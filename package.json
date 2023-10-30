@@ -1,0 +1,36 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "codegen": ". ./.env && zeus $HASURA_GRAPHQL_ENDPOINT/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/apollo": "^5.0.0-alpha.11",
+    "autoprefixer": "^10.4.16",
+    "nuxt": "^3.8.0",
+    "postcss": "^8.4.31",
+    "sass": "^1.69.5",
+    "tailwindcss": "^3.3.5",
+    "vue": "^3.3.7",
+    "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "@tailwindcss/forms": "^0.5.7",
+    "eventemitter3": "^5.0.1",
+    "graphql-ws": "^5.14.2",
+    "graphql-zeus": "^5.3.2",
+    "javascript-time-ago": "^2.5.9",
+    "node-fetch": "^2.7.0",
+    "pinia": "^2.1.7",
+    "preline": "^2.0.2",
+    "uuid": "^9.0.1"
+  }
+}

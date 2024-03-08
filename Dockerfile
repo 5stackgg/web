@@ -1,6 +1,6 @@
 FROM node:18 as builder
 
-WORKDIR /opt/stack5
+WORKDIR /opt/5stack
 
 COPY . .
 
@@ -14,11 +14,11 @@ RUN yarn build
 
 FROM node:18
 
-WORKDIR /opt/stack5
+WORKDIR /opt/5stack
 
-COPY --from=builder /opt/stack5/.output  .
+COPY --from=builder /opt/5stack/.output  .
 
 ENV HOST 0.0.0.0
 EXPOSE 3000
 
-CMD [ "node", ".output/server/index.mjs" ]
+CMD [ "node", "server/index.mjs" ]

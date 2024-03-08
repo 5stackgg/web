@@ -147,7 +147,7 @@ export default {
   },
   methods: {
     connectDiscord() {
-      window.location = `https://playcs.live/auth/discord?redirect=${encodeURIComponent(
+      window.location = `https://5stack.gg/auth/discord?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

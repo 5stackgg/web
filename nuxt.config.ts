@@ -17,11 +17,11 @@ export default defineNuxtConfig({
     proxyCookies: true,
     clients: {
       default: {
-        httpEndpoint: "https://api.playcs.live/v1/graphql",
+        httpEndpoint: "https://api.5stack.gg/v1/graphql",
         httpLinkOptions: {
           credentials: "include",
         },
-        wsEndpoint: "wss://api.playcs.live/v1/graphql",
+        wsEndpoint: "wss://api.5stack.gg/v1/graphql",
         wsLinkOptions: {
           credentials: "include",
         },

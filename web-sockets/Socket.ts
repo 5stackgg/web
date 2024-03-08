@@ -11,7 +11,7 @@ class Socket extends EventEmitter {
   }> = [];
 
   public connect() {
-    const wsHost = `${import.meta.env.VITE_WS_HOST || "ws://5stack.loca.lt"}`;
+    const wsHost = `${import.meta.env.VITE_WS_HOST || "wss://ws.5stack.gg"}`;
     console.info(`connecting to ws: ${wsHost}`);
     const webSocket = new WebSocket(wsHost);
 

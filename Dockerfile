@@ -16,7 +16,7 @@ FROM node:18
 
 WORKDIR /opt/stack5
 
-COPY --from=builder /opt/stack5  .
+COPY --from=builder /opt/stack5/.output  .
 
 ENV HOST 0.0.0.0
 EXPOSE 3000

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { AllTypesProps, ReturnTypes, Ops } from './const';
-export const HOST = "https://api.playcs.live/v1/graphql"
+export const HOST = "https://api.5stack.gg/v1/graphql"
 
 
 export const HEADERS = {}

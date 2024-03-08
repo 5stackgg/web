@@ -1,4 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+// TODO : https://stackoverflow.com/questions/75001801/nuxt-dynamically-change-the-enviroment-variables-in-run-time-config
+// https://nuxt.com/docs/guide/directory-structure/env
+
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },

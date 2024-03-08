@@ -1,22 +1,31 @@
-# Dockerfile
-FROM node:11.13.0-alpine
+FROM node:18 as builder
 
-# create destination directory
-RUN mkdir -p /usr/src/nuxt-app
-WORKDIR /usr/src/nuxt-app
+WORKDIR /opt/stack5
 
-# update and install dependency
-RUN apk update && apk upgrade
-RUN apk add git
+COPY . .
 
-# copy the app, note .dockerignore
-COPY . /usr/src/nuxt-app/
-RUN npm install
-RUN npm run build
+RUN yarn install \
+  --prefer-offline \
+  --frozen-lockfile \
+  --non-interactive \
+  --production=false
 
+RUN yarn build
+
+RUN rm -rf node_modules && \
+  NODE_ENV=production yarn install \
+  --prefer-offline \
+  --pure-lockfile \
+  --non-interactive \
+  --production=true
+
+FROM node:lts
+
+WORKDIR /opt/stack5
+
+COPY --from=builder /opt/stack5  .
+
+ENV HOST 0.0.0.0
 EXPOSE 3000
 
-ENV NUXT_HOST=0.0.0.0
-ENV NUXT_PORT=3000
-
-CMD [ "npm", "start" ]
+CMD [ "node", ".output/server/index.mjs" ]

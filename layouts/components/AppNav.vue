@@ -147,7 +147,7 @@ export default {
   },
   methods: {
     connectDiscord() {
-      window.location = `https://5stack.gg/auth/discord?redirect=${encodeURIComponent(
+      window.location = `https://api.5stack.gg/auth/discord?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

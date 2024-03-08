@@ -24,5 +24,5 @@ jobs:
         with:
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/playcs-web:${{ github.sha }}
-            ghcr.io/${{ github.repository }}/playcs-web:latest
+            ghcr.io/${{ github.repository }}/5stack-web:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/5stack-web:latest

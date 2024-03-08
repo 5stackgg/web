@@ -25,7 +25,7 @@ export default {
   methods: {
     signIn() {
       // TODO - use env variable
-      window.location = `https://5stack.gg/auth/steam?redirect=${encodeURIComponent(
+      window.location = `https://api.5stack.gg/auth/steam?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

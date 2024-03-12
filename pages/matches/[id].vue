@@ -11,16 +11,15 @@
           <h3>{{ match.map }}</h3>
           <h4>{{ match.lineup_1.score }} - {{ match.lineup_2.score }}</h4>
           <h6 v-if="match.status != 'Finished'">
-            <spanx
-              class="text-purple-400 underline"
+            <span
+              class="text-purple-400 underline flex"
               v-if="match.connection_string"
             >
-              {{ match.connection_string }}
-              <br />
+              <clip-board :data="match.connection_string"></clip-board>
               <a :href="`https://api.5stack.gg${match.connection_link}`">
-                https://api.5stack.gg{{ match.connection_link }}
+                {{ match.connection_string }}
               </a>
-            </spanx>
+            </span>
             <span v-else-if="!match.server_id" class="text-red-400 underline">
               Server has not been assigned
             </span>
@@ -270,9 +269,11 @@ import LineupOverview from "~/components/match-details/LineupOverview.vue";
 import LineupMember from "~/components/match-details/LineupMember.vue";
 import LineupUtility from "~/components/match-details/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
+import ClipBoard from "~/components/ClipBoard.vue";
 
 export default {
   components: {
+    ClipBoard,
     LineupOpeningDuels,
     LineupUtility,
     LineupMember,

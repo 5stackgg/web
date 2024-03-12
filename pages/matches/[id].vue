@@ -12,14 +12,18 @@
           <h4>{{ match.lineup_1.score }} - {{ match.lineup_2.score }}</h4>
           <h6 v-if="match.status != 'Finished'">
             <span
-              class="text-purple-400 underline"
+              class="text-purple-400 underline flex"
               v-if="match.connection_string"
             >
-              {{ match.connection_string }}
+              <clip-board :data="match.connection_string"></clip-board>
+              <a :href="`https://api.5stack.gg${match.connection_link}`">
+                {{ match.connection_string }}
+              </a>
             </span>
-            <span class="text-red-400 underline" v-else>
+            <span v-else-if="!match.server_id" class="text-red-400 underline">
               Server has not been assigned
             </span>
+            <span v-else> Server has been assigned. </span>
           </h6>
         </div>
 
@@ -175,140 +179,116 @@
 
     <hr class="mt-8 mb-8 border-gray-600" />
 
-    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto" v-if="match.status === 'PickingPlayers' && match.organizer_steam_id == me.steam_id">
+    <div
+      class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
+      v-if="
+        match.status === 'PickingPlayers' &&
+        match.organizer_steam_id == me.steam_id
+      "
+    >
       <h1>Assign lineups</h1>
 
       <div class="grid md:grid-cols-2 gap-12">
         <div
-            class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
         >
-         <form>
-           <five-stack-search-input
-               label="Team 1"
-               placeholder="Find Player"
-               v-model="form.lineup_1"
-               :search="searchPlayers"
-           ></five-stack-search-input>
-         </form>
+          <form @submit.prevent.stop>
+            <five-stack-search-input
+              label="Team 1"
+              placeholder="Find Player"
+              v-model="form.lineup_1"
+              :search="searchPlayers"
+            ></five-stack-search-input>
+          </form>
         </div>
 
         <div
-            class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
         >
-          <form>
+          <form @submit.prevent.stop>
             <five-stack-search-input
-                label="Team 2"
-                placeholder="Find Player"
-                v-model="form.lineup_2"
-                :search="searchPlayers"
+              label="Team 2"
+              placeholder="Find Player"
+              v-model="form.lineup_2"
+              :search="searchPlayers"
             ></five-stack-search-input>
           </form>
         </div>
       </div>
     </div>
 
+    TODO - add round breakdown as we are already going by it
+
     <tabs>
       <tab title="Overview">
-        <lineup-overview :match="match" :lineup="match.lineup_1"></lineup-overview>
-        <br>
-        <lineup-overview :match="match" :lineup="match.lineup_2"></lineup-overview>
+        <lineup-overview
+          :match="match"
+          :lineup="match.lineup_1"
+        ></lineup-overview>
+        <br />
+        <lineup-overview
+          :match="match"
+          :lineup="match.lineup_2"
+        ></lineup-overview>
       </tab>
       <tab title="Utility">
-        <clickable-table :caption="match.lineup_1.name">
-          <thead>
-            <tr>
-              <th>{{ match.lineup_1.name }}</th>
-              <th>Flash Assists</th>
-              <th>Enemies Flashed</th>
-              <th>Friendly Flashed</th>
-              <th>Avg bling time</th>
-              <th>HE Damage</th>
-              <th>HE Team damage</th>
-              <th>Unused utility</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="member of match.lineup_1.lineup_players">
-              <td class="w-2" @click="viewPlayer(member.steam_id)">
-                <template v-if="member.player">
-                  {{ member.player.name }}
-                </template>
-                <template v-else>
-                  {{ member.name }}
-                </template>
-                <span
-                  class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
-                  v-if="member.captain"
-                  >Captain</span
-                >
-              </td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-            </tr>
-          </tbody>
-        </clickable-table>
+        <lineup-utility
+          :match="match"
+          :lineup="match.lineup_1"
+        ></lineup-utility>
+        <br />
+        <lineup-utility
+          :match="match"
+          :lineup="match.lineup_2"
+        ></lineup-utility>
       </tab>
       <tab title="Opening Duels">
-        <clickable-table :caption="match.lineup_1.name">
-          <thead>
-            <tr>
-              <th>{{ match.lineup_1.name }}</th>
-              <th>Attempts</th>
-              <th>Success</th>
-              <th>Traded</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="member of match.lineup_1.lineup_players">
-              <td class="w-2" @click="viewPlayer(member.steam_id)">
-                <template v-if="member.player">
-                  {{ member.player.name }}
-                </template>
-                <template v-else>
-                  {{ member.name }}
-                </template>
-                <span
-                  class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
-                  v-if="member.captain"
-                  >Captain</span
-                >
-              </td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-            </tr>
-          </tbody>
-        </clickable-table>
-        TODO - add round breakdown as we are already going by it
+        <lineup-opening-duels
+          :match="match"
+          :lineup="match.lineup_1"
+        ></lineup-opening-duels>
+        <br />
+        <lineup-opening-duels
+          :match="match"
+          :lineup="match.lineup_2"
+        ></lineup-opening-duels>
       </tab>
       <tab title="Clutches"> </tab>
     </tabs>
   </template>
 </template>
-f
+
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import CaptainInfo from "~/components/CaptainInfo.vue";
 import Tab from "~/components/tabs/Tab.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import {generateMutation, generateQuery} from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import LineupOverview from "~/components/match-details/LineupOverview.vue";
+import LineupMember from "~/components/match-details/LineupMember.vue";
+import LineupUtility from "~/components/match-details/LineupUtility.vue";
+import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
+import ClipBoard from "~/components/ClipBoard.vue";
 
 export default {
-  components: {LineupOverview, FiveStackSearchInput, Tab, CaptainInfo },
+  components: {
+    ClipBoard,
+    LineupOpeningDuels,
+    LineupUtility,
+    LineupMember,
+    LineupOverview,
+    FiveStackSearchInput,
+    Tab,
+    CaptainInfo,
+  },
   data() {
     return {
       match: undefined,
       form: {
         lineup_1: undefined,
         lineup_2: undefined,
-      }
+      },
     };
   },
   apollo: {
@@ -322,11 +302,13 @@ export default {
             {
               id: true,
               map: true,
+              server_id: true,
               overtime: true,
               knife_round: true,
               mr: true,
               organizer_steam_id: true,
               connection_string: true,
+              connection_link: true,
               status: true,
               type: true,
               scheduled_at: true,
@@ -510,27 +492,24 @@ export default {
     },
   },
   watch: {
-    ['form.lineup_1']: {
+    ["form.lineup_1"]: {
       handler(member) {
         if (member) {
           this.form.lineup_1 = undefined;
           this.addMember(member.value.steam_id, this.match.lineup_1.id);
         }
-      }
+      },
     },
-    ['form.lineup_2']: {
+    ["form.lineup_2"]: {
       handler(member) {
         if (member) {
           this.form.lineup_2 = undefined;
           this.addMember(member.value.steam_id, this.match.lineup_2.id);
         }
-      }
-    }
+      },
+    },
   },
   methods: {
-    viewPlayer(steam_id) {
-      this.$router.push(`/players/${steam_id}`);
-    },
     async searchPlayers(query) {
       const { data } = await this.$apollo.query({
         query: generateQuery({
@@ -538,12 +517,12 @@ export default {
             {
               where: {
                 ...(/^[0-9]+$/.test(query)
-                    ? {
+                  ? {
                       steam_id: {
                         _eq: $("playerSteamIdQuery", "bigint"),
                       },
                     }
-                    : {
+                  : {
                       name: {
                         _ilike: $("playerQuery", "String"),
                       },
@@ -563,7 +542,8 @@ export default {
         },
       });
 
-      return data.players
+      return (
+        data.players
           // .filter((player) => {
           //   return (
           //       this.form.players.lineup_1.indexOf(player) === -1 ||
@@ -575,7 +555,8 @@ export default {
               value: player,
               display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"src="${player.avatar_url}"> ${player.name} <small>[${player.steam_id}]</small>`,
             };
-          });
+          })
+      );
     },
     async addMember(steam_id: bigint, match_lineup_id: string) {
       await this.$apollo.mutate({

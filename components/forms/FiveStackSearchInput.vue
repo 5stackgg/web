@@ -1,6 +1,7 @@
 <template>
   <div class="relative">
     <five-stack-text-input
+      @keydown.enter="results.length === 1 && select(results[0])"
       :label="label"
       :placeholder="modelValue?.display || placeholder"
       :required="!modelValue && required"

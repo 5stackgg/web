@@ -2,26 +2,23 @@
   <td class="w-2" @click="viewPlayer">
     <template v-if="member.player">
       {{ member.player.name }}
-      <small>
-        [{{ member.player.steam_id }}]
-      </small>
+      <small> [{{ member.player.steam_id }}] </small>
     </template>
     <template v-else>
       {{ member.name }}
     </template>
-    <span @click.stop.prevent="makeCaptain" class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white">
-      <template v-if="member.captain">
-        Captain
-      </template>
-      <template v-else>
-        Promote
-      </template>
+    <span
+      @click.stop.prevent="makeCaptain"
+      class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
+    >
+      <template v-if="member.captain"> Captain </template>
+      <template v-else> Promote </template>
     </span>
   </td>
 </template>
 <script lang="ts">
-import {generateMutation} from "~/graphql/graphqlGen";
-import {$} from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
+import { $ } from "~/generated/zeus";
 
 export default {
   props: {
@@ -32,15 +29,15 @@ export default {
     lineup_id: {
       type: String,
       required: true,
-    }
+    },
   },
   methods: {
     viewPlayer() {
       this.$router.push(`/players/${this.member.steam_id}`);
     },
     async makeCaptain() {
-      if(this.member.captain) {
-        return
+      if (this.member.captain) {
+        return;
       }
 
       await this.$apollo.mutate({
@@ -49,7 +46,7 @@ export default {
             {
               where: {
                 steam_id: {
-                  _eq: $("steam_id", "bigint")
+                  _eq: $("steam_id", "bigint"),
                 },
                 match_lineup_id: {
                   _eq: $("match_lineup_id", "uuid"),
@@ -57,7 +54,7 @@ export default {
               },
               _set: {
                 captain: true,
-              }
+              },
             },
             {
               __typename: true,
@@ -67,9 +64,9 @@ export default {
         variables: {
           steam_id: this.member.steam_id,
           match_lineup_id: this.lineup_id,
-        }
+        },
       });
     },
-  }
-}
+  },
+};
 </script>

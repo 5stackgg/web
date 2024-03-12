@@ -987,12 +987,14 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"matches_on_conflict"
 	},
 	matches_avg_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	matches_bool_exp:{
 		_and:"matches_bool_exp",
 		_not:"matches_bool_exp",
 		_or:"matches_bool_exp",
+		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		e_match_status:"e_match_status_bool_exp",
@@ -1010,7 +1012,7 @@ export const AllTypesProps: Record<string,any> = {
 		map:"String_comparison_exp",
 		mr:"Int_comparison_exp",
 		organizer:"players_bool_exp",
-		organizer_steam_id:"uuid_comparison_exp",
+		organizer_steam_id:"bigint_comparison_exp",
 		overtime:"Boolean_comparison_exp",
 		password:"String_comparison_exp",
 		player_assists:"player_assists_bool_exp",
@@ -1031,7 +1033,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	matches_constraint: "enum" as const,
 	matches_inc_input:{
-
+		organizer_steam_id:"bigint"
 	},
 	matches_insert_input:{
 		created_at:"timestamptz",
@@ -1046,7 +1048,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_id_2:"uuid",
 		lineup_players:"match_lineup_players_arr_rel_insert_input",
 		organizer:"players_obj_rel_insert_input",
-		organizer_steam_id:"uuid",
+		organizer_steam_id:"bigint",
 		player_assists:"player_assists_arr_rel_insert_input",
 		player_damages:"player_damages_arr_rel_insert_input",
 		player_kills:"player_kills_arr_rel_insert_input",
@@ -1096,6 +1098,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"matches_bool_exp"
 	},
 	matches_order_by:{
+		connection_link:"order_by",
 		connection_string:"order_by",
 		created_at:"order_by",
 		e_match_status:"e_match_status_order_by",
@@ -1139,7 +1142,7 @@ export const AllTypesProps: Record<string,any> = {
 		knife_round_winner_lineup_id:"uuid",
 		lineup_id_1:"uuid",
 		lineup_id_2:"uuid",
-		organizer_steam_id:"uuid",
+		organizer_steam_id:"bigint",
 		scheduled_at:"date",
 		server_id:"uuid",
 		status:"e_match_status_enum",
@@ -1147,13 +1150,16 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	matches_stddev_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	matches_stddev_pop_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	matches_stddev_samp_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	matches_stream_cursor_input:{
 		initial_value:"matches_stream_cursor_value_input",
@@ -1165,7 +1171,7 @@ export const AllTypesProps: Record<string,any> = {
 		knife_round_winner_lineup_id:"uuid",
 		lineup_id_1:"uuid",
 		lineup_id_2:"uuid",
-		organizer_steam_id:"uuid",
+		organizer_steam_id:"bigint",
 		scheduled_at:"date",
 		server_id:"uuid",
 		status:"e_match_status_enum",
@@ -1173,7 +1179,8 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	matches_sum_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	matches_update_column: "enum" as const,
 	matches_updates:{
@@ -1182,13 +1189,16 @@ export const AllTypesProps: Record<string,any> = {
 		where:"matches_bool_exp"
 	},
 	matches_var_pop_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	matches_var_samp_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	matches_variance_order_by:{
-		mr:"order_by"
+		mr:"order_by",
+		organizer_steam_id:"order_by"
 	},
 	mutation_root:{
 		delete_e_match_status:{
@@ -4117,6 +4127,7 @@ export const ReturnTypes: Record<string,any> = {
 		team_2_score:"Float"
 	},
 	matches:{
+		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
 		e_match_status:"e_match_status",
@@ -4134,7 +4145,7 @@ export const ReturnTypes: Record<string,any> = {
 		map:"String",
 		mr:"Int",
 		organizer:"players",
-		organizer_steam_id:"uuid",
+		organizer_steam_id:"bigint",
 		overtime:"Boolean",
 		password:"String",
 		player_assists:"player_assists",
@@ -4171,9 +4182,11 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"matches_variance_fields"
 	},
 	matches_avg_fields:{
-		mr:"Float"
+		mr:"Float",
+		organizer_steam_id:"Float"
 	},
 	matches_max_fields:{
+		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
 		id:"uuid",
@@ -4182,13 +4195,14 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_id_2:"uuid",
 		map:"String",
 		mr:"Int",
-		organizer_steam_id:"uuid",
+		organizer_steam_id:"bigint",
 		password:"String",
 		scheduled_at:"date",
 		server_id:"uuid",
 		updated_at:"timestamptz"
 	},
 	matches_min_fields:{
+		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
 		id:"uuid",
@@ -4197,7 +4211,7 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_id_2:"uuid",
 		map:"String",
 		mr:"Int",
-		organizer_steam_id:"uuid",
+		organizer_steam_id:"bigint",
 		password:"String",
 		scheduled_at:"date",
 		server_id:"uuid",
@@ -4208,25 +4222,32 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"matches"
 	},
 	matches_stddev_fields:{
-		mr:"Float"
+		mr:"Float",
+		organizer_steam_id:"Float"
 	},
 	matches_stddev_pop_fields:{
-		mr:"Float"
+		mr:"Float",
+		organizer_steam_id:"Float"
 	},
 	matches_stddev_samp_fields:{
-		mr:"Float"
+		mr:"Float",
+		organizer_steam_id:"Float"
 	},
 	matches_sum_fields:{
-		mr:"Int"
+		mr:"Int",
+		organizer_steam_id:"bigint"
 	},
 	matches_var_pop_fields:{
-		mr:"Float"
+		mr:"Float",
+		organizer_steam_id:"Float"
 	},
 	matches_var_samp_fields:{
-		mr:"Float"
+		mr:"Float",
+		organizer_steam_id:"Float"
 	},
 	matches_variance_fields:{
-		mr:"Float"
+		mr:"Float",
+		organizer_steam_id:"Float"
 	},
 	mutation_root:{
 		delete_e_match_status:"e_match_status_mutation_response",

@@ -11,18 +11,20 @@
           <h3>{{ match.map }}</h3>
           <h4>{{ match.lineup_1.score }} - {{ match.lineup_2.score }}</h4>
           <h6 v-if="match.status != 'Finished'">
-            <span
+            <spanx
               class="text-purple-400 underline"
               v-if="match.connection_string"
             >
               {{ match.connection_string }}
-            </span>
+              <br />
+              <a :href="`https://api.5stack.gg${match.connection_link}`">
+                https://api.5stack.gg{{ match.connection_link }}
+              </a>
+            </spanx>
             <span v-else-if="!match.server_id" class="text-red-400 underline">
               Server has not been assigned
             </span>
-            <span v-else>
-              Server has been assigned.
-            </span>
+            <span v-else> Server has been assigned. </span>
           </h6>
         </div>
 
@@ -178,32 +180,38 @@
 
     <hr class="mt-8 mb-8 border-gray-600" />
 
-    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto" v-if="match.status === 'PickingPlayers' && match.organizer_steam_id == me.steam_id">
+    <div
+      class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
+      v-if="
+        match.status === 'PickingPlayers' &&
+        match.organizer_steam_id == me.steam_id
+      "
+    >
       <h1>Assign lineups</h1>
 
       <div class="grid md:grid-cols-2 gap-12">
         <div
-            class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-        >
-         <form @submit.prevent.stop>
-           <five-stack-search-input
-               label="Team 1"
-               placeholder="Find Player"
-               v-model="form.lineup_1"
-               :search="searchPlayers"
-           ></five-stack-search-input>
-         </form>
-        </div>
-
-        <div
-            class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
         >
           <form @submit.prevent.stop>
             <five-stack-search-input
-                label="Team 2"
-                placeholder="Find Player"
-                v-model="form.lineup_2"
-                :search="searchPlayers"
+              label="Team 1"
+              placeholder="Find Player"
+              v-model="form.lineup_1"
+              :search="searchPlayers"
+            ></five-stack-search-input>
+          </form>
+        </div>
+
+        <div
+          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+        >
+          <form @submit.prevent.stop>
+            <five-stack-search-input
+              label="Team 2"
+              placeholder="Find Player"
+              v-model="form.lineup_2"
+              :search="searchPlayers"
             ></five-stack-search-input>
           </form>
         </div>
@@ -214,19 +222,37 @@
 
     <tabs>
       <tab title="Overview">
-        <lineup-overview :match="match" :lineup="match.lineup_1"></lineup-overview>
-        <br>
-        <lineup-overview :match="match" :lineup="match.lineup_2"></lineup-overview>
+        <lineup-overview
+          :match="match"
+          :lineup="match.lineup_1"
+        ></lineup-overview>
+        <br />
+        <lineup-overview
+          :match="match"
+          :lineup="match.lineup_2"
+        ></lineup-overview>
       </tab>
       <tab title="Utility">
-        <lineup-utility :match="match" :lineup="match.lineup_1"></lineup-utility>
-        <br>
-        <lineup-utility :match="match" :lineup="match.lineup_2"></lineup-utility>
+        <lineup-utility
+          :match="match"
+          :lineup="match.lineup_1"
+        ></lineup-utility>
+        <br />
+        <lineup-utility
+          :match="match"
+          :lineup="match.lineup_2"
+        ></lineup-utility>
       </tab>
       <tab title="Opening Duels">
-        <lineup-opening-duels :match="match" :lineup="match.lineup_1"></lineup-opening-duels>
-        <br>
-        <lineup-opening-duels :match="match" :lineup="match.lineup_2"></lineup-opening-duels>
+        <lineup-opening-duels
+          :match="match"
+          :lineup="match.lineup_1"
+        ></lineup-opening-duels>
+        <br />
+        <lineup-opening-duels
+          :match="match"
+          :lineup="match.lineup_2"
+        ></lineup-opening-duels>
       </tab>
       <tab title="Clutches"> </tab>
     </tabs>
@@ -239,21 +265,29 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import CaptainInfo from "~/components/CaptainInfo.vue";
 import Tab from "~/components/tabs/Tab.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import {generateMutation, generateQuery} from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import LineupOverview from "~/components/match-details/LineupOverview.vue";
 import LineupMember from "~/components/match-details/LineupMember.vue";
 import LineupUtility from "~/components/match-details/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
 
 export default {
-  components: {LineupOpeningDuels, LineupUtility, LineupMember, LineupOverview, FiveStackSearchInput, Tab, CaptainInfo },
+  components: {
+    LineupOpeningDuels,
+    LineupUtility,
+    LineupMember,
+    LineupOverview,
+    FiveStackSearchInput,
+    Tab,
+    CaptainInfo,
+  },
   data() {
     return {
       match: undefined,
       form: {
         lineup_1: undefined,
         lineup_2: undefined,
-      }
+      },
     };
   },
   apollo: {
@@ -273,6 +307,7 @@ export default {
               mr: true,
               organizer_steam_id: true,
               connection_string: true,
+              connection_link: true,
               status: true,
               type: true,
               scheduled_at: true,
@@ -456,22 +491,22 @@ export default {
     },
   },
   watch: {
-    ['form.lineup_1']: {
+    ["form.lineup_1"]: {
       handler(member) {
         if (member) {
           this.form.lineup_1 = undefined;
           this.addMember(member.value.steam_id, this.match.lineup_1.id);
         }
-      }
+      },
     },
-    ['form.lineup_2']: {
+    ["form.lineup_2"]: {
       handler(member) {
         if (member) {
           this.form.lineup_2 = undefined;
           this.addMember(member.value.steam_id, this.match.lineup_2.id);
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     async searchPlayers(query) {
@@ -481,12 +516,12 @@ export default {
             {
               where: {
                 ...(/^[0-9]+$/.test(query)
-                    ? {
+                  ? {
                       steam_id: {
                         _eq: $("playerSteamIdQuery", "bigint"),
                       },
                     }
-                    : {
+                  : {
                       name: {
                         _ilike: $("playerQuery", "String"),
                       },
@@ -506,7 +541,8 @@ export default {
         },
       });
 
-      return data.players
+      return (
+        data.players
           // .filter((player) => {
           //   return (
           //       this.form.players.lineup_1.indexOf(player) === -1 ||
@@ -518,7 +554,8 @@ export default {
               value: player,
               display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"src="${player.avatar_url}"> ${player.name} <small>[${player.steam_id}]</small>`,
             };
-          });
+          })
+      );
     },
     async addMember(steam_id: bigint, match_lineup_id: string) {
       await this.$apollo.mutate({

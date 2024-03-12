@@ -17,8 +17,11 @@
             >
               {{ match.connection_string }}
             </span>
-            <span class="text-red-400 underline" v-else>
+            <span v-else-if="!match.server_id" class="text-red-400 underline">
               Server has not been assigned
+            </span>
+            <span v-else>
+              Server has been assigned.
             </span>
           </h6>
         </div>
@@ -182,7 +185,7 @@
         <div
             class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
         >
-         <form>
+         <form @submit.prevent.stop>
            <five-stack-search-input
                label="Team 1"
                placeholder="Find Player"
@@ -195,7 +198,7 @@
         <div
             class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
         >
-          <form>
+          <form @submit.prevent.stop>
             <five-stack-search-input
                 label="Team 2"
                 placeholder="Find Player"
@@ -207,6 +210,8 @@
       </div>
     </div>
 
+    TODO - add round breakdown as we are already going by it
+
     <tabs>
       <tab title="Overview">
         <lineup-overview :match="match" :lineup="match.lineup_1"></lineup-overview>
@@ -214,83 +219,20 @@
         <lineup-overview :match="match" :lineup="match.lineup_2"></lineup-overview>
       </tab>
       <tab title="Utility">
-        <clickable-table :caption="match.lineup_1.name">
-          <thead>
-            <tr>
-              <th>{{ match.lineup_1.name }}</th>
-              <th>Flash Assists</th>
-              <th>Enemies Flashed</th>
-              <th>Friendly Flashed</th>
-              <th>Avg bling time</th>
-              <th>HE Damage</th>
-              <th>HE Team damage</th>
-              <th>Unused utility</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="member of match.lineup_1.lineup_players">
-              <td class="w-2" @click="viewPlayer(member.steam_id)">
-                <template v-if="member.player">
-                  {{ member.player.name }}
-                </template>
-                <template v-else>
-                  {{ member.name }}
-                </template>
-                <span
-                  class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
-                  v-if="member.captain"
-                  >Captain</span
-                >
-              </td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-            </tr>
-          </tbody>
-        </clickable-table>
+        <lineup-utility :match="match" :lineup="match.lineup_1"></lineup-utility>
+        <br>
+        <lineup-utility :match="match" :lineup="match.lineup_2"></lineup-utility>
       </tab>
       <tab title="Opening Duels">
-        <clickable-table :caption="match.lineup_1.name">
-          <thead>
-            <tr>
-              <th>{{ match.lineup_1.name }}</th>
-              <th>Attempts</th>
-              <th>Success</th>
-              <th>Traded</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="member of match.lineup_1.lineup_players">
-              <td class="w-2" @click="viewPlayer(member.steam_id)">
-                <template v-if="member.player">
-                  {{ member.player.name }}
-                </template>
-                <template v-else>
-                  {{ member.name }}
-                </template>
-                <span
-                  class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
-                  v-if="member.captain"
-                  >Captain</span
-                >
-              </td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-              <td class="w-2">TODO</td>
-            </tr>
-          </tbody>
-        </clickable-table>
-        TODO - add round breakdown as we are already going by it
+        <lineup-opening-duels :match="match" :lineup="match.lineup_1"></lineup-opening-duels>
+        <br>
+        <lineup-opening-duels :match="match" :lineup="match.lineup_2"></lineup-opening-duels>
       </tab>
       <tab title="Clutches"> </tab>
     </tabs>
   </template>
 </template>
-f
+
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
@@ -299,9 +241,12 @@ import Tab from "~/components/tabs/Tab.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import {generateMutation, generateQuery} from "~/graphql/graphqlGen";
 import LineupOverview from "~/components/match-details/LineupOverview.vue";
+import LineupMember from "~/components/match-details/LineupMember.vue";
+import LineupUtility from "~/components/match-details/LineupUtility.vue";
+import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
 
 export default {
-  components: {LineupOverview, FiveStackSearchInput, Tab, CaptainInfo },
+  components: {LineupOpeningDuels, LineupUtility, LineupMember, LineupOverview, FiveStackSearchInput, Tab, CaptainInfo },
   data() {
     return {
       match: undefined,
@@ -322,6 +267,7 @@ export default {
             {
               id: true,
               map: true,
+              server_id: true,
               overtime: true,
               knife_round: true,
               mr: true,
@@ -528,9 +474,6 @@ export default {
     }
   },
   methods: {
-    viewPlayer(steam_id) {
-      this.$router.push(`/players/${steam_id}`);
-    },
     async searchPlayers(query) {
       const { data } = await this.$apollo.query({
         query: generateQuery({

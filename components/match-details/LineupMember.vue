@@ -12,8 +12,11 @@
       class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
     >
       <template v-if="member.captain"> Captain </template>
-      <template v-else> Promote </template>
+      <template v-else>Promote</template>
     </span>
+    <button v-if="removeable" @click.stop.prevent="removeFromLineup">
+      Remove
+    </button>
   </td>
 </template>
 <script lang="ts">
@@ -30,10 +33,40 @@ export default {
       type: String,
       required: true,
     },
+    removeable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   methods: {
     viewPlayer() {
       this.$router.push(`/players/${this.member.steam_id}`);
+    },
+    async removeFromLineup() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_match_lineup_players: [
+            {
+              where: {
+                steam_id: {
+                  _eq: $("steam_id", "bigint"),
+                },
+                match_lineup_id: {
+                  _eq: $("match_lineup_id", "uuid"),
+                },
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+        variables: {
+          steam_id: this.member.steam_id,
+          match_lineup_id: this.lineup_id,
+        },
+      });
     },
     async makeCaptain() {
       if (this.member.captain) {

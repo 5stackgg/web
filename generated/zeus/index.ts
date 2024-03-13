@@ -3159,6 +3159,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** mutation root */
 ["mutation_root"]: AliasType<{
+cancelMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 delete_e_match_status?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_match_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
 delete_e_match_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_status"]],
@@ -9610,6 +9611,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** mutation root */
 ["mutation_root"]: AliasType<{
+cancelMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 delete_e_match_status?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_match_status_bool_exp"]},ResolverInputTypes["e_match_status_mutation_response"]],
 delete_e_match_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_status"]],
@@ -15850,7 +15852,9 @@ export type ModelTypes = {
 };
 	/** mutation root */
 ["mutation_root"]: {
-		/** delete data from the table: "e_match_status" */
+		/** cancelMatch */
+	cancelMatch?: ModelTypes["SuccessOutput"] | undefined,
+	/** delete data from the table: "e_match_status" */
 	delete_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined,
 	/** delete single row from the table: "e_match_status" */
 	delete_e_match_status_by_pk?: ModelTypes["e_match_status"] | undefined,
@@ -21504,6 +21508,8 @@ export type GraphQLTypes = {
 	/** mutation root */
 ["mutation_root"]: {
 	__typename: "mutation_root",
+	/** cancelMatch */
+	cancelMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** delete data from the table: "e_match_status" */
 	delete_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined,
 	/** delete single row from the table: "e_match_status" */

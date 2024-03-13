@@ -1211,6 +1211,9 @@ export const AllTypesProps: Record<string,any> = {
 		organizer_steam_id:"order_by"
 	},
 	mutation_root:{
+		cancelMatch:{
+			match_id:"uuid"
+		},
 		delete_e_match_status:{
 			where:"e_match_status_bool_exp"
 		},
@@ -4281,6 +4284,7 @@ export const ReturnTypes: Record<string,any> = {
 		organizer_steam_id:"Float"
 	},
 	mutation_root:{
+		cancelMatch:"SuccessOutput",
 		delete_e_match_status:"e_match_status_mutation_response",
 		delete_e_match_status_by_pk:"e_match_status",
 		delete_e_match_types:"e_match_types_mutation_response",

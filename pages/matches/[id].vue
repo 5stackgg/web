@@ -60,6 +60,12 @@
                   {{ match.tv_connection_string }}
                 </a>
               </span>
+
+
+              <pre>{{ match.status }}</pre>
+              <five-stack-button @click="cancelMatch">
+                Cancel Match
+              </five-stack-button>
             </template>
           </h6>
         </div>
@@ -668,6 +674,20 @@ export default {
       await this.$apollo.mutate({
         mutation: generateMutation({
           scheduleMatch: [
+            {
+              match_id: this.match.id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+    async cancelMatch() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          cancelMatch: [
             {
               match_id: this.match.id,
             },

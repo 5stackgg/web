@@ -22,21 +22,24 @@
               </template>
             </template>
             <template v-if="match.status == 'Scheduled'">
-              <template v-if="match.is_match_server_available">
-                <form @submit.prevent="startMatch">
-                  <five-stack-select-input
-                    :required="true"
-                    label="type"
-                    :options="availableServers"
-                    v-model="startMatchForm.server_id"
-                  ></five-stack-select-input>
-                  <five-stack-button> Start Match </five-stack-button>
-                </form>
-              </template>
-              <template v-else>
-                Another match is on going on the selected server. Once complete
-                match will be able to be started.
-              </template>
+              <div v-if="match.server_id && !match.is_match_server_available">
+                <p>
+                  Another match is on going on the selected server. Once
+                  complete match will be able to be started.
+                </p>
+
+                <p class="mt-4">Choose another server.</p>
+              </div>
+
+              <form @submit.prevent="startMatch">
+                <pre>{{ startMatchForm.server_id }}</pre>
+                <five-stack-select-input
+                  label="type"
+                  :options="availableServers"
+                  v-model="startMatchForm.server_id"
+                ></five-stack-select-input>
+                <five-stack-button> Start Match </five-stack-button>
+              </form>
             </template>
             <template v-else-if="match.status != 'Finished'">
               <span
@@ -696,12 +699,23 @@ export default {
       }
     },
     availableServers() {
-      return this.servers.map((server) => {
-        return {
-          value: server.id,
-          display: `${server.label} (${server.host}:${server.port})`,
-        };
+      const servers = this.servers
+        .filter((server) => {
+          return this.match.server_id !== server.id;
+        })
+        .map((server) => {
+          return {
+            value: server.id,
+            display: `${server.label} (${server.host}:${server.port})`,
+          };
+        });
+
+      servers.unshift({
+        value: null,
+        display: "On Demand",
       });
+
+      return servers;
     },
   },
 };

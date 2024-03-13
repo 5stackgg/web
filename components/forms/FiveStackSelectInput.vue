@@ -15,7 +15,10 @@
           [`input--validation-error`]: !isValid,
         }"
       >
-        <option v-for="option of options" :value="option?.value || option">
+        <option
+          v-for="option of options"
+          :value="option.value !== undefined ? option?.value || '' : option"
+        >
           {{ option?.display || option }}
         </option>
       </select>
@@ -68,7 +71,9 @@ export default {
   },
   methods: {
     updateModelValue(event) {
-      this.$emit("update:modelValue", event.target.value);
+      const value = event.target.value;
+
+      this.$emit("update:modelValue", value.length === 0 ? null : value);
     },
   },
 };

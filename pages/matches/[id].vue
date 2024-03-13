@@ -8,15 +8,10 @@
           >
             {{ lineup1.name }} vs {{ lineup2.name }}
           </h2>
-          <h3>{{ match.map }}</h3>
 <!--          <h4>{{ lineup1.score }} - {{ lineup2.score }}</h4>-->
-          <h6>
+          <div>
             <template v-if="match.status == 'PickingPlayers'">
-              <pre>{{ canAddToLineup1}} {{ canAddToLineup2 }}</pre>
-              <template v-if="canAddToLineup1 || canAddToLineup2">
-                Picking Players
-              </template>
-              <template v-else>
+              <template v-if="!canAddToLineup1 && !canAddToLineup2">
                 <five-stack-button @click="scheduleMatch">
                   Schedule Match!
                 </five-stack-button>
@@ -42,7 +37,7 @@
               </form>
             </template>
             <template v-else-if="match.status != 'Canceled' && match.status != 'Finished'">
-              <span
+              <div
                 class="text-purple-400 underline flex"
                 v-if="match.connection_string"
               >
@@ -50,22 +45,22 @@
                 <a :href="`https://api.5stack.gg${match.connection_link}`">
                   {{ match.connection_string }}
                 </a>
-              </span>
-              <span v-else-if="!match.server_id" class="text-red-400 underline">
+              </div>
+              <div v-else-if="!match.server_id" class="text-red-400 underline">
                 Server has not been assigned
-              </span>
-              <span v-else>
+              </div>
+              <div v-else>
                 <clip-board :data="match.tv_connection_string"></clip-board>
                 <a :href="`https://api.5stack.gg${match.tv_connection_link}`">
                   {{ match.tv_connection_string }}
                 </a>
-              </span>
+              </div>
 
               <five-stack-button @click="cancelMatch">
                 Cancel Match
               </five-stack-button>
             </template>
-          </h6>
+          </div>
         </div>
 
         <div class="lg:col-span-2">
@@ -148,6 +143,34 @@
 
             <div class="flex gap-x-5">
               <svg
+                  class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              >
+                <path d="M7 10v12" />
+                <path
+                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"
+                />
+              </svg>
+              <div class="grow">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+                  Map<template v-if="match.best_of > 1">s</template>
+                </h3>
+                <template v-if="match.match_maps.length !== match.best_of">
+                  Picking Maps
+                </template>
+              </div>
+            </div>
+
+            <div class="flex gap-x-5">
+              <svg
                 class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -182,46 +205,27 @@
                 </p>
               </div>
             </div>
-
-            <div class="flex gap-x-5">
-              <svg
-                class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M7 10v12" />
-                <path
-                  d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"
-                />
-              </svg>
-              <div class="grow" v-if="match.knife_round">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Knife Round
-                </h3>
-                <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  <template v-if="match.knife_round_winner">
-                    {{ match.knife_round_winner.name }} won knife round. Picked
-                    {{ match.knife_round_winner.starting_side }}.
-                  </template>
-                  <template v-else>
-                    Knife Round has not been finished.
-                  </template>
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
 
     <hr class="mt-8 mb-8 border-gray-600" />
+
+    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto" v-if="match.best_of !== match.match_maps.length">
+        <h1>Map Picks</h1>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <div
+              class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+          >
+            <form @submit.prevent.stop>
+              <five-stack-map-picker v-model="mapsForm.maps" :match-type="match.type" :best_of="match.best_of"></five-stack-map-picker>
+              <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
+            </form>
+          </div>
+        </div>
+      </div>
 
     <div
       class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
@@ -317,9 +321,11 @@ import LineupUtility from "~/components/match-details/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
+import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 
 export default {
   components: {
+    FiveStackMapPicker,
     FiveStackSelectInput,
     ClipBoard,
     LineupOpeningDuels,
@@ -337,6 +343,10 @@ export default {
       form: {
         lineup_1: undefined,
         lineup_2: undefined,
+      },
+      mapsForm: {
+        maps: [],
+        pickedBy: undefined
       },
       startMatchForm: {
         server_id: undefined,
@@ -373,6 +383,7 @@ export default {
               overtime: true,
               knife_round: true,
               mr: true,
+              best_of: true,
               lineup_1_id: true,
               lineup_2_id: true,
               organizer_steam_id: true,
@@ -388,6 +399,10 @@ export default {
               //   name: true,
               //   starting_side: true,
               // },
+              match_maps: {
+                id: true,
+                map: true,
+              },
               lineups: {
                 id: true,
                 name: true,
@@ -626,6 +641,9 @@ export default {
         }),
       });
     },
+    async addMaps() {
+      console.info("ELTS GO!", this.mapsForm)
+    }
   },
   computed: {
     me() {

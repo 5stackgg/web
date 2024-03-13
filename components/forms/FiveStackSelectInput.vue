@@ -14,12 +14,12 @@
         :class="{
           [`input--validation-error`]: !isValid,
         }"
-        :multiple="multiple"
+        :multiple="multiple !== undefined ? multiple : expectsMultiple"
       >
         <option
           v-for="option of options"
           :class="{
-            'selected': multiple ? modelValue.includes(getValue(option)): false,
+            'selected': expectsMultiple ? modelValue.includes(getValue(option)): false,
           }"
           :key="getValue(option)"
           :value="getValue(option)"
@@ -65,13 +65,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    multiple: {
+      type: Boolean,
+      default: false,
+    }
   },
   computed: {
-    multiple() {
-      return Array.isArray(this.modelValue);
+    expectsMultiple() {
+      return this.multiple || Array.isArray(this.modelValue);
     },
     isValid() {
-      const length = this.multiple ? this.modelValue.length : this.modelValue?.toString().trim().length;
+      const length = this.expectsMultiple ? this.modelValue.length : this.modelValue?.toString().trim().length;
 
       return (
         (!this.required || length > 0) &&
@@ -84,11 +88,11 @@ export default {
       return option.value !== undefined ? option?.value || '' : option
     },
     updateModelValue(event) {
-      let value = this.multiple ? Array.from(event.target.selectedOptions).map((option) => {
+      let value = this.expectsMultiple ? Array.from(event.target.selectedOptions).map((option) => {
         return option.value;
       }) : event.target.value;
 
-      if(!this.multiple) {
+      if(!this.expectsMultiple) {
         value = value.length === 0 ? null : value;
       }
 

@@ -40,13 +40,7 @@
                   v-model="form.best_of"
               ></five-stack-select-input>
 
-              <five-stack-select-input
-                :disabled="form.veto || !form.type || availableMaps.length === 0"
-                :required="!form.veto"
-                label="Maps"
-                :options="availableMaps"
-                v-model="form.match_maps"
-              ></five-stack-select-input>
+              <five-stack-map-picker v-model="form.match_maps" :match-type="form.type" :best_of="form.best_of"></five-stack-map-picker>
             </div>
           </div>
 
@@ -140,12 +134,13 @@ import FiveStackCheckbox from "~/components/forms/FiveStackCheckbox.vue";
 import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import { mapFields } from "~/graphql/mapGraphql";
 import { $, e_match_types_enum, e_sides_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 
 export default {
   components: {
+    FiveStackMapPicker,
     FiveStackSearchInput,
     FiveStackTextInput,
     FiveStackCheckbox,
@@ -160,7 +155,7 @@ export default {
         veto: false,
         best_of: 1,
         type: e_match_types_enum.Competitive,
-        match_maps: undefined,
+        match_maps: [],
         knife_round: true,
         overtime: true,
         team_1: undefined,
@@ -172,22 +167,10 @@ export default {
       },
     };
   },
-  apollo: {
-    maps: {
-      query: generateQuery({
-        maps: [{}, mapFields],
-      }),
-    },
-  },
   watch: {
     ["form.veto"]: {
       handler() {
         this.form.map = undefined;
-      },
-    },
-    ["form.best_of"]: {
-      handler() {
-        this.form.match_maps = this.form.best_of == 1 ? undefined : [];
       },
     },
   },
@@ -280,6 +263,13 @@ export default {
           overtime: this.form.overtime,
           team_1_side: e_sides_enum.CT,
           team_2_side: e_sides_enum.TERRORIST,
+          maps: {
+            data: this.form.match_maps.map((map) => {
+              return {
+                map,
+              }
+            })
+          },
         },
         mutation: generateMutation(
             {
@@ -288,9 +278,8 @@ export default {
                 object: {
                   mr: $("mr", "Int!"),
                   type: $("type", "e_match_types_enum!"),
-                  best_of: $("best_of", "numeric!"),
-                  // TODO
-                  // match_maps: [],
+                  best_of: $("best_of", "Int!"),
+                  match_maps: $("maps", "match_maps_arr_rel_insert_input"),
                   knife_round: $("knife_round", "Boolean!"),
                   overtime: $("overtime", "Boolean!"),
                   lineups: {
@@ -339,32 +328,6 @@ export default {
     },
     matchTypes() {
       return Object.keys(e_match_types_enum);
-    },
-    availableMaps() {
-      const type = this.form.type;
-      if (!this.maps) {
-        return [];
-      }
-      return this.maps
-        .filter((map) => {
-          switch (type) {
-            case e_match_types_enum.Competitive:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Scrimmage:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Wingman:
-              return map.type === e_match_types_enum.Wingman;
-          }
-        })
-        .map((map) => {
-          return map.name;
-        });
     },
     bestOfOptions() {
       return [1,3,5].map((rounds) => {

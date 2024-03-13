@@ -219,10 +219,8 @@
     <div
       class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
       v-if="
-        (match.status === 'PickingPlayers' &&
-          match.organizer_steam_id == me.steam_id &&
-          canAddToLineup1) ||
-        canAddToLineup2
+        match.organizer_steam_id == me.steam_id &&
+        (match.status == 'Warmup' || match.status == 'PickingPlayers' || match.status == 'Scheduled') && (canAddToLineup1 || canAddToLineup2)
       "
     >
       <h1>Assign lineups</h1>
@@ -300,7 +298,7 @@
 </template>
 
 <script lang="ts">
-import { $, e_match_status_enum } from "~/generated/zeus";
+import {$, order_by} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import CaptainInfo from "~/components/CaptainInfo.vue";
 import Tab from "~/components/tabs/Tab.vue";
@@ -394,7 +392,18 @@ export default {
                   },
                 },
                 lineup_players: [
-                  {},
+                  {
+                    order_by: [
+                      {
+                        player: {
+                          name: order_by.asc,
+                          kills_aggregate: {
+                            count: order_by.desc
+                          }
+                        }
+                      }
+                    ]
+                  },
                   {
                     captain: true,
                     steam_id: true,
@@ -470,7 +479,18 @@ export default {
                   },
                 },
                 lineup_players: [
-                  {},
+                  {
+                    order_by: [
+                      {
+                        player: {
+                          name: order_by.asc,
+                          kills_aggregate: {
+                            count: order_by.desc
+                          }
+                        }
+                      }
+                    ]
+                  },
                   {
                     captain: true,
                     steam_id: true,

@@ -1000,6 +1000,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_match_status:"e_match_status_bool_exp",
 		e_match_type:"e_match_types_bool_exp",
 		id:"uuid_comparison_exp",
+		is_match_server_available:"Boolean_comparison_exp",
 		knife_round:"Boolean_comparison_exp",
 		knife_round_winner:"match_lineups_bool_exp",
 		knife_round_winner_lineup_id:"uuid_comparison_exp",
@@ -1029,6 +1030,8 @@ export const AllTypesProps: Record<string,any> = {
 		server_id:"uuid_comparison_exp",
 		status:"e_match_status_enum_comparison_exp",
 		teams:"teams_bool_exp",
+		tv_connection_link:"String_comparison_exp",
+		tv_connection_string:"String_comparison_exp",
 		type:"e_match_types_enum_comparison_exp",
 		updated_at:"timestamptz_comparison_exp"
 	},
@@ -1107,6 +1110,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_match_status:"e_match_status_order_by",
 		e_match_type:"e_match_types_order_by",
 		id:"order_by",
+		is_match_server_available:"order_by",
 		knife_round:"order_by",
 		knife_round_winner:"match_lineups_order_by",
 		knife_round_winner_lineup_id:"order_by",
@@ -1131,6 +1135,8 @@ export const AllTypesProps: Record<string,any> = {
 		server_id:"order_by",
 		status:"order_by",
 		teams_aggregate:"teams_aggregate_order_by",
+		tv_connection_link:"order_by",
+		tv_connection_string:"order_by",
 		type:"order_by",
 		updated_at:"order_by"
 	},
@@ -1205,6 +1211,9 @@ export const AllTypesProps: Record<string,any> = {
 		organizer_steam_id:"order_by"
 	},
 	mutation_root:{
+		cancelMatch:{
+			match_id:"uuid"
+		},
 		delete_e_match_status:{
 			where:"e_match_status_bool_exp"
 		},
@@ -1438,6 +1447,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		insert_v_match_captains_one:{
 			object:"v_match_captains_insert_input"
+		},
+		scheduleMatch:{
+			match_id:"uuid",
+			time:"timestamptz"
+		},
+		startMatch:{
+			match_id:"uuid",
+			server_id:"uuid"
 		},
 		update_e_match_status:{
 			_set:"e_match_status_set_input",
@@ -3716,6 +3733,9 @@ export const ReturnTypes: Record<string,any> = {
 		profile_url:"String",
 		steam_id:"String"
 	},
+	SuccessOutput:{
+		success:"Boolean"
+	},
 	bigint: `scalar.bigint` as const,
 	date: `scalar.date` as const,
 	e_match_status:{
@@ -4137,6 +4157,7 @@ export const ReturnTypes: Record<string,any> = {
 		e_match_status:"e_match_status",
 		e_match_type:"e_match_types",
 		id:"uuid",
+		is_match_server_available:"Boolean",
 		knife_round:"Boolean",
 		knife_round_winner:"match_lineups",
 		knife_round_winner_lineup_id:"uuid",
@@ -4166,6 +4187,8 @@ export const ReturnTypes: Record<string,any> = {
 		server_id:"uuid",
 		status:"e_match_status_enum",
 		teams:"teams",
+		tv_connection_link:"String",
+		tv_connection_string:"String",
 		type:"e_match_types_enum",
 		updated_at:"timestamptz"
 	},
@@ -4205,6 +4228,8 @@ export const ReturnTypes: Record<string,any> = {
 		password:"String",
 		scheduled_at:"date",
 		server_id:"uuid",
+		tv_connection_link:"String",
+		tv_connection_string:"String",
 		updated_at:"timestamptz"
 	},
 	matches_min_fields:{
@@ -4222,6 +4247,8 @@ export const ReturnTypes: Record<string,any> = {
 		password:"String",
 		scheduled_at:"date",
 		server_id:"uuid",
+		tv_connection_link:"String",
+		tv_connection_string:"String",
 		updated_at:"timestamptz"
 	},
 	matches_mutation_response:{
@@ -4257,6 +4284,7 @@ export const ReturnTypes: Record<string,any> = {
 		organizer_steam_id:"Float"
 	},
 	mutation_root:{
+		cancelMatch:"SuccessOutput",
 		delete_e_match_status:"e_match_status_mutation_response",
 		delete_e_match_status_by_pk:"e_match_status",
 		delete_e_match_types:"e_match_types_mutation_response",
@@ -4324,6 +4352,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_teams_one:"teams",
 		insert_v_match_captains:"v_match_captains_mutation_response",
 		insert_v_match_captains_one:"v_match_captains",
+		scheduleMatch:"SuccessOutput",
+		startMatch:"SuccessOutput",
 		update_e_match_status:"e_match_status_mutation_response",
 		update_e_match_status_by_pk:"e_match_status",
 		update_e_match_status_many:"e_match_status_mutation_response",

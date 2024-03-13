@@ -41,7 +41,7 @@
                 <five-stack-button> Start Match </five-stack-button>
               </form>
             </template>
-            <template v-else-if="match.status != 'Finished'">
+            <template v-else-if="match.status != 'Canceled' && match.status != 'Finished'">
               <span
                 class="text-purple-400 underline flex"
                 v-if="match.connection_string"
@@ -87,7 +87,10 @@
                   Match Status
                 </h3>
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  <template v-if="match.status == 'Finished'">
+                  <template v-if="match.status == 'Canceled'">
+                    Match Canceled @ {{ endOfMatch }}
+                  </template>
+                  <template v-else-if="match.status == 'Finished'">
                     Match Finished @ {{ endOfMatch }}
                   </template>
                   <template v-else-if="match.status == 'Warmup'">

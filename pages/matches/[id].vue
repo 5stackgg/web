@@ -10,20 +10,54 @@
           </h2>
           <h3>{{ match.map }}</h3>
           <h4>{{ match.lineup_1.score }} - {{ match.lineup_2.score }}</h4>
-          <h6 v-if="match.status != 'Finished'">
-            <span
-              class="text-purple-400 underline flex"
-              v-if="match.connection_string"
-            >
-              <clip-board :data="match.connection_string"></clip-board>
-              <a :href="`https://api.5stack.gg${match.connection_link}`">
-                {{ match.connection_string }}
-              </a>
-            </span>
-            <span v-else-if="!match.server_id" class="text-red-400 underline">
-              Server has not been assigned
-            </span>
-            <span v-else> Server has been assigned. </span>
+          <h6>
+            <template v-if="match.status == 'PickingPlayers'">
+              <template v-if="canAddToLineup1 || canAddToLineup2">
+                Picking Players
+              </template>
+              <template v-else>
+                <five-stack-button @click="scheduleMatch">
+                  Schedule Match!
+                </five-stack-button>
+              </template>
+            </template>
+            <template v-if="match.status == 'Scheduled'">
+              <template v-if="match.is_match_server_available">
+                <form @submit.prevent="startMatch">
+                  <five-stack-select-input
+                    :required="true"
+                    label="type"
+                    :options="availableServers"
+                    v-model="startMatchForm.server_id"
+                  ></five-stack-select-input>
+                  <five-stack-button> Start Match </five-stack-button>
+                </form>
+              </template>
+              <template v-else>
+                Another match is on going on the selected server. Once complete
+                match will be able to be started.
+              </template>
+            </template>
+            <template v-else-if="match.status != 'Finished'">
+              <span
+                class="text-purple-400 underline flex"
+                v-if="match.connection_string"
+              >
+                <clip-board :data="match.connection_string"></clip-board>
+                <a :href="`https://api.5stack.gg${match.connection_link}`">
+                  {{ match.connection_string }}
+                </a>
+              </span>
+              <span v-else-if="!match.server_id" class="text-red-400 underline">
+                Server has not been assigned
+              </span>
+              <span v-else>
+                <clip-board :data="match.tv_connection_string"></clip-board>
+                <a :href="`https://api.5stack.gg${match.tv_connection_link}`">
+                  {{ match.tv_connection_string }}
+                </a>
+              </span>
+            </template>
           </h6>
         </div>
 
@@ -182,8 +216,10 @@
     <div
       class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
       v-if="
-        match.status === 'PickingPlayers' &&
-        match.organizer_steam_id == me.steam_id
+        (match.status === 'PickingPlayers' &&
+          match.organizer_steam_id == me.steam_id &&
+          canAddToLineup1) ||
+        canAddToLineup2
       "
     >
       <h1>Assign lineups</h1>
@@ -192,7 +228,7 @@
         <div
           class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
         >
-          <form @submit.prevent.stop>
+          <form @submit.prevent.stop v-if="canAddToLineup1">
             <five-stack-search-input
               label="Team 1"
               placeholder="Find Player"
@@ -200,12 +236,13 @@
               :search="searchPlayers"
             ></five-stack-search-input>
           </form>
+          <template v-else> Team 1 Lineup setup. </template>
         </div>
 
         <div
           class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
         >
-          <form @submit.prevent.stop>
+          <form @submit.prevent.stop v-if="canAddToLineup2">
             <five-stack-search-input
               label="Team 2"
               placeholder="Find Player"
@@ -213,6 +250,7 @@
               :search="searchPlayers"
             ></five-stack-search-input>
           </form>
+          <template v-else> Team 1 Lineup setup. </template>
         </div>
       </div>
     </div>
@@ -259,7 +297,7 @@
 </template>
 
 <script lang="ts">
-import { $ } from "~/generated/zeus";
+import { $, e_match_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import CaptainInfo from "~/components/CaptainInfo.vue";
 import Tab from "~/components/tabs/Tab.vue";
@@ -270,9 +308,11 @@ import LineupMember from "~/components/match-details/LineupMember.vue";
 import LineupUtility from "~/components/match-details/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
+import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 
 export default {
   components: {
+    FiveStackSelectInput,
     ClipBoard,
     LineupOpeningDuels,
     LineupUtility,
@@ -284,15 +324,35 @@ export default {
   },
   data() {
     return {
+      servers: [],
       match: undefined,
       form: {
         lineup_1: undefined,
         lineup_2: undefined,
       },
+      startMatchForm: {
+        server_id: undefined,
+      },
     };
   },
   apollo: {
     $subscribe: {
+      servers: {
+        query: typedGql("subscription")({
+          servers: [
+            {},
+            {
+              id: true,
+              host: true,
+              port: true,
+              label: true,
+            },
+          ],
+        }),
+        result({ data }) {
+          this.servers = data.servers;
+        },
+      },
       matches_by_pk: {
         query: typedGql("subscription")({
           matches_by_pk: [
@@ -309,6 +369,9 @@ export default {
               organizer_steam_id: true,
               connection_string: true,
               connection_link: true,
+              tv_connection_string: true,
+              tv_connection_link: true,
+              is_match_server_available: true,
               status: true,
               type: true,
               scheduled_at: true,
@@ -575,10 +638,52 @@ export default {
         }),
       });
     },
+    async scheduleMatch() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          scheduleMatch: [
+            {
+              match_id: this.match.id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+    async startMatch() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          startMatch: [
+            {
+              match_id: this.match.id,
+              server_id: this.startMatchForm.server_id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
   },
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    maxPlayersPerLineup() {
+      return this.match?.type === "Wingman" ? 2 : 5;
+    },
+    canAddToLineup1() {
+      return (
+        this.match?.lineup_1?.lineup_players.length < this.maxPlayersPerLineup
+      );
+    },
+    canAddToLineup2() {
+      return (
+        this.match?.lineup_2?.lineup_players.length < this.maxPlayersPerLineup
+      );
     },
     startOfMatch() {
       return this.match?.rounds?.[0]?.created_at;
@@ -589,6 +694,14 @@ export default {
       if (lastRound) {
         return new Date(lastRound).toLocaleString();
       }
+    },
+    availableServers() {
+      return this.servers.map((server) => {
+        return {
+          value: server.id,
+          display: `${server.label} (${server.host}:${server.port})`,
+        };
+      });
     },
   },
 };

@@ -906,6 +906,10 @@ export type ValueTypes = {
 	/** does the column match the given SQL regular expression */
 	_similar?: string | undefined | null | Variable<any, string>
 };
+	["SuccessOutput"]: AliasType<{
+	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bigint"]:unknown;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_comparison_exp"]: {
@@ -2610,6 +2614,8 @@ count?: [{	columns?: Array<ValueTypes["match_rounds_select_column"]> | undefined
 	/** An object relationship */
 	e_match_type?:ValueTypes["e_match_types"],
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_match_server_available" */
+	is_match_server_available?:boolean | `@${string}`,
 	knife_round?:boolean | `@${string}`,
 	/** An object relationship */
 	knife_round_winner?:ValueTypes["match_lineups"],
@@ -2699,6 +2705,10 @@ teams?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["teams_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["teams"]],
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -2789,6 +2799,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_match_status?: ValueTypes["e_match_status_bool_exp"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_match_server_available?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	knife_round?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	knife_round_winner?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	knife_round_winner_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2818,6 +2829,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	teams?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
+	tv_connection_link?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	tv_connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
 };
@@ -2878,6 +2891,10 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -2915,6 +2932,10 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -2962,6 +2983,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_match_status?: ValueTypes["e_match_status_order_by"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_match_server_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	knife_round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	knife_round_winner?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	knife_round_winner_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -2986,6 +3008,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	teams_aggregate?: ValueTypes["teams_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	tv_connection_link?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tv_connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3285,6 +3309,8 @@ insert_v_match_captains?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["v_match_captains_insert_input"]> | Variable<any, string>},ValueTypes["v_match_captains_mutation_response"]],
 insert_v_match_captains_one?: [{	/** the row to be inserted */
 	object: ValueTypes["v_match_captains_insert_input"] | Variable<any, string>},ValueTypes["v_match_captains"]],
+scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 update_e_match_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_match_status_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_match_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
@@ -7331,6 +7357,10 @@ export type ResolverInputTypes = {
 	/** does the column match the given SQL regular expression */
 	_similar?: string | undefined | null
 };
+	["SuccessOutput"]: AliasType<{
+	success?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bigint"]:unknown;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_comparison_exp"]: {
@@ -9035,6 +9065,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_rounds_select_column"]> | u
 	/** An object relationship */
 	e_match_type?:ResolverInputTypes["e_match_types"],
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_match_server_available" */
+	is_match_server_available?:boolean | `@${string}`,
 	knife_round?:boolean | `@${string}`,
 	/** An object relationship */
 	knife_round_winner?:ResolverInputTypes["match_lineups"],
@@ -9124,6 +9156,10 @@ teams?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["teams_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["teams_bool_exp"] | undefined | null},ResolverInputTypes["teams"]],
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -9214,6 +9250,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_match_status?: ResolverInputTypes["e_match_status_bool_exp"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	is_match_server_available?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	knife_round?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	knife_round_winner?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	knife_round_winner_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -9243,6 +9280,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum_comparison_exp"] | undefined | null,
 	teams?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
+	tv_connection_link?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	tv_connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum_comparison_exp"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
 };
@@ -9303,6 +9342,10 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -9340,6 +9383,10 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -9387,6 +9434,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_match_status?: ResolverInputTypes["e_match_status_order_by"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	is_match_server_available?: ResolverInputTypes["order_by"] | undefined | null,
 	knife_round?: ResolverInputTypes["order_by"] | undefined | null,
 	knife_round_winner?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	knife_round_winner_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -9411,6 +9459,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server_id?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
 	teams_aggregate?: ResolverInputTypes["teams_aggregate_order_by"] | undefined | null,
+	tv_connection_link?: ResolverInputTypes["order_by"] | undefined | null,
+	tv_connection_string?: ResolverInputTypes["order_by"] | undefined | null,
 	type?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -9710,6 +9760,8 @@ insert_v_match_captains?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["v_match_captains_insert_input"]>},ResolverInputTypes["v_match_captains_mutation_response"]],
 insert_v_match_captains_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["v_match_captains_insert_input"]},ResolverInputTypes["v_match_captains"]],
+scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 update_e_match_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_match_status_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_match_status_bool_exp"]},ResolverInputTypes["e_match_status_mutation_response"]],
@@ -13754,6 +13806,9 @@ export type ModelTypes = {
 	/** does the column match the given SQL regular expression */
 	_similar?: string | undefined
 };
+	["SuccessOutput"]: {
+		success: boolean
+};
 	["bigint"]:any;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_comparison_exp"]: {
@@ -15313,6 +15368,8 @@ export type ModelTypes = {
 	/** An object relationship */
 	e_match_type: ModelTypes["e_match_types"],
 	id: ModelTypes["uuid"],
+	/** A computed field, executes function "is_match_server_available" */
+	is_match_server_available?: boolean | undefined,
 	knife_round: boolean,
 	/** An object relationship */
 	knife_round_winner?: ModelTypes["match_lineups"] | undefined,
@@ -15358,6 +15415,10 @@ export type ModelTypes = {
 	status: ModelTypes["e_match_status_enum"],
 	/** A computed field, executes function "get_match_teams" */
 	teams?: Array<ModelTypes["teams"]> | undefined,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?: string | undefined,
 	type: ModelTypes["e_match_types_enum"],
 	updated_at: ModelTypes["timestamptz"]
 };
@@ -15444,6 +15505,7 @@ export type ModelTypes = {
 	e_match_status?: ModelTypes["e_match_status_bool_exp"] | undefined,
 	e_match_type?: ModelTypes["e_match_types_bool_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	is_match_server_available?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	knife_round?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	knife_round_winner?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	knife_round_winner_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -15473,6 +15535,8 @@ export type ModelTypes = {
 	server_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	status?: ModelTypes["e_match_status_enum_comparison_exp"] | undefined,
 	teams?: ModelTypes["teams_bool_exp"] | undefined,
+	tv_connection_link?: ModelTypes["String_comparison_exp"] | undefined,
+	tv_connection_string?: ModelTypes["String_comparison_exp"] | undefined,
 	type?: ModelTypes["e_match_types_enum_comparison_exp"] | undefined,
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined
 };
@@ -15532,6 +15596,10 @@ export type ModelTypes = {
 	password?: string | undefined,
 	scheduled_at?: ModelTypes["date"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?: string | undefined,
 	updated_at?: ModelTypes["timestamptz"] | undefined
 };
 	/** order by max() on columns of table "matches" */
@@ -15568,6 +15636,10 @@ export type ModelTypes = {
 	password?: string | undefined,
 	scheduled_at?: ModelTypes["date"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?: string | undefined,
 	updated_at?: ModelTypes["timestamptz"] | undefined
 };
 	/** order by min() on columns of table "matches" */
@@ -15613,6 +15685,7 @@ export type ModelTypes = {
 	e_match_status?: ModelTypes["e_match_status_order_by"] | undefined,
 	e_match_type?: ModelTypes["e_match_types_order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	is_match_server_available?: ModelTypes["order_by"] | undefined,
 	knife_round?: ModelTypes["order_by"] | undefined,
 	knife_round_winner?: ModelTypes["match_lineups_order_by"] | undefined,
 	knife_round_winner_lineup_id?: ModelTypes["order_by"] | undefined,
@@ -15637,6 +15710,8 @@ export type ModelTypes = {
 	server_id?: ModelTypes["order_by"] | undefined,
 	status?: ModelTypes["order_by"] | undefined,
 	teams_aggregate?: ModelTypes["teams_aggregate_order_by"] | undefined,
+	tv_connection_link?: ModelTypes["order_by"] | undefined,
+	tv_connection_string?: ModelTypes["order_by"] | undefined,
 	type?: ModelTypes["order_by"] | undefined,
 	updated_at?: ModelTypes["order_by"] | undefined
 };
@@ -15909,6 +15984,10 @@ export type ModelTypes = {
 	insert_v_match_captains?: ModelTypes["v_match_captains_mutation_response"] | undefined,
 	/** insert a single row into the table: "v_match_captains" */
 	insert_v_match_captains_one?: ModelTypes["v_match_captains"] | undefined,
+	/** scheduleMatch */
+	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined,
+	/** startMatch */
+	startMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "e_match_status" */
 	update_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined,
 	/** update single row of the table: "e_match_status" */
@@ -19251,6 +19330,10 @@ export type GraphQLTypes = {
 	/** does the column match the given SQL regular expression */
 	_similar?: string | undefined
 };
+	["SuccessOutput"]: {
+	__typename: "SuccessOutput",
+	success: boolean
+};
 	["bigint"]: "scalar" & { name: "bigint" };
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_comparison_exp"]: {
@@ -20920,6 +21003,8 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	e_match_type: GraphQLTypes["e_match_types"],
 	id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "is_match_server_available" */
+	is_match_server_available?: boolean | undefined,
 	knife_round: boolean,
 	/** An object relationship */
 	knife_round_winner?: GraphQLTypes["match_lineups"] | undefined,
@@ -20965,6 +21050,10 @@ export type GraphQLTypes = {
 	status: GraphQLTypes["e_match_status_enum"],
 	/** A computed field, executes function "get_match_teams" */
 	teams?: Array<GraphQLTypes["teams"]> | undefined,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?: string | undefined,
 	type: GraphQLTypes["e_match_types_enum"],
 	updated_at: GraphQLTypes["timestamptz"]
 };
@@ -21054,6 +21143,7 @@ export type GraphQLTypes = {
 	e_match_status?: GraphQLTypes["e_match_status_bool_exp"] | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_bool_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	is_match_server_available?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	knife_round?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	knife_round_winner?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	knife_round_winner_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -21083,6 +21173,8 @@ export type GraphQLTypes = {
 	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum_comparison_exp"] | undefined,
 	teams?: GraphQLTypes["teams_bool_exp"] | undefined,
+	tv_connection_link?: GraphQLTypes["String_comparison_exp"] | undefined,
+	tv_connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
 	type?: GraphQLTypes["e_match_types_enum_comparison_exp"] | undefined,
 	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined
 };
@@ -21144,6 +21236,10 @@ export type GraphQLTypes = {
 	password?: string | undefined,
 	scheduled_at?: GraphQLTypes["date"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?: string | undefined,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** order by max() on columns of table "matches" */
@@ -21181,6 +21277,10 @@ export type GraphQLTypes = {
 	password?: string | undefined,
 	scheduled_at?: GraphQLTypes["date"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_tv_connection_link" */
+	tv_connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_tv_connection_string" */
+	tv_connection_string?: string | undefined,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** order by min() on columns of table "matches" */
@@ -21227,6 +21327,7 @@ export type GraphQLTypes = {
 	e_match_status?: GraphQLTypes["e_match_status_order_by"] | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	is_match_server_available?: GraphQLTypes["order_by"] | undefined,
 	knife_round?: GraphQLTypes["order_by"] | undefined,
 	knife_round_winner?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	knife_round_winner_lineup_id?: GraphQLTypes["order_by"] | undefined,
@@ -21251,6 +21352,8 @@ export type GraphQLTypes = {
 	server_id?: GraphQLTypes["order_by"] | undefined,
 	status?: GraphQLTypes["order_by"] | undefined,
 	teams_aggregate?: GraphQLTypes["teams_aggregate_order_by"] | undefined,
+	tv_connection_link?: GraphQLTypes["order_by"] | undefined,
+	tv_connection_string?: GraphQLTypes["order_by"] | undefined,
 	type?: GraphQLTypes["order_by"] | undefined,
 	updated_at?: GraphQLTypes["order_by"] | undefined
 };
@@ -21535,6 +21638,10 @@ export type GraphQLTypes = {
 	insert_v_match_captains?: GraphQLTypes["v_match_captains_mutation_response"] | undefined,
 	/** insert a single row into the table: "v_match_captains" */
 	insert_v_match_captains_one?: GraphQLTypes["v_match_captains"] | undefined,
+	/** scheduleMatch */
+	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined,
+	/** startMatch */
+	startMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "e_match_status" */
 	update_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined,
 	/** update single row of the table: "e_match_status" */

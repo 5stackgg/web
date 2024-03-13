@@ -17,7 +17,11 @@
     </thead>
     <tbody>
       <tr v-for="member of lineup.lineup_players">
-        <lineup-member :member="member" :lineup_id="lineup.id" :removeable="true"></lineup-member>
+        <lineup-member
+          :member="member"
+          :lineup_id="lineup.id"
+          :removeable="true"
+        ></lineup-member>
         <td class="w-2">
           {{ member.player.kills_aggregate.aggregate.count }}
         </td>

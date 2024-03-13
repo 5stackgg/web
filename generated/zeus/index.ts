@@ -25122,6 +25122,7 @@ export const enum e_match_status_constraint {
 	e_match_status_pkey = "e_match_status_pkey"
 }
 export const enum e_match_status_enum {
+	Canceled = "Canceled",
 	Finished = "Finished",
 	Knife = "Knife",
 	Live = "Live",

@@ -6,12 +6,13 @@
           <h2
             class="font-bold text-2xl md:text-3xl text-gray-800 dark:text-gray-200"
           >
-            {{ match.lineup_1.name }} vs {{ match.lineup_2.name }}
+            {{ lineup1.name }} vs {{ lineup2.name }}
           </h2>
           <h3>{{ match.map }}</h3>
-          <h4>{{ match.lineup_1.score }} - {{ match.lineup_2.score }}</h4>
+<!--          <h4>{{ lineup1.score }} - {{ lineup2.score }}</h4>-->
           <h6>
             <template v-if="match.status == 'PickingPlayers'">
+              <pre>{{ canAddToLineup1}} {{ canAddToLineup2 }}</pre>
               <template v-if="canAddToLineup1 || canAddToLineup2">
                 Picking Players
               </template>
@@ -32,7 +33,6 @@
               </div>
 
               <form @submit.prevent="startMatch">
-                <pre>{{ startMatchForm.server_id }}</pre>
                 <five-stack-select-input
                   label="type"
                   :options="availableServers"
@@ -61,8 +61,6 @@
                 </a>
               </span>
 
-
-              <pre>{{ match.status }}</pre>
               <five-stack-button @click="cancelMatch">
                 Cancel Match
               </five-stack-button>
@@ -174,12 +172,12 @@
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   Captain 1:
                   <captain-info
-                    :captain="match.lineup_1.captain"
+                    :captain="lineup1.captain"
                   ></captain-info>
                   <br />
                   Captain 2:
                   <captain-info
-                    :captain="match.lineup_2.captain"
+                    :captain="lineup2.captain"
                   ></captain-info>
                 </p>
               </div>
@@ -267,38 +265,38 @@
 
     TODO - add round breakdown as we are already going by it
 
-    <tabs>
+    <tabs v-if="lineup1 && lineup2">
       <tab title="Overview">
         <lineup-overview
           :match="match"
-          :lineup="match.lineup_1"
+          :lineup="lineup1"
         ></lineup-overview>
         <br />
         <lineup-overview
           :match="match"
-          :lineup="match.lineup_2"
+          :lineup="lineup2"
         ></lineup-overview>
       </tab>
       <tab title="Utility">
         <lineup-utility
           :match="match"
-          :lineup="match.lineup_1"
+          :lineup="lineup1"
         ></lineup-utility>
         <br />
         <lineup-utility
           :match="match"
-          :lineup="match.lineup_2"
+          :lineup="lineup2"
         ></lineup-utility>
       </tab>
       <tab title="Opening Duels">
         <lineup-opening-duels
           :match="match"
-          :lineup="match.lineup_1"
+          :lineup="lineup1"
         ></lineup-opening-duels>
         <br />
         <lineup-opening-duels
           :match="match"
-          :lineup="match.lineup_2"
+          :lineup="lineup2"
         ></lineup-opening-duels>
       </tab>
       <tab title="Clutches"> </tab>
@@ -371,28 +369,28 @@ export default {
             },
             {
               id: true,
-              map: true,
               server_id: true,
               overtime: true,
               knife_round: true,
               mr: true,
+              lineup_1_id: true,
+              lineup_2_id: true,
               organizer_steam_id: true,
-              connection_string: true,
-              connection_link: true,
-              tv_connection_string: true,
-              tv_connection_link: true,
-              is_match_server_available: true,
+              // connection_string: true,
+              // connection_link: true,
+              // tv_connection_string: true,
+              // tv_connection_link: true,
+              // is_match_server_available: true,
               status: true,
               type: true,
               scheduled_at: true,
-              knife_round_winner: {
-                name: true,
-                starting_side: true,
-              },
-              lineup_1: {
+              // knife_round_winner: {
+              //   name: true,
+              //   starting_side: true,
+              // },
+              lineups: {
                 id: true,
                 name: true,
-                score: true,
                 captain: {
                   placeholder_name: true,
                   player: {
@@ -405,9 +403,9 @@ export default {
                     order_by: [
                       {
                         player: {
-                          name: order_by.asc,
+                          name: $('order_by_name', 'order_by'),
                           kills_aggregate: {
-                            count: order_by.desc
+                            count: $('order_by_kills', 'order_by')
                           }
                         }
                       }
@@ -476,108 +474,23 @@ export default {
                   },
                 ],
               },
-              lineup_2: {
-                id: true,
-                name: true,
-                score: true,
-                captain: {
-                  placeholder_name: true,
-                  player: {
-                    name: true,
-                    steam_id: true,
-                  },
-                },
-                lineup_players: [
-                  {
-                    order_by: [
-                      {
-                        player: {
-                          name: order_by.asc,
-                          kills_aggregate: {
-                            count: order_by.desc
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    captain: true,
-                    steam_id: true,
-                    player: {
-                      name: true,
-                      steam_id: true,
-                      kills_aggregate: [
-                        {
-                          where: {
-                            match_id: {
-                              _eq: $("matchId", "uuid!"),
-                            },
-                          },
-                        },
-                        {
-                          aggregate: [
-                            {},
-                            {
-                              count: true,
-                            },
-                          ],
-                        },
-                      ],
-                      assists_aggregate: [
-                        {
-                          where: {
-                            match_id: {
-                              _eq: $("matchId", "uuid!"),
-                            },
-                          },
-                        },
-                        {
-                          aggregate: [
-                            {},
-                            {
-                              count: true,
-                            },
-                          ],
-                        },
-                      ],
-                      damage_dealt_aggregate: [
-                        {
-                          where: {
-                            match_id: {
-                              _eq: $("matchId", "uuid!"),
-                            },
-                          },
-                        },
-                        {
-                          aggregate: [
-                            {},
-                            {
-                              sum: {
-                                damage: true,
-                              },
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-              rounds: [
-                {},
-                {
-                  round: true,
-                  team_1_score: true,
-                  team_2_score: true,
-                  created_at: true,
-                },
-              ],
+              // rounds: [
+              //   {},
+              //   {
+              //     round: true,
+              //     team_1_score: true,
+              //     team_2_score: true,
+              //     created_at: true,
+              //   },
+              // ],
             },
           ],
         }),
         variables: function () {
           return {
             matchId: this.$route.params.id,
+            order_by_name: order_by.asc,
+            order_by_kills: order_by.desc,
           };
         },
         result: function ({ data }) {
@@ -591,7 +504,7 @@ export default {
       handler(member) {
         if (member) {
           this.form.lineup_1 = undefined;
-          this.addMember(member.value.steam_id, this.match.lineup_1.id);
+          this.addMember(member.value.steam_id, this.lineup1.id);
         }
       },
     },
@@ -599,7 +512,7 @@ export default {
       handler(member) {
         if (member) {
           this.form.lineup_2 = undefined;
-          this.addMember(member.value.steam_id, this.match.lineup_2.id);
+          this.addMember(member.value.steam_id, this.lineup2.id);
         }
       },
     },
@@ -718,17 +631,27 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    lineup1() {
+      return this.match?.lineups.find((lineup) => {
+        return lineup.id === this.match.lineup_1_id;
+      })
+    },
+    lineup2() {
+      return this.match?.lineups.find((lineup) => {
+        return lineup.id === this.match.lineup_2_id;
+      })
+    },
     maxPlayersPerLineup() {
       return this.match?.type === "Wingman" ? 2 : 5;
     },
     canAddToLineup1() {
       return (
-        this.match?.lineup_1?.lineup_players.length < this.maxPlayersPerLineup
+        this.lineup1?.lineup_players.length < this.maxPlayersPerLineup
       );
     },
     canAddToLineup2() {
       return (
-        this.match?.lineup_2?.lineup_players.length < this.maxPlayersPerLineup
+        this.lineup2?.lineup_players.length < this.maxPlayersPerLineup
       );
     },
     startOfMatch() {

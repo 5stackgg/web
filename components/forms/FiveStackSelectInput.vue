@@ -14,10 +14,15 @@
         :class="{
           [`input--validation-error`]: !isValid,
         }"
+        :multiple="multiple"
       >
         <option
           v-for="option of options"
-          :value="option.value !== undefined ? option?.value || '' : option"
+          :class="{
+            'selected': multiple ? modelValue.includes(getValue(option)): false,
+          }"
+          :key="getValue(option)"
+          :value="getValue(option)"
         >
           {{ option?.display || option }}
         </option>
@@ -34,7 +39,7 @@ export default {
   emits: ["update:modelValue"],
   props: {
     modelValue: {
-      type: String,
+      type: [String, Number, Array],
       default: "",
     },
     type: {
@@ -62,19 +67,40 @@ export default {
     },
   },
   computed: {
+    multiple() {
+      return Array.isArray(this.modelValue);
+    },
     isValid() {
+      const length = this.multiple ? this.modelValue.length : this.modelValue?.toString().trim().length;
+
       return (
-        (!this.required || this.modelValue?.trim().length > 0) &&
+        (!this.required || length > 0) &&
         (!this.validation || this.validation(this.modelValue))
       );
     },
   },
   methods: {
+    getValue(option) {
+      return option.value !== undefined ? option?.value || '' : option
+    },
     updateModelValue(event) {
-      const value = event.target.value;
+      let value = this.multiple ? Array.from(event.target.selectedOptions).map((option) => {
+        return option.value;
+      }) : event.target.value;
 
-      this.$emit("update:modelValue", value.length === 0 ? null : value);
+      if(!this.multiple) {
+        value = value.length === 0 ? null : value;
+      }
+
+      this.$emit("update:modelValue", value);
     },
   },
 };
 </script>
+
+
+<style scoped>
+.selected {
+  background-color: rgba(255, 255, 255, .3);
+}
+</style>

@@ -4,7 +4,7 @@
       <div
         class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
       >
-        <form @submit.prevent="createMatch">
+        <form @submit.prevent="setupMatch">
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
             Match Details
           </h2>
@@ -28,19 +28,24 @@
 
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-              <five-stack-checkbox
-                class="mt-7"
-                label="Veto"
-                v-model="form.veto"
-              ></five-stack-checkbox>
+<!--              <five-stack-checkbox-->
+<!--                class="mt-7"-->
+<!--                label="Veto"-->
+<!--                v-model="form.veto"-->
+<!--              ></five-stack-checkbox>-->
 
-              <!--              // TODO - add maps instead of map for veto selection-->
               <five-stack-select-input
-                :disabled="form.veto || !form.type || availabeMaps.length === 0"
+                  label="Best of"
+                  :options="bestOfOptions"
+                  v-model="form.best_of"
+              ></five-stack-select-input>
+
+              <five-stack-select-input
+                :disabled="form.veto || !form.type || availableMaps.length === 0"
                 :required="!form.veto"
-                label="Map"
-                :options="availabeMaps"
-                v-model="form.map"
+                label="Maps"
+                :options="availableMaps"
+                v-model="form.match_maps"
               ></five-stack-select-input>
             </div>
           </div>
@@ -118,8 +123,8 @@
       </tabs>
     </div>
     <div class="mt-10 text-right">
-      <five-stack-button type="success" @click="createMatch"
-        >Schedule Match</five-stack-button
+      <five-stack-button type="success" @click="setupMatch"
+        >Setup Match</five-stack-button
       >
     </div>
   </div>
@@ -152,9 +157,10 @@ export default {
     return {
       form: {
         mr: "12",
-        veto: true,
+        veto: false,
+        best_of: 1,
         type: e_match_types_enum.Competitive,
-        map: undefined,
+        match_maps: undefined,
         knife_round: true,
         overtime: true,
         team_1: undefined,
@@ -177,6 +183,11 @@ export default {
     ["form.veto"]: {
       handler() {
         this.form.map = undefined;
+      },
+    },
+    ["form.best_of"]: {
+      handler() {
+        this.form.match_maps = this.form.best_of == 1 ? undefined : [];
       },
     },
   },
@@ -258,52 +269,65 @@ export default {
         };
       });
     },
-    async createMatch() {
+    async setupMatch() {
       const { data } = await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_matches_one: [
+        variables: {
+          mr: this.form.mr,
+          veto: this.form.veto,
+          type: this.form.type,
+          best_of: this.form.best_of,
+          knife_round: this.form.knife_round,
+          overtime: this.form.overtime,
+          team_1_side: e_sides_enum.CT,
+          team_2_side: e_sides_enum.TERRORIST,
+        },
+        mutation: generateMutation(
             {
-              object: {
-                mr: this.form.mr,
-                // veto: this.form.veto,
-                type: this.form.type,
-                map: this.form.map,
-                knife_round: this.form.knife_round,
-                overtime: this.form.overtime,
-                lineup_1: {
-                  data: {
-                    team_id: this.form.team_1,
-                    starting_side: e_sides_enum.CT,
-                    lineup_players: {
-                      data: this.form.players.lineup_1.map((player) => {
-                        return {
-                          steam_id: player.value.steam_id,
-                        };
-                      }),
-                    },
-                  },
-                },
-                lineup_2: {
-                  data: {
-                    // TODO - this is because of the search selector display issues
-                    team_id: this.form.team_2?.value,
-                    starting_side: e_sides_enum.TERRORIST,
-                    lineup_players: {
-                      data: this.form.players.lineup_2.map((player) => {
-                        return {
-                          steam_id: player.value.steam_id,
-                        };
-                      }),
-                    },
+            insert_matches_one: [
+              {
+                object: {
+                  mr: $("mr", "Int!"),
+                  type: $("type", "e_match_types_enum!"),
+                  best_of: $("best_of", "numeric!"),
+                  // TODO
+                  // match_maps: [],
+                  knife_round: $("knife_round", "Boolean!"),
+                  overtime: $("overtime", "Boolean!"),
+                  lineups: {
+                    data: [
+                      {
+                        team_id: this.form.team_1,
+                        starting_side: $("team_1_side", "e_sides_enum!"),
+                        lineup_players: {
+                          data: this.form.players.lineup_1.map((player) => {
+                            return {
+                              steam_id: player.value.steam_id,
+                            };
+                          }),
+                        },
+                      },
+                      {
+                        // TODO - this is because of the search selector display issues
+                        team_id: this.form.team_2?.value,
+                        starting_side: $("team_2_side", "e_sides_enum!"),
+                        lineup_players: {
+                          data: this.form.players.lineup_2.map((player) => {
+                            return {
+                              steam_id: player.value.steam_id,
+                            };
+                          }),
+                        },
+                      }
+                    ],
                   },
                 },
               },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
+              {
+                id: true,
+              },
+            ]
+          },
+        ),
       });
 
       this.$router.push(`/matches/${data.insert_matches_one.id}`);
@@ -316,7 +340,7 @@ export default {
     matchTypes() {
       return Object.keys(e_match_types_enum);
     },
-    availabeMaps() {
+    availableMaps() {
       const type = this.form.type;
       if (!this.maps) {
         return [];
@@ -342,6 +366,14 @@ export default {
           return map.name;
         });
     },
+    bestOfOptions() {
+      return [1,3,5].map((rounds) => {
+        return {
+          value: rounds,
+          display: `Best of ${rounds}`
+        }
+      })
+    }
   },
 };
 </script>

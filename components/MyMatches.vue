@@ -74,17 +74,7 @@ export default {
               player: {
                 name: true,
                 player_lineup_aggregate: [
-                  {
-                    where: {
-                      lineup: {
-                        matches: {
-                          status: {
-                            _nin: $("statuses", "[e_match_status_enum]"),
-                          },
-                        },
-                      },
-                    },
-                  },
+                  {},
                   {
                     aggregate: {
                       count: true,

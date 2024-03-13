@@ -13,7 +13,7 @@
     <tbody>
       <template v-for="match of matches">
         <tr @click="viewMatch(match.id)">
-          <td>{{ match.lineup_1.name }} vs {{ match.lineup_2.name }}</td>
+          <td>{{ match.lineups[0].name }} vs {{ match.lineups[1].name }}</td>
           <td>{{ match.status }}</td>
           <td>{{ match.type }} (MR {{ match.mr }})</td>
           <td>
@@ -22,7 +22,7 @@
           <td>
             {{ match.created_at }}
           </td>
-          <td>{{ match.lineup_1.score }} - {{ match.lineup_2.score }}</td>
+          <td>TODO - get number of maps and current map socre</td>
         </tr>
       </template>
     </tbody>

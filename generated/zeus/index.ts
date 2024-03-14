@@ -1806,8 +1806,6 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
 	/** An object relationship */
 	side?:ValueTypes["e_sides"],
 	starting_side?:boolean | `@${string}`,
@@ -1833,17 +1831,9 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 };
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: AliasType<{
-	avg?:ValueTypes["match_lineups_avg_fields"],
 count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	max?:ValueTypes["match_lineups_max_fields"],
 	min?:ValueTypes["match_lineups_min_fields"],
-	stddev?:ValueTypes["match_lineups_stddev_fields"],
-	stddev_pop?:ValueTypes["match_lineups_stddev_pop_fields"],
-	stddev_samp?:ValueTypes["match_lineups_stddev_samp_fields"],
-	sum?:ValueTypes["match_lineups_sum_fields"],
-	var_pop?:ValueTypes["match_lineups_var_pop_fields"],
-	var_samp?:ValueTypes["match_lineups_var_samp_fields"],
-	variance?:ValueTypes["match_lineups_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by aggregate values of table "match_lineups" */
@@ -1858,12 +1848,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	/** upsert condition */
 	on_conflict?: ValueTypes["match_lineups_on_conflict"] | undefined | null | Variable<any, string>
 };
-	/** aggregate avg on columns */
-["match_lineups_avg_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
 	_and?: Array<ValueTypes["match_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -1877,7 +1861,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_bool_exp"] | undefined | null | Variable<any, string>,
 	starting_side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
@@ -1905,8 +1888,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -1924,8 +1905,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -1965,7 +1944,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_order_by"] | undefined | null | Variable<any, string>,
 	starting_side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
@@ -1985,24 +1963,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	starting_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
-	/** aggregate stddev on columns */
-["match_lineups_stddev_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_pop on columns */
-["match_lineups_stddev_pop_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_samp on columns */
-["match_lineups_stddev_samp_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
 	/** Stream column input with initial value */
@@ -2018,12 +1978,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	starting_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
-	/** aggregate sum on columns */
-["match_lineups_sum_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** update columns of table "match_lineups" */
 ["match_lineups_update_column"]:match_lineups_update_column;
 	["match_lineups_updates"]: {
@@ -2032,24 +1986,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	/** filter the rows which have to be updated */
 	where: ValueTypes["match_lineups_bool_exp"] | Variable<any, string>
 };
-	/** aggregate var_pop on columns */
-["match_lineups_var_pop_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate var_samp on columns */
-["match_lineups_var_samp_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate variance on columns */
-["match_lineups_variance_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -2363,6 +2299,10 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: AliasType<{
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
@@ -2450,6 +2390,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	_not?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	map?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2479,6 +2421,10 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
@@ -2496,6 +2442,10 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
@@ -2533,6 +2483,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -8271,8 +8223,6 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
 	/** An object relationship */
 	side?:ResolverInputTypes["e_sides"],
 	starting_side?:boolean | `@${string}`,
@@ -8298,17 +8248,9 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 };
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: AliasType<{
-	avg?:ResolverInputTypes["match_lineups_avg_fields"],
 count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
 	max?:ResolverInputTypes["match_lineups_max_fields"],
 	min?:ResolverInputTypes["match_lineups_min_fields"],
-	stddev?:ResolverInputTypes["match_lineups_stddev_fields"],
-	stddev_pop?:ResolverInputTypes["match_lineups_stddev_pop_fields"],
-	stddev_samp?:ResolverInputTypes["match_lineups_stddev_samp_fields"],
-	sum?:ResolverInputTypes["match_lineups_sum_fields"],
-	var_pop?:ResolverInputTypes["match_lineups_var_pop_fields"],
-	var_samp?:ResolverInputTypes["match_lineups_var_samp_fields"],
-	variance?:ResolverInputTypes["match_lineups_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by aggregate values of table "match_lineups" */
@@ -8323,12 +8265,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	/** upsert condition */
 	on_conflict?: ResolverInputTypes["match_lineups_on_conflict"] | undefined | null
 };
-	/** aggregate avg on columns */
-["match_lineups_avg_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["match_lineups_bool_exp"]> | undefined | null,
@@ -8342,7 +8278,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_bool_exp"] | undefined | null,
 	starting_side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
@@ -8370,8 +8305,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -8389,8 +8322,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -8430,7 +8361,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
-	score?: ResolverInputTypes["order_by"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_order_by"] | undefined | null,
 	starting_side?: ResolverInputTypes["order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
@@ -8450,24 +8380,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	starting_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
 };
-	/** aggregate stddev on columns */
-["match_lineups_stddev_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_pop on columns */
-["match_lineups_stddev_pop_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate stddev_samp on columns */
-["match_lineups_stddev_samp_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
 	/** Stream column input with initial value */
@@ -8483,12 +8395,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	starting_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
 };
-	/** aggregate sum on columns */
-["match_lineups_sum_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** update columns of table "match_lineups" */
 ["match_lineups_update_column"]:match_lineups_update_column;
 	["match_lineups_updates"]: {
@@ -8497,24 +8403,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["match_lineups_bool_exp"]
 };
-	/** aggregate var_pop on columns */
-["match_lineups_var_pop_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate var_samp on columns */
-["match_lineups_var_samp_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
-	/** aggregate variance on columns */
-["match_lineups_variance_fields"]: AliasType<{
-	/** A computed field, executes function "get_lineup_score" */
-	score?:boolean | `@${string}`,
-		__typename?: boolean | `@${string}`
-}>;
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -8828,6 +8716,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: AliasType<{
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
@@ -8915,6 +8807,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	_not?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_maps_bool_exp"]> | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	map?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -8944,6 +8838,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
@@ -8961,6 +8859,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
@@ -8998,6 +8900,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
 	map?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -14635,8 +14539,6 @@ export type ModelTypes = {
 	match_id: ModelTypes["uuid"],
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined,
 	/** An object relationship */
 	side: ModelTypes["e_sides"],
 	starting_side: ModelTypes["e_sides_enum"],
@@ -14660,17 +14562,9 @@ export type ModelTypes = {
 };
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: {
-		avg?: ModelTypes["match_lineups_avg_fields"] | undefined,
-	count: number,
+		count: number,
 	max?: ModelTypes["match_lineups_max_fields"] | undefined,
-	min?: ModelTypes["match_lineups_min_fields"] | undefined,
-	stddev?: ModelTypes["match_lineups_stddev_fields"] | undefined,
-	stddev_pop?: ModelTypes["match_lineups_stddev_pop_fields"] | undefined,
-	stddev_samp?: ModelTypes["match_lineups_stddev_samp_fields"] | undefined,
-	sum?: ModelTypes["match_lineups_sum_fields"] | undefined,
-	var_pop?: ModelTypes["match_lineups_var_pop_fields"] | undefined,
-	var_samp?: ModelTypes["match_lineups_var_samp_fields"] | undefined,
-	variance?: ModelTypes["match_lineups_variance_fields"] | undefined
+	min?: ModelTypes["match_lineups_min_fields"] | undefined
 };
 	/** order by aggregate values of table "match_lineups" */
 ["match_lineups_aggregate_order_by"]: {
@@ -14683,11 +14577,6 @@ export type ModelTypes = {
 	data: Array<ModelTypes["match_lineups_insert_input"]>,
 	/** upsert condition */
 	on_conflict?: ModelTypes["match_lineups_on_conflict"] | undefined
-};
-	/** aggregate avg on columns */
-["match_lineups_avg_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
 };
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
@@ -14702,7 +14591,6 @@ export type ModelTypes = {
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
-	score?: ModelTypes["Int_comparison_exp"] | undefined,
 	side?: ModelTypes["e_sides_bool_exp"] | undefined,
 	starting_side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined,
 	team?: ModelTypes["teams_bool_exp"] | undefined,
@@ -14729,8 +14617,6 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "match_lineups" */
@@ -14747,8 +14633,6 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "match_lineups" */
@@ -14786,7 +14670,6 @@ export type ModelTypes = {
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
-	score?: ModelTypes["order_by"] | undefined,
 	side?: ModelTypes["e_sides_order_by"] | undefined,
 	starting_side?: ModelTypes["order_by"] | undefined,
 	team?: ModelTypes["teams_order_by"] | undefined,
@@ -14805,21 +14688,6 @@ export type ModelTypes = {
 	starting_side?: ModelTypes["e_sides_enum"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
-	/** aggregate stddev on columns */
-["match_lineups_stddev_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate stddev_pop on columns */
-["match_lineups_stddev_pop_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate stddev_samp on columns */
-["match_lineups_stddev_samp_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
 	/** Stream column input with initial value */
@@ -14835,32 +14703,12 @@ export type ModelTypes = {
 	starting_side?: ModelTypes["e_sides_enum"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
-	/** aggregate sum on columns */
-["match_lineups_sum_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
 	["match_lineups_update_column"]:match_lineups_update_column;
 	["match_lineups_updates"]: {
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["match_lineups_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: ModelTypes["match_lineups_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["match_lineups_var_pop_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate var_samp on columns */
-["match_lineups_var_samp_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate variance on columns */
-["match_lineups_variance_fields"]: {
-		/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
@@ -15158,6 +15006,10 @@ export type ModelTypes = {
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: {
 		id: ModelTypes["uuid"],
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?: string | undefined,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?: string | undefined,
 	map: string,
 	/** An object relationship */
 	match: ModelTypes["matches"],
@@ -15233,6 +15085,8 @@ export type ModelTypes = {
 	_not?: ModelTypes["match_maps_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_maps_bool_exp"]> | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	lineup_1_score?: ModelTypes["String_comparison_exp"] | undefined,
+	lineup_2_score?: ModelTypes["String_comparison_exp"] | undefined,
 	map?: ModelTypes["String_comparison_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -15261,6 +15115,10 @@ export type ModelTypes = {
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
 		id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?: string | undefined,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?: string | undefined,
 	map?: string | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -15277,6 +15135,10 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
 		id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?: string | undefined,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?: string | undefined,
 	map?: string | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -15312,6 +15174,8 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 	id?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
 	map?: ModelTypes["order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
@@ -20230,8 +20094,6 @@ export type GraphQLTypes = {
 	match_id: GraphQLTypes["uuid"],
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined,
 	/** An object relationship */
 	side: GraphQLTypes["e_sides"],
 	starting_side: GraphQLTypes["e_sides_enum"],
@@ -20257,17 +20119,9 @@ export type GraphQLTypes = {
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: {
 	__typename: "match_lineups_aggregate_fields",
-	avg?: GraphQLTypes["match_lineups_avg_fields"] | undefined,
 	count: number,
 	max?: GraphQLTypes["match_lineups_max_fields"] | undefined,
-	min?: GraphQLTypes["match_lineups_min_fields"] | undefined,
-	stddev?: GraphQLTypes["match_lineups_stddev_fields"] | undefined,
-	stddev_pop?: GraphQLTypes["match_lineups_stddev_pop_fields"] | undefined,
-	stddev_samp?: GraphQLTypes["match_lineups_stddev_samp_fields"] | undefined,
-	sum?: GraphQLTypes["match_lineups_sum_fields"] | undefined,
-	var_pop?: GraphQLTypes["match_lineups_var_pop_fields"] | undefined,
-	var_samp?: GraphQLTypes["match_lineups_var_samp_fields"] | undefined,
-	variance?: GraphQLTypes["match_lineups_variance_fields"] | undefined
+	min?: GraphQLTypes["match_lineups_min_fields"] | undefined
 };
 	/** order by aggregate values of table "match_lineups" */
 ["match_lineups_aggregate_order_by"]: {
@@ -20280,12 +20134,6 @@ export type GraphQLTypes = {
 		data: Array<GraphQLTypes["match_lineups_insert_input"]>,
 	/** upsert condition */
 	on_conflict?: GraphQLTypes["match_lineups_on_conflict"] | undefined
-};
-	/** aggregate avg on columns */
-["match_lineups_avg_fields"]: {
-	__typename: "match_lineups_avg_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
 };
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
@@ -20300,7 +20148,6 @@ export type GraphQLTypes = {
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
-	score?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	side?: GraphQLTypes["e_sides_bool_exp"] | undefined,
 	starting_side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined,
@@ -20329,8 +20176,6 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "match_lineups" */
@@ -20348,8 +20193,6 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "match_lineups" */
@@ -20388,7 +20231,6 @@ export type GraphQLTypes = {
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
-	score?: GraphQLTypes["order_by"] | undefined,
 	side?: GraphQLTypes["e_sides_order_by"] | undefined,
 	starting_side?: GraphQLTypes["order_by"] | undefined,
 	team?: GraphQLTypes["teams_order_by"] | undefined,
@@ -20408,24 +20250,6 @@ export type GraphQLTypes = {
 	starting_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
-	/** aggregate stddev on columns */
-["match_lineups_stddev_fields"]: {
-	__typename: "match_lineups_stddev_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate stddev_pop on columns */
-["match_lineups_stddev_pop_fields"]: {
-	__typename: "match_lineups_stddev_pop_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate stddev_samp on columns */
-["match_lineups_stddev_samp_fields"]: {
-	__typename: "match_lineups_stddev_samp_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
 		/** Stream column input with initial value */
@@ -20441,12 +20265,6 @@ export type GraphQLTypes = {
 	starting_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
-	/** aggregate sum on columns */
-["match_lineups_sum_fields"]: {
-	__typename: "match_lineups_sum_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
 	/** update columns of table "match_lineups" */
 ["match_lineups_update_column"]: match_lineups_update_column;
 	["match_lineups_updates"]: {
@@ -20454,24 +20272,6 @@ export type GraphQLTypes = {
 	_set?: GraphQLTypes["match_lineups_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["match_lineups_bool_exp"]
-};
-	/** aggregate var_pop on columns */
-["match_lineups_var_pop_fields"]: {
-	__typename: "match_lineups_var_pop_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate var_samp on columns */
-["match_lineups_var_samp_fields"]: {
-	__typename: "match_lineups_var_samp_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
-};
-	/** aggregate variance on columns */
-["match_lineups_variance_fields"]: {
-	__typename: "match_lineups_variance_fields",
-	/** A computed field, executes function "get_lineup_score" */
-	score?: number | undefined
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
@@ -20787,6 +20587,10 @@ export type GraphQLTypes = {
 ["match_maps"]: {
 	__typename: "match_maps",
 	id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?: string | undefined,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?: string | undefined,
 	map: string,
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
@@ -20865,6 +20669,8 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_maps_bool_exp"]> | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	lineup_1_score?: GraphQLTypes["String_comparison_exp"] | undefined,
+	lineup_2_score?: GraphQLTypes["String_comparison_exp"] | undefined,
 	map?: GraphQLTypes["String_comparison_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -20895,6 +20701,10 @@ export type GraphQLTypes = {
 ["match_maps_max_fields"]: {
 	__typename: "match_maps_max_fields",
 	id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?: string | undefined,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?: string | undefined,
 	map?: string | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -20912,6 +20722,10 @@ export type GraphQLTypes = {
 ["match_maps_min_fields"]: {
 	__typename: "match_maps_min_fields",
 	id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "lineup_1_score" */
+	lineup_1_score?: string | undefined,
+	/** A computed field, executes function "lineup_2_score" */
+	lineup_2_score?: string | undefined,
 	map?: string | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -20948,6 +20762,8 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 		id?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
 	map?: GraphQLTypes["order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,

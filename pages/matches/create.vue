@@ -148,7 +148,7 @@ export default {
     FiveStackTextInput,
     FiveStackMapPicker,
     FiveStackSearchInput,
-    FiveStackSelectInput
+    FiveStackSelectInput,
   },
   data() {
     return {

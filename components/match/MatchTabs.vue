@@ -37,7 +37,6 @@
   </tabs>
 </template>
 <script lang="ts">
-
 import Tab from "~/components/tabs/Tab.vue";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import LineupUtility from "~/components/match/LineupUtility.vue";

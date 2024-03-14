@@ -166,6 +166,12 @@
                 <template v-if="match.match_maps.length !== match.best_of">
                   Picking Maps
                 </template>
+                <div v-for="match_map of match.match_maps">
+                    {{ match_map.map }}
+                  [<small v-if="match_map.picked_by">
+                  {{ match_map.picked_by.name }}
+                </small>]
+                </div>
               </div>
             </div>
 
@@ -221,6 +227,7 @@
           >
             <form @submit.prevent.stop>
               <five-stack-map-picker v-model="mapsForm.maps" :match-type="match.type" :best_of="match.best_of"></five-stack-map-picker>
+              <five-stack-select-input v-model="mapsForm.pickedBy" label="Picked By" :options="mapPickLineupOptions"></five-stack-select-input>
               <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
             </form>
           </div>
@@ -402,6 +409,9 @@ export default {
               match_maps: {
                 id: true,
                 map: true,
+                picked_by: {
+                  name: true,
+                }
               },
               lineups: {
                 id: true,
@@ -642,12 +652,47 @@ export default {
       });
     },
     async addMaps() {
-      console.info("ELTS GO!", this.mapsForm)
+      let currentMapCount = this.match.match_maps.length - 1;
+
+      try {
+        for(const map of this.mapsForm.maps) {
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              insert_match_maps_one: [
+                {
+                 object: {
+                   map,
+                   order: ++currentMapCount,
+                   match_id: this.match.id,
+                   picked_by_lineup_id: this.mapsForm.pickedBy,
+                 }
+                },
+                {
+                  id: true,
+                },
+              ],
+            }),
+          });
+        }
+      } catch(error) {
+        console.warn('unable to insert map', error);
+      } finally {
+        this.mapsForm.maps = [];
+        this.mapsForm.pickedBy= undefined;
+      }
     }
   },
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    mapPickLineupOptions() {
+      return this.match.lineups.map((lineup) => {
+        return {
+          value: lineup.id,
+          display: lineup.name
+        }
+      })
     },
     lineup1() {
       return this.match?.lineups.find((lineup) => {

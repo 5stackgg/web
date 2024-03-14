@@ -127,7 +127,6 @@
     </div>
   </div>
 
-  <pre>{{ form }}</pre>
 </template>
 
 <script lang="ts">

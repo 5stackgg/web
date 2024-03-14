@@ -938,6 +938,111 @@ export type ValueTypes = {
 	_neq?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	_nin?: Array<ValueTypes["date"]> | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "e_match_map_status" */
+["e_match_map_status"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_match_map_status" */
+["e_match_map_status_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_match_map_status_aggregate_fields"],
+	nodes?:ValueTypes["e_match_map_status"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_match_map_status" */
+["e_match_map_status_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_match_map_status_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_match_map_status_max_fields"],
+	min?:ValueTypes["e_match_map_status_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_match_map_status". All fields are combined with a logical 'AND'. */
+["e_match_map_status_bool_exp"]: {
+	_and?: Array<ValueTypes["e_match_map_status_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_match_map_status_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_match_map_status" */
+["e_match_map_status_constraint"]:e_match_map_status_constraint;
+	["e_match_map_status_enum"]:e_match_map_status_enum;
+	/** Boolean expression to compare columns of type "e_match_map_status_enum". All fields are combined with logical 'AND'. */
+["e_match_map_status_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_match_map_status_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_match_map_status_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_match_map_status" */
+["e_match_map_status_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_match_map_status_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_match_map_status_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_match_map_status" */
+["e_match_map_status_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_match_map_status"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_match_map_status" */
+["e_match_map_status_on_conflict"]: {
+	constraint: ValueTypes["e_match_map_status_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_match_map_status_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_match_map_status". */
+["e_match_map_status_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_match_map_status */
+["e_match_map_status_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_match_map_status" */
+["e_match_map_status_select_column"]:e_match_map_status_select_column;
+	/** input type for updating data in table "e_match_map_status" */
+["e_match_map_status_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_match_map_status" */
+["e_match_map_status_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_match_map_status_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_map_status_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_match_map_status" */
+["e_match_map_status_update_column"]:e_match_map_status_update_column;
+	["e_match_map_status_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_match_map_status_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_match_map_status_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -2323,6 +2428,7 @@ rounds_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["match_map_rounds_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_map_rounds_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_rounds_aggregate"]],
+	status?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "match_maps" */
@@ -2399,7 +2505,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	picked_by?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	picked_by_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	rounds?: ValueTypes["match_map_rounds_bool_exp"] | undefined | null | Variable<any, string>,
-	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null | Variable<any, string>
+	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_match_map_status_enum_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "match_maps" */
 ["match_maps_constraint"]:match_maps_constraint;
@@ -2416,7 +2523,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	order?: number | undefined | null | Variable<any, string>,
 	picked_by?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	rounds?: ValueTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null | Variable<any, string>
+	rounds?: ValueTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
@@ -2491,7 +2599,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	picked_by?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	picked_by_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_order_by"] | undefined | null | Variable<any, string>
+	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -2505,7 +2614,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	map?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: AliasType<{
@@ -2547,7 +2657,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	map?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: AliasType<{
@@ -2603,6 +2714,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_status?:ValueTypes["e_match_status"],
 	/** An object relationship */
@@ -2787,6 +2900,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	connection_link?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	current_match_map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_match_status?: ValueTypes["e_match_status_bool_exp"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2862,6 +2976,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -2901,6 +3017,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -2958,6 +3076,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	connection_link?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	current_match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_match_status?: ValueTypes["e_match_status_order_by"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3141,6 +3260,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** mutation root */
 ["mutation_root"]: AliasType<{
 cancelMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+delete_e_match_map_status?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_match_map_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_map_status_mutation_response"]],
+delete_e_match_map_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_map_status"]],
 delete_e_match_status?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_match_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
 delete_e_match_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_status"]],
@@ -3191,6 +3313,12 @@ delete_teams?: [{	/** filter the rows which have to be deleted */
 delete_teams_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["teams"]],
 delete_v_match_captains?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["v_match_captains_bool_exp"] | Variable<any, string>},ValueTypes["v_match_captains_mutation_response"]],
+insert_e_match_map_status?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_match_map_status_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_match_map_status_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status_mutation_response"]],
+insert_e_match_map_status_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_match_map_status_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_match_map_status_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status"]],
 insert_e_match_status?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_match_status_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_match_status_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
@@ -3293,6 +3421,13 @@ insert_v_match_captains_one?: [{	/** the row to be inserted */
 	object: ValueTypes["v_match_captains_insert_input"] | Variable<any, string>},ValueTypes["v_match_captains"]],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+update_e_match_map_status?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_match_map_status_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_match_map_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_map_status_mutation_response"]],
+update_e_match_map_status_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_match_map_status_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_match_map_status_pk_columns_input"] | Variable<any, string>},ValueTypes["e_match_map_status"]],
+update_e_match_map_status_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_match_map_status_updates"]> | Variable<any, string>},ValueTypes["e_match_map_status_mutation_response"]],
 update_e_match_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_match_status_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_match_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_status_mutation_response"]],
@@ -5049,6 +5184,19 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 		__typename?: boolean | `@${string}`
 }>;
 	["query_root"]: AliasType<{
+e_match_map_status?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_map_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_map_status_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status"]],
+e_match_map_status_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_map_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_map_status_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status_aggregate"]],
+e_match_map_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_map_status"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_match_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -5579,6 +5727,23 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 		__typename?: boolean | `@${string}`
 }>;
 	["subscription_root"]: AliasType<{
+e_match_map_status?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_map_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_map_status_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status"]],
+e_match_map_status_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_match_map_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_match_map_status_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status_aggregate"]],
+e_match_map_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_map_status"]],
+e_match_map_status_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_match_map_status_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_match_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -7355,6 +7520,111 @@ export type ResolverInputTypes = {
 	_neq?: ResolverInputTypes["date"] | undefined | null,
 	_nin?: Array<ResolverInputTypes["date"]> | undefined | null
 };
+	/** columns and relationships of "e_match_map_status" */
+["e_match_map_status"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_match_map_status" */
+["e_match_map_status_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_match_map_status_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_match_map_status"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_match_map_status" */
+["e_match_map_status_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_match_map_status_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_match_map_status_max_fields"],
+	min?:ResolverInputTypes["e_match_map_status_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_match_map_status". All fields are combined with a logical 'AND'. */
+["e_match_map_status_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_match_map_status_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_match_map_status_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_match_map_status" */
+["e_match_map_status_constraint"]:e_match_map_status_constraint;
+	["e_match_map_status_enum"]:e_match_map_status_enum;
+	/** Boolean expression to compare columns of type "e_match_map_status_enum". All fields are combined with logical 'AND'. */
+["e_match_map_status_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_match_map_status_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_match_map_status_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_match_map_status" */
+["e_match_map_status_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_match_map_status_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_match_map_status_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_match_map_status" */
+["e_match_map_status_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_match_map_status"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_match_map_status" */
+["e_match_map_status_on_conflict"]: {
+	constraint: ResolverInputTypes["e_match_map_status_constraint"],
+	update_columns: Array<ResolverInputTypes["e_match_map_status_update_column"]>,
+	where?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_match_map_status". */
+["e_match_map_status_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_match_map_status */
+["e_match_map_status_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_match_map_status" */
+["e_match_map_status_select_column"]:e_match_map_status_select_column;
+	/** input type for updating data in table "e_match_map_status" */
+["e_match_map_status_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_match_map_status" */
+["e_match_map_status_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_match_map_status_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_map_status_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_match_map_status" */
+["e_match_map_status_update_column"]:e_match_map_status_update_column;
+	["e_match_map_status_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_match_map_status_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_match_map_status_bool_exp"]
+};
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -8740,6 +9010,7 @@ rounds_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["match_map_rounds_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_map_rounds_bool_exp"] | undefined | null},ResolverInputTypes["match_map_rounds_aggregate"]],
+	status?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "match_maps" */
@@ -8816,7 +9087,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	picked_by?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	picked_by_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	rounds?: ResolverInputTypes["match_map_rounds_bool_exp"] | undefined | null,
-	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null
+	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null,
+	status?: ResolverInputTypes["e_match_map_status_enum_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "match_maps" */
 ["match_maps_constraint"]:match_maps_constraint;
@@ -8833,7 +9105,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	order?: number | undefined | null,
 	picked_by?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
-	rounds?: ResolverInputTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null
+	rounds?: ResolverInputTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null,
+	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
@@ -8908,7 +9181,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	order?: ResolverInputTypes["order_by"] | undefined | null,
 	picked_by?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	picked_by_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
-	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_order_by"] | undefined | null
+	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_order_by"] | undefined | null,
+	status?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -8922,7 +9196,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	map?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
+	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: AliasType<{
@@ -8964,7 +9239,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	map?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
+	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
+	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: AliasType<{
@@ -9020,6 +9296,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_status?:ResolverInputTypes["e_match_status"],
 	/** An object relationship */
@@ -9204,6 +9482,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	connection_link?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	current_match_map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	e_match_status?: ResolverInputTypes["e_match_status_bool_exp"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -9279,6 +9558,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -9318,6 +9599,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -9375,6 +9658,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	connection_link?: ResolverInputTypes["order_by"] | undefined | null,
 	connection_string?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	current_match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	e_match_status?: ResolverInputTypes["e_match_status_order_by"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -9558,6 +9842,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** mutation root */
 ["mutation_root"]: AliasType<{
 cancelMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+delete_e_match_map_status?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_match_map_status_bool_exp"]},ResolverInputTypes["e_match_map_status_mutation_response"]],
+delete_e_match_map_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_map_status"]],
 delete_e_match_status?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_match_status_bool_exp"]},ResolverInputTypes["e_match_status_mutation_response"]],
 delete_e_match_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_status"]],
@@ -9608,6 +9895,12 @@ delete_teams?: [{	/** filter the rows which have to be deleted */
 delete_teams_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["teams"]],
 delete_v_match_captains?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["v_match_captains_bool_exp"]},ResolverInputTypes["v_match_captains_mutation_response"]],
+insert_e_match_map_status?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_match_map_status_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_match_map_status_on_conflict"] | undefined | null},ResolverInputTypes["e_match_map_status_mutation_response"]],
+insert_e_match_map_status_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_match_map_status_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_match_map_status_on_conflict"] | undefined | null},ResolverInputTypes["e_match_map_status"]],
 insert_e_match_status?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_match_status_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_match_status_on_conflict"] | undefined | null},ResolverInputTypes["e_match_status_mutation_response"]],
@@ -9710,6 +10003,13 @@ insert_v_match_captains_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["v_match_captains_insert_input"]},ResolverInputTypes["v_match_captains"]],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+update_e_match_map_status?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_match_map_status_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_match_map_status_bool_exp"]},ResolverInputTypes["e_match_map_status_mutation_response"]],
+update_e_match_map_status_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_match_map_status_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_match_map_status_pk_columns_input"]},ResolverInputTypes["e_match_map_status"]],
+update_e_match_map_status_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_match_map_status_updates"]>},ResolverInputTypes["e_match_map_status_mutation_response"]],
 update_e_match_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_match_status_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_match_status_bool_exp"]},ResolverInputTypes["e_match_status_mutation_response"]],
@@ -11466,6 +11766,19 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 		__typename?: boolean | `@${string}`
 }>;
 	["query_root"]: AliasType<{
+e_match_map_status?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_map_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_map_status_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null},ResolverInputTypes["e_match_map_status"]],
+e_match_map_status_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_map_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_map_status_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null},ResolverInputTypes["e_match_map_status_aggregate"]],
+e_match_map_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_map_status"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_match_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -11996,6 +12309,23 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 		__typename?: boolean | `@${string}`
 }>;
 	["subscription_root"]: AliasType<{
+e_match_map_status?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_map_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_map_status_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null},ResolverInputTypes["e_match_map_status"]],
+e_match_map_status_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_match_map_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_match_map_status_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null},ResolverInputTypes["e_match_map_status_aggregate"]],
+e_match_map_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_map_status"]],
+e_match_map_status_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_match_map_status_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null},ResolverInputTypes["e_match_map_status"]],
 e_match_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_match_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -13768,6 +14098,102 @@ export type ModelTypes = {
 	_neq?: ModelTypes["date"] | undefined,
 	_nin?: Array<ModelTypes["date"]> | undefined
 };
+	/** columns and relationships of "e_match_map_status" */
+["e_match_map_status"]: {
+		description: string,
+	value: string
+};
+	/** aggregated selection of "e_match_map_status" */
+["e_match_map_status_aggregate"]: {
+		aggregate?: ModelTypes["e_match_map_status_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["e_match_map_status"]>
+};
+	/** aggregate fields of "e_match_map_status" */
+["e_match_map_status_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_match_map_status_max_fields"] | undefined,
+	min?: ModelTypes["e_match_map_status_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_match_map_status". All fields are combined with a logical 'AND'. */
+["e_match_map_status_bool_exp"]: {
+	_and?: Array<ModelTypes["e_match_map_status_bool_exp"]> | undefined,
+	_not?: ModelTypes["e_match_map_status_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["e_match_map_status_bool_exp"]> | undefined,
+	description?: ModelTypes["String_comparison_exp"] | undefined,
+	value?: ModelTypes["String_comparison_exp"] | undefined
+};
+	["e_match_map_status_constraint"]:e_match_map_status_constraint;
+	["e_match_map_status_enum"]:e_match_map_status_enum;
+	/** Boolean expression to compare columns of type "e_match_map_status_enum". All fields are combined with logical 'AND'. */
+["e_match_map_status_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_match_map_status_enum"] | undefined,
+	_in?: Array<ModelTypes["e_match_map_status_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: ModelTypes["e_match_map_status_enum"] | undefined,
+	_nin?: Array<ModelTypes["e_match_map_status_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_match_map_status" */
+["e_match_map_status_insert_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_match_map_status_max_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_match_map_status_min_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_match_map_status" */
+["e_match_map_status_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_match_map_status"]>
+};
+	/** on_conflict condition type for table "e_match_map_status" */
+["e_match_map_status_on_conflict"]: {
+	constraint: ModelTypes["e_match_map_status_constraint"],
+	update_columns: Array<ModelTypes["e_match_map_status_update_column"]>,
+	where?: ModelTypes["e_match_map_status_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_match_map_status". */
+["e_match_map_status_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined,
+	value?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_match_map_status */
+["e_match_map_status_pk_columns_input"]: {
+	value: string
+};
+	["e_match_map_status_select_column"]:e_match_map_status_select_column;
+	/** input type for updating data in table "e_match_map_status" */
+["e_match_map_status_set_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_match_map_status" */
+["e_match_map_status_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_match_map_status_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_map_status_stream_cursor_value_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	["e_match_map_status_update_column"]:e_match_map_status_update_column;
+	["e_match_map_status_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_match_map_status_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_match_map_status_bool_exp"]
+};
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: {
 		description: string,
@@ -15021,7 +15447,8 @@ export type ModelTypes = {
 	/** An array relationship */
 	rounds: Array<ModelTypes["match_map_rounds"]>,
 	/** An aggregate relationship */
-	rounds_aggregate: ModelTypes["match_map_rounds_aggregate"]
+	rounds_aggregate: ModelTypes["match_map_rounds_aggregate"],
+	status: ModelTypes["e_match_map_status_enum"]
 };
 	/** aggregated selection of "match_maps" */
 ["match_maps_aggregate"]: {
@@ -15094,7 +15521,8 @@ export type ModelTypes = {
 	picked_by?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	picked_by_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	rounds?: ModelTypes["match_map_rounds_bool_exp"] | undefined,
-	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_bool_exp"] | undefined
+	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_bool_exp"] | undefined,
+	status?: ModelTypes["e_match_map_status_enum_comparison_exp"] | undefined
 };
 	["match_maps_constraint"]:match_maps_constraint;
 	/** input type for incrementing numeric columns in table "match_maps" */
@@ -15110,7 +15538,8 @@ export type ModelTypes = {
 	order?: number | undefined,
 	picked_by?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	picked_by_lineup_id?: ModelTypes["uuid"] | undefined,
-	rounds?: ModelTypes["match_map_rounds_arr_rel_insert_input"] | undefined
+	rounds?: ModelTypes["match_map_rounds_arr_rel_insert_input"] | undefined,
+	status?: ModelTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
@@ -15182,7 +15611,8 @@ export type ModelTypes = {
 	order?: ModelTypes["order_by"] | undefined,
 	picked_by?: ModelTypes["match_lineups_order_by"] | undefined,
 	picked_by_lineup_id?: ModelTypes["order_by"] | undefined,
-	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_order_by"] | undefined
+	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_order_by"] | undefined,
+	status?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -15195,7 +15625,8 @@ export type ModelTypes = {
 	map?: string | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined
+	picked_by_lineup_id?: ModelTypes["uuid"] | undefined,
+	status?: ModelTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: {
@@ -15234,7 +15665,8 @@ export type ModelTypes = {
 	map?: string | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined
+	picked_by_lineup_id?: ModelTypes["uuid"] | undefined,
+	status?: ModelTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: {
@@ -15285,6 +15717,8 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?: string | undefined,
 	created_at: ModelTypes["timestamptz"],
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?: ModelTypes["uuid"] | undefined,
 	/** An object relationship */
 	e_match_status: ModelTypes["e_match_status"],
 	/** An object relationship */
@@ -15421,6 +15855,7 @@ export type ModelTypes = {
 	connection_link?: ModelTypes["String_comparison_exp"] | undefined,
 	connection_string?: ModelTypes["String_comparison_exp"] | undefined,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
+	current_match_map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	e_match_status?: ModelTypes["e_match_status_bool_exp"] | undefined,
 	e_match_type?: ModelTypes["e_match_types_bool_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -15495,6 +15930,8 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?: ModelTypes["uuid"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -15533,6 +15970,8 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?: ModelTypes["uuid"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -15588,6 +16027,7 @@ export type ModelTypes = {
 	connection_link?: ModelTypes["order_by"] | undefined,
 	connection_string?: ModelTypes["order_by"] | undefined,
 	created_at?: ModelTypes["order_by"] | undefined,
+	current_match_map_id?: ModelTypes["order_by"] | undefined,
 	e_match_status?: ModelTypes["e_match_status_order_by"] | undefined,
 	e_match_type?: ModelTypes["e_match_types_order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -15761,6 +16201,10 @@ export type ModelTypes = {
 ["mutation_root"]: {
 		/** cancelMatch */
 	cancelMatch?: ModelTypes["SuccessOutput"] | undefined,
+	/** delete data from the table: "e_match_map_status" */
+	delete_e_match_map_status?: ModelTypes["e_match_map_status_mutation_response"] | undefined,
+	/** delete single row from the table: "e_match_map_status" */
+	delete_e_match_map_status_by_pk?: ModelTypes["e_match_map_status"] | undefined,
 	/** delete data from the table: "e_match_status" */
 	delete_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined,
 	/** delete single row from the table: "e_match_status" */
@@ -15827,6 +16271,10 @@ export type ModelTypes = {
 	delete_teams_by_pk?: ModelTypes["teams"] | undefined,
 	/** delete data from the table: "v_match_captains" */
 	delete_v_match_captains?: ModelTypes["v_match_captains_mutation_response"] | undefined,
+	/** insert data into the table: "e_match_map_status" */
+	insert_e_match_map_status?: ModelTypes["e_match_map_status_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_match_map_status" */
+	insert_e_match_map_status_one?: ModelTypes["e_match_map_status"] | undefined,
 	/** insert data into the table: "e_match_status" */
 	insert_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_match_status" */
@@ -15899,6 +16347,12 @@ export type ModelTypes = {
 	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** startMatch */
 	startMatch?: ModelTypes["SuccessOutput"] | undefined,
+	/** update data of the table: "e_match_map_status" */
+	update_e_match_map_status?: ModelTypes["e_match_map_status_mutation_response"] | undefined,
+	/** update single row of the table: "e_match_map_status" */
+	update_e_match_map_status_by_pk?: ModelTypes["e_match_map_status"] | undefined,
+	/** update multiples rows of table: "e_match_map_status" */
+	update_e_match_map_status_many?: Array<ModelTypes["e_match_map_status_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_match_status" */
 	update_e_match_status?: ModelTypes["e_match_status_mutation_response"] | undefined,
 	/** update single row of the table: "e_match_status" */
@@ -17463,7 +17917,13 @@ export type ModelTypes = {
 		steam_id?: number | undefined
 };
 	["query_root"]: {
-		/** fetch data from the table: "e_match_status" */
+		/** fetch data from the table: "e_match_map_status" */
+	e_match_map_status: Array<ModelTypes["e_match_map_status"]>,
+	/** fetch aggregated fields from the table: "e_match_map_status" */
+	e_match_map_status_aggregate: ModelTypes["e_match_map_status_aggregate"],
+	/** fetch data from the table: "e_match_map_status" using primary key columns */
+	e_match_map_status_by_pk?: ModelTypes["e_match_map_status"] | undefined,
+	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<ModelTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
 	e_match_status_aggregate: ModelTypes["e_match_status_aggregate"],
@@ -17815,7 +18275,15 @@ export type ModelTypes = {
 	tv_port?: number | undefined
 };
 	["subscription_root"]: {
-		/** fetch data from the table: "e_match_status" */
+		/** fetch data from the table: "e_match_map_status" */
+	e_match_map_status: Array<ModelTypes["e_match_map_status"]>,
+	/** fetch aggregated fields from the table: "e_match_map_status" */
+	e_match_map_status_aggregate: ModelTypes["e_match_map_status_aggregate"],
+	/** fetch data from the table: "e_match_map_status" using primary key columns */
+	e_match_map_status_by_pk?: ModelTypes["e_match_map_status"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_match_map_status" */
+	e_match_map_status_stream: Array<ModelTypes["e_match_map_status"]>,
+	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<ModelTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
 	e_match_status_aggregate: ModelTypes["e_match_status_aggregate"],
@@ -19265,6 +19733,111 @@ export type GraphQLTypes = {
 	_neq?: GraphQLTypes["date"] | undefined,
 	_nin?: Array<GraphQLTypes["date"]> | undefined
 };
+	/** columns and relationships of "e_match_map_status" */
+["e_match_map_status"]: {
+	__typename: "e_match_map_status",
+	description: string,
+	value: string
+};
+	/** aggregated selection of "e_match_map_status" */
+["e_match_map_status_aggregate"]: {
+	__typename: "e_match_map_status_aggregate",
+	aggregate?: GraphQLTypes["e_match_map_status_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["e_match_map_status"]>
+};
+	/** aggregate fields of "e_match_map_status" */
+["e_match_map_status_aggregate_fields"]: {
+	__typename: "e_match_map_status_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_match_map_status_max_fields"] | undefined,
+	min?: GraphQLTypes["e_match_map_status_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_match_map_status". All fields are combined with a logical 'AND'. */
+["e_match_map_status_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_match_map_status_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["e_match_map_status_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["e_match_map_status_bool_exp"]> | undefined,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "e_match_map_status" */
+["e_match_map_status_constraint"]: e_match_map_status_constraint;
+	["e_match_map_status_enum"]: e_match_map_status_enum;
+	/** Boolean expression to compare columns of type "e_match_map_status_enum". All fields are combined with logical 'AND'. */
+["e_match_map_status_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_match_map_status_enum"] | undefined,
+	_in?: Array<GraphQLTypes["e_match_map_status_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: GraphQLTypes["e_match_map_status_enum"] | undefined,
+	_nin?: Array<GraphQLTypes["e_match_map_status_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_match_map_status" */
+["e_match_map_status_insert_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_match_map_status_max_fields"]: {
+	__typename: "e_match_map_status_max_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_match_map_status_min_fields"]: {
+	__typename: "e_match_map_status_min_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_match_map_status" */
+["e_match_map_status_mutation_response"]: {
+	__typename: "e_match_map_status_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_match_map_status"]>
+};
+	/** on_conflict condition type for table "e_match_map_status" */
+["e_match_map_status_on_conflict"]: {
+		constraint: GraphQLTypes["e_match_map_status_constraint"],
+	update_columns: Array<GraphQLTypes["e_match_map_status_update_column"]>,
+	where?: GraphQLTypes["e_match_map_status_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_match_map_status". */
+["e_match_map_status_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined,
+	value?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_match_map_status */
+["e_match_map_status_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_match_map_status" */
+["e_match_map_status_select_column"]: e_match_map_status_select_column;
+	/** input type for updating data in table "e_match_map_status" */
+["e_match_map_status_set_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_match_map_status" */
+["e_match_map_status_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_match_map_status_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_match_map_status_stream_cursor_value_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** update columns of table "e_match_map_status" */
+["e_match_map_status_update_column"]: e_match_map_status_update_column;
+	["e_match_map_status_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_match_map_status_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_match_map_status_bool_exp"]
+};
 	/** columns and relationships of "e_match_status" */
 ["e_match_status"]: {
 	__typename: "e_match_status",
@@ -20602,7 +21175,8 @@ export type GraphQLTypes = {
 	/** An array relationship */
 	rounds: Array<GraphQLTypes["match_map_rounds"]>,
 	/** An aggregate relationship */
-	rounds_aggregate: GraphQLTypes["match_map_rounds_aggregate"]
+	rounds_aggregate: GraphQLTypes["match_map_rounds_aggregate"],
+	status: GraphQLTypes["e_match_map_status_enum"]
 };
 	/** aggregated selection of "match_maps" */
 ["match_maps_aggregate"]: {
@@ -20678,7 +21252,8 @@ export type GraphQLTypes = {
 	picked_by?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	picked_by_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	rounds?: GraphQLTypes["match_map_rounds_bool_exp"] | undefined,
-	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_bool_exp"] | undefined
+	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_bool_exp"] | undefined,
+	status?: GraphQLTypes["e_match_map_status_enum_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "match_maps" */
 ["match_maps_constraint"]: match_maps_constraint;
@@ -20695,7 +21270,8 @@ export type GraphQLTypes = {
 	order?: number | undefined,
 	picked_by?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined,
-	rounds?: GraphQLTypes["match_map_rounds_arr_rel_insert_input"] | undefined
+	rounds?: GraphQLTypes["match_map_rounds_arr_rel_insert_input"] | undefined,
+	status?: GraphQLTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
@@ -20770,7 +21346,8 @@ export type GraphQLTypes = {
 	order?: GraphQLTypes["order_by"] | undefined,
 	picked_by?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	picked_by_lineup_id?: GraphQLTypes["order_by"] | undefined,
-	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_order_by"] | undefined
+	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_order_by"] | undefined,
+	status?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -20784,7 +21361,8 @@ export type GraphQLTypes = {
 	map?: string | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined
+	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined,
+	status?: GraphQLTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: {
@@ -20826,7 +21404,8 @@ export type GraphQLTypes = {
 	map?: string | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined
+	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined,
+	status?: GraphQLTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: {
@@ -20883,6 +21462,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?: string | undefined,
 	created_at: GraphQLTypes["timestamptz"],
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
 	/** An object relationship */
 	e_match_status: GraphQLTypes["e_match_status"],
 	/** An object relationship */
@@ -21022,6 +21603,7 @@ export type GraphQLTypes = {
 	connection_link?: GraphQLTypes["String_comparison_exp"] | undefined,
 	connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
+	current_match_map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	e_match_status?: GraphQLTypes["e_match_status_bool_exp"] | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_bool_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -21098,6 +21680,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -21137,6 +21721,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_match_connection_string" */
 	connection_string?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_current_match_map" */
+	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
 	/** A computed field, executes function "get_match_lineup_1_id" */
@@ -21193,6 +21779,7 @@ export type GraphQLTypes = {
 	connection_link?: GraphQLTypes["order_by"] | undefined,
 	connection_string?: GraphQLTypes["order_by"] | undefined,
 	created_at?: GraphQLTypes["order_by"] | undefined,
+	current_match_map_id?: GraphQLTypes["order_by"] | undefined,
 	e_match_status?: GraphQLTypes["e_match_status_order_by"] | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
@@ -21378,6 +21965,10 @@ export type GraphQLTypes = {
 	__typename: "mutation_root",
 	/** cancelMatch */
 	cancelMatch?: GraphQLTypes["SuccessOutput"] | undefined,
+	/** delete data from the table: "e_match_map_status" */
+	delete_e_match_map_status?: GraphQLTypes["e_match_map_status_mutation_response"] | undefined,
+	/** delete single row from the table: "e_match_map_status" */
+	delete_e_match_map_status_by_pk?: GraphQLTypes["e_match_map_status"] | undefined,
 	/** delete data from the table: "e_match_status" */
 	delete_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined,
 	/** delete single row from the table: "e_match_status" */
@@ -21444,6 +22035,10 @@ export type GraphQLTypes = {
 	delete_teams_by_pk?: GraphQLTypes["teams"] | undefined,
 	/** delete data from the table: "v_match_captains" */
 	delete_v_match_captains?: GraphQLTypes["v_match_captains_mutation_response"] | undefined,
+	/** insert data into the table: "e_match_map_status" */
+	insert_e_match_map_status?: GraphQLTypes["e_match_map_status_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_match_map_status" */
+	insert_e_match_map_status_one?: GraphQLTypes["e_match_map_status"] | undefined,
 	/** insert data into the table: "e_match_status" */
 	insert_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_match_status" */
@@ -21516,6 +22111,12 @@ export type GraphQLTypes = {
 	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** startMatch */
 	startMatch?: GraphQLTypes["SuccessOutput"] | undefined,
+	/** update data of the table: "e_match_map_status" */
+	update_e_match_map_status?: GraphQLTypes["e_match_map_status_mutation_response"] | undefined,
+	/** update single row of the table: "e_match_map_status" */
+	update_e_match_map_status_by_pk?: GraphQLTypes["e_match_map_status"] | undefined,
+	/** update multiples rows of table: "e_match_map_status" */
+	update_e_match_map_status_many?: Array<GraphQLTypes["e_match_map_status_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_match_status" */
 	update_e_match_status?: GraphQLTypes["e_match_status_mutation_response"] | undefined,
 	/** update single row of the table: "e_match_status" */
@@ -23152,6 +23753,12 @@ export type GraphQLTypes = {
 };
 	["query_root"]: {
 	__typename: "query_root",
+	/** fetch data from the table: "e_match_map_status" */
+	e_match_map_status: Array<GraphQLTypes["e_match_map_status"]>,
+	/** fetch aggregated fields from the table: "e_match_map_status" */
+	e_match_map_status_aggregate: GraphQLTypes["e_match_map_status_aggregate"],
+	/** fetch data from the table: "e_match_map_status" using primary key columns */
+	e_match_map_status_by_pk?: GraphQLTypes["e_match_map_status"] | undefined,
 	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<GraphQLTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
@@ -23522,6 +24129,14 @@ export type GraphQLTypes = {
 };
 	["subscription_root"]: {
 	__typename: "subscription_root",
+	/** fetch data from the table: "e_match_map_status" */
+	e_match_map_status: Array<GraphQLTypes["e_match_map_status"]>,
+	/** fetch aggregated fields from the table: "e_match_map_status" */
+	e_match_map_status_aggregate: GraphQLTypes["e_match_map_status_aggregate"],
+	/** fetch data from the table: "e_match_map_status" using primary key columns */
+	e_match_map_status_by_pk?: GraphQLTypes["e_match_map_status"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_match_map_status" */
+	e_match_map_status_stream: Array<GraphQLTypes["e_match_map_status"]>,
 	/** fetch data from the table: "e_match_status" */
 	e_match_status: Array<GraphQLTypes["e_match_status"]>,
 	/** fetch aggregated fields from the table: "e_match_status" */
@@ -24983,6 +25598,31 @@ export const enum cursor_ordering {
 	ASC = "ASC",
 	DESC = "DESC"
 }
+/** unique or primary key constraints on table "e_match_map_status" */
+export const enum e_match_map_status_constraint {
+	match_map_status_pkey = "match_map_status_pkey"
+}
+export const enum e_match_map_status_enum {
+	Canceled = "Canceled",
+	Finished = "Finished",
+	Knife = "Knife",
+	Live = "Live",
+	Overtime = "Overtime",
+	Paused = "Paused",
+	Scheduled = "Scheduled",
+	TechTimeout = "TechTimeout",
+	Warmup = "Warmup"
+}
+/** select columns of table "e_match_map_status" */
+export const enum e_match_map_status_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_match_map_status" */
+export const enum e_match_map_status_update_column {
+	description = "description",
+	value = "value"
+}
 /** unique or primary key constraints on table "e_match_status" */
 export const enum e_match_status_constraint {
 	e_match_status_pkey = "e_match_status_pkey"
@@ -25165,7 +25805,8 @@ export const enum match_maps_select_column {
 	map = "map",
 	match_id = "match_id",
 	order = "order",
-	picked_by_lineup_id = "picked_by_lineup_id"
+	picked_by_lineup_id = "picked_by_lineup_id",
+	status = "status"
 }
 /** update columns of table "match_maps" */
 export const enum match_maps_update_column {
@@ -25173,7 +25814,8 @@ export const enum match_maps_update_column {
 	map = "map",
 	match_id = "match_id",
 	order = "order",
-	picked_by_lineup_id = "picked_by_lineup_id"
+	picked_by_lineup_id = "picked_by_lineup_id",
+	status = "status"
 }
 /** unique or primary key constraints on table "matches" */
 export const enum matches_constraint {
@@ -25494,6 +26136,20 @@ type ZEUS_VARIABLES = {
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
 	["date"]: ValueTypes["date"];
 	["date_comparison_exp"]: ValueTypes["date_comparison_exp"];
+	["e_match_map_status_bool_exp"]: ValueTypes["e_match_map_status_bool_exp"];
+	["e_match_map_status_constraint"]: ValueTypes["e_match_map_status_constraint"];
+	["e_match_map_status_enum"]: ValueTypes["e_match_map_status_enum"];
+	["e_match_map_status_enum_comparison_exp"]: ValueTypes["e_match_map_status_enum_comparison_exp"];
+	["e_match_map_status_insert_input"]: ValueTypes["e_match_map_status_insert_input"];
+	["e_match_map_status_on_conflict"]: ValueTypes["e_match_map_status_on_conflict"];
+	["e_match_map_status_order_by"]: ValueTypes["e_match_map_status_order_by"];
+	["e_match_map_status_pk_columns_input"]: ValueTypes["e_match_map_status_pk_columns_input"];
+	["e_match_map_status_select_column"]: ValueTypes["e_match_map_status_select_column"];
+	["e_match_map_status_set_input"]: ValueTypes["e_match_map_status_set_input"];
+	["e_match_map_status_stream_cursor_input"]: ValueTypes["e_match_map_status_stream_cursor_input"];
+	["e_match_map_status_stream_cursor_value_input"]: ValueTypes["e_match_map_status_stream_cursor_value_input"];
+	["e_match_map_status_update_column"]: ValueTypes["e_match_map_status_update_column"];
+	["e_match_map_status_updates"]: ValueTypes["e_match_map_status_updates"];
 	["e_match_status_bool_exp"]: ValueTypes["e_match_status_bool_exp"];
 	["e_match_status_constraint"]: ValueTypes["e_match_status_constraint"];
 	["e_match_status_enum"]: ValueTypes["e_match_status_enum"];

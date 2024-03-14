@@ -8,7 +8,6 @@
           >
             {{ lineup1.name }} vs {{ lineup2.name }}
           </h2>
-<!--          <h4>{{ lineup1.score }} - {{ lineup2.score }}</h4>-->
           <div>
             <template v-if="match.status == 'PickingPlayers'">
               <template v-if="!canAddToLineup1 && !canAddToLineup2">
@@ -167,10 +166,13 @@
                   Picking Maps
                 </template>
                 <div v-for="match_map of match.match_maps">
-                    {{ match_map.map }}
-                  [<small v-if="match_map.picked_by">
-                  {{ match_map.picked_by.name }}
-                </small>]
+                    [{{ match_map.status }}] {{ match_map.map }}
+                    <br>
+                    (<small v-if="match_map.picked_by">{{ match_map.picked_by.name }} picked</small>)
+                    <br>
+                    {{ lineup1.name }}:{{ match_map.lineup_1_score }}
+                    <br>
+                    {{ lineup2.name }}:{{ match_map.lineup_2_score }}
                 </div>
               </div>
             </div>
@@ -407,6 +409,9 @@ export default {
               match_maps: {
                 id: true,
                 map: true,
+                status: true,
+                lineup_1_score: true,
+                lineup_2_score: true,
                 picked_by: {
                   name: true,
                 }

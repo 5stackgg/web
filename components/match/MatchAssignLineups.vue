@@ -35,12 +35,12 @@
 </template>
 
 <script lang="ts">
-import { $, e_sides_enum } from "~/generated/zeus";
+import { $ } from "~/generated/zeus";
+import getMatchLineups from "~/utilities/getMatchLineups";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
   components: {

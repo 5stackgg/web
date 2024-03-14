@@ -33,9 +33,9 @@
 <script lang="ts">
 import { e_sides_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
+import getMatchLineups from "~/utilities/getMatchLineups";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
-import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
   components: {

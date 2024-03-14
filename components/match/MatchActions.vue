@@ -48,10 +48,11 @@
   </template>
 </template>
 <script lang="ts">
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
+
 export default {
   components: {
     FiveStackSelectInput,

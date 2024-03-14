@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import LineupMember from "~/components/match-details/LineupMember.vue";
+import LineupMember from "~/components/match/LineupMember.vue";
 
 export default {
   components: { LineupMember },

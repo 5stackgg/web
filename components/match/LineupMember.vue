@@ -20,8 +20,8 @@
   </td>
 </template>
 <script lang="ts">
-import { generateMutation } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {

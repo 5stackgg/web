@@ -37,11 +37,12 @@
   </tabs>
 </template>
 <script lang="ts">
+
 import Tab from "~/components/tabs/Tab.vue";
 import getMatchLineups from "~/utilities/getMatchLineups";
-import LineupUtility from "~/components/match-details/LineupUtility.vue";
-import LineupOverview from "~/components/match-details/LineupOverview.vue";
-import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
+import LineupUtility from "~/components/match/LineupUtility.vue";
+import LineupOverview from "~/components/match/LineupOverview.vue";
+import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 
 export default {
   components: {

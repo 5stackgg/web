@@ -100,11 +100,11 @@
 import { $, order_by } from "~/generated/zeus";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import MatchTabs from "~/components/match-details/MatchTabs.vue";
-import MatchStatus from "~/components/match-details/MatchStatus.vue";
-import MatchActions from "~/components/match-details/MatchActions.vue";
-import MatchMapPicks from "~/components/match-forms/MatchMapPicks.vue";
-import MatchAssignLineups from "~/components/match-forms/MatchAssignLineups.vue";
+import MatchTabs from "~/components/match/MatchTabs.vue";
+import MatchStatus from "~/components/match/MatchStatus.vue";
+import MatchActions from "~/components/match/MatchActions.vue";
+import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
+import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
 
 export default {
   components: {

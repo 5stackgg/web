@@ -1,8 +1,8 @@
 <template>
-  <clickable-table :caption="match.lineup_1.name">
+  <clickable-table :caption="lineup.name">
     <thead>
       <tr>
-        <th>{{ match.lineup_1.name }}</th>
+        <th>{{ lineup.name }}</th>
         <th>Flash Assists</th>
         <th>Enemies Flashed</th>
         <th>Friendly Flashed</th>
@@ -13,10 +13,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="member of match.lineup_1.lineup_players">
+      <tr v-for="member of lineup.lineup_players">
         <lineup-member
           :member="member"
-          :lineup_id="match.lineup_1.id"
+          :lineup_id="lineup.id"
         ></lineup-member>
         <td class="w-2">TODO</td>
         <td class="w-2">TODO</td>

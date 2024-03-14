@@ -310,7 +310,9 @@
           :lineup="lineup2"
         ></lineup-opening-duels>
       </tab>
-      <tab title="Clutches"> </tab>
+      <tab title="Clutches">
+        TODO
+      </tab>
     </tabs>
   </template>
 </template>

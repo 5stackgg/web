@@ -92,6 +92,9 @@
       :match="match"
       v-if="assigningLineups"
     ></match-assign-lineups>
+
+    <hr class="mt-8 mb-8 border-gray-600" />
+
     <match-tabs :match="match"></match-tabs>
   </template>
 </template>

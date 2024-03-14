@@ -6,16 +6,12 @@
           <h2
             class="font-bold text-2xl md:text-3xl text-gray-800 dark:text-gray-200"
           >
-            {{ match.lineup_1.name }} vs {{ match.lineup_2.name }}
+            {{ lineup1.name }} vs {{ lineup2.name }}
           </h2>
-          <h3>{{ match.map }}</h3>
-          <h4>{{ match.lineup_1.score }} - {{ match.lineup_2.score }}</h4>
-          <h6>
+<!--          <h4>{{ lineup1.score }} - {{ lineup2.score }}</h4>-->
+          <div>
             <template v-if="match.status == 'PickingPlayers'">
-              <template v-if="canAddToLineup1 || canAddToLineup2">
-                Picking Players
-              </template>
-              <template v-else>
+              <template v-if="!canAddToLineup1 && !canAddToLineup2">
                 <five-stack-button @click="scheduleMatch">
                   Schedule Match!
                 </five-stack-button>
@@ -32,7 +28,6 @@
               </div>
 
               <form @submit.prevent="startMatch">
-                <pre>{{ startMatchForm.server_id }}</pre>
                 <five-stack-select-input
                   label="type"
                   :options="availableServers"
@@ -42,7 +37,7 @@
               </form>
             </template>
             <template v-else-if="match.status != 'Canceled' && match.status != 'Finished'">
-              <span
+              <div
                 class="text-purple-400 underline flex"
                 v-if="match.connection_string"
               >
@@ -50,24 +45,22 @@
                 <a :href="`https://api.5stack.gg${match.connection_link}`">
                   {{ match.connection_string }}
                 </a>
-              </span>
-              <span v-else-if="!match.server_id" class="text-red-400 underline">
+              </div>
+              <div v-else-if="!match.server_id" class="text-red-400 underline">
                 Server has not been assigned
-              </span>
-              <span v-else>
+              </div>
+              <div v-else>
                 <clip-board :data="match.tv_connection_string"></clip-board>
                 <a :href="`https://api.5stack.gg${match.tv_connection_link}`">
                   {{ match.tv_connection_string }}
                 </a>
-              </span>
+              </div>
 
-
-              <pre>{{ match.status }}</pre>
               <five-stack-button @click="cancelMatch">
                 Cancel Match
               </five-stack-button>
             </template>
-          </h6>
+          </div>
         </div>
 
         <div class="lg:col-span-2">
@@ -150,6 +143,40 @@
 
             <div class="flex gap-x-5">
               <svg
+                  class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              >
+                <path d="M7 10v12" />
+                <path
+                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"
+                />
+              </svg>
+              <div class="grow">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+                  Map<template v-if="match.best_of > 1">s</template>
+                </h3>
+                <template v-if="match.match_maps.length !== match.best_of">
+                  Picking Maps
+                </template>
+                <div v-for="match_map of match.match_maps">
+                    {{ match_map.map }}
+                  [<small v-if="match_map.picked_by">
+                  {{ match_map.picked_by.name }}
+                </small>]
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-x-5">
+              <svg
                 class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -174,47 +201,13 @@
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   Captain 1:
                   <captain-info
-                    :captain="match.lineup_1.captain"
+                    :captain="lineup1.captain"
                   ></captain-info>
                   <br />
                   Captain 2:
                   <captain-info
-                    :captain="match.lineup_2.captain"
+                    :captain="lineup2.captain"
                   ></captain-info>
-                </p>
-              </div>
-            </div>
-
-            <div class="flex gap-x-5">
-              <svg
-                class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M7 10v12" />
-                <path
-                  d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"
-                />
-              </svg>
-              <div class="grow" v-if="match.knife_round">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Knife Round
-                </h3>
-                <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  <template v-if="match.knife_round_winner">
-                    {{ match.knife_round_winner.name }} won knife round. Picked
-                    {{ match.knife_round_winner.starting_side }}.
-                  </template>
-                  <template v-else>
-                    Knife Round has not been finished.
-                  </template>
                 </p>
               </div>
             </div>
@@ -224,6 +217,22 @@
     </div>
 
     <hr class="mt-8 mb-8 border-gray-600" />
+
+    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto" v-if="match.best_of !== match.match_maps.length">
+        <h1>Map Picks</h1>
+
+        <div class="grid md:grid-cols-2 gap-12">
+          <div
+              class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+          >
+            <form @submit.prevent.stop>
+              <five-stack-map-picker v-model="mapsForm.maps" :match-type="match.type" :best_of="match.best_of"></five-stack-map-picker>
+              <five-stack-select-input v-model="mapsForm.pickedBy" label="Picked By" :options="mapPickLineupOptions"></five-stack-select-input>
+              <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
+            </form>
+          </div>
+        </div>
+      </div>
 
     <div
       class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
@@ -267,41 +276,43 @@
 
     TODO - add round breakdown as we are already going by it
 
-    <tabs>
+    <tabs v-if="lineup1 && lineup2">
       <tab title="Overview">
         <lineup-overview
           :match="match"
-          :lineup="match.lineup_1"
+          :lineup="lineup1"
         ></lineup-overview>
         <br />
         <lineup-overview
           :match="match"
-          :lineup="match.lineup_2"
+          :lineup="lineup2"
         ></lineup-overview>
       </tab>
       <tab title="Utility">
         <lineup-utility
           :match="match"
-          :lineup="match.lineup_1"
+          :lineup="lineup1"
         ></lineup-utility>
         <br />
         <lineup-utility
           :match="match"
-          :lineup="match.lineup_2"
+          :lineup="lineup2"
         ></lineup-utility>
       </tab>
       <tab title="Opening Duels">
         <lineup-opening-duels
           :match="match"
-          :lineup="match.lineup_1"
+          :lineup="lineup1"
         ></lineup-opening-duels>
         <br />
         <lineup-opening-duels
           :match="match"
-          :lineup="match.lineup_2"
+          :lineup="lineup2"
         ></lineup-opening-duels>
       </tab>
-      <tab title="Clutches"> </tab>
+      <tab title="Clutches">
+        TODO
+      </tab>
     </tabs>
   </template>
 </template>
@@ -319,9 +330,11 @@ import LineupUtility from "~/components/match-details/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
+import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 
 export default {
   components: {
+    FiveStackMapPicker,
     FiveStackSelectInput,
     ClipBoard,
     LineupOpeningDuels,
@@ -339,6 +352,10 @@ export default {
       form: {
         lineup_1: undefined,
         lineup_2: undefined,
+      },
+      mapsForm: {
+        maps: [],
+        pickedBy: undefined
       },
       startMatchForm: {
         server_id: undefined,
@@ -371,11 +388,13 @@ export default {
             },
             {
               id: true,
-              map: true,
               server_id: true,
               overtime: true,
               knife_round: true,
               mr: true,
+              best_of: true,
+              lineup_1_id: true,
+              lineup_2_id: true,
               organizer_steam_id: true,
               connection_string: true,
               connection_link: true,
@@ -385,14 +404,16 @@ export default {
               status: true,
               type: true,
               scheduled_at: true,
-              knife_round_winner: {
-                name: true,
-                starting_side: true,
+              match_maps: {
+                id: true,
+                map: true,
+                picked_by: {
+                  name: true,
+                }
               },
-              lineup_1: {
+              lineups: {
                 id: true,
                 name: true,
-                score: true,
                 captain: {
                   placeholder_name: true,
                   player: {
@@ -405,9 +426,9 @@ export default {
                     order_by: [
                       {
                         player: {
-                          name: order_by.asc,
+                          name: $('order_by_name', 'order_by'),
                           kills_aggregate: {
-                            count: order_by.desc
+                            count: $('order_by_kills', 'order_by')
                           }
                         }
                       }
@@ -476,108 +497,23 @@ export default {
                   },
                 ],
               },
-              lineup_2: {
-                id: true,
-                name: true,
-                score: true,
-                captain: {
-                  placeholder_name: true,
-                  player: {
-                    name: true,
-                    steam_id: true,
-                  },
-                },
-                lineup_players: [
-                  {
-                    order_by: [
-                      {
-                        player: {
-                          name: order_by.asc,
-                          kills_aggregate: {
-                            count: order_by.desc
-                          }
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    captain: true,
-                    steam_id: true,
-                    player: {
-                      name: true,
-                      steam_id: true,
-                      kills_aggregate: [
-                        {
-                          where: {
-                            match_id: {
-                              _eq: $("matchId", "uuid!"),
-                            },
-                          },
-                        },
-                        {
-                          aggregate: [
-                            {},
-                            {
-                              count: true,
-                            },
-                          ],
-                        },
-                      ],
-                      assists_aggregate: [
-                        {
-                          where: {
-                            match_id: {
-                              _eq: $("matchId", "uuid!"),
-                            },
-                          },
-                        },
-                        {
-                          aggregate: [
-                            {},
-                            {
-                              count: true,
-                            },
-                          ],
-                        },
-                      ],
-                      damage_dealt_aggregate: [
-                        {
-                          where: {
-                            match_id: {
-                              _eq: $("matchId", "uuid!"),
-                            },
-                          },
-                        },
-                        {
-                          aggregate: [
-                            {},
-                            {
-                              sum: {
-                                damage: true,
-                              },
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-              rounds: [
-                {},
-                {
-                  round: true,
-                  team_1_score: true,
-                  team_2_score: true,
-                  created_at: true,
-                },
-              ],
+              // rounds: [
+              //   {},
+              //   {
+              //     round: true,
+              //     team_1_score: true,
+              //     team_2_score: true,
+              //     created_at: true,
+              //   },
+              // ],
             },
           ],
         }),
         variables: function () {
           return {
             matchId: this.$route.params.id,
+            order_by_name: order_by.asc,
+            order_by_kills: order_by.desc,
           };
         },
         result: function ({ data }) {
@@ -591,7 +527,7 @@ export default {
       handler(member) {
         if (member) {
           this.form.lineup_1 = undefined;
-          this.addMember(member.value.steam_id, this.match.lineup_1.id);
+          this.addMember(member.value.steam_id, this.lineup1.id);
         }
       },
     },
@@ -599,7 +535,7 @@ export default {
       handler(member) {
         if (member) {
           this.form.lineup_2 = undefined;
-          this.addMember(member.value.steam_id, this.match.lineup_2.id);
+          this.addMember(member.value.steam_id, this.lineup2.id);
         }
       },
     },
@@ -641,8 +577,7 @@ export default {
         data.players
           // .filter((player) => {
           //   return (
-          //       this.form.players.lineup_1.indexOf(player) === -1 ||
-          //       this.form.players.lineup_2.indexOf(player) === -1
+          //    TODO
           //   );
           // })
           .map((player) => {
@@ -713,22 +648,70 @@ export default {
         }),
       });
     },
+    async addMaps() {
+      let currentMapCount = this.match.match_maps.length;
+
+      try {
+        for(const map of this.mapsForm.maps) {
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              insert_match_maps_one: [
+                {
+                 object: {
+                   map,
+                   order: ++currentMapCount,
+                   match_id: this.match.id,
+                   picked_by_lineup_id: this.mapsForm.pickedBy,
+                 }
+                },
+                {
+                  id: true,
+                },
+              ],
+            }),
+          });
+        }
+      } catch(error) {
+        console.warn('unable to insert map', error);
+      } finally {
+        this.mapsForm.maps = [];
+        this.mapsForm.pickedBy= undefined;
+      }
+    }
   },
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    mapPickLineupOptions() {
+      return this.match.lineups.map((lineup) => {
+        return {
+          value: lineup.id,
+          display: lineup.name
+        }
+      })
+    },
+    lineup1() {
+      return this.match?.lineups.find((lineup) => {
+        return lineup.id === this.match.lineup_1_id;
+      })
+    },
+    lineup2() {
+      return this.match?.lineups.find((lineup) => {
+        return lineup.id === this.match.lineup_2_id;
+      })
     },
     maxPlayersPerLineup() {
       return this.match?.type === "Wingman" ? 2 : 5;
     },
     canAddToLineup1() {
       return (
-        this.match?.lineup_1?.lineup_players.length < this.maxPlayersPerLineup
+        this.lineup1?.lineup_players.length < this.maxPlayersPerLineup
       );
     },
     canAddToLineup2() {
       return (
-        this.match?.lineup_2?.lineup_players.length < this.maxPlayersPerLineup
+        this.lineup2?.lineup_players.length < this.maxPlayersPerLineup
       );
     },
     startOfMatch() {

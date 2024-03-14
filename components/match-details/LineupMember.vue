@@ -12,7 +12,7 @@
       class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
     >
       <template v-if="member.captain"> Captain </template>
-      <template v-else>Promote</template>
+      <template v-else-if="removeable">Promote</template>
     </span>
     <button v-if="removeable" @click.stop.prevent="removeFromLineup">
       Remove

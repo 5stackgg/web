@@ -37,7 +37,9 @@
             >{{
               Math.ceil(
                 member.player.damage_dealt_aggregate.aggregate.sum.damage /
-                  match.rounds.length,
+                  1,
+                  // TODO - need to get rounds
+                  // match.rounds.length,
               )
             }}
             ADR</span

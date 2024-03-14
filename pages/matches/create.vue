@@ -4,7 +4,7 @@
       <div
         class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
       >
-        <form @submit.prevent="createMatch">
+        <form @submit.prevent="setupMatch">
           <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
             Match Details
           </h2>
@@ -28,20 +28,19 @@
 
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-              <five-stack-checkbox
-                class="mt-7"
-                label="Veto"
-                v-model="form.veto"
-              ></five-stack-checkbox>
+<!--              <five-stack-checkbox-->
+<!--                class="mt-7"-->
+<!--                label="Veto"-->
+<!--                v-model="form.veto"-->
+<!--              ></five-stack-checkbox>-->
 
-              <!--              // TODO - add maps instead of map for veto selection-->
               <five-stack-select-input
-                :disabled="form.veto || !form.type || availabeMaps.length === 0"
-                :required="!form.veto"
-                label="Map"
-                :options="availabeMaps"
-                v-model="form.map"
+                  label="Best of"
+                  :options="bestOfOptions"
+                  v-model="form.best_of"
               ></five-stack-select-input>
+
+              <five-stack-map-picker v-model="form.match_maps" :match-type="form.type" :best_of="form.best_of"></five-stack-map-picker>
             </div>
           </div>
 
@@ -118,8 +117,8 @@
       </tabs>
     </div>
     <div class="mt-10 text-right">
-      <five-stack-button type="success" @click="createMatch"
-        >Schedule Match</five-stack-button
+      <five-stack-button type="success" @click="setupMatch"
+        >Setup Match</five-stack-button
       >
     </div>
   </div>
@@ -135,12 +134,13 @@ import FiveStackCheckbox from "~/components/forms/FiveStackCheckbox.vue";
 import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import { mapFields } from "~/graphql/mapGraphql";
 import { $, e_match_types_enum, e_sides_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 
 export default {
   components: {
+    FiveStackMapPicker,
     FiveStackSearchInput,
     FiveStackTextInput,
     FiveStackCheckbox,
@@ -152,9 +152,10 @@ export default {
     return {
       form: {
         mr: "12",
-        veto: true,
+        veto: false,
+        best_of: 1,
         type: e_match_types_enum.Competitive,
-        map: undefined,
+        match_maps: [],
         knife_round: true,
         overtime: true,
         team_1: undefined,
@@ -165,13 +166,6 @@ export default {
         },
       },
     };
-  },
-  apollo: {
-    maps: {
-      query: generateQuery({
-        maps: [{}, mapFields],
-      }),
-    },
   },
   watch: {
     ["form.veto"]: {
@@ -258,52 +252,73 @@ export default {
         };
       });
     },
-    async createMatch() {
+    async setupMatch() {
+      let mapOrder = 0;
       const { data } = await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_matches_one: [
+        variables: {
+          mr: this.form.mr,
+          veto: this.form.veto,
+          type: this.form.type,
+          best_of: this.form.best_of,
+          knife_round: this.form.knife_round,
+          overtime: this.form.overtime,
+          team_1_side: e_sides_enum.CT,
+          team_2_side: e_sides_enum.TERRORIST,
+          maps: {
+            data: this.form.match_maps.map((map) => {
+              return {
+                map,
+                order: ++mapOrder
+              }
+            })
+          },
+        },
+        mutation: generateMutation(
             {
-              object: {
-                mr: this.form.mr,
-                // veto: this.form.veto,
-                type: this.form.type,
-                map: this.form.map,
-                knife_round: this.form.knife_round,
-                overtime: this.form.overtime,
-                lineup_1: {
-                  data: {
-                    team_id: this.form.team_1,
-                    starting_side: e_sides_enum.CT,
-                    lineup_players: {
-                      data: this.form.players.lineup_1.map((player) => {
-                        return {
-                          steam_id: player.value.steam_id,
-                        };
-                      }),
-                    },
-                  },
-                },
-                lineup_2: {
-                  data: {
-                    // TODO - this is because of the search selector display issues
-                    team_id: this.form.team_2?.value,
-                    starting_side: e_sides_enum.TERRORIST,
-                    lineup_players: {
-                      data: this.form.players.lineup_2.map((player) => {
-                        return {
-                          steam_id: player.value.steam_id,
-                        };
-                      }),
-                    },
+            insert_matches_one: [
+              {
+                object: {
+                  mr: $("mr", "Int!"),
+                  type: $("type", "e_match_types_enum!"),
+                  best_of: $("best_of", "Int!"),
+                  match_maps: $("maps", "match_maps_arr_rel_insert_input"),
+                  knife_round: $("knife_round", "Boolean!"),
+                  overtime: $("overtime", "Boolean!"),
+                  lineups: {
+                    data: [
+                      {
+                        team_id: this.form.team_1,
+                        starting_side: $("team_1_side", "e_sides_enum!"),
+                        lineup_players: {
+                          data: this.form.players.lineup_1.map((player) => {
+                            return {
+                              steam_id: player.value.steam_id,
+                            };
+                          }),
+                        },
+                      },
+                      {
+                        // TODO - this is because of the search selector display issues
+                        team_id: this.form.team_2?.value,
+                        starting_side: $("team_2_side", "e_sides_enum!"),
+                        lineup_players: {
+                          data: this.form.players.lineup_2.map((player) => {
+                            return {
+                              steam_id: player.value.steam_id,
+                            };
+                          }),
+                        },
+                      }
+                    ],
                   },
                 },
               },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
+              {
+                id: true,
+              },
+            ]
+          },
+        ),
       });
 
       this.$router.push(`/matches/${data.insert_matches_one.id}`);
@@ -316,32 +331,14 @@ export default {
     matchTypes() {
       return Object.keys(e_match_types_enum);
     },
-    availabeMaps() {
-      const type = this.form.type;
-      if (!this.maps) {
-        return [];
-      }
-      return this.maps
-        .filter((map) => {
-          switch (type) {
-            case e_match_types_enum.Competitive:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Scrimmage:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Wingman:
-              return map.type === e_match_types_enum.Wingman;
-          }
-        })
-        .map((map) => {
-          return map.name;
-        });
-    },
+    bestOfOptions() {
+      return [1,3,5].map((rounds) => {
+        return {
+          value: rounds,
+          display: `Best of ${rounds}`
+        }
+      })
+    }
   },
 };
 </script>

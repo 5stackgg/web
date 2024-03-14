@@ -1,6 +1,6 @@
 <template>
   <template v-if="match.status == e_match_status_enum.PickingPlayers">
-    <form v-if="!canAddToLineup1 && !canAddToLineup2">
+    <form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">
       <five-stack-select-input
         label="Server"
         :options="availableServers"

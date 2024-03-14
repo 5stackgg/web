@@ -396,18 +396,14 @@ export default {
               lineup_1_id: true,
               lineup_2_id: true,
               organizer_steam_id: true,
-              // connection_string: true,
-              // connection_link: true,
-              // tv_connection_string: true,
-              // tv_connection_link: true,
-              // is_match_server_available: true,
+              connection_string: true,
+              connection_link: true,
+              tv_connection_string: true,
+              tv_connection_link: true,
+              is_match_server_available: true,
               status: true,
               type: true,
               scheduled_at: true,
-              // knife_round_winner: {
-              //   name: true,
-              //   starting_side: true,
-              // },
               match_maps: {
                 id: true,
                 map: true,
@@ -581,8 +577,7 @@ export default {
         data.players
           // .filter((player) => {
           //   return (
-          //       this.form.players.lineup_1.indexOf(player) === -1 ||
-          //       this.form.players.lineup_2.indexOf(player) === -1
+          //    TODO
           //   );
           // })
           .map((player) => {
@@ -654,7 +649,7 @@ export default {
       });
     },
     async addMaps() {
-      let currentMapCount = this.match.match_maps.length - 1;
+      let currentMapCount = this.match.match_maps.length;
 
       try {
         for(const map of this.mapsForm.maps) {

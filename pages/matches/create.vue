@@ -253,6 +253,7 @@ export default {
       });
     },
     async setupMatch() {
+      let mapOrder = 0;
       const { data } = await this.$apollo.mutate({
         variables: {
           mr: this.form.mr,
@@ -267,6 +268,7 @@ export default {
             data: this.form.match_maps.map((map) => {
               return {
                 map,
+                order: ++mapOrder
               }
             })
           },

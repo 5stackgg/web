@@ -5,24 +5,31 @@
         <th></th>
         <th>Status</th>
         <th>Type</th>
-        <th>Map</th>
+        <th>Maps</th>
         <th>Date</th>
-        <th>Score</th>
       </tr>
     </thead>
     <tbody>
       <template v-for="match of matches">
         <tr @click="viewMatch(match.id)">
-          <td>{{ match.lineups[0].name }} vs {{ match.lineups[1].name }}</td>
+          <td>{{ lineup1(match).name }} vs {{ lineup2(match).name }}</td>
           <td>{{ match.status }}</td>
           <td>{{ match.type }} (MR {{ match.mr }})</td>
           <td>
-            {{ match.map }}
+            <template v-for="match_map of match.match_maps">
+              {{ match_map.map }}
+              <br>
+              <p>
+                {{ lineup1(match).name }} {{ match_map.lineup_1_score }}
+              </p>
+              <p>
+                {{ lineup2(match).name }} {{ match_map.lineup_2_score }}
+              </p>
+            </template>
           </td>
           <td>
             {{ match.created_at }}
           </td>
-          <td>TODO - get number of maps and current map socre</td>
         </tr>
       </template>
     </tbody>
@@ -40,6 +47,16 @@ export default {
   methods: {
     viewMatch(matchId) {
       this.$router.push(`/matches/${matchId}`);
+    },
+    lineup1(match) {
+      return match?.lineups.find((lineup) => {
+        return lineup.id === match.lineup_1_id;
+      })
+    },
+    lineup2(match) {
+      return match?.lineups?.find((lineup) => {
+        return lineup.id === match.lineup_2_id;
+      })
     },
   },
 };

@@ -813,11 +813,18 @@ export type Variable<T extends GraphQLVariableType, Name extends string> = {
   ' __zeus_type': T;
 };
 
+export type ExtractVariablesDeep<Query> = Query extends Variable<infer VType, infer VName>
+  ? { [key in VName]: GetVariableType<VType> }
+  : Query extends string | number | boolean | Array<string | number | boolean>
+  ? // eslint-disable-next-line @typescript-eslint/ban-types
+    {}
+  : UnionToIntersection<{ [K in keyof Query]: WithOptionalNullables<ExtractVariablesDeep<Query[K]>> }[keyof Query]>;
+
 export type ExtractVariables<Query> = Query extends Variable<infer VType, infer VName>
   ? { [key in VName]: GetVariableType<VType> }
   : Query extends [infer Inputs, infer Outputs]
-  ? ExtractVariables<Inputs> & ExtractVariables<Outputs>
-  : Query extends string | number | boolean
+  ? ExtractVariablesDeep<Inputs> & ExtractVariables<Outputs>
+  : Query extends string | number | boolean | Array<string | number | boolean>
   ? // eslint-disable-next-line @typescript-eslint/ban-types
     {}
   : UnionToIntersection<{ [K in keyof Query]: WithOptionalNullables<ExtractVariables<Query[K]>> }[keyof Query]>;
@@ -1316,18 +1323,30 @@ count?: [{	columns?: Array<ValueTypes["e_match_types_select_column"]> | undefine
 	/** columns and relationships of "e_sides" */
 ["e_sides"]: AliasType<{
 	description?:boolean | `@${string}`,
-match_lineups?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+match_map_lineup_1?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
-match_lineups_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	order_by?: Array<ValueTypes["match_maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_maps"]],
+match_map_lineup_1_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
+	order_by?: Array<ValueTypes["match_maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_maps_aggregate"]],
+match_map_lineup_2?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_maps"]],
+match_map_lineup_2_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_maps_aggregate"]],
 	value?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -1350,8 +1369,10 @@ count?: [{	columns?: Array<ValueTypes["e_sides_select_column"]> | undefined | nu
 	_not?: ValueTypes["e_sides_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["e_sides_bool_exp"]> | undefined | null | Variable<any, string>,
 	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	match_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
-	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	match_map_lineup_1?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
+	match_map_lineup_1_aggregate?: ValueTypes["match_maps_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	match_map_lineup_2?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
+	match_map_lineup_2_aggregate?: ValueTypes["match_maps_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "e_sides" */
@@ -1368,7 +1389,8 @@ count?: [{	columns?: Array<ValueTypes["e_sides_select_column"]> | undefined | nu
 	/** input type for inserting data into table "e_sides" */
 ["e_sides_insert_input"]: {
 	description?: string | undefined | null | Variable<any, string>,
-	match_lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	match_map_lineup_1?: ValueTypes["match_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	match_map_lineup_2?: ValueTypes["match_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	value?: string | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
@@ -1391,12 +1413,6 @@ count?: [{	columns?: Array<ValueTypes["e_sides_select_column"]> | undefined | nu
 	returning?:ValueTypes["e_sides"],
 		__typename?: boolean | `@${string}`
 }>;
-	/** input type for inserting object relation for remote table "e_sides" */
-["e_sides_obj_rel_insert_input"]: {
-	data: ValueTypes["e_sides_insert_input"] | Variable<any, string>,
-	/** upsert condition */
-	on_conflict?: ValueTypes["e_sides_on_conflict"] | undefined | null | Variable<any, string>
-};
 	/** on_conflict condition type for table "e_sides" */
 ["e_sides_on_conflict"]: {
 	constraint: ValueTypes["e_sides_constraint"] | Variable<any, string>,
@@ -1406,7 +1422,8 @@ count?: [{	columns?: Array<ValueTypes["e_sides_select_column"]> | undefined | nu
 	/** Ordering options when selecting data from "e_sides". */
 ["e_sides_order_by"]: {
 	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	match_map_lineup_1_aggregate?: ValueTypes["match_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	match_map_lineup_2_aggregate?: ValueTypes["match_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: e_sides */
@@ -1912,9 +1929,6 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
 	/** An object relationship */
-	side?:ValueTypes["e_sides"],
-	starting_side?:boolean | `@${string}`,
-	/** An object relationship */
 	team?:ValueTypes["teams"],
 	team_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -1966,8 +1980,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	side?: ValueTypes["e_sides_bool_exp"] | undefined | null | Variable<any, string>,
-	starting_side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
 };
@@ -1981,8 +1993,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	lineup_players?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	side?: ValueTypes["e_sides_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	starting_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
@@ -2049,8 +2059,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	side?: ValueTypes["e_sides_order_by"] | undefined | null | Variable<any, string>,
-	starting_side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -2065,7 +2073,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	starting_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "match_lineups" */
@@ -2080,7 +2087,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	starting_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** update columns of table "match_lineups" */
@@ -2406,8 +2412,10 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_side?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_side?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
@@ -2497,7 +2505,9 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	_or?: Array<ValueTypes["match_maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_1_score?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_1_side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_2_score?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_2_side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	map?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2517,6 +2527,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
+	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	map?: string | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -2592,7 +2604,9 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 ["match_maps_order_by"]: {
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -2611,6 +2625,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
+	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	map?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
@@ -2654,6 +2670,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
+	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	map?: string | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
@@ -7898,18 +7916,30 @@ count?: [{	columns?: Array<ResolverInputTypes["e_match_types_select_column"]> | 
 	/** columns and relationships of "e_sides" */
 ["e_sides"]: AliasType<{
 	description?:boolean | `@${string}`,
-match_lineups?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
+match_map_lineup_1?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups"]],
-match_lineups_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	order_by?: Array<ResolverInputTypes["match_maps_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null},ResolverInputTypes["match_maps"]],
+match_map_lineup_1_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
+	order_by?: Array<ResolverInputTypes["match_maps_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null},ResolverInputTypes["match_maps_aggregate"]],
+match_map_lineup_2?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_maps_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null},ResolverInputTypes["match_maps"]],
+match_map_lineup_2_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_maps_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null},ResolverInputTypes["match_maps_aggregate"]],
 	value?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -7932,8 +7962,10 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sides_select_column"]> | undefi
 	_not?: ResolverInputTypes["e_sides_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["e_sides_bool_exp"]> | undefined | null,
 	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	match_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
-	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
+	match_map_lineup_1?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
+	match_map_lineup_1_aggregate?: ResolverInputTypes["match_maps_aggregate_bool_exp"] | undefined | null,
+	match_map_lineup_2?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
+	match_map_lineup_2_aggregate?: ResolverInputTypes["match_maps_aggregate_bool_exp"] | undefined | null,
 	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "e_sides" */
@@ -7950,7 +7982,8 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sides_select_column"]> | undefi
 	/** input type for inserting data into table "e_sides" */
 ["e_sides_insert_input"]: {
 	description?: string | undefined | null,
-	match_lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
+	match_map_lineup_1?: ResolverInputTypes["match_maps_arr_rel_insert_input"] | undefined | null,
+	match_map_lineup_2?: ResolverInputTypes["match_maps_arr_rel_insert_input"] | undefined | null,
 	value?: string | undefined | null
 };
 	/** aggregate max on columns */
@@ -7973,12 +8006,6 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sides_select_column"]> | undefi
 	returning?:ResolverInputTypes["e_sides"],
 		__typename?: boolean | `@${string}`
 }>;
-	/** input type for inserting object relation for remote table "e_sides" */
-["e_sides_obj_rel_insert_input"]: {
-	data: ResolverInputTypes["e_sides_insert_input"],
-	/** upsert condition */
-	on_conflict?: ResolverInputTypes["e_sides_on_conflict"] | undefined | null
-};
 	/** on_conflict condition type for table "e_sides" */
 ["e_sides_on_conflict"]: {
 	constraint: ResolverInputTypes["e_sides_constraint"],
@@ -7988,7 +8015,8 @@ count?: [{	columns?: Array<ResolverInputTypes["e_sides_select_column"]> | undefi
 	/** Ordering options when selecting data from "e_sides". */
 ["e_sides_order_by"]: {
 	description?: ResolverInputTypes["order_by"] | undefined | null,
-	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
+	match_map_lineup_1_aggregate?: ResolverInputTypes["match_maps_aggregate_order_by"] | undefined | null,
+	match_map_lineup_2_aggregate?: ResolverInputTypes["match_maps_aggregate_order_by"] | undefined | null,
 	value?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: e_sides */
@@ -8494,9 +8522,6 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
 	/** An object relationship */
-	side?:ResolverInputTypes["e_sides"],
-	starting_side?:boolean | `@${string}`,
-	/** An object relationship */
 	team?:ResolverInputTypes["teams"],
 	team_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -8548,8 +8573,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	side?: ResolverInputTypes["e_sides_bool_exp"] | undefined | null,
-	starting_side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
 };
@@ -8563,8 +8586,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	lineup_players?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
-	side?: ResolverInputTypes["e_sides_obj_rel_insert_input"] | undefined | null,
-	starting_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
 };
@@ -8631,8 +8652,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
-	side?: ResolverInputTypes["e_sides_order_by"] | undefined | null,
-	starting_side?: ResolverInputTypes["order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -8647,7 +8666,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
-	starting_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** Streaming cursor of the table "match_lineups" */
@@ -8662,7 +8680,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
-	starting_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** update columns of table "match_lineups" */
@@ -8988,8 +9005,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_side?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_side?:boolean | `@${string}`,
 	map?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
@@ -9079,7 +9098,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	_or?: Array<ResolverInputTypes["match_maps_bool_exp"]> | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	lineup_1_score?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	lineup_1_side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
 	lineup_2_score?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	lineup_2_side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
 	map?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -9099,6 +9120,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
+	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	map?: string | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -9174,7 +9197,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 ["match_maps_order_by"]: {
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_side?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_side?: ResolverInputTypes["order_by"] | undefined | null,
 	map?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -9193,6 +9218,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
+	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	map?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
@@ -9236,6 +9263,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
+	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	map?: string | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
@@ -14426,9 +14455,13 @@ export type ModelTypes = {
 ["e_sides"]: {
 		description: string,
 	/** An array relationship */
-	match_lineups: Array<ModelTypes["match_lineups"]>,
+	match_map_lineup_1: Array<ModelTypes["match_maps"]>,
 	/** An aggregate relationship */
-	match_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
+	match_map_lineup_1_aggregate: ModelTypes["match_maps_aggregate"],
+	/** An array relationship */
+	match_map_lineup_2: Array<ModelTypes["match_maps"]>,
+	/** An aggregate relationship */
+	match_map_lineup_2_aggregate: ModelTypes["match_maps_aggregate"],
 	value: string
 };
 	/** aggregated selection of "e_sides" */
@@ -14448,8 +14481,10 @@ export type ModelTypes = {
 	_not?: ModelTypes["e_sides_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["e_sides_bool_exp"]> | undefined,
 	description?: ModelTypes["String_comparison_exp"] | undefined,
-	match_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
-	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
+	match_map_lineup_1?: ModelTypes["match_maps_bool_exp"] | undefined,
+	match_map_lineup_1_aggregate?: ModelTypes["match_maps_aggregate_bool_exp"] | undefined,
+	match_map_lineup_2?: ModelTypes["match_maps_bool_exp"] | undefined,
+	match_map_lineup_2_aggregate?: ModelTypes["match_maps_aggregate_bool_exp"] | undefined,
 	value?: ModelTypes["String_comparison_exp"] | undefined
 };
 	["e_sides_constraint"]:e_sides_constraint;
@@ -14465,7 +14500,8 @@ export type ModelTypes = {
 	/** input type for inserting data into table "e_sides" */
 ["e_sides_insert_input"]: {
 	description?: string | undefined,
-	match_lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined,
+	match_map_lineup_1?: ModelTypes["match_maps_arr_rel_insert_input"] | undefined,
+	match_map_lineup_2?: ModelTypes["match_maps_arr_rel_insert_input"] | undefined,
 	value?: string | undefined
 };
 	/** aggregate max on columns */
@@ -14485,12 +14521,6 @@ export type ModelTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<ModelTypes["e_sides"]>
 };
-	/** input type for inserting object relation for remote table "e_sides" */
-["e_sides_obj_rel_insert_input"]: {
-	data: ModelTypes["e_sides_insert_input"],
-	/** upsert condition */
-	on_conflict?: ModelTypes["e_sides_on_conflict"] | undefined
-};
 	/** on_conflict condition type for table "e_sides" */
 ["e_sides_on_conflict"]: {
 	constraint: ModelTypes["e_sides_constraint"],
@@ -14500,7 +14530,8 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "e_sides". */
 ["e_sides_order_by"]: {
 	description?: ModelTypes["order_by"] | undefined,
-	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
+	match_map_lineup_1_aggregate?: ModelTypes["match_maps_aggregate_order_by"] | undefined,
+	match_map_lineup_2_aggregate?: ModelTypes["match_maps_aggregate_order_by"] | undefined,
 	value?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: e_sides */
@@ -14966,9 +14997,6 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
 	/** An object relationship */
-	side: ModelTypes["e_sides"],
-	starting_side: ModelTypes["e_sides_enum"],
-	/** An object relationship */
 	team?: ModelTypes["teams"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
@@ -15017,8 +15045,6 @@ export type ModelTypes = {
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
-	side?: ModelTypes["e_sides_bool_exp"] | undefined,
-	starting_side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined,
 	team?: ModelTypes["teams_bool_exp"] | undefined,
 	team_id?: ModelTypes["uuid_comparison_exp"] | undefined
 };
@@ -15031,8 +15057,6 @@ export type ModelTypes = {
 	lineup_players?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
-	side?: ModelTypes["e_sides_obj_rel_insert_input"] | undefined,
-	starting_side?: ModelTypes["e_sides_enum"] | undefined,
 	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
@@ -15096,8 +15120,6 @@ export type ModelTypes = {
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
-	side?: ModelTypes["e_sides_order_by"] | undefined,
-	starting_side?: ModelTypes["order_by"] | undefined,
 	team?: ModelTypes["teams_order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined
 };
@@ -15111,7 +15133,6 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
-	starting_side?: ModelTypes["e_sides_enum"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
 	/** Streaming cursor of the table "match_lineups" */
@@ -15126,7 +15147,6 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
-	starting_side?: ModelTypes["e_sides_enum"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
 	["match_lineups_update_column"]:match_lineups_update_column;
@@ -15434,8 +15454,10 @@ export type ModelTypes = {
 		id: ModelTypes["uuid"],
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: string | undefined,
+	lineup_1_side: ModelTypes["e_sides_enum"],
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: string | undefined,
+	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
 	map: string,
 	/** An object relationship */
 	match: ModelTypes["matches"],
@@ -15513,7 +15535,9 @@ export type ModelTypes = {
 	_or?: Array<ModelTypes["match_maps_bool_exp"]> | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	lineup_1_score?: ModelTypes["String_comparison_exp"] | undefined,
+	lineup_1_side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined,
 	lineup_2_score?: ModelTypes["String_comparison_exp"] | undefined,
+	lineup_2_side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined,
 	map?: ModelTypes["String_comparison_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -15532,6 +15556,8 @@ export type ModelTypes = {
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 	id?: ModelTypes["uuid"] | undefined,
+	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
+	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
 	map?: string | undefined,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
@@ -15604,7 +15630,9 @@ export type ModelTypes = {
 ["match_maps_order_by"]: {
 	id?: ModelTypes["order_by"] | undefined,
 	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_side?: ModelTypes["order_by"] | undefined,
 	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_side?: ModelTypes["order_by"] | undefined,
 	map?: ModelTypes["order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
@@ -15622,6 +15650,8 @@ export type ModelTypes = {
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
 	id?: ModelTypes["uuid"] | undefined,
+	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
+	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
 	map?: string | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -15662,6 +15692,8 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
 	id?: ModelTypes["uuid"] | undefined,
+	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
+	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
 	map?: string | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -20089,9 +20121,13 @@ export type GraphQLTypes = {
 	__typename: "e_sides",
 	description: string,
 	/** An array relationship */
-	match_lineups: Array<GraphQLTypes["match_lineups"]>,
+	match_map_lineup_1: Array<GraphQLTypes["match_maps"]>,
 	/** An aggregate relationship */
-	match_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
+	match_map_lineup_1_aggregate: GraphQLTypes["match_maps_aggregate"],
+	/** An array relationship */
+	match_map_lineup_2: Array<GraphQLTypes["match_maps"]>,
+	/** An aggregate relationship */
+	match_map_lineup_2_aggregate: GraphQLTypes["match_maps_aggregate"],
 	value: string
 };
 	/** aggregated selection of "e_sides" */
@@ -20113,8 +20149,10 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["e_sides_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["e_sides_bool_exp"]> | undefined,
 	description?: GraphQLTypes["String_comparison_exp"] | undefined,
-	match_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
-	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
+	match_map_lineup_1?: GraphQLTypes["match_maps_bool_exp"] | undefined,
+	match_map_lineup_1_aggregate?: GraphQLTypes["match_maps_aggregate_bool_exp"] | undefined,
+	match_map_lineup_2?: GraphQLTypes["match_maps_bool_exp"] | undefined,
+	match_map_lineup_2_aggregate?: GraphQLTypes["match_maps_aggregate_bool_exp"] | undefined,
 	value?: GraphQLTypes["String_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "e_sides" */
@@ -20131,7 +20169,8 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "e_sides" */
 ["e_sides_insert_input"]: {
 		description?: string | undefined,
-	match_lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined,
+	match_map_lineup_1?: GraphQLTypes["match_maps_arr_rel_insert_input"] | undefined,
+	match_map_lineup_2?: GraphQLTypes["match_maps_arr_rel_insert_input"] | undefined,
 	value?: string | undefined
 };
 	/** aggregate max on columns */
@@ -20154,12 +20193,6 @@ export type GraphQLTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<GraphQLTypes["e_sides"]>
 };
-	/** input type for inserting object relation for remote table "e_sides" */
-["e_sides_obj_rel_insert_input"]: {
-		data: GraphQLTypes["e_sides_insert_input"],
-	/** upsert condition */
-	on_conflict?: GraphQLTypes["e_sides_on_conflict"] | undefined
-};
 	/** on_conflict condition type for table "e_sides" */
 ["e_sides_on_conflict"]: {
 		constraint: GraphQLTypes["e_sides_constraint"],
@@ -20169,7 +20202,8 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "e_sides". */
 ["e_sides_order_by"]: {
 		description?: GraphQLTypes["order_by"] | undefined,
-	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
+	match_map_lineup_1_aggregate?: GraphQLTypes["match_maps_aggregate_order_by"] | undefined,
+	match_map_lineup_2_aggregate?: GraphQLTypes["match_maps_aggregate_order_by"] | undefined,
 	value?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: e_sides */
@@ -20668,9 +20702,6 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
 	/** An object relationship */
-	side: GraphQLTypes["e_sides"],
-	starting_side: GraphQLTypes["e_sides_enum"],
-	/** An object relationship */
 	team?: GraphQLTypes["teams"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
@@ -20721,8 +20752,6 @@ export type GraphQLTypes = {
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
-	side?: GraphQLTypes["e_sides_bool_exp"] | undefined,
-	starting_side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined,
 	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined
 };
@@ -20736,8 +20765,6 @@ export type GraphQLTypes = {
 	lineup_players?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
-	side?: GraphQLTypes["e_sides_obj_rel_insert_input"] | undefined,
-	starting_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
@@ -20804,8 +20831,6 @@ export type GraphQLTypes = {
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
-	side?: GraphQLTypes["e_sides_order_by"] | undefined,
-	starting_side?: GraphQLTypes["order_by"] | undefined,
 	team?: GraphQLTypes["teams_order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined
 };
@@ -20820,7 +20845,6 @@ export type GraphQLTypes = {
 		created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
-	starting_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** Streaming cursor of the table "match_lineups" */
@@ -20835,7 +20859,6 @@ export type GraphQLTypes = {
 		created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
-	starting_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** update columns of table "match_lineups" */
@@ -21162,8 +21185,10 @@ export type GraphQLTypes = {
 	id: GraphQLTypes["uuid"],
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: string | undefined,
+	lineup_1_side: GraphQLTypes["e_sides_enum"],
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: string | undefined,
+	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	map: string,
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
@@ -21244,7 +21269,9 @@ export type GraphQLTypes = {
 	_or?: Array<GraphQLTypes["match_maps_bool_exp"]> | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	lineup_1_score?: GraphQLTypes["String_comparison_exp"] | undefined,
+	lineup_1_side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined,
 	lineup_2_score?: GraphQLTypes["String_comparison_exp"] | undefined,
+	lineup_2_side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined,
 	map?: GraphQLTypes["String_comparison_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -21264,6 +21291,8 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 		id?: GraphQLTypes["uuid"] | undefined,
+	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
+	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	map?: string | undefined,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
@@ -21339,7 +21368,9 @@ export type GraphQLTypes = {
 ["match_maps_order_by"]: {
 		id?: GraphQLTypes["order_by"] | undefined,
 	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_side?: GraphQLTypes["order_by"] | undefined,
 	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_side?: GraphQLTypes["order_by"] | undefined,
 	map?: GraphQLTypes["order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
@@ -21358,6 +21389,8 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
 		id?: GraphQLTypes["uuid"] | undefined,
+	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
+	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	map?: string | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -21401,6 +21434,8 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
 		id?: GraphQLTypes["uuid"] | undefined,
+	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
+	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	map?: string | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
@@ -25757,7 +25792,6 @@ export const enum match_lineups_select_column {
 	created_at = "created_at",
 	id = "id",
 	match_id = "match_id",
-	starting_side = "starting_side",
 	team_id = "team_id"
 }
 /** update columns of table "match_lineups" */
@@ -25765,7 +25799,6 @@ export const enum match_lineups_update_column {
 	created_at = "created_at",
 	id = "id",
 	match_id = "match_id",
-	starting_side = "starting_side",
 	team_id = "team_id"
 }
 /** unique or primary key constraints on table "match_map_rounds" */
@@ -25802,6 +25835,8 @@ export const enum match_maps_constraint {
 /** select columns of table "match_maps" */
 export const enum match_maps_select_column {
 	id = "id",
+	lineup_1_side = "lineup_1_side",
+	lineup_2_side = "lineup_2_side",
 	map = "map",
 	match_id = "match_id",
 	order = "order",
@@ -25811,6 +25846,8 @@ export const enum match_maps_select_column {
 /** update columns of table "match_maps" */
 export const enum match_maps_update_column {
 	id = "id",
+	lineup_1_side = "lineup_1_side",
+	lineup_2_side = "lineup_2_side",
 	map = "map",
 	match_id = "match_id",
 	order = "order",
@@ -26185,7 +26222,6 @@ type ZEUS_VARIABLES = {
 	["e_sides_enum"]: ValueTypes["e_sides_enum"];
 	["e_sides_enum_comparison_exp"]: ValueTypes["e_sides_enum_comparison_exp"];
 	["e_sides_insert_input"]: ValueTypes["e_sides_insert_input"];
-	["e_sides_obj_rel_insert_input"]: ValueTypes["e_sides_obj_rel_insert_input"];
 	["e_sides_on_conflict"]: ValueTypes["e_sides_on_conflict"];
 	["e_sides_order_by"]: ValueTypes["e_sides_order_by"];
 	["e_sides_pk_columns_input"]: ValueTypes["e_sides_pk_columns_input"];

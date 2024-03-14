@@ -18,13 +18,9 @@
           <td>
             <template v-for="match_map of match.match_maps">
               {{ match_map.map }}
-              <br>
-              <p>
-                {{ lineup1(match).name }} {{ match_map.lineup_1_score }}
-              </p>
-              <p>
-                {{ lineup2(match).name }} {{ match_map.lineup_2_score }}
-              </p>
+              <br />
+              <p>{{ lineup1(match).name }} {{ match_map.lineup_1_score }}</p>
+              <p>{{ lineup2(match).name }} {{ match_map.lineup_2_score }}</p>
             </template>
           </td>
           <td>
@@ -51,12 +47,12 @@ export default {
     lineup1(match) {
       return match?.lineups.find((lineup) => {
         return lineup.id === match.lineup_1_id;
-      })
+      });
     },
     lineup2(match) {
       return match?.lineups?.find((lineup) => {
         return lineup.id === match.lineup_2_id;
-      })
+      });
     },
   },
 };

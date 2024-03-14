@@ -19,7 +19,9 @@
         <option
           v-for="option of options"
           :class="{
-            'selected': expectsMultiple ? modelValue.includes(getValue(option)): false,
+            selected: expectsMultiple
+              ? modelValue.includes(getValue(option))
+              : false,
           }"
           :key="getValue(option)"
           :value="getValue(option)"
@@ -68,14 +70,16 @@ export default {
     multiple: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   computed: {
     expectsMultiple() {
       return this.multiple || Array.isArray(this.modelValue);
     },
     isValid() {
-      const length = this.expectsMultiple ? this.modelValue.length : this.modelValue?.toString().trim().length;
+      const length = this.expectsMultiple
+        ? this.modelValue.length
+        : this.modelValue?.toString().trim().length;
 
       return (
         (!this.required || length > 0) &&
@@ -85,14 +89,16 @@ export default {
   },
   methods: {
     getValue(option) {
-      return option.value !== undefined ? option?.value || '' : option
+      return option.value !== undefined ? option?.value || "" : option;
     },
     updateModelValue(event) {
-      let value = this.expectsMultiple ? Array.from(event.target.selectedOptions).map((option) => {
-        return option.value;
-      }) : event.target.value;
+      let value = this.expectsMultiple
+        ? Array.from(event.target.selectedOptions).map((option) => {
+            return option.value;
+          })
+        : event.target.value;
 
-      if(!this.expectsMultiple) {
+      if (!this.expectsMultiple) {
         value = value.length === 0 ? null : value;
       }
 
@@ -102,9 +108,8 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .selected {
-  background-color: rgba(255, 255, 255, .3);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 </style>

@@ -28,19 +28,23 @@
 
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-<!--              <five-stack-checkbox-->
-<!--                class="mt-7"-->
-<!--                label="Veto"-->
-<!--                v-model="form.veto"-->
-<!--              ></five-stack-checkbox>-->
+              <!--              <five-stack-checkbox-->
+              <!--                class="mt-7"-->
+              <!--                label="Veto"-->
+              <!--                v-model="form.veto"-->
+              <!--              ></five-stack-checkbox>-->
 
               <five-stack-select-input
-                  label="Best of"
-                  :options="bestOfOptions"
-                  v-model="form.best_of"
+                label="Best of"
+                :options="bestOfOptions"
+                v-model="form.best_of"
               ></five-stack-select-input>
 
-              <five-stack-map-picker v-model="form.match_maps" :match-type="form.type" :best_of="form.best_of"></five-stack-map-picker>
+              <five-stack-map-picker
+                v-model="form.match_maps"
+                :match-type="form.type"
+                :best_of="form.best_of"
+              ></five-stack-map-picker>
             </div>
           </div>
 
@@ -262,63 +266,57 @@ export default {
           best_of: this.form.best_of,
           knife_round: this.form.knife_round,
           overtime: this.form.overtime,
-          team_1_side: e_sides_enum.CT,
-          team_2_side: e_sides_enum.TERRORIST,
           maps: {
             data: this.form.match_maps.map((map) => {
               return {
                 map,
-                order: ++mapOrder
-              }
-            })
+                order: ++mapOrder,
+              };
+            }),
           },
         },
-        mutation: generateMutation(
+        mutation: generateMutation({
+          insert_matches_one: [
             {
-            insert_matches_one: [
-              {
-                object: {
-                  mr: $("mr", "Int!"),
-                  type: $("type", "e_match_types_enum!"),
-                  best_of: $("best_of", "Int!"),
-                  match_maps: $("maps", "match_maps_arr_rel_insert_input"),
-                  knife_round: $("knife_round", "Boolean!"),
-                  overtime: $("overtime", "Boolean!"),
-                  lineups: {
-                    data: [
-                      {
-                        team_id: this.form.team_1,
-                        starting_side: $("team_1_side", "e_sides_enum!"),
-                        lineup_players: {
-                          data: this.form.players.lineup_1.map((player) => {
-                            return {
-                              steam_id: player.value.steam_id,
-                            };
-                          }),
-                        },
+              object: {
+                mr: $("mr", "Int!"),
+                type: $("type", "e_match_types_enum!"),
+                best_of: $("best_of", "Int!"),
+                match_maps: $("maps", "match_maps_arr_rel_insert_input"),
+                knife_round: $("knife_round", "Boolean!"),
+                overtime: $("overtime", "Boolean!"),
+                lineups: {
+                  data: [
+                    {
+                      team_id: this.form.team_1,
+                      lineup_players: {
+                        data: this.form.players.lineup_1.map((player) => {
+                          return {
+                            steam_id: player.value.steam_id,
+                          };
+                        }),
                       },
-                      {
-                        // TODO - this is because of the search selector display issues
-                        team_id: this.form.team_2?.value,
-                        starting_side: $("team_2_side", "e_sides_enum!"),
-                        lineup_players: {
-                          data: this.form.players.lineup_2.map((player) => {
-                            return {
-                              steam_id: player.value.steam_id,
-                            };
-                          }),
-                        },
-                      }
-                    ],
-                  },
+                    },
+                    {
+                      // TODO - this is because of the search selector display issues
+                      team_id: this.form.team_2?.value,
+                      lineup_players: {
+                        data: this.form.players.lineup_2.map((player) => {
+                          return {
+                            steam_id: player.value.steam_id,
+                          };
+                        }),
+                      },
+                    },
+                  ],
                 },
               },
-              {
-                id: true,
-              },
-            ]
-          },
-        ),
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
       });
 
       this.$router.push(`/matches/${data.insert_matches_one.id}`);
@@ -332,13 +330,13 @@ export default {
       return Object.keys(e_match_types_enum);
     },
     bestOfOptions() {
-      return [1,3,5].map((rounds) => {
+      return [1, 3, 5].map((rounds) => {
         return {
           value: rounds,
-          display: `Best of ${rounds}`
-        }
-      })
-    }
+          display: `Best of ${rounds}`,
+        };
+      });
+    },
   },
 };
 </script>

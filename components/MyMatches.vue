@@ -61,7 +61,9 @@ export default {
       variables: function () {
         return {
           offset: this.myMatchesSearchOffset,
-          statuses: this.upcoming ? [e_match_status_enum.Canceled, e_match_status_enum.Finished] : [],
+          statuses: this.upcoming
+            ? [e_match_status_enum.Canceled, e_match_status_enum.Finished]
+            : [],
         };
       },
     },
@@ -88,7 +90,9 @@ export default {
       }),
       variables: function () {
         return {
-          statuses: this.upcoming ? [e_match_status_enum.Canceled, e_match_status_enum.Finished] : [],
+          statuses: this.upcoming
+            ? [e_match_status_enum.Canceled, e_match_status_enum.Finished]
+            : [],
         };
       },
     },

@@ -33,6 +33,57 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"date",
 		_nin:"date"
 	},
+	e_match_map_status_aggregate_fields:{
+		count:{
+			columns:"e_match_map_status_select_column"
+		}
+	},
+	e_match_map_status_bool_exp:{
+		_and:"e_match_map_status_bool_exp",
+		_not:"e_match_map_status_bool_exp",
+		_or:"e_match_map_status_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_match_map_status_constraint: "enum" as const,
+	e_match_map_status_enum: "enum" as const,
+	e_match_map_status_enum_comparison_exp:{
+		_eq:"e_match_map_status_enum",
+		_in:"e_match_map_status_enum",
+		_neq:"e_match_map_status_enum",
+		_nin:"e_match_map_status_enum"
+	},
+	e_match_map_status_insert_input:{
+
+	},
+	e_match_map_status_on_conflict:{
+		constraint:"e_match_map_status_constraint",
+		update_columns:"e_match_map_status_update_column",
+		where:"e_match_map_status_bool_exp"
+	},
+	e_match_map_status_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_match_map_status_pk_columns_input:{
+
+	},
+	e_match_map_status_select_column: "enum" as const,
+	e_match_map_status_set_input:{
+
+	},
+	e_match_map_status_stream_cursor_input:{
+		initial_value:"e_match_map_status_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_match_map_status_stream_cursor_value_input:{
+
+	},
+	e_match_map_status_update_column: "enum" as const,
+	e_match_map_status_updates:{
+		_set:"e_match_map_status_set_input",
+		where:"e_match_map_status_bool_exp"
+	},
 	e_match_status:{
 		matches:{
 			distinct_on:"matches_select_column",
@@ -829,7 +880,8 @@ export const AllTypesProps: Record<string,any> = {
 		picked_by:"match_lineups_bool_exp",
 		picked_by_lineup_id:"uuid_comparison_exp",
 		rounds:"match_map_rounds_bool_exp",
-		rounds_aggregate:"match_map_rounds_aggregate_bool_exp"
+		rounds_aggregate:"match_map_rounds_aggregate_bool_exp",
+		status:"e_match_map_status_enum_comparison_exp"
 	},
 	match_maps_constraint: "enum" as const,
 	match_maps_inc_input:{
@@ -841,7 +893,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		picked_by:"match_lineups_obj_rel_insert_input",
 		picked_by_lineup_id:"uuid",
-		rounds:"match_map_rounds_arr_rel_insert_input"
+		rounds:"match_map_rounds_arr_rel_insert_input",
+		status:"e_match_map_status_enum"
 	},
 	match_maps_max_order_by:{
 		id:"order_by",
@@ -876,7 +929,8 @@ export const AllTypesProps: Record<string,any> = {
 		order:"order_by",
 		picked_by:"match_lineups_order_by",
 		picked_by_lineup_id:"order_by",
-		rounds_aggregate:"match_map_rounds_aggregate_order_by"
+		rounds_aggregate:"match_map_rounds_aggregate_order_by",
+		status:"order_by"
 	},
 	match_maps_pk_columns_input:{
 		id:"uuid"
@@ -885,7 +939,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_maps_set_input:{
 		id:"uuid",
 		match_id:"uuid",
-		picked_by_lineup_id:"uuid"
+		picked_by_lineup_id:"uuid",
+		status:"e_match_map_status_enum"
 	},
 	match_maps_stddev_order_by:{
 		order:"order_by"
@@ -903,7 +958,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_maps_stream_cursor_value_input:{
 		id:"uuid",
 		match_id:"uuid",
-		picked_by_lineup_id:"uuid"
+		picked_by_lineup_id:"uuid",
+		status:"e_match_map_status_enum"
 	},
 	match_maps_sum_order_by:{
 		order:"order_by"
@@ -1035,6 +1091,7 @@ export const AllTypesProps: Record<string,any> = {
 		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
+		current_match_map_id:"uuid_comparison_exp",
 		e_match_status:"e_match_status_bool_exp",
 		e_match_type:"e_match_types_bool_exp",
 		id:"uuid_comparison_exp",
@@ -1129,6 +1186,7 @@ export const AllTypesProps: Record<string,any> = {
 		connection_link:"order_by",
 		connection_string:"order_by",
 		created_at:"order_by",
+		current_match_map_id:"order_by",
 		e_match_status:"e_match_status_order_by",
 		e_match_type:"e_match_types_order_by",
 		id:"order_by",
@@ -1232,6 +1290,12 @@ export const AllTypesProps: Record<string,any> = {
 		cancelMatch:{
 			match_id:"uuid"
 		},
+		delete_e_match_map_status:{
+			where:"e_match_map_status_bool_exp"
+		},
+		delete_e_match_map_status_by_pk:{
+
+		},
 		delete_e_match_status:{
 			where:"e_match_status_bool_exp"
 		},
@@ -1331,6 +1395,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_v_match_captains:{
 			where:"v_match_captains_bool_exp"
+		},
+		insert_e_match_map_status:{
+			objects:"e_match_map_status_insert_input",
+			on_conflict:"e_match_map_status_on_conflict"
+		},
+		insert_e_match_map_status_one:{
+			object:"e_match_map_status_insert_input",
+			on_conflict:"e_match_map_status_on_conflict"
 		},
 		insert_e_match_status:{
 			objects:"e_match_status_insert_input",
@@ -1473,6 +1545,17 @@ export const AllTypesProps: Record<string,any> = {
 		startMatch:{
 			match_id:"uuid",
 			server_id:"uuid"
+		},
+		update_e_match_map_status:{
+			_set:"e_match_map_status_set_input",
+			where:"e_match_map_status_bool_exp"
+		},
+		update_e_match_map_status_by_pk:{
+			_set:"e_match_map_status_set_input",
+			pk_columns:"e_match_map_status_pk_columns_input"
+		},
+		update_e_match_map_status_many:{
+			updates:"e_match_map_status_updates"
 		},
 		update_e_match_status:{
 			_set:"e_match_status_set_input",
@@ -2521,6 +2604,19 @@ export const AllTypesProps: Record<string,any> = {
 		where:"players_bool_exp"
 	},
 	query_root:{
+		e_match_map_status:{
+			distinct_on:"e_match_map_status_select_column",
+			order_by:"e_match_map_status_order_by",
+			where:"e_match_map_status_bool_exp"
+		},
+		e_match_map_status_aggregate:{
+			distinct_on:"e_match_map_status_select_column",
+			order_by:"e_match_map_status_order_by",
+			where:"e_match_map_status_bool_exp"
+		},
+		e_match_map_status_by_pk:{
+
+		},
 		e_match_status:{
 			distinct_on:"e_match_status_select_column",
 			order_by:"e_match_status_order_by",
@@ -2876,6 +2972,23 @@ export const AllTypesProps: Record<string,any> = {
 		where:"servers_bool_exp"
 	},
 	subscription_root:{
+		e_match_map_status:{
+			distinct_on:"e_match_map_status_select_column",
+			order_by:"e_match_map_status_order_by",
+			where:"e_match_map_status_bool_exp"
+		},
+		e_match_map_status_aggregate:{
+			distinct_on:"e_match_map_status_select_column",
+			order_by:"e_match_map_status_order_by",
+			where:"e_match_map_status_bool_exp"
+		},
+		e_match_map_status_by_pk:{
+
+		},
+		e_match_map_status_stream:{
+			cursor:"e_match_map_status_stream_cursor_input",
+			where:"e_match_map_status_bool_exp"
+		},
 		e_match_status:{
 			distinct_on:"e_match_status_select_column",
 			order_by:"e_match_status_order_by",
@@ -3742,6 +3855,31 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	bigint: `scalar.bigint` as const,
 	date: `scalar.date` as const,
+	e_match_map_status:{
+		description:"String",
+		value:"String"
+	},
+	e_match_map_status_aggregate:{
+		aggregate:"e_match_map_status_aggregate_fields",
+		nodes:"e_match_map_status"
+	},
+	e_match_map_status_aggregate_fields:{
+		count:"Int",
+		max:"e_match_map_status_max_fields",
+		min:"e_match_map_status_min_fields"
+	},
+	e_match_map_status_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_match_map_status_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_match_map_status_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_match_map_status"
+	},
 	e_match_status:{
 		description:"String",
 		matches:"matches",
@@ -4063,7 +4201,8 @@ export const ReturnTypes: Record<string,any> = {
 		picked_by:"match_lineups",
 		picked_by_lineup_id:"uuid",
 		rounds:"match_map_rounds",
-		rounds_aggregate:"match_map_rounds_aggregate"
+		rounds_aggregate:"match_map_rounds_aggregate",
+		status:"e_match_map_status_enum"
 	},
 	match_maps_aggregate:{
 		aggregate:"match_maps_aggregate_fields",
@@ -4133,6 +4272,7 @@ export const ReturnTypes: Record<string,any> = {
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
+		current_match_map_id:"uuid",
 		e_match_status:"e_match_status",
 		e_match_type:"e_match_types",
 		id:"uuid",
@@ -4193,6 +4333,7 @@ export const ReturnTypes: Record<string,any> = {
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
+		current_match_map_id:"uuid",
 		id:"uuid",
 		label:"String",
 		lineup_1_id:"String",
@@ -4211,6 +4352,7 @@ export const ReturnTypes: Record<string,any> = {
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
+		current_match_map_id:"uuid",
 		id:"uuid",
 		label:"String",
 		lineup_1_id:"String",
@@ -4265,6 +4407,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	mutation_root:{
 		cancelMatch:"SuccessOutput",
+		delete_e_match_map_status:"e_match_map_status_mutation_response",
+		delete_e_match_map_status_by_pk:"e_match_map_status",
 		delete_e_match_status:"e_match_status_mutation_response",
 		delete_e_match_status_by_pk:"e_match_status",
 		delete_e_match_types:"e_match_types_mutation_response",
@@ -4298,6 +4442,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_teams:"teams_mutation_response",
 		delete_teams_by_pk:"teams",
 		delete_v_match_captains:"v_match_captains_mutation_response",
+		insert_e_match_map_status:"e_match_map_status_mutation_response",
+		insert_e_match_map_status_one:"e_match_map_status",
 		insert_e_match_status:"e_match_status_mutation_response",
 		insert_e_match_status_one:"e_match_status",
 		insert_e_match_types:"e_match_types_mutation_response",
@@ -4334,6 +4480,9 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_match_captains_one:"v_match_captains",
 		scheduleMatch:"SuccessOutput",
 		startMatch:"SuccessOutput",
+		update_e_match_map_status:"e_match_map_status_mutation_response",
+		update_e_match_map_status_by_pk:"e_match_map_status",
+		update_e_match_map_status_many:"e_match_map_status_mutation_response",
 		update_e_match_status:"e_match_status_mutation_response",
 		update_e_match_status_by_pk:"e_match_status",
 		update_e_match_status_many:"e_match_status_mutation_response",
@@ -4842,6 +4991,9 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	query_root:{
+		e_match_map_status:"e_match_map_status",
+		e_match_map_status_aggregate:"e_match_map_status_aggregate",
+		e_match_map_status_by_pk:"e_match_map_status",
 		e_match_status:"e_match_status",
 		e_match_status_aggregate:"e_match_status_aggregate",
 		e_match_status_by_pk:"e_match_status",
@@ -4996,6 +5148,10 @@ export const ReturnTypes: Record<string,any> = {
 		tv_port:"Float"
 	},
 	subscription_root:{
+		e_match_map_status:"e_match_map_status",
+		e_match_map_status_aggregate:"e_match_map_status_aggregate",
+		e_match_map_status_by_pk:"e_match_map_status",
+		e_match_map_status_stream:"e_match_map_status",
 		e_match_status:"e_match_status",
 		e_match_status_aggregate:"e_match_status_aggregate",
 		e_match_status_by_pk:"e_match_status",

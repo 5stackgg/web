@@ -84,16 +84,16 @@
 
     <hr class="mt-8 mb-8 border-gray-600" />
 
-    <match-map-picks
-      :match="match"
-      v-if="match.best_of !== match.match_maps.length"
-    ></match-map-picks>
     <match-assign-lineups
       :match="match"
       v-if="assigningLineups"
     ></match-assign-lineups>
 
-    <hr class="mt-8 mb-8 border-gray-600" />
+    <match-map-picks :match="match" v-else-if="assigningMaps"></match-map-picks>
+
+    <template v-if="assigningLineups || assigningMaps">
+      <hr class="mt-8 mb-8 border-gray-600" />
+    </template>
 
     <match-tabs :match="match"></match-tabs>
   </template>
@@ -276,6 +276,9 @@ export default {
           currentStatus == "Scheduled") &&
         (this.canAddToLineup1 || this.canAddToLineup2)
       );
+    },
+    assigningMaps() {
+      return this.match.best_of !== this.match.match_maps.length;
     },
     maxPlayersPerLineup() {
       return this.match?.type === "Wingman" ? 2 : 5;

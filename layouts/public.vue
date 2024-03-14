@@ -1,5 +1,4 @@
 <template>
-  <public-announcement></public-announcement>
   <public-header></public-header>
   <slot></slot>
   <public-footer />
@@ -9,10 +8,9 @@
 import Index from "~/pages/index.vue";
 import PublicFooter from "~/layouts/components/PublicFooter.vue";
 import PublicHeader from "~/layouts/components/PublicHeader.vue";
-import PublicAnnouncement from "~/layouts/components/PublicAnnouncement.vue";
 
 export default {
-  components: { PublicAnnouncement, PublicFooter, PublicHeader, Index },
+  components: { PublicFooter, PublicHeader, Index },
   setup() {
     useHead({
       htmlAttrs: {

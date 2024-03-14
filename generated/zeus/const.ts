@@ -538,7 +538,6 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		name:"String_comparison_exp",
-		score:"Int_comparison_exp",
 		side:"e_sides_bool_exp",
 		starting_side:"e_sides_enum_comparison_exp",
 		team:"teams_bool_exp",
@@ -586,7 +585,6 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_order_by",
 		match_id:"order_by",
 		name:"order_by",
-		score:"order_by",
 		side:"e_sides_order_by",
 		starting_side:"order_by",
 		team:"teams_order_by",
@@ -822,6 +820,8 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_maps_bool_exp",
 		_or:"match_maps_bool_exp",
 		id:"uuid_comparison_exp",
+		lineup_1_score:"String_comparison_exp",
+		lineup_2_score:"String_comparison_exp",
 		map:"String_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
@@ -868,6 +868,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_maps_order_by:{
 		id:"order_by",
+		lineup_1_score:"order_by",
+		lineup_2_score:"order_by",
 		map:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
@@ -3929,7 +3931,6 @@ export const ReturnTypes: Record<string,any> = {
 		match:"matches",
 		match_id:"uuid",
 		name:"String",
-		score:"Int",
 		side:"e_sides",
 		starting_side:"e_sides_enum",
 		team:"teams",
@@ -3940,27 +3941,15 @@ export const ReturnTypes: Record<string,any> = {
 		nodes:"match_lineups"
 	},
 	match_lineups_aggregate_fields:{
-		avg:"match_lineups_avg_fields",
 		count:"Int",
 		max:"match_lineups_max_fields",
-		min:"match_lineups_min_fields",
-		stddev:"match_lineups_stddev_fields",
-		stddev_pop:"match_lineups_stddev_pop_fields",
-		stddev_samp:"match_lineups_stddev_samp_fields",
-		sum:"match_lineups_sum_fields",
-		var_pop:"match_lineups_var_pop_fields",
-		var_samp:"match_lineups_var_samp_fields",
-		variance:"match_lineups_variance_fields"
-	},
-	match_lineups_avg_fields:{
-		score:"Int"
+		min:"match_lineups_min_fields"
 	},
 	match_lineups_max_fields:{
 		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		name:"String",
-		score:"Int",
 		team_id:"uuid"
 	},
 	match_lineups_min_fields:{
@@ -3968,33 +3957,11 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		name:"String",
-		score:"Int",
 		team_id:"uuid"
 	},
 	match_lineups_mutation_response:{
 		affected_rows:"Int",
 		returning:"match_lineups"
-	},
-	match_lineups_stddev_fields:{
-		score:"Int"
-	},
-	match_lineups_stddev_pop_fields:{
-		score:"Int"
-	},
-	match_lineups_stddev_samp_fields:{
-		score:"Int"
-	},
-	match_lineups_sum_fields:{
-		score:"Int"
-	},
-	match_lineups_var_pop_fields:{
-		score:"Int"
-	},
-	match_lineups_var_samp_fields:{
-		score:"Int"
-	},
-	match_lineups_variance_fields:{
-		score:"Int"
 	},
 	match_map_rounds:{
 		created_at:"timestamptz",
@@ -4087,6 +4054,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_maps:{
 		id:"uuid",
+		lineup_1_score:"String",
+		lineup_2_score:"String",
 		map:"String",
 		match:"matches",
 		match_id:"uuid",
@@ -4118,6 +4087,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_maps_max_fields:{
 		id:"uuid",
+		lineup_1_score:"String",
+		lineup_2_score:"String",
 		map:"String",
 		match_id:"uuid",
 		order:"Int",
@@ -4125,6 +4096,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_maps_min_fields:{
 		id:"uuid",
+		lineup_1_score:"String",
+		lineup_2_score:"String",
 		map:"String",
 		match_id:"uuid",
 		order:"Int",

@@ -1,6 +1,6 @@
 <template>
   <template v-if="match.status == e_match_status_enum.PickingPlayers">
-    <template v-if="!canAddToLineup1 && !canAddToLineup2">
+    <form v-if="!canAddToLineup1 && !canAddToLineup2">
       <five-stack-select-input
         label="Server"
         :options="availableServers"
@@ -9,7 +9,7 @@
       <five-stack-button @click="scheduleMatch">
         Schedule Match!
       </five-stack-button>
-    </template>
+    </form>
   </template>
   <template v-if="match.status == e_match_status_enum.Scheduled">
     <div v-if="match.server_id && !match.is_match_server_available">

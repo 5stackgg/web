@@ -8,6 +8,7 @@
       {{ member.name }}
     </template>
     <span
+      v-if="member.captain || removeable"
       @click.stop.prevent="makeCaptain"
       class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
     >
@@ -19,9 +20,10 @@
     </button>
   </td>
 </template>
+
 <script lang="ts">
-import { generateMutation } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {

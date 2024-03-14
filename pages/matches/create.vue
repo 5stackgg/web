@@ -126,30 +126,29 @@
       >
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
-import Tabs from "~/components/tabs/Tabs.vue";
 import Tab from "~/components/tabs/Tab.vue";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
+import Tabs from "~/components/tabs/Tabs.vue";
+import { useAuthStore } from "~/stores/AuthStore";
+import { $, e_match_types_enum } from "~/generated/zeus";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import FiveStackCheckbox from "~/components/forms/FiveStackCheckbox.vue";
 import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
-import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import { $, e_match_types_enum, e_sides_enum } from "~/generated/zeus";
-import { useAuthStore } from "~/stores/AuthStore";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
+import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
+import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 
 export default {
   components: {
-    FiveStackMapPicker,
-    FiveStackSearchInput,
-    FiveStackTextInput,
-    FiveStackCheckbox,
-    FiveStackSelectInput,
     Tab,
     Tabs,
+    FiveStackCheckbox,
+    FiveStackTextInput,
+    FiveStackMapPicker,
+    FiveStackSearchInput,
+    FiveStackSelectInput,
   },
   data() {
     return {

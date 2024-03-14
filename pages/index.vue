@@ -2,9 +2,7 @@
   <template v-if="me">
     <dashboard></dashboard>
   </template>
-  <template v-else>
-
-  </template>
+  <template v-else> </template>
 </template>
 
 <script>

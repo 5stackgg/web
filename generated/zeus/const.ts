@@ -239,15 +239,25 @@ export const AllTypesProps: Record<string,any> = {
 		where:"e_match_types_bool_exp"
 	},
 	e_sides:{
-		match_lineups:{
-			distinct_on:"match_lineups_select_column",
-			order_by:"match_lineups_order_by",
-			where:"match_lineups_bool_exp"
+		match_map_lineup_1:{
+			distinct_on:"match_maps_select_column",
+			order_by:"match_maps_order_by",
+			where:"match_maps_bool_exp"
 		},
-		match_lineups_aggregate:{
-			distinct_on:"match_lineups_select_column",
-			order_by:"match_lineups_order_by",
-			where:"match_lineups_bool_exp"
+		match_map_lineup_1_aggregate:{
+			distinct_on:"match_maps_select_column",
+			order_by:"match_maps_order_by",
+			where:"match_maps_bool_exp"
+		},
+		match_map_lineup_2:{
+			distinct_on:"match_maps_select_column",
+			order_by:"match_maps_order_by",
+			where:"match_maps_bool_exp"
+		},
+		match_map_lineup_2_aggregate:{
+			distinct_on:"match_maps_select_column",
+			order_by:"match_maps_order_by",
+			where:"match_maps_bool_exp"
 		}
 	},
 	e_sides_aggregate_fields:{
@@ -260,8 +270,10 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"e_sides_bool_exp",
 		_or:"e_sides_bool_exp",
 		description:"String_comparison_exp",
-		match_lineups:"match_lineups_bool_exp",
-		match_lineups_aggregate:"match_lineups_aggregate_bool_exp",
+		match_map_lineup_1:"match_maps_bool_exp",
+		match_map_lineup_1_aggregate:"match_maps_aggregate_bool_exp",
+		match_map_lineup_2:"match_maps_bool_exp",
+		match_map_lineup_2_aggregate:"match_maps_aggregate_bool_exp",
 		value:"String_comparison_exp"
 	},
 	e_sides_constraint: "enum" as const,
@@ -273,11 +285,8 @@ export const AllTypesProps: Record<string,any> = {
 		_nin:"e_sides_enum"
 	},
 	e_sides_insert_input:{
-		match_lineups:"match_lineups_arr_rel_insert_input"
-	},
-	e_sides_obj_rel_insert_input:{
-		data:"e_sides_insert_input",
-		on_conflict:"e_sides_on_conflict"
+		match_map_lineup_1:"match_maps_arr_rel_insert_input",
+		match_map_lineup_2:"match_maps_arr_rel_insert_input"
 	},
 	e_sides_on_conflict:{
 		constraint:"e_sides_constraint",
@@ -286,7 +295,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	e_sides_order_by:{
 		description:"order_by",
-		match_lineups_aggregate:"match_lineups_aggregate_order_by",
+		match_map_lineup_1_aggregate:"match_maps_aggregate_order_by",
+		match_map_lineup_2_aggregate:"match_maps_aggregate_order_by",
 		value:"order_by"
 	},
 	e_sides_pk_columns_input:{
@@ -589,8 +599,6 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		name:"String_comparison_exp",
-		side:"e_sides_bool_exp",
-		starting_side:"e_sides_enum_comparison_exp",
 		team:"teams_bool_exp",
 		team_id:"uuid_comparison_exp"
 	},
@@ -602,8 +610,6 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_players:"match_lineup_players_arr_rel_insert_input",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
-		side:"e_sides_obj_rel_insert_input",
-		starting_side:"e_sides_enum",
 		team:"teams_obj_rel_insert_input",
 		team_id:"uuid"
 	},
@@ -636,8 +642,6 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_order_by",
 		match_id:"order_by",
 		name:"order_by",
-		side:"e_sides_order_by",
-		starting_side:"order_by",
 		team:"teams_order_by",
 		team_id:"order_by"
 	},
@@ -649,7 +653,6 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		starting_side:"e_sides_enum",
 		team_id:"uuid"
 	},
 	match_lineups_stream_cursor_input:{
@@ -660,7 +663,6 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		starting_side:"e_sides_enum",
 		team_id:"uuid"
 	},
 	match_lineups_update_column: "enum" as const,
@@ -872,7 +874,9 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"match_maps_bool_exp",
 		id:"uuid_comparison_exp",
 		lineup_1_score:"String_comparison_exp",
+		lineup_1_side:"e_sides_enum_comparison_exp",
 		lineup_2_score:"String_comparison_exp",
+		lineup_2_side:"e_sides_enum_comparison_exp",
 		map:"String_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
@@ -889,6 +893,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_maps_insert_input:{
 		id:"uuid",
+		lineup_1_side:"e_sides_enum",
+		lineup_2_side:"e_sides_enum",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		picked_by:"match_lineups_obj_rel_insert_input",
@@ -922,7 +928,9 @@ export const AllTypesProps: Record<string,any> = {
 	match_maps_order_by:{
 		id:"order_by",
 		lineup_1_score:"order_by",
+		lineup_1_side:"order_by",
 		lineup_2_score:"order_by",
+		lineup_2_side:"order_by",
 		map:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
@@ -938,6 +946,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_maps_select_column: "enum" as const,
 	match_maps_set_input:{
 		id:"uuid",
+		lineup_1_side:"e_sides_enum",
+		lineup_2_side:"e_sides_enum",
 		match_id:"uuid",
 		picked_by_lineup_id:"uuid",
 		status:"e_match_map_status_enum"
@@ -957,6 +967,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_maps_stream_cursor_value_input:{
 		id:"uuid",
+		lineup_1_side:"e_sides_enum",
+		lineup_2_side:"e_sides_enum",
 		match_id:"uuid",
 		picked_by_lineup_id:"uuid",
 		status:"e_match_map_status_enum"
@@ -3938,8 +3950,10 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	e_sides:{
 		description:"String",
-		match_lineups:"match_lineups",
-		match_lineups_aggregate:"match_lineups_aggregate",
+		match_map_lineup_1:"match_maps",
+		match_map_lineup_1_aggregate:"match_maps_aggregate",
+		match_map_lineup_2:"match_maps",
+		match_map_lineup_2_aggregate:"match_maps_aggregate",
 		value:"String"
 	},
 	e_sides_aggregate:{
@@ -4069,8 +4083,6 @@ export const ReturnTypes: Record<string,any> = {
 		match:"matches",
 		match_id:"uuid",
 		name:"String",
-		side:"e_sides",
-		starting_side:"e_sides_enum",
 		team:"teams",
 		team_id:"uuid"
 	},
@@ -4193,7 +4205,9 @@ export const ReturnTypes: Record<string,any> = {
 	match_maps:{
 		id:"uuid",
 		lineup_1_score:"String",
+		lineup_1_side:"e_sides_enum",
 		lineup_2_score:"String",
+		lineup_2_side:"e_sides_enum",
 		map:"String",
 		match:"matches",
 		match_id:"uuid",

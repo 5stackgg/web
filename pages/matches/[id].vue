@@ -35,7 +35,11 @@
                 <five-stack-button> Start Match </five-stack-button>
               </form>
             </template>
-            <template v-else-if="match.status != 'Canceled' && match.status != 'Finished'">
+            <template
+              v-else-if="
+                match.status != 'Canceled' && match.status != 'Finished'
+              "
+            >
               <div
                 class="text-purple-400 underline flex"
                 v-if="match.connection_string"
@@ -142,20 +146,20 @@
 
             <div class="flex gap-x-5">
               <svg
-                  class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                class="flex-shrink-0 mt-1 w-6 h-6 text-blue-600 dark:text-blue-500"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
               >
                 <path d="M7 10v12" />
                 <path
-                    d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"
+                  d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"
                 />
               </svg>
               <div class="grow">
@@ -166,13 +170,12 @@
                   Picking Maps
                 </template>
                 <div v-for="match_map of match.match_maps">
-                    [{{ match_map.status }}] {{ match_map.map }}
-                    <br>
-                    (<small v-if="match_map.picked_by">{{ match_map.picked_by.name }} picked</small>)
-                    <br>
-                    {{ lineup1.name }}:{{ match_map.lineup_1_score }}
-                    <br>
-                    {{ lineup2.name }}:{{ match_map.lineup_2_score }}
+                  [{{ match_map.status }}] {{ match_map.map }}
+                  <p v-if="match_map.picked_by">
+                    <small>({{ match_map.picked_by.name }} picked)</small>
+                  </p>
+                  <p>{{ lineup1.name }}: {{ match_map.lineup_1_score }}</p>
+                  <p>{{ lineup2.name }}: {{ match_map.lineup_2_score }}</p>
                 </div>
               </div>
             </div>
@@ -202,14 +205,10 @@
                 </h3>
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   Captain 1:
-                  <captain-info
-                    :captain="lineup1.captain"
-                  ></captain-info>
+                  <captain-info :captain="lineup1.captain"></captain-info>
                   <br />
                   Captain 2:
-                  <captain-info
-                    :captain="lineup2.captain"
-                  ></captain-info>
+                  <captain-info :captain="lineup2.captain"></captain-info>
                 </p>
               </div>
             </div>
@@ -220,27 +219,47 @@
 
     <hr class="mt-8 mb-8 border-gray-600" />
 
-    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto" v-if="match.best_of !== match.match_maps.length">
-        <h1>Map Picks</h1>
+    <div
+      class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
+      v-if="match.best_of !== match.match_maps.length"
+    >
+      <h1>Map Picks</h1>
 
-        <div class="grid md:grid-cols-2 gap-12">
-          <div
-              class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-          >
-            <form @submit.prevent.stop>
-              <five-stack-map-picker v-model="mapsForm.maps" :match-type="match.type" :best_of="match.best_of"></five-stack-map-picker>
-              <five-stack-select-input v-model="mapsForm.pickedBy" label="Picked By" :options="mapPickLineupOptions"></five-stack-select-input>
-              <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
-            </form>
-          </div>
+      <div class="grid md:grid-cols-2 gap-12">
+        <div
+          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+        >
+          <form @submit.prevent.stop>
+            <five-stack-map-picker
+              v-model="mapsForm.maps"
+              :match-type="match.type"
+              :best_of="match.best_of"
+            ></five-stack-map-picker>
+            <five-stack-select-input
+              v-model="mapsForm.pickedBy"
+              label="Picked By"
+              :options="mapPickLineupOptions"
+            ></five-stack-select-input>
+            <five-stack-select-input
+              v-model="mapsForm.startingSide"
+              label="Starting Side"
+              :options="startingSideOptions"
+              :disabled="!mapsForm.pickedBy"
+            ></five-stack-select-input>
+            <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
+          </form>
         </div>
       </div>
+    </div>
 
     <div
       class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
       v-if="
         match.organizer_steam_id == me.steam_id &&
-        (match.status == 'Warmup' || match.status == 'PickingPlayers' || match.status == 'Scheduled') && (canAddToLineup1 || canAddToLineup2)
+        (match.status == 'Warmup' ||
+          match.status == 'PickingPlayers' ||
+          match.status == 'Scheduled') &&
+        (canAddToLineup1 || canAddToLineup2)
       "
     >
       <h1>Assign lineups</h1>
@@ -276,32 +295,19 @@
       </div>
     </div>
 
-    TODO - add round breakdown as we are already going by it
-
-    TODO - match maps should have what sides the lineups start on (MAKES LIFE MUCH HAPPIER)
+    TODO - add round breakdown as we are already going by it TODO - match maps
+    should have what sides the lineups start on (MAKES LIFE MUCH HAPPIER)
 
     <tabs v-if="lineup1 && lineup2">
       <tab title="Overview">
-        <lineup-overview
-          :match="match"
-          :lineup="lineup1"
-        ></lineup-overview>
+        <lineup-overview :match="match" :lineup="lineup1"></lineup-overview>
         <br />
-        <lineup-overview
-          :match="match"
-          :lineup="lineup2"
-        ></lineup-overview>
+        <lineup-overview :match="match" :lineup="lineup2"></lineup-overview>
       </tab>
       <tab title="Utility">
-        <lineup-utility
-          :match="match"
-          :lineup="lineup1"
-        ></lineup-utility>
+        <lineup-utility :match="match" :lineup="lineup1"></lineup-utility>
         <br />
-        <lineup-utility
-          :match="match"
-          :lineup="lineup2"
-        ></lineup-utility>
+        <lineup-utility :match="match" :lineup="lineup2"></lineup-utility>
       </tab>
       <tab title="Opening Duels">
         <lineup-opening-duels
@@ -314,15 +320,13 @@
           :lineup="lineup2"
         ></lineup-opening-duels>
       </tab>
-      <tab title="Clutches">
-        TODO
-      </tab>
+      <tab title="Clutches"> TODO </tab>
     </tabs>
   </template>
 </template>
 
 <script lang="ts">
-import {$, order_by} from "~/generated/zeus";
+import { $, e_sides_enum, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import CaptainInfo from "~/components/CaptainInfo.vue";
 import Tab from "~/components/tabs/Tab.vue";
@@ -359,7 +363,8 @@ export default {
       },
       mapsForm: {
         maps: [],
-        pickedBy: undefined
+        pickedBy: undefined,
+        startingSide: e_sides_enum.CT,
       },
       startMatchForm: {
         server_id: undefined,
@@ -416,12 +421,11 @@ export default {
                 lineup_2_score: true,
                 picked_by: {
                   name: true,
-                }
+                },
               },
               lineups: {
                 id: true,
                 name: true,
-                starting_side: true,
                 captain: {
                   placeholder_name: true,
                   player: {
@@ -434,13 +438,13 @@ export default {
                     order_by: [
                       {
                         player: {
-                          name: $('order_by_name', 'order_by'),
+                          name: $("order_by_name", "order_by"),
                           kills_aggregate: {
-                            count: $('order_by_kills', 'order_by')
-                          }
-                        }
-                      }
-                    ]
+                            count: $("order_by_kills", "order_by"),
+                          },
+                        },
+                      },
+                    ],
                   },
                   {
                     captain: true,
@@ -658,19 +662,40 @@ export default {
     },
     async addMaps() {
       let currentMapCount = this.match.match_maps.length;
+      const picked_by_lineup_id = this.mapsForm.pickedBy;
+      const pickedStartingSide = this.mapsForm.startingSide;
+
+      let lineup_1_side = e_sides_enum.CT;
+      let lineup_2_side = e_sides_enum.TERRORIST;
+
+      if (picked_by_lineup_id == this.lineup1.id) {
+        lineup_1_side = pickedStartingSide;
+        lineup_2_side =
+          lineup_1_side === e_sides_enum.CT
+            ? e_sides_enum.TERRORIST
+            : e_sides_enum.CT;
+      } else {
+        lineup_2_side = pickedStartingSide;
+        lineup_1_side =
+          lineup_2_side === e_sides_enum.CT
+            ? e_sides_enum.TERRORIST
+            : e_sides_enum.CT;
+      }
 
       try {
-        for(const map of this.mapsForm.maps) {
+        for (const map of this.mapsForm.maps) {
           await this.$apollo.mutate({
             mutation: generateMutation({
               insert_match_maps_one: [
                 {
-                 object: {
-                   map,
-                   order: ++currentMapCount,
-                   match_id: this.match.id,
-                   picked_by_lineup_id: this.mapsForm.pickedBy,
-                 }
+                  object: {
+                    map,
+                    order: ++currentMapCount,
+                    match_id: this.match.id,
+                    picked_by_lineup_id: picked_by_lineup_id,
+                    lineup_1_side,
+                    lineup_2_side,
+                  },
                 },
                 {
                   id: true,
@@ -679,48 +704,51 @@ export default {
             }),
           });
         }
-      } catch(error) {
-        console.warn('unable to insert map', error);
+      } catch (error) {
+        console.warn("unable to insert map", error);
       } finally {
         this.mapsForm.maps = [];
-        this.mapsForm.pickedBy= undefined;
+        this.mapsForm.pickedBy = undefined;
       }
-    }
+    },
   },
   computed: {
     me() {
       return useAuthStore().me;
     },
     mapPickLineupOptions() {
-      return this.match.lineups.map((lineup) => {
-        return {
-          value: lineup.id,
-          display: lineup.name
-        }
-      })
+      return [
+        {
+          value: this.lineup1.id,
+          display: this.lineup1.name,
+        },
+        {
+          value: this.lineup2.id,
+          display: this.lineup2.name,
+        },
+      ];
+    },
+    startingSideOptions() {
+      return [e_sides_enum.CT, e_sides_enum.TERRORIST];
     },
     lineup1() {
       return this.match?.lineups.find((lineup) => {
         return lineup.id === this.match.lineup_1_id;
-      })
+      });
     },
     lineup2() {
       return this.match?.lineups.find((lineup) => {
         return lineup.id === this.match.lineup_2_id;
-      })
+      });
     },
     maxPlayersPerLineup() {
       return this.match?.type === "Wingman" ? 2 : 5;
     },
     canAddToLineup1() {
-      return (
-        this.lineup1?.lineup_players.length < this.maxPlayersPerLineup
-      );
+      return this.lineup1?.lineup_players.length < this.maxPlayersPerLineup;
     },
     canAddToLineup2() {
-      return (
-        this.lineup2?.lineup_players.length < this.maxPlayersPerLineup
-      );
+      return this.lineup2?.lineup_players.length < this.maxPlayersPerLineup;
     },
     startOfMatch() {
       return this.match?.rounds?.[0]?.created_at;

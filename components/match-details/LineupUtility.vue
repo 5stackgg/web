@@ -14,10 +14,7 @@
     </thead>
     <tbody>
       <tr v-for="member of lineup.lineup_players">
-        <lineup-member
-          :member="member"
-          :lineup_id="lineup.id"
-        ></lineup-member>
+        <lineup-member :member="member" :lineup_id="lineup.id"></lineup-member>
         <td class="w-2">TODO</td>
         <td class="w-2">TODO</td>
         <td class="w-2">TODO</td>

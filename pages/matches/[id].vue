@@ -42,7 +42,7 @@
                 <template v-if="match.match_maps.length !== match.best_of">
                   Picking Maps
                 </template>
-                <div v-for="match_map of match.match_maps">
+                <div class="mt-1 text-gray-600 dark:text-gray-400" v-for="match_map of match.match_maps">
                   [{{ match_map.status }}] {{ match_map.map }}
                   <p v-if="match_map.picked_by">
                     <small>({{ match_map.picked_by.name }} picked)</small>
@@ -62,7 +62,7 @@
             <div class="flex gap-x-5">
               <div class="grow">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Captains:
+                  Captains
                 </h3>
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   Captain 1:

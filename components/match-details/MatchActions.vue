@@ -51,6 +51,7 @@
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 export default {
   components: {
     FiveStackSelectInput,
@@ -63,10 +64,31 @@ export default {
   },
   data() {
     return {
+      servers: [],
       form: {
         server_id: undefined,
       },
     };
+  },
+  $apollo: {
+    subscribe: {
+      servers: {
+        query: typedGql("subscription")({
+          servers: [
+            {},
+            {
+              id: true,
+              host: true,
+              port: true,
+              label: true,
+            },
+          ],
+        }),
+        result({ data }) {
+          this.servers = data.servers;
+        },
+      },
+    },
   },
   methods: {
     async scheduleMatch() {

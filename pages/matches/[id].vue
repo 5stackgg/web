@@ -88,76 +88,39 @@
       :match="match"
       v-if="match.best_of !== match.match_maps.length"
     ></match-map-picks>
-    <match-assign-linups
+    <match-assign-lineups
       :match="match"
       v-if="assigningLineups"
-    ></match-assign-linups>
+    ></match-assign-lineups>
     <match-tabs :match="match"></match-tabs>
   </template>
 </template>
 
 <script lang="ts">
-import { $, e_sides_enum, order_by } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
+import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import CaptainInfo from "~/components/CaptainInfo.vue";
-import Tab from "~/components/tabs/Tab.vue";
-import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import LineupOverview from "~/components/match-details/LineupOverview.vue";
-import LineupMember from "~/components/match-details/LineupMember.vue";
-import LineupUtility from "~/components/match-details/LineupUtility.vue";
-import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vue";
-import ClipBoard from "~/components/ClipBoard.vue";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
-import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
-import MatchMapPicks from "~/components/match-forms/MatchMapPicks.vue";
-import MatchAssignLinups from "~/components/match-forms/MatchAssignLinups.vue";
 import MatchTabs from "~/components/match-details/MatchTabs.vue";
 import MatchStatus from "~/components/match-details/MatchStatus.vue";
 import MatchActions from "~/components/match-details/MatchActions.vue";
-import getMatchLineups from "~/utilities/getMatchLineups";
+import MatchMapPicks from "~/components/match-forms/MatchMapPicks.vue";
+import MatchAssignLineups from "~/components/match-forms/MatchAssignLineups.vue";
 
 export default {
   components: {
-    MatchActions,
-    MatchStatus,
     MatchTabs,
-    MatchAssignLinups,
+    MatchStatus,
+    MatchActions,
     MatchMapPicks,
-    FiveStackMapPicker,
-    FiveStackSelectInput,
-    ClipBoard,
-    LineupOpeningDuels,
-    LineupUtility,
-    LineupMember,
-    LineupOverview,
-    FiveStackSearchInput,
-    Tab,
-    CaptainInfo,
+    MatchAssignLineups,
   },
   data() {
     return {
-      servers: [],
       match: undefined,
     };
   },
   apollo: {
     $subscribe: {
-      servers: {
-        query: typedGql("subscription")({
-          servers: [
-            {},
-            {
-              id: true,
-              host: true,
-              port: true,
-              label: true,
-            },
-          ],
-        }),
-        result({ data }) {
-          this.servers = data.servers;
-        },
-      },
       matches_by_pk: {
         query: typedGql("subscription")({
           matches_by_pk: [

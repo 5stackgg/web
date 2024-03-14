@@ -8,20 +8,20 @@
       >
         <form @submit.prevent.stop>
           <five-stack-map-picker
-            v-model="mapsForm.maps"
+            v-model="form.maps"
             :match-type="match.type"
             :best_of="match.best_of"
           ></five-stack-map-picker>
           <five-stack-select-input
-            v-model="mapsForm.pickedBy"
+            v-model="form.pickedBy"
             label="Picked By"
             :options="mapPickLineupOptions"
           ></five-stack-select-input>
           <five-stack-select-input
-            v-model="mapsForm.startingSide"
+            v-model="form.startingSide"
             label="Starting Side"
             :options="startingSideOptions"
-            :disabled="!mapsForm.pickedBy"
+            :disabled="!form.pickedBy"
           ></five-stack-select-input>
           <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
         </form>
@@ -50,7 +50,7 @@ export default {
   },
   data() {
     return {
-      mapsForm: {
+      form: {
         maps: [],
         pickedBy: undefined,
         startingSide: e_sides_enum.CT,
@@ -60,8 +60,8 @@ export default {
   methods: {
     async addMaps() {
       let currentMapCount = this.match.match_maps.length;
-      const picked_by_lineup_id = this.mapsForm.pickedBy;
-      const pickedStartingSide = this.mapsForm.startingSide;
+      const picked_by_lineup_id = this.form.pickedBy;
+      const pickedStartingSide = this.form.startingSide;
 
       let lineup_1_side = e_sides_enum.CT;
       let lineup_2_side = e_sides_enum.TERRORIST;
@@ -81,7 +81,7 @@ export default {
       }
 
       try {
-        for (const map of this.mapsForm.maps) {
+        for (const map of this.form.maps) {
           await this.$apollo.mutate({
             mutation: generateMutation({
               insert_match_maps_one: [
@@ -105,8 +105,8 @@ export default {
       } catch (error) {
         console.warn("unable to insert map", error);
       } finally {
-        this.mapsForm.maps = [];
-        this.mapsForm.pickedBy = undefined;
+        this.form.maps = [];
+        this.form.pickedBy = undefined;
       }
     },
   },

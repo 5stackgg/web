@@ -6,64 +6,9 @@
           <h2
             class="font-bold text-2xl md:text-3xl text-gray-800 dark:text-gray-200"
           >
-            {{ lineup1.name }} vs {{ lineup2.name }}
+            {{ matchLineups.lineup1.name }} vs {{ matchLineups.lineup2.name }}
           </h2>
-          <div>
-            <template v-if="match.status == 'PickingPlayers'">
-              <template v-if="!canAddToLineup1 && !canAddToLineup2">
-                <five-stack-button @click="scheduleMatch">
-                  Schedule Match!
-                </five-stack-button>
-              </template>
-            </template>
-            <template v-if="match.status == 'Scheduled'">
-              <div v-if="match.server_id && !match.is_match_server_available">
-                <p>
-                  Another match is on going on the selected server. Once
-                  complete match will be able to be started.
-                </p>
-
-                <p class="mt-4">Choose another server.</p>
-              </div>
-
-              <form @submit.prevent="startMatch">
-                <five-stack-select-input
-                  label="type"
-                  :options="availableServers"
-                  v-model="startMatchForm.server_id"
-                ></five-stack-select-input>
-                <five-stack-button> Start Match </five-stack-button>
-              </form>
-            </template>
-            <template
-              v-else-if="
-                match.status != 'Canceled' && match.status != 'Finished'
-              "
-            >
-              <div
-                class="text-purple-400 underline flex"
-                v-if="match.connection_string"
-              >
-                <clip-board :data="match.connection_string"></clip-board>
-                <a :href="`https://api.5stack.gg${match.connection_link}`">
-                  {{ match.connection_string }}
-                </a>
-              </div>
-              <div v-else-if="!match.server_id" class="text-red-400 underline">
-                Server has not been assigned
-              </div>
-              <div v-else>
-                <clip-board :data="match.tv_connection_string"></clip-board>
-                <a :href="`https://api.5stack.gg${match.tv_connection_link}`">
-                  {{ match.tv_connection_string }}
-                </a>
-              </div>
-
-              <five-stack-button @click="cancelMatch">
-                Cancel Match
-              </five-stack-button>
-            </template>
-          </div>
+          <match-actions :match="match"></match-actions>
         </div>
 
         <div class="lg:col-span-2">
@@ -88,32 +33,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
                   Match Status
                 </h3>
-                <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  <template v-if="match.status == 'Canceled'">
-                    Match Canceled @ {{ endOfMatch }}
-                  </template>
-                  <template v-else-if="match.status == 'Finished'">
-                    Match Finished @ {{ endOfMatch }}
-                  </template>
-                  <template v-else-if="match.status == 'Warmup'">
-                    Warmups
-                  </template>
-                  <template v-else-if="match.status == 'Knife'"> </template>
-                  <template v-else-if="match.status == 'Scheduled'">
-                    Match is Scheduled for
-                    <template v-if="match.scheduled_at">
-                      <time-ago :date="match.scheduled_at"></time-ago>
-                    </template>
-                    <template v-else> ASAP </template>
-                  </template>
-                  <template v-else-if="startOfMatch">
-                    Match has been going on for
-                    <time-ago :date="startOfMatch"></time-ago>
-                  </template>
-                  <template v-else>
-                    {{ match.status }}
-                  </template>
-                </p>
+                <match-status :match="match"></match-status>
               </div>
             </div>
 
@@ -174,8 +94,14 @@
                   <p v-if="match_map.picked_by">
                     <small>({{ match_map.picked_by.name }} picked)</small>
                   </p>
-                  <p>{{ lineup1.name }}: {{ match_map.lineup_1_score }}</p>
-                  <p>{{ lineup2.name }}: {{ match_map.lineup_2_score }}</p>
+                  <p>
+                    {{ matchLineups.lineup1.name }}:
+                    {{ match_map.lineup_1_score }}
+                  </p>
+                  <p>
+                    {{ matchLineups.lineup2.name }}:
+                    {{ match_map.lineup_2_score }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -205,10 +131,14 @@
                 </h3>
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   Captain 1:
-                  <captain-info :captain="lineup1.captain"></captain-info>
+                  <captain-info
+                    :captain="matchLineups.lineup1.captain"
+                  ></captain-info>
                   <br />
                   Captain 2:
-                  <captain-info :captain="lineup2.captain"></captain-info>
+                  <captain-info
+                    :captain="matchLineups.lineup2.captain"
+                  ></captain-info>
                 </p>
               </div>
             </div>
@@ -219,109 +149,15 @@
 
     <hr class="mt-8 mb-8 border-gray-600" />
 
-    <div
-      class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
+    <match-map-picks
+      :match="match"
       v-if="match.best_of !== match.match_maps.length"
-    >
-      <h1>Map Picks</h1>
-
-      <div class="grid md:grid-cols-2 gap-12">
-        <div
-          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-        >
-          <form @submit.prevent.stop>
-            <five-stack-map-picker
-              v-model="mapsForm.maps"
-              :match-type="match.type"
-              :best_of="match.best_of"
-            ></five-stack-map-picker>
-            <five-stack-select-input
-              v-model="mapsForm.pickedBy"
-              label="Picked By"
-              :options="mapPickLineupOptions"
-            ></five-stack-select-input>
-            <five-stack-select-input
-              v-model="mapsForm.startingSide"
-              label="Starting Side"
-              :options="startingSideOptions"
-              :disabled="!mapsForm.pickedBy"
-            ></five-stack-select-input>
-            <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
-      v-if="
-        match.organizer_steam_id == me.steam_id &&
-        (match.status == 'Warmup' ||
-          match.status == 'PickingPlayers' ||
-          match.status == 'Scheduled') &&
-        (canAddToLineup1 || canAddToLineup2)
-      "
-    >
-      <h1>Assign lineups</h1>
-
-      <div class="grid md:grid-cols-2 gap-12">
-        <div
-          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-        >
-          <form @submit.prevent.stop v-if="canAddToLineup1">
-            <five-stack-search-input
-              label="Team 1"
-              placeholder="Find Player"
-              v-model="form.lineup_1"
-              :search="searchPlayers"
-            ></five-stack-search-input>
-          </form>
-          <template v-else> Team 1 Lineup setup. </template>
-        </div>
-
-        <div
-          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-        >
-          <form @submit.prevent.stop v-if="canAddToLineup2">
-            <five-stack-search-input
-              label="Team 2"
-              placeholder="Find Player"
-              v-model="form.lineup_2"
-              :search="searchPlayers"
-            ></five-stack-search-input>
-          </form>
-          <template v-else> Team 1 Lineup setup. </template>
-        </div>
-      </div>
-    </div>
-
-    TODO - add round breakdown as we are already going by it TODO - match maps
-    should have what sides the lineups start on (MAKES LIFE MUCH HAPPIER)
-
-    <tabs v-if="lineup1 && lineup2">
-      <tab title="Overview">
-        <lineup-overview :match="match" :lineup="lineup1"></lineup-overview>
-        <br />
-        <lineup-overview :match="match" :lineup="lineup2"></lineup-overview>
-      </tab>
-      <tab title="Utility">
-        <lineup-utility :match="match" :lineup="lineup1"></lineup-utility>
-        <br />
-        <lineup-utility :match="match" :lineup="lineup2"></lineup-utility>
-      </tab>
-      <tab title="Opening Duels">
-        <lineup-opening-duels
-          :match="match"
-          :lineup="lineup1"
-        ></lineup-opening-duels>
-        <br />
-        <lineup-opening-duels
-          :match="match"
-          :lineup="lineup2"
-        ></lineup-opening-duels>
-      </tab>
-      <tab title="Clutches"> TODO </tab>
-    </tabs>
+    ></match-map-picks>
+    <match-assign-linups
+      :match="match"
+      v-if="assigningLineups"
+    ></match-assign-linups>
+    <match-tabs :match="match"></match-tabs>
   </template>
 </template>
 
@@ -331,7 +167,6 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import CaptainInfo from "~/components/CaptainInfo.vue";
 import Tab from "~/components/tabs/Tab.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import LineupOverview from "~/components/match-details/LineupOverview.vue";
 import LineupMember from "~/components/match-details/LineupMember.vue";
 import LineupUtility from "~/components/match-details/LineupUtility.vue";
@@ -339,9 +174,20 @@ import LineupOpeningDuels from "~/components/match-details/LineupOpeningDuels.vu
 import ClipBoard from "~/components/ClipBoard.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
+import MatchMapPicks from "~/components/match-forms/MatchMapPicks.vue";
+import MatchAssignLinups from "~/components/match-forms/MatchAssignLinups.vue";
+import MatchTabs from "~/components/match-details/MatchTabs.vue";
+import MatchStatus from "~/components/match-details/MatchStatus.vue";
+import MatchActions from "~/components/match-details/MatchActions.vue";
+import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
   components: {
+    MatchActions,
+    MatchStatus,
+    MatchTabs,
+    MatchAssignLinups,
+    MatchMapPicks,
     FiveStackMapPicker,
     FiveStackSelectInput,
     ClipBoard,
@@ -357,18 +203,6 @@ export default {
     return {
       servers: [],
       match: undefined,
-      form: {
-        lineup_1: undefined,
-        lineup_2: undefined,
-      },
-      mapsForm: {
-        maps: [],
-        pickedBy: undefined,
-        startingSide: e_sides_enum.CT,
-      },
-      startMatchForm: {
-        server_id: undefined,
-      },
     };
   },
   apollo: {
@@ -509,15 +343,6 @@ export default {
                   },
                 ],
               },
-              // rounds: [
-              //   {},
-              //   {
-              //     round: true,
-              //     team_1_score: true,
-              //     team_2_score: true,
-              //     created_at: true,
-              //   },
-              // ],
             },
           ],
         }),
@@ -534,250 +359,37 @@ export default {
       },
     },
   },
-  watch: {
-    ["form.lineup_1"]: {
-      handler(member) {
-        if (member) {
-          this.form.lineup_1 = undefined;
-          this.addMember(member.value.steam_id, this.lineup1.id);
-        }
-      },
-    },
-    ["form.lineup_2"]: {
-      handler(member) {
-        if (member) {
-          this.form.lineup_2 = undefined;
-          this.addMember(member.value.steam_id, this.lineup2.id);
-        }
-      },
-    },
-  },
-  methods: {
-    async searchPlayers(query) {
-      const { data } = await this.$apollo.query({
-        query: generateQuery({
-          players: [
-            {
-              where: {
-                ...(/^[0-9]+$/.test(query)
-                  ? {
-                      steam_id: {
-                        _eq: $("playerSteamIdQuery", "bigint"),
-                      },
-                    }
-                  : {
-                      name: {
-                        _ilike: $("playerQuery", "String"),
-                      },
-                    }),
-              },
-            },
-            {
-              name: true,
-              steam_id: true,
-              avatar_url: true,
-            },
-          ],
-        }),
-        variables: {
-          playerQuery: `%${query}%`,
-          playerSteamIdQuery: query,
-        },
-      });
-
-      return (
-        data.players
-          // .filter((player) => {
-          //   return (
-          //    TODO
-          //   );
-          // })
-          .map((player) => {
-            return {
-              value: player,
-              display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"src="${player.avatar_url}"> ${player.name} <small>[${player.steam_id}]</small>`,
-            };
-          })
-      );
-    },
-    async addMember(steam_id: bigint, match_lineup_id: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_match_lineup_players_one: [
-            {
-              object: {
-                steam_id,
-                match_lineup_id,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async scheduleMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          scheduleMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-    async cancelMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          cancelMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-    async startMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          startMatch: [
-            {
-              match_id: this.match.id,
-              server_id: this.startMatchForm.server_id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-    async addMaps() {
-      let currentMapCount = this.match.match_maps.length;
-      const picked_by_lineup_id = this.mapsForm.pickedBy;
-      const pickedStartingSide = this.mapsForm.startingSide;
-
-      let lineup_1_side = e_sides_enum.CT;
-      let lineup_2_side = e_sides_enum.TERRORIST;
-
-      if (picked_by_lineup_id == this.lineup1.id) {
-        lineup_1_side = pickedStartingSide;
-        lineup_2_side =
-          lineup_1_side === e_sides_enum.CT
-            ? e_sides_enum.TERRORIST
-            : e_sides_enum.CT;
-      } else {
-        lineup_2_side = pickedStartingSide;
-        lineup_1_side =
-          lineup_2_side === e_sides_enum.CT
-            ? e_sides_enum.TERRORIST
-            : e_sides_enum.CT;
-      }
-
-      try {
-        for (const map of this.mapsForm.maps) {
-          await this.$apollo.mutate({
-            mutation: generateMutation({
-              insert_match_maps_one: [
-                {
-                  object: {
-                    map,
-                    order: ++currentMapCount,
-                    match_id: this.match.id,
-                    picked_by_lineup_id: picked_by_lineup_id,
-                    lineup_1_side,
-                    lineup_2_side,
-                  },
-                },
-                {
-                  id: true,
-                },
-              ],
-            }),
-          });
-        }
-      } catch (error) {
-        console.warn("unable to insert map", error);
-      } finally {
-        this.mapsForm.maps = [];
-        this.mapsForm.pickedBy = undefined;
-      }
-    },
-  },
   computed: {
     me() {
       return useAuthStore().me;
     },
-    mapPickLineupOptions() {
-      return [
-        {
-          value: this.lineup1.id,
-          display: this.lineup1.name,
-        },
-        {
-          value: this.lineup2.id,
-          display: this.lineup2.name,
-        },
-      ];
+    matchLineups() {
+      return getMatchLineups(this.match);
     },
-    startingSideOptions() {
-      return [e_sides_enum.CT, e_sides_enum.TERRORIST];
-    },
-    lineup1() {
-      return this.match?.lineups.find((lineup) => {
-        return lineup.id === this.match.lineup_1_id;
-      });
-    },
-    lineup2() {
-      return this.match?.lineups.find((lineup) => {
-        return lineup.id === this.match.lineup_2_id;
-      });
+    assigningLineups() {
+      const currentStatus = this.match.status;
+      return (
+        this.match.organizer_steam_id == this.me.steam_id &&
+        (currentStatus == "Warmup" ||
+          currentStatus == "PickingPlayers" ||
+          currentStatus == "Scheduled") &&
+        (this.canAddToLineup1 || this.canAddToLineup2)
+      );
     },
     maxPlayersPerLineup() {
       return this.match?.type === "Wingman" ? 2 : 5;
     },
     canAddToLineup1() {
-      return this.lineup1?.lineup_players.length < this.maxPlayersPerLineup;
+      return (
+        this.matchLineups.lineup1?.lineup_players.length <
+        this.maxPlayersPerLineup
+      );
     },
     canAddToLineup2() {
-      return this.lineup2?.lineup_players.length < this.maxPlayersPerLineup;
-    },
-    startOfMatch() {
-      return this.match?.rounds?.[0]?.created_at;
-    },
-    endOfMatch() {
-      let lastRound =
-        this.match?.rounds?.[this.match?.rounds.length - 1].created_at;
-      if (lastRound) {
-        return new Date(lastRound).toLocaleString();
-      }
-    },
-    availableServers() {
-      const servers = this.servers
-        .filter((server) => {
-          return this.match.server_id !== server.id;
-        })
-        .map((server) => {
-          return {
-            value: server.id,
-            display: `${server.label} (${server.host}:${server.port})`,
-          };
-        });
-
-      servers.unshift({
-        value: null,
-        display: "On Demand",
-      });
-
-      return servers;
+      return (
+        this.matchLineups.lineup2?.lineup_players.length <
+        this.maxPlayersPerLineup
+      );
     },
   },
 };

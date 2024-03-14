@@ -278,6 +278,8 @@
 
     TODO - add round breakdown as we are already going by it
 
+    TODO - match maps should have what sides the lineups start on (MAKES LIFE MUCH HAPPIER)
+
     <tabs v-if="lineup1 && lineup2">
       <tab title="Overview">
         <lineup-overview
@@ -419,6 +421,7 @@ export default {
               lineups: {
                 id: true,
                 name: true,
+                starting_side: true,
                 captain: {
                   placeholder_name: true,
                   player: {

@@ -1,12 +1,17 @@
 <template>
-  <template v-if="match.status == 'PickingPlayers'">
+  <template v-if="match.status == e_match_status_enum.PickingPlayers">
     <template v-if="!canAddToLineup1 && !canAddToLineup2">
+      <five-stack-select-input
+        label="Server"
+        :options="availableServers"
+        v-model="form.server_id"
+      ></five-stack-select-input>
       <five-stack-button @click="scheduleMatch">
         Schedule Match!
       </five-stack-button>
     </template>
   </template>
-  <template v-if="match.status == 'Scheduled'">
+  <template v-if="match.status == e_match_status_enum.Scheduled">
     <div v-if="match.server_id && !match.is_match_server_available">
       <p>
         Another match is on going on the selected server. Once complete match
@@ -18,7 +23,7 @@
 
     <form @submit.prevent="startMatch">
       <five-stack-select-input
-        label="type"
+        label="Server"
         :options="availableServers"
         v-model="form.server_id"
       ></five-stack-select-input>
@@ -26,7 +31,10 @@
     </form>
   </template>
   <template
-    v-else-if="match.status != 'Canceled' && match.status != 'Finished'"
+    v-else-if="
+      match.status != e_match_status_enum.Canceled &&
+      match.status != e_match_status_enum.Finished
+    "
   >
     <div class="text-purple-400 underline flex" v-if="match.connection_string">
       <clip-board :data="match.connection_string"></clip-board>
@@ -47,6 +55,11 @@
     <five-stack-button @click="cancelMatch"> Cancel Match </five-stack-button>
   </template>
 </template>
+
+<script setup lang="ts">
+import { e_match_status_enum } from "~/generated/zeus";
+</script>
+
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
@@ -71,8 +84,8 @@ export default {
       },
     };
   },
-  $apollo: {
-    subscribe: {
+  apollo: {
+    $subscribe: {
       servers: {
         query: typedGql("subscription")({
           servers: [

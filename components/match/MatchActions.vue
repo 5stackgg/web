@@ -173,9 +173,9 @@ export default {
     },
     availableServers() {
       const servers = this.servers
-        .filter((server) => {
-          return this.match.server_id !== server.id;
-        })
+        // .filter((server) => {
+        //   return this.match.server_id !== server.id;
+        // })
         .map((server) => {
           return {
             value: server.id,

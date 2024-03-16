@@ -273,6 +273,28 @@ export default {
                         },
                       ],
                       __alias: {
+                        zeus_kills_aggregate: {
+                          kills_aggregate: [
+                            {
+                              where: {
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                                with: {
+                                  _eq: "knife",
+                                },
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  count: true,
+                                },
+                              ],
+                            },
+                          ],
+                        },
                         knife_kills_aggregate: {
                           kills_aggregate: [
                             {

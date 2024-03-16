@@ -38,6 +38,9 @@
     <td class="w-2">
       {{ member.player.knife_kills_aggregate.aggregate.count }}
     </td>
+    <td class="w-2">
+      {{ member.player.zeus_kills_aggregate.aggregate.count }}
+    </td>
   </tr>
 </template>
 <script lang="ts">

@@ -13,6 +13,7 @@
         <th>4k</th>
         <th>5k</th>
         <th>knifes</th>
+        <th>zeus</th>
       </tr>
     </thead>
     <tbody>

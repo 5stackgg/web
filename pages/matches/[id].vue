@@ -224,6 +224,23 @@ export default {
                           ],
                         },
                       ],
+                      deaths_aggregate: [
+                        {
+                          where: {
+                            match_id: {
+                              _eq: $("matchId", "uuid!"),
+                            },
+                          },
+                        },
+                        {
+                          aggregate: [
+                            {},
+                            {
+                              count: true,
+                            },
+                          ],
+                        },
+                      ],
                       damage_dealt_aggregate: [
                         {
                           where: {
@@ -243,6 +260,42 @@ export default {
                           ],
                         },
                       ],
+                      multi_kills: [
+                        {
+                          where: {
+                            match_id: {
+                              _eq: $("matchId", "uuid!"),
+                            },
+                          },
+                        },
+                        {
+                          kills: true,
+                        },
+                      ],
+                      __alias: {
+                        knife_kills_aggregate: {
+                          kills_aggregate: [
+                            {
+                              where: {
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                                with: {
+                                  _eq: "knife",
+                                },
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  count: true,
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      },
                     },
                   },
                 ],

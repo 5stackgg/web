@@ -64,11 +64,8 @@ export default {
       if (this.member.player.deaths_aggregate.aggregate.count === 0) {
         return this.member.player.kills_aggregate.aggregate.count;
       }
-      return Math.round(
-        this.member.player.kills_aggregate.aggregate.count /
-          this.member.player.deaths_aggregate.aggregate.count,
-        2,
-      );
+      return Math.round(( this.member.player.kills_aggregate.aggregate.count /
+          this.member.player.deaths_aggregate.aggregate.count) * 100) / 100; // round to two decimal places
     },
     twoKills() {
       return this.member.player.multi_kills.filter(({ kills }) => {

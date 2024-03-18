@@ -173,7 +173,7 @@ export default {
                   kills: [
                     {
                       order_by: {
-                        created_at: $("order_by_round_kills", "order_by"),
+                        time: $("order_by_round_kills", "order_by"),
                       },
                     },
                     {
@@ -275,7 +275,7 @@ export default {
                             },
                             team_damage: {
                               _eq: false,
-                            }
+                            },
                           },
                         },
                         {
@@ -437,7 +437,7 @@ export default {
                                 },
                                 team_damage: {
                                   _eq: true,
-                                }
+                                },
                               },
                             },
                             {
@@ -463,8 +463,8 @@ export default {
                                   _eq: $("matchId", "uuid!"),
                                 },
                                 team_damage: {
-                                  _eq: false
-                                }
+                                  _eq: false,
+                                },
                               },
                             },
                             {
@@ -491,8 +491,8 @@ export default {
                                   _eq: $("matchId", "uuid!"),
                                 },
                                 team_damage: {
-                                  _eq: false
-                                }
+                                  _eq: false,
+                                },
                               },
                             },
                             {

@@ -694,7 +694,6 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_lineups_bool_exp",
 		_or:"match_lineups_bool_exp",
 		captain:"v_match_captains_bool_exp",
-		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		lineup_players:"match_lineup_players_bool_exp",
 		lineup_players_aggregate:"match_lineup_players_aggregate_bool_exp",
@@ -707,7 +706,6 @@ export const AllTypesProps: Record<string,any> = {
 	match_lineups_constraint: "enum" as const,
 	match_lineups_insert_input:{
 		captain:"v_match_captains_obj_rel_insert_input",
-		created_at:"timestamptz",
 		id:"uuid",
 		lineup_players:"match_lineup_players_arr_rel_insert_input",
 		match:"matches_obj_rel_insert_input",
@@ -716,13 +714,11 @@ export const AllTypesProps: Record<string,any> = {
 		team_id:"uuid"
 	},
 	match_lineups_max_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		team_id:"order_by"
 	},
 	match_lineups_min_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		team_id:"order_by"
@@ -738,7 +734,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_lineups_order_by:{
 		captain:"v_match_captains_order_by",
-		created_at:"order_by",
 		id:"order_by",
 		lineup_players_aggregate:"match_lineup_players_aggregate_order_by",
 		match:"matches_order_by",
@@ -752,7 +747,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_lineups_select_column: "enum" as const,
 	match_lineups_set_input:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		team_id:"uuid"
@@ -762,7 +756,6 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	match_lineups_stream_cursor_value_input:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		team_id:"uuid"
@@ -823,7 +816,6 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_map_rounds_bool_exp",
 		_not:"match_map_rounds_bool_exp",
 		_or:"match_map_rounds_bool_exp",
-		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		kills:"player_kills_bool_exp",
 		kills_aggregate:"player_kills_aggregate_bool_exp",
@@ -832,37 +824,32 @@ export const AllTypesProps: Record<string,any> = {
 		round:"Int_comparison_exp",
 		team_1_score:"Int_comparison_exp",
 		team_2_score:"Int_comparison_exp",
-		updated_at:"timestamptz_comparison_exp"
+		time:"time_comparison_exp"
 	},
 	match_map_rounds_constraint: "enum" as const,
 	match_map_rounds_inc_input:{
 
 	},
 	match_map_rounds_insert_input:{
-		created_at:"timestamptz",
 		id:"uuid",
 		kills:"player_kills_arr_rel_insert_input",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
-		updated_at:"timestamptz"
+		time:"time"
 	},
 	match_map_rounds_max_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
 		team_1_score:"order_by",
-		team_2_score:"order_by",
-		updated_at:"order_by"
+		team_2_score:"order_by"
 	},
 	match_map_rounds_min_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
 		team_1_score:"order_by",
-		team_2_score:"order_by",
-		updated_at:"order_by"
+		team_2_score:"order_by"
 	},
 	match_map_rounds_on_conflict:{
 		constraint:"match_map_rounds_constraint",
@@ -870,7 +857,6 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_map_rounds_bool_exp"
 	},
 	match_map_rounds_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		kills_aggregate:"player_kills_aggregate_order_by",
 		match_map:"match_maps_order_by",
@@ -878,17 +864,16 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		team_1_score:"order_by",
 		team_2_score:"order_by",
-		updated_at:"order_by"
+		time:"order_by"
 	},
 	match_map_rounds_pk_columns_input:{
 		id:"uuid"
 	},
 	match_map_rounds_select_column: "enum" as const,
 	match_map_rounds_set_input:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
-		updated_at:"timestamptz"
+		time:"time"
 	},
 	match_map_rounds_stddev_order_by:{
 		round:"order_by",
@@ -910,10 +895,9 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	match_map_rounds_stream_cursor_value_input:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
-		updated_at:"timestamptz"
+		time:"time"
 	},
 	match_map_rounds_sum_order_by:{
 		round:"order_by",
@@ -1050,6 +1034,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_maps_bool_exp",
 		_not:"match_maps_bool_exp",
 		_or:"match_maps_bool_exp",
+		created_at:"date_comparison_exp",
 		flashes:"player_flashes_bool_exp",
 		flashes_aggregate:"player_flashes_aggregate_bool_exp",
 		id:"uuid_comparison_exp",
@@ -1082,6 +1067,7 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	match_maps_insert_input:{
+		created_at:"date",
 		flashes:"player_flashes_arr_rel_insert_input",
 		id:"uuid",
 		lineup_1_side:"e_sides_enum",
@@ -1099,6 +1085,7 @@ export const AllTypesProps: Record<string,any> = {
 		utility:"player_utility_arr_rel_insert_input"
 	},
 	match_maps_max_order_by:{
+		created_at:"order_by",
 		id:"order_by",
 		map:"order_by",
 		match_id:"order_by",
@@ -1106,6 +1093,7 @@ export const AllTypesProps: Record<string,any> = {
 		picked_by_lineup_id:"order_by"
 	},
 	match_maps_min_order_by:{
+		created_at:"order_by",
 		id:"order_by",
 		map:"order_by",
 		match_id:"order_by",
@@ -1122,6 +1110,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_maps_bool_exp"
 	},
 	match_maps_order_by:{
+		created_at:"order_by",
 		flashes_aggregate:"player_flashes_aggregate_order_by",
 		id:"order_by",
 		lineup_1_score:"order_by",
@@ -1147,6 +1136,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_maps_select_column: "enum" as const,
 	match_maps_set_input:{
+		created_at:"date",
 		id:"uuid",
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
@@ -1168,6 +1158,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	match_maps_stream_cursor_value_input:{
+		created_at:"date",
 		id:"uuid",
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
@@ -2219,7 +2210,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_team:"String_comparison_exp",
 		attacker_steam_id:"bigint_comparison_exp",
 		attacker_team:"String_comparison_exp",
-		created_at:"timestamptz_comparison_exp",
 		flash:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
@@ -2227,7 +2217,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
 		player:"players_bool_exp",
-		round:"Int_comparison_exp"
+		round:"Int_comparison_exp",
+		time:"timestamptz_comparison_exp"
 	},
 	player_assists_constraint: "enum" as const,
 	player_assists_inc_input:{
@@ -2238,35 +2229,35 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_player:"players_obj_rel_insert_input",
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
-		player:"players_obj_rel_insert_input"
+		player:"players_obj_rel_insert_input",
+		time:"timestamptz"
 	},
 	player_assists_max_order_by:{
 		attacked_steam_id:"order_by",
 		attacked_team:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_assists_min_order_by:{
 		attacked_steam_id:"order_by",
 		attacked_team:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_assists_on_conflict:{
 		constraint:"player_assists_constraint",
@@ -2279,7 +2270,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_team:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		flash:"order_by",
 		id:"order_by",
 		match:"matches_order_by",
@@ -2287,7 +2277,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
 		player:"players_order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_assists_pk_columns_input:{
 		id:"uuid"
@@ -2298,10 +2289,10 @@ export const AllTypesProps: Record<string,any> = {
 	player_assists_set_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		time:"timestamptz"
 	},
 	player_assists_stddev_order_by:{
 		attacked_steam_id:"order_by",
@@ -2325,10 +2316,10 @@ export const AllTypesProps: Record<string,any> = {
 	player_assists_stream_cursor_value_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		time:"timestamptz"
 	},
 	player_assists_sum_order_by:{
 		attacked_steam_id:"order_by",
@@ -2409,7 +2400,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"String_comparison_exp",
 		attacker_steam_id:"bigint_comparison_exp",
 		attacker_team:"String_comparison_exp",
-		created_at:"timestamptz_comparison_exp",
 		damage:"Int_comparison_exp",
 		damage_armor:"Int_comparison_exp",
 		health:"Int_comparison_exp",
@@ -2422,6 +2412,7 @@ export const AllTypesProps: Record<string,any> = {
 		player:"players_bool_exp",
 		round:"numeric_comparison_exp",
 		team_damage:"Boolean_comparison_exp",
+		time:"timestamptz_comparison_exp",
 		with:"String_comparison_exp"
 	},
 	player_damages_constraint: "enum" as const,
@@ -2434,14 +2425,14 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_player:"players_obj_rel_insert_input",
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
 		player:"players_obj_rel_insert_input",
-		round:"numeric"
+		round:"numeric",
+		time:"timestamptz"
 	},
 	player_damages_max_order_by:{
 		armor:"order_by",
@@ -2453,7 +2444,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		damage:"order_by",
 		damage_armor:"order_by",
 		health:"order_by",
@@ -2462,6 +2452,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
+		time:"order_by",
 		with:"order_by"
 	},
 	player_damages_min_order_by:{
@@ -2474,7 +2465,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		damage:"order_by",
 		damage_armor:"order_by",
 		health:"order_by",
@@ -2483,6 +2473,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
+		time:"order_by",
 		with:"order_by"
 	},
 	player_damages_on_conflict:{
@@ -2501,7 +2492,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		damage:"order_by",
 		damage_armor:"order_by",
 		health:"order_by",
@@ -2514,6 +2504,7 @@ export const AllTypesProps: Record<string,any> = {
 		player:"players_order_by",
 		round:"order_by",
 		team_damage:"order_by",
+		time:"order_by",
 		with:"order_by"
 	},
 	player_damages_pk_columns_input:{
@@ -2523,11 +2514,11 @@ export const AllTypesProps: Record<string,any> = {
 	player_damages_set_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"numeric"
+		round:"numeric",
+		time:"timestamptz"
 	},
 	player_damages_stddev_order_by:{
 		armor:"order_by",
@@ -2563,11 +2554,11 @@ export const AllTypesProps: Record<string,any> = {
 	player_damages_stream_cursor_value_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"numeric"
+		round:"numeric",
+		time:"timestamptz"
 	},
 	player_damages_sum_order_by:{
 		armor:"order_by",
@@ -2674,7 +2665,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		round:"Int_comparison_exp",
 		team_flash:"Boolean_comparison_exp",
-		thrown_by:"players_bool_exp"
+		thrown_by:"players_bool_exp",
+		time:"timestamptz_comparison_exp"
 	},
 	player_flashes_constraint: "enum" as const,
 	player_flashes_inc_input:{
@@ -2692,7 +2684,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
-		thrown_by:"players_obj_rel_insert_input"
+		thrown_by:"players_obj_rel_insert_input",
+		time:"timestamptz"
 	},
 	player_flashes_max_order_by:{
 		attacked_steam_id:"order_by",
@@ -2701,7 +2694,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_flashes_min_order_by:{
 		attacked_steam_id:"order_by",
@@ -2710,7 +2704,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_flashes_on_conflict:{
 		constraint:"player_flashes_constraint",
@@ -2729,7 +2724,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		round:"order_by",
 		team_flash:"order_by",
-		thrown_by:"players_order_by"
+		thrown_by:"players_order_by",
+		time:"order_by"
 	},
 	player_flashes_pk_columns_input:{
 		id:"uuid"
@@ -2743,7 +2739,8 @@ export const AllTypesProps: Record<string,any> = {
 		duration:"numeric",
 		id:"uuid",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		time:"timestamptz"
 	},
 	player_flashes_stddev_order_by:{
 		attacked_steam_id:"order_by",
@@ -2773,7 +2770,8 @@ export const AllTypesProps: Record<string,any> = {
 		duration:"numeric",
 		id:"uuid",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		time:"timestamptz"
 	},
 	player_flashes_sum_order_by:{
 		attacked_steam_id:"order_by",
@@ -2867,7 +2865,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"bigint_comparison_exp",
 		attacker_team:"String_comparison_exp",
 		blinded:"Boolean_comparison_exp",
-		created_at:"timestamptz_comparison_exp",
 		headshot:"Boolean_comparison_exp",
 		hitgroup:"String_comparison_exp",
 		id:"uuid_comparison_exp",
@@ -2880,6 +2877,7 @@ export const AllTypesProps: Record<string,any> = {
 		round:"Int_comparison_exp",
 		thru_smoke:"Boolean_comparison_exp",
 		thru_wall:"Boolean_comparison_exp",
+		time:"timestamptz_comparison_exp",
 		with:"String_comparison_exp"
 	},
 	player_kills_constraint: "enum" as const,
@@ -2891,13 +2889,13 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_player:"players_obj_rel_insert_input",
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
-		player:"players_obj_rel_insert_input"
+		player:"players_obj_rel_insert_input",
+		time:"timestamptz"
 	},
 	player_kills_max_order_by:{
 		attacked_location:"order_by",
@@ -2908,12 +2906,12 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		hitgroup:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
+		time:"order_by",
 		with:"order_by"
 	},
 	player_kills_min_order_by:{
@@ -2925,12 +2923,12 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
-		created_at:"order_by",
 		hitgroup:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
+		time:"order_by",
 		with:"order_by"
 	},
 	player_kills_on_conflict:{
@@ -2950,7 +2948,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
 		blinded:"order_by",
-		created_at:"order_by",
 		headshot:"order_by",
 		hitgroup:"order_by",
 		id:"order_by",
@@ -2963,6 +2960,7 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		thru_smoke:"order_by",
 		thru_wall:"order_by",
+		time:"order_by",
 		with:"order_by"
 	},
 	player_kills_pk_columns_input:{
@@ -2974,10 +2972,10 @@ export const AllTypesProps: Record<string,any> = {
 	player_kills_set_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		time:"timestamptz"
 	},
 	player_kills_stddev_order_by:{
 		attacked_steam_id:"order_by",
@@ -3001,10 +2999,10 @@ export const AllTypesProps: Record<string,any> = {
 	player_kills_stream_cursor_value_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		time:"timestamptz"
 	},
 	player_kills_sum_order_by:{
 		attacked_steam_id:"order_by",
@@ -3078,6 +3076,7 @@ export const AllTypesProps: Record<string,any> = {
 		player:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
 		round:"Int_comparison_exp",
+		time:"timestamptz_comparison_exp",
 		type:"e_objective_types_enum_comparison_exp"
 	},
 	player_objectives_constraint: "enum" as const,
@@ -3092,6 +3091,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid",
 		player:"players_obj_rel_insert_input",
 		player_steam_id:"bigint",
+		time:"timestamptz",
 		type:"e_objective_types_enum"
 	},
 	player_objectives_max_order_by:{
@@ -3099,14 +3099,16 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_map_id:"order_by",
 		player_steam_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_objectives_min_order_by:{
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		player_steam_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_objectives_on_conflict:{
 		constraint:"player_objectives_constraint",
@@ -3122,6 +3124,7 @@ export const AllTypesProps: Record<string,any> = {
 		player:"players_order_by",
 		player_steam_id:"order_by",
 		round:"order_by",
+		time:"order_by",
 		type:"order_by"
 	},
 	player_objectives_pk_columns_input:{
@@ -3133,6 +3136,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
+		time:"timestamptz",
 		type:"e_objective_types_enum"
 	},
 	player_objectives_stddev_order_by:{
@@ -3156,6 +3160,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
+		time:"timestamptz",
 		type:"e_objective_types_enum"
 	},
 	player_objectives_sum_order_by:{
@@ -3227,6 +3232,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		player:"players_bool_exp",
 		round:"Int_comparison_exp",
+		time:"timestamptz_comparison_exp",
 		type:"e_utility_types_enum_comparison_exp"
 	},
 	player_utility_constraint: "enum" as const,
@@ -3241,6 +3247,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
 		player:"players_obj_rel_insert_input",
+		time:"timestamptz",
 		type:"e_utility_types_enum"
 	},
 	player_utility_max_order_by:{
@@ -3249,7 +3256,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_utility_min_order_by:{
 		attacker_location_coordinates:"order_by",
@@ -3257,7 +3265,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		round:"order_by"
+		round:"order_by",
+		time:"order_by"
 	},
 	player_utility_on_conflict:{
 		constraint:"player_utility_constraint",
@@ -3274,6 +3283,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		player:"players_order_by",
 		round:"order_by",
+		time:"order_by",
 		type:"order_by"
 	},
 	player_utility_pk_columns_input:{
@@ -3285,6 +3295,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
+		time:"timestamptz",
 		type:"e_utility_types_enum"
 	},
 	player_utility_stddev_order_by:{
@@ -3308,6 +3319,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
+		time:"timestamptz",
 		type:"e_utility_types_enum"
 	},
 	player_utility_sum_order_by:{
@@ -3508,7 +3520,6 @@ export const AllTypesProps: Record<string,any> = {
 		assited_by_players:"player_assists_bool_exp",
 		assited_by_players_aggregate:"player_assists_aggregate_bool_exp",
 		avatar_url:"String_comparison_exp",
-		created_at:"timestamptz_comparison_exp",
 		damage_dealt:"player_damages_bool_exp",
 		damage_dealt_aggregate:"player_damages_aggregate_bool_exp",
 		damage_taken:"player_damages_bool_exp",
@@ -3539,7 +3550,6 @@ export const AllTypesProps: Record<string,any> = {
 		team_members:"team_roster_bool_exp",
 		team_members_aggregate:"team_roster_aggregate_bool_exp",
 		teams:"teams_bool_exp",
-		updated_at:"timestamptz_comparison_exp",
 		utility_thrown:"player_utility_bool_exp",
 		utility_thrown_aggregate:"player_utility_aggregate_bool_exp"
 	},
@@ -3550,7 +3560,6 @@ export const AllTypesProps: Record<string,any> = {
 	players_insert_input:{
 		assists:"player_assists_arr_rel_insert_input",
 		assited_by_players:"player_assists_arr_rel_insert_input",
-		created_at:"timestamptz",
 		damage_dealt:"player_damages_arr_rel_insert_input",
 		damage_taken:"player_damages_arr_rel_insert_input",
 		deaths:"player_kills_arr_rel_insert_input",
@@ -3564,7 +3573,6 @@ export const AllTypesProps: Record<string,any> = {
 		player_lineup:"match_lineup_players_arr_rel_insert_input",
 		steam_id:"bigint",
 		team_members:"team_roster_arr_rel_insert_input",
-		updated_at:"timestamptz",
 		utility_thrown:"player_utility_arr_rel_insert_input"
 	},
 	players_obj_rel_insert_input:{
@@ -3580,7 +3588,6 @@ export const AllTypesProps: Record<string,any> = {
 		assists_aggregate:"player_assists_aggregate_order_by",
 		assited_by_players_aggregate:"player_assists_aggregate_order_by",
 		avatar_url:"order_by",
-		created_at:"order_by",
 		damage_dealt_aggregate:"player_damages_aggregate_order_by",
 		damage_taken_aggregate:"player_damages_aggregate_order_by",
 		deaths_aggregate:"player_kills_aggregate_order_by",
@@ -3599,7 +3606,6 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"order_by",
 		team_members_aggregate:"team_roster_aggregate_order_by",
 		teams_aggregate:"teams_aggregate_order_by",
-		updated_at:"order_by",
 		utility_thrown_aggregate:"player_utility_aggregate_order_by"
 	},
 	players_pk_columns_input:{
@@ -3607,18 +3613,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_select_column: "enum" as const,
 	players_set_input:{
-		created_at:"timestamptz",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_stream_cursor_input:{
 		initial_value:"players_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
 	players_stream_cursor_value_input:{
-		created_at:"timestamptz",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_update_column: "enum" as const,
 	players_updates:{
@@ -4006,7 +4008,6 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"servers_bool_exp",
 		_not:"servers_bool_exp",
 		_or:"servers_bool_exp",
-		created_at:"timestamptz_comparison_exp",
 		current_match_id:"String_comparison_exp",
 		enabled:"Boolean_comparison_exp",
 		host:"String_comparison_exp",
@@ -4018,18 +4019,15 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"String_comparison_exp",
 		port:"Int_comparison_exp",
 		rcon_password:"String_comparison_exp",
-		tv_port:"Int_comparison_exp",
-		updated_at:"timestamptz_comparison_exp"
+		tv_port:"Int_comparison_exp"
 	},
 	servers_constraint: "enum" as const,
 	servers_inc_input:{
 
 	},
 	servers_insert_input:{
-		created_at:"timestamptz",
 		id:"uuid",
-		matches:"matches_arr_rel_insert_input",
-		updated_at:"timestamptz"
+		matches:"matches_arr_rel_insert_input"
 	},
 	servers_obj_rel_insert_input:{
 		data:"servers_insert_input",
@@ -4041,7 +4039,6 @@ export const AllTypesProps: Record<string,any> = {
 		where:"servers_bool_exp"
 	},
 	servers_order_by:{
-		created_at:"order_by",
 		current_match_id:"order_by",
 		enabled:"order_by",
 		host:"order_by",
@@ -4052,26 +4049,21 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		port:"order_by",
 		rcon_password:"order_by",
-		tv_port:"order_by",
-		updated_at:"order_by"
+		tv_port:"order_by"
 	},
 	servers_pk_columns_input:{
 		id:"uuid"
 	},
 	servers_select_column: "enum" as const,
 	servers_set_input:{
-		created_at:"timestamptz",
-		id:"uuid",
-		updated_at:"timestamptz"
+		id:"uuid"
 	},
 	servers_stream_cursor_input:{
 		initial_value:"servers_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
 	servers_stream_cursor_value_input:{
-		created_at:"timestamptz",
-		id:"uuid",
-		updated_at:"timestamptz"
+		id:"uuid"
 	},
 	servers_update_column: "enum" as const,
 	servers_updates:{
@@ -4737,7 +4729,6 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"teams_bool_exp",
 		_not:"teams_bool_exp",
 		_or:"teams_bool_exp",
-		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		match_lineups:"match_lineups_bool_exp",
 		match_lineups_aggregate:"match_lineups_aggregate_bool_exp",
@@ -4747,37 +4738,30 @@ export const AllTypesProps: Record<string,any> = {
 		owner_steam_id:"bigint_comparison_exp",
 		roster:"team_roster_bool_exp",
 		roster_aggregate:"team_roster_aggregate_bool_exp",
-		short_name:"String_comparison_exp",
-		updated_at:"timestamptz_comparison_exp"
+		short_name:"String_comparison_exp"
 	},
 	teams_constraint: "enum" as const,
 	teams_inc_input:{
 		owner_steam_id:"bigint"
 	},
 	teams_insert_input:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_lineups:"match_lineups_arr_rel_insert_input",
 		owner:"players_obj_rel_insert_input",
 		owner_steam_id:"bigint",
-		roster:"team_roster_arr_rel_insert_input",
-		updated_at:"timestamptz"
+		roster:"team_roster_arr_rel_insert_input"
 	},
 	teams_max_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
-		short_name:"order_by",
-		updated_at:"order_by"
+		short_name:"order_by"
 	},
 	teams_min_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
-		short_name:"order_by",
-		updated_at:"order_by"
+		short_name:"order_by"
 	},
 	teams_obj_rel_insert_input:{
 		data:"teams_insert_input",
@@ -4789,7 +4773,6 @@ export const AllTypesProps: Record<string,any> = {
 		where:"teams_bool_exp"
 	},
 	teams_order_by:{
-		created_at:"order_by",
 		id:"order_by",
 		match_lineups_aggregate:"match_lineups_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
@@ -4797,18 +4780,15 @@ export const AllTypesProps: Record<string,any> = {
 		owner:"players_order_by",
 		owner_steam_id:"order_by",
 		roster_aggregate:"team_roster_aggregate_order_by",
-		short_name:"order_by",
-		updated_at:"order_by"
+		short_name:"order_by"
 	},
 	teams_pk_columns_input:{
 		id:"uuid"
 	},
 	teams_select_column: "enum" as const,
 	teams_set_input:{
-		created_at:"timestamptz",
 		id:"uuid",
-		owner_steam_id:"bigint",
-		updated_at:"timestamptz"
+		owner_steam_id:"bigint"
 	},
 	teams_stddev_order_by:{
 		owner_steam_id:"order_by"
@@ -4824,10 +4804,8 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	teams_stream_cursor_value_input:{
-		created_at:"timestamptz",
 		id:"uuid",
-		owner_steam_id:"bigint",
-		updated_at:"timestamptz"
+		owner_steam_id:"bigint"
 	},
 	teams_sum_order_by:{
 		owner_steam_id:"order_by"
@@ -4846,6 +4824,17 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_variance_order_by:{
 		owner_steam_id:"order_by"
+	},
+	time: `scalar.time` as const,
+	time_comparison_exp:{
+		_eq:"time",
+		_gt:"time",
+		_gte:"time",
+		_in:"time",
+		_lt:"time",
+		_lte:"time",
+		_neq:"time",
+		_nin:"time"
 	},
 	timestamptz: `scalar.timestamptz` as const,
 	timestamptz_comparison_exp:{
@@ -5565,7 +5554,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_lineups:{
 		captain:"v_match_captains",
-		created_at:"timestamptz",
 		id:"uuid",
 		lineup_players:"match_lineup_players",
 		lineup_players_aggregate:"match_lineup_players_aggregate",
@@ -5585,14 +5573,12 @@ export const ReturnTypes: Record<string,any> = {
 		min:"match_lineups_min_fields"
 	},
 	match_lineups_max_fields:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		name:"String",
 		team_id:"uuid"
 	},
 	match_lineups_min_fields:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		name:"String",
@@ -5603,7 +5589,6 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_lineups"
 	},
 	match_map_rounds:{
-		created_at:"timestamptz",
 		id:"uuid",
 		kills:"player_kills",
 		kills_aggregate:"player_kills_aggregate",
@@ -5612,7 +5597,7 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Int",
 		team_1_score:"Int",
 		team_2_score:"Int",
-		updated_at:"timestamptz"
+		time:"time"
 	},
 	match_map_rounds_aggregate:{
 		aggregate:"match_map_rounds_aggregate_fields",
@@ -5637,22 +5622,18 @@ export const ReturnTypes: Record<string,any> = {
 		team_2_score:"Float"
 	},
 	match_map_rounds_max_fields:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
 		team_1_score:"Int",
-		team_2_score:"Int",
-		updated_at:"timestamptz"
+		team_2_score:"Int"
 	},
 	match_map_rounds_min_fields:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
 		team_1_score:"Int",
-		team_2_score:"Int",
-		updated_at:"timestamptz"
+		team_2_score:"Int"
 	},
 	match_map_rounds_mutation_response:{
 		affected_rows:"Int",
@@ -5694,6 +5675,7 @@ export const ReturnTypes: Record<string,any> = {
 		team_2_score:"Float"
 	},
 	match_maps:{
+		created_at:"date",
 		flashes:"player_flashes",
 		flashes_aggregate:"player_flashes_aggregate",
 		id:"uuid",
@@ -5744,6 +5726,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_maps_max_fields:{
+		created_at:"date",
 		id:"uuid",
 		lineup_1_score:"Int",
 		lineup_2_score:"Int",
@@ -5753,6 +5736,7 @@ export const ReturnTypes: Record<string,any> = {
 		picked_by_lineup_id:"uuid"
 	},
 	match_maps_min_fields:{
+		created_at:"date",
 		id:"uuid",
 		lineup_1_score:"Int",
 		lineup_2_score:"Int",
@@ -6115,7 +6099,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacked_team:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		flash:"Boolean",
 		id:"uuid",
 		match:"matches",
@@ -6123,7 +6106,8 @@ export const ReturnTypes: Record<string,any> = {
 		match_map:"match_maps",
 		match_map_id:"uuid",
 		player:"players",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_assists_aggregate:{
 		aggregate:"player_assists_aggregate_fields",
@@ -6152,22 +6136,22 @@ export const ReturnTypes: Record<string,any> = {
 		attacked_team:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_assists_min_fields:{
 		attacked_steam_id:"bigint",
 		attacked_team:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_assists_mutation_response:{
 		affected_rows:"Int",
@@ -6219,7 +6203,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		damage:"Int",
 		damage_armor:"Int",
 		health:"Int",
@@ -6232,6 +6215,7 @@ export const ReturnTypes: Record<string,any> = {
 		player:"players",
 		round:"numeric",
 		team_damage:"Boolean",
+		time:"timestamptz",
 		with:"String"
 	},
 	player_damages_aggregate:{
@@ -6270,7 +6254,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		damage:"Int",
 		damage_armor:"Int",
 		health:"Int",
@@ -6279,6 +6262,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"numeric",
+		time:"timestamptz",
 		with:"String"
 	},
 	player_damages_min_fields:{
@@ -6291,7 +6275,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		damage:"Int",
 		damage_armor:"Int",
 		health:"Int",
@@ -6300,6 +6283,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"numeric",
+		time:"timestamptz",
 		with:"String"
 	},
 	player_damages_mutation_response:{
@@ -6381,7 +6365,8 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		round:"Int",
 		team_flash:"Boolean",
-		thrown_by:"players"
+		thrown_by:"players",
+		time:"timestamptz"
 	},
 	player_flashes_aggregate:{
 		aggregate:"player_flashes_aggregate_fields",
@@ -6413,7 +6398,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_flashes_min_fields:{
 		attacked_steam_id:"bigint",
@@ -6422,7 +6408,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_flashes_mutation_response:{
 		affected_rows:"Int",
@@ -6482,7 +6469,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
 		blinded:"Boolean",
-		created_at:"timestamptz",
 		headshot:"Boolean",
 		hitgroup:"String",
 		id:"uuid",
@@ -6495,6 +6481,7 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Int",
 		thru_smoke:"Boolean",
 		thru_wall:"Boolean",
+		time:"timestamptz",
 		with:"String"
 	},
 	player_kills_aggregate:{
@@ -6528,12 +6515,12 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		hitgroup:"String",
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
+		time:"timestamptz",
 		with:"String"
 	},
 	player_kills_min_fields:{
@@ -6545,12 +6532,12 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
-		created_at:"timestamptz",
 		hitgroup:"String",
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
+		time:"timestamptz",
 		with:"String"
 	},
 	player_kills_mutation_response:{
@@ -6601,6 +6588,7 @@ export const ReturnTypes: Record<string,any> = {
 		player:"players",
 		player_steam_id:"bigint",
 		round:"Int",
+		time:"timestamptz",
 		type:"e_objective_types_enum"
 	},
 	player_objectives_aggregate:{
@@ -6629,14 +6617,16 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_objectives_min_fields:{
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_objectives_mutation_response:{
 		affected_rows:"Int",
@@ -6680,6 +6670,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		player:"players",
 		round:"Int",
+		time:"timestamptz",
 		type:"e_utility_types_enum"
 	},
 	player_utility_aggregate:{
@@ -6709,7 +6700,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_utility_min_fields:{
 		attacker_location_coordinates:"String",
@@ -6717,7 +6709,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		round:"Int"
+		round:"Int",
+		time:"timestamptz"
 	},
 	player_utility_mutation_response:{
 		affected_rows:"Int",
@@ -6757,7 +6750,6 @@ export const ReturnTypes: Record<string,any> = {
 		assited_by_players:"player_assists",
 		assited_by_players_aggregate:"player_assists_aggregate",
 		avatar_url:"String",
-		created_at:"timestamptz",
 		damage_dealt:"player_damages",
 		damage_dealt_aggregate:"player_damages_aggregate",
 		damage_taken:"player_damages",
@@ -6788,7 +6780,6 @@ export const ReturnTypes: Record<string,any> = {
 		team_members:"team_roster",
 		team_members_aggregate:"team_roster_aggregate",
 		teams:"teams",
-		updated_at:"timestamptz",
 		utility_thrown:"player_utility",
 		utility_thrown_aggregate:"player_utility_aggregate"
 	},
@@ -6814,21 +6805,17 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	players_max_fields:{
 		avatar_url:"String",
-		created_at:"timestamptz",
 		discord_id:"String",
 		name:"String",
 		profile_url:"String",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_min_fields:{
 		avatar_url:"String",
-		created_at:"timestamptz",
 		discord_id:"String",
 		name:"String",
 		profile_url:"String",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_mutation_response:{
 		affected_rows:"Int",
@@ -6939,7 +6926,6 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_opening_duels_aggregate:"v_player_opening_duels_aggregate"
 	},
 	servers:{
-		created_at:"timestamptz",
 		current_match_id:"String",
 		enabled:"Boolean",
 		host:"String",
@@ -6951,8 +6937,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"String",
 		port:"Int",
 		rcon_password:"String",
-		tv_port:"Int",
-		updated_at:"timestamptz"
+		tv_port:"Int"
 	},
 	servers_aggregate:{
 		aggregate:"servers_aggregate_fields",
@@ -6976,7 +6961,6 @@ export const ReturnTypes: Record<string,any> = {
 		tv_port:"Float"
 	},
 	servers_max_fields:{
-		created_at:"timestamptz",
 		current_match_id:"String",
 		host:"String",
 		id:"uuid",
@@ -6984,11 +6968,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"String",
 		port:"Int",
 		rcon_password:"String",
-		tv_port:"Int",
-		updated_at:"timestamptz"
+		tv_port:"Int"
 	},
 	servers_min_fields:{
-		created_at:"timestamptz",
 		current_match_id:"String",
 		host:"String",
 		id:"uuid",
@@ -6996,8 +6978,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"String",
 		port:"Int",
 		rcon_password:"String",
-		tv_port:"Int",
-		updated_at:"timestamptz"
+		tv_port:"Int"
 	},
 	servers_mutation_response:{
 		affected_rows:"Int",
@@ -7205,7 +7186,6 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	teams:{
-		created_at:"timestamptz",
 		id:"uuid",
 		match_lineups:"match_lineups",
 		match_lineups_aggregate:"match_lineups_aggregate",
@@ -7215,8 +7195,7 @@ export const ReturnTypes: Record<string,any> = {
 		owner_steam_id:"bigint",
 		roster:"team_roster",
 		roster_aggregate:"team_roster_aggregate",
-		short_name:"String",
-		updated_at:"timestamptz"
+		short_name:"String"
 	},
 	teams_aggregate:{
 		aggregate:"teams_aggregate_fields",
@@ -7239,20 +7218,16 @@ export const ReturnTypes: Record<string,any> = {
 		owner_steam_id:"Float"
 	},
 	teams_max_fields:{
-		created_at:"timestamptz",
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",
-		short_name:"String",
-		updated_at:"timestamptz"
+		short_name:"String"
 	},
 	teams_min_fields:{
-		created_at:"timestamptz",
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",
-		short_name:"String",
-		updated_at:"timestamptz"
+		short_name:"String"
 	},
 	teams_mutation_response:{
 		affected_rows:"Int",
@@ -7279,6 +7254,7 @@ export const ReturnTypes: Record<string,any> = {
 	teams_variance_fields:{
 		owner_steam_id:"Float"
 	},
+	time: `scalar.time` as const,
 	timestamptz: `scalar.timestamptz` as const,
 	uuid: `scalar.uuid` as const,
 	v_match_captains:{

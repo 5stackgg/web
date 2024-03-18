@@ -5,25 +5,25 @@
         <th>{{ lineup.name }}</th>
         <th>Attempts</th>
         <th>Success</th>
-        <th>Traded</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="member of lineup.lineup_players">
-        <lineup-member :member="member" :lineup_id="lineup.id"></lineup-member>
-        <td class="w-2">TODO</td>
-        <td class="w-2">TODO</td>
-        <td class="w-2">TODO</td>
-      </tr>
+      <lineup-opening-duel-row
+        :member="member"
+        :lineup="lineup"
+        :match="match"
+        v-for="member of lineup.lineup_players"
+      ></lineup-opening-duel-row>
     </tbody>
   </clickable-table>
 </template>
 
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
+import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
 
 export default {
-  components: { LineupMember },
+  components: { LineupOpeningDuelRow, LineupMember },
   props: {
     match: {
       required: true,

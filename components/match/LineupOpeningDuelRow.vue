@@ -1,0 +1,67 @@
+<template>
+  <tr>
+    <lineup-member :member="member" :lineup_id="lineup.id"></lineup-member>
+    <td class="w-2">{{ attempts }}</td>
+    <td class="w-2">{{ success }}</td>
+  </tr>
+</template>
+
+<script lang="ts">
+import LineupMember from "~/components/match/LineupMember.vue";
+
+export default {
+  components: { LineupMember },
+  props: {
+    match: {
+      required: true,
+      type: Object,
+    },
+    member: {
+      required: true,
+      type: Object,
+    },
+    lineup: {
+      required: true,
+      type: Object,
+    },
+  },
+  computed: {
+    attempts() {
+      let attempts = 0;
+
+      for (const match_map of this.match.match_maps) {
+        for (const round of match_map.rounds) {
+          const firstKill = round.kills[0];
+
+          if (
+            firstKill &&
+            (this.member.steam_id === firstKill.player.steam_id ||
+              this.member.steam_id === firstKill.attacked_player.steam_id)
+          ) {
+            attempts++;
+          }
+
+          break;
+        }
+      }
+      return attempts;
+    },
+    success() {
+      let success = 0;
+
+      for (const match_map of this.match.match_maps) {
+        for (const round of match_map.rounds) {
+          const firstKill = round.kills[0];
+
+          if (firstKill && this.member.steam_id === firstKill.player.steam_id) {
+            success++;
+          }
+
+          break;
+        }
+      }
+      return success;
+    },
+  },
+};
+</script>

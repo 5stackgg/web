@@ -133,6 +133,7 @@ export default {
             matchId: this.$route.params.id,
             order_by_name: order_by.asc,
             order_by_kills: order_by.desc,
+            order_by_round_kills: order_by.asc,
           };
         },
         query: typedGql("subscription")({
@@ -166,6 +167,24 @@ export default {
                 lineup_2_score: true,
                 picked_by: {
                   name: true,
+                },
+                rounds: {
+                  round: true,
+                  kills: [
+                    {
+                      order_by: {
+                        created_at: $("order_by_round_kills", "order_by"),
+                      },
+                    },
+                    {
+                      player: {
+                        steam_id: true,
+                      },
+                      attacked_player: {
+                        steam_id: true,
+                      },
+                    },
+                  ],
                 },
               },
               lineups: {

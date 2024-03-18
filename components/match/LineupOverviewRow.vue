@@ -31,7 +31,7 @@
       >
     </td>
     <td class="w-2">
-      {{ member.player.team_damage_aggregate.aggregate.sum.damage }}
+      {{ member.player.team_damage_aggregate.aggregate.sum.damage || 0 }}
     </td>
     <td class="w-2">{{ twoKills }}</td>
     <td class="w-2">{{ threeKills }}</td>

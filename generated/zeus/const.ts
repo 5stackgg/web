@@ -772,6 +772,18 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"match_lineups_set_input",
 		where:"match_lineups_bool_exp"
 	},
+	match_map_rounds:{
+		kills:{
+			distinct_on:"player_kills_select_column",
+			order_by:"player_kills_order_by",
+			where:"player_kills_bool_exp"
+		},
+		kills_aggregate:{
+			distinct_on:"player_kills_select_column",
+			order_by:"player_kills_order_by",
+			where:"player_kills_bool_exp"
+		}
+	},
 	match_map_rounds_aggregate_bool_exp:{
 		count:"match_map_rounds_aggregate_bool_exp_count"
 	},
@@ -813,6 +825,8 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"match_map_rounds_bool_exp",
 		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
+		kills:"player_kills_bool_exp",
+		kills_aggregate:"player_kills_aggregate_bool_exp",
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
 		round:"Int_comparison_exp",
@@ -827,6 +841,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_rounds_insert_input:{
 		created_at:"timestamptz",
 		id:"uuid",
+		kills:"player_kills_arr_rel_insert_input",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
 		updated_at:"timestamptz"
@@ -857,6 +872,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_rounds_order_by:{
 		created_at:"order_by",
 		id:"order_by",
+		kills_aggregate:"player_kills_aggregate_order_by",
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -2405,6 +2421,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		player:"players_bool_exp",
 		round:"numeric_comparison_exp",
+		team_damage:"Boolean_comparison_exp",
 		with:"String_comparison_exp"
 	},
 	player_damages_constraint: "enum" as const,
@@ -2496,6 +2513,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		player:"players_order_by",
 		round:"order_by",
+		team_damage:"order_by",
 		with:"order_by"
 	},
 	player_damages_pk_columns_input:{
@@ -5587,6 +5605,8 @@ export const ReturnTypes: Record<string,any> = {
 	match_map_rounds:{
 		created_at:"timestamptz",
 		id:"uuid",
+		kills:"player_kills",
+		kills_aggregate:"player_kills_aggregate",
 		match_map:"match_maps",
 		match_map_id:"uuid",
 		round:"Int",
@@ -6211,6 +6231,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		player:"players",
 		round:"numeric",
+		team_damage:"Boolean",
 		with:"String"
 	},
 	player_damages_aggregate:{

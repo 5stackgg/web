@@ -8,7 +8,7 @@
         <th>Team Flashed</th>
         <th>Avg bling time</th>
         <th>HE Damage</th>
-        <th>HE Team damage</th>
+        <th>Molotov Damage</th>
         <th>Unused utility</th>
       </tr>
     </thead>
@@ -34,7 +34,9 @@
         <td class="w-2">
           {{ member.player.he_damage_aggregate.aggregate.sum.damage || 0 }}
         </td>
-        <td class="w-2">TODO</td>
+        <td class="w-2">
+          {{ member.player.molotov_damage_aggregate.aggregate.sum.damage || 0 }}
+        </td>
         <td class="w-2">TODO</td>
       </tr>
     </tbody>

@@ -267,13 +267,15 @@ export default {
                           ],
                         },
                       ],
-                      // TODO - non team damage
                       damage_dealt_aggregate: [
                         {
                           where: {
                             match_id: {
                               _eq: $("matchId", "uuid!"),
                             },
+                            team_damage: {
+                              _eq: false,
+                            }
                           },
                         },
                         {
@@ -426,8 +428,31 @@ export default {
                             },
                           ],
                         },
+                        team_damage_aggregate: {
+                          damage_dealt_aggregate: [
+                            {
+                              where: {
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                                team_damage: {
+                                  _eq: true,
+                                }
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  sum: {
+                                    damage: true,
+                                  },
+                                },
+                              ],
+                            },
+                          ],
+                        },
                         he_damage_aggregate: {
-                          // TODO - non team damage
                           damage_dealt_aggregate: [
                             {
                               where: {
@@ -437,6 +462,37 @@ export default {
                                 match_id: {
                                   _eq: $("matchId", "uuid!"),
                                 },
+                                team_damage: {
+                                  _eq: false
+                                }
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  sum: {
+                                    damage: true,
+                                  },
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        molotov_damage_aggregate: {
+                          // TODO - non team damage
+                          damage_dealt_aggregate: [
+                            {
+                              where: {
+                                with: {
+                                  _eq: "molotov",
+                                },
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                                team_damage: {
+                                  _eq: false
+                                }
                               },
                             },
                             {

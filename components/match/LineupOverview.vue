@@ -8,6 +8,7 @@
         <th>Deaths</th>
         <th>K/D</th>
         <th>Total Damage</th>
+        <th>Team Damage</th>
         <th>2k</th>
         <th>3k</th>
         <th>4k</th>

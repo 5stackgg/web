@@ -2,7 +2,6 @@
   <NuxtLink to="/teams/create">
     <five-stack-button>Create Team</five-stack-button>
   </NuxtLink>
-
   <tabs>
     <tab title="Teams">
       <form @submit.prevent>
@@ -25,21 +24,7 @@
       ></pagination>
     </tab>
     <tab title="My Teams">
-      <teams-table
-        :teams="meWithTeams.player.teams"
-        v-if="meWithTeams"
-      ></teams-table>
-      <pagination
-        :per-page="10"
-        :offset="myTeamsOffset"
-        @offset="
-          (offset) => {
-            myTeamsOffset = offset;
-          }
-        "
-        :total="my_teams_aggregate.aggregate.count"
-        v-if="my_teams_aggregate"
-      ></pagination>
+      <teams-table :teams="myTeams" v-if="myTeams"></teams-table>
     </tab>
   </tabs>
 </template>
@@ -54,6 +39,7 @@ import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $, order_by } from "~/generated/zeus";
 import { useAuthStore } from "#imports";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 export default {
   data() {
@@ -61,6 +47,7 @@ export default {
       teamsOffset: 0,
       myTeamsOffset: 0,
       teamQuery: undefined,
+      myTeams: undefined,
     };
   },
   apollo: {
@@ -113,76 +100,33 @@ export default {
         ],
       }),
     },
-    meWithTeams: {
-      fetchPolicy: "network-only",
-      query: function () {
-        return generateQuery({
-          __alias: {
-            meWithTeams: {
-              me: {
-                player: {
-                  teams: [
-                    {
-                      limit: 10,
-                      offset: $("offset", "Int!"),
-                      order_by: [
-                        {},
-                        {
-                          name: order_by.asc,
-                        },
-                      ],
-                      ...(this.teamQuery?.length >= 3 && {
-                        where: {
-                          name: {
-                            _ilike: $("teamQuery", "String"),
-                          },
-                        },
-                      }),
-                    },
-                    {
-                      id: true,
-                      name: true,
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        });
-      },
-      variables: function () {
-        return {
-          offset: this.myTeamsOffset,
-          teamQuery: `%${this.teamQuery}%`,
-        };
-      },
-    },
-    my_teams_aggregate: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          my_teams_aggregate: {
-            team_roster_aggregate: [
+    $subscribe: {
+      myTeams: {
+        query: function () {
+          return typedGql("subscription")({
+            players: [
               {
                 where: {
-                  player_steam_id: {
-                    _eq: $("steam_id", "bigint!"),
+                  steam_id: {
+                    _eq: useAuthStore().me.steam_id,
                   },
                 },
               },
               {
-                aggregate: {
-                  count: true,
-                },
+                teams: [
+                  {},
+                  {
+                    id: true,
+                    name: true,
+                  },
+                ],
               },
             ],
-          },
+          });
         },
-      }),
-      variables: function () {
-        return {
-          steam_id: useAuthStore().me.steam_id,
-        };
+        result: function ({ data }) {
+          this.myTeams = data.players?.[0].teams;
+        },
       },
     },
   },

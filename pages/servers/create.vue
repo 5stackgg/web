@@ -57,7 +57,6 @@ import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import FiveStackNumberInput from "~/components/forms/FiveStackNumberInput.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { $ } from "~/generated/zeus";
 
 export default {
   components: {

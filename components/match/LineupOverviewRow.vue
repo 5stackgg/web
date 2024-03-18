@@ -22,10 +22,9 @@
       <span
         class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
         >{{
-          Math.ceil(
-            member.player.damage_dealt_aggregate.aggregate.sum.damage / 1,
-            // TODO - need to get rounds
-            // match.rounds.length,
+          formatStatValue(
+            member.player.damage_dealt_aggregate.aggregate.sum.damage /
+              totalRounds,
           )
         }}
         ADR</span
@@ -43,13 +42,22 @@
     </td>
   </tr>
 </template>
+<script setup lang="ts">
+import formatStatValue from "~/utilities/formatStatValue";
+</script>
+
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
+
 export default {
   components: {
     LineupMember,
   },
   props: {
+    match: {
+      required: true,
+      type: Object,
+    },
     member: {
       required: true,
       type: Object,
@@ -64,8 +72,10 @@ export default {
       if (this.member.player.deaths_aggregate.aggregate.count === 0) {
         return this.member.player.kills_aggregate.aggregate.count;
       }
-      return Math.round(( this.member.player.kills_aggregate.aggregate.count /
-          this.member.player.deaths_aggregate.aggregate.count) * 100) / 100; // round to two decimal places
+      return formatStatValue(
+        this.member.player.kills_aggregate.aggregate.count /
+          this.member.player.deaths_aggregate.aggregate.count,
+      );
     },
     twoKills() {
       return this.member.player.multi_kills.filter(({ kills }) => {
@@ -86,6 +96,13 @@ export default {
       return this.member.player.multi_kills.filter(({ kills }) => {
         return kills == 5;
       }).length;
+    },
+    totalRounds() {
+      let rounds = 0;
+      for (const match_map of this.match.match_maps) {
+        rounds += match_map.lineup_1_score + match_map.lineup_2_score;
+      }
+      return rounds;
     },
   },
 };

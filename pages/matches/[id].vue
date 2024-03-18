@@ -128,6 +128,13 @@ export default {
   apollo: {
     $subscribe: {
       matches_by_pk: {
+        variables: function () {
+          return {
+            matchId: this.$route.params.id,
+            order_by_name: order_by.asc,
+            order_by_kills: order_by.desc,
+          };
+        },
         query: typedGql("subscription")({
           matches_by_pk: [
             {
@@ -272,6 +279,23 @@ export default {
                           kills: true,
                         },
                       ],
+                      flashed_players_aggregate: [
+                        {
+                          where: {
+                            match_id: {
+                              _eq: $("matchId", "uuid!"),
+                            },
+                          },
+                        },
+                        {
+                          aggregate: [
+                            {},
+                            {
+                              count: true,
+                            },
+                          ],
+                        },
+                      ],
                       __alias: {
                         zeus_kills_aggregate: {
                           kills_aggregate: [
@@ -317,6 +341,95 @@ export default {
                             },
                           ],
                         },
+                        team_flashes_aggregate: {
+                          flashed_players_aggregate: [
+                            {
+                              where: {
+                                team_flash: {
+                                  _eq: true,
+                                },
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  count: true,
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        avg_flash_duration_aggregate: {
+                          flashed_players_aggregate: [
+                            {
+                              where: {
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  avg: {
+                                    duration: true,
+                                  },
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        flashes_thrown_aggregate: {
+                          utility_thrown_aggregate: [
+                            {
+                              where: {
+                                type: {
+                                  _eq: "Flash",
+                                },
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  count: true,
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        he_damage_aggregate: {
+                          damage_dealt_aggregate: [
+                            {
+                              where: {
+                                with: {
+                                  _eq: "hegrenade",
+                                },
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  sum: {
+                                    damage: true,
+                                  },
+                                },
+                              ],
+                            },
+                          ],
+                        },
                       },
                     },
                   },
@@ -325,13 +438,6 @@ export default {
             },
           ],
         }),
-        variables: function () {
-          return {
-            matchId: this.$route.params.id,
-            order_by_name: order_by.asc,
-            order_by_kills: order_by.desc,
-          };
-        },
         result: function ({ data }) {
           this.match = data.matches_by_pk;
         },

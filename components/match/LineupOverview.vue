@@ -18,6 +18,7 @@
     </thead>
     <tbody>
       <lineup-overview-row
+        :match="match"
         :member="member"
         v-for="member of lineup.lineup_players"
         :lineup_id="lineup.id"

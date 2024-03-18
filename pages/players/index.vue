@@ -11,14 +11,12 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Kills</th>
       </tr>
     </thead>
     <tbody>
       <template v-for="player of players">
         <tr @click="viewPlayer(player.steam_id)">
           <td>{{ player.name }}</td>
-          <td>{{ player.kills_aggregate.aggregate.count }}</td>
         </tr>
       </template>
     </tbody>
@@ -78,17 +76,6 @@ export default {
             {
               name: true,
               steam_id: true,
-              kills_aggregate: [
-                {},
-                {
-                  aggregate: [
-                    {},
-                    {
-                      count: true,
-                    },
-                  ],
-                },
-              ],
             },
           ],
         });

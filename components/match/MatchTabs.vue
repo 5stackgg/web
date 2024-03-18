@@ -33,7 +33,13 @@
         :lineup="matchLineups.lineup2"
       ></lineup-opening-duels>
     </tab>
-    <tab title="Clutches"> TODO </tab>
+    <tab title="Clutches">
+      <lineup-clutches
+        :match="match"
+        :lineup1="matchLineups.lineup1"
+        :lineup2="matchLineups.lineup2"
+      ></lineup-clutches>
+    </tab>
   </tabs>
 </template>
 <script lang="ts">
@@ -41,6 +47,7 @@ import Tab from "~/components/tabs/Tab.vue";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOverview from "~/components/match/LineupOverview.vue";
+import LineupClutches from "~/components/match/LineupClutches.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 
 export default {
@@ -48,6 +55,7 @@ export default {
     Tab,
     LineupUtility,
     LineupOverview,
+    LineupClutches,
     LineupOpeningDuels,
   },
   props: {

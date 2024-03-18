@@ -248,6 +248,7 @@ export default {
                           ],
                         },
                       ],
+                      // TODO - non team damage
                       damage_dealt_aggregate: [
                         {
                           where: {
@@ -407,6 +408,7 @@ export default {
                           ],
                         },
                         he_damage_aggregate: {
+                          // TODO - non team damage
                           damage_dealt_aggregate: [
                             {
                               where: {

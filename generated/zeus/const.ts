@@ -1037,9 +1037,9 @@ export const AllTypesProps: Record<string,any> = {
 		flashes:"player_flashes_bool_exp",
 		flashes_aggregate:"player_flashes_aggregate_bool_exp",
 		id:"uuid_comparison_exp",
-		lineup_1_score:"String_comparison_exp",
+		lineup_1_score:"Int_comparison_exp",
 		lineup_1_side:"e_sides_enum_comparison_exp",
-		lineup_2_score:"String_comparison_exp",
+		lineup_2_score:"Int_comparison_exp",
 		lineup_2_side:"e_sides_enum_comparison_exp",
 		map:"String_comparison_exp",
 		match:"matches_bool_exp",
@@ -3420,6 +3420,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_objectives_order_by",
 			where:"player_objectives_bool_exp"
 		},
+		opening_duels:{
+			distinct_on:"v_player_opening_duels_select_column",
+			order_by:"v_player_opening_duels_order_by",
+			where:"v_player_opening_duels_bool_exp"
+		},
+		opening_duels_aggregate:{
+			distinct_on:"v_player_opening_duels_select_column",
+			order_by:"v_player_opening_duels_order_by",
+			where:"v_player_opening_duels_bool_exp"
+		},
 		owned_teams:{
 			distinct_on:"teams_select_column",
 			order_by:"teams_order_by",
@@ -3500,6 +3510,8 @@ export const AllTypesProps: Record<string,any> = {
 		name:"String_comparison_exp",
 		objectives:"player_objectives_bool_exp",
 		objectives_aggregate:"player_objectives_aggregate_bool_exp",
+		opening_duels:"v_player_opening_duels_bool_exp",
+		opening_duels_aggregate:"v_player_opening_duels_aggregate_bool_exp",
 		owned_teams:"teams_bool_exp",
 		owned_teams_aggregate:"teams_aggregate_bool_exp",
 		player_lineup:"match_lineup_players_bool_exp",
@@ -3529,6 +3541,7 @@ export const AllTypesProps: Record<string,any> = {
 		kills:"player_kills_arr_rel_insert_input",
 		multi_kills:"v_player_multi_kills_arr_rel_insert_input",
 		objectives:"player_objectives_arr_rel_insert_input",
+		opening_duels:"v_player_opening_duels_arr_rel_insert_input",
 		owned_teams:"teams_arr_rel_insert_input",
 		player_lineup:"match_lineup_players_arr_rel_insert_input",
 		steam_id:"bigint",
@@ -3561,6 +3574,7 @@ export const AllTypesProps: Record<string,any> = {
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_order_by",
 		name:"order_by",
 		objectives_aggregate:"player_objectives_aggregate_order_by",
+		opening_duels_aggregate:"v_player_opening_duels_aggregate_order_by",
 		owned_teams_aggregate:"teams_aggregate_order_by",
 		player_lineup_aggregate:"match_lineup_players_aggregate_order_by",
 		profile_url:"order_by",
@@ -3941,6 +3955,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_player_multi_kills_select_column",
 			order_by:"v_player_multi_kills_order_by",
 			where:"v_player_multi_kills_bool_exp"
+		},
+		v_player_opening_duels:{
+			distinct_on:"v_player_opening_duels_select_column",
+			order_by:"v_player_opening_duels_order_by",
+			where:"v_player_opening_duels_bool_exp"
+		},
+		v_player_opening_duels_aggregate:{
+			distinct_on:"v_player_opening_duels_select_column",
+			order_by:"v_player_opening_duels_order_by",
+			where:"v_player_opening_duels_bool_exp"
 		}
 	},
 	servers:{
@@ -4496,6 +4520,20 @@ export const AllTypesProps: Record<string,any> = {
 		v_player_multi_kills_stream:{
 			cursor:"v_player_multi_kills_stream_cursor_input",
 			where:"v_player_multi_kills_bool_exp"
+		},
+		v_player_opening_duels:{
+			distinct_on:"v_player_opening_duels_select_column",
+			order_by:"v_player_opening_duels_order_by",
+			where:"v_player_opening_duels_bool_exp"
+		},
+		v_player_opening_duels_aggregate:{
+			distinct_on:"v_player_opening_duels_select_column",
+			order_by:"v_player_opening_duels_order_by",
+			where:"v_player_opening_duels_bool_exp"
+		},
+		v_player_opening_duels_stream:{
+			cursor:"v_player_opening_duels_stream_cursor_input",
+			where:"v_player_opening_duels_bool_exp"
 		}
 	},
 	team_roster_aggregate_bool_exp:{
@@ -5110,6 +5148,125 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		kills:"order_by",
 		round:"order_by"
+	},
+	v_player_opening_duels_aggregate_bool_exp:{
+		count:"v_player_opening_duels_aggregate_bool_exp_count"
+	},
+	v_player_opening_duels_aggregate_bool_exp_count:{
+		arguments:"v_player_opening_duels_select_column",
+		filter:"v_player_opening_duels_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	v_player_opening_duels_aggregate_fields:{
+		count:{
+			columns:"v_player_opening_duels_select_column"
+		}
+	},
+	v_player_opening_duels_aggregate_order_by:{
+		avg:"v_player_opening_duels_avg_order_by",
+		count:"order_by",
+		max:"v_player_opening_duels_max_order_by",
+		min:"v_player_opening_duels_min_order_by",
+		stddev:"v_player_opening_duels_stddev_order_by",
+		stddev_pop:"v_player_opening_duels_stddev_pop_order_by",
+		stddev_samp:"v_player_opening_duels_stddev_samp_order_by",
+		sum:"v_player_opening_duels_sum_order_by",
+		var_pop:"v_player_opening_duels_var_pop_order_by",
+		var_samp:"v_player_opening_duels_var_samp_order_by",
+		variance:"v_player_opening_duels_variance_order_by"
+	},
+	v_player_opening_duels_arr_rel_insert_input:{
+		data:"v_player_opening_duels_insert_input"
+	},
+	v_player_opening_duels_avg_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_bool_exp:{
+		_and:"v_player_opening_duels_bool_exp",
+		_not:"v_player_opening_duels_bool_exp",
+		_or:"v_player_opening_duels_bool_exp",
+		attempts:"bigint_comparison_exp",
+		match_id:"uuid_comparison_exp",
+		match_map_id:"uuid_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		successes:"bigint_comparison_exp"
+	},
+	v_player_opening_duels_insert_input:{
+		attempts:"bigint",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint",
+		successes:"bigint"
+	},
+	v_player_opening_duels_max_order_by:{
+		attempts:"order_by",
+		match_id:"order_by",
+		match_map_id:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_min_order_by:{
+		attempts:"order_by",
+		match_id:"order_by",
+		match_map_id:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_order_by:{
+		attempts:"order_by",
+		match_id:"order_by",
+		match_map_id:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_select_column: "enum" as const,
+	v_player_opening_duels_stddev_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_stddev_pop_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_stddev_samp_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_stream_cursor_input:{
+		initial_value:"v_player_opening_duels_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_player_opening_duels_stream_cursor_value_input:{
+		attempts:"bigint",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint",
+		successes:"bigint"
+	},
+	v_player_opening_duels_sum_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_var_pop_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_var_samp_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
+	},
+	v_player_opening_duels_variance_order_by:{
+		attempts:"order_by",
+		steam_id:"order_by",
+		successes:"order_by"
 	}
 }
 
@@ -5520,9 +5677,9 @@ export const ReturnTypes: Record<string,any> = {
 		flashes:"player_flashes",
 		flashes_aggregate:"player_flashes_aggregate",
 		id:"uuid",
-		lineup_1_score:"String",
+		lineup_1_score:"Int",
 		lineup_1_side:"e_sides_enum",
-		lineup_2_score:"String",
+		lineup_2_score:"Int",
 		lineup_2_side:"e_sides_enum",
 		map:"String",
 		match:"matches",
@@ -5562,12 +5719,14 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"match_maps_variance_fields"
 	},
 	match_maps_avg_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Float"
 	},
 	match_maps_max_fields:{
 		id:"uuid",
-		lineup_1_score:"String",
-		lineup_2_score:"String",
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		map:"String",
 		match_id:"uuid",
 		order:"Int",
@@ -5575,8 +5734,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_maps_min_fields:{
 		id:"uuid",
-		lineup_1_score:"String",
-		lineup_2_score:"String",
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		map:"String",
 		match_id:"uuid",
 		order:"Int",
@@ -5587,24 +5746,38 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_maps"
 	},
 	match_maps_stddev_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Float"
 	},
 	match_maps_stddev_pop_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Float"
 	},
 	match_maps_stddev_samp_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Float"
 	},
 	match_maps_sum_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Int"
 	},
 	match_maps_var_pop_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Float"
 	},
 	match_maps_var_samp_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Float"
 	},
 	match_maps_variance_fields:{
+		lineup_1_score:"Int",
+		lineup_2_score:"Int",
 		order:"Float"
 	},
 	matches:{
@@ -6583,6 +6756,8 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		objectives:"player_objectives",
 		objectives_aggregate:"player_objectives_aggregate",
+		opening_duels:"v_player_opening_duels",
+		opening_duels_aggregate:"v_player_opening_duels_aggregate",
 		owned_teams:"teams",
 		owned_teams_aggregate:"teams_aggregate",
 		player_lineup:"match_lineup_players",
@@ -6738,7 +6913,9 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_match_kills:"v_player_match_kills",
 		v_player_match_kills_aggregate:"v_player_match_kills_aggregate",
 		v_player_multi_kills:"v_player_multi_kills",
-		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate"
+		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate",
+		v_player_opening_duels:"v_player_opening_duels",
+		v_player_opening_duels_aggregate:"v_player_opening_duels_aggregate"
 	},
 	servers:{
 		created_at:"timestamptz",
@@ -6939,7 +7116,10 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_match_kills_stream:"v_player_match_kills",
 		v_player_multi_kills:"v_player_multi_kills",
 		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate",
-		v_player_multi_kills_stream:"v_player_multi_kills"
+		v_player_multi_kills_stream:"v_player_multi_kills",
+		v_player_opening_duels:"v_player_opening_duels",
+		v_player_opening_duels_aggregate:"v_player_opening_duels_aggregate",
+		v_player_opening_duels_stream:"v_player_opening_duels"
 	},
 	team_roster:{
 		player:"players",
@@ -7537,6 +7717,84 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"Float",
 		kills:"Float",
 		round:"Float"
+	},
+	v_player_opening_duels:{
+		attempts:"bigint",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint",
+		successes:"bigint"
+	},
+	v_player_opening_duels_aggregate:{
+		aggregate:"v_player_opening_duels_aggregate_fields",
+		nodes:"v_player_opening_duels"
+	},
+	v_player_opening_duels_aggregate_fields:{
+		avg:"v_player_opening_duels_avg_fields",
+		count:"Int",
+		max:"v_player_opening_duels_max_fields",
+		min:"v_player_opening_duels_min_fields",
+		stddev:"v_player_opening_duels_stddev_fields",
+		stddev_pop:"v_player_opening_duels_stddev_pop_fields",
+		stddev_samp:"v_player_opening_duels_stddev_samp_fields",
+		sum:"v_player_opening_duels_sum_fields",
+		var_pop:"v_player_opening_duels_var_pop_fields",
+		var_samp:"v_player_opening_duels_var_samp_fields",
+		variance:"v_player_opening_duels_variance_fields"
+	},
+	v_player_opening_duels_avg_fields:{
+		attempts:"Float",
+		steam_id:"Float",
+		successes:"Float"
+	},
+	v_player_opening_duels_max_fields:{
+		attempts:"bigint",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint",
+		successes:"bigint"
+	},
+	v_player_opening_duels_min_fields:{
+		attempts:"bigint",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint",
+		successes:"bigint"
+	},
+	v_player_opening_duels_stddev_fields:{
+		attempts:"Float",
+		steam_id:"Float",
+		successes:"Float"
+	},
+	v_player_opening_duels_stddev_pop_fields:{
+		attempts:"Float",
+		steam_id:"Float",
+		successes:"Float"
+	},
+	v_player_opening_duels_stddev_samp_fields:{
+		attempts:"Float",
+		steam_id:"Float",
+		successes:"Float"
+	},
+	v_player_opening_duels_sum_fields:{
+		attempts:"bigint",
+		steam_id:"bigint",
+		successes:"bigint"
+	},
+	v_player_opening_duels_var_pop_fields:{
+		attempts:"Float",
+		steam_id:"Float",
+		successes:"Float"
+	},
+	v_player_opening_duels_var_samp_fields:{
+		attempts:"Float",
+		steam_id:"Float",
+		successes:"Float"
+	},
+	v_player_opening_duels_variance_fields:{
+		attempts:"Float",
+		steam_id:"Float",
+		successes:"Float"
 	}
 }
 

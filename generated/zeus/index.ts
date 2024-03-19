@@ -842,7 +842,6 @@ export type ScalarCoders = {
 	bigint?: ScalarResolver;
 	date?: ScalarResolver;
 	numeric?: ScalarResolver;
-	time?: ScalarResolver;
 	timestamptz?: ScalarResolver;
 	uuid?: ScalarResolver;
 }
@@ -2406,7 +2405,7 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	team_2_money?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	team_2_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	time?: ValueTypes["time_comparison_exp"] | undefined | null | Variable<any, string>
+	time?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "match_map_rounds" */
 ["match_map_rounds_constraint"]:match_map_rounds_constraint;
@@ -2429,7 +2428,7 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_score?: number | undefined | null | Variable<any, string>,
 	team_2_money?: number | undefined | null | Variable<any, string>,
 	team_2_score?: number | undefined | null | Variable<any, string>,
-	time?: ValueTypes["time"] | undefined | null | Variable<any, string>
+	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: AliasType<{
@@ -2440,6 +2439,7 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_score?:boolean | `@${string}`,
 	team_2_money?:boolean | `@${string}`,
 	team_2_score?:boolean | `@${string}`,
+	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "match_map_rounds" */
@@ -2450,7 +2450,8 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: AliasType<{
@@ -2461,6 +2462,7 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_score?:boolean | `@${string}`,
 	team_2_money?:boolean | `@${string}`,
 	team_2_score?:boolean | `@${string}`,
+	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "match_map_rounds" */
@@ -2471,7 +2473,8 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** response of any mutation on the table "match_map_rounds" */
 ["match_map_rounds_mutation_response"]: AliasType<{
@@ -2515,7 +2518,7 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_score?: number | undefined | null | Variable<any, string>,
 	team_2_money?: number | undefined | null | Variable<any, string>,
 	team_2_score?: number | undefined | null | Variable<any, string>,
-	time?: ValueTypes["time"] | undefined | null | Variable<any, string>
+	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: AliasType<{
@@ -2584,7 +2587,7 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	team_1_score?: number | undefined | null | Variable<any, string>,
 	team_2_money?: number | undefined | null | Variable<any, string>,
 	team_2_score?: number | undefined | null | Variable<any, string>,
-	time?: ValueTypes["time"] | undefined | null | Variable<any, string>
+	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: AliasType<{
@@ -8784,19 +8787,6 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["teams_variance_order_by"]: {
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
-	["time"]:unknown;
-	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
-["time_comparison_exp"]: {
-	_eq?: ValueTypes["time"] | undefined | null | Variable<any, string>,
-	_gt?: ValueTypes["time"] | undefined | null | Variable<any, string>,
-	_gte?: ValueTypes["time"] | undefined | null | Variable<any, string>,
-	_in?: Array<ValueTypes["time"]> | undefined | null | Variable<any, string>,
-	_is_null?: boolean | undefined | null | Variable<any, string>,
-	_lt?: ValueTypes["time"] | undefined | null | Variable<any, string>,
-	_lte?: ValueTypes["time"] | undefined | null | Variable<any, string>,
-	_neq?: ValueTypes["time"] | undefined | null | Variable<any, string>,
-	_nin?: Array<ValueTypes["time"]> | undefined | null | Variable<any, string>
-};
 	["timestamptz"]:unknown;
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
 ["timestamptz_comparison_exp"]: {
@@ -11594,7 +11584,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	team_2_money?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	team_2_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	time?: ResolverInputTypes["time_comparison_exp"] | undefined | null
+	time?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "match_map_rounds" */
 ["match_map_rounds_constraint"]:match_map_rounds_constraint;
@@ -11617,7 +11607,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_score?: number | undefined | null,
 	team_2_money?: number | undefined | null,
 	team_2_score?: number | undefined | null,
-	time?: ResolverInputTypes["time"] | undefined | null
+	time?: ResolverInputTypes["timestamptz"] | undefined | null
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: AliasType<{
@@ -11628,6 +11618,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_score?:boolean | `@${string}`,
 	team_2_money?:boolean | `@${string}`,
 	team_2_score?:boolean | `@${string}`,
+	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "match_map_rounds" */
@@ -11638,7 +11629,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
 	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
 	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	team_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	time?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: AliasType<{
@@ -11649,6 +11641,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_score?:boolean | `@${string}`,
 	team_2_money?:boolean | `@${string}`,
 	team_2_score?:boolean | `@${string}`,
+	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "match_map_rounds" */
@@ -11659,7 +11652,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
 	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
 	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	team_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	time?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "match_map_rounds" */
 ["match_map_rounds_mutation_response"]: AliasType<{
@@ -11703,7 +11697,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_score?: number | undefined | null,
 	team_2_money?: number | undefined | null,
 	team_2_score?: number | undefined | null,
-	time?: ResolverInputTypes["time"] | undefined | null
+	time?: ResolverInputTypes["timestamptz"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: AliasType<{
@@ -11772,7 +11766,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	team_1_score?: number | undefined | null,
 	team_2_money?: number | undefined | null,
 	team_2_score?: number | undefined | null,
-	time?: ResolverInputTypes["time"] | undefined | null
+	time?: ResolverInputTypes["timestamptz"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: AliasType<{
@@ -17972,19 +17966,6 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["teams_variance_order_by"]: {
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
-	["time"]:unknown;
-	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
-["time_comparison_exp"]: {
-	_eq?: ResolverInputTypes["time"] | undefined | null,
-	_gt?: ResolverInputTypes["time"] | undefined | null,
-	_gte?: ResolverInputTypes["time"] | undefined | null,
-	_in?: Array<ResolverInputTypes["time"]> | undefined | null,
-	_is_null?: boolean | undefined | null,
-	_lt?: ResolverInputTypes["time"] | undefined | null,
-	_lte?: ResolverInputTypes["time"] | undefined | null,
-	_neq?: ResolverInputTypes["time"] | undefined | null,
-	_nin?: Array<ResolverInputTypes["time"]> | undefined | null
-};
 	["timestamptz"]:unknown;
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
 ["timestamptz_comparison_exp"]: {
@@ -20544,7 +20525,7 @@ export type ModelTypes = {
 	team_1_score: number,
 	team_2_money: number,
 	team_2_score: number,
-	time: ModelTypes["time"]
+	time: ModelTypes["timestamptz"]
 };
 	/** aggregated selection of "match_map_rounds" */
 ["match_map_rounds_aggregate"]: {
@@ -20625,7 +20606,7 @@ export type ModelTypes = {
 	team_1_score?: ModelTypes["Int_comparison_exp"] | undefined,
 	team_2_money?: ModelTypes["Int_comparison_exp"] | undefined,
 	team_2_score?: ModelTypes["Int_comparison_exp"] | undefined,
-	time?: ModelTypes["time_comparison_exp"] | undefined
+	time?: ModelTypes["timestamptz_comparison_exp"] | undefined
 };
 	["match_map_rounds_constraint"]:match_map_rounds_constraint;
 	/** input type for incrementing numeric columns in table "match_map_rounds" */
@@ -20647,7 +20628,7 @@ export type ModelTypes = {
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
 	team_2_score?: number | undefined,
-	time?: ModelTypes["time"] | undefined
+	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: {
@@ -20657,7 +20638,8 @@ export type ModelTypes = {
 	team_1_money?: number | undefined,
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	team_2_score?: number | undefined,
+	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** order by max() on columns of table "match_map_rounds" */
 ["match_map_rounds_max_order_by"]: {
@@ -20667,7 +20649,8 @@ export type ModelTypes = {
 	team_1_money?: ModelTypes["order_by"] | undefined,
 	team_1_score?: ModelTypes["order_by"] | undefined,
 	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	team_2_score?: ModelTypes["order_by"] | undefined,
+	time?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: {
@@ -20677,7 +20660,8 @@ export type ModelTypes = {
 	team_1_money?: number | undefined,
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	team_2_score?: number | undefined,
+	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** order by min() on columns of table "match_map_rounds" */
 ["match_map_rounds_min_order_by"]: {
@@ -20687,7 +20671,8 @@ export type ModelTypes = {
 	team_1_money?: ModelTypes["order_by"] | undefined,
 	team_1_score?: ModelTypes["order_by"] | undefined,
 	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	team_2_score?: ModelTypes["order_by"] | undefined,
+	time?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_map_rounds" */
 ["match_map_rounds_mutation_response"]: {
@@ -20729,7 +20714,7 @@ export type ModelTypes = {
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
 	team_2_score?: number | undefined,
-	time?: ModelTypes["time"] | undefined
+	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: {
@@ -20795,7 +20780,7 @@ export type ModelTypes = {
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
 	team_2_score?: number | undefined,
-	time?: ModelTypes["time"] | undefined
+	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: {
@@ -25908,19 +25893,6 @@ export type ModelTypes = {
 ["teams_variance_order_by"]: {
 	owner_steam_id?: ModelTypes["order_by"] | undefined
 };
-	["time"]:any;
-	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
-["time_comparison_exp"]: {
-	_eq?: ModelTypes["time"] | undefined,
-	_gt?: ModelTypes["time"] | undefined,
-	_gte?: ModelTypes["time"] | undefined,
-	_in?: Array<ModelTypes["time"]> | undefined,
-	_is_null?: boolean | undefined,
-	_lt?: ModelTypes["time"] | undefined,
-	_lte?: ModelTypes["time"] | undefined,
-	_neq?: ModelTypes["time"] | undefined,
-	_nin?: Array<ModelTypes["time"]> | undefined
-};
 	["timestamptz"]:any;
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
 ["timestamptz_comparison_exp"]: {
@@ -28473,7 +28445,7 @@ export type GraphQLTypes = {
 	team_1_score: number,
 	team_2_money: number,
 	team_2_score: number,
-	time: GraphQLTypes["time"]
+	time: GraphQLTypes["timestamptz"]
 };
 	/** aggregated selection of "match_map_rounds" */
 ["match_map_rounds_aggregate"]: {
@@ -28557,7 +28529,7 @@ export type GraphQLTypes = {
 	team_1_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	team_2_money?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	team_2_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	time?: GraphQLTypes["time_comparison_exp"] | undefined
+	time?: GraphQLTypes["timestamptz_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "match_map_rounds" */
 ["match_map_rounds_constraint"]: match_map_rounds_constraint;
@@ -28580,7 +28552,7 @@ export type GraphQLTypes = {
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
 	team_2_score?: number | undefined,
-	time?: GraphQLTypes["time"] | undefined
+	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: {
@@ -28591,7 +28563,8 @@ export type GraphQLTypes = {
 	team_1_money?: number | undefined,
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	team_2_score?: number | undefined,
+	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** order by max() on columns of table "match_map_rounds" */
 ["match_map_rounds_max_order_by"]: {
@@ -28601,7 +28574,8 @@ export type GraphQLTypes = {
 	team_1_money?: GraphQLTypes["order_by"] | undefined,
 	team_1_score?: GraphQLTypes["order_by"] | undefined,
 	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+	team_2_score?: GraphQLTypes["order_by"] | undefined,
+	time?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: {
@@ -28612,7 +28586,8 @@ export type GraphQLTypes = {
 	team_1_money?: number | undefined,
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	team_2_score?: number | undefined,
+	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** order by min() on columns of table "match_map_rounds" */
 ["match_map_rounds_min_order_by"]: {
@@ -28622,7 +28597,8 @@ export type GraphQLTypes = {
 	team_1_money?: GraphQLTypes["order_by"] | undefined,
 	team_1_score?: GraphQLTypes["order_by"] | undefined,
 	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+	team_2_score?: GraphQLTypes["order_by"] | undefined,
+	time?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_map_rounds" */
 ["match_map_rounds_mutation_response"]: {
@@ -28666,7 +28642,7 @@ export type GraphQLTypes = {
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
 	team_2_score?: number | undefined,
-	time?: GraphQLTypes["time"] | undefined
+	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: {
@@ -28735,7 +28711,7 @@ export type GraphQLTypes = {
 	team_1_score?: number | undefined,
 	team_2_money?: number | undefined,
 	team_2_score?: number | undefined,
-	time?: GraphQLTypes["time"] | undefined
+	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: {
@@ -34086,19 +34062,6 @@ export type GraphQLTypes = {
 ["teams_variance_order_by"]: {
 		owner_steam_id?: GraphQLTypes["order_by"] | undefined
 };
-	["time"]: "scalar" & { name: "time" };
-	/** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
-["time_comparison_exp"]: {
-		_eq?: GraphQLTypes["time"] | undefined,
-	_gt?: GraphQLTypes["time"] | undefined,
-	_gte?: GraphQLTypes["time"] | undefined,
-	_in?: Array<GraphQLTypes["time"]> | undefined,
-	_is_null?: boolean | undefined,
-	_lt?: GraphQLTypes["time"] | undefined,
-	_lte?: GraphQLTypes["time"] | undefined,
-	_neq?: GraphQLTypes["time"] | undefined,
-	_nin?: Array<GraphQLTypes["time"]> | undefined
-};
 	["timestamptz"]: "scalar" & { name: "timestamptz" };
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
 ["timestamptz_comparison_exp"]: {
@@ -35371,8 +35334,7 @@ export const enum e_match_status_enum {
 	Live = "Live",
 	PickingPlayers = "PickingPlayers",
 	Scheduled = "Scheduled",
-	Veto = "Veto",
-	Warmup = "Warmup"
+	Veto = "Veto"
 }
 /** select columns of table "e_match_status" */
 export const enum e_match_status_select_column {
@@ -36579,8 +36541,6 @@ type ZEUS_VARIABLES = {
 	["teams_var_pop_order_by"]: ValueTypes["teams_var_pop_order_by"];
 	["teams_var_samp_order_by"]: ValueTypes["teams_var_samp_order_by"];
 	["teams_variance_order_by"]: ValueTypes["teams_variance_order_by"];
-	["time"]: ValueTypes["time"];
-	["time_comparison_exp"]: ValueTypes["time_comparison_exp"];
 	["timestamptz"]: ValueTypes["timestamptz"];
 	["timestamptz_comparison_exp"]: ValueTypes["timestamptz_comparison_exp"];
 	["uuid"]: ValueTypes["uuid"];

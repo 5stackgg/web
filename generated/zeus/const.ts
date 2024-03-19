@@ -828,7 +828,7 @@ export const AllTypesProps: Record<string,any> = {
 		team_1_score:"Int_comparison_exp",
 		team_2_money:"Int_comparison_exp",
 		team_2_score:"Int_comparison_exp",
-		time:"time_comparison_exp"
+		time:"timestamptz_comparison_exp"
 	},
 	match_map_rounds_constraint: "enum" as const,
 	match_map_rounds_inc_input:{
@@ -839,7 +839,7 @@ export const AllTypesProps: Record<string,any> = {
 		kills:"player_kills_arr_rel_insert_input",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
-		time:"time"
+		time:"timestamptz"
 	},
 	match_map_rounds_max_order_by:{
 		id:"order_by",
@@ -848,7 +848,8 @@ export const AllTypesProps: Record<string,any> = {
 		team_1_money:"order_by",
 		team_1_score:"order_by",
 		team_2_money:"order_by",
-		team_2_score:"order_by"
+		team_2_score:"order_by",
+		time:"order_by"
 	},
 	match_map_rounds_min_order_by:{
 		id:"order_by",
@@ -857,7 +858,8 @@ export const AllTypesProps: Record<string,any> = {
 		team_1_money:"order_by",
 		team_1_score:"order_by",
 		team_2_money:"order_by",
-		team_2_score:"order_by"
+		team_2_score:"order_by",
+		time:"order_by"
 	},
 	match_map_rounds_on_conflict:{
 		constraint:"match_map_rounds_constraint",
@@ -883,7 +885,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_rounds_set_input:{
 		id:"uuid",
 		match_map_id:"uuid",
-		time:"time"
+		time:"timestamptz"
 	},
 	match_map_rounds_stddev_order_by:{
 		round:"order_by",
@@ -913,7 +915,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_rounds_stream_cursor_value_input:{
 		id:"uuid",
 		match_map_id:"uuid",
-		time:"time"
+		time:"timestamptz"
 	},
 	match_map_rounds_sum_order_by:{
 		round:"order_by",
@@ -4971,17 +4973,6 @@ export const AllTypesProps: Record<string,any> = {
 	teams_variance_order_by:{
 		owner_steam_id:"order_by"
 	},
-	time: `scalar.time` as const,
-	time_comparison_exp:{
-		_eq:"time",
-		_gt:"time",
-		_gte:"time",
-		_in:"time",
-		_lt:"time",
-		_lte:"time",
-		_neq:"time",
-		_nin:"time"
-	},
 	timestamptz: `scalar.timestamptz` as const,
 	timestamptz_comparison_exp:{
 		_eq:"timestamptz",
@@ -5745,7 +5736,7 @@ export const ReturnTypes: Record<string,any> = {
 		team_1_score:"Int",
 		team_2_money:"Int",
 		team_2_score:"Int",
-		time:"time"
+		time:"timestamptz"
 	},
 	match_map_rounds_aggregate:{
 		aggregate:"match_map_rounds_aggregate_fields",
@@ -5778,7 +5769,8 @@ export const ReturnTypes: Record<string,any> = {
 		team_1_money:"Int",
 		team_1_score:"Int",
 		team_2_money:"Int",
-		team_2_score:"Int"
+		team_2_score:"Int",
+		time:"timestamptz"
 	},
 	match_map_rounds_min_fields:{
 		id:"uuid",
@@ -5787,7 +5779,8 @@ export const ReturnTypes: Record<string,any> = {
 		team_1_money:"Int",
 		team_1_score:"Int",
 		team_2_money:"Int",
-		team_2_score:"Int"
+		team_2_score:"Int",
+		time:"timestamptz"
 	},
 	match_map_rounds_mutation_response:{
 		affected_rows:"Int",
@@ -7521,7 +7514,6 @@ export const ReturnTypes: Record<string,any> = {
 	teams_variance_fields:{
 		owner_steam_id:"Float"
 	},
-	time: `scalar.time` as const,
 	timestamptz: `scalar.timestamptz` as const,
 	uuid: `scalar.uuid` as const,
 	v_match_captains:{

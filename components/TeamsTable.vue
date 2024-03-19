@@ -6,9 +6,6 @@
         <th>Wins</th>
         <th>Losses</th>
         <th>Overtime Losses</th>
-        <th>Kills</th>
-        <th>Deaths</th>
-        <th>Rounds</th>
       </tr>
     </thead>
     <tbody>
@@ -18,9 +15,6 @@
           <td>Wins</td>
           <td>Losses</td>
           <td>Overtime Losses</td>
-          <td>Kills</td>
-          <td>Deaths</td>
-          <td>Rounds</td>
         </tr>
       </template>
     </tbody>

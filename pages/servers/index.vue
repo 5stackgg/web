@@ -1,5 +1,9 @@
 <template>
   <h1>Manage Servers</h1>
+  <NuxtLink to="/servers/create">
+    <five-stack-button>Create Server</five-stack-button>
+  </NuxtLink>
+
   <clickable-table class="mt-2 mb-2">
     <thead>
       <tr>
@@ -32,7 +36,9 @@
     v-if="servers_aggregate"
   ></pagination>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import FiveStackButton from "~/components/FiveStackButton.vue";
+</script>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";

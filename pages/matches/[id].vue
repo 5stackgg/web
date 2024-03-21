@@ -332,7 +332,7 @@ export default {
                                   _eq: $("matchId", "uuid!"),
                                 },
                                 with: {
-                                  _eq: "knife",
+                                  _eq: "taser",
                                 },
                               },
                             },

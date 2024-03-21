@@ -1,8 +1,5 @@
 <template>
-  <template v-if="me">
-    <dashboard></dashboard>
-  </template>
-  <template v-else> </template>
+  <dashboard></dashboard>
 </template>
 
 <script>

@@ -111,6 +111,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
+import {useAuthStore} from "~/stores/AuthStore";
 
 export default {
   components: {
@@ -129,6 +130,10 @@ export default {
     $subscribe: {
       matches_by_pk: {
         variables: function () {
+          console.info({
+            id: this.$route.params.id,
+            me: useAuthStore().me.steam_id,
+          })
           return {
             matchId: this.$route.params.id,
             order_by_name: order_by.asc,

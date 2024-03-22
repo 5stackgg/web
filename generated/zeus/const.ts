@@ -1253,6 +1253,103 @@ export const AllTypesProps: Record<string,any> = {
 	match_maps_variance_order_by:{
 		order:"order_by"
 	},
+	match_veto_picks_aggregate_bool_exp:{
+		count:"match_veto_picks_aggregate_bool_exp_count"
+	},
+	match_veto_picks_aggregate_bool_exp_count:{
+		arguments:"match_veto_picks_select_column",
+		filter:"match_veto_picks_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	match_veto_picks_aggregate_fields:{
+		count:{
+			columns:"match_veto_picks_select_column"
+		}
+	},
+	match_veto_picks_aggregate_order_by:{
+		count:"order_by",
+		max:"match_veto_picks_max_order_by",
+		min:"match_veto_picks_min_order_by"
+	},
+	match_veto_picks_arr_rel_insert_input:{
+		data:"match_veto_picks_insert_input",
+		on_conflict:"match_veto_picks_on_conflict"
+	},
+	match_veto_picks_bool_exp:{
+		_and:"match_veto_picks_bool_exp",
+		_not:"match_veto_picks_bool_exp",
+		_or:"match_veto_picks_bool_exp",
+		id:"uuid_comparison_exp",
+		map:"String_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		match_lineup:"match_lineups_bool_exp",
+		match_lineup_id:"uuid_comparison_exp",
+		side:"String_comparison_exp",
+		type:"String_comparison_exp"
+	},
+	match_veto_picks_constraint: "enum" as const,
+	match_veto_picks_insert_input:{
+		id:"uuid",
+		match:"matches_obj_rel_insert_input",
+		match_id:"uuid",
+		match_lineup:"match_lineups_obj_rel_insert_input",
+		match_lineup_id:"uuid"
+	},
+	match_veto_picks_max_order_by:{
+		id:"order_by",
+		map:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by",
+		side:"order_by",
+		type:"order_by"
+	},
+	match_veto_picks_min_order_by:{
+		id:"order_by",
+		map:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by",
+		side:"order_by",
+		type:"order_by"
+	},
+	match_veto_picks_on_conflict:{
+		constraint:"match_veto_picks_constraint",
+		update_columns:"match_veto_picks_update_column",
+		where:"match_veto_picks_bool_exp"
+	},
+	match_veto_picks_order_by:{
+		id:"order_by",
+		map:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		match_lineup:"match_lineups_order_by",
+		match_lineup_id:"order_by",
+		side:"order_by",
+		type:"order_by"
+	},
+	match_veto_picks_pk_columns_input:{
+		id:"uuid"
+	},
+	match_veto_picks_select_column: "enum" as const,
+	match_veto_picks_set_input:{
+		id:"uuid",
+		match_id:"uuid",
+		match_lineup_id:"uuid"
+	},
+	match_veto_picks_stream_cursor_input:{
+		initial_value:"match_veto_picks_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	match_veto_picks_stream_cursor_value_input:{
+		id:"uuid",
+		match_id:"uuid",
+		match_lineup_id:"uuid"
+	},
+	match_veto_picks_update_column: "enum" as const,
+	match_veto_picks_updates:{
+		_set:"match_veto_picks_set_input",
+		where:"match_veto_picks_bool_exp"
+	},
 	matches:{
 		lineups:{
 			distinct_on:"match_lineups_select_column",
@@ -1338,6 +1435,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"teams_select_column",
 			order_by:"teams_order_by",
 			where:"teams_bool_exp"
+		},
+		veto_picks:{
+			distinct_on:"match_veto_picks_select_column",
+			order_by:"match_veto_picks_order_by",
+			where:"match_veto_picks_bool_exp"
+		},
+		veto_picks_aggregate:{
+			distinct_on:"match_veto_picks_select_column",
+			order_by:"match_veto_picks_order_by",
+			where:"match_veto_picks_bool_exp"
 		}
 	},
 	matches_aggregate_bool_exp:{
@@ -1437,7 +1544,9 @@ export const AllTypesProps: Record<string,any> = {
 		tv_connection_link:"String_comparison_exp",
 		tv_connection_string:"String_comparison_exp",
 		type:"e_match_types_enum_comparison_exp",
-		updated_at:"timestamptz_comparison_exp"
+		updated_at:"timestamptz_comparison_exp",
+		veto_picks:"match_veto_picks_bool_exp",
+		veto_picks_aggregate:"match_veto_picks_aggregate_bool_exp"
 	},
 	matches_constraint: "enum" as const,
 	matches_inc_input:{
@@ -1463,7 +1572,8 @@ export const AllTypesProps: Record<string,any> = {
 		server_id:"uuid",
 		status:"e_match_status_enum",
 		type:"e_match_types_enum",
-		updated_at:"timestamptz"
+		updated_at:"timestamptz",
+		veto_picks:"match_veto_picks_arr_rel_insert_input"
 	},
 	matches_max_order_by:{
 		best_of:"order_by",
@@ -1538,7 +1648,8 @@ export const AllTypesProps: Record<string,any> = {
 		tv_connection_link:"order_by",
 		tv_connection_string:"order_by",
 		type:"order_by",
-		updated_at:"order_by"
+		updated_at:"order_by",
+		veto_picks_aggregate:"match_veto_picks_aggregate_order_by"
 	},
 	matches_pk_columns_input:{
 		id:"uuid"
@@ -1686,6 +1797,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"match_maps_bool_exp"
 		},
 		delete_match_maps_by_pk:{
+			id:"uuid"
+		},
+		delete_match_veto_picks:{
+			where:"match_veto_picks_bool_exp"
+		},
+		delete_match_veto_picks_by_pk:{
 			id:"uuid"
 		},
 		delete_matches:{
@@ -1851,6 +1968,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_match_maps_one:{
 			object:"match_maps_insert_input",
 			on_conflict:"match_maps_on_conflict"
+		},
+		insert_match_veto_picks:{
+			objects:"match_veto_picks_insert_input",
+			on_conflict:"match_veto_picks_on_conflict"
+		},
+		insert_match_veto_picks_one:{
+			object:"match_veto_picks_insert_input",
+			on_conflict:"match_veto_picks_on_conflict"
 		},
 		insert_matches:{
 			objects:"matches_insert_input",
@@ -2090,6 +2215,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_match_maps_many:{
 			updates:"match_maps_updates"
+		},
+		update_match_veto_picks:{
+			_set:"match_veto_picks_set_input",
+			where:"match_veto_picks_bool_exp"
+		},
+		update_match_veto_picks_by_pk:{
+			_set:"match_veto_picks_set_input",
+			pk_columns:"match_veto_picks_pk_columns_input"
+		},
+		update_match_veto_picks_many:{
+			updates:"match_veto_picks_updates"
 		},
 		update_matches:{
 			_inc:"matches_inc_input",
@@ -3951,6 +4087,19 @@ export const AllTypesProps: Record<string,any> = {
 		match_maps_by_pk:{
 			id:"uuid"
 		},
+		match_veto_picks:{
+			distinct_on:"match_veto_picks_select_column",
+			order_by:"match_veto_picks_order_by",
+			where:"match_veto_picks_bool_exp"
+		},
+		match_veto_picks_aggregate:{
+			distinct_on:"match_veto_picks_select_column",
+			order_by:"match_veto_picks_order_by",
+			where:"match_veto_picks_bool_exp"
+		},
+		match_veto_picks_by_pk:{
+			id:"uuid"
+		},
 		matches:{
 			distinct_on:"matches_select_column",
 			order_by:"matches_order_by",
@@ -4450,6 +4599,23 @@ export const AllTypesProps: Record<string,any> = {
 		match_maps_stream:{
 			cursor:"match_maps_stream_cursor_input",
 			where:"match_maps_bool_exp"
+		},
+		match_veto_picks:{
+			distinct_on:"match_veto_picks_select_column",
+			order_by:"match_veto_picks_order_by",
+			where:"match_veto_picks_bool_exp"
+		},
+		match_veto_picks_aggregate:{
+			distinct_on:"match_veto_picks_select_column",
+			order_by:"match_veto_picks_order_by",
+			where:"match_veto_picks_bool_exp"
+		},
+		match_veto_picks_by_pk:{
+			id:"uuid"
+		},
+		match_veto_picks_stream:{
+			cursor:"match_veto_picks_stream_cursor_input",
+			where:"match_veto_picks_bool_exp"
 		},
 		matches:{
 			distinct_on:"matches_select_column",
@@ -6041,6 +6207,45 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_2_score:"Int",
 		order:"Float"
 	},
+	match_veto_picks:{
+		id:"uuid",
+		map:"String",
+		match:"matches",
+		match_id:"uuid",
+		match_lineup:"match_lineups",
+		match_lineup_id:"uuid",
+		side:"String",
+		type:"String"
+	},
+	match_veto_picks_aggregate:{
+		aggregate:"match_veto_picks_aggregate_fields",
+		nodes:"match_veto_picks"
+	},
+	match_veto_picks_aggregate_fields:{
+		count:"Int",
+		max:"match_veto_picks_max_fields",
+		min:"match_veto_picks_min_fields"
+	},
+	match_veto_picks_max_fields:{
+		id:"uuid",
+		map:"String",
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		side:"String",
+		type:"String"
+	},
+	match_veto_picks_min_fields:{
+		id:"uuid",
+		map:"String",
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		side:"String",
+		type:"String"
+	},
+	match_veto_picks_mutation_response:{
+		affected_rows:"Int",
+		returning:"match_veto_picks"
+	},
 	matches:{
 		best_of:"Int",
 		coaches:"Boolean",
@@ -6087,7 +6292,9 @@ export const ReturnTypes: Record<string,any> = {
 		tv_connection_link:"String",
 		tv_connection_string:"String",
 		type:"e_match_types_enum",
-		updated_at:"timestamptz"
+		updated_at:"timestamptz",
+		veto_picks:"match_veto_picks",
+		veto_picks_aggregate:"match_veto_picks_aggregate"
 	},
 	matches_aggregate:{
 		aggregate:"matches_aggregate_fields",
@@ -6222,6 +6429,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_match_map_rounds_by_pk:"match_map_rounds",
 		delete_match_maps:"match_maps_mutation_response",
 		delete_match_maps_by_pk:"match_maps",
+		delete_match_veto_picks:"match_veto_picks_mutation_response",
+		delete_match_veto_picks_by_pk:"match_veto_picks",
 		delete_matches:"matches_mutation_response",
 		delete_matches_by_pk:"matches",
 		delete_player_assists:"player_assists_mutation_response",
@@ -6269,6 +6478,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_match_map_rounds_one:"match_map_rounds",
 		insert_match_maps:"match_maps_mutation_response",
 		insert_match_maps_one:"match_maps",
+		insert_match_veto_picks:"match_veto_picks_mutation_response",
+		insert_match_veto_picks_one:"match_veto_picks",
 		insert_matches:"matches_mutation_response",
 		insert_matches_one:"matches",
 		insert_player_assists:"player_assists_mutation_response",
@@ -6330,6 +6541,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_match_maps:"match_maps_mutation_response",
 		update_match_maps_by_pk:"match_maps",
 		update_match_maps_many:"match_maps_mutation_response",
+		update_match_veto_picks:"match_veto_picks_mutation_response",
+		update_match_veto_picks_by_pk:"match_veto_picks",
+		update_match_veto_picks_many:"match_veto_picks_mutation_response",
 		update_matches:"matches_mutation_response",
 		update_matches_by_pk:"matches",
 		update_matches_many:"matches_mutation_response",
@@ -7238,6 +7452,9 @@ export const ReturnTypes: Record<string,any> = {
 		match_maps:"match_maps",
 		match_maps_aggregate:"match_maps_aggregate",
 		match_maps_by_pk:"match_maps",
+		match_veto_picks:"match_veto_picks",
+		match_veto_picks_aggregate:"match_veto_picks_aggregate",
+		match_veto_picks_by_pk:"match_veto_picks",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
 		matches_by_pk:"matches",
@@ -7422,6 +7639,10 @@ export const ReturnTypes: Record<string,any> = {
 		match_maps_aggregate:"match_maps_aggregate",
 		match_maps_by_pk:"match_maps",
 		match_maps_stream:"match_maps",
+		match_veto_picks:"match_veto_picks",
+		match_veto_picks_aggregate:"match_veto_picks_aggregate",
+		match_veto_picks_by_pk:"match_veto_picks",
+		match_veto_picks_stream:"match_veto_picks",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
 		matches_by_pk:"matches",

@@ -30,6 +30,8 @@
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   First to {{ match.mr + 1 }} with
                   <template v-if="match.overtime">overtime</template>
+                  <br>
+                  best of {{ match.best_of }}
                 </p>
               </div>
             </div>
@@ -85,7 +87,15 @@
       </div>
     </div>
 
+    <pre>
+      Veto: {{ match.map_veto }}
+      Coaches: {{ match.coaches }}
+      Substitutes: {{ match.number_of_substitutes }}
+    </pre>
+
     <hr class="mt-8 mb-8 border-gray-600" />
+
+    <map-veto :match="match"></map-veto>
 
     <match-assign-lineups
       :match="match"
@@ -106,6 +116,7 @@
 import { $, order_by } from "~/generated/zeus";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import MapVeto from "~/components/veto/MapVeto.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
@@ -115,6 +126,7 @@ import {useAuthStore} from "~/stores/AuthStore";
 
 export default {
   components: {
+    MapVeto,
     MatchTabs,
     MatchStatus,
     MatchActions,
@@ -130,10 +142,6 @@ export default {
     $subscribe: {
       matches_by_pk: {
         variables: function () {
-          console.info({
-            id: this.$route.params.id,
-            me: useAuthStore().me.steam_id,
-          })
           return {
             matchId: this.$route.params.id,
             order_by_name: order_by.asc,

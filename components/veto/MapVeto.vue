@@ -6,7 +6,16 @@
   </pre>
 
   <div class="grid grid-cols-4" v-for="pick of picks">
-    <map-preview :map="{ name: pick.map }" class="cursor-pointer bg-red-500"></map-preview>
+    <map-preview :map="{ name: pick.map }">
+      <br>
+      {{ pick.type }}ed by
+
+      {{ pick.match_lineup.name }}
+
+      <template v-if="pick.side">
+        ({{ pick.side }})
+      </template>
+    </map-preview>
   </div>
 
   <hr>
@@ -85,6 +94,9 @@ export default {
               side: true,
               type: true,
               match_lineup_id: true,
+              match_lineup: [{}, {
+                name: true,
+              }]
             }
           ]
         }),
@@ -183,8 +195,7 @@ export default {
       }
 
       if(this.match.best_of === 1) {
-        // TODO - test it
-        return this.picks.length % 2;
+        // TODO
       }
 
 
@@ -240,7 +251,10 @@ export default {
           });
     },
     sideOptions() {
-      return [{ value: "CT", display: "Counter-Terrorist"}, {value: "Terrorist", display: "Terrorist"}]
+      /**
+       * yes they are opposite
+       */
+      return [{ value: "Terrorist", display: "Counter-Terrorist"}, {value: "CT", display: "Terrorist"}]
     },
   }
 }

@@ -681,19 +681,31 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	match_lineups_aggregate_order_by:{
+		avg:"match_lineups_avg_order_by",
 		count:"order_by",
 		max:"match_lineups_max_order_by",
-		min:"match_lineups_min_order_by"
+		min:"match_lineups_min_order_by",
+		stddev:"match_lineups_stddev_order_by",
+		stddev_pop:"match_lineups_stddev_pop_order_by",
+		stddev_samp:"match_lineups_stddev_samp_order_by",
+		sum:"match_lineups_sum_order_by",
+		var_pop:"match_lineups_var_pop_order_by",
+		var_samp:"match_lineups_var_samp_order_by",
+		variance:"match_lineups_variance_order_by"
 	},
 	match_lineups_arr_rel_insert_input:{
 		data:"match_lineups_insert_input",
 		on_conflict:"match_lineups_on_conflict"
+	},
+	match_lineups_avg_order_by:{
+		coach_steam_id:"order_by"
 	},
 	match_lineups_bool_exp:{
 		_and:"match_lineups_bool_exp",
 		_not:"match_lineups_bool_exp",
 		_or:"match_lineups_bool_exp",
 		captain:"v_match_captains_bool_exp",
+		coach_steam_id:"bigint_comparison_exp",
 		id:"uuid_comparison_exp",
 		lineup_players:"match_lineup_players_bool_exp",
 		lineup_players_aggregate:"match_lineup_players_aggregate_bool_exp",
@@ -704,8 +716,12 @@ export const AllTypesProps: Record<string,any> = {
 		team_id:"uuid_comparison_exp"
 	},
 	match_lineups_constraint: "enum" as const,
+	match_lineups_inc_input:{
+		coach_steam_id:"bigint"
+	},
 	match_lineups_insert_input:{
 		captain:"v_match_captains_obj_rel_insert_input",
+		coach_steam_id:"bigint",
 		id:"uuid",
 		lineup_players:"match_lineup_players_arr_rel_insert_input",
 		match:"matches_obj_rel_insert_input",
@@ -714,11 +730,13 @@ export const AllTypesProps: Record<string,any> = {
 		team_id:"uuid"
 	},
 	match_lineups_max_order_by:{
+		coach_steam_id:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		team_id:"order_by"
 	},
 	match_lineups_min_order_by:{
+		coach_steam_id:"order_by",
 		id:"order_by",
 		match_id:"order_by",
 		team_id:"order_by"
@@ -734,6 +752,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_lineups_order_by:{
 		captain:"v_match_captains_order_by",
+		coach_steam_id:"order_by",
 		id:"order_by",
 		lineup_players_aggregate:"match_lineup_players_aggregate_order_by",
 		match:"matches_order_by",
@@ -747,23 +766,47 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_lineups_select_column: "enum" as const,
 	match_lineups_set_input:{
+		coach_steam_id:"bigint",
 		id:"uuid",
 		match_id:"uuid",
 		team_id:"uuid"
+	},
+	match_lineups_stddev_order_by:{
+		coach_steam_id:"order_by"
+	},
+	match_lineups_stddev_pop_order_by:{
+		coach_steam_id:"order_by"
+	},
+	match_lineups_stddev_samp_order_by:{
+		coach_steam_id:"order_by"
 	},
 	match_lineups_stream_cursor_input:{
 		initial_value:"match_lineups_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
 	match_lineups_stream_cursor_value_input:{
+		coach_steam_id:"bigint",
 		id:"uuid",
 		match_id:"uuid",
 		team_id:"uuid"
 	},
+	match_lineups_sum_order_by:{
+		coach_steam_id:"order_by"
+	},
 	match_lineups_update_column: "enum" as const,
 	match_lineups_updates:{
+		_inc:"match_lineups_inc_input",
 		_set:"match_lineups_set_input",
 		where:"match_lineups_bool_exp"
+	},
+	match_lineups_var_pop_order_by:{
+		coach_steam_id:"order_by"
+	},
+	match_lineups_var_samp_order_by:{
+		coach_steam_id:"order_by"
+	},
+	match_lineups_variance_order_by:{
+		coach_steam_id:"order_by"
 	},
 	match_map_rounds:{
 		kills:{
@@ -1342,6 +1385,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_avg_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	matches_bool_exp:{
@@ -1349,6 +1393,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"matches_bool_exp",
 		_or:"matches_bool_exp",
 		best_of:"Int_comparison_exp",
+		coaches:"Boolean_comparison_exp",
 		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
@@ -1363,9 +1408,11 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"String_comparison_exp",
 		lineups:"match_lineups_bool_exp",
 		lineups_aggregate:"match_lineups_aggregate_bool_exp",
+		map_veto:"Boolean_comparison_exp",
 		match_maps:"match_maps_bool_exp",
 		match_maps_aggregate:"match_maps_aggregate_bool_exp",
 		mr:"Int_comparison_exp",
+		number_of_substitutes:"Int_comparison_exp",
 		organizer:"players_bool_exp",
 		organizer_steam_id:"bigint_comparison_exp",
 		overtime:"Boolean_comparison_exp",
@@ -1424,6 +1471,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		label:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by",
 		password:"order_by",
 		scheduled_at:"order_by",
@@ -1436,6 +1484,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		label:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by",
 		password:"order_by",
 		scheduled_at:"order_by",
@@ -1453,6 +1502,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	matches_order_by:{
 		best_of:"order_by",
+		coaches:"order_by",
 		connection_link:"order_by",
 		connection_string:"order_by",
 		created_at:"order_by",
@@ -1466,8 +1516,10 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_1_id:"order_by",
 		lineup_2_id:"order_by",
 		lineups_aggregate:"match_lineups_aggregate_order_by",
+		map_veto:"order_by",
 		match_maps_aggregate:"match_maps_aggregate_order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer:"players_order_by",
 		organizer_steam_id:"order_by",
 		overtime:"order_by",
@@ -1507,16 +1559,19 @@ export const AllTypesProps: Record<string,any> = {
 	matches_stddev_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	matches_stddev_pop_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	matches_stddev_samp_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	matches_stream_cursor_input:{
@@ -1536,6 +1591,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_sum_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	matches_update_column: "enum" as const,
@@ -1547,16 +1603,19 @@ export const AllTypesProps: Record<string,any> = {
 	matches_var_pop_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	matches_var_samp_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	matches_variance_order_by:{
 		best_of:"order_by",
 		mr:"order_by",
+		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by"
 	},
 	mutation_root:{
@@ -1994,10 +2053,12 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"match_lineup_players_updates"
 		},
 		update_match_lineups:{
+			_inc:"match_lineups_inc_input",
 			_set:"match_lineups_set_input",
 			where:"match_lineups_bool_exp"
 		},
 		update_match_lineups_by_pk:{
+			_inc:"match_lineups_inc_input",
 			_set:"match_lineups_set_input",
 			pk_columns:"match_lineups_pk_columns_input"
 		},
@@ -5691,6 +5752,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_lineups:{
 		captain:"v_match_captains",
+		coach_steam_id:"bigint",
 		id:"uuid",
 		lineup_players:"match_lineup_players",
 		lineup_players_aggregate:"match_lineup_players_aggregate",
@@ -5705,17 +5767,30 @@ export const ReturnTypes: Record<string,any> = {
 		nodes:"match_lineups"
 	},
 	match_lineups_aggregate_fields:{
+		avg:"match_lineups_avg_fields",
 		count:"Int",
 		max:"match_lineups_max_fields",
-		min:"match_lineups_min_fields"
+		min:"match_lineups_min_fields",
+		stddev:"match_lineups_stddev_fields",
+		stddev_pop:"match_lineups_stddev_pop_fields",
+		stddev_samp:"match_lineups_stddev_samp_fields",
+		sum:"match_lineups_sum_fields",
+		var_pop:"match_lineups_var_pop_fields",
+		var_samp:"match_lineups_var_samp_fields",
+		variance:"match_lineups_variance_fields"
+	},
+	match_lineups_avg_fields:{
+		coach_steam_id:"Float"
 	},
 	match_lineups_max_fields:{
+		coach_steam_id:"bigint",
 		id:"uuid",
 		match_id:"uuid",
 		name:"String",
 		team_id:"uuid"
 	},
 	match_lineups_min_fields:{
+		coach_steam_id:"bigint",
 		id:"uuid",
 		match_id:"uuid",
 		name:"String",
@@ -5724,6 +5799,27 @@ export const ReturnTypes: Record<string,any> = {
 	match_lineups_mutation_response:{
 		affected_rows:"Int",
 		returning:"match_lineups"
+	},
+	match_lineups_stddev_fields:{
+		coach_steam_id:"Float"
+	},
+	match_lineups_stddev_pop_fields:{
+		coach_steam_id:"Float"
+	},
+	match_lineups_stddev_samp_fields:{
+		coach_steam_id:"Float"
+	},
+	match_lineups_sum_fields:{
+		coach_steam_id:"bigint"
+	},
+	match_lineups_var_pop_fields:{
+		coach_steam_id:"Float"
+	},
+	match_lineups_var_samp_fields:{
+		coach_steam_id:"Float"
+	},
+	match_lineups_variance_fields:{
+		coach_steam_id:"Float"
 	},
 	match_map_rounds:{
 		id:"uuid",
@@ -5947,6 +6043,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	matches:{
 		best_of:"Int",
+		coaches:"Boolean",
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
@@ -5961,9 +6058,11 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_2_id:"String",
 		lineups:"match_lineups",
 		lineups_aggregate:"match_lineups_aggregate",
+		map_veto:"Boolean",
 		match_maps:"match_maps",
 		match_maps_aggregate:"match_maps_aggregate",
 		mr:"Int",
+		number_of_substitutes:"Int",
 		organizer:"players",
 		organizer_steam_id:"bigint",
 		overtime:"Boolean",
@@ -6010,6 +6109,7 @@ export const ReturnTypes: Record<string,any> = {
 	matches_avg_fields:{
 		best_of:"Float",
 		mr:"Float",
+		number_of_substitutes:"Float",
 		organizer_steam_id:"Float"
 	},
 	matches_max_fields:{
@@ -6023,6 +6123,7 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_1_id:"String",
 		lineup_2_id:"String",
 		mr:"Int",
+		number_of_substitutes:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
 		scheduled_at:"date",
@@ -6042,6 +6143,7 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_1_id:"String",
 		lineup_2_id:"String",
 		mr:"Int",
+		number_of_substitutes:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
 		scheduled_at:"date",
@@ -6057,36 +6159,43 @@ export const ReturnTypes: Record<string,any> = {
 	matches_stddev_fields:{
 		best_of:"Float",
 		mr:"Float",
+		number_of_substitutes:"Float",
 		organizer_steam_id:"Float"
 	},
 	matches_stddev_pop_fields:{
 		best_of:"Float",
 		mr:"Float",
+		number_of_substitutes:"Float",
 		organizer_steam_id:"Float"
 	},
 	matches_stddev_samp_fields:{
 		best_of:"Float",
 		mr:"Float",
+		number_of_substitutes:"Float",
 		organizer_steam_id:"Float"
 	},
 	matches_sum_fields:{
 		best_of:"Int",
 		mr:"Int",
+		number_of_substitutes:"Int",
 		organizer_steam_id:"bigint"
 	},
 	matches_var_pop_fields:{
 		best_of:"Float",
 		mr:"Float",
+		number_of_substitutes:"Float",
 		organizer_steam_id:"Float"
 	},
 	matches_var_samp_fields:{
 		best_of:"Float",
 		mr:"Float",
+		number_of_substitutes:"Float",
 		organizer_steam_id:"Float"
 	},
 	matches_variance_fields:{
 		best_of:"Float",
 		mr:"Float",
+		number_of_substitutes:"Float",
 		organizer_steam_id:"Float"
 	},
 	mutation_root:{

@@ -2119,6 +2119,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 ["match_lineups"]: AliasType<{
 	/** An object relationship */
 	captain?:ValueTypes["v_match_captains"],
+	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 lineup_players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_lineup_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -2159,16 +2160,32 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 };
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["match_lineups_avg_fields"],
 count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	max?:ValueTypes["match_lineups_max_fields"],
 	min?:ValueTypes["match_lineups_min_fields"],
+	stddev?:ValueTypes["match_lineups_stddev_fields"],
+	stddev_pop?:ValueTypes["match_lineups_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["match_lineups_stddev_samp_fields"],
+	sum?:ValueTypes["match_lineups_sum_fields"],
+	var_pop?:ValueTypes["match_lineups_var_pop_fields"],
+	var_samp?:ValueTypes["match_lineups_var_samp_fields"],
+	variance?:ValueTypes["match_lineups_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by aggregate values of table "match_lineups" */
 ["match_lineups_aggregate_order_by"]: {
+	avg?: ValueTypes["match_lineups_avg_order_by"] | undefined | null | Variable<any, string>,
 	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	max?: ValueTypes["match_lineups_max_order_by"] | undefined | null | Variable<any, string>,
-	min?: ValueTypes["match_lineups_min_order_by"] | undefined | null | Variable<any, string>
+	min?: ValueTypes["match_lineups_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["match_lineups_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["match_lineups_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["match_lineups_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["match_lineups_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["match_lineups_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["match_lineups_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["match_lineups_variance_order_by"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting array relation for remote table "match_lineups" */
 ["match_lineups_arr_rel_insert_input"]: {
@@ -2176,12 +2193,22 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	/** upsert condition */
 	on_conflict?: ValueTypes["match_lineups_on_conflict"] | undefined | null | Variable<any, string>
 };
+	/** aggregate avg on columns */
+["match_lineups_avg_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "match_lineups" */
+["match_lineups_avg_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
 	_and?: Array<ValueTypes["match_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["v_match_captains_bool_exp"] | undefined | null | Variable<any, string>,
+	coach_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_players?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>,
 	lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -2193,9 +2220,14 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 };
 	/** unique or primary key constraints on table "match_lineups" */
 ["match_lineups_constraint"]:match_lineups_constraint;
+	/** input type for incrementing numeric columns in table "match_lineups" */
+["match_lineups_inc_input"]: {
+	coach_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 	captain?: ValueTypes["v_match_captains_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	coach_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_players?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -2205,6 +2237,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 };
 	/** aggregate max on columns */
 ["match_lineups_max_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
@@ -2214,12 +2247,14 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 }>;
 	/** order by max() on columns of table "match_lineups" */
 ["match_lineups_max_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["match_lineups_min_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
@@ -2229,6 +2264,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 }>;
 	/** order by min() on columns of table "match_lineups" */
 ["match_lineups_min_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -2256,6 +2292,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 	captain?: ValueTypes["v_match_captains_order_by"] | undefined | null | Variable<any, string>,
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
@@ -2272,9 +2309,37 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 ["match_lineups_select_column"]:match_lineups_select_column;
 	/** input type for updating data in table "match_lineups" */
 ["match_lineups_set_input"]: {
+	coach_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["match_lineups_stddev_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "match_lineups" */
+["match_lineups_stddev_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["match_lineups_stddev_pop_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "match_lineups" */
+["match_lineups_stddev_pop_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["match_lineups_stddev_samp_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "match_lineups" */
+["match_lineups_stddev_samp_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
@@ -2285,17 +2350,56 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_lineups_stream_cursor_value_input"]: {
+	coach_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
+	/** aggregate sum on columns */
+["match_lineups_sum_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "match_lineups" */
+["match_lineups_sum_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** update columns of table "match_lineups" */
 ["match_lineups_update_column"]:match_lineups_update_column;
 	["match_lineups_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_lineups_inc_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["match_lineups_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
 	where: ValueTypes["match_lineups_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["match_lineups_var_pop_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "match_lineups" */
+["match_lineups_var_pop_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["match_lineups_var_samp_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "match_lineups" */
+["match_lineups_var_samp_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["match_lineups_variance_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "match_lineups" */
+["match_lineups_variance_order_by"]: {
+	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
@@ -3125,6 +3229,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** columns and relationships of "matches" */
 ["matches"]: AliasType<{
 	best_of?:boolean | `@${string}`,
+	coaches?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_string" */
@@ -3157,6 +3262,7 @@ lineups_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
+	map_veto?:boolean | `@${string}`,
 match_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -3170,6 +3276,7 @@ match_maps_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["match_maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_maps_aggregate"]],
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	/** An object relationship */
 	organizer?:ValueTypes["players"],
 	organizer_steam_id?:boolean | `@${string}`,
@@ -3334,6 +3441,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_avg_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3341,6 +3449,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_avg_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
@@ -3349,6 +3458,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	_not?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["matches_bool_exp"]> | undefined | null | Variable<any, string>,
 	best_of?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	coaches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	connection_link?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -3363,9 +3473,11 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineup_2_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	map_veto?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	organizer?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	overtime?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -3398,11 +3510,13 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_inc_input"]: {
 	best_of?: number | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
+	number_of_substitutes?: number | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
 	best_of?: number | undefined | null | Variable<any, string>,
+	coaches?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	e_match_status?: ValueTypes["e_match_status_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -3410,8 +3524,10 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	knife_round?: boolean | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
 	lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	map_veto?: boolean | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
+	number_of_substitutes?: number | undefined | null | Variable<any, string>,
 	organizer?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	overtime?: boolean | undefined | null | Variable<any, string>,
@@ -3446,6 +3562,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
@@ -3464,6 +3581,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3487,6 +3605,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
@@ -3505,6 +3624,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3534,6 +3654,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	coaches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	connection_link?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3547,8 +3668,10 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineup_1_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	map_veto?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	overtime?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3582,11 +3705,14 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
 	best_of?: number | undefined | null | Variable<any, string>,
+	coaches?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
+	map_veto?: boolean | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
+	number_of_substitutes?: number | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	overtime?: boolean | undefined | null | Variable<any, string>,
 	password?: string | undefined | null | Variable<any, string>,
@@ -3600,6 +3726,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_stddev_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3607,12 +3734,14 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_stddev_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_pop on columns */
 ["matches_stddev_pop_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3620,12 +3749,14 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_stddev_pop_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_samp on columns */
 ["matches_stddev_samp_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3633,6 +3764,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_stddev_samp_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "matches" */
@@ -3645,11 +3777,14 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
 	best_of?: number | undefined | null | Variable<any, string>,
+	coaches?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
+	map_veto?: boolean | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
+	number_of_substitutes?: number | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	overtime?: boolean | undefined | null | Variable<any, string>,
 	password?: string | undefined | null | Variable<any, string>,
@@ -3663,6 +3798,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_sum_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3670,6 +3806,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_sum_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** update columns of table "matches" */
@@ -3686,6 +3823,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_var_pop_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3693,12 +3831,14 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_var_pop_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate var_samp on columns */
 ["matches_var_samp_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3706,12 +3846,14 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_var_samp_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate variance on columns */
 ["matches_variance_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3719,6 +3861,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_variance_order_by"]: {
 	best_of?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** mutation root */
@@ -3997,10 +4140,12 @@ update_match_lineup_players_by_pk?: [{	/** increments the numeric columns with g
 	_set?: ValueTypes["match_lineup_players_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["match_lineup_players_pk_columns_input"] | Variable<any, string>},ValueTypes["match_lineup_players"]],
 update_match_lineup_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["match_lineup_players_updates"]> | Variable<any, string>},ValueTypes["match_lineup_players_mutation_response"]],
-update_match_lineups?: [{	/** sets the columns of the filtered rows to the given values */
+update_match_lineups?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_lineups_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["match_lineups_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["match_lineups_bool_exp"] | Variable<any, string>},ValueTypes["match_lineups_mutation_response"]],
-update_match_lineups_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+update_match_lineups_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_lineups_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["match_lineups_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["match_lineups_pk_columns_input"] | Variable<any, string>},ValueTypes["match_lineups"]],
 update_match_lineups_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["match_lineups_updates"]> | Variable<any, string>},ValueTypes["match_lineups_mutation_response"]],
@@ -11298,6 +11443,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 ["match_lineups"]: AliasType<{
 	/** An object relationship */
 	captain?:ResolverInputTypes["v_match_captains"],
+	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 lineup_players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_lineup_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -11338,16 +11484,32 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 };
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["match_lineups_avg_fields"],
 count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
 	max?:ResolverInputTypes["match_lineups_max_fields"],
 	min?:ResolverInputTypes["match_lineups_min_fields"],
+	stddev?:ResolverInputTypes["match_lineups_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["match_lineups_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["match_lineups_stddev_samp_fields"],
+	sum?:ResolverInputTypes["match_lineups_sum_fields"],
+	var_pop?:ResolverInputTypes["match_lineups_var_pop_fields"],
+	var_samp?:ResolverInputTypes["match_lineups_var_samp_fields"],
+	variance?:ResolverInputTypes["match_lineups_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by aggregate values of table "match_lineups" */
 ["match_lineups_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["match_lineups_avg_order_by"] | undefined | null,
 	count?: ResolverInputTypes["order_by"] | undefined | null,
 	max?: ResolverInputTypes["match_lineups_max_order_by"] | undefined | null,
-	min?: ResolverInputTypes["match_lineups_min_order_by"] | undefined | null
+	min?: ResolverInputTypes["match_lineups_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["match_lineups_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["match_lineups_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["match_lineups_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["match_lineups_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["match_lineups_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["match_lineups_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["match_lineups_variance_order_by"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "match_lineups" */
 ["match_lineups_arr_rel_insert_input"]: {
@@ -11355,12 +11517,22 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	/** upsert condition */
 	on_conflict?: ResolverInputTypes["match_lineups_on_conflict"] | undefined | null
 };
+	/** aggregate avg on columns */
+["match_lineups_avg_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "match_lineups" */
+["match_lineups_avg_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["match_lineups_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_lineups_bool_exp"]> | undefined | null,
 	captain?: ResolverInputTypes["v_match_captains_bool_exp"] | undefined | null,
+	coach_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	lineup_players?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null,
 	lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null,
@@ -11372,9 +11544,14 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 };
 	/** unique or primary key constraints on table "match_lineups" */
 ["match_lineups_constraint"]:match_lineups_constraint;
+	/** input type for incrementing numeric columns in table "match_lineups" */
+["match_lineups_inc_input"]: {
+	coach_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 	captain?: ResolverInputTypes["v_match_captains_obj_rel_insert_input"] | undefined | null,
+	coach_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_players?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
@@ -11384,6 +11561,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 };
 	/** aggregate max on columns */
 ["match_lineups_max_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
@@ -11393,12 +11571,14 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 }>;
 	/** order by max() on columns of table "match_lineups" */
 ["match_lineups_max_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["match_lineups_min_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_team_name" */
@@ -11408,6 +11588,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 }>;
 	/** order by min() on columns of table "match_lineups" */
 ["match_lineups_min_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -11435,6 +11616,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 	captain?: ResolverInputTypes["v_match_captains_order_by"] | undefined | null,
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
@@ -11451,9 +11633,37 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 ["match_lineups_select_column"]:match_lineups_select_column;
 	/** input type for updating data in table "match_lineups" */
 ["match_lineups_set_input"]: {
+	coach_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["match_lineups_stddev_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "match_lineups" */
+["match_lineups_stddev_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["match_lineups_stddev_pop_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "match_lineups" */
+["match_lineups_stddev_pop_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["match_lineups_stddev_samp_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "match_lineups" */
+["match_lineups_stddev_samp_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
@@ -11464,17 +11674,56 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_lineups_stream_cursor_value_input"]: {
+	coach_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
 };
+	/** aggregate sum on columns */
+["match_lineups_sum_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "match_lineups" */
+["match_lineups_sum_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** update columns of table "match_lineups" */
 ["match_lineups_update_column"]:match_lineups_update_column;
 	["match_lineups_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_lineups_inc_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["match_lineups_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["match_lineups_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_lineups_var_pop_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "match_lineups" */
+["match_lineups_var_pop_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["match_lineups_var_samp_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "match_lineups" */
+["match_lineups_var_samp_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["match_lineups_variance_fields"]: AliasType<{
+	coach_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "match_lineups" */
+["match_lineups_variance_order_by"]: {
+	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
@@ -12304,6 +12553,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** columns and relationships of "matches" */
 ["matches"]: AliasType<{
 	best_of?:boolean | `@${string}`,
+	coaches?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_string" */
@@ -12336,6 +12586,7 @@ lineups_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
+	map_veto?:boolean | `@${string}`,
 match_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -12349,6 +12600,7 @@ match_maps_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["match_maps_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null},ResolverInputTypes["match_maps_aggregate"]],
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	/** An object relationship */
 	organizer?:ResolverInputTypes["players"],
 	organizer_steam_id?:boolean | `@${string}`,
@@ -12513,6 +12765,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_avg_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12520,6 +12773,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_avg_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
@@ -12528,6 +12782,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	_not?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["matches_bool_exp"]> | undefined | null,
 	best_of?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	coaches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	connection_link?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -12542,9 +12797,11 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineup_2_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
+	map_veto?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_bool_exp"] | undefined | null,
 	mr?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	organizer?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	overtime?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -12577,11 +12834,13 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_inc_input"]: {
 	best_of?: number | undefined | null,
 	mr?: number | undefined | null,
+	number_of_substitutes?: number | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
 	best_of?: number | undefined | null,
+	coaches?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	e_match_status?: ResolverInputTypes["e_match_status_obj_rel_insert_input"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
@@ -12589,8 +12848,10 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	knife_round?: boolean | undefined | null,
 	label?: string | undefined | null,
 	lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
+	map_veto?: boolean | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_arr_rel_insert_input"] | undefined | null,
 	mr?: number | undefined | null,
+	number_of_substitutes?: number | undefined | null,
 	organizer?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	overtime?: boolean | undefined | null,
@@ -12625,6 +12886,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
@@ -12643,6 +12905,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	password?: ResolverInputTypes["order_by"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -12666,6 +12929,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
@@ -12684,6 +12948,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	password?: ResolverInputTypes["order_by"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -12713,6 +12978,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
+	coaches?: ResolverInputTypes["order_by"] | undefined | null,
 	connection_link?: ResolverInputTypes["order_by"] | undefined | null,
 	connection_string?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -12726,8 +12992,10 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineup_1_id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
+	map_veto?: ResolverInputTypes["order_by"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer?: ResolverInputTypes["players_order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	overtime?: ResolverInputTypes["order_by"] | undefined | null,
@@ -12761,11 +13029,14 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
 	best_of?: number | undefined | null,
+	coaches?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	knife_round?: boolean | undefined | null,
 	label?: string | undefined | null,
+	map_veto?: boolean | undefined | null,
 	mr?: number | undefined | null,
+	number_of_substitutes?: number | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	overtime?: boolean | undefined | null,
 	password?: string | undefined | null,
@@ -12779,6 +13050,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_stddev_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12786,12 +13058,14 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_stddev_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["matches_stddev_pop_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12799,12 +13073,14 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_stddev_pop_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["matches_stddev_samp_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12812,6 +13088,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_stddev_samp_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "matches" */
@@ -12824,11 +13101,14 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
 	best_of?: number | undefined | null,
+	coaches?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	knife_round?: boolean | undefined | null,
 	label?: string | undefined | null,
+	map_veto?: boolean | undefined | null,
 	mr?: number | undefined | null,
+	number_of_substitutes?: number | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	overtime?: boolean | undefined | null,
 	password?: string | undefined | null,
@@ -12842,6 +13122,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_sum_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12849,6 +13130,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_sum_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** update columns of table "matches" */
@@ -12865,6 +13147,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_var_pop_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12872,12 +13155,14 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_var_pop_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["matches_var_samp_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12885,12 +13170,14 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_var_samp_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate variance on columns */
 ["matches_variance_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
+	number_of_substitutes?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12898,6 +13185,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_variance_order_by"]: {
 	best_of?: ResolverInputTypes["order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
+	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** mutation root */
@@ -13176,10 +13464,12 @@ update_match_lineup_players_by_pk?: [{	/** increments the numeric columns with g
 	_set?: ResolverInputTypes["match_lineup_players_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["match_lineup_players_pk_columns_input"]},ResolverInputTypes["match_lineup_players"]],
 update_match_lineup_players_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["match_lineup_players_updates"]>},ResolverInputTypes["match_lineup_players_mutation_response"]],
-update_match_lineups?: [{	/** sets the columns of the filtered rows to the given values */
+update_match_lineups?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_lineups_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["match_lineups_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["match_lineups_bool_exp"]},ResolverInputTypes["match_lineups_mutation_response"]],
-update_match_lineups_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+update_match_lineups_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_lineups_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["match_lineups_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["match_lineups_pk_columns_input"]},ResolverInputTypes["match_lineups"]],
 update_match_lineups_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["match_lineups_updates"]>},ResolverInputTypes["match_lineups_mutation_response"]],
@@ -20349,6 +20639,7 @@ export type ModelTypes = {
 ["match_lineups"]: {
 		/** An object relationship */
 	captain?: ModelTypes["v_match_captains"] | undefined,
+	coach_steam_id?: ModelTypes["bigint"] | undefined,
 	id: ModelTypes["uuid"],
 	/** An array relationship */
 	lineup_players: Array<ModelTypes["match_lineup_players"]>,
@@ -20379,15 +20670,31 @@ export type ModelTypes = {
 };
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: {
-		count: number,
+		avg?: ModelTypes["match_lineups_avg_fields"] | undefined,
+	count: number,
 	max?: ModelTypes["match_lineups_max_fields"] | undefined,
-	min?: ModelTypes["match_lineups_min_fields"] | undefined
+	min?: ModelTypes["match_lineups_min_fields"] | undefined,
+	stddev?: ModelTypes["match_lineups_stddev_fields"] | undefined,
+	stddev_pop?: ModelTypes["match_lineups_stddev_pop_fields"] | undefined,
+	stddev_samp?: ModelTypes["match_lineups_stddev_samp_fields"] | undefined,
+	sum?: ModelTypes["match_lineups_sum_fields"] | undefined,
+	var_pop?: ModelTypes["match_lineups_var_pop_fields"] | undefined,
+	var_samp?: ModelTypes["match_lineups_var_samp_fields"] | undefined,
+	variance?: ModelTypes["match_lineups_variance_fields"] | undefined
 };
 	/** order by aggregate values of table "match_lineups" */
 ["match_lineups_aggregate_order_by"]: {
+	avg?: ModelTypes["match_lineups_avg_order_by"] | undefined,
 	count?: ModelTypes["order_by"] | undefined,
 	max?: ModelTypes["match_lineups_max_order_by"] | undefined,
-	min?: ModelTypes["match_lineups_min_order_by"] | undefined
+	min?: ModelTypes["match_lineups_min_order_by"] | undefined,
+	stddev?: ModelTypes["match_lineups_stddev_order_by"] | undefined,
+	stddev_pop?: ModelTypes["match_lineups_stddev_pop_order_by"] | undefined,
+	stddev_samp?: ModelTypes["match_lineups_stddev_samp_order_by"] | undefined,
+	sum?: ModelTypes["match_lineups_sum_order_by"] | undefined,
+	var_pop?: ModelTypes["match_lineups_var_pop_order_by"] | undefined,
+	var_samp?: ModelTypes["match_lineups_var_samp_order_by"] | undefined,
+	variance?: ModelTypes["match_lineups_variance_order_by"] | undefined
 };
 	/** input type for inserting array relation for remote table "match_lineups" */
 ["match_lineups_arr_rel_insert_input"]: {
@@ -20395,12 +20702,21 @@ export type ModelTypes = {
 	/** upsert condition */
 	on_conflict?: ModelTypes["match_lineups_on_conflict"] | undefined
 };
+	/** aggregate avg on columns */
+["match_lineups_avg_fields"]: {
+		coach_steam_id?: number | undefined
+};
+	/** order by avg() on columns of table "match_lineups" */
+["match_lineups_avg_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
+};
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
 	_and?: Array<ModelTypes["match_lineups_bool_exp"]> | undefined,
 	_not?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_lineups_bool_exp"]> | undefined,
 	captain?: ModelTypes["v_match_captains_bool_exp"] | undefined,
+	coach_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	lineup_players?: ModelTypes["match_lineup_players_bool_exp"] | undefined,
 	lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
@@ -20411,9 +20727,14 @@ export type ModelTypes = {
 	team_id?: ModelTypes["uuid_comparison_exp"] | undefined
 };
 	["match_lineups_constraint"]:match_lineups_constraint;
+	/** input type for incrementing numeric columns in table "match_lineups" */
+["match_lineups_inc_input"]: {
+	coach_steam_id?: ModelTypes["bigint"] | undefined
+};
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 	captain?: ModelTypes["v_match_captains_obj_rel_insert_input"] | undefined,
+	coach_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_players?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
@@ -20423,7 +20744,8 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["match_lineups_max_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		coach_steam_id?: ModelTypes["bigint"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
@@ -20431,13 +20753,15 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "match_lineups" */
 ["match_lineups_max_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_lineups_min_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		coach_steam_id?: ModelTypes["bigint"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
@@ -20445,6 +20769,7 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "match_lineups" */
 ["match_lineups_min_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined
@@ -20471,6 +20796,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 	captain?: ModelTypes["v_match_captains_order_by"] | undefined,
+	coach_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
@@ -20486,9 +20812,34 @@ export type ModelTypes = {
 	["match_lineups_select_column"]:match_lineups_select_column;
 	/** input type for updating data in table "match_lineups" */
 ["match_lineups_set_input"]: {
+	coach_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
+};
+	/** aggregate stddev on columns */
+["match_lineups_stddev_fields"]: {
+		coach_steam_id?: number | undefined
+};
+	/** order by stddev() on columns of table "match_lineups" */
+["match_lineups_stddev_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate stddev_pop on columns */
+["match_lineups_stddev_pop_fields"]: {
+		coach_steam_id?: number | undefined
+};
+	/** order by stddev_pop() on columns of table "match_lineups" */
+["match_lineups_stddev_pop_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate stddev_samp on columns */
+["match_lineups_stddev_samp_fields"]: {
+		coach_steam_id?: number | undefined
+};
+	/** order by stddev_samp() on columns of table "match_lineups" */
+["match_lineups_stddev_samp_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
@@ -20499,16 +20850,51 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_lineups_stream_cursor_value_input"]: {
+	coach_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
+	/** aggregate sum on columns */
+["match_lineups_sum_fields"]: {
+		coach_steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** order by sum() on columns of table "match_lineups" */
+["match_lineups_sum_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
+};
 	["match_lineups_update_column"]:match_lineups_update_column;
 	["match_lineups_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["match_lineups_inc_input"] | undefined,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["match_lineups_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: ModelTypes["match_lineups_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_lineups_var_pop_fields"]: {
+		coach_steam_id?: number | undefined
+};
+	/** order by var_pop() on columns of table "match_lineups" */
+["match_lineups_var_pop_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate var_samp on columns */
+["match_lineups_var_samp_fields"]: {
+		coach_steam_id?: number | undefined
+};
+	/** order by var_samp() on columns of table "match_lineups" */
+["match_lineups_var_samp_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate variance on columns */
+["match_lineups_variance_fields"]: {
+		coach_steam_id?: number | undefined
+};
+	/** order by variance() on columns of table "match_lineups" */
+["match_lineups_variance_order_by"]: {
+	coach_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
@@ -21240,6 +21626,7 @@ export type ModelTypes = {
 	/** columns and relationships of "matches" */
 ["matches"]: {
 		best_of: number,
+	coaches: boolean,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_connection_string" */
@@ -21264,11 +21651,13 @@ export type ModelTypes = {
 	lineups: Array<ModelTypes["match_lineups"]>,
 	/** An aggregate relationship */
 	lineups_aggregate: ModelTypes["match_lineups_aggregate"],
+	map_veto: boolean,
 	/** An array relationship */
 	match_maps: Array<ModelTypes["match_maps"]>,
 	/** An aggregate relationship */
 	match_maps_aggregate: ModelTypes["match_maps_aggregate"],
 	mr: number,
+	number_of_substitutes: number,
 	/** An object relationship */
 	organizer?: ModelTypes["players"] | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
@@ -21378,12 +21767,14 @@ export type ModelTypes = {
 ["matches_avg_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by avg() on columns of table "matches" */
 ["matches_avg_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
@@ -21392,6 +21783,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["matches_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["matches_bool_exp"]> | undefined,
 	best_of?: ModelTypes["Int_comparison_exp"] | undefined,
+	coaches?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	connection_link?: ModelTypes["String_comparison_exp"] | undefined,
 	connection_string?: ModelTypes["String_comparison_exp"] | undefined,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
@@ -21406,9 +21798,11 @@ export type ModelTypes = {
 	lineup_2_id?: ModelTypes["String_comparison_exp"] | undefined,
 	lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
+	map_veto?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	match_maps?: ModelTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_bool_exp"] | undefined,
 	mr?: ModelTypes["Int_comparison_exp"] | undefined,
+	number_of_substitutes?: ModelTypes["Int_comparison_exp"] | undefined,
 	organizer?: ModelTypes["players_bool_exp"] | undefined,
 	organizer_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	overtime?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -21440,11 +21834,13 @@ export type ModelTypes = {
 ["matches_inc_input"]: {
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
 	best_of?: number | undefined,
+	coaches?: boolean | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	e_match_status?: ModelTypes["e_match_status_obj_rel_insert_input"] | undefined,
 	e_match_type?: ModelTypes["e_match_types_obj_rel_insert_input"] | undefined,
@@ -21452,8 +21848,10 @@ export type ModelTypes = {
 	knife_round?: boolean | undefined,
 	label?: string | undefined,
 	lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined,
+	map_veto?: boolean | undefined,
 	match_maps?: ModelTypes["match_maps_arr_rel_insert_input"] | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer?: ModelTypes["players_obj_rel_insert_input"] | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	overtime?: boolean | undefined,
@@ -21488,6 +21886,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?: string | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	password?: string | undefined,
 	scheduled_at?: ModelTypes["date"] | undefined,
@@ -21505,6 +21904,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined,
 	label?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined,
 	password?: ModelTypes["order_by"] | undefined,
 	scheduled_at?: ModelTypes["order_by"] | undefined,
@@ -21528,6 +21928,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?: string | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	password?: string | undefined,
 	scheduled_at?: ModelTypes["date"] | undefined,
@@ -21545,6 +21946,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined,
 	label?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined,
 	password?: ModelTypes["order_by"] | undefined,
 	scheduled_at?: ModelTypes["order_by"] | undefined,
@@ -21573,6 +21975,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
+	coaches?: ModelTypes["order_by"] | undefined,
 	connection_link?: ModelTypes["order_by"] | undefined,
 	connection_string?: ModelTypes["order_by"] | undefined,
 	created_at?: ModelTypes["order_by"] | undefined,
@@ -21586,8 +21989,10 @@ export type ModelTypes = {
 	lineup_1_id?: ModelTypes["order_by"] | undefined,
 	lineup_2_id?: ModelTypes["order_by"] | undefined,
 	lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
+	map_veto?: ModelTypes["order_by"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer?: ModelTypes["players_order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined,
 	overtime?: ModelTypes["order_by"] | undefined,
@@ -21618,11 +22023,14 @@ export type ModelTypes = {
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
 	best_of?: number | undefined,
+	coaches?: boolean | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	knife_round?: boolean | undefined,
 	label?: string | undefined,
+	map_veto?: boolean | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	overtime?: boolean | undefined,
 	password?: string | undefined,
@@ -21636,36 +22044,42 @@ export type ModelTypes = {
 ["matches_stddev_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev() on columns of table "matches" */
 ["matches_stddev_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["matches_stddev_pop_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "matches" */
 ["matches_stddev_pop_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["matches_stddev_samp_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "matches" */
 ["matches_stddev_samp_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "matches" */
@@ -21678,11 +22092,14 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
 	best_of?: number | undefined,
+	coaches?: boolean | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	knife_round?: boolean | undefined,
 	label?: string | undefined,
+	map_veto?: boolean | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	overtime?: boolean | undefined,
 	password?: string | undefined,
@@ -21696,12 +22113,14 @@ export type ModelTypes = {
 ["matches_sum_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined
 };
 	/** order by sum() on columns of table "matches" */
 ["matches_sum_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	["matches_update_column"]:matches_update_column;
@@ -21717,36 +22136,42 @@ export type ModelTypes = {
 ["matches_var_pop_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by var_pop() on columns of table "matches" */
 ["matches_var_pop_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate var_samp on columns */
 ["matches_var_samp_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by var_samp() on columns of table "matches" */
 ["matches_var_samp_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate variance on columns */
 ["matches_variance_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by variance() on columns of table "matches" */
 ["matches_variance_order_by"]: {
 	best_of?: ModelTypes["order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
+	number_of_substitutes?: ModelTypes["order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** mutation root */
@@ -23341,7 +23766,7 @@ export type ModelTypes = {
 	thru_smoke: boolean,
 	thru_wall: boolean,
 	time: ModelTypes["timestamptz"],
-	with: string
+	with?: string | undefined
 };
 	/** aggregated selection of "player_kills" */
 ["player_kills_aggregate"]: {
@@ -28260,6 +28685,7 @@ export type GraphQLTypes = {
 	__typename: "match_lineups",
 	/** An object relationship */
 	captain?: GraphQLTypes["v_match_captains"] | undefined,
+	coach_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
 	lineup_players: Array<GraphQLTypes["match_lineup_players"]>,
@@ -28292,15 +28718,31 @@ export type GraphQLTypes = {
 	/** aggregate fields of "match_lineups" */
 ["match_lineups_aggregate_fields"]: {
 	__typename: "match_lineups_aggregate_fields",
+	avg?: GraphQLTypes["match_lineups_avg_fields"] | undefined,
 	count: number,
 	max?: GraphQLTypes["match_lineups_max_fields"] | undefined,
-	min?: GraphQLTypes["match_lineups_min_fields"] | undefined
+	min?: GraphQLTypes["match_lineups_min_fields"] | undefined,
+	stddev?: GraphQLTypes["match_lineups_stddev_fields"] | undefined,
+	stddev_pop?: GraphQLTypes["match_lineups_stddev_pop_fields"] | undefined,
+	stddev_samp?: GraphQLTypes["match_lineups_stddev_samp_fields"] | undefined,
+	sum?: GraphQLTypes["match_lineups_sum_fields"] | undefined,
+	var_pop?: GraphQLTypes["match_lineups_var_pop_fields"] | undefined,
+	var_samp?: GraphQLTypes["match_lineups_var_samp_fields"] | undefined,
+	variance?: GraphQLTypes["match_lineups_variance_fields"] | undefined
 };
 	/** order by aggregate values of table "match_lineups" */
 ["match_lineups_aggregate_order_by"]: {
-		count?: GraphQLTypes["order_by"] | undefined,
+		avg?: GraphQLTypes["match_lineups_avg_order_by"] | undefined,
+	count?: GraphQLTypes["order_by"] | undefined,
 	max?: GraphQLTypes["match_lineups_max_order_by"] | undefined,
-	min?: GraphQLTypes["match_lineups_min_order_by"] | undefined
+	min?: GraphQLTypes["match_lineups_min_order_by"] | undefined,
+	stddev?: GraphQLTypes["match_lineups_stddev_order_by"] | undefined,
+	stddev_pop?: GraphQLTypes["match_lineups_stddev_pop_order_by"] | undefined,
+	stddev_samp?: GraphQLTypes["match_lineups_stddev_samp_order_by"] | undefined,
+	sum?: GraphQLTypes["match_lineups_sum_order_by"] | undefined,
+	var_pop?: GraphQLTypes["match_lineups_var_pop_order_by"] | undefined,
+	var_samp?: GraphQLTypes["match_lineups_var_samp_order_by"] | undefined,
+	variance?: GraphQLTypes["match_lineups_variance_order_by"] | undefined
 };
 	/** input type for inserting array relation for remote table "match_lineups" */
 ["match_lineups_arr_rel_insert_input"]: {
@@ -28308,12 +28750,22 @@ export type GraphQLTypes = {
 	/** upsert condition */
 	on_conflict?: GraphQLTypes["match_lineups_on_conflict"] | undefined
 };
+	/** aggregate avg on columns */
+["match_lineups_avg_fields"]: {
+	__typename: "match_lineups_avg_fields",
+	coach_steam_id?: number | undefined
+};
+	/** order by avg() on columns of table "match_lineups" */
+["match_lineups_avg_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
+};
 	/** Boolean expression to filter rows from the table "match_lineups". All fields are combined with a logical 'AND'. */
 ["match_lineups_bool_exp"]: {
 		_and?: Array<GraphQLTypes["match_lineups_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_lineups_bool_exp"]> | undefined,
 	captain?: GraphQLTypes["v_match_captains_bool_exp"] | undefined,
+	coach_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	lineup_players?: GraphQLTypes["match_lineup_players_bool_exp"] | undefined,
 	lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
@@ -28325,9 +28777,14 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "match_lineups" */
 ["match_lineups_constraint"]: match_lineups_constraint;
+	/** input type for incrementing numeric columns in table "match_lineups" */
+["match_lineups_inc_input"]: {
+		coach_steam_id?: GraphQLTypes["bigint"] | undefined
+};
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 		captain?: GraphQLTypes["v_match_captains_obj_rel_insert_input"] | undefined,
+	coach_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_players?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
@@ -28338,6 +28795,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["match_lineups_max_fields"]: {
 	__typename: "match_lineups_max_fields",
+	coach_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
@@ -28346,13 +28804,15 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "match_lineups" */
 ["match_lineups_max_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_lineups_min_fields"]: {
 	__typename: "match_lineups_min_fields",
+	coach_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_team_name" */
@@ -28361,7 +28821,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "match_lineups" */
 ["match_lineups_min_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined
 };
@@ -28388,6 +28849,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 		captain?: GraphQLTypes["v_match_captains_order_by"] | undefined,
+	coach_steam_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
@@ -28404,9 +28866,37 @@ export type GraphQLTypes = {
 ["match_lineups_select_column"]: match_lineups_select_column;
 	/** input type for updating data in table "match_lineups" */
 ["match_lineups_set_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		coach_steam_id?: GraphQLTypes["bigint"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** aggregate stddev on columns */
+["match_lineups_stddev_fields"]: {
+	__typename: "match_lineups_stddev_fields",
+	coach_steam_id?: number | undefined
+};
+	/** order by stddev() on columns of table "match_lineups" */
+["match_lineups_stddev_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate stddev_pop on columns */
+["match_lineups_stddev_pop_fields"]: {
+	__typename: "match_lineups_stddev_pop_fields",
+	coach_steam_id?: number | undefined
+};
+	/** order by stddev_pop() on columns of table "match_lineups" */
+["match_lineups_stddev_pop_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate stddev_samp on columns */
+["match_lineups_stddev_samp_fields"]: {
+	__typename: "match_lineups_stddev_samp_fields",
+	coach_steam_id?: number | undefined
+};
+	/** order by stddev_samp() on columns of table "match_lineups" */
+["match_lineups_stddev_samp_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "match_lineups" */
 ["match_lineups_stream_cursor_input"]: {
@@ -28417,17 +28907,56 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_lineups_stream_cursor_value_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		coach_steam_id?: GraphQLTypes["bigint"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** aggregate sum on columns */
+["match_lineups_sum_fields"]: {
+	__typename: "match_lineups_sum_fields",
+	coach_steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** order by sum() on columns of table "match_lineups" */
+["match_lineups_sum_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** update columns of table "match_lineups" */
 ["match_lineups_update_column"]: match_lineups_update_column;
 	["match_lineups_updates"]: {
-		/** sets the columns of the filtered rows to the given values */
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["match_lineups_inc_input"] | undefined,
+	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["match_lineups_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["match_lineups_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_lineups_var_pop_fields"]: {
+	__typename: "match_lineups_var_pop_fields",
+	coach_steam_id?: number | undefined
+};
+	/** order by var_pop() on columns of table "match_lineups" */
+["match_lineups_var_pop_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate var_samp on columns */
+["match_lineups_var_samp_fields"]: {
+	__typename: "match_lineups_var_samp_fields",
+	coach_steam_id?: number | undefined
+};
+	/** order by var_samp() on columns of table "match_lineups" */
+["match_lineups_var_samp_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate variance on columns */
+["match_lineups_variance_fields"]: {
+	__typename: "match_lineups_variance_fields",
+	coach_steam_id?: number | undefined
+};
+	/** order by variance() on columns of table "match_lineups" */
+["match_lineups_variance_order_by"]: {
+		coach_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
@@ -29194,6 +29723,7 @@ export type GraphQLTypes = {
 ["matches"]: {
 	__typename: "matches",
 	best_of: number,
+	coaches: boolean,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_connection_string" */
@@ -29218,11 +29748,13 @@ export type GraphQLTypes = {
 	lineups: Array<GraphQLTypes["match_lineups"]>,
 	/** An aggregate relationship */
 	lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
+	map_veto: boolean,
 	/** An array relationship */
 	match_maps: Array<GraphQLTypes["match_maps"]>,
 	/** An aggregate relationship */
 	match_maps_aggregate: GraphQLTypes["match_maps_aggregate"],
 	mr: number,
+	number_of_substitutes: number,
 	/** An object relationship */
 	organizer?: GraphQLTypes["players"] | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
@@ -29335,12 +29867,14 @@ export type GraphQLTypes = {
 	__typename: "matches_avg_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by avg() on columns of table "matches" */
 ["matches_avg_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
@@ -29349,6 +29883,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["matches_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["matches_bool_exp"]> | undefined,
 	best_of?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	coaches?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	connection_link?: GraphQLTypes["String_comparison_exp"] | undefined,
 	connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
@@ -29363,9 +29898,11 @@ export type GraphQLTypes = {
 	lineup_2_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 	lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
+	map_veto?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	match_maps?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_bool_exp"] | undefined,
 	mr?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	number_of_substitutes?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	organizer?: GraphQLTypes["players_bool_exp"] | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	overtime?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -29398,11 +29935,13 @@ export type GraphQLTypes = {
 ["matches_inc_input"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
 		best_of?: number | undefined,
+	coaches?: boolean | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	e_match_status?: GraphQLTypes["e_match_status_obj_rel_insert_input"] | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_obj_rel_insert_input"] | undefined,
@@ -29410,8 +29949,10 @@ export type GraphQLTypes = {
 	knife_round?: boolean | undefined,
 	label?: string | undefined,
 	lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined,
+	map_veto?: boolean | undefined,
 	match_maps?: GraphQLTypes["match_maps_arr_rel_insert_input"] | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	overtime?: boolean | undefined,
@@ -29447,6 +29988,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?: string | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	password?: string | undefined,
 	scheduled_at?: GraphQLTypes["date"] | undefined,
@@ -29464,6 +30006,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined,
 	label?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined,
 	password?: GraphQLTypes["order_by"] | undefined,
 	scheduled_at?: GraphQLTypes["order_by"] | undefined,
@@ -29488,6 +30031,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_match_lineup_2_id" */
 	lineup_2_id?: string | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	password?: string | undefined,
 	scheduled_at?: GraphQLTypes["date"] | undefined,
@@ -29505,6 +30049,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined,
 	label?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined,
 	password?: GraphQLTypes["order_by"] | undefined,
 	scheduled_at?: GraphQLTypes["order_by"] | undefined,
@@ -29534,6 +30079,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
+	coaches?: GraphQLTypes["order_by"] | undefined,
 	connection_link?: GraphQLTypes["order_by"] | undefined,
 	connection_string?: GraphQLTypes["order_by"] | undefined,
 	created_at?: GraphQLTypes["order_by"] | undefined,
@@ -29547,8 +30093,10 @@ export type GraphQLTypes = {
 	lineup_1_id?: GraphQLTypes["order_by"] | undefined,
 	lineup_2_id?: GraphQLTypes["order_by"] | undefined,
 	lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
+	map_veto?: GraphQLTypes["order_by"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer?: GraphQLTypes["players_order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined,
 	overtime?: GraphQLTypes["order_by"] | undefined,
@@ -29582,11 +30130,14 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
 		best_of?: number | undefined,
+	coaches?: boolean | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	knife_round?: boolean | undefined,
 	label?: string | undefined,
+	map_veto?: boolean | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	overtime?: boolean | undefined,
 	password?: string | undefined,
@@ -29601,12 +30152,14 @@ export type GraphQLTypes = {
 	__typename: "matches_stddev_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev() on columns of table "matches" */
 ["matches_stddev_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_pop on columns */
@@ -29614,12 +30167,14 @@ export type GraphQLTypes = {
 	__typename: "matches_stddev_pop_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "matches" */
 ["matches_stddev_pop_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_samp on columns */
@@ -29627,12 +30182,14 @@ export type GraphQLTypes = {
 	__typename: "matches_stddev_samp_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "matches" */
 ["matches_stddev_samp_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "matches" */
@@ -29645,11 +30202,14 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
 		best_of?: number | undefined,
+	coaches?: boolean | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	knife_round?: boolean | undefined,
 	label?: string | undefined,
+	map_veto?: boolean | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	overtime?: boolean | undefined,
 	password?: string | undefined,
@@ -29664,12 +30224,14 @@ export type GraphQLTypes = {
 	__typename: "matches_sum_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined
 };
 	/** order by sum() on columns of table "matches" */
 ["matches_sum_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** update columns of table "matches" */
@@ -29687,12 +30249,14 @@ export type GraphQLTypes = {
 	__typename: "matches_var_pop_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by var_pop() on columns of table "matches" */
 ["matches_var_pop_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate var_samp on columns */
@@ -29700,12 +30264,14 @@ export type GraphQLTypes = {
 	__typename: "matches_var_samp_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by var_samp() on columns of table "matches" */
 ["matches_var_samp_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate variance on columns */
@@ -29713,12 +30279,14 @@ export type GraphQLTypes = {
 	__typename: "matches_variance_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
+	number_of_substitutes?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by variance() on columns of table "matches" */
 ["matches_variance_order_by"]: {
 		best_of?: GraphQLTypes["order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
+	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** mutation root */
@@ -31371,7 +31939,7 @@ export type GraphQLTypes = {
 	thru_smoke: boolean,
 	thru_wall: boolean,
 	time: GraphQLTypes["timestamptz"],
-	with: string
+	with?: string | undefined
 };
 	/** aggregated selection of "player_kills" */
 ["player_kills_aggregate"]: {
@@ -35490,12 +36058,14 @@ export const enum match_lineups_constraint {
 }
 /** select columns of table "match_lineups" */
 export const enum match_lineups_select_column {
+	coach_steam_id = "coach_steam_id",
 	id = "id",
 	match_id = "match_id",
 	team_id = "team_id"
 }
 /** update columns of table "match_lineups" */
 export const enum match_lineups_update_column {
+	coach_steam_id = "coach_steam_id",
 	id = "id",
 	match_id = "match_id",
 	team_id = "team_id"
@@ -35564,11 +36134,14 @@ export const enum matches_constraint {
 /** select columns of table "matches" */
 export const enum matches_select_column {
 	best_of = "best_of",
+	coaches = "coaches",
 	created_at = "created_at",
 	id = "id",
 	knife_round = "knife_round",
 	label = "label",
+	map_veto = "map_veto",
 	mr = "mr",
+	number_of_substitutes = "number_of_substitutes",
 	organizer_steam_id = "organizer_steam_id",
 	overtime = "overtime",
 	password = "password",
@@ -35580,22 +36153,29 @@ export const enum matches_select_column {
 }
 /** select "matches_aggregate_bool_exp_bool_and_arguments_columns" columns of table "matches" */
 export const enum matches_select_column_matches_aggregate_bool_exp_bool_and_arguments_columns {
+	coaches = "coaches",
 	knife_round = "knife_round",
+	map_veto = "map_veto",
 	overtime = "overtime"
 }
 /** select "matches_aggregate_bool_exp_bool_or_arguments_columns" columns of table "matches" */
 export const enum matches_select_column_matches_aggregate_bool_exp_bool_or_arguments_columns {
+	coaches = "coaches",
 	knife_round = "knife_round",
+	map_veto = "map_veto",
 	overtime = "overtime"
 }
 /** update columns of table "matches" */
 export const enum matches_update_column {
 	best_of = "best_of",
+	coaches = "coaches",
 	created_at = "created_at",
 	id = "id",
 	knife_round = "knife_round",
 	label = "label",
+	map_veto = "map_veto",
 	mr = "mr",
+	number_of_substitutes = "number_of_substitutes",
 	organizer_steam_id = "organizer_steam_id",
 	overtime = "overtime",
 	password = "password",
@@ -36166,8 +36746,10 @@ type ZEUS_VARIABLES = {
 	["match_lineups_aggregate_bool_exp_count"]: ValueTypes["match_lineups_aggregate_bool_exp_count"];
 	["match_lineups_aggregate_order_by"]: ValueTypes["match_lineups_aggregate_order_by"];
 	["match_lineups_arr_rel_insert_input"]: ValueTypes["match_lineups_arr_rel_insert_input"];
+	["match_lineups_avg_order_by"]: ValueTypes["match_lineups_avg_order_by"];
 	["match_lineups_bool_exp"]: ValueTypes["match_lineups_bool_exp"];
 	["match_lineups_constraint"]: ValueTypes["match_lineups_constraint"];
+	["match_lineups_inc_input"]: ValueTypes["match_lineups_inc_input"];
 	["match_lineups_insert_input"]: ValueTypes["match_lineups_insert_input"];
 	["match_lineups_max_order_by"]: ValueTypes["match_lineups_max_order_by"];
 	["match_lineups_min_order_by"]: ValueTypes["match_lineups_min_order_by"];
@@ -36177,10 +36759,17 @@ type ZEUS_VARIABLES = {
 	["match_lineups_pk_columns_input"]: ValueTypes["match_lineups_pk_columns_input"];
 	["match_lineups_select_column"]: ValueTypes["match_lineups_select_column"];
 	["match_lineups_set_input"]: ValueTypes["match_lineups_set_input"];
+	["match_lineups_stddev_order_by"]: ValueTypes["match_lineups_stddev_order_by"];
+	["match_lineups_stddev_pop_order_by"]: ValueTypes["match_lineups_stddev_pop_order_by"];
+	["match_lineups_stddev_samp_order_by"]: ValueTypes["match_lineups_stddev_samp_order_by"];
 	["match_lineups_stream_cursor_input"]: ValueTypes["match_lineups_stream_cursor_input"];
 	["match_lineups_stream_cursor_value_input"]: ValueTypes["match_lineups_stream_cursor_value_input"];
+	["match_lineups_sum_order_by"]: ValueTypes["match_lineups_sum_order_by"];
 	["match_lineups_update_column"]: ValueTypes["match_lineups_update_column"];
 	["match_lineups_updates"]: ValueTypes["match_lineups_updates"];
+	["match_lineups_var_pop_order_by"]: ValueTypes["match_lineups_var_pop_order_by"];
+	["match_lineups_var_samp_order_by"]: ValueTypes["match_lineups_var_samp_order_by"];
+	["match_lineups_variance_order_by"]: ValueTypes["match_lineups_variance_order_by"];
 	["match_map_rounds_aggregate_bool_exp"]: ValueTypes["match_map_rounds_aggregate_bool_exp"];
 	["match_map_rounds_aggregate_bool_exp_count"]: ValueTypes["match_map_rounds_aggregate_bool_exp_count"];
 	["match_map_rounds_aggregate_order_by"]: ValueTypes["match_map_rounds_aggregate_order_by"];

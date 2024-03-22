@@ -28,7 +28,7 @@
             :search="searchPlayers"
           ></five-stack-search-input>
         </form>
-        <template v-else> Team 1 Lineup setup. </template>
+        <template v-else> Team 2 Lineup setup. </template>
       </div>
     </div>
   </div>
@@ -151,7 +151,7 @@ export default {
       return getMatchLineups(this.match);
     },
     maxPlayersPerLineup() {
-      return this.match?.type === "Wingman" ? 2 : 5;
+      return (this.match?.type === "Wingman" ? 2 : 5) + this.match.number_of_substitutes;
     },
     canAddToLineup1() {
       return (

@@ -153,6 +153,9 @@ export default {
               knife_round: true,
               mr: true,
               best_of: true,
+              coaches: true,
+              map_veto: true,
+              number_of_substitutes: true,
               lineup_1_id: true,
               lineup_2_id: true,
               organizer_steam_id: true,
@@ -547,7 +550,7 @@ export default {
       return this.match.best_of !== this.match.match_maps.length;
     },
     maxPlayersPerLineup() {
-      return this.match?.type === "Wingman" ? 2 : 5;
+      return (this.match?.type === "Wingman" ? 2 : 5) + this.match.number_of_substitutes;
     },
     canAddToLineup1() {
       return (

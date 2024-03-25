@@ -11,7 +11,7 @@
       </five-stack-button>
     </form>
   </template>
-  <template v-if="match.status == e_match_status_enum.Scheduled">
+  <template v-if="match.status == e_match_status_enum.Scheduled || match.status == e_match_status_enum.Veto">
     <div v-if="match.server_id && !match.is_match_server_available">
       <p>
         Another match is on going on the selected server. Once complete match

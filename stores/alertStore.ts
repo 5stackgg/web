@@ -4,7 +4,7 @@ import type { AlertStatuses } from "@/constants/AlertStatuses";
 
 type Alert = {
   title: string;
-  message: string;
+  message?: string;
   severity: AlertStatuses;
   id?: null | number | string;
   duration: number | undefined | null;

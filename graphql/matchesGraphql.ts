@@ -17,13 +17,13 @@ export const matchFields = Selector("servers")({
       ],
     },
     {
-      map: true,
+      map: {
+        id: true,
+        name: true,
+      },
       order: true,
       lineup_1_score: true,
       lineup_2_score: true,
-      picked_by: {
-        name: true,
-      },
     },
   ],
   lineups: {

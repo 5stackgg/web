@@ -28,12 +28,47 @@
 
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-              <!--              <five-stack-checkbox-->
-              <!--                class="mt-7"-->
-              <!--                label="Veto"-->
-              <!--                v-model="form.veto"-->
-              <!--              ></five-stack-checkbox>-->
+              <five-stack-checkbox
+                class="mt-7"
+                label="Coaches"
+                v-model="form.coaches"
+              ></five-stack-checkbox>
 
+              <five-stack-number-input
+                class="mt-7"
+                label="Substitutes"
+                v-model="form.number_of_substitutes"
+              >
+              </five-stack-number-input>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-4 lg:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+              <five-stack-checkbox
+                class="mt-7"
+                label="Veto"
+                v-model="form.map_veto"
+              ></five-stack-checkbox>
+
+              <five-stack-checkbox
+                label="Overtime"
+                v-model="form.overtime"
+              ></five-stack-checkbox>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-4 lg:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+              <five-stack-checkbox
+                label="Knife Round"
+                v-model="form.knife_round"
+              ></five-stack-checkbox>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-4 lg:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <five-stack-select-input
                 label="Best of"
                 :options="bestOfOptions"
@@ -45,19 +80,6 @@
                 :match-type="form.type"
                 :best_of="form.best_of"
               ></five-stack-map-picker>
-            </div>
-          </div>
-
-          <div class="mt-6 grid gap-4 lg:gap-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-              <five-stack-checkbox
-                label="Overtime"
-                v-model="form.overtime"
-              ></five-stack-checkbox>
-              <five-stack-checkbox
-                label="Knife Round"
-                v-model="form.knife_round"
-              ></five-stack-checkbox>
             </div>
           </div>
         </form>
@@ -139,9 +161,11 @@ import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
+import FiveStackNumberInput from "~/components/forms/FiveStackNumberInput.vue";
 
 export default {
   components: {
+    FiveStackNumberInput,
     Tab,
     Tabs,
     FiveStackCheckbox,
@@ -154,8 +178,10 @@ export default {
     return {
       form: {
         mr: "12",
-        veto: false,
+        map_veto: false,
+        coaches: false,
         best_of: 1,
+        number_of_substitutes: 0,
         type: e_match_types_enum.Competitive,
         match_maps: [],
         knife_round: true,
@@ -170,7 +196,7 @@ export default {
     };
   },
   watch: {
-    ["form.veto"]: {
+    ["form.map_veto"]: {
       handler() {
         this.form.map = undefined;
       },
@@ -259,11 +285,13 @@ export default {
       const { data } = await this.$apollo.mutate({
         variables: {
           mr: this.form.mr,
-          veto: this.form.veto,
           type: this.form.type,
           best_of: this.form.best_of,
           knife_round: this.form.knife_round,
           overtime: this.form.overtime,
+          map_veto: this.form.map_veto,
+          coaches: this.form.coaches,
+          number_of_substitutes: this.form.number_of_substitutes,
           maps: {
             data: this.form.match_maps.map((map) => {
               return {
@@ -283,6 +311,9 @@ export default {
                 match_maps: $("maps", "match_maps_arr_rel_insert_input"),
                 knife_round: $("knife_round", "Boolean!"),
                 overtime: $("overtime", "Boolean!"),
+                map_veto: $("map_veto", "Boolean!"),
+                coaches: $("coaches", "Boolean!"),
+                number_of_substitutes: $("number_of_substitutes", "Int!"),
                 lineups: {
                   data: [
                     {

@@ -8,7 +8,7 @@ export const useAuthStore = defineStore("auth", () => {
   const me = ref<typeof meFields>();
 
   async function getMe() {
-    try{
+    try {
       const response = await getGraphqlClient().query({
         query: generateQuery({
           me: meFields,
@@ -16,14 +16,14 @@ export const useAuthStore = defineStore("auth", () => {
       });
       me.value = response.data.me;
       return me.value;
-    } catch(error) {
-      console.info('auth failure', error);
+    } catch (error) {
+      console.info("auth failure", error);
     }
   }
 
   return {
     me,
-    getMe
+    getMe,
   };
 });
 

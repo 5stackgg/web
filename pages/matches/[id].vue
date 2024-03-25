@@ -30,6 +30,8 @@
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   First to {{ match.mr + 1 }} with
                   <template v-if="match.overtime">overtime</template>
+                  <br />
+                  best of {{ match.best_of }}
                 </p>
               </div>
             </div>
@@ -46,17 +48,23 @@
                   class="mt-1 text-gray-600 dark:text-gray-400"
                   v-for="match_map of match.match_maps"
                 >
-                  [{{ match_map.status }}] {{ match_map.map }}
-                  <p v-if="match_map.picked_by">
-                    <small>({{ match_map.picked_by.name }} picked)</small>
-                  </p>
+                  [{{ match_map.status }}] {{ match_map.map.name }}
+                  <template v-for="veto of match_map.vetos">
+                    <template v-if="veto.type === 'LeftOver'">[Left Over]</template>
+                  </template>
                   <p>
                     {{ matchLineups.lineup1.name }}:
                     {{ match_map.lineup_1_score }}
+                    <template v-for="veto of match_map.vetos">
+                      <template v-if="veto.type === 'Pick' && veto.match_lineup_id === matchLineups.lineup1.id">[PICKED]</template>
+                    </template>
                   </p>
                   <p>
                     {{ matchLineups.lineup2.name }}:
                     {{ match_map.lineup_2_score }}
+                    <template v-for="veto of match_map.vetos">
+                      <template v-if="veto.type === 'Pick' && veto.match_lineup_id === matchLineups.lineup2.id">[PICKED]</template>
+                    </template>
                   </p>
                 </div>
               </div>
@@ -85,7 +93,17 @@
       </div>
     </div>
 
+    <pre>
+      Veto: {{ match.map_veto }}
+      Coaches: {{ match.coaches }}
+      Substitutes: {{ match.number_of_substitutes }}
+    </pre>
+
     <hr class="mt-8 mb-8 border-gray-600" />
+
+    <map-veto :match="match"></map-veto>
+
+    <match-assign-coach :match="match"></match-assign-coach>
 
     <match-assign-lineups
       :match="match"
@@ -106,15 +124,19 @@
 import { $, order_by } from "~/generated/zeus";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import MapVeto from "~/components/veto/MapVeto.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
-import {useAuthStore} from "~/stores/AuthStore";
+import { useAuthStore } from "~/stores/AuthStore";
+import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
 
 export default {
   components: {
+    MatchAssignCoach,
+    MapVeto,
     MatchTabs,
     MatchStatus,
     MatchActions,
@@ -130,10 +152,6 @@ export default {
     $subscribe: {
       matches_by_pk: {
         variables: function () {
-          console.info({
-            id: this.$route.params.id,
-            me: useAuthStore().me.steam_id,
-          })
           return {
             matchId: this.$route.params.id,
             order_by_name: order_by.asc,
@@ -153,6 +171,10 @@ export default {
               knife_round: true,
               mr: true,
               best_of: true,
+              coaches: true,
+              map_veto: true,
+              veto_picking_lineup_id: true,
+              number_of_substitutes: true,
               lineup_1_id: true,
               lineup_2_id: true,
               organizer_steam_id: true,
@@ -166,13 +188,17 @@ export default {
               scheduled_at: true,
               match_maps: {
                 id: true,
-                map: true,
+                map: {
+                  name: true,
+                },
+                vetos: {
+                  side: true,
+                  type: true,
+                  match_lineup_id: true,
+                },
                 status: true,
                 lineup_1_score: true,
                 lineup_2_score: true,
-                picked_by: {
-                  name: true,
-                },
                 rounds: {
                   round: true,
                   kills: [
@@ -195,6 +221,10 @@ export default {
               lineups: {
                 id: true,
                 name: true,
+                coach: {
+                  name: true,
+                  steam_id: true,
+                },
                 captain: {
                   placeholder_name: true,
                   player: {
@@ -547,7 +577,10 @@ export default {
       return this.match.best_of !== this.match.match_maps.length;
     },
     maxPlayersPerLineup() {
-      return this.match?.type === "Wingman" ? 2 : 5;
+      return (
+        (this.match?.type === "Wingman" ? 2 : 5) +
+        this.match.number_of_substitutes
+      );
     },
     canAddToLineup1() {
       return (

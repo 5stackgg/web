@@ -4,10 +4,13 @@
     Best Of: {{ bestOf }}
     isPicking: {{ isPicking }} ({{ match.veto_picking_lineup_id }})
     isMatchOrganizer: {{ isMatchOrganizer }}
+    isVeto: {{ bestOf }} / {{ match.match_maps.length }} ({{
+      bestOf < match.match_maps.length
+    }}
   </pre>
 
   <div class="grid grid-cols-4" v-for="pick of picks">
-    <map-preview :map="{ name: pick.map }">
+    <map-preview :map="pick.map">
       <br />
       {{ pick.type }}ed by
 
@@ -19,37 +22,39 @@
 
   <hr />
 
-  <forms-five-stack-checkbox
-    v-model="override"
-    v-if="isMatchOrganizer"
-    label="Match Organizer override"
-  ></forms-five-stack-checkbox>
+  <template v-if="bestOf < match.match_maps.length">
+    <forms-five-stack-checkbox
+      v-model="override"
+      v-if="isMatchOrganizer"
+      label="Match Organizer override"
+    ></forms-five-stack-checkbox>
 
-  <form @submit.prevent="pickMap" v-if="isPicking">
-    <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
-    <template v-if="pickType === 'Side'">
-      <pre>{{ picks.at(-1) }}</pre>
-      <five-stack-select-input
-        label="Side"
-        :options="sideOptions"
-        v-model="form.side"
-      ></five-stack-select-input>
-    </template>
-    <template v-else>
-      <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
-        <map-preview
-          :map="availableMap"
-          class="cursor-pointer"
-          :class="{
-            'bg-red-500': form.map_id === availableMap.id,
-          }"
-          @click="form.map_id = availableMap.id"
-        ></map-preview>
-      </div>
-    </template>
+    <form @submit.prevent="pickMap" v-if="isPicking">
+      <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
+      <template v-if="pickType === 'Side'">
+        <pre>{{ picks.at(-1) }}</pre>
+        <five-stack-select-input
+          label="Side"
+          :options="sideOptions"
+          v-model="form.side"
+        ></five-stack-select-input>
+      </template>
+      <template v-else>
+        <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
+          <map-preview
+            :map="availableMap"
+            class="cursor-pointer"
+            :class="{
+              'bg-red-500': form.map_id === availableMap.id,
+            }"
+            @click="form.map_id = availableMap.id"
+          ></map-preview>
+        </div>
+      </template>
 
-    <five-stack-button>{{ pickType }}</five-stack-button>
-  </form>
+      <five-stack-button>{{ pickType }}</five-stack-button>
+    </form>
+  </template>
 </template>
 
 <script>
@@ -108,6 +113,7 @@ export default {
               id: true,
               map: {
                 id: true,
+                name: true,
               },
               side: true,
               type: true,

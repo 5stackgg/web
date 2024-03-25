@@ -94,6 +94,8 @@
 
     <map-veto :match="match"></map-veto>
 
+    <match-assign-coach :match="match"></match-assign-coach>
+
     <match-assign-lineups
       :match="match"
       v-if="assigningLineups"
@@ -120,9 +122,11 @@ import MatchActions from "~/components/match/MatchActions.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
 
 export default {
   components: {
+    MatchAssignCoach,
     MapVeto,
     MatchTabs,
     MatchStatus,
@@ -203,6 +207,10 @@ export default {
               lineups: {
                 id: true,
                 name: true,
+                coach: {
+                  name: true,
+                  steam_id: true,
+                },
                 captain: {
                   placeholder_name: true,
                   player: {

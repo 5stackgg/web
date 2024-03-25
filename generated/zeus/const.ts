@@ -770,6 +770,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_lineups_bool_exp",
 		_or:"match_lineups_bool_exp",
 		captain:"v_match_captains_bool_exp",
+		coach:"players_bool_exp",
 		coach_steam_id:"bigint_comparison_exp",
 		id:"uuid_comparison_exp",
 		lineup_players:"match_lineup_players_bool_exp",
@@ -789,6 +790,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_lineups_insert_input:{
 		captain:"v_match_captains_obj_rel_insert_input",
+		coach:"players_obj_rel_insert_input",
 		coach_steam_id:"bigint",
 		id:"uuid",
 		lineup_players:"match_lineup_players_arr_rel_insert_input",
@@ -822,6 +824,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_lineups_order_by:{
 		captain:"v_match_captains_order_by",
+		coach:"players_order_by",
 		coach_steam_id:"order_by",
 		id:"order_by",
 		lineup_players_aggregate:"match_lineup_players_aggregate_order_by",
@@ -6298,6 +6301,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_lineups:{
 		captain:"v_match_captains",
+		coach:"players",
 		coach_steam_id:"bigint",
 		id:"uuid",
 		lineup_players:"match_lineup_players",

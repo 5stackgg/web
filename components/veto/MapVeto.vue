@@ -185,9 +185,7 @@ export default {
       return this.match.best_of;
     },
     isCaptain() {
-      return !!this.myLineup?.lineup_players.find((player) => {
-        return player.steam_id === this.me.steam_id && player.captain === true;
-      });
+      return this.myLineup?.captain.player.steam_id === this.me.steam_id;
     },
     myLineup() {
       return this.match?.lineups.find((lineup) => {

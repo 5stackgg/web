@@ -1,12 +1,18 @@
 <template>
-  <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-    <h1>Assign lineups</h1>
+  <div
+    class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
+    v-if="canUpdateLineup1 || canUpdateLineup2"
+  >
+    <h1>Assign Coach</h1>
 
     <div class="grid md:grid-cols-2 gap-12">
       <div
         class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+        v-if="canUpdateLineup1"
       >
-        <form @submit.prevent.stop v-if="canAddToLineup1">
+        <pre>{{ matchLineups.lineup1.coach }}</pre>
+
+        <form @submit.prevent.stop>
           <five-stack-search-input
             :label="matchLineups.lineup1.name"
             placeholder="Find Player"
@@ -14,13 +20,15 @@
             :search="searchPlayers"
           ></five-stack-search-input>
         </form>
-        <template v-else> Team 1 Lineup setup. </template>
       </div>
 
       <div
         class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
+        v-if="canUpdateLineup2"
       >
-        <form @submit.prevent.stop v-if="canAddToLineup2">
+        <pre>{{ matchLineups.lineup2.coach }}</pre>
+
+        <form @submit.prevent.stop>
           <five-stack-search-input
             :label="matchLineups.lineup2.name"
             placeholder="Find Player"
@@ -28,7 +36,6 @@
             :search="searchPlayers"
           ></five-stack-search-input>
         </form>
-        <template v-else> Team 2 Lineup setup. </template>
       </div>
     </div>
   </div>
@@ -39,6 +46,7 @@ import { $ } from "~/generated/zeus";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   components: {
@@ -62,16 +70,14 @@ export default {
     ["form.lineup_1"]: {
       handler(member) {
         if (member) {
-          this.form.lineup_1 = undefined;
-          this.addMember(member.value.steam_id, this.matchLineups.lineup1.id);
+          this.updateCoach(member.value.steam_id, this.matchLineups.lineup1.id);
         }
       },
     },
     ["form.lineup_2"]: {
       handler(member) {
         if (member) {
-          this.form.lineup_2 = undefined;
-          this.addMember(member.value.steam_id, this.matchLineups.lineup2.id);
+          this.updateCoach(member.value.steam_id, this.matchLineups.lineup2.id);
         }
       },
     },
@@ -124,14 +130,16 @@ export default {
           })
       );
     },
-    async addMember(steam_id: bigint, match_lineup_id: string) {
+    async updateCoach(steam_id: bigint, match_lineup_id: string) {
       await this.$apollo.mutate({
         mutation: generateMutation({
-          insert_match_lineup_players_one: [
+          update_match_lineups_by_pk: [
             {
-              object: {
-                steam_id,
-                match_lineup_id,
+              pk_columns: {
+                id: match_lineup_id,
+              },
+              _set: {
+                coach_steam_id: steam_id,
               },
             },
             {
@@ -143,25 +151,22 @@ export default {
     },
   },
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
     matchLineups() {
       return getMatchLineups(this.match);
     },
-    maxPlayersPerLineup() {
+    canUpdateLineup1() {
       return (
-        (this.match?.type === "Wingman" ? 2 : 5) +
-        this.match.number_of_substitutes
+        this.match.organizer_steam_id === this.me.steam_id ||
+        this.matchLineups.lineup1.captain.player.steam_id === this.me.steam_id
       );
     },
-    canAddToLineup1() {
+    canUpdateLineup2() {
       return (
-        this.matchLineups.lineup1?.lineup_players.length <
-        this.maxPlayersPerLineup
-      );
-    },
-    canAddToLineup2() {
-      return (
-        this.matchLineups.lineup2?.lineup_players.length <
-        this.maxPlayersPerLineup
+        this.match.organizer_steam_id === this.me.steam_id ||
+        this.matchLineups.lineup2.captain.player.steam_id === this.me.steam_id
       );
     },
   },

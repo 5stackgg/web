@@ -2182,6 +2182,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 ["match_lineups"]: AliasType<{
 	/** An object relationship */
 	captain?:ValueTypes["v_match_captains"],
+	/** An object relationship */
+	coach?:ValueTypes["players"],
 	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 lineup_players?: [{	/** distinct select on columns */
@@ -2285,6 +2287,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	_not?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["v_match_captains_bool_exp"] | undefined | null | Variable<any, string>,
+	coach?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	coach_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_players?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>,
@@ -2307,6 +2310,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 	captain?: ValueTypes["v_match_captains_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	coach?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	coach_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_players?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -2374,6 +2378,7 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 	captain?: ValueTypes["v_match_captains_order_by"] | undefined | null | Variable<any, string>,
+	coach?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -12201,6 +12206,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 ["match_lineups"]: AliasType<{
 	/** An object relationship */
 	captain?:ResolverInputTypes["v_match_captains"],
+	/** An object relationship */
+	coach?:ResolverInputTypes["players"],
 	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 lineup_players?: [{	/** distinct select on columns */
@@ -12304,6 +12311,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	_not?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_lineups_bool_exp"]> | undefined | null,
 	captain?: ResolverInputTypes["v_match_captains_bool_exp"] | undefined | null,
+	coach?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	coach_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	lineup_players?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null,
@@ -12326,6 +12334,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 	captain?: ResolverInputTypes["v_match_captains_obj_rel_insert_input"] | undefined | null,
+	coach?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	coach_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_players?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
@@ -12393,6 +12402,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 	captain?: ResolverInputTypes["v_match_captains_order_by"] | undefined | null,
+	coach?: ResolverInputTypes["players_order_by"] | undefined | null,
 	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
@@ -22068,6 +22078,8 @@ export type ModelTypes = {
 ["match_lineups"]: {
 		/** An object relationship */
 	captain?: ModelTypes["v_match_captains"] | undefined,
+	/** An object relationship */
+	coach?: ModelTypes["players"] | undefined,
 	coach_steam_id?: ModelTypes["bigint"] | undefined,
 	id: ModelTypes["uuid"],
 	/** An array relationship */
@@ -22151,6 +22163,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_lineups_bool_exp"]> | undefined,
 	captain?: ModelTypes["v_match_captains_bool_exp"] | undefined,
+	coach?: ModelTypes["players_bool_exp"] | undefined,
 	coach_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	lineup_players?: ModelTypes["match_lineup_players_bool_exp"] | undefined,
@@ -22172,6 +22185,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 	captain?: ModelTypes["v_match_captains_obj_rel_insert_input"] | undefined,
+	coach?: ModelTypes["players_obj_rel_insert_input"] | undefined,
 	coach_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_players?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
@@ -22236,6 +22250,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 	captain?: ModelTypes["v_match_captains_order_by"] | undefined,
+	coach?: ModelTypes["players_order_by"] | undefined,
 	coach_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined,
@@ -30675,6 +30690,8 @@ export type GraphQLTypes = {
 	__typename: "match_lineups",
 	/** An object relationship */
 	captain?: GraphQLTypes["v_match_captains"] | undefined,
+	/** An object relationship */
+	coach?: GraphQLTypes["players"] | undefined,
 	coach_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
@@ -30761,6 +30778,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_lineups_bool_exp"]> | undefined,
 	captain?: GraphQLTypes["v_match_captains_bool_exp"] | undefined,
+	coach?: GraphQLTypes["players_bool_exp"] | undefined,
 	coach_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	lineup_players?: GraphQLTypes["match_lineup_players_bool_exp"] | undefined,
@@ -30783,6 +30801,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "match_lineups" */
 ["match_lineups_insert_input"]: {
 		captain?: GraphQLTypes["v_match_captains_obj_rel_insert_input"] | undefined,
+	coach?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
 	coach_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_players?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
@@ -30850,6 +30869,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
 		captain?: GraphQLTypes["v_match_captains_order_by"] | undefined,
+	coach?: GraphQLTypes["players_order_by"] | undefined,
 	coach_steam_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined,

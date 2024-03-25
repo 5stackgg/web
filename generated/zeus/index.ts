@@ -3112,6 +3112,18 @@ utility_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_utility_aggregate"]],
+vetos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks"]],
+vetos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks_aggregate"]],
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "match_maps" */
@@ -3209,7 +3221,9 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_map_status_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	utility?: ValueTypes["player_utility_bool_exp"] | undefined | null | Variable<any, string>,
-	utility_aggregate?: ValueTypes["player_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>
+	utility_aggregate?: ValueTypes["player_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	vetos?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
+	vetos_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "match_maps" */
 ["match_maps_constraint"]:match_maps_constraint;
@@ -3236,7 +3250,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	player_unused_utilities?: ValueTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	rounds?: ValueTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>,
-	utility?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>
+	utility?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	vetos?: ValueTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
@@ -3321,7 +3336,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	utility_aggregate?: ValueTypes["player_utility_aggregate_order_by"] | undefined | null | Variable<any, string>
+	utility_aggregate?: ValueTypes["player_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	vetos_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -3970,7 +3986,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	tv_connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
-	veto_picking_lineup_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	veto_picking_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	veto_picks?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
 	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>
 };
@@ -13136,6 +13152,18 @@ utility_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_utility_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_utility_aggregate"]],
+vetos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks"]],
+vetos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks_aggregate"]],
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "match_maps" */
@@ -13233,7 +13261,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_match_map_status_enum_comparison_exp"] | undefined | null,
 	utility?: ResolverInputTypes["player_utility_bool_exp"] | undefined | null,
-	utility_aggregate?: ResolverInputTypes["player_utility_aggregate_bool_exp"] | undefined | null
+	utility_aggregate?: ResolverInputTypes["player_utility_aggregate_bool_exp"] | undefined | null,
+	vetos?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
+	vetos_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "match_maps" */
 ["match_maps_constraint"]:match_maps_constraint;
@@ -13260,7 +13290,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	player_unused_utilities?: ResolverInputTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null,
 	rounds?: ResolverInputTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null,
 	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null,
-	utility?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null
+	utility?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null,
+	vetos?: ResolverInputTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
@@ -13345,7 +13376,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_order_by"] | undefined | null,
 	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
-	utility_aggregate?: ResolverInputTypes["player_utility_aggregate_order_by"] | undefined | null
+	utility_aggregate?: ResolverInputTypes["player_utility_aggregate_order_by"] | undefined | null,
+	vetos_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -13994,7 +14026,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	tv_connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum_comparison_exp"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
-	veto_picking_lineup_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	veto_picking_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	veto_picks?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
 	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null
 };
@@ -22876,7 +22908,11 @@ export type ModelTypes = {
 	/** An array relationship */
 	utility: Array<ModelTypes["player_utility"]>,
 	/** An aggregate relationship */
-	utility_aggregate: ModelTypes["player_utility_aggregate"]
+	utility_aggregate: ModelTypes["player_utility_aggregate"],
+	/** An array relationship */
+	vetos: Array<ModelTypes["match_veto_picks"]>,
+	/** An aggregate relationship */
+	vetos_aggregate: ModelTypes["match_veto_picks_aggregate"]
 };
 	/** aggregated selection of "match_maps" */
 ["match_maps_aggregate"]: {
@@ -22970,7 +23006,9 @@ export type ModelTypes = {
 	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_bool_exp"] | undefined,
 	status?: ModelTypes["e_match_map_status_enum_comparison_exp"] | undefined,
 	utility?: ModelTypes["player_utility_bool_exp"] | undefined,
-	utility_aggregate?: ModelTypes["player_utility_aggregate_bool_exp"] | undefined
+	utility_aggregate?: ModelTypes["player_utility_aggregate_bool_exp"] | undefined,
+	vetos?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
+	vetos_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined
 };
 	["match_maps_constraint"]:match_maps_constraint;
 	/** input type for incrementing numeric columns in table "match_maps" */
@@ -22996,7 +23034,8 @@ export type ModelTypes = {
 	player_unused_utilities?: ModelTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	rounds?: ModelTypes["match_map_rounds_arr_rel_insert_input"] | undefined,
 	status?: ModelTypes["e_match_map_status_enum"] | undefined,
-	utility?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined
+	utility?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined,
+	vetos?: ModelTypes["match_veto_picks_arr_rel_insert_input"] | undefined
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
@@ -23078,7 +23117,8 @@ export type ModelTypes = {
 	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_order_by"] | undefined,
 	status?: ModelTypes["order_by"] | undefined,
-	utility_aggregate?: ModelTypes["player_utility_aggregate_order_by"] | undefined
+	utility_aggregate?: ModelTypes["player_utility_aggregate_order_by"] | undefined,
+	vetos_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -23476,7 +23516,7 @@ export type ModelTypes = {
 	type: ModelTypes["e_match_types_enum"],
 	updated_at: ModelTypes["timestamptz"],
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: string | undefined,
+	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
 	/** An array relationship */
 	veto_picks: Array<ModelTypes["match_veto_picks"]>,
 	/** An aggregate relationship */
@@ -23613,7 +23653,7 @@ export type ModelTypes = {
 	tv_connection_string?: ModelTypes["String_comparison_exp"] | undefined,
 	type?: ModelTypes["e_match_types_enum_comparison_exp"] | undefined,
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
-	veto_picking_lineup_id?: ModelTypes["String_comparison_exp"] | undefined,
+	veto_picking_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	veto_picks?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
 	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined
 };
@@ -23688,7 +23728,7 @@ export type ModelTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: string | undefined
+	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -23732,7 +23772,7 @@ export type ModelTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: string | undefined
+	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
@@ -31531,7 +31571,11 @@ export type GraphQLTypes = {
 	/** An array relationship */
 	utility: Array<GraphQLTypes["player_utility"]>,
 	/** An aggregate relationship */
-	utility_aggregate: GraphQLTypes["player_utility_aggregate"]
+	utility_aggregate: GraphQLTypes["player_utility_aggregate"],
+	/** An array relationship */
+	vetos: Array<GraphQLTypes["match_veto_picks"]>,
+	/** An aggregate relationship */
+	vetos_aggregate: GraphQLTypes["match_veto_picks_aggregate"]
 };
 	/** aggregated selection of "match_maps" */
 ["match_maps_aggregate"]: {
@@ -31628,7 +31672,9 @@ export type GraphQLTypes = {
 	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_bool_exp"] | undefined,
 	status?: GraphQLTypes["e_match_map_status_enum_comparison_exp"] | undefined,
 	utility?: GraphQLTypes["player_utility_bool_exp"] | undefined,
-	utility_aggregate?: GraphQLTypes["player_utility_aggregate_bool_exp"] | undefined
+	utility_aggregate?: GraphQLTypes["player_utility_aggregate_bool_exp"] | undefined,
+	vetos?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
+	vetos_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined
 };
 	/** unique or primary key constraints on table "match_maps" */
 ["match_maps_constraint"]: match_maps_constraint;
@@ -31655,7 +31701,8 @@ export type GraphQLTypes = {
 	player_unused_utilities?: GraphQLTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	rounds?: GraphQLTypes["match_map_rounds_arr_rel_insert_input"] | undefined,
 	status?: GraphQLTypes["e_match_map_status_enum"] | undefined,
-	utility?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined
+	utility?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined,
+	vetos?: GraphQLTypes["match_veto_picks_arr_rel_insert_input"] | undefined
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
@@ -31740,7 +31787,8 @@ export type GraphQLTypes = {
 	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_order_by"] | undefined,
 	status?: GraphQLTypes["order_by"] | undefined,
-	utility_aggregate?: GraphQLTypes["player_utility_aggregate_order_by"] | undefined
+	utility_aggregate?: GraphQLTypes["player_utility_aggregate_order_by"] | undefined,
+	vetos_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined
 };
 	/** primary key columns input for table: match_maps */
 ["match_maps_pk_columns_input"]: {
@@ -32157,7 +32205,7 @@ export type GraphQLTypes = {
 	type: GraphQLTypes["e_match_types_enum"],
 	updated_at: GraphQLTypes["timestamptz"],
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: string | undefined,
+	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	/** An array relationship */
 	veto_picks: Array<GraphQLTypes["match_veto_picks"]>,
 	/** An aggregate relationship */
@@ -32297,7 +32345,7 @@ export type GraphQLTypes = {
 	tv_connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
 	type?: GraphQLTypes["e_match_types_enum_comparison_exp"] | undefined,
 	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
-	veto_picking_lineup_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+	veto_picking_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	veto_picks?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
 	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined
 };
@@ -32374,7 +32422,7 @@ export type GraphQLTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: string | undefined
+	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -32419,7 +32467,7 @@ export type GraphQLTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: string | undefined
+	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {

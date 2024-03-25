@@ -48,14 +48,23 @@
                   class="mt-1 text-gray-600 dark:text-gray-400"
                   v-for="match_map of match.match_maps"
                 >
-                  [{{ match_map.status }}] {{ match_map.map }}
+                  [{{ match_map.status }}] {{ match_map.map.name }}
+                  <template v-for="veto of match_map.vetos">
+                    <template v-if="veto.type === 'LeftOver'">[Left Over]</template>
+                  </template>
                   <p>
                     {{ matchLineups.lineup1.name }}:
                     {{ match_map.lineup_1_score }}
+                    <template v-for="veto of match_map.vetos">
+                      <template v-if="veto.type === 'Pick' && veto.match_lineup_id === matchLineups.lineup1.id">[PICKED]</template>
+                    </template>
                   </p>
                   <p>
                     {{ matchLineups.lineup2.name }}:
                     {{ match_map.lineup_2_score }}
+                    <template v-for="veto of match_map.vetos">
+                      <template v-if="veto.type === 'Pick' && veto.match_lineup_id === matchLineups.lineup2.id">[PICKED]</template>
+                    </template>
                   </p>
                 </div>
               </div>
@@ -181,6 +190,11 @@ export default {
                 id: true,
                 map: {
                   name: true,
+                },
+                vetos: {
+                  side: true,
+                  type: true,
+                  match_lineup_id: true,
                 },
                 status: true,
                 lineup_1_score: true,

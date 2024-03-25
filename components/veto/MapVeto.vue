@@ -4,9 +4,7 @@
     Best Of: {{ bestOf }}
     isPicking: {{ isPicking }} ({{ match.veto_picking_lineup_id }})
     isMatchOrganizer: {{ isMatchOrganizer }}
-    isVeto: {{ bestOf }} / {{ match.match_maps.length }} ({{
-      bestOf < match.match_maps.length
-    }}
+    isVeto: {{ match.match_maps.length }} / {{ bestOf }}
   </pre>
 
   <div class="grid grid-cols-4" v-for="pick of picks">
@@ -22,7 +20,7 @@
 
   <hr />
 
-  <template v-if="bestOf < match.match_maps.length">
+  <template v-if="match.match_maps.length < bestOf">
     <forms-five-stack-checkbox
       v-model="override"
       v-if="isMatchOrganizer"

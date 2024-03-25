@@ -3177,7 +3177,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	_and?: Array<ValueTypes["match_maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_maps_bool_exp"]> | undefined | null | Variable<any, string>,
-	created_at?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	flashes?: ValueTypes["player_flashes_bool_exp"] | undefined | null | Variable<any, string>,
 	flashes_aggregate?: ValueTypes["player_flashes_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -3214,7 +3214,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
-	created_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	flashes?: ValueTypes["player_flashes_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
@@ -3326,7 +3326,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 ["match_maps_select_column"]:match_maps_select_column;
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
-	created_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
@@ -3383,7 +3383,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
-	created_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
@@ -13196,7 +13196,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	_and?: Array<ResolverInputTypes["match_maps_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_maps_bool_exp"]> | undefined | null,
-	created_at?: ResolverInputTypes["date_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	flashes?: ResolverInputTypes["player_flashes_bool_exp"] | undefined | null,
 	flashes_aggregate?: ResolverInputTypes["player_flashes_aggregate_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -13233,7 +13233,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
-	created_at?: ResolverInputTypes["date"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	flashes?: ResolverInputTypes["player_flashes_arr_rel_insert_input"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
@@ -13345,7 +13345,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 ["match_maps_select_column"]:match_maps_select_column;
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
-	created_at?: ResolverInputTypes["date"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
@@ -13402,7 +13402,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
-	created_at?: ResolverInputTypes["date"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
@@ -22814,7 +22814,7 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: {
-		created_at: ModelTypes["date"],
+		created_at: ModelTypes["timestamptz"],
 	/** An array relationship */
 	flashes: Array<ModelTypes["player_flashes"]>,
 	/** An aggregate relationship */
@@ -22928,7 +22928,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["match_maps_bool_exp"]> | undefined,
 	_not?: ModelTypes["match_maps_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_maps_bool_exp"]> | undefined,
-	created_at?: ModelTypes["date_comparison_exp"] | undefined,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	flashes?: ModelTypes["player_flashes_bool_exp"] | undefined,
 	flashes_aggregate?: ModelTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -22964,7 +22964,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
-	created_at?: ModelTypes["date"] | undefined,
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	flashes?: ModelTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
@@ -22985,7 +22985,7 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
-		created_at?: ModelTypes["date"] | undefined,
+		created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -23005,7 +23005,7 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
-		created_at?: ModelTypes["date"] | undefined,
+		created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -23072,7 +23072,7 @@ export type ModelTypes = {
 	["match_maps_select_column"]:match_maps_select_column;
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
-	created_at?: ModelTypes["date"] | undefined,
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
@@ -23126,7 +23126,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
-	created_at?: ModelTypes["date"] | undefined,
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
@@ -31464,7 +31464,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: {
 	__typename: "match_maps",
-	created_at: GraphQLTypes["date"],
+	created_at: GraphQLTypes["timestamptz"],
 	/** An array relationship */
 	flashes: Array<GraphQLTypes["player_flashes"]>,
 	/** An aggregate relationship */
@@ -31581,7 +31581,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["match_maps_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_maps_bool_exp"]> | undefined,
-	created_at?: GraphQLTypes["date_comparison_exp"] | undefined,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	flashes?: GraphQLTypes["player_flashes_bool_exp"] | undefined,
 	flashes_aggregate?: GraphQLTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -31618,7 +31618,7 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
-		created_at?: GraphQLTypes["date"] | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
 	flashes?: GraphQLTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
@@ -31640,7 +31640,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
 	__typename: "match_maps_max_fields",
-	created_at?: GraphQLTypes["date"] | undefined,
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -31661,7 +31661,7 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
 	__typename: "match_maps_min_fields",
-	created_at?: GraphQLTypes["date"] | undefined,
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -31730,7 +31730,7 @@ export type GraphQLTypes = {
 ["match_maps_select_column"]: match_maps_select_column;
 	/** input type for updating data in table "match_maps" */
 ["match_maps_set_input"]: {
-		created_at?: GraphQLTypes["date"] | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
@@ -31787,7 +31787,7 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_maps_stream_cursor_value_input"]: {
-		created_at?: GraphQLTypes["date"] | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,

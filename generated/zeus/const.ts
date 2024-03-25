@@ -1264,7 +1264,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_maps_bool_exp",
 		_not:"match_maps_bool_exp",
 		_or:"match_maps_bool_exp",
-		created_at:"date_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
 		flashes:"player_flashes_bool_exp",
 		flashes_aggregate:"player_flashes_aggregate_bool_exp",
 		id:"uuid_comparison_exp",
@@ -1298,7 +1298,7 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	match_maps_insert_input:{
-		created_at:"date",
+		created_at:"timestamptz",
 		flashes:"player_flashes_arr_rel_insert_input",
 		id:"uuid",
 		lineup_1_side:"e_sides_enum",
@@ -1366,7 +1366,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_maps_select_column: "enum" as const,
 	match_maps_set_input:{
-		created_at:"date",
+		created_at:"timestamptz",
 		id:"uuid",
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
@@ -1388,7 +1388,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	match_maps_stream_cursor_value_input:{
-		created_at:"date",
+		created_at:"timestamptz",
 		id:"uuid",
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
@@ -6508,7 +6508,7 @@ export const ReturnTypes: Record<string,any> = {
 		team_2_score:"Float"
 	},
 	match_maps:{
-		created_at:"date",
+		created_at:"timestamptz",
 		flashes:"player_flashes",
 		flashes_aggregate:"player_flashes_aggregate",
 		id:"uuid",
@@ -6560,7 +6560,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_maps_max_fields:{
-		created_at:"date",
+		created_at:"timestamptz",
 		id:"uuid",
 		lineup_1_score:"Int",
 		lineup_2_score:"Int",
@@ -6569,7 +6569,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Int"
 	},
 	match_maps_min_fields:{
-		created_at:"date",
+		created_at:"timestamptz",
 		id:"uuid",
 		lineup_1_score:"Int",
 		lineup_2_score:"Int",

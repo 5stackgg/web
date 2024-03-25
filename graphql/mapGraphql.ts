@@ -1,6 +1,7 @@
 import { Selector } from "@/generated/zeus";
 
 export const mapFields = Selector("maps")({
+  id: true,
   name: true,
   type: true,
   active_pool: true,

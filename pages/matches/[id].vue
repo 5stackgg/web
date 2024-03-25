@@ -30,7 +30,7 @@
                 <p class="mt-1 text-gray-600 dark:text-gray-400">
                   First to {{ match.mr + 1 }} with
                   <template v-if="match.overtime">overtime</template>
-                  <br>
+                  <br />
                   best of {{ match.best_of }}
                 </p>
               </div>
@@ -49,9 +49,6 @@
                   v-for="match_map of match.match_maps"
                 >
                   [{{ match_map.status }}] {{ match_map.map }}
-                  <p v-if="match_map.picked_by">
-                    <small>({{ match_map.picked_by.name }} picked)</small>
-                  </p>
                   <p>
                     {{ matchLineups.lineup1.name }}:
                     {{ match_map.lineup_1_score }}
@@ -122,7 +119,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
-import {useAuthStore} from "~/stores/AuthStore";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   components: {
@@ -163,6 +160,7 @@ export default {
               best_of: true,
               coaches: true,
               map_veto: true,
+              veto_picking_lineup_id: true,
               number_of_substitutes: true,
               lineup_1_id: true,
               lineup_2_id: true,
@@ -177,13 +175,12 @@ export default {
               scheduled_at: true,
               match_maps: {
                 id: true,
-                map: true,
+                map: {
+                  name: true,
+                },
                 status: true,
                 lineup_1_score: true,
                 lineup_2_score: true,
-                picked_by: {
-                  name: true,
-                },
                 rounds: {
                   round: true,
                   kills: [
@@ -558,7 +555,10 @@ export default {
       return this.match.best_of !== this.match.match_maps.length;
     },
     maxPlayersPerLineup() {
-      return (this.match?.type === "Wingman" ? 2 : 5) + this.match.number_of_substitutes;
+      return (
+        (this.match?.type === "Wingman" ? 2 : 5) +
+        this.match.number_of_substitutes
+      );
     },
     canAddToLineup1() {
       return (

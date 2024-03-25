@@ -2,37 +2,49 @@
   <pre>
     isCaptain :{{ isCaptain }}
     Best Of: {{ bestOf }}
-    isPicking: {{ isPicking }}
+    isPicking: {{ isPicking }} ({{ match.veto_picking_lineup_id }})
+    isMatchOrganizer: {{ isMatchOrganizer }}
   </pre>
 
   <div class="grid grid-cols-4" v-for="pick of picks">
     <map-preview :map="{ name: pick.map }">
-      <br>
+      <br />
       {{ pick.type }}ed by
 
       {{ pick.match_lineup.name }}
 
-      <template v-if="pick.side">
-        ({{ pick.side }})
-      </template>
+      <template v-if="pick.side"> ({{ pick.side }}) </template>
     </map-preview>
   </div>
 
-  <hr>
+  <hr />
+
+  <forms-five-stack-checkbox
+    v-model="override"
+    v-if="isMatchOrganizer"
+    label="Match Organizer override"
+  ></forms-five-stack-checkbox>
 
   <form @submit.prevent="pickMap" v-if="isPicking">
-    <h1>Your Team Is Picking</h1>
-
+    <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
     <template v-if="pickType === 'Side'">
       <pre>{{ picks.at(-1) }}</pre>
-      <pre>{{ form }}</pre>
-      <five-stack-select-input label="Side" :options="sideOptions" v-model="form.side"></five-stack-select-input>
+      <five-stack-select-input
+        label="Side"
+        :options="sideOptions"
+        v-model="form.side"
+      ></five-stack-select-input>
     </template>
     <template v-else>
       <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
-        <map-preview :map="availableMap" class="cursor-pointer" :class="{
-       'bg-red-500': form.map === availableMap.name,
-     }" @click="form.map = availableMap.name"></map-preview>
+        <map-preview
+          :map="availableMap"
+          class="cursor-pointer"
+          :class="{
+            'bg-red-500': form.map_id === availableMap.id,
+          }"
+          @click="form.map_id = availableMap.id"
+        ></map-preview>
       </div>
     </template>
 
@@ -41,23 +53,27 @@
 </template>
 
 <script>
-
-import {$, e_match_types_enum, order_by} from "~/generated/zeus/index";
-import {useAuthStore} from "~/stores/AuthStore";
-import {typedGql} from "~/generated/zeus/typedDocumentNode";
+import { useAuthStore } from "~/stores/AuthStore";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
-import {generateMutation, generateQuery} from "~/graphql/graphqlGen";
-import {mapFields} from "~/graphql/mapGraphql";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { mapFields } from "~/graphql/mapGraphql";
 import MapPreview from "~/components/veto/MapPreview.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
+import {
+  $,
+  e_match_types_enum,
+  e_sides_enum,
+  order_by,
+} from "~/generated/zeus/index";
 
 export default {
-  components: {FiveStackSelectInput, MapPreview, FiveStackMapPicker},
-  props:{
+  components: { FiveStackSelectInput, MapPreview, FiveStackMapPicker },
+  props: {
     match: {
       type: Object,
       required: true,
-    }
+    },
   },
   apollo: {
     maps: {
@@ -78,27 +94,32 @@ export default {
             {
               where: {
                 match_id: {
-                  _eq: $("matchId", "uuid!")
-                }
+                  _eq: $("matchId", "uuid!"),
+                },
               },
               order_by: [
                 {},
                 {
-                  created_at: $("order_by", "order_by")
-                }
-              ]
+                  created_at: $("order_by", "order_by"),
+                },
+              ],
             },
             {
               id: true,
-              map: true,
+              map: {
+                id: true,
+              },
               side: true,
               type: true,
               match_lineup_id: true,
-              match_lineup: [{}, {
-                name: true,
-              }]
-            }
-          ]
+              match_lineup: [
+                {},
+                {
+                  name: true,
+                },
+              ],
+            },
+          ],
         }),
         result: function ({ data }) {
           this.picks = data.match_veto_picks;
@@ -108,57 +129,42 @@ export default {
   },
   data() {
     return {
+      override: false,
       picks: undefined,
       form: {
         map: undefined,
         side: undefined,
-      }
-    }
+      },
+    };
   },
   methods: {
     async pickMap() {
-      if(this.pickType === "Side") {
-        await this.$apollo.mutate({
-          variables: {
-            side: this.form.side,
-            id: this.picks.at(-1).id,
-          },
-          mutation: generateMutation({
-            update_match_veto_picks_by_pk: [
-              {
-                pk_columns: {
-                  id: $("id", "uuid!")
-                },
-                _set: {
-                  side: $("side", "String!")
-                }
-              },
-              {
-                id: true,
-              },
-            ],
-          }),
-        });
-        this.form.side = undefined;
-        return;
+      if (this.pickType === "Side") {
+        this.form.map_id = this.picks.at(-1).map.id;
       }
 
       await this.$apollo.mutate({
         variables: {
-          map: this.form.map,
+          map_id: this.form.map_id,
           type: this.pickType,
+          ...(this.form.side
+            ? {
+                side: this.form.side,
+              }
+            : {}),
           match_id: this.$route.params.id,
-          match_lineup_id: this.myLineup.id,
+          match_lineup_id: this.match.veto_picking_lineup_id,
         },
         mutation: generateMutation({
           insert_match_veto_picks_one: [
             {
               object: {
-                map: $("map", "String!"),
+                map_id: $("map_id", "uuid!"),
+                side: $("side", "String"),
                 type: $("type", "String!"),
                 match_id: $("match_id", "uuid!"),
-                match_lineup_id: $("match_lineup_id", "uuid!")
-              }
+                match_lineup_id: $("match_lineup_id", "uuid!"),
+              },
             },
             {
               id: true,
@@ -167,7 +173,8 @@ export default {
         }),
       });
 
-      this.form.map = undefined;
+      this.form.side = undefined;
+      this.form.map_id = undefined;
     },
   },
   computed: {
@@ -180,82 +187,81 @@ export default {
     isCaptain() {
       return !!this.myLineup?.lineup_players.find((player) => {
         return player.steam_id === this.me.steam_id && player.captain === true;
-      })
+      });
     },
     myLineup() {
       return this.match?.lineups.find((lineup) => {
         return lineup?.lineup_players.find((player) => {
           return player.steam_id === this.me.steam_id;
-        })
-      })
+        });
+      });
     },
     isPicking() {
-      if(!this.match || !this.picks) {
+      if (!this.match) {
         return false;
       }
 
-      if(this.match.best_of === 1) {
-        // TODO
-      }
-
-
-      const lastPick = this.picks.at(-1);
-      if(lastPick?.type === "Pick" && lastPick.side == null && lastPick.match_lineup_id !== this.myLineup.id) {
+      if (this.override) {
         return true;
       }
 
-      return this.picks.length % 2 === 0
+      return this.myLineup.id === this.match.veto_picking_lineup_id;
+    },
+    isMatchOrganizer() {
+      return this.match.organizer_steam_id === this.me.steam_id;
     },
     pickType() {
-      if(!this.match || !this.picks) {
+      if (!this.match || !this.picks) {
         return;
       }
 
-      if(this.match.best_of === 1) {
+      if (this.match.best_of === 1) {
         return "Ban";
       }
 
-      const lastPick = this.picks.at(-1);
-
-      if(lastPick?.type === "Pick" && lastPick.side == null) {
-        return "Side";
-      }
-
-      const pattern = ['Ban', 'Ban', 'Pick', 'Pick'];
-      return pattern[this.picks.length % pattern.length]
+      const pattern = ["Ban", "Ban", "Pick", "Side", "Pick", "Side"];
+      return pattern[this.picks.length % pattern.length];
     },
     availableMaps() {
       if (!this.maps) {
         return [];
       }
       return this.maps
-          .filter((map) => {
-            switch (this.match.type) {
-              case e_match_types_enum.Competitive:
-                return (
-                    map.type === e_match_types_enum.Competitive &&
-                    map.active_pool === true
-                );
-              case e_match_types_enum.Scrimmage:
-                return (
-                    map.type === e_match_types_enum.Competitive &&
-                    map.active_pool === true
-                );
-              case e_match_types_enum.Wingman:
-                return map.type === e_match_types_enum.Wingman;
-            }
-          }).filter((map) =>{
-            return this.picks.find((pick) => {
-              return pick.map === map.name
+        .filter((map) => {
+          switch (this.match.type) {
+            case e_match_types_enum.Competitive:
+              return (
+                map.type === e_match_types_enum.Competitive &&
+                map.active_pool === true
+              );
+            case e_match_types_enum.Scrimmage:
+              return (
+                map.type === e_match_types_enum.Competitive &&
+                map.active_pool === true
+              );
+            case e_match_types_enum.Wingman:
+              return map.type === e_match_types_enum.Wingman;
+          }
+        })
+        .filter((map) => {
+          return (
+            this.picks?.find((pick) => {
+              return pick.map.id === map.id;
             }) === undefined
-          });
+          );
+        });
     },
     sideOptions() {
-      /**
-       * yes they are opposite
-       */
-      return [{ value: "Terrorist", display: "Counter-Terrorist"}, {value: "CT", display: "Terrorist"}]
+      return [
+        { value: e_sides_enum.CT, display: "Counter-Terrorist" },
+        { value: e_sides_enum.TERRORIST, display: "Terrorist" },
+      ];
     },
-  }
-}
+    teamName() {
+      return this.match?.lineups.find((lineup) => {
+        return lineup.id === this.match.veto_picking_lineup_id;
+      }).name;
+    },
+  },
+};
 </script>

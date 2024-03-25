@@ -151,7 +151,10 @@ export default {
       return getMatchLineups(this.match);
     },
     maxPlayersPerLineup() {
-      return (this.match?.type === "Wingman" ? 2 : 5) + this.match.number_of_substitutes;
+      return (
+        (this.match?.type === "Wingman" ? 2 : 5) +
+        this.match.number_of_substitutes
+      );
     },
     canAddToLineup1() {
       return (

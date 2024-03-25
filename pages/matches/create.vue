@@ -29,15 +29,15 @@
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <five-stack-checkbox
-                  class="mt-7"
-                  label="Coaches"
-                  v-model="form.coaches"
+                class="mt-7"
+                label="Coaches"
+                v-model="form.coaches"
               ></five-stack-checkbox>
 
               <five-stack-number-input
-                  class="mt-7"
-                  label="Substitutes"
-                  v-model="form.number_of_substitutes"
+                class="mt-7"
+                label="Substitutes"
+                v-model="form.number_of_substitutes"
               >
               </five-stack-number-input>
             </div>
@@ -46,21 +46,20 @@
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <five-stack-checkbox
-                  class="mt-7"
-                  label="Veto"
-                  v-model="form.map_veto"
+                class="mt-7"
+                label="Veto"
+                v-model="form.map_veto"
               ></five-stack-checkbox>
 
               <five-stack-checkbox
-                  label="Overtime"
-                  v-model="form.overtime"
+                label="Overtime"
+                v-model="form.overtime"
               ></five-stack-checkbox>
             </div>
           </div>
 
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-
               <five-stack-checkbox
                 label="Knife Round"
                 v-model="form.knife_round"
@@ -71,15 +70,15 @@
           <div class="mt-6 grid gap-4 lg:gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <five-stack-select-input
-                  label="Best of"
-                  :options="bestOfOptions"
-                  v-model="form.best_of"
+                label="Best of"
+                :options="bestOfOptions"
+                v-model="form.best_of"
               ></five-stack-select-input>
 
               <five-stack-map-picker
-                  v-model="form.match_maps"
-                  :match-type="form.type"
-                  :best_of="form.best_of"
+                v-model="form.match_maps"
+                :match-type="form.type"
+                :best_of="form.best_of"
               ></five-stack-map-picker>
             </div>
           </div>

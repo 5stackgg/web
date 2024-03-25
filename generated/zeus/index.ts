@@ -1672,6 +1672,43 @@ count?: [{	columns?: Array<ValueTypes["e_utility_types_select_column"]> | undefi
 	active_pool?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_type?:ValueTypes["e_match_types"],
+	id?:boolean | `@${string}`,
+match_map_pools?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool"]],
+match_map_pools_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool_aggregate"]],
+match_maps?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_maps"]],
+match_maps_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_maps_aggregate"]],
+match_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks"]],
+match_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks_aggregate"]],
 	name?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
@@ -1732,6 +1769,13 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	_or?: Array<ValueTypes["maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	active_pool?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_bool_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match_map_pools?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>,
+	match_map_pools_aggregate?: ValueTypes["match_map_pool_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	match_maps?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
+	match_maps_aggregate?: ValueTypes["match_maps_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	match_veto_picks?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
+	match_veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
@@ -1742,29 +1786,37 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 ["maps_insert_input"]: {
 	active_pool?: boolean | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_map_pools?: ValueTypes["match_map_pool_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	match_maps?: ValueTypes["match_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	match_veto_picks?: ValueTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: string | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["maps_max_fields"]: AliasType<{
+	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: AliasType<{
+	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -1776,6 +1828,12 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	returning?:ValueTypes["maps"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "maps" */
+["maps_obj_rel_insert_input"]: {
+	data: ValueTypes["maps_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["maps_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** on_conflict condition type for table "maps" */
 ["maps_on_conflict"]: {
 	constraint: ValueTypes["maps_constraint"] | Variable<any, string>,
@@ -1786,14 +1844,17 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 ["maps_order_by"]: {
 	active_pool?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_match_type?: ValueTypes["e_match_types_order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_map_pools_aggregate?: ValueTypes["match_map_pool_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	match_maps_aggregate?: ValueTypes["match_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	match_veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: maps */
 ["maps_pk_columns_input"]: {
-	name: string | Variable<any, string>,
-	type: ValueTypes["e_match_types_enum"] | Variable<any, string>
+	id: ValueTypes["uuid"] | Variable<any, string>
 };
 	/** select columns of table "maps" */
 ["maps_select_column"]:maps_select_column;
@@ -1804,6 +1865,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: string | undefined | null | Variable<any, string>
@@ -1818,6 +1880,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 	active_pool?: boolean | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: string | undefined | null | Variable<any, string>
@@ -2136,8 +2199,22 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
+match_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks"]],
+match_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks_aggregate"]],
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ValueTypes["players"],
 	/** An object relationship */
 	team?:ValueTypes["teams"],
 	team_id?:boolean | `@${string}`,
@@ -2214,7 +2291,10 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match_veto_picks?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
+	match_veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
 };
@@ -2232,6 +2312,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	lineup_players?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_veto_picks?: ValueTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
@@ -2297,7 +2379,9 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -2400,6 +2484,144 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	/** order by variance() on columns of table "match_lineups" */
 ["match_lineups_variance_order_by"]: {
 	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "match_map_pool" */
+["match_map_pool"]: AliasType<{
+	/** An object relationship */
+	map?:ValueTypes["maps"],
+	map_id?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ValueTypes["matches"],
+	match_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "match_map_pool" */
+["match_map_pool_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["match_map_pool_aggregate_fields"],
+	nodes?:ValueTypes["match_map_pool"],
+		__typename?: boolean | `@${string}`
+}>;
+	["match_map_pool_aggregate_bool_exp"]: {
+	count?: ValueTypes["match_map_pool_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["match_map_pool_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
+	/** aggregate fields of "match_map_pool" */
+["match_map_pool_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["match_map_pool_max_fields"],
+	min?:ValueTypes["match_map_pool_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "match_map_pool" */
+["match_map_pool_aggregate_order_by"]: {
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["match_map_pool_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["match_map_pool_min_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "match_map_pool" */
+["match_map_pool_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["match_map_pool_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["match_map_pool_on_conflict"] | undefined | null | Variable<any, string>
+};
+	/** Boolean expression to filter rows from the table "match_map_pool". All fields are combined with a logical 'AND'. */
+["match_map_pool_bool_exp"]: {
+	_and?: Array<ValueTypes["match_map_pool_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["match_map_pool_bool_exp"]> | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "match_map_pool" */
+["match_map_pool_constraint"]:match_map_pool_constraint;
+	/** input type for inserting data into table "match_map_pool" */
+["match_map_pool_insert_input"]: {
+	map?: ValueTypes["maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["match_map_pool_max_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "match_map_pool" */
+["match_map_pool_max_order_by"]: {
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate min on columns */
+["match_map_pool_min_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "match_map_pool" */
+["match_map_pool_min_order_by"]: {
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** response of any mutation on the table "match_map_pool" */
+["match_map_pool_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["match_map_pool"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "match_map_pool" */
+["match_map_pool_on_conflict"]: {
+	constraint: ValueTypes["match_map_pool_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["match_map_pool_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "match_map_pool". */
+["match_map_pool_order_by"]: {
+	map?: ValueTypes["maps_order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: match_map_pool */
+["match_map_pool_pk_columns_input"]: {
+	map_id: ValueTypes["uuid"] | Variable<any, string>,
+	match_id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "match_map_pool" */
+["match_map_pool_select_column"]:match_map_pool_select_column;
+	/** input type for updating data in table "match_map_pool" */
+["match_map_pool_set_input"]: {
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "match_map_pool" */
+["match_map_pool_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["match_map_pool_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_pool_stream_cursor_value_input"]: {
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** update columns of table "match_map_pool" */
+["match_map_pool_update_column"]:match_map_pool_update_column;
+	["match_map_pool_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_map_pool_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["match_map_pool_bool_exp"] | Variable<any, string>
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
@@ -2793,7 +3015,9 @@ flashes_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
 	lineup_2_side?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	/** An object relationship */
+	map?:ValueTypes["maps"],
+	map_id?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -2810,9 +3034,6 @@ objectives_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_objectives_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_objectives_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_objectives_aggregate"]],
 	order?:boolean | `@${string}`,
-	/** An object relationship */
-	picked_by?:ValueTypes["match_lineups"],
-	picked_by_lineup_id?:boolean | `@${string}`,
 player_assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_assists_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -2849,6 +3070,18 @@ player_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_kills_aggregate"]],
+player_unused_utilities?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_unused_utility_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_unused_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_unused_utility"]],
+player_unused_utilities_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_unused_utility_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_unused_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_unused_utility_aggregate"]],
 rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_map_rounds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -2952,20 +3185,21 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	lineup_1_side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_2_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_2_side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	objectives?: ValueTypes["player_objectives_bool_exp"] | undefined | null | Variable<any, string>,
 	objectives_aggregate?: ValueTypes["player_objectives_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	order?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	picked_by?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	player_assists?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>,
 	player_assists_aggregate?: ValueTypes["player_assists_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	player_damages?: ValueTypes["player_damages_bool_exp"] | undefined | null | Variable<any, string>,
 	player_damages_aggregate?: ValueTypes["player_damages_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	player_kills?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>,
 	player_kills_aggregate?: ValueTypes["player_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	player_unused_utilities?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>,
+	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	rounds?: ValueTypes["match_map_rounds_bool_exp"] | undefined | null | Variable<any, string>,
 	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_map_status_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2985,16 +3219,16 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
-	map?: string | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	objectives?: ValueTypes["player_objectives_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
-	picked_by?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	player_assists?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_damages?: ValueTypes["player_damages_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_kills?: ValueTypes["player_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	player_unused_utilities?: ValueTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	rounds?: ValueTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>,
 	utility?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>
@@ -3007,20 +3241,18 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	lineup_1_score?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
-	picked_by_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "match_maps" */
 ["match_maps_max_order_by"]: {
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
@@ -3030,20 +3262,18 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	lineup_1_score?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
-	picked_by_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "match_maps" */
 ["match_maps_min_order_by"]: {
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: AliasType<{
@@ -3074,16 +3304,16 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	lineup_1_side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_2_side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	objectives_aggregate?: ValueTypes["player_objectives_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	picked_by?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_assists_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_damages_aggregate?: ValueTypes["player_damages_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	rounds_aggregate?: ValueTypes["match_map_rounds_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	utility_aggregate?: ValueTypes["player_utility_aggregate_order_by"] | undefined | null | Variable<any, string>
@@ -3100,10 +3330,9 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
-	map?: string | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
@@ -3158,10 +3387,9 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
 	lineup_2_side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
-	map?: string | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
-	picked_by_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
@@ -3228,8 +3456,11 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** columns and relationships of "match_veto_picks" */
 ["match_veto_picks"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	/** An object relationship */
+	map?:ValueTypes["maps"],
+	map_id?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -3279,8 +3510,10 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 	_and?: Array<ValueTypes["match_veto_picks_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_veto_picks_bool_exp"]> | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_lineup?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
@@ -3292,8 +3525,10 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 ["match_veto_picks_constraint"]:match_veto_picks_constraint;
 	/** input type for inserting data into table "match_veto_picks" */
 ["match_veto_picks_insert_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	map?: string | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_lineup?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -3303,8 +3538,9 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 };
 	/** aggregate max on columns */
 ["match_veto_picks_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
 	side?:boolean | `@${string}`,
@@ -3313,8 +3549,9 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 }>;
 	/** order by max() on columns of table "match_veto_picks" */
 ["match_veto_picks_max_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3322,8 +3559,9 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 };
 	/** aggregate min on columns */
 ["match_veto_picks_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
 	side?:boolean | `@${string}`,
@@ -3332,8 +3570,9 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 }>;
 	/** order by min() on columns of table "match_veto_picks" */
 ["match_veto_picks_min_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3355,8 +3594,10 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 };
 	/** Ordering options when selecting data from "match_veto_picks". */
 ["match_veto_picks_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_lineup?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
@@ -3372,8 +3613,9 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 ["match_veto_picks_select_column"]:match_veto_picks_select_column;
 	/** input type for updating data in table "match_veto_picks" */
 ["match_veto_picks_set_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	map?: string | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	side?: string | undefined | null | Variable<any, string>,
@@ -3388,8 +3630,9 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_veto_picks_stream_cursor_value_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	map?: string | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	side?: string | undefined | null | Variable<any, string>,
@@ -3440,6 +3683,18 @@ lineups_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
 	map_veto?:boolean | `@${string}`,
+match_map_pools?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool"]],
+match_map_pools_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool_aggregate"]],
 match_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -3519,6 +3774,18 @@ player_objectives_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_objectives_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_objectives_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_objectives_aggregate"]],
+player_unused_utilities?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_unused_utility_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_unused_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_unused_utility"]],
+player_unused_utilities_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_unused_utility_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_unused_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_unused_utility_aggregate"]],
 player_utility?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_utility_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -3548,6 +3815,8 @@ teams?: [{	/** distinct select on columns */
 	tv_connection_string?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?:boolean | `@${string}`,
 veto_picks?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -3663,6 +3932,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	map_veto?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	match_map_pools?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>,
+	match_map_pools_aggregate?: ValueTypes["match_map_pool_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -3681,6 +3952,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_kills_aggregate?: ValueTypes["player_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	player_objectives?: ValueTypes["player_objectives_bool_exp"] | undefined | null | Variable<any, string>,
 	player_objectives_aggregate?: ValueTypes["player_objectives_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	player_unused_utilities?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>,
+	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	player_utility?: ValueTypes["player_utility_bool_exp"] | undefined | null | Variable<any, string>,
 	player_utility_aggregate?: ValueTypes["player_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -3692,6 +3965,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	tv_connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	veto_picking_lineup_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	veto_picks?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
 	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>
 };
@@ -3716,6 +3990,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	label?: string | undefined | null | Variable<any, string>,
 	lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	map_veto?: boolean | undefined | null | Variable<any, string>,
+	match_map_pools?: ValueTypes["match_map_pool_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
 	number_of_substitutes?: number | undefined | null | Variable<any, string>,
@@ -3728,6 +4003,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_flashes?: ValueTypes["player_flashes_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_kills?: ValueTypes["player_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_objectives?: ValueTypes["player_objectives_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	player_unused_utilities?: ValueTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_utility?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -3764,6 +4040,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "matches" */
@@ -3807,6 +4085,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "matches" */
@@ -3861,6 +4141,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineup_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	map_veto?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_map_pools_aggregate?: ValueTypes["match_map_pool_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	mr?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	number_of_substitutes?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -3873,6 +4154,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_flashes_aggregate?: ValueTypes["player_flashes_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_objectives_aggregate?: ValueTypes["player_objectives_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_utility_aggregate?: ValueTypes["player_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
@@ -3883,6 +4165,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	tv_connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	veto_picking_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: matches */
@@ -4080,13 +4363,16 @@ delete_e_utility_types?: [{	/** filter the rows which have to be deleted */
 delete_e_utility_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_utility_types"]],
 delete_maps?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["maps_bool_exp"] | Variable<any, string>},ValueTypes["maps_mutation_response"]],
-delete_maps_by_pk?: [{	name: string | Variable<any, string>,	type: ValueTypes["e_match_types_enum"] | Variable<any, string>},ValueTypes["maps"]],
+delete_maps_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["maps"]],
 delete_match_lineup_players?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["match_lineup_players_bool_exp"] | Variable<any, string>},ValueTypes["match_lineup_players_mutation_response"]],
 delete_match_lineup_players_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_lineup_players"]],
 delete_match_lineups?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["match_lineups_bool_exp"] | Variable<any, string>},ValueTypes["match_lineups_mutation_response"]],
 delete_match_lineups_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_lineups"]],
+delete_match_map_pool?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["match_map_pool_bool_exp"] | Variable<any, string>},ValueTypes["match_map_pool_mutation_response"]],
+delete_match_map_pool_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_pool"]],
 delete_match_map_rounds?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["match_map_rounds_bool_exp"] | Variable<any, string>},ValueTypes["match_map_rounds_mutation_response"]],
 delete_match_map_rounds_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_rounds"]],
@@ -4188,6 +4474,12 @@ insert_match_lineups?: [{	/** the rows to be inserted */
 insert_match_lineups_one?: [{	/** the row to be inserted */
 	object: ValueTypes["match_lineups_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["match_lineups_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
+insert_match_map_pool?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["match_map_pool_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["match_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool_mutation_response"]],
+insert_match_map_pool_one?: [{	/** the row to be inserted */
+	object: ValueTypes["match_map_pool_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["match_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool"]],
 insert_match_map_rounds?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["match_map_rounds_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["match_map_rounds_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_map_rounds_mutation_response"]],
@@ -4351,6 +4643,13 @@ update_match_lineups_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ValueTypes["match_lineups_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["match_lineups_pk_columns_input"] | Variable<any, string>},ValueTypes["match_lineups"]],
 update_match_lineups_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["match_lineups_updates"]> | Variable<any, string>},ValueTypes["match_lineups_mutation_response"]],
+update_match_map_pool?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_map_pool_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["match_map_pool_bool_exp"] | Variable<any, string>},ValueTypes["match_map_pool_mutation_response"]],
+update_match_map_pool_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_map_pool_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["match_map_pool_pk_columns_input"] | Variable<any, string>},ValueTypes["match_map_pool"]],
+update_match_map_pool_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["match_map_pool_updates"]> | Variable<any, string>},ValueTypes["match_map_pool_mutation_response"]],
 update_match_map_rounds?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["match_map_rounds_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["match_map_rounds_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -6543,6 +6842,15 @@ count?: [{	columns?: Array<ValueTypes["player_objectives_select_column"]> | unde
 	nodes?:ValueTypes["player_unused_utility"],
 		__typename?: boolean | `@${string}`
 }>;
+	["player_unused_utility_aggregate_bool_exp"]: {
+	count?: ValueTypes["player_unused_utility_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["player_unused_utility_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["player_unused_utility_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
 	/** aggregate fields of "player_unused_utility" */
 ["player_unused_utility_aggregate_fields"]: AliasType<{
 	avg?:ValueTypes["player_unused_utility_avg_fields"],
@@ -6558,6 +6866,26 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	variance?:ValueTypes["player_unused_utility_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by aggregate values of table "player_unused_utility" */
+["player_unused_utility_aggregate_order_by"]: {
+	avg?: ValueTypes["player_unused_utility_avg_order_by"] | undefined | null | Variable<any, string>,
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["player_unused_utility_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["player_unused_utility_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["player_unused_utility_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["player_unused_utility_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["player_unused_utility_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["player_unused_utility_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["player_unused_utility_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["player_unused_utility_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["player_unused_utility_variance_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "player_unused_utility" */
+["player_unused_utility_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["player_unused_utility_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["player_unused_utility_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** aggregate avg on columns */
 ["player_unused_utility_avg_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -6565,6 +6893,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by avg() on columns of table "player_unused_utility" */
+["player_unused_utility_avg_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** Boolean expression to filter rows from the table "player_unused_utility". All fields are combined with a logical 'AND'. */
 ["player_unused_utility_bool_exp"]: {
 	_and?: Array<ValueTypes["player_unused_utility_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -6604,6 +6938,15 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by max() on columns of table "player_unused_utility" */
+["player_unused_utility_max_order_by"]: {
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** aggregate min on columns */
 ["player_unused_utility_min_fields"]: AliasType<{
 	id?:boolean | `@${string}`,
@@ -6614,6 +6957,15 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by min() on columns of table "player_unused_utility" */
+["player_unused_utility_min_order_by"]: {
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** response of any mutation on the table "player_unused_utility" */
 ["player_unused_utility_mutation_response"]: AliasType<{
 	/** number of rows affected by the mutation */
@@ -6659,6 +7011,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by stddev() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** aggregate stddev_pop on columns */
 ["player_unused_utility_stddev_pop_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -6666,6 +7024,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by stddev_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_pop_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** aggregate stddev_samp on columns */
 ["player_unused_utility_stddev_samp_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -6673,6 +7037,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by stddev_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_samp_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** Streaming cursor of the table "player_unused_utility" */
 ["player_unused_utility_stream_cursor_input"]: {
 	/** Stream column input with initial value */
@@ -6696,6 +7066,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by sum() on columns of table "player_unused_utility" */
+["player_unused_utility_sum_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** update columns of table "player_unused_utility" */
 ["player_unused_utility_update_column"]:player_unused_utility_update_column;
 	["player_unused_utility_updates"]: {
@@ -6713,6 +7089,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by var_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_var_pop_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** aggregate var_samp on columns */
 ["player_unused_utility_var_samp_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -6720,6 +7102,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by var_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_var_samp_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** aggregate variance on columns */
 ["player_unused_utility_variance_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -6727,6 +7115,12 @@ count?: [{	columns?: Array<ValueTypes["player_unused_utility_select_column"]> | 
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by variance() on columns of table "player_unused_utility" */
+["player_unused_utility_variance_order_by"]: {
+	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	unused?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** columns and relationships of "player_utility" */
 ["player_utility"]: AliasType<{
 	attacker_location_coordinates?:boolean | `@${string}`,
@@ -7136,6 +7530,18 @@ kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_kills_aggregate"]],
+match_lineups?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
+match_lineups_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
 matches?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -7203,6 +7609,18 @@ player_lineup_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["match_lineup_players_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineup_players_aggregate"]],
+player_unused_utilities?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_unused_utility_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_unused_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_unused_utility"]],
+player_unused_utilities_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["player_unused_utility_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["player_unused_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_unused_utility_aggregate"]],
 	profile_url?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 team_members?: [{	/** distinct select on columns */
@@ -7286,6 +7704,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	flashed_players_aggregate?: ValueTypes["player_flashes_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	match_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
+	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	multi_kills?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>,
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -7298,6 +7718,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	owned_teams_aggregate?: ValueTypes["teams_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	player_lineup?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>,
 	player_lineup_aggregate?: ValueTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	player_unused_utilities?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>,
+	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	team_members?: ValueTypes["team_roster_bool_exp"] | undefined | null | Variable<any, string>,
@@ -7324,12 +7746,14 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	flashed_by_players?: ValueTypes["player_flashes_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	flashed_players?: ValueTypes["player_flashes_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["player_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	match_lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	multi_kills?: ValueTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	objectives?: ValueTypes["player_objectives_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	opening_duels?: ValueTypes["v_player_opening_duels_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	owned_teams?: ValueTypes["teams_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_lineup?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	player_unused_utilities?: ValueTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	team_members?: ValueTypes["team_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -7385,6 +7809,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	flashed_by_players_aggregate?: ValueTypes["player_flashes_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	flashed_players_aggregate?: ValueTypes["player_flashes_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -7392,6 +7817,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	opening_duels_aggregate?: ValueTypes["v_player_opening_duels_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	owned_teams_aggregate?: ValueTypes["teams_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_lineup_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_members_aggregate?: ValueTypes["team_roster_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -7563,7 +7989,7 @@ maps_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["maps_aggregate"]],
-maps_by_pk?: [{	name: string | Variable<any, string>,	type: ValueTypes["e_match_types_enum"] | Variable<any, string>},ValueTypes["maps"]],
+maps_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["maps"]],
 match_lineup_players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_lineup_players_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -7590,6 +8016,19 @@ match_lineups_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
 match_lineups_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_lineups"]],
+match_map_pool?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool"]],
+match_map_pool_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool_aggregate"]],
+match_map_pool_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_pool"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_map_rounds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -8229,7 +8668,7 @@ maps_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["maps_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["maps_aggregate"]],
-maps_by_pk?: [{	name: string | Variable<any, string>,	type: ValueTypes["e_match_types_enum"] | Variable<any, string>},ValueTypes["maps"]],
+maps_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["maps"]],
 maps_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["maps_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
@@ -8268,6 +8707,23 @@ match_lineups_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["match_lineups_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
+match_map_pool?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool"]],
+match_map_pool_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool_aggregate"]],
+match_map_pool_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_pool"]],
+match_map_pool_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["match_map_pool_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_pool"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_map_rounds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -11235,6 +11691,43 @@ count?: [{	columns?: Array<ResolverInputTypes["e_utility_types_select_column"]> 
 	active_pool?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_type?:ResolverInputTypes["e_match_types"],
+	id?:boolean | `@${string}`,
+match_map_pools?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool"]],
+match_map_pools_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool_aggregate"]],
+match_maps?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_maps_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null},ResolverInputTypes["match_maps"]],
+match_maps_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_maps_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null},ResolverInputTypes["match_maps_aggregate"]],
+match_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks"]],
+match_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks_aggregate"]],
 	name?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
@@ -11295,6 +11788,13 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	_or?: Array<ResolverInputTypes["maps_bool_exp"]> | undefined | null,
 	active_pool?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_bool_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match_map_pools?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null,
+	match_map_pools_aggregate?: ResolverInputTypes["match_map_pool_aggregate_bool_exp"] | undefined | null,
+	match_maps?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
+	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_bool_exp"] | undefined | null,
+	match_veto_picks?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
+	match_veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum_comparison_exp"] | undefined | null,
 	workshop_map_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null
@@ -11305,29 +11805,37 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 ["maps_insert_input"]: {
 	active_pool?: boolean | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_obj_rel_insert_input"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_map_pools?: ResolverInputTypes["match_map_pool_arr_rel_insert_input"] | undefined | null,
+	match_maps?: ResolverInputTypes["match_maps_arr_rel_insert_input"] | undefined | null,
+	match_veto_picks?: ResolverInputTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
 	/** aggregate max on columns */
 ["maps_max_fields"]: AliasType<{
+	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
+	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	workshop_map_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: AliasType<{
+	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
+	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	workshop_map_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -11339,6 +11847,12 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	returning?:ResolverInputTypes["maps"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "maps" */
+["maps_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["maps_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["maps_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "maps" */
 ["maps_on_conflict"]: {
 	constraint: ResolverInputTypes["maps_constraint"],
@@ -11349,14 +11863,17 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 ["maps_order_by"]: {
 	active_pool?: ResolverInputTypes["order_by"] | undefined | null,
 	e_match_type?: ResolverInputTypes["e_match_types_order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_map_pools_aggregate?: ResolverInputTypes["match_map_pool_aggregate_order_by"] | undefined | null,
+	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_order_by"] | undefined | null,
+	match_veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	type?: ResolverInputTypes["order_by"] | undefined | null,
 	workshop_map_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: maps */
 ["maps_pk_columns_input"]: {
-	name: string,
-	type: ResolverInputTypes["e_match_types_enum"]
+	id: ResolverInputTypes["uuid"]
 };
 	/** select columns of table "maps" */
 ["maps_select_column"]:maps_select_column;
@@ -11367,6 +11884,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 	active_pool?: boolean | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
@@ -11381,6 +11899,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 	active_pool?: boolean | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
@@ -11699,8 +12218,22 @@ lineup_players_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
+match_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks"]],
+match_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks_aggregate"]],
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ResolverInputTypes["players"],
 	/** An object relationship */
 	team?:ResolverInputTypes["teams"],
 	team_id?:boolean | `@${string}`,
@@ -11777,7 +12310,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match_veto_picks?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
+	match_veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
 };
@@ -11795,6 +12331,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	lineup_players?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_veto_picks?: ResolverInputTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null,
+	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null
 };
@@ -11860,7 +12398,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
+	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -11963,6 +12503,144 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	/** order by variance() on columns of table "match_lineups" */
 ["match_lineups_variance_order_by"]: {
 	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** columns and relationships of "match_map_pool" */
+["match_map_pool"]: AliasType<{
+	/** An object relationship */
+	map?:ResolverInputTypes["maps"],
+	map_id?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ResolverInputTypes["matches"],
+	match_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "match_map_pool" */
+["match_map_pool_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["match_map_pool_aggregate_fields"],
+	nodes?:ResolverInputTypes["match_map_pool"],
+		__typename?: boolean | `@${string}`
+}>;
+	["match_map_pool_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["match_map_pool_aggregate_bool_exp_count"] | undefined | null
+};
+	["match_map_pool_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "match_map_pool" */
+["match_map_pool_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["match_map_pool_max_fields"],
+	min?:ResolverInputTypes["match_map_pool_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by aggregate values of table "match_map_pool" */
+["match_map_pool_aggregate_order_by"]: {
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["match_map_pool_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["match_map_pool_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "match_map_pool" */
+["match_map_pool_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["match_map_pool_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_map_pool_on_conflict"] | undefined | null
+};
+	/** Boolean expression to filter rows from the table "match_map_pool". All fields are combined with a logical 'AND'. */
+["match_map_pool_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["match_map_pool_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["match_map_pool_bool_exp"]> | undefined | null,
+	map?: ResolverInputTypes["maps_bool_exp"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "match_map_pool" */
+["match_map_pool_constraint"]:match_map_pool_constraint;
+	/** input type for inserting data into table "match_map_pool" */
+["match_map_pool_insert_input"]: {
+	map?: ResolverInputTypes["maps_obj_rel_insert_input"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate max on columns */
+["match_map_pool_max_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by max() on columns of table "match_map_pool" */
+["match_map_pool_max_order_by"]: {
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate min on columns */
+["match_map_pool_min_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by min() on columns of table "match_map_pool" */
+["match_map_pool_min_order_by"]: {
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** response of any mutation on the table "match_map_pool" */
+["match_map_pool_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["match_map_pool"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "match_map_pool" */
+["match_map_pool_on_conflict"]: {
+	constraint: ResolverInputTypes["match_map_pool_constraint"],
+	update_columns: Array<ResolverInputTypes["match_map_pool_update_column"]>,
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "match_map_pool". */
+["match_map_pool_order_by"]: {
+	map?: ResolverInputTypes["maps_order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: match_map_pool */
+["match_map_pool_pk_columns_input"]: {
+	map_id: ResolverInputTypes["uuid"],
+	match_id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "match_map_pool" */
+["match_map_pool_select_column"]:match_map_pool_select_column;
+	/** input type for updating data in table "match_map_pool" */
+["match_map_pool_set_input"]: {
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** Streaming cursor of the table "match_map_pool" */
+["match_map_pool_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["match_map_pool_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_pool_stream_cursor_value_input"]: {
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** update columns of table "match_map_pool" */
+["match_map_pool_update_column"]:match_map_pool_update_column;
+	["match_map_pool_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_map_pool_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["match_map_pool_bool_exp"]
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
@@ -12356,7 +13034,9 @@ flashes_aggregate?: [{	/** distinct select on columns */
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
 	lineup_2_side?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	/** An object relationship */
+	map?:ResolverInputTypes["maps"],
+	map_id?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -12373,9 +13053,6 @@ objectives_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_objectives_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_objectives_bool_exp"] | undefined | null},ResolverInputTypes["player_objectives_aggregate"]],
 	order?:boolean | `@${string}`,
-	/** An object relationship */
-	picked_by?:ResolverInputTypes["match_lineups"],
-	picked_by_lineup_id?:boolean | `@${string}`,
 player_assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_assists_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -12412,6 +13089,18 @@ player_kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_kills_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null},ResolverInputTypes["player_kills_aggregate"]],
+player_unused_utilities?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_unused_utility_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_unused_utility_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_unused_utility"]],
+player_unused_utilities_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_unused_utility_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_unused_utility_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_unused_utility_aggregate"]],
 rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_map_rounds_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -12515,20 +13204,21 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	lineup_1_side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
 	lineup_2_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	lineup_2_side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
-	map?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	map?: ResolverInputTypes["maps_bool_exp"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	objectives?: ResolverInputTypes["player_objectives_bool_exp"] | undefined | null,
 	objectives_aggregate?: ResolverInputTypes["player_objectives_aggregate_bool_exp"] | undefined | null,
 	order?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	picked_by?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	player_assists?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null,
 	player_assists_aggregate?: ResolverInputTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	player_damages?: ResolverInputTypes["player_damages_bool_exp"] | undefined | null,
 	player_damages_aggregate?: ResolverInputTypes["player_damages_aggregate_bool_exp"] | undefined | null,
 	player_kills?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null,
 	player_kills_aggregate?: ResolverInputTypes["player_kills_aggregate_bool_exp"] | undefined | null,
+	player_unused_utilities?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null,
+	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null,
 	rounds?: ResolverInputTypes["match_map_rounds_bool_exp"] | undefined | null,
 	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_bool_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_match_map_status_enum_comparison_exp"] | undefined | null,
@@ -12548,16 +13238,16 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
-	map?: string | undefined | null,
+	map?: ResolverInputTypes["maps_obj_rel_insert_input"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	objectives?: ResolverInputTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	order?: number | undefined | null,
-	picked_by?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
 	player_assists?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	player_damages?: ResolverInputTypes["player_damages_arr_rel_insert_input"] | undefined | null,
 	player_kills?: ResolverInputTypes["player_kills_arr_rel_insert_input"] | undefined | null,
+	player_unused_utilities?: ResolverInputTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null,
 	rounds?: ResolverInputTypes["match_map_rounds_arr_rel_insert_input"] | undefined | null,
 	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null,
 	utility?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null
@@ -12570,20 +13260,18 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	lineup_1_score?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
-	picked_by_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "match_maps" */
 ["match_maps_max_order_by"]: {
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	map?: ResolverInputTypes["order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
-	order?: ResolverInputTypes["order_by"] | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
+	order?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
@@ -12593,20 +13281,18 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	lineup_1_score?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
-	picked_by_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "match_maps" */
 ["match_maps_min_order_by"]: {
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	map?: ResolverInputTypes["order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
-	order?: ResolverInputTypes["order_by"] | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
+	order?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: AliasType<{
@@ -12637,16 +13323,16 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	lineup_1_side?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_2_side?: ResolverInputTypes["order_by"] | undefined | null,
-	map?: ResolverInputTypes["order_by"] | undefined | null,
+	map?: ResolverInputTypes["maps_order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	objectives_aggregate?: ResolverInputTypes["player_objectives_aggregate_order_by"] | undefined | null,
 	order?: ResolverInputTypes["order_by"] | undefined | null,
-	picked_by?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_assists_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	player_damages_aggregate?: ResolverInputTypes["player_damages_aggregate_order_by"] | undefined | null,
 	player_kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
+	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_order_by"] | undefined | null,
 	rounds_aggregate?: ResolverInputTypes["match_map_rounds_aggregate_order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
 	utility_aggregate?: ResolverInputTypes["player_utility_aggregate_order_by"] | undefined | null
@@ -12663,10 +13349,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
-	map?: string | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -12721,10 +13406,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
 	lineup_2_side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
-	map?: string | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
-	picked_by_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null
 };
 	/** aggregate sum on columns */
@@ -12791,8 +13475,11 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** columns and relationships of "match_veto_picks" */
 ["match_veto_picks"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	/** An object relationship */
+	map?:ResolverInputTypes["maps"],
+	map_id?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -12842,8 +13529,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 	_and?: Array<ResolverInputTypes["match_veto_picks_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_veto_picks_bool_exp"]> | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	map?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	map?: ResolverInputTypes["maps_bool_exp"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_lineup?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
@@ -12855,8 +13544,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 ["match_veto_picks_constraint"]:match_veto_picks_constraint;
 	/** input type for inserting data into table "match_veto_picks" */
 ["match_veto_picks_insert_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	map?: string | undefined | null,
+	map?: ResolverInputTypes["maps_obj_rel_insert_input"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_lineup?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
@@ -12866,8 +13557,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 };
 	/** aggregate max on columns */
 ["match_veto_picks_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
 	side?:boolean | `@${string}`,
@@ -12876,8 +13568,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 }>;
 	/** order by max() on columns of table "match_veto_picks" */
 ["match_veto_picks_max_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	map?: ResolverInputTypes["order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
 	side?: ResolverInputTypes["order_by"] | undefined | null,
@@ -12885,8 +13578,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 };
 	/** aggregate min on columns */
 ["match_veto_picks_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	map?:boolean | `@${string}`,
+	map_id?:boolean | `@${string}`,
 	match_id?:boolean | `@${string}`,
 	match_lineup_id?:boolean | `@${string}`,
 	side?:boolean | `@${string}`,
@@ -12895,8 +13589,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 }>;
 	/** order by min() on columns of table "match_veto_picks" */
 ["match_veto_picks_min_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	map?: ResolverInputTypes["order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
 	side?: ResolverInputTypes["order_by"] | undefined | null,
@@ -12918,8 +13613,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 };
 	/** Ordering options when selecting data from "match_veto_picks". */
 ["match_veto_picks_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	map?: ResolverInputTypes["order_by"] | undefined | null,
+	map?: ResolverInputTypes["maps_order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_lineup?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
@@ -12935,8 +13632,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 ["match_veto_picks_select_column"]:match_veto_picks_select_column;
 	/** input type for updating data in table "match_veto_picks" */
 ["match_veto_picks_set_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	map?: string | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
 	side?: string | undefined | null,
@@ -12951,8 +13649,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_veto_picks_stream_cursor_value_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	map?: string | undefined | null,
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_lineup_id?: ResolverInputTypes["uuid"] | undefined | null,
 	side?: string | undefined | null,
@@ -13003,6 +13702,18 @@ lineups_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
 	map_veto?:boolean | `@${string}`,
+match_map_pools?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool"]],
+match_map_pools_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool_aggregate"]],
 match_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -13082,6 +13793,18 @@ player_objectives_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_objectives_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_objectives_bool_exp"] | undefined | null},ResolverInputTypes["player_objectives_aggregate"]],
+player_unused_utilities?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_unused_utility_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_unused_utility_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_unused_utility"]],
+player_unused_utilities_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_unused_utility_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_unused_utility_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_unused_utility_aggregate"]],
 player_utility?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_utility_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -13111,6 +13834,8 @@ teams?: [{	/** distinct select on columns */
 	tv_connection_string?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?:boolean | `@${string}`,
 veto_picks?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -13226,6 +13951,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	map_veto?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	match_map_pools?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null,
+	match_map_pools_aggregate?: ResolverInputTypes["match_map_pool_aggregate_bool_exp"] | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_bool_exp"] | undefined | null,
 	mr?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -13244,6 +13971,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_kills_aggregate?: ResolverInputTypes["player_kills_aggregate_bool_exp"] | undefined | null,
 	player_objectives?: ResolverInputTypes["player_objectives_bool_exp"] | undefined | null,
 	player_objectives_aggregate?: ResolverInputTypes["player_objectives_aggregate_bool_exp"] | undefined | null,
+	player_unused_utilities?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null,
+	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null,
 	player_utility?: ResolverInputTypes["player_utility_bool_exp"] | undefined | null,
 	player_utility_aggregate?: ResolverInputTypes["player_utility_aggregate_bool_exp"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["date_comparison_exp"] | undefined | null,
@@ -13255,6 +13984,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	tv_connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum_comparison_exp"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	veto_picking_lineup_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	veto_picks?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
 	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null
 };
@@ -13279,6 +14009,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	label?: string | undefined | null,
 	lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	map_veto?: boolean | undefined | null,
+	match_map_pools?: ResolverInputTypes["match_map_pool_arr_rel_insert_input"] | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_arr_rel_insert_input"] | undefined | null,
 	mr?: number | undefined | null,
 	number_of_substitutes?: number | undefined | null,
@@ -13291,6 +14022,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_flashes?: ResolverInputTypes["player_flashes_arr_rel_insert_input"] | undefined | null,
 	player_kills?: ResolverInputTypes["player_kills_arr_rel_insert_input"] | undefined | null,
 	player_objectives?: ResolverInputTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
+	player_unused_utilities?: ResolverInputTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null,
 	player_utility?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["date"] | undefined | null,
 	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
@@ -13327,6 +14059,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "matches" */
@@ -13370,6 +14104,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?:boolean | `@${string}`,
 	updated_at?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "matches" */
@@ -13424,6 +14160,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineup_2_id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	map_veto?: ResolverInputTypes["order_by"] | undefined | null,
+	match_map_pools_aggregate?: ResolverInputTypes["match_map_pool_aggregate_order_by"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_order_by"] | undefined | null,
 	mr?: ResolverInputTypes["order_by"] | undefined | null,
 	number_of_substitutes?: ResolverInputTypes["order_by"] | undefined | null,
@@ -13436,6 +14173,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_flashes_aggregate?: ResolverInputTypes["player_flashes_aggregate_order_by"] | undefined | null,
 	player_kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
 	player_objectives_aggregate?: ResolverInputTypes["player_objectives_aggregate_order_by"] | undefined | null,
+	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_order_by"] | undefined | null,
 	player_utility_aggregate?: ResolverInputTypes["player_utility_aggregate_order_by"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
@@ -13446,6 +14184,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	tv_connection_string?: ResolverInputTypes["order_by"] | undefined | null,
 	type?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
+	veto_picking_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
 	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null
 };
 	/** primary key columns input for table: matches */
@@ -13643,13 +14382,16 @@ delete_e_utility_types?: [{	/** filter the rows which have to be deleted */
 delete_e_utility_types_by_pk?: [{	value: string},ResolverInputTypes["e_utility_types"]],
 delete_maps?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["maps_bool_exp"]},ResolverInputTypes["maps_mutation_response"]],
-delete_maps_by_pk?: [{	name: string,	type: ResolverInputTypes["e_match_types_enum"]},ResolverInputTypes["maps"]],
+delete_maps_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["maps"]],
 delete_match_lineup_players?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["match_lineup_players_bool_exp"]},ResolverInputTypes["match_lineup_players_mutation_response"]],
 delete_match_lineup_players_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_lineup_players"]],
 delete_match_lineups?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["match_lineups_bool_exp"]},ResolverInputTypes["match_lineups_mutation_response"]],
 delete_match_lineups_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_lineups"]],
+delete_match_map_pool?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["match_map_pool_bool_exp"]},ResolverInputTypes["match_map_pool_mutation_response"]],
+delete_match_map_pool_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_pool"]],
 delete_match_map_rounds?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["match_map_rounds_bool_exp"]},ResolverInputTypes["match_map_rounds_mutation_response"]],
 delete_match_map_rounds_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_rounds"]],
@@ -13751,6 +14493,12 @@ insert_match_lineups?: [{	/** the rows to be inserted */
 insert_match_lineups_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["match_lineups_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["match_lineups_on_conflict"] | undefined | null},ResolverInputTypes["match_lineups"]],
+insert_match_map_pool?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["match_map_pool_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["match_map_pool_mutation_response"]],
+insert_match_map_pool_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["match_map_pool_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["match_map_pool"]],
 insert_match_map_rounds?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["match_map_rounds_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["match_map_rounds_on_conflict"] | undefined | null},ResolverInputTypes["match_map_rounds_mutation_response"]],
@@ -13914,6 +14662,13 @@ update_match_lineups_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ResolverInputTypes["match_lineups_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["match_lineups_pk_columns_input"]},ResolverInputTypes["match_lineups"]],
 update_match_lineups_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["match_lineups_updates"]>},ResolverInputTypes["match_lineups_mutation_response"]],
+update_match_map_pool?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_map_pool_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["match_map_pool_bool_exp"]},ResolverInputTypes["match_map_pool_mutation_response"]],
+update_match_map_pool_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_map_pool_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["match_map_pool_pk_columns_input"]},ResolverInputTypes["match_map_pool"]],
+update_match_map_pool_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["match_map_pool_updates"]>},ResolverInputTypes["match_map_pool_mutation_response"]],
 update_match_map_rounds?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["match_map_rounds_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["match_map_rounds_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -16106,6 +16861,15 @@ count?: [{	columns?: Array<ResolverInputTypes["player_objectives_select_column"]
 	nodes?:ResolverInputTypes["player_unused_utility"],
 		__typename?: boolean | `@${string}`
 }>;
+	["player_unused_utility_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["player_unused_utility_aggregate_bool_exp_count"] | undefined | null
+};
+	["player_unused_utility_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["player_unused_utility_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "player_unused_utility" */
 ["player_unused_utility_aggregate_fields"]: AliasType<{
 	avg?:ResolverInputTypes["player_unused_utility_avg_fields"],
@@ -16121,6 +16885,26 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	variance?:ResolverInputTypes["player_unused_utility_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by aggregate values of table "player_unused_utility" */
+["player_unused_utility_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["player_unused_utility_avg_order_by"] | undefined | null,
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["player_unused_utility_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["player_unused_utility_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["player_unused_utility_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["player_unused_utility_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["player_unused_utility_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["player_unused_utility_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["player_unused_utility_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["player_unused_utility_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["player_unused_utility_variance_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "player_unused_utility" */
+["player_unused_utility_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["player_unused_utility_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["player_unused_utility_on_conflict"] | undefined | null
+};
 	/** aggregate avg on columns */
 ["player_unused_utility_avg_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -16128,6 +16912,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by avg() on columns of table "player_unused_utility" */
+["player_unused_utility_avg_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "player_unused_utility". All fields are combined with a logical 'AND'. */
 ["player_unused_utility_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["player_unused_utility_bool_exp"]> | undefined | null,
@@ -16167,6 +16957,15 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by max() on columns of table "player_unused_utility" */
+["player_unused_utility_max_order_by"]: {
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** aggregate min on columns */
 ["player_unused_utility_min_fields"]: AliasType<{
 	id?:boolean | `@${string}`,
@@ -16177,6 +16976,15 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by min() on columns of table "player_unused_utility" */
+["player_unused_utility_min_order_by"]: {
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** response of any mutation on the table "player_unused_utility" */
 ["player_unused_utility_mutation_response"]: AliasType<{
 	/** number of rows affected by the mutation */
@@ -16222,6 +17030,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by stddev() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** aggregate stddev_pop on columns */
 ["player_unused_utility_stddev_pop_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -16229,6 +17043,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by stddev_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_pop_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** aggregate stddev_samp on columns */
 ["player_unused_utility_stddev_samp_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -16236,6 +17056,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by stddev_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_samp_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** Streaming cursor of the table "player_unused_utility" */
 ["player_unused_utility_stream_cursor_input"]: {
 	/** Stream column input with initial value */
@@ -16259,6 +17085,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by sum() on columns of table "player_unused_utility" */
+["player_unused_utility_sum_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** update columns of table "player_unused_utility" */
 ["player_unused_utility_update_column"]:player_unused_utility_update_column;
 	["player_unused_utility_updates"]: {
@@ -16276,6 +17108,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by var_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_var_pop_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** aggregate var_samp on columns */
 ["player_unused_utility_var_samp_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -16283,6 +17121,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by var_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_var_samp_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** aggregate variance on columns */
 ["player_unused_utility_variance_fields"]: AliasType<{
 	player_steam_id?:boolean | `@${string}`,
@@ -16290,6 +17134,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_unused_utility_select_colu
 	unused?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by variance() on columns of table "player_unused_utility" */
+["player_unused_utility_variance_order_by"]: {
+	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null,
+	unused?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** columns and relationships of "player_utility" */
 ["player_utility"]: AliasType<{
 	attacker_location_coordinates?:boolean | `@${string}`,
@@ -16699,6 +17549,18 @@ kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_kills_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null},ResolverInputTypes["player_kills_aggregate"]],
+match_lineups?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups"]],
+match_lineups_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
 matches?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -16766,6 +17628,18 @@ player_lineup_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["match_lineup_players_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null},ResolverInputTypes["match_lineup_players_aggregate"]],
+player_unused_utilities?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_unused_utility_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_unused_utility_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_unused_utility"]],
+player_unused_utilities_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["player_unused_utility_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["player_unused_utility_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_unused_utility_aggregate"]],
 	profile_url?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 team_members?: [{	/** distinct select on columns */
@@ -16849,6 +17723,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	flashed_players_aggregate?: ResolverInputTypes["player_flashes_aggregate_bool_exp"] | undefined | null,
 	kills?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_bool_exp"] | undefined | null,
+	match_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
+	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	multi_kills?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null,
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
@@ -16861,6 +17737,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	owned_teams_aggregate?: ResolverInputTypes["teams_aggregate_bool_exp"] | undefined | null,
 	player_lineup?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null,
 	player_lineup_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null,
+	player_unused_utilities?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null,
+	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null,
 	profile_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	team_members?: ResolverInputTypes["team_roster_bool_exp"] | undefined | null,
@@ -16887,12 +17765,14 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	flashed_by_players?: ResolverInputTypes["player_flashes_arr_rel_insert_input"] | undefined | null,
 	flashed_players?: ResolverInputTypes["player_flashes_arr_rel_insert_input"] | undefined | null,
 	kills?: ResolverInputTypes["player_kills_arr_rel_insert_input"] | undefined | null,
+	match_lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	multi_kills?: ResolverInputTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	objectives?: ResolverInputTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	opening_duels?: ResolverInputTypes["v_player_opening_duels_arr_rel_insert_input"] | undefined | null,
 	owned_teams?: ResolverInputTypes["teams_arr_rel_insert_input"] | undefined | null,
 	player_lineup?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
+	player_unused_utilities?: ResolverInputTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null,
 	profile_url?: string | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	team_members?: ResolverInputTypes["team_roster_arr_rel_insert_input"] | undefined | null,
@@ -16948,6 +17828,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	flashed_by_players_aggregate?: ResolverInputTypes["player_flashes_aggregate_order_by"] | undefined | null,
 	flashed_players_aggregate?: ResolverInputTypes["player_flashes_aggregate_order_by"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
+	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
@@ -16955,6 +17836,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	opening_duels_aggregate?: ResolverInputTypes["v_player_opening_duels_aggregate_order_by"] | undefined | null,
 	owned_teams_aggregate?: ResolverInputTypes["teams_aggregate_order_by"] | undefined | null,
 	player_lineup_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
+	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_order_by"] | undefined | null,
 	profile_url?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	team_members_aggregate?: ResolverInputTypes["team_roster_aggregate_order_by"] | undefined | null,
@@ -17126,7 +18008,7 @@ maps_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["maps_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["maps_bool_exp"] | undefined | null},ResolverInputTypes["maps_aggregate"]],
-maps_by_pk?: [{	name: string,	type: ResolverInputTypes["e_match_types_enum"]},ResolverInputTypes["maps"]],
+maps_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["maps"]],
 match_lineup_players?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_lineup_players_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -17153,6 +18035,19 @@ match_lineups_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
 match_lineups_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_lineups"]],
+match_map_pool?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool"]],
+match_map_pool_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool_aggregate"]],
+match_map_pool_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_pool"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_map_rounds_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -17792,7 +18687,7 @@ maps_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["maps_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["maps_bool_exp"] | undefined | null},ResolverInputTypes["maps_aggregate"]],
-maps_by_pk?: [{	name: string,	type: ResolverInputTypes["e_match_types_enum"]},ResolverInputTypes["maps"]],
+maps_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["maps"]],
 maps_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["maps_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
@@ -17831,6 +18726,23 @@ match_lineups_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["match_lineups_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups"]],
+match_map_pool?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool"]],
+match_map_pool_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool_aggregate"]],
+match_map_pool_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_pool"]],
+match_map_pool_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["match_map_pool_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["match_map_pool"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_map_rounds_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -20700,6 +21612,19 @@ export type ModelTypes = {
 		active_pool: boolean,
 	/** An object relationship */
 	e_match_type: ModelTypes["e_match_types"],
+	id: ModelTypes["uuid"],
+	/** An array relationship */
+	match_map_pools: Array<ModelTypes["match_map_pool"]>,
+	/** An aggregate relationship */
+	match_map_pools_aggregate: ModelTypes["match_map_pool_aggregate"],
+	/** An array relationship */
+	match_maps: Array<ModelTypes["match_maps"]>,
+	/** An aggregate relationship */
+	match_maps_aggregate: ModelTypes["match_maps_aggregate"],
+	/** An array relationship */
+	match_veto_picks: Array<ModelTypes["match_veto_picks"]>,
+	/** An aggregate relationship */
+	match_veto_picks_aggregate: ModelTypes["match_veto_picks_aggregate"],
 	name: string,
 	type: ModelTypes["e_match_types_enum"],
 	workshop_map_id?: string | undefined
@@ -20757,6 +21682,13 @@ export type ModelTypes = {
 	_or?: Array<ModelTypes["maps_bool_exp"]> | undefined,
 	active_pool?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	e_match_type?: ModelTypes["e_match_types_bool_exp"] | undefined,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	match_map_pools?: ModelTypes["match_map_pool_bool_exp"] | undefined,
+	match_map_pools_aggregate?: ModelTypes["match_map_pool_aggregate_bool_exp"] | undefined,
+	match_maps?: ModelTypes["match_maps_bool_exp"] | undefined,
+	match_maps_aggregate?: ModelTypes["match_maps_aggregate_bool_exp"] | undefined,
+	match_veto_picks?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
+	match_veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
 	type?: ModelTypes["e_match_types_enum_comparison_exp"] | undefined,
 	workshop_map_id?: ModelTypes["String_comparison_exp"] | undefined
@@ -20766,27 +21698,35 @@ export type ModelTypes = {
 ["maps_insert_input"]: {
 	active_pool?: boolean | undefined,
 	e_match_type?: ModelTypes["e_match_types_obj_rel_insert_input"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	match_map_pools?: ModelTypes["match_map_pool_arr_rel_insert_input"] | undefined,
+	match_maps?: ModelTypes["match_maps_arr_rel_insert_input"] | undefined,
+	match_veto_picks?: ModelTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	type?: ModelTypes["e_match_types_enum"] | undefined,
 	workshop_map_id?: string | undefined
 };
 	/** aggregate max on columns */
 ["maps_max_fields"]: {
-		name?: string | undefined,
+		id?: ModelTypes["uuid"] | undefined,
+	name?: string | undefined,
 	workshop_map_id?: string | undefined
 };
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
+	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	workshop_map_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: {
-		name?: string | undefined,
+		id?: ModelTypes["uuid"] | undefined,
+	name?: string | undefined,
 	workshop_map_id?: string | undefined
 };
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
+	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	workshop_map_id?: ModelTypes["order_by"] | undefined
 };
@@ -20796,6 +21736,12 @@ export type ModelTypes = {
 	affected_rows: number,
 	/** data from the rows affected by the mutation */
 	returning: Array<ModelTypes["maps"]>
+};
+	/** input type for inserting object relation for remote table "maps" */
+["maps_obj_rel_insert_input"]: {
+	data: ModelTypes["maps_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["maps_on_conflict"] | undefined
 };
 	/** on_conflict condition type for table "maps" */
 ["maps_on_conflict"]: {
@@ -20807,14 +21753,17 @@ export type ModelTypes = {
 ["maps_order_by"]: {
 	active_pool?: ModelTypes["order_by"] | undefined,
 	e_match_type?: ModelTypes["e_match_types_order_by"] | undefined,
+	id?: ModelTypes["order_by"] | undefined,
+	match_map_pools_aggregate?: ModelTypes["match_map_pool_aggregate_order_by"] | undefined,
+	match_maps_aggregate?: ModelTypes["match_maps_aggregate_order_by"] | undefined,
+	match_veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	type?: ModelTypes["order_by"] | undefined,
 	workshop_map_id?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: maps */
 ["maps_pk_columns_input"]: {
-	name: string,
-	type: ModelTypes["e_match_types_enum"]
+	id: ModelTypes["uuid"]
 };
 	["maps_select_column"]:maps_select_column;
 	["maps_select_column_maps_aggregate_bool_exp_bool_and_arguments_columns"]:maps_select_column_maps_aggregate_bool_exp_bool_and_arguments_columns;
@@ -20822,6 +21771,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 	active_pool?: boolean | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	type?: ModelTypes["e_match_types_enum"] | undefined,
 	workshop_map_id?: string | undefined
@@ -20836,6 +21786,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 	active_pool?: boolean | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	type?: ModelTypes["e_match_types_enum"] | undefined,
 	workshop_map_id?: string | undefined
@@ -21126,8 +22077,14 @@ export type ModelTypes = {
 	/** An object relationship */
 	match: ModelTypes["matches"],
 	match_id: ModelTypes["uuid"],
+	/** An array relationship */
+	match_veto_picks: Array<ModelTypes["match_veto_picks"]>,
+	/** An aggregate relationship */
+	match_veto_picks_aggregate: ModelTypes["match_veto_picks_aggregate"],
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
+	/** An object relationship */
+	player?: ModelTypes["players"] | undefined,
 	/** An object relationship */
 	team?: ModelTypes["teams"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
@@ -21200,7 +22157,10 @@ export type ModelTypes = {
 	lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	match_veto_picks?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
+	match_veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
+	player?: ModelTypes["players_bool_exp"] | undefined,
 	team?: ModelTypes["teams_bool_exp"] | undefined,
 	team_id?: ModelTypes["uuid_comparison_exp"] | undefined
 };
@@ -21217,6 +22177,8 @@ export type ModelTypes = {
 	lineup_players?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
+	match_veto_picks?: ModelTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
+	player?: ModelTypes["players_obj_rel_insert_input"] | undefined,
 	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined
 };
@@ -21279,7 +22241,9 @@ export type ModelTypes = {
 	lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
+	match_veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
+	player?: ModelTypes["players_order_by"] | undefined,
 	team?: ModelTypes["teams_order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined
 };
@@ -21373,6 +22337,135 @@ export type ModelTypes = {
 	/** order by variance() on columns of table "match_lineups" */
 ["match_lineups_variance_order_by"]: {
 	coach_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** columns and relationships of "match_map_pool" */
+["match_map_pool"]: {
+		/** An object relationship */
+	map: ModelTypes["maps"],
+	map_id: ModelTypes["uuid"],
+	/** An object relationship */
+	match: ModelTypes["matches"],
+	match_id: ModelTypes["uuid"]
+};
+	/** aggregated selection of "match_map_pool" */
+["match_map_pool_aggregate"]: {
+		aggregate?: ModelTypes["match_map_pool_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["match_map_pool"]>
+};
+	["match_map_pool_aggregate_bool_exp"]: {
+	count?: ModelTypes["match_map_pool_aggregate_bool_exp_count"] | undefined
+};
+	["match_map_pool_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["match_map_pool_select_column"]> | undefined,
+	distinct?: boolean | undefined,
+	filter?: ModelTypes["match_map_pool_bool_exp"] | undefined,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "match_map_pool" */
+["match_map_pool_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["match_map_pool_max_fields"] | undefined,
+	min?: ModelTypes["match_map_pool_min_fields"] | undefined
+};
+	/** order by aggregate values of table "match_map_pool" */
+["match_map_pool_aggregate_order_by"]: {
+	count?: ModelTypes["order_by"] | undefined,
+	max?: ModelTypes["match_map_pool_max_order_by"] | undefined,
+	min?: ModelTypes["match_map_pool_min_order_by"] | undefined
+};
+	/** input type for inserting array relation for remote table "match_map_pool" */
+["match_map_pool_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["match_map_pool_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["match_map_pool_on_conflict"] | undefined
+};
+	/** Boolean expression to filter rows from the table "match_map_pool". All fields are combined with a logical 'AND'. */
+["match_map_pool_bool_exp"]: {
+	_and?: Array<ModelTypes["match_map_pool_bool_exp"]> | undefined,
+	_not?: ModelTypes["match_map_pool_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["match_map_pool_bool_exp"]> | undefined,
+	map?: ModelTypes["maps_bool_exp"] | undefined,
+	map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	match?: ModelTypes["matches_bool_exp"] | undefined,
+	match_id?: ModelTypes["uuid_comparison_exp"] | undefined
+};
+	["match_map_pool_constraint"]:match_map_pool_constraint;
+	/** input type for inserting data into table "match_map_pool" */
+["match_map_pool_insert_input"]: {
+	map?: ModelTypes["maps_obj_rel_insert_input"] | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
+	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined
+};
+	/** aggregate max on columns */
+["match_map_pool_max_fields"]: {
+		map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined
+};
+	/** order by max() on columns of table "match_map_pool" */
+["match_map_pool_max_order_by"]: {
+	map_id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate min on columns */
+["match_map_pool_min_fields"]: {
+		map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined
+};
+	/** order by min() on columns of table "match_map_pool" */
+["match_map_pool_min_order_by"]: {
+	map_id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined
+};
+	/** response of any mutation on the table "match_map_pool" */
+["match_map_pool_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["match_map_pool"]>
+};
+	/** on_conflict condition type for table "match_map_pool" */
+["match_map_pool_on_conflict"]: {
+	constraint: ModelTypes["match_map_pool_constraint"],
+	update_columns: Array<ModelTypes["match_map_pool_update_column"]>,
+	where?: ModelTypes["match_map_pool_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "match_map_pool". */
+["match_map_pool_order_by"]: {
+	map?: ModelTypes["maps_order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
+	match?: ModelTypes["matches_order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: match_map_pool */
+["match_map_pool_pk_columns_input"]: {
+	map_id: ModelTypes["uuid"],
+	match_id: ModelTypes["uuid"]
+};
+	["match_map_pool_select_column"]:match_map_pool_select_column;
+	/** input type for updating data in table "match_map_pool" */
+["match_map_pool_set_input"]: {
+	map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined
+};
+	/** Streaming cursor of the table "match_map_pool" */
+["match_map_pool_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["match_map_pool_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_pool_stream_cursor_value_input"]: {
+	map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined
+};
+	["match_map_pool_update_column"]:match_map_pool_update_column;
+	["match_map_pool_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["match_map_pool_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["match_map_pool_bool_exp"]
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
@@ -21733,7 +22826,9 @@ export type ModelTypes = {
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: number | undefined,
 	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
-	map: string,
+	/** An object relationship */
+	map: ModelTypes["maps"],
+	map_id: ModelTypes["uuid"],
 	/** An object relationship */
 	match: ModelTypes["matches"],
 	match_id: ModelTypes["uuid"],
@@ -21742,9 +22837,6 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	objectives_aggregate: ModelTypes["player_objectives_aggregate"],
 	order: number,
-	/** An object relationship */
-	picked_by?: ModelTypes["match_lineups"] | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined,
 	/** An array relationship */
 	player_assists: Array<ModelTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -21757,6 +22849,10 @@ export type ModelTypes = {
 	player_kills: Array<ModelTypes["player_kills"]>,
 	/** An aggregate relationship */
 	player_kills_aggregate: ModelTypes["player_kills_aggregate"],
+	/** An array relationship */
+	player_unused_utilities: Array<ModelTypes["player_unused_utility"]>,
+	/** An aggregate relationship */
+	player_unused_utilities_aggregate: ModelTypes["player_unused_utility_aggregate"],
 	/** An array relationship */
 	rounds: Array<ModelTypes["match_map_rounds"]>,
 	/** An aggregate relationship */
@@ -21840,20 +22936,21 @@ export type ModelTypes = {
 	lineup_1_side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined,
 	lineup_2_score?: ModelTypes["Int_comparison_exp"] | undefined,
 	lineup_2_side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined,
-	map?: ModelTypes["String_comparison_exp"] | undefined,
+	map?: ModelTypes["maps_bool_exp"] | undefined,
+	map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	objectives?: ModelTypes["player_objectives_bool_exp"] | undefined,
 	objectives_aggregate?: ModelTypes["player_objectives_aggregate_bool_exp"] | undefined,
 	order?: ModelTypes["Int_comparison_exp"] | undefined,
-	picked_by?: ModelTypes["match_lineups_bool_exp"] | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	player_assists?: ModelTypes["player_assists_bool_exp"] | undefined,
 	player_assists_aggregate?: ModelTypes["player_assists_aggregate_bool_exp"] | undefined,
 	player_damages?: ModelTypes["player_damages_bool_exp"] | undefined,
 	player_damages_aggregate?: ModelTypes["player_damages_aggregate_bool_exp"] | undefined,
 	player_kills?: ModelTypes["player_kills_bool_exp"] | undefined,
 	player_kills_aggregate?: ModelTypes["player_kills_aggregate_bool_exp"] | undefined,
+	player_unused_utilities?: ModelTypes["player_unused_utility_bool_exp"] | undefined,
+	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	rounds?: ModelTypes["match_map_rounds_bool_exp"] | undefined,
 	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_bool_exp"] | undefined,
 	status?: ModelTypes["e_match_map_status_enum_comparison_exp"] | undefined,
@@ -21872,16 +22969,16 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
-	map?: string | undefined,
+	map?: ModelTypes["maps_obj_rel_insert_input"] | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	objectives?: ModelTypes["player_objectives_arr_rel_insert_input"] | undefined,
 	order?: number | undefined,
-	picked_by?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined,
 	player_assists?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined,
 	player_damages?: ModelTypes["player_damages_arr_rel_insert_input"] | undefined,
 	player_kills?: ModelTypes["player_kills_arr_rel_insert_input"] | undefined,
+	player_unused_utilities?: ModelTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	rounds?: ModelTypes["match_map_rounds_arr_rel_insert_input"] | undefined,
 	status?: ModelTypes["e_match_map_status_enum"] | undefined,
 	utility?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined
@@ -21894,19 +22991,17 @@ export type ModelTypes = {
 	lineup_1_score?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: number | undefined,
-	map?: string | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
-	order?: number | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined
+	order?: number | undefined
 };
 	/** order by max() on columns of table "match_maps" */
 ["match_maps_max_order_by"]: {
 	created_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
-	map?: ModelTypes["order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
-	order?: ModelTypes["order_by"] | undefined,
-	picked_by_lineup_id?: ModelTypes["order_by"] | undefined
+	order?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
@@ -21916,19 +23011,17 @@ export type ModelTypes = {
 	lineup_1_score?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: number | undefined,
-	map?: string | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
-	order?: number | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined
+	order?: number | undefined
 };
 	/** order by min() on columns of table "match_maps" */
 ["match_maps_min_order_by"]: {
 	created_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
-	map?: ModelTypes["order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
-	order?: ModelTypes["order_by"] | undefined,
-	picked_by_lineup_id?: ModelTypes["order_by"] | undefined
+	order?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: {
@@ -21958,16 +23051,16 @@ export type ModelTypes = {
 	lineup_1_side?: ModelTypes["order_by"] | undefined,
 	lineup_2_score?: ModelTypes["order_by"] | undefined,
 	lineup_2_side?: ModelTypes["order_by"] | undefined,
-	map?: ModelTypes["order_by"] | undefined,
+	map?: ModelTypes["maps_order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	objectives_aggregate?: ModelTypes["player_objectives_aggregate_order_by"] | undefined,
 	order?: ModelTypes["order_by"] | undefined,
-	picked_by?: ModelTypes["match_lineups_order_by"] | undefined,
-	picked_by_lineup_id?: ModelTypes["order_by"] | undefined,
 	player_assists_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined,
 	player_damages_aggregate?: ModelTypes["player_damages_aggregate_order_by"] | undefined,
 	player_kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined,
+	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	rounds_aggregate?: ModelTypes["match_map_rounds_aggregate_order_by"] | undefined,
 	status?: ModelTypes["order_by"] | undefined,
 	utility_aggregate?: ModelTypes["player_utility_aggregate_order_by"] | undefined
@@ -21983,10 +23076,9 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
-	map?: string | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate stddev on columns */
@@ -22038,10 +23130,9 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_1_side?: ModelTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: ModelTypes["e_sides_enum"] | undefined,
-	map?: string | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate sum on columns */
@@ -22103,8 +23194,11 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "match_veto_picks" */
 ["match_veto_picks"]: {
-		id: ModelTypes["uuid"],
-	map: string,
+		created_at: ModelTypes["timestamptz"],
+	id: ModelTypes["uuid"],
+	/** An object relationship */
+	map: ModelTypes["maps"],
+	map_id: ModelTypes["uuid"],
 	/** An object relationship */
 	match: ModelTypes["matches"],
 	match_id: ModelTypes["uuid"],
@@ -22151,8 +23245,10 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["match_veto_picks_bool_exp"]> | undefined,
 	_not?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_veto_picks_bool_exp"]> | undefined,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
-	map?: ModelTypes["String_comparison_exp"] | undefined,
+	map?: ModelTypes["maps_bool_exp"] | undefined,
+	map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match_lineup?: ModelTypes["match_lineups_bool_exp"] | undefined,
@@ -22163,8 +23259,10 @@ export type ModelTypes = {
 	["match_veto_picks_constraint"]:match_veto_picks_constraint;
 	/** input type for inserting data into table "match_veto_picks" */
 ["match_veto_picks_insert_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
-	map?: string | undefined,
+	map?: ModelTypes["maps_obj_rel_insert_input"] | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_lineup?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
@@ -22174,8 +23272,9 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["match_veto_picks_max_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
-	map?: string | undefined,
+		created_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_lineup_id?: ModelTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -22183,8 +23282,9 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "match_veto_picks" */
 ["match_veto_picks_max_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
-	map?: ModelTypes["order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_lineup_id?: ModelTypes["order_by"] | undefined,
 	side?: ModelTypes["order_by"] | undefined,
@@ -22192,8 +23292,9 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["match_veto_picks_min_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
-	map?: string | undefined,
+		created_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_lineup_id?: ModelTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -22201,8 +23302,9 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "match_veto_picks" */
 ["match_veto_picks_min_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
-	map?: ModelTypes["order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_lineup_id?: ModelTypes["order_by"] | undefined,
 	side?: ModelTypes["order_by"] | undefined,
@@ -22223,8 +23325,10 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "match_veto_picks". */
 ["match_veto_picks_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
-	map?: ModelTypes["order_by"] | undefined,
+	map?: ModelTypes["maps_order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_lineup?: ModelTypes["match_lineups_order_by"] | undefined,
@@ -22239,8 +23343,9 @@ export type ModelTypes = {
 	["match_veto_picks_select_column"]:match_veto_picks_select_column;
 	/** input type for updating data in table "match_veto_picks" */
 ["match_veto_picks_set_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
-	map?: string | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_lineup_id?: ModelTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -22255,8 +23360,9 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_veto_picks_stream_cursor_value_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
-	map?: string | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_lineup_id?: ModelTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -22299,6 +23405,10 @@ export type ModelTypes = {
 	lineups_aggregate: ModelTypes["match_lineups_aggregate"],
 	map_veto: boolean,
 	/** An array relationship */
+	match_map_pools: Array<ModelTypes["match_map_pool"]>,
+	/** An aggregate relationship */
+	match_map_pools_aggregate: ModelTypes["match_map_pool_aggregate"],
+	/** An array relationship */
 	match_maps: Array<ModelTypes["match_maps"]>,
 	/** An aggregate relationship */
 	match_maps_aggregate: ModelTypes["match_maps_aggregate"],
@@ -22330,6 +23440,10 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	player_objectives_aggregate: ModelTypes["player_objectives_aggregate"],
 	/** An array relationship */
+	player_unused_utilities: Array<ModelTypes["player_unused_utility"]>,
+	/** An aggregate relationship */
+	player_unused_utilities_aggregate: ModelTypes["player_unused_utility_aggregate"],
+	/** An array relationship */
 	player_utility: Array<ModelTypes["player_utility"]>,
 	/** An aggregate relationship */
 	player_utility_aggregate: ModelTypes["player_utility_aggregate"],
@@ -22346,6 +23460,8 @@ export type ModelTypes = {
 	tv_connection_string?: string | undefined,
 	type: ModelTypes["e_match_types_enum"],
 	updated_at: ModelTypes["timestamptz"],
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?: string | undefined,
 	/** An array relationship */
 	veto_picks: Array<ModelTypes["match_veto_picks"]>,
 	/** An aggregate relationship */
@@ -22449,6 +23565,8 @@ export type ModelTypes = {
 	lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	map_veto?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	match_map_pools?: ModelTypes["match_map_pool_bool_exp"] | undefined,
+	match_map_pools_aggregate?: ModelTypes["match_map_pool_aggregate_bool_exp"] | undefined,
 	match_maps?: ModelTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_bool_exp"] | undefined,
 	mr?: ModelTypes["Int_comparison_exp"] | undefined,
@@ -22467,6 +23585,8 @@ export type ModelTypes = {
 	player_kills_aggregate?: ModelTypes["player_kills_aggregate_bool_exp"] | undefined,
 	player_objectives?: ModelTypes["player_objectives_bool_exp"] | undefined,
 	player_objectives_aggregate?: ModelTypes["player_objectives_aggregate_bool_exp"] | undefined,
+	player_unused_utilities?: ModelTypes["player_unused_utility_bool_exp"] | undefined,
+	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	player_utility?: ModelTypes["player_utility_bool_exp"] | undefined,
 	player_utility_aggregate?: ModelTypes["player_utility_aggregate_bool_exp"] | undefined,
 	scheduled_at?: ModelTypes["date_comparison_exp"] | undefined,
@@ -22478,6 +23598,7 @@ export type ModelTypes = {
 	tv_connection_string?: ModelTypes["String_comparison_exp"] | undefined,
 	type?: ModelTypes["e_match_types_enum_comparison_exp"] | undefined,
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
+	veto_picking_lineup_id?: ModelTypes["String_comparison_exp"] | undefined,
 	veto_picks?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
 	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined
 };
@@ -22501,6 +23622,7 @@ export type ModelTypes = {
 	label?: string | undefined,
 	lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	map_veto?: boolean | undefined,
+	match_map_pools?: ModelTypes["match_map_pool_arr_rel_insert_input"] | undefined,
 	match_maps?: ModelTypes["match_maps_arr_rel_insert_input"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
@@ -22513,6 +23635,7 @@ export type ModelTypes = {
 	player_flashes?: ModelTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	player_kills?: ModelTypes["player_kills_arr_rel_insert_input"] | undefined,
 	player_objectives?: ModelTypes["player_objectives_arr_rel_insert_input"] | undefined,
+	player_unused_utilities?: ModelTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	player_utility?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined,
 	scheduled_at?: ModelTypes["date"] | undefined,
 	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined,
@@ -22548,7 +23671,9 @@ export type ModelTypes = {
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?: string | undefined,
-	updated_at?: ModelTypes["timestamptz"] | undefined
+	updated_at?: ModelTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?: string | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -22590,7 +23715,9 @@ export type ModelTypes = {
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?: string | undefined,
-	updated_at?: ModelTypes["timestamptz"] | undefined
+	updated_at?: ModelTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?: string | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
@@ -22643,6 +23770,7 @@ export type ModelTypes = {
 	lineup_2_id?: ModelTypes["order_by"] | undefined,
 	lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
 	map_veto?: ModelTypes["order_by"] | undefined,
+	match_map_pools_aggregate?: ModelTypes["match_map_pool_aggregate_order_by"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_order_by"] | undefined,
 	mr?: ModelTypes["order_by"] | undefined,
 	number_of_substitutes?: ModelTypes["order_by"] | undefined,
@@ -22655,6 +23783,7 @@ export type ModelTypes = {
 	player_flashes_aggregate?: ModelTypes["player_flashes_aggregate_order_by"] | undefined,
 	player_kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined,
 	player_objectives_aggregate?: ModelTypes["player_objectives_aggregate_order_by"] | undefined,
+	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	player_utility_aggregate?: ModelTypes["player_utility_aggregate_order_by"] | undefined,
 	scheduled_at?: ModelTypes["order_by"] | undefined,
 	server?: ModelTypes["servers_order_by"] | undefined,
@@ -22665,6 +23794,7 @@ export type ModelTypes = {
 	tv_connection_string?: ModelTypes["order_by"] | undefined,
 	type?: ModelTypes["order_by"] | undefined,
 	updated_at?: ModelTypes["order_by"] | undefined,
+	veto_picking_lineup_id?: ModelTypes["order_by"] | undefined,
 	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined
 };
 	/** primary key columns input for table: matches */
@@ -22868,6 +23998,10 @@ export type ModelTypes = {
 	delete_match_lineups?: ModelTypes["match_lineups_mutation_response"] | undefined,
 	/** delete single row from the table: "match_lineups" */
 	delete_match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
+	/** delete data from the table: "match_map_pool" */
+	delete_match_map_pool?: ModelTypes["match_map_pool_mutation_response"] | undefined,
+	/** delete single row from the table: "match_map_pool" */
+	delete_match_map_pool_by_pk?: ModelTypes["match_map_pool"] | undefined,
 	/** delete data from the table: "match_map_rounds" */
 	delete_match_map_rounds?: ModelTypes["match_map_rounds_mutation_response"] | undefined,
 	/** delete single row from the table: "match_map_rounds" */
@@ -22966,6 +24100,10 @@ export type ModelTypes = {
 	insert_match_lineups?: ModelTypes["match_lineups_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_lineups" */
 	insert_match_lineups_one?: ModelTypes["match_lineups"] | undefined,
+	/** insert data into the table: "match_map_pool" */
+	insert_match_map_pool?: ModelTypes["match_map_pool_mutation_response"] | undefined,
+	/** insert a single row into the table: "match_map_pool" */
+	insert_match_map_pool_one?: ModelTypes["match_map_pool"] | undefined,
 	/** insert data into the table: "match_map_rounds" */
 	insert_match_map_rounds?: ModelTypes["match_map_rounds_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_map_rounds" */
@@ -23088,6 +24226,12 @@ export type ModelTypes = {
 	update_match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
 	/** update multiples rows of table: "match_lineups" */
 	update_match_lineups_many?: Array<ModelTypes["match_lineups_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "match_map_pool" */
+	update_match_map_pool?: ModelTypes["match_map_pool_mutation_response"] | undefined,
+	/** update single row of the table: "match_map_pool" */
+	update_match_map_pool_by_pk?: ModelTypes["match_map_pool"] | undefined,
+	/** update multiples rows of table: "match_map_pool" */
+	update_match_map_pool_many?: Array<ModelTypes["match_map_pool_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "match_map_rounds" */
 	update_match_map_rounds?: ModelTypes["match_map_rounds_mutation_response"] | undefined,
 	/** update single row of the table: "match_map_rounds" */
@@ -25140,6 +26284,15 @@ export type ModelTypes = {
 		aggregate?: ModelTypes["player_unused_utility_aggregate_fields"] | undefined,
 	nodes: Array<ModelTypes["player_unused_utility"]>
 };
+	["player_unused_utility_aggregate_bool_exp"]: {
+	count?: ModelTypes["player_unused_utility_aggregate_bool_exp_count"] | undefined
+};
+	["player_unused_utility_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["player_unused_utility_select_column"]> | undefined,
+	distinct?: boolean | undefined,
+	filter?: ModelTypes["player_unused_utility_bool_exp"] | undefined,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "player_unused_utility" */
 ["player_unused_utility_aggregate_fields"]: {
 		avg?: ModelTypes["player_unused_utility_avg_fields"] | undefined,
@@ -25154,11 +26307,37 @@ export type ModelTypes = {
 	var_samp?: ModelTypes["player_unused_utility_var_samp_fields"] | undefined,
 	variance?: ModelTypes["player_unused_utility_variance_fields"] | undefined
 };
+	/** order by aggregate values of table "player_unused_utility" */
+["player_unused_utility_aggregate_order_by"]: {
+	avg?: ModelTypes["player_unused_utility_avg_order_by"] | undefined,
+	count?: ModelTypes["order_by"] | undefined,
+	max?: ModelTypes["player_unused_utility_max_order_by"] | undefined,
+	min?: ModelTypes["player_unused_utility_min_order_by"] | undefined,
+	stddev?: ModelTypes["player_unused_utility_stddev_order_by"] | undefined,
+	stddev_pop?: ModelTypes["player_unused_utility_stddev_pop_order_by"] | undefined,
+	stddev_samp?: ModelTypes["player_unused_utility_stddev_samp_order_by"] | undefined,
+	sum?: ModelTypes["player_unused_utility_sum_order_by"] | undefined,
+	var_pop?: ModelTypes["player_unused_utility_var_pop_order_by"] | undefined,
+	var_samp?: ModelTypes["player_unused_utility_var_samp_order_by"] | undefined,
+	variance?: ModelTypes["player_unused_utility_variance_order_by"] | undefined
+};
+	/** input type for inserting array relation for remote table "player_unused_utility" */
+["player_unused_utility_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["player_unused_utility_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["player_unused_utility_on_conflict"] | undefined
+};
 	/** aggregate avg on columns */
 ["player_unused_utility_avg_fields"]: {
 		player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by avg() on columns of table "player_unused_utility" */
+["player_unused_utility_avg_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "player_unused_utility". All fields are combined with a logical 'AND'. */
 ["player_unused_utility_bool_exp"]: {
@@ -25197,6 +26376,15 @@ export type ModelTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by max() on columns of table "player_unused_utility" */
+["player_unused_utility_max_order_by"]: {
+	id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined,
+	match_map_id?: ModelTypes["order_by"] | undefined,
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
+};
 	/** aggregate min on columns */
 ["player_unused_utility_min_fields"]: {
 		id?: ModelTypes["uuid"] | undefined,
@@ -25205,6 +26393,15 @@ export type ModelTypes = {
 	player_steam_id?: ModelTypes["bigint"] | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by min() on columns of table "player_unused_utility" */
+["player_unused_utility_min_order_by"]: {
+	id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined,
+	match_map_id?: ModelTypes["order_by"] | undefined,
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "player_unused_utility" */
 ["player_unused_utility_mutation_response"]: {
@@ -25248,17 +26445,35 @@ export type ModelTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by stddev() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
+};
 	/** aggregate stddev_pop on columns */
 ["player_unused_utility_stddev_pop_fields"]: {
 		player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by stddev_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_pop_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
+};
 	/** aggregate stddev_samp on columns */
 ["player_unused_utility_stddev_samp_fields"]: {
 		player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by stddev_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_samp_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "player_unused_utility" */
 ["player_unused_utility_stream_cursor_input"]: {
@@ -25282,6 +26497,12 @@ export type ModelTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by sum() on columns of table "player_unused_utility" */
+["player_unused_utility_sum_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
+};
 	["player_unused_utility_update_column"]:player_unused_utility_update_column;
 	["player_unused_utility_updates"]: {
 	/** increments the numeric columns with given value of the filtered values */
@@ -25297,17 +26518,35 @@ export type ModelTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by var_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_var_pop_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
+};
 	/** aggregate var_samp on columns */
 ["player_unused_utility_var_samp_fields"]: {
 		player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by var_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_var_samp_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
+};
 	/** aggregate variance on columns */
 ["player_unused_utility_variance_fields"]: {
 		player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by variance() on columns of table "player_unused_utility" */
+["player_unused_utility_variance_order_by"]: {
+	player_steam_id?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined,
+	unused?: ModelTypes["order_by"] | undefined
 };
 	/** columns and relationships of "player_utility" */
 ["player_utility"]: {
@@ -25637,6 +26876,10 @@ export type ModelTypes = {
 	kills: Array<ModelTypes["player_kills"]>,
 	/** An aggregate relationship */
 	kills_aggregate: ModelTypes["player_kills_aggregate"],
+	/** An array relationship */
+	match_lineups: Array<ModelTypes["match_lineups"]>,
+	/** An aggregate relationship */
+	match_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
 	/** A computed field, executes function "get_player_matches" */
 	matches?: Array<ModelTypes["matches"]> | undefined,
 	/** An array relationship */
@@ -25660,6 +26903,10 @@ export type ModelTypes = {
 	player_lineup: Array<ModelTypes["match_lineup_players"]>,
 	/** An aggregate relationship */
 	player_lineup_aggregate: ModelTypes["match_lineup_players_aggregate"],
+	/** An array relationship */
+	player_unused_utilities: Array<ModelTypes["player_unused_utility"]>,
+	/** An aggregate relationship */
+	player_unused_utilities_aggregate: ModelTypes["player_unused_utility_aggregate"],
 	profile_url?: string | undefined,
 	steam_id: ModelTypes["bigint"],
 	/** An array relationship */
@@ -25719,6 +26966,8 @@ export type ModelTypes = {
 	flashed_players_aggregate?: ModelTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	kills?: ModelTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_bool_exp"] | undefined,
+	match_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
+	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: ModelTypes["matches_bool_exp"] | undefined,
 	multi_kills?: ModelTypes["v_player_multi_kills_bool_exp"] | undefined,
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined,
@@ -25731,6 +26980,8 @@ export type ModelTypes = {
 	owned_teams_aggregate?: ModelTypes["teams_aggregate_bool_exp"] | undefined,
 	player_lineup?: ModelTypes["match_lineup_players_bool_exp"] | undefined,
 	player_lineup_aggregate?: ModelTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
+	player_unused_utilities?: ModelTypes["player_unused_utility_bool_exp"] | undefined,
+	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	profile_url?: ModelTypes["String_comparison_exp"] | undefined,
 	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	team_members?: ModelTypes["team_roster_bool_exp"] | undefined,
@@ -25756,12 +27007,14 @@ export type ModelTypes = {
 	flashed_by_players?: ModelTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	flashed_players?: ModelTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	kills?: ModelTypes["player_kills_arr_rel_insert_input"] | undefined,
+	match_lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	multi_kills?: ModelTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	objectives?: ModelTypes["player_objectives_arr_rel_insert_input"] | undefined,
 	opening_duels?: ModelTypes["v_player_opening_duels_arr_rel_insert_input"] | undefined,
 	owned_teams?: ModelTypes["teams_arr_rel_insert_input"] | undefined,
 	player_lineup?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
+	player_unused_utilities?: ModelTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	profile_url?: string | undefined,
 	steam_id?: ModelTypes["bigint"] | undefined,
 	team_members?: ModelTypes["team_roster_arr_rel_insert_input"] | undefined,
@@ -25814,6 +27067,7 @@ export type ModelTypes = {
 	flashed_by_players_aggregate?: ModelTypes["player_flashes_aggregate_order_by"] | undefined,
 	flashed_players_aggregate?: ModelTypes["player_flashes_aggregate_order_by"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined,
+	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined,
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
@@ -25821,6 +27075,7 @@ export type ModelTypes = {
 	opening_duels_aggregate?: ModelTypes["v_player_opening_duels_aggregate_order_by"] | undefined,
 	owned_teams_aggregate?: ModelTypes["teams_aggregate_order_by"] | undefined,
 	player_lineup_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined,
+	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	profile_url?: ModelTypes["order_by"] | undefined,
 	steam_id?: ModelTypes["order_by"] | undefined,
 	team_members_aggregate?: ModelTypes["team_roster_aggregate_order_by"] | undefined,
@@ -25947,6 +27202,12 @@ export type ModelTypes = {
 	match_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
 	/** fetch data from the table: "match_lineups" using primary key columns */
 	match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
+	/** fetch data from the table: "match_map_pool" */
+	match_map_pool: Array<ModelTypes["match_map_pool"]>,
+	/** fetch aggregated fields from the table: "match_map_pool" */
+	match_map_pool_aggregate: ModelTypes["match_map_pool_aggregate"],
+	/** fetch data from the table: "match_map_pool" using primary key columns */
+	match_map_pool_by_pk?: ModelTypes["match_map_pool"] | undefined,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<ModelTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -25959,9 +27220,9 @@ export type ModelTypes = {
 	match_maps_aggregate: ModelTypes["match_maps_aggregate"],
 	/** fetch data from the table: "match_maps" using primary key columns */
 	match_maps_by_pk?: ModelTypes["match_maps"] | undefined,
-	/** fetch data from the table: "match_veto_picks" */
+	/** An array relationship */
 	match_veto_picks: Array<ModelTypes["match_veto_picks"]>,
-	/** fetch aggregated fields from the table: "match_veto_picks" */
+	/** An aggregate relationship */
 	match_veto_picks_aggregate: ModelTypes["match_veto_picks_aggregate"],
 	/** fetch data from the table: "match_veto_picks" using primary key columns */
 	match_veto_picks_by_pk?: ModelTypes["match_veto_picks"] | undefined,
@@ -26357,6 +27618,14 @@ export type ModelTypes = {
 	match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
 	/** fetch data from the table in a streaming manner: "match_lineups" */
 	match_lineups_stream: Array<ModelTypes["match_lineups"]>,
+	/** fetch data from the table: "match_map_pool" */
+	match_map_pool: Array<ModelTypes["match_map_pool"]>,
+	/** fetch aggregated fields from the table: "match_map_pool" */
+	match_map_pool_aggregate: ModelTypes["match_map_pool_aggregate"],
+	/** fetch data from the table: "match_map_pool" using primary key columns */
+	match_map_pool_by_pk?: ModelTypes["match_map_pool"] | undefined,
+	/** fetch data from the table in a streaming manner: "match_map_pool" */
+	match_map_pool_stream: Array<ModelTypes["match_map_pool"]>,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<ModelTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -26373,9 +27642,9 @@ export type ModelTypes = {
 	match_maps_by_pk?: ModelTypes["match_maps"] | undefined,
 	/** fetch data from the table in a streaming manner: "match_maps" */
 	match_maps_stream: Array<ModelTypes["match_maps"]>,
-	/** fetch data from the table: "match_veto_picks" */
+	/** An array relationship */
 	match_veto_picks: Array<ModelTypes["match_veto_picks"]>,
-	/** fetch aggregated fields from the table: "match_veto_picks" */
+	/** An aggregate relationship */
 	match_veto_picks_aggregate: ModelTypes["match_veto_picks_aggregate"],
 	/** fetch data from the table: "match_veto_picks" using primary key columns */
 	match_veto_picks_by_pk?: ModelTypes["match_veto_picks"] | undefined,
@@ -28920,6 +30189,19 @@ export type GraphQLTypes = {
 	active_pool: boolean,
 	/** An object relationship */
 	e_match_type: GraphQLTypes["e_match_types"],
+	id: GraphQLTypes["uuid"],
+	/** An array relationship */
+	match_map_pools: Array<GraphQLTypes["match_map_pool"]>,
+	/** An aggregate relationship */
+	match_map_pools_aggregate: GraphQLTypes["match_map_pool_aggregate"],
+	/** An array relationship */
+	match_maps: Array<GraphQLTypes["match_maps"]>,
+	/** An aggregate relationship */
+	match_maps_aggregate: GraphQLTypes["match_maps_aggregate"],
+	/** An array relationship */
+	match_veto_picks: Array<GraphQLTypes["match_veto_picks"]>,
+	/** An aggregate relationship */
+	match_veto_picks_aggregate: GraphQLTypes["match_veto_picks_aggregate"],
 	name: string,
 	type: GraphQLTypes["e_match_types_enum"],
 	workshop_map_id?: string | undefined
@@ -28979,6 +30261,13 @@ export type GraphQLTypes = {
 	_or?: Array<GraphQLTypes["maps_bool_exp"]> | undefined,
 	active_pool?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_bool_exp"] | undefined,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	match_map_pools?: GraphQLTypes["match_map_pool_bool_exp"] | undefined,
+	match_map_pools_aggregate?: GraphQLTypes["match_map_pool_aggregate_bool_exp"] | undefined,
+	match_maps?: GraphQLTypes["match_maps_bool_exp"] | undefined,
+	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_bool_exp"] | undefined,
+	match_veto_picks?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
+	match_veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
 	type?: GraphQLTypes["e_match_types_enum_comparison_exp"] | undefined,
 	workshop_map_id?: GraphQLTypes["String_comparison_exp"] | undefined
@@ -28989,6 +30278,10 @@ export type GraphQLTypes = {
 ["maps_insert_input"]: {
 		active_pool?: boolean | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_obj_rel_insert_input"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	match_map_pools?: GraphQLTypes["match_map_pool_arr_rel_insert_input"] | undefined,
+	match_maps?: GraphQLTypes["match_maps_arr_rel_insert_input"] | undefined,
+	match_veto_picks?: GraphQLTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined,
 	workshop_map_id?: string | undefined
@@ -28996,23 +30289,27 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["maps_max_fields"]: {
 	__typename: "maps_max_fields",
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	workshop_map_id?: string | undefined
 };
 	/** order by max() on columns of table "maps" */
 ["maps_max_order_by"]: {
-		name?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+	name?: GraphQLTypes["order_by"] | undefined,
 	workshop_map_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["maps_min_fields"]: {
 	__typename: "maps_min_fields",
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	workshop_map_id?: string | undefined
 };
 	/** order by min() on columns of table "maps" */
 ["maps_min_order_by"]: {
-		name?: GraphQLTypes["order_by"] | undefined,
+		id?: GraphQLTypes["order_by"] | undefined,
+	name?: GraphQLTypes["order_by"] | undefined,
 	workshop_map_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "maps" */
@@ -29022,6 +30319,12 @@ export type GraphQLTypes = {
 	affected_rows: number,
 	/** data from the rows affected by the mutation */
 	returning: Array<GraphQLTypes["maps"]>
+};
+	/** input type for inserting object relation for remote table "maps" */
+["maps_obj_rel_insert_input"]: {
+		data: GraphQLTypes["maps_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["maps_on_conflict"] | undefined
 };
 	/** on_conflict condition type for table "maps" */
 ["maps_on_conflict"]: {
@@ -29033,14 +30336,17 @@ export type GraphQLTypes = {
 ["maps_order_by"]: {
 		active_pool?: GraphQLTypes["order_by"] | undefined,
 	e_match_type?: GraphQLTypes["e_match_types_order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	match_map_pools_aggregate?: GraphQLTypes["match_map_pool_aggregate_order_by"] | undefined,
+	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_order_by"] | undefined,
+	match_veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	type?: GraphQLTypes["order_by"] | undefined,
 	workshop_map_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: maps */
 ["maps_pk_columns_input"]: {
-		name: string,
-	type: GraphQLTypes["e_match_types_enum"]
+		id: GraphQLTypes["uuid"]
 };
 	/** select columns of table "maps" */
 ["maps_select_column"]: maps_select_column;
@@ -29051,6 +30357,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "maps" */
 ["maps_set_input"]: {
 		active_pool?: boolean | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined,
 	workshop_map_id?: string | undefined
@@ -29065,6 +30372,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["maps_stream_cursor_value_input"]: {
 		active_pool?: boolean | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined,
 	workshop_map_id?: string | undefined
@@ -29376,8 +30684,14 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
 	match_id: GraphQLTypes["uuid"],
+	/** An array relationship */
+	match_veto_picks: Array<GraphQLTypes["match_veto_picks"]>,
+	/** An aggregate relationship */
+	match_veto_picks_aggregate: GraphQLTypes["match_veto_picks_aggregate"],
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
+	/** An object relationship */
+	player?: GraphQLTypes["players"] | undefined,
 	/** An object relationship */
 	team?: GraphQLTypes["teams"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
@@ -29453,7 +30767,10 @@ export type GraphQLTypes = {
 	lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	match_veto_picks?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
+	match_veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
+	player?: GraphQLTypes["players_bool_exp"] | undefined,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined,
 	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined
 };
@@ -29471,6 +30788,8 @@ export type GraphQLTypes = {
 	lineup_players?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
+	match_veto_picks?: GraphQLTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
+	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
 	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined
 };
@@ -29536,7 +30855,9 @@ export type GraphQLTypes = {
 	lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
+	match_veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
+	player?: GraphQLTypes["players_order_by"] | undefined,
 	team?: GraphQLTypes["teams_order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined
 };
@@ -29639,6 +30960,144 @@ export type GraphQLTypes = {
 	/** order by variance() on columns of table "match_lineups" */
 ["match_lineups_variance_order_by"]: {
 		coach_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** columns and relationships of "match_map_pool" */
+["match_map_pool"]: {
+	__typename: "match_map_pool",
+	/** An object relationship */
+	map: GraphQLTypes["maps"],
+	map_id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	match: GraphQLTypes["matches"],
+	match_id: GraphQLTypes["uuid"]
+};
+	/** aggregated selection of "match_map_pool" */
+["match_map_pool_aggregate"]: {
+	__typename: "match_map_pool_aggregate",
+	aggregate?: GraphQLTypes["match_map_pool_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["match_map_pool"]>
+};
+	["match_map_pool_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["match_map_pool_aggregate_bool_exp_count"] | undefined
+};
+	["match_map_pool_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["match_map_pool_select_column"]> | undefined,
+	distinct?: boolean | undefined,
+	filter?: GraphQLTypes["match_map_pool_bool_exp"] | undefined,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
+	/** aggregate fields of "match_map_pool" */
+["match_map_pool_aggregate_fields"]: {
+	__typename: "match_map_pool_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["match_map_pool_max_fields"] | undefined,
+	min?: GraphQLTypes["match_map_pool_min_fields"] | undefined
+};
+	/** order by aggregate values of table "match_map_pool" */
+["match_map_pool_aggregate_order_by"]: {
+		count?: GraphQLTypes["order_by"] | undefined,
+	max?: GraphQLTypes["match_map_pool_max_order_by"] | undefined,
+	min?: GraphQLTypes["match_map_pool_min_order_by"] | undefined
+};
+	/** input type for inserting array relation for remote table "match_map_pool" */
+["match_map_pool_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["match_map_pool_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["match_map_pool_on_conflict"] | undefined
+};
+	/** Boolean expression to filter rows from the table "match_map_pool". All fields are combined with a logical 'AND'. */
+["match_map_pool_bool_exp"]: {
+		_and?: Array<GraphQLTypes["match_map_pool_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["match_map_pool_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["match_map_pool_bool_exp"]> | undefined,
+	map?: GraphQLTypes["maps_bool_exp"] | undefined,
+	map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	match?: GraphQLTypes["matches_bool_exp"] | undefined,
+	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "match_map_pool" */
+["match_map_pool_constraint"]: match_map_pool_constraint;
+	/** input type for inserting data into table "match_map_pool" */
+["match_map_pool_insert_input"]: {
+		map?: GraphQLTypes["maps_obj_rel_insert_input"] | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
+	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** aggregate max on columns */
+["match_map_pool_max_fields"]: {
+	__typename: "match_map_pool_max_fields",
+	map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** order by max() on columns of table "match_map_pool" */
+["match_map_pool_max_order_by"]: {
+		map_id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate min on columns */
+["match_map_pool_min_fields"]: {
+	__typename: "match_map_pool_min_fields",
+	map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** order by min() on columns of table "match_map_pool" */
+["match_map_pool_min_order_by"]: {
+		map_id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** response of any mutation on the table "match_map_pool" */
+["match_map_pool_mutation_response"]: {
+	__typename: "match_map_pool_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["match_map_pool"]>
+};
+	/** on_conflict condition type for table "match_map_pool" */
+["match_map_pool_on_conflict"]: {
+		constraint: GraphQLTypes["match_map_pool_constraint"],
+	update_columns: Array<GraphQLTypes["match_map_pool_update_column"]>,
+	where?: GraphQLTypes["match_map_pool_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "match_map_pool". */
+["match_map_pool_order_by"]: {
+		map?: GraphQLTypes["maps_order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
+	match?: GraphQLTypes["matches_order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: match_map_pool */
+["match_map_pool_pk_columns_input"]: {
+		map_id: GraphQLTypes["uuid"],
+	match_id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "match_map_pool" */
+["match_map_pool_select_column"]: match_map_pool_select_column;
+	/** input type for updating data in table "match_map_pool" */
+["match_map_pool_set_input"]: {
+		map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** Streaming cursor of the table "match_map_pool" */
+["match_map_pool_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["match_map_pool_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_pool_stream_cursor_value_input"]: {
+		map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** update columns of table "match_map_pool" */
+["match_map_pool_update_column"]: match_map_pool_update_column;
+	["match_map_pool_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["match_map_pool_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["match_map_pool_bool_exp"]
 };
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
@@ -30017,7 +31476,9 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: number | undefined,
 	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
-	map: string,
+	/** An object relationship */
+	map: GraphQLTypes["maps"],
+	map_id: GraphQLTypes["uuid"],
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
 	match_id: GraphQLTypes["uuid"],
@@ -30026,9 +31487,6 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	objectives_aggregate: GraphQLTypes["player_objectives_aggregate"],
 	order: number,
-	/** An object relationship */
-	picked_by?: GraphQLTypes["match_lineups"] | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	/** An array relationship */
 	player_assists: Array<GraphQLTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -30041,6 +31499,10 @@ export type GraphQLTypes = {
 	player_kills: Array<GraphQLTypes["player_kills"]>,
 	/** An aggregate relationship */
 	player_kills_aggregate: GraphQLTypes["player_kills_aggregate"],
+	/** An array relationship */
+	player_unused_utilities: Array<GraphQLTypes["player_unused_utility"]>,
+	/** An aggregate relationship */
+	player_unused_utilities_aggregate: GraphQLTypes["player_unused_utility_aggregate"],
 	/** An array relationship */
 	rounds: Array<GraphQLTypes["match_map_rounds"]>,
 	/** An aggregate relationship */
@@ -30127,20 +31589,21 @@ export type GraphQLTypes = {
 	lineup_1_side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined,
 	lineup_2_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	lineup_2_side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined,
-	map?: GraphQLTypes["String_comparison_exp"] | undefined,
+	map?: GraphQLTypes["maps_bool_exp"] | undefined,
+	map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	objectives?: GraphQLTypes["player_objectives_bool_exp"] | undefined,
 	objectives_aggregate?: GraphQLTypes["player_objectives_aggregate_bool_exp"] | undefined,
 	order?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	picked_by?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	player_assists?: GraphQLTypes["player_assists_bool_exp"] | undefined,
 	player_assists_aggregate?: GraphQLTypes["player_assists_aggregate_bool_exp"] | undefined,
 	player_damages?: GraphQLTypes["player_damages_bool_exp"] | undefined,
 	player_damages_aggregate?: GraphQLTypes["player_damages_aggregate_bool_exp"] | undefined,
 	player_kills?: GraphQLTypes["player_kills_bool_exp"] | undefined,
 	player_kills_aggregate?: GraphQLTypes["player_kills_aggregate_bool_exp"] | undefined,
+	player_unused_utilities?: GraphQLTypes["player_unused_utility_bool_exp"] | undefined,
+	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	rounds?: GraphQLTypes["match_map_rounds_bool_exp"] | undefined,
 	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_bool_exp"] | undefined,
 	status?: GraphQLTypes["e_match_map_status_enum_comparison_exp"] | undefined,
@@ -30160,16 +31623,16 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
-	map?: string | undefined,
+	map?: GraphQLTypes["maps_obj_rel_insert_input"] | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	objectives?: GraphQLTypes["player_objectives_arr_rel_insert_input"] | undefined,
 	order?: number | undefined,
-	picked_by?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	player_assists?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined,
 	player_damages?: GraphQLTypes["player_damages_arr_rel_insert_input"] | undefined,
 	player_kills?: GraphQLTypes["player_kills_arr_rel_insert_input"] | undefined,
+	player_unused_utilities?: GraphQLTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	rounds?: GraphQLTypes["match_map_rounds_arr_rel_insert_input"] | undefined,
 	status?: GraphQLTypes["e_match_map_status_enum"] | undefined,
 	utility?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined
@@ -30183,19 +31646,17 @@ export type GraphQLTypes = {
 	lineup_1_score?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: number | undefined,
-	map?: string | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
-	order?: number | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined
+	order?: number | undefined
 };
 	/** order by max() on columns of table "match_maps" */
 ["match_maps_max_order_by"]: {
 		created_at?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
-	map?: GraphQLTypes["order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
-	order?: GraphQLTypes["order_by"] | undefined,
-	picked_by_lineup_id?: GraphQLTypes["order_by"] | undefined
+	order?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
@@ -30206,19 +31667,17 @@ export type GraphQLTypes = {
 	lineup_1_score?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
 	lineup_2_score?: number | undefined,
-	map?: string | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
-	order?: number | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined
+	order?: number | undefined
 };
 	/** order by min() on columns of table "match_maps" */
 ["match_maps_min_order_by"]: {
 		created_at?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
-	map?: GraphQLTypes["order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
-	order?: GraphQLTypes["order_by"] | undefined,
-	picked_by_lineup_id?: GraphQLTypes["order_by"] | undefined
+	order?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: {
@@ -30249,16 +31708,16 @@ export type GraphQLTypes = {
 	lineup_1_side?: GraphQLTypes["order_by"] | undefined,
 	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
 	lineup_2_side?: GraphQLTypes["order_by"] | undefined,
-	map?: GraphQLTypes["order_by"] | undefined,
+	map?: GraphQLTypes["maps_order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	objectives_aggregate?: GraphQLTypes["player_objectives_aggregate_order_by"] | undefined,
 	order?: GraphQLTypes["order_by"] | undefined,
-	picked_by?: GraphQLTypes["match_lineups_order_by"] | undefined,
-	picked_by_lineup_id?: GraphQLTypes["order_by"] | undefined,
 	player_assists_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined,
 	player_damages_aggregate?: GraphQLTypes["player_damages_aggregate_order_by"] | undefined,
 	player_kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined,
+	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	rounds_aggregate?: GraphQLTypes["match_map_rounds_aggregate_order_by"] | undefined,
 	status?: GraphQLTypes["order_by"] | undefined,
 	utility_aggregate?: GraphQLTypes["player_utility_aggregate_order_by"] | undefined
@@ -30275,10 +31734,9 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
-	map?: string | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate stddev on columns */
@@ -30333,10 +31791,9 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_1_side?: GraphQLTypes["e_sides_enum"] | undefined,
 	lineup_2_side?: GraphQLTypes["e_sides_enum"] | undefined,
-	map?: string | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
-	picked_by_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_map_status_enum"] | undefined
 };
 	/** aggregate sum on columns */
@@ -30404,8 +31861,11 @@ export type GraphQLTypes = {
 	/** columns and relationships of "match_veto_picks" */
 ["match_veto_picks"]: {
 	__typename: "match_veto_picks",
+	created_at: GraphQLTypes["timestamptz"],
 	id: GraphQLTypes["uuid"],
-	map: string,
+	/** An object relationship */
+	map: GraphQLTypes["maps"],
+	map_id: GraphQLTypes["uuid"],
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
 	match_id: GraphQLTypes["uuid"],
@@ -30454,8 +31914,10 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["match_veto_picks_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_veto_picks_bool_exp"]> | undefined,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
-	map?: GraphQLTypes["String_comparison_exp"] | undefined,
+	map?: GraphQLTypes["maps_bool_exp"] | undefined,
+	map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match_lineup?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
@@ -30467,8 +31929,10 @@ export type GraphQLTypes = {
 ["match_veto_picks_constraint"]: match_veto_picks_constraint;
 	/** input type for inserting data into table "match_veto_picks" */
 ["match_veto_picks_insert_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
-	map?: string | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	map?: GraphQLTypes["maps_obj_rel_insert_input"] | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_lineup?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
@@ -30479,8 +31943,9 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["match_veto_picks_max_fields"]: {
 	__typename: "match_veto_picks_max_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
-	map?: string | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -30488,8 +31953,9 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "match_veto_picks" */
 ["match_veto_picks_max_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
-	map?: GraphQLTypes["order_by"] | undefined,
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_lineup_id?: GraphQLTypes["order_by"] | undefined,
 	side?: GraphQLTypes["order_by"] | undefined,
@@ -30498,8 +31964,9 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["match_veto_picks_min_fields"]: {
 	__typename: "match_veto_picks_min_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
-	map?: string | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -30507,8 +31974,9 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "match_veto_picks" */
 ["match_veto_picks_min_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
-	map?: GraphQLTypes["order_by"] | undefined,
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_lineup_id?: GraphQLTypes["order_by"] | undefined,
 	side?: GraphQLTypes["order_by"] | undefined,
@@ -30530,8 +31998,10 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "match_veto_picks". */
 ["match_veto_picks_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
-	map?: GraphQLTypes["order_by"] | undefined,
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	map?: GraphQLTypes["maps_order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_lineup?: GraphQLTypes["match_lineups_order_by"] | undefined,
@@ -30547,8 +32017,9 @@ export type GraphQLTypes = {
 ["match_veto_picks_select_column"]: match_veto_picks_select_column;
 	/** input type for updating data in table "match_veto_picks" */
 ["match_veto_picks_set_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
-	map?: string | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -30563,8 +32034,9 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_veto_picks_stream_cursor_value_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
-	map?: string | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	side?: string | undefined,
@@ -30609,6 +32081,10 @@ export type GraphQLTypes = {
 	lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
 	map_veto: boolean,
 	/** An array relationship */
+	match_map_pools: Array<GraphQLTypes["match_map_pool"]>,
+	/** An aggregate relationship */
+	match_map_pools_aggregate: GraphQLTypes["match_map_pool_aggregate"],
+	/** An array relationship */
 	match_maps: Array<GraphQLTypes["match_maps"]>,
 	/** An aggregate relationship */
 	match_maps_aggregate: GraphQLTypes["match_maps_aggregate"],
@@ -30640,6 +32116,10 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	player_objectives_aggregate: GraphQLTypes["player_objectives_aggregate"],
 	/** An array relationship */
+	player_unused_utilities: Array<GraphQLTypes["player_unused_utility"]>,
+	/** An aggregate relationship */
+	player_unused_utilities_aggregate: GraphQLTypes["player_unused_utility_aggregate"],
+	/** An array relationship */
 	player_utility: Array<GraphQLTypes["player_utility"]>,
 	/** An aggregate relationship */
 	player_utility_aggregate: GraphQLTypes["player_utility_aggregate"],
@@ -30656,6 +32136,8 @@ export type GraphQLTypes = {
 	tv_connection_string?: string | undefined,
 	type: GraphQLTypes["e_match_types_enum"],
 	updated_at: GraphQLTypes["timestamptz"],
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?: string | undefined,
 	/** An array relationship */
 	veto_picks: Array<GraphQLTypes["match_veto_picks"]>,
 	/** An aggregate relationship */
@@ -30762,6 +32244,8 @@ export type GraphQLTypes = {
 	lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	map_veto?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	match_map_pools?: GraphQLTypes["match_map_pool_bool_exp"] | undefined,
+	match_map_pools_aggregate?: GraphQLTypes["match_map_pool_aggregate_bool_exp"] | undefined,
 	match_maps?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_bool_exp"] | undefined,
 	mr?: GraphQLTypes["Int_comparison_exp"] | undefined,
@@ -30780,6 +32264,8 @@ export type GraphQLTypes = {
 	player_kills_aggregate?: GraphQLTypes["player_kills_aggregate_bool_exp"] | undefined,
 	player_objectives?: GraphQLTypes["player_objectives_bool_exp"] | undefined,
 	player_objectives_aggregate?: GraphQLTypes["player_objectives_aggregate_bool_exp"] | undefined,
+	player_unused_utilities?: GraphQLTypes["player_unused_utility_bool_exp"] | undefined,
+	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	player_utility?: GraphQLTypes["player_utility_bool_exp"] | undefined,
 	player_utility_aggregate?: GraphQLTypes["player_utility_aggregate_bool_exp"] | undefined,
 	scheduled_at?: GraphQLTypes["date_comparison_exp"] | undefined,
@@ -30791,6 +32277,7 @@ export type GraphQLTypes = {
 	tv_connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
 	type?: GraphQLTypes["e_match_types_enum_comparison_exp"] | undefined,
 	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
+	veto_picking_lineup_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 	veto_picks?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
 	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined
 };
@@ -30815,6 +32302,7 @@ export type GraphQLTypes = {
 	label?: string | undefined,
 	lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	map_veto?: boolean | undefined,
+	match_map_pools?: GraphQLTypes["match_map_pool_arr_rel_insert_input"] | undefined,
 	match_maps?: GraphQLTypes["match_maps_arr_rel_insert_input"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
@@ -30827,6 +32315,7 @@ export type GraphQLTypes = {
 	player_flashes?: GraphQLTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	player_kills?: GraphQLTypes["player_kills_arr_rel_insert_input"] | undefined,
 	player_objectives?: GraphQLTypes["player_objectives_arr_rel_insert_input"] | undefined,
+	player_unused_utilities?: GraphQLTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	player_utility?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined,
 	scheduled_at?: GraphQLTypes["date"] | undefined,
 	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined,
@@ -30863,7 +32352,9 @@ export type GraphQLTypes = {
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?: string | undefined,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined
+	updated_at?: GraphQLTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?: string | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -30906,7 +32397,9 @@ export type GraphQLTypes = {
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?: string | undefined,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined
+	updated_at?: GraphQLTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "get_veto_picking_lineup_id" */
+	veto_picking_lineup_id?: string | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
@@ -30960,6 +32453,7 @@ export type GraphQLTypes = {
 	lineup_2_id?: GraphQLTypes["order_by"] | undefined,
 	lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	map_veto?: GraphQLTypes["order_by"] | undefined,
+	match_map_pools_aggregate?: GraphQLTypes["match_map_pool_aggregate_order_by"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_order_by"] | undefined,
 	mr?: GraphQLTypes["order_by"] | undefined,
 	number_of_substitutes?: GraphQLTypes["order_by"] | undefined,
@@ -30972,6 +32466,7 @@ export type GraphQLTypes = {
 	player_flashes_aggregate?: GraphQLTypes["player_flashes_aggregate_order_by"] | undefined,
 	player_kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined,
 	player_objectives_aggregate?: GraphQLTypes["player_objectives_aggregate_order_by"] | undefined,
+	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	player_utility_aggregate?: GraphQLTypes["player_utility_aggregate_order_by"] | undefined,
 	scheduled_at?: GraphQLTypes["order_by"] | undefined,
 	server?: GraphQLTypes["servers_order_by"] | undefined,
@@ -30982,6 +32477,7 @@ export type GraphQLTypes = {
 	tv_connection_string?: GraphQLTypes["order_by"] | undefined,
 	type?: GraphQLTypes["order_by"] | undefined,
 	updated_at?: GraphQLTypes["order_by"] | undefined,
+	veto_picking_lineup_id?: GraphQLTypes["order_by"] | undefined,
 	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined
 };
 	/** primary key columns input for table: matches */
@@ -31197,6 +32693,10 @@ export type GraphQLTypes = {
 	delete_match_lineups?: GraphQLTypes["match_lineups_mutation_response"] | undefined,
 	/** delete single row from the table: "match_lineups" */
 	delete_match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
+	/** delete data from the table: "match_map_pool" */
+	delete_match_map_pool?: GraphQLTypes["match_map_pool_mutation_response"] | undefined,
+	/** delete single row from the table: "match_map_pool" */
+	delete_match_map_pool_by_pk?: GraphQLTypes["match_map_pool"] | undefined,
 	/** delete data from the table: "match_map_rounds" */
 	delete_match_map_rounds?: GraphQLTypes["match_map_rounds_mutation_response"] | undefined,
 	/** delete single row from the table: "match_map_rounds" */
@@ -31295,6 +32795,10 @@ export type GraphQLTypes = {
 	insert_match_lineups?: GraphQLTypes["match_lineups_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_lineups" */
 	insert_match_lineups_one?: GraphQLTypes["match_lineups"] | undefined,
+	/** insert data into the table: "match_map_pool" */
+	insert_match_map_pool?: GraphQLTypes["match_map_pool_mutation_response"] | undefined,
+	/** insert a single row into the table: "match_map_pool" */
+	insert_match_map_pool_one?: GraphQLTypes["match_map_pool"] | undefined,
 	/** insert data into the table: "match_map_rounds" */
 	insert_match_map_rounds?: GraphQLTypes["match_map_rounds_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_map_rounds" */
@@ -31417,6 +32921,12 @@ export type GraphQLTypes = {
 	update_match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
 	/** update multiples rows of table: "match_lineups" */
 	update_match_lineups_many?: Array<GraphQLTypes["match_lineups_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "match_map_pool" */
+	update_match_map_pool?: GraphQLTypes["match_map_pool_mutation_response"] | undefined,
+	/** update single row of the table: "match_map_pool" */
+	update_match_map_pool_by_pk?: GraphQLTypes["match_map_pool"] | undefined,
+	/** update multiples rows of table: "match_map_pool" */
+	update_match_map_pool_many?: Array<GraphQLTypes["match_map_pool_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "match_map_rounds" */
 	update_match_map_rounds?: GraphQLTypes["match_map_rounds_mutation_response"] | undefined,
 	/** update single row of the table: "match_map_rounds" */
@@ -33563,6 +35073,15 @@ export type GraphQLTypes = {
 	aggregate?: GraphQLTypes["player_unused_utility_aggregate_fields"] | undefined,
 	nodes: Array<GraphQLTypes["player_unused_utility"]>
 };
+	["player_unused_utility_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["player_unused_utility_aggregate_bool_exp_count"] | undefined
+};
+	["player_unused_utility_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["player_unused_utility_select_column"]> | undefined,
+	distinct?: boolean | undefined,
+	filter?: GraphQLTypes["player_unused_utility_bool_exp"] | undefined,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "player_unused_utility" */
 ["player_unused_utility_aggregate_fields"]: {
 	__typename: "player_unused_utility_aggregate_fields",
@@ -33578,12 +35097,38 @@ export type GraphQLTypes = {
 	var_samp?: GraphQLTypes["player_unused_utility_var_samp_fields"] | undefined,
 	variance?: GraphQLTypes["player_unused_utility_variance_fields"] | undefined
 };
+	/** order by aggregate values of table "player_unused_utility" */
+["player_unused_utility_aggregate_order_by"]: {
+		avg?: GraphQLTypes["player_unused_utility_avg_order_by"] | undefined,
+	count?: GraphQLTypes["order_by"] | undefined,
+	max?: GraphQLTypes["player_unused_utility_max_order_by"] | undefined,
+	min?: GraphQLTypes["player_unused_utility_min_order_by"] | undefined,
+	stddev?: GraphQLTypes["player_unused_utility_stddev_order_by"] | undefined,
+	stddev_pop?: GraphQLTypes["player_unused_utility_stddev_pop_order_by"] | undefined,
+	stddev_samp?: GraphQLTypes["player_unused_utility_stddev_samp_order_by"] | undefined,
+	sum?: GraphQLTypes["player_unused_utility_sum_order_by"] | undefined,
+	var_pop?: GraphQLTypes["player_unused_utility_var_pop_order_by"] | undefined,
+	var_samp?: GraphQLTypes["player_unused_utility_var_samp_order_by"] | undefined,
+	variance?: GraphQLTypes["player_unused_utility_variance_order_by"] | undefined
+};
+	/** input type for inserting array relation for remote table "player_unused_utility" */
+["player_unused_utility_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["player_unused_utility_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["player_unused_utility_on_conflict"] | undefined
+};
 	/** aggregate avg on columns */
 ["player_unused_utility_avg_fields"]: {
 	__typename: "player_unused_utility_avg_fields",
 	player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by avg() on columns of table "player_unused_utility" */
+["player_unused_utility_avg_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "player_unused_utility". All fields are combined with a logical 'AND'. */
 ["player_unused_utility_bool_exp"]: {
@@ -33624,6 +35169,15 @@ export type GraphQLTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by max() on columns of table "player_unused_utility" */
+["player_unused_utility_max_order_by"]: {
+		id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined,
+	match_map_id?: GraphQLTypes["order_by"] | undefined,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
+};
 	/** aggregate min on columns */
 ["player_unused_utility_min_fields"]: {
 	__typename: "player_unused_utility_min_fields",
@@ -33633,6 +35187,15 @@ export type GraphQLTypes = {
 	player_steam_id?: GraphQLTypes["bigint"] | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by min() on columns of table "player_unused_utility" */
+["player_unused_utility_min_order_by"]: {
+		id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined,
+	match_map_id?: GraphQLTypes["order_by"] | undefined,
+	player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "player_unused_utility" */
 ["player_unused_utility_mutation_response"]: {
@@ -33679,6 +35242,12 @@ export type GraphQLTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by stddev() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
+};
 	/** aggregate stddev_pop on columns */
 ["player_unused_utility_stddev_pop_fields"]: {
 	__typename: "player_unused_utility_stddev_pop_fields",
@@ -33686,12 +35255,24 @@ export type GraphQLTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by stddev_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_pop_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
+};
 	/** aggregate stddev_samp on columns */
 ["player_unused_utility_stddev_samp_fields"]: {
 	__typename: "player_unused_utility_stddev_samp_fields",
 	player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by stddev_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_stddev_samp_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "player_unused_utility" */
 ["player_unused_utility_stream_cursor_input"]: {
@@ -33716,6 +35297,12 @@ export type GraphQLTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by sum() on columns of table "player_unused_utility" */
+["player_unused_utility_sum_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
+};
 	/** update columns of table "player_unused_utility" */
 ["player_unused_utility_update_column"]: player_unused_utility_update_column;
 	["player_unused_utility_updates"]: {
@@ -33733,6 +35320,12 @@ export type GraphQLTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by var_pop() on columns of table "player_unused_utility" */
+["player_unused_utility_var_pop_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
+};
 	/** aggregate var_samp on columns */
 ["player_unused_utility_var_samp_fields"]: {
 	__typename: "player_unused_utility_var_samp_fields",
@@ -33740,12 +35333,24 @@ export type GraphQLTypes = {
 	round?: number | undefined,
 	unused?: number | undefined
 };
+	/** order by var_samp() on columns of table "player_unused_utility" */
+["player_unused_utility_var_samp_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
+};
 	/** aggregate variance on columns */
 ["player_unused_utility_variance_fields"]: {
 	__typename: "player_unused_utility_variance_fields",
 	player_steam_id?: number | undefined,
 	round?: number | undefined,
 	unused?: number | undefined
+};
+	/** order by variance() on columns of table "player_unused_utility" */
+["player_unused_utility_variance_order_by"]: {
+		player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined,
+	unused?: GraphQLTypes["order_by"] | undefined
 };
 	/** columns and relationships of "player_utility" */
 ["player_utility"]: {
@@ -34093,6 +35698,10 @@ export type GraphQLTypes = {
 	kills: Array<GraphQLTypes["player_kills"]>,
 	/** An aggregate relationship */
 	kills_aggregate: GraphQLTypes["player_kills_aggregate"],
+	/** An array relationship */
+	match_lineups: Array<GraphQLTypes["match_lineups"]>,
+	/** An aggregate relationship */
+	match_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
 	/** A computed field, executes function "get_player_matches" */
 	matches?: Array<GraphQLTypes["matches"]> | undefined,
 	/** An array relationship */
@@ -34116,6 +35725,10 @@ export type GraphQLTypes = {
 	player_lineup: Array<GraphQLTypes["match_lineup_players"]>,
 	/** An aggregate relationship */
 	player_lineup_aggregate: GraphQLTypes["match_lineup_players_aggregate"],
+	/** An array relationship */
+	player_unused_utilities: Array<GraphQLTypes["player_unused_utility"]>,
+	/** An aggregate relationship */
+	player_unused_utilities_aggregate: GraphQLTypes["player_unused_utility_aggregate"],
 	profile_url?: string | undefined,
 	steam_id: GraphQLTypes["bigint"],
 	/** An array relationship */
@@ -34178,6 +35791,8 @@ export type GraphQLTypes = {
 	flashed_players_aggregate?: GraphQLTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	kills?: GraphQLTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_bool_exp"] | undefined,
+	match_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
+	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined,
 	multi_kills?: GraphQLTypes["v_player_multi_kills_bool_exp"] | undefined,
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined,
@@ -34190,6 +35805,8 @@ export type GraphQLTypes = {
 	owned_teams_aggregate?: GraphQLTypes["teams_aggregate_bool_exp"] | undefined,
 	player_lineup?: GraphQLTypes["match_lineup_players_bool_exp"] | undefined,
 	player_lineup_aggregate?: GraphQLTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
+	player_unused_utilities?: GraphQLTypes["player_unused_utility_bool_exp"] | undefined,
+	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	profile_url?: GraphQLTypes["String_comparison_exp"] | undefined,
 	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	team_members?: GraphQLTypes["team_roster_bool_exp"] | undefined,
@@ -34216,12 +35833,14 @@ export type GraphQLTypes = {
 	flashed_by_players?: GraphQLTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	flashed_players?: GraphQLTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	kills?: GraphQLTypes["player_kills_arr_rel_insert_input"] | undefined,
+	match_lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	multi_kills?: GraphQLTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	objectives?: GraphQLTypes["player_objectives_arr_rel_insert_input"] | undefined,
 	opening_duels?: GraphQLTypes["v_player_opening_duels_arr_rel_insert_input"] | undefined,
 	owned_teams?: GraphQLTypes["teams_arr_rel_insert_input"] | undefined,
 	player_lineup?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
+	player_unused_utilities?: GraphQLTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	profile_url?: string | undefined,
 	steam_id?: GraphQLTypes["bigint"] | undefined,
 	team_members?: GraphQLTypes["team_roster_arr_rel_insert_input"] | undefined,
@@ -34277,6 +35896,7 @@ export type GraphQLTypes = {
 	flashed_by_players_aggregate?: GraphQLTypes["player_flashes_aggregate_order_by"] | undefined,
 	flashed_players_aggregate?: GraphQLTypes["player_flashes_aggregate_order_by"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined,
+	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
@@ -34284,6 +35904,7 @@ export type GraphQLTypes = {
 	opening_duels_aggregate?: GraphQLTypes["v_player_opening_duels_aggregate_order_by"] | undefined,
 	owned_teams_aggregate?: GraphQLTypes["teams_aggregate_order_by"] | undefined,
 	player_lineup_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined,
+	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	profile_url?: GraphQLTypes["order_by"] | undefined,
 	steam_id?: GraphQLTypes["order_by"] | undefined,
 	team_members_aggregate?: GraphQLTypes["team_roster_aggregate_order_by"] | undefined,
@@ -34420,6 +36041,12 @@ export type GraphQLTypes = {
 	match_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
 	/** fetch data from the table: "match_lineups" using primary key columns */
 	match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
+	/** fetch data from the table: "match_map_pool" */
+	match_map_pool: Array<GraphQLTypes["match_map_pool"]>,
+	/** fetch aggregated fields from the table: "match_map_pool" */
+	match_map_pool_aggregate: GraphQLTypes["match_map_pool_aggregate"],
+	/** fetch data from the table: "match_map_pool" using primary key columns */
+	match_map_pool_by_pk?: GraphQLTypes["match_map_pool"] | undefined,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<GraphQLTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -34432,9 +36059,9 @@ export type GraphQLTypes = {
 	match_maps_aggregate: GraphQLTypes["match_maps_aggregate"],
 	/** fetch data from the table: "match_maps" using primary key columns */
 	match_maps_by_pk?: GraphQLTypes["match_maps"] | undefined,
-	/** fetch data from the table: "match_veto_picks" */
+	/** An array relationship */
 	match_veto_picks: Array<GraphQLTypes["match_veto_picks"]>,
-	/** fetch aggregated fields from the table: "match_veto_picks" */
+	/** An aggregate relationship */
 	match_veto_picks_aggregate: GraphQLTypes["match_veto_picks_aggregate"],
 	/** fetch data from the table: "match_veto_picks" using primary key columns */
 	match_veto_picks_by_pk?: GraphQLTypes["match_veto_picks"] | undefined,
@@ -34848,6 +36475,14 @@ export type GraphQLTypes = {
 	match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
 	/** fetch data from the table in a streaming manner: "match_lineups" */
 	match_lineups_stream: Array<GraphQLTypes["match_lineups"]>,
+	/** fetch data from the table: "match_map_pool" */
+	match_map_pool: Array<GraphQLTypes["match_map_pool"]>,
+	/** fetch aggregated fields from the table: "match_map_pool" */
+	match_map_pool_aggregate: GraphQLTypes["match_map_pool_aggregate"],
+	/** fetch data from the table: "match_map_pool" using primary key columns */
+	match_map_pool_by_pk?: GraphQLTypes["match_map_pool"] | undefined,
+	/** fetch data from the table in a streaming manner: "match_map_pool" */
+	match_map_pool_stream: Array<GraphQLTypes["match_map_pool"]>,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<GraphQLTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -34864,9 +36499,9 @@ export type GraphQLTypes = {
 	match_maps_by_pk?: GraphQLTypes["match_maps"] | undefined,
 	/** fetch data from the table in a streaming manner: "match_maps" */
 	match_maps_stream: Array<GraphQLTypes["match_maps"]>,
-	/** fetch data from the table: "match_veto_picks" */
+	/** An array relationship */
 	match_veto_picks: Array<GraphQLTypes["match_veto_picks"]>,
-	/** fetch aggregated fields from the table: "match_veto_picks" */
+	/** An aggregate relationship */
 	match_veto_picks_aggregate: GraphQLTypes["match_veto_picks_aggregate"],
 	/** fetch data from the table: "match_veto_picks" using primary key columns */
 	match_veto_picks_by_pk?: GraphQLTypes["match_veto_picks"] | undefined,
@@ -36896,6 +38531,7 @@ export const enum maps_constraint {
 /** select columns of table "maps" */
 export const enum maps_select_column {
 	active_pool = "active_pool",
+	id = "id",
 	name = "name",
 	type = "type",
 	workshop_map_id = "workshop_map_id"
@@ -36911,6 +38547,7 @@ export const enum maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_c
 /** update columns of table "maps" */
 export const enum maps_update_column {
 	active_pool = "active_pool",
+	id = "id",
 	name = "name",
 	type = "type",
 	workshop_map_id = "workshop_map_id"
@@ -36965,6 +38602,20 @@ export const enum match_lineups_update_column {
 	match_id = "match_id",
 	team_id = "team_id"
 }
+/** unique or primary key constraints on table "match_map_pool" */
+export const enum match_map_pool_constraint {
+	match_map_pool_pkey = "match_map_pool_pkey"
+}
+/** select columns of table "match_map_pool" */
+export const enum match_map_pool_select_column {
+	map_id = "map_id",
+	match_id = "match_id"
+}
+/** update columns of table "match_map_pool" */
+export const enum match_map_pool_update_column {
+	map_id = "map_id",
+	match_id = "match_id"
+}
 /** unique or primary key constraints on table "match_map_rounds" */
 export const enum match_map_rounds_constraint {
 	match_rounds__id_key = "match_rounds__id_key",
@@ -37004,10 +38655,9 @@ export const enum match_maps_select_column {
 	id = "id",
 	lineup_1_side = "lineup_1_side",
 	lineup_2_side = "lineup_2_side",
-	map = "map",
+	map_id = "map_id",
 	match_id = "match_id",
 	order = "order",
-	picked_by_lineup_id = "picked_by_lineup_id",
 	status = "status"
 }
 /** update columns of table "match_maps" */
@@ -37016,10 +38666,9 @@ export const enum match_maps_update_column {
 	id = "id",
 	lineup_1_side = "lineup_1_side",
 	lineup_2_side = "lineup_2_side",
-	map = "map",
+	map_id = "map_id",
 	match_id = "match_id",
 	order = "order",
-	picked_by_lineup_id = "picked_by_lineup_id",
 	status = "status"
 }
 /** unique or primary key constraints on table "match_veto_picks" */
@@ -37028,8 +38677,9 @@ export const enum match_veto_picks_constraint {
 }
 /** select columns of table "match_veto_picks" */
 export const enum match_veto_picks_select_column {
+	created_at = "created_at",
 	id = "id",
-	map = "map",
+	map_id = "map_id",
 	match_id = "match_id",
 	match_lineup_id = "match_lineup_id",
 	side = "side",
@@ -37037,8 +38687,9 @@ export const enum match_veto_picks_select_column {
 }
 /** update columns of table "match_veto_picks" */
 export const enum match_veto_picks_update_column {
+	created_at = "created_at",
 	id = "id",
-	map = "map",
+	map_id = "map_id",
 	match_id = "match_id",
 	match_lineup_id = "match_lineup_id",
 	side = "side",
@@ -37617,6 +39268,7 @@ type ZEUS_VARIABLES = {
 	["maps_insert_input"]: ValueTypes["maps_insert_input"];
 	["maps_max_order_by"]: ValueTypes["maps_max_order_by"];
 	["maps_min_order_by"]: ValueTypes["maps_min_order_by"];
+	["maps_obj_rel_insert_input"]: ValueTypes["maps_obj_rel_insert_input"];
 	["maps_on_conflict"]: ValueTypes["maps_on_conflict"];
 	["maps_order_by"]: ValueTypes["maps_order_by"];
 	["maps_pk_columns_input"]: ValueTypes["maps_pk_columns_input"];
@@ -37687,6 +39339,24 @@ type ZEUS_VARIABLES = {
 	["match_lineups_var_pop_order_by"]: ValueTypes["match_lineups_var_pop_order_by"];
 	["match_lineups_var_samp_order_by"]: ValueTypes["match_lineups_var_samp_order_by"];
 	["match_lineups_variance_order_by"]: ValueTypes["match_lineups_variance_order_by"];
+	["match_map_pool_aggregate_bool_exp"]: ValueTypes["match_map_pool_aggregate_bool_exp"];
+	["match_map_pool_aggregate_bool_exp_count"]: ValueTypes["match_map_pool_aggregate_bool_exp_count"];
+	["match_map_pool_aggregate_order_by"]: ValueTypes["match_map_pool_aggregate_order_by"];
+	["match_map_pool_arr_rel_insert_input"]: ValueTypes["match_map_pool_arr_rel_insert_input"];
+	["match_map_pool_bool_exp"]: ValueTypes["match_map_pool_bool_exp"];
+	["match_map_pool_constraint"]: ValueTypes["match_map_pool_constraint"];
+	["match_map_pool_insert_input"]: ValueTypes["match_map_pool_insert_input"];
+	["match_map_pool_max_order_by"]: ValueTypes["match_map_pool_max_order_by"];
+	["match_map_pool_min_order_by"]: ValueTypes["match_map_pool_min_order_by"];
+	["match_map_pool_on_conflict"]: ValueTypes["match_map_pool_on_conflict"];
+	["match_map_pool_order_by"]: ValueTypes["match_map_pool_order_by"];
+	["match_map_pool_pk_columns_input"]: ValueTypes["match_map_pool_pk_columns_input"];
+	["match_map_pool_select_column"]: ValueTypes["match_map_pool_select_column"];
+	["match_map_pool_set_input"]: ValueTypes["match_map_pool_set_input"];
+	["match_map_pool_stream_cursor_input"]: ValueTypes["match_map_pool_stream_cursor_input"];
+	["match_map_pool_stream_cursor_value_input"]: ValueTypes["match_map_pool_stream_cursor_value_input"];
+	["match_map_pool_update_column"]: ValueTypes["match_map_pool_update_column"];
+	["match_map_pool_updates"]: ValueTypes["match_map_pool_updates"];
 	["match_map_rounds_aggregate_bool_exp"]: ValueTypes["match_map_rounds_aggregate_bool_exp"];
 	["match_map_rounds_aggregate_bool_exp_count"]: ValueTypes["match_map_rounds_aggregate_bool_exp_count"];
 	["match_map_rounds_aggregate_order_by"]: ValueTypes["match_map_rounds_aggregate_order_by"];
@@ -37942,19 +39612,33 @@ type ZEUS_VARIABLES = {
 	["player_objectives_var_pop_order_by"]: ValueTypes["player_objectives_var_pop_order_by"];
 	["player_objectives_var_samp_order_by"]: ValueTypes["player_objectives_var_samp_order_by"];
 	["player_objectives_variance_order_by"]: ValueTypes["player_objectives_variance_order_by"];
+	["player_unused_utility_aggregate_bool_exp"]: ValueTypes["player_unused_utility_aggregate_bool_exp"];
+	["player_unused_utility_aggregate_bool_exp_count"]: ValueTypes["player_unused_utility_aggregate_bool_exp_count"];
+	["player_unused_utility_aggregate_order_by"]: ValueTypes["player_unused_utility_aggregate_order_by"];
+	["player_unused_utility_arr_rel_insert_input"]: ValueTypes["player_unused_utility_arr_rel_insert_input"];
+	["player_unused_utility_avg_order_by"]: ValueTypes["player_unused_utility_avg_order_by"];
 	["player_unused_utility_bool_exp"]: ValueTypes["player_unused_utility_bool_exp"];
 	["player_unused_utility_constraint"]: ValueTypes["player_unused_utility_constraint"];
 	["player_unused_utility_inc_input"]: ValueTypes["player_unused_utility_inc_input"];
 	["player_unused_utility_insert_input"]: ValueTypes["player_unused_utility_insert_input"];
+	["player_unused_utility_max_order_by"]: ValueTypes["player_unused_utility_max_order_by"];
+	["player_unused_utility_min_order_by"]: ValueTypes["player_unused_utility_min_order_by"];
 	["player_unused_utility_on_conflict"]: ValueTypes["player_unused_utility_on_conflict"];
 	["player_unused_utility_order_by"]: ValueTypes["player_unused_utility_order_by"];
 	["player_unused_utility_pk_columns_input"]: ValueTypes["player_unused_utility_pk_columns_input"];
 	["player_unused_utility_select_column"]: ValueTypes["player_unused_utility_select_column"];
 	["player_unused_utility_set_input"]: ValueTypes["player_unused_utility_set_input"];
+	["player_unused_utility_stddev_order_by"]: ValueTypes["player_unused_utility_stddev_order_by"];
+	["player_unused_utility_stddev_pop_order_by"]: ValueTypes["player_unused_utility_stddev_pop_order_by"];
+	["player_unused_utility_stddev_samp_order_by"]: ValueTypes["player_unused_utility_stddev_samp_order_by"];
 	["player_unused_utility_stream_cursor_input"]: ValueTypes["player_unused_utility_stream_cursor_input"];
 	["player_unused_utility_stream_cursor_value_input"]: ValueTypes["player_unused_utility_stream_cursor_value_input"];
+	["player_unused_utility_sum_order_by"]: ValueTypes["player_unused_utility_sum_order_by"];
 	["player_unused_utility_update_column"]: ValueTypes["player_unused_utility_update_column"];
 	["player_unused_utility_updates"]: ValueTypes["player_unused_utility_updates"];
+	["player_unused_utility_var_pop_order_by"]: ValueTypes["player_unused_utility_var_pop_order_by"];
+	["player_unused_utility_var_samp_order_by"]: ValueTypes["player_unused_utility_var_samp_order_by"];
+	["player_unused_utility_variance_order_by"]: ValueTypes["player_unused_utility_variance_order_by"];
 	["player_utility_aggregate_bool_exp"]: ValueTypes["player_utility_aggregate_bool_exp"];
 	["player_utility_aggregate_bool_exp_count"]: ValueTypes["player_utility_aggregate_bool_exp_count"];
 	["player_utility_aggregate_order_by"]: ValueTypes["player_utility_aggregate_order_by"];

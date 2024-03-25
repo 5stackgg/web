@@ -1,7 +1,7 @@
 <template>
   <img
-      @click="signIn"
-      src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_02.png"
+    @click="signIn"
+    src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_02.png"
   />
 </template>
 
@@ -12,7 +12,7 @@ definePageMeta({
 </script>
 
 <script lang="ts">
-import {useAuthStore} from "~/stores/AuthStore";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   methods: {
@@ -37,9 +37,9 @@ export default {
     authLink() {
       // TODO - use env variable
       return `https://api.5stack.gg/auth/steam?redirect=${encodeURIComponent(
-          window.location.toString(),
+        window.location.toString(),
       )}`;
     },
   },
-}
+};
 </script>

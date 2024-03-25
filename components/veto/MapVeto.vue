@@ -2,7 +2,7 @@
   <pre>
     isCaptain :{{ isCaptain }}
     Best Of: {{ bestOf }}
-    isPicking: {{ isPicking }} ({{ match.veto_picking_lineup_id }})
+    isPicking: {{ isPicking }}
     isMatchOrganizer: {{ isMatchOrganizer }}
     isVeto: {{ match.match_maps.length }} / {{ bestOf }}
   </pre>

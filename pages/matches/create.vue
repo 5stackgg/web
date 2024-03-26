@@ -208,20 +208,23 @@ export default {
   apollo: {
     map_pools: {
       query: generateQuery({
-        map_pools: [{
-          where: {
-            enabled: {
-              _eq: true,
+        map_pools: [
+          {
+            where: {
+              enabled: {
+                _eq: true,
+              },
+              owner_steam_id: {
+                _is_null: true,
+              },
             },
-            owner_steam_id: {
-              _is_null: true,
-            }
-          }
-        }, {
-          id: true,
-          label: true,
-          maps: [{}, mapFields]
-        }]
+          },
+          {
+            id: true,
+            label: true,
+            maps: [{}, mapFields],
+          },
+        ],
       }),
     },
   },
@@ -344,27 +347,36 @@ export default {
           map_veto: this.form.map_veto,
           coaches: this.form.coaches,
           number_of_substitutes: this.form.number_of_substitutes,
-          maps: this.form.best_of == 1 ? {
-            data: [
-              {
-                order: 1,
-                map_id: this.form.match_map,
-              },
-            ],
-          } : null,
-          match_pool_id: this.form.best_of != 1 && this.form.map_pool.length === 0 ? this.defaultMapPool.id : null,
-          map_pool: this.form.best_of != 1 && this.form.map_pool.length > 0 ? {
-            data: {
-              enabled: false,
-              maps: {
-                data: this.form.map_pool.map((map_id) => {
-                  return {
-                    id: map_id,
-                  };
-                }),
-              },
-            },
-          }: null,
+          maps:
+            this.form.best_of == 1
+              ? {
+                  data: [
+                    {
+                      order: 1,
+                      map_id: this.form.match_map,
+                    },
+                  ],
+                }
+              : null,
+          match_pool_id:
+            this.form.best_of != 1 && this.form.map_pool.length === 0
+              ? this.defaultMapPool.id
+              : null,
+          map_pool:
+            this.form.best_of != 1 && this.form.map_pool.length > 0
+              ? {
+                  data: {
+                    enabled: false,
+                    maps: {
+                      data: this.form.map_pool.map((map_id) => {
+                        return {
+                          id: map_id,
+                        };
+                      }),
+                    },
+                  },
+                }
+              : null,
         },
         mutation: generateMutation({
           insert_matches_one: [

@@ -441,10 +441,27 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"jsonb",
 		_nin:"jsonb"
 	},
+	map_pool_aggregate_bool_exp:{
+		count:"map_pool_aggregate_bool_exp_count"
+	},
+	map_pool_aggregate_bool_exp_count:{
+		arguments:"map_pool_select_column",
+		filter:"map_pool_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	map_pool_aggregate_fields:{
 		count:{
 			columns:"map_pool_select_column"
 		}
+	},
+	map_pool_aggregate_order_by:{
+		count:"order_by",
+		max:"map_pool_max_order_by",
+		min:"map_pool_min_order_by"
+	},
+	map_pool_arr_rel_insert_input:{
+		data:"map_pool_insert_input",
+		on_conflict:"map_pool_on_conflict"
 	},
 	map_pool_bool_exp:{
 		_and:"map_pool_bool_exp",
@@ -461,6 +478,14 @@ export const AllTypesProps: Record<string,any> = {
 		map_id:"uuid",
 		map_pool_id:"uuid",
 		pool:"map_pools_obj_rel_insert_input"
+	},
+	map_pool_max_order_by:{
+		map_id:"order_by",
+		map_pool_id:"order_by"
+	},
+	map_pool_min_order_by:{
+		map_id:"order_by",
+		map_pool_id:"order_by"
 	},
 	map_pool_on_conflict:{
 		constraint:"map_pool_constraint",
@@ -495,18 +520,6 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"map_pool_set_input",
 		where:"map_pool_bool_exp"
 	},
-	map_pools:{
-		maps:{
-			distinct_on:"match_map_pools_select_column",
-			order_by:"match_map_pools_order_by",
-			where:"match_map_pools_bool_exp"
-		},
-		maps_aggregate:{
-			distinct_on:"match_map_pools_select_column",
-			order_by:"match_map_pools_order_by",
-			where:"match_map_pools_bool_exp"
-		}
-	},
 	map_pools_aggregate_fields:{
 		count:{
 			columns:"map_pools_select_column"
@@ -519,8 +532,6 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		label:"String_comparison_exp",
-		maps:"match_map_pools_bool_exp",
-		maps_aggregate:"match_map_pools_aggregate_bool_exp",
 		owner_steam_id:"bigint_comparison_exp"
 	},
 	map_pools_constraint: "enum" as const,
@@ -529,7 +540,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	map_pools_insert_input:{
 		id:"uuid",
-		maps:"match_map_pools_arr_rel_insert_input",
 		owner_steam_id:"bigint"
 	},
 	map_pools_obj_rel_insert_input:{
@@ -545,7 +555,6 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"order_by",
 		id:"order_by",
 		label:"order_by",
-		maps_aggregate:"match_map_pools_aggregate_order_by",
 		owner_steam_id:"order_by"
 	},
 	map_pools_pk_columns_input:{
@@ -590,6 +599,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"match_veto_picks_select_column",
 			order_by:"match_veto_picks_order_by",
 			where:"match_veto_picks_bool_exp"
+		},
+		pools:{
+			distinct_on:"map_pool_select_column",
+			order_by:"map_pool_order_by",
+			where:"map_pool_bool_exp"
+		},
+		pools_aggregate:{
+			distinct_on:"map_pool_select_column",
+			order_by:"map_pool_order_by",
+			where:"map_pool_bool_exp"
 		}
 	},
 	maps_aggregate_bool_exp:{
@@ -638,6 +657,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_veto_picks:"match_veto_picks_bool_exp",
 		match_veto_picks_aggregate:"match_veto_picks_aggregate_bool_exp",
 		name:"String_comparison_exp",
+		pools:"map_pool_bool_exp",
+		pools_aggregate:"map_pool_aggregate_bool_exp",
 		type:"e_match_types_enum_comparison_exp",
 		workshop_map_id:"String_comparison_exp"
 	},
@@ -647,6 +668,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_maps:"match_maps_arr_rel_insert_input",
 		match_veto_picks:"match_veto_picks_arr_rel_insert_input",
+		pools:"map_pool_arr_rel_insert_input",
 		type:"e_match_types_enum"
 	},
 	maps_max_order_by:{
@@ -675,6 +697,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_maps_aggregate:"match_maps_aggregate_order_by",
 		match_veto_picks_aggregate:"match_veto_picks_aggregate_order_by",
 		name:"order_by",
+		pools_aggregate:"map_pool_aggregate_order_by",
 		type:"order_by",
 		workshop_map_id:"order_by"
 	},
@@ -1018,90 +1041,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_lineups_variance_order_by:{
 		coach_steam_id:"order_by"
-	},
-	match_map_pools_aggregate_bool_exp:{
-		bool_and:"match_map_pools_aggregate_bool_exp_bool_and",
-		bool_or:"match_map_pools_aggregate_bool_exp_bool_or",
-		count:"match_map_pools_aggregate_bool_exp_count"
-	},
-	match_map_pools_aggregate_bool_exp_bool_and:{
-		arguments:"match_map_pools_select_column_match_map_pools_aggregate_bool_exp_bool_and_arguments_columns",
-		filter:"match_map_pools_bool_exp",
-		predicate:"Boolean_comparison_exp"
-	},
-	match_map_pools_aggregate_bool_exp_bool_or:{
-		arguments:"match_map_pools_select_column_match_map_pools_aggregate_bool_exp_bool_or_arguments_columns",
-		filter:"match_map_pools_bool_exp",
-		predicate:"Boolean_comparison_exp"
-	},
-	match_map_pools_aggregate_bool_exp_count:{
-		arguments:"match_map_pools_select_column",
-		filter:"match_map_pools_bool_exp",
-		predicate:"Int_comparison_exp"
-	},
-	match_map_pools_aggregate_fields:{
-		count:{
-			columns:"match_map_pools_select_column"
-		}
-	},
-	match_map_pools_aggregate_order_by:{
-		count:"order_by",
-		max:"match_map_pools_max_order_by",
-		min:"match_map_pools_min_order_by"
-	},
-	match_map_pools_arr_rel_insert_input:{
-		data:"match_map_pools_insert_input"
-	},
-	match_map_pools_bool_exp:{
-		_and:"match_map_pools_bool_exp",
-		_not:"match_map_pools_bool_exp",
-		_or:"match_map_pools_bool_exp",
-		active_pool:"Boolean_comparison_exp",
-		id:"uuid_comparison_exp",
-		map_pool_id:"uuid_comparison_exp",
-		name:"String_comparison_exp",
-		pool:"map_pools_bool_exp",
-		type:"String_comparison_exp",
-		workshop_map_id:"String_comparison_exp"
-	},
-	match_map_pools_insert_input:{
-		id:"uuid",
-		map_pool_id:"uuid",
-		pool:"map_pools_obj_rel_insert_input"
-	},
-	match_map_pools_max_order_by:{
-		id:"order_by",
-		map_pool_id:"order_by",
-		name:"order_by",
-		type:"order_by",
-		workshop_map_id:"order_by"
-	},
-	match_map_pools_min_order_by:{
-		id:"order_by",
-		map_pool_id:"order_by",
-		name:"order_by",
-		type:"order_by",
-		workshop_map_id:"order_by"
-	},
-	match_map_pools_order_by:{
-		active_pool:"order_by",
-		id:"order_by",
-		map_pool_id:"order_by",
-		name:"order_by",
-		pool:"map_pools_order_by",
-		type:"order_by",
-		workshop_map_id:"order_by"
-	},
-	match_map_pools_select_column: "enum" as const,
-	match_map_pools_select_column_match_map_pools_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
-	match_map_pools_select_column_match_map_pools_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
-	match_map_pools_stream_cursor_input:{
-		initial_value:"match_map_pools_stream_cursor_value_input",
-		ordering:"cursor_ordering"
-	},
-	match_map_pools_stream_cursor_value_input:{
-		id:"uuid",
-		map_pool_id:"uuid"
 	},
 	match_map_rounds:{
 		kills:{
@@ -2161,9 +2100,6 @@ export const AllTypesProps: Record<string,any> = {
 		delete_match_lineups_by_pk:{
 			id:"uuid"
 		},
-		delete_match_map_pools:{
-			where:"match_map_pools_bool_exp"
-		},
 		delete_match_map_rounds:{
 			where:"match_map_rounds_bool_exp"
 		},
@@ -2376,12 +2312,6 @@ export const AllTypesProps: Record<string,any> = {
 		insert_match_lineups_one:{
 			object:"match_lineups_insert_input",
 			on_conflict:"match_lineups_on_conflict"
-		},
-		insert_match_map_pools:{
-			objects:"match_map_pools_insert_input"
-		},
-		insert_match_map_pools_one:{
-			object:"match_map_pools_insert_input"
 		},
 		insert_match_map_rounds:{
 			objects:"match_map_rounds_insert_input",
@@ -4806,16 +4736,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_lineups_by_pk:{
 			id:"uuid"
 		},
-		match_map_pools:{
-			distinct_on:"match_map_pools_select_column",
-			order_by:"match_map_pools_order_by",
-			where:"match_map_pools_bool_exp"
-		},
-		match_map_pools_aggregate:{
-			distinct_on:"match_map_pools_select_column",
-			order_by:"match_map_pools_order_by",
-			where:"match_map_pools_bool_exp"
-		},
 		match_map_rounds:{
 			distinct_on:"match_map_rounds_select_column",
 			order_by:"match_map_rounds_order_by",
@@ -5421,20 +5341,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_lineups_stream:{
 			cursor:"match_lineups_stream_cursor_input",
 			where:"match_lineups_bool_exp"
-		},
-		match_map_pools:{
-			distinct_on:"match_map_pools_select_column",
-			order_by:"match_map_pools_order_by",
-			where:"match_map_pools_bool_exp"
-		},
-		match_map_pools_aggregate:{
-			distinct_on:"match_map_pools_select_column",
-			order_by:"match_map_pools_order_by",
-			where:"match_map_pools_bool_exp"
-		},
-		match_map_pools_stream:{
-			cursor:"match_map_pools_stream_cursor_input",
-			where:"match_map_pools_bool_exp"
 		},
 		match_map_rounds:{
 			distinct_on:"match_map_rounds_select_column",
@@ -7505,8 +7411,6 @@ export const ReturnTypes: Record<string,any> = {
 		enabled:"Boolean",
 		id:"uuid",
 		label:"String",
-		maps:"match_map_pools",
-		maps_aggregate:"match_map_pools_aggregate",
 		owner_steam_id:"bigint"
 	},
 	map_pools_aggregate:{
@@ -7573,6 +7477,8 @@ export const ReturnTypes: Record<string,any> = {
 		match_veto_picks:"match_veto_picks",
 		match_veto_picks_aggregate:"match_veto_picks_aggregate",
 		name:"String",
+		pools:"map_pool",
+		pools_aggregate:"map_pool_aggregate",
 		type:"e_match_types_enum",
 		workshop_map_id:"String"
 	},
@@ -7742,42 +7648,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_lineups_variance_fields:{
 		coach_steam_id:"Float"
-	},
-	match_map_pools:{
-		active_pool:"Boolean",
-		id:"uuid",
-		map_pool_id:"uuid",
-		name:"String",
-		pool:"map_pools",
-		type:"String",
-		workshop_map_id:"String"
-	},
-	match_map_pools_aggregate:{
-		aggregate:"match_map_pools_aggregate_fields",
-		nodes:"match_map_pools"
-	},
-	match_map_pools_aggregate_fields:{
-		count:"Int",
-		max:"match_map_pools_max_fields",
-		min:"match_map_pools_min_fields"
-	},
-	match_map_pools_max_fields:{
-		id:"uuid",
-		map_pool_id:"uuid",
-		name:"String",
-		type:"String",
-		workshop_map_id:"String"
-	},
-	match_map_pools_min_fields:{
-		id:"uuid",
-		map_pool_id:"uuid",
-		name:"String",
-		type:"String",
-		workshop_map_id:"String"
-	},
-	match_map_pools_mutation_response:{
-		affected_rows:"Int",
-		returning:"match_map_pools"
 	},
 	match_map_rounds:{
 		id:"uuid",
@@ -8236,7 +8106,6 @@ export const ReturnTypes: Record<string,any> = {
 		delete_match_lineup_players_by_pk:"match_lineup_players",
 		delete_match_lineups:"match_lineups_mutation_response",
 		delete_match_lineups_by_pk:"match_lineups",
-		delete_match_map_pools:"match_map_pools_mutation_response",
 		delete_match_map_rounds:"match_map_rounds_mutation_response",
 		delete_match_map_rounds_by_pk:"match_map_rounds",
 		delete_match_maps:"match_maps_mutation_response",
@@ -8300,8 +8169,6 @@ export const ReturnTypes: Record<string,any> = {
 		insert_match_lineup_players_one:"match_lineup_players",
 		insert_match_lineups:"match_lineups_mutation_response",
 		insert_match_lineups_one:"match_lineups",
-		insert_match_map_pools:"match_map_pools_mutation_response",
-		insert_match_map_pools_one:"match_map_pools",
 		insert_match_map_rounds:"match_map_rounds_mutation_response",
 		insert_match_map_rounds_one:"match_map_rounds",
 		insert_match_maps:"match_maps_mutation_response",
@@ -9321,8 +9188,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_lineups:"match_lineups",
 		match_lineups_aggregate:"match_lineups_aggregate",
 		match_lineups_by_pk:"match_lineups",
-		match_map_pools:"match_map_pools",
-		match_map_pools_aggregate:"match_map_pools_aggregate",
 		match_map_rounds:"match_map_rounds",
 		match_map_rounds_aggregate:"match_map_rounds_aggregate",
 		match_map_rounds_by_pk:"match_map_rounds",
@@ -9531,9 +9396,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_lineups_aggregate:"match_lineups_aggregate",
 		match_lineups_by_pk:"match_lineups",
 		match_lineups_stream:"match_lineups",
-		match_map_pools:"match_map_pools",
-		match_map_pools_aggregate:"match_map_pools_aggregate",
-		match_map_pools_stream:"match_map_pools",
 		match_map_rounds:"match_map_rounds",
 		match_map_rounds_aggregate:"match_map_rounds_aggregate",
 		match_map_rounds_by_pk:"match_map_rounds",

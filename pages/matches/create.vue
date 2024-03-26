@@ -78,6 +78,7 @@
               <five-stack-map-picker
                 v-if="form.best_of == 1"
                 label="Map"
+                :required="true"
                 v-model="form.match_map"
                 :match-type="form.type"
               ></five-stack-map-picker>
@@ -92,7 +93,10 @@
           <div class="mt-6 grid gap-4 lg:gap-6" v-if="form.best_of > 1">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <template v-if="!custom_map_pool">
-                <pre>{{ defaultMapPool }}</pre>
+                <pre>{{ defaultMapPool.id }}</pre>
+                <template v-for="map of defaultMapPool.maps">
+                  <p>{{ map.name }}</p>
+                </template>
               </template>
               <template v-else>
                 <pre>{{ form.map_pool }}</pre>
@@ -202,9 +206,22 @@ export default {
     FiveStackSelectInput,
   },
   apollo: {
-    maps: {
+    map_pools: {
       query: generateQuery({
-        maps: [{}, mapFields],
+        map_pools: [{
+          where: {
+            enabled: {
+              _eq: true,
+            },
+            owner_steam_id: {
+              _is_null: true,
+            }
+          }
+        }, {
+          id: true,
+          label: true,
+          maps: [{}, mapFields]
+        }]
       }),
     },
   },
@@ -235,22 +252,6 @@ export default {
     ["form.map_veto"]: {
       handler() {
         this.form.map = undefined;
-      },
-    },
-    ["form.type"]: {
-      handler() {
-        if (this.form.best_of > 1 && this.defaultMapPool.length === 0) {
-          this.custom_map_pool = true;
-        }
-      },
-    },
-    ["form.best_of"]: {
-      handler() {
-        this.custom_map_pool = false;
-
-        if (this.form.best_of > 1 && this.defaultMapPool.length === 0) {
-          this.custom_map_pool = true;
-        }
       },
     },
   },
@@ -343,31 +344,27 @@ export default {
           map_veto: this.form.map_veto,
           coaches: this.form.coaches,
           number_of_substitutes: this.form.number_of_substitutes,
-          ...(this.form.best_of == 1
-            ? {
-                maps: {
-                  data: [
-                    {
-                      order: 1,
-                      map_id: this.form.match_map,
-                    },
-                  ],
-                },
-              }
-            : {
-                map_pool: {
-                  data: {
-                    enabled: false,
-                    maps: {
-                      data: this.form.map_pool.map((map_id) => {
-                        return {
-                          id: map_id,
-                        };
-                      }),
-                    },
-                  },
-                },
-              }),
+          maps: this.form.best_of == 1 ? {
+            data: [
+              {
+                order: 1,
+                map_id: this.form.match_map,
+              },
+            ],
+          } : null,
+          match_pool_id: this.form.best_of != 1 && this.form.map_pool.length === 0 ? this.defaultMapPool.id : null,
+          map_pool: this.form.best_of != 1 && this.form.map_pool.length > 0 ? {
+            data: {
+              enabled: false,
+              maps: {
+                data: this.form.map_pool.map((map_id) => {
+                  return {
+                    id: map_id,
+                  };
+                }),
+              },
+            },
+          }: null,
         },
         mutation: generateMutation({
           insert_matches_one: [
@@ -382,6 +379,7 @@ export default {
                 overtime: $("overtime", "Boolean!"),
                 map_veto: $("map_veto", "Boolean!"),
                 coaches: $("coaches", "Boolean!"),
+                match_pool_id: $("match_pool_id", "uuid"),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
                 lineups: {
                   data: [
@@ -436,24 +434,9 @@ export default {
       });
     },
     defaultMapPool() {
-      if (!this.maps) {
-        return [];
-      }
-      return this.maps
-        .filter((map) => {
-          switch (this.form.type) {
-            case e_match_types_enum.Competitive:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Wingman:
-              return map.type === e_match_types_enum.Wingman;
-          }
-        })
-        .map((map) => {
-          return map.name;
-        });
+      return this.map_pools.find((pool) => {
+        return pool.label === this.form.type;
+      });
     },
   },
 };

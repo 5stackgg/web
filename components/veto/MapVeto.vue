@@ -80,9 +80,47 @@ export default {
   },
   apollo: {
     maps: {
+      variables: function() {
+        return {
+          where: {
+            ...(this.match.type === e_match_types_enum.Competitive) ? {
+              active_pool: {
+                _eq: true,
+              }
+            } : {},
+            type: {
+              _eq: this.match.type === e_match_types_enum.Scrimmage ? e_match_types_enum.Competitive : this.match.type
+            }
+          }
+        }
+      },
       query: generateQuery({
-        maps: [{}, mapFields],
-      }),
+        maps: [{
+          where: $("where", "maps_bool_exp!")
+        }, mapFields],
+      })
+    },
+    match_map_pool: {
+      variables: function () {
+        return {
+          match_id: this.match.id,
+        }
+      },
+      query: generateQuery({
+        __alias: {
+          match_map_pool: {
+            maps: [{
+              where: {
+                match_map_pools: {
+                  match_id: {
+                    _eq: $("match_id", "uuid!")
+                  }
+                }
+              }
+            }, mapFields],
+          }
+        }
+      })
     },
     $subscribe: {
       match_veto_picks: {
@@ -225,26 +263,13 @@ export default {
       return pattern[this.picks.length % pattern.length];
     },
     availableMaps() {
-      if (!this.maps) {
-        return [];
+      let maps = this.match_map_pool?.length > 0 ? this.match_map_pool : this.maps;
+
+      if(!maps) {
+        return;
       }
-      return this.maps
-        .filter((map) => {
-          switch (this.match.type) {
-            case e_match_types_enum.Competitive:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Scrimmage:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Wingman:
-              return map.type === e_match_types_enum.Wingman;
-          }
-        })
+
+      return maps
         .filter((map) => {
           return (
             this.picks?.find((pick) => {

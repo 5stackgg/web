@@ -79,48 +79,34 @@ export default {
     },
   },
   apollo: {
-    maps: {
-      variables: function() {
-        return {
-          where: {
-            ...(this.match.type === e_match_types_enum.Competitive) ? {
-              active_pool: {
-                _eq: true,
-              }
-            } : {},
-            type: {
-              _eq: this.match.type === e_match_types_enum.Scrimmage ? e_match_types_enum.Competitive : this.match.type
-            }
-          }
-        }
-      },
-      query: generateQuery({
-        maps: [{
-          where: $("where", "maps_bool_exp!")
-        }, mapFields],
-      })
-    },
-    match_map_pool: {
+    match_maps: {
       variables: function () {
         return {
           match_id: this.match.id,
-        }
+        };
       },
       query: generateQuery({
         __alias: {
-          match_map_pool: {
-            maps: [{
-              where: {
-                match_map_pools: {
-                  match_id: {
-                    _eq: $("match_id", "uuid!")
-                  }
-                }
-              }
-            }, mapFields],
-          }
-        }
-      })
+          match_maps: {
+            matches_by_pk: [
+              {
+                id: $("match_id", "uuid!"),
+              },
+              {
+                map_pool: [
+                  {},
+                  {
+                    maps: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      }),
     },
     $subscribe: {
       match_veto_picks: {
@@ -263,20 +249,19 @@ export default {
       return pattern[this.picks.length % pattern.length];
     },
     availableMaps() {
-      let maps = this.match_map_pool?.length > 0 ? this.match_map_pool : this.maps;
+      let maps = this.match_maps?.map_pool?.maps;
 
-      if(!maps) {
+      if (!maps) {
         return;
       }
 
-      return maps
-        .filter((map) => {
-          return (
-            this.picks?.find((pick) => {
-              return pick.map.id === map.id;
-            }) === undefined
-          );
-        });
+      return maps.filter((map) => {
+        return (
+          this.picks?.find((pick) => {
+            return pick.map.id === map.id;
+          }) === undefined
+        );
+      });
     },
     sideOptions() {
       return [

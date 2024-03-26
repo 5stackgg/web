@@ -359,13 +359,13 @@ export default {
                   data: {
                     enabled: false,
                     maps: {
-                      data:  this.form.map_pool.map((map_id) => {
+                      data: this.form.map_pool.map((map_id) => {
                         return {
                           id: map_id,
-                        }
-                      })
-                    }
-                  }
+                        };
+                      }),
+                    },
+                  },
                 },
               }),
         },

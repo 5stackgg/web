@@ -1,11 +1,11 @@
 <template>
   <five-stack-select-input
-    :disabled="availableMaps.length === 0"
-    label="Maps"
+    :label="label"
+    :disabled="disabled || availableMaps.length === 0"
     :options="availableMaps"
     :modelValue="modelValue"
     @update:modelValue="updateModelValue"
-    :multiple="best_of > 1"
+    :multiple="multiple"
   ></five-stack-select-input>
 </template>
 
@@ -21,8 +21,8 @@ export default {
     FiveStackSelectInput,
   },
   props: {
-    best_of: {
-      type: [Number, String],
+    label: {
+      type: String,
       required: true,
     },
     matchType: {
@@ -33,6 +33,14 @@ export default {
       type: [String, Number, Array],
       default: "",
     },
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    }
   },
   apollo: {
     maps: {
@@ -61,15 +69,17 @@ export default {
               );
             case e_match_types_enum.Scrimmage:
               return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
+                map.type === e_match_types_enum.Competitive
               );
             case e_match_types_enum.Wingman:
               return map.type === e_match_types_enum.Wingman;
           }
         })
         .map((map) => {
-          return map.name;
+          return {
+            value: map.id,
+            display: map.name,
+          };
         });
     },
   },

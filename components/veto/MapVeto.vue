@@ -20,7 +20,7 @@
 
   <hr />
 
-  <template v-if="match.match_maps.length < bestOf">
+  <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
     <forms-five-stack-checkbox
       v-model="override"
       v-if="isMatchOrganizer"
@@ -189,7 +189,7 @@ export default {
       return this.match.best_of;
     },
     isCaptain() {
-      return this.myLineup?.captain.player.steam_id === this.me.steam_id;
+      return this.myLineup?.captain?.player.steam_id === this.me.steam_id;
     },
     myLineup() {
       return this.match?.lineups.find((lineup) => {
@@ -199,12 +199,12 @@ export default {
       });
     },
     isPicking() {
-      if (!this.match) {
-        return false;
-      }
-
       if (this.override) {
         return true;
+      }
+
+      if (!this.match || !this.myLineup) {
+        return false;
       }
 
       return this.myLineup.id === this.match.veto_picking_lineup_id;

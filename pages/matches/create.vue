@@ -356,12 +356,16 @@ export default {
               }
             : {
                 map_pool: {
-                  data: this.form.map_pool.map((map_id) => {
-                    console.info("WEE", map_id);
-                    return {
-                      map_id,
-                    };
-                  }),
+                  data: {
+                    enabled: false,
+                    maps: {
+                      data:  this.form.map_pool.map((map_id) => {
+                        return {
+                          id: map_id,
+                        }
+                      })
+                    }
+                  }
                 },
               }),
         },
@@ -373,7 +377,7 @@ export default {
                 type: $("type", "e_match_types_enum!"),
                 best_of: $("best_of", "Int!"),
                 match_maps: $("maps", "match_maps_arr_rel_insert_input"),
-                map_pool: $("map_pool", "match_map_pool_arr_rel_insert_input"),
+                map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
                 knife_round: $("knife_round", "Boolean!"),
                 overtime: $("overtime", "Boolean!"),
                 map_veto: $("map_veto", "Boolean!"),

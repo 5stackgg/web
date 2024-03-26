@@ -50,20 +50,34 @@
                 >
                   [{{ match_map.status }}] {{ match_map.map.name }}
                   <template v-for="veto of match_map.vetos">
-                    <template v-if="veto.type === 'LeftOver'">[Left Over]</template>
+                    <template v-if="veto.type === 'LeftOver'"
+                      >[Left Over]</template
+                    >
                   </template>
                   <p>
                     {{ matchLineups.lineup1.name }}:
                     {{ match_map.lineup_1_score }}
                     <template v-for="veto of match_map.vetos">
-                      <template v-if="veto.type === 'Pick' && veto.match_lineup_id === matchLineups.lineup1.id">[PICKED]</template>
+                      <template
+                        v-if="
+                          veto.type === 'Pick' &&
+                          veto.match_lineup_id === matchLineups.lineup1.id
+                        "
+                        >[PICKED]</template
+                      >
                     </template>
                   </p>
                   <p>
                     {{ matchLineups.lineup2.name }}:
                     {{ match_map.lineup_2_score }}
                     <template v-for="veto of match_map.vetos">
-                      <template v-if="veto.type === 'Pick' && veto.match_lineup_id === matchLineups.lineup2.id">[PICKED]</template>
+                      <template
+                        v-if="
+                          veto.type === 'Pick' &&
+                          veto.match_lineup_id === matchLineups.lineup2.id
+                        "
+                        >[PICKED]</template
+                      >
                     </template>
                   </p>
                 </div>

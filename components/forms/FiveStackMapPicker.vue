@@ -40,7 +40,7 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   apollo: {
     maps: {
@@ -68,9 +68,7 @@ export default {
                 map.active_pool === true
               );
             case e_match_types_enum.Scrimmage:
-              return (
-                map.type === e_match_types_enum.Competitive
-              );
+              return map.type === e_match_types_enum.Competitive;
             case e_match_types_enum.Wingman:
               return map.type === e_match_types_enum.Wingman;
           }

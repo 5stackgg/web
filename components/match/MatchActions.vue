@@ -23,10 +23,10 @@
       </div>
 
       <five-stack-select-input
-          v-if="!match.server_id || !match.is_match_server_available"
-          label="Server"
-          :options="availableServers"
-          v-model="form.server_id"
+        v-if="!match.server_id || !match.is_match_server_available"
+        label="Server"
+        :options="availableServers"
+        v-model="form.server_id"
       ></five-stack-select-input>
 
       <five-stack-button> Start Match </five-stack-button>

@@ -76,15 +76,15 @@
               ></five-stack-select-input>
 
               <five-stack-map-picker
-                  v-if="form.best_of == 1"
-                  label="Map"
-                  v-model="form.match_map"
-                  :match-type="form.type"
+                v-if="form.best_of == 1"
+                label="Map"
+                v-model="form.match_map"
+                :match-type="form.type"
               ></five-stack-map-picker>
               <five-stack-checkbox
-                  v-else
-                  label="Custom Map Pool"
-                  v-model="custom_map_pool"
+                v-else
+                label="Custom Map Pool"
+                v-model="custom_map_pool"
               ></five-stack-checkbox>
             </div>
           </div>
@@ -97,11 +97,11 @@
               <template v-else>
                 <pre>{{ form.map_pool }}</pre>
                 <five-stack-map-picker
-                    :disabled="!custom_map_pool"
-                    label="Custom Map Pool"
-                    v-model="form.map_pool"
-                    :match-type="form.type"
-                    :multiple="true"
+                  :disabled="!custom_map_pool"
+                  label="Custom Map Pool"
+                  v-model="form.map_pool"
+                  :match-type="form.type"
+                  :multiple="true"
                 ></five-stack-map-picker>
               </template>
             </div>
@@ -188,7 +188,7 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import FiveStackNumberInput from "~/components/forms/FiveStackNumberInput.vue";
-import {mapFields} from "~/graphql/mapGraphql";
+import { mapFields } from "~/graphql/mapGraphql";
 
 export default {
   components: {
@@ -227,7 +227,7 @@ export default {
           lineup_1: [],
           lineup_2: [],
         },
-        map_pool: []
+        map_pool: [],
       },
     };
   },
@@ -239,7 +239,7 @@ export default {
     },
     ["form.type"]: {
       handler() {
-        if(this.form.best_of > 1 && this.defaultMapPool.length ===0 ) {
+        if (this.form.best_of > 1 && this.defaultMapPool.length === 0) {
           this.custom_map_pool = true;
         }
       },
@@ -248,11 +248,11 @@ export default {
       handler() {
         this.custom_map_pool = false;
 
-        if(this.form.best_of > 1 && this.defaultMapPool.length ===0 ) {
+        if (this.form.best_of > 1 && this.defaultMapPool.length === 0) {
           this.custom_map_pool = true;
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     async searchPlayers(query) {
@@ -343,25 +343,27 @@ export default {
           map_veto: this.form.map_veto,
           coaches: this.form.coaches,
           number_of_substitutes: this.form.number_of_substitutes,
-          ...(this.form.best_of == 1) ? {
-              maps: {
-                data: [
-                  {
-                    order: 1,
-                    map_id: this.form.match_map,
-                  }
-                ]
+          ...(this.form.best_of == 1
+            ? {
+                maps: {
+                  data: [
+                    {
+                      order: 1,
+                      map_id: this.form.match_map,
+                    },
+                  ],
+                },
               }
-            } : {
-            map_pool: {
-              data: this.form.map_pool.map((map_id) => {
-                console.info("WEE", map_id)
-                return {
-                  map_id
-                }
-              })
-            }
-          },
+            : {
+                map_pool: {
+                  data: this.form.map_pool.map((map_id) => {
+                    console.info("WEE", map_id);
+                    return {
+                      map_id,
+                    };
+                  }),
+                },
+              }),
         },
         mutation: generateMutation({
           insert_matches_one: [
@@ -434,20 +436,20 @@ export default {
         return [];
       }
       return this.maps
-          .filter((map) => {
-            switch (this.form.type) {
-              case e_match_types_enum.Competitive:
-                return (
-                    map.type === e_match_types_enum.Competitive &&
-                    map.active_pool === true
-                );
-              case e_match_types_enum.Wingman:
-                return map.type === e_match_types_enum.Wingman;
-            }
-          })
-          .map((map) => {
-            return map.name;
-          });
+        .filter((map) => {
+          switch (this.form.type) {
+            case e_match_types_enum.Competitive:
+              return (
+                map.type === e_match_types_enum.Competitive &&
+                map.active_pool === true
+              );
+            case e_match_types_enum.Wingman:
+              return map.type === e_match_types_enum.Wingman;
+          }
+        })
+        .map((map) => {
+          return map.name;
+        });
     },
   },
 };

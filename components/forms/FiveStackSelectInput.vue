@@ -18,11 +18,6 @@
       >
         <option
           v-for="option of options"
-          :class="{
-            selected: expectsMultiple
-              ? modelValue.includes(getValue(option))
-              : false,
-          }"
           :key="getValue(option)"
           :value="getValue(option)"
         >
@@ -107,9 +102,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.selected {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-</style>

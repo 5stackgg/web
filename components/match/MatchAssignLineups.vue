@@ -8,10 +8,11 @@
       >
         <form @submit.prevent.stop v-if="canAddToLineup1">
           <five-stack-search-input
+            :click-init-search="true"
             :label="matchLineups.lineup1.name"
             placeholder="Find Player"
             v-model="form.lineup_1"
-            :search="searchPlayers"
+            :search="lineup1Search"
           ></five-stack-search-input>
         </form>
         <template v-else> Team 1 Lineup setup. </template>
@@ -22,10 +23,11 @@
       >
         <form @submit.prevent.stop v-if="canAddToLineup2">
           <five-stack-search-input
+            :click-init-search="true"
             :label="matchLineups.lineup2.name"
             placeholder="Find Player"
             v-model="form.lineup_2"
-            :search="searchPlayers"
+            :search="lineup2Search"
           ></five-stack-search-input>
         </form>
         <template v-else> Team 2 Lineup setup. </template>
@@ -77,23 +79,42 @@ export default {
     },
   },
   methods: {
-    async searchPlayers(query) {
+    async lineup1Search(query) {
+      return await this.searchPlayers(query, this.matchLineups.lineup1.team_id)
+    },
+    async lineup2Search(query) {
+      return await this.searchPlayers(query, this.matchLineups.lineup2.team_id)
+    },
+    async searchPlayers(query, teamId) {
+      if(!query && !teamId) {
+        return;
+      }
+
       const { data } = await this.$apollo.query({
         query: generateQuery({
           players: [
             {
               where: {
-                ...(/^[0-9]+$/.test(query)
-                  ? {
-                      steam_id: {
-                        _eq: $("playerSteamIdQuery", "bigint"),
-                      },
+                _and: [
+                  ...(teamId) ? [{
+                    teams: {
+                      id: {
+                        _eq: teamId,
+                      }
                     }
-                  : {
-                      name: {
-                        _ilike: $("playerQuery", "String"),
-                      },
-                    }),
+                  }]: [],
+                    ...(query) ? [...(/^[0-9]+$/.test(query)
+                        ? [{
+                          steam_id: {
+                            _eq: $("playerSteamIdQuery", "bigint"),
+                          },
+                        }]
+                        :[ {
+                          name: {
+                            _ilike: $("playerQuery", "String"),
+                          },
+                        }]),]: []
+                ]
               },
             },
             {
@@ -111,11 +132,20 @@ export default {
 
       return (
         data.players
-          // .filter((player) => {
-          //   return (
-          //    TODO
-          //   );
-          // })
+          .filter((player) => {
+            if(
+                this.matchLineups.lineup1.lineup_players.find((_player) => {
+                  return _player.steam_id === player.steam_id;
+                }) ||
+                this.matchLineups.lineup2.lineup_players.find((_player) => {
+                  return _player.steam_id === player.steam_id;
+                })
+            ) {
+              return false
+            }
+
+            return true;
+          })
           .map((player) => {
             return {
               value: player,

@@ -1,7 +1,7 @@
 <template>
   <div
     class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
-    v-if="canUpdateLineup1 || canUpdateLineup2"
+    v-if="match.coaches && (canUpdateLineup1 || canUpdateLineup2)"
   >
     <h1>Assign Coach</h1>
 

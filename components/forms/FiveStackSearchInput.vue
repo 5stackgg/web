@@ -1,6 +1,7 @@
 <template>
   <div class="relative">
     <five-stack-text-input
+      @click="clickInitSearch && searchDebounce()"
       @keydown.enter="results.length === 1 && select(results[0])"
       :label="label"
       :placeholder="modelValue?.display || placeholder"
@@ -47,10 +48,10 @@
       </template>
     </five-stack-text-input>
 
-    <template v-if="results">
+    <div class="absolute" v-if="results">
       <template v-if="results.length === 0">
         <div
-          class="absolute z-10 left-0 right-0 p-4 border border-gray-600 rounded-b bg-gray-800"
+          class="z-10 left-0 right-0 p-4 border border-gray-600 rounded-b bg-gray-800"
         >
           No Results
         </div>
@@ -58,12 +59,12 @@
       <template v-for="result of results" v-else>
         <div
           @click="select(result)"
-          class="absolute z-10 left-0 right-0 p-4 border border-gray-600 rounded-b cursor-pointer bg-gray-700 hover:bg-gray-800"
+          class="z-10 left-0 right-0 p-4 border border-gray-600 rounded-b cursor-pointer bg-gray-700 hover:bg-gray-800"
         >
           <div v-html="result.display"></div>
         </div>
       </template>
-    </template>
+    </div>
   </div>
 
   <template v-if="Array.isArray(modelValue)">
@@ -119,6 +120,10 @@ export default {
     search: {
       type: Function,
       required: true,
+    },
+    clickInitSearch: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

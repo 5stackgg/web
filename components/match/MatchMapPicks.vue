@@ -13,7 +13,6 @@
           <five-stack-map-picker
             v-model="form.maps"
             :match-type="match.type"
-            :best_of="match.best_of"
           ></five-stack-map-picker>
           <five-stack-select-input
             v-model="form.pickedBy"

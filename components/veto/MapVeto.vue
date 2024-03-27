@@ -20,7 +20,7 @@
 
   <hr />
 
-  <template v-if="match.match_maps.length < bestOf">
+  <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
     <forms-five-stack-checkbox
       v-model="override"
       v-if="isMatchOrganizer"
@@ -79,9 +79,33 @@ export default {
     },
   },
   apollo: {
-    maps: {
+    match_maps: {
+      variables: function () {
+        return {
+          match_id: this.match.id,
+        };
+      },
       query: generateQuery({
-        maps: [{}, mapFields],
+        __alias: {
+          match_maps: {
+            matches_by_pk: [
+              {
+                id: $("match_id", "uuid!"),
+              },
+              {
+                map_pool: [
+                  {},
+                  {
+                    maps: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        },
       }),
     },
     $subscribe: {
@@ -189,7 +213,7 @@ export default {
       return this.match.best_of;
     },
     isCaptain() {
-      return this.myLineup?.captain.player.steam_id === this.me.steam_id;
+      return this.myLineup?.captain?.player.steam_id === this.me.steam_id;
     },
     myLineup() {
       return this.match?.lineups.find((lineup) => {
@@ -199,12 +223,12 @@ export default {
       });
     },
     isPicking() {
-      if (!this.match) {
-        return false;
-      }
-
       if (this.override) {
         return true;
+      }
+
+      if (!this.match || !this.myLineup) {
+        return false;
       }
 
       return this.myLineup.id === this.match.veto_picking_lineup_id;
@@ -225,33 +249,19 @@ export default {
       return pattern[this.picks.length % pattern.length];
     },
     availableMaps() {
-      if (!this.maps) {
-        return [];
+      let maps = this.match_maps?.map_pool?.maps;
+
+      if (!maps) {
+        return;
       }
-      return this.maps
-        .filter((map) => {
-          switch (this.match.type) {
-            case e_match_types_enum.Competitive:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Scrimmage:
-              return (
-                map.type === e_match_types_enum.Competitive &&
-                map.active_pool === true
-              );
-            case e_match_types_enum.Wingman:
-              return map.type === e_match_types_enum.Wingman;
-          }
-        })
-        .filter((map) => {
-          return (
-            this.picks?.find((pick) => {
-              return pick.map.id === map.id;
-            }) === undefined
-          );
-        });
+
+      return maps.filter((map) => {
+        return (
+          this.picks?.find((pick) => {
+            return pick.map.id === map.id;
+          }) === undefined
+        );
+      });
     },
     sideOptions() {
       return [

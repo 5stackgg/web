@@ -11,22 +11,24 @@
       </five-stack-button>
     </form>
   </template>
-  <template v-if="match.status == e_match_status_enum.Scheduled || match.status == e_match_status_enum.Veto">
-    <div v-if="match.server_id && !match.is_match_server_available">
-      <p>
-        Another match is on going on the selected server. Once complete match
-        will be able to be started.
-      </p>
-
-      <p class="mt-4">Choose another server.</p>
-    </div>
-
+  <template v-if="match.status == e_match_status_enum.Scheduled">
     <form @submit.prevent="startMatch">
+      <div v-if="match.server_id && !match.is_match_server_available">
+        <p>
+          Another match is on going on the selected server. Once complete match
+          will be able to be started.
+        </p>
+
+        <p class="mt-4">Choose another server.</p>
+      </div>
+
       <five-stack-select-input
+        v-if="!match.server_id || !match.is_match_server_available"
         label="Server"
         :options="availableServers"
         v-model="form.server_id"
       ></five-stack-select-input>
+
       <five-stack-button> Start Match </five-stack-button>
     </form>
   </template>

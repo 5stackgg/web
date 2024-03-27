@@ -76,10 +76,38 @@
               ></five-stack-select-input>
 
               <five-stack-map-picker
-                v-model="form.match_maps"
+                v-if="form.best_of == 1"
+                label="Map"
+                :required="true"
+                v-model="form.match_map"
                 :match-type="form.type"
-                :best_of="form.best_of"
               ></five-stack-map-picker>
+              <five-stack-checkbox
+                v-else
+                label="Custom Map Pool"
+                v-model="custom_map_pool"
+              ></five-stack-checkbox>
+            </div>
+          </div>
+
+          <div class="mt-6 grid gap-4 lg:gap-6" v-if="form.best_of > 1">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+              <template v-if="!custom_map_pool">
+                <pre>{{ defaultMapPool.id }}</pre>
+                <template v-for="map of defaultMapPool.maps">
+                  <p>{{ map.name }}</p>
+                </template>
+              </template>
+              <template v-else>
+                <pre>{{ form.map_pool }}</pre>
+                <five-stack-map-picker
+                  :disabled="!custom_map_pool"
+                  label="Custom Map Pool"
+                  v-model="form.map_pool"
+                  :match-type="form.type"
+                  :multiple="true"
+                ></five-stack-map-picker>
+              </template>
             </div>
           </div>
         </form>
@@ -162,6 +190,7 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import FiveStackNumberInput from "~/components/forms/FiveStackNumberInput.vue";
+import { mapFields } from "~/graphql/mapGraphql";
 
 export default {
   components: {
@@ -174,8 +203,32 @@ export default {
     FiveStackSearchInput,
     FiveStackSelectInput,
   },
+  apollo: {
+    map_pools: {
+      query: generateQuery({
+        map_pools: [
+          {
+            where: {
+              enabled: {
+                _eq: true,
+              },
+              owner_steam_id: {
+                _is_null: true,
+              },
+            },
+          },
+          {
+            id: true,
+            label: true,
+            maps: [{}, mapFields],
+          },
+        ],
+      }),
+    },
+  },
   data() {
     return {
+      custom_map_pool: false,
       form: {
         mr: "12",
         map_veto: false,
@@ -183,7 +236,7 @@ export default {
         best_of: 1,
         number_of_substitutes: 0,
         type: e_match_types_enum.Competitive,
-        match_maps: [],
+        match_map: undefined,
         knife_round: true,
         overtime: true,
         team_1: undefined,
@@ -192,6 +245,7 @@ export default {
           lineup_1: [],
           lineup_2: [],
         },
+        map_pool: [],
       },
     };
   },
@@ -281,7 +335,9 @@ export default {
       });
     },
     async setupMatch() {
-      let mapOrder = 0;
+      const useDefaultPool =
+        this.form.best_of != 1 && this.form.map_pool.length == 0;
+
       const { data } = await this.$apollo.mutate({
         variables: {
           mr: this.form.mr,
@@ -292,14 +348,37 @@ export default {
           map_veto: this.form.map_veto,
           coaches: this.form.coaches,
           number_of_substitutes: this.form.number_of_substitutes,
-          maps: {
-            data: this.form.match_maps.map((map) => {
-              return {
-                map,
-                order: ++mapOrder,
-              };
-            }),
-          },
+          maps:
+            this.form.best_of == 1
+              ? {
+                  data: [
+                    {
+                      order: 1,
+                      map_id: this.form.match_map,
+                    },
+                  ],
+                }
+              : null,
+          ...(useDefaultPool
+            ? {
+                match_pool_id: this.defaultMapPool.id,
+              }
+            : {}),
+          map_pool:
+            this.form.best_of != 1 && this.form.map_pool.length > 0
+              ? {
+                  data: {
+                    enabled: false,
+                    maps: {
+                      data: this.form.map_pool.map((map_id) => {
+                        return {
+                          id: map_id,
+                        };
+                      }),
+                    },
+                  },
+                }
+              : null,
         },
         mutation: generateMutation({
           insert_matches_one: [
@@ -309,10 +388,14 @@ export default {
                 type: $("type", "e_match_types_enum!"),
                 best_of: $("best_of", "Int!"),
                 match_maps: $("maps", "match_maps_arr_rel_insert_input"),
+                map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
                 knife_round: $("knife_round", "Boolean!"),
                 overtime: $("overtime", "Boolean!"),
                 map_veto: $("map_veto", "Boolean!"),
                 coaches: $("coaches", "Boolean!"),
+                ...(useDefaultPool
+                  ? { match_pool_id: $("match_pool_id", "uuid") }
+                  : {}),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
                 lineups: {
                   data: [
@@ -364,6 +447,11 @@ export default {
           value: rounds,
           display: `Best of ${rounds}`,
         };
+      });
+    },
+    defaultMapPool() {
+      return this.map_pools.find((pool) => {
+        return pool.label === this.form.type;
       });
     },
   },

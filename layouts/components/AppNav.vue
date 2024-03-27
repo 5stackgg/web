@@ -129,6 +129,17 @@
           {{ me.player.name }} <small>[{{ me.steam_id }}]</small>
         </div>
       </NuxtLink>
+
+      <template v-for="invite of invites">
+        Team Invite for {{ invite.team.name }}
+
+        <five-stack-button @click="acceptInvite(invite.id)"
+          >Accept</five-stack-button
+        >
+        <five-stack-button @click="denyInvite(invite.id)"
+          >DENY
+        </five-stack-button>
+      </template>
     </div>
   </div>
 </template>
@@ -138,6 +149,9 @@ import FiveStackLogo from "~/components/icons/FiveStackLogo.vue";
 
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
+import { generateMutation } from "~/graphql/graphqlGen";
+import { $ } from "~/generated/zeus";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 export default {
   computed: {
@@ -145,11 +159,76 @@ export default {
       return useAuthStore().me!;
     },
   },
+  data() {
+    return {
+      invites: undefined,
+    };
+  },
+  apollo: {
+    $subscribe: {
+      team_invites: {
+        query: typedGql("subscription")({
+          team_invites: [
+            {
+              where: {
+                steam_id: {
+                  _eq: $("steam_id", "bigint!"),
+                },
+              },
+            },
+            {
+              id: true,
+              team: {
+                id: true,
+                name: true,
+              },
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            steam_id: this.me.steam_id,
+          };
+        },
+        result: function ({ data }) {
+          this.invites = data.team_invites;
+        },
+      },
+    },
+  },
   methods: {
     connectDiscord() {
       window.location = `https://api.5stack.gg/auth/discord?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
+    },
+    async acceptInvite(inviteId) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          acceptTeamInvite: [
+            {
+              invite_id: inviteId,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+    async denyInvite(inviteId) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_team_invites_by_pk: [
+            {
+              id: inviteId,
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
+      });
     },
   },
 };

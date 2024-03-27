@@ -80,13 +80,13 @@ export default {
   },
   methods: {
     async lineup1Search(query) {
-      return await this.searchPlayers(query, this.matchLineups.lineup1.team_id)
+      return await this.searchPlayers(query, this.matchLineups.lineup1.team_id);
     },
     async lineup2Search(query) {
-      return await this.searchPlayers(query, this.matchLineups.lineup2.team_id)
+      return await this.searchPlayers(query, this.matchLineups.lineup2.team_id);
     },
     async searchPlayers(query, teamId) {
-      if(!query && !teamId) {
+      if (!query && !teamId) {
         return;
       }
 
@@ -96,25 +96,37 @@ export default {
             {
               where: {
                 _and: [
-                  ...(teamId) ? [{
-                    teams: {
-                      id: {
-                        _eq: teamId,
-                      }
-                    }
-                  }]: [],
-                    ...(query) ? [...(/^[0-9]+$/.test(query)
-                        ? [{
-                          steam_id: {
-                            _eq: $("playerSteamIdQuery", "bigint"),
+                  ...(teamId
+                    ? [
+                        {
+                          teams: {
+                            id: {
+                              _eq: teamId,
+                            },
                           },
-                        }]
-                        :[ {
-                          name: {
-                            _ilike: $("playerQuery", "String"),
-                          },
-                        }]),]: []
-                ]
+                        },
+                      ]
+                    : []),
+                  ...(query
+                    ? [
+                        ...(/^[0-9]+$/.test(query)
+                          ? [
+                              {
+                                steam_id: {
+                                  _eq: $("playerSteamIdQuery", "bigint"),
+                                },
+                              },
+                            ]
+                          : [
+                              {
+                                name: {
+                                  _ilike: $("playerQuery", "String"),
+                                },
+                              },
+                            ]),
+                      ]
+                    : []),
+                ],
               },
             },
             {
@@ -130,29 +142,27 @@ export default {
         },
       });
 
-      return (
-        data.players
-          .filter((player) => {
-            if(
-                this.matchLineups.lineup1.lineup_players.find((_player) => {
-                  return _player.steam_id === player.steam_id;
-                }) ||
-                this.matchLineups.lineup2.lineup_players.find((_player) => {
-                  return _player.steam_id === player.steam_id;
-                })
-            ) {
-              return false
-            }
+      return data.players
+        .filter((player) => {
+          if (
+            this.matchLineups.lineup1.lineup_players.find((_player) => {
+              return _player.steam_id === player.steam_id;
+            }) ||
+            this.matchLineups.lineup2.lineup_players.find((_player) => {
+              return _player.steam_id === player.steam_id;
+            })
+          ) {
+            return false;
+          }
 
-            return true;
-          })
-          .map((player) => {
-            return {
-              value: player,
-              display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"src="${player.avatar_url}"> ${player.name} <small>[${player.steam_id}]</small>`,
-            };
-          })
-      );
+          return true;
+        })
+        .map((player) => {
+          return {
+            value: player,
+            display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"src="${player.avatar_url}"> ${player.name} <small>[${player.steam_id}]</small>`,
+          };
+        });
     },
     async addMember(steam_id: bigint, match_lineup_id: string) {
       await this.$apollo.mutate({

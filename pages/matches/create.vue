@@ -335,6 +335,9 @@ export default {
       });
     },
     async setupMatch() {
+      const useDefaultPool =
+        this.form.best_of != 1 && this.form.map_pool.length == 0;
+
       const { data } = await this.$apollo.mutate({
         variables: {
           mr: this.form.mr,
@@ -356,10 +359,11 @@ export default {
                   ],
                 }
               : null,
-          match_pool_id:
-            this.form.best_of != 1 && this.form.map_pool.length === 0
-              ? this.defaultMapPool.id
-              : null,
+          ...(useDefaultPool
+            ? {
+                match_pool_id: this.defaultMapPool.id,
+              }
+            : {}),
           map_pool:
             this.form.best_of != 1 && this.form.map_pool.length > 0
               ? {
@@ -389,7 +393,9 @@ export default {
                 overtime: $("overtime", "Boolean!"),
                 map_veto: $("map_veto", "Boolean!"),
                 coaches: $("coaches", "Boolean!"),
-                match_pool_id: $("match_pool_id", "uuid"),
+                ...(useDefaultPool
+                  ? { match_pool_id: $("match_pool_id", "uuid") }
+                  : {}),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
                 lineups: {
                   data: [

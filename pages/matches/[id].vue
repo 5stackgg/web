@@ -235,6 +235,7 @@ export default {
               lineups: {
                 id: true,
                 name: true,
+                team_id: true,
                 coach: {
                   name: true,
                   steam_id: true,

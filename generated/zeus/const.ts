@@ -6588,6 +6588,16 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	teams:{
+		invites:{
+			distinct_on:"team_invites_select_column",
+			order_by:"team_invites_order_by",
+			where:"team_invites_bool_exp"
+		},
+		invites_aggregate:{
+			distinct_on:"team_invites_select_column",
+			order_by:"team_invites_order_by",
+			where:"team_invites_bool_exp"
+		},
 		match_lineups:{
 			distinct_on:"match_lineups_select_column",
 			order_by:"match_lineups_order_by",
@@ -6612,16 +6622,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"team_roster_select_column",
 			order_by:"team_roster_order_by",
 			where:"team_roster_bool_exp"
-		},
-		team_invites:{
-			distinct_on:"team_invites_select_column",
-			order_by:"team_invites_order_by",
-			where:"team_invites_bool_exp"
-		},
-		team_invites_aggregate:{
-			distinct_on:"team_invites_select_column",
-			order_by:"team_invites_order_by",
-			where:"team_invites_bool_exp"
 		},
 		tournament_rosters:{
 			distinct_on:"tournament_roster_select_column",
@@ -6682,6 +6682,8 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"teams_bool_exp",
 		_or:"teams_bool_exp",
 		id:"uuid_comparison_exp",
+		invites:"team_invites_bool_exp",
+		invites_aggregate:"team_invites_aggregate_bool_exp",
 		match_lineups:"match_lineups_bool_exp",
 		match_lineups_aggregate:"match_lineups_aggregate_bool_exp",
 		matches:"matches_bool_exp",
@@ -6691,8 +6693,6 @@ export const AllTypesProps: Record<string,any> = {
 		roster:"team_roster_bool_exp",
 		roster_aggregate:"team_roster_aggregate_bool_exp",
 		short_name:"String_comparison_exp",
-		team_invites:"team_invites_bool_exp",
-		team_invites_aggregate:"team_invites_aggregate_bool_exp",
 		tournament_rosters:"tournament_roster_bool_exp",
 		tournament_rosters_aggregate:"tournament_roster_aggregate_bool_exp",
 		tournament_teams:"tournament_teams_bool_exp",
@@ -6704,11 +6704,11 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_insert_input:{
 		id:"uuid",
+		invites:"team_invites_arr_rel_insert_input",
 		match_lineups:"match_lineups_arr_rel_insert_input",
 		owner:"players_obj_rel_insert_input",
 		owner_steam_id:"bigint",
 		roster:"team_roster_arr_rel_insert_input",
-		team_invites:"team_invites_arr_rel_insert_input",
 		tournament_rosters:"tournament_roster_arr_rel_insert_input",
 		tournament_teams:"tournament_teams_arr_rel_insert_input"
 	},
@@ -6735,6 +6735,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_order_by:{
 		id:"order_by",
+		invites_aggregate:"team_invites_aggregate_order_by",
 		match_lineups_aggregate:"match_lineups_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		name:"order_by",
@@ -6742,7 +6743,6 @@ export const AllTypesProps: Record<string,any> = {
 		owner_steam_id:"order_by",
 		roster_aggregate:"team_roster_aggregate_order_by",
 		short_name:"order_by",
-		team_invites_aggregate:"team_invites_aggregate_order_by",
 		tournament_rosters_aggregate:"tournament_roster_aggregate_order_by",
 		tournament_teams_aggregate:"tournament_teams_aggregate_order_by"
 	},
@@ -10718,6 +10718,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	teams:{
 		id:"uuid",
+		invites:"team_invites",
+		invites_aggregate:"team_invites_aggregate",
 		match_lineups:"match_lineups",
 		match_lineups_aggregate:"match_lineups_aggregate",
 		matches:"matches",
@@ -10727,8 +10729,6 @@ export const ReturnTypes: Record<string,any> = {
 		roster:"team_roster",
 		roster_aggregate:"team_roster_aggregate",
 		short_name:"String",
-		team_invites:"team_invites",
-		team_invites_aggregate:"team_invites_aggregate",
 		tournament_rosters:"tournament_roster",
 		tournament_rosters_aggregate:"tournament_roster_aggregate",
 		tournament_teams:"tournament_teams",

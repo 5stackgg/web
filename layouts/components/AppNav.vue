@@ -217,6 +217,7 @@ export default {
       });
     },
     async denyInvite(inviteId) {
+      // TODO - lets make an action so it can remove them from the teams pending list
       await this.$apollo.mutate({
         mutation: generateMutation({
           delete_team_invites_by_pk: [

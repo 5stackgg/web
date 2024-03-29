@@ -43,6 +43,7 @@ export default {
             label: true,
             tv_port: true,
             enabled: true,
+            api_password: true,
           },
         ],
       }),

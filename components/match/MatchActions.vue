@@ -40,7 +40,7 @@
   >
     <div class="text-purple-400 underline flex" v-if="match.connection_string">
       <clip-board :data="match.connection_string"></clip-board>
-      <a :href="`https://api.5stack.gg${match.connection_link}`">
+      <a :href="`https://5stack.gg${match.connection_link}`">
         {{ match.connection_string }}
       </a>
     </div>
@@ -49,7 +49,7 @@
     </div>
     <div v-else>
       <clip-board :data="match.tv_connection_string"></clip-board>
-      <a :href="`https://api.5stack.gg${match.tv_connection_link}`">
+      <a :href="`https://5stack.gg${match.tv_connection_link}`">
         {{ match.tv_connection_string }}
       </a>
     </div>

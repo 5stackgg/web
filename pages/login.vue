@@ -36,7 +36,7 @@ export default {
     },
     authLink() {
       // TODO - use env variable
-      return `https://api.5stack.gg/auth/steam?redirect=${encodeURIComponent(
+      return `https://5stack.gg/auth/steam?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

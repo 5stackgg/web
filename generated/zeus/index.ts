@@ -10872,6 +10872,18 @@ count?: [{	columns?: Array<ValueTypes["team_roster_select_column"]> | undefined 
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
 	id?:boolean | `@${string}`,
+invites?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["team_invites_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["team_invites"]],
+invites_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["team_invites_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["team_invites_aggregate"]],
 match_lineups?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -10907,18 +10919,6 @@ roster_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["team_roster_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["team_roster_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["team_roster_aggregate"]],
 	short_name?:boolean | `@${string}`,
-team_invites?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["team_invites_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["team_invites"]],
-team_invites_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["team_invites_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["team_invites_aggregate"]],
 tournament_rosters?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["tournament_roster_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -11010,6 +11010,8 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	_not?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["teams_bool_exp"]> | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	invites?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>,
+	invites_aggregate?: ValueTypes["team_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	match_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
@@ -11019,8 +11021,6 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	roster?: ValueTypes["team_roster_bool_exp"] | undefined | null | Variable<any, string>,
 	roster_aggregate?: ValueTypes["team_roster_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	short_name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	team_invites?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>,
-	team_invites_aggregate?: ValueTypes["team_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	tournament_rosters?: ValueTypes["tournament_roster_bool_exp"] | undefined | null | Variable<any, string>,
 	tournament_rosters_aggregate?: ValueTypes["tournament_roster_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	tournament_teams?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
@@ -11035,13 +11035,13 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	invites?: ValueTypes["team_invites_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	owner?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	roster?: ValueTypes["team_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	short_name?: string | undefined | null | Variable<any, string>,
-	team_invites?: ValueTypes["team_invites_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	tournament_rosters?: ValueTypes["tournament_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	tournament_teams?: ValueTypes["tournament_teams_arr_rel_insert_input"] | undefined | null | Variable<any, string>
 };
@@ -11098,6 +11098,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	invites_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -11105,7 +11106,6 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	roster_aggregate?: ValueTypes["team_roster_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	short_name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_invites_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	tournament_rosters_aggregate?: ValueTypes["tournament_roster_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	tournament_teams_aggregate?: ValueTypes["tournament_teams_aggregate_order_by"] | undefined | null | Variable<any, string>
 };
@@ -24074,6 +24074,18 @@ count?: [{	columns?: Array<ResolverInputTypes["team_roster_select_column"]> | un
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
 	id?:boolean | `@${string}`,
+invites?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["team_invites_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null},ResolverInputTypes["team_invites"]],
+invites_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["team_invites_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null},ResolverInputTypes["team_invites_aggregate"]],
 match_lineups?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -24109,18 +24121,6 @@ roster_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["team_roster_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["team_roster_bool_exp"] | undefined | null},ResolverInputTypes["team_roster_aggregate"]],
 	short_name?:boolean | `@${string}`,
-team_invites?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["team_invites_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null},ResolverInputTypes["team_invites"]],
-team_invites_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["team_invites_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null},ResolverInputTypes["team_invites_aggregate"]],
 tournament_rosters?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["tournament_roster_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -24212,6 +24212,8 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	_not?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["teams_bool_exp"]> | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	invites?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null,
+	invites_aggregate?: ResolverInputTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	match_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
@@ -24221,8 +24223,6 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	roster?: ResolverInputTypes["team_roster_bool_exp"] | undefined | null,
 	roster_aggregate?: ResolverInputTypes["team_roster_aggregate_bool_exp"] | undefined | null,
 	short_name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	team_invites?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null,
-	team_invites_aggregate?: ResolverInputTypes["team_invites_aggregate_bool_exp"] | undefined | null,
 	tournament_rosters?: ResolverInputTypes["tournament_roster_bool_exp"] | undefined | null,
 	tournament_rosters_aggregate?: ResolverInputTypes["tournament_roster_aggregate_bool_exp"] | undefined | null,
 	tournament_teams?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
@@ -24237,13 +24237,13 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	invites?: ResolverInputTypes["team_invites_arr_rel_insert_input"] | undefined | null,
 	match_lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	owner?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	roster?: ResolverInputTypes["team_roster_arr_rel_insert_input"] | undefined | null,
 	short_name?: string | undefined | null,
-	team_invites?: ResolverInputTypes["team_invites_arr_rel_insert_input"] | undefined | null,
 	tournament_rosters?: ResolverInputTypes["tournament_roster_arr_rel_insert_input"] | undefined | null,
 	tournament_teams?: ResolverInputTypes["tournament_teams_arr_rel_insert_input"] | undefined | null
 };
@@ -24300,6 +24300,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	invites_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
@@ -24307,7 +24308,6 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	roster_aggregate?: ResolverInputTypes["team_roster_aggregate_order_by"] | undefined | null,
 	short_name?: ResolverInputTypes["order_by"] | undefined | null,
-	team_invites_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
 	tournament_rosters_aggregate?: ResolverInputTypes["tournament_roster_aggregate_order_by"] | undefined | null,
 	tournament_teams_aggregate?: ResolverInputTypes["tournament_teams_aggregate_order_by"] | undefined | null
 };
@@ -35564,6 +35564,10 @@ export type ModelTypes = {
 ["teams"]: {
 		id: ModelTypes["uuid"],
 	/** An array relationship */
+	invites: Array<ModelTypes["team_invites"]>,
+	/** An aggregate relationship */
+	invites_aggregate: ModelTypes["team_invites_aggregate"],
+	/** An array relationship */
 	match_lineups: Array<ModelTypes["match_lineups"]>,
 	/** An aggregate relationship */
 	match_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
@@ -35578,10 +35582,6 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	roster_aggregate: ModelTypes["team_roster_aggregate"],
 	short_name: string,
-	/** An array relationship */
-	team_invites: Array<ModelTypes["team_invites"]>,
-	/** An aggregate relationship */
-	team_invites_aggregate: ModelTypes["team_invites_aggregate"],
 	/** An array relationship */
 	tournament_rosters: Array<ModelTypes["tournament_roster"]>,
 	/** An aggregate relationship */
@@ -35653,6 +35653,8 @@ export type ModelTypes = {
 	_not?: ModelTypes["teams_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["teams_bool_exp"]> | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	invites?: ModelTypes["team_invites_bool_exp"] | undefined,
+	invites_aggregate?: ModelTypes["team_invites_aggregate_bool_exp"] | undefined,
 	match_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: ModelTypes["matches_bool_exp"] | undefined,
@@ -35662,8 +35664,6 @@ export type ModelTypes = {
 	roster?: ModelTypes["team_roster_bool_exp"] | undefined,
 	roster_aggregate?: ModelTypes["team_roster_aggregate_bool_exp"] | undefined,
 	short_name?: ModelTypes["String_comparison_exp"] | undefined,
-	team_invites?: ModelTypes["team_invites_bool_exp"] | undefined,
-	team_invites_aggregate?: ModelTypes["team_invites_aggregate_bool_exp"] | undefined,
 	tournament_rosters?: ModelTypes["tournament_roster_bool_exp"] | undefined,
 	tournament_rosters_aggregate?: ModelTypes["tournament_roster_aggregate_bool_exp"] | undefined,
 	tournament_teams?: ModelTypes["tournament_teams_bool_exp"] | undefined,
@@ -35677,13 +35677,13 @@ export type ModelTypes = {
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 	id?: ModelTypes["uuid"] | undefined,
+	invites?: ModelTypes["team_invites_arr_rel_insert_input"] | undefined,
 	match_lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	owner?: ModelTypes["players_obj_rel_insert_input"] | undefined,
 	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	roster?: ModelTypes["team_roster_arr_rel_insert_input"] | undefined,
 	short_name?: string | undefined,
-	team_invites?: ModelTypes["team_invites_arr_rel_insert_input"] | undefined,
 	tournament_rosters?: ModelTypes["tournament_roster_arr_rel_insert_input"] | undefined,
 	tournament_teams?: ModelTypes["tournament_teams_arr_rel_insert_input"] | undefined
 };
@@ -35737,6 +35737,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 	id?: ModelTypes["order_by"] | undefined,
+	invites_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
@@ -35744,7 +35745,6 @@ export type ModelTypes = {
 	owner_steam_id?: ModelTypes["order_by"] | undefined,
 	roster_aggregate?: ModelTypes["team_roster_aggregate_order_by"] | undefined,
 	short_name?: ModelTypes["order_by"] | undefined,
-	team_invites_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined,
 	tournament_rosters_aggregate?: ModelTypes["tournament_roster_aggregate_order_by"] | undefined,
 	tournament_teams_aggregate?: ModelTypes["tournament_teams_aggregate_order_by"] | undefined
 };
@@ -47169,6 +47169,10 @@ export type GraphQLTypes = {
 	__typename: "teams",
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
+	invites: Array<GraphQLTypes["team_invites"]>,
+	/** An aggregate relationship */
+	invites_aggregate: GraphQLTypes["team_invites_aggregate"],
+	/** An array relationship */
 	match_lineups: Array<GraphQLTypes["match_lineups"]>,
 	/** An aggregate relationship */
 	match_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
@@ -47183,10 +47187,6 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	roster_aggregate: GraphQLTypes["team_roster_aggregate"],
 	short_name: string,
-	/** An array relationship */
-	team_invites: Array<GraphQLTypes["team_invites"]>,
-	/** An aggregate relationship */
-	team_invites_aggregate: GraphQLTypes["team_invites_aggregate"],
 	/** An array relationship */
 	tournament_rosters: Array<GraphQLTypes["tournament_roster"]>,
 	/** An aggregate relationship */
@@ -47261,6 +47261,8 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["teams_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["teams_bool_exp"]> | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	invites?: GraphQLTypes["team_invites_bool_exp"] | undefined,
+	invites_aggregate?: GraphQLTypes["team_invites_aggregate_bool_exp"] | undefined,
 	match_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined,
@@ -47270,8 +47272,6 @@ export type GraphQLTypes = {
 	roster?: GraphQLTypes["team_roster_bool_exp"] | undefined,
 	roster_aggregate?: GraphQLTypes["team_roster_aggregate_bool_exp"] | undefined,
 	short_name?: GraphQLTypes["String_comparison_exp"] | undefined,
-	team_invites?: GraphQLTypes["team_invites_bool_exp"] | undefined,
-	team_invites_aggregate?: GraphQLTypes["team_invites_aggregate_bool_exp"] | undefined,
 	tournament_rosters?: GraphQLTypes["tournament_roster_bool_exp"] | undefined,
 	tournament_rosters_aggregate?: GraphQLTypes["tournament_roster_aggregate_bool_exp"] | undefined,
 	tournament_teams?: GraphQLTypes["tournament_teams_bool_exp"] | undefined,
@@ -47286,13 +47286,13 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "teams" */
 ["teams_insert_input"]: {
 		id?: GraphQLTypes["uuid"] | undefined,
+	invites?: GraphQLTypes["team_invites_arr_rel_insert_input"] | undefined,
 	match_lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	owner?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	roster?: GraphQLTypes["team_roster_arr_rel_insert_input"] | undefined,
 	short_name?: string | undefined,
-	team_invites?: GraphQLTypes["team_invites_arr_rel_insert_input"] | undefined,
 	tournament_rosters?: GraphQLTypes["tournament_roster_arr_rel_insert_input"] | undefined,
 	tournament_teams?: GraphQLTypes["tournament_teams_arr_rel_insert_input"] | undefined
 };
@@ -47349,6 +47349,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
 		id?: GraphQLTypes["order_by"] | undefined,
+	invites_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
@@ -47356,7 +47357,6 @@ export type GraphQLTypes = {
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined,
 	roster_aggregate?: GraphQLTypes["team_roster_aggregate_order_by"] | undefined,
 	short_name?: GraphQLTypes["order_by"] | undefined,
-	team_invites_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined,
 	tournament_rosters_aggregate?: GraphQLTypes["tournament_roster_aggregate_order_by"] | undefined,
 	tournament_teams_aggregate?: GraphQLTypes["tournament_teams_aggregate_order_by"] | undefined
 };

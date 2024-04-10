@@ -1,7 +1,6 @@
 <template>
   <div
     class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
-    v-if="match.match_veto == false"
   >
     <h1>Map Picks</h1>
 
@@ -57,13 +56,13 @@ export default {
       let currentMapCount = this.match.match_maps.length;
 
       try {
-        for (const map of this.form.maps) {
+        for (const map_id of this.form.maps) {
           await this.$apollo.mutate({
             mutation: generateMutation({
               insert_match_maps_one: [
                 {
                   object: {
-                    map,
+                    map_id,
                     order: ++currentMapCount,
                     match_id: this.match.id,
                     lineup_1_side: e_sides_enum.CT,

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { AllTypesProps, ReturnTypes, Ops } from './const';
-export const HOST = "https://5stack.gg/v1/graphql"
+export const HOST = "https://api.5stack.gg/v1/graphql"
 
 
 export const HEADERS = {}
@@ -3122,8 +3122,183 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 ["match_lineups_variance_order_by"]: {
 	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "match_map_demos" */
+["match_map_demos"]: AliasType<{
+	file?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	match_map_id?:boolean | `@${string}`,
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "match_map_demos" */
+["match_map_demos_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["match_map_demos_aggregate_fields"],
+	nodes?:ValueTypes["match_map_demos"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "match_map_demos" */
+["match_map_demos_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["match_map_demos_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["match_map_demos_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["match_map_demos_max_fields"],
+	min?:ValueTypes["match_map_demos_min_fields"],
+	stddev?:ValueTypes["match_map_demos_stddev_fields"],
+	stddev_pop?:ValueTypes["match_map_demos_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["match_map_demos_stddev_samp_fields"],
+	sum?:ValueTypes["match_map_demos_sum_fields"],
+	var_pop?:ValueTypes["match_map_demos_var_pop_fields"],
+	var_samp?:ValueTypes["match_map_demos_var_samp_fields"],
+	variance?:ValueTypes["match_map_demos_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["match_map_demos_avg_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "match_map_demos". All fields are combined with a logical 'AND'. */
+["match_map_demos_bool_exp"]: {
+	_and?: Array<ValueTypes["match_map_demos_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["match_map_demos_bool_exp"]> | undefined | null | Variable<any, string>,
+	file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match_map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	size?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "match_map_demos" */
+["match_map_demos_constraint"]:match_map_demos_constraint;
+	/** input type for incrementing numeric columns in table "match_map_demos" */
+["match_map_demos_inc_input"]: {
+	size?: number | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "match_map_demos" */
+["match_map_demos_insert_input"]: {
+	file?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	size?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["match_map_demos_max_fields"]: AliasType<{
+	file?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	match_map_id?:boolean | `@${string}`,
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["match_map_demos_min_fields"]: AliasType<{
+	file?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	match_map_id?:boolean | `@${string}`,
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "match_map_demos" */
+["match_map_demos_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["match_map_demos"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "match_map_demos" */
+["match_map_demos_on_conflict"]: {
+	constraint: ValueTypes["match_map_demos_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["match_map_demos_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "match_map_demos". */
+["match_map_demos_order_by"]: {
+	file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: match_map_demos */
+["match_map_demos_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "match_map_demos" */
+["match_map_demos_select_column"]:match_map_demos_select_column;
+	/** input type for updating data in table "match_map_demos" */
+["match_map_demos_set_input"]: {
+	file?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	size?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["match_map_demos_stddev_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["match_map_demos_stddev_pop_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["match_map_demos_stddev_samp_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "match_map_demos" */
+["match_map_demos_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["match_map_demos_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_demos_stream_cursor_value_input"]: {
+	file?: string | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	size?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["match_map_demos_sum_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "match_map_demos" */
+["match_map_demos_update_column"]:match_map_demos_update_column;
+	["match_map_demos_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_map_demos_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_map_demos_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["match_map_demos_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["match_map_demos_var_pop_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["match_map_demos_var_samp_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["match_map_demos_variance_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
+	backup_file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -3137,14 +3312,16 @@ kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_kills_aggregate"]],
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	/** An object relationship */
 	match_map?:ValueTypes["match_maps"],
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3200,105 +3377,129 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 };
 	/** aggregate avg on columns */
 ["match_map_rounds_avg_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by avg() on columns of table "match_map_rounds" */
 ["match_map_rounds_avg_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Boolean expression to filter rows from the table "match_map_rounds". All fields are combined with a logical 'AND'. */
 ["match_map_rounds_bool_exp"]: {
 	_and?: Array<ValueTypes["match_map_rounds_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["match_map_rounds_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_map_rounds_bool_exp"]> | undefined | null | Variable<any, string>,
+	backup_file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	lineup_1_money?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	time?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "match_map_rounds" */
 ["match_map_rounds_constraint"]:match_map_rounds_constraint;
 	/** input type for incrementing numeric columns in table "match_map_rounds" */
 ["match_map_rounds_inc_input"]: {
-	round?: number | undefined | null | Variable<any, string>,
-	team_1_money?: number | undefined | null | Variable<any, string>,
-	team_1_score?: number | undefined | null | Variable<any, string>,
-	team_2_money?: number | undefined | null | Variable<any, string>,
-	team_2_score?: number | undefined | null | Variable<any, string>
+	lineup_1_money?: number | undefined | null | Variable<any, string>,
+	lineup_1_score?: number | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: number | undefined | null | Variable<any, string>,
+	lineup_2_money?: number | undefined | null | Variable<any, string>,
+	lineup_2_score?: number | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: number | undefined | null | Variable<any, string>,
+	round?: number | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "match_map_rounds" */
 ["match_map_rounds_insert_input"]: {
+	backup_file?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["player_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	lineup_1_money?: number | undefined | null | Variable<any, string>,
+	lineup_1_score?: number | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: number | undefined | null | Variable<any, string>,
+	lineup_2_money?: number | undefined | null | Variable<any, string>,
+	lineup_2_score?: number | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: number | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
-	team_1_money?: number | undefined | null | Variable<any, string>,
-	team_1_score?: number | undefined | null | Variable<any, string>,
-	team_2_money?: number | undefined | null | Variable<any, string>,
-	team_2_score?: number | undefined | null | Variable<any, string>,
 	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: AliasType<{
+	backup_file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "match_map_rounds" */
 ["match_map_rounds_max_order_by"]: {
+	backup_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: AliasType<{
+	backup_file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "match_map_rounds" */
 ["match_map_rounds_min_order_by"]: {
+	backup_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** response of any mutation on the table "match_map_rounds" */
@@ -3317,15 +3518,18 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 };
 	/** Ordering options when selecting data from "match_map_rounds". */
 ["match_map_rounds_order_by"]: {
+	backup_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_order_by"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: match_map_rounds */
@@ -3336,65 +3540,80 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 ["match_map_rounds_select_column"]:match_map_rounds_select_column;
 	/** input type for updating data in table "match_map_rounds" */
 ["match_map_rounds_set_input"]: {
+	backup_file?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	lineup_1_money?: number | undefined | null | Variable<any, string>,
+	lineup_1_score?: number | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: number | undefined | null | Variable<any, string>,
+	lineup_2_money?: number | undefined | null | Variable<any, string>,
+	lineup_2_score?: number | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: number | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
-	team_1_money?: number | undefined | null | Variable<any, string>,
-	team_1_score?: number | undefined | null | Variable<any, string>,
-	team_2_money?: number | undefined | null | Variable<any, string>,
-	team_2_score?: number | undefined | null | Variable<any, string>,
 	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_pop on columns */
 ["match_map_rounds_stddev_pop_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_pop_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_samp on columns */
 ["match_map_rounds_stddev_samp_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_samp_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "match_map_rounds" */
 ["match_map_rounds_stream_cursor_input"]: {
@@ -3405,31 +3624,38 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_map_rounds_stream_cursor_value_input"]: {
+	backup_file?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	lineup_1_money?: number | undefined | null | Variable<any, string>,
+	lineup_1_score?: number | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: number | undefined | null | Variable<any, string>,
+	lineup_2_money?: number | undefined | null | Variable<any, string>,
+	lineup_2_score?: number | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: number | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
-	team_1_money?: number | undefined | null | Variable<any, string>,
-	team_1_score?: number | undefined | null | Variable<any, string>,
-	team_2_money?: number | undefined | null | Variable<any, string>,
-	team_2_score?: number | undefined | null | Variable<any, string>,
 	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by sum() on columns of table "match_map_rounds" */
 ["match_map_rounds_sum_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** update columns of table "match_map_rounds" */
 ["match_map_rounds_update_column"]:match_map_rounds_update_column;
@@ -3443,54 +3669,66 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 };
 	/** aggregate var_pop on columns */
 ["match_map_rounds_var_pop_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_pop_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate var_samp on columns */
 ["match_map_rounds_var_samp_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_samp_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate variance on columns */
 ["match_map_rounds_variance_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by variance() on columns of table "match_map_rounds" */
 ["match_map_rounds_variance_order_by"]: {
-	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	team_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	lineup_1_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_money?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: AliasType<{
@@ -4967,6 +5205,9 @@ delete_match_lineup_players_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, st
 delete_match_lineups?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["match_lineups_bool_exp"] | Variable<any, string>},ValueTypes["match_lineups_mutation_response"]],
 delete_match_lineups_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_lineups"]],
+delete_match_map_demos?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["match_map_demos_bool_exp"] | Variable<any, string>},ValueTypes["match_map_demos_mutation_response"]],
+delete_match_map_demos_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_demos"]],
 delete_match_map_rounds?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["match_map_rounds_bool_exp"] | Variable<any, string>},ValueTypes["match_map_rounds_mutation_response"]],
 delete_match_map_rounds_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_rounds"]],
@@ -5121,6 +5362,12 @@ insert_match_lineups?: [{	/** the rows to be inserted */
 insert_match_lineups_one?: [{	/** the row to be inserted */
 	object: ValueTypes["match_lineups_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["match_lineups_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
+insert_match_map_demos?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["match_map_demos_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["match_map_demos_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos_mutation_response"]],
+insert_match_map_demos_one?: [{	/** the row to be inserted */
+	object: ValueTypes["match_map_demos_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["match_map_demos_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos"]],
 insert_match_map_rounds?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["match_map_rounds_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["match_map_rounds_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["match_map_rounds_mutation_response"]],
@@ -5367,6 +5614,15 @@ update_match_lineups_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ValueTypes["match_lineups_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["match_lineups_pk_columns_input"] | Variable<any, string>},ValueTypes["match_lineups"]],
 update_match_lineups_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["match_lineups_updates"]> | Variable<any, string>},ValueTypes["match_lineups_mutation_response"]],
+update_match_map_demos?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_map_demos_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_map_demos_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["match_map_demos_bool_exp"] | Variable<any, string>},ValueTypes["match_map_demos_mutation_response"]],
+update_match_map_demos_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["match_map_demos_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["match_map_demos_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["match_map_demos_pk_columns_input"] | Variable<any, string>},ValueTypes["match_map_demos"]],
+update_match_map_demos_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["match_map_demos_updates"]> | Variable<any, string>},ValueTypes["match_map_demos_mutation_response"]],
 update_match_map_rounds?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["match_map_rounds_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["match_map_rounds_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -8962,6 +9218,19 @@ match_lineups_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
 match_lineups_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_lineups"]],
+match_map_demos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_demos_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_demos_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos"]],
+match_map_demos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_demos_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_demos_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos_aggregate"]],
+match_map_demos_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_demos"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_map_rounds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -9350,6 +9619,7 @@ v_pool_maps_aggregate?: [{	/** distinct select on columns */
 }>;
 	/** columns and relationships of "servers" */
 ["servers"]: AliasType<{
+	api_password?:boolean | `@${string}`,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
@@ -9419,6 +9689,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	_and?: Array<ValueTypes["servers_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["servers_bool_exp"]> | undefined | null | Variable<any, string>,
+	api_password?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	current_match_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	host?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -9443,6 +9714,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
+	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -9457,6 +9729,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** aggregate max on columns */
 ["servers_max_fields"]: AliasType<{
+	api_password?:boolean | `@${string}`,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
@@ -9470,6 +9743,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 }>;
 	/** aggregate min on columns */
 ["servers_min_fields"]: AliasType<{
+	api_password?:boolean | `@${string}`,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
@@ -9503,6 +9777,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
+	api_password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	current_match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	host?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -9524,6 +9799,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 ["servers_select_column"]:servers_select_column;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
+	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -9561,6 +9837,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
+	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -9844,6 +10121,23 @@ match_lineups_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["match_lineups_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
+match_map_demos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_demos_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_demos_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos"]],
+match_map_demos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_demos_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_demos_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos_aggregate"]],
+match_map_demos_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["match_map_demos"]],
+match_map_demos_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["match_map_demos_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_map_rounds_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -16324,8 +16618,183 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 ["match_lineups_variance_order_by"]: {
 	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "match_map_demos" */
+["match_map_demos"]: AliasType<{
+	file?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	match_map_id?:boolean | `@${string}`,
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "match_map_demos" */
+["match_map_demos_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["match_map_demos_aggregate_fields"],
+	nodes?:ResolverInputTypes["match_map_demos"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "match_map_demos" */
+["match_map_demos_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["match_map_demos_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["match_map_demos_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["match_map_demos_max_fields"],
+	min?:ResolverInputTypes["match_map_demos_min_fields"],
+	stddev?:ResolverInputTypes["match_map_demos_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["match_map_demos_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["match_map_demos_stddev_samp_fields"],
+	sum?:ResolverInputTypes["match_map_demos_sum_fields"],
+	var_pop?:ResolverInputTypes["match_map_demos_var_pop_fields"],
+	var_samp?:ResolverInputTypes["match_map_demos_var_samp_fields"],
+	variance?:ResolverInputTypes["match_map_demos_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["match_map_demos_avg_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "match_map_demos". All fields are combined with a logical 'AND'. */
+["match_map_demos_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["match_map_demos_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["match_map_demos_bool_exp"]> | undefined | null,
+	file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match_map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	size?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "match_map_demos" */
+["match_map_demos_constraint"]:match_map_demos_constraint;
+	/** input type for incrementing numeric columns in table "match_map_demos" */
+["match_map_demos_inc_input"]: {
+	size?: number | undefined | null
+};
+	/** input type for inserting data into table "match_map_demos" */
+["match_map_demos_insert_input"]: {
+	file?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	size?: number | undefined | null
+};
+	/** aggregate max on columns */
+["match_map_demos_max_fields"]: AliasType<{
+	file?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	match_map_id?:boolean | `@${string}`,
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["match_map_demos_min_fields"]: AliasType<{
+	file?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	match_map_id?:boolean | `@${string}`,
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "match_map_demos" */
+["match_map_demos_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["match_map_demos"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "match_map_demos" */
+["match_map_demos_on_conflict"]: {
+	constraint: ResolverInputTypes["match_map_demos_constraint"],
+	update_columns: Array<ResolverInputTypes["match_map_demos_update_column"]>,
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "match_map_demos". */
+["match_map_demos_order_by"]: {
+	file?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	size?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: match_map_demos */
+["match_map_demos_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "match_map_demos" */
+["match_map_demos_select_column"]:match_map_demos_select_column;
+	/** input type for updating data in table "match_map_demos" */
+["match_map_demos_set_input"]: {
+	file?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	size?: number | undefined | null
+};
+	/** aggregate stddev on columns */
+["match_map_demos_stddev_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["match_map_demos_stddev_pop_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["match_map_demos_stddev_samp_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "match_map_demos" */
+["match_map_demos_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["match_map_demos_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_demos_stream_cursor_value_input"]: {
+	file?: string | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	size?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["match_map_demos_sum_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "match_map_demos" */
+["match_map_demos_update_column"]:match_map_demos_update_column;
+	["match_map_demos_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_map_demos_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_map_demos_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["match_map_demos_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_map_demos_var_pop_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["match_map_demos_var_samp_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["match_map_demos_variance_fields"]: AliasType<{
+	size?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: AliasType<{
+	backup_file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -16339,14 +16808,16 @@ kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_kills_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null},ResolverInputTypes["player_kills_aggregate"]],
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	/** An object relationship */
 	match_map?:ResolverInputTypes["match_maps"],
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -16402,105 +16873,129 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 };
 	/** aggregate avg on columns */
 ["match_map_rounds_avg_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by avg() on columns of table "match_map_rounds" */
 ["match_map_rounds_avg_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "match_map_rounds". All fields are combined with a logical 'AND'. */
 ["match_map_rounds_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["match_map_rounds_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["match_map_rounds_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_map_rounds_bool_exp"]> | undefined | null,
+	backup_file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	kills?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_bool_exp"] | undefined | null,
+	lineup_1_money?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	round?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	team_1_money?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	team_1_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	team_2_money?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	team_2_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	time?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "match_map_rounds" */
 ["match_map_rounds_constraint"]:match_map_rounds_constraint;
 	/** input type for incrementing numeric columns in table "match_map_rounds" */
 ["match_map_rounds_inc_input"]: {
-	round?: number | undefined | null,
-	team_1_money?: number | undefined | null,
-	team_1_score?: number | undefined | null,
-	team_2_money?: number | undefined | null,
-	team_2_score?: number | undefined | null
+	lineup_1_money?: number | undefined | null,
+	lineup_1_score?: number | undefined | null,
+	lineup_1_timeouts_available?: number | undefined | null,
+	lineup_2_money?: number | undefined | null,
+	lineup_2_score?: number | undefined | null,
+	lineup_2_timeouts_available?: number | undefined | null,
+	round?: number | undefined | null
 };
 	/** input type for inserting data into table "match_map_rounds" */
 ["match_map_rounds_insert_input"]: {
+	backup_file?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	kills?: ResolverInputTypes["player_kills_arr_rel_insert_input"] | undefined | null,
+	lineup_1_money?: number | undefined | null,
+	lineup_1_score?: number | undefined | null,
+	lineup_1_timeouts_available?: number | undefined | null,
+	lineup_2_money?: number | undefined | null,
+	lineup_2_score?: number | undefined | null,
+	lineup_2_timeouts_available?: number | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_obj_rel_insert_input"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
-	team_1_money?: number | undefined | null,
-	team_1_score?: number | undefined | null,
-	team_2_money?: number | undefined | null,
-	team_2_score?: number | undefined | null,
 	time?: ResolverInputTypes["timestamptz"] | undefined | null
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: AliasType<{
+	backup_file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "match_map_rounds" */
 ["match_map_rounds_max_order_by"]: {
+	backup_file?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null,
 	time?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: AliasType<{
+	backup_file?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	match_map_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "match_map_rounds" */
 ["match_map_rounds_min_order_by"]: {
+	backup_file?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null,
 	time?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "match_map_rounds" */
@@ -16519,15 +17014,18 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 };
 	/** Ordering options when selecting data from "match_map_rounds". */
 ["match_map_rounds_order_by"]: {
+	backup_file?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_order_by"] | undefined | null,
 	match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null,
 	time?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: match_map_rounds */
@@ -16538,65 +17036,80 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 ["match_map_rounds_select_column"]:match_map_rounds_select_column;
 	/** input type for updating data in table "match_map_rounds" */
 ["match_map_rounds_set_input"]: {
+	backup_file?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	lineup_1_money?: number | undefined | null,
+	lineup_1_score?: number | undefined | null,
+	lineup_1_timeouts_available?: number | undefined | null,
+	lineup_2_money?: number | undefined | null,
+	lineup_2_score?: number | undefined | null,
+	lineup_2_timeouts_available?: number | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
-	team_1_money?: number | undefined | null,
-	team_1_score?: number | undefined | null,
-	team_2_money?: number | undefined | null,
-	team_2_score?: number | undefined | null,
 	time?: ResolverInputTypes["timestamptz"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["match_map_rounds_stddev_pop_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_pop_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["match_map_rounds_stddev_samp_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_samp_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "match_map_rounds" */
 ["match_map_rounds_stream_cursor_input"]: {
@@ -16607,31 +17120,38 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_map_rounds_stream_cursor_value_input"]: {
+	backup_file?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	lineup_1_money?: number | undefined | null,
+	lineup_1_score?: number | undefined | null,
+	lineup_1_timeouts_available?: number | undefined | null,
+	lineup_2_money?: number | undefined | null,
+	lineup_2_score?: number | undefined | null,
+	lineup_2_timeouts_available?: number | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
-	team_1_money?: number | undefined | null,
-	team_1_score?: number | undefined | null,
-	team_2_money?: number | undefined | null,
-	team_2_score?: number | undefined | null,
 	time?: ResolverInputTypes["timestamptz"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by sum() on columns of table "match_map_rounds" */
 ["match_map_rounds_sum_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** update columns of table "match_map_rounds" */
 ["match_map_rounds_update_column"]:match_map_rounds_update_column;
@@ -16645,54 +17165,66 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 };
 	/** aggregate var_pop on columns */
 ["match_map_rounds_var_pop_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_pop_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["match_map_rounds_var_samp_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_samp_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate variance on columns */
 ["match_map_rounds_variance_fields"]: AliasType<{
+	lineup_1_money?:boolean | `@${string}`,
+	lineup_1_score?:boolean | `@${string}`,
+	lineup_1_timeouts_available?:boolean | `@${string}`,
+	lineup_2_money?:boolean | `@${string}`,
+	lineup_2_score?:boolean | `@${string}`,
+	lineup_2_timeouts_available?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
-	team_1_money?:boolean | `@${string}`,
-	team_1_score?:boolean | `@${string}`,
-	team_2_money?:boolean | `@${string}`,
-	team_2_score?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by variance() on columns of table "match_map_rounds" */
 ["match_map_rounds_variance_order_by"]: {
-	round?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_1_score?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_money?: ResolverInputTypes["order_by"] | undefined | null,
-	team_2_score?: ResolverInputTypes["order_by"] | undefined | null
+	lineup_1_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_money?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_score?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
+	round?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: AliasType<{
@@ -18169,6 +18701,9 @@ delete_match_lineup_players_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverI
 delete_match_lineups?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["match_lineups_bool_exp"]},ResolverInputTypes["match_lineups_mutation_response"]],
 delete_match_lineups_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_lineups"]],
+delete_match_map_demos?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["match_map_demos_bool_exp"]},ResolverInputTypes["match_map_demos_mutation_response"]],
+delete_match_map_demos_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_demos"]],
 delete_match_map_rounds?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["match_map_rounds_bool_exp"]},ResolverInputTypes["match_map_rounds_mutation_response"]],
 delete_match_map_rounds_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_rounds"]],
@@ -18323,6 +18858,12 @@ insert_match_lineups?: [{	/** the rows to be inserted */
 insert_match_lineups_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["match_lineups_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["match_lineups_on_conflict"] | undefined | null},ResolverInputTypes["match_lineups"]],
+insert_match_map_demos?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["match_map_demos_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_map_demos_on_conflict"] | undefined | null},ResolverInputTypes["match_map_demos_mutation_response"]],
+insert_match_map_demos_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["match_map_demos_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_map_demos_on_conflict"] | undefined | null},ResolverInputTypes["match_map_demos"]],
 insert_match_map_rounds?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["match_map_rounds_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["match_map_rounds_on_conflict"] | undefined | null},ResolverInputTypes["match_map_rounds_mutation_response"]],
@@ -18569,6 +19110,15 @@ update_match_lineups_by_pk?: [{	/** increments the numeric columns with given va
 	_set?: ResolverInputTypes["match_lineups_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["match_lineups_pk_columns_input"]},ResolverInputTypes["match_lineups"]],
 update_match_lineups_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["match_lineups_updates"]>},ResolverInputTypes["match_lineups_mutation_response"]],
+update_match_map_demos?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_map_demos_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_map_demos_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["match_map_demos_bool_exp"]},ResolverInputTypes["match_map_demos_mutation_response"]],
+update_match_map_demos_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["match_map_demos_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["match_map_demos_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["match_map_demos_pk_columns_input"]},ResolverInputTypes["match_map_demos"]],
+update_match_map_demos_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["match_map_demos_updates"]>},ResolverInputTypes["match_map_demos_mutation_response"]],
 update_match_map_rounds?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["match_map_rounds_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["match_map_rounds_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -22164,6 +22714,19 @@ match_lineups_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
 match_lineups_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_lineups"]],
+match_map_demos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_demos_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_demos_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos"]],
+match_map_demos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_demos_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_demos_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos_aggregate"]],
+match_map_demos_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_demos"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_map_rounds_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -22552,6 +23115,7 @@ v_pool_maps_aggregate?: [{	/** distinct select on columns */
 }>;
 	/** columns and relationships of "servers" */
 ["servers"]: AliasType<{
+	api_password?:boolean | `@${string}`,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
@@ -22621,6 +23185,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	_and?: Array<ResolverInputTypes["servers_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["servers_bool_exp"]> | undefined | null,
+	api_password?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	current_match_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	host?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -22645,6 +23210,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
+	api_password?: ResolverInputTypes["uuid"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -22659,6 +23225,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** aggregate max on columns */
 ["servers_max_fields"]: AliasType<{
+	api_password?:boolean | `@${string}`,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
@@ -22672,6 +23239,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 }>;
 	/** aggregate min on columns */
 ["servers_min_fields"]: AliasType<{
+	api_password?:boolean | `@${string}`,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?:boolean | `@${string}`,
 	host?:boolean | `@${string}`,
@@ -22705,6 +23273,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
+	api_password?: ResolverInputTypes["order_by"] | undefined | null,
 	current_match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	host?: ResolverInputTypes["order_by"] | undefined | null,
@@ -22726,6 +23295,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 ["servers_select_column"]:servers_select_column;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
+	api_password?: ResolverInputTypes["uuid"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -22763,6 +23333,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
+	api_password?: ResolverInputTypes["uuid"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	host?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -23046,6 +23617,23 @@ match_lineups_stream?: [{	/** maximum number of rows returned in a single batch 
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["match_lineups_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups"]],
+match_map_demos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_demos_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_demos_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos"]],
+match_map_demos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_demos_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_demos_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos_aggregate"]],
+match_map_demos_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["match_map_demos"]],
+match_map_demos_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["match_map_demos_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos"]],
 match_map_rounds?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_map_rounds_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -29280,21 +29868,181 @@ export type ModelTypes = {
 ["match_lineups_variance_order_by"]: {
 	coach_steam_id?: ModelTypes["order_by"] | undefined
 };
+	/** columns and relationships of "match_map_demos" */
+["match_map_demos"]: {
+		file: string,
+	id: ModelTypes["uuid"],
+	match_id: ModelTypes["uuid"],
+	match_map_id: ModelTypes["uuid"],
+	size: number
+};
+	/** aggregated selection of "match_map_demos" */
+["match_map_demos_aggregate"]: {
+		aggregate?: ModelTypes["match_map_demos_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["match_map_demos"]>
+};
+	/** aggregate fields of "match_map_demos" */
+["match_map_demos_aggregate_fields"]: {
+		avg?: ModelTypes["match_map_demos_avg_fields"] | undefined,
+	count: number,
+	max?: ModelTypes["match_map_demos_max_fields"] | undefined,
+	min?: ModelTypes["match_map_demos_min_fields"] | undefined,
+	stddev?: ModelTypes["match_map_demos_stddev_fields"] | undefined,
+	stddev_pop?: ModelTypes["match_map_demos_stddev_pop_fields"] | undefined,
+	stddev_samp?: ModelTypes["match_map_demos_stddev_samp_fields"] | undefined,
+	sum?: ModelTypes["match_map_demos_sum_fields"] | undefined,
+	var_pop?: ModelTypes["match_map_demos_var_pop_fields"] | undefined,
+	var_samp?: ModelTypes["match_map_demos_var_samp_fields"] | undefined,
+	variance?: ModelTypes["match_map_demos_variance_fields"] | undefined
+};
+	/** aggregate avg on columns */
+["match_map_demos_avg_fields"]: {
+		size?: number | undefined
+};
+	/** Boolean expression to filter rows from the table "match_map_demos". All fields are combined with a logical 'AND'. */
+["match_map_demos_bool_exp"]: {
+	_and?: Array<ModelTypes["match_map_demos_bool_exp"]> | undefined,
+	_not?: ModelTypes["match_map_demos_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["match_map_demos_bool_exp"]> | undefined,
+	file?: ModelTypes["String_comparison_exp"] | undefined,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	match_map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	size?: ModelTypes["Int_comparison_exp"] | undefined
+};
+	["match_map_demos_constraint"]:match_map_demos_constraint;
+	/** input type for incrementing numeric columns in table "match_map_demos" */
+["match_map_demos_inc_input"]: {
+	size?: number | undefined
+};
+	/** input type for inserting data into table "match_map_demos" */
+["match_map_demos_insert_input"]: {
+	file?: string | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	match_map_id?: ModelTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate max on columns */
+["match_map_demos_max_fields"]: {
+		file?: string | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	match_map_id?: ModelTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate min on columns */
+["match_map_demos_min_fields"]: {
+		file?: string | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	match_map_id?: ModelTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** response of any mutation on the table "match_map_demos" */
+["match_map_demos_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["match_map_demos"]>
+};
+	/** on_conflict condition type for table "match_map_demos" */
+["match_map_demos_on_conflict"]: {
+	constraint: ModelTypes["match_map_demos_constraint"],
+	update_columns: Array<ModelTypes["match_map_demos_update_column"]>,
+	where?: ModelTypes["match_map_demos_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "match_map_demos". */
+["match_map_demos_order_by"]: {
+	file?: ModelTypes["order_by"] | undefined,
+	id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined,
+	match_map_id?: ModelTypes["order_by"] | undefined,
+	size?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: match_map_demos */
+["match_map_demos_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	["match_map_demos_select_column"]:match_map_demos_select_column;
+	/** input type for updating data in table "match_map_demos" */
+["match_map_demos_set_input"]: {
+	file?: string | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	match_map_id?: ModelTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate stddev on columns */
+["match_map_demos_stddev_fields"]: {
+		size?: number | undefined
+};
+	/** aggregate stddev_pop on columns */
+["match_map_demos_stddev_pop_fields"]: {
+		size?: number | undefined
+};
+	/** aggregate stddev_samp on columns */
+["match_map_demos_stddev_samp_fields"]: {
+		size?: number | undefined
+};
+	/** Streaming cursor of the table "match_map_demos" */
+["match_map_demos_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["match_map_demos_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_demos_stream_cursor_value_input"]: {
+	file?: string | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	match_map_id?: ModelTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate sum on columns */
+["match_map_demos_sum_fields"]: {
+		size?: number | undefined
+};
+	["match_map_demos_update_column"]:match_map_demos_update_column;
+	["match_map_demos_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["match_map_demos_inc_input"] | undefined,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["match_map_demos_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["match_map_demos_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_map_demos_var_pop_fields"]: {
+		size?: number | undefined
+};
+	/** aggregate var_samp on columns */
+["match_map_demos_var_samp_fields"]: {
+		size?: number | undefined
+};
+	/** aggregate variance on columns */
+["match_map_demos_variance_fields"]: {
+		size?: number | undefined
+};
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
-		id: ModelTypes["uuid"],
+		backup_file?: string | undefined,
+	id: ModelTypes["uuid"],
 	/** An array relationship */
 	kills: Array<ModelTypes["player_kills"]>,
 	/** An aggregate relationship */
 	kills_aggregate: ModelTypes["player_kills_aggregate"],
+	lineup_1_money: number,
+	lineup_1_score: number,
+	lineup_1_timeouts_available: number,
+	lineup_2_money: number,
+	lineup_2_score: number,
+	lineup_2_timeouts_available: number,
 	/** An object relationship */
 	match_map: ModelTypes["match_maps"],
 	match_map_id: ModelTypes["uuid"],
 	round: number,
-	team_1_money: number,
-	team_1_score: number,
-	team_2_money: number,
-	team_2_score: number,
 	time: ModelTypes["timestamptz"]
 };
 	/** aggregated selection of "match_map_rounds" */
@@ -29347,101 +30095,125 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["match_map_rounds_avg_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by avg() on columns of table "match_map_rounds" */
 ["match_map_rounds_avg_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "match_map_rounds". All fields are combined with a logical 'AND'. */
 ["match_map_rounds_bool_exp"]: {
 	_and?: Array<ModelTypes["match_map_rounds_bool_exp"]> | undefined,
 	_not?: ModelTypes["match_map_rounds_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_map_rounds_bool_exp"]> | undefined,
+	backup_file?: ModelTypes["String_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	kills?: ModelTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_bool_exp"] | undefined,
+	lineup_1_money?: ModelTypes["Int_comparison_exp"] | undefined,
+	lineup_1_score?: ModelTypes["Int_comparison_exp"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["Int_comparison_exp"] | undefined,
+	lineup_2_money?: ModelTypes["Int_comparison_exp"] | undefined,
+	lineup_2_score?: ModelTypes["Int_comparison_exp"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["Int_comparison_exp"] | undefined,
 	match_map?: ModelTypes["match_maps_bool_exp"] | undefined,
 	match_map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	round?: ModelTypes["Int_comparison_exp"] | undefined,
-	team_1_money?: ModelTypes["Int_comparison_exp"] | undefined,
-	team_1_score?: ModelTypes["Int_comparison_exp"] | undefined,
-	team_2_money?: ModelTypes["Int_comparison_exp"] | undefined,
-	team_2_score?: ModelTypes["Int_comparison_exp"] | undefined,
 	time?: ModelTypes["timestamptz_comparison_exp"] | undefined
 };
 	["match_map_rounds_constraint"]:match_map_rounds_constraint;
 	/** input type for incrementing numeric columns in table "match_map_rounds" */
 ["match_map_rounds_inc_input"]: {
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** input type for inserting data into table "match_map_rounds" */
 ["match_map_rounds_insert_input"]: {
+	backup_file?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	kills?: ModelTypes["player_kills_arr_rel_insert_input"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map?: ModelTypes["match_maps_obj_rel_insert_input"] | undefined,
 	match_map_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		backup_file?: string | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** order by max() on columns of table "match_map_rounds" */
 ["match_map_rounds_max_order_by"]: {
+	backup_file?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
 	match_map_id?: ModelTypes["order_by"] | undefined,
 	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined,
 	time?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		backup_file?: string | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** order by min() on columns of table "match_map_rounds" */
 ["match_map_rounds_min_order_by"]: {
+	backup_file?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
 	match_map_id?: ModelTypes["order_by"] | undefined,
 	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined,
 	time?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_map_rounds" */
@@ -29459,15 +30231,18 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "match_map_rounds". */
 ["match_map_rounds_order_by"]: {
+	backup_file?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined,
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
 	match_map?: ModelTypes["match_maps_order_by"] | undefined,
 	match_map_id?: ModelTypes["order_by"] | undefined,
 	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined,
 	time?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: match_map_rounds */
@@ -29477,62 +30252,77 @@ export type ModelTypes = {
 	["match_map_rounds_select_column"]:match_map_rounds_select_column;
 	/** input type for updating data in table "match_map_rounds" */
 ["match_map_rounds_set_input"]: {
+	backup_file?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by stddev() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["match_map_rounds_stddev_pop_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_pop_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["match_map_rounds_stddev_samp_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_samp_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "match_map_rounds" */
 ["match_map_rounds_stream_cursor_input"]: {
@@ -29543,30 +30333,37 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_map_rounds_stream_cursor_value_input"]: {
+	backup_file?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: ModelTypes["timestamptz"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by sum() on columns of table "match_map_rounds" */
 ["match_map_rounds_sum_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	["match_map_rounds_update_column"]:match_map_rounds_update_column;
 	["match_map_rounds_updates"]: {
@@ -29579,51 +30376,63 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["match_map_rounds_var_pop_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by var_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_pop_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate var_samp on columns */
 ["match_map_rounds_var_samp_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by var_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_samp_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate variance on columns */
 ["match_map_rounds_variance_fields"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by variance() on columns of table "match_map_rounds" */
 ["match_map_rounds_variance_order_by"]: {
-	round?: ModelTypes["order_by"] | undefined,
-	team_1_money?: ModelTypes["order_by"] | undefined,
-	team_1_score?: ModelTypes["order_by"] | undefined,
-	team_2_money?: ModelTypes["order_by"] | undefined,
-	team_2_score?: ModelTypes["order_by"] | undefined
+	lineup_1_money?: ModelTypes["order_by"] | undefined,
+	lineup_1_score?: ModelTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
+	lineup_2_money?: ModelTypes["order_by"] | undefined,
+	lineup_2_score?: ModelTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: ModelTypes["order_by"] | undefined,
+	round?: ModelTypes["order_by"] | undefined
 };
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: {
@@ -30915,6 +31724,10 @@ export type ModelTypes = {
 	delete_match_lineups?: ModelTypes["match_lineups_mutation_response"] | undefined,
 	/** delete single row from the table: "match_lineups" */
 	delete_match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
+	/** delete data from the table: "match_map_demos" */
+	delete_match_map_demos?: ModelTypes["match_map_demos_mutation_response"] | undefined,
+	/** delete single row from the table: "match_map_demos" */
+	delete_match_map_demos_by_pk?: ModelTypes["match_map_demos"] | undefined,
 	/** delete data from the table: "match_map_rounds" */
 	delete_match_map_rounds?: ModelTypes["match_map_rounds_mutation_response"] | undefined,
 	/** delete single row from the table: "match_map_rounds" */
@@ -31063,6 +31876,10 @@ export type ModelTypes = {
 	insert_match_lineups?: ModelTypes["match_lineups_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_lineups" */
 	insert_match_lineups_one?: ModelTypes["match_lineups"] | undefined,
+	/** insert data into the table: "match_map_demos" */
+	insert_match_map_demos?: ModelTypes["match_map_demos_mutation_response"] | undefined,
+	/** insert a single row into the table: "match_map_demos" */
+	insert_match_map_demos_one?: ModelTypes["match_map_demos"] | undefined,
 	/** insert data into the table: "match_map_rounds" */
 	insert_match_map_rounds?: ModelTypes["match_map_rounds_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_map_rounds" */
@@ -31247,6 +32064,12 @@ export type ModelTypes = {
 	update_match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
 	/** update multiples rows of table: "match_lineups" */
 	update_match_lineups_many?: Array<ModelTypes["match_lineups_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "match_map_demos" */
+	update_match_map_demos?: ModelTypes["match_map_demos_mutation_response"] | undefined,
+	/** update single row of the table: "match_map_demos" */
+	update_match_map_demos_by_pk?: ModelTypes["match_map_demos"] | undefined,
+	/** update multiples rows of table: "match_map_demos" */
+	update_match_map_demos_many?: Array<ModelTypes["match_map_demos_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "match_map_rounds" */
 	update_match_map_rounds?: ModelTypes["match_map_rounds_mutation_response"] | undefined,
 	/** update single row of the table: "match_map_rounds" */
@@ -34344,6 +35167,12 @@ export type ModelTypes = {
 	match_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
 	/** fetch data from the table: "match_lineups" using primary key columns */
 	match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
+	/** fetch data from the table: "match_map_demos" */
+	match_map_demos: Array<ModelTypes["match_map_demos"]>,
+	/** fetch aggregated fields from the table: "match_map_demos" */
+	match_map_demos_aggregate: ModelTypes["match_map_demos_aggregate"],
+	/** fetch data from the table: "match_map_demos" using primary key columns */
+	match_map_demos_by_pk?: ModelTypes["match_map_demos"] | undefined,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<ModelTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -34513,7 +35342,8 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "servers" */
 ["servers"]: {
-		/** A computed field, executes function "get_server_current_match_id" */
+		api_password: ModelTypes["uuid"],
+	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?: string | undefined,
 	enabled: boolean,
 	host: string,
@@ -34562,6 +35392,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["servers_bool_exp"]> | undefined,
 	_not?: ModelTypes["servers_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["servers_bool_exp"]> | undefined,
+	api_password?: ModelTypes["uuid_comparison_exp"] | undefined,
 	current_match_id?: ModelTypes["String_comparison_exp"] | undefined,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	host?: ModelTypes["String_comparison_exp"] | undefined,
@@ -34585,6 +35416,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
+	api_password?: ModelTypes["uuid"] | undefined,
 	enabled?: boolean | undefined,
 	host?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -34599,7 +35431,8 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["servers_max_fields"]: {
-		/** A computed field, executes function "get_server_current_match_id" */
+		api_password?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?: string | undefined,
 	host?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -34611,7 +35444,8 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["servers_min_fields"]: {
-		/** A computed field, executes function "get_server_current_match_id" */
+		api_password?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?: string | undefined,
 	host?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -34642,6 +35476,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
+	api_password?: ModelTypes["order_by"] | undefined,
 	current_match_id?: ModelTypes["order_by"] | undefined,
 	enabled?: ModelTypes["order_by"] | undefined,
 	host?: ModelTypes["order_by"] | undefined,
@@ -34662,6 +35497,7 @@ export type ModelTypes = {
 	["servers_select_column"]:servers_select_column;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
+	api_password?: ModelTypes["uuid"] | undefined,
 	enabled?: boolean | undefined,
 	host?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -34696,6 +35532,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
+	api_password?: ModelTypes["uuid"] | undefined,
 	enabled?: boolean | undefined,
 	host?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -34848,6 +35685,14 @@ export type ModelTypes = {
 	match_lineups_by_pk?: ModelTypes["match_lineups"] | undefined,
 	/** fetch data from the table in a streaming manner: "match_lineups" */
 	match_lineups_stream: Array<ModelTypes["match_lineups"]>,
+	/** fetch data from the table: "match_map_demos" */
+	match_map_demos: Array<ModelTypes["match_map_demos"]>,
+	/** fetch aggregated fields from the table: "match_map_demos" */
+	match_map_demos_aggregate: ModelTypes["match_map_demos_aggregate"],
+	/** fetch data from the table: "match_map_demos" using primary key columns */
+	match_map_demos_by_pk?: ModelTypes["match_map_demos"] | undefined,
+	/** fetch data from the table in a streaming manner: "match_map_demos" */
+	match_map_demos_stream: Array<ModelTypes["match_map_demos"]>,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<ModelTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -40625,22 +41470,199 @@ export type GraphQLTypes = {
 ["match_lineups_variance_order_by"]: {
 		coach_steam_id?: GraphQLTypes["order_by"] | undefined
 };
+	/** columns and relationships of "match_map_demos" */
+["match_map_demos"]: {
+	__typename: "match_map_demos",
+	file: string,
+	id: GraphQLTypes["uuid"],
+	match_id: GraphQLTypes["uuid"],
+	match_map_id: GraphQLTypes["uuid"],
+	size: number
+};
+	/** aggregated selection of "match_map_demos" */
+["match_map_demos_aggregate"]: {
+	__typename: "match_map_demos_aggregate",
+	aggregate?: GraphQLTypes["match_map_demos_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["match_map_demos"]>
+};
+	/** aggregate fields of "match_map_demos" */
+["match_map_demos_aggregate_fields"]: {
+	__typename: "match_map_demos_aggregate_fields",
+	avg?: GraphQLTypes["match_map_demos_avg_fields"] | undefined,
+	count: number,
+	max?: GraphQLTypes["match_map_demos_max_fields"] | undefined,
+	min?: GraphQLTypes["match_map_demos_min_fields"] | undefined,
+	stddev?: GraphQLTypes["match_map_demos_stddev_fields"] | undefined,
+	stddev_pop?: GraphQLTypes["match_map_demos_stddev_pop_fields"] | undefined,
+	stddev_samp?: GraphQLTypes["match_map_demos_stddev_samp_fields"] | undefined,
+	sum?: GraphQLTypes["match_map_demos_sum_fields"] | undefined,
+	var_pop?: GraphQLTypes["match_map_demos_var_pop_fields"] | undefined,
+	var_samp?: GraphQLTypes["match_map_demos_var_samp_fields"] | undefined,
+	variance?: GraphQLTypes["match_map_demos_variance_fields"] | undefined
+};
+	/** aggregate avg on columns */
+["match_map_demos_avg_fields"]: {
+	__typename: "match_map_demos_avg_fields",
+	size?: number | undefined
+};
+	/** Boolean expression to filter rows from the table "match_map_demos". All fields are combined with a logical 'AND'. */
+["match_map_demos_bool_exp"]: {
+		_and?: Array<GraphQLTypes["match_map_demos_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["match_map_demos_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["match_map_demos_bool_exp"]> | undefined,
+	file?: GraphQLTypes["String_comparison_exp"] | undefined,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	match_map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	size?: GraphQLTypes["Int_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "match_map_demos" */
+["match_map_demos_constraint"]: match_map_demos_constraint;
+	/** input type for incrementing numeric columns in table "match_map_demos" */
+["match_map_demos_inc_input"]: {
+		size?: number | undefined
+};
+	/** input type for inserting data into table "match_map_demos" */
+["match_map_demos_insert_input"]: {
+		file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	match_map_id?: GraphQLTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate max on columns */
+["match_map_demos_max_fields"]: {
+	__typename: "match_map_demos_max_fields",
+	file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	match_map_id?: GraphQLTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate min on columns */
+["match_map_demos_min_fields"]: {
+	__typename: "match_map_demos_min_fields",
+	file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	match_map_id?: GraphQLTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** response of any mutation on the table "match_map_demos" */
+["match_map_demos_mutation_response"]: {
+	__typename: "match_map_demos_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["match_map_demos"]>
+};
+	/** on_conflict condition type for table "match_map_demos" */
+["match_map_demos_on_conflict"]: {
+		constraint: GraphQLTypes["match_map_demos_constraint"],
+	update_columns: Array<GraphQLTypes["match_map_demos_update_column"]>,
+	where?: GraphQLTypes["match_map_demos_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "match_map_demos". */
+["match_map_demos_order_by"]: {
+		file?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined,
+	match_map_id?: GraphQLTypes["order_by"] | undefined,
+	size?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: match_map_demos */
+["match_map_demos_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "match_map_demos" */
+["match_map_demos_select_column"]: match_map_demos_select_column;
+	/** input type for updating data in table "match_map_demos" */
+["match_map_demos_set_input"]: {
+		file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	match_map_id?: GraphQLTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate stddev on columns */
+["match_map_demos_stddev_fields"]: {
+	__typename: "match_map_demos_stddev_fields",
+	size?: number | undefined
+};
+	/** aggregate stddev_pop on columns */
+["match_map_demos_stddev_pop_fields"]: {
+	__typename: "match_map_demos_stddev_pop_fields",
+	size?: number | undefined
+};
+	/** aggregate stddev_samp on columns */
+["match_map_demos_stddev_samp_fields"]: {
+	__typename: "match_map_demos_stddev_samp_fields",
+	size?: number | undefined
+};
+	/** Streaming cursor of the table "match_map_demos" */
+["match_map_demos_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["match_map_demos_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["match_map_demos_stream_cursor_value_input"]: {
+		file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	match_map_id?: GraphQLTypes["uuid"] | undefined,
+	size?: number | undefined
+};
+	/** aggregate sum on columns */
+["match_map_demos_sum_fields"]: {
+	__typename: "match_map_demos_sum_fields",
+	size?: number | undefined
+};
+	/** update columns of table "match_map_demos" */
+["match_map_demos_update_column"]: match_map_demos_update_column;
+	["match_map_demos_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["match_map_demos_inc_input"] | undefined,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["match_map_demos_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["match_map_demos_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["match_map_demos_var_pop_fields"]: {
+	__typename: "match_map_demos_var_pop_fields",
+	size?: number | undefined
+};
+	/** aggregate var_samp on columns */
+["match_map_demos_var_samp_fields"]: {
+	__typename: "match_map_demos_var_samp_fields",
+	size?: number | undefined
+};
+	/** aggregate variance on columns */
+["match_map_demos_variance_fields"]: {
+	__typename: "match_map_demos_variance_fields",
+	size?: number | undefined
+};
 	/** columns and relationships of "match_map_rounds" */
 ["match_map_rounds"]: {
 	__typename: "match_map_rounds",
+	backup_file?: string | undefined,
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
 	kills: Array<GraphQLTypes["player_kills"]>,
 	/** An aggregate relationship */
 	kills_aggregate: GraphQLTypes["player_kills_aggregate"],
+	lineup_1_money: number,
+	lineup_1_score: number,
+	lineup_1_timeouts_available: number,
+	lineup_2_money: number,
+	lineup_2_score: number,
+	lineup_2_timeouts_available: number,
 	/** An object relationship */
 	match_map: GraphQLTypes["match_maps"],
 	match_map_id: GraphQLTypes["uuid"],
 	round: number,
-	team_1_money: number,
-	team_1_score: number,
-	team_2_money: number,
-	team_2_score: number,
 	time: GraphQLTypes["timestamptz"]
 };
 	/** aggregated selection of "match_map_rounds" */
@@ -40696,104 +41718,128 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["match_map_rounds_avg_fields"]: {
 	__typename: "match_map_rounds_avg_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by avg() on columns of table "match_map_rounds" */
 ["match_map_rounds_avg_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "match_map_rounds". All fields are combined with a logical 'AND'. */
 ["match_map_rounds_bool_exp"]: {
 		_and?: Array<GraphQLTypes["match_map_rounds_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["match_map_rounds_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_map_rounds_bool_exp"]> | undefined,
+	backup_file?: GraphQLTypes["String_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	kills?: GraphQLTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_bool_exp"] | undefined,
+	lineup_1_money?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	lineup_1_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	lineup_2_money?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	lineup_2_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	match_map?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	match_map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	round?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	team_1_money?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	team_1_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	team_2_money?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	team_2_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	time?: GraphQLTypes["timestamptz_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "match_map_rounds" */
 ["match_map_rounds_constraint"]: match_map_rounds_constraint;
 	/** input type for incrementing numeric columns in table "match_map_rounds" */
 ["match_map_rounds_inc_input"]: {
-		round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+		lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** input type for inserting data into table "match_map_rounds" */
 ["match_map_rounds_insert_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		backup_file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	kills?: GraphQLTypes["player_kills_arr_rel_insert_input"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map?: GraphQLTypes["match_maps_obj_rel_insert_input"] | undefined,
 	match_map_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** aggregate max on columns */
 ["match_map_rounds_max_fields"]: {
 	__typename: "match_map_rounds_max_fields",
+	backup_file?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** order by max() on columns of table "match_map_rounds" */
 ["match_map_rounds_max_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		backup_file?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
 	match_map_id?: GraphQLTypes["order_by"] | undefined,
 	round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined,
 	time?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_map_rounds_min_fields"]: {
 	__typename: "match_map_rounds_min_fields",
+	backup_file?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** order by min() on columns of table "match_map_rounds" */
 ["match_map_rounds_min_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		backup_file?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
 	match_map_id?: GraphQLTypes["order_by"] | undefined,
 	round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined,
 	time?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_map_rounds" */
@@ -40812,15 +41858,18 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "match_map_rounds". */
 ["match_map_rounds_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		backup_file?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined,
+	lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
 	match_map?: GraphQLTypes["match_maps_order_by"] | undefined,
 	match_map_id?: GraphQLTypes["order_by"] | undefined,
 	round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined,
 	time?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: match_map_rounds */
@@ -40831,65 +41880,80 @@ export type GraphQLTypes = {
 ["match_map_rounds_select_column"]: match_map_rounds_select_column;
 	/** input type for updating data in table "match_map_rounds" */
 ["match_map_rounds_set_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		backup_file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_map_rounds_stddev_fields"]: {
 	__typename: "match_map_rounds_stddev_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by stddev() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["match_map_rounds_stddev_pop_fields"]: {
 	__typename: "match_map_rounds_stddev_pop_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_pop_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["match_map_rounds_stddev_samp_fields"]: {
 	__typename: "match_map_rounds_stddev_samp_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_stddev_samp_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "match_map_rounds" */
 ["match_map_rounds_stream_cursor_input"]: {
@@ -40900,31 +41964,38 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["match_map_rounds_stream_cursor_value_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		backup_file?: string | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
 	match_map_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined,
 	time?: GraphQLTypes["timestamptz"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_map_rounds_sum_fields"]: {
 	__typename: "match_map_rounds_sum_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by sum() on columns of table "match_map_rounds" */
 ["match_map_rounds_sum_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** update columns of table "match_map_rounds" */
 ["match_map_rounds_update_column"]: match_map_rounds_update_column;
@@ -40939,53 +42010,65 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["match_map_rounds_var_pop_fields"]: {
 	__typename: "match_map_rounds_var_pop_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by var_pop() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_pop_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate var_samp on columns */
 ["match_map_rounds_var_samp_fields"]: {
 	__typename: "match_map_rounds_var_samp_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by var_samp() on columns of table "match_map_rounds" */
 ["match_map_rounds_var_samp_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate variance on columns */
 ["match_map_rounds_variance_fields"]: {
 	__typename: "match_map_rounds_variance_fields",
-	round?: number | undefined,
-	team_1_money?: number | undefined,
-	team_1_score?: number | undefined,
-	team_2_money?: number | undefined,
-	team_2_score?: number | undefined
+	lineup_1_money?: number | undefined,
+	lineup_1_score?: number | undefined,
+	lineup_1_timeouts_available?: number | undefined,
+	lineup_2_money?: number | undefined,
+	lineup_2_score?: number | undefined,
+	lineup_2_timeouts_available?: number | undefined,
+	round?: number | undefined
 };
 	/** order by variance() on columns of table "match_map_rounds" */
 ["match_map_rounds_variance_order_by"]: {
-		round?: GraphQLTypes["order_by"] | undefined,
-	team_1_money?: GraphQLTypes["order_by"] | undefined,
-	team_1_score?: GraphQLTypes["order_by"] | undefined,
-	team_2_money?: GraphQLTypes["order_by"] | undefined,
-	team_2_score?: GraphQLTypes["order_by"] | undefined
+		lineup_1_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_money?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_score?: GraphQLTypes["order_by"] | undefined,
+	lineup_2_timeouts_available?: GraphQLTypes["order_by"] | undefined,
+	round?: GraphQLTypes["order_by"] | undefined
 };
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: {
@@ -42323,6 +43406,10 @@ export type GraphQLTypes = {
 	delete_match_lineups?: GraphQLTypes["match_lineups_mutation_response"] | undefined,
 	/** delete single row from the table: "match_lineups" */
 	delete_match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
+	/** delete data from the table: "match_map_demos" */
+	delete_match_map_demos?: GraphQLTypes["match_map_demos_mutation_response"] | undefined,
+	/** delete single row from the table: "match_map_demos" */
+	delete_match_map_demos_by_pk?: GraphQLTypes["match_map_demos"] | undefined,
 	/** delete data from the table: "match_map_rounds" */
 	delete_match_map_rounds?: GraphQLTypes["match_map_rounds_mutation_response"] | undefined,
 	/** delete single row from the table: "match_map_rounds" */
@@ -42471,6 +43558,10 @@ export type GraphQLTypes = {
 	insert_match_lineups?: GraphQLTypes["match_lineups_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_lineups" */
 	insert_match_lineups_one?: GraphQLTypes["match_lineups"] | undefined,
+	/** insert data into the table: "match_map_demos" */
+	insert_match_map_demos?: GraphQLTypes["match_map_demos_mutation_response"] | undefined,
+	/** insert a single row into the table: "match_map_demos" */
+	insert_match_map_demos_one?: GraphQLTypes["match_map_demos"] | undefined,
 	/** insert data into the table: "match_map_rounds" */
 	insert_match_map_rounds?: GraphQLTypes["match_map_rounds_mutation_response"] | undefined,
 	/** insert a single row into the table: "match_map_rounds" */
@@ -42655,6 +43746,12 @@ export type GraphQLTypes = {
 	update_match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
 	/** update multiples rows of table: "match_lineups" */
 	update_match_lineups_many?: Array<GraphQLTypes["match_lineups_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "match_map_demos" */
+	update_match_map_demos?: GraphQLTypes["match_map_demos_mutation_response"] | undefined,
+	/** update single row of the table: "match_map_demos" */
+	update_match_map_demos_by_pk?: GraphQLTypes["match_map_demos"] | undefined,
+	/** update multiples rows of table: "match_map_demos" */
+	update_match_map_demos_many?: Array<GraphQLTypes["match_map_demos_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "match_map_rounds" */
 	update_match_map_rounds?: GraphQLTypes["match_map_rounds_mutation_response"] | undefined,
 	/** update single row of the table: "match_map_rounds" */
@@ -45896,6 +46993,12 @@ export type GraphQLTypes = {
 	match_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
 	/** fetch data from the table: "match_lineups" using primary key columns */
 	match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
+	/** fetch data from the table: "match_map_demos" */
+	match_map_demos: Array<GraphQLTypes["match_map_demos"]>,
+	/** fetch aggregated fields from the table: "match_map_demos" */
+	match_map_demos_aggregate: GraphQLTypes["match_map_demos_aggregate"],
+	/** fetch data from the table: "match_map_demos" using primary key columns */
+	match_map_demos_by_pk?: GraphQLTypes["match_map_demos"] | undefined,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<GraphQLTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -46066,6 +47169,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "servers" */
 ["servers"]: {
 	__typename: "servers",
+	api_password: GraphQLTypes["uuid"],
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?: string | undefined,
 	enabled: boolean,
@@ -46118,6 +47222,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["servers_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["servers_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["servers_bool_exp"]> | undefined,
+	api_password?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	current_match_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	host?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -46142,7 +47247,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
-		enabled?: boolean | undefined,
+		api_password?: GraphQLTypes["uuid"] | undefined,
+	enabled?: boolean | undefined,
 	host?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
@@ -46157,6 +47263,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["servers_max_fields"]: {
 	__typename: "servers_max_fields",
+	api_password?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?: string | undefined,
 	host?: string | undefined,
@@ -46170,6 +47277,7 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["servers_min_fields"]: {
 	__typename: "servers_min_fields",
+	api_password?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_server_current_match_id" */
 	current_match_id?: string | undefined,
 	host?: string | undefined,
@@ -46202,7 +47310,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
-		current_match_id?: GraphQLTypes["order_by"] | undefined,
+		api_password?: GraphQLTypes["order_by"] | undefined,
+	current_match_id?: GraphQLTypes["order_by"] | undefined,
 	enabled?: GraphQLTypes["order_by"] | undefined,
 	host?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
@@ -46223,7 +47332,8 @@ export type GraphQLTypes = {
 ["servers_select_column"]: servers_select_column;
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
-		enabled?: boolean | undefined,
+		api_password?: GraphQLTypes["uuid"] | undefined,
+	enabled?: boolean | undefined,
 	host?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
@@ -46260,7 +47370,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
-		enabled?: boolean | undefined,
+		api_password?: GraphQLTypes["uuid"] | undefined,
+	enabled?: boolean | undefined,
 	host?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
@@ -46418,6 +47529,14 @@ export type GraphQLTypes = {
 	match_lineups_by_pk?: GraphQLTypes["match_lineups"] | undefined,
 	/** fetch data from the table in a streaming manner: "match_lineups" */
 	match_lineups_stream: Array<GraphQLTypes["match_lineups"]>,
+	/** fetch data from the table: "match_map_demos" */
+	match_map_demos: Array<GraphQLTypes["match_map_demos"]>,
+	/** fetch aggregated fields from the table: "match_map_demos" */
+	match_map_demos_aggregate: GraphQLTypes["match_map_demos_aggregate"],
+	/** fetch data from the table: "match_map_demos" using primary key columns */
+	match_map_demos_by_pk?: GraphQLTypes["match_map_demos"] | undefined,
+	/** fetch data from the table in a streaming manner: "match_map_demos" */
+	match_map_demos_stream: Array<GraphQLTypes["match_map_demos"]>,
 	/** fetch data from the table: "match_map_rounds" */
 	match_map_rounds: Array<GraphQLTypes["match_map_rounds"]>,
 	/** fetch aggregated fields from the table: "match_map_rounds" */
@@ -50384,7 +51503,8 @@ export const enum e_team_roles_constraint {
 export const enum e_team_roles_enum {
 	Admin = "Admin",
 	Invite = "Invite",
-	Member = "Member"
+	Member = "Member",
+	Pending = "Pending"
 }
 /** select columns of table "e_team_roles" */
 export const enum e_team_roles_select_column {
@@ -50401,9 +51521,9 @@ export const enum e_timeout_settings_constraint {
 	e_timeout_settings_pkey = "e_timeout_settings_pkey"
 }
 export const enum e_timeout_settings_enum {
+	Admin = "Admin",
 	Coach = "Coach",
-	CoachAndPlayers = "CoachAndPlayers",
-	None = "None"
+	CoachAndPlayers = "CoachAndPlayers"
 }
 /** select columns of table "e_timeout_settings" */
 export const enum e_timeout_settings_select_column {
@@ -50553,6 +51673,26 @@ export const enum match_lineups_update_column {
 	match_id = "match_id",
 	team_id = "team_id"
 }
+/** unique or primary key constraints on table "match_map_demos" */
+export const enum match_map_demos_constraint {
+	match_demos_pkey = "match_demos_pkey"
+}
+/** select columns of table "match_map_demos" */
+export const enum match_map_demos_select_column {
+	file = "file",
+	id = "id",
+	match_id = "match_id",
+	match_map_id = "match_map_id",
+	size = "size"
+}
+/** update columns of table "match_map_demos" */
+export const enum match_map_demos_update_column {
+	file = "file",
+	id = "id",
+	match_id = "match_id",
+	match_map_id = "match_map_id",
+	size = "size"
+}
 /** unique or primary key constraints on table "match_map_rounds" */
 export const enum match_map_rounds_constraint {
 	match_rounds__id_key = "match_rounds__id_key",
@@ -50561,24 +51701,30 @@ export const enum match_map_rounds_constraint {
 }
 /** select columns of table "match_map_rounds" */
 export const enum match_map_rounds_select_column {
+	backup_file = "backup_file",
 	id = "id",
+	lineup_1_money = "lineup_1_money",
+	lineup_1_score = "lineup_1_score",
+	lineup_1_timeouts_available = "lineup_1_timeouts_available",
+	lineup_2_money = "lineup_2_money",
+	lineup_2_score = "lineup_2_score",
+	lineup_2_timeouts_available = "lineup_2_timeouts_available",
 	match_map_id = "match_map_id",
 	round = "round",
-	team_1_money = "team_1_money",
-	team_1_score = "team_1_score",
-	team_2_money = "team_2_money",
-	team_2_score = "team_2_score",
 	time = "time"
 }
 /** update columns of table "match_map_rounds" */
 export const enum match_map_rounds_update_column {
+	backup_file = "backup_file",
 	id = "id",
+	lineup_1_money = "lineup_1_money",
+	lineup_1_score = "lineup_1_score",
+	lineup_1_timeouts_available = "lineup_1_timeouts_available",
+	lineup_2_money = "lineup_2_money",
+	lineup_2_score = "lineup_2_score",
+	lineup_2_timeouts_available = "lineup_2_timeouts_available",
 	match_map_id = "match_map_id",
 	round = "round",
-	team_1_money = "team_1_money",
-	team_1_score = "team_1_score",
-	team_2_money = "team_2_money",
-	team_2_score = "team_2_score",
 	time = "time"
 }
 /** unique or primary key constraints on table "match_maps" */
@@ -51001,6 +52147,7 @@ export const enum servers_constraint {
 }
 /** select columns of table "servers" */
 export const enum servers_select_column {
+	api_password = "api_password",
 	enabled = "enabled",
 	host = "host",
 	id = "id",
@@ -51013,6 +52160,7 @@ export const enum servers_select_column {
 }
 /** update columns of table "servers" */
 export const enum servers_update_column {
+	api_password = "api_password",
 	enabled = "enabled",
 	host = "host",
 	id = "id",
@@ -51508,6 +52656,19 @@ type ZEUS_VARIABLES = {
 	["match_lineups_var_pop_order_by"]: ValueTypes["match_lineups_var_pop_order_by"];
 	["match_lineups_var_samp_order_by"]: ValueTypes["match_lineups_var_samp_order_by"];
 	["match_lineups_variance_order_by"]: ValueTypes["match_lineups_variance_order_by"];
+	["match_map_demos_bool_exp"]: ValueTypes["match_map_demos_bool_exp"];
+	["match_map_demos_constraint"]: ValueTypes["match_map_demos_constraint"];
+	["match_map_demos_inc_input"]: ValueTypes["match_map_demos_inc_input"];
+	["match_map_demos_insert_input"]: ValueTypes["match_map_demos_insert_input"];
+	["match_map_demos_on_conflict"]: ValueTypes["match_map_demos_on_conflict"];
+	["match_map_demos_order_by"]: ValueTypes["match_map_demos_order_by"];
+	["match_map_demos_pk_columns_input"]: ValueTypes["match_map_demos_pk_columns_input"];
+	["match_map_demos_select_column"]: ValueTypes["match_map_demos_select_column"];
+	["match_map_demos_set_input"]: ValueTypes["match_map_demos_set_input"];
+	["match_map_demos_stream_cursor_input"]: ValueTypes["match_map_demos_stream_cursor_input"];
+	["match_map_demos_stream_cursor_value_input"]: ValueTypes["match_map_demos_stream_cursor_value_input"];
+	["match_map_demos_update_column"]: ValueTypes["match_map_demos_update_column"];
+	["match_map_demos_updates"]: ValueTypes["match_map_demos_updates"];
 	["match_map_rounds_aggregate_bool_exp"]: ValueTypes["match_map_rounds_aggregate_bool_exp"];
 	["match_map_rounds_aggregate_bool_exp_count"]: ValueTypes["match_map_rounds_aggregate_bool_exp_count"];
 	["match_map_rounds_aggregate_order_by"]: ValueTypes["match_map_rounds_aggregate_order_by"];

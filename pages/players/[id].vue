@@ -13,15 +13,17 @@
   <div v-if="playerWithMatches">
     <matches-table :matches="playerWithMatches.matches"></matches-table>
     <pagination
-      :per-page="10"
-      :offset="playerMatchesOffset"
-      @offset="
-        (offset) => {
-          playerMatchesOffset = offset;
+      :page="page"
+      @page="
+        (_page) => {
+          page = _page;
         }
       "
       :total="
-        playerWithMatchesAggregate.player_lineup_aggregate.aggregate.count
+        Math.ceil(
+          playerWithMatchesAggregate.player_lineup_aggregate.aggregate.count /
+            per_page,
+        )
       "
       v-if="playerWithMatchesAggregate"
     ></pagination>
@@ -30,7 +32,7 @@
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, e_match_status_enum, order_by } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { matchFields } from "~/graphql/matchesGraphql";
 
@@ -38,7 +40,8 @@ export default {
   data() {
     return {
       player: undefined,
-      playerMatchesOffset: 0,
+      page: 1,
+      per_page: 10,
     };
   },
   apollo: {
@@ -98,7 +101,7 @@ export default {
               {
                 matches: [
                   {
-                    limit: 10,
+                    limit: $("limit", "Int!"),
                     offset: $("offset", "Int!"),
                     order_by: [
                       {},
@@ -117,7 +120,8 @@ export default {
       variables: function () {
         return {
           playerId: this.$route.params.id,
-          offset: this.playerMatchesOffset,
+          limit: this.per_page,
+          offset: (this.page - 1) * this.per_page,
         };
       },
     },

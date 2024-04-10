@@ -2,14 +2,18 @@
   <div v-if="meWithMatches?.player?.matches">
     <matches-table :matches="meWithMatches.player.matches"></matches-table>
     <pagination
-      :per-page="10"
-      :offset="myMatchesSearchOffset"
-      @offset="
-        (offset) => {
-          myMatchesSearchOffset = offset;
+      :page="page"
+      @page="
+        (_page) => {
+          page = _page;
         }
       "
-      :total="myTotalMatches.player.player_lineup_aggregate.aggregate.count"
+      :total="
+        Math.ceil(
+          myTotalMatches.player.player_lineup_aggregate.aggregate.count /
+            per_page,
+        )
+      "
       v-if="myTotalMatches"
     ></pagination>
   </div>
@@ -37,7 +41,7 @@ export default {
               player: {
                 matches: [
                   {
-                    limit: 10,
+                    limit: $("limit", "Int!"),
                     offset: $("offset", "Int!"),
                     where: {
                       status: {
@@ -60,7 +64,8 @@ export default {
       }),
       variables: function () {
         return {
-          offset: this.myMatchesSearchOffset,
+          limit: this.per_page,
+          offset: (this.page - 1) * this.per_page,
           statuses: this.upcoming
             ? [e_match_status_enum.Canceled, e_match_status_enum.Finished]
             : [],
@@ -99,7 +104,8 @@ export default {
   },
   data() {
     return {
-      myMatchesSearchOffset: 0,
+      page: 1,
+      per_page: 10,
     };
   },
 };

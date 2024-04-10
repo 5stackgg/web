@@ -12,14 +12,13 @@
       </form>
       <teams-table :teams="teams" v-if="teams"></teams-table>
       <pagination
-        :per-page="10"
-        :offset="teamsOffset"
-        @offset="
-          (offset) => {
-            teamsOffset = offset;
+        :page="page"
+        @page="
+          (_page) => {
+            page = _page;
           }
         "
-        :total="teams_aggregate.aggregate.count"
+        :total="Math.ceil(teams_aggregate.aggregate.count / per_page)"
         v-if="teams_aggregate"
       ></pagination>
     </tab>
@@ -44,8 +43,8 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 export default {
   data() {
     return {
-      teamsOffset: 0,
-      myTeamsOffset: 0,
+      page: 1,
+      per_page: 10,
       teamQuery: undefined,
       myTeams: undefined,
     };
@@ -57,7 +56,7 @@ export default {
         return generateQuery({
           teams: [
             {
-              limit: 10,
+              limit: $("limit", "Int!"),
               offset: $("offset", "Int!"),
               order_by: [
                 {},
@@ -82,8 +81,9 @@ export default {
       },
       variables: function () {
         return {
-          offset: this.teamsOffset,
           teamQuery: `%${this.teamQuery}%`,
+          limit: this.per_page,
+          offset: (this.page - 1) * this.per_page,
         };
       },
     },

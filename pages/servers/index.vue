@@ -25,14 +25,13 @@
     </tbody>
   </clickable-table>
   <pagination
-    :per-page="10"
-    :offset="serversOffset"
-    @offset="
-      (offset) => {
-        serversOffset = offset;
+    :page="page"
+    @page="
+      (_page) => {
+        page = _page;
       }
     "
-    :total="servers_aggregate.aggregate.count"
+    :total="Math.ceil(servers_aggregate.aggregate.count / per_page)"
     v-if="servers_aggregate"
   ></pagination>
 </template>
@@ -42,18 +41,23 @@ import FiveStackButton from "~/components/FiveStackButton.vue";
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import { $ } from "~/generated/zeus";
 
 export default {
   data() {
     return {
-      serversOffset: 0,
+      page: 1,
+      per_page: 10,
     };
   },
   apollo: {
     servers: {
       query: generateQuery({
         servers: [
-          {},
+          {
+            limit: $("limit", "Int!"),
+            offset: $("offset", "Int!"),
+          },
           {
             id: true,
             host: true,
@@ -64,6 +68,12 @@ export default {
           },
         ],
       }),
+      variables: function () {
+        return {
+          limit: this.per_page,
+          offset: (this.page - 1) * this.per_page,
+        };
+      },
     },
     servers_aggregate: {
       query: generateQuery({

@@ -10,14 +10,13 @@
     <tab title="Matches">
       <matches-table :matches="matches" v-if="matches"></matches-table>
       <pagination
-        :per-page="10"
-        :offset="matchesOffset"
-        @offset="
-          (offset) => {
-            matchesOffset = offset;
+        :page="page"
+        @page="
+          (_page) => {
+            page = _page;
           }
         "
-        :total="matches_aggregate.aggregate.count"
+        :total="Math.ceil(matches_aggregate.aggregate.count / per_page)"
         v-if="matches_aggregate"
       ></pagination>
     </tab>
@@ -37,7 +36,8 @@ import { $, order_by } from "~/generated/zeus";
 export default {
   data() {
     return {
-      matchesOffset: 0,
+      page: 1,
+      per_page: 10,
     };
   },
   apollo: {
@@ -46,7 +46,7 @@ export default {
       query: generateQuery({
         matches: [
           {
-            limit: 10,
+            limit: $("limit", "Int!"),
             offset: $("offset", "Int!"),
             order_by: [
               {},
@@ -60,7 +60,8 @@ export default {
       }),
       variables: function () {
         return {
-          offset: this.matchesOffset,
+          limit: this.per_page,
+          offset: (this.page - 1) * this.per_page,
         };
       },
     },

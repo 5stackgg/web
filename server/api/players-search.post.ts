@@ -27,5 +27,7 @@ export default defineEventHandler(async (event) => {
       query_by: queryBy,
       sort_by: "name:asc",
       ...(body.teamId ? { filter_by: `teams:${body.teamId}` } : {}),
+      ...(body.page ? { page: body.page } : {}),
+      ...(body.per_page ? { per_page: body.per_page } : {}),
     });
 });

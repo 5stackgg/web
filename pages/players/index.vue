@@ -52,6 +52,7 @@ export default {
     players: {
       fetchPolicy: "network-only",
       query: function () {
+        // TODO - use typesense instead?
         return generateQuery({
           players: [
             {

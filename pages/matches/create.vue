@@ -258,38 +258,15 @@ export default {
   },
   methods: {
     async searchPlayers(query) {
-      const { data } = await this.$apollo.query({
-        query: generateQuery({
-          players: [
-            {
-              where: {
-                ...(/^[0-9]+$/.test(query)
-                  ? {
-                      steam_id: {
-                        _eq: $("playerSteamIdQuery", "bigint"),
-                      },
-                    }
-                  : {
-                      name: {
-                        _ilike: $("playerQuery", "String"),
-                      },
-                    }),
-              },
-            },
-            {
-              name: true,
-              steam_id: true,
-              avatar_url: true,
-            },
-          ],
-        }),
-        variables: {
-          playerQuery: `%${query}%`,
-          playerSteamIdQuery: query,
-        },
+      const response = await useFetch("/api/players-search", {
+        method: "post",
+        body: { query },
+      });
+      const players = response.data.value.hits.map(({ document }) => {
+        return document;
       });
 
-      return data.players
+      return players
         .filter((player) => {
           return (
             this.form.players.lineup_1.indexOf(player) === -1 ||

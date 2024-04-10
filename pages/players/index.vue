@@ -22,15 +22,14 @@
     </tbody>
   </clickable-table>
   <pagination
-    :per-page="10"
-    :offset="playersOffset"
-    @offset="
-      (offset) => {
-        playersOffset = offset;
+    :page="page"
+    @page="
+      (_page) => {
+        page = _page;
       }
     "
-    :total="players_aggregate.aggregate.count"
-    v-if="players_aggregate"
+    :total="Math.ceil(pagination.total / per_page)"
+    v-if="pagination"
   ></pagination>
 </template>
 <script setup lang="ts">
@@ -44,91 +43,44 @@ import { $ } from "~/generated/zeus";
 export default {
   data() {
     return {
-      playersOffset: 0,
+      page: 1,
+      per_page: 10,
       playerQuery: null,
+      players: undefined,
+      pagination: undefined,
     };
   },
-  apollo: {
-    players: {
-      fetchPolicy: "network-only",
-      query: function () {
-        return generateQuery({
-          players: [
-            {
-              limit: 10,
-              offset: $("offset", "Int!"),
-              ...(this.playerQuery?.length >= 3 && {
-                where: {
-                  ...(/^[0-9]+$/.test(this.playerQuery)
-                    ? {
-                        steam_id: {
-                          _eq: $("playerSteamIdQuery", "bigint"),
-                        },
-                      }
-                    : {
-                        name: {
-                          _ilike: $("playerQuery", "String"),
-                        },
-                      }),
-                },
-              }),
-            },
-            {
-              name: true,
-              steam_id: true,
-            },
-          ],
-        });
-      },
-      variables: function () {
-        return {
-          offset: this.playersOffset,
-          playerQuery: `%${this.playerQuery}%`,
-          playerSteamIdQuery: this.playerQuery,
-        };
-      },
-    },
-    players_aggregate: {
-      fetchPolicy: "network-only",
-      query: function () {
-        return generateQuery({
-          players_aggregate: [
-            {
-              ...(this.playerQuery?.length >= 3 && {
-                where: {
-                  ...(/^[0-9]+$/.test(this.playerQuery)
-                    ? {
-                        steam_id: {
-                          _eq: $("playerSteamIdQuery", "bigint"),
-                        },
-                      }
-                    : {
-                        name: {
-                          _ilike: $("playerQuery", "String"),
-                        },
-                      }),
-                },
-              }),
-            },
-            {
-              aggregate: {
-                count: true,
-              },
-            },
-          ],
-        });
-      },
-      variables: function () {
-        return {
-          playerQuery: `%${this.playerQuery}%`,
-          playerSteamIdQuery: this.playerQuery,
-        };
+  watch: {
+    page: {
+      immediate: true,
+      handler() {
+        this.searchPlayers();
       },
     },
   },
   methods: {
     viewPlayer(steam_id) {
       this.$router.push(`/players/${steam_id}`);
+    },
+    async searchPlayers() {
+      const response = await useFetch("/api/players-search", {
+        method: "post",
+        body: {
+          page: this.page,
+          query: this.playerQuery,
+          per_page: this.per_page,
+        },
+      });
+
+      const { found, request_params } = response.data.value;
+
+      this.pagination = {
+        total: found,
+      };
+
+      this.players = response.data.value.hits.map(({ document }) => {
+        return document;
+      });
     },
   },
 };

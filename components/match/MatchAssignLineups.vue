@@ -90,59 +90,16 @@ export default {
         return;
       }
 
-      const { data } = await this.$apollo.query({
-        query: generateQuery({
-          players: [
-            {
-              where: {
-                _and: [
-                  ...(teamId
-                    ? [
-                        {
-                          teams: {
-                            id: {
-                              _eq: teamId,
-                            },
-                          },
-                        },
-                      ]
-                    : []),
-                  ...(query
-                    ? [
-                        ...(/^[0-9]+$/.test(query)
-                          ? [
-                              {
-                                steam_id: {
-                                  _eq: $("playerSteamIdQuery", "bigint"),
-                                },
-                              },
-                            ]
-                          : [
-                              {
-                                name: {
-                                  _ilike: $("playerQuery", "String"),
-                                },
-                              },
-                            ]),
-                      ]
-                    : []),
-                ],
-              },
-            },
-            {
-              name: true,
-              steam_id: true,
-              avatar_url: true,
-            },
-          ],
-        }),
-        variables: {
-          playerQuery: `%${query}%`,
-          playerSteamIdQuery: query,
-        },
+      const response = await useFetch("/api/players-search", {
+        method: "post",
+        body: { query, teamId },
       });
 
-      return data.players
+      const players = response.data.value.hits.map(({ document }) => {
+        return document;
+      });
+
+      return players
         .filter((player) => {
           if (
             this.matchLineups.lineup1.lineup_players.find((_player) => {

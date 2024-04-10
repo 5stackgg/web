@@ -38,19 +38,18 @@
           <template v-for="invite of team.invites">
             PENDING INVITES
             <img
-                class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"
-                :src="invite.player.avatar_url"
+              class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"
+              :src="invite.player.avatar_url"
             />
             {{ invite.player.name }}
             <small>[{{ invite.player.steam_id }}]</small>
             <div
-                @click="removeInvite(invite.id)"
-                class="cursor-pointer flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-gray-800 bg-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+              @click="removeInvite(invite.id)"
+              class="cursor-pointer flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-gray-800 bg-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
             >
               <close-icon></close-icon>
             </div>
           </template>
-
         </div>
 
         <div>
@@ -135,14 +134,17 @@ export default {
                   },
                 },
               ],
-              invites: [{}, {
-                id: true,
-                player: {
-                  name: true,
-                  steam_id: true,
-                  avatar_url: true,
-                }
-              }],
+              invites: [
+                {},
+                {
+                  id: true,
+                  player: {
+                    name: true,
+                    steam_id: true,
+                    avatar_url: true,
+                  },
+                },
+              ],
               matches: [{}, matchFields],
             },
           ],
@@ -216,38 +218,16 @@ export default {
       });
     },
     async searchPlayers(query) {
-      const { data } = await this.$apollo.query({
-        query: generateQuery({
-          players: [
-            {
-              where: {
-                ...(/^[0-9]+$/.test(query)
-                  ? {
-                      steam_id: {
-                        _eq: $("playerSteamIdQuery", "bigint"),
-                      },
-                    }
-                  : {
-                      name: {
-                        _ilike: $("playerQuery", "String"),
-                      },
-                    }),
-              },
-            },
-            {
-              name: true,
-              steam_id: true,
-              avatar_url: true,
-            },
-          ],
-        }),
-        variables: {
-          playerQuery: `%${query}%`,
-          playerSteamIdQuery: query,
-        },
+      const response = await useFetch("/api/players-search", {
+        method: "post",
+        body: { query },
       });
 
-      return data.players
+      const players = response.data.value.hits.map(({ document }) => {
+        return document;
+      });
+
+      return players
         .filter((player) => {
           return !this.team.roster.find((member) => {
             return member.player.steam_id === player.steam_id;

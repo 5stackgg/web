@@ -34,6 +34,7 @@
     "node-fetch": "^2.7.0",
     "pinia": "^2.1.7",
     "preline": "^2.0.3",
+    "typesense": "^1.8.2",
     "uuid": "^9.0.1"
   }
 }

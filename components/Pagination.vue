@@ -25,7 +25,7 @@
         1
       </button>
 
-      <div class="hs-tooltip inline-block" v-if="totalPages > 10">
+      <div class="hs-tooltip inline-block" v-if="total > 10">
         <button
           type="button"
           @click="setQuickPages(quickPage - 3)"
@@ -58,7 +58,7 @@
           </button>
         </template>
 
-        <div class="hs-tooltip inline-block" v-if="totalPages > 10">
+        <div class="hs-tooltip inline-block" v-if="total > 10">
           <button
             type="button"
             @click="setQuickPages(quickPage + 3)"
@@ -76,22 +76,22 @@
         </div>
 
         <button
-          @click="paginate(totalPages)"
+          @click="paginate(total)"
           type="button"
-          :disabled="current === totalPages"
-          v-if="totalPages > 1"
+          :disabled="current === total"
+          v-if="total > 1"
           class="min-h-[38px] min-w-[38px] flex justify-center items-center border border-transparent text-gray-800 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white"
           :class="{
-            [`border-gray-200 dark:border-gray-700`]: current === totalPages,
+            [`border-gray-200 dark:border-gray-700`]: current === total,
           }"
         >
-          {{ totalPages }}
+          {{ total }}
         </button>
       </div>
 
       <button
         @click="paginate(current + 1)"
-        :disabled="current === totalPages"
+        :disabled="current === total"
         type="button"
         class="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-transparent dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
       >
@@ -129,16 +129,12 @@ export default {
       type: Number,
       required: true,
     },
-    offset: {
-      type: Number,
-      required: true,
-    },
-    perPage: {
+    page: {
       type: Number,
       required: true,
     },
   },
-  emits: ["offset"],
+  emits: ["page"],
   watch: {
     current: {
       immediate: true,
@@ -155,7 +151,7 @@ export default {
   methods: {
     paginate(page) {
       if (page) {
-        this.$emit("offset", (page - 1) * this.perPage);
+        this.$emit("page", page);
       }
     },
     setQuickPages(page) {
@@ -163,8 +159,8 @@ export default {
         page = 4;
       }
 
-      if (page > this.totalPages - 3) {
-        page = this.totalPages - 3;
+      if (page > this.total - 3) {
+        page = this.total - 3;
       }
 
       this.quickPage = page;
@@ -172,7 +168,7 @@ export default {
   },
   computed: {
     quickPages() {
-      if (this.totalPages < 10) {
+      if (this.total < 10) {
         return [];
       }
 
@@ -184,10 +180,7 @@ export default {
       });
     },
     current() {
-      return this.offset / this.perPage + 1;
-    },
-    totalPages() {
-      return Math.ceil(this.total / this.perPage);
+      return this.page;
     },
   },
 };

@@ -57,6 +57,11 @@ export default {
         this.searchPlayers();
       },
     },
+    playerQuery: {
+      handler() {
+        this.searchPlayers();
+      },
+    },
   },
   methods: {
     viewPlayer(steam_id) {

@@ -35,7 +35,6 @@ export default {
   methods: {
     getClutches(member) {
       const clutches = [];
-
       for (const match_map_id in this.clutches) {
         for (const round in this.clutches[match_map_id]) {
           if (this.clutches[match_map_id][round].steam_id === member.steam_id) {
@@ -96,6 +95,10 @@ export default {
 
             const clutcher_steam_id =
               clutches[match_map.id]?.[round.round]?.steam_id;
+
+            if(lineup1Alive == 0 && lineup2Alive === 0) {
+              continue;
+            }
 
             if (
               ((lineup1Alive == 0 || lineup2Alive === 0) &&

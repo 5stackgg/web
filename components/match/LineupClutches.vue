@@ -96,7 +96,7 @@ export default {
             const clutcher_steam_id =
               clutches[match_map.id]?.[round.round]?.steam_id;
 
-            if(lineup1Alive == 0 && lineup2Alive === 0) {
+            if (lineup1Alive == 0 && lineup2Alive === 0) {
               continue;
             }
 

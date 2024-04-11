@@ -117,9 +117,6 @@
     </nav>
 
     <div class="flex flex-col flex-grow">
-      <five-stack-button @click="connectDiscord" v-if="!me.discord_id"
-        >Connect Discord to use match creating bot</five-stack-button
-      >
       <NuxtLink :to="`/players/${me.steam_id}`" class="nav-item">
         <div>
           <img
@@ -129,6 +126,13 @@
           {{ me.player.name }} <small>[{{ me.steam_id }}]</small>
         </div>
       </NuxtLink>
+
+      <five-stack-button @click="addDiscordBot" v-if="me.discord_id">
+        Add Discord Bot to Your Server
+      </five-stack-button>
+      <five-stack-button @click="connectDiscord" v-else>
+        Connect Discord to use match creating bot
+      </five-stack-button>
 
       <template v-for="invite of invites">
         Team Invite for {{ invite.team.name }}
@@ -201,6 +205,9 @@ export default {
       window.location = `https://5stack.gg/auth/discord?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
+    },
+    addDiscordBot() {
+      window.open("https://5stack.gg/discord-bot", "_blank");
     },
     async acceptInvite(inviteId) {
       await this.$apollo.mutate({

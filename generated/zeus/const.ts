@@ -4919,6 +4919,7 @@ export const AllTypesProps: Record<string,any> = {
 		assited_by_players:"player_assists_bool_exp",
 		assited_by_players_aggregate:"player_assists_aggregate_bool_exp",
 		avatar_url:"String_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
 		damage_dealt:"player_damages_bool_exp",
 		damage_dealt_aggregate:"player_damages_aggregate_bool_exp",
 		damage_taken:"player_damages_bool_exp",
@@ -4963,6 +4964,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_rosters_aggregate:"tournament_roster_aggregate_bool_exp",
 		tournaments:"tournaments_bool_exp",
 		tournaments_aggregate:"tournaments_aggregate_bool_exp",
+		updated_at:"timestamptz_comparison_exp",
 		utility_thrown:"player_utility_bool_exp",
 		utility_thrown_aggregate:"player_utility_aggregate_bool_exp"
 	},
@@ -4973,6 +4975,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_insert_input:{
 		assists:"player_assists_arr_rel_insert_input",
 		assited_by_players:"player_assists_arr_rel_insert_input",
+		created_at:"timestamptz",
 		damage_dealt:"player_damages_arr_rel_insert_input",
 		damage_taken:"player_damages_arr_rel_insert_input",
 		deaths:"player_kills_arr_rel_insert_input",
@@ -4993,6 +4996,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_organizers:"tournament_organizers_arr_rel_insert_input",
 		tournament_rosters:"tournament_roster_arr_rel_insert_input",
 		tournaments:"tournaments_arr_rel_insert_input",
+		updated_at:"timestamptz",
 		utility_thrown:"player_utility_arr_rel_insert_input"
 	},
 	players_obj_rel_insert_input:{
@@ -5008,6 +5012,7 @@ export const AllTypesProps: Record<string,any> = {
 		assists_aggregate:"player_assists_aggregate_order_by",
 		assited_by_players_aggregate:"player_assists_aggregate_order_by",
 		avatar_url:"order_by",
+		created_at:"order_by",
 		damage_dealt_aggregate:"player_damages_aggregate_order_by",
 		damage_taken_aggregate:"player_damages_aggregate_order_by",
 		deaths_aggregate:"player_kills_aggregate_order_by",
@@ -5033,6 +5038,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		tournament_rosters_aggregate:"tournament_roster_aggregate_order_by",
 		tournaments_aggregate:"tournaments_aggregate_order_by",
+		updated_at:"order_by",
 		utility_thrown_aggregate:"player_utility_aggregate_order_by"
 	},
 	players_pk_columns_input:{
@@ -5040,14 +5046,18 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_select_column: "enum" as const,
 	players_set_input:{
-		steam_id:"bigint"
+		created_at:"timestamptz",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
 	},
 	players_stream_cursor_input:{
 		initial_value:"players_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
 	players_stream_cursor_value_input:{
-		steam_id:"bigint"
+		created_at:"timestamptz",
+		steam_id:"bigint",
+		updated_at:"timestamptz"
 	},
 	players_update_column: "enum" as const,
 	players_updates:{
@@ -5661,7 +5671,8 @@ export const AllTypesProps: Record<string,any> = {
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
 		on_demand:"Boolean_comparison_exp",
-		player_steam_id:"String_comparison_exp",
+		owner:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
 		port:"Int_comparison_exp",
 		rcon_password:"String_comparison_exp",
 		tournament_servers:"tournament_servers_bool_exp",
@@ -5670,12 +5681,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_constraint: "enum" as const,
 	servers_inc_input:{
-
+		player_steam_id:"bigint"
 	},
 	servers_insert_input:{
 		api_password:"uuid",
 		id:"uuid",
 		matches:"matches_arr_rel_insert_input",
+		owner:"players_obj_rel_insert_input",
+		player_steam_id:"bigint",
 		tournament_servers:"tournament_servers_arr_rel_insert_input"
 	},
 	servers_obj_rel_insert_input:{
@@ -5696,6 +5709,7 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		on_demand:"order_by",
+		owner:"players_order_by",
 		player_steam_id:"order_by",
 		port:"order_by",
 		rcon_password:"order_by",
@@ -5708,7 +5722,8 @@ export const AllTypesProps: Record<string,any> = {
 	servers_select_column: "enum" as const,
 	servers_set_input:{
 		api_password:"uuid",
-		id:"uuid"
+		id:"uuid",
+		player_steam_id:"bigint"
 	},
 	servers_stream_cursor_input:{
 		initial_value:"servers_stream_cursor_value_input",
@@ -5716,7 +5731,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_stream_cursor_value_input:{
 		api_password:"uuid",
-		id:"uuid"
+		id:"uuid",
+		player_steam_id:"bigint"
 	},
 	servers_update_column: "enum" as const,
 	servers_updates:{
@@ -10335,6 +10351,7 @@ export const ReturnTypes: Record<string,any> = {
 		assited_by_players:"player_assists",
 		assited_by_players_aggregate:"player_assists_aggregate",
 		avatar_url:"String",
+		created_at:"timestamptz",
 		damage_dealt:"player_damages",
 		damage_dealt_aggregate:"player_damages_aggregate",
 		damage_taken:"player_damages",
@@ -10379,6 +10396,7 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_rosters_aggregate:"tournament_roster_aggregate",
 		tournaments:"tournaments",
 		tournaments_aggregate:"tournaments_aggregate",
+		updated_at:"timestamptz",
 		utility_thrown:"player_utility",
 		utility_thrown_aggregate:"player_utility_aggregate"
 	},
@@ -10404,17 +10422,21 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	players_max_fields:{
 		avatar_url:"String",
+		created_at:"timestamptz",
 		discord_id:"String",
 		name:"String",
 		profile_url:"String",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		updated_at:"timestamptz"
 	},
 	players_min_fields:{
 		avatar_url:"String",
+		created_at:"timestamptz",
 		discord_id:"String",
 		name:"String",
 		profile_url:"String",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		updated_at:"timestamptz"
 	},
 	players_mutation_response:{
 		affected_rows:"Int",
@@ -10581,7 +10603,8 @@ export const ReturnTypes: Record<string,any> = {
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
 		on_demand:"Boolean",
-		player_steam_id:"String",
+		owner:"players",
+		player_steam_id:"bigint",
 		port:"Int",
 		rcon_password:"String",
 		tournament_servers:"tournament_servers",
@@ -10606,6 +10629,7 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"servers_variance_fields"
 	},
 	servers_avg_fields:{
+		player_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
@@ -10615,7 +10639,7 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		label:"String",
-		player_steam_id:"String",
+		player_steam_id:"bigint",
 		port:"Int",
 		rcon_password:"String",
 		tv_port:"Int"
@@ -10626,7 +10650,7 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		label:"String",
-		player_steam_id:"String",
+		player_steam_id:"bigint",
 		port:"Int",
 		rcon_password:"String",
 		tv_port:"Int"
@@ -10636,30 +10660,37 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"servers"
 	},
 	servers_stddev_fields:{
+		player_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_pop_fields:{
+		player_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_samp_fields:{
+		player_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_sum_fields:{
+		player_steam_id:"bigint",
 		port:"Int",
 		tv_port:"Int"
 	},
 	servers_var_pop_fields:{
+		player_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_var_samp_fields:{
+		player_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_variance_fields:{
+		player_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},

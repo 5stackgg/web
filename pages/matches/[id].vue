@@ -369,6 +369,28 @@ export default {
                         },
                       ],
                       __alias: {
+                        hs_kills_aggregate: {
+                          kills_aggregate: [
+                            {
+                              where: {
+                                match_id: {
+                                  _eq: $("matchId", "uuid!"),
+                                },
+                                headshot: {
+                                  _eq: true,
+                                },
+                              },
+                            },
+                            {
+                              aggregate: [
+                                {},
+                                {
+                                  count: true,
+                                },
+                              ],
+                            },
+                          ],
+                        },
                         zeus_kills_aggregate: {
                           kills_aggregate: [
                             {

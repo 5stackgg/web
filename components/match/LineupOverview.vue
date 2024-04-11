@@ -7,6 +7,7 @@
         <th>Assists</th>
         <th>Deaths</th>
         <th>K/D</th>
+        <th>HS%</th>
         <th>Total Damage</th>
         <th>Team Damage</th>
         <th>2k</th>

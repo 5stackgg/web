@@ -17,6 +17,9 @@
     <td class="w-2">
       {{ kd }}
     </td>
+    <td>
+      {{ hs }}
+    </td>
     <td class="w-2">
       {{ member.player.damage_dealt_aggregate.aggregate.sum.damage }}
       <span
@@ -78,6 +81,19 @@ export default {
       return formatStatValue(
         this.member.player.kills_aggregate.aggregate.count /
           this.member.player.deaths_aggregate.aggregate.count,
+      );
+    },
+    hs() {
+      if (this.member.player.kills_aggregate.aggregate.count === 0) {
+        return 0;
+      }
+      return (
+        formatStatValue(
+          this.member.player.hs_kills_aggregate.aggregate.count /
+            this.member.player.kills_aggregate.aggregate.count,
+        ) *
+          100 +
+        "%"
       );
     },
     twoKills() {

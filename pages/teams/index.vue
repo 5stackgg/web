@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Search } from "lucide-vue-next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FormItem, FormControl, FormLabel, Form } from "@/components/ui/form";
-import { Separator } from "~/components/ui/separator";
+import { FormItem, FormControl, Form } from "@/components/ui/form";
 import {Button} from "~/components/ui/button";
 </script>
 

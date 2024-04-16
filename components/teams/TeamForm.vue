@@ -68,10 +68,12 @@ export default {
     team: {
       immediate: true,
       handler(team) {
-        this.form.setValues({
-          team_name: team.name,
-          short_name: team.short_name
-        })
+        if(team) {
+          this.form.setValues({
+            team_name: team.name,
+            short_name: team.short_name
+          })
+        }
       }
     }
   },
@@ -100,7 +102,23 @@ export default {
         return;
       }
 
-      // TODO
+      const { data } = await this.$apollo.mutate({
+        mutation: generateMutation({
+          insert_teams_one: [
+            {
+              object: {
+                name: this.form.values.team_name,
+                short_name: this.form.values.short_name
+              }
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
+      });
+
+      this.$router.push(`/teams/${data.insert_teams_one.id}`);
 
     },
   }

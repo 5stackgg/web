@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import Pagination from "@/components/Pagination.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "~/components/ui/button";
 </script>
 
 <template>
@@ -39,15 +38,22 @@ import { Button } from "~/components/ui/button";
         class="cursor-pointer"
       >
         <TableCell class="font-medium">
-          <Avatar>
-            <AvatarImage
-              :src="player.avatar_url"
-              :alt="player.name"
-              v-if="player.avatar_url"
-            />
-            <AvatarFallback>{{ player.name }}</AvatarFallback>
-          </Avatar>
-          {{ player.name }}
+          <div class="flex">
+            <Avatar class="mx-3">
+              <AvatarImage
+                  :src="player.avatar_url"
+                  :alt="player.name"
+                  v-if="player.avatar_url"
+              />
+              <AvatarFallback>{{ player.name }}</AvatarFallback>
+            </Avatar>
+            <div>
+              {{ player.name }}
+              <p class="text-xs">
+                {{ player.steam_id }}
+              </p>
+            </div>
+          </div>
         </TableCell>
       </TableRow>
     </TableBody>

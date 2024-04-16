@@ -1,35 +1,49 @@
+<script setup lang="ts">
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+</script>
+
 <template>
-  <clickable-table class="mt-2 mb-2">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Status</th>
-        <th>Type</th>
-        <th>Maps</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template v-for="match of matches">
-        <tr @click="viewMatch(match.id)">
-          <td>{{ lineup1(match).name }} vs {{ lineup2(match).name }}</td>
-          <td>{{ match.status }}</td>
-          <td>{{ match.type }} (MR {{ match.mr }})</td>
-          <td>
-            <template v-for="match_map of match.match_maps">
-              {{ match_map.map }}
-              <br />
-              <p>{{ lineup1(match).name }} {{ match_map.lineup_1_score }}</p>
-              <p>{{ lineup2(match).name }} {{ match_map.lineup_2_score }}</p>
-            </template>
-          </td>
-          <td>
-            {{ match.created_at }}
-          </td>
-        </tr>
-      </template>
-    </tbody>
-  </clickable-table>
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Teams</TableHead>
+        <TableHead>Status</TableHead>
+        <TableHead>Type</TableHead>
+        <TableHead>Maps</TableHead>
+        <TableHead>Date</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow
+        v-for="match of matches"
+        :key="match.id"
+        @click="viewMatch(match.id)"
+        class="cursor-pointer"
+      >
+        <TableCell class="font-medium">
+          {{ lineup1(match).name }} vs {{ lineup2(match).name }}
+        </TableCell>
+        <TableCell>{{ match.status }}</TableCell>
+        <TableCell>{{ match.type }} (MR {{ match.mr }})</TableCell>
+        <TableCell>
+          <template v-for="(match_map, index) of match.match_maps">
+            <template v-if="index > 0">,</template>
+            {{ match_map.map.name }}
+          </template>
+        </TableCell>
+        <TableCell>
+          <time-ago :date="match.created_at"></time-ago>
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
 </template>
 
 <script lang="ts">

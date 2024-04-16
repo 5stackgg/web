@@ -86,7 +86,6 @@
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import Tab from "~/components/tabs/Tab.vue";
 import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import FiveStackCheckbox from "~/components/forms/FiveStackCheckbox.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";

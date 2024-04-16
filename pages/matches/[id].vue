@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import MapVeto from "~/components/veto/MapVeto.vue";
+import MatchTabs from "~/components/match/MatchTabs.vue";
+</script>
+
 <template>
   <template v-if="match">
     <div class="px-4 sm:px-6 lg:px-8">
@@ -138,8 +143,7 @@
 import { $, order_by } from "~/generated/zeus";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import MapVeto from "~/components/veto/MapVeto.vue";
-import MatchTabs from "~/components/match/MatchTabs.vue";
+
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
@@ -148,15 +152,6 @@ import { useAuthStore } from "~/stores/AuthStore";
 import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
 
 export default {
-  components: {
-    MatchAssignCoach,
-    MapVeto,
-    MatchTabs,
-    MatchStatus,
-    MatchActions,
-    MatchMapPicks,
-    MatchAssignLineups,
-  },
   data() {
     return {
       match: undefined,

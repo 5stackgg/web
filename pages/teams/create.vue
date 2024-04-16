@@ -24,7 +24,7 @@
               ></five-stack-text-input>
             </div>
             <div class="mt-6 grid gap-4 lg:gap-6">
-              <five-stack-button type="success">Create Team</five-stack-button>
+              <Button>Create Team</Button>
             </div>
           </form>
         </div>
@@ -34,13 +34,11 @@
 </template>
 
 <script lang="ts">
-import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
+import { Button } from "@/components/ui/button";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
-  components: {
-    FiveStackTextInput,
-  },
+  components: { Button },
   data() {
     return {
       form: {

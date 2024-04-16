@@ -1,5 +1,5 @@
 <template>
-  <tr>
+  <tr v-if="member.player">
     <lineup-member
       :member="member"
       :lineup_id="lineup_id"

@@ -1,6 +1,24 @@
 <template>
   <template v-if="match.status == e_match_status_enum.PickingPlayers">
-    <form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">
+    <Form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">
+      <FormField>
+        <FormItem>
+          <FormLabel>Server</FormLabel>
+          <FormControl>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Server" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Fruits</SelectLabel>
+                  <SelectItem value="apple"> Apple </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+        </FormItem>
+      </FormField>
       <five-stack-select-input
         label="Server"
         :options="availableServers"
@@ -9,7 +27,7 @@
       <five-stack-button @click="scheduleMatch">
         Schedule Match!
       </five-stack-button>
-    </form>
+    </Form>
   </template>
   <template v-if="match.status == e_match_status_enum.Scheduled">
     <form @submit.prevent="startMatch">

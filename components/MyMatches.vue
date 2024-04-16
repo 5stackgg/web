@@ -14,6 +14,7 @@
             per_page,
         )
       "
+      :per-page="per_page"
       v-if="myTotalMatches"
     ></pagination>
   </div>

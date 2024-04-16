@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from "@/components/ui/table";
 </script>
 
 <template>
@@ -20,7 +20,7 @@ import {
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow  @click="viewTeam(team.id)" v-for="team of teams" :key="team.id">
+      <TableRow @click="viewTeam(team.id)" v-for="team of teams" :key="team.id">
         <TableCell class="font-medium">
           {{ team.name }}
         </TableCell>

@@ -1,43 +1,35 @@
 <script setup lang="ts">
-import { TeamMembers} from "~/components/teams";
+import { TeamMembers } from "~/components/teams";
 import {
   AlertDialog,
-  AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter, AlertDialogHeader,
-  AlertDialogTitle, AlertDialogTrigger
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
-import {Button} from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 </script>
 
 <template>
   <template v-if="team">
     <PageHeading>
       {{ team.name }}
-      <template #description>
-        [{{ team.short_name }}]
-      </template>
+      <template #description> [{{ team.short_name }}] </template>
     </PageHeading>
 
-    <team-members :team-id="$route.params.id"></team-members>
-
-    <PageHeading>
-      Adding Members
-    </PageHeading>
-
-      <form @submit.prevent>
-<!--            <five-stack-search-input-->
-<!--              placeholder="Find Player"-->
-<!--              v-model="form.member"-->
-<!--              :search="searchPlayers"-->
-<!--            ></five-stack-search-input>-->
-      </form>
-
-    <PageHeading>
-      Recent Matches / Scheduled
-    </PageHeading>
-
-    <matches-table :matches="team.matches"></matches-table>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="col-span-2 sm:col-span-1 lg:col-span-2">
+        <PageHeading> Recent Matches / Scheduled </PageHeading>
+        <matches-table :matches="team.matches"></matches-table>
+      </div>
+      <div class="col-span-2 sm:col-span-1 lg:col-span-1">
+        <team-members :team-id="$route.params.id"></team-members>
+      </div>
+    </div>
 
     <AlertDialog>
       <AlertDialogTrigger>

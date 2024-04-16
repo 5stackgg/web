@@ -2,7 +2,7 @@
 import { Search } from "lucide-vue-next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormItem, FormControl, Form } from "@/components/ui/form";
-import {Button} from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 </script>
 
 <template>
@@ -12,9 +12,7 @@ import {Button} from "~/components/ui/button";
       <Button>Create Team</Button>
     </NuxtLink>
 
-    <template v-slot:description>
-      Manage teams and rosters.
-    </template>
+    <template v-slot:description> Manage teams and rosters. </template>
   </PageHeading>
 
   <Tabs default-value="my-teams">

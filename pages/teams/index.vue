@@ -3,19 +3,20 @@ import { Search } from "lucide-vue-next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormItem, FormControl, FormLabel, Form } from "@/components/ui/form";
 import { Separator } from "~/components/ui/separator";
+import {Button} from "~/components/ui/button";
 </script>
 
 <template>
-  <div class="space-y-0.5">
-    <h2 class="text-2xl font-bold tracking-tight">
-      Teams
-      <NuxtLink to="/teams/create">
-        <Button>Create Team</Button>
-      </NuxtLink>
-    </h2>
-    <p class="text-muted-foreground">Manage teams and rosters.</p>
-  </div>
-  <Separator class="my-6" />
+  <PageHeading>
+    Teams
+    <NuxtLink to="/teams/create">
+      <Button>Create Team</Button>
+    </NuxtLink>
+
+    <template v-slot:description>
+      Manage teams and rosters.
+    </template>
+  </PageHeading>
 
   <Tabs default-value="my-teams">
     <TabsList>

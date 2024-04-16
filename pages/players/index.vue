@@ -4,12 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import Pagination from "@/components/Pagination.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {Button} from "~/components/ui/button";
 </script>
 
 <template>
-  <div class="space-y-0.5">
-    <h2 class="text-2xl font-bold tracking-tight">Players</h2>
-  </div>
+  <PageHeading>
+    Players
+  </PageHeading>
   <Separator class="my-6" />
 
   <div class="relative w-full max-w-sm items-center">

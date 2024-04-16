@@ -7,17 +7,17 @@ import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
-  <div class="space-y-0.5">
-    <h2 class="text-2xl font-bold tracking-tight">
-      Matches
-      <NuxtLink to="/matches/create">
-        <Button>Create Match</Button>
-      </NuxtLink>
-    </h2>
-    <p class="text-muted-foreground">
+  <PageHeading>
+    Matches
+    <NuxtLink to="/matches/create">
+      <Button>Create Match</Button>
+    </NuxtLink>
+
+    <template v-slot:description>
       Manage and View upcoming matches that you are assigned to.
-    </p>
-  </div>
+    </template>
+  </PageHeading>
+
   <Separator class="my-6" />
 
   <Tabs default-value="my">

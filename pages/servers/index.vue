@@ -12,11 +12,12 @@ import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
-  <div class="space-y-0.5">
-    <h2 class="text-2xl font-bold tracking-tight">Servers</h2>
-    <p class="text-muted-foreground">Manage your dedicated servers servers</p>
-  </div>
-  <Separator class="my-6" />
+  <PageHeading>
+    Servers
+    <template v-slot:description>
+      Manage your dedicated servers servers
+    </template>
+  </PageHeading>
 
   <Table>
     <TableHeader>

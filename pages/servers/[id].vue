@@ -1,32 +1,64 @@
-<template>
-  <pre>{{ servers_by_pk }}</pre>
-
-  <form @submit.prevent="sendCommand">
-    <div class="mt-6 grid gap-4 lg:gap-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-        <five-stack-text-input
-          label="Command"
-          v-model="command"
-        ></five-stack-text-input>
-      </div>
-    </div>
-  </form>
-
-  <div class="p-10 overflow-scroll bg-black text-white text-xs font-mono">
-    <p v-for="log in logs" :key="log" class="whitespace-pre mt-2 mb-2">
-      {{ log }}
-    </p>
-  </div>
-</template>
 <script setup lang="ts">
-import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
+import { Button } from '@/components/ui/button'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {CornerDownLeft} from "lucide-vue-next";
+import {Badge} from "~/components/ui/badge";
+import PageHeading from "~/components/PageHeading.vue";
+
 </script>
+
+<template>
+  <PageHeading v-if="servers_by_pk">
+    {{ servers_by_pk.label }} ({{ servers_by_pk.host }}:{{ servers_by_pk.port }})
+    <PasswordInput v-model="servers_by_pk.api_password" description="Server API Key use to get matches / connect to redis for match events." :disabled="true"></PasswordInput>
+  </PageHeading>
+
+  <div class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
+    <Badge variant="outline" class="absolute right-3 top-3">
+      Output
+    </Badge>
+    <div class="flex-1 overflow-scroll max-h-screen">
+      <p v-for="log in logs" :key="log" class="whitespace-pre mt-2 mb-2">
+        {{ log }}
+      </p>
+    </div>
+    <form class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring" @submit.prevent="sendCommand">
+      <FormField v-slot="{ componentField }" name="command">
+        <FormItem>
+          <FormControl>
+             <Input
+                 placeholder="..."
+                 v-bind="componentField"
+                 class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+             />
+          </FormControl>
+        </FormItem>
+      </FormField>
+      <div class="flex items-center p-3 pt-0">
+        <Button type="submit" size="sm" class="ml-auto gap-1.5">
+          Send Command
+          <CornerDownLeft class="size-3.5" />
+        </Button>
+      </div>
+    </form>
+  </div>
+
+</template>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import socket from "~/web-sockets/Socket";
 import { v4 as uuidv4 } from "uuid";
+
+import {useForm} from "vee-validate";
+import {toTypedSchema} from "@vee-validate/zod";
+import * as z from 'zod'
 
 export default {
   apollo: {
@@ -57,9 +89,13 @@ export default {
   data() {
     return {
       logs: [],
-      command: "",
       uuid: undefined,
       rconListener: undefined,
+      form: useForm({
+        validationSchema: toTypedSchema(z.object({
+          command: z.string().min(1)
+        })),
+      })
     };
   },
   watch: {
@@ -81,15 +117,17 @@ export default {
   },
   methods: {
     sendCommand() {
-      if (this.command.length === 0) {
+      const { command } = this.form.values;
+      console.info("COMMAND", command)
+      if (command?.length === 0) {
         return;
       }
 
       socket.event("rcon", this.uuid, {
         serverId: this.$route.params.id,
-        command: this.command,
+        command: command,
       });
-      this.command = "";
+      this.form.resetForm();
     },
   },
   beforeUnmount() {

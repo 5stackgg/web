@@ -22,7 +22,7 @@ import {
 
 
 import { ref } from 'vue'
-import {CornerDownLeft, MoreHorizontal, Trash} from 'lucide-vue-next'
+import {MoreHorizontal, Trash} from 'lucide-vue-next'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -33,8 +33,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {FormControl, FormField, FormItem} from "~/components/ui/form";
-import {Input} from "~/components/ui/input";
 import TeamForm from "~/components/teams/TeamForm.vue";
 
 const teamMenu = ref(false)
@@ -61,7 +59,7 @@ const teamMenu = ref(false)
             <DropdownMenuSeparator />
 
             <DropdownMenuItem class="text-red-600" @click="deleteTeamAlertDialog = true">
-              <Trash class="mr-2 h-4 w-4 inline" /> Delete Team
+              <Trash class="mr-2 h-4 w-4 inline" /> Delete
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

@@ -9,11 +9,16 @@ import {
 } from "@/components/ui/table";
 import Pagination from "@/components/Pagination.vue";
 import { Separator } from "~/components/ui/separator";
+import {Button} from "~/components/ui/button";
 </script>
 
 <template>
   <PageHeading>
     Servers
+    <NuxtLink to="/servers/create">
+      <Button>Create Server</Button>
+    </NuxtLink>
+
     <template v-slot:description>
       Manage your dedicated servers servers
     </template>
@@ -65,32 +70,38 @@ export default {
     return {
       page: 1,
       perPage: 10,
+      servers: undefined,
     };
   },
   apollo: {
-    servers: {
-      query: generateQuery({
-        servers: [
-          {
-            limit: $("limit", "Int!"),
-            offset: $("offset", "Int!"),
-          },
-          {
-            id: true,
-            host: true,
-            port: true,
-            label: true,
-            tv_port: true,
-            enabled: true,
-          },
-        ],
-      }),
-      variables: function () {
-        return {
-          limit: this.perPage,
-          offset: (this.page - 1) * this.perPage,
-        };
-      },
+    $subscribe : {
+      servers: {
+        query: generateQuery({
+          servers: [
+            {
+              limit: $("limit", "Int!"),
+              offset: $("offset", "Int!"),
+            },
+            {
+              id: true,
+              host: true,
+              port: true,
+              label: true,
+              tv_port: true,
+              enabled: true,
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            limit: this.perPage,
+            offset: (this.page - 1) * this.perPage,
+          };
+        },
+        result: function ({ data }) {
+          this.servers = data.servers
+        },
+      }
     },
     servers_aggregate: {
       query: generateQuery({

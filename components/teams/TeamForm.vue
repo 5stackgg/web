@@ -28,7 +28,7 @@ import {FormControl, FormField, FormItem} from "~/components/ui/form";
         </FormControl>
       </FormItem>
     </FormField>
-    <Button type="submit" :disabled="form.errors.length > 0">
+    <Button type="submit" :disabled="Object.keys(form.errors) > 0">
       <template v-if="team">
         Update
       </template><template v-else>

@@ -17,16 +17,15 @@ import { Separator } from "~/components/ui/separator";
   </div>
   <Separator class="my-6" />
 
-  <Tabs default-value="my-teams" class="w-[400px]">
+  <Tabs default-value="my-teams">
     <TabsList>
-      <TabsTrigger value="my-teams"> my teams </TabsTrigger>
-      <TabsTrigger value="teams"> teams </TabsTrigger>
+      <TabsTrigger value="my-teams"> My Teams </TabsTrigger>
+      <TabsTrigger value="teams"> Other Teams </TabsTrigger>
     </TabsList>
     <TabsContent value="teams">
-      <Form @submit="onSubmit">
-        <FormField v-slot="{ componentField }" name="username">
+      <Form>
+        <FormField name="teamQuery">
           <FormItem>
-            <FormLabel>Username</FormLabel>
             <FormControl>
               <div class="relative w-full max-w-sm items-center">
                 <Input

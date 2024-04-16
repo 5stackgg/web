@@ -1,7 +1,7 @@
 <template>
   <template v-if="match.status == e_match_status_enum.PickingPlayers">
     <Form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">
-      <FormField>
+      <FormField name="server">
         <FormItem>
           <FormLabel>Server</FormLabel>
           <FormControl>

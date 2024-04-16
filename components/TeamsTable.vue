@@ -1,24 +1,36 @@
+<script setup lang="ts">
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+</script>
+
 <template>
-  <clickable-table class="mt-2 mb-2">
-    <thead>
-      <tr>
-        <th>Team</th>
-        <th>Wins</th>
-        <th>Losses</th>
-        <th>Overtime Losses</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template v-for="team of teams">
-        <tr @click="viewTeam(team.id)">
-          <td>{{ team.name }}</td>
-          <td>Wins</td>
-          <td>Losses</td>
-          <td>Overtime Losses</td>
-        </tr>
-      </template>
-    </tbody>
-  </clickable-table>
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Team</TableHead>
+        <TableHead>Wins</TableHead>
+        <TableHead>Losses</TableHead>
+        <TableHead>Overtime Losses</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow  @click="viewTeam(team.id)" v-for="team of teams" :key="team.id">
+        <TableCell class="font-medium">
+          {{ team.name }}
+        </TableCell>
+        <TableCell>TODO</TableCell>
+        <TableCell>TODO</TableCell>
+        <TableCell>TODO</TableCell>
+        <TableCell>TODO</TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
 </template>
 
 <script lang="ts">

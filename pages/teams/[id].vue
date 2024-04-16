@@ -124,9 +124,6 @@ export default {
       team: undefined,
       editTeamSheet: false,
       deleteTeamAlertDialog: false,
-      form: {
-        member: undefined,
-      },
     };
   },
   apollo: {
@@ -177,57 +174,7 @@ export default {
       },
     },
   },
-  watch: {
-    ["form.member"]: {
-      handler(member) {
-        if (member) {
-          this.form.member = undefined;
-          this.addMember(member.value.steam_id);
-        }
-      },
-    },
-  },
   methods: {
-    async addMember(steam_id) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_team_invites_one: [
-            {
-              object: {
-                steam_id,
-                team_id: this.$route.params.id,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async searchPlayers(query) {
-      const response = await useFetch("/api/players-search", {
-        method: "post",
-        body: { query },
-      });
-
-      const players = response.data.value.hits.map(({ document }) => {
-        return document;
-      });
-
-      return players
-        .filter((player) => {
-          return !this.team.roster.find((member) => {
-            return member.player.steam_id === player.steam_id;
-          });
-        })
-        .map((user) => {
-          return {
-            value: user,
-            display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg" src="${user.avatar_url}"> ${user.name} <small>[${user.steam_id}]</small>`,
-          };
-        });
-    },
     async deleteTeam() {
       await this.$apollo.mutate({
         mutation: generateMutation({

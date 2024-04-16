@@ -43,19 +43,14 @@ import { Separator } from "~/components/ui/separator";
       </template>
     </CardContent>
   </Card>
-</template>
 
-<!--<form @submit.prevent>-->
-<!--&lt;!&ndash;            <five-stack-search-input&ndash;&gt;-->
-<!--&lt;!&ndash;              placeholder="Find Player"&ndash;&gt;-->
-<!--&lt;!&ndash;              v-model="form.member"&ndash;&gt;-->
-<!--&lt;!&ndash;              :search="searchPlayers"&ndash;&gt;-->
-<!--&lt;!&ndash;            ></five-stack-search-input>&ndash;&gt;-->
-<!--</form>-->
+  <player-search label="Invite Player to Team" :exclude="team?.roster.map((member) => member.player.steam_id) || []" @selected="addMember"></player-search>
+</template>
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_team_roles_enum, order_by } from "~/generated/zeus";
+import {generateMutation} from "~/graphql/graphqlGen";
 
 export default {
   props: {
@@ -140,6 +135,25 @@ export default {
           this.roles = data.e_team_roles;
         },
       },
+    },
+  },
+  methods: {
+    async addMember(member) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          insert_team_invites_one: [
+            {
+              object: {
+                steam_id: member.steam_id,
+                team_id: this.$route.params.id,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
     },
   },
 };

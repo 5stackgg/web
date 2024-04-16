@@ -11,29 +11,89 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
-import { Button } from "~/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+
+
+import { ref } from 'vue'
+import {CornerDownLeft, MoreHorizontal, Trash} from 'lucide-vue-next'
+
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {FormControl, FormField, FormItem} from "~/components/ui/form";
+import {Input} from "~/components/ui/input";
+import TeamForm from "~/components/teams/TeamForm.vue";
+
+const teamMenu = ref(false)
+
 </script>
 
 <template>
   <template v-if="team">
     <PageHeading>
       {{ team.name }}
+
+      <DropdownMenu v-model:open="teamMenu">
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" size="sm">
+            <MoreHorizontal />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" class="w-[200px]">
+          <DropdownMenuGroup>
+            <DropdownMenuItem @click="editTeamSheet = true">
+              Edit
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem class="text-red-600" @click="deleteTeamAlertDialog = true">
+              <Trash class="mr-2 h-4 w-4 inline" /> Delete Team
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <template #description> [{{ team.short_name }}] </template>
+
     </PageHeading>
 
     <div class="grid grid-cols-2 gap-4">
-      <div class="col-span-2 sm:col-span-1 lg:col-span-2">
+      <div>
         <PageHeading> Recent Matches / Scheduled </PageHeading>
         <matches-table :matches="team.matches"></matches-table>
       </div>
-      <div class="col-span-2 sm:col-span-1 lg:col-span-1">
+      <div>
         <team-members :team-id="$route.params.id"></team-members>
       </div>
     </div>
 
-    <AlertDialog>
-      <AlertDialogTrigger>
-        <Button>Cancel Invite</Button>
+    <Sheet :open="editTeamSheet" @update:open="(open) => editTeamSheet = open">
+      <SheetTrigger></SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Editing Team</SheetTitle>
+          <SheetDescription>
+            <team-form :team="team" @updated="editTeamSheet = false"></team-form>
+          </SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+
+    <AlertDialog :open="deleteTeamAlertDialog" @update:open="(open) => deleteTeamAlertDialog = open">
+      <AlertDialogTrigger class="w-full">
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -62,6 +122,8 @@ export default {
   data() {
     return {
       team: undefined,
+      editTeamSheet: false,
+      deleteTeamAlertDialog: false,
       form: {
         member: undefined,
       },
@@ -76,6 +138,7 @@ export default {
               id: $("teamId", "uuid!"),
             },
             {
+              id: true,
               name: true,
               short_name: true,
               roster: [
@@ -180,26 +243,6 @@ export default {
       });
 
       this.$router.push("/teams");
-    },
-    async updateTeamName() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_teams_by_pk: [
-            {
-              pk_columns: {
-                id: this.$route.params.id,
-              },
-              _set: {
-                name: this.$refs["team-name"].innerHTML,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-      this.editingTeamName = false;
     },
   },
 };

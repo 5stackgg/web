@@ -21,27 +21,34 @@ import {
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow
-        v-for="match of matches"
-        :key="match.id"
-        @click="viewMatch(match.id)"
-        class="cursor-pointer"
-      >
-        <TableCell class="font-medium">
-          {{ lineup1(match).name }} vs {{ lineup2(match).name }}
-        </TableCell>
-        <TableCell>{{ match.status }}</TableCell>
-        <TableCell>{{ match.type }} (MR {{ match.mr }})</TableCell>
-        <TableCell>
-          <template v-for="(match_map, index) of match.match_maps">
-            <template v-if="index > 0">,</template>
-            {{ match_map.map.name }}
-          </template>
-        </TableCell>
-        <TableCell>
-          <time-ago :date="match.created_at"></time-ago>
-        </TableCell>
-      </TableRow>
+      <template v-if="matches.length === 0">
+        <TableRow>
+          <TableCell colspan="5" class="text-center">No Matches</TableCell>
+        </TableRow>
+      </template>
+      <template v-else>
+        <TableRow
+            v-for="match of matches"
+            :key="match.id"
+            @click="viewMatch(match.id)"
+            class="cursor-pointer"
+        >
+          <TableCell class="font-medium">
+            {{ lineup1(match).name }} vs {{ lineup2(match).name }}
+          </TableCell>
+          <TableCell>{{ match.status }}</TableCell>
+          <TableCell>{{ match.type }} (MR {{ match.mr }})</TableCell>
+          <TableCell>
+            <template v-for="(match_map, index) of match.match_maps">
+              <template v-if="index > 0">,</template>
+              {{ match_map.map.name }}
+            </template>
+          </TableCell>
+          <TableCell>
+            <time-ago :date="match.created_at"></time-ago>
+          </TableCell>
+        </TableRow>
+      </template>
     </TableBody>
   </Table>
 </template>

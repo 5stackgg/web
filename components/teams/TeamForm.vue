@@ -1,0 +1,106 @@
+<script setup lang="ts">
+import {Input} from "~/components/ui/input";
+import {Button} from "~/components/ui/button";
+import {FormControl, FormField, FormItem} from "~/components/ui/form";
+</script>
+
+<template>
+  <form @submit.prevent="updateCreateTeam">
+    <FormField v-slot="{ componentField }" name="team_name">
+      <FormItem>
+        <FormLabel>Name</FormLabel>
+        <FormControl>
+          <Input
+              v-bind="componentField"
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <FormField v-slot="{ componentField }" name="short_name">
+      <FormItem>
+        <FormLabel>Short Name</FormLabel>
+        <FormControl>
+          <Input
+              v-bind="componentField"
+          />
+          <FormMessage />
+        </FormControl>
+      </FormItem>
+    </FormField>
+    <Button type="submit" :disabled="form.errors.length > 0">
+      <template v-if="team">
+        Update
+      </template><template v-else>
+      Create
+    </template> Team
+    </Button>
+  </form>
+</template>
+
+<script lang="ts">
+import * as z from "zod";
+import {useForm} from "vee-validate";
+import {toTypedSchema} from "@vee-validate/zod";
+import {generateMutation} from "~/graphql/graphqlGen";
+
+export default {
+  emits: ["updated"],
+  props: {
+    team: {
+      type: Object,
+      required: false,
+    }
+  },
+  data() {
+    return {
+      form: useForm({
+        validationSchema: toTypedSchema(
+            z.object({
+              team_name: z.string().min(1),
+              short_name: z.string().min(1).max(3),
+            }),
+        ),
+      }),
+    }
+  },
+  watch: {
+    team: {
+      immediate: true,
+      handler(team) {
+        this.form.setValues({
+          team_name: team.name,
+          short_name: team.short_name
+        })
+      }
+    }
+  },
+  methods: {
+    async updateCreateTeam() {
+      if(this.team) {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_teams_by_pk: [
+              {
+                pk_columns: {
+                  id: this.team.id,
+                },
+                _set: {
+                  name: this.form.values.team_name,
+                  short_name: this.form.values.short_name
+                },
+              },
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
+        this.$emit("updated");
+        return;
+      }
+
+    },
+  }
+}
+</script>

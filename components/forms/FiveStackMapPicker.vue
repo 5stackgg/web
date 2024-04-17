@@ -28,15 +28,15 @@ import {
             :class="cn('w-[200px] justify-between', !modelValue && 'text-muted-foreground')"
         >
           <template v-if="expectsMultiple">
-            <template v-for="(map, index) of modelValue" v-if="modelValue.length > 0">
-              <template v-if="index != 0">,</template> {{ map.display }}
+            <template v-for="(mapId, index) of modelValue" v-if="modelValue.length > 0">
+              <template v-if="parseInt(index) != 0">,</template> {{ availableMaps.find((map) => map.value === mapId)?.display || "Unknown" }}
             </template>
             <template v-else>
-              {{ modelValue?.display || "Select Maps" }}
+              Select Maps
             </template>
           </template>
           <template v-else>
-            {{ modelValue?.display || "Select a Map" }}
+            {{ availableMaps[modelValue]?.display || "Select a Map" }}
           </template>
 
           <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -52,12 +52,12 @@ import {
             <CommandItem
                 v-for="availableMap in availableMaps"
                 :key="availableMap.value"
-                :value="availableMap"
+                :value="availableMap.value"
             >
               <CheckIcon
                   :class="cn(
                   'mr-2 h-4 w-4',
-                  expectsMultiple ? modelValue.includes(availableMap) : modelValue.value === availableMap ? 'opacity-100' : 'opacity-0',
+                  (expectsMultiple ? modelValue.includes(availableMap.value) : modelValue === availableMap) ? 'opacity-100' : 'opacity-0',
                 )"
               />
               {{ availableMap.display }}

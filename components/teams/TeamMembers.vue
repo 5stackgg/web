@@ -44,7 +44,7 @@ import { Separator } from "~/components/ui/separator";
     </CardContent>
   </Card>
 
-  <player-search label="Invite Player to Team" :exclude="team?.roster.map((member) => member.player.steam_id) || []" @selected="addMember"></player-search>
+  <player-search label="Invite Player to Team ..." :exclude="team?.roster.map((member) => member.player.steam_id) || []" @selected="addMember"></player-search>
 </template>
 
 <script lang="ts">

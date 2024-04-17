@@ -174,117 +174,56 @@
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="match_maps">
-          <FormItem>
-            <FormLabel>Maps Selector</FormLabel>
+
+        <FormField v-slot="{ value, handleChange }" name="custom_map_pool">
+          <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div class="space-y-0.5">
+              <FormLabel class="text-base">
+                Custom Map Pool
+              </FormLabel>
+            </div>
+            <FormControl>
+              <Switch
+                  :checked="value"
+                  @update:checked="handleChange"
+              />
+            </FormControl>
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ componentField }" name="map_pool">
+          <FormItem v-show="form.values.custom_map_pool">
+            <FormLabel>Custom Map Pool</FormLabel>
             <five-stack-map-picker
-              v-model="componentField.modelValue"
-              :match-type="form.values.type"
+                v-model="componentField.modelValue"
+                :match-type="form.values.type"
             ></five-stack-map-picker>
             <FormMessage />
           </FormItem>
         </FormField>
       </div>
+
+      <FormField v-slot="{ handleChange, componentField }" name="team_1">
+        <FormItem>
+          <FormLabel>Team 1</FormLabel>
+          <team-search label="Search for a Team ..." @selected="(team) => handleChange(team.id)" v-model="componentField.modelValue"></team-search>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField v-slot="{ handleChange, componentField }" name="team_2">
+        <FormItem>
+          <FormLabel>Team 2</FormLabel>
+          <team-search label="Search for a Team ..." @selected="(team) => handleChange(team.id)" :exclude="[form.values.team_1]" v-model="componentField.modelValue"></team-search>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
     </div>
     <Button type="submit">
       Submit
     </Button>
   </form>
-
-<!--              <five-stack-checkbox-->
-<!--                v-else-->
-<!--                label="Custom Map Pool"-->
-<!--                v-model="custom_map_pool"-->
-<!--              ></five-stack-checkbox>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="mt-6 grid gap-4 lg:gap-6" v-if="form.best_of > 1">-->
-<!--            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">-->
-<!--              <template v-if="!custom_map_pool">-->
-<!--                <pre>{{ defaultMapPool.id }}</pre>-->
-<!--                <template v-for="map of defaultMapPool.maps">-->
-<!--                  <p>{{ map.name }}</p>-->
-<!--                </template>-->
-<!--              </template>-->
-<!--              <template v-else>-->
-<!--                <pre>{{ form.map_pool }}</pre>-->
-<!--                <five-stack-map-picker-->
-<!--                  :disabled="!custom_map_pool"-->
-<!--                  label="Custom Map Pool"-->
-<!--                  v-model="form.map_pool"-->
-<!--                  :match-type="form.type"-->
-<!--                  :multiple="true"-->
-<!--                ></five-stack-map-picker>-->
-<!--              </template>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </form>-->
-<!--      </div>-->
-
-<!--      <tabs>-->
-<!--        <tab-->
-<!--          title="Pick 10"-->
-<!--          @click="-->
-<!--            form.team_1 = undefined;-->
-<!--            form.team_2 = undefined;-->
-<!--          "-->
-<!--        >-->
-<!--          <form @submit.prevent>-->
-<!--            <five-stack-search-input-->
-<!--              label="Team 1"-->
-<!--              placeholder="Find Player"-->
-<!--              v-model="form.players.lineup_1"-->
-<!--              :search="searchPlayers"-->
-<!--            ></five-stack-search-input>-->
-
-<!--            <five-stack-search-input-->
-<!--              label="Team 2"-->
-<!--              placeholder="Find Player"-->
-<!--              v-model="form.players.lineup_2"-->
-<!--              :search="searchPlayers"-->
-<!--            ></five-stack-search-input>-->
-<!--          </form>-->
-<!--        </tab>-->
-<!--        <tab-->
-<!--          title="Teams"-->
-<!--          @click="-->
-<!--            form.players.lineup_1 = [];-->
-<!--            form.players.lineup_2 = [];-->
-<!--          "-->
-<!--        >-->
-<!--          <form @submit.prevent>-->
-<!--            <five-stack-select-input-->
-<!--              :required="true"-->
-<!--              label="Team 1"-->
-<!--              :options="-->
-<!--                me.player.teams.map((team) => {-->
-<!--                  return {-->
-<!--                    value: team.id,-->
-<!--                    display: `${team.name}`,-->
-<!--                  };-->
-<!--                })-->
-<!--              "-->
-<!--              v-model="form.team_1"-->
-<!--            ></five-stack-select-input>-->
-
-<!--            <five-stack-search-input-->
-<!--              label="Team 2"-->
-<!--              placeholder="Search for a team to challenge"-->
-<!--              v-model="form.team_2"-->
-<!--              :required="true"-->
-<!--              :search="searchTeams"-->
-<!--            ></five-stack-search-input>-->
-<!--          </form>-->
-<!--        </tab>-->
-<!--      </tabs>-->
-<!--    </div>-->
-<!--    <div class="mt-10 text-right">-->
-<!--      <five-stack-button type="success" @click="setupMatch"-->
-<!--        >Setup Match</five-stack-button-->
-<!--      >-->
-<!--    </div>-->
-<!--  </div>-->
 </template>
 
 <script lang="ts">
@@ -304,9 +243,11 @@ import {useForm} from "vee-validate";
 import {Input} from "~/components/ui/input";
 import {toTypedSchema} from "@vee-validate/zod";
 import * as z from "zod";
+import TeamSearch from "~/components/teams/TeamSearch.vue";
 
 export default {
   components: {
+    TeamSearch,
     Input,
     FiveStackNumberInput,
     Tab,
@@ -355,7 +296,6 @@ export default {
   },
   data() {
     return {
-      custom_map_pool: false,
       form: useForm({
         validationSchema: toTypedSchema(
             z.object({
@@ -365,56 +305,28 @@ export default {
               knife_round: z.boolean().default(true),
               overtime: z.boolean().default(true),
               best_of: z.string().default("1"),
+              custom_map_pool:  z.boolean().default(false),
               number_of_substitutes: z.number().min(0).max(5).default(0),
               type: z.string().default(e_match_types_enum.Competitive),
               match_maps: z.string().array().default([]),
               team_1: z.string().optional(),
               team_2: z.string().optional(),
               map_pool: z.string().array().default([]),
-              players: z.object({
-                lineup_1: z.string().array().default([]),
-                lineup_2: z.string().array().default([]),
-              }).default({
-                lineup_1: [],
-                lineup_2: []
-              })
             })
         )
       }),
     };
   },
+  watch: {
+    ["form.values.custom_map_pool"]: {
+      handler(customMapPool) {
+        if(customMapPool === false) {
+          this.form.setFieldValue("map_pool", [])
+        }
+      }
+    }
+  },
   methods: {
-    async searchTeams(query) {
-      const { data } = await this.$apollo.query({
-        query: generateQuery({
-          teams: [
-            {
-              where: {
-                _or: [
-                  {
-                    name: {
-                      _ilike: `%${query}%`,
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              id: true,
-              name: true,
-              short_name: true,
-            },
-          ],
-        }),
-      });
-
-      return data.teams.map((team) => {
-        return {
-          value: team.id,
-          display: `${team.name} [${team.short_name}]`,
-        };
-      });
-    },
     async setupMatch() {
       const form = this.form.values;
 

@@ -28,7 +28,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
           :aria-expanded="open"
           class="w-[500px] justify-between"
       >
-        Search for a Player ...
+        {{ label }}
         <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>

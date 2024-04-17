@@ -384,6 +384,12 @@ export default {
                 overtime: $("overtime", "Boolean!"),
                 map_veto: $("map_veto", "Boolean!"),
                 coaches: $("coaches", "Boolean!"),
+                lineups: {
+                  data: [
+                    { lineup_players: { data: [] } },
+                    { lineup_players: { data: [] } },
+                  ],
+                },
                 ...(mapPoolLength === 0
                   ? { match_pool_id: $("match_pool_id", "uuid") }
                   : {}),

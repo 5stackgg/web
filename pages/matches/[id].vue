@@ -5,111 +5,73 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
 
 <template>
   <template v-if="match">
-    <div class="px-4 sm:px-6 lg:px-8">
-      <div class="mt-5 lg:mt-16 grid lg:grid-cols-3 gap-8 lg:gap-12">
-        <div class="lg:col-span-1">
-          <h2
-            class="font-bold text-2xl md:text-3xl text-gray-800 dark:text-gray-200"
-          >
-            {{ matchLineups.lineup1.name }} vs {{ matchLineups.lineup2.name }}
-          </h2>
-          <match-actions :match="match"></match-actions>
-        </div>
+    {{ matchLineups.lineup1.name }} vs {{ matchLineups.lineup2.name }}
+    <match-actions :match="match"></match-actions>
+    <match-status :match="match"></match-status>
 
-        <div class="lg:col-span-2">
-          <div class="grid sm:grid-cols-2 gap-8 md:gap-12">
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Match Status
-                </h3>
-                <match-status :match="match"></match-status>
-              </div>
-            </div>
 
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  {{ match.type }}
-                </h3>
-                <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  First to {{ match.mr + 1 }} with
-                  <template v-if="match.overtime">overtime</template>
-                  <br />
-                  best of {{ match.best_of }}
-                </p>
-              </div>
-            </div>
+    {{ match.type }}
+    <div>
+      First to {{ match.mr + 1 }} with
+      <template v-if="match.overtime">overtime</template>
+      <br />
+      best of {{ match.best_of }}
+    </div>
 
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Map<template v-if="match.best_of > 1">s</template>
-                </h3>
-                <template v-if="match.match_maps.length !== match.best_of">
-                  Picking Maps
-                </template>
-                <div
-                  class="mt-1 text-gray-600 dark:text-gray-400"
-                  v-for="match_map of match.match_maps"
-                >
-                  [{{ match_map.status }}] {{ match_map.map.name }}
-                  <template v-for="veto of match_map.vetos">
-                    <template v-if="veto.type === 'LeftOver'"
-                      >[Left Over]</template
-                    >
-                  </template>
-                  <p>
-                    {{ matchLineups.lineup1.name }}:
-                    {{ match_map.lineup_1_score }}
-                    <template v-for="veto of match_map.vetos">
-                      <template
-                        v-if="
+    Map<template v-if="match.best_of > 1">s</template>
+
+    <template v-if="match.match_maps.length !== match.best_of">
+      Picking Maps
+    </template>
+
+    <div
+        class="mt-1 text-gray-600 dark:text-gray-400"
+        v-for="match_map of match.match_maps"
+    >
+      [{{ match_map.status }}] {{ match_map.map.name }}
+      <template v-for="veto of match_map.vetos">
+        <template v-if="veto.type === 'LeftOver'"
+        >[Left Over]</template
+        >
+      </template>
+      <p>
+        {{ matchLineups.lineup1.name }}:
+        {{ match_map.lineup_1_score }}
+        <template v-for="veto of match_map.vetos">
+          <template
+              v-if="
                           veto.type === 'Pick' &&
                           veto.match_lineup_id === matchLineups.lineup1.id
                         "
-                        >[PICKED]</template
-                      >
-                    </template>
-                  </p>
-                  <p>
-                    {{ matchLineups.lineup2.name }}:
-                    {{ match_map.lineup_2_score }}
-                    <template v-for="veto of match_map.vetos">
-                      <template
-                        v-if="
+          >[PICKED]</template
+          >
+        </template>
+      </p>
+      <p>
+        {{ matchLineups.lineup2.name }}:
+        {{ match_map.lineup_2_score }}
+        <template v-for="veto of match_map.vetos">
+          <template
+              v-if="
                           veto.type === 'Pick' &&
                           veto.match_lineup_id === matchLineups.lineup2.id
                         "
-                        >[PICKED]</template
-                      >
-                    </template>
-                  </p>
-                </div>
-              </div>
-            </div>
+          >[PICKED]</template
+          >
+        </template>
+      </p>
+    </div>
 
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Captains
-                </h3>
-                <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  Captain 1:
-                  <captain-info
-                    :captain="matchLineups.lineup1.captain"
-                  ></captain-info>
-                  <br />
-                  Captain 2:
-                  <captain-info
-                    :captain="matchLineups.lineup2.captain"
-                  ></captain-info>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div>
+      Captain 1:
+      <captain-info
+          :captain="matchLineups.lineup1.captain"
+      ></captain-info>
+      <br />
+      Captain 2:
+      <captain-info
+          :captain="matchLineups.lineup2.captain"
+      ></captain-info>
     </div>
 
     <pre>
@@ -117,8 +79,6 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
       Coaches: {{ match.coaches }}
       Substitutes: {{ match.number_of_substitutes }}
     </pre>
-
-    <hr class="mt-8 mb-8 border-gray-600" />
 
     <map-veto :match="match"></map-veto>
 
@@ -130,10 +90,6 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
     ></match-assign-lineups>
 
     <match-map-picks :match="match" v-else-if="assigningMaps"></match-map-picks>
-
-    <template v-if="assigningLineups || assigningMaps">
-      <hr class="mt-8 mb-8 border-gray-600" />
-    </template>
 
     <match-tabs :match="match"></match-tabs>
   </template>

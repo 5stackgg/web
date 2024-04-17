@@ -4,7 +4,6 @@
       <h3 class="mb-4 text-lg font-medium">
         Match Details
       </h3>
-      <pre>{{ form.values }}</pre>
 
       <div class="flex">
         <FormField v-slot="{ value, handleChange }" name="coaches">
@@ -330,8 +329,9 @@ export default {
     async setupMatch() {
       const form = this.form.values;
 
+      let order = 0;
+      const matchMaps = this.form.values.match_maps;
       const mapPoolLength = form?.map_pool?.length || 0;
-      const useDefaultPool = form.best_of != "1" && mapPoolLength;
 
       const { data } = await this.$apollo.mutate({
         variables: {
@@ -343,13 +343,20 @@ export default {
           map_veto: form.map_veto,
           coaches: form.coaches,
           number_of_substitutes: form.number_of_substitutes,
-          maps: form.match_maps,
-          ...(useDefaultPool
+          maps: matchMaps.length > 0 ? {
+            data: matchMaps.map((map) => {
+              return {
+                map_id: map,
+                order: ++order,
+              }
+            })
+          } : null,
+          ...(mapPoolLength === 0
             ? {
                 match_pool_id: this.defaultMapPool.id,
               }
             : {}),
-          map_pool: form.best_of != "1" && mapPoolLength > 0
+          map_pool: mapPoolLength > 0
               ? {
                   data: {
                     enabled: false,
@@ -377,35 +384,10 @@ export default {
                 overtime: $("overtime", "Boolean!"),
                 map_veto: $("map_veto", "Boolean!"),
                 coaches: $("coaches", "Boolean!"),
-                ...(useDefaultPool
+                ...(mapPoolLength === 0
                   ? { match_pool_id: $("match_pool_id", "uuid") }
                   : {}),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
-                lineups: {
-                  data: [
-                    {
-                      team_id: form.team_1,
-                      lineup_players: {
-                        data: form.players?.lineup_1?.map((player) => {
-                          return {
-                            steam_id: player.value.steam_id,
-                          };
-                        }) || [],
-                      },
-                    },
-                    {
-                      // TODO - this is because of the search selector display issues
-                      team_id: form.team_2?.value,
-                      lineup_players: {
-                        data: form?.players?.lineup_2?.map((player) => {
-                          return {
-                            steam_id: player.value.steam_id,
-                          };
-                        }) || [],
-                      },
-                    },
-                  ],
-                },
               },
             },
             {
@@ -432,7 +414,7 @@ export default {
     },
     defaultMapPool() {
       return this.map_pools.find((pool) => {
-        return pool.label === this.form.type;
+        return pool.label === this.form.values.type;
       });
     },
   },

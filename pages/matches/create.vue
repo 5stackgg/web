@@ -1,5 +1,5 @@
 <template>
-  <form class="w-1/2 space-y-6">
+  <form class="w-1/2 space-y-6" @submit.prevent="setupMatch">
     <div>
       <h3 class="mb-4 text-lg font-medium">
         Match Details
@@ -87,8 +87,8 @@
         </FormField>
       </div>
 
-      <div class="flex">
-        <FormField v-slot="{ componentField }" name="substitutes">
+      <div>
+        <FormField v-slot="{ componentField }" name="number_of_substitutes">
           <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4">
             <div class="space-y-0.5">
               <FormLabel class="text-base">
@@ -112,7 +112,7 @@
             <Select v-bind="componentField">
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a verified email to display" />
+                  <SelectValue placeholder="Select the match type" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -137,7 +137,7 @@
             <Select v-bind="componentField">
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a verified email to display" />
+                  <SelectValue placeholder="Select a best of value" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -159,7 +159,7 @@
             <Select v-bind="componentField">
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a verified email to display" />
+                  <SelectValue placeholder="Select the max number of rounds" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -174,22 +174,23 @@
           </FormItem>
         </FormField>
 
-
+        <FormField v-slot="{ componentField }" name="match_maps">
+          <FormItem>
+            <FormLabel>Maps Selector</FormLabel>
+            <five-stack-map-picker
+              v-model="componentField.modelValue"
+              :match-type="form.values.type"
+            ></five-stack-map-picker>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
-
     </div>
     <Button type="submit">
       Submit
     </Button>
   </form>
 
-<!--              <five-stack-map-picker-->
-<!--                v-if="form.best_of == 1"-->
-<!--                label="Map"-->
-<!--                :required="true"-->
-<!--                v-model="form.match_map"-->
-<!--                :match-type="form.type"-->
-<!--              ></five-stack-map-picker>-->
 <!--              <five-stack-checkbox-->
 <!--                v-else-->
 <!--                label="Custom Map Pool"-->
@@ -364,27 +365,23 @@ export default {
               knife_round: z.boolean().default(true),
               overtime: z.boolean().default(true),
               best_of: z.string().default("1"),
-              substitutes: z.number().min(0).max(5).default(0),
+              number_of_substitutes: z.number().min(0).max(5).default(0),
               type: z.string().default(e_match_types_enum.Competitive),
-              match_map: z.string().optional(),
+              match_maps: z.string().array().default([]),
               team_1: z.string().optional(),
               team_2: z.string().optional(),
-              map_pool: z.string().array(),
+              map_pool: z.string().array().default([]),
               players: z.object({
-                lineup_1: z.string().array(),
-                lineup_2: z.string().array(),
+                lineup_1: z.string().array().default([]),
+                lineup_2: z.string().array().default([]),
+              }).default({
+                lineup_1: [],
+                lineup_2: []
               })
             })
         )
       }),
     };
-  },
-  watch: {
-    ["form.values.map_veto"]: {
-      handler() {
-        this.form.values.map = undefined;
-      },
-    },
   },
   methods: {
     async searchTeams(query) {
@@ -419,10 +416,10 @@ export default {
       });
     },
     async setupMatch() {
-      const form = form.values;
+      const form = this.form.values;
 
-      const useDefaultPool =
-        form.best_of != 1 && form.map_pool.length == 0;
+      const mapPoolLength = form?.map_pool?.length || 0;
+      const useDefaultPool = form.best_of != "1" && mapPoolLength;
 
       const { data } = await this.$apollo.mutate({
         variables: {
@@ -434,29 +431,18 @@ export default {
           map_veto: form.map_veto,
           coaches: form.coaches,
           number_of_substitutes: form.number_of_substitutes,
-          maps:
-            form.best_of == 1
-              ? {
-                  data: [
-                    {
-                      order: 1,
-                      map_id: form.match_map,
-                    },
-                  ],
-                }
-              : null,
+          maps: form.match_maps,
           ...(useDefaultPool
             ? {
                 match_pool_id: this.defaultMapPool.id,
               }
             : {}),
-          map_pool:
-            form.best_of != 1 && form.map_pool.length > 0
+          map_pool: form.best_of != "1" && mapPoolLength > 0
               ? {
                   data: {
                     enabled: false,
                     maps: {
-                      data: form.map_pool.map((map_id) => {
+                      data: form?.map_pool?.map((map_id) => {
                         return {
                           id: map_id,
                         };
@@ -488,22 +474,22 @@ export default {
                     {
                       team_id: form.team_1,
                       lineup_players: {
-                        data: form.players.lineup_1.map((player) => {
+                        data: form.players?.lineup_1?.map((player) => {
                           return {
                             steam_id: player.value.steam_id,
                           };
-                        }),
+                        }) || [],
                       },
                     },
                     {
                       // TODO - this is because of the search selector display issues
                       team_id: form.team_2?.value,
                       lineup_players: {
-                        data: form.players.lineup_2.map((player) => {
+                        data: form?.players?.lineup_2?.map((player) => {
                           return {
                             steam_id: player.value.steam_id,
                           };
-                        }),
+                        }) || [],
                       },
                     },
                   ],

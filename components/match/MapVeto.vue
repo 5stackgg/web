@@ -1,57 +1,68 @@
+<script lang="ts" setup>
+import MapPreview from "~/components/match/MapPreview.vue";
+</script>
+
 <template>
-  <div class="grid grid-cols-4" v-for="pick of picks">
-    <match-map-preview :map="pick.map">
-      <br />
-      {{ pick.type }}ed by
+  <Card class="sm:col-span-4">
+    <CardHeader class="pb-3">
+      <CardTitle>Map Veto</CardTitle>
+      <CardContent>
+        <div class="grid grid-cols-4" v-for="pick of picks">
+          <match-map-preview :map="pick.map">
+            <br />
+            {{ pick.type }}ed by
 
-      {{ pick.match_lineup.name }}
+            {{ pick.match_lineup.name }}
 
-      <template v-if="pick.side"> ({{ pick.side }}) </template>
-    </match-map-preview>
-  </div>
+            <template v-if="pick.side"> ({{ pick.side }}) </template>
+          </match-map-preview>
+        </div>
 
-  <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+        <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
 
-    <div class="flex items-center space-x-2">
-      <Switch />
-      <Label>Airplane Mode</Label>
-    </div>
+          <div class="flex items-center space-x-2">
+            <Switch />
+            <Label>Airplane Mode</Label>
+          </div>
 
-    <forms-five-stack-checkbox
-      v-model="override"
-      v-if="isMatchOrganizer"
-      label="Match Organizer override"
-    ></forms-five-stack-checkbox>
+          <forms-five-stack-checkbox
+              v-model="override"
+              v-if="isMatchOrganizer"
+              label="Match Organizer override"
+          ></forms-five-stack-checkbox>
 
-    <form @submit.prevent="pickMap" v-if="isPicking">
-      <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
-      <template v-if="pickType === 'Side'">
-        <pre>{{ picks.at(-1) }}</pre>
-        <five-stack-select-input
-          label="Side"
-          :options="sideOptions"
-          v-model="form.side"
-        ></five-stack-select-input>
-      </template>
-      <template v-else>
-        <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
-          <map-preview
-            :map="availableMap"
-            class="cursor-pointer"
-            :class="{
+          <form @submit.prevent="pickMap" v-if="isPicking">
+            <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
+            <template v-if="pickType === 'Side'">
+              <pre>{{ picks.at(-1) }}</pre>
+              <!--        <five-stack-select-input-->
+              <!--          label="Side"-->
+              <!--          :options="sideOptions"-->
+              <!--          v-model="form.side"-->
+              <!--        ></five-stack-select-input>-->
+            </template>
+            <template v-else>
+              <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
+                <map-preview
+                    :map="availableMap"
+                    class="cursor-pointer"
+                    :class="{
               'bg-red-500': form.map_id === availableMap.id,
             }"
-            @click="form.map_id = availableMap.id"
-          ></map-preview>
-        </div>
-      </template>
+                    @click="form.map_id = availableMap.id"
+                ></map-preview>
+              </div>
+            </template>
 
-      <Button>{{ pickType }}</Button>
-    </form>
-  </template>
+            <Button>{{ pickType }}</Button>
+          </form>
+        </template>
+      </CardContent>
+    </CardHeader>
+  </Card>
 </template>
 
-<script>
+<script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";

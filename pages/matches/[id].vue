@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import {Badge} from "~/components/ui/badge";
+import {Separator} from "~/components/ui/separator";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
-import {Separator} from "~/components/ui/separator";
-import {Badge} from "~/components/ui/badge";
 </script>
+
 <template>
   <template v-if="match">
     <div class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -15,7 +16,9 @@ import {Badge} from "~/components/ui/badge";
               <CardTitle class="group flex items-center gap-2 text-lg">
                 {{ matchLineups.lineup1.name }} vs {{ matchLineups.lineup2.name }}
                 <Badge variant="outline">
-                  {{ match.type }} over {{ match.best_of}} map<span v-if="match.best_of > 1">s</span>
+                  <span>
+                    {{ match.type }} over {{ match.best_of}} map<span v-if="match.best_of > 1">s</span>
+                  </span>
                 </Badge>
               </CardTitle>
               <CardDescription>
@@ -166,7 +169,7 @@ import {Badge} from "~/components/ui/badge";
               v-if="assigningLineups"
           ></match-assign-lineups>
           <match-assign-coach :match="match"></match-assign-coach>
-<!--          <match-map-veto :match="match"></match-map-veto>-->
+          <match-map-veto :match="match"></match-map-veto>
 <!--          <match-map-picks :match="match" if="assigningMaps"></match-map-picks>-->
         </div>
         <match-tabs :match="match"></match-tabs>

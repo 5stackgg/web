@@ -1,3 +1,6 @@
+<script lang="ts" setup>
+import { Copy } from "lucide-vue-next"
+</script>
 <template>
   <div class="copy">
     <div
@@ -19,7 +22,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import ClipboardJS from "clipboard";
 import alertStore from "@/stores/alertStore";
 import { AlertStatuses } from "@/constants/AlertStatuses";

@@ -73,12 +73,8 @@ import {
 import { mapFields } from "~/graphql/mapGraphql";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 
 export default {
-  components: {
-    FiveStackSelectInput,
-  },
   props: {
     matchType: {
       type: String,

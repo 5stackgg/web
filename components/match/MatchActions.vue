@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MoreVertical } from "lucide-vue-next"
+import { MoreVertical, Copy } from "lucide-vue-next"
 import {e_match_status_enum} from "~/generated/zeus";
 </script>
 

@@ -61,7 +61,6 @@ import {toTypedSchema} from "@vee-validate/zod";
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
 import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
 
@@ -80,7 +79,6 @@ export default {
     SelectContent,
     Button,
     FiveStackMapPicker,
-    FiveStackSelectInput,
   },
   props: {
     match: {

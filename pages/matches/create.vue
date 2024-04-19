@@ -1,3 +1,8 @@
+<script lang="ts" setup>
+import TeamSearch from "~/components/teams/TeamSearch.vue";
+import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
+</script>
+
 <template>
   <form class="w-1/2 space-y-6" @submit.prevent="setupMatch">
     <div>
@@ -226,37 +231,15 @@
 </template>
 
 <script lang="ts">
-import Tab from "~/components/tabs/Tab.vue";
-import Tabs from "~/components/tabs/Tabs.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { $, e_match_types_enum } from "~/generated/zeus";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import FiveStackCheckbox from "~/components/forms/FiveStackCheckbox.vue";
-import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
-import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
-import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
-import FiveStackNumberInput from "~/components/forms/FiveStackNumberInput.vue";
 import { mapFields } from "~/graphql/mapGraphql";
 import {useForm} from "vee-validate";
-import {Input} from "~/components/ui/input";
 import {toTypedSchema} from "@vee-validate/zod";
 import * as z from "zod";
-import TeamSearch from "~/components/teams/TeamSearch.vue";
 
 export default {
-  components: {
-    TeamSearch,
-    Input,
-    FiveStackNumberInput,
-    Tab,
-    Tabs,
-    FiveStackCheckbox,
-    FiveStackTextInput,
-    FiveStackMapPicker,
-    FiveStackSearchInput,
-    FiveStackSelectInput,
-  },
   apollo: {
     e_match_types: {
       query: generateQuery({

@@ -1,40 +1,42 @@
 <template>
-  <ol class="flex items-center whitespace-nowrap" aria-label="Breadcrumb">
-    <li class="inline-flex items-center">
-      <NuxtLink to="/" class="crumb"> Dashboard </NuxtLink>
-    </li>
+  <Breadcrumb class="hidden md:flex">
+    <BreadcrumbList>
+      <BreadcrumbItem>
+        <BreadcrumbLink as-child>
+          <NuxtLink to="/" class="crumb"> dashboard </NuxtLink>
+        </BreadcrumbLink>
+      </BreadcrumbItem>
 
-    <template v-for="(crumb, index) in crumbs" :key="index">
-      <svg
-        class="flex-shrink-0 mx-2 overflow-visible h-4 w-4 text-gray-400 dark:text-neutral-600 dark:text-neutral-600"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="m9 18 6-6-6-6" />
-      </svg>
+      <template v-for="(crumb, index) in crumbs" :key="index">
+        <BreadcrumbSeparator />
 
-      <NuxtLink
-        :to="crumb.to"
-        class="crumb"
-        :class="{
-          [`crumb--active`]: crumbs.length - 1 == index,
-        }"
-      >
-        {{ crumb.text }}
-      </NuxtLink>
-    </template>
-  </ol>
+        <BreadcrumbItem>
+          <BreadcrumbLink as-child>
+            <NuxtLink :to="crumb.to" class="crumb"> {{ crumb.text }} </NuxtLink>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      </template>
+    </BreadcrumbList>
+  </Breadcrumb>
 </template>
 
 <script lang="ts">
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "~/components/ui/breadcrumb";
+
 export default {
+  components: {
+    BreadcrumbItem,
+    BreadcrumbList,
+    Breadcrumb,
+    BreadcrumbLink,
+    BreadcrumbSeparator,
+  },
   computed: {
     crumbs() {
       const segments = this.$route.path.split("/").filter((segment: string) => {
@@ -58,12 +60,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.crumb {
-  @apply text-gray-500 capitalize;
-  &--active {
-    @apply inline-flex items-center text-sm font-semibold text-gray-800 truncate dark:text-gray-200;
-  }
-}
-</style>

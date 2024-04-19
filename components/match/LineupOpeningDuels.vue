@@ -1,29 +1,35 @@
+<script lang="ts" setup>
+
+import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
+</script>
 <template>
-  <clickable-table :caption="lineup.name">
-    <thead>
-      <tr>
-        <th>{{ lineup.name }}</th>
-        <th>Attempts</th>
-        <th>Success</th>
-      </tr>
-    </thead>
-    <tbody>
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead class="hidden sm:table-cell">
+          {{ lineup.name }}
+        </TableHead>
+        <TableHead class="hidden sm:table-cell">
+          Attempts
+        </TableHead>
+        <TableHead class="hidden sm:table-cell">
+          Success
+        </TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
       <lineup-opening-duel-row
-        :member="member"
-        :lineup="lineup"
-        :match="match"
-        v-for="member of lineup.lineup_players"
+          :member="member"
+          :lineup="lineup"
+          :match="match"
+          v-for="member of lineup.lineup_players"
       ></lineup-opening-duel-row>
-    </tbody>
-  </clickable-table>
+    </TableBody>
+  </Table>
 </template>
 
 <script lang="ts">
-import LineupMember from "~/components/match/LineupMember.vue";
-import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
-
 export default {
-  components: { LineupOpeningDuelRow, LineupMember },
   props: {
     match: {
       required: true,

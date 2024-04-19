@@ -1,13 +1,11 @@
 <template>
-  <NuxtLayout :name="layout">
+  <NuxtLayout>
     <NuxtPage></NuxtPage>
   </NuxtLayout>
+  <Toaster />
 </template>
 
 <script>
-import "./assets/styles/public.scss";
-import { useAuthStore } from "@/stores/AuthStore";
-
 export default {
   beforeCreate() {
     useHead({
@@ -40,11 +38,6 @@ export default {
         { rel: "shortcut icon", href: "/favicon/favicon.ico" },
       ],
     });
-  },
-  computed: {
-    layout() {
-      return useAuthStore().me ? "default" : "public";
-    },
   },
 };
 </script>

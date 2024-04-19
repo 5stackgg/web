@@ -1,57 +1,133 @@
+<script setup lang="ts">
+import {Badge} from "~/components/ui/badge";
+import {Separator} from "~/components/ui/separator";
+import MatchStatus from "~/components/match/MatchStatus.vue";
+import MatchActions from "~/components/match/MatchActions.vue";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
+</script>
+
 <template>
   <template v-if="match">
-    <div class="px-4 sm:px-6 lg:px-8">
-      <div class="mt-5 lg:mt-16 grid lg:grid-cols-3 gap-8 lg:gap-12">
-        <div class="lg:col-span-1">
-          <h2
-            class="font-bold text-2xl md:text-3xl text-gray-800 dark:text-gray-200"
-          >
-            {{ matchLineups.lineup1.name }} vs {{ matchLineups.lineup2.name }}
-          </h2>
-          <match-actions :match="match"></match-actions>
-        </div>
-
-        <div class="lg:col-span-2">
-          <div class="grid sm:grid-cols-2 gap-8 md:gap-12">
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Match Status
-                </h3>
-                <match-status :match="match"></match-status>
-              </div>
+    <div class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+      <div>
+        <Card>
+          <CardHeader class="flex flex-row items-start bg-muted/50">
+            <div class="grid gap-0.5">
+              <CardTitle class="group flex items-center gap-2 text-lg">
+                {{ matchLineups.lineup1.name }} vs {{ matchLineups.lineup2.name }}
+                <Badge variant="outline">
+                  <span>
+                    {{ match.type }} over {{ match.best_of}} map<span v-if="match.best_of > 1">s</span>
+                  </span>
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                <Badge>
+                  <match-status :match="match"></match-status>
+                </Badge>
+              </CardDescription>
             </div>
-
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  {{ match.type }}
-                </h3>
-                <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  First to {{ match.mr + 1 }} with
-                  <template v-if="match.overtime">overtime</template>
-                  <br />
-                  best of {{ match.best_of }}
-                </p>
-              </div>
+            <div class="ml-auto flex items-center gap-1">
+              <match-actions :match="match"></match-actions>
             </div>
-
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Map<template v-if="match.best_of > 1">s</template>
-                </h3>
-                <template v-if="match.match_maps.length !== match.best_of">
-                  Picking Maps
-                </template>
+          </CardHeader>
+          <CardContent class="p-6 text-sm">
+            <div class="grid gap-3">
+              <div class="font-semibold">
+                Match Details
+              </div>
+              <ul class="grid gap-3">
+                <li class="flex items-center justify-between">
+                  <span class="text-muted-foreground">
+                    Max Rounds
+                  </span>
+                  <span>{{ match.mr }}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                 <span class="text-muted-foreground">
+                    Coaches
+                  </span>
+                  <span>{{ match.coaches }}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                 <span class="text-muted-foreground">
+                    Overtime
+                  </span>
+                  <span>{{ match.overtime }}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                 <span class="text-muted-foreground">
+                    Knife Round
+                  </span>
+                  <span>{{ match.knife_round }}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                 <span class="text-muted-foreground">
+                    Map Veto
+                  </span>
+                  <span>{{ match.map_veto }}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                 <span class="text-muted-foreground">
+                    Map Pool
+                  </span>
+                  <span>
+                    {{ match.map_pool.label }}
+                  </span>
+                </li>
+                <li class="flex items-center justify-between">
+                 <span class="text-muted-foreground">
+                    Substitutes
+                  </span>
+                  <span>{{ match.number_of_substitutes }}</span>
+                </li>
+              </ul>
+              <Separator class="my-2" />
+              <div class="grid gap-3">
+                <div class="font-semibold">
+                  Captains
+                </div>
+                <ul class="grid gap-3">
+                  <li class="flex items-center justify-between">
+                    <span class="text-muted-foreground">
+                      Captain 1
+                    </span>
+                    <span>
+                      <captain-info
+                          :captain="matchLineups.lineup1.captain"
+                      ></captain-info>
+                    </span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="text-muted-foreground">
+                      Captain 2
+                    </span>
+                    <span>
+                      <captain-info
+                          :captain="matchLineups.lineup2.captain"
+                      ></captain-info>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <Separator class="my-2" />
+              <div class="grid gap-3">
+                <div class="font-semibold">
+                  <template v-if="match.map_veto">
+                    Map Veto
+                  </template>
+                  <template v-else>
+                    Maps
+                  </template>
+                </div>
                 <div
-                  class="mt-1 text-gray-600 dark:text-gray-400"
-                  v-for="match_map of match.match_maps"
+                    class="mt-1 text-gray-600 dark:text-gray-400"
+                    v-for="match_map of match.match_maps"
                 >
                   [{{ match_map.status }}] {{ match_map.map.name }}
                   <template v-for="veto of match_map.vetos">
                     <template v-if="veto.type === 'LeftOver'"
-                      >[Left Over]</template
+                    >[Left Over]</template
                     >
                   </template>
                   <p>
@@ -59,11 +135,11 @@
                     {{ match_map.lineup_1_score }}
                     <template v-for="veto of match_map.vetos">
                       <template
-                        v-if="
+                          v-if="
                           veto.type === 'Pick' &&
                           veto.match_lineup_id === matchLineups.lineup1.id
                         "
-                        >[PICKED]</template
+                      >[PICKED]</template
                       >
                     </template>
                   </p>
@@ -72,65 +148,33 @@
                     {{ match_map.lineup_2_score }}
                     <template v-for="veto of match_map.vetos">
                       <template
-                        v-if="
+                          v-if="
                           veto.type === 'Pick' &&
                           veto.match_lineup_id === matchLineups.lineup2.id
                         "
-                        >[PICKED]</template
+                      >[PICKED]</template
                       >
                     </template>
                   </p>
                 </div>
               </div>
             </div>
-
-            <div class="flex gap-x-5">
-              <div class="grow">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
-                  Captains
-                </h3>
-                <p class="mt-1 text-gray-600 dark:text-gray-400">
-                  Captain 1:
-                  <captain-info
-                    :captain="matchLineups.lineup1.captain"
-                  ></captain-info>
-                  <br />
-                  Captain 2:
-                  <captain-info
-                    :captain="matchLineups.lineup2.captain"
-                  ></captain-info>
-                </p>
-              </div>
-            </div>
-          </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div class="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+          <match-assign-lineups
+              :match="match"
+              v-if="assigningLineups"
+          ></match-assign-lineups>
+          <match-assign-coach :match="match"></match-assign-coach>
+          <match-map-veto :match="match" v-if="match.veto"></match-map-veto>
+          <match-map-picks :match="match" v-else-if="assigningMaps"></match-map-picks>
         </div>
+        <match-tabs :match="match"></match-tabs>
       </div>
     </div>
-
-    <pre>
-      Veto: {{ match.map_veto }}
-      Coaches: {{ match.coaches }}
-      Substitutes: {{ match.number_of_substitutes }}
-    </pre>
-
-    <hr class="mt-8 mb-8 border-gray-600" />
-
-    <map-veto :match="match"></map-veto>
-
-    <match-assign-coach :match="match"></match-assign-coach>
-
-    <match-assign-lineups
-      :match="match"
-      v-if="assigningLineups"
-    ></match-assign-lineups>
-
-    <match-map-picks :match="match" v-else-if="assigningMaps"></match-map-picks>
-
-    <template v-if="assigningLineups || assigningMaps">
-      <hr class="mt-8 mb-8 border-gray-600" />
-    </template>
-
-    <match-tabs :match="match"></match-tabs>
   </template>
 </template>
 
@@ -138,25 +182,9 @@
 import { $, order_by } from "~/generated/zeus";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import MapVeto from "~/components/veto/MapVeto.vue";
-import MatchTabs from "~/components/match/MatchTabs.vue";
-import MatchStatus from "~/components/match/MatchStatus.vue";
-import MatchActions from "~/components/match/MatchActions.vue";
-import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
-import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
 import { useAuthStore } from "~/stores/AuthStore";
-import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
 
 export default {
-  components: {
-    MatchAssignCoach,
-    MapVeto,
-    MatchTabs,
-    MatchStatus,
-    MatchActions,
-    MatchMapPicks,
-    MatchAssignLineups,
-  },
   data() {
     return {
       match: undefined,
@@ -200,6 +228,12 @@ export default {
               status: true,
               type: true,
               scheduled_at: true,
+              map_pool: {
+                label: true,
+                maps: {
+                  name: true,
+                }
+              },
               match_maps: {
                 id: true,
                 map: {
@@ -239,6 +273,7 @@ export default {
                 coach: {
                   name: true,
                   steam_id: true,
+                  avatar_url: true,
                 },
                 captain: {
                   placeholder_name: true,
@@ -266,6 +301,7 @@ export default {
                     player: {
                       name: true,
                       steam_id: true,
+                      avatar_url: true,
                       kills_aggregate: [
                         {
                           where: {
@@ -611,7 +647,7 @@ export default {
       );
     },
     assigningMaps() {
-      return this.match.best_of !== this.match.match_maps.length;
+      return this.match.best_of > Object.keys(this.match.match_maps).length;
     },
     maxPlayersPerLineup() {
       return (

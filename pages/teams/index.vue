@@ -1,38 +1,67 @@
+<script setup lang="ts">
+import { Search } from "lucide-vue-next";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FormItem, FormControl, Form } from "@/components/ui/form";
+import { Button } from "~/components/ui/button";
+</script>
+
 <template>
-  <NuxtLink to="/teams/create">
-    <five-stack-button>Create Team</five-stack-button>
-  </NuxtLink>
-  <tabs>
-    <tab title="Teams">
-      <form @submit.prevent>
-        <five-stack-text-input
-          label="Filter Teams"
-          v-model="teamQuery"
-        ></five-stack-text-input>
-      </form>
+  <PageHeading>
+    Teams
+    <NuxtLink to="/teams/create">
+      <Button>Create Team</Button>
+    </NuxtLink>
+
+    <template v-slot:description> Manage teams and rosters. </template>
+  </PageHeading>
+
+  <Tabs default-value="my-teams">
+    <TabsList>
+      <TabsTrigger value="my-teams"> My Teams </TabsTrigger>
+      <TabsTrigger value="teams"> Other Teams </TabsTrigger>
+    </TabsList>
+    <TabsContent value="teams">
+      <Form>
+        <FormField name="teamQuery">
+          <FormItem>
+            <FormControl>
+              <div class="relative w-full max-w-sm items-center">
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  v-model="teamQuery"
+                  class="pl-10"
+                ></Input>
+                <span
+                  class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+                >
+                  <Search class="size-6 text-muted-foreground" />
+                </span>
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </Form>
+
       <teams-table :teams="teams" v-if="teams"></teams-table>
       <pagination
         :page="page"
+        :per-page="perPage"
         @page="
           (_page) => {
             page = _page;
           }
         "
-        :total="Math.ceil(teams_aggregate.aggregate.count / per_page)"
+        :total="Math.ceil(teams_aggregate.aggregate.count / perPage)"
         v-if="teams_aggregate"
       ></pagination>
-    </tab>
-    <tab title="My Teams">
+    </TabsContent>
+    <TabsContent value="my-teams">
       <teams-table :teams="myTeams" v-if="myTeams"></teams-table>
-    </tab>
-  </tabs>
+    </TabsContent>
+  </Tabs>
 </template>
-<script setup lang="ts">
-import FiveStackButton from "~/components/FiveStackButton.vue";
-import TeamsTable from "~/components/TeamsTable.vue";
-import Tab from "~/components/tabs/Tab.vue";
-import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
-</script>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
@@ -44,7 +73,7 @@ export default {
   data() {
     return {
       page: 1,
-      per_page: 10,
+      perPage: 10,
       teamQuery: undefined,
       myTeams: undefined,
     };
@@ -82,8 +111,8 @@ export default {
       variables: function () {
         return {
           teamQuery: `%${this.teamQuery}%`,
-          limit: this.per_page,
-          offset: (this.page - 1) * this.per_page,
+          limit: this.perPage,
+          offset: (this.page - 1) * this.perPage,
         };
       },
     },

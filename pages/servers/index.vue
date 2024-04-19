@@ -1,43 +1,65 @@
-<template>
-  <h1>Manage Servers</h1>
-  <NuxtLink to="/servers/create">
-    <five-stack-button>Create Server</five-stack-button>
-  </NuxtLink>
+<script setup lang="ts">
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Pagination from "@/components/Pagination.vue";
+import { Separator } from "~/components/ui/separator";
+import {Button} from "~/components/ui/button";
+</script>
 
-  <clickable-table class="mt-2 mb-2">
-    <thead>
-      <tr>
-        <th>Label</th>
-        <th>Host/Port</th>
-        <th>TV Port</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <template v-for="server of servers">
-        <tr @click="viewServer(server.id)">
-          <td>{{ server.label }}</td>
-          <td>{{ server.host }}:{{ server.port }}</td>
-          <td>{{ server.tv_port }}</td>
-          <td>{{ server.enabled }}</td>
-        </tr>
-      </template>
-    </tbody>
-  </clickable-table>
-  <pagination
+<template>
+  <PageHeading>
+    Servers
+    <NuxtLink to="/servers/create">
+      <Button>Create Server</Button>
+    </NuxtLink>
+
+    <template v-slot:description>
+      Manage your dedicated servers servers
+    </template>
+  </PageHeading>
+
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Label</TableHead>
+        <TableHead>Connection Details</TableHead>
+        <TableHead>TV Port</TableHead>
+        <TableHead>Enabled</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow
+        v-for="server of servers"
+        :key="server.id"
+        @click="viewServer(server.id)"
+        class="cursor-pointer"
+      >
+        <TableCell>{{ server.label }}</TableCell>
+        <TableCell>{{ server.host }}</TableCell>
+        <TableCell>{{ server.tv_port }}</TableCell>
+        <TableCell>{{ server.enabled }}</TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+
+  <Pagination
     :page="page"
+    :per-page="perPage"
     @page="
       (_page) => {
         page = _page;
       }
     "
-    :total="Math.ceil(servers_aggregate.aggregate.count / per_page)"
+    :total="Math.ceil(servers_aggregate.aggregate.count / perPage)"
     v-if="servers_aggregate"
-  ></pagination>
+  ></Pagination>
 </template>
-<script setup lang="ts">
-import FiveStackButton from "~/components/FiveStackButton.vue";
-</script>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
@@ -47,33 +69,39 @@ export default {
   data() {
     return {
       page: 1,
-      per_page: 10,
+      perPage: 10,
+      servers: undefined,
     };
   },
   apollo: {
-    servers: {
-      query: generateQuery({
-        servers: [
-          {
-            limit: $("limit", "Int!"),
-            offset: $("offset", "Int!"),
-          },
-          {
-            id: true,
-            host: true,
-            port: true,
-            label: true,
-            tv_port: true,
-            enabled: true,
-          },
-        ],
-      }),
-      variables: function () {
-        return {
-          limit: this.per_page,
-          offset: (this.page - 1) * this.per_page,
-        };
-      },
+    $subscribe : {
+      servers: {
+        query: generateQuery({
+          servers: [
+            {
+              limit: $("limit", "Int!"),
+              offset: $("offset", "Int!"),
+            },
+            {
+              id: true,
+              host: true,
+              port: true,
+              label: true,
+              tv_port: true,
+              enabled: true,
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            limit: this.perPage,
+            offset: (this.page - 1) * this.perPage,
+          };
+        },
+        result: function ({ data }) {
+          this.servers = data.servers
+        },
+      }
     },
     servers_aggregate: {
       query: generateQuery({

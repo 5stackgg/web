@@ -5,8 +5,14 @@
 
 export default defineNuxtConfig({
   ssr: false,
-  devtools: { enabled: true },
-  css: ["~/assets/styles/public.scss"],
+  devtools: {
+    enabled: true,
+
+    timeline: {
+      enabled: true,
+    },
+  },
+  css: ["~/assets/css/tailwind.css"],
   postcss: {
     plugins: {
       "tailwindcss/nesting": "postcss-nesting",
@@ -14,9 +20,32 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@nuxtjs/apollo", "@pinia/nuxt"],
+  modules: [
+    "@nuxtjs/apollo",
+    "@pinia/nuxt",
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/color-mode",
+    "shadcn-nuxt",
+  ],
 
-  plugins: ["~/plugins/preline.client.ts"],
+  colorMode: {
+    classSuffix: "",
+    preference: "dark",
+  },
+
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: "",
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: "./components/ui",
+  },
+
+  plugins: [],
 
   apollo: {
     proxyCookies: true,

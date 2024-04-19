@@ -1,32 +1,49 @@
-<template>
-  <NuxtLink to="/matches/create">
-    <five-stack-button>Create Match</five-stack-button>
-  </NuxtLink>
+<script setup lang="ts">
+import { Button } from "@/components/ui/button";
+import MyMatches from "~/components/MyMatches.vue";
+import Pagination from "~/components/Pagination.vue";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "~/components/ui/separator";
+</script>
 
-  <tabs>
-    <tab title="My Matches">
+<template>
+  <PageHeading>
+    Matches
+    <NuxtLink to="/matches/create">
+      <Button>Create Match</Button>
+    </NuxtLink>
+
+    <template v-slot:description>
+      Manage and View upcoming matches that you are assigned to.
+    </template>
+  </PageHeading>
+
+  <Separator class="my-6" />
+
+  <Tabs default-value="my">
+    <TabsList>
+      <TabsTrigger value="my"> My Matches </TabsTrigger>
+      <TabsTrigger value="other"> Other Matches </TabsTrigger>
+    </TabsList>
+    <TabsContent value="my">
       <my-matches></my-matches>
-    </tab>
-    <tab title="Matches">
+    </TabsContent>
+    <TabsContent value="other">
       <matches-table :matches="matches" v-if="matches"></matches-table>
-      <pagination
+      <Pagination
         :page="page"
+        :per-page="perPage"
         @page="
           (_page) => {
             page = _page;
           }
         "
-        :total="Math.ceil(matches_aggregate.aggregate.count / per_page)"
+        :total="Math.ceil(matches_aggregate.aggregate.count / perPage)"
         v-if="matches_aggregate"
-      ></pagination>
-    </tab>
-  </tabs>
+      ></Pagination>
+    </TabsContent>
+  </Tabs>
 </template>
-<script setup lang="ts">
-import FiveStackButton from "~/components/FiveStackButton.vue";
-import MyMatches from "~/components/MyMatches.vue";
-import Tab from "~/components/tabs/Tab.vue";
-</script>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
@@ -37,7 +54,7 @@ export default {
   data() {
     return {
       page: 1,
-      per_page: 10,
+      perPage: 10,
     };
   },
   apollo: {
@@ -60,8 +77,8 @@ export default {
       }),
       variables: function () {
         return {
-          limit: this.per_page,
-          offset: (this.page - 1) * this.per_page,
+          limit: this.perPage,
+          offset: (this.page - 1) * this.perPage,
         };
       },
     },

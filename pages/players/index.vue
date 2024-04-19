@@ -1,28 +1,66 @@
-<template>
-  <h1>Players</h1>
+<script setup lang="ts">
+import { Search } from "lucide-vue-next";
+import { Input } from "@/components/ui/input";
+import { Separator } from "~/components/ui/separator";
+import Pagination from "@/components/Pagination.vue";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+</script>
 
-  <form @submit.prevent>
-    <five-stack-text-input
-      label="Filter Players"
+<template>
+  <PageHeading> Players </PageHeading>
+  <Separator class="my-6" />
+
+  <div class="relative w-full max-w-sm items-center">
+    <Input
+      id="search"
+      type="text"
+      placeholder="Search..."
+      class="pl-10"
       v-model="playerQuery"
-    ></five-stack-text-input>
-  </form>
-  <clickable-table class="mt-2 mb-2">
-    <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template v-for="player of players">
-        <tr @click="viewPlayer(player.steam_id)">
-          <td>{{ player.name }}</td>
-        </tr>
-      </template>
-    </tbody>
-  </clickable-table>
-  <pagination
+    />
+    <span
+      class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+    >
+      <Search class="size-6 text-muted-foreground" />
+    </span>
+  </div>
+
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead class="w-[100px]"> Name </TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow
+        v-for="player of players"
+        @click="viewPlayer(player.steam_id)"
+        class="cursor-pointer"
+      >
+        <TableCell class="font-medium">
+          <div class="flex">
+            <Avatar class="mx-3">
+              <AvatarImage
+                  :src="player.avatar_url"
+                  :alt="player.name"
+                  v-if="player.avatar_url"
+              />
+              <AvatarFallback>{{ player.name }}</AvatarFallback>
+            </Avatar>
+            <div>
+              {{ player.name }}
+              <p class="text-xs">
+                {{ player.steam_id }}
+              </p>
+            </div>
+          </div>
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+  <Pagination
     :page="page"
+    :per-page="per_page"
     @page="
       (_page) => {
         page = _page;
@@ -30,16 +68,10 @@
     "
     :total="Math.ceil(pagination.total / per_page)"
     v-if="pagination"
-  ></pagination>
+  ></Pagination>
 </template>
-<script setup lang="ts">
-import FiveStackTextInput from "~/components/forms/FiveStackTextInput.vue";
-</script>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
-import { $ } from "~/generated/zeus";
-
 export default {
   data() {
     return {

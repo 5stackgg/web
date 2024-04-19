@@ -1,5 +1,5 @@
 <template>
-  <p class="mt-1 text-gray-600 dark:text-gray-400">
+  <p >
     <template v-if="match.status == e_match_status_enum.Canceled">
       Match Canceled @ {{ endOfMatch }}
     </template>
@@ -11,11 +11,16 @@
     </template>
     <template v-else-if="match.status == e_match_status_enum.Knife"> </template>
     <template v-else-if="match.status == e_match_status_enum.Scheduled">
-      Match is Scheduled for
-      <template v-if="match.scheduled_at">
-        <time-ago :date="match.scheduled_at"></time-ago>
-      </template>
-      <template v-else> ASAP </template>
+      <div v-if="match.server_id && !match.is_match_server_available">
+        Waiting for Server to become available ...
+      </div>
+      <div v-else>
+        Match is Scheduled for
+        <template v-if="match.scheduled_at">
+          <time-ago :date="match.scheduled_at"></time-ago>
+        </template>
+        <template v-else> ASAP </template>
+      </div>
     </template>
     <template v-else-if="startOfMatch">
       Match has been going on for
@@ -24,7 +29,7 @@
     <template v-else>
       {{ match.status }}
     </template>
-  </p>
+  </p >
 </template>
 
 <script setup lang="ts">

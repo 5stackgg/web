@@ -1,109 +1,72 @@
+<script setup lang="ts">
+import { MoreVertical, Copy } from "lucide-vue-next"
+import {e_match_status_enum} from "~/generated/zeus";
+</script>
+
 <template>
+  <Button size="sm" variant="outline" class="h-8 gap-1" v-if="match.server">
+    <Copy class="h-3.5 w-3.5" />
+    <span class="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+      Copy Server Connection
+    </span>
+  </Button>
   <template v-if="match.status == e_match_status_enum.PickingPlayers">
-    <form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">
-      <five-stack-select-input
-        label="Server"
-        :options="availableServers"
-        v-model="form.server_id"
-      ></five-stack-select-input>
-      <five-stack-button @click="scheduleMatch">
-        Schedule Match!
-      </five-stack-button>
-    </form>
+    <Button variant="outline" @click.prevent.stop="scheduleMatch" class="-mr-2" :disabled="canAddToLineup1 || canAddToLineup2">
+      Schedule Match!
+    </Button>
   </template>
   <template v-if="match.status == e_match_status_enum.Scheduled">
-    <form @submit.prevent="startMatch">
-      <div v-if="match.server_id && !match.is_match_server_available">
-        <p>
-          Another match is on going on the selected server. Once complete match
-          will be able to be started.
-        </p>
-
-        <p class="mt-4">Choose another server.</p>
-      </div>
-
-      <five-stack-select-input
-        v-if="!match.server_id || !match.is_match_server_available"
-        label="Server"
-        :options="availableServers"
-        v-model="form.server_id"
-      ></five-stack-select-input>
-
-      <five-stack-button> Start Match </five-stack-button>
-    </form>
+    <Button variant="outline" @click.prevent.stop="startMatch" class="-mr-2" :disabled="!isServerAvailable">
+      Start Match
+    </Button>
   </template>
   <template
-    v-else-if="
+      v-else-if="
       match.status != e_match_status_enum.Canceled &&
       match.status != e_match_status_enum.Finished
     "
   >
-    <div class="text-purple-400 underline flex" v-if="match.connection_string">
+    <div class="underline flex" v-if="match.connection_string">
       <clip-board :data="match.connection_string"></clip-board>
       <a :href="`https://5stack.gg${match.connection_link}`">
         {{ match.connection_string }}
       </a>
     </div>
-    <div v-else-if="!match.server_id" class="text-red-400 underline">
-      Server has not been assigned
-    </div>
-    <div v-else>
+    <div v-else-if="match.server_id">
       <clip-board :data="match.tv_connection_string"></clip-board>
       <a :href="`https://5stack.gg${match.tv_connection_link}`">
         {{ match.tv_connection_string }}
       </a>
     </div>
-
-    <five-stack-button @click="cancelMatch"> Cancel Match </five-stack-button>
   </template>
-</template>
 
-<script setup lang="ts">
-import { e_match_status_enum } from "~/generated/zeus";
-</script>
+  <DropdownMenu>
+    <DropdownMenuTrigger as-child>
+      <Button size="icon" variant="outline">
+        <MoreVertical class="h-3.5 w-3.5" />
+        <span class="sr-only">More</span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem>
+        <match-select-server :match="match"></match-select-server>
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Cancel Match</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</template>
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 
 export default {
-  components: {
-    FiveStackSelectInput,
-  },
   props: {
     match: {
       type: Object,
       required: true,
-    },
-  },
-  data() {
-    return {
-      servers: [],
-      form: {
-        server_id: undefined,
-      },
-    };
-  },
-  apollo: {
-    $subscribe: {
-      servers: {
-        query: typedGql("subscription")({
-          servers: [
-            {},
-            {
-              id: true,
-              host: true,
-              port: true,
-              label: true,
-            },
-          ],
-        }),
-        result({ data }) {
-          this.servers = data.servers;
-        },
-      },
     },
   },
   methods: {
@@ -127,7 +90,6 @@ export default {
           startMatch: [
             {
               match_id: this.match.id,
-              server_id: this.form.server_id,
             },
             {
               success: true,
@@ -155,6 +117,12 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    isServerAvailable() {
+      if(!this.match.server_id) {
+        return true;
+      }
+      return this.match.server_id && this.match.is_match_server_available
+    },
     matchLineups() {
       return getMatchLineups(this.match);
     },
@@ -172,25 +140,6 @@ export default {
         this.matchLineups.lineup2?.lineup_players.length <
         this.maxPlayersPerLineup
       );
-    },
-    availableServers() {
-      const servers = this.servers
-        // .filter((server) => {
-        //   return this.match.server_id !== server.id;
-        // })
-        .map((server) => {
-          return {
-            value: server.id,
-            display: `${server.label} (${server.host}:${server.port})`,
-          };
-        });
-
-      servers.unshift({
-        value: null,
-        display: "On Demand",
-      });
-
-      return servers;
     },
   },
 };

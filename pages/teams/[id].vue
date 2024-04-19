@@ -1,116 +1,127 @@
+<script setup lang="ts">
+import { TeamMembers } from "~/components/teams";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+
+
+import { ref } from 'vue'
+import {MoreHorizontal, Trash} from 'lucide-vue-next'
+
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import TeamForm from "~/components/teams/TeamForm.vue";
+
+const teamMenu = ref(false)
+
+</script>
+
 <template>
   <template v-if="team">
-    <h1>
-      <span
-        :contentEditable="editingTeamName"
-        @keydown.enter.prevent="updateTeamName"
-        ref="team-name"
-      >
-        {{ team.name }}
-      </span>
-      [{{ team.short_name }}]
-    </h1>
-    <small @click="editTeamName">
-      <template v-if="editingTeamName"> cancel </template>
-      <template v-else> rename </template>
-    </small>
+    <PageHeading>
+      {{ team.name }}
 
-    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <div class="grid md:grid-cols-2 gap-12">
-        <div
-          class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-        >
-          <template v-for="member of team.roster">
-            <img
-              class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"
-              :src="member.player.avatar_url"
-            />
-            {{ member.player.name }}
-            <small>[{{ member.player.steam_id }}]</small>
-            <div
-              @click="removeMember(member.player.steam_id)"
-              class="cursor-pointer flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-gray-800 bg-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            >
-              <close-icon></close-icon>
-            </div>
-          </template>
+      <DropdownMenu v-model:open="teamMenu">
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" size="sm">
+            <MoreHorizontal />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" class="w-[200px]">
+          <DropdownMenuGroup>
+            <DropdownMenuItem @click="editTeamSheet = true">
+              Edit
+            </DropdownMenuItem>
 
-          <template v-for="invite of team.invites">
-            PENDING INVITES
-            <img
-              class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"
-              :src="invite.player.avatar_url"
-            />
-            {{ invite.player.name }}
-            <small>[{{ invite.player.steam_id }}]</small>
-            <div
-              @click="removeInvite(invite.id)"
-              class="cursor-pointer flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-gray-800 bg-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-            >
-              <close-icon></close-icon>
-            </div>
-          </template>
-        </div>
+            <DropdownMenuSeparator />
 
-        <div>
-          <h1>Adding Members</h1>
-          <form @submit.prevent>
-            <five-stack-search-input
-              placeholder="Find Player"
-              v-model="form.member"
-              :search="searchPlayers"
-            ></five-stack-search-input>
-          </form>
-        </div>
+            <DropdownMenuItem class="text-red-600" @click="deleteTeamAlertDialog = true">
+              <Trash class="mr-2 h-4 w-4 inline" /> Delete
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <template #description> [{{ team.short_name }}] </template>
+
+    </PageHeading>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <PageHeading> Recent Matches / Scheduled </PageHeading>
+        <matches-table :matches="team.matches"></matches-table>
+      </div>
+      <div>
+        <team-members :team-id="$route.params.id"></team-members>
       </div>
     </div>
 
-    <hr />
-    Recent Matches / Scheduled
+    <Sheet :open="editTeamSheet" @update:open="(open) => editTeamSheet = open">
+      <SheetTrigger></SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Editing Team</SheetTitle>
+          <SheetDescription>
+            <team-form :team="team" @updated="editTeamSheet = false"></team-form>
+          </SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
 
-    <hr />
-
-    <matches-table :matches="team.matches"></matches-table>
-
-    <confirm-dialog :confirm-action="deleteTeam">
-      <div
-        class="cursor-pointer flex justify-center items-center w-7 h-7 text-sm font-semibold rounded-full border border-transparent text-red-500 bg-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-      >
-        Delete Team
-        <close-icon></close-icon>
-      </div>
-    </confirm-dialog>
+    <AlertDialog :open="deleteTeamAlertDialog" @update:open="(open) => deleteTeamAlertDialog = open">
+      <AlertDialogTrigger class="w-full">
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your team
+            and remove associated data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction @click="deleteTeam">Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </template>
 </template>
 
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import Tab from "~/components/tabs/Tab.vue";
-import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
-import FiveStackCheckbox from "~/components/forms/FiveStackCheckbox.vue";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import CloseIcon from "~/components/icons/CloseIcon.vue";
-import ConfirmDialog from "~/components/ConfirmDialog.vue";
+import { generateMutation } from "~/graphql/graphqlGen";
 import { matchFields } from "~/graphql/matchesGraphql";
 
 export default {
-  components: {
-    ConfirmDialog,
-    CloseIcon,
-    FiveStackSelectInput,
-    FiveStackCheckbox,
-    FiveStackSearchInput,
-    Tab,
-  },
   data() {
     return {
       team: undefined,
-      editingTeamName: false,
-      form: {
-        member: undefined,
-      },
+      editTeamSheet: false,
+      deleteTeamAlertDialog: false,
     };
   },
   apollo: {
@@ -122,6 +133,7 @@ export default {
               id: $("teamId", "uuid!"),
             },
             {
+              id: true,
               name: true,
               short_name: true,
               roster: [
@@ -160,86 +172,7 @@ export default {
       },
     },
   },
-  watch: {
-    ["form.member"]: {
-      handler(member) {
-        if (member) {
-          this.form.member = undefined;
-          this.addMember(member.value.steam_id);
-        }
-      },
-    },
-  },
   methods: {
-    async addMember(steam_id) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_team_invites_one: [
-            {
-              object: {
-                steam_id,
-                team_id: this.$route.params.id,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async removeInvite(inviteId) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_team_invites_by_pk: [
-            {
-              id: inviteId,
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-    },
-    async removeMember(player_steam_id: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_team_roster_by_pk: [
-            {
-              player_steam_id,
-              team_id: this.$route.params.id,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async searchPlayers(query) {
-      const response = await useFetch("/api/players-search", {
-        method: "post",
-        body: { query },
-      });
-
-      const players = response.data.value.hits.map(({ document }) => {
-        return document;
-      });
-
-      return players
-        .filter((player) => {
-          return !this.team.roster.find((member) => {
-            return member.player.steam_id === player.steam_id;
-          });
-        })
-        .map((user) => {
-          return {
-            value: user,
-            display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg" src="${user.avatar_url}"> ${user.name} <small>[${user.steam_id}]</small>`,
-          };
-        });
-    },
     async deleteTeam() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -255,46 +188,6 @@ export default {
       });
 
       this.$router.push("/teams");
-    },
-    async editTeamName() {
-      this.editingTeamName = !this.editingTeamName;
-      if (this.editingTeamName) {
-        const teamNameRef = this.$refs["team-name"];
-
-        this.$nextTick(() => {
-          teamNameRef.focus();
-          const range = document.createRange();
-          const selection = window.getSelection();
-
-          range.setStart(
-            teamNameRef.childNodes[0],
-            teamNameRef.textContent.length,
-          ); // Set the cursor at the end
-          range.collapse(true); // Collapse the range to the end
-          selection.removeAllRanges();
-          selection.addRange(range);
-        });
-      }
-    },
-    async updateTeamName() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_teams_by_pk: [
-            {
-              pk_columns: {
-                id: this.$route.params.id,
-              },
-              _set: {
-                name: this.$refs["team-name"].innerHTML,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-      this.editingTeamName = false;
     },
   },
 };

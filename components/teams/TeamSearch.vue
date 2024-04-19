@@ -1,0 +1,138 @@
+<script setup lang="ts">
+import { CaretSortIcon } from '@radix-icons/vue'
+
+import { Button } from '@/components/ui/button'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+
+</script>
+
+<template>
+  <Popover v-model:open="open">
+    <PopoverTrigger as-child>
+      <Button
+          @click="searchTeams()"
+          variant="outline"
+          :aria-expanded="open"
+          class="w-[500px] justify-between"
+      >
+        {{ teams?.find((team) => team.id == modelValue)?.name || label }}
+        <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent class="w-[500px] p-0">
+      <Command @update:searchTerm="(term) => searchTeams(term)">
+        <CommandInput class="h-9" @keydown.enter="select(teams.at(0))"/>
+        <CommandEmpty>No Teams Found.</CommandEmpty>
+        <CommandList>
+          <CommandGroup>
+            <CommandItem
+                v-for="team in teams"
+                :key="team.id"
+                :value="team"
+                @select="select(team)"
+            >
+              <div>
+                <span class="text-xs">
+                  [{{ team.short_name }}]
+                </span> {{ team.name }}
+              </div>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>
+</template>
+
+<script lang="ts">
+
+import {generateQuery} from "~/graphql/graphqlGen";
+
+export default {
+  emits: ["selected", "update:modelValue"],
+  props: {
+    label: {
+      type: String,
+      required: true,
+    },
+    exclude: {
+      type: Array,
+      required: false,
+      default: [],
+    },
+    modelValue: {
+      type: [String, Number, Array, Object],
+      default: "",
+      required: false,
+    },
+  },
+  data() {
+    return {
+      open: false,
+      query: undefined,
+      teams: undefined,
+    }
+  },
+  methods: {
+    select(team) {
+      if(!team) {
+        return;
+      }
+      this.open = false;
+      this.$emit("selected", team);
+      this.$emit("update:modelValue", team);
+    },
+    async searchTeams(query?: string) {
+      let teams = [];
+      if(!query || query.trim().length === 0) {
+        teams = this.me.player.teams;
+      } else {
+        const { data } = await this.$apollo.query({
+          query: generateQuery({
+            teams: [
+              {
+                where:  {
+                  _or: [
+                    {
+                      name: {
+                        _ilike: `%${query}%`,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                id: true,
+                name: true,
+                short_name: true,
+              },
+            ],
+          }),
+        });
+        teams = data.teams;
+      }
+
+      this.teams = teams.filter((team) => {
+        return this.exclude.includes(team.id) === false;
+      });
+    },
+  },
+  computed: {
+    me() {
+      return useAuthStore().me;
+    }
+  }
+}
+</script>

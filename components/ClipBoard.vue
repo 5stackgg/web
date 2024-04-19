@@ -1,3 +1,6 @@
+<script lang="ts" setup>
+import { Copy } from "lucide-vue-next"
+</script>
 <template>
   <div class="copy">
     <div
@@ -6,7 +9,7 @@
       class="icon--btn icon--btn-small"
       :data-clipboard-text="data"
     >
-      <copy-icon />
+      <Copy></Copy>
     </div>
     <div
       v-else
@@ -14,18 +17,16 @@
       class="icon--btn icon--btn-small"
       :data-clipboard-target="target"
     >
-      <copy-icon />
+      <Copy></Copy>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import ClipboardJS from "clipboard";
 import alertStore from "@/stores/alertStore";
-import CopyIcon from "@/components/icons/CopyIcon.vue";
 import { AlertStatuses } from "@/constants/AlertStatuses";
 export default {
-  components: { CopyIcon },
   props: {
     target: {
       required: false,

@@ -1,112 +1,62 @@
 <template>
-  <div
-    class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
-    v-if="match.coaches && (canUpdateLineup1 || canUpdateLineup2)"
-  >
-    <h1>Assign Coach</h1>
+  <template v-if="match.coaches && (canUpdateLineup1 || canUpdateLineup2)">
+    <Card class="sm:col-span-2" v-if="canUpdateLineup1">
+      <CardHeader class="pb-3">
+        <CardTitle>Assign Coach for {{ matchLineups.lineup1.name }}</CardTitle>
+        <CardDescription>
+          <div v-if="matchLineups.lineup1.coach">
+              <Avatar>
+                <AvatarImage
+                    :src="matchLineups.lineup1.coach.avatar_url"
+                    :alt="matchLineups.lineup1.coach.name"
+                />
+                <AvatarFallback>{{ matchLineups.lineup1.coach.name }}</AvatarFallback>
+              </Avatar>
 
-    <div class="grid md:grid-cols-2 gap-12">
-      <div
-        class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-        v-if="canUpdateLineup1"
-      >
-        <pre>{{ matchLineups.lineup1.coach }}</pre>
+              {{ matchLineups.lineup1.coach.name }}
+          </div>
 
-        <form @submit.prevent.stop>
-          <five-stack-search-input
-            :label="matchLineups.lineup1.name"
-            placeholder="Find Player"
-            v-model="form.lineup_1"
-            :search="searchPlayers"
-          ></five-stack-search-input>
-        </form>
-      </div>
+          <player-search label="Assign Coach" :exclude="matchLineups.lineup1.lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup1.team_id" @selected="(player) => updateCoach(player.steam_id, matchLineups.lineup1.id)"></player-search>
+        </CardDescription>
+      </CardHeader>
+    </Card>
 
-      <div
-        class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-        v-if="canUpdateLineup2"
-      >
-        <pre>{{ matchLineups.lineup2.coach }}</pre>
+    <Card class="sm:col-span-2" v-if="canUpdateLineup2">
+      <CardHeader class="pb-3">
+        <CardTitle>Assign Coach for {{ matchLineups.lineup2.name }}</CardTitle>
+        <CardDescription>
+          <div v-if="matchLineups.lineup2.coach">
+            <Avatar>
+              <AvatarImage
+                  :src="matchLineups.lineup2.coach.avatar_url"
+                  :alt="matchLineups.lineup2.coach.name"
+              />
+              <AvatarFallback>{{ matchLineups.lineup2.coach.name }}</AvatarFallback>
+            </Avatar>
 
-        <form @submit.prevent.stop>
-          <five-stack-search-input
-            :label="matchLineups.lineup2.name"
-            placeholder="Find Player"
-            v-model="form.lineup_2"
-            :search="searchPlayers"
-          ></five-stack-search-input>
-        </form>
-      </div>
-    </div>
-  </div>
+            {{ matchLineups.lineup2.coach.name }}
+          </div>
+
+          <player-search label="Assign Coach" :exclude="matchLineups.lineup2.lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup2.team_id" @selected="(player) => updateCoach(player.steam_id, matchLineups.lineup2.id)"></player-search>
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  </template>
 </template>
 
 <script lang="ts">
-import { $ } from "~/generated/zeus";
-import getMatchLineups from "~/utilities/getMatchLineups";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import { generateMutation } from "~/graphql/graphqlGen";
+import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
-  components: {
-    FiveStackSearchInput,
-  },
   props: {
     match: {
       type: Object,
       required: true,
     },
   },
-  data() {
-    return {
-      form: {
-        lineup_1: undefined,
-        lineup_2: undefined,
-      },
-    };
-  },
-  watch: {
-    ["form.lineup_1"]: {
-      handler(member) {
-        if (member) {
-          this.updateCoach(member.value.steam_id, this.matchLineups.lineup1.id);
-        }
-      },
-    },
-    ["form.lineup_2"]: {
-      handler(member) {
-        if (member) {
-          this.updateCoach(member.value.steam_id, this.matchLineups.lineup2.id);
-        }
-      },
-    },
-  },
   methods: {
-    async searchPlayers(query) {
-      const response = await useFetch("/api/players-search", {
-        method: "post",
-        body: { query },
-      });
-      const players = response.data.value.hits.map(({ document }) => {
-        return document;
-      });
-
-      return (
-        players
-          // .filter((player) => {
-          //   return (
-          //    TODO
-          //   );
-          // })
-          .map((player) => {
-            return {
-              value: player,
-              display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"src="${player.avatar_url}"> ${player.name} <small>[${player.steam_id}]</small>`,
-            };
-          })
-      );
-    },
     async updateCoach(steam_id: bigint, match_lineup_id: string) {
       await this.$apollo.mutate({
         mutation: generateMutation({

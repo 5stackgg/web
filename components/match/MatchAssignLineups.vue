@@ -16,7 +16,7 @@
       <CardTitle>Assign Players to {{ matchLineups.lineup2.name }}</CardTitle>
       <CardDescription>
         <template v-if="canAddToLineup2">
-          <player-search label="Search for a player" :exclude="matchLineups.lineup2lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup2.team_id" @selected="(player) => addMember(player.steam_id, matchLineups.lineup2.id)"></player-search>
+          <player-search label="Search for a player" :exclude="matchLineups.lineup2.lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup2.team_id" @selected="(player) => addMember(player.steam_id, matchLineups.lineup2.id)"></player-search>
         </template>
         <template v-else> Team 2 Lineup setup. </template>
       </CardDescription>

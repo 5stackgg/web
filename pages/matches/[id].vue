@@ -165,7 +165,7 @@ import {Badge} from "~/components/ui/badge";
               :match="match"
               v-if="assigningLineups"
           ></match-assign-lineups>
-<!--          <match-assign-coach :match="match"></match-assign-coach>-->
+          <match-assign-coach :match="match"></match-assign-coach>
 <!--          <match-map-veto :match="match"></match-map-veto>-->
 <!--          <match-map-picks :match="match" if="assigningMaps"></match-map-picks>-->
         </div>
@@ -270,6 +270,7 @@ export default {
                 coach: {
                   name: true,
                   steam_id: true,
+                  avatar_url: true,
                 },
                 captain: {
                   placeholder_name: true,

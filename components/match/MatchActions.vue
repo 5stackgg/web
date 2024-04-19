@@ -52,7 +52,7 @@ import {e_match_status_enum} from "~/generated/zeus";
         <match-select-server :match="match"></match-select-server>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>Cancel Match</DropdownMenuItem>
+      <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </template>

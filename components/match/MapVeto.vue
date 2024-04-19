@@ -8,19 +8,25 @@
   </pre>
 
   <div class="grid grid-cols-4" v-for="pick of picks">
-    <map-preview :map="pick.map">
+    <match-map-preview :map="pick.map">
       <br />
       {{ pick.type }}ed by
 
       {{ pick.match_lineup.name }}
 
       <template v-if="pick.side"> ({{ pick.side }}) </template>
-    </map-preview>
+    </match-map-preview>
   </div>
 
   <hr />
 
   <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+
+    <div class="flex items-center space-x-2">
+      <Switch />
+      <Label>Airplane Mode</Label>
+    </div>
+
     <forms-five-stack-checkbox
       v-model="override"
       v-if="isMatchOrganizer"
@@ -50,7 +56,7 @@
         </div>
       </template>
 
-      <five-stack-button>{{ pickType }}</five-stack-button>
+      <Button>{{ pickType }}</Button>
     </form>
   </template>
 </template>
@@ -58,20 +64,14 @@
 <script>
 import { useAuthStore } from "~/stores/AuthStore";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import { mapFields } from "~/graphql/mapGraphql";
-import MapPreview from "~/components/veto/MapPreview.vue";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 import {
   $,
-  e_match_types_enum,
   e_sides_enum,
   order_by,
 } from "~/generated/zeus/index";
 
 export default {
-  components: { FiveStackSelectInput, MapPreview, FiveStackMapPicker },
   props: {
     match: {
       type: Object,

@@ -26,13 +26,13 @@ import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
           @click="searchPlayers()"
           variant="outline"
           :aria-expanded="open"
-          class="w-[500px] justify-between"
+          class="justify-between"
       >
         {{ label }}
         <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
-    <PopoverContent class="w-[500px] p-0">
+    <PopoverContent class="p-0">
       <Command @update:searchTerm="(term) => searchPlayers(term)">
         <CommandInput class="h-9" @keydown.enter="select(players.at(0))"/>
         <CommandEmpty>No Players Found.</CommandEmpty>
@@ -80,7 +80,11 @@ export default {
       type: Array,
       required: false,
       default: [],
-    }
+    },
+    teamId: {
+      type: String,
+      required: false,
+    },
   },
   data() {
     return {
@@ -103,14 +107,15 @@ export default {
       const response = await useFetch("/api/players-search", {
         method: "post",
         body: {
-          query
+          query,
+          teamId: this.teamId
         },
       });
 
       this.players = response.data.value.hits.map(({ document }) => {
         return document;
       }).filter((player) => {
-        return this.exclude.includes(player.steam_id) === false;
+        return !this.exclude.includes(player.steam_id);
       });
     },
   }

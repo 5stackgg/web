@@ -1,5 +1,5 @@
 <template>
-  <p class="mt-1 text-gray-600 dark:text-gray-400">
+  <p >
     <template v-if="match.status == e_match_status_enum.Canceled">
       Match Canceled @ {{ endOfMatch }}
     </template>

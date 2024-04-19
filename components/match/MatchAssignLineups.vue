@@ -1,126 +1,42 @@
 <template>
-  <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-    <h1>Assign lineups</h1>
-
-    <div class="grid md:grid-cols-2 gap-12">
-      <div
-        class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-      >
-        <form @submit.prevent.stop v-if="canAddToLineup1">
-          <five-stack-search-input
-            :click-init-search="true"
-            :label="matchLineups.lineup1.name"
-            placeholder="Find Player"
-            v-model="form.lineup_1"
-            :search="lineup1Search"
-          ></five-stack-search-input>
-        </form>
+  <Card class="sm:col-span-2">
+    <CardHeader class="pb-3">
+      <CardTitle>Assign Players to {{ matchLineups.lineup1.name }}</CardTitle>
+      <CardDescription>
+        <template v-if="canAddToLineup1">
+          <player-search label="Search for a player" :exclude="matchLineups.lineup1.lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup1.team_id" @selected="(player) => addMember(player.steam_id, matchLineups.lineup1.id)"></player-search>
+        </template>
         <template v-else> Team 1 Lineup setup. </template>
-      </div>
+      </CardDescription>
+    </CardHeader>
+  </Card>
 
-      <div
-        class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-      >
-        <form @submit.prevent.stop v-if="canAddToLineup2">
-          <five-stack-search-input
-            :click-init-search="true"
-            :label="matchLineups.lineup2.name"
-            placeholder="Find Player"
-            v-model="form.lineup_2"
-            :search="lineup2Search"
-          ></five-stack-search-input>
-        </form>
+  <Card class="sm:col-span-2">
+    <CardHeader class="pb-3">
+      <CardTitle>Assign Players to {{ matchLineups.lineup2.name }}</CardTitle>
+      <CardDescription>
+        <template v-if="canAddToLineup2">
+          <player-search label="Search for a player" :exclude="matchLineups.lineup2lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup2.team_id" @selected="(player) => addMember(player.steam_id, matchLineups.lineup2.id)"></player-search>
+        </template>
         <template v-else> Team 2 Lineup setup. </template>
-      </div>
-    </div>
-  </div>
+      </CardDescription>
+    </CardHeader>
+  </Card>
 </template>
 
 <script lang="ts">
-import { $ } from "~/generated/zeus";
+import {e_match_types_enum} from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import FiveStackSearchInput from "~/components/forms/FiveStackSearchInput.vue";
 
 export default {
-  components: {
-    FiveStackSearchInput,
-  },
   props: {
     match: {
       type: Object,
       required: true,
     },
   },
-  data() {
-    return {
-      form: {
-        lineup_1: undefined,
-        lineup_2: undefined,
-      },
-    };
-  },
-  watch: {
-    ["form.lineup_1"]: {
-      handler(member) {
-        if (member) {
-          this.form.lineup_1 = undefined;
-          this.addMember(member.value.steam_id, this.matchLineups.lineup1.id);
-        }
-      },
-    },
-    ["form.lineup_2"]: {
-      handler(member) {
-        if (member) {
-          this.form.lineup_2 = undefined;
-          this.addMember(member.value.steam_id, this.matchLineups.lineup2.id);
-        }
-      },
-    },
-  },
   methods: {
-    async lineup1Search(query) {
-      return await this.searchPlayers(query, this.matchLineups.lineup1.team_id);
-    },
-    async lineup2Search(query) {
-      return await this.searchPlayers(query, this.matchLineups.lineup2.team_id);
-    },
-    async searchPlayers(query, teamId) {
-      if (!query && !teamId) {
-        return;
-      }
-
-      const response = await useFetch("/api/players-search", {
-        method: "post",
-        body: { query, teamId },
-      });
-
-      const players = response.data.value.hits.map(({ document }) => {
-        return document;
-      });
-
-      return players
-        .filter((player) => {
-          if (
-            this.matchLineups.lineup1.lineup_players.find((_player) => {
-              return _player.steam_id === player.steam_id;
-            }) ||
-            this.matchLineups.lineup2.lineup_players.find((_player) => {
-              return _player.steam_id === player.steam_id;
-            })
-          ) {
-            return false;
-          }
-
-          return true;
-        })
-        .map((player) => {
-          return {
-            value: player,
-            display: `<img class="inline-block h-[2.875rem] w-[2.875rem] rounded-lg"src="${player.avatar_url}"> ${player.name} <small>[${player.steam_id}]</small>`,
-          };
-        });
-    },
     async addMember(steam_id: bigint, match_lineup_id: string) {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -145,7 +61,7 @@ export default {
     },
     maxPlayersPerLineup() {
       return (
-        (this.match?.type === "Wingman" ? 2 : 5) +
+        (this.match?.type === e_match_types_enum.Wingman ? 2 : 5) +
         this.match.number_of_substitutes
       );
     },

@@ -1,95 +1,104 @@
 <template>
-  <template v-if="match.status == e_match_status_enum.PickingPlayers">
-    <Form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">
-      <FormField name="server">
-        <FormItem>
-          <FormLabel>Server</FormLabel>
-          <FormControl>
-            <Select>
-              <SelectTrigger>
-                <SelectValue placeholder="Server" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
-                  <SelectItem value="apple"> Apple </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </FormControl>
-        </FormItem>
-      </FormField>
-      <five-stack-select-input
-        label="Server"
-        :options="availableServers"
-        v-model="form.server_id"
-      ></five-stack-select-input>
-      <five-stack-button @click="scheduleMatch">
-        Schedule Match!
-      </five-stack-button>
-    </Form>
-  </template>
-  <template v-if="match.status == e_match_status_enum.Scheduled">
-    <form @submit.prevent="startMatch">
-      <div v-if="match.server_id && !match.is_match_server_available">
-        <p>
-          Another match is on going on the selected server. Once complete match
-          will be able to be started.
-        </p>
+  <Button size="sm" variant="outline" class="h-8 gap-1" v-if="match.server">
+    <Copy class="h-3.5 w-3.5" />
+    <span class="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+      Copy Server Connection
+    </span>
+  </Button>
 
-        <p class="mt-4">Choose another server.</p>
-      </div>
+  <DropdownMenu>
+    <DropdownMenuTrigger as-child>
+      <Button size="icon" variant="outline" class="h-8 w-8">
+        <MoreVertical class="h-3.5 w-3.5" />
+        <span class="sr-only">More</span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem>Edit</DropdownMenuItem>
+      <DropdownMenuItem>Export</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Cancel Match</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
 
-      <five-stack-select-input
-        v-if="!match.server_id || !match.is_match_server_available"
-        label="Server"
-        :options="availableServers"
-        v-model="form.server_id"
-      ></five-stack-select-input>
+<!--  <template v-if="match.status == e_match_status_enum.PickingPlayers">-->
+<!--    <Form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">-->
+<!--      <five-stack-select-input-->
+<!--        label="Server"-->
+<!--        :options="availableServers"-->
+<!--        v-model="form.server_id"-->
+<!--      ></five-stack-select-input>-->
+<!--      <Button @click="scheduleMatch">-->
+<!--        Schedule Match!-->
+<!--      </Button>-->
+<!--    </Form>-->
+<!--  </template>-->
+<!--  <template v-if="match.status == e_match_status_enum.Scheduled">-->
+<!--    <form @submit.prevent="startMatch">-->
+<!--      <div v-if="match.server_id && !match.is_match_server_available">-->
+<!--        <p>-->
+<!--          Another match is on going on the selected server. Once complete match-->
+<!--          will be able to be started.-->
+<!--        </p>-->
 
-      <five-stack-button> Start Match </five-stack-button>
-    </form>
-  </template>
-  <template
-    v-else-if="
-      match.status != e_match_status_enum.Canceled &&
-      match.status != e_match_status_enum.Finished
-    "
-  >
-    <div class="text-purple-400 underline flex" v-if="match.connection_string">
-      <clip-board :data="match.connection_string"></clip-board>
-      <a :href="`https://5stack.gg${match.connection_link}`">
-        {{ match.connection_string }}
-      </a>
-    </div>
-    <div v-else-if="!match.server_id" class="text-red-400 underline">
-      Server has not been assigned
-    </div>
-    <div v-else>
-      <clip-board :data="match.tv_connection_string"></clip-board>
-      <a :href="`https://5stack.gg${match.tv_connection_link}`">
-        {{ match.tv_connection_string }}
-      </a>
-    </div>
+<!--        <p class="mt-4">Choose another server.</p>-->
+<!--      </div>-->
 
-    <five-stack-button @click="cancelMatch"> Cancel Match </five-stack-button>
-  </template>
+<!--      <five-stack-select-input-->
+<!--        v-if="!match.server_id || !match.is_match_server_available"-->
+<!--        label="Server"-->
+<!--        :options="availableServers"-->
+<!--        v-model="form.server_id"-->
+<!--      ></five-stack-select-input>-->
+
+<!--      <five-stack-button> Start Match </five-stack-button>-->
+<!--    </form>-->
+<!--  </template>-->
+<!--  <template-->
+<!--    v-else-if="-->
+<!--      match.status != e_match_status_enum.Canceled &&-->
+<!--      match.status != e_match_status_enum.Finished-->
+<!--    "-->
+<!--  >-->
+<!--    <div class="underline flex" v-if="match.connection_string">-->
+<!--      <clip-board :data="match.connection_string"></clip-board>-->
+<!--      <a :href="`https://5stack.gg${match.connection_link}`">-->
+<!--        {{ match.connection_string }}-->
+<!--      </a>-->
+<!--    </div>-->
+<!--    <div v-else-if="!match.server_id" class="underline">-->
+<!--      Server has not been assigned-->
+<!--    </div>-->
+<!--    <div v-else>-->
+<!--      <clip-board :data="match.tv_connection_string"></clip-board>-->
+<!--      <a :href="`https://5stack.gg${match.tv_connection_link}`">-->
+<!--        {{ match.tv_connection_string }}-->
+<!--      </a>-->
+<!--    </div>-->
+
+<!--    <Button size="sm" variant="destructive" @click="cancelMatch" > Cancel Match </Button>-->
+<!--  </template>-->
 </template>
 
 <script setup lang="ts">
 import { e_match_status_enum } from "~/generated/zeus";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "~/components/ui/dropdown-menu";
+import {Copy, MoreVertical} from "lucide-vue-next";
+import {Button} from "~/components/ui/button";
 </script>
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
 
 export default {
-  components: {
-    FiveStackSelectInput,
-  },
   props: {
     match: {
       type: Object,

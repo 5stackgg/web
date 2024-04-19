@@ -10,53 +10,18 @@ import {e_match_status_enum} from "~/generated/zeus";
       Copy Server Connection
     </span>
   </Button>
-
-  <DropdownMenu>
-    <DropdownMenuTrigger as-child>
-      <Button size="icon" variant="outline" class="h-8 w-8">
-        <MoreVertical class="h-3.5 w-3.5" />
-        <span class="sr-only">More</span>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-<!--      <DropdownMenuItem>Edit</DropdownMenuItem>-->
-<!--      <DropdownMenuItem>Export</DropdownMenuItem>-->
-<!--      <DropdownMenuSeparator />-->
-      <DropdownMenuItem>Cancel Match</DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-
   <template v-if="match.status == e_match_status_enum.PickingPlayers">
-    <Form @submit.prevent v-if="!canAddToLineup1 && !canAddToLineup2">
-<!--      availableServers-->
-      <Button @click="scheduleMatch">
-        Schedule Match!
-      </Button>
-    </Form>
+    <Button variant="outline" @click.prevent.stop="scheduleMatch" class="-mr-2" :disabled="canAddToLineup1 || canAddToLineup2">
+      Schedule Match!
+    </Button>
   </template>
   <template v-if="match.status == e_match_status_enum.Scheduled">
-    <form @submit.prevent="startMatch">
-      <div v-if="match.server_id && !match.is_match_server_available">
-        <p>
-          Another match is on going on the selected server. Once complete match
-          will be able to be started.
-        </p>
-
-        <p class="mt-4">Choose another server.</p>
-      </div>
-
-<!--      <five-stack-select-input-->
-<!--        v-if="!match.server_id || !match.is_match_server_available"-->
-<!--        label="Server"-->
-<!--        :options="availableServers"-->
-<!--        v-model="form.server_id"-->
-<!--      ></five-stack-select-input>-->
-
-      <five-stack-button> Start Match </five-stack-button>
-    </form>
+    <Button variant="outline" @click.prevent.stop="startMatch" class="-mr-2" :disabled="!isServerAvailable">
+      Start Match
+    </Button>
   </template>
   <template
-    v-else-if="
+      v-else-if="
       match.status != e_match_status_enum.Canceled &&
       match.status != e_match_status_enum.Finished
     "
@@ -74,6 +39,22 @@ import {e_match_status_enum} from "~/generated/zeus";
       </a>
     </div>
   </template>
+
+  <DropdownMenu>
+    <DropdownMenuTrigger as-child>
+      <Button size="icon" variant="outline">
+        <MoreVertical class="h-3.5 w-3.5" />
+        <span class="sr-only">More</span>
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem>
+        <match-select-server :match="match"></match-select-server>
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Cancel Match</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
 </template>
 
 <script lang="ts">
@@ -86,31 +67,6 @@ export default {
     match: {
       type: Object,
       required: true,
-    },
-  },
-  data() {
-    return {
-      servers: [],
-    };
-  },
-  apollo: {
-    $subscribe: {
-      servers: {
-        query: typedGql("subscription")({
-          servers: [
-            {},
-            {
-              id: true,
-              host: true,
-              port: true,
-              label: true,
-            },
-          ],
-        }),
-        result({ data }) {
-          this.servers = data.servers;
-        },
-      },
     },
   },
   methods: {
@@ -134,7 +90,6 @@ export default {
           startMatch: [
             {
               match_id: this.match.id,
-              server_id: this.form.server_id,
             },
             {
               success: true,
@@ -162,6 +117,12 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    isServerAvailable() {
+      if(!this.match.server_id) {
+        return true;
+      }
+      return this.match.server_id && this.match.is_match_server_available
+    },
     matchLineups() {
       return getMatchLineups(this.match);
     },
@@ -179,25 +140,6 @@ export default {
         this.matchLineups.lineup2?.lineup_players.length <
         this.maxPlayersPerLineup
       );
-    },
-    availableServers() {
-      const servers = this.servers
-        // .filter((server) => {
-        //   return this.match.server_id !== server.id;
-        // })
-        .map((server) => {
-          return {
-            value: server.id,
-            display: `${server.label} (${server.host}:${server.port})`,
-          };
-        });
-
-      servers.unshift({
-        value: null,
-        display: "On Demand",
-      });
-
-      return servers;
     },
   },
 };

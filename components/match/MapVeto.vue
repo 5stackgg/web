@@ -11,7 +11,7 @@ import {Button} from "~/components/ui/button";
       <CardTitle>Map Veto</CardTitle>
       <CardContent>
         <div class="grid grid-cols-4">
-          <match-map-preview :map="pick.map"  v-for="pick of picks">
+          <match-map-preview :map="pick.map"  v-for="pick of picks" v-if="match.maps">
             <br />
             {{ pick.type }}ed by
 

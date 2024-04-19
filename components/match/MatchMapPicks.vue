@@ -1,37 +1,84 @@
 <template>
-  <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-    <h1>Map Picks</h1>
+  <Card class="sm:col-span-4">
+    <CardHeader class="pb-3">
+      <CardTitle>Map Veto</CardTitle>
+      <CardContent>
 
-    <div class="grid md:grid-cols-2 gap-12">
-      <div
-        class="flex flex-col border rounded-xl p-4 sm:p-6 lg:p-10 dark:border-gray-700"
-      >
-        <form @submit.prevent.stop>
-          <five-stack-map-picker
-            v-model="form.maps"
-            :match-type="match.type"
-          ></five-stack-map-picker>
-          <five-stack-select-input
-            v-model="form.pickedBy"
-            label="Picked By"
-            :options="mapPickLineupOptions"
-          ></five-stack-select-input>
-          <five-stack-button @click="addMaps">Pick Maps</five-stack-button>
-        </form>
-      </div>
-    </div>
-  </div>
+      <form @submit.prevent="addMap">
+        <FormField v-slot="{ componentField }" name="maps">
+          <FormItem>
+            <FormLabel>Custom Map Pool</FormLabel>
+            <five-stack-map-picker
+                v-model="componentField.modelValue"
+                :match-type="match.type"
+            ></five-stack-map-picker>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+
+
+        <FormField v-slot="{ componentField }" name="picked_by">
+          <FormItem>
+            <FormLabel>Picked Team</FormLabel>
+
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select the team that selected the pick" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                      v-for="mapPickLineupOption in mapPickLineupOptions"
+                      :key="mapPickLineupOption.value"
+                      :value="mapPickLineupOption.value"
+                  >
+                    {{ mapPickLineupOption.display }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+
+        <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+          Pick Map
+        </Button>
+      </form>
+      </CardContent>
+    </CardHeader>
+  </Card>
 </template>
 
 <script lang="ts">
-import { e_sides_enum } from "~/generated/zeus";
+import * as z from "zod";
+import {useForm} from "vee-validate";
+import {e_sides_enum} from "~/generated/zeus";
+import {Button} from "~/components/ui/button";
+import {toTypedSchema} from "@vee-validate/zod";
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import FiveStackSelectInput from "~/components/forms/FiveStackSelectInput.vue";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
+import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
 
 export default {
   components: {
+    FormLabel,
+    SelectGroup,
+    SelectValue,
+    FormItem,
+    FormField,
+    FormControl,
+    SelectItem,
+    SelectTrigger,
+    Select,
+    FormMessage,
+    SelectContent,
+    Button,
     FiveStackMapPicker,
     FiveStackSelectInput,
   },
@@ -43,18 +90,23 @@ export default {
   },
   data() {
     return {
-      form: {
-        maps: [],
-        pickedBy: undefined,
-      },
+      form: useForm({
+        validationSchema: toTypedSchema(
+            z.object({
+              maps: z.array(z.string()).min(1).max(this.match.best_of).default([]),
+              picked_by: z.string()
+            })
+        )
+      }),
     };
   },
   methods: {
-    async addMaps() {
+    async addMap() {
       let currentMapCount = this.match.match_maps.length;
 
       try {
-        for (const map_id of this.form.maps) {
+        const { maps, picked_by } = this.form.values;
+        for (const map_id of maps) {
           await this.$apollo.mutate({
             mutation: generateMutation({
               insert_match_maps_one: [
@@ -76,10 +128,9 @@ export default {
         }
       } catch (error) {
         console.warn("unable to insert map", error);
-      } finally {
-        this.form.maps = [];
-        this.form.pickedBy = undefined;
       }
+
+      this.form.resetForm();
     },
   },
   computed: {

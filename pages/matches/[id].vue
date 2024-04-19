@@ -169,8 +169,8 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/compo
               v-if="assigningLineups"
           ></match-assign-lineups>
           <match-assign-coach :match="match"></match-assign-coach>
-          <match-map-veto :match="match"></match-map-veto>
-<!--          <match-map-picks :match="match" if="assigningMaps"></match-map-picks>-->
+          <match-map-veto :match="match" v-if="match.veto"></match-map-veto>
+          <match-map-picks :match="match" v-else-if="assigningMaps"></match-map-picks>
         </div>
         <match-tabs :match="match"></match-tabs>
       </div>
@@ -647,7 +647,7 @@ export default {
       );
     },
     assigningMaps() {
-      return this.match.best_of !== this.match.match_maps.length;
+      return this.match.best_of > Object.keys(this.match.match_maps).length;
     },
     maxPlayersPerLineup() {
       return (

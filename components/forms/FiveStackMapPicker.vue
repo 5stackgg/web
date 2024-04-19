@@ -45,7 +45,7 @@ import {
     </PopoverTrigger>
     <PopoverContent>
       <Command v-bind:model-value="modelValue" multiple>
-        <CommandInput placeholder="Search framework..." />
+        <CommandInput placeholder="Search Maps..." />
         <CommandEmpty>No framework found.</CommandEmpty>
         <CommandList>
           <CommandGroup>

@@ -1,18 +1,6 @@
 <script lang="ts" setup>
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel, DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "~/components/ui/dropdown-menu";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "~/components/ui/table";
-import {File, ListFilter} from "lucide-vue-next";
-import {Badge} from "~/components/ui/badge";
-import {Checkbox} from "~/components/ui/checkbox";
-import {Button} from "~/components/ui/button";
 import LineupOverview from "~/components/match/LineupOverview.vue";
 
 </script>
@@ -75,29 +63,46 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
         </CardContent>
       </Card>
     </TabsContent>
-    <TabsContent value="opening-duels"></TabsContent>
-    <TabsContent value="clutches"></TabsContent>
+    <TabsContent value="opening-duels">
+      <Card>
+        <CardHeader class="px-7">
+          <CardTitle>Opening Duels</CardTitle>
+          <CardDescription>
+            Opening Duels
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <match-lineup-opening-duels
+              :match="match"
+              :lineup="matchLineups.lineup1"
+          ></match-lineup-opening-duels>
+          <match-lineup-opening-duels
+              :match="match"
+              :lineup="matchLineups.lineup2"
+          ></match-lineup-opening-duels>
+        </CardContent>
+      </Card>
+    </TabsContent>
+    <TabsContent value="clutches">
+      <Card>
+        <CardHeader class="px-7">
+          <CardTitle>Clutches</CardTitle>
+          <CardDescription>
+            Clutches
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <match-lineup-clutches
+              :match="match"
+              :lineup1="matchLineups.lineup1"
+              :lineup2="matchLineups.lineup2"
+          ></match-lineup-clutches>
+        </CardContent>
+      </Card>
+    </TabsContent>
   </Tabs>
-<!--    <tab title="">-->
-<!--      <lineup-opening-duels-->
-<!--        :match="match"-->
-<!--        :lineup="matchLineups.lineup1"-->
-<!--      ></lineup-opening-duels>-->
-<!--      <br />-->
-<!--      <lineup-opening-duels-->
-<!--        :match="match"-->
-<!--        :lineup="matchLineups.lineup2"-->
-<!--      ></lineup-opening-duels>-->
-<!--    </tab>-->
-<!--    <tab title="Clutches">-->
-<!--      <lineup-clutches-->
-<!--        :match="match"-->
-<!--        :lineup1="matchLineups.lineup1"-->
-<!--        :lineup2="matchLineups.lineup2"-->
-<!--      ></lineup-clutches>-->
-<!--    </tab>-->
-<!--  </tabs>-->
 </template>
+
 <script lang="ts">
 import getMatchLineups from "~/utilities/getMatchLineups";
 

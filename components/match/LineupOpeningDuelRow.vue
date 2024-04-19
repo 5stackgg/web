@@ -1,9 +1,11 @@
 <template>
-  <tr>
-    <lineup-member :member="member" :lineup_id="lineup.id"></lineup-member>
-    <td class="w-2">{{ attempts }}</td>
-    <td class="w-2">{{ success }}</td>
-  </tr>
+  <TableRow>
+    <TableCell>
+      <lineup-member :member="member" :lineup_id="lineup.id"></lineup-member>
+    </TableCell>
+    <TableCell>{{ attempts }}</TableCell>
+    <TableCell>{{ success }}</TableCell>
+  </TableRow>
 </template>
 
 <script lang="ts">

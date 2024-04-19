@@ -1,23 +1,9 @@
 <script setup lang="ts">
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "~/components/ui/card";
-import {Copy, CreditCard, File, ListFilter} from "lucide-vue-next";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel, DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "~/components/ui/dropdown-menu";
-import {Pagination, PaginationList, PaginationNext, PaginationPrev} from "~/components/ui/pagination";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "~/components/ui/table";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
 import {Separator} from "~/components/ui/separator";
-import {Progress} from "~/components/ui/progress";
 import {Badge} from "~/components/ui/badge";
-import {Checkbox} from "~/components/ui/checkbox";
-import {Button} from "~/components/ui/button";
 </script>
 <template>
   <template v-if="match">

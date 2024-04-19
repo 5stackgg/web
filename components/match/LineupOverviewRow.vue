@@ -1,59 +1,87 @@
+<script lang="ts" setup>
+import formatStatValue from "~/utilities/formatStatValue";
+
+</script>
 <template>
-  <tr v-if="member.player">
-    <lineup-member
-      :member="member"
-      :lineup_id="lineup_id"
-      :removeable="true"
-    ></lineup-member>
-    <td class="w-2">
+  <TableRow>
+    <TableCell>
+      <lineup-member
+          :member="member"
+          :lineup_id="lineup_id"
+      ></lineup-member>
+    </TableCell>
+    <TableCell class="hidden sm:table-cell">
       {{ member.player.kills_aggregate.aggregate.count }}
-    </td>
-    <td class="w-2">
+    </TableCell>
+    <TableCell class="hidden sm:table-cell">
       {{ member.player.assists_aggregate.aggregate.count }}
-    </td>
-    <td class="w-2">
+    </TableCell>
+    <TableCell class="hidden md:table-cell">
       {{ member.player.deaths_aggregate.aggregate.count }}
-    </td>
-    <td class="w-2">
+    </TableCell>
+    <TableCell>
       {{ kd }}
-    </td>
-    <td>
+    </TableCell>
+    <TableCell>
       {{ hs }}
-    </td>
-    <td class="w-2">
-      {{ member.player.damage_dealt_aggregate.aggregate.sum.damage }}
-      <span
-        class="ml-2 inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white"
-        >{{
+    </TableCell>
+    <TableCell>
+      {{ member.player.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
+      <Badge class="text-xs" variant="outline">
+        {{
           formatStatValue(
-            member.player.damage_dealt_aggregate.aggregate.sum.damage /
-              totalRounds,
+              member.player.damage_dealt_aggregate.aggregate.sum.damage /
+              totalRounds
           )
         }}
-        ADR</span
-      >
-    </td>
-    <td class="w-2">
+        ADR
+      </Badge>
+    </TableCell>
+    <TableCell>
       {{ member.player.team_damage_aggregate.aggregate.sum.damage || 0 }}
-    </td>
-    <td class="w-2">{{ twoKills }}</td>
-    <td class="w-2">{{ threeKills }}</td>
-    <td class="w-2">{{ fourKills }}</td>
-    <td class="w-2">{{ fiveKills }}</td>
-    <td class="w-2">
+    </TableCell>
+    <TableCell>
+      {{ twoKills }}
+    </TableCell>
+    <TableCell>
+      {{ threeKills }}
+    </TableCell>
+    <TableCell>
+      {{ fourKills }}
+    </TableCell>
+    <TableCell>
+      {{ fiveKills }}
+    </TableCell>
+    <TableCell>
       {{ member.player.knife_kills_aggregate.aggregate.count }}
-    </td>
-    <td class="w-2">
+    </TableCell>
+    <TableCell>
       {{ member.player.zeus_kills_aggregate.aggregate.count }}
-    </td>
-  </tr>
+    </TableCell>
+    <TableCell>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="outline" size="icon">
+            <PaginationEllipsis></PaginationEllipsis>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent class="w-56">
+          <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
+            <span>Promote to Captain</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem @click="removeFromLineup">
+            <span>Remove from Lineup</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </TableCell>
+  </TableRow>
 </template>
-<script setup lang="ts">
-import formatStatValue from "~/utilities/formatStatValue";
-</script>
 
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
+import {generateMutation} from "~/graphql/graphqlGen";
+import {$} from "~/generated/zeus";
 
 export default {
   components: {
@@ -71,6 +99,64 @@ export default {
     lineup_id: {
       required: true,
       type: String,
+    },
+  },
+  methods: {
+    async makeCaptain() {
+      if (this.member.captain) {
+        return;
+      }
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_match_lineup_players: [
+            {
+              where: {
+                steam_id: {
+                  _eq: $("steam_id", "bigint"),
+                },
+                match_lineup_id: {
+                  _eq: $("match_lineup_id", "uuid"),
+                },
+              },
+              _set: {
+                captain: true,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+        variables: {
+          steam_id: this.member.steam_id,
+          match_lineup_id: this.lineup_id,
+        },
+      });
+    },
+    async removeFromLineup() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_match_lineup_players: [
+            {
+              where: {
+                steam_id: {
+                  _eq: $("steam_id", "bigint"),
+                },
+                match_lineup_id: {
+                  _eq: $("match_lineup_id", "uuid"),
+                },
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+        variables: {
+          steam_id: this.member.steam_id,
+          match_lineup_id: this.lineup_id,
+        },
+      });
     },
   },
   computed: {

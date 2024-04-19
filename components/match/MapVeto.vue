@@ -1,12 +1,4 @@
 <template>
-  <pre>
-    isCaptain :{{ isCaptain }}
-    Best Of: {{ bestOf }}
-    isPicking: {{ isPicking }}
-    isMatchOrganizer: {{ isMatchOrganizer }}
-    isVeto: {{ match.match_maps.length }} / {{ bestOf }}
-  </pre>
-
   <div class="grid grid-cols-4" v-for="pick of picks">
     <match-map-preview :map="pick.map">
       <br />
@@ -17,8 +9,6 @@
       <template v-if="pick.side"> ({{ pick.side }}) </template>
     </match-map-preview>
   </div>
-
-  <hr />
 
   <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
 

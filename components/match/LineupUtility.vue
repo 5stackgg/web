@@ -1,55 +1,94 @@
+<script lang="ts" setup>
+
+import LineupMember from "~/components/match/LineupMember.vue";
+</script>
+
 <template>
-  <clickable-table :caption="lineup.name">
-    <thead>
-      <tr>
-        <th>{{ lineup.name }}</th>
-        <th>Flash Assists</th>
-        <th>Enemies Flashed</th>
-        <th>Team Flashed</th>
-        <th>Avg bling time</th>
-        <th>HE Damage</th>
-        <th>Molotov Damage</th>
-        <th>Unused utility</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="member of lineup.lineup_players">
-        <lineup-member :member="member" :lineup_id="lineup.id"></lineup-member>
-        <td class="w-2">
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead class="hidden sm:table-cell">
+          {{ lineup.name }}
+        </TableHead>
+        <TableHead class="hidden sm:table-cell">
+          Flashes Thrown
+        </TableHead>
+        <TableHead class="hidden sm:table-cell">
+          Flash Assists
+        </TableHead>
+        <TableHead class="hidden md:table-cell">
+          Enemies Flashed
+        </TableHead>
+        <TableHead >
+          Team Flashed
+        </TableHead>
+        <TableHead >
+          Avg bling time
+        </TableHead>
+        <TableHead >
+          HE Damage
+        </TableHead>
+        <TableHead >
+          Total Damage
+        </TableHead>
+        <TableHead >
+          Team Damage
+        </TableHead>
+        <TableHead >
+          Molotov Damage
+        </TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow v-for="member of lineup.lineup_players">
+        <TableCell>
+          <lineup-member
+              :member="member"
+              :lineup_id="lineup.id"
+          ></lineup-member>
+        </TableCell>
+        <TableCell>
           {{ member.player.flashes_thrown_aggregate.aggregate.count }}
-        </td>
-        <td class="w-2">
+        </TableCell>
+        <TableCell>
+          TODO assits
+        </TableCell>
+        <TableCell>
           {{ member.player.flashed_players_aggregate.aggregate.count }}
-        </td>
-        <td class="w-2">
+        </TableCell>
+        <TableCell>
           {{ member.player.team_flashes_aggregate.aggregate.count }}
-        </td>
-        <td class="w-2">
+        </TableCell>
+        <TableCell>
+          duration
           {{
             formatStatValue(
-              member.player.avg_flash_duration_aggregate.aggregate.avg.duration,
+                member.player.avg_flash_duration_aggregate.aggregate.avg.duration,
             )
           }}
-        </td>
-        <td class="w-2">
+        </TableCell>
+        <TableCell>
           {{ member.player.he_damage_aggregate.aggregate.sum.damage || 0 }}
-        </td>
-        <td class="w-2">
+        </TableCell>
+        <TableCell>
           {{ member.player.molotov_damage_aggregate.aggregate.sum.damage || 0 }}
-        </td>
-        <td class="w-2">TODO</td>
-      </tr>
-    </tbody>
-  </clickable-table>
+        </TableCell>
+        <TableCell>
+          TODO
+        </TableCell>
+        <TableCell>
+          TODO
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
 </template>
 
 <script lang="ts">
-import LineupMember from "~/components/match/LineupMember.vue";
 import formatStatValue from "../../utilities/formatStatValue";
 
 export default {
   methods: { formatStatValue },
-  components: { LineupMember },
   props: {
     match: {
       required: true,

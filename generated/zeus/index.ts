@@ -51523,7 +51523,6 @@ export const enum e_match_map_status_enum {
 	Overtime = "Overtime",
 	Paused = "Paused",
 	Scheduled = "Scheduled",
-	TechTimeout = "TechTimeout",
 	Warmup = "Warmup"
 }
 /** select columns of table "e_match_map_status" */
@@ -51683,7 +51682,8 @@ export const enum e_veto_pick_types_constraint {
 export const enum e_veto_pick_types_enum {
 	Ban = "Ban",
 	LeftOver = "LeftOver",
-	Pick = "Pick"
+	Pick = "Pick",
+	Side = "Side"
 }
 /** select columns of table "e_veto_pick_types" */
 export const enum e_veto_pick_types_select_column {

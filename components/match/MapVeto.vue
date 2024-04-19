@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import MapPreview from "~/components/match/MapPreview.vue";
+import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
+import {Button} from "~/components/ui/button";
 </script>
 
 <template>
@@ -7,8 +10,8 @@ import MapPreview from "~/components/match/MapPreview.vue";
     <CardHeader class="pb-3">
       <CardTitle>Map Veto</CardTitle>
       <CardContent>
-        <div class="grid grid-cols-4" v-for="pick of picks">
-          <match-map-preview :map="pick.map">
+        <div class="grid grid-cols-4">
+          <match-map-preview :map="pick.map"  v-for="pick of picks">
             <br />
             {{ pick.type }}ed by
 
@@ -19,27 +22,40 @@ import MapPreview from "~/components/match/MapPreview.vue";
         </div>
 
         <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+          <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
 
-          <div class="flex items-center space-x-2">
-            <Switch />
-            <Label>Airplane Mode</Label>
+          <div @click="override = !override">
+            <Switch :checked="override" />
+            <Label>Match Organizer override</Label>
           </div>
 
-          <forms-five-stack-checkbox
-              v-model="override"
-              v-if="isMatchOrganizer"
-              label="Match Organizer override"
-          ></forms-five-stack-checkbox>
-
-          <form @submit.prevent="pickMap" v-if="isPicking">
-            <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
+          <form @submit.prevent="vetoPick" v-if="isPicking">
             <template v-if="pickType === 'Side'">
-              <pre>{{ picks.at(-1) }}</pre>
-              <!--        <five-stack-select-input-->
-              <!--          label="Side"-->
-              <!--          :options="sideOptions"-->
-              <!--          v-model="form.side"-->
-              <!--        ></five-stack-select-input>-->
+              <FormField v-slot="{ componentField }" name="side">
+                <FormItem>
+                  <FormLabel>Side</FormLabel>
+
+                  <Select v-bind="componentField">
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select the Side your team wants to start on" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                            v-for="sideOption in sideOptions"
+                            :key="sideOption.value"
+                            :value="sideOption.value"
+                        >
+                          {{ sideOption.display }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </template>
             <template v-else>
               <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
@@ -47,14 +63,16 @@ import MapPreview from "~/components/match/MapPreview.vue";
                     :map="availableMap"
                     class="cursor-pointer"
                     :class="{
-              'bg-red-500': form.map_id === availableMap.id,
+              'bg-red-500': form.values.map_id === availableMap.id,
             }"
-                    @click="form.map_id = availableMap.id"
+                    @click="form.setFieldValue('map_id', availableMap.id)"
                 ></map-preview>
               </div>
             </template>
 
-            <Button>{{ pickType }}</Button>
+            <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+              {{ pickType }}
+            </Button>
           </form>
         </template>
       </CardContent>
@@ -68,9 +86,12 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import {
   $,
-  e_sides_enum,
+  e_sides_enum, e_veto_pick_types_enum,
   order_by,
 } from "~/generated/zeus/index";
+import {useForm} from "vee-validate";
+import {toTypedSchema} from "@vee-validate/zod";
+import * as z from "zod";
 
 export default {
   props: {
@@ -160,25 +181,47 @@ export default {
     return {
       override: false,
       picks: undefined,
-      form: {
-        map: undefined,
-        side: undefined,
-      },
+      // TODO - should be on or the other
+      form: useForm({
+        validationSchema: toTypedSchema(
+            z.object({
+              map_id: z.string(),
+              side: z.string().optional().refine((value, data) => {
+                if (this.pickType === e_veto_pick_types_enum.Side) {
+                  return typeof value === "string" && value.trim() !== "";
+                }
+                return true;
+              }, { message: "side is required" })
+            })
+        )
+      }),
     };
   },
-  methods: {
-    async pickMap() {
-      if (this.pickType === "Side") {
-        this.form.map_id = this.picks.at(-1).map.id;
+  watch: {
+    pickType: {
+      immediate: true,
+      handler(pickType) {
+        if (pickType === e_veto_pick_types_enum.Side) {
+          const mapId = this.picks.at(-1).map.id;
+          console.info("WEEEE", mapId)
+          this.form.setValues({
+            map_id: mapId
+          })
+        }
       }
+    }
+  },
+  methods: {
+    async vetoPick() {
+      const { map_id, side } = this.form.values
 
       await this.$apollo.mutate({
         variables: {
-          map_id: this.form.map_id,
+          map_id,
           type: this.pickType,
-          ...(this.form.side
+          ...(side
             ? {
-                side: this.form.side,
+                side,
               }
             : {}),
           match_id: this.$route.params.id,
@@ -190,7 +233,7 @@ export default {
               object: {
                 map_id: $("map_id", "uuid!"),
                 side: $("side", "String"),
-                type: $("type", "String!"),
+                type: $("type", "e_veto_pick_types_enum!"),
                 match_id: $("match_id", "uuid!"),
                 match_lineup_id: $("match_lineup_id", "uuid!"),
               },
@@ -202,8 +245,7 @@ export default {
         }),
       });
 
-      this.form.side = undefined;
-      this.form.map_id = undefined;
+      this.form.resetForm();
     },
   },
   computed: {
@@ -243,10 +285,10 @@ export default {
       }
 
       if (this.match.best_of === 1) {
-        return "Ban";
+        return e_veto_pick_types_enum.Ban;
       }
 
-      const pattern = ["Ban", "Ban", "Pick", "Side", "Pick", "Side"];
+      const pattern = [e_veto_pick_types_enum.Ban, e_veto_pick_types_enum.Ban, e_veto_pick_types_enum.Pick, e_veto_pick_types_enum.Side, e_veto_pick_types_enum.Pick, e_veto_pick_types_enum.Side];
       return pattern[this.picks.length % pattern.length];
     },
     availableMaps() {

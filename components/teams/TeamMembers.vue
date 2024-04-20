@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { TeamMember } from "~/components/teams";
 import { Separator } from "~/components/ui/separator";
+import PlayerSearch from "~/components/PlayerSearch.vue";
 </script>
 
 <template>

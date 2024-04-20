@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+
+import PlayerSearch from "~/components/PlayerSearch.vue";
+</script>
 <template>
   <Card class="sm:col-span-2">
     <CardHeader class="pb-3">

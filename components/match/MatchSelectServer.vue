@@ -34,9 +34,9 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 
 <script lang="ts">
 import * as z from "zod";
-  import {useForm} from "vee-validate";
-  import {toTypedSchema} from "@vee-validate/zod";
-  import {typedGql} from "~/generated/zeus/typedDocumentNode";
+import {useForm} from "vee-validate";
+import {toTypedSchema} from "@vee-validate/zod";
+import {typedGql} from "~/generated/zeus/typedDocumentNode";
 import {generateMutation} from "~/graphql/graphqlGen";
 
   export default {

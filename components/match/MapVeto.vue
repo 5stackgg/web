@@ -203,7 +203,6 @@ export default {
       handler(pickType) {
         if (pickType === e_veto_pick_types_enum.Side) {
           const mapId = this.picks.at(-1).map.id;
-          console.info("WEEEE", mapId)
           this.form.setValues({
             map_id: mapId
           })

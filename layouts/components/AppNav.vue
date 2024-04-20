@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { Gamepad, PanelLeft, Bell } from "lucide-vue-next";
+import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
+import { Button } from "~/components/ui/button";
+import BreadCrumbs from "~/components/BreadCrumbs.vue";
+</script>
+
 <template>
   <aside
     class="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex"
@@ -10,71 +17,46 @@
         <Gamepad class="h-4 w-4 transition-all group-hover:scale-110" />
         <span class="sr-only">5Stack</span>
       </nuxt-link>
-      <TooltipProvider>
-        <template v-for="link of links">
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <nuxt-link
-                :to="link.to"
-                class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-              >
-                <component class="h-5 w-5" :is="link.icon"></component>
-                <span class="sr-only">{{ link.title }}</span>
-              </nuxt-link>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              {{ link.title }}
-            </TooltipContent>
-          </Tooltip>
-        </template>
-      </TooltipProvider>
+      <template v-for="link of links">
+        <nuxt-link
+            :to="link.to"
+            class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+        >
+          <component class="h-5 w-5" :is="link.icon"></component>
+          <span class="sr-only">{{ link.title }}</span>
+        </nuxt-link>
+      </template>
     </nav>
     <nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <Sheet>
-              <SheetTrigger
-                class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-              >
-                <Bell class="h-5 w-5" />
-                <span class="sr-only">Notifications</span>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle>Notifications</SheetTitle>
-                  <SheetDescription> // TODO </SheetDescription>
-                </SheetHeader>
-              </SheetContent>
-            </Sheet>
-          </TooltipTrigger>
-          <TooltipContent side="right"> Notifications </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Sheet>
+        <SheetTrigger>
+          <Bell class="h-5 w-5" />
+          <span class="sr-only">Notifications</span>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Notifications</SheetTitle>
+            <SheetDescription> // TODO </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
 
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <nuxt-link
-              href="/settings/profile"
-              class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-            >
-              <Avatar>
-                <AvatarImage
-                  :src="me.player.avatar_url"
-                  :alt="me.player.name"
-                />
-                <AvatarFallback>{{ me.player.name }}</AvatarFallback>
-              </Avatar>
+      <nuxt-link
+          href="/settings/profile"
+          class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+      >
+        <Avatar>
+          <AvatarImage
+              :src="me.player.avatar_url"
+              :alt="me.player.name"
+          />
+          <AvatarFallback>{{ me.player.name }}</AvatarFallback>
+        </Avatar>
 
-              <span class="sr-only">
+        <span class="sr-only">
                 {{ me.player.name }}
               </span>
-            </nuxt-link>
-          </TooltipTrigger>
-          <TooltipContent side="right"> Settings </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      </nuxt-link>
     </nav>
   </aside>
 
@@ -113,17 +95,6 @@
     <bread-crumbs></bread-crumbs>
   </header>
 </template>
-
-<script setup lang="ts">
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
-import { Gamepad, PanelLeft, Settings, Bell } from "lucide-vue-next";
-import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
-import { Button } from "~/components/ui/button";
-</script>
 
 <script lang="ts">
 import { Swords, Server, Users, ShieldHalf } from "lucide-vue-next";

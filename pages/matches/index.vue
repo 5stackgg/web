@@ -4,6 +4,8 @@ import MyMatches from "~/components/MyMatches.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "~/components/ui/separator";
+import MatchesTable from "~/components/MatchesTable.vue";
+import PageHeading from "~/components/PageHeading.vue";
 </script>
 
 <template>

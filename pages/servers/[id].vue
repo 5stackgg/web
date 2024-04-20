@@ -22,6 +22,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import {ref} from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
+import PasswordInput from "~/components/PasswordInput.vue";
 
 const serverMenu = ref(false)
 
@@ -164,7 +165,6 @@ export default {
           };
         },
         result: function ({ data }) {
-          console.info("LETS GO", data)
           this.server = data.servers_by_pk
         },
       },
@@ -242,7 +242,6 @@ export default {
     },
     sendCommand() {
       const { command } = this.form.values;
-      console.info("COMMAND", command);
       if (command?.length === 0) {
         return;
       }

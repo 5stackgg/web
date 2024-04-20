@@ -1,18 +1,35 @@
+<script lang="ts" setup>
+import MatchesTable from "~/components/MatchesTable.vue";
+</script>
+
 <template>
   <div class="flex flex-auto" v-if="player">
-    <simple-card title="Kills">
-      {{ player.kills_aggregate.aggregate.count }}
-    </simple-card>
-    <simple-card title="Assists">
-      {{ player.assists_aggregate.aggregate.count }}
-    </simple-card>
-    <simple-card title="K/D"> TODO </simple-card>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          Kills
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {{ player.kills_aggregate.aggregate.count }}
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          Assists
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {{ player.assists_aggregate.aggregate.count }}
+      </CardContent>
+    </Card>
   </div>
 
   <h1>Matches</h1>
   <div v-if="playerWithMatches">
     <matches-table :matches="playerWithMatches.matches"></matches-table>
-    <pagination
+    <Pagination
       :page="page"
       @page="
         (_page) => {
@@ -26,7 +43,7 @@
         )
       "
       v-if="playerWithMatchesAggregate"
-    ></pagination>
+    ></Pagination>
   </div>
 </template>
 

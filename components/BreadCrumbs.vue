@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+
+</script>
+
 <template>
   <Breadcrumb class="hidden md:flex">
     <BreadcrumbList>
@@ -21,22 +25,7 @@
 </template>
 
 <script lang="ts">
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb";
-
 export default {
-  components: {
-    BreadcrumbItem,
-    BreadcrumbList,
-    Breadcrumb,
-    BreadcrumbLink,
-    BreadcrumbSeparator,
-  },
   computed: {
     crumbs() {
       const segments = this.$route.path.split("/").filter((segment: string) => {

@@ -1,16 +1,5 @@
 <script setup lang="ts">
-import {
-  Pagination,
-  PaginationEllipsis,
-  PaginationFirst,
-  PaginationLast,
-  PaginationList,
-  PaginationListItem,
-  PaginationNext,
-  PaginationPrev,
-} from "@/components/ui/pagination";
 
-import { Button } from "@/components/ui/button";
 </script>
 
 <template>

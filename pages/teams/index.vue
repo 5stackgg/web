@@ -3,6 +3,8 @@ import { Search } from "lucide-vue-next";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormItem, FormControl, Form } from "@/components/ui/form";
 import { Button } from "~/components/ui/button";
+import TeamsTable from "~/components/TeamsTable.vue";
+import PageHeading from "~/components/PageHeading.vue";
 </script>
 
 <template>

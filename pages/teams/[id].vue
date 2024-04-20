@@ -34,6 +34,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import TeamForm from "~/components/teams/TeamForm.vue";
+import PageHeading from "~/components/PageHeading.vue";
+import MatchesTable from "~/components/MatchesTable.vue";
 
 const teamMenu = ref(false)
 

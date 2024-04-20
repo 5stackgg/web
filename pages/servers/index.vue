@@ -8,8 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Pagination from "@/components/Pagination.vue";
-import { Separator } from "~/components/ui/separator";
-import {Button} from "~/components/ui/button";
+import PageHeading from "~/components/PageHeading.vue";
 </script>
 
 <template>

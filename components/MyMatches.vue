@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+import MatchesTable from "~/components/MatchesTable.vue";
+</script>
+
 <template>
   <div v-if="meWithMatches?.player?.matches">
     <matches-table :matches="meWithMatches.player.matches"></matches-table>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import MyMatches from "~/components/MyMatches.vue";
 import { Separator } from "~/components/ui/separator/index.js";
 </script>
+
 <template>
   <div class="space-y-0.5">
     <h2 class="text-2xl font-bold tracking-tight">Upcoming Matches</h2>

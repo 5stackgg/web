@@ -1,3 +1,7 @@
+<script lang="ts" setup>
+import PlayerSearch from "~/components/PlayerSearch.vue";
+</script>
+
 <template>
   <template v-if="match.coaches && (canUpdateLineup1 || canUpdateLineup2)">
     <Card class="sm:col-span-2" v-if="canUpdateLineup1">

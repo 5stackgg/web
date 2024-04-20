@@ -4,6 +4,12 @@ import {Separator} from "~/components/ui/separator";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
+import CaptainInfo from "~/components/CaptainInfo.vue";
+import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
+import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
+import MapVeto from "~/components/match/MapVeto.vue";
+import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
+import MatchTabs from "~/components/match/MatchTabs.vue";
 </script>
 
 <template>
@@ -169,7 +175,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/compo
               v-if="assigningLineups"
           ></match-assign-lineups>
           <match-assign-coach :match="match"></match-assign-coach>
-          <match-map-veto :match="match" v-if="match.veto"></match-map-veto>
+          <map-veto :match="match" v-if="match.veto"></map-veto>
           <match-map-picks :match="match" v-else-if="assigningMaps"></match-map-picks>
         </div>
         <match-tabs :match="match"></match-tabs>

@@ -166,7 +166,6 @@ export default {
       });
     },
     async removeInvite() {
-      console.info("REMOVE INVITE",  this.member.id)
       await this.$apollo.mutate({
         mutation: generateMutation({
           delete_team_invites_by_pk: [

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import Pagination from "@/components/Pagination.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import PageHeading from "~/components/PageHeading.vue";
 </script>
 
 <template>

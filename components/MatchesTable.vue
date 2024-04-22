@@ -21,10 +21,10 @@ import TimeAgo from "~/components/TimeAgo.vue";
       </template>
       <template v-else>
         <TableRow
-            v-for="match of matches"
-            :key="match.id"
-            @click="viewMatch(match.id)"
-            class="cursor-pointer"
+          v-for="match of matches"
+          :key="match.id"
+          @click="viewMatch(match.id)"
+          class="cursor-pointer"
         >
           <TableCell class="font-medium">
             {{ lineup1(match).name }} vs {{ lineup2(match).name }}

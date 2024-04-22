@@ -19,8 +19,8 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
       </nuxt-link>
       <template v-for="link of links">
         <nuxt-link
-            :to="link.to"
-            class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+          :to="link.to"
+          class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
         >
           <component class="h-5 w-5" :is="link.icon"></component>
           <span class="sr-only">{{ link.title }}</span>
@@ -42,20 +42,17 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
       </Sheet>
 
       <nuxt-link
-          href="/settings/profile"
-          class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+        href="/settings/profile"
+        class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
       >
         <Avatar>
-          <AvatarImage
-              :src="me.player.avatar_url"
-              :alt="me.player.name"
-          />
+          <AvatarImage :src="me.player.avatar_url" :alt="me.player.name" />
           <AvatarFallback>{{ me.player.name }}</AvatarFallback>
         </Avatar>
 
         <span class="sr-only">
-                {{ me.player.name }}
-              </span>
+          {{ me.player.name }}
+        </span>
       </nuxt-link>
     </nav>
   </aside>

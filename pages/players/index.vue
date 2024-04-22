@@ -42,9 +42,9 @@ import PageHeading from "~/components/PageHeading.vue";
           <div class="flex">
             <Avatar class="mx-3">
               <AvatarImage
-                  :src="player.avatar_url"
-                  :alt="player.name"
-                  v-if="player.avatar_url"
+                :src="player.avatar_url"
+                :alt="player.name"
+                v-if="player.avatar_url"
               />
               <AvatarFallback>{{ player.name }}</AvatarFallback>
             </Avatar>

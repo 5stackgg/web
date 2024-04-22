@@ -18,13 +18,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
+} from "@/components/ui/sheet";
 
+import { ref } from "vue";
+import { MoreHorizontal, Trash } from "lucide-vue-next";
 
-import { ref } from 'vue'
-import {MoreHorizontal, Trash} from 'lucide-vue-next'
-
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,13 +31,12 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from "@/components/ui/dropdown-menu";
 import TeamForm from "~/components/teams/TeamForm.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
 
-const teamMenu = ref(false)
-
+const teamMenu = ref(false);
 </script>
 
 <template>
@@ -60,14 +58,16 @@ const teamMenu = ref(false)
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem class="text-red-600" @click="deleteTeamAlertDialog = true">
+            <DropdownMenuItem
+              class="text-red-600"
+              @click="deleteTeamAlertDialog = true"
+            >
               <Trash class="mr-2 h-4 w-4 inline" /> Delete
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <template #description> [{{ team.short_name }}] </template>
-
     </PageHeading>
 
     <div class="grid grid-cols-2 gap-4">
@@ -80,21 +80,29 @@ const teamMenu = ref(false)
       </div>
     </div>
 
-    <Sheet :open="editTeamSheet" @update:open="(open) => editTeamSheet = open">
+    <Sheet
+      :open="editTeamSheet"
+      @update:open="(open) => (editTeamSheet = open)"
+    >
       <SheetTrigger></SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Editing Team</SheetTitle>
           <SheetDescription>
-            <team-form :team="team" @updated="editTeamSheet = false"></team-form>
+            <team-form
+              :team="team"
+              @updated="editTeamSheet = false"
+            ></team-form>
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
     </Sheet>
 
-    <AlertDialog :open="deleteTeamAlertDialog" @update:open="(open) => deleteTeamAlertDialog = open">
-      <AlertDialogTrigger class="w-full">
-      </AlertDialogTrigger>
+    <AlertDialog
+      :open="deleteTeamAlertDialog"
+      @update:open="(open) => (deleteTeamAlertDialog = open)"
+    >
+      <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { MoreVertical, Copy } from "lucide-vue-next"
-import {e_match_status_enum} from "~/generated/zeus";
+import { MoreVertical, Copy } from "lucide-vue-next";
+import { e_match_status_enum } from "~/generated/zeus";
 import ClipBoard from "~/components/ClipBoard.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
-
 </script>
 
 <template>
@@ -14,17 +13,27 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
     </span>
   </Button>
   <template v-if="match.status == e_match_status_enum.PickingPlayers">
-    <Button variant="outline" @click.prevent.stop="scheduleMatch" class="-mr-2" :disabled="canAddToLineup1 || canAddToLineup2">
+    <Button
+      variant="outline"
+      @click.prevent.stop="scheduleMatch"
+      class="-mr-2"
+      :disabled="canAddToLineup1 || canAddToLineup2"
+    >
       Schedule Match!
     </Button>
   </template>
   <template v-if="match.status == e_match_status_enum.Scheduled">
-    <Button variant="outline" @click.prevent.stop="startMatch" class="-mr-2" :disabled="!isServerAvailable">
+    <Button
+      variant="outline"
+      @click.prevent.stop="startMatch"
+      class="-mr-2"
+      :disabled="!isServerAvailable"
+    >
       Start Match
     </Button>
   </template>
   <template
-      v-else-if="
+    v-else-if="
       match.status != e_match_status_enum.Canceled &&
       match.status != e_match_status_enum.Finished
     "
@@ -120,10 +129,10 @@ export default {
       return useAuthStore().me;
     },
     isServerAvailable() {
-      if(!this.match.server_id) {
+      if (!this.match.server_id) {
         return true;
       }
-      return this.match.server_id && this.match.is_match_server_available
+      return this.match.server_id && this.match.is_match_server_available;
     },
     matchLineups() {
       return getMatchLineups(this.match);

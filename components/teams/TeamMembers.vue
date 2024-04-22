@@ -45,13 +45,17 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
     </CardContent>
   </Card>
 
-  <player-search label="Invite Player to Team ..." :exclude="team?.roster.map((member) => member.player.steam_id) || []" @selected="addMember"></player-search>
+  <player-search
+    label="Invite Player to Team ..."
+    :exclude="team?.roster.map((member) => member.player.steam_id) || []"
+    @selected="addMember"
+  ></player-search>
 </template>
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_team_roles_enum, order_by } from "~/generated/zeus";
-import {generateMutation} from "~/graphql/graphqlGen";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {

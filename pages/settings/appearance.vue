@@ -34,7 +34,7 @@ const appearanceFormSchema = toTypedSchema(
       invalid_type_error: "Select a font",
       required_error: "Please select a font.",
     }),
-  }),
+  })
 );
 
 const { handleSubmit } = useForm({
@@ -52,7 +52,7 @@ const onSubmit = handleSubmit((values) => {
     description: h(
       "pre",
       { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
+      h("code", { class: "text-white" }, JSON.stringify(values, null, 2))
     ),
   });
 });
@@ -77,7 +77,7 @@ const onSubmit = handleSubmit((values) => {
               :class="
                 cn(
                   buttonVariants({ variant: 'outline' }),
-                  'w-[200px] appearance-none bg-transparent font-normal',
+                  'w-[200px] appearance-none bg-transparent font-normal'
                 )
               "
               v-bind="field"

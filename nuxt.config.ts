@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   },
   // disable auto imports for components
   components: {
-    dirs: []
+    dirs: [],
   },
   css: ["~/assets/css/tailwind.css"],
   postcss: {

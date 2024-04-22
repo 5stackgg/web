@@ -1,14 +1,10 @@
 <script lang="ts" setup>
 import formatStatValue from "~/utilities/formatStatValue";
-
 </script>
 <template>
   <TableRow>
     <TableCell>
-      <lineup-member
-          :member="member"
-          :lineup_id="lineup_id"
-      ></lineup-member>
+      <lineup-member :member="member" :lineup_id="lineup_id"></lineup-member>
     </TableCell>
     <TableCell class="hidden sm:table-cell">
       {{ member.player.kills_aggregate.aggregate.count }}
@@ -30,7 +26,7 @@ import formatStatValue from "~/utilities/formatStatValue";
       <Badge class="text-xs" variant="outline">
         {{
           formatStatValue(
-              member.player.damage_dealt_aggregate.aggregate.sum.damage /
+            member.player.damage_dealt_aggregate.aggregate.sum.damage /
               totalRounds
           )
         }}
@@ -80,8 +76,8 @@ import formatStatValue from "~/utilities/formatStatValue";
 
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
-import {generateMutation} from "~/graphql/graphqlGen";
-import {$} from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
+import { $ } from "~/generated/zeus";
 
 export default {
   components: {
@@ -166,7 +162,7 @@ export default {
       }
       return formatStatValue(
         this.member.player.kills_aggregate.aggregate.count /
-          this.member.player.deaths_aggregate.aggregate.count,
+          this.member.player.deaths_aggregate.aggregate.count
       );
     },
     hs() {
@@ -176,7 +172,7 @@ export default {
       return (
         formatStatValue(
           this.member.player.hs_kills_aggregate.aggregate.count /
-            this.member.player.kills_aggregate.aggregate.count,
+            this.member.player.kills_aggregate.aggregate.count
         ) *
           100 +
         "%"

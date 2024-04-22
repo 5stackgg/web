@@ -9,18 +9,31 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         <CardTitle>Assign Coach for {{ matchLineups.lineup1.name }}</CardTitle>
         <CardDescription>
           <div v-if="matchLineups.lineup1.coach">
-              <Avatar>
-                <AvatarImage
-                    :src="matchLineups.lineup1.coach.avatar_url"
-                    :alt="matchLineups.lineup1.coach.name"
-                />
-                <AvatarFallback>{{ matchLineups.lineup1.coach.name }}</AvatarFallback>
-              </Avatar>
+            <Avatar>
+              <AvatarImage
+                :src="matchLineups.lineup1.coach.avatar_url"
+                :alt="matchLineups.lineup1.coach.name"
+              />
+              <AvatarFallback>{{
+                matchLineups.lineup1.coach.name
+              }}</AvatarFallback>
+            </Avatar>
 
-              {{ matchLineups.lineup1.coach.name }}
+            {{ matchLineups.lineup1.coach.name }}
           </div>
 
-          <player-search label="Assign Coach" :exclude="matchLineups.lineup1.lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup1.team_id" @selected="(player) => updateCoach(player.steam_id, matchLineups.lineup1.id)"></player-search>
+          <player-search
+            label="Assign Coach"
+            :exclude="
+              matchLineups.lineup1.lineup_players.map(
+                (player) => player.steam_id
+              )
+            "
+            :team-id="matchLineups.lineup1.team_id"
+            @selected="
+              (player) => updateCoach(player.steam_id, matchLineups.lineup1.id)
+            "
+          ></player-search>
         </CardDescription>
       </CardHeader>
     </Card>
@@ -32,16 +45,29 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
           <div v-if="matchLineups.lineup2.coach">
             <Avatar>
               <AvatarImage
-                  :src="matchLineups.lineup2.coach.avatar_url"
-                  :alt="matchLineups.lineup2.coach.name"
+                :src="matchLineups.lineup2.coach.avatar_url"
+                :alt="matchLineups.lineup2.coach.name"
               />
-              <AvatarFallback>{{ matchLineups.lineup2.coach.name }}</AvatarFallback>
+              <AvatarFallback>{{
+                matchLineups.lineup2.coach.name
+              }}</AvatarFallback>
             </Avatar>
 
             {{ matchLineups.lineup2.coach.name }}
           </div>
 
-          <player-search label="Assign Coach" :exclude="matchLineups.lineup2.lineup_players.map((player) => player.steam_id)" :team-id="matchLineups.lineup2.team_id" @selected="(player) => updateCoach(player.steam_id, matchLineups.lineup2.id)"></player-search>
+          <player-search
+            label="Assign Coach"
+            :exclude="
+              matchLineups.lineup2.lineup_players.map(
+                (player) => player.steam_id
+              )
+            "
+            :team-id="matchLineups.lineup2.team_id"
+            @selected="
+              (player) => updateCoach(player.steam_id, matchLineups.lineup2.id)
+            "
+          ></player-search>
         </CardDescription>
       </CardHeader>
     </Card>

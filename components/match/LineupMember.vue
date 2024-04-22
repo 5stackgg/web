@@ -3,32 +3,27 @@
     <template v-if="member.player">
       <Avatar class="mx-3">
         <AvatarImage
-            :src="member.player.avatar_url"
-            :alt="member.player.name"
-            v-if="member.player.avatar_url"
+          :src="member.player.avatar_url"
+          :alt="member.player.name"
+          v-if="member.player.avatar_url"
         />
         <AvatarFallback>{{ member.player.name }}</AvatarFallback>
       </Avatar>
       {{ member.player.name }}
-      <div class="text-xs">
-        [{{ member.player.steam_id }}]
-      </div>
+      <div class="text-xs">[{{ member.player.steam_id }}]</div>
     </template>
     <template v-else>
       {{ member.name }}
     </template>
-    <Badge variant="outline" v-if="member.captain">
-      Captain
-    </Badge>
+    <Badge variant="outline" v-if="member.captain"> Captain </Badge>
   </div>
 </template>
 
 <script lang="ts">
-
-import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 export default {
-  components: {Avatar, AvatarFallback, AvatarImage},
+  components: { Avatar, AvatarFallback, AvatarImage },
   props: {
     member: {
       type: Object,

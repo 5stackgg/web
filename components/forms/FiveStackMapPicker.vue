@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { CaretSortIcon, CheckIcon } from '@radix-icons/vue'
+import { CaretSortIcon, CheckIcon } from "@radix-icons/vue";
 
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -10,12 +10,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command'
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from "@/components/ui/popover";
 </script>
 
 <template>
@@ -23,17 +23,27 @@ import {
     <PopoverTrigger as-child>
       <FormControl>
         <Button
-            variant="outline"
-            role="combobox"
-            :class="cn('w-[200px] justify-between', !modelValue && 'text-muted-foreground')"
+          variant="outline"
+          role="combobox"
+          :class="
+            cn(
+              'w-[200px] justify-between',
+              !modelValue && 'text-muted-foreground'
+            )
+          "
         >
           <template v-if="expectsMultiple">
-            <template v-for="(mapId, index) of modelValue" v-if="modelValue.length > 0">
-              <template v-if="parseInt(index) != 0">,</template> {{ availableMaps.find((map) => map.value === mapId)?.display || "Unknown" }}
+            <template
+              v-for="(mapId, index) of modelValue"
+              v-if="modelValue.length > 0"
+            >
+              <template v-if="parseInt(index) != 0">,</template>
+              {{
+                availableMaps.find((map) => map.value === mapId)?.display ||
+                "Unknown"
+              }}
             </template>
-            <template v-else>
-              Select Maps
-            </template>
+            <template v-else> Select Maps </template>
           </template>
           <template v-else>
             {{ availableMaps[modelValue]?.display || "Select a Map" }}
@@ -50,15 +60,23 @@ import {
         <CommandList>
           <CommandGroup>
             <CommandItem
-                v-for="availableMap in availableMaps"
-                :key="availableMap.value"
-                :value="availableMap.value"
+              v-for="availableMap in availableMaps"
+              :key="availableMap.value"
+              :value="availableMap.value"
             >
               <CheckIcon
-                  :class="cn(
-                  'mr-2 h-4 w-4',
-                  (expectsMultiple ? modelValue.includes(availableMap.value) : modelValue === availableMap) ? 'opacity-100' : 'opacity-0',
-                )"
+                :class="
+                  cn(
+                    'mr-2 h-4 w-4',
+                    (
+                      expectsMultiple
+                        ? modelValue.includes(availableMap.value)
+                        : modelValue === availableMap
+                    )
+                      ? 'opacity-100'
+                      : 'opacity-0'
+                  )
+                "
               />
               {{ availableMap.display }}
             </CommandItem>

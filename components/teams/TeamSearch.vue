@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { CaretSortIcon } from '@radix-icons/vue'
+import { CaretSortIcon } from "@radix-icons/vue";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -9,23 +9,22 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command'
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-
+} from "@/components/ui/popover";
 </script>
 
 <template>
   <Popover v-model:open="open">
     <PopoverTrigger as-child>
       <Button
-          @click="searchTeams()"
-          variant="outline"
-          :aria-expanded="open"
-          class="w-[500px] justify-between"
+        @click="searchTeams()"
+        variant="outline"
+        :aria-expanded="open"
+        class="w-[500px] justify-between"
       >
         {{ teams?.find((team) => team.id == modelValue)?.name || label }}
         <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -33,20 +32,19 @@ import {
     </PopoverTrigger>
     <PopoverContent class="w-[500px] p-0">
       <Command @update:searchTerm="(term) => searchTeams(term)">
-        <CommandInput class="h-9" @keydown.enter="select(teams.at(0))"/>
+        <CommandInput class="h-9" @keydown.enter="select(teams.at(0))" />
         <CommandEmpty>No Teams Found.</CommandEmpty>
         <CommandList>
           <CommandGroup>
             <CommandItem
-                v-for="team in teams"
-                :key="team.id"
-                :value="team"
-                @select="select(team)"
+              v-for="team in teams"
+              :key="team.id"
+              :value="team"
+              @select="select(team)"
             >
               <div>
-                <span class="text-xs">
-                  [{{ team.short_name }}]
-                </span> {{ team.name }}
+                <span class="text-xs"> [{{ team.short_name }}] </span>
+                {{ team.name }}
               </div>
             </CommandItem>
           </CommandGroup>
@@ -57,8 +55,7 @@ import {
 </template>
 
 <script lang="ts">
-
-import {generateQuery} from "~/graphql/graphqlGen";
+import { generateQuery } from "~/graphql/graphqlGen";
 
 export default {
   emits: ["selected", "update:modelValue"],
@@ -83,11 +80,11 @@ export default {
       open: false,
       query: undefined,
       teams: undefined,
-    }
+    };
   },
   methods: {
     select(team) {
-      if(!team) {
+      if (!team) {
         return;
       }
       this.open = false;
@@ -96,14 +93,14 @@ export default {
     },
     async searchTeams(query?: string) {
       let teams = [];
-      if(!query || query.trim().length === 0) {
+      if (!query || query.trim().length === 0) {
         teams = this.me.player.teams;
       } else {
         const { data } = await this.$apollo.query({
           query: generateQuery({
             teams: [
               {
-                where:  {
+                where: {
                   _or: [
                     {
                       name: {
@@ -132,7 +129,7 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    }
-  }
-}
+    },
+  },
+};
 </script>

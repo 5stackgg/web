@@ -5,4 +5,3 @@ import ServerForm from "~/components/servers/ServerForm.vue";
 <template>
   <server-form></server-form>
 </template>
-

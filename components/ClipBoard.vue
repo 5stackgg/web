@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Copy } from "lucide-vue-next"
+import { Copy } from "lucide-vue-next";
 </script>
 <template>
   <div class="copy">

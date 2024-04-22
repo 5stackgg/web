@@ -6,45 +6,39 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 <template>
   <form class="w-1/2 space-y-6" @submit.prevent="setupMatch">
     <div>
-      <h3 class="mb-4 text-lg font-medium">
-        Match Details
-      </h3>
+      <h3 class="mb-4 text-lg font-medium">Match Details</h3>
 
       <div class="flex">
         <FormField v-slot="{ value, handleChange }" name="coaches">
-          <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer" @click="handleChange(!value)">
+          <FormItem
+            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+            @click="handleChange(!value)"
+          >
             <div class="space-y-0.5">
-              <FormLabel class="text-base">
-                Allow Coaches
-              </FormLabel>
+              <FormLabel class="text-base"> Allow Coaches </FormLabel>
               <FormDescription>
                 Coaches will be spawned and killed at the start of each round
               </FormDescription>
             </div>
             <FormControl>
-              <Switch
-                  :checked="value"
-                  @update:checked="handleChange"
-              />
+              <Switch :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
 
         <FormField v-slot="{ value, handleChange }" name="overtime">
-          <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer" @click="handleChange(!value)">
+          <FormItem
+            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+            @click="handleChange(!value)"
+          >
             <div class="space-y-0.5">
-              <FormLabel class="text-base">
-                Overtime
-              </FormLabel>
+              <FormLabel class="text-base"> Overtime </FormLabel>
               <FormDescription>
                 Each overtime is set of best of 4.
               </FormDescription>
             </div>
             <FormControl>
-              <Switch
-                  :checked="value"
-                  @update:checked="handleChange"
-              />
+              <Switch :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -52,40 +46,38 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 
       <div class="flex">
         <FormField v-slot="{ value, handleChange }" name="map_veto">
-          <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer" @click="handleChange(!value)">
+          <FormItem
+            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+            @click="handleChange(!value)"
+          >
             <div class="space-y-0.5">
-              <FormLabel class="text-base">
-               Map Veto
-              </FormLabel>
+              <FormLabel class="text-base"> Map Veto </FormLabel>
               <FormDescription>
-                Map Veto process is team 1 ban, team 2 ban, team 1 pick, team 2 pick side, team 2 pick, team 1 pick side, team 2 ban ...
-                The process then repeats till a final map is remaining.
+                Map Veto process is team 1 ban, team 2 ban, team 1 pick, team 2
+                pick side, team 2 pick, team 1 pick side, team 2 ban ... The
+                process then repeats till a final map is remaining.
               </FormDescription>
             </div>
             <FormControl>
-              <Switch
-                  :checked="value"
-                  @update:checked="handleChange"
-              />
+              <Switch :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
 
         <FormField v-slot="{ value, handleChange }" name="knife_round">
-          <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer" @click="handleChange(!value)">
+          <FormItem
+            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+            @click="handleChange(!value)"
+          >
             <div class="space-y-0.5">
-              <FormLabel class="text-base">
-                Knife Rond
-              </FormLabel>
+              <FormLabel class="text-base"> Knife Rond </FormLabel>
               <FormDescription>
-                Knife Rounds are only played when neither team did not pick the map in the map veto.
+                Knife Rounds are only played when neither team did not pick the
+                map in the map veto.
               </FormDescription>
             </div>
             <FormControl>
-              <Switch
-                  :checked="value"
-                  @update:checked="handleChange"
-              />
+              <Switch :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -93,19 +85,17 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 
       <div>
         <FormField v-slot="{ componentField }" name="number_of_substitutes">
-          <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4">
+          <FormItem
+            class="flex flex-row items-center justify-between rounded-lg border p-4"
+          >
             <div class="space-y-0.5">
-              <FormLabel class="text-base">
-                Substitutes
-              </FormLabel>
-              <FormDescription>
-                Number of Substitutes
-              </FormDescription>
+              <FormLabel class="text-base"> Substitutes </FormLabel>
+              <FormDescription> Number of Substitutes </FormDescription>
             </div>
             <FormControl>
               <Input type="number" v-bind="componentField"></Input>
             </FormControl>
-            <FormMessage/>
+            <FormMessage />
           </FormItem>
         </FormField>
 
@@ -146,7 +136,10 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
               </FormControl>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem :value="bestOf.value" v-for="bestOf of bestOfOptions">
+                  <SelectItem
+                    :value="bestOf.value"
+                    v-for="bestOf of bestOfOptions"
+                  >
                     {{ bestOf.display }}
                   </SelectItem>
                 </SelectGroup>
@@ -168,7 +161,10 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
               </FormControl>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem :value="rounds" v-for="rounds of [`8`, '12', '15']">
+                  <SelectItem
+                    :value="rounds"
+                    v-for="rounds of [`8`, '12', '15']"
+                  >
                     {{ rounds }}
                   </SelectItem>
                 </SelectGroup>
@@ -178,19 +174,15 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
           </FormItem>
         </FormField>
 
-
         <FormField v-slot="{ value, handleChange }" name="custom_map_pool">
-          <FormItem class="flex flex-row items-center justify-between rounded-lg border p-4">
+          <FormItem
+            class="flex flex-row items-center justify-between rounded-lg border p-4"
+          >
             <div class="space-y-0.5">
-              <FormLabel class="text-base">
-                Custom Map Pool
-              </FormLabel>
+              <FormLabel class="text-base"> Custom Map Pool </FormLabel>
             </div>
             <FormControl>
-              <Switch
-                  :checked="value"
-                  @update:checked="handleChange"
-              />
+              <Switch :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -199,8 +191,8 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
           <FormItem v-show="form.values.custom_map_pool">
             <FormLabel>Custom Map Pool</FormLabel>
             <five-stack-map-picker
-                v-model="componentField.modelValue"
-                :match-type="form.values.type"
+              v-model="componentField.modelValue"
+              :match-type="form.values.type"
             ></five-stack-map-picker>
             <FormMessage />
           </FormItem>
@@ -210,7 +202,11 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
       <FormField v-slot="{ handleChange, componentField }" name="team_1">
         <FormItem>
           <FormLabel>Team 1</FormLabel>
-          <team-search label="Search for a Team ..." @selected="(team) => handleChange(team.id)" v-model="componentField.modelValue"></team-search>
+          <team-search
+            label="Search for a Team ..."
+            @selected="(team) => handleChange(team.id)"
+            v-model="componentField.modelValue"
+          ></team-search>
           <FormMessage />
         </FormItem>
       </FormField>
@@ -218,15 +214,17 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
       <FormField v-slot="{ handleChange, componentField }" name="team_2">
         <FormItem>
           <FormLabel>Team 2</FormLabel>
-          <team-search label="Search for a Team ..." @selected="(team) => handleChange(team.id)" :exclude="[form.values.team_1]" v-model="componentField.modelValue"></team-search>
+          <team-search
+            label="Search for a Team ..."
+            @selected="(team) => handleChange(team.id)"
+            :exclude="[form.values.team_1]"
+            v-model="componentField.modelValue"
+          ></team-search>
           <FormMessage />
         </FormItem>
       </FormField>
-
     </div>
-    <Button type="submit">
-      Submit
-    </Button>
+    <Button type="submit"> Submit </Button>
   </form>
 </template>
 
@@ -235,8 +233,8 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { $, e_match_types_enum } from "~/generated/zeus";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
-import {useForm} from "vee-validate";
-import {toTypedSchema} from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 
 export default {
@@ -244,9 +242,7 @@ export default {
     e_match_types: {
       query: generateQuery({
         e_match_types: [
-          {
-
-          },
+          {},
           {
             value: true,
             description: true,
@@ -280,33 +276,33 @@ export default {
     return {
       form: useForm({
         validationSchema: toTypedSchema(
-            z.object({
-              mr: z.string().default("12"),
-              map_veto: z.boolean().default(false),
-              coaches: z.boolean().default(false),
-              knife_round: z.boolean().default(true),
-              overtime: z.boolean().default(true),
-              best_of: z.string().default("1"),
-              custom_map_pool:  z.boolean().default(false),
-              number_of_substitutes: z.number().min(0).max(5).default(0),
-              type: z.string().default(e_match_types_enum.Competitive),
-              match_maps: z.string().array().default([]),
-              team_1: z.string().optional(),
-              team_2: z.string().optional(),
-              map_pool: z.string().array().default([]),
-            })
-        )
+          z.object({
+            mr: z.string().default("12"),
+            map_veto: z.boolean().default(false),
+            coaches: z.boolean().default(false),
+            knife_round: z.boolean().default(true),
+            overtime: z.boolean().default(true),
+            best_of: z.string().default("1"),
+            custom_map_pool: z.boolean().default(false),
+            number_of_substitutes: z.number().min(0).max(5).default(0),
+            type: z.string().default(e_match_types_enum.Competitive),
+            match_maps: z.string().array().default([]),
+            team_1: z.string().optional(),
+            team_2: z.string().optional(),
+            map_pool: z.string().array().default([]),
+          })
+        ),
       }),
     };
   },
   watch: {
     ["form.values.custom_map_pool"]: {
       handler(customMapPool) {
-        if(customMapPool === false) {
-          this.form.setFieldValue("map_pool", [])
+        if (customMapPool === false) {
+          this.form.setFieldValue("map_pool", []);
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     async setupMatch() {
@@ -326,20 +322,24 @@ export default {
           map_veto: form.map_veto,
           coaches: form.coaches,
           number_of_substitutes: form.number_of_substitutes,
-          maps: matchMaps.length > 0 ? {
-            data: matchMaps.map((map) => {
-              return {
-                map_id: map,
-                order: ++order,
-              }
-            })
-          } : null,
+          maps:
+            matchMaps.length > 0
+              ? {
+                  data: matchMaps.map((map) => {
+                    return {
+                      map_id: map,
+                      order: ++order,
+                    };
+                  }),
+                }
+              : null,
           ...(mapPoolLength === 0
             ? {
                 match_pool_id: this.defaultMapPool.id,
               }
             : {}),
-          map_pool: mapPoolLength > 0
+          map_pool:
+            mapPoolLength > 0
               ? {
                   data: {
                     enabled: false,

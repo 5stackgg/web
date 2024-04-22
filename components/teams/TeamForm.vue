@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {Input} from "~/components/ui/input";
-import {Button} from "~/components/ui/button";
-import {FormControl, FormField, FormItem} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { FormControl, FormField, FormItem } from "~/components/ui/form";
 </script>
 
 <template>
@@ -10,9 +10,7 @@ import {FormControl, FormField, FormItem} from "~/components/ui/form";
       <FormItem>
         <FormLabel>Name</FormLabel>
         <FormControl>
-          <Input
-              v-bind="componentField"
-          />
+          <Input v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -21,28 +19,23 @@ import {FormControl, FormField, FormItem} from "~/components/ui/form";
       <FormItem>
         <FormLabel>Short Name</FormLabel>
         <FormControl>
-          <Input
-              v-bind="componentField"
-          />
+          <Input v-bind="componentField" />
           <FormMessage />
         </FormControl>
       </FormItem>
     </FormField>
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      <template v-if="team">
-        Update
-      </template><template v-else>
-      Create
-    </template> Team
+      <template v-if="team"> Update </template
+      ><template v-else> Create </template> Team
     </Button>
   </form>
 </template>
 
 <script lang="ts">
 import * as z from "zod";
-import {useForm} from "vee-validate";
-import {toTypedSchema} from "@vee-validate/zod";
-import {generateMutation} from "~/graphql/graphqlGen";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   emits: ["updated"],
@@ -50,36 +43,36 @@ export default {
     team: {
       type: Object,
       required: false,
-    }
+    },
   },
   data() {
     return {
       form: useForm({
         validationSchema: toTypedSchema(
-            z.object({
-              team_name: z.string().min(1),
-              short_name: z.string().min(1).max(3),
-            }),
+          z.object({
+            team_name: z.string().min(1),
+            short_name: z.string().min(1).max(3),
+          })
         ),
       }),
-    }
+    };
   },
   watch: {
     team: {
       immediate: true,
       handler(team) {
-        if(team) {
+        if (team) {
           this.form.setValues({
             team_name: team.name,
-            short_name: team.short_name
-          })
+            short_name: team.short_name,
+          });
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     async updateCreateTeam() {
-      if(this.team) {
+      if (this.team) {
         await this.$apollo.mutate({
           mutation: generateMutation({
             update_teams_by_pk: [
@@ -89,7 +82,7 @@ export default {
                 },
                 _set: {
                   name: this.form.values.team_name,
-                  short_name: this.form.values.short_name
+                  short_name: this.form.values.short_name,
                 },
               },
               {
@@ -108,8 +101,8 @@ export default {
             {
               object: {
                 name: this.form.values.team_name,
-                short_name: this.form.values.short_name
-              }
+                short_name: this.form.values.short_name,
+              },
             },
             {
               id: true,
@@ -119,8 +112,7 @@ export default {
       });
 
       this.$router.push(`/teams/${data.insert_teams_one.id}`);
-
     },
-  }
-}
+  },
+};
 </script>

@@ -33,7 +33,7 @@ const notificationsFormSchema = toTypedSchema(
     social_emails: z.boolean().default(false).optional(),
     marketing_emails: z.boolean().default(false).optional(),
     security_emails: z.boolean(),
-  }),
+  })
 );
 
 const { handleSubmit } = useForm({
@@ -52,7 +52,7 @@ const onSubmit = handleSubmit((values, { resetForm }) => {
     description: h(
       "pre",
       { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
+      h("code", { class: "text-white" }, JSON.stringify(values, null, 2))
     ),
   });
 });

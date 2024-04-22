@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import {Badge} from "~/components/ui/badge";
-import {Separator} from "~/components/ui/separator";
+import { Badge } from "~/components/ui/badge";
+import { Separator } from "~/components/ui/separator";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import CaptainInfo from "~/components/CaptainInfo.vue";
 import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
 import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
@@ -14,16 +20,22 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
 
 <template>
   <template v-if="match">
-    <div class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+    <div
+      class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3"
+    >
       <div>
         <Card>
           <CardHeader class="flex flex-row items-start bg-muted/50">
             <div class="grid gap-0.5">
               <CardTitle class="group flex items-center gap-2 text-lg">
-                {{ matchLineups.lineup1.name }} vs {{ matchLineups.lineup2.name }}
+                {{ matchLineups.lineup1.name }} vs
+                {{ matchLineups.lineup2.name }}
                 <Badge variant="outline">
                   <span>
-                    {{ match.type }} over {{ match.best_of}} map<span v-if="match.best_of > 1">s</span>
+                    {{ match.type }} over {{ match.best_of }} map<span
+                      v-if="match.best_of > 1"
+                      >s</span
+                    >
                   </span>
                 </Badge>
               </CardTitle>
@@ -39,78 +51,56 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
           </CardHeader>
           <CardContent class="p-6 text-sm">
             <div class="grid gap-3">
-              <div class="font-semibold">
-                Match Details
-              </div>
+              <div class="font-semibold">Match Details</div>
               <ul class="grid gap-3">
                 <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground">
-                    Max Rounds
-                  </span>
+                  <span class="text-muted-foreground"> Max Rounds </span>
                   <span>{{ match.mr }}</span>
                 </li>
                 <li class="flex items-center justify-between">
-                 <span class="text-muted-foreground">
-                    Coaches
-                  </span>
+                  <span class="text-muted-foreground"> Coaches </span>
                   <span>{{ match.coaches }}</span>
                 </li>
                 <li class="flex items-center justify-between">
-                 <span class="text-muted-foreground">
-                    Overtime
-                  </span>
+                  <span class="text-muted-foreground"> Overtime </span>
                   <span>{{ match.overtime }}</span>
                 </li>
                 <li class="flex items-center justify-between">
-                 <span class="text-muted-foreground">
-                    Knife Round
-                  </span>
+                  <span class="text-muted-foreground"> Knife Round </span>
                   <span>{{ match.knife_round }}</span>
                 </li>
                 <li class="flex items-center justify-between">
-                 <span class="text-muted-foreground">
-                    Map Veto
-                  </span>
+                  <span class="text-muted-foreground"> Map Veto </span>
                   <span>{{ match.map_veto }}</span>
                 </li>
                 <li class="flex items-center justify-between">
-                 <span class="text-muted-foreground">
-                    Map Pool
-                  </span>
+                  <span class="text-muted-foreground"> Map Pool </span>
                   <span>
                     {{ match.map_pool.label }}
                   </span>
                 </li>
                 <li class="flex items-center justify-between">
-                 <span class="text-muted-foreground">
-                    Substitutes
-                  </span>
+                  <span class="text-muted-foreground"> Substitutes </span>
                   <span>{{ match.number_of_substitutes }}</span>
                 </li>
               </ul>
               <Separator class="my-2" />
               <div class="grid gap-3">
-                <div class="font-semibold">
-                  Captains
-                </div>
+                <div class="font-semibold">Captains</div>
                 <ul class="grid gap-3">
                   <li class="flex items-center justify-between">
-                    <span class="text-muted-foreground">
-                      Captain 1
-                    </span>
+                    <span class="text-muted-foreground"> Captain 1 </span>
                     <span>
                       <captain-info
-                          :captain="matchLineups.lineup1.captain"
+                        :captain="matchLineups.lineup1.captain"
                       ></captain-info>
                     </span>
                   </li>
                   <li class="flex items-center justify-between">
-                    <span class="text-muted-foreground">
-                      Captain 2
-                    </span>
+                    <span class="text-muted-foreground"> Captain 2 </span>
                     <span>
                       <captain-info
-                          :captain="matchLineups.lineup2.captain"
+                        :captain="matchLineups.lineup2.captain"
                       ></captain-info>
                     </span>
                   </li>
@@ -119,21 +109,17 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
               <Separator class="my-2" />
               <div class="grid gap-3">
                 <div class="font-semibold">
-                  <template v-if="match.map_veto">
-                    Map Veto
-                  </template>
-                  <template v-else>
-                    Maps
-                  </template>
+                  <template v-if="match.map_veto"> Map Veto </template>
+                  <template v-else> Maps </template>
                 </div>
                 <div
-                    class="mt-1 text-gray-600 dark:text-gray-400"
-                    v-for="match_map of match.match_maps"
+                  class="mt-1 text-gray-600 dark:text-gray-400"
+                  v-for="match_map of match.match_maps"
                 >
                   [{{ match_map.status }}] {{ match_map.map.name }}
                   <template v-for="veto of match_map.vetos">
                     <template v-if="veto.type === 'LeftOver'"
-                    >[Left Over]</template
+                      >[Left Over]</template
                     >
                   </template>
                   <p>
@@ -141,11 +127,11 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
                     {{ match_map.lineup_1_score }}
                     <template v-for="veto of match_map.vetos">
                       <template
-                          v-if="
+                        v-if="
                           veto.type === 'Pick' &&
                           veto.match_lineup_id === matchLineups.lineup1.id
                         "
-                      >[PICKED]</template
+                        >[PICKED]</template
                       >
                     </template>
                   </p>
@@ -154,11 +140,11 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
                     {{ match_map.lineup_2_score }}
                     <template v-for="veto of match_map.vetos">
                       <template
-                          v-if="
+                        v-if="
                           veto.type === 'Pick' &&
                           veto.match_lineup_id === matchLineups.lineup2.id
                         "
-                      >[PICKED]</template
+                        >[PICKED]</template
                       >
                     </template>
                   </p>
@@ -169,14 +155,19 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
         </Card>
       </div>
       <div class="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
+        <div
+          class="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4"
+        >
           <match-assign-lineups
-              :match="match"
-              v-if="assigningLineups"
+            :match="match"
+            v-if="assigningLineups"
           ></match-assign-lineups>
           <match-assign-coach :match="match"></match-assign-coach>
           <map-veto :match="match" v-if="match.veto"></map-veto>
-          <match-map-picks :match="match" v-else-if="assigningMaps"></match-map-picks>
+          <match-map-picks
+            :match="match"
+            v-else-if="assigningMaps"
+          ></match-map-picks>
         </div>
         <match-tabs :match="match"></match-tabs>
       </div>
@@ -238,7 +229,7 @@ export default {
                 label: true,
                 maps: {
                   name: true,
-                }
+                },
               },
               match_maps: {
                 id: true,

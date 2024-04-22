@@ -19,7 +19,7 @@ class Socket extends EventEmitter {
 
     webSocket.addEventListener("message", (message) => {
       const { event, id, data } = JSON.parse(message.data);
-      this.emit(`${event}:${id}`, data);
+      this.emit(event, data);
     });
 
     webSocket.addEventListener("open", () => {
@@ -50,26 +50,25 @@ class Socket extends EventEmitter {
     };
   }
 
-  public event(event: string, id: string, data: Record<string, unknown>) {
+  public event(event: string, data: Record<string, unknown>) {
     if (!this.connected || !this.connection) {
       this.offlineQueue.push({ event, id, data });
     } else {
       this.connection.send(
         JSON.stringify({
           event,
-          id,
           data,
-        }),
+        })
       );
     }
   }
 
-  public listen(event: string, id: string, callback: (data: any) => void) {
-    this.on(`${event}:${id}`, callback);
+  public listen(event: string, callback: (data: any) => void) {
+    this.on(event, callback);
 
     return {
       stop: () => {
-        this.removeListener(`${event}:${id}`, callback);
+        this.removeListener(event, callback);
       },
     };
   }

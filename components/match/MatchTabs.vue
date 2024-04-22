@@ -1,6 +1,12 @@
 <script lang="ts" setup>
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
@@ -11,37 +17,27 @@ import LineupClutches from "~/components/match/LineupClutches.vue";
   <Tabs default-value="overview">
     <div class="flex items-center">
       <TabsList>
-        <TabsTrigger value="overview">
-          Overview
-        </TabsTrigger>
-        <TabsTrigger value="utility">
-          Utility
-        </TabsTrigger>
-        <TabsTrigger value="opening-duels">
-          Opening Duels
-        </TabsTrigger>
-        <TabsTrigger value="clutches">
-          Clutches
-        </TabsTrigger>
+        <TabsTrigger value="overview"> Overview </TabsTrigger>
+        <TabsTrigger value="utility"> Utility </TabsTrigger>
+        <TabsTrigger value="opening-duels"> Opening Duels </TabsTrigger>
+        <TabsTrigger value="clutches"> Clutches </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent value="overview">
       <Card>
         <CardHeader class="px-7">
           <CardTitle>Match Overview</CardTitle>
-          <CardDescription>
-            Overview of basic stats
-          </CardDescription>
+          <CardDescription> Overview of basic stats </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-overview
-              :match="match"
-              :lineup="matchLineups.lineup1"
+            :match="match"
+            :lineup="matchLineups.lineup1"
           ></lineup-overview>
 
           <lineup-overview
-              :match="match"
-              :lineup="matchLineups.lineup2"
+            :match="match"
+            :lineup="matchLineups.lineup2"
           ></lineup-overview>
         </CardContent>
       </Card>
@@ -50,18 +46,16 @@ import LineupClutches from "~/components/match/LineupClutches.vue";
       <Card>
         <CardHeader class="px-7">
           <CardTitle>Utility Usage</CardTitle>
-          <CardDescription>
-            Utility usage per player
-          </CardDescription>
+          <CardDescription> Utility usage per player </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-utility
-              :match="match"
-              :lineup="matchLineups.lineup1"
+            :match="match"
+            :lineup="matchLineups.lineup1"
           ></lineup-utility>
           <lineup-utility
-              :match="match"
-              :lineup="matchLineups.lineup2"
+            :match="match"
+            :lineup="matchLineups.lineup2"
           ></lineup-utility>
         </CardContent>
       </Card>
@@ -70,18 +64,16 @@ import LineupClutches from "~/components/match/LineupClutches.vue";
       <Card>
         <CardHeader class="px-7">
           <CardTitle>Opening Duels</CardTitle>
-          <CardDescription>
-            Opening Duels
-          </CardDescription>
+          <CardDescription> Opening Duels </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-opening-duels
-              :match="match"
-              :lineup="matchLineups.lineup1"
+            :match="match"
+            :lineup="matchLineups.lineup1"
           ></lineup-opening-duels>
           <lineup-opening-duels
-              :match="match"
-              :lineup="matchLineups.lineup2"
+            :match="match"
+            :lineup="matchLineups.lineup2"
           ></lineup-opening-duels>
         </CardContent>
       </Card>
@@ -90,15 +82,13 @@ import LineupClutches from "~/components/match/LineupClutches.vue";
       <Card>
         <CardHeader class="px-7">
           <CardTitle>Clutches</CardTitle>
-          <CardDescription>
-            Clutches
-          </CardDescription>
+          <CardDescription> Clutches </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-clutches
-              :match="match"
-              :lineup1="matchLineups.lineup1"
-              :lineup2="matchLineups.lineup2"
+            :match="match"
+            :lineup1="matchLineups.lineup1"
+            :lineup2="matchLineups.lineup2"
           ></lineup-clutches>
         </CardContent>
       </Card>

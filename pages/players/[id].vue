@@ -6,9 +6,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
   <div class="flex flex-auto" v-if="player">
     <Card>
       <CardHeader>
-        <CardTitle>
-          Kills
-        </CardTitle>
+        <CardTitle> Kills </CardTitle>
       </CardHeader>
       <CardContent>
         {{ player.kills_aggregate.aggregate.count }}
@@ -16,9 +14,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
     </Card>
     <Card>
       <CardHeader>
-        <CardTitle>
-          Assists
-        </CardTitle>
+        <CardTitle> Assists </CardTitle>
       </CardHeader>
       <CardContent>
         {{ player.assists_aggregate.aggregate.count }}
@@ -39,7 +35,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
       :total="
         Math.ceil(
           playerWithMatchesAggregate.player_lineup_aggregate.aggregate.count /
-            per_page,
+            per_page
         )
       "
       v-if="playerWithMatchesAggregate"

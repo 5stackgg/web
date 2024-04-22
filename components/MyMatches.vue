@@ -15,7 +15,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
       :total="
         Math.ceil(
           myTotalMatches.player.player_lineup_aggregate.aggregate.count /
-            per_page,
+            per_page
         )
       "
       :per-page="per_page"

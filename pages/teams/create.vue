@@ -2,8 +2,6 @@
 import TeamForm from "~/components/teams/TeamForm.vue";
 </script>
 
-
 <template>
   <team-form></team-form>
 </template>
-

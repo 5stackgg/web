@@ -2,37 +2,46 @@
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {CornerDownLeft, MoreHorizontal, Trash} from "lucide-vue-next";
+import { CornerDownLeft, MoreHorizontal, Trash } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
 import PageHeading from "~/components/PageHeading.vue";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem, DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger} from "~/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
 import {
   AlertDialog,
-  AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter, AlertDialogHeader,
-  AlertDialogTitle, AlertDialogTrigger
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
-import {ref} from "vue";
+import { ref } from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import PasswordInput from "~/components/PasswordInput.vue";
 
-const serverMenu = ref(false)
-
+const serverMenu = ref(false);
 </script>
 
 <template>
   <PageHeading v-if="server">
-    {{ server.label }} ({{ server.host }}:{{
-      server.port
-    }})
+    {{ server.label }} ({{ server.host }}:{{ server.port }})
     <div class="flex items-center space-x-2">
       <Switch @click="toggleServerEnabled" :checked="server.enabled" />
       <Label>Enabled</Label>
@@ -52,7 +61,10 @@ const serverMenu = ref(false)
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem class="text-red-600" @click="deleteServerAlertDialog = true">
+          <DropdownMenuItem
+            class="text-red-600"
+            @click="deleteServerAlertDialog = true"
+          >
             <Trash class="mr-2 h-4 w-4 inline" /> Delete
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -99,21 +111,29 @@ const serverMenu = ref(false)
     </form>
   </div>
 
-  <Sheet :open="editServerSheet" @update:open="(open) => editServerSheet = open">
+  <Sheet
+    :open="editServerSheet"
+    @update:open="(open) => (editServerSheet = open)"
+  >
     <SheetTrigger></SheetTrigger>
     <SheetContent>
       <SheetHeader>
         <SheetTitle>Editing Team</SheetTitle>
         <SheetDescription>
-          <server-form :server="server" @updated="editServerSheet = false"></server-form>
+          <server-form
+            :server="server"
+            @updated="editServerSheet = false"
+          ></server-form>
         </SheetDescription>
       </SheetHeader>
     </SheetContent>
   </Sheet>
 
-  <AlertDialog :open="deleteServerAlertDialog" @update:open="(open) => deleteServerAlertDialog = open">
-    <AlertDialogTrigger class="w-full">
-    </AlertDialogTrigger>
+  <AlertDialog
+    :open="deleteServerAlertDialog"
+    @update:open="(open) => (deleteServerAlertDialog = open)"
+  >
+    <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -134,7 +154,11 @@ const serverMenu = ref(false)
 import { v4 as uuidv4 } from "uuid";
 import { $ } from "~/generated/zeus";
 import socket from "~/web-sockets/Socket";
-import {generateMutation, generateQuery, generateSubscription} from "~/graphql/graphqlGen";
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
@@ -165,7 +189,7 @@ export default {
           };
         },
         result: function ({ data }) {
-          this.server = data.servers_by_pk
+          this.server = data.servers_by_pk;
         },
       },
     },
@@ -173,7 +197,7 @@ export default {
   data() {
     return {
       logs: [],
-      server:undefined,
+      server: undefined,
       uuid: undefined,
       rconListener: undefined,
       editServerSheet: false,
@@ -182,7 +206,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             command: z.string().min(1),
-          }),
+          })
         ),
       }),
     };
@@ -198,8 +222,10 @@ export default {
 
         this.uuid = uuidv4();
 
-        this.rconListener = socket.listen("rcon", this.uuid, (data) => {
-          this.logs.unshift(data.result);
+        this.rconListener = socket.listen("rcon", (data) => {
+          if (data.uuid === this.uuid) {
+            this.logs.unshift(data.result);
+          }
         });
       },
     },
@@ -214,7 +240,7 @@ export default {
                 id: this.server.id,
               },
               _set: {
-                enabled: !this.server.enabled
+                enabled: !this.server.enabled,
               },
             },
             {
@@ -246,7 +272,8 @@ export default {
         return;
       }
 
-      socket.event("rcon", this.uuid, {
+      socket.event("rcon", {
+        uuid: this.uuid,
         serverId: this.$route.params.id,
         command: command,
       });

@@ -1,8 +1,21 @@
 <script lang="ts" setup>
 import MapPreview from "~/components/match/MapPreview.vue";
-import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
-import {Button} from "~/components/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Button } from "~/components/ui/button";
 </script>
 
 <template>
@@ -11,7 +24,11 @@ import {Button} from "~/components/ui/button";
       <CardTitle>Map Veto</CardTitle>
       <CardContent>
         <div class="grid grid-cols-4">
-          <match-map-preview :map="pick.map"  v-for="pick of picks" v-if="match.maps">
+          <match-map-preview
+            :map="pick.map"
+            v-for="pick of picks"
+            v-if="match.maps"
+          >
             <br />
             {{ pick.type }}ed by
 
@@ -21,7 +38,9 @@ import {Button} from "~/components/ui/button";
           </match-map-preview>
         </div>
 
-        <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+        <template
+          v-if="match.status === 'Veto' && match.match_maps.length < bestOf"
+        >
           <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
 
           <div @click="override = !override">
@@ -38,15 +57,17 @@ import {Button} from "~/components/ui/button";
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select the Side your team wants to start on" />
+                        <SelectValue
+                          placeholder="Select the Side your team wants to start on"
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem
-                            v-for="sideOption in sideOptions"
-                            :key="sideOption.value"
-                            :value="sideOption.value"
+                          v-for="sideOption in sideOptions"
+                          :key="sideOption.value"
+                          :value="sideOption.value"
                         >
                           {{ sideOption.display }}
                         </SelectItem>
@@ -58,19 +79,25 @@ import {Button} from "~/components/ui/button";
               </FormField>
             </template>
             <template v-else>
-              <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
+              <div
+                class="grid grid-cols-4"
+                v-for="availableMap of availableMaps"
+              >
                 <map-preview
-                    :map="availableMap"
-                    class="cursor-pointer"
-                    :class="{
-              'bg-red-500': form.values.map_id === availableMap.id,
-            }"
-                    @click="form.setFieldValue('map_id', availableMap.id)"
+                  :map="availableMap"
+                  class="cursor-pointer"
+                  :class="{
+                    'bg-red-500': form.values.map_id === availableMap.id,
+                  }"
+                  @click="form.setFieldValue('map_id', availableMap.id)"
                 ></map-preview>
               </div>
             </template>
 
-            <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+            <Button
+              type="submit"
+              :disabled="Object.keys(form.errors).length > 0"
+            >
               {{ pickType }}
             </Button>
           </form>
@@ -86,11 +113,12 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import {
   $,
-  e_sides_enum, e_veto_pick_types_enum,
+  e_sides_enum,
+  e_veto_pick_types_enum,
   order_by,
 } from "~/generated/zeus/index";
-import {useForm} from "vee-validate";
-import {toTypedSchema} from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 
 export default {
@@ -184,16 +212,22 @@ export default {
       // TODO - should be on or the other
       form: useForm({
         validationSchema: toTypedSchema(
-            z.object({
-              map_id: z.string(),
-              side: z.string().optional().refine((value, data) => {
-                if (this.pickType === e_veto_pick_types_enum.Side) {
-                  return typeof value === "string" && value.trim() !== "";
-                }
-                return true;
-              }, { message: "side is required" })
-            })
-        )
+          z.object({
+            map_id: z.string(),
+            side: z
+              .string()
+              .optional()
+              .refine(
+                (value, data) => {
+                  if (this.pickType === e_veto_pick_types_enum.Side) {
+                    return typeof value === "string" && value.trim() !== "";
+                  }
+                  return true;
+                },
+                { message: "side is required" }
+              ),
+          })
+        ),
       }),
     };
   },
@@ -204,15 +238,15 @@ export default {
         if (pickType === e_veto_pick_types_enum.Side) {
           const mapId = this.picks.at(-1).map.id;
           this.form.setValues({
-            map_id: mapId
-          })
+            map_id: mapId,
+          });
         }
-      }
-    }
+      },
+    },
   },
   methods: {
     async vetoPick() {
-      const { map_id, side } = this.form.values
+      const { map_id, side } = this.form.values;
 
       await this.$apollo.mutate({
         variables: {
@@ -287,7 +321,14 @@ export default {
         return e_veto_pick_types_enum.Ban;
       }
 
-      const pattern = [e_veto_pick_types_enum.Ban, e_veto_pick_types_enum.Ban, e_veto_pick_types_enum.Pick, e_veto_pick_types_enum.Side, e_veto_pick_types_enum.Pick, e_veto_pick_types_enum.Side];
+      const pattern = [
+        e_veto_pick_types_enum.Ban,
+        e_veto_pick_types_enum.Ban,
+        e_veto_pick_types_enum.Pick,
+        e_veto_pick_types_enum.Side,
+        e_veto_pick_types_enum.Pick,
+        e_veto_pick_types_enum.Side,
+      ];
       return pattern[this.picks.length % pattern.length];
     },
     availableMaps() {

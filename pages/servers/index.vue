@@ -73,7 +73,7 @@ export default {
     };
   },
   apollo: {
-    $subscribe : {
+    $subscribe: {
       servers: {
         query: generateQuery({
           servers: [
@@ -98,9 +98,9 @@ export default {
           };
         },
         result: function ({ data }) {
-          this.servers = data.servers
+          this.servers = data.servers;
         },
-      }
+      },
     },
     servers_aggregate: {
       query: generateQuery({

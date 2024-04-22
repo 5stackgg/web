@@ -1,11 +1,10 @@
-
 <script setup lang="ts">
 import { e_match_status_enum } from "~/generated/zeus";
 import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
-  <p >
+  <p>
     <template v-if="match.status == e_match_status_enum.Canceled">
       Match Canceled @ {{ endOfMatch }}
     </template>
@@ -35,9 +34,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
     <template v-else>
       {{ match.status }}
     </template>
-  </p >
+  </p>
 </template>
-
 
 <script lang="ts">
 export default {

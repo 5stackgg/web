@@ -84,7 +84,7 @@ const accountFormSchema = toTypedSchema(
       .optional()
       .refine((date) => date !== undefined, "Please select a valid date."),
     language: z.string().min(1, "Please select a language."),
-  }),
+  })
 );
 
 // https://github.com/logaretm/vee-validate/issues/3521
@@ -95,7 +95,7 @@ async function onSubmit(values: any) {
     description: h(
       "pre",
       { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
+      h("code", { class: "text-white" }, JSON.stringify(values, null, 2))
     ),
   });
 }
@@ -139,7 +139,7 @@ async function onSubmit(values: any) {
                 :class="
                   cn(
                     'w-[240px] justify-start text-left font-normal',
-                    !value && 'text-muted-foreground',
+                    !value && 'text-muted-foreground'
                   )
                 "
               >
@@ -168,7 +168,7 @@ async function onSubmit(values: any) {
                       {
                         dob: toDate(v).toISOString(),
                       },
-                      false,
+                      false
                     );
                   } else {
                     dateValue = undefined;
@@ -176,7 +176,7 @@ async function onSubmit(values: any) {
                       {
                         dob: undefined,
                       },
-                      false,
+                      false
                     );
                   }
                 }
@@ -206,7 +206,7 @@ async function onSubmit(values: any) {
                 :class="
                   cn(
                     'w-[200px] justify-between',
-                    !value && 'text-muted-foreground',
+                    !value && 'text-muted-foreground'
                   )
                 "
               >
@@ -237,7 +237,7 @@ async function onSubmit(values: any) {
                           {
                             language: language.value,
                           },
-                          false,
+                          false
                         );
                         open = false;
                       }
@@ -247,9 +247,7 @@ async function onSubmit(values: any) {
                       :class="
                         cn(
                           'mr-2 h-4 w-4',
-                          value === language.value
-                            ? 'opacity-100'
-                            : 'opacity-0',
+                          value === language.value ? 'opacity-100' : 'opacity-0'
                         )
                       "
                     />

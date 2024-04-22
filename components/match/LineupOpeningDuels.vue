@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
 </script>
 <template>
@@ -9,20 +8,16 @@ import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
         <TableHead class="hidden sm:table-cell">
           {{ lineup.name }}
         </TableHead>
-        <TableHead class="hidden sm:table-cell">
-          Attempts
-        </TableHead>
-        <TableHead class="hidden sm:table-cell">
-          Success
-        </TableHead>
+        <TableHead class="hidden sm:table-cell"> Attempts </TableHead>
+        <TableHead class="hidden sm:table-cell"> Success </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       <lineup-opening-duel-row
-          :member="member"
-          :lineup="lineup"
-          :match="match"
-          v-for="member of lineup.lineup_players"
+        :member="member"
+        :lineup="lineup"
+        :match="match"
+        v-for="member of lineup.lineup_players"
       ></lineup-opening-duel-row>
     </TableBody>
   </Table>

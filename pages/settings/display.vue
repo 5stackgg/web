@@ -53,7 +53,7 @@ const displayFormSchema = toTypedSchema(
     items: z.array(z.string()).refine((value) => value.some((item) => item), {
       message: "You have to select at least one item.",
     }),
-  }),
+  })
 );
 
 const { handleSubmit } = useForm({
@@ -69,7 +69,7 @@ const onSubmit = handleSubmit((values) => {
     description: h(
       "pre",
       { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
+      h("code", { class: "text-white" }, JSON.stringify(values, null, 2))
     ),
   });
 });
@@ -112,7 +112,7 @@ const onSubmit = handleSubmit((values) => {
                       handleChange(
                         checked
                           ? [...value, item.id]
-                          : value.filter((id) => id !== item.id),
+                          : value.filter((id) => id !== item.id)
                       );
                     }
                   }

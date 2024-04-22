@@ -3,50 +3,50 @@
     <CardHeader class="pb-3">
       <CardTitle>Map Veto</CardTitle>
       <CardContent>
-
-      <form @submit.prevent="addMap">
-        <FormField v-slot="{ componentField }" name="maps">
-          <FormItem>
-            <FormLabel>Custom Map Pool</FormLabel>
-            <five-stack-map-picker
+        <form @submit.prevent="addMap">
+          <FormField v-slot="{ componentField }" name="maps">
+            <FormItem>
+              <FormLabel>Custom Map Pool</FormLabel>
+              <five-stack-map-picker
                 v-model="componentField.modelValue"
                 :match-type="match.type"
-            ></five-stack-map-picker>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+              ></five-stack-map-picker>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
+          <FormField v-slot="{ componentField }" name="picked_by">
+            <FormItem>
+              <FormLabel>Picked Team</FormLabel>
 
-        <FormField v-slot="{ componentField }" name="picked_by">
-          <FormItem>
-            <FormLabel>Picked Team</FormLabel>
-
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select the team that selected the pick" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder="Select the team that selected the pick"
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
                       v-for="mapPickLineupOption in mapPickLineupOptions"
                       :key="mapPickLineupOption.value"
                       :value="mapPickLineupOption.value"
-                  >
-                    {{ mapPickLineupOption.display }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+                    >
+                      {{ mapPickLineupOption.display }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-        <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-          Pick Map
-        </Button>
-      </form>
+          <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+            Pick Map
+          </Button>
+        </form>
       </CardContent>
     </CardHeader>
   </Card>
@@ -54,15 +54,28 @@
 
 <script lang="ts">
 import * as z from "zod";
-import {useForm} from "vee-validate";
-import {e_sides_enum} from "~/generated/zeus";
-import {Button} from "~/components/ui/button";
-import {toTypedSchema} from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { e_sides_enum } from "~/generated/zeus";
+import { Button } from "~/components/ui/button";
+import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
-import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
 
 export default {
   components: {
@@ -90,11 +103,15 @@ export default {
     return {
       form: useForm({
         validationSchema: toTypedSchema(
-            z.object({
-              maps: z.array(z.string()).min(1).max(this.match.best_of).default([]),
-              picked_by: z.string()
-            })
-        )
+          z.object({
+            maps: z
+              .array(z.string())
+              .min(1)
+              .max(this.match.best_of)
+              .default([]),
+            picked_by: z.string(),
+          })
+        ),
       }),
     };
   },

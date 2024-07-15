@@ -1,18 +1,19 @@
+<script lang="ts" setup>
+import {Alert, AlertDescription, AlertTitle} from "~/components/ui/alert";
+</script>
+
 <template>
-  <transition name="fade">
-    <div v-show="alert" class="alert" :class="alert.severity">
-      <button class="alert-close" type="button" @click="close(alert)">
-        <span>&times;</span>
-      </button>
-      <h4 v-if="alert.title" class="alert-heading">
-        {{ alert.title }}
-      </h4>
-      <div class="alert-text" v-html="alert.message"></div>
-    </div>
-  </transition>
+  <Alert class="mt--10">
+    <AlertTitle>
+      {{ alert.title }}
+    </AlertTitle>
+    <AlertDescription>
+      {{ alert.message }}
+    </AlertDescription>
+  </Alert>
 </template>
 
-<script>
+<script lang="ts">
 import alertStore from "@/stores/alertStore";
 
 export default {

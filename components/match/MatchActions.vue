@@ -44,12 +44,6 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
         {{ match.connection_string }}
       </a>
     </div>
-    <div v-else-if="match.server_id">
-      <clip-board :data="match.tv_connection_string"></clip-board>
-      <a :href="`https://5stack.gg${match.tv_connection_link}`">
-        {{ match.tv_connection_string }}
-      </a>
-    </div>
   </template>
 
   <DropdownMenu>

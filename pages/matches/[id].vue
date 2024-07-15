@@ -16,6 +16,8 @@ import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
 import MapVeto from "~/components/match/MapVeto.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
+import ClipBoard from "~/components/ClipBoard.vue";
+import {Tv} from "lucide-vue-next";
 </script>
 
 <template>
@@ -28,14 +30,22 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
           <CardHeader class="flex flex-row items-start bg-muted/50">
             <div class="grid gap-0.5">
               <CardTitle class="group flex items-center gap-2 text-lg">
+                <div v-if="match.tv_connection_string">
+                  <clip-board :data="match.tv_connection_string">
+                    <Tv></Tv>
+                  </clip-board>
+                </div>
+                
                 {{ matchLineups.lineup1.name }} vs
                 {{ matchLineups.lineup2.name }}
                 <Badge variant="outline">
                   <span>
-                    {{ match.type }} over {{ match.best_of }} map<span
+                    {{ match.type }}
+                    <br>
+                    ({{ match.best_of }} map<span
                       v-if="match.best_of > 1"
                       >s</span
-                    >
+                    >)
                   </span>
                 </Badge>
               </CardTitle>

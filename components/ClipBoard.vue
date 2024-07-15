@@ -9,7 +9,9 @@ import { Copy } from "lucide-vue-next";
       class="icon--btn icon--btn-small"
       :data-clipboard-text="data"
     >
-      <Copy></Copy>
+      <slot>
+        <Copy></Copy>
+      </slot>
     </div>
     <div
       v-else
@@ -17,7 +19,9 @@ import { Copy } from "lucide-vue-next";
       class="icon--btn icon--btn-small"
       :data-clipboard-target="target"
     >
-      <Copy></Copy>
+      <slot>
+        <Copy></Copy>
+      </slot>
     </div>
   </div>
 </template>
@@ -71,11 +75,11 @@ export default {
 
 <style>
 .copy {
+  cursor: pointer;
   margin: 0 10px;
   display: inline;
   svg {
     width: 22px;
-    fill: white;
     height: auto;
   }
 }

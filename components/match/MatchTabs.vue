@@ -11,6 +11,7 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
+import RconCommander from "~/components/servers/RconCommander.vue";
 </script>
 
 <template>
@@ -21,6 +22,7 @@ import LineupClutches from "~/components/match/LineupClutches.vue";
         <TabsTrigger value="utility"> Utility </TabsTrigger>
         <TabsTrigger value="opening-duels"> Opening Duels </TabsTrigger>
         <TabsTrigger value="clutches"> Clutches </TabsTrigger>
+        <TabsTrigger value="server"> Server </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent value="overview">
@@ -92,6 +94,9 @@ import LineupClutches from "~/components/match/LineupClutches.vue";
           ></lineup-clutches>
         </CardContent>
       </Card>
+    </TabsContent>
+    <TabsContent value="server">
+      <rcon-commander :server-id="match.server_id"></rcon-commander>
     </TabsContent>
   </Tabs>
 </template>

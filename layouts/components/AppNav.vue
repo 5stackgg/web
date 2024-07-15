@@ -42,7 +42,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
       </Sheet>
 
       <nuxt-link
-        href="/settings/profile"
+        href="/settings"
         class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
       >
         <Avatar>

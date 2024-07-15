@@ -14,7 +14,7 @@ const $route = useRoute();
 const sidebarNavItems: Item[] = [
   {
     title: "Profile",
-    to: "/settings/profile",
+    to: "/settings",
   },
   {
     title: "Appearance",

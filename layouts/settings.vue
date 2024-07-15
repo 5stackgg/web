@@ -17,20 +17,8 @@ const sidebarNavItems: Item[] = [
     to: "/settings/profile",
   },
   {
-    title: "Account",
-    to: "/settings/account",
-  },
-  {
     title: "Appearance",
     to: "/settings/appearance",
-  },
-  {
-    title: "Notifications",
-    to: "/settings/notifications",
-  },
-  {
-    title: "Display",
-    to: "/settings/display",
   },
 ];
 </script>
@@ -40,7 +28,7 @@ const sidebarNavItems: Item[] = [
     <div class="space-y-0.5">
       <h2 class="text-2xl font-bold tracking-tight">Settings</h2>
       <p class="text-muted-foreground">
-        Manage your account settings and set e-mail preferences.
+        Manage your account settings.
       </p>
     </div>
     <Separator class="my-6" />

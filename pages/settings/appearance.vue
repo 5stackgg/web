@@ -8,8 +8,6 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 
-import { ChevronDownIcon } from "@radix-icons/vue";
-import { cn } from "@/lib/utils";
 import {
   FormControl,
   FormDescription,
@@ -30,10 +28,6 @@ const appearanceFormSchema = toTypedSchema(
     theme: z.enum(["light", "dark"], {
       required_error: "Please select a theme.",
     }),
-    font: z.enum(["inter", "manrope", "system"], {
-      invalid_type_error: "Select a font",
-      required_error: "Please select a font.",
-    }),
   })
 );
 
@@ -41,7 +35,6 @@ const { handleSubmit } = useForm({
   validationSchema: appearanceFormSchema,
   initialValues: {
     theme: "light",
-    font: "inter",
   },
 });
 
@@ -60,7 +53,7 @@ const onSubmit = handleSubmit((values) => {
 
 <template>
   <div>
-    <h3 class="text-lg font-medium">Appearence</h3>
+    <h3 class="text-lg font-medium">Appearance</h3>
     <p class="text-sm text-muted-foreground">
       Customize the appearance of the app. Automatically switch between day and
       night themes.
@@ -68,36 +61,6 @@ const onSubmit = handleSubmit((values) => {
   </div>
   <Separator />
   <form class="space-y-8" @submit="onSubmit">
-    <FormField v-slot="{ field }" name="font">
-      <FormItem>
-        <FormLabel>Font</FormLabel>
-        <div class="relative w-[200px]">
-          <FormControl>
-            <select
-              :class="
-                cn(
-                  buttonVariants({ variant: 'outline' }),
-                  'w-[200px] appearance-none bg-transparent font-normal'
-                )
-              "
-              v-bind="field"
-            >
-              <option value="inter">Inter</option>
-              <option value="manrope">Manrope</option>
-              <option value="system">System</option>
-            </select>
-          </FormControl>
-          <ChevronDownIcon
-            class="pointer-events-none absolute right-3 top-2.5 h-4 w-4 opacity-50"
-          />
-        </div>
-        <FormDescription>
-          Set the font you want to use in the dashboard.
-        </FormDescription>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
     <FormField v-slot="{ componentField }" type="radio" name="theme">
       <FormItem class="space-y-1">
         <FormLabel>Theme</FormLabel>

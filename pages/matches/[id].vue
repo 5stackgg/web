@@ -35,7 +35,7 @@ import {Tv} from "lucide-vue-next";
                     <Tv></Tv>
                   </clip-board>
                 </div>
-                
+
                 {{ matchLineups.lineup1.name }} vs
                 {{ matchLineups.lineup2.name }}
                 <Badge variant="outline">

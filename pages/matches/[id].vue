@@ -145,11 +145,9 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
           <match-assign-coach :match="match"></match-assign-coach>
 
           <Card class="sm:col-span-4" v-if="match.map_veto">
-            <CardHeader>
-              <CardContent>
-                <map-veto :match="match"></map-veto>
-              </CardContent>
-            </CardHeader>
+            <CardContent class="pt-6">
+              <map-veto :match="match"></map-veto>
+            </CardContent>
           </Card>
 
           <match-map-picks

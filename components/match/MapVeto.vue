@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import MapPreview from "~/components/match/MapPreview.vue";
 import {
   FormControl,
   FormField,
@@ -45,7 +44,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
     </template>
   </div>
 
-  <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+  <template v-if="match.status === 'Veto'">
     <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
 
     <div @click="override = !override">
@@ -84,15 +83,19 @@ import MapDisplay from "~/components/MapDisplay.vue";
         </FormField>
       </template>
       <template v-else>
-        <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
-          <map-preview
-            :map="availableMap"
-            class="cursor-pointer"
+        <div class="flex">
+          <map-display
+            :map="availableMap.name"
+            class="cursor-pointer outline-red-600"
             :class="{
-              'bg-red-500': form.values.map_id === availableMap.id,
+              'border-red-500': form.values.map_id === availableMap.id,
             }"
             @click="form.setFieldValue('map_id', availableMap.id)"
-          ></map-preview>
+            v-for="availableMap of availableMaps"
+          >
+            <pre>{{ form.values.map_id === availableMap.id }}</pre>
+
+          </map-display>
         </div>
       </template>
 
@@ -100,6 +103,9 @@ import MapDisplay from "~/components/MapDisplay.vue";
         {{ pickType }}
       </Button>
     </form>
+  </template>
+  <template v-else-if="match.match_maps.length < bestOf">
+      <h1 class="text-center">Start the Match to Start Map Veto</h1>
   </template>
 </template>
 

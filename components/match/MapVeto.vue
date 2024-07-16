@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import MapDisplay from "~/components/MapDisplay.vue";
+import VetoPreview from "~/components/match/VetoPreview.vue";
 </script>
 
 <template>
@@ -44,69 +45,65 @@ import MapDisplay from "~/components/MapDisplay.vue";
     </template>
   </div>
 
-  <template v-if="match.status === 'Veto'">
-    <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
+  <div v-if="match.match_maps.length < bestOf">
+    <Separator class="mt-6 mb-3"></Separator>
+    <template v-if="match.status === 'Veto'">
+      <div class="flex justify-between">
+        <h1>{{ teamName }} is Picking a <span class="underline">{{ pickType }}</span></h1>
 
-    <div @click="override = !override">
-      <Switch :checked="override" />
-      <Label>Match Organizer override</Label>
-    </div>
-
-    <form @submit.prevent="vetoPick" v-if="isPicking">
-      <template v-if="pickType === 'Side'">
-        <FormField v-slot="{ componentField }" name="side">
-          <FormItem>
-            <FormLabel>Side</FormLabel>
-
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder="Select the Side your team wants to start on"
-                  />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    v-for="sideOption in sideOptions"
-                    :key="sideOption.value"
-                    :value="sideOption.value"
-                  >
-                    {{ sideOption.display }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </template>
-      <template v-else>
-        <div class="flex">
-          <map-display
-            :map="availableMap.name"
-            class="cursor-pointer outline-red-600"
-            :class="{
-              'border-red-500': form.values.map_id === availableMap.id,
-            }"
-            @click="form.setFieldValue('map_id', availableMap.id)"
-            v-for="availableMap of availableMaps"
-          >
-            <pre>{{ form.values.map_id === availableMap.id }}</pre>
-
-          </map-display>
+        <div class="flex items-center space-x-2 cursor-pointer" @click="override = !override" v-if="isMatchOrganizer">
+          <Label>Match Organizer Override</Label>
+          <Switch :checked="override" />
         </div>
-      </template>
+      </div>
 
-      <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-        {{ pickType }}
-      </Button>
-    </form>
-  </template>
-  <template v-else-if="match.match_maps.length < bestOf">
+      <form @submit.prevent="vetoPick" v-if="isPicking">
+        <template v-if="pickType === 'Side'">
+          <FormField v-slot="{ componentField }" name="side">
+            <FormItem>
+              <FormLabel>Side</FormLabel>
+
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                        placeholder="Select the Side your team wants to start on"
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                        v-for="sideOption in sideOptions"
+                        :key="sideOption.value"
+                        :value="sideOption.value"
+                    >
+                      {{ sideOption.display }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </template>
+
+        <veto-preview :model-value="form.values.map_id" :maps="maps" :picks="picks" @update:modelValue="(mapId) => {
+        form.setFieldValue('map_id', mapId)
+      }"></veto-preview>
+
+        <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+          {{ pickType }}
+        </Button>
+      </form>
+      <template v-else>
+        <veto-preview :maps="maps" :picks="picks"></veto-preview>
+      </template>
+    </template>
+    <template v-else>
       <h1 class="text-center">Start the Match to Start Map Veto</h1>
-  </template>
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
@@ -234,6 +231,14 @@ export default {
     };
   },
   watch: {
+    isPicking: {
+      immediate: true,
+      handler() {
+        this.form.setValues({
+          map_id: undefined
+        });
+      }
+    },
     pickType: {
       immediate: true,
       handler(pickType) {
@@ -309,7 +314,9 @@ export default {
         return false;
       }
 
-      return this.myLineup.id === this.match.veto_picking_lineup_id;
+      return this.myLineup.id === this.match.veto_picking_lineup_id && (
+          this.isCaptain || this.isMatchOrganizer
+      );
     },
     isMatchOrganizer() {
       return this.match.organizer_steam_id === this.me.steam_id;
@@ -333,21 +340,10 @@ export default {
       ];
       return pattern[this.picks.length % pattern.length];
     },
-    availableMaps() {
-      let maps = this.match_maps?.map_pool?.maps;
-
-      if (!maps) {
-        return;
-      }
-
-      return maps.filter((map) => {
-        return (
-          this.picks?.find((pick) => {
-            return pick.map.id === map.id;
-          }) === undefined
-        );
-      });
+    maps() {
+      return this.match_maps?.map_pool?.maps;
     },
+
     sideOptions() {
       return [
         { value: e_sides_enum.CT, display: "Counter-Terrorist" },

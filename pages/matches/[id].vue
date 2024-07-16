@@ -18,8 +18,8 @@ import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { Tv } from "lucide-vue-next";
-import MapDisplay from "~/components/MapDisplay.vue";
 import MatchMapDisplay from "~/components/match/match-map-display/MatchMapDisplay.vue";
+import BooleanToText from "~/components/BooleanToText.vue";
 </script>
 
 <template>
@@ -70,19 +70,19 @@ import MatchMapDisplay from "~/components/match/match-map-display/MatchMapDispla
                 </li>
                 <li class="flex items-center justify-between">
                   <span class="text-muted-foreground"> Coaches </span>
-                  <span>{{ match.coaches }}</span>
+                  <BooleanToText :value="match.coaches"></BooleanToText>
                 </li>
                 <li class="flex items-center justify-between">
                   <span class="text-muted-foreground"> Overtime </span>
-                  <span>{{ match.overtime }}</span>
+                  <BooleanToText :value="match.overtime"></BooleanToText>
                 </li>
                 <li class="flex items-center justify-between">
                   <span class="text-muted-foreground"> Knife Round </span>
-                  <span>{{ match.knife_round }}</span>
+                  <BooleanToText :value="match.knife_round"></BooleanToText>
                 </li>
                 <li class="flex items-center justify-between">
                   <span class="text-muted-foreground"> Map Veto </span>
-                  <span>{{ match.map_veto }}</span>
+                  <BooleanToText :value="match.map_veto"></BooleanToText>
                 </li>
                 <li class="flex items-center justify-between">
                   <span class="text-muted-foreground"> Map Pool </span>

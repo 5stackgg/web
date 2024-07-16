@@ -19,7 +19,7 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { Tv } from "lucide-vue-next";
 import MapDisplay from "~/components/MapDisplay.vue";
-import MatchMapDisplay from "~/components/match/MatchMapDisplay.vue";
+import MatchMapDisplay from "~/components/match/match-map-display/MatchMapDisplay.vue";
 </script>
 
 <template>

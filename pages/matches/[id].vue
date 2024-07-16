@@ -28,106 +28,113 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
     <div
       class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3"
     >
-      <div>
-        <Card>
-          <CardHeader class="bg-muted/50">
-            <CardTitle>
-              <clip-board :data="match.tv_connection_string" v-if="match.tv_connection_string">
-                <Tv></Tv>
-              </clip-board>
+      <Card>
+        <CardHeader class="bg-muted/50">
+          <CardTitle>
+            <clip-board :data="match.tv_connection_string" v-if="match.tv_connection_string">
+              <Tv></Tv>
+            </clip-board>
 
-              {{ matchLineups.lineup1.name }} vs
-              {{ matchLineups.lineup2.name }}
+            {{ matchLineups.lineup1.name }} vs
+            {{ matchLineups.lineup2.name }}
 
-              <match-actions :match="match"></match-actions>
+            <match-actions :match="match"></match-actions>
 
-              <Badge>
-                <match-status :match="match"></match-status>
-              </Badge>
-            </CardTitle>
-            <CardDescription>
-              <QuickServerConnect :match="match"></QuickServerConnect>
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="p-6">
-            <ul class="grid gap-3">
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Match Type </span>
-                <span>{{ match.type }}</span>
-              </li>
+            <Badge>
+              <match-status :match="match"></match-status>
+            </Badge>
+          </CardTitle>
+          <CardDescription>
+            <QuickServerConnect :match="match"></QuickServerConnect>
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="p-6">
+          <ul class="grid gap-3">
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Match Type </span>
+              <span>{{ match.type }}</span>
+            </li>
 
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Best of </span>
-                <span>{{ match.best_of }}</span>
-              </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Best of </span>
+              <span>{{ match.best_of }}</span>
+            </li>
 
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Max Rounds </span>
-                <span>{{ match.mr }}</span>
-              </li>
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Coaches </span>
-                <BooleanToText :value="match.coaches"></BooleanToText>
-              </li>
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Overtime </span>
-                <BooleanToText :value="match.overtime"></BooleanToText>
-              </li>
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Knife Round </span>
-                <BooleanToText :value="match.knife_round"></BooleanToText>
-              </li>
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Map Veto </span>
-                <BooleanToText :value="match.map_veto"></BooleanToText>
-              </li>
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Map Pool </span>
-                <span>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Max Rounds </span>
+              <span>{{ match.mr }}</span>
+            </li>
+
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Coaches </span>
+              <BooleanToText :value="match.coaches"></BooleanToText>
+            </li>
+
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Overtime </span>
+              <BooleanToText :value="match.overtime"></BooleanToText>
+            </li>
+
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Knife Round </span>
+              <BooleanToText :value="match.knife_round"></BooleanToText>
+            </li>
+
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Map Veto </span>
+              <BooleanToText :value="match.map_veto"></BooleanToText>
+            </li>
+
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Map Pool </span>
+              <span>
                     {{ match.map_pool?.label }}
                   </span>
-              </li>
+            </li>
+
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Substitutes </span>
+              <span>{{ match.number_of_substitutes }}</span>
+            </li>
+          </ul>
+
+          <Separator class="my-2" />
+
+          <div class="grid gap-3">
+            <div class="font-semibold">Captains</div>
+            <ul class="grid gap-3">
               <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> Substitutes </span>
-                <span>{{ match.number_of_substitutes }}</span>
-              </li>
-            </ul>
-            <Separator class="my-2" />
-            <div class="grid gap-3">
-              <div class="font-semibold">Captains</div>
-              <ul class="grid gap-3">
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> {{matchLineups.lineup1.name  }} </span>
-                  <span>
+                <span class="text-muted-foreground"> {{matchLineups.lineup1.name  }} </span>
+                <span>
                       <captain-info
                           :captain="matchLineups.lineup1.captain"
                       ></captain-info>
                     </span>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> {{ matchLineups.lineup2.name }} </span>
-                  <span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> {{ matchLineups.lineup2.name }} </span>
+                <span>
                       <captain-info
                           :captain="matchLineups.lineup2.captain"
                       ></captain-info>
                     </span>
-                </li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              </li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+
       <div class="grid auto-rows-max items-start gap-4 lg:col-span-2">
         <div
           class="grid md:grid-cols-1 gap-4"
           :class="`lg:grid-cols-${match.match_maps.length}`"
         >
-          <div v-for="match_map of match.match_maps">
+          <template v-for="match_map of match.match_maps">
             <MatchMapDisplay
               :match="match"
               :match-map="match_map"
             ></MatchMapDisplay>
-          </div>
+          </template>
         </div>
 
         <div>
@@ -150,6 +157,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
             v-else-if="assigningMaps && match.map_veto === false"
           ></match-map-picks>
         </div>
+
         <match-tabs :match="match"></match-tabs>
       </div>
     </div>

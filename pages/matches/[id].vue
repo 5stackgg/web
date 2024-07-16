@@ -17,9 +17,10 @@ import MapVeto from "~/components/match/MapVeto.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
-import { Tv } from "lucide-vue-next";
+import {Tv} from "lucide-vue-next";
 import MatchMapDisplay from "~/components/match/match-map-display/MatchMapDisplay.vue";
 import BooleanToText from "~/components/BooleanToText.vue";
+import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 </script>
 
 <template>
@@ -29,94 +30,95 @@ import BooleanToText from "~/components/BooleanToText.vue";
     >
       <div>
         <Card>
-          <CardHeader class="flex flex-row items-start bg-muted/50">
-            <div class="grid gap-0.5">
-              <CardTitle class="group flex items-center gap-2 text-lg">
-                <div v-if="match.tv_connection_string">
-                  <clip-board :data="match.tv_connection_string">
-                    <Tv></Tv>
-                  </clip-board>
-                </div>
+          <CardHeader class="bg-muted/50">
+            <CardTitle>
+              <div v-if="match.tv_connection_string">
+                <clip-board :data="match.tv_connection_string">
+                  <Tv></Tv>
+                </clip-board>
+              </div>
 
+              <div>
                 {{ matchLineups.lineup1.name }} vs
                 {{ matchLineups.lineup2.name }}
-                <Badge variant="outline">
-                  <span>
-                    {{ match.type }}
-                    <br />
-                    ({{ match.best_of }} map<span v-if="match.best_of > 1"
-                      >s</span
-                    >)
-                  </span>
-                </Badge>
-              </CardTitle>
-              <CardDescription>
+              </div>
+
+              <match-actions :match="match"></match-actions>
+
+              <div>
                 <Badge>
                   <match-status :match="match"></match-status>
                 </Badge>
-              </CardDescription>
-            </div>
-            <div class="ml-auto flex items-center gap-1">
-              <match-actions :match="match"></match-actions>
-            </div>
+              </div>
+            </CardTitle>
+            <CardDescription>
+              <QuickServerConnect :match="match"></QuickServerConnect>
+            </CardDescription>
           </CardHeader>
-          <CardContent class="p-6 text-sm">
-            <div class="grid gap-3">
-              <div class="font-semibold">Match Details</div>
-              <ul class="grid gap-3">
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> Max Rounds </span>
-                  <span>{{ match.mr }}</span>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> Coaches </span>
-                  <BooleanToText :value="match.coaches"></BooleanToText>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> Overtime </span>
-                  <BooleanToText :value="match.overtime"></BooleanToText>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> Knife Round </span>
-                  <BooleanToText :value="match.knife_round"></BooleanToText>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> Map Veto </span>
-                  <BooleanToText :value="match.map_veto"></BooleanToText>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> Map Pool </span>
-                  <span>
+          <CardContent class="p-6">
+            <ul class="grid gap-3">
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Match Type </span>
+                <span>{{ match.type }}</span>
+              </li>
+
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Best of </span>
+                <span>{{ match.best_of }}</span>
+              </li>
+
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Max Rounds </span>
+                <span>{{ match.mr }}</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Coaches </span>
+                <BooleanToText :value="match.coaches"></BooleanToText>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Overtime </span>
+                <BooleanToText :value="match.overtime"></BooleanToText>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Knife Round </span>
+                <BooleanToText :value="match.knife_round"></BooleanToText>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Map Veto </span>
+                <BooleanToText :value="match.map_veto"></BooleanToText>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Map Pool </span>
+                <span>
                     {{ match.map_pool?.label }}
                   </span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground"> Substitutes </span>
+                <span>{{ match.number_of_substitutes }}</span>
+              </li>
+            </ul>
+            <Separator class="my-2" />
+            <div class="grid gap-3">
+              <div class="font-semibold">Captains</div>
+              <ul class="grid gap-3">
+                <li class="flex items-center justify-between">
+                  <span class="text-muted-foreground"> {{matchLineups.lineup1.name  }} </span>
+                  <span>
+                      <captain-info
+                          :captain="matchLineups.lineup1.captain"
+                      ></captain-info>
+                    </span>
                 </li>
                 <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground"> Substitutes </span>
-                  <span>{{ match.number_of_substitutes }}</span>
+                  <span class="text-muted-foreground"> {{ matchLineups.lineup2.name }} </span>
+                  <span>
+                      <captain-info
+                          :captain="matchLineups.lineup2.captain"
+                      ></captain-info>
+                    </span>
                 </li>
               </ul>
-              <Separator class="my-2" />
-              <div class="grid gap-3">
-                <div class="font-semibold">Captains</div>
-                <ul class="grid gap-3">
-                  <li class="flex items-center justify-between">
-                    <span class="text-muted-foreground"> Captain 1 </span>
-                    <span>
-                      <captain-info
-                        :captain="matchLineups.lineup1.captain"
-                      ></captain-info>
-                    </span>
-                  </li>
-                  <li class="flex items-center justify-between">
-                    <span class="text-muted-foreground"> Captain 2 </span>
-                    <span>
-                      <captain-info
-                        :captain="matchLineups.lineup2.captain"
-                      ></captain-info>
-                    </span>
-                  </li>
-                </ul>
-              </div>
             </div>
           </CardContent>
         </Card>

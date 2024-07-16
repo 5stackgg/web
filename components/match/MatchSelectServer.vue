@@ -20,7 +20,7 @@ import {
   <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="server_id">
       <FormItem>
-        <FormLabel>Server</FormLabel>
+        <FormLabel>Assign Match Server</FormLabel>
         <Select v-bind="componentField" @update:modelValue="updateMatchServer">
           <FormControl>
             <SelectTrigger>

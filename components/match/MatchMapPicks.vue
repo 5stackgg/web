@@ -4,12 +4,13 @@
       <CardTitle>Map Veto</CardTitle>
       <CardContent>
         <form @submit.prevent="addMap">
-          <FormField v-slot="{ componentField }" name="maps">
+          <FormField v-slot="{ componentField, handleChange }" name="maps">
             <FormItem>
               <FormLabel>Custom Map Pool</FormLabel>
               <five-stack-map-picker
                 v-model="componentField.modelValue"
                 :match-type="match.type"
+                @update:modelValue="handleChange"
               ></five-stack-map-picker>
               <FormMessage />
             </FormItem>
@@ -104,8 +105,8 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            maps: z
-              .array(z.string())
+            maps: this.match.best_of === 1 ? z.string() :
+              z.array(z.string())
               .min(1)
               .max(this.match.best_of)
               .default([]),

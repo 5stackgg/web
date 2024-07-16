@@ -46,7 +46,7 @@ import {
             <template v-else> Select Maps </template>
           </template>
           <template v-else>
-            {{ availableMaps[modelValue]?.display || "Select a Map" }}
+            {{ availableMaps.find(({ value }) => value === modelValue)?.display || "Select a Map" }}
           </template>
 
           <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -56,13 +56,14 @@ import {
     <PopoverContent>
       <Command v-bind:model-value="modelValue" multiple>
         <CommandInput placeholder="Search Maps..." />
-        <CommandEmpty>No framework found.</CommandEmpty>
         <CommandList>
+          <CommandEmpty>No Map found.</CommandEmpty>
           <CommandGroup>
             <CommandItem
               v-for="availableMap in availableMaps"
               :key="availableMap.value"
-              :value="availableMap.value"
+              :value="availableMap.display"
+              @select=selectMap(availableMap)
             >
               <CheckIcon
                 :class="
@@ -71,7 +72,7 @@ import {
                     (
                       expectsMultiple
                         ? modelValue.includes(availableMap.value)
-                        : modelValue === availableMap
+                        : modelValue === availableMap.value
                     )
                       ? 'opacity-100'
                       : 'opacity-0'
@@ -93,6 +94,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";
 
 export default {
+  emits: ['update:modelValue'],
   props: {
     matchType: {
       type: String,
@@ -113,6 +115,39 @@ export default {
         maps: [{}, mapFields],
       }),
     },
+  },
+  methods: {
+    selectMap(map: {
+      value: string;
+      label: string;
+    }) {
+      if(!this.expectsMultiple) {
+        this.$emit('update:modelValue', map.value)
+        return;
+      }
+
+      if(!Array.isArray(this.modelValue)) {
+        this.$emit('update:modelValue', [])
+        return;
+      }
+
+      const selectedMaps: Array<string> = this.modelValue as Array<string>;
+
+      let foundIndex: number;
+      for(const index in selectedMaps) {
+        if(selectedMaps[index] === map.value) {
+          foundIndex = index;
+          break;
+        }
+      }
+
+      if(foundIndex) {
+        selectedMaps.splice(foundIndex, 1);
+        return;
+      }
+
+      selectedMaps.push(map.value);
+    }
   },
   computed: {
     expectsMultiple() {

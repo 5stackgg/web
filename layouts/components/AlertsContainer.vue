@@ -1,7 +1,11 @@
 <template>
   <div class="fixed right-2.5 top-16 w-88 z-1000">
     <transition-group name="alert-animation">
-      <alert-action v-for="alert in alerts" :key="alert.id" :alert="alert"></alert-action>
+      <alert-action
+        v-for="alert in alerts"
+        :key="alert.id"
+        :alert="alert"
+      ></alert-action>
     </transition-group>
   </div>
 </template>

@@ -16,95 +16,89 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
+import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
 <template>
-  <Card class="sm:col-span-4">
-    <CardHeader class="pb-3">
-      <CardTitle>Map Veto</CardTitle>
-      <CardContent>
-        <div class="grid grid-cols-4">
-          <match-map-preview
-            :map="pick.map"
-            v-for="pick of picks"
-            v-if="match.maps"
-          >
-            <br />
-            {{ pick.type }}ed by
+  <div class="flex">
+    <template v-for="pick of picks">
+      <div v-if="pick.type !== 'Side'">
+        <map-display :map="pick.map.name">
+          <template v-slot:header>
+            <badge :variant="pick.type === 'Pick' ? 'default' : 'destructive'">
+              <template v-if="pick.type === 'LeftOver'"> Decider </template>
+              <template v-else>
+                {{ pick.type }}
+              </template>
+            </badge>
+          </template>
 
-            {{ pick.match_lineup.name }}
+          <template v-slot:default>
+            <div class="text-sm">
+              {{ pick.match_lineup.name }}
+            </div>
+          </template>
+        </map-display>
+      </div>
+    </template>
+  </div>
 
-            <template v-if="pick.side"> ({{ pick.side }}) </template>
-          </match-map-preview>
+  <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+    <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
+
+    <div @click="override = !override">
+      <Switch :checked="override" />
+      <Label>Match Organizer override</Label>
+    </div>
+
+    <form @submit.prevent="vetoPick" v-if="isPicking">
+      <template v-if="pickType === 'Side'">
+        <FormField v-slot="{ componentField }" name="side">
+          <FormItem>
+            <FormLabel>Side</FormLabel>
+
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder="Select the Side your team wants to start on"
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="sideOption in sideOptions"
+                    :key="sideOption.value"
+                    :value="sideOption.value"
+                  >
+                    {{ sideOption.display }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </template>
+      <template v-else>
+        <div class="grid grid-cols-4" v-for="availableMap of availableMaps">
+          <map-preview
+            :map="availableMap"
+            class="cursor-pointer"
+            :class="{
+              'bg-red-500': form.values.map_id === availableMap.id,
+            }"
+            @click="form.setFieldValue('map_id', availableMap.id)"
+          ></map-preview>
         </div>
+      </template>
 
-        <template
-          v-if="match.status === 'Veto' && match.match_maps.length < bestOf"
-        >
-          <h1>{{ teamName }} Is Picking ({{ pickType }})</h1>
-
-          <div @click="override = !override">
-            <Switch :checked="override" />
-            <Label>Match Organizer override</Label>
-          </div>
-
-          <form @submit.prevent="vetoPick" v-if="isPicking">
-            <template v-if="pickType === 'Side'">
-              <FormField v-slot="{ componentField }" name="side">
-                <FormItem>
-                  <FormLabel>Side</FormLabel>
-
-                  <Select v-bind="componentField">
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder="Select the Side your team wants to start on"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem
-                          v-for="sideOption in sideOptions"
-                          :key="sideOption.value"
-                          :value="sideOption.value"
-                        >
-                          {{ sideOption.display }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-            </template>
-            <template v-else>
-              <div
-                class="grid grid-cols-4"
-                v-for="availableMap of availableMaps"
-              >
-                <map-preview
-                  :map="availableMap"
-                  class="cursor-pointer"
-                  :class="{
-                    'bg-red-500': form.values.map_id === availableMap.id,
-                  }"
-                  @click="form.setFieldValue('map_id', availableMap.id)"
-                ></map-preview>
-              </div>
-            </template>
-
-            <Button
-              type="submit"
-              :disabled="Object.keys(form.errors).length > 0"
-            >
-              {{ pickType }}
-            </Button>
-          </form>
-        </template>
-      </CardContent>
-    </CardHeader>
-  </Card>
+      <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+        {{ pickType }}
+      </Button>
+    </form>
+  </template>
 </template>
 
 <script lang="ts">

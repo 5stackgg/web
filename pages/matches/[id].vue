@@ -17,7 +17,9 @@ import MapVeto from "~/components/match/MapVeto.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
-import {Tv} from "lucide-vue-next";
+import { Tv } from "lucide-vue-next";
+import MapDisplay from "~/components/MapDisplay.vue";
+import MatchMapDisplay from "~/components/match/MatchMapDisplay.vue";
 </script>
 
 <template>
@@ -41,9 +43,8 @@ import {Tv} from "lucide-vue-next";
                 <Badge variant="outline">
                   <span>
                     {{ match.type }}
-                    <br>
-                    ({{ match.best_of }} map<span
-                      v-if="match.best_of > 1"
+                    <br />
+                    ({{ match.best_of }} map<span v-if="match.best_of > 1"
                       >s</span
                     >)
                   </span>
@@ -86,7 +87,7 @@ import {Tv} from "lucide-vue-next";
                 <li class="flex items-center justify-between">
                   <span class="text-muted-foreground"> Map Pool </span>
                   <span>
-                    {{ match.map_pool.label }}
+                    {{ match.map_pool?.label }}
                   </span>
                 </li>
                 <li class="flex items-center justify-between">
@@ -116,67 +117,41 @@ import {Tv} from "lucide-vue-next";
                   </li>
                 </ul>
               </div>
-              <Separator class="my-2" />
-              <div class="grid gap-3">
-                <div class="font-semibold">
-                  <template v-if="match.map_veto"> Map Veto </template>
-                  <template v-else> Maps </template>
-                </div>
-                <div
-                  class="mt-1 text-gray-600 dark:text-gray-400"
-                  v-for="match_map of match.match_maps"
-                >
-                  [{{ match_map.status }}] {{ match_map.map.name }}
-                  <template v-for="veto of match_map.vetos">
-                    <template v-if="veto.type === 'LeftOver'"
-                      >[Left Over]</template
-                    >
-                  </template>
-                  <p>
-                    {{ matchLineups.lineup1.name }}:
-                    {{ match_map.lineup_1_score }}
-                    <template v-for="veto of match_map.vetos">
-                      <template
-                        v-if="
-                          veto.type === 'Pick' &&
-                          veto.match_lineup_id === matchLineups.lineup1.id
-                        "
-                        >[PICKED]</template
-                      >
-                    </template>
-                  </p>
-                  <p>
-                    {{ matchLineups.lineup2.name }}:
-                    {{ match_map.lineup_2_score }}
-                    <template v-for="veto of match_map.vetos">
-                      <template
-                        v-if="
-                          veto.type === 'Pick' &&
-                          veto.match_lineup_id === matchLineups.lineup2.id
-                        "
-                        >[PICKED]</template
-                      >
-                    </template>
-                  </p>
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>
       </div>
-      <div class="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+      <div class="grid auto-rows-max items-start gap-4 lg:col-span-2">
         <div
-          class="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4"
+          class="grid md:grid-cols-1 gap-4"
+          :class="`lg:grid-cols-${match.match_maps.length}`"
         >
+          <div v-for="match_map of match.match_maps">
+            <MatchMapDisplay
+              :match="match"
+              :match-map="match_map"
+            ></MatchMapDisplay>
+          </div>
+        </div>
+
+        <div>
           <match-assign-lineups
             :match="match"
             v-if="assigningLineups"
           ></match-assign-lineups>
           <match-assign-coach :match="match"></match-assign-coach>
-          <map-veto :match="match" v-if="match.veto"></map-veto>
+
+          <Card class="sm:col-span-4" v-if="match.map_veto">
+            <CardHeader>
+              <CardContent>
+                <map-veto :match="match"></map-veto>
+              </CardContent>
+            </CardHeader>
+          </Card>
+
           <match-map-picks
             :match="match"
-            v-else-if="assigningMaps"
+            v-else-if="assigningMaps && match.map_veto === false"
           ></match-map-picks>
         </div>
         <match-tabs :match="match"></match-tabs>
@@ -241,38 +216,48 @@ export default {
                   name: true,
                 },
               },
-              match_maps: {
-                id: true,
-                map: {
-                  name: true,
+              match_maps: [
+                {
+                  order_by: {
+                    order: order_by.asc,
+                  },
                 },
-                vetos: {
-                  side: true,
-                  type: true,
-                  match_lineup_id: true,
+                {
+                  id: true,
+                  order: true,
+                  lineup_1_side: true,
+                  lineup_2_side: true,
+                  map: {
+                    name: true,
+                  },
+                  vetos: {
+                    side: true,
+                    type: true,
+                    match_lineup_id: true,
+                  },
+                  status: true,
+                  lineup_1_score: true,
+                  lineup_2_score: true,
+                  rounds: {
+                    round: true,
+                    kills: [
+                      {
+                        order_by: {
+                          time: $("order_by_round_kills", "order_by"),
+                        },
+                      },
+                      {
+                        player: {
+                          steam_id: true,
+                        },
+                        attacked_player: {
+                          steam_id: true,
+                        },
+                      },
+                    ],
+                  },
                 },
-                status: true,
-                lineup_1_score: true,
-                lineup_2_score: true,
-                rounds: {
-                  round: true,
-                  kills: [
-                    {
-                      order_by: {
-                        time: $("order_by_round_kills", "order_by"),
-                      },
-                    },
-                    {
-                      player: {
-                        steam_id: true,
-                      },
-                      attacked_player: {
-                        steam_id: true,
-                      },
-                    },
-                  ],
-                },
-              },
+              ],
               lineups: {
                 id: true,
                 name: true,

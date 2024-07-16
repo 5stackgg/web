@@ -54,10 +54,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
           {{ me.player.name }}
         </span>
       </nuxt-link>
-      <div @click="linkDiscord" v-if="!me.discord_id">
-        Link Discord
-      </div>
-
+      <div @click="linkDiscord" v-if="!me.discord_id">Link Discord</div>
     </nav>
   </aside>
 
@@ -128,11 +125,11 @@ export default {
     };
   },
   methods: {
-    linkDiscord(){
+    linkDiscord() {
       window.location = `https://5stack.gg/auth/discord?redirect=${encodeURIComponent(
-          window.location.toString(),
+        window.location.toString()
       )}`;
-    }
+    },
   },
   computed: {
     me() {

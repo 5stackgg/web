@@ -119,10 +119,7 @@ const serverMenu = ref(false);
 
 <script lang="ts">
 import { $ } from "~/generated/zeus";
-import {
-  generateMutation,
-  generateSubscription,
-} from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 
 export default {
   apollo: {

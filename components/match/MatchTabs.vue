@@ -22,7 +22,7 @@ import RconCommander from "~/components/servers/RconCommander.vue";
         <TabsTrigger value="utility"> Utility </TabsTrigger>
         <TabsTrigger value="opening-duels"> Opening Duels </TabsTrigger>
         <TabsTrigger value="clutches"> Clutches </TabsTrigger>
-        <TabsTrigger value="server"> Server </TabsTrigger>
+        <TabsTrigger value="server"> Server Console </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent value="overview">

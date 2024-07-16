@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.0.8",
+    "@nuxt/image": "^1.7.0",
     "@nuxtjs/apollo": "^5.0.0-alpha.13",
     "@nuxtjs/tailwindcss": "^6.11.4",
     "autoprefixer": "^10.4.18",

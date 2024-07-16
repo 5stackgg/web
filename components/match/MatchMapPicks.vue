@@ -15,35 +15,6 @@
               <FormMessage />
             </FormItem>
           </FormField>
-
-          <FormField v-slot="{ componentField }" name="picked_by">
-            <FormItem>
-              <FormLabel>Picked Team</FormLabel>
-
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder="Select the team that selected the pick"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      v-for="mapPickLineupOption in mapPickLineupOptions"
-                      :key="mapPickLineupOption.value"
-                      :value="mapPickLineupOption.value"
-                    >
-                      {{ mapPickLineupOption.display }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
           <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
             Pick Map
           </Button>
@@ -60,7 +31,6 @@ import { e_sides_enum } from "~/generated/zeus";
 import { Button } from "~/components/ui/button";
 import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation } from "~/graphql/graphqlGen";
-import getMatchLineups from "~/utilities/getMatchLineups";
 import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
 import {
   Select,
@@ -105,12 +75,14 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            maps: this.match.best_of === 1 ? z.string() :
-              z.array(z.string())
-              .min(1)
-              .max(this.match.best_of)
-              .default([]),
-            picked_by: z.string(),
+            maps:
+              this.match.best_of === 1
+                ? z.string()
+                : z
+                    .array(z.string())
+                    .min(1)
+                    .max(this.match.best_of)
+                    .default([]),
           })
         ),
       }),
@@ -121,7 +93,7 @@ export default {
       let currentMapCount = this.match.match_maps.length;
 
       try {
-        const { maps, picked_by } = this.form.values;
+        const { maps } = this.form.values;
         for (const map_id of maps) {
           await this.$apollo.mutate({
             mutation: generateMutation({
@@ -147,23 +119,6 @@ export default {
       }
 
       this.form.resetForm();
-    },
-  },
-  computed: {
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
-    mapPickLineupOptions() {
-      return [
-        {
-          value: this.matchLineups.lineup1.id,
-          display: this.matchLineups.lineup1.name,
-        },
-        {
-          value: this.matchLineups.lineup2.id,
-          display: this.matchLineups.lineup2.name,
-        },
-      ];
     },
   },
 };

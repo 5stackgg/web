@@ -25,16 +25,18 @@ import MapDisplay from "~/components/MapDisplay.vue";
       <div v-if="pick.type !== 'Side'">
         <map-display :map="pick.map.name">
           <template v-slot:header>
-            <badge :variant="pick.type === 'Pick' ? 'default' : 'destructive'">
-              <template v-if="pick.type === 'LeftOver'"> Decider </template>
-              <template v-else>
-                {{ pick.type }}
-              </template>
-            </badge>
+            <div class="absolute top-3">
+              <badge :variant="pick.type === 'Pick' ? 'default' : 'destructive'">
+                <template v-if="pick.type === 'LeftOver'"> Decider </template>
+                <template v-else>
+                  {{ pick.type }}
+                </template>
+              </badge>
+            </div>
           </template>
 
           <template v-slot:default>
-            <div class="text-sm">
+            <div class="absolute bottom-3 text-sm">
               {{ pick.match_lineup.name }}
             </div>
           </template>

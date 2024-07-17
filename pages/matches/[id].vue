@@ -27,9 +27,7 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 
         <Separator class="my-8"></Separator>
 
-        <match-assign-lineups
-          :match="match"
-        ></match-assign-lineups>
+        <match-assign-lineups :match="match"></match-assign-lineups>
 
         <map-veto :match="match" v-if="match.map_veto"></map-veto>
         <match-map-selector
@@ -506,6 +504,6 @@ export default {
     assigningMaps() {
       return this.match.best_of > Object.keys(this.match.match_maps).length;
     },
-  }
+  },
 };
 </script>

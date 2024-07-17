@@ -1,28 +1,33 @@
 <script setup lang="ts">
 import CaptainInfo from "~/components/CaptainInfo.vue";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
-import {Badge} from "~/components/ui/badge";
-import {Tv} from "lucide-vue-next";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Badge } from "~/components/ui/badge";
+import { Tv } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import BooleanToText from "~/components/BooleanToText.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
-import {Separator} from "~/components/ui/separator";
+import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
   <Card>
     <CardHeader class="bg-muted/50">
       <CardTitle class="relative">
-
         <div class="flex">
           <Badge>
             <match-status :match="match"></match-status>
           </Badge>
           <clip-board
-              :data="match.tv_connection_string"
-              v-if="match.tv_connection_string"
+            :data="match.tv_connection_string"
+            v-if="match.tv_connection_string"
           >
             <Tv></Tv>
           </clip-board>
@@ -36,8 +41,6 @@ import {Separator} from "~/components/ui/separator";
 
           <match-actions :match="match"></match-actions>
         </div>
-
-
       </CardTitle>
       <CardDescription>
         <QuickServerConnect :match="match"></QuickServerConnect>
@@ -83,8 +86,8 @@ import {Separator} from "~/components/ui/separator";
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Map Pool </span>
           <span>
-                {{ match.map_pool?.label }}
-              </span>
+            {{ match.map_pool?.label }}
+          </span>
         </li>
 
         <li class="flex items-center justify-between">
@@ -99,24 +102,24 @@ import {Separator} from "~/components/ui/separator";
         <div class="font-semibold">Captains</div>
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ matchLineups.lineup1.name }}
-                </span>
+            <span class="text-muted-foreground">
+              {{ matchLineups.lineup1.name }}
+            </span>
             <span>
-                  <captain-info
-                      :captain="matchLineups.lineup1.captain"
-                  ></captain-info>
-                </span>
+              <captain-info
+                :captain="matchLineups.lineup1.captain"
+              ></captain-info>
+            </span>
           </li>
           <li class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ matchLineups.lineup2.name }}
-                </span>
+            <span class="text-muted-foreground">
+              {{ matchLineups.lineup2.name }}
+            </span>
             <span>
-                  <captain-info
-                      :captain="matchLineups.lineup2.captain"
-                  ></captain-info>
-                </span>
+              <captain-info
+                :captain="matchLineups.lineup2.captain"
+              ></captain-info>
+            </span>
           </li>
         </ul>
       </div>
@@ -125,36 +128,36 @@ import {Separator} from "~/components/ui/separator";
         <div class="font-semibold">Coaches</div>
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ matchLineups.lineup1.name }}
-                </span>
-                  <div v-if="matchLineups.lineup1.coach">
-                    <Avatar>
-                      <AvatarImage
-                          :src="matchLineups.lineup1.coach.avatar_url"
-                          :alt="matchLineups.lineup1.coach.name"
-                      />
-                      <AvatarFallback>{{
-                          matchLineups.lineup1.coach.name
-                        }}</AvatarFallback>
-                    </Avatar>
+            <span class="text-muted-foreground">
+              {{ matchLineups.lineup1.name }}
+            </span>
+            <div v-if="matchLineups.lineup1.coach">
+              <Avatar>
+                <AvatarImage
+                  :src="matchLineups.lineup1.coach.avatar_url"
+                  :alt="matchLineups.lineup1.coach.name"
+                />
+                <AvatarFallback>{{
+                  matchLineups.lineup1.coach.name
+                }}</AvatarFallback>
+              </Avatar>
 
-                    {{ matchLineups.lineup1.coach.name }}
-                </div>
+              {{ matchLineups.lineup1.coach.name }}
+            </div>
           </li>
           <li class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ matchLineups.lineup2.name }}
-                </span>
+            <span class="text-muted-foreground">
+              {{ matchLineups.lineup2.name }}
+            </span>
             <div v-if="matchLineups.lineup2.coach">
               <Avatar>
                 <AvatarImage
-                    :src="matchLineups.lineup2.coach.avatar_url"
-                    :alt="matchLineups.lineup2.coach.name"
+                  :src="matchLineups.lineup2.coach.avatar_url"
+                  :alt="matchLineups.lineup2.coach.name"
                 />
                 <AvatarFallback>{{
-                    matchLineups.lineup2.coach.name
-                  }}</AvatarFallback>
+                  matchLineups.lineup2.coach.name
+                }}</AvatarFallback>
               </Avatar>
 
               {{ matchLineups.lineup2.coach.name }}
@@ -162,14 +165,12 @@ import {Separator} from "~/components/ui/separator";
           </li>
         </ul>
       </div>
-
-
     </CardContent>
   </Card>
 </template>
 
 <script lang="ts">
-import {useAuthStore} from "~/stores/AuthStore";
+import { useAuthStore } from "~/stores/AuthStore";
 import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
@@ -177,7 +178,7 @@ export default {
     match: {
       type: Object,
       required: true,
-    }
+    },
   },
   computed: {
     me() {
@@ -185,7 +186,7 @@ export default {
     },
     matchLineups() {
       return getMatchLineups(this.match);
-    }
+    },
   },
-}
+};
 </script>

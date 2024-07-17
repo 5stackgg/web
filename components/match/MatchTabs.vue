@@ -40,8 +40,8 @@ import RconCommander from "~/components/servers/RconCommander.vue";
 
         <CardContent>
           <lineup-overview
-              :match="match"
-              :lineup="matchLineups.lineup2"
+            :match="match"
+            :lineup="matchLineups.lineup2"
           ></lineup-overview>
         </CardContent>
       </Card>

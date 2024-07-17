@@ -4,16 +4,10 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 
 <template>
   <player-search
-      label="Assign Coach"
-      :exclude="
-                lineup.lineup_players.map(
-                  (player) => player.steam_id
-                )
-              "
-      :team-id="lineup.team_id"
-      @selected="
-                (player) => updateCoach(player.steam_id, lineup.id)
-              "
+    label="Assign Coach"
+    :exclude="exclude.map((player) => player.steam_id)"
+    :team-id="lineup.team_id"
+    @selected="(player) => updateCoach(player.steam_id, lineup.id)"
   ></player-search>
 </template>
 
@@ -27,6 +21,11 @@ export default {
     lineup: {
       type: Object,
       required: true,
+    },
+    exclude: {
+      type: Array,
+      required: true,
+      default: [],
     },
   },
   methods: {

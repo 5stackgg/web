@@ -7,8 +7,16 @@ import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
   <Card v-if="assigningLineups">
     <CardHeader class="pb-3">
       <CardContent class="flex">
-        <AssignPlayerToLineup :lineup="matchLineups.lineup1" v-if="canAddToLineup1"></AssignPlayerToLineup>
-        <AssignPlayerToLineup :lineup="matchLineups.lineup1" v-if="canAddToLineup2"></AssignPlayerToLineup>
+        <AssignPlayerToLineup
+          :lineup="matchLineups.lineup1"
+          :exclude="players"
+          v-if="canAddToLineup1"
+        ></AssignPlayerToLineup>
+        <AssignPlayerToLineup
+          :lineup="matchLineups.lineup2"
+          :exclude="players"
+          v-if="canAddToLineup2"
+        ></AssignPlayerToLineup>
       </CardContent>
     </CardHeader>
   </Card>
@@ -18,14 +26,18 @@ import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
       <CardHeader class="pb-3">
         <CardTitle>Assign Coach for {{ matchLineups.lineup1.name }}</CardTitle>
         <CardContent>
-            <AssignCoachToLineup :lineup="matchLineups.lineup1"></AssignCoachToLineup>
-            <AssignCoachToLineup :lineup="matchLineups.lineup2"></AssignCoachToLineup>
+          <AssignCoachToLineup
+            :lineup="matchLineups.lineup1"
+            :exclude="players"
+          ></AssignCoachToLineup>
+          <AssignCoachToLineup
+            :lineup="matchLineups.lineup2"
+            :exclude="players"
+          ></AssignCoachToLineup>
         </CardContent>
       </CardHeader>
     </Card>
   </template>
-
-
 </template>
 
 <script lang="ts">
@@ -47,11 +59,11 @@ export default {
     assigningLineups() {
       const currentStatus = this.match.status;
       return (
-          this.match.organizer_steam_id == this.me.steam_id &&
-          (currentStatus == "Warmup" ||
-              currentStatus == "PickingPlayers" ||
-              currentStatus == "Scheduled") &&
-          (this.canAddToLineup1 || this.canAddToLineup2)
+        this.match.organizer_steam_id == this.me.steam_id &&
+        (currentStatus == "Warmup" ||
+          currentStatus == "PickingPlayers" ||
+          currentStatus == "Scheduled") &&
+        (this.canAddToLineup1 || this.canAddToLineup2)
       );
     },
     matchLineups() {
@@ -77,15 +89,22 @@ export default {
     },
     canUpdateLineup1() {
       return (
-          this.match.organizer_steam_id === this.me.steam_id ||
-          this.matchLineups.lineup1.captain.player.steam_id === this.me.steam_id
+        this.match.organizer_steam_id === this.me.steam_id ||
+        this.matchLineups.lineup1.captain.player.steam_id === this.me.steam_id
       );
     },
     canUpdateLineup2() {
       return (
-          this.match.organizer_steam_id === this.me.steam_id ||
-          this.matchLineups.lineup2.captain.player.steam_id === this.me.steam_id
+        this.match.organizer_steam_id === this.me.steam_id ||
+        this.matchLineups.lineup2.captain.player.steam_id === this.me.steam_id
       );
+    },
+    players() {
+      let players = [];
+      for (const lineup of this.match.lineups) {
+        players.push(...lineup.lineup_players);
+      }
+      return players;
     },
   },
 };

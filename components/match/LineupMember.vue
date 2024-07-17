@@ -10,7 +10,7 @@
         <AvatarFallback>{{ member.player.name }}</AvatarFallback>
       </Avatar>
       {{ member.player.name }}
-      <br>
+      <br />
       <Badge variant="outline" v-if="member.captain"> Captain </Badge>
     </template>
     <template v-else>

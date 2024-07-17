@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {e_match_status_enum} from "~/generated/zeus";
+import { e_match_status_enum } from "~/generated/zeus";
 import ClipBoard from "~/components/ClipBoard.vue";
-import {Copy} from "lucide-vue-next";
+import { Copy } from "lucide-vue-next";
 </script>
 
 <template>
@@ -13,9 +13,9 @@ import {Copy} from "lucide-vue-next";
   </Button>
 
   <template
-      v-if="
-              match.status != e_match_status_enum.Canceled &&
-              match.status != e_match_status_enum.Finished
+    v-if="
+      match.status != e_match_status_enum.Canceled &&
+      match.status != e_match_status_enum.Finished
     "
   >
     <div class="underline flex" v-if="match.connection_string">
@@ -33,7 +33,7 @@ export default {
     match: {
       type: Object,
       required: true,
-    }
-  }
-}
+    },
+  },
+};
 </script>

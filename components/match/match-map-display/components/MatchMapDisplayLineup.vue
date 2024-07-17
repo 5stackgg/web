@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Badge} from "~/components/ui/badge";
+import { Badge } from "~/components/ui/badge";
 </script>
 
 <template>
@@ -11,10 +11,10 @@ import {Badge} from "~/components/ui/badge";
   <br />
 
   <NuxtImg
-      v-if="showTeamPatch"
-      class="inline-block"
-      :src="teamPatch"
-      sizes="sm:18px"
+    v-if="showTeamPatch"
+    class="inline-block"
+    :src="teamPatch"
+    sizes="sm:18px"
   />
   {{ lineup.name }}:
   <span class="underline">{{ matchMap.lineup_1_score }}</span>
@@ -39,17 +39,19 @@ export default {
     },
     showTeamPatch: {
       required: true,
-    }
+    },
   },
   computed: {
     matchLineups() {
       return getMatchLineups(this.match);
     },
     teamPatch() {
-      return (this.matchLineups.lineup1.id === this.lineup.id ? this.matchMap.lineup_1_side : this.matchMap.lineup_2_side) === 'TERRORIST'
-          ? '/img/teams/t-patch.png'
-          : '/img/teams/ct-patch.webp';
-    }
+      return (this.matchLineups.lineup1.id === this.lineup.id
+        ? this.matchMap.lineup_1_side
+        : this.matchMap.lineup_2_side) === "TERRORIST"
+        ? "/img/teams/t-patch.png"
+        : "/img/teams/ct-patch.webp";
+    },
   },
-}
+};
 </script>

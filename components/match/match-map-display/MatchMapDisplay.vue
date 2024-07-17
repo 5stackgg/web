@@ -14,14 +14,22 @@ import MatchMapDisplayLineup from "~/components/match/match-map-display/componen
       <badge class="mb-2">{{ matchMap.status }}</badge>
     </template>
     <template v-slot:default>
-      <div
-        class="absolute bottom-3 left-3 right-3 flex justify-between"
-      >
+      <div class="absolute bottom-3 left-3 right-3 flex justify-between">
         <div class="text-left">
-          <match-map-display-lineup :match="match" :match-map="matchMap" :lineup="matchLineups.lineup1" :showTeamPatch="showTeamPatch"></match-map-display-lineup>
+          <match-map-display-lineup
+            :match="match"
+            :match-map="matchMap"
+            :lineup="matchLineups.lineup1"
+            :showTeamPatch="showTeamPatch"
+          ></match-map-display-lineup>
         </div>
         <div class="text-right">
-          <match-map-display-lineup :match="match"  :match-map="matchMap" :lineup="matchLineups.lineup2" :showTeamPatch="showTeamPatch"></match-map-display-lineup>
+          <match-map-display-lineup
+            :match="match"
+            :match-map="matchMap"
+            :lineup="matchLineups.lineup2"
+            :showTeamPatch="showTeamPatch"
+          ></match-map-display-lineup>
         </div>
       </div>
     </template>
@@ -47,13 +55,13 @@ export default {
       return getMatchLineups(this.match);
     },
     showTeamPatch() {
-      return !this.isLeftOver || this.matchMap.status === "Live"
+      return !this.isLeftOver || this.matchMap.status === "Live";
     },
     isLeftOver() {
       return this.matchMap.vetos.find(({ type }) => {
-        return type === "LeftOver"
+        return type === "LeftOver";
       });
-    }
+    },
   },
 };
 </script>

@@ -1,10 +1,6 @@
 <template>
-  <template v-if="value">
-    Yes
-  </template>
-  <template v-else>
-    No
-  </template>
+  <template v-if="value"> Yes </template>
+  <template v-else> No </template>
 </template>
 
 <script lang="ts">
@@ -13,7 +9,7 @@ export default {
     value: {
       type: Boolean,
       required: true,
-    }
-  }
-}
+    },
+  },
+};
 </script>

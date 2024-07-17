@@ -5,14 +5,14 @@ import MapDisplay from "~/components/MapDisplay.vue";
 <template>
   <div class="flex">
     <map-display
-        :map="map.name"
-        class="cursor-pointer p-1"
-        :class="{
-              'bg-red-500': modelValue === map.id,
-              'opacity-30 pointer-events-none': !availableMaps.includes(map),
-            }"
-        @click="$emit('update:modelValue', map.id)"
-        v-for="map of maps"
+      :map="map.name"
+      class="cursor-pointer p-1"
+      :class="{
+        'bg-red-500': modelValue === map.id,
+        'opacity-30 pointer-events-none': !availableMaps.includes(map),
+      }"
+      @click="$emit('update:modelValue', map.id)"
+      v-for="map of maps"
     >
     </map-display>
   </div>
@@ -20,20 +20,20 @@ import MapDisplay from "~/components/MapDisplay.vue";
 
 <script lang="ts">
 export default {
-  emits: ['update:modelValue'],
+  emits: ["update:modelValue"],
   props: {
     modelValue: {
       type: String,
       required: false,
     },
-    maps:{
+    maps: {
       type: Array,
-      required: true,
+      required: false,
     },
-    picks:{
+    picks: {
       type: Array,
-      required: true,
-    }
+      required: false,
+    },
   },
   computed: {
     availableMaps() {
@@ -43,12 +43,12 @@ export default {
 
       return this.maps.filter((map) => {
         return (
-            this.picks?.find((pick) => {
-              return pick.map.id === map.id;
-            }) === undefined
+          this.picks?.find((pick) => {
+            return pick.map.id === map.id;
+          }) === undefined
         );
       });
     },
-  }
-}
+  },
+};
 </script>

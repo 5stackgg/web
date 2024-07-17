@@ -17,7 +17,7 @@ import MapVeto from "~/components/match/MapVeto.vue";
 import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
-import {Tv} from "lucide-vue-next";
+import { Tv } from "lucide-vue-next";
 import MatchMapDisplay from "~/components/match/match-map-display/MatchMapDisplay.vue";
 import BooleanToText from "~/components/BooleanToText.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
@@ -25,13 +25,14 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 
 <template>
   <template v-if="match">
-    <div
-      class="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3"
-    >
+    <div class="grid items-start gap-3 p-4 lg:grid-cols-3">
       <Card>
         <CardHeader class="bg-muted/50">
           <CardTitle>
-            <clip-board :data="match.tv_connection_string" v-if="match.tv_connection_string">
+            <clip-board
+              :data="match.tv_connection_string"
+              v-if="match.tv_connection_string"
+            >
               <Tv></Tv>
             </clip-board>
 
@@ -88,8 +89,8 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
             <li class="flex items-center justify-between">
               <span class="text-muted-foreground"> Map Pool </span>
               <span>
-                    {{ match.map_pool?.label }}
-                  </span>
+                {{ match.map_pool?.label }}
+              </span>
             </li>
 
             <li class="flex items-center justify-between">
@@ -104,31 +105,32 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
             <div class="font-semibold">Captains</div>
             <ul class="grid gap-3">
               <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> {{matchLineups.lineup1.name  }} </span>
+                <span class="text-muted-foreground">
+                  {{ matchLineups.lineup1.name }}
+                </span>
                 <span>
-                      <captain-info
-                          :captain="matchLineups.lineup1.captain"
-                      ></captain-info>
-                    </span>
+                  <captain-info
+                    :captain="matchLineups.lineup1.captain"
+                  ></captain-info>
+                </span>
               </li>
               <li class="flex items-center justify-between">
-                <span class="text-muted-foreground"> {{ matchLineups.lineup2.name }} </span>
+                <span class="text-muted-foreground">
+                  {{ matchLineups.lineup2.name }}
+                </span>
                 <span>
-                      <captain-info
-                          :captain="matchLineups.lineup2.captain"
-                      ></captain-info>
-                    </span>
+                  <captain-info
+                    :captain="matchLineups.lineup2.captain"
+                  ></captain-info>
+                </span>
               </li>
             </ul>
           </div>
         </CardContent>
       </Card>
 
-      <div class="grid auto-rows-max items-start gap-4 lg:col-span-2">
-        <div
-          class="grid md:grid-cols-1 gap-4"
-          :class="`lg:grid-cols-${match.match_maps.length}`"
-        >
+      <div class="lg:col-span-2">
+        <div class="flex">
           <template v-for="match_map of match.match_maps">
             <MatchMapDisplay
               :match="match"
@@ -137,24 +139,22 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
           </template>
         </div>
 
-        <div>
-          <match-assign-lineups
-            :match="match"
-            v-if="assigningLineups"
-          ></match-assign-lineups>
-          <match-assign-coach :match="match"></match-assign-coach>
+        <match-assign-lineups
+          :match="match"
+          v-if="assigningLineups"
+        ></match-assign-lineups>
+        <match-assign-coach :match="match"></match-assign-coach>
 
-          <Card class="sm:col-span-4" v-if="match.map_veto">
-            <CardContent class="pt-6">
-              <map-veto :match="match"></map-veto>
-            </CardContent>
-          </Card>
+        <Card v-if="match.map_veto">
+          <CardContent class="pt-6">
+            <map-veto :match="match"></map-veto>
+          </CardContent>
+        </Card>
 
-          <match-map-picks
-            :match="match"
-            v-else-if="assigningMaps && match.map_veto === false"
-          ></match-map-picks>
-        </div>
+        <match-map-picks
+          :match="match"
+          v-else-if="assigningMaps && match.map_veto === false"
+        ></match-map-picks>
 
         <match-tabs :match="match"></match-tabs>
       </div>

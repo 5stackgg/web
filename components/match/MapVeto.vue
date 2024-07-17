@@ -26,7 +26,9 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
         <map-display :map="pick.map.name">
           <template v-slot:header>
             <div class="absolute top-3">
-              <badge :variant="pick.type === 'Pick' ? 'default' : 'destructive'">
+              <badge
+                :variant="pick.type === 'Pick' ? 'default' : 'destructive'"
+              >
                 <template v-if="pick.type === 'LeftOver'"> Decider </template>
                 <template v-else>
                   {{ pick.type }}
@@ -49,9 +51,16 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
     <Separator class="mt-6 mb-3"></Separator>
     <template v-if="match.status === 'Veto'">
       <div class="flex justify-between">
-        <h1>{{ teamName }} is Picking a <span class="underline">{{ pickType }}</span></h1>
+        <h1>
+          {{ teamName }} is Picking a
+          <span class="underline">{{ pickType }}</span>
+        </h1>
 
-        <div class="flex items-center space-x-2 cursor-pointer" @click="override = !override" v-if="isMatchOrganizer">
+        <div
+          class="flex items-center space-x-2 cursor-pointer"
+          @click="override = !override"
+          v-if="isMatchOrganizer"
+        >
           <Label>Match Organizer Override</Label>
           <Switch :checked="override" />
         </div>
@@ -67,16 +76,16 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
-                        placeholder="Select the Side your team wants to start on"
+                      placeholder="Select the Side your team wants to start on"
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem
-                        v-for="sideOption in sideOptions"
-                        :key="sideOption.value"
-                        :value="sideOption.value"
+                      v-for="sideOption in sideOptions"
+                      :key="sideOption.value"
+                      :value="sideOption.value"
                     >
                       {{ sideOption.display }}
                     </SelectItem>
@@ -88,9 +97,16 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
           </FormField>
         </template>
 
-        <veto-preview :model-value="form.values.map_id" :maps="maps" :picks="picks" @update:modelValue="(mapId) => {
-        form.setFieldValue('map_id', mapId)
-      }"></veto-preview>
+        <veto-preview
+          :model-value="form.values.map_id"
+          :maps="maps"
+          :picks="picks"
+          @update:modelValue="
+            (mapId) => {
+              form.setFieldValue('map_id', mapId);
+            }
+          "
+        ></veto-preview>
 
         <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
           {{ pickType }}
@@ -235,9 +251,9 @@ export default {
       immediate: true,
       handler() {
         this.form.setValues({
-          map_id: undefined
+          map_id: undefined,
         });
-      }
+      },
     },
     pickType: {
       immediate: true,
@@ -314,8 +330,9 @@ export default {
         return false;
       }
 
-      return this.myLineup.id === this.match.veto_picking_lineup_id && (
-          this.isCaptain || this.isMatchOrganizer
+      return (
+        this.myLineup.id === this.match.veto_picking_lineup_id &&
+        (this.isCaptain || this.isMatchOrganizer)
       );
     },
     isMatchOrganizer() {

@@ -28,11 +28,11 @@ import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
         <CardContent>
           <AssignCoachToLineup
             :lineup="matchLineups.lineup1"
-            :exclude="players"
+            :exclude="players.concat(coaches)"
           ></AssignCoachToLineup>
           <AssignCoachToLineup
             :lineup="matchLineups.lineup2"
-            :exclude="players"
+            :exclude="players.concat(coaches)"
           ></AssignCoachToLineup>
         </CardContent>
       </CardHeader>
@@ -99,8 +99,21 @@ export default {
         this.matchLineups.lineup2.captain.player.steam_id === this.me.steam_id
       );
     },
+    coaches() {
+      const coaches = [];
+
+      if(this.matchLineups.lineup1.coach) {
+        coaches.push(this.matchLineups.lineup1.coach);
+      }
+
+      if(this.matchLineups.lineup2.coach) {
+        coaches.push(this.matchLineups.lineup2.coach);
+      }
+
+      return coaches;
+    },
     players() {
-      let players = [];
+      const  players = [];
       for (const lineup of this.match.lineups) {
         players.push(...lineup.lineup_players);
       }

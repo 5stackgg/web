@@ -1,6 +1,6 @@
 <template>
-  <div class="relative w-auto h-full">
-    <NuxtImg :src="poster" class="rounded-[3px]" sizes="sm:200px md:400px" />
+  <div class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]">
+    <NuxtImg :src="poster" sizes="sm:200px md:400px lg:1200" />
 
     <div class="absolute inset-0 bg-black bg-opacity-35"></div>
     <div class="absolute inset-0 flex flex-col items-center justify-center">

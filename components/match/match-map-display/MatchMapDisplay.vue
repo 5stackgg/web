@@ -15,7 +15,7 @@ import MatchMapDisplayLineup from "~/components/match/match-map-display/componen
     </template>
     <template v-slot:default>
       <div class="absolute bottom-3 left-3 right-3 flex justify-between">
-        <div class="text-left">
+        <div class="flex flex-col items-start justify-end gap-1">
           <match-map-display-lineup
             :match="match"
             :match-map="matchMap"
@@ -23,8 +23,9 @@ import MatchMapDisplayLineup from "~/components/match/match-map-display/componen
             :showTeamPatch="showTeamPatch"
           ></match-map-display-lineup>
         </div>
-        <div class="text-right">
+        <div class="flex flex-col items-end justify-end gap-1">
           <match-map-display-lineup
+            :reverse="true"
             :match="match"
             :match-map="matchMap"
             :lineup="matchLineups.lineup2"

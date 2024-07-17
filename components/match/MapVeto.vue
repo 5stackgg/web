@@ -20,7 +20,7 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
 </script>
 
 <template>
-  <div class="flex">
+  <div class="flex gap-4 h-[250px] overflow-hidden">
     <template v-for="pick of picks">
       <div v-if="pick.type !== 'Side'">
         <map-display :map="pick.map.name">
@@ -47,9 +47,9 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
     </template>
   </div>
 
-  <div v-if="match.match_maps.length < bestOf">
-    <Separator class="mt-6 mb-3"></Separator>
-    <template v-if="match.status === 'Veto'">
+  <div v-if="match.match_maps.length < bestOf || 1 == 1">
+    <Separator class="mt-8 mb-8"></Separator>
+    <template v-if="match.status === 'Veto' || 1 == 1">
       <div class="flex justify-between">
         <h1>
           {{ teamName }} is Picking a
@@ -370,7 +370,7 @@ export default {
     teamName() {
       return this.match?.lineups.find((lineup) => {
         return lineup.id === this.match.veto_picking_lineup_id;
-      }).name;
+      })?.name;
     },
   },
 };

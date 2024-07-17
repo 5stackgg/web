@@ -25,7 +25,9 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 
 <template>
   <template v-if="match">
-    <div class="grid items-start gap-3 p-4 lg:grid-cols-3">
+    <div
+      class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
+    >
       <Card>
         <CardHeader class="bg-muted/50">
           <CardTitle>
@@ -129,8 +131,8 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
         </CardContent>
       </Card>
 
-      <div class="lg:col-span-2">
-        <div class="flex">
+      <div>
+        <div class="flex gap-4 max-h-[500px] justify-around">
           <template v-for="match_map of match.match_maps">
             <MatchMapDisplay
               :match="match"
@@ -139,24 +141,22 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
           </template>
         </div>
 
+        <Separator class="mt-8 mb-8"></Separator>
+
         <match-assign-lineups
           :match="match"
           v-if="assigningLineups"
         ></match-assign-lineups>
         <match-assign-coach :match="match"></match-assign-coach>
 
-        <Card v-if="match.map_veto">
-          <CardContent class="pt-6">
-            <map-veto :match="match"></map-veto>
-          </CardContent>
-        </Card>
+        <map-veto :match="match" v-if="match.map_veto"></map-veto>
 
         <match-map-picks
           :match="match"
           v-else-if="assigningMaps && match.map_veto === false"
         ></match-map-picks>
 
-        <match-tabs :match="match"></match-tabs>
+        <!--        <match-tabs :match="match"></match-tabs>-->
       </div>
     </div>
   </template>

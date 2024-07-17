@@ -5,19 +5,29 @@ import { Badge } from "~/components/ui/badge";
 <template>
   <template v-for="veto of matchMap.vetos">
     <template v-if="veto.type === 'Pick' && veto.match_lineup_id === lineup.id">
-      <badge> Picked </badge>
+      <badge class="mb-2"> Picked </badge>
     </template>
   </template>
-  <br />
 
-  <NuxtImg
-    v-if="showTeamPatch"
-    class="inline-block"
-    :src="teamPatch"
-    sizes="sm:18px"
-  />
-  {{ lineup.name }}:
-  <span class="underline">{{ matchMap.lineup_1_score }}</span>
+  <div
+    class="flex items-center gap-2"
+    :class="`${reverse ? 'flex-row-reverse' : ''}`"
+  >
+    <NuxtImg
+      v-if="showTeamPatch"
+      class="inline-block"
+      :src="teamPatch"
+      sizes="sm:18px"
+    />
+    <div>
+      <span class="font-bold">{{ matchMap.lineup_1_score }}</span> [<span
+        class="text-yellow-500"
+        >0</span
+      >:<span class="text-blue-800">0</span>]
+    </div>
+  </div>
+
+  {{ lineup.name }}
 </template>
 
 <script lang="ts">
@@ -39,6 +49,10 @@ export default {
     },
     showTeamPatch: {
       required: true,
+    },
+    reverse: {
+      type: Boolean,
+      required: false,
     },
   },
   computed: {

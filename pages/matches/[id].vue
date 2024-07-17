@@ -4,7 +4,7 @@ import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
 import MapVeto from "~/components/match/MapVeto.vue";
 import MatchMapSelector from "~/components/match/MatchMapPicks.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
-import MatchMapDisplay from "~/components/match/match-map-display/MatchMapDisplay.vue";
+import MatchMapDisplay from "~/components/match/MatchMapDisplay.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 </script>
 

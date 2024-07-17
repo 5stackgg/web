@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
 import { Badge } from "~/components/ui/badge";
-import MatchMapDisplayLineup from "~/components/match/match-map-display/components/MatchMapDisplayLineup.vue";
+import MatchMapDisplayLineup from "~/components/match/MatchMapDisplayLineup.vue";
 </script>
 
 <template>

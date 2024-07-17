@@ -101,7 +101,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
             </li>
           </ul>
 
-          <Separator class="my-2" />
+          <Separator class="my-8" />
 
           <div class="grid gap-3">
             <div class="font-semibold">Captains</div>
@@ -141,7 +141,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
           </template>
         </div>
 
-        <Separator class="mt-8 mb-8"></Separator>
+        <Separator class="my-8"></Separator>
 
         <match-assign-lineups
           :match="match"

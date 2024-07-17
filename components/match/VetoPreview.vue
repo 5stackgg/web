@@ -3,7 +3,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
 <template>
-  <div class="flex gap-4 h-[150px] overflow-hidden mt-8 mb-8">
+  <div class="flex gap-4 h-[150px] overflow-hidden my-8">
     <map-display
       :map="map.name"
       class="cursor-pointer"

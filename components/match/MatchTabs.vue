@@ -27,7 +27,7 @@ import RconCommander from "~/components/servers/RconCommander.vue";
     </div>
     <TabsContent value="overview">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Match Overview</CardTitle>
           <CardDescription> Overview of basic stats </CardDescription>
         </CardHeader>
@@ -48,7 +48,7 @@ import RconCommander from "~/components/servers/RconCommander.vue";
     </TabsContent>
     <TabsContent value="utility">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Utility Usage</CardTitle>
           <CardDescription> Utility usage per player </CardDescription>
         </CardHeader>
@@ -57,6 +57,8 @@ import RconCommander from "~/components/servers/RconCommander.vue";
             :match="match"
             :lineup="matchLineups.lineup1"
           ></lineup-utility>
+        </CardContent>
+        <CardContent>
           <lineup-utility
             :match="match"
             :lineup="matchLineups.lineup2"
@@ -66,7 +68,7 @@ import RconCommander from "~/components/servers/RconCommander.vue";
     </TabsContent>
     <TabsContent value="opening-duels">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Opening Duels</CardTitle>
           <CardDescription> Opening Duels </CardDescription>
         </CardHeader>
@@ -75,6 +77,8 @@ import RconCommander from "~/components/servers/RconCommander.vue";
             :match="match"
             :lineup="matchLineups.lineup1"
           ></lineup-opening-duels>
+        </CardContent>
+        <CardContent>
           <lineup-opening-duels
             :match="match"
             :lineup="matchLineups.lineup2"
@@ -84,7 +88,7 @@ import RconCommander from "~/components/servers/RconCommander.vue";
     </TabsContent>
     <TabsContent value="clutches">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Clutches</CardTitle>
           <CardDescription> Clutches </CardDescription>
         </CardHeader>

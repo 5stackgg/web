@@ -4,7 +4,7 @@
   >
     <Badge variant="outline" class="absolute right-3 top-3"> Output </Badge>
     <div class="flex-1 overflow-scroll max-h-screen">
-      <p v-for="log in logs" :key="log" class="whitespace-pre mt-2 mb-2">
+      <p v-for="log in logs" :key="log" class="whitespace-pre my-2">
         {{ log }}
       </p>
     </div>

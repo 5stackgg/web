@@ -48,7 +48,7 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
   </div>
 
   <div v-if="match.match_maps.length < bestOf">
-    <Separator class="mt-8 mb-8"></Separator>
+    <Separator class="my-8"></Separator>
     <template v-if="match.status === 'Veto'">
       <div class="flex justify-between">
         <h1>

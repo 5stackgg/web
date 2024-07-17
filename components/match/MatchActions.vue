@@ -103,12 +103,6 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    isServerAvailable() {
-      if (!this.match.server_id) {
-        return true;
-      }
-      return this.match.server_id && this.match.is_match_server_available;
-    },
     matchLineups() {
       return getMatchLineups(this.match);
     },

@@ -16,7 +16,6 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
-import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
   props: {
@@ -54,9 +53,6 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    matchLineups() {
-      return getMatchLineups(this.match);
     },
   },
 };

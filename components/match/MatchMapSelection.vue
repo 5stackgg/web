@@ -10,7 +10,9 @@ import MapSelector from "~/components/match/MapSelector.vue";
     :map-pool="mapPool"
     v-if="match.map_veto"
   ></MatchMapVeto>
-  <template v-else-if="assigningMaps && match.map_veto === false">
+  <template
+    v-else-if="canAssignMap && assigningMaps && match.map_veto === false"
+  >
     <Card class="sm:col-span-4">
       <CardHeader class="pb-3">
         <CardContent>
@@ -125,8 +127,14 @@ export default {
     },
   },
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
     mapPool() {
       return this.match_maps?.map_pool?.maps;
+    },
+    canAssignMap() {
+      return this.match.organizer_steam_id === this.me.steam_id;
     },
     assigningMaps() {
       return this.match.best_of > Object.keys(this.match.match_maps).length;

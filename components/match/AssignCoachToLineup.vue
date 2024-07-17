@@ -3,6 +3,8 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 </script>
 
 <template>
+  Assign Coach for {{ lineup.name }}
+
   <player-search
     label="Assign Coach"
     :exclude="exclude.map((player) => player.steam_id)"

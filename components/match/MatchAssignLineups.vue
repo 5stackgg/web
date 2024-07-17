@@ -22,17 +22,18 @@ import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
   </Card>
 
   <template v-if="match.coaches && (canUpdateLineup1 || canUpdateLineup2)">
-    <Card v-if="canUpdateLineup1">
+    <Card>
       <CardHeader class="pb-3">
-        <CardTitle>Assign Coach for {{ matchLineups.lineup1.name }}</CardTitle>
         <CardContent>
           <AssignCoachToLineup
             :lineup="matchLineups.lineup1"
             :exclude="players.concat(coaches)"
+            v-if="canUpdateLineup1"
           ></AssignCoachToLineup>
           <AssignCoachToLineup
             :lineup="matchLineups.lineup2"
             :exclude="players.concat(coaches)"
+            v-if="canUpdateLineup2"
           ></AssignCoachToLineup>
         </CardContent>
       </CardHeader>
@@ -102,18 +103,18 @@ export default {
     coaches() {
       const coaches = [];
 
-      if(this.matchLineups.lineup1.coach) {
+      if (this.matchLineups.lineup1.coach) {
         coaches.push(this.matchLineups.lineup1.coach);
       }
 
-      if(this.matchLineups.lineup2.coach) {
+      if (this.matchLineups.lineup2.coach) {
         coaches.push(this.matchLineups.lineup2.coach);
       }
 
       return coaches;
     },
     players() {
-      const  players = [];
+      const players = [];
       for (const lineup of this.match.lineups) {
         players.push(...lineup.lineup_players);
       }

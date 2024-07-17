@@ -87,6 +87,9 @@ export default {
               tv_connection_link: true,
               is_match_server_available: true,
               status: true,
+              e_match_status: {
+                description: true,
+              },
               type: true,
               scheduled_at: true,
               map_pool: {

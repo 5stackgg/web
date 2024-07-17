@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { Separator } from "~/components/ui/separator";
 import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
-import MapVeto from "~/components/match/MapVeto.vue";
-import MatchMapSelector from "~/components/match/MatchMapPicks.vue";
+import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
-import MatchMapDisplay from "~/components/match/MatchMapDisplay.vue";
+import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 </script>
 
@@ -18,24 +16,15 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
       <div>
         <div class="flex gap-4 max-h-[500px] justify-around">
           <template v-for="match_map of match.match_maps">
-            <MatchMapDisplay
-              :match="match"
-              :match-map="match_map"
-            ></MatchMapDisplay>
+            <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
           </template>
         </div>
 
-        <Separator class="my-8"></Separator>
+        <MatchAssignLineups :match="match"></MatchAssignLineups>
 
-        <match-assign-lineups :match="match"></match-assign-lineups>
+        <MatchMapSelection :match="match"></MatchMapSelection>
 
-        <map-veto :match="match" v-if="match.map_veto"></map-veto>
-        <match-map-selector
-          :match="match"
-          v-else-if="assigningMaps && match.map_veto === false"
-        ></match-map-selector>
-
-        <match-tabs :match="match" class="mt-8"></match-tabs>
+        <MatchTabs :match="match" class="mt-8"></MatchTabs>
       </div>
     </div>
   </template>
@@ -501,11 +490,6 @@ export default {
           this.match = data.matches_by_pk;
         },
       },
-    },
-  },
-  computed: {
-    assigningMaps() {
-      return this.match.best_of > Object.keys(this.match.match_maps).length;
     },
   },
 };

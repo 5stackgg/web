@@ -4,7 +4,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
-  <p>
+  <Badge variant="secondary">
     <template v-if="match.status == e_match_status_enum.Canceled">
       Canceled @ {{ endOfMatch }}
     </template>
@@ -16,10 +16,10 @@ import TimeAgo from "~/components/TimeAgo.vue";
         Waiting for server ...
       </div>
       <div v-else>
-        Scheduled [<template v-if="match.scheduled_at">
+        Scheduled (<template v-if="match.scheduled_at">
           <time-ago :date="match.scheduled_at"></time-ago>
         </template>
-        <template v-else> ASAP </template>]
+        <template v-else>ASAP</template>)
       </div>
     </template>
     <template v-else-if="startOfMatch">
@@ -29,7 +29,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
     <template v-else>
       {{ match.e_match_status.description }}
     </template>
-  </p>
+  </Badge>
 </template>
 
 <script lang="ts">

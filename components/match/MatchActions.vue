@@ -5,24 +5,20 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 </script>
 
 <template>
-  <template v-if="match.status == e_match_status_enum.PickingPlayers">
+  <template
+    v-if="
+      match.status == e_match_status_enum.PickingPlayers ||
+      match.status == e_match_status_enum.Scheduled
+    "
+  >
     <Button
-      variant="outline"
-      @click.prevent.stop="scheduleMatch"
+      @click.prevent.stop="startMatch"
       class="-mr-2"
       :disabled="canAddToLineup1 || canAddToLineup2"
     >
-      Schedule Match!
-    </Button>
-  </template>
-  <template v-if="match.status == e_match_status_enum.Scheduled">
-    <Button
-      variant="outline"
-      @click.prevent.stop="startMatch"
-      class="-mr-2"
-      :disabled="!isServerAvailable"
-    >
-      Start Match
+      Start
+      <template v-if="match.map_veto"> Veto </template>
+      <template v-else> Match </template>
     </Button>
   </template>
 
@@ -36,6 +32,11 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
     <DropdownMenuContent align="end">
       <DropdownMenuItem>
         <match-select-server :match="match"></match-select-server>
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        v-if="match.status == e_match_status_enum.PickingPlayers"
+      >
+        SCHEDULE MATCH HERE
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>

@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
 import { Tv } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
@@ -22,9 +21,7 @@ import { Separator } from "~/components/ui/separator";
     <CardHeader class="bg-muted/50">
       <CardTitle class="relative">
         <div class="flex">
-          <Badge>
-            <match-status :match="match"></match-status>
-          </Badge>
+          <match-status :match="match"></match-status>
           <clip-board
             :data="match.tv_connection_string"
             v-if="match.tv_connection_string"

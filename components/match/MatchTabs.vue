@@ -36,10 +36,12 @@ import RconCommander from "~/components/servers/RconCommander.vue";
             :match="match"
             :lineup="matchLineups.lineup1"
           ></lineup-overview>
+        </CardContent>
 
+        <CardContent>
           <lineup-overview
-            :match="match"
-            :lineup="matchLineups.lineup2"
+              :match="match"
+              :lineup="matchLineups.lineup2"
           ></lineup-overview>
         </CardContent>
       </Card>

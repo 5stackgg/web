@@ -91,6 +91,7 @@ export default {
         body: {
           query,
           teamId: this.teamId,
+          exclude: this.exclude,
         },
       });
 

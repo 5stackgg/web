@@ -1,125 +1,26 @@
 <script lang="ts" setup>
-import PlayerSearch from "~/components/PlayerSearch.vue";
-import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
+import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
+import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
 </script>
+
 <template>
-  <Card class="sm:col-span-2" v-if="assigningLineups">
+  <Card v-if="assigningLineups">
     <CardHeader class="pb-3">
       <CardContent class="flex">
-        <div>
-          Assign Players to {{ matchLineups.lineup1.name }}
-
-          <template v-if="canAddToLineup1">
-            <player-search
-                label="Search for a player"
-                :exclude="
-              matchLineups.lineup1.lineup_players.map(
-                (player) => player.steam_id
-              )
-            "
-                :team-id="matchLineups.lineup1.team_id"
-                @selected="
-              (player) => addMember(player.steam_id, matchLineups.lineup1.id)
-            "
-            ></player-search>
-          </template>
-          <template v-else> Team 1 Lineup setup. </template>
-        </div>
-
-        <div>
-          <template v-if="canAddToLineup2">
-            Assign Players to {{ matchLineups.lineup2.name }}
-
-            <player-search
-                label="Search for a player"
-                :exclude="
-              matchLineups.lineup2.lineup_players.map(
-                (player) => player.steam_id
-              )
-            "
-                :team-id="matchLineups.lineup2.team_id"
-                @selected="
-              (player) => addMember(player.steam_id, matchLineups.lineup2.id)
-            "
-            ></player-search>
-          </template>
-          <template v-else> Team 2 Lineup setup. </template>
-        </div>
+        <AssignPlayerToLineup :lineup="matchLineups.lineup1" v-if="canAddToLineup1"></AssignPlayerToLineup>
+        <AssignPlayerToLineup :lineup="matchLineups.lineup1" v-if="canAddToLineup2"></AssignPlayerToLineup>
       </CardContent>
     </CardHeader>
   </Card>
 
-
-
-
-
-
   <template v-if="match.coaches && (canUpdateLineup1 || canUpdateLineup2)">
-    <Card class="sm:col-span-2" v-if="canUpdateLineup1">
+    <Card v-if="canUpdateLineup1">
       <CardHeader class="pb-3">
         <CardTitle>Assign Coach for {{ matchLineups.lineup1.name }}</CardTitle>
-        <CardDescription>
-          <div v-if="matchLineups.lineup1.coach">
-            <Avatar>
-              <AvatarImage
-                  :src="matchLineups.lineup1.coach.avatar_url"
-                  :alt="matchLineups.lineup1.coach.name"
-              />
-              <AvatarFallback>{{
-                  matchLineups.lineup1.coach.name
-                }}</AvatarFallback>
-            </Avatar>
-
-            {{ matchLineups.lineup1.coach.name }}
-          </div>
-
-          <player-search
-              label="Assign Coach"
-              :exclude="
-              matchLineups.lineup1.lineup_players.map(
-                (player) => player.steam_id
-              )
-            "
-              :team-id="matchLineups.lineup1.team_id"
-              @selected="
-              (player) => updateCoach(player.steam_id, matchLineups.lineup1.id)
-            "
-          ></player-search>
-        </CardDescription>
-      </CardHeader>
-    </Card>
-
-    <Card class="sm:col-span-2" v-if="canUpdateLineup2">
-      <CardHeader class="pb-3">
-        <CardTitle>Assign Coach for {{ matchLineups.lineup2.name }}</CardTitle>
-        <CardDescription>
-          <div v-if="matchLineups.lineup2.coach">
-            <Avatar>
-              <AvatarImage
-                  :src="matchLineups.lineup2.coach.avatar_url"
-                  :alt="matchLineups.lineup2.coach.name"
-              />
-              <AvatarFallback>{{
-                  matchLineups.lineup2.coach.name
-                }}</AvatarFallback>
-            </Avatar>
-
-            {{ matchLineups.lineup2.coach.name }}
-          </div>
-
-          <player-search
-              label="Assign Coach"
-              :exclude="
-              matchLineups.lineup2.lineup_players.map(
-                (player) => player.steam_id
-              )
-            "
-              :team-id="matchLineups.lineup2.team_id"
-              @selected="
-              (player) => updateCoach(player.steam_id, matchLineups.lineup2.id)
-            "
-          ></player-search>
-        </CardDescription>
+        <CardContent>
+            <AssignCoachToLineup :lineup="matchLineups.lineup1"></AssignCoachToLineup>
+            <AssignCoachToLineup :lineup="matchLineups.lineup2"></AssignCoachToLineup>
+        </CardContent>
       </CardHeader>
     </Card>
   </template>
@@ -129,7 +30,6 @@ import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
 
 <script lang="ts">
 import { e_match_types_enum } from "~/generated/zeus";
-import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
@@ -139,25 +39,7 @@ export default {
       required: true,
     },
   },
-  methods: {
-    async addMember(steam_id: bigint, match_lineup_id: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_match_lineup_players_one: [
-            {
-              object: {
-                steam_id,
-                match_lineup_id,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-  },
+
   computed: {
     me() {
       return useAuthStore().me;

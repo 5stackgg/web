@@ -120,6 +120,50 @@ import {Separator} from "~/components/ui/separator";
           </li>
         </ul>
       </div>
+
+      <div class="grid gap-3">
+        <div class="font-semibold">Coaches</div>
+        <ul class="grid gap-3">
+          <li class="flex items-center justify-between">
+                <span class="text-muted-foreground">
+                  {{ matchLineups.lineup1.name }}
+                </span>
+                  <div v-if="matchLineups.lineup1.coach">
+                    <Avatar>
+                      <AvatarImage
+                          :src="matchLineups.lineup1.coach.avatar_url"
+                          :alt="matchLineups.lineup1.coach.name"
+                      />
+                      <AvatarFallback>{{
+                          matchLineups.lineup1.coach.name
+                        }}</AvatarFallback>
+                    </Avatar>
+
+                    {{ matchLineups.lineup1.coach.name }}
+                </div>
+          </li>
+          <li class="flex items-center justify-between">
+                <span class="text-muted-foreground">
+                  {{ matchLineups.lineup2.name }}
+                </span>
+            <div v-if="matchLineups.lineup2.coach">
+              <Avatar>
+                <AvatarImage
+                    :src="matchLineups.lineup2.coach.avatar_url"
+                    :alt="matchLineups.lineup2.coach.name"
+                />
+                <AvatarFallback>{{
+                    matchLineups.lineup2.coach.name
+                  }}</AvatarFallback>
+              </Avatar>
+
+              {{ matchLineups.lineup2.coach.name }}
+            </div>
+          </li>
+        </ul>
+      </div>
+
+
     </CardContent>
   </Card>
 </template>

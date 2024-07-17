@@ -6,7 +6,7 @@
       sizes="sm:200px md:400px lg:1200"
     />
 
-    <div class="absolute inset-0 bg-black bg-opacity-35"></div>
+    <div class="absolute inset-0 bg-black bg-opacity-45"></div>
     <div class="absolute inset-0 flex flex-col items-center justify-center">
       <slot name="header"></slot>
 

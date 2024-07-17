@@ -20,10 +20,11 @@ import { Badge } from "~/components/ui/badge";
       sizes="sm:18px"
     />
     <div>
-      <span class="font-bold">{{ matchMap.lineup_1_score }}</span> [<span
-        class="text-yellow-500"
-        >0</span
-      >:<span class="text-blue-800">0</span>]
+      <span class="font-bold">{{ matchMap.lineup_1_score }}</span>
+        [<span
+          class="text-yellow-500"
+      >0</span
+      >:<span class="text-blue-400">0</span>]
     </div>
   </div>
 

@@ -155,7 +155,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
           v-else-if="assigningMaps && match.map_veto === false"
         ></match-map-picks>
 
-        <match-tabs :match="match"></match-tabs>
+        <match-tabs :match="match" class="mt-8"></match-tabs>
       </div>
     </div>
   </template>

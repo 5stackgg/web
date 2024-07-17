@@ -20,9 +20,9 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
 </script>
 
 <template>
-  <div class="flex gap-4 h-[250px] overflow-hidden">
+  <div class="flex gap-4 h-[200px] overflow-hidden">
     <template v-for="pick of picks">
-      <div v-if="pick.type !== 'Side'">
+      <template v-if="pick.type !== 'Side'">
         <map-display :map="pick.map.name">
           <template v-slot:header>
             <div class="absolute top-3">
@@ -43,13 +43,13 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
             </div>
           </template>
         </map-display>
-      </div>
+      </template>
     </template>
   </div>
 
-  <div v-if="match.match_maps.length < bestOf || 1 == 1">
+  <div v-if="match.match_maps.length < bestOf">
     <Separator class="mt-8 mb-8"></Separator>
-    <template v-if="match.status === 'Veto' || 1 == 1">
+    <template v-if="match.status === 'Veto'">
       <div class="flex justify-between">
         <h1>
           {{ teamName }} is Picking a
@@ -71,7 +71,6 @@ import VetoPreview from "~/components/match/VetoPreview.vue";
           <FormField v-slot="{ componentField }" name="side">
             <FormItem>
               <FormLabel>Side</FormLabel>
-
               <Select v-bind="componentField">
                 <FormControl>
                   <SelectTrigger>
@@ -370,7 +369,7 @@ export default {
     teamName() {
       return this.match?.lineups.find((lineup) => {
         return lineup.id === this.match.veto_picking_lineup_id;
-      })?.name;
+      }).name;
     },
   },
 };

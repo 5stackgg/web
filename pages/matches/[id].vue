@@ -150,13 +150,12 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
         <match-assign-coach :match="match"></match-assign-coach>
 
         <map-veto :match="match" v-if="match.map_veto"></map-veto>
-
         <match-map-picks
           :match="match"
           v-else-if="assigningMaps && match.map_veto === false"
         ></match-map-picks>
 
-        <!--        <match-tabs :match="match"></match-tabs>-->
+        <match-tabs :match="match"></match-tabs>
       </div>
     </div>
   </template>

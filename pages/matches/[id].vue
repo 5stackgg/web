@@ -31,20 +31,29 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
       <Card>
         <CardHeader class="bg-muted/50">
           <CardTitle class="relative">
-            <clip-board
-                :data="match.tv_connection_string"
-                v-if="match.tv_connection_string"
-            >
-              <Tv></Tv>
-            </clip-board>
-            <Badge>
-              <match-status :match="match"></match-status>
-            </Badge>
 
-            {{ matchLineups.lineup1.name }} vs
-            {{ matchLineups.lineup2.name }}
+            <div class="flex">
+              <Badge>
+                <match-status :match="match"></match-status>
+              </Badge>
+              <clip-board
+                  :data="match.tv_connection_string"
+                  v-if="match.tv_connection_string"
+              >
+                <Tv></Tv>
+              </clip-board>
+            </div>
 
-            <match-actions :match="match"></match-actions>
+            <div class="flex py-2 items-center justify-between">
+              <div>
+                {{ matchLineups.lineup1.name }} vs
+                {{ matchLineups.lineup2.name }}
+              </div>
+
+              <match-actions :match="match"></match-actions>
+            </div>
+
+
           </CardTitle>
           <CardDescription>
             <QuickServerConnect :match="match"></QuickServerConnect>

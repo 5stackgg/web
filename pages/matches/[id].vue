@@ -1,26 +1,11 @@
 <script setup lang="ts">
-import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
-import MatchStatus from "~/components/match/MatchStatus.vue";
-import MatchActions from "~/components/match/MatchActions.vue";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import CaptainInfo from "~/components/CaptainInfo.vue";
 import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
-import MatchAssignCoach from "~/components/match/MatchAssignCoach.vue";
 import MapVeto from "~/components/match/MapVeto.vue";
-import MatchMapPicks from "~/components/match/MatchMapPicks.vue";
+import MatchMapSelector from "~/components/match/MatchMapPicks.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
-import ClipBoard from "~/components/ClipBoard.vue";
-import { Tv } from "lucide-vue-next";
 import MatchMapDisplay from "~/components/match/match-map-display/MatchMapDisplay.vue";
-import BooleanToText from "~/components/BooleanToText.vue";
-import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
+import MatchInfo from "~/components/match/MatchInfo.vue";
 </script>
 
 <template>
@@ -28,116 +13,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
     <div
       class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
     >
-      <Card>
-        <CardHeader class="bg-muted/50">
-          <CardTitle class="relative">
-
-            <div class="flex">
-              <Badge>
-                <match-status :match="match"></match-status>
-              </Badge>
-              <clip-board
-                  :data="match.tv_connection_string"
-                  v-if="match.tv_connection_string"
-              >
-                <Tv></Tv>
-              </clip-board>
-            </div>
-
-            <div class="flex py-2 items-center justify-between">
-              <div>
-                {{ matchLineups.lineup1.name }} vs
-                {{ matchLineups.lineup2.name }}
-              </div>
-
-              <match-actions :match="match"></match-actions>
-            </div>
-
-
-          </CardTitle>
-          <CardDescription>
-            <QuickServerConnect :match="match"></QuickServerConnect>
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="p-6">
-          <ul class="grid gap-3">
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Match Type </span>
-              <span>{{ match.type }}</span>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Best of </span>
-              <span>{{ match.best_of }}</span>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Max Rounds </span>
-              <span>{{ match.mr }}</span>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Coaches </span>
-              <BooleanToText :value="match.coaches"></BooleanToText>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Overtime </span>
-              <BooleanToText :value="match.overtime"></BooleanToText>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Knife Round </span>
-              <BooleanToText :value="match.knife_round"></BooleanToText>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Map Veto </span>
-              <BooleanToText :value="match.map_veto"></BooleanToText>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Map Pool </span>
-              <span>
-                {{ match.map_pool?.label }}
-              </span>
-            </li>
-
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Substitutes </span>
-              <span>{{ match.number_of_substitutes }}</span>
-            </li>
-          </ul>
-
-          <Separator class="my-8" />
-
-          <div class="grid gap-3">
-            <div class="font-semibold">Captains</div>
-            <ul class="grid gap-3">
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ matchLineups.lineup1.name }}
-                </span>
-                <span>
-                  <captain-info
-                    :captain="matchLineups.lineup1.captain"
-                  ></captain-info>
-                </span>
-              </li>
-              <li class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ matchLineups.lineup2.name }}
-                </span>
-                <span>
-                  <captain-info
-                    :captain="matchLineups.lineup2.captain"
-                  ></captain-info>
-                </span>
-              </li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
+      <MatchInfo :match="match"></MatchInfo>
 
       <div>
         <div class="flex gap-4 max-h-[500px] justify-around">
@@ -153,16 +29,13 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 
         <match-assign-lineups
           :match="match"
-          v-if="assigningLineups"
         ></match-assign-lineups>
 
-        <match-assign-coach :match="match"></match-assign-coach>
-
         <map-veto :match="match" v-if="match.map_veto"></map-veto>
-        <match-map-picks
+        <match-map-selector
           :match="match"
           v-else-if="assigningMaps && match.map_veto === false"
-        ></match-map-picks>
+        ></match-map-selector>
 
         <match-tabs :match="match" class="mt-8"></match-tabs>
       </div>
@@ -172,9 +45,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
-import getMatchLineups from "~/utilities/getMatchLineups";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   data() {
@@ -632,43 +503,9 @@ export default {
     },
   },
   computed: {
-    me() {
-      return useAuthStore().me;
-    },
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
-    assigningLineups() {
-      const currentStatus = this.match.status;
-      return (
-        this.match.organizer_steam_id == this.me.steam_id &&
-        (currentStatus == "Warmup" ||
-          currentStatus == "PickingPlayers" ||
-          currentStatus == "Scheduled") &&
-        (this.canAddToLineup1 || this.canAddToLineup2)
-      );
-    },
     assigningMaps() {
       return this.match.best_of > Object.keys(this.match.match_maps).length;
     },
-    maxPlayersPerLineup() {
-      return (
-        (this.match?.type === "Wingman" ? 2 : 5) +
-        this.match.number_of_substitutes
-      );
-    },
-    canAddToLineup1() {
-      return (
-        this.matchLineups.lineup1?.lineup_players.length <
-        this.maxPlayersPerLineup
-      );
-    },
-    canAddToLineup2() {
-      return (
-        this.matchLineups.lineup2?.lineup_players.length <
-        this.maxPlayersPerLineup
-      );
-    },
-  },
+  }
 };
 </script>

@@ -1,19 +1,4 @@
 <script lang="ts" setup>
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
@@ -72,32 +57,29 @@ import { Separator } from "~/components/ui/separator";
 
     <form @submit.prevent="vetoPick" v-if="isPicking">
       <template v-if="pickType === 'Side'">
-        <FormField v-slot="{ componentField }" name="side">
-          <FormItem>
-            <FormLabel>Side</FormLabel>
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue
-                    placeholder="Select the Side your team wants to start on"
-                  />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    v-for="sideOption in sideOptions"
-                    :key="sideOption.value"
-                    :value="sideOption.value"
-                  >
-                    {{ sideOption.display }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+        <div class="flex">
+          <MapDisplay :map="previousMap.name"></MapDisplay>
+
+          <div>
+            <p>Select the Side your team wants to start on</p>
+
+            <template v-for="sideOption in sideOptions" :key="sideOption.value">
+              <div
+                class="relative"
+                :class="{
+                  'bg-red-500': sideOption.value === form.values.side,
+                }"
+                @click="form.setFieldValue('side', sideOption.value)"
+              >
+                <NuxtImg :src="sideOption.img" />
+                <div>
+                  {{ sideOption.display }}
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+        <Separator></Separator>
       </template>
 
       <MapSelector
@@ -246,7 +228,7 @@ export default {
       let { map_id, side } = this.form.values;
 
       if (this.pickType === e_veto_pick_types_enum.Side) {
-        map_id = this.picks.at(-1).map.id;
+        map_id = this.previousMap.id;
       }
 
       await this.$apollo.mutate({
@@ -323,11 +305,21 @@ export default {
 
       return this.match.veto_type;
     },
-
+    previousMap() {
+      return this.picks.at(-1).map;
+    },
     sideOptions() {
       return [
-        { value: e_sides_enum.CT, display: "Counter-Terrorist" },
-        { value: e_sides_enum.TERRORIST, display: "Terrorist" },
+        {
+          value: e_sides_enum.CT,
+          display: "Counter-Terrorist",
+          img: "/img/teams/ct-patch.webp",
+        },
+        {
+          value: e_sides_enum.TERRORIST,
+          display: "Terrorist",
+          img: "/img/teams/t-patch.png",
+        },
       ];
     },
     teamName() {

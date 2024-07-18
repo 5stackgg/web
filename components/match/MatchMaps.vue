@@ -7,11 +7,13 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 <template>
   <map-display :map="matchMap.map.name">
     <template v-slot:header>
-      <div v-if="isDecider && match.best_of > 1" class="absolute top-3">
-        <badge variant="destructive">Decider</badge>
+      <div class="absolute top-3">
+        <badge class="mb-2">{{ matchMap.status }}</badge>
       </div>
 
-      <badge class="mb-2">{{ matchMap.status }}</badge>
+      <badge variant="destructive" v-if="isDecider && match.best_of > 1"
+        >Decider</badge
+      >
     </template>
     <template v-slot:default>
       <div class="absolute bottom-3 left-3 right-3 flex justify-between">

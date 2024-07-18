@@ -22,7 +22,7 @@ import { Separator } from "~/components/ui/separator";
 
 <template>
   <template v-if="picks?.length > 0">
-    <Separator class="my-8"></Separator>
+    <Separator></Separator>
     <div class="flex gap-4 h-[200px] overflow-hidden" v-if="picks?.length > 0">
       <template v-for="pick of picks">
         <template v-if="pick.type !== 'Side'">
@@ -51,8 +51,8 @@ import { Separator } from "~/components/ui/separator";
     </div>
   </template>
 
-  <template v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
-    <Separator class="my-8"></Separator>
+  <div v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+    <Separator v-if="picks?.length > 0"></Separator>
 
     <div class="flex justify-between">
       <h1>
@@ -118,7 +118,7 @@ import { Separator } from "~/components/ui/separator";
     <template v-else>
       <MapSelector :map-pool="mapPool" :picks="picks"></MapSelector>
     </template>
-  </template>
+  </div>
 </template>
 
 <script lang="ts">

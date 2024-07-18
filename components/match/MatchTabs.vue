@@ -19,10 +19,18 @@ import RconCommander from "~/components/servers/RconCommander.vue";
     <div class="flex items-center">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
-        <TabsTrigger value="utility"> Utility </TabsTrigger>
-        <TabsTrigger value="opening-duels"> Opening Duels </TabsTrigger>
-        <TabsTrigger value="clutches"> Clutches </TabsTrigger>
-        <TabsTrigger value="server"> Server Console </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="utility">
+          Utility
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="opening-duels">
+          Opening Duels
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="clutches">
+          Clutches
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="server">
+          Server Console
+        </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent value="overview">
@@ -109,6 +117,7 @@ import RconCommander from "~/components/servers/RconCommander.vue";
 
 <script lang="ts">
 import getMatchLineups from "~/utilities/getMatchLineups";
+import { e_match_status_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -120,6 +129,9 @@ export default {
   computed: {
     matchLineups() {
       return getMatchLineups(this.match);
+    },
+    disableStats() {
+      return e_match_status_enum.PickingPlayers === this.match.status;
     },
   },
 };

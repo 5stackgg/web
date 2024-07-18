@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MatchAssignLineups from "~/components/match/MatchAssignLineups.vue";
 import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
@@ -13,18 +12,19 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
     >
       <MatchInfo :match="match"></MatchInfo>
 
-      <div>
-        <div class="flex gap-4 max-h-[500px] justify-around">
+      <div class="grid gap-y-4">
+        <div
+          class="flex gap-4 max-h-[500px] justify-around"
+          v-if="match.match_maps.length > 0"
+        >
           <template v-for="match_map of match.match_maps">
             <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
           </template>
         </div>
 
-        <MatchAssignLineups :match="match"></MatchAssignLineups>
-
         <MatchMapSelection :match="match"></MatchMapSelection>
 
-        <MatchTabs :match="match" class="mt-8"></MatchTabs>
+        <MatchTabs :match="match"></MatchTabs>
       </div>
     </div>
   </template>

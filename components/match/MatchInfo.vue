@@ -14,6 +14,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import BooleanToText from "~/components/BooleanToText.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { Separator } from "~/components/ui/separator";
+import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -36,8 +37,29 @@ import { Separator } from "~/components/ui/separator";
             {{ matchLineups.lineup2.name }}
           </div>
 
-          <match-actions :match="match"></match-actions>
+          <MatchActions :match="match"></MatchActions>
         </div>
+
+        <template
+          v-if="
+            match.status == e_match_status_enum.PickingPlayers ||
+            match.status == e_match_status_enum.Scheduled
+          "
+        >
+          <Button
+            @click.prevent.stop="startMatch"
+            class="-mr-2"
+            :disabled="canAddToLineup1 || canAddToLineup2"
+          >
+            Start
+            <template
+              v-if="match.map_veto && match.best_of != match.match_maps.length"
+            >
+              Veto
+            </template>
+            <template v-else> Match </template>
+          </Button>
+        </template>
       </CardTitle>
       <CardDescription>
         <QuickServerConnect :match="match"></QuickServerConnect>
@@ -169,6 +191,7 @@ import { Separator } from "~/components/ui/separator";
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
 import getMatchLineups from "~/utilities/getMatchLineups";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {
@@ -177,12 +200,57 @@ export default {
       required: true,
     },
   },
+  methods: {
+    async scheduleMatch() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          scheduleMatch: [
+            {
+              match_id: this.match.id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+    async startMatch() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          startMatch: [
+            {
+              match_id: this.match.id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+  },
   computed: {
     me() {
       return useAuthStore().me;
     },
     matchLineups() {
       return getMatchLineups(this.match);
+    },
+    maxPlayersPerLineup() {
+      return this.match?.type === "Wingman" ? 2 : 5;
+    },
+    canAddToLineup1() {
+      return (
+        this.matchLineups.lineup1?.lineup_players.length <
+        this.maxPlayersPerLineup
+      );
+    },
+    canAddToLineup2() {
+      return (
+        this.matchLineups.lineup2?.lineup_players.length <
+        this.maxPlayersPerLineup
+      );
     },
   },
 };

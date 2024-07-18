@@ -5,27 +5,6 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 </script>
 
 <template>
-  <template
-    v-if="
-      match.status == e_match_status_enum.PickingPlayers ||
-      match.status == e_match_status_enum.Scheduled
-    "
-  >
-    <Button
-      @click.prevent.stop="startMatch"
-      class="-mr-2"
-      :disabled="canAddToLineup1 || canAddToLineup2"
-    >
-      Start
-      <template
-        v-if="match.map_veto && match.best_of != match.match_maps.length"
-      >
-        Veto
-      </template>
-      <template v-else> Match </template>
-    </Button>
-  </template>
-
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button size="icon" variant="outline">
@@ -53,7 +32,6 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
-import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
   props: {
@@ -63,34 +41,6 @@ export default {
     },
   },
   methods: {
-    async scheduleMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          scheduleMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-    async startMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          startMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
     async cancelMatch() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -112,24 +62,6 @@ export default {
     },
     cancelable() {
       return this.match.status !== e_match_status_enum.Canceled;
-    },
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
-    maxPlayersPerLineup() {
-      return this.match?.type === "Wingman" ? 2 : 5;
-    },
-    canAddToLineup1() {
-      return (
-        this.matchLineups.lineup1?.lineup_players.length <
-        this.maxPlayersPerLineup
-      );
-    },
-    canAddToLineup2() {
-      return (
-        this.matchLineups.lineup2?.lineup_players.length <
-        this.maxPlayersPerLineup
-      );
     },
   },
 };

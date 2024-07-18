@@ -121,7 +121,7 @@ import { Separator } from "~/components/ui/separator";
         </ul>
       </div>
 
-      <div class="grid gap-3">
+      <div class="grid gap-3" v-if="match.coaches">
         <div class="font-semibold">Coaches</div>
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">

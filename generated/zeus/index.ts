@@ -156,66 +156,82 @@ export const InternalsBuildQuery = ({
   return ibb;
 };
 
+type UnionOverrideKeys<T, U> = Omit<T, keyof U> & U;
+
 export const Thunder =
-  (fn: FetchFunction) =>
-  <O extends keyof typeof Ops, SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(
+  <SCLR extends ScalarDefinition>(fn: FetchFunction, thunderGraphQLOptions?: ThunderGraphQLOptions<SCLR>) =>
+  <O extends keyof typeof Ops, OVERRIDESCLR extends SCLR, R extends keyof ValueTypes = GenericOperation<O>>(
     operation: O,
-    graphqlOptions?: ThunderGraphQLOptions<SCLR>,
+    graphqlOptions?: ThunderGraphQLOptions<OVERRIDESCLR>,
   ) =>
   <Z extends ValueTypes[R]>(
-    o: (Z & ValueTypes[R]) | ValueTypes[R],
+    o: Z & {
+      [P in keyof Z]: P extends keyof ValueTypes[R] ? Z[P] : never;
+    },
     ops?: OperationOptions & { variables?: Record<string, unknown> },
-  ) =>
-    fn(
+  ) => {
+    const options = {
+      ...thunderGraphQLOptions,
+      ...graphqlOptions,
+    };
+    return fn(
       Zeus(operation, o, {
         operationOptions: ops,
-        scalars: graphqlOptions?.scalars,
+        scalars: options?.scalars,
       }),
       ops?.variables,
     ).then((data) => {
-      if (graphqlOptions?.scalars) {
+      if (options?.scalars) {
         return decodeScalarsInResponse({
           response: data,
           initialOp: operation,
           initialZeusQuery: o as VType,
           returns: ReturnTypes,
-          scalars: graphqlOptions.scalars,
+          scalars: options.scalars,
           ops: Ops,
         });
       }
       return data;
-    }) as Promise<InputType<GraphQLTypes[R], Z, SCLR>>;
+    }) as Promise<InputType<GraphQLTypes[R], Z, UnionOverrideKeys<SCLR, OVERRIDESCLR>>>;
+  };
 
 export const Chain = (...options: chainOptions) => Thunder(apiFetch(options));
 
 export const SubscriptionThunder =
-  (fn: SubscriptionFunction) =>
-  <O extends keyof typeof Ops, SCLR extends ScalarDefinition, R extends keyof ValueTypes = GenericOperation<O>>(
+  <SCLR extends ScalarDefinition>(fn: SubscriptionFunction, thunderGraphQLOptions?: ThunderGraphQLOptions<SCLR>) =>
+  <O extends keyof typeof Ops, OVERRIDESCLR extends SCLR, R extends keyof ValueTypes = GenericOperation<O>>(
     operation: O,
-    graphqlOptions?: ThunderGraphQLOptions<SCLR>,
+    graphqlOptions?: ThunderGraphQLOptions<OVERRIDESCLR>,
   ) =>
   <Z extends ValueTypes[R]>(
-    o: (Z & ValueTypes[R]) | ValueTypes[R],
+    o: Z & {
+      [P in keyof Z]: P extends keyof ValueTypes[R] ? Z[P] : never;
+    },
     ops?: OperationOptions & { variables?: ExtractVariables<Z> },
   ) => {
+    const options = {
+      ...thunderGraphQLOptions,
+      ...graphqlOptions,
+    };
+    type CombinedSCLR = UnionOverrideKeys<SCLR, OVERRIDESCLR>;
     const returnedFunction = fn(
       Zeus(operation, o, {
         operationOptions: ops,
-        scalars: graphqlOptions?.scalars,
+        scalars: options?.scalars,
       }),
-    ) as SubscriptionToGraphQL<Z, GraphQLTypes[R], SCLR>;
-    if (returnedFunction?.on && graphqlOptions?.scalars) {
+    ) as SubscriptionToGraphQL<Z, GraphQLTypes[R], CombinedSCLR>;
+    if (returnedFunction?.on && options?.scalars) {
       const wrapped = returnedFunction.on;
-      returnedFunction.on = (fnToCall: (args: InputType<GraphQLTypes[R], Z, SCLR>) => void) =>
-        wrapped((data: InputType<GraphQLTypes[R], Z, SCLR>) => {
-          if (graphqlOptions?.scalars) {
+      returnedFunction.on = (fnToCall: (args: InputType<GraphQLTypes[R], Z, CombinedSCLR>) => void) =>
+        wrapped((data: InputType<GraphQLTypes[R], Z, CombinedSCLR>) => {
+          if (options?.scalars) {
             return fnToCall(
               decodeScalarsInResponse({
                 response: data,
                 initialOp: operation,
                 initialZeusQuery: o as VType,
                 returns: ReturnTypes,
-                scalars: graphqlOptions.scalars,
+                scalars: options.scalars,
                 ops: Ops,
               }),
             );
@@ -233,7 +249,7 @@ export const Zeus = <
   R extends keyof ValueTypes = GenericOperation<O>,
 >(
   operation: O,
-  o: (Z & ValueTypes[R]) | ValueTypes[R],
+  o: Z,
   ops?: {
     operationOptions?: OperationOptions;
     scalars?: ScalarDefinition;
@@ -751,7 +767,11 @@ export type ScalarResolver = {
   decode?: (s: unknown) => unknown;
 };
 
-export type SelectionFunction<V> = <T>(t: T | V) => T;
+export type SelectionFunction<V> = <Z extends V>(
+  t: Z & {
+    [P in keyof Z]: P extends keyof V ? Z[P] : never;
+  },
+) => Z;
 
 type BuiltInVariableTypes = {
   ['String']: string;
@@ -840,6 +860,7 @@ export const $ = <Type extends GraphQLVariableType, Name extends string>(name: N
 type ZEUS_INTERFACES = never
 export type ScalarCoders = {
 	bigint?: ScalarResolver;
+	bytea?: ScalarResolver;
 	date?: ScalarResolver;
 	jsonb?: ScalarResolver;
 	numeric?: ScalarResolver;
@@ -1027,6 +1048,19 @@ count?: [{	columns?: Array<ValueTypes["_map_pool_select_column"]> | undefined | 
 	_lte?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	_neq?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	_nin?: Array<ValueTypes["bigint"]> | undefined | null | Variable<any, string>
+};
+	["bytea"]:unknown;
+	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
+["bytea_comparison_exp"]: {
+	_eq?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
+	_gt?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
+	_gte?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["bytea"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_lt?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
+	_lte?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["bytea"]> | undefined | null | Variable<any, string>
 };
 	/** ordering argument of a cursor */
 ["cursor_ordering"]:cursor_ordering;
@@ -7127,6 +7161,7 @@ count?: [{	columns?: Array<ValueTypes["player_flashes_select_column"]> | undefin
 	headshot?:boolean | `@${string}`,
 	hitgroup?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	in_air?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -7239,6 +7274,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	headshot?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	hitgroup?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	in_air?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
@@ -7275,6 +7311,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	headshot?: boolean | undefined | null | Variable<any, string>,
 	hitgroup?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	in_air?: boolean | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -7391,6 +7428,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	headshot?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	hitgroup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	in_air?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_order_by"] | undefined | null | Variable<any, string>,
@@ -7428,6 +7466,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	headshot?: boolean | undefined | null | Variable<any, string>,
 	hitgroup?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	in_air?: boolean | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	no_scope?: boolean | undefined | null | Variable<any, string>,
@@ -7498,6 +7537,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	headshot?: boolean | undefined | null | Variable<any, string>,
 	hitgroup?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	in_air?: boolean | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	no_scope?: boolean | undefined | null | Variable<any, string>,
@@ -9720,7 +9760,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	owner?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	port?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	rcon_password?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	rcon_password?: ValueTypes["bytea_comparison_exp"] | undefined | null | Variable<any, string>,
 	tournament_servers?: ValueTypes["tournament_servers_bool_exp"] | undefined | null | Variable<any, string>,
 	tournament_servers_aggregate?: ValueTypes["tournament_servers_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	tv_port?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
@@ -9745,7 +9785,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	owner?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	port?: number | undefined | null | Variable<any, string>,
-	rcon_password?: string | undefined | null | Variable<any, string>,
+	rcon_password?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
 	tournament_servers?: ValueTypes["tournament_servers_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>
 };
@@ -9759,7 +9799,6 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	label?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
-	rcon_password?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -9773,7 +9812,6 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	label?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
-	rcon_password?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -9830,7 +9868,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	on_demand?: boolean | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	port?: number | undefined | null | Variable<any, string>,
-	rcon_password?: string | undefined | null | Variable<any, string>,
+	rcon_password?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
@@ -9871,7 +9909,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	on_demand?: boolean | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	port?: number | undefined | null | Variable<any, string>,
-	rcon_password?: string | undefined | null | Variable<any, string>,
+	rcon_password?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
@@ -14553,6 +14591,19 @@ count?: [{	columns?: Array<ResolverInputTypes["_map_pool_select_column"]> | unde
 	_lte?: ResolverInputTypes["bigint"] | undefined | null,
 	_neq?: ResolverInputTypes["bigint"] | undefined | null,
 	_nin?: Array<ResolverInputTypes["bigint"]> | undefined | null
+};
+	["bytea"]:unknown;
+	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
+["bytea_comparison_exp"]: {
+	_eq?: ResolverInputTypes["bytea"] | undefined | null,
+	_gt?: ResolverInputTypes["bytea"] | undefined | null,
+	_gte?: ResolverInputTypes["bytea"] | undefined | null,
+	_in?: Array<ResolverInputTypes["bytea"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ResolverInputTypes["bytea"] | undefined | null,
+	_lte?: ResolverInputTypes["bytea"] | undefined | null,
+	_neq?: ResolverInputTypes["bytea"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["bytea"]> | undefined | null
 };
 	/** ordering argument of a cursor */
 ["cursor_ordering"]:cursor_ordering;
@@ -20653,6 +20704,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_flashes_select_column"]> |
 	headshot?:boolean | `@${string}`,
 	hitgroup?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	in_air?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -20765,6 +20817,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	headshot?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	hitgroup?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	in_air?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
@@ -20801,6 +20854,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	headshot?: boolean | undefined | null,
 	hitgroup?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	in_air?: boolean | undefined | null,
 	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_obj_rel_insert_input"] | undefined | null,
@@ -20917,6 +20971,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	headshot?: ResolverInputTypes["order_by"] | undefined | null,
 	hitgroup?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	in_air?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_order_by"] | undefined | null,
@@ -20954,6 +21009,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	headshot?: boolean | undefined | null,
 	hitgroup?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	in_air?: boolean | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	no_scope?: boolean | undefined | null,
@@ -21024,6 +21080,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	headshot?: boolean | undefined | null,
 	hitgroup?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	in_air?: boolean | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
 	no_scope?: boolean | undefined | null,
@@ -23246,7 +23303,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	owner?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	port?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	rcon_password?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	rcon_password?: ResolverInputTypes["bytea_comparison_exp"] | undefined | null,
 	tournament_servers?: ResolverInputTypes["tournament_servers_bool_exp"] | undefined | null,
 	tournament_servers_aggregate?: ResolverInputTypes["tournament_servers_aggregate_bool_exp"] | undefined | null,
 	tv_port?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
@@ -23271,7 +23328,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	owner?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	port?: number | undefined | null,
-	rcon_password?: string | undefined | null,
+	rcon_password?: ResolverInputTypes["bytea"] | undefined | null,
 	tournament_servers?: ResolverInputTypes["tournament_servers_arr_rel_insert_input"] | undefined | null,
 	tv_port?: number | undefined | null
 };
@@ -23285,7 +23342,6 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	label?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
-	rcon_password?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -23299,7 +23355,6 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	label?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
-	rcon_password?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -23356,7 +23411,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	on_demand?: boolean | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	port?: number | undefined | null,
-	rcon_password?: string | undefined | null,
+	rcon_password?: ResolverInputTypes["bytea"] | undefined | null,
 	tv_port?: number | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -23397,7 +23452,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	on_demand?: boolean | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	port?: number | undefined | null,
-	rcon_password?: string | undefined | null,
+	rcon_password?: ResolverInputTypes["bytea"] | undefined | null,
 	tv_port?: number | undefined | null
 };
 	/** aggregate sum on columns */
@@ -28067,6 +28122,19 @@ export type ModelTypes = {
 	_lte?: ModelTypes["bigint"] | undefined,
 	_neq?: ModelTypes["bigint"] | undefined,
 	_nin?: Array<ModelTypes["bigint"]> | undefined
+};
+	["bytea"]:any;
+	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
+["bytea_comparison_exp"]: {
+	_eq?: ModelTypes["bytea"] | undefined,
+	_gt?: ModelTypes["bytea"] | undefined,
+	_gte?: ModelTypes["bytea"] | undefined,
+	_in?: Array<ModelTypes["bytea"]> | undefined,
+	_is_null?: boolean | undefined,
+	_lt?: ModelTypes["bytea"] | undefined,
+	_lte?: ModelTypes["bytea"] | undefined,
+	_neq?: ModelTypes["bytea"] | undefined,
+	_nin?: Array<ModelTypes["bytea"]> | undefined
 };
 	["cursor_ordering"]:cursor_ordering;
 	["date"]:any;
@@ -33505,6 +33573,7 @@ export type ModelTypes = {
 	headshot: boolean,
 	hitgroup: string,
 	id: ModelTypes["uuid"],
+	in_air: boolean,
 	/** An object relationship */
 	match: ModelTypes["matches"],
 	match_id: ModelTypes["uuid"],
@@ -33613,6 +33682,7 @@ export type ModelTypes = {
 	headshot?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	hitgroup?: ModelTypes["String_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	in_air?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match_map?: ModelTypes["match_maps_bool_exp"] | undefined,
@@ -33648,6 +33718,7 @@ export type ModelTypes = {
 	headshot?: boolean | undefined,
 	hitgroup?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	in_air?: boolean | undefined,
 	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_map?: ModelTypes["match_maps_obj_rel_insert_input"] | undefined,
@@ -33761,6 +33832,7 @@ export type ModelTypes = {
 	headshot?: ModelTypes["order_by"] | undefined,
 	hitgroup?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	in_air?: ModelTypes["order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_map?: ModelTypes["match_maps_order_by"] | undefined,
@@ -33795,6 +33867,7 @@ export type ModelTypes = {
 	headshot?: boolean | undefined,
 	hitgroup?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	in_air?: boolean | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_map_id?: ModelTypes["uuid"] | undefined,
 	no_scope?: boolean | undefined,
@@ -33862,6 +33935,7 @@ export type ModelTypes = {
 	headshot?: boolean | undefined,
 	hitgroup?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	in_air?: boolean | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_map_id?: ModelTypes["uuid"] | undefined,
 	no_scope?: boolean | undefined,
@@ -35434,7 +35508,7 @@ export type ModelTypes = {
 	owner?: ModelTypes["players"] | undefined,
 	player_steam_id?: ModelTypes["bigint"] | undefined,
 	port: number,
-	rcon_password: string,
+	rcon_password: ModelTypes["bytea"],
 	/** An array relationship */
 	tournament_servers: Array<ModelTypes["tournament_servers"]>,
 	/** An aggregate relationship */
@@ -35483,7 +35557,7 @@ export type ModelTypes = {
 	owner?: ModelTypes["players_bool_exp"] | undefined,
 	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	port?: ModelTypes["Int_comparison_exp"] | undefined,
-	rcon_password?: ModelTypes["String_comparison_exp"] | undefined,
+	rcon_password?: ModelTypes["bytea_comparison_exp"] | undefined,
 	tournament_servers?: ModelTypes["tournament_servers_bool_exp"] | undefined,
 	tournament_servers_aggregate?: ModelTypes["tournament_servers_aggregate_bool_exp"] | undefined,
 	tv_port?: ModelTypes["Int_comparison_exp"] | undefined
@@ -35507,7 +35581,7 @@ export type ModelTypes = {
 	owner?: ModelTypes["players_obj_rel_insert_input"] | undefined,
 	player_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
+	rcon_password?: ModelTypes["bytea"] | undefined,
 	tournament_servers?: ModelTypes["tournament_servers_arr_rel_insert_input"] | undefined,
 	tv_port?: number | undefined
 };
@@ -35521,7 +35595,6 @@ export type ModelTypes = {
 	label?: string | undefined,
 	player_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate min on columns */
@@ -35534,7 +35607,6 @@ export type ModelTypes = {
 	label?: string | undefined,
 	player_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
 	tv_port?: number | undefined
 };
 	/** response of any mutation on the table "servers" */
@@ -35588,7 +35660,7 @@ export type ModelTypes = {
 	on_demand?: boolean | undefined,
 	player_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
+	rcon_password?: ModelTypes["bytea"] | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate stddev on columns */
@@ -35626,7 +35698,7 @@ export type ModelTypes = {
 	on_demand?: boolean | undefined,
 	player_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
+	rcon_password?: ModelTypes["bytea"] | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate sum on columns */
@@ -39553,6 +39625,19 @@ export type GraphQLTypes = {
 	_lte?: GraphQLTypes["bigint"] | undefined,
 	_neq?: GraphQLTypes["bigint"] | undefined,
 	_nin?: Array<GraphQLTypes["bigint"]> | undefined
+};
+	["bytea"]: "scalar" & { name: "bytea" };
+	/** Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'. */
+["bytea_comparison_exp"]: {
+		_eq?: GraphQLTypes["bytea"] | undefined,
+	_gt?: GraphQLTypes["bytea"] | undefined,
+	_gte?: GraphQLTypes["bytea"] | undefined,
+	_in?: Array<GraphQLTypes["bytea"]> | undefined,
+	_is_null?: boolean | undefined,
+	_lt?: GraphQLTypes["bytea"] | undefined,
+	_lte?: GraphQLTypes["bytea"] | undefined,
+	_neq?: GraphQLTypes["bytea"] | undefined,
+	_nin?: Array<GraphQLTypes["bytea"]> | undefined
 };
 	/** ordering argument of a cursor */
 ["cursor_ordering"]: cursor_ordering;
@@ -45274,6 +45359,7 @@ export type GraphQLTypes = {
 	headshot: boolean,
 	hitgroup: string,
 	id: GraphQLTypes["uuid"],
+	in_air: boolean,
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
 	match_id: GraphQLTypes["uuid"],
@@ -45385,6 +45471,7 @@ export type GraphQLTypes = {
 	headshot?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	hitgroup?: GraphQLTypes["String_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	in_air?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match_map?: GraphQLTypes["match_maps_bool_exp"] | undefined,
@@ -45421,6 +45508,7 @@ export type GraphQLTypes = {
 	headshot?: boolean | undefined,
 	hitgroup?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	in_air?: boolean | undefined,
 	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_map?: GraphQLTypes["match_maps_obj_rel_insert_input"] | undefined,
@@ -45537,6 +45625,7 @@ export type GraphQLTypes = {
 	headshot?: GraphQLTypes["order_by"] | undefined,
 	hitgroup?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	in_air?: GraphQLTypes["order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_map?: GraphQLTypes["match_maps_order_by"] | undefined,
@@ -45574,6 +45663,7 @@ export type GraphQLTypes = {
 	headshot?: boolean | undefined,
 	hitgroup?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	in_air?: boolean | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_map_id?: GraphQLTypes["uuid"] | undefined,
 	no_scope?: boolean | undefined,
@@ -45644,6 +45734,7 @@ export type GraphQLTypes = {
 	headshot?: boolean | undefined,
 	hitgroup?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	in_air?: boolean | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_map_id?: GraphQLTypes["uuid"] | undefined,
 	no_scope?: boolean | undefined,
@@ -47291,7 +47382,7 @@ export type GraphQLTypes = {
 	owner?: GraphQLTypes["players"] | undefined,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port: number,
-	rcon_password: string,
+	rcon_password: GraphQLTypes["bytea"],
 	/** An array relationship */
 	tournament_servers: Array<GraphQLTypes["tournament_servers"]>,
 	/** An aggregate relationship */
@@ -47343,7 +47434,7 @@ export type GraphQLTypes = {
 	owner?: GraphQLTypes["players_bool_exp"] | undefined,
 	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	port?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	rcon_password?: GraphQLTypes["String_comparison_exp"] | undefined,
+	rcon_password?: GraphQLTypes["bytea_comparison_exp"] | undefined,
 	tournament_servers?: GraphQLTypes["tournament_servers_bool_exp"] | undefined,
 	tournament_servers_aggregate?: GraphQLTypes["tournament_servers_aggregate_bool_exp"] | undefined,
 	tv_port?: GraphQLTypes["Int_comparison_exp"] | undefined
@@ -47368,7 +47459,7 @@ export type GraphQLTypes = {
 	owner?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
+	rcon_password?: GraphQLTypes["bytea"] | undefined,
 	tournament_servers?: GraphQLTypes["tournament_servers_arr_rel_insert_input"] | undefined,
 	tv_port?: number | undefined
 };
@@ -47383,7 +47474,6 @@ export type GraphQLTypes = {
 	label?: string | undefined,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate min on columns */
@@ -47397,7 +47487,6 @@ export type GraphQLTypes = {
 	label?: string | undefined,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
 	tv_port?: number | undefined
 };
 	/** response of any mutation on the table "servers" */
@@ -47453,7 +47542,7 @@ export type GraphQLTypes = {
 	on_demand?: boolean | undefined,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
+	rcon_password?: GraphQLTypes["bytea"] | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate stddev on columns */
@@ -47494,7 +47583,7 @@ export type GraphQLTypes = {
 	on_demand?: boolean | undefined,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
-	rcon_password?: string | undefined,
+	rcon_password?: GraphQLTypes["bytea"] | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate sum on columns */
@@ -51681,7 +51770,7 @@ export const enum e_veto_pick_types_constraint {
 }
 export const enum e_veto_pick_types_enum {
 	Ban = "Ban",
-	LeftOver = "LeftOver",
+	Decider = "Decider",
 	Pick = "Pick",
 	Side = "Side"
 }
@@ -52116,6 +52205,7 @@ export const enum player_kills_select_column {
 	headshot = "headshot",
 	hitgroup = "hitgroup",
 	id = "id",
+	in_air = "in_air",
 	match_id = "match_id",
 	match_map_id = "match_map_id",
 	no_scope = "no_scope",
@@ -52130,6 +52220,7 @@ export const enum player_kills_select_column_player_kills_aggregate_bool_exp_boo
 	assisted = "assisted",
 	blinded = "blinded",
 	headshot = "headshot",
+	in_air = "in_air",
 	no_scope = "no_scope",
 	thru_smoke = "thru_smoke",
 	thru_wall = "thru_wall"
@@ -52139,6 +52230,7 @@ export const enum player_kills_select_column_player_kills_aggregate_bool_exp_boo
 	assisted = "assisted",
 	blinded = "blinded",
 	headshot = "headshot",
+	in_air = "in_air",
 	no_scope = "no_scope",
 	thru_smoke = "thru_smoke",
 	thru_wall = "thru_wall"
@@ -52158,6 +52250,7 @@ export const enum player_kills_update_column {
 	headshot = "headshot",
 	hitgroup = "hitgroup",
 	id = "id",
+	in_air = "in_air",
 	match_id = "match_id",
 	match_map_id = "match_map_id",
 	no_scope = "no_scope",
@@ -52549,6 +52642,8 @@ type ZEUS_VARIABLES = {
 	["_map_pool_updates"]: ValueTypes["_map_pool_updates"];
 	["bigint"]: ValueTypes["bigint"];
 	["bigint_comparison_exp"]: ValueTypes["bigint_comparison_exp"];
+	["bytea"]: ValueTypes["bytea"];
+	["bytea_comparison_exp"]: ValueTypes["bytea_comparison_exp"];
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
 	["date"]: ValueTypes["date"];
 	["date_comparison_exp"]: ValueTypes["date_comparison_exp"];

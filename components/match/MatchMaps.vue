@@ -7,7 +7,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 <template>
   <map-display :map="matchMap.map.name">
     <template v-slot:header>
-      <div v-if="isLeftOver" class="absolute top-3">
+      <div v-if="isDecider" class="absolute top-3">
         <badge variant="destructive">Decider</badge>
       </div>
 
@@ -39,6 +39,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 
 <script lang="ts">
 import getMatchLineups from "~/utilities/getMatchLineups";
+import { e_match_status_enum, e_veto_pick_types_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -56,11 +57,13 @@ export default {
       return getMatchLineups(this.match);
     },
     showTeamPatch() {
-      return !this.isLeftOver || this.matchMap.status === "Live";
+      return (
+        !this.isDecider || this.matchMap.status === e_match_status_enum.Live
+      );
     },
-    isLeftOver() {
+    isDecider() {
       return this.matchMap.vetos.find(({ type }) => {
-        return type === "LeftOver";
+        return type === e_veto_pick_types_enum.Decider;
       });
     },
   },

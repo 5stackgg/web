@@ -69,6 +69,17 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"bigint",
 		_nin:"bigint"
 	},
+	bytea: `scalar.bytea` as const,
+	bytea_comparison_exp:{
+		_eq:"bytea",
+		_gt:"bytea",
+		_gte:"bytea",
+		_in:"bytea",
+		_lt:"bytea",
+		_lte:"bytea",
+		_neq:"bytea",
+		_nin:"bytea"
+	},
 	cursor_ordering: "enum" as const,
 	date: `scalar.date` as const,
 	date_comparison_exp:{
@@ -4042,6 +4053,7 @@ export const AllTypesProps: Record<string,any> = {
 		headshot:"Boolean_comparison_exp",
 		hitgroup:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		in_air:"Boolean_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
@@ -4125,6 +4137,7 @@ export const AllTypesProps: Record<string,any> = {
 		headshot:"order_by",
 		hitgroup:"order_by",
 		id:"order_by",
+		in_air:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
@@ -5674,7 +5687,7 @@ export const AllTypesProps: Record<string,any> = {
 		owner:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
 		port:"Int_comparison_exp",
-		rcon_password:"String_comparison_exp",
+		rcon_password:"bytea_comparison_exp",
 		tournament_servers:"tournament_servers_bool_exp",
 		tournament_servers_aggregate:"tournament_servers_aggregate_bool_exp",
 		tv_port:"Int_comparison_exp"
@@ -5689,6 +5702,7 @@ export const AllTypesProps: Record<string,any> = {
 		matches:"matches_arr_rel_insert_input",
 		owner:"players_obj_rel_insert_input",
 		player_steam_id:"bigint",
+		rcon_password:"bytea",
 		tournament_servers:"tournament_servers_arr_rel_insert_input"
 	},
 	servers_obj_rel_insert_input:{
@@ -5723,7 +5737,8 @@ export const AllTypesProps: Record<string,any> = {
 	servers_set_input:{
 		api_password:"uuid",
 		id:"uuid",
-		player_steam_id:"bigint"
+		player_steam_id:"bigint",
+		rcon_password:"bytea"
 	},
 	servers_stream_cursor_input:{
 		initial_value:"servers_stream_cursor_value_input",
@@ -5732,7 +5747,8 @@ export const AllTypesProps: Record<string,any> = {
 	servers_stream_cursor_value_input:{
 		api_password:"uuid",
 		id:"uuid",
-		player_steam_id:"bigint"
+		player_steam_id:"bigint",
+		rcon_password:"bytea"
 	},
 	servers_update_column: "enum" as const,
 	servers_updates:{
@@ -8305,6 +8321,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"_map_pool"
 	},
 	bigint: `scalar.bigint` as const,
+	bytea: `scalar.bytea` as const,
 	date: `scalar.date` as const,
 	e_match_map_status:{
 		description:"String",
@@ -9985,6 +10002,7 @@ export const ReturnTypes: Record<string,any> = {
 		headshot:"Boolean",
 		hitgroup:"String",
 		id:"uuid",
+		in_air:"Boolean",
 		match:"matches",
 		match_id:"uuid",
 		match_map:"match_maps",
@@ -10606,7 +10624,7 @@ export const ReturnTypes: Record<string,any> = {
 		owner:"players",
 		player_steam_id:"bigint",
 		port:"Int",
-		rcon_password:"String",
+		rcon_password:"bytea",
 		tournament_servers:"tournament_servers",
 		tournament_servers_aggregate:"tournament_servers_aggregate",
 		tv_port:"Int"
@@ -10641,7 +10659,6 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		player_steam_id:"bigint",
 		port:"Int",
-		rcon_password:"String",
 		tv_port:"Int"
 	},
 	servers_min_fields:{
@@ -10652,7 +10669,6 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		player_steam_id:"bigint",
 		port:"Int",
-		rcon_password:"String",
 		tv_port:"Int"
 	},
 	servers_mutation_response:{

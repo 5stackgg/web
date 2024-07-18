@@ -32,7 +32,7 @@ import { Separator } from "~/components/ui/separator";
                 <badge
                   :variant="pick.type === 'Pick' ? 'default' : 'destructive'"
                 >
-                  <template v-if="pick.type === 'LeftOver'"> Decider </template>
+                  <template v-if="pick.type === 'Decider'"> Decider </template>
                   <template v-else>
                     {{ pick.type }}
                   </template>
@@ -202,7 +202,18 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            map_id: z.string(),
+            map_id: z
+              .string()
+              .optional()
+              .refine(
+                (value, data) => {
+                  if (this.pickType === e_veto_pick_types_enum.Side) {
+                    return true;
+                  }
+                  return value !== undefined;
+                },
+                { message: "side is required" }
+              ),
             side: z
               .string()
               .optional()
@@ -229,21 +240,14 @@ export default {
         });
       },
     },
-    pickType: {
-      immediate: true,
-      handler(pickType) {
-        if (pickType === e_veto_pick_types_enum.Side) {
-          const mapId = this.picks.at(-1).map.id;
-          this.form.setValues({
-            map_id: mapId,
-          });
-        }
-      },
-    },
   },
   methods: {
     async vetoPick() {
-      const { map_id, side } = this.form.values;
+      let { map_id, side } = this.form.values;
+
+      if (this.pickType === e_veto_pick_types_enum.Side) {
+        map_id = this.picks.at(-1).map.id;
+      }
 
       await this.$apollo.mutate({
         variables: {
@@ -317,19 +321,47 @@ export default {
         return;
       }
 
-      if (this.match.best_of === 1) {
-        return e_veto_pick_types_enum.Ban;
+      return this.vetoPattern[this.picks.length];
+    },
+    vetoPattern() {
+      const pattern: Array<string> = [];
+      const basePattern = [
+        e_veto_pick_types_enum.Ban,
+        e_veto_pick_types_enum.Ban,
+        e_veto_pick_types_enum.Pick,
+        e_veto_pick_types_enum.Pick,
+      ];
+
+      while (pattern.length !== this.mapPool.length - 1) {
+        const picks: Array<string> = pattern.filter(
+          (type) => type === e_veto_pick_types_enum.Pick
+        );
+
+        if (picks.length === this.bestOf - 1) {
+          pattern.push(e_veto_pick_types_enum.Ban);
+          continue;
+        }
+
+        const picksLeft = this.mapPool.length - pattern.length - 1;
+
+        if (picksLeft < picks.length + 2) {
+          pattern.push(e_veto_pick_types_enum.Pick);
+          continue;
+        }
+
+        pattern.push(...basePattern.slice(0, picksLeft));
       }
 
-      const pattern = [
-        e_veto_pick_types_enum.Ban,
-        e_veto_pick_types_enum.Ban,
-        e_veto_pick_types_enum.Pick,
-        e_veto_pick_types_enum.Side,
-        e_veto_pick_types_enum.Pick,
-        e_veto_pick_types_enum.Side,
-      ];
-      return pattern[this.picks.length % pattern.length];
+      let patternLength = pattern.length;
+
+      for (let i = 0; i < patternLength; i++) {
+        if (pattern[i] === e_veto_pick_types_enum.Pick) {
+          pattern.splice(i + 1, 0, e_veto_pick_types_enum.Side);
+          patternLength++;
+        }
+      }
+
+      return pattern;
     },
     sideOptions() {
       return [

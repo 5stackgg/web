@@ -2,7 +2,7 @@
   <div class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]">
     <NuxtImg
       :src="poster"
-      class="w-full h-full object-cover"
+      class="w-full h-full object-cover min-w-[150px]"
       sizes="sm:200px md:400px lg:1200"
     />
 

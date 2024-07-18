@@ -4,8 +4,8 @@ import MapDisplay from "~/components/MapDisplay.vue";
 
 <template>
   <div class="flex gap-4 h-[150px] overflow-hidden my-8">
-    <map-display
-      :map="map.name"
+    <MapDisplay
+      :map="map"
       class="cursor-pointer p-1"
       :class="{
         'bg-red-500': modelValue === map.id,
@@ -14,7 +14,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
       @click="$emit('update:modelValue', map.id)"
       v-for="map of mapPool"
     >
-    </map-display>
+    </MapDisplay>
   </div>
 </template>
 

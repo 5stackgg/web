@@ -87,6 +87,8 @@ export default {
                 label: true,
                 maps: {
                   name: true,
+                  patch: true,
+                  poster: true,
                 },
               },
               match_maps: [
@@ -102,6 +104,8 @@ export default {
                   lineup_2_side: true,
                   map: {
                     name: true,
+                    patch: true,
+                    poster: true,
                   },
                   vetos: {
                     side: true,

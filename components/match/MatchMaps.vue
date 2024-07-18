@@ -5,7 +5,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 </script>
 
 <template>
-  <map-display :map="matchMap.map.name">
+  <MapDisplay :map="matchMap.map">
     <template v-slot:header>
       <div class="absolute top-3">
         <badge class="mb-2">{{ matchMap.status }}</badge>
@@ -36,7 +36,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
         </div>
       </div>
     </template>
-  </map-display>
+  </MapDisplay>
 </template>
 
 <script lang="ts">

@@ -11,7 +11,7 @@ import { Separator } from "~/components/ui/separator";
     <div class="flex gap-4 h-[200px] overflow-hidden" v-if="picks?.length > 0">
       <template v-for="pick of picks">
         <template v-if="pick.type !== 'Side'">
-          <map-display :map="pick.map.name">
+          <MapDisplay :map="pick.map">
             <template v-slot:header>
               <div class="absolute top-3">
                 <badge
@@ -30,7 +30,7 @@ import { Separator } from "~/components/ui/separator";
                 {{ pick.match_lineup.name }}
               </div>
             </template>
-          </map-display>
+          </MapDisplay>
         </template>
       </template>
     </div>
@@ -158,6 +158,8 @@ export default {
               map: {
                 id: true,
                 name: true,
+                patch: true,
+                poster: true,
               },
               side: true,
               type: true,

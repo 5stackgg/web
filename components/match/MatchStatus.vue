@@ -6,7 +6,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 <template>
   <Badge variant="secondary">
     <template v-if="match.status == e_match_status_enum.Canceled">
-      Canceled @ {{ endOfMatch }}
+      Canceled
     </template>
     <template v-else-if="match.status == e_match_status_enum.Finished">
       Finished @ {{ endOfMatch }}

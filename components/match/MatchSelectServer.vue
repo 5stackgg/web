@@ -105,10 +105,6 @@ export default {
   },
   methods: {
     async updateMatchServer() {
-      let serverId: string | null = this.form.values.server_id;
-      if (serverId === "0") {
-        serverId = null;
-      }
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_matches_by_pk: [
@@ -117,7 +113,7 @@ export default {
                 id: this.match.id,
               },
               _set: {
-                server_id: serverId,
+                server_id: this.form.values.server_id === "0" ?  null : this.form.values.server_id,
               },
             },
             {

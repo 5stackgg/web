@@ -10,7 +10,21 @@ import { Separator } from "~/components/ui/separator";
     <Separator></Separator>
     <div class="flex gap-4 h-[200px] overflow-hidden" v-if="picks?.length > 0">
       <template v-for="pick of picks">
-        <template v-if="pick.type !== 'Side'">
+        <template v-if="pick.type === 'Side'">
+          <div class="relative">
+            <NuxtImg
+              :src="
+                pick.side === 'CT'
+                  ? '/img/teams/patches/ct.webp'
+                  : '/img/teams/patches/t.png'
+              "
+            ></NuxtImg>
+            <div class="absolute bottom-3 text-sm">
+              {{ pick.match_lineup.name }}
+            </div>
+          </div>
+        </template>
+        <template v-else>
           <MapDisplay :map="pick.map">
             <template v-slot:header>
               <div class="absolute top-3">

@@ -15,7 +15,11 @@
     <div class="absolute inset-0 flex flex-col items-center justify-center">
       <slot name="header"></slot>
 
-      <NuxtImg :src="map.patch" sizes="sm:10vw md:64px lg:64px" v-if="map.patch" />
+      <NuxtImg
+        :src="map.patch"
+        sizes="sm:10vw md:64px lg:64px"
+        v-if="map.patch"
+      />
 
       <span class="text-white text-xl font-bold uppercase">
         {{ map.name.replace("de_", "") }}

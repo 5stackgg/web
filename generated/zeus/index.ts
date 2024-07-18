@@ -4664,6 +4664,8 @@ veto_picks_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["match_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks_aggregate"]],
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "matches" */
@@ -4804,7 +4806,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	updated_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	veto_picking_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	veto_picks?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
-	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>
+	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	veto_type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "matches" */
 ["matches_constraint"]:matches_constraint;
@@ -4883,6 +4886,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	updated_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "matches" */
@@ -4930,6 +4935,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	updated_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "matches" */
@@ -5013,7 +5020,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	veto_picking_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>
+	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	veto_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {
@@ -18207,6 +18215,8 @@ veto_picks_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["match_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks_aggregate"]],
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "matches" */
@@ -18347,7 +18357,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	updated_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	veto_picking_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	veto_picks?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
-	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null
+	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null,
+	veto_type?: ResolverInputTypes["String_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "matches" */
 ["matches_constraint"]:matches_constraint;
@@ -18426,6 +18437,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	updated_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "matches" */
@@ -18473,6 +18486,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	updated_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "matches" */
@@ -18556,7 +18571,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	type?: ResolverInputTypes["order_by"] | undefined | null,
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
 	veto_picking_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
-	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null
+	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null,
+	veto_type?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {
@@ -31279,7 +31295,9 @@ export type ModelTypes = {
 	/** An array relationship */
 	veto_picks: Array<ModelTypes["match_veto_picks"]>,
 	/** An aggregate relationship */
-	veto_picks_aggregate: ModelTypes["match_veto_picks_aggregate"]
+	veto_picks_aggregate: ModelTypes["match_veto_picks_aggregate"],
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?: string | undefined
 };
 	/** aggregated selection of "matches" */
 ["matches_aggregate"]: {
@@ -31416,7 +31434,8 @@ export type ModelTypes = {
 	updated_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	veto_picking_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	veto_picks?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
-	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined
+	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
+	veto_type?: ModelTypes["String_comparison_exp"] | undefined
 };
 	["matches_constraint"]:matches_constraint;
 	/** input type for incrementing numeric columns in table "matches" */
@@ -31493,7 +31512,9 @@ export type ModelTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined
+	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?: string | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -31539,7 +31560,9 @@ export type ModelTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined
+	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?: string | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
@@ -31621,7 +31644,8 @@ export type ModelTypes = {
 	type?: ModelTypes["order_by"] | undefined,
 	updated_at?: ModelTypes["order_by"] | undefined,
 	veto_picking_lineup_id?: ModelTypes["order_by"] | undefined,
-	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined
+	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined,
+	veto_type?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {
@@ -42989,7 +43013,9 @@ export type GraphQLTypes = {
 	/** An array relationship */
 	veto_picks: Array<GraphQLTypes["match_veto_picks"]>,
 	/** An aggregate relationship */
-	veto_picks_aggregate: GraphQLTypes["match_veto_picks_aggregate"]
+	veto_picks_aggregate: GraphQLTypes["match_veto_picks_aggregate"],
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?: string | undefined
 };
 	/** aggregated selection of "matches" */
 ["matches_aggregate"]: {
@@ -43129,7 +43155,8 @@ export type GraphQLTypes = {
 	updated_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	veto_picking_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	veto_picks?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
-	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined
+	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
+	veto_type?: GraphQLTypes["String_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "matches" */
 ["matches_constraint"]: matches_constraint;
@@ -43208,7 +43235,9 @@ export type GraphQLTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined
+	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?: string | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -43255,7 +43284,9 @@ export type GraphQLTypes = {
 	tv_connection_string?: string | undefined,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
-	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined
+	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_veto_type" */
+	veto_type?: string | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
@@ -43338,7 +43369,8 @@ export type GraphQLTypes = {
 	type?: GraphQLTypes["order_by"] | undefined,
 	updated_at?: GraphQLTypes["order_by"] | undefined,
 	veto_picking_lineup_id?: GraphQLTypes["order_by"] | undefined,
-	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined
+	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined,
+	veto_type?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {

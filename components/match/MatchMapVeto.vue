@@ -317,52 +317,13 @@ export default {
       return this.match.organizer_steam_id === this.me.steam_id;
     },
     pickType() {
-      if (!this.match || !this.picks) {
+      if (!this.match) {
         return;
       }
 
-      return this.vetoPattern[this.picks.length];
+      return this.match.veto_type;
     },
-    vetoPattern() {
-      const pattern: Array<string> = [];
-      const basePattern = [
-        e_veto_pick_types_enum.Ban,
-        e_veto_pick_types_enum.Ban,
-        e_veto_pick_types_enum.Pick,
-        e_veto_pick_types_enum.Pick,
-      ];
 
-      while (pattern.length !== this.mapPool.length - 1) {
-        const picks: Array<string> = pattern.filter(
-          (type) => type === e_veto_pick_types_enum.Pick
-        );
-
-        if (picks.length === this.bestOf - 1) {
-          pattern.push(e_veto_pick_types_enum.Ban);
-          continue;
-        }
-
-        const picksLeft = this.mapPool.length - pattern.length - 1;
-
-        if (picksLeft < picks.length + 2) {
-          pattern.push(e_veto_pick_types_enum.Pick);
-          continue;
-        }
-
-        pattern.push(...basePattern.slice(0, picksLeft));
-      }
-
-      let patternLength = pattern.length;
-
-      for (let i = 0; i < patternLength; i++) {
-        if (pattern[i] === e_veto_pick_types_enum.Pick) {
-          pattern.splice(i + 1, 0, e_veto_pick_types_enum.Side);
-          patternLength++;
-        }
-      }
-
-      return pattern;
-    },
     sideOptions() {
       return [
         { value: e_sides_enum.CT, display: "Counter-Terrorist" },

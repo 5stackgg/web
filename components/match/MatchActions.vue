@@ -17,7 +17,7 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
       :disabled="canAddToLineup1 || canAddToLineup2"
     >
       Start
-      <template v-if="match.map_veto"> Veto </template>
+      <template v-if="match.map_veto && match.best_of != match.match_maps.length"> Veto </template>
       <template v-else> Match </template>
     </Button>
   </template>

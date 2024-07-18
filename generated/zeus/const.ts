@@ -2099,7 +2099,8 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz_comparison_exp",
 		veto_picking_lineup_id:"uuid_comparison_exp",
 		veto_picks:"match_veto_picks_bool_exp",
-		veto_picks_aggregate:"match_veto_picks_aggregate_bool_exp"
+		veto_picks_aggregate:"match_veto_picks_aggregate_bool_exp",
+		veto_type:"String_comparison_exp"
 	},
 	matches_constraint: "enum" as const,
 	matches_inc_input:{
@@ -2215,7 +2216,8 @@ export const AllTypesProps: Record<string,any> = {
 		type:"order_by",
 		updated_at:"order_by",
 		veto_picking_lineup_id:"order_by",
-		veto_picks_aggregate:"match_veto_picks_aggregate_order_by"
+		veto_picks_aggregate:"match_veto_picks_aggregate_order_by",
+		veto_type:"order_by"
 	},
 	matches_pk_columns_input:{
 		id:"uuid"
@@ -9234,7 +9236,8 @@ export const ReturnTypes: Record<string,any> = {
 		updated_at:"timestamptz",
 		veto_picking_lineup_id:"uuid",
 		veto_picks:"match_veto_picks",
-		veto_picks_aggregate:"match_veto_picks_aggregate"
+		veto_picks_aggregate:"match_veto_picks_aggregate",
+		veto_type:"String"
 	},
 	matches_aggregate:{
 		aggregate:"matches_aggregate_fields",
@@ -9279,7 +9282,8 @@ export const ReturnTypes: Record<string,any> = {
 		tv_connection_link:"String",
 		tv_connection_string:"String",
 		updated_at:"timestamptz",
-		veto_picking_lineup_id:"uuid"
+		veto_picking_lineup_id:"uuid",
+		veto_type:"String"
 	},
 	matches_min_fields:{
 		best_of:"Int",
@@ -9301,7 +9305,8 @@ export const ReturnTypes: Record<string,any> = {
 		tv_connection_link:"String",
 		tv_connection_string:"String",
 		updated_at:"timestamptz",
-		veto_picking_lineup_id:"uuid"
+		veto_picking_lineup_id:"uuid",
+		veto_type:"String"
 	},
 	matches_mutation_response:{
 		affected_rows:"Int",

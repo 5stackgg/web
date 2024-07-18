@@ -65,6 +65,7 @@ export default {
               best_of: true,
               coaches: true,
               map_veto: true,
+              veto_type: true,
               veto_picking_lineup_id: true,
               number_of_substitutes: true,
               lineup_1_id: true,

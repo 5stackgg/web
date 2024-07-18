@@ -4635,6 +4635,8 @@ player_utility_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	server?:ValueTypes["servers"],
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
 teams?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["teams_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -4796,6 +4798,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	server_type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	teams?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -4879,6 +4882,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -4928,6 +4933,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -5011,6 +5018,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	server_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	teams_aggregate?: ValueTypes["teams_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -18186,6 +18194,8 @@ player_utility_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	server?:ResolverInputTypes["servers"],
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?:boolean | `@${string}`,
 	status?:boolean | `@${string}`,
 teams?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["teams_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -18347,6 +18357,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["date_comparison_exp"] | undefined | null,
 	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	server_type?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum_comparison_exp"] | undefined | null,
 	teams?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null,
@@ -18430,6 +18441,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -18479,6 +18492,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	password?:boolean | `@${string}`,
 	scheduled_at?:boolean | `@${string}`,
 	server_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -18562,6 +18577,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
 	server_id?: ResolverInputTypes["order_by"] | undefined | null,
+	server_type?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
 	teams_aggregate?: ResolverInputTypes["teams_aggregate_order_by"] | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["order_by"] | undefined | null,
@@ -31279,6 +31295,8 @@ export type ModelTypes = {
 	/** An object relationship */
 	server?: ModelTypes["servers"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?: string | undefined,
 	status: ModelTypes["e_match_status_enum"],
 	/** A computed field, executes function "get_match_teams" */
 	teams?: Array<ModelTypes["teams"]> | undefined,
@@ -31424,6 +31442,7 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["date_comparison_exp"] | undefined,
 	server?: ModelTypes["servers_bool_exp"] | undefined,
 	server_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	server_type?: ModelTypes["String_comparison_exp"] | undefined,
 	status?: ModelTypes["e_match_status_enum_comparison_exp"] | undefined,
 	teams?: ModelTypes["teams_bool_exp"] | undefined,
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
@@ -31506,6 +31525,8 @@ export type ModelTypes = {
 	password?: string | undefined,
 	scheduled_at?: ModelTypes["date"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -31554,6 +31575,8 @@ export type ModelTypes = {
 	password?: string | undefined,
 	scheduled_at?: ModelTypes["date"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -31635,6 +31658,7 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["order_by"] | undefined,
 	server?: ModelTypes["servers_order_by"] | undefined,
 	server_id?: ModelTypes["order_by"] | undefined,
+	server_type?: ModelTypes["order_by"] | undefined,
 	status?: ModelTypes["order_by"] | undefined,
 	teams_aggregate?: ModelTypes["teams_aggregate_order_by"] | undefined,
 	tech_timeout_setting?: ModelTypes["order_by"] | undefined,
@@ -42997,6 +43021,8 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	server?: GraphQLTypes["servers"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?: string | undefined,
 	status: GraphQLTypes["e_match_status_enum"],
 	/** A computed field, executes function "get_match_teams" */
 	teams?: Array<GraphQLTypes["teams"]> | undefined,
@@ -43145,6 +43171,7 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["date_comparison_exp"] | undefined,
 	server?: GraphQLTypes["servers_bool_exp"] | undefined,
 	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	server_type?: GraphQLTypes["String_comparison_exp"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum_comparison_exp"] | undefined,
 	teams?: GraphQLTypes["teams_bool_exp"] | undefined,
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
@@ -43229,6 +43256,8 @@ export type GraphQLTypes = {
 	password?: string | undefined,
 	scheduled_at?: GraphQLTypes["date"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -43278,6 +43307,8 @@ export type GraphQLTypes = {
 	password?: string | undefined,
 	scheduled_at?: GraphQLTypes["date"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "get_match_server_type" */
+	server_type?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_link" */
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
@@ -43360,6 +43391,7 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["order_by"] | undefined,
 	server?: GraphQLTypes["servers_order_by"] | undefined,
 	server_id?: GraphQLTypes["order_by"] | undefined,
+	server_type?: GraphQLTypes["order_by"] | undefined,
 	status?: GraphQLTypes["order_by"] | undefined,
 	teams_aggregate?: GraphQLTypes["teams_aggregate_order_by"] | undefined,
 	tech_timeout_setting?: GraphQLTypes["order_by"] | undefined,

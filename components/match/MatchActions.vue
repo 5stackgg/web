@@ -37,11 +37,11 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
       <DropdownMenuItem>
         <match-select-server :match="match"></match-select-server>
       </DropdownMenuItem>
-<!--      <DropdownMenuItem-->
-<!--        v-if="match.status == e_match_status_enum.PickingPlayers"-->
-<!--      >-->
-<!--        SCHEDULE MATCH HERE-->
-<!--      </DropdownMenuItem>-->
+      <!--      <DropdownMenuItem-->
+      <!--        v-if="match.status == e_match_status_enum.PickingPlayers"-->
+      <!--      >-->
+      <!--        SCHEDULE MATCH HERE-->
+      <!--      </DropdownMenuItem>-->
 
       <template v-if="cancelable">
         <DropdownMenuSeparator />
@@ -54,7 +54,6 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import getMatchLineups from "~/utilities/getMatchLineups";
-import {e_match_status_enum} from "~/generated/zeus";
 
 export default {
   props: {

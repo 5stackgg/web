@@ -113,7 +113,10 @@ export default {
                 id: this.match.id,
               },
               _set: {
-                server_id: this.form.values.server_id === "0" ?  null : this.form.values.server_id,
+                server_id:
+                  this.form.values.server_id === "0"
+                    ? null
+                    : this.form.values.server_id,
               },
             },
             {
@@ -134,7 +137,8 @@ export default {
       });
 
       servers.unshift({
-        value: "0",
+        value:
+          this.match.server_type === "OnDemand" ? this.match.server_id : "0",
         display: "On Demand",
       });
 

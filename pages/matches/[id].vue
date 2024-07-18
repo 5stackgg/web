@@ -59,6 +59,7 @@ export default {
             {
               id: true,
               server_id: true,
+              server_type: true,
               overtime: true,
               knife_round: true,
               mr: true,

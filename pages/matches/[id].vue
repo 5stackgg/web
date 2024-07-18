@@ -85,11 +85,6 @@ export default {
               scheduled_at: true,
               map_pool: {
                 label: true,
-                maps: {
-                  name: true,
-                  patch: true,
-                  poster: true,
-                },
               },
               match_maps: [
                 {

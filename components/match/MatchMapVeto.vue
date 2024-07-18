@@ -58,7 +58,7 @@ import { Separator } from "~/components/ui/separator";
     <form @submit.prevent="vetoPick" v-if="isPicking">
       <template v-if="pickType === 'Side'">
         <div class="flex">
-          <MapDisplay :map="previousMap.name"></MapDisplay>
+          <MapDisplay :map="previousMap"></MapDisplay>
 
           <div>
             <p>Select the Side your team wants to start on</p>
@@ -315,12 +315,12 @@ export default {
         {
           value: e_sides_enum.CT,
           display: "Counter-Terrorist",
-          img: "/img/teams/ct-patch.webp",
+          img: "/img/teams/patches/ct.webp",
         },
         {
           value: e_sides_enum.TERRORIST,
           display: "Terrorist",
-          img: "/img/teams/t-patch.png",
+          img: "/img/teams/patches/t.png",
         },
       ];
     },

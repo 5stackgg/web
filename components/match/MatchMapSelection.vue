@@ -75,6 +75,8 @@ export default {
                     maps: {
                       id: true,
                       name: true,
+                      poster: true,
+                      patch: true,
                     },
                   },
                 ],

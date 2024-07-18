@@ -155,6 +155,7 @@ import { e_match_status_enum } from "~/generated/zeus";
                 <AvatarImage
                   :src="matchLineups.lineup1.coach.avatar_url"
                   :alt="matchLineups.lineup1.coach.name"
+                  v-if="matchLineups.lineup1.coach.avatar_url"
                 />
                 <AvatarFallback>{{
                   matchLineups.lineup1.coach.name
@@ -173,6 +174,7 @@ import { e_match_status_enum } from "~/generated/zeus";
                 <AvatarImage
                   :src="matchLineups.lineup2.coach.avatar_url"
                   :alt="matchLineups.lineup2.coach.name"
+                  v-if="matchLineups.lineup2.coach.avatar_url"
                 />
                 <AvatarFallback>{{
                   matchLineups.lineup2.coach.name

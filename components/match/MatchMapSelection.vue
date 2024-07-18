@@ -43,7 +43,7 @@ import MapSelector from "~/components/match/MapSelector.vue";
 <script lang="ts">
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { $, e_sides_enum } from "~/generated/zeus";
+import {$, e_sides_enum, order_by} from "~/generated/zeus";
 import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 
@@ -72,12 +72,19 @@ export default {
                 map_pool: [
                   {},
                   {
-                    maps: {
-                      id: true,
-                      name: true,
-                      poster: true,
-                      patch: true,
-                    },
+                    maps: [
+                      {
+                        order_by: {
+                          name: order_by.asc
+                        }
+                      },
+                      {
+                        id: true,
+                            name: true,
+                          poster: true,
+                          patch: true,
+                      }
+                    ],
                   },
                 ],
               },

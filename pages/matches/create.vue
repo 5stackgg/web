@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
-import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
+import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
 <template>
@@ -21,7 +21,7 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
               </FormDescription>
             </div>
             <FormControl>
-              <Switch :checked="value" @update:checked="handleChange" />
+              <Switch class="pointer-events-none" :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -38,7 +38,7 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
               </FormDescription>
             </div>
             <FormControl>
-              <Switch :checked="value" @update:checked="handleChange" />
+              <Switch class="pointer-events-none" :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -59,7 +59,7 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
               </FormDescription>
             </div>
             <FormControl>
-              <Switch :checked="value" @update:checked="handleChange" />
+              <Switch class="pointer-events-none" :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -77,7 +77,7 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
               </FormDescription>
             </div>
             <FormControl>
-              <Switch :checked="value" @update:checked="handleChange" />
+              <Switch class="pointer-events-none" :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -174,29 +174,40 @@ import FiveStackMapPicker from "~/components/forms/FiveStackMapPicker.vue";
           </FormItem>
         </FormField>
 
+
         <FormField v-slot="{ value, handleChange }" name="custom_map_pool">
           <FormItem
-            class="flex flex-row items-center justify-between rounded-lg border p-4"
+              class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+              @click="handleChange(!value)"
           >
             <div class="space-y-0.5">
               <FormLabel class="text-base"> Custom Map Pool </FormLabel>
+              <FormDescription>
+                Coaches will be spawned and killed at the start of each round
+              </FormDescription>
             </div>
             <FormControl>
-              <Switch :checked="value" @update:checked="handleChange" />
+              <Switch class="pointer-events-none" :checked="value" @update:checked="handleChange" />
             </FormControl>
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="map_pool">
-          <FormItem v-show="form.values.custom_map_pool">
-            <FormLabel>Custom Map Pool</FormLabel>
-            <five-stack-map-picker
-              v-model="componentField.modelValue"
-              :match-type="form.values.type"
-            ></five-stack-map-picker>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+        <div v-show="form.values.custom_map_pool">
+          <FormField name="map_pool">
+            <FormItem>
+              <FormLabel>Custom Map Pool</FormLabel>
+              <div class="flex">
+                <template v-for="map in availableMaps">
+                  <div class="relative cursor-pointer" @click="updateMapPool(map.id)">
+                    <MapDisplay :map="map.name"></MapDisplay>
+                    <div class="absolute inset-0 bg-black bg-opacity-55" v-if="!form.values.map_pool.includes(map.id)"></div>
+                  </div>
+                </template>
+              </div>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
       </div>
 
       <FormField v-slot="{ handleChange, componentField }" name="team_1">
@@ -248,6 +259,11 @@ export default {
             description: true,
           },
         ],
+      }),
+    },
+    maps: {
+      query: generateQuery({
+        maps: [{}, mapFields],
       }),
     },
     map_pools: {
@@ -305,6 +321,16 @@ export default {
     },
   },
   methods: {
+    updateMapPool(mapId: string) {
+      const pool = Object.assign([], this.form.values.map_pool);
+      if(pool.includes(mapId)) {
+        pool.splice(pool.indexOf(mapId), 1);
+      } else {
+        pool.push(mapId);
+      }
+
+      this.form.setFieldValue("map_pool", pool)
+    },
     async setupMatch() {
       const form = this.form.values;
 
@@ -406,6 +432,25 @@ export default {
         return pool.label === this.form.values.type;
       });
     },
-  },
+    availableMaps() {
+      if (!this.maps) {
+        return [];
+      }
+      return this.maps
+          .filter((map) => {
+            switch (this.form.values.type) {
+              case e_match_types_enum.Competitive:
+                return (
+                    map.type === e_match_types_enum.Competitive &&
+                    map.active_pool === true
+                );
+              case e_match_types_enum.Scrimmage:
+                return map.type === e_match_types_enum.Competitive;
+              case e_match_types_enum.Wingman:
+                return map.type === e_match_types_enum.Wingman;
+            }
+          })
+    }
+  }
 };
 </script>

@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import TournamentsTable from "~/components/TournamentsTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
+import {Button} from "~/components/ui/button";
 </script>
 
 <template>
   <PageHeading>
     Tournaments
+    <NuxtLink to="/tournaments/create">
+      <Button>Create Tournament</Button>
+    </NuxtLink>
     <template v-slot:description> Manage tournaments. </template>
   </PageHeading>
   <TournamentsTable

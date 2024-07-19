@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
@@ -14,6 +15,10 @@ import {
     <TableHeader>
       <TableRow>
         <TableHead>Tournament</TableHead>
+        <TableHead>Type</TableHead>
+        <TableHead>Status</TableHead>
+        <TableHead>Teams</TableHead>
+        <TableHead>Starts</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -23,7 +28,19 @@ import {
         :key="tournament.id"
       >
         <TableCell class="font-medium">
-          {{ tournament.id }}
+          {{ tournament.name }}
+        </TableCell>
+        <TableCell>
+          <Badge>{{ tournament.status }}</Badge>
+        </TableCell>
+        <TableCell>
+          {{ tournament.type }}
+        </TableCell>
+        <TableCell>
+          {{ tournament.teams_aggregate.aggregate.count }}
+        </TableCell>
+        <TableCell>
+          <TimeAgo :date="tournament.start"></TimeAgo>
         </TableCell>
       </TableRow>
     </TableBody>

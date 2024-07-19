@@ -1,21 +1,62 @@
 <template>
-  <div class="flex" v-if="tournament">
-    <template v-for="round of Array.from(rounds.keys())">
-      <TournamentRound :matches="rounds.get(round)"></TournamentRound>
-    </template>
-  </div>
+  <Tabs default-value="info" v-if="tournament">
+    <TabsList>
+      <TabsTrigger value="info"> Information </TabsTrigger>
+      <TabsTrigger value="bracket"> Bracket </TabsTrigger>
+      <TabsTrigger value="teams"> Teams </TabsTrigger>
+      <TabsTrigger value="roster"> Manage My Roster </TabsTrigger>
+      <TabsTrigger value="manage"> Manage Tournament </TabsTrigger>
+    </TabsList>
+    <TabsContent value="info">
+      {{ tournament.name }} : {{ tournament.description }}
+      <Badge>{{ tournament.status }}</Badge>
+      <Badge>{{ tournament.type }}</Badge>
+      <Badge>{{ tournament.start }}</Badge>
+
+      <p>
+        Admin:
+        {{ tournament.admin.name }}
+      </p>
+
+      <p>Organizers</p>
+      <p v-for="{organizer, role} of tournament.organizers">
+        {{ organizer.name }} ({{ role }})
+      </p>
+
+
+    </TabsContent>
+    <TabsContent value="bracket">
+        <template v-for="stage of tournament.stages" :key="stage.id">
+            <TournamentStage :stage="stage"></TournamentStage>
+        </template>
+    </TabsContent>
+    <TabsContent value="manage">
+      <Tabs default-value="organizers">
+        <TabsList>
+          <TabsTrigger value="organizers"> Organizers </TabsTrigger>
+          <TabsTrigger value="stages"> Stages </TabsTrigger>
+          <TabsTrigger value="servers"> Servers </TabsTrigger>
+        </TabsList>
+        <TabsContent value="organizers">asdfasdfsd</TabsContent>
+        <TabsContent value="bracket"></TabsContent>
+        <TabsContent value="servers"></TabsContent>
+      </Tabs>
+    </TabsContent>
+  </Tabs>
 </template>
 
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import TournamentRound from "~/components/tournament/TournamentRound.vue";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
+import TournamentStage from "~/components/tournament/TournamentStage.vue";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
  */
 export default {
-  components: { TournamentRound },
+  components: {TournamentStage, TabsList, Tabs, TabsContent, TabsTrigger, TournamentRound },
   data() {
     return {
       tournament: undefined,
@@ -31,10 +72,31 @@ export default {
             },
             {
               id: true,
+              name: true,
+              status: true,
+              type: true,
+              start: true,
+              description: true,
+              admin: {
+                name: true,
+              },
+              organizers: [{}, {
+                role: true,
+                organizer: {
+                  name: true,
+                }
+              }],
               stages: [
-                {},
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    }
+                  ]
+                },
                 {
                   id: true,
+                  order: true,
                   brackets: [
                     {
                       order_by: [
@@ -67,23 +129,6 @@ export default {
           this.tournament = data.tournaments_by_pk;
         },
       },
-    },
-  },
-  computed: {
-    stage() {
-      return this.tournament?.stages[0];
-    },
-    rounds() {
-      const rounds = new Map();
-      for (const bracket of this.stage?.brackets) {
-        let matches = rounds.get(bracket.round) || [];
-
-        matches.push(bracket);
-
-        rounds.set(bracket.round, matches);
-      }
-
-      return rounds;
     },
   },
 };

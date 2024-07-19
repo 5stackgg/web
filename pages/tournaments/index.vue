@@ -56,6 +56,18 @@ export default {
             },
             {
               id: true,
+              name: true,
+              type: true,
+              start: true,
+              status: true,
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ]
             },
           ],
         });

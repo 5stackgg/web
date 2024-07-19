@@ -95,7 +95,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
 </template>
 
 <script lang="ts">
-import { Swords, Server, Users, ShieldHalf } from "lucide-vue-next";
+import { Swords, Server, Users, ShieldHalf, Trophy } from "lucide-vue-next";
 
 export default {
   data() {
@@ -105,6 +105,11 @@ export default {
           to: "/matches",
           title: "Matches",
           icon: Swords,
+        },
+        {
+          to: "/tournaments",
+          title: "Tournaments",
+          icon: Trophy,
         },
         {
           to: "/teams",

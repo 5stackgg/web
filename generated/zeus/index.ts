@@ -6018,10 +6018,12 @@ update_tournament_stages_by_pk?: [{	/** append existing jsonb value of filtered 
 	_set?: ValueTypes["tournament_stages_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["tournament_stages_pk_columns_input"] | Variable<any, string>},ValueTypes["tournament_stages"]],
 update_tournament_stages_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["tournament_stages_updates"]> | Variable<any, string>},ValueTypes["tournament_stages_mutation_response"]],
-update_tournament_teams?: [{	/** sets the columns of the filtered rows to the given values */
+update_tournament_teams?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["tournament_teams_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["tournament_teams_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["tournament_teams_bool_exp"] | Variable<any, string>},ValueTypes["tournament_teams_mutation_response"]],
-update_tournament_teams_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+update_tournament_teams_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["tournament_teams_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["tournament_teams_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["tournament_teams_pk_columns_input"] | Variable<any, string>},ValueTypes["tournament_teams"]],
 update_tournament_teams_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["tournament_teams_updates"]> | Variable<any, string>},ValueTypes["tournament_teams_mutation_response"]],
@@ -13123,6 +13125,9 @@ count?: [{	columns?: Array<ValueTypes["tournament_stages_select_column"]> | unde
 };
 	/** columns and relationships of "tournament_teams" */
 ["tournament_teams"]: AliasType<{
+	/** An object relationship */
+	creator?:ValueTypes["players"],
+	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	/** An object relationship */
@@ -13150,16 +13155,32 @@ count?: [{	columns?: Array<ValueTypes["tournament_stages_select_column"]> | unde
 };
 	/** aggregate fields of "tournament_teams" */
 ["tournament_teams_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["tournament_teams_avg_fields"],
 count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	max?:ValueTypes["tournament_teams_max_fields"],
 	min?:ValueTypes["tournament_teams_min_fields"],
+	stddev?:ValueTypes["tournament_teams_stddev_fields"],
+	stddev_pop?:ValueTypes["tournament_teams_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["tournament_teams_stddev_samp_fields"],
+	sum?:ValueTypes["tournament_teams_sum_fields"],
+	var_pop?:ValueTypes["tournament_teams_var_pop_fields"],
+	var_samp?:ValueTypes["tournament_teams_var_samp_fields"],
+	variance?:ValueTypes["tournament_teams_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by aggregate values of table "tournament_teams" */
 ["tournament_teams_aggregate_order_by"]: {
+	avg?: ValueTypes["tournament_teams_avg_order_by"] | undefined | null | Variable<any, string>,
 	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	max?: ValueTypes["tournament_teams_max_order_by"] | undefined | null | Variable<any, string>,
-	min?: ValueTypes["tournament_teams_min_order_by"] | undefined | null | Variable<any, string>
+	min?: ValueTypes["tournament_teams_min_order_by"] | undefined | null | Variable<any, string>,
+	stddev?: ValueTypes["tournament_teams_stddev_order_by"] | undefined | null | Variable<any, string>,
+	stddev_pop?: ValueTypes["tournament_teams_stddev_pop_order_by"] | undefined | null | Variable<any, string>,
+	stddev_samp?: ValueTypes["tournament_teams_stddev_samp_order_by"] | undefined | null | Variable<any, string>,
+	sum?: ValueTypes["tournament_teams_sum_order_by"] | undefined | null | Variable<any, string>,
+	var_pop?: ValueTypes["tournament_teams_var_pop_order_by"] | undefined | null | Variable<any, string>,
+	var_samp?: ValueTypes["tournament_teams_var_samp_order_by"] | undefined | null | Variable<any, string>,
+	variance?: ValueTypes["tournament_teams_variance_order_by"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting array relation for remote table "tournament_teams" */
 ["tournament_teams_arr_rel_insert_input"]: {
@@ -13167,11 +13188,22 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	/** upsert condition */
 	on_conflict?: ValueTypes["tournament_teams_on_conflict"] | undefined | null | Variable<any, string>
 };
+	/** aggregate avg on columns */
+["tournament_teams_avg_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "tournament_teams" */
+["tournament_teams_avg_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
 	_and?: Array<ValueTypes["tournament_teams_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["tournament_teams_bool_exp"]> | undefined | null | Variable<any, string>,
+	creator?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	creator_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
@@ -13181,8 +13213,14 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 };
 	/** unique or primary key constraints on table "tournament_teams" */
 ["tournament_teams_constraint"]:tournament_teams_constraint;
+	/** input type for incrementing numeric columns in table "tournament_teams" */
+["tournament_teams_inc_input"]: {
+	creator_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
+	creator?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	creator_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -13192,6 +13230,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 };
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
@@ -13200,6 +13239,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 }>;
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -13207,6 +13247,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 };
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
@@ -13215,6 +13256,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 }>;
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -13242,6 +13284,8 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 };
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
+	creator?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
@@ -13257,10 +13301,38 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 ["tournament_teams_select_column"]:tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
+	creator_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["tournament_teams_stddev_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "tournament_teams" */
+["tournament_teams_stddev_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_pop on columns */
+["tournament_teams_stddev_pop_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "tournament_teams" */
+["tournament_teams_stddev_pop_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev_samp on columns */
+["tournament_teams_stddev_samp_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "tournament_teams" */
+["tournament_teams_stddev_samp_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -13271,18 +13343,57 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
+	creator_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
+	/** aggregate sum on columns */
+["tournament_teams_sum_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "tournament_teams" */
+["tournament_teams_sum_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** update columns of table "tournament_teams" */
 ["tournament_teams_update_column"]:tournament_teams_update_column;
 	["tournament_teams_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["tournament_teams_inc_input"] | undefined | null | Variable<any, string>,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["tournament_teams_set_input"] | undefined | null | Variable<any, string>,
 	/** filter the rows which have to be updated */
 	where: ValueTypes["tournament_teams_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["tournament_teams_var_pop_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "tournament_teams" */
+["tournament_teams_var_pop_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate var_samp on columns */
+["tournament_teams_var_samp_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "tournament_teams" */
+["tournament_teams_var_samp_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** aggregate variance on columns */
+["tournament_teams_variance_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "tournament_teams" */
+["tournament_teams_variance_order_by"]: {
+	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: AliasType<{
@@ -20186,10 +20297,12 @@ update_tournament_stages_by_pk?: [{	/** append existing jsonb value of filtered 
 	_set?: ResolverInputTypes["tournament_stages_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["tournament_stages_pk_columns_input"]},ResolverInputTypes["tournament_stages"]],
 update_tournament_stages_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["tournament_stages_updates"]>},ResolverInputTypes["tournament_stages_mutation_response"]],
-update_tournament_teams?: [{	/** sets the columns of the filtered rows to the given values */
+update_tournament_teams?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["tournament_teams_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["tournament_teams_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["tournament_teams_bool_exp"]},ResolverInputTypes["tournament_teams_mutation_response"]],
-update_tournament_teams_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+update_tournament_teams_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["tournament_teams_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["tournament_teams_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["tournament_teams_pk_columns_input"]},ResolverInputTypes["tournament_teams"]],
 update_tournament_teams_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["tournament_teams_updates"]>},ResolverInputTypes["tournament_teams_mutation_response"]],
@@ -27291,6 +27404,9 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_stages_select_column"]
 };
 	/** columns and relationships of "tournament_teams" */
 ["tournament_teams"]: AliasType<{
+	/** An object relationship */
+	creator?:ResolverInputTypes["players"],
+	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	/** An object relationship */
@@ -27318,16 +27434,32 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_stages_select_column"]
 };
 	/** aggregate fields of "tournament_teams" */
 ["tournament_teams_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["tournament_teams_avg_fields"],
 count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
 	max?:ResolverInputTypes["tournament_teams_max_fields"],
 	min?:ResolverInputTypes["tournament_teams_min_fields"],
+	stddev?:ResolverInputTypes["tournament_teams_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["tournament_teams_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["tournament_teams_stddev_samp_fields"],
+	sum?:ResolverInputTypes["tournament_teams_sum_fields"],
+	var_pop?:ResolverInputTypes["tournament_teams_var_pop_fields"],
+	var_samp?:ResolverInputTypes["tournament_teams_var_samp_fields"],
+	variance?:ResolverInputTypes["tournament_teams_variance_fields"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by aggregate values of table "tournament_teams" */
 ["tournament_teams_aggregate_order_by"]: {
+	avg?: ResolverInputTypes["tournament_teams_avg_order_by"] | undefined | null,
 	count?: ResolverInputTypes["order_by"] | undefined | null,
 	max?: ResolverInputTypes["tournament_teams_max_order_by"] | undefined | null,
-	min?: ResolverInputTypes["tournament_teams_min_order_by"] | undefined | null
+	min?: ResolverInputTypes["tournament_teams_min_order_by"] | undefined | null,
+	stddev?: ResolverInputTypes["tournament_teams_stddev_order_by"] | undefined | null,
+	stddev_pop?: ResolverInputTypes["tournament_teams_stddev_pop_order_by"] | undefined | null,
+	stddev_samp?: ResolverInputTypes["tournament_teams_stddev_samp_order_by"] | undefined | null,
+	sum?: ResolverInputTypes["tournament_teams_sum_order_by"] | undefined | null,
+	var_pop?: ResolverInputTypes["tournament_teams_var_pop_order_by"] | undefined | null,
+	var_samp?: ResolverInputTypes["tournament_teams_var_samp_order_by"] | undefined | null,
+	variance?: ResolverInputTypes["tournament_teams_variance_order_by"] | undefined | null
 };
 	/** input type for inserting array relation for remote table "tournament_teams" */
 ["tournament_teams_arr_rel_insert_input"]: {
@@ -27335,11 +27467,22 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	/** upsert condition */
 	on_conflict?: ResolverInputTypes["tournament_teams_on_conflict"] | undefined | null
 };
+	/** aggregate avg on columns */
+["tournament_teams_avg_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by avg() on columns of table "tournament_teams" */
+["tournament_teams_avg_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["tournament_teams_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["tournament_teams_bool_exp"]> | undefined | null,
+	creator?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	creator_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
@@ -27349,8 +27492,14 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 };
 	/** unique or primary key constraints on table "tournament_teams" */
 ["tournament_teams_constraint"]:tournament_teams_constraint;
+	/** input type for incrementing numeric columns in table "tournament_teams" */
+["tournament_teams_inc_input"]: {
+	creator_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
+	creator?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	creator_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
@@ -27360,6 +27509,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 };
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
@@ -27368,6 +27518,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 }>;
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -27375,6 +27526,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 };
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
@@ -27383,6 +27535,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 }>;
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -27410,6 +27563,8 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 };
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
+	creator?: ResolverInputTypes["players_order_by"] | undefined | null,
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
@@ -27425,10 +27580,38 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 ["tournament_teams_select_column"]:tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
+	creator_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["tournament_teams_stddev_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev() on columns of table "tournament_teams" */
+["tournament_teams_stddev_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["tournament_teams_stddev_pop_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_pop() on columns of table "tournament_teams" */
+["tournament_teams_stddev_pop_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["tournament_teams_stddev_samp_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by stddev_samp() on columns of table "tournament_teams" */
+["tournament_teams_stddev_samp_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -27439,18 +27622,57 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
+	creator_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null
 };
+	/** aggregate sum on columns */
+["tournament_teams_sum_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by sum() on columns of table "tournament_teams" */
+["tournament_teams_sum_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** update columns of table "tournament_teams" */
 ["tournament_teams_update_column"]:tournament_teams_update_column;
 	["tournament_teams_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["tournament_teams_inc_input"] | undefined | null,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["tournament_teams_set_input"] | undefined | null,
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["tournament_teams_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["tournament_teams_var_pop_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_pop() on columns of table "tournament_teams" */
+["tournament_teams_var_pop_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate var_samp on columns */
+["tournament_teams_var_samp_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by var_samp() on columns of table "tournament_teams" */
+["tournament_teams_var_samp_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** aggregate variance on columns */
+["tournament_teams_variance_fields"]: AliasType<{
+	creator_steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** order by variance() on columns of table "tournament_teams" */
+["tournament_teams_variance_order_by"]: {
+	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: AliasType<{
@@ -39523,7 +39745,10 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "tournament_teams" */
 ["tournament_teams"]: {
-		id: ModelTypes["uuid"],
+		/** An object relationship */
+	creator: ModelTypes["players"],
+	creator_steam_id: ModelTypes["bigint"],
+	id: ModelTypes["uuid"],
 	name: string,
 	/** An object relationship */
 	team?: ModelTypes["teams"] | undefined,
@@ -39548,15 +39773,31 @@ export type ModelTypes = {
 };
 	/** aggregate fields of "tournament_teams" */
 ["tournament_teams_aggregate_fields"]: {
-		count: number,
+		avg?: ModelTypes["tournament_teams_avg_fields"] | undefined,
+	count: number,
 	max?: ModelTypes["tournament_teams_max_fields"] | undefined,
-	min?: ModelTypes["tournament_teams_min_fields"] | undefined
+	min?: ModelTypes["tournament_teams_min_fields"] | undefined,
+	stddev?: ModelTypes["tournament_teams_stddev_fields"] | undefined,
+	stddev_pop?: ModelTypes["tournament_teams_stddev_pop_fields"] | undefined,
+	stddev_samp?: ModelTypes["tournament_teams_stddev_samp_fields"] | undefined,
+	sum?: ModelTypes["tournament_teams_sum_fields"] | undefined,
+	var_pop?: ModelTypes["tournament_teams_var_pop_fields"] | undefined,
+	var_samp?: ModelTypes["tournament_teams_var_samp_fields"] | undefined,
+	variance?: ModelTypes["tournament_teams_variance_fields"] | undefined
 };
 	/** order by aggregate values of table "tournament_teams" */
 ["tournament_teams_aggregate_order_by"]: {
+	avg?: ModelTypes["tournament_teams_avg_order_by"] | undefined,
 	count?: ModelTypes["order_by"] | undefined,
 	max?: ModelTypes["tournament_teams_max_order_by"] | undefined,
-	min?: ModelTypes["tournament_teams_min_order_by"] | undefined
+	min?: ModelTypes["tournament_teams_min_order_by"] | undefined,
+	stddev?: ModelTypes["tournament_teams_stddev_order_by"] | undefined,
+	stddev_pop?: ModelTypes["tournament_teams_stddev_pop_order_by"] | undefined,
+	stddev_samp?: ModelTypes["tournament_teams_stddev_samp_order_by"] | undefined,
+	sum?: ModelTypes["tournament_teams_sum_order_by"] | undefined,
+	var_pop?: ModelTypes["tournament_teams_var_pop_order_by"] | undefined,
+	var_samp?: ModelTypes["tournament_teams_var_samp_order_by"] | undefined,
+	variance?: ModelTypes["tournament_teams_variance_order_by"] | undefined
 };
 	/** input type for inserting array relation for remote table "tournament_teams" */
 ["tournament_teams_arr_rel_insert_input"]: {
@@ -39564,11 +39805,21 @@ export type ModelTypes = {
 	/** upsert condition */
 	on_conflict?: ModelTypes["tournament_teams_on_conflict"] | undefined
 };
+	/** aggregate avg on columns */
+["tournament_teams_avg_fields"]: {
+		creator_steam_id?: number | undefined
+};
+	/** order by avg() on columns of table "tournament_teams" */
+["tournament_teams_avg_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
+};
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
 	_and?: Array<ModelTypes["tournament_teams_bool_exp"]> | undefined,
 	_not?: ModelTypes["tournament_teams_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["tournament_teams_bool_exp"]> | undefined,
+	creator?: ModelTypes["players_bool_exp"] | undefined,
+	creator_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
 	team?: ModelTypes["teams_bool_exp"] | undefined,
@@ -39577,8 +39828,14 @@ export type ModelTypes = {
 	tournament_id?: ModelTypes["uuid_comparison_exp"] | undefined
 };
 	["tournament_teams_constraint"]:tournament_teams_constraint;
+	/** input type for incrementing numeric columns in table "tournament_teams" */
+["tournament_teams_inc_input"]: {
+	creator_steam_id?: ModelTypes["bigint"] | undefined
+};
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
+	creator?: ModelTypes["players_obj_rel_insert_input"] | undefined,
+	creator_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined,
@@ -39588,13 +39845,15 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		creator_steam_id?: ModelTypes["bigint"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined,
@@ -39602,13 +39861,15 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		creator_steam_id?: ModelTypes["bigint"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined,
@@ -39635,6 +39896,8 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
+	creator?: ModelTypes["players_order_by"] | undefined,
+	creator_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	team?: ModelTypes["teams_order_by"] | undefined,
@@ -39649,10 +39912,35 @@ export type ModelTypes = {
 	["tournament_teams_select_column"]:tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
+	creator_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
+};
+	/** aggregate stddev on columns */
+["tournament_teams_stddev_fields"]: {
+		creator_steam_id?: number | undefined
+};
+	/** order by stddev() on columns of table "tournament_teams" */
+["tournament_teams_stddev_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate stddev_pop on columns */
+["tournament_teams_stddev_pop_fields"]: {
+		creator_steam_id?: number | undefined
+};
+	/** order by stddev_pop() on columns of table "tournament_teams" */
+["tournament_teams_stddev_pop_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate stddev_samp on columns */
+["tournament_teams_stddev_samp_fields"]: {
+		creator_steam_id?: number | undefined
+};
+	/** order by stddev_samp() on columns of table "tournament_teams" */
+["tournament_teams_stddev_samp_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -39663,17 +39951,52 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
+	creator_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
 };
+	/** aggregate sum on columns */
+["tournament_teams_sum_fields"]: {
+		creator_steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** order by sum() on columns of table "tournament_teams" */
+["tournament_teams_sum_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
+};
 	["tournament_teams_update_column"]:tournament_teams_update_column;
 	["tournament_teams_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["tournament_teams_inc_input"] | undefined,
 	/** sets the columns of the filtered rows to the given values */
 	_set?: ModelTypes["tournament_teams_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: ModelTypes["tournament_teams_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["tournament_teams_var_pop_fields"]: {
+		creator_steam_id?: number | undefined
+};
+	/** order by var_pop() on columns of table "tournament_teams" */
+["tournament_teams_var_pop_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate var_samp on columns */
+["tournament_teams_var_samp_fields"]: {
+		creator_steam_id?: number | undefined
+};
+	/** order by var_samp() on columns of table "tournament_teams" */
+["tournament_teams_var_samp_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** aggregate variance on columns */
+["tournament_teams_variance_fields"]: {
+		creator_steam_id?: number | undefined
+};
+	/** order by variance() on columns of table "tournament_teams" */
+["tournament_teams_variance_order_by"]: {
+	creator_steam_id?: ModelTypes["order_by"] | undefined
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: {
@@ -52114,6 +52437,9 @@ export type GraphQLTypes = {
 	/** columns and relationships of "tournament_teams" */
 ["tournament_teams"]: {
 	__typename: "tournament_teams",
+	/** An object relationship */
+	creator: GraphQLTypes["players"],
+	creator_steam_id: GraphQLTypes["bigint"],
 	id: GraphQLTypes["uuid"],
 	name: string,
 	/** An object relationship */
@@ -52141,15 +52467,31 @@ export type GraphQLTypes = {
 	/** aggregate fields of "tournament_teams" */
 ["tournament_teams_aggregate_fields"]: {
 	__typename: "tournament_teams_aggregate_fields",
+	avg?: GraphQLTypes["tournament_teams_avg_fields"] | undefined,
 	count: number,
 	max?: GraphQLTypes["tournament_teams_max_fields"] | undefined,
-	min?: GraphQLTypes["tournament_teams_min_fields"] | undefined
+	min?: GraphQLTypes["tournament_teams_min_fields"] | undefined,
+	stddev?: GraphQLTypes["tournament_teams_stddev_fields"] | undefined,
+	stddev_pop?: GraphQLTypes["tournament_teams_stddev_pop_fields"] | undefined,
+	stddev_samp?: GraphQLTypes["tournament_teams_stddev_samp_fields"] | undefined,
+	sum?: GraphQLTypes["tournament_teams_sum_fields"] | undefined,
+	var_pop?: GraphQLTypes["tournament_teams_var_pop_fields"] | undefined,
+	var_samp?: GraphQLTypes["tournament_teams_var_samp_fields"] | undefined,
+	variance?: GraphQLTypes["tournament_teams_variance_fields"] | undefined
 };
 	/** order by aggregate values of table "tournament_teams" */
 ["tournament_teams_aggregate_order_by"]: {
-		count?: GraphQLTypes["order_by"] | undefined,
+		avg?: GraphQLTypes["tournament_teams_avg_order_by"] | undefined,
+	count?: GraphQLTypes["order_by"] | undefined,
 	max?: GraphQLTypes["tournament_teams_max_order_by"] | undefined,
-	min?: GraphQLTypes["tournament_teams_min_order_by"] | undefined
+	min?: GraphQLTypes["tournament_teams_min_order_by"] | undefined,
+	stddev?: GraphQLTypes["tournament_teams_stddev_order_by"] | undefined,
+	stddev_pop?: GraphQLTypes["tournament_teams_stddev_pop_order_by"] | undefined,
+	stddev_samp?: GraphQLTypes["tournament_teams_stddev_samp_order_by"] | undefined,
+	sum?: GraphQLTypes["tournament_teams_sum_order_by"] | undefined,
+	var_pop?: GraphQLTypes["tournament_teams_var_pop_order_by"] | undefined,
+	var_samp?: GraphQLTypes["tournament_teams_var_samp_order_by"] | undefined,
+	variance?: GraphQLTypes["tournament_teams_variance_order_by"] | undefined
 };
 	/** input type for inserting array relation for remote table "tournament_teams" */
 ["tournament_teams_arr_rel_insert_input"]: {
@@ -52157,11 +52499,22 @@ export type GraphQLTypes = {
 	/** upsert condition */
 	on_conflict?: GraphQLTypes["tournament_teams_on_conflict"] | undefined
 };
+	/** aggregate avg on columns */
+["tournament_teams_avg_fields"]: {
+	__typename: "tournament_teams_avg_fields",
+	creator_steam_id?: number | undefined
+};
+	/** order by avg() on columns of table "tournament_teams" */
+["tournament_teams_avg_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
+};
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
 		_and?: Array<GraphQLTypes["tournament_teams_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["tournament_teams_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["tournament_teams_bool_exp"]> | undefined,
+	creator?: GraphQLTypes["players_bool_exp"] | undefined,
+	creator_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined,
@@ -52171,9 +52524,15 @@ export type GraphQLTypes = {
 };
 	/** unique or primary key constraints on table "tournament_teams" */
 ["tournament_teams_constraint"]: tournament_teams_constraint;
+	/** input type for incrementing numeric columns in table "tournament_teams" */
+["tournament_teams_inc_input"]: {
+		creator_steam_id?: GraphQLTypes["bigint"] | undefined
+};
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		creator?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
+	creator_steam_id?: GraphQLTypes["bigint"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
@@ -52183,6 +52542,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: {
 	__typename: "tournament_teams_max_fields",
+	creator_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
@@ -52190,7 +52550,8 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
 	tournament_id?: GraphQLTypes["order_by"] | undefined
@@ -52198,6 +52559,7 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: {
 	__typename: "tournament_teams_min_fields",
+	creator_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
@@ -52205,7 +52567,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
 	tournament_id?: GraphQLTypes["order_by"] | undefined
@@ -52232,7 +52595,9 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		creator?: GraphQLTypes["players_order_by"] | undefined,
+	creator_steam_id?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	team?: GraphQLTypes["teams_order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
@@ -52247,10 +52612,38 @@ export type GraphQLTypes = {
 ["tournament_teams_select_column"]: tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		creator_steam_id?: GraphQLTypes["bigint"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** aggregate stddev on columns */
+["tournament_teams_stddev_fields"]: {
+	__typename: "tournament_teams_stddev_fields",
+	creator_steam_id?: number | undefined
+};
+	/** order by stddev() on columns of table "tournament_teams" */
+["tournament_teams_stddev_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate stddev_pop on columns */
+["tournament_teams_stddev_pop_fields"]: {
+	__typename: "tournament_teams_stddev_pop_fields",
+	creator_steam_id?: number | undefined
+};
+	/** order by stddev_pop() on columns of table "tournament_teams" */
+["tournament_teams_stddev_pop_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate stddev_samp on columns */
+["tournament_teams_stddev_samp_fields"]: {
+	__typename: "tournament_teams_stddev_samp_fields",
+	creator_steam_id?: number | undefined
+};
+	/** order by stddev_samp() on columns of table "tournament_teams" */
+["tournament_teams_stddev_samp_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -52261,18 +52654,57 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		creator_steam_id?: GraphQLTypes["bigint"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament_id?: GraphQLTypes["uuid"] | undefined
 };
+	/** aggregate sum on columns */
+["tournament_teams_sum_fields"]: {
+	__typename: "tournament_teams_sum_fields",
+	creator_steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** order by sum() on columns of table "tournament_teams" */
+["tournament_teams_sum_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
+};
 	/** update columns of table "tournament_teams" */
 ["tournament_teams_update_column"]: tournament_teams_update_column;
 	["tournament_teams_updates"]: {
-		/** sets the columns of the filtered rows to the given values */
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["tournament_teams_inc_input"] | undefined,
+	/** sets the columns of the filtered rows to the given values */
 	_set?: GraphQLTypes["tournament_teams_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["tournament_teams_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["tournament_teams_var_pop_fields"]: {
+	__typename: "tournament_teams_var_pop_fields",
+	creator_steam_id?: number | undefined
+};
+	/** order by var_pop() on columns of table "tournament_teams" */
+["tournament_teams_var_pop_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate var_samp on columns */
+["tournament_teams_var_samp_fields"]: {
+	__typename: "tournament_teams_var_samp_fields",
+	creator_steam_id?: number | undefined
+};
+	/** order by var_samp() on columns of table "tournament_teams" */
+["tournament_teams_var_samp_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** aggregate variance on columns */
+["tournament_teams_variance_fields"]: {
+	__typename: "tournament_teams_variance_fields",
+	creator_steam_id?: number | undefined
+};
+	/** order by variance() on columns of table "tournament_teams" */
+["tournament_teams_variance_order_by"]: {
+		creator_steam_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: {
@@ -54972,6 +55404,7 @@ export const enum tournament_teams_constraint {
 }
 /** select columns of table "tournament_teams" */
 export const enum tournament_teams_select_column {
+	creator_steam_id = "creator_steam_id",
 	id = "id",
 	name = "name",
 	team_id = "team_id",
@@ -54979,6 +55412,7 @@ export const enum tournament_teams_select_column {
 }
 /** update columns of table "tournament_teams" */
 export const enum tournament_teams_update_column {
+	creator_steam_id = "creator_steam_id",
 	id = "id",
 	name = "name",
 	team_id = "team_id",
@@ -55914,8 +56348,10 @@ type ZEUS_VARIABLES = {
 	["tournament_teams_aggregate_bool_exp_count"]: ValueTypes["tournament_teams_aggregate_bool_exp_count"];
 	["tournament_teams_aggregate_order_by"]: ValueTypes["tournament_teams_aggregate_order_by"];
 	["tournament_teams_arr_rel_insert_input"]: ValueTypes["tournament_teams_arr_rel_insert_input"];
+	["tournament_teams_avg_order_by"]: ValueTypes["tournament_teams_avg_order_by"];
 	["tournament_teams_bool_exp"]: ValueTypes["tournament_teams_bool_exp"];
 	["tournament_teams_constraint"]: ValueTypes["tournament_teams_constraint"];
+	["tournament_teams_inc_input"]: ValueTypes["tournament_teams_inc_input"];
 	["tournament_teams_insert_input"]: ValueTypes["tournament_teams_insert_input"];
 	["tournament_teams_max_order_by"]: ValueTypes["tournament_teams_max_order_by"];
 	["tournament_teams_min_order_by"]: ValueTypes["tournament_teams_min_order_by"];
@@ -55925,10 +56361,17 @@ type ZEUS_VARIABLES = {
 	["tournament_teams_pk_columns_input"]: ValueTypes["tournament_teams_pk_columns_input"];
 	["tournament_teams_select_column"]: ValueTypes["tournament_teams_select_column"];
 	["tournament_teams_set_input"]: ValueTypes["tournament_teams_set_input"];
+	["tournament_teams_stddev_order_by"]: ValueTypes["tournament_teams_stddev_order_by"];
+	["tournament_teams_stddev_pop_order_by"]: ValueTypes["tournament_teams_stddev_pop_order_by"];
+	["tournament_teams_stddev_samp_order_by"]: ValueTypes["tournament_teams_stddev_samp_order_by"];
 	["tournament_teams_stream_cursor_input"]: ValueTypes["tournament_teams_stream_cursor_input"];
 	["tournament_teams_stream_cursor_value_input"]: ValueTypes["tournament_teams_stream_cursor_value_input"];
+	["tournament_teams_sum_order_by"]: ValueTypes["tournament_teams_sum_order_by"];
 	["tournament_teams_update_column"]: ValueTypes["tournament_teams_update_column"];
 	["tournament_teams_updates"]: ValueTypes["tournament_teams_updates"];
+	["tournament_teams_var_pop_order_by"]: ValueTypes["tournament_teams_var_pop_order_by"];
+	["tournament_teams_var_samp_order_by"]: ValueTypes["tournament_teams_var_samp_order_by"];
+	["tournament_teams_variance_order_by"]: ValueTypes["tournament_teams_variance_order_by"];
 	["tournaments_aggregate_bool_exp"]: ValueTypes["tournaments_aggregate_bool_exp"];
 	["tournaments_aggregate_bool_exp_count"]: ValueTypes["tournaments_aggregate_bool_exp_count"];
 	["tournaments_aggregate_order_by"]: ValueTypes["tournaments_aggregate_order_by"];

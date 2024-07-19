@@ -197,9 +197,6 @@ import MapDisplay from "~/components/MapDisplay.vue";
           >
             <div class="space-y-0.5">
               <FormLabel class="text-base"> Custom Map Pool </FormLabel>
-              <FormDescription>
-                Coaches will be spawned and killed at the start of each round
-              </FormDescription>
             </div>
             <FormControl>
               <Switch

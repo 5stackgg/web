@@ -1,9 +1,17 @@
+<script lang="ts" setup>
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
+import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
+</script>
+
 <template>
   <Tabs default-value="info" v-if="tournament">
     <TabsList>
       <TabsTrigger value="info"> Information </TabsTrigger>
       <TabsTrigger value="bracket"> Bracket </TabsTrigger>
-      <TabsTrigger value="teams"> Teams ({{ tournament.teams_aggregate.aggregate.count }}) </TabsTrigger>
+      <TabsTrigger value="teams">
+        Teams ({{ tournament.teams_aggregate.aggregate.count }})
+      </TabsTrigger>
       <TabsTrigger value="roster"> Manage My Roster </TabsTrigger>
       <TabsTrigger value="manage"> Manage Tournament </TabsTrigger>
     </TabsList>
@@ -22,9 +30,32 @@
       <p v-for="{ organizer, role } of tournament.organizers">
         {{ organizer.name }} ({{ role }})
       </p>
+      <Drawer>
+        <DrawerTrigger>
+          <Button> Join Tournament </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Which Team do you wish to join with?</DrawerTitle>
+          </DrawerHeader>
+          <DrawerFooter>
+            <TournamentJoinForm @close=""></TournamentJoinForm>
+            <DrawerClose>
+              <Button variant="outline"> Cancel </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </TabsContent>
     <TabsContent value="bracket">
       <TournamentStageBuilder :tournament="tournament"></TournamentStageBuilder>
+    </TabsContent>
+    <TabsContent value="teams">
+      <template v-for="team of tournament.teams">
+        <p>
+          {{ team.name }}
+        </p>
+      </template>
     </TabsContent>
     <TabsContent value="manage">
       <Tabs default-value="organizers">
@@ -42,24 +73,11 @@
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import TournamentRound from "~/components/tournament/TournamentRound.vue";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import TournamentStage from "~/components/tournament/TournamentStage.vue";
-import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
  */
 export default {
-  components: {
-    TournamentStageBuilder,
-    TournamentStage,
-    TabsList,
-    Tabs,
-    TabsContent,
-    TabsTrigger,
-    TournamentRound,
-  },
   data() {
     return {
       tournament: undefined,
@@ -92,6 +110,10 @@ export default {
                   },
                 },
               ],
+              teams: [{}, {
+                id: true,
+                name: true,
+              }],
               teams_aggregate: [
                 {},
                 {

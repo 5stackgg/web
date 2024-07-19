@@ -12,7 +12,7 @@ import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue
   <div v-if="tournament.stages.length === 0">
     <h1>Add Another Stage</h1>
     <TournamentStageForm
-        :order="tournament.stages.length + 1"
+      :order="tournament.stages.length + 1"
     ></TournamentStageForm>
   </div>
 </template>

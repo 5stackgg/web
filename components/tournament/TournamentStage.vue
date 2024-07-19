@@ -26,29 +26,34 @@ import {
 
 <template>
   <h1>
-    {{ stage.type }} Stage {{ stage.order }} : Min Teams {{ stage.min_teams }},
+    <div>
+      Stage {{ stage.order }}
+      <DropdownMenu v-model:open="stageMenu">
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" size="sm">
+            <MoreHorizontal />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" class="w-[200px]">
+          <DropdownMenuGroup>
+            <DropdownMenuItem @click="editStage = true"> Edit </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+                class="text-red-600"
+                @click="deleteAlertDialog = true"
+            >
+              <Trash class="mr-2 h-4 w-4 inline" /> Delete
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+
+    <Badge>{{ stage.e_tournament_stage_type.description }}</Badge>
+    Min Teams {{ stage.min_teams }}
     Max Teams {{ stage.max_teams }}
-    <DropdownMenu v-model:open="stageMenu">
-      <DropdownMenuTrigger as-child>
-        <Button variant="ghost" size="sm">
-          <MoreHorizontal />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" class="w-[200px]">
-        <DropdownMenuGroup>
-          <DropdownMenuItem @click="editStage = true"> Edit </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            class="text-red-600"
-            @click="deleteAlertDialog = true"
-          >
-            <Trash class="mr-2 h-4 w-4 inline" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
   </h1>
   <div class="flex">
     <template v-for="round of Array.from(rounds.keys())">

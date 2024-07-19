@@ -105,6 +105,9 @@ export default {
                 {
                   id: true,
                   type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
                   order: true,
                   min_teams: true,
                   max_teams: true,

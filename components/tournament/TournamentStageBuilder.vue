@@ -7,7 +7,7 @@ import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue
   <div v-for="stage of tournament.stages" :key="stage.id">
     <TournamentStage :stage="stage"></TournamentStage>
   </div>
-  
+
   <!-- Backend needs to support multiple stages -->
   <div v-if="tournament.stages.length === 0">
     <h1>Add Another Stage</h1>

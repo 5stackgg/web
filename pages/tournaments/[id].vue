@@ -30,12 +30,10 @@
       <Tabs default-value="organizers">
         <TabsList>
           <TabsTrigger value="organizers"> Organizers </TabsTrigger>
-          <TabsTrigger value="stages"> Stages </TabsTrigger>
           <TabsTrigger value="servers"> Servers </TabsTrigger>
         </TabsList>
-        <TabsContent value="organizers">asdfasdfsd</TabsContent>
-        <TabsContent value="bracket"></TabsContent>
-        <TabsContent value="servers"></TabsContent>
+        <TabsContent value="organizers">organizers</TabsContent>
+        <TabsContent value="servers">servers</TabsContent>
       </Tabs>
     </TabsContent>
   </Tabs>

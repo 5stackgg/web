@@ -3,7 +3,7 @@
     <TabsList>
       <TabsTrigger value="info"> Information </TabsTrigger>
       <TabsTrigger value="bracket"> Bracket </TabsTrigger>
-      <TabsTrigger value="teams"> Teams </TabsTrigger>
+      <TabsTrigger value="teams"> Teams ({{ tournament.teams_aggregate.aggregate.count }}) </TabsTrigger>
       <TabsTrigger value="roster"> Manage My Roster </TabsTrigger>
       <TabsTrigger value="manage"> Manage Tournament </TabsTrigger>
     </TabsList>
@@ -89,6 +89,14 @@ export default {
                   role: true,
                   organizer: {
                     name: true,
+                  },
+                },
+              ],
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
                   },
                 },
               ],

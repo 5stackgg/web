@@ -19,16 +19,12 @@
       </p>
 
       <p>Organizers</p>
-      <p v-for="{organizer, role} of tournament.organizers">
+      <p v-for="{ organizer, role } of tournament.organizers">
         {{ organizer.name }} ({{ role }})
       </p>
-
-
     </TabsContent>
     <TabsContent value="bracket">
-        <template v-for="stage of tournament.stages" :key="stage.id">
-            <TournamentStage :stage="stage"></TournamentStage>
-        </template>
+      <TournamentStageBuilder :tournament="tournament"></TournamentStageBuilder>
     </TabsContent>
     <TabsContent value="manage">
       <Tabs default-value="organizers">
@@ -49,14 +45,23 @@
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import TournamentRound from "~/components/tournament/TournamentRound.vue";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "~/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStage from "~/components/tournament/TournamentStage.vue";
+import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
  */
 export default {
-  components: {TournamentStage, TabsList, Tabs, TabsContent, TabsTrigger, TournamentRound },
+  components: {
+    TournamentStageBuilder,
+    TournamentStage,
+    TabsList,
+    Tabs,
+    TabsContent,
+    TabsTrigger,
+    TournamentRound,
+  },
   data() {
     return {
       tournament: undefined,
@@ -80,23 +85,29 @@ export default {
               admin: {
                 name: true,
               },
-              organizers: [{}, {
-                role: true,
-                organizer: {
-                  name: true,
-                }
-              }],
+              organizers: [
+                {},
+                {
+                  role: true,
+                  organizer: {
+                    name: true,
+                  },
+                },
+              ],
               stages: [
                 {
                   order_by: [
                     {
                       order: order_by.asc,
-                    }
-                  ]
+                    },
+                  ],
                 },
                 {
                   id: true,
+                  type: true,
                   order: true,
+                  min_teams: true,
+                  max_teams: true,
                   brackets: [
                     {
                       order_by: [

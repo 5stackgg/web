@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TournamentsTable from "~/components/TournamentsTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
-import {Button} from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 </script>
 
 <template>
@@ -71,7 +71,7 @@ export default {
                     count: true,
                   },
                 },
-              ]
+              ],
             },
           ],
         });

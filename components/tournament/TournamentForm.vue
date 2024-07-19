@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Calendar as CalendarIcon } from 'lucide-vue-next'
-import { Calendar } from '@/components/ui/calendar'
-import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-
+import { Calendar as CalendarIcon } from "lucide-vue-next";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 </script>
-
 
 <template>
   <form @submit.prevent="updateCreateTournament">
@@ -47,10 +49,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
             <Popover>
               <PopoverTrigger as-child>
                 <Button
-                    variant="outline"
-                    class="w-[280px] justify-start text-left font-normal"
-                    :class="{
-                    ['text-muted-foreground']: !componentField.modelValue
+                  variant="outline"
+                  class="w-[280px] justify-start text-left font-normal"
+                  :class="{
+                    ['text-muted-foreground']: !componentField.modelValue,
                   }"
                 >
                   <CalendarIcon class="mr-2 h-4 w-4" />
@@ -62,14 +64,18 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
               </PopoverContent>
             </Popover>
 
-            <Input type="time" v-model="startTime" style="color-scheme: dark"></Input>
+            <Input
+              type="time"
+              v-model="startTime"
+              style="color-scheme: dark"
+            ></Input>
           </div>
 
           <FormMessage />
         </FormControl>
       </FormItem>
     </FormField>
-    <pre>{{ form.errors }}</pre>
+
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
       <template v-if="tournament"> Update </template
       ><template v-else> Create </template> Tournament
@@ -97,12 +103,12 @@ export default {
       startTime: undefined,
       form: useForm({
         validationSchema: toTypedSchema(
-            z.object({
-              name: z.string().min(1),
-              type: z.string(),
-              start: z.date(),
-              description: z.string().nullable().default(null),
-            })
+          z.object({
+            name: z.string().min(1),
+            type: z.string(),
+            start: z.date(),
+            description: z.string().nullable().default(null),
+          })
         ),
       }),
     };
@@ -112,13 +118,13 @@ export default {
       immediate: true,
       handler() {
         this.setStart();
-      }
+      },
     },
     startDate: {
       immediate: true,
       handler() {
         this.setStart();
-      }
+      },
     },
     tournament: {
       immediate: true,
@@ -136,17 +142,17 @@ export default {
   },
   methods: {
     setStart() {
-      if(!this.startDate || !this.startTime) {
-        return
+      if (!this.startDate || !this.startTime) {
+        return;
       }
       this.form.setValues({
-        start: new Date(`${this.startDate} ${this.startTime}`)
-      })
+        start: new Date(`${this.startDate} ${this.startTime}`),
+      });
     },
     async updateCreateTournament() {
       const { valid } = await this.form.validate();
 
-      if(!valid) {
+      if (!valid) {
         return;
       }
 

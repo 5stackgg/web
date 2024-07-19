@@ -534,6 +534,61 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_timeout_settings_set_input",
 		where:"e_timeout_settings_bool_exp"
 	},
+	e_tournament_stage_types_aggregate_fields:{
+		count:{
+			columns:"e_tournament_stage_types_select_column"
+		}
+	},
+	e_tournament_stage_types_bool_exp:{
+		_and:"e_tournament_stage_types_bool_exp",
+		_not:"e_tournament_stage_types_bool_exp",
+		_or:"e_tournament_stage_types_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_tournament_stage_types_constraint: "enum" as const,
+	e_tournament_stage_types_enum: "enum" as const,
+	e_tournament_stage_types_enum_comparison_exp:{
+		_eq:"e_tournament_stage_types_enum",
+		_in:"e_tournament_stage_types_enum",
+		_neq:"e_tournament_stage_types_enum",
+		_nin:"e_tournament_stage_types_enum"
+	},
+	e_tournament_stage_types_insert_input:{
+
+	},
+	e_tournament_stage_types_obj_rel_insert_input:{
+		data:"e_tournament_stage_types_insert_input",
+		on_conflict:"e_tournament_stage_types_on_conflict"
+	},
+	e_tournament_stage_types_on_conflict:{
+		constraint:"e_tournament_stage_types_constraint",
+		update_columns:"e_tournament_stage_types_update_column",
+		where:"e_tournament_stage_types_bool_exp"
+	},
+	e_tournament_stage_types_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_tournament_stage_types_pk_columns_input:{
+
+	},
+	e_tournament_stage_types_select_column: "enum" as const,
+	e_tournament_stage_types_set_input:{
+
+	},
+	e_tournament_stage_types_stream_cursor_input:{
+		initial_value:"e_tournament_stage_types_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_tournament_stage_types_stream_cursor_value_input:{
+
+	},
+	e_tournament_stage_types_update_column: "enum" as const,
+	e_tournament_stage_types_updates:{
+		_set:"e_tournament_stage_types_set_input",
+		where:"e_tournament_stage_types_bool_exp"
+	},
 	e_utility_types_aggregate_fields:{
 		count:{
 			columns:"e_utility_types_select_column"
@@ -2369,6 +2424,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_timeout_settings_by_pk:{
 
 		},
+		delete_e_tournament_stage_types:{
+			where:"e_tournament_stage_types_bool_exp"
+		},
+		delete_e_tournament_stage_types_by_pk:{
+
+		},
 		delete_e_utility_types:{
 			where:"e_utility_types_bool_exp"
 		},
@@ -2617,6 +2678,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_timeout_settings_one:{
 			object:"e_timeout_settings_insert_input",
 			on_conflict:"e_timeout_settings_on_conflict"
+		},
+		insert_e_tournament_stage_types:{
+			objects:"e_tournament_stage_types_insert_input",
+			on_conflict:"e_tournament_stage_types_on_conflict"
+		},
+		insert_e_tournament_stage_types_one:{
+			object:"e_tournament_stage_types_insert_input",
+			on_conflict:"e_tournament_stage_types_on_conflict"
 		},
 		insert_e_utility_types:{
 			objects:"e_utility_types_insert_input",
@@ -2959,6 +3028,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_timeout_settings_many:{
 			updates:"e_timeout_settings_updates"
+		},
+		update_e_tournament_stage_types:{
+			_set:"e_tournament_stage_types_set_input",
+			where:"e_tournament_stage_types_bool_exp"
+		},
+		update_e_tournament_stage_types_by_pk:{
+			_set:"e_tournament_stage_types_set_input",
+			pk_columns:"e_tournament_stage_types_pk_columns_input"
+		},
+		update_e_tournament_stage_types_many:{
+			updates:"e_tournament_stage_types_updates"
 		},
 		update_e_utility_types:{
 			_set:"e_utility_types_set_input",
@@ -5214,6 +5294,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_timeout_settings_by_pk:{
 
 		},
+		e_tournament_stage_types:{
+			distinct_on:"e_tournament_stage_types_select_column",
+			order_by:"e_tournament_stage_types_order_by",
+			where:"e_tournament_stage_types_bool_exp"
+		},
+		e_tournament_stage_types_aggregate:{
+			distinct_on:"e_tournament_stage_types_select_column",
+			order_by:"e_tournament_stage_types_order_by",
+			where:"e_tournament_stage_types_bool_exp"
+		},
+		e_tournament_stage_types_by_pk:{
+
+		},
 		e_utility_types:{
 			distinct_on:"e_utility_types_select_column",
 			order_by:"e_utility_types_order_by",
@@ -5936,6 +6029,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_timeout_settings_stream:{
 			cursor:"e_timeout_settings_stream_cursor_input",
 			where:"e_timeout_settings_bool_exp"
+		},
+		e_tournament_stage_types:{
+			distinct_on:"e_tournament_stage_types_select_column",
+			order_by:"e_tournament_stage_types_order_by",
+			where:"e_tournament_stage_types_bool_exp"
+		},
+		e_tournament_stage_types_aggregate:{
+			distinct_on:"e_tournament_stage_types_select_column",
+			order_by:"e_tournament_stage_types_order_by",
+			where:"e_tournament_stage_types_bool_exp"
+		},
+		e_tournament_stage_types_by_pk:{
+
+		},
+		e_tournament_stage_types_stream:{
+			cursor:"e_tournament_stage_types_stream_cursor_input",
+			where:"e_tournament_stage_types_bool_exp"
 		},
 		e_utility_types:{
 			distinct_on:"e_utility_types_select_column",
@@ -7584,6 +7694,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"tournament_stages_bool_exp",
 		brackets:"tournament_brackets_bool_exp",
 		brackets_aggregate:"tournament_brackets_aggregate_bool_exp",
+		e_tournament_stage_type:"e_tournament_stage_types_bool_exp",
 		id:"uuid_comparison_exp",
 		max_teams:"Int_comparison_exp",
 		min_teams:"Int_comparison_exp",
@@ -7591,7 +7702,7 @@ export const AllTypesProps: Record<string,any> = {
 		settings:"jsonb_comparison_exp",
 		tournament:"tournaments_bool_exp",
 		tournament_id:"uuid_comparison_exp",
-		type:"String_comparison_exp"
+		type:"e_tournament_stage_types_enum_comparison_exp"
 	},
 	tournament_stages_constraint: "enum" as const,
 	tournament_stages_delete_at_path_input:{
@@ -7608,26 +7719,26 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_stages_insert_input:{
 		brackets:"tournament_brackets_arr_rel_insert_input",
+		e_tournament_stage_type:"e_tournament_stage_types_obj_rel_insert_input",
 		id:"uuid",
 		settings:"jsonb",
 		tournament:"tournaments_obj_rel_insert_input",
-		tournament_id:"uuid"
+		tournament_id:"uuid",
+		type:"e_tournament_stage_types_enum"
 	},
 	tournament_stages_max_order_by:{
 		id:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
-		tournament_id:"order_by",
-		type:"order_by"
+		tournament_id:"order_by"
 	},
 	tournament_stages_min_order_by:{
 		id:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
-		tournament_id:"order_by",
-		type:"order_by"
+		tournament_id:"order_by"
 	},
 	tournament_stages_obj_rel_insert_input:{
 		data:"tournament_stages_insert_input",
@@ -7640,6 +7751,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_stages_order_by:{
 		brackets_aggregate:"tournament_brackets_aggregate_order_by",
+		e_tournament_stage_type:"e_tournament_stage_types_order_by",
 		id:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
@@ -7659,7 +7771,8 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_stages_set_input:{
 		id:"uuid",
 		settings:"jsonb",
-		tournament_id:"uuid"
+		tournament_id:"uuid",
+		type:"e_tournament_stage_types_enum"
 	},
 	tournament_stages_stddev_order_by:{
 		max_teams:"order_by",
@@ -7683,7 +7796,8 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_stages_stream_cursor_value_input:{
 		id:"uuid",
 		settings:"jsonb",
-		tournament_id:"uuid"
+		tournament_id:"uuid",
+		type:"e_tournament_stage_types_enum"
 	},
 	tournament_stages_sum_order_by:{
 		max_teams:"order_by",
@@ -8770,6 +8884,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_timeout_settings"
 	},
+	e_tournament_stage_types:{
+		description:"String",
+		value:"String"
+	},
+	e_tournament_stage_types_aggregate:{
+		aggregate:"e_tournament_stage_types_aggregate_fields",
+		nodes:"e_tournament_stage_types"
+	},
+	e_tournament_stage_types_aggregate_fields:{
+		count:"Int",
+		max:"e_tournament_stage_types_max_fields",
+		min:"e_tournament_stage_types_min_fields"
+	},
+	e_tournament_stage_types_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_tournament_stage_types_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_tournament_stage_types_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_tournament_stage_types"
+	},
 	e_utility_types:{
 		description:"String",
 		value:"String"
@@ -9642,6 +9781,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_team_roles_by_pk:"e_team_roles",
 		delete_e_timeout_settings:"e_timeout_settings_mutation_response",
 		delete_e_timeout_settings_by_pk:"e_timeout_settings",
+		delete_e_tournament_stage_types:"e_tournament_stage_types_mutation_response",
+		delete_e_tournament_stage_types_by_pk:"e_tournament_stage_types",
 		delete_e_utility_types:"e_utility_types_mutation_response",
 		delete_e_utility_types_by_pk:"e_utility_types",
 		delete_e_veto_pick_types:"e_veto_pick_types_mutation_response",
@@ -9719,6 +9860,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_team_roles_one:"e_team_roles",
 		insert_e_timeout_settings:"e_timeout_settings_mutation_response",
 		insert_e_timeout_settings_one:"e_timeout_settings",
+		insert_e_tournament_stage_types:"e_tournament_stage_types_mutation_response",
+		insert_e_tournament_stage_types_one:"e_tournament_stage_types",
 		insert_e_utility_types:"e_utility_types_mutation_response",
 		insert_e_utility_types_one:"e_utility_types",
 		insert_e_veto_pick_types:"e_veto_pick_types_mutation_response",
@@ -9807,6 +9950,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_timeout_settings:"e_timeout_settings_mutation_response",
 		update_e_timeout_settings_by_pk:"e_timeout_settings",
 		update_e_timeout_settings_many:"e_timeout_settings_mutation_response",
+		update_e_tournament_stage_types:"e_tournament_stage_types_mutation_response",
+		update_e_tournament_stage_types_by_pk:"e_tournament_stage_types",
+		update_e_tournament_stage_types_many:"e_tournament_stage_types_mutation_response",
 		update_e_utility_types:"e_utility_types_mutation_response",
 		update_e_utility_types_by_pk:"e_utility_types",
 		update_e_utility_types_many:"e_utility_types_mutation_response",
@@ -10784,6 +10930,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_timeout_settings:"e_timeout_settings",
 		e_timeout_settings_aggregate:"e_timeout_settings_aggregate",
 		e_timeout_settings_by_pk:"e_timeout_settings",
+		e_tournament_stage_types:"e_tournament_stage_types",
+		e_tournament_stage_types_aggregate:"e_tournament_stage_types_aggregate",
+		e_tournament_stage_types_by_pk:"e_tournament_stage_types",
 		e_utility_types:"e_utility_types",
 		e_utility_types_aggregate:"e_utility_types_aggregate",
 		e_utility_types_by_pk:"e_utility_types",
@@ -11024,6 +11173,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_timeout_settings_aggregate:"e_timeout_settings_aggregate",
 		e_timeout_settings_by_pk:"e_timeout_settings",
 		e_timeout_settings_stream:"e_timeout_settings",
+		e_tournament_stage_types:"e_tournament_stage_types",
+		e_tournament_stage_types_aggregate:"e_tournament_stage_types_aggregate",
+		e_tournament_stage_types_by_pk:"e_tournament_stage_types",
+		e_tournament_stage_types_stream:"e_tournament_stage_types",
 		e_utility_types:"e_utility_types",
 		e_utility_types_aggregate:"e_utility_types_aggregate",
 		e_utility_types_by_pk:"e_utility_types",
@@ -11628,6 +11781,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_stages:{
 		brackets:"tournament_brackets",
 		brackets_aggregate:"tournament_brackets_aggregate",
+		e_tournament_stage_type:"e_tournament_stage_types",
 		id:"uuid",
 		max_teams:"Int",
 		min_teams:"Int",
@@ -11635,7 +11789,7 @@ export const ReturnTypes: Record<string,any> = {
 		settings:"jsonb",
 		tournament:"tournaments",
 		tournament_id:"uuid",
-		type:"String"
+		type:"e_tournament_stage_types_enum"
 	},
 	tournament_stages_aggregate:{
 		aggregate:"tournament_stages_aggregate_fields",
@@ -11664,16 +11818,14 @@ export const ReturnTypes: Record<string,any> = {
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
-		tournament_id:"uuid",
-		type:"String"
+		tournament_id:"uuid"
 	},
 	tournament_stages_min_fields:{
 		id:"uuid",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
-		tournament_id:"uuid",
-		type:"String"
+		tournament_id:"uuid"
 	},
 	tournament_stages_mutation_response:{
 		affected_rows:"Int",

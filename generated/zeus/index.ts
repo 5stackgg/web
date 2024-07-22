@@ -9906,7 +9906,7 @@ matches_aggregate?: [{	/** distinct select on columns */
 	on_demand?:boolean | `@${string}`,
 	/** An object relationship */
 	owner?:ValueTypes["players"],
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	rcon_password?:boolean | `@${string}`,
 tournament_servers?: [{	/** distinct select on columns */
@@ -9947,7 +9947,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 }>;
 	/** aggregate avg on columns */
 ["servers_avg_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -9967,7 +9967,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	matches_aggregate?: ValueTypes["matches_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	on_demand?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	owner?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	owner_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	port?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	rcon_password?: ValueTypes["bytea_comparison_exp"] | undefined | null | Variable<any, string>,
 	tournament_servers?: ValueTypes["tournament_servers_bool_exp"] | undefined | null | Variable<any, string>,
@@ -9978,7 +9978,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 ["servers_constraint"]:servers_constraint;
 	/** input type for incrementing numeric columns in table "servers" */
 ["servers_inc_input"]: {
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	port?: number | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>
 };
@@ -9992,7 +9992,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	matches?: ValueTypes["matches_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	on_demand?: boolean | undefined | null | Variable<any, string>,
 	owner?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	port?: number | undefined | null | Variable<any, string>,
 	rcon_password?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
 	tournament_servers?: ValueTypes["tournament_servers_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -10006,7 +10006,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -10019,7 +10019,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -10055,7 +10055,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	on_demand?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	port?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	rcon_password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_servers_aggregate?: ValueTypes["tournament_servers_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -10075,28 +10075,28 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
 	on_demand?: boolean | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	port?: number | undefined | null | Variable<any, string>,
 	rcon_password?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["servers_stddev_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
 ["servers_stddev_pop_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
 ["servers_stddev_samp_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -10116,14 +10116,14 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
 	on_demand?: boolean | undefined | null | Variable<any, string>,
-	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	port?: number | undefined | null | Variable<any, string>,
 	rcon_password?: ValueTypes["bytea"] | undefined | null | Variable<any, string>,
 	tv_port?: number | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["servers_sum_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -10140,21 +10140,21 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 };
 	/** aggregate var_pop on columns */
 ["servers_var_pop_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
 ["servers_var_samp_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
 ["servers_variance_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -24190,7 +24190,7 @@ matches_aggregate?: [{	/** distinct select on columns */
 	on_demand?:boolean | `@${string}`,
 	/** An object relationship */
 	owner?:ResolverInputTypes["players"],
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	rcon_password?:boolean | `@${string}`,
 tournament_servers?: [{	/** distinct select on columns */
@@ -24231,7 +24231,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 }>;
 	/** aggregate avg on columns */
 ["servers_avg_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -24251,7 +24251,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_bool_exp"] | undefined | null,
 	on_demand?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	owner?: ResolverInputTypes["players_bool_exp"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	owner_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	port?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	rcon_password?: ResolverInputTypes["bytea_comparison_exp"] | undefined | null,
 	tournament_servers?: ResolverInputTypes["tournament_servers_bool_exp"] | undefined | null,
@@ -24262,7 +24262,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 ["servers_constraint"]:servers_constraint;
 	/** input type for incrementing numeric columns in table "servers" */
 ["servers_inc_input"]: {
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	port?: number | undefined | null,
 	tv_port?: number | undefined | null
 };
@@ -24276,7 +24276,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	matches?: ResolverInputTypes["matches_arr_rel_insert_input"] | undefined | null,
 	on_demand?: boolean | undefined | null,
 	owner?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	port?: number | undefined | null,
 	rcon_password?: ResolverInputTypes["bytea"] | undefined | null,
 	tournament_servers?: ResolverInputTypes["tournament_servers_arr_rel_insert_input"] | undefined | null,
@@ -24290,7 +24290,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -24303,7 +24303,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	host?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -24339,7 +24339,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	on_demand?: ResolverInputTypes["order_by"] | undefined | null,
 	owner?: ResolverInputTypes["players_order_by"] | undefined | null,
-	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	port?: ResolverInputTypes["order_by"] | undefined | null,
 	rcon_password?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_servers_aggregate?: ResolverInputTypes["tournament_servers_aggregate_order_by"] | undefined | null,
@@ -24359,28 +24359,28 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	on_demand?: boolean | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	port?: number | undefined | null,
 	rcon_password?: ResolverInputTypes["bytea"] | undefined | null,
 	tv_port?: number | undefined | null
 };
 	/** aggregate stddev on columns */
 ["servers_stddev_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
 ["servers_stddev_pop_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
 ["servers_stddev_samp_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -24400,14 +24400,14 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	on_demand?: boolean | undefined | null,
-	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	port?: number | undefined | null,
 	rcon_password?: ResolverInputTypes["bytea"] | undefined | null,
 	tv_port?: number | undefined | null
 };
 	/** aggregate sum on columns */
 ["servers_sum_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -24424,21 +24424,21 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 };
 	/** aggregate var_pop on columns */
 ["servers_var_pop_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
 ["servers_var_samp_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
 ["servers_variance_fields"]: AliasType<{
-	player_steam_id?:boolean | `@${string}`,
+	owner_steam_id?:boolean | `@${string}`,
 	port?:boolean | `@${string}`,
 	tv_port?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -37166,7 +37166,7 @@ export type ModelTypes = {
 	on_demand: boolean,
 	/** An object relationship */
 	owner?: ModelTypes["players"] | undefined,
-	player_steam_id?: ModelTypes["bigint"] | undefined,
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port: number,
 	rcon_password: ModelTypes["bytea"],
 	/** An array relationship */
@@ -37196,7 +37196,7 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["servers_avg_fields"]: {
-		player_steam_id?: number | undefined,
+		owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -37215,7 +37215,7 @@ export type ModelTypes = {
 	matches_aggregate?: ModelTypes["matches_aggregate_bool_exp"] | undefined,
 	on_demand?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	owner?: ModelTypes["players_bool_exp"] | undefined,
-	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
+	owner_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	port?: ModelTypes["Int_comparison_exp"] | undefined,
 	rcon_password?: ModelTypes["bytea_comparison_exp"] | undefined,
 	tournament_servers?: ModelTypes["tournament_servers_bool_exp"] | undefined,
@@ -37225,7 +37225,7 @@ export type ModelTypes = {
 	["servers_constraint"]:servers_constraint;
 	/** input type for incrementing numeric columns in table "servers" */
 ["servers_inc_input"]: {
-	player_steam_id?: ModelTypes["bigint"] | undefined,
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -37239,7 +37239,7 @@ export type ModelTypes = {
 	matches?: ModelTypes["matches_arr_rel_insert_input"] | undefined,
 	on_demand?: boolean | undefined,
 	owner?: ModelTypes["players_obj_rel_insert_input"] | undefined,
-	player_steam_id?: ModelTypes["bigint"] | undefined,
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
 	rcon_password?: ModelTypes["bytea"] | undefined,
 	tournament_servers?: ModelTypes["tournament_servers_arr_rel_insert_input"] | undefined,
@@ -37253,7 +37253,7 @@ export type ModelTypes = {
 	host?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
-	player_steam_id?: ModelTypes["bigint"] | undefined,
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -37265,7 +37265,7 @@ export type ModelTypes = {
 	host?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
-	player_steam_id?: ModelTypes["bigint"] | undefined,
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -37299,7 +37299,7 @@ export type ModelTypes = {
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined,
 	on_demand?: ModelTypes["order_by"] | undefined,
 	owner?: ModelTypes["players_order_by"] | undefined,
-	player_steam_id?: ModelTypes["order_by"] | undefined,
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
 	port?: ModelTypes["order_by"] | undefined,
 	rcon_password?: ModelTypes["order_by"] | undefined,
 	tournament_servers_aggregate?: ModelTypes["tournament_servers_aggregate_order_by"] | undefined,
@@ -37318,26 +37318,26 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
 	on_demand?: boolean | undefined,
-	player_steam_id?: ModelTypes["bigint"] | undefined,
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
 	rcon_password?: ModelTypes["bytea"] | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate stddev on columns */
 ["servers_stddev_fields"]: {
-		player_steam_id?: number | undefined,
+		owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["servers_stddev_pop_fields"]: {
-		player_steam_id?: number | undefined,
+		owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["servers_stddev_samp_fields"]: {
-		player_steam_id?: number | undefined,
+		owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -37356,14 +37356,14 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
 	on_demand?: boolean | undefined,
-	player_steam_id?: ModelTypes["bigint"] | undefined,
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
 	rcon_password?: ModelTypes["bytea"] | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate sum on columns */
 ["servers_sum_fields"]: {
-		player_steam_id?: ModelTypes["bigint"] | undefined,
+		owner_steam_id?: ModelTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -37378,19 +37378,19 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["servers_var_pop_fields"]: {
-		player_steam_id?: number | undefined,
+		owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate var_samp on columns */
 ["servers_var_samp_fields"]: {
-		player_steam_id?: number | undefined,
+		owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate variance on columns */
 ["servers_variance_fields"]: {
-		player_steam_id?: number | undefined,
+		owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -49709,7 +49709,7 @@ export type GraphQLTypes = {
 	on_demand: boolean,
 	/** An object relationship */
 	owner?: GraphQLTypes["players"] | undefined,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port: number,
 	rcon_password: GraphQLTypes["bytea"],
 	/** An array relationship */
@@ -49742,7 +49742,7 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["servers_avg_fields"]: {
 	__typename: "servers_avg_fields",
-	player_steam_id?: number | undefined,
+	owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -49761,7 +49761,7 @@ export type GraphQLTypes = {
 	matches_aggregate?: GraphQLTypes["matches_aggregate_bool_exp"] | undefined,
 	on_demand?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	owner?: GraphQLTypes["players_bool_exp"] | undefined,
-	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	port?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	rcon_password?: GraphQLTypes["bytea_comparison_exp"] | undefined,
 	tournament_servers?: GraphQLTypes["tournament_servers_bool_exp"] | undefined,
@@ -49772,7 +49772,7 @@ export type GraphQLTypes = {
 ["servers_constraint"]: servers_constraint;
 	/** input type for incrementing numeric columns in table "servers" */
 ["servers_inc_input"]: {
-		player_steam_id?: GraphQLTypes["bigint"] | undefined,
+		owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -49786,7 +49786,7 @@ export type GraphQLTypes = {
 	matches?: GraphQLTypes["matches_arr_rel_insert_input"] | undefined,
 	on_demand?: boolean | undefined,
 	owner?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
 	rcon_password?: GraphQLTypes["bytea"] | undefined,
 	tournament_servers?: GraphQLTypes["tournament_servers_arr_rel_insert_input"] | undefined,
@@ -49801,7 +49801,7 @@ export type GraphQLTypes = {
 	host?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -49814,7 +49814,7 @@ export type GraphQLTypes = {
 	host?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -49849,7 +49849,7 @@ export type GraphQLTypes = {
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,
 	on_demand?: GraphQLTypes["order_by"] | undefined,
 	owner?: GraphQLTypes["players_order_by"] | undefined,
-	player_steam_id?: GraphQLTypes["order_by"] | undefined,
+	owner_steam_id?: GraphQLTypes["order_by"] | undefined,
 	port?: GraphQLTypes["order_by"] | undefined,
 	rcon_password?: GraphQLTypes["order_by"] | undefined,
 	tournament_servers_aggregate?: GraphQLTypes["tournament_servers_aggregate_order_by"] | undefined,
@@ -49869,7 +49869,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
 	on_demand?: boolean | undefined,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
 	rcon_password?: GraphQLTypes["bytea"] | undefined,
 	tv_port?: number | undefined
@@ -49877,21 +49877,21 @@ export type GraphQLTypes = {
 	/** aggregate stddev on columns */
 ["servers_stddev_fields"]: {
 	__typename: "servers_stddev_fields",
-	player_steam_id?: number | undefined,
+	owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["servers_stddev_pop_fields"]: {
 	__typename: "servers_stddev_pop_fields",
-	player_steam_id?: number | undefined,
+	owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["servers_stddev_samp_fields"]: {
 	__typename: "servers_stddev_samp_fields",
-	player_steam_id?: number | undefined,
+	owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -49910,7 +49910,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
 	on_demand?: boolean | undefined,
-	player_steam_id?: GraphQLTypes["bigint"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
 	rcon_password?: GraphQLTypes["bytea"] | undefined,
 	tv_port?: number | undefined
@@ -49918,7 +49918,7 @@ export type GraphQLTypes = {
 	/** aggregate sum on columns */
 ["servers_sum_fields"]: {
 	__typename: "servers_sum_fields",
-	player_steam_id?: GraphQLTypes["bigint"] | undefined,
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -49935,21 +49935,21 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["servers_var_pop_fields"]: {
 	__typename: "servers_var_pop_fields",
-	player_steam_id?: number | undefined,
+	owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate var_samp on columns */
 ["servers_var_samp_fields"]: {
 	__typename: "servers_var_samp_fields",
-	player_steam_id?: number | undefined,
+	owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
 	/** aggregate variance on columns */
 ["servers_variance_fields"]: {
 	__typename: "servers_variance_fields",
-	player_steam_id?: number | undefined,
+	owner_steam_id?: number | undefined,
 	port?: number | undefined,
 	tv_port?: number | undefined
 };
@@ -55226,7 +55226,7 @@ export const enum servers_select_column {
 	id = "id",
 	label = "label",
 	on_demand = "on_demand",
-	player_steam_id = "player_steam_id",
+	owner_steam_id = "owner_steam_id",
 	port = "port",
 	rcon_password = "rcon_password",
 	tv_port = "tv_port"
@@ -55239,7 +55239,7 @@ export const enum servers_update_column {
 	id = "id",
 	label = "label",
 	on_demand = "on_demand",
-	player_steam_id = "player_steam_id",
+	owner_steam_id = "owner_steam_id",
 	port = "port",
 	rcon_password = "rcon_password",
 	tv_port = "tv_port"

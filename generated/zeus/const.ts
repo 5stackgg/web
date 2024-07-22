@@ -5831,7 +5831,7 @@ export const AllTypesProps: Record<string,any> = {
 		matches_aggregate:"matches_aggregate_bool_exp",
 		on_demand:"Boolean_comparison_exp",
 		owner:"players_bool_exp",
-		player_steam_id:"bigint_comparison_exp",
+		owner_steam_id:"bigint_comparison_exp",
 		port:"Int_comparison_exp",
 		rcon_password:"bytea_comparison_exp",
 		tournament_servers:"tournament_servers_bool_exp",
@@ -5840,14 +5840,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_constraint: "enum" as const,
 	servers_inc_input:{
-		player_steam_id:"bigint"
+		owner_steam_id:"bigint"
 	},
 	servers_insert_input:{
 		api_password:"uuid",
 		id:"uuid",
 		matches:"matches_arr_rel_insert_input",
 		owner:"players_obj_rel_insert_input",
-		player_steam_id:"bigint",
+		owner_steam_id:"bigint",
 		rcon_password:"bytea",
 		tournament_servers:"tournament_servers_arr_rel_insert_input"
 	},
@@ -5870,7 +5870,7 @@ export const AllTypesProps: Record<string,any> = {
 		matches_aggregate:"matches_aggregate_order_by",
 		on_demand:"order_by",
 		owner:"players_order_by",
-		player_steam_id:"order_by",
+		owner_steam_id:"order_by",
 		port:"order_by",
 		rcon_password:"order_by",
 		tournament_servers_aggregate:"tournament_servers_aggregate_order_by",
@@ -5883,7 +5883,7 @@ export const AllTypesProps: Record<string,any> = {
 	servers_set_input:{
 		api_password:"uuid",
 		id:"uuid",
-		player_steam_id:"bigint",
+		owner_steam_id:"bigint",
 		rcon_password:"bytea"
 	},
 	servers_stream_cursor_input:{
@@ -5893,7 +5893,7 @@ export const AllTypesProps: Record<string,any> = {
 	servers_stream_cursor_value_input:{
 		api_password:"uuid",
 		id:"uuid",
-		player_steam_id:"bigint",
+		owner_steam_id:"bigint",
 		rcon_password:"bytea"
 	},
 	servers_update_column: "enum" as const,
@@ -11118,7 +11118,7 @@ export const ReturnTypes: Record<string,any> = {
 		matches_aggregate:"matches_aggregate",
 		on_demand:"Boolean",
 		owner:"players",
-		player_steam_id:"bigint",
+		owner_steam_id:"bigint",
 		port:"Int",
 		rcon_password:"bytea",
 		tournament_servers:"tournament_servers",
@@ -11143,7 +11143,7 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"servers_variance_fields"
 	},
 	servers_avg_fields:{
-		player_steam_id:"Float",
+		owner_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
@@ -11153,7 +11153,7 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		label:"String",
-		player_steam_id:"bigint",
+		owner_steam_id:"bigint",
 		port:"Int",
 		tv_port:"Int"
 	},
@@ -11163,7 +11163,7 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		label:"String",
-		player_steam_id:"bigint",
+		owner_steam_id:"bigint",
 		port:"Int",
 		tv_port:"Int"
 	},
@@ -11172,37 +11172,37 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"servers"
 	},
 	servers_stddev_fields:{
-		player_steam_id:"Float",
+		owner_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_pop_fields:{
-		player_steam_id:"Float",
+		owner_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_samp_fields:{
-		player_steam_id:"Float",
+		owner_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_sum_fields:{
-		player_steam_id:"bigint",
+		owner_steam_id:"bigint",
 		port:"Int",
 		tv_port:"Int"
 	},
 	servers_var_pop_fields:{
-		player_steam_id:"Float",
+		owner_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_var_samp_fields:{
-		player_steam_id:"Float",
+		owner_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_variance_fields:{
-		player_steam_id:"Float",
+		owner_steam_id:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},

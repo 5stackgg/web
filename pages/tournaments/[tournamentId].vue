@@ -218,10 +218,6 @@ export default {
           ],
         }),
         variables: function () {
-          console.info({
-            steam_id: this.me.steam_id,
-            tournamentId: this.$route.params.tournamentId,
-          });
           return {
             steam_id: this.me.steam_id,
             tournamentId: this.$route.params.tournamentId,

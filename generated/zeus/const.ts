@@ -953,7 +953,9 @@ export const AllTypesProps: Record<string,any> = {
 		maps_aggregate:"v_pool_maps_aggregate_bool_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
-		owner_steam_id:"bigint_comparison_exp"
+		owner_steam_id:"bigint_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp"
 	},
 	map_pools_constraint: "enum" as const,
 	map_pools_inc_input:{
@@ -963,7 +965,9 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		maps:"v_pool_maps_arr_rel_insert_input",
 		matches:"matches_arr_rel_insert_input",
-		owner_steam_id:"bigint"
+		owner_steam_id:"bigint",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid"
 	},
 	map_pools_obj_rel_insert_input:{
 		data:"map_pools_insert_input",
@@ -980,7 +984,9 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		maps_aggregate:"v_pool_maps_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
-		owner_steam_id:"order_by"
+		owner_steam_id:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by"
 	},
 	map_pools_pk_columns_input:{
 		id:"uuid"
@@ -988,7 +994,8 @@ export const AllTypesProps: Record<string,any> = {
 	map_pools_select_column: "enum" as const,
 	map_pools_set_input:{
 		id:"uuid",
-		owner_steam_id:"bigint"
+		owner_steam_id:"bigint",
+		tournament_id:"uuid"
 	},
 	map_pools_stream_cursor_input:{
 		initial_value:"map_pools_stream_cursor_value_input",
@@ -996,7 +1003,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	map_pools_stream_cursor_value_input:{
 		id:"uuid",
-		owner_steam_id:"bigint"
+		owner_steam_id:"bigint",
+		tournament_id:"uuid"
 	},
 	map_pools_update_column: "enum" as const,
 	map_pools_updates:{
@@ -2332,10 +2340,10 @@ export const AllTypesProps: Record<string,any> = {
 		lineups:"match_lineups_bool_exp",
 		lineups_aggregate:"match_lineups_aggregate_bool_exp",
 		map_pool:"map_pools_bool_exp",
+		map_pool_id:"uuid_comparison_exp",
 		map_veto:"Boolean_comparison_exp",
 		match_maps:"match_maps_bool_exp",
 		match_maps_aggregate:"match_maps_aggregate_bool_exp",
-		match_pool_id:"uuid_comparison_exp",
 		mr:"Int_comparison_exp",
 		number_of_substitutes:"Int_comparison_exp",
 		organizer:"players_bool_exp",
@@ -2384,8 +2392,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lineups:"match_lineups_arr_rel_insert_input",
 		map_pool:"map_pools_obj_rel_insert_input",
+		map_pool_id:"uuid",
 		match_maps:"match_maps_arr_rel_insert_input",
-		match_pool_id:"uuid",
 		organizer:"players_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
 		player_assists:"player_assists_arr_rel_insert_input",
@@ -2410,7 +2418,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"order_by",
 		id:"order_by",
 		label:"order_by",
-		match_pool_id:"order_by",
+		map_pool_id:"order_by",
 		mr:"order_by",
 		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by",
@@ -2424,7 +2432,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"order_by",
 		id:"order_by",
 		label:"order_by",
-		match_pool_id:"order_by",
+		map_pool_id:"order_by",
 		mr:"order_by",
 		number_of_substitutes:"order_by",
 		organizer_steam_id:"order_by",
@@ -2459,9 +2467,9 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"order_by",
 		lineups_aggregate:"match_lineups_aggregate_order_by",
 		map_pool:"map_pools_order_by",
+		map_pool_id:"order_by",
 		map_veto:"order_by",
 		match_maps_aggregate:"match_maps_aggregate_order_by",
-		match_pool_id:"order_by",
 		mr:"order_by",
 		number_of_substitutes:"order_by",
 		organizer:"players_order_by",
@@ -2500,7 +2508,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_set_input:{
 		created_at:"timestamptz",
 		id:"uuid",
-		match_pool_id:"uuid",
+		map_pool_id:"uuid",
 		organizer_steam_id:"bigint",
 		scheduled_at:"date",
 		server_id:"uuid",
@@ -2535,7 +2543,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		id:"uuid",
-		match_pool_id:"uuid",
+		map_pool_id:"uuid",
 		organizer_steam_id:"bigint",
 		scheduled_at:"date",
 		server_id:"uuid",
@@ -8340,6 +8348,8 @@ export const AllTypesProps: Record<string,any> = {
 		description:"String_comparison_exp",
 		e_tournament_status:"e_tournament_status_bool_exp",
 		id:"uuid_comparison_exp",
+		map_pool:"map_pools_bool_exp",
+		map_pool_id:"uuid_comparison_exp",
 		name:"String_comparison_exp",
 		organizer_steam_id:"bigint_comparison_exp",
 		organizers:"tournament_organizers_bool_exp",
@@ -8364,6 +8374,8 @@ export const AllTypesProps: Record<string,any> = {
 		admin:"players_obj_rel_insert_input",
 		e_tournament_status:"e_tournament_status_obj_rel_insert_input",
 		id:"uuid",
+		map_pool:"map_pools_obj_rel_insert_input",
+		map_pool_id:"uuid",
 		organizer_steam_id:"bigint",
 		organizers:"tournament_organizers_arr_rel_insert_input",
 		rosters:"tournament_team_roster_arr_rel_insert_input",
@@ -8376,6 +8388,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournaments_max_order_by:{
 		description:"order_by",
 		id:"order_by",
+		map_pool_id:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
 		start:"order_by",
@@ -8384,6 +8397,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournaments_min_order_by:{
 		description:"order_by",
 		id:"order_by",
+		map_pool_id:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
 		start:"order_by",
@@ -8403,6 +8417,8 @@ export const AllTypesProps: Record<string,any> = {
 		description:"order_by",
 		e_tournament_status:"e_tournament_status_order_by",
 		id:"order_by",
+		map_pool:"map_pools_order_by",
+		map_pool_id:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
@@ -8420,6 +8436,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournaments_select_column: "enum" as const,
 	tournaments_set_input:{
 		id:"uuid",
+		map_pool_id:"uuid",
 		organizer_steam_id:"bigint",
 		start:"timestamptz",
 		status:"e_tournament_status_enum"
@@ -8439,6 +8456,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournaments_stream_cursor_value_input:{
 		id:"uuid",
+		map_pool_id:"uuid",
 		organizer_steam_id:"bigint",
 		start:"timestamptz",
 		status:"e_tournament_status_enum"
@@ -9341,7 +9359,9 @@ export const ReturnTypes: Record<string,any> = {
 		maps_aggregate:"v_pool_maps_aggregate",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
-		owner_steam_id:"bigint"
+		owner_steam_id:"bigint",
+		tournament:"tournaments",
+		tournament_id:"uuid"
 	},
 	map_pools_aggregate:{
 		aggregate:"map_pools_aggregate_fields",
@@ -9366,12 +9386,14 @@ export const ReturnTypes: Record<string,any> = {
 	map_pools_max_fields:{
 		id:"uuid",
 		label:"String",
-		owner_steam_id:"bigint"
+		owner_steam_id:"bigint",
+		tournament_id:"uuid"
 	},
 	map_pools_min_fields:{
 		id:"uuid",
 		label:"String",
-		owner_steam_id:"bigint"
+		owner_steam_id:"bigint",
+		tournament_id:"uuid"
 	},
 	map_pools_mutation_response:{
 		affected_rows:"Int",
@@ -9977,10 +9999,10 @@ export const ReturnTypes: Record<string,any> = {
 		lineups:"match_lineups",
 		lineups_aggregate:"match_lineups_aggregate",
 		map_pool:"map_pools",
+		map_pool_id:"uuid",
 		map_veto:"Boolean",
 		match_maps:"match_maps",
 		match_maps_aggregate:"match_maps_aggregate",
-		match_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
 		organizer:"players",
@@ -10051,7 +10073,7 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		lineup_1_id:"String",
 		lineup_2_id:"String",
-		match_pool_id:"uuid",
+		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
 		organizer_steam_id:"bigint",
@@ -10075,7 +10097,7 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		lineup_1_id:"String",
 		lineup_2_id:"String",
-		match_pool_id:"uuid",
+		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
 		organizer_steam_id:"bigint",
@@ -12322,6 +12344,8 @@ export const ReturnTypes: Record<string,any> = {
 		description:"String",
 		e_tournament_status:"e_tournament_status",
 		id:"uuid",
+		map_pool:"map_pools",
+		map_pool_id:"uuid",
 		name:"String",
 		organizer_steam_id:"bigint",
 		organizers:"tournament_organizers",
@@ -12361,6 +12385,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_max_fields:{
 		description:"String",
 		id:"uuid",
+		map_pool_id:"uuid",
 		name:"String",
 		organizer_steam_id:"bigint",
 		start:"timestamptz",
@@ -12369,6 +12394,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournaments_min_fields:{
 		description:"String",
 		id:"uuid",
+		map_pool_id:"uuid",
 		name:"String",
 		organizer_steam_id:"bigint",
 		start:"timestamptz",

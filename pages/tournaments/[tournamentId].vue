@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
+import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 </script>
 
 <template>
@@ -13,7 +14,7 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
       <TabsTrigger value="teams">
         Teams ({{ tournament.teams_aggregate.aggregate.count }})
       </TabsTrigger>
-      <TabsTrigger value="roster"> Manage My Roster </TabsTrigger>
+      <TabsTrigger value="roster" v-if="myTeam"> My Roster </TabsTrigger>
       <TabsTrigger value="manage"> Manage Tournament </TabsTrigger>
     </TabsList>
     <TabsContent value="info">
@@ -28,8 +29,8 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
       </p>
 
       <p>Organizers</p>
-      <p v-for="{ organizer, role } of tournament.organizers">
-        {{ organizer.name }} ({{ role }})
+      <p v-for="{ organizer } of tournament.organizers">
+        {{ organizer.name }}
       </p>
       <Drawer :open="tournamentDialog">
         <DrawerTrigger @click="tournamentDialog = true">
@@ -58,7 +59,7 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
         </NuxtLink>
       </template>
     </TabsContent>
-    <TabsContent value="roster">
+    <TabsContent value="roster" v-if="myTeam">
       <TournamentTeamTable :team="myTeam"></TournamentTeamTable>
     </TabsContent>
     <TabsContent value="manage">
@@ -67,7 +68,10 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
           <TabsTrigger value="organizers"> Organizers </TabsTrigger>
           <TabsTrigger value="servers"> Servers </TabsTrigger>
         </TabsList>
-        <TabsContent value="organizers">organizers</TabsContent>
+        <TabsContent value="organizers">
+          <TournamentOrganizers :tournament="tournament">
+          </TournamentOrganizers>
+        </TabsContent>
         <TabsContent value="servers">servers</TabsContent>
       </Tabs>
     </TabsContent>
@@ -112,9 +116,10 @@ export default {
               organizers: [
                 {},
                 {
-                  role: true,
                   organizer: {
                     name: true,
+                    steam_id: true,
+                    avatar_url: true,
                   },
                 },
               ],

@@ -2,6 +2,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
+import TournamentTeamTable from "~/components/tournament/TournamentTeamTable.vue";
 </script>
 
 <template>
@@ -30,8 +31,8 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
       <p v-for="{ organizer, role } of tournament.organizers">
         {{ organizer.name }} ({{ role }})
       </p>
-      <Drawer>
-        <DrawerTrigger>
+      <Drawer :open="tournamentDialog">
+        <DrawerTrigger @click="tournamentDialog = true">
           <Button> Join Tournament </Button>
         </DrawerTrigger>
         <DrawerContent>
@@ -39,10 +40,9 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
             <DrawerTitle>Which Team do you wish to join with?</DrawerTitle>
           </DrawerHeader>
           <DrawerFooter>
-            <TournamentJoinForm @close=""></TournamentJoinForm>
-            <DrawerClose>
-              <Button variant="outline"> Cancel </Button>
-            </DrawerClose>
+            <TournamentJoinForm
+              @close="tournamentDialog = false"
+            ></TournamentJoinForm>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -52,10 +52,14 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
     </TabsContent>
     <TabsContent value="teams">
       <template v-for="team of tournament.teams">
-        <p>
-          {{ team.name }}
-        </p>
+        <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
+          {{ team.name }}: {{ team.roster_aggregate.aggregate.count }} players
+          registered
+        </NuxtLink>
       </template>
+    </TabsContent>
+    <TabsContent value="roster">
+      <pre>{{ myTeam }}</pre>
     </TabsContent>
     <TabsContent value="manage">
       <Tabs default-value="organizers">
@@ -73,6 +77,7 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { useAuthStore } from "~/stores/AuthStore";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
@@ -80,7 +85,9 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 export default {
   data() {
     return {
+      myTeam: undefined,
       tournament: undefined,
+      tournamentDialog: false,
     };
   },
   apollo: {
@@ -110,10 +117,21 @@ export default {
                   },
                 },
               ],
-              teams: [{}, {
-                id: true,
-                name: true,
-              }],
+              teams: [
+                {},
+                {
+                  id: true,
+                  name: true,
+                  roster_aggregate: [
+                    {},
+                    {
+                      aggregate: {
+                        count: true,
+                      },
+                    },
+                  ],
+                },
+              ],
               teams_aggregate: [
                 {},
                 {
@@ -164,13 +182,76 @@ export default {
         }),
         variables: function () {
           return {
-            tournamentId: this.$route.params.id,
+            tournamentId: this.$route.params.tournamentId,
           };
         },
         result: function ({ data }) {
           this.tournament = data.tournaments_by_pk;
         },
       },
+      tournament_teams: {
+        query: typedGql("subscription")({
+          tournament_teams: [
+            {
+              where: {
+                tournament_id: {
+                  _eq: $("tournamentId", "uuid!"),
+                },
+                _or: [
+                  {
+                    creator_steam_id: {
+                      _eq: $("steam_id", "bigint!"),
+                    },
+                  },
+                  {
+                    roster: {
+                      player_steam_id: {
+                        _eq: $("steam_id", "bigint!"),
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              id: true,
+              name: true,
+              team: {
+                name: true,
+              },
+              roster: [
+                {},
+                {
+                  player: {
+                    name: true,
+                    steam_id: true,
+                    avatar_url: true,
+                  },
+                },
+              ],
+              // matches: [{}, matchFields],
+            },
+          ],
+        }),
+        variables: function () {
+          console.info({
+            steam_id: this.me.steam_id,
+            tournamentId: this.$route.params.tournamentId,
+          });
+          return {
+            steam_id: this.me.steam_id,
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        result: function ({ data }) {
+          this.myTeam = data.tournament_teams?.[0];
+        },
+      },
+    },
+  },
+  computed: {
+    me() {
+      return useAuthStore().me;
     },
   },
 };

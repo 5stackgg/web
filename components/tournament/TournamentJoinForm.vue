@@ -77,6 +77,8 @@ import {
       Join Tournament
     </Button>
   </form>
+
+  <Button variant="outline" @click="$emit('close')"> Cancel </Button>
 </template>
 
 <script lang="ts">
@@ -87,6 +89,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
+  emits: ["close"],
   data() {
     return {
       form: useForm({
@@ -131,6 +134,10 @@ export default {
   },
   methods: {
     async joinTournament() {
+      if (!this.me) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
@@ -143,6 +150,10 @@ export default {
         const team = this.teams.find(({ id }) => {
           return id === this.form.values.team_id;
         });
+
+        if (!team) {
+          return;
+        }
         teamName = team.name;
       }
 
@@ -151,9 +162,17 @@ export default {
           insert_tournament_teams_one: [
             {
               object: {
-                tournament_id: this.$route.params.id,
+                tournament_id: this.$route.params.tournamentId,
                 name: teamName,
                 team_id: !this.form.values.newTeam && this.form.values.team_id,
+                roster: {
+                  data: [
+                    {
+                      player_steam_id: this.me.steam_id,
+                      tournament_id: this.$route.params.tournamentId,
+                    },
+                  ],
+                },
               },
             },
             {
@@ -162,6 +181,8 @@ export default {
           ],
         }),
       });
+
+      this.$emit("close");
     },
   },
 };

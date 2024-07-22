@@ -7832,6 +7832,18 @@ export const AllTypesProps: Record<string,any> = {
 		min_teams:"order_by",
 		order:"order_by"
 	},
+	tournament_teams:{
+		roster:{
+			distinct_on:"tournament_roster_select_column",
+			order_by:"tournament_roster_order_by",
+			where:"tournament_roster_bool_exp"
+		},
+		roster_aggregate:{
+			distinct_on:"tournament_roster_select_column",
+			order_by:"tournament_roster_order_by",
+			where:"tournament_roster_bool_exp"
+		}
+	},
 	tournament_teams_aggregate_bool_exp:{
 		count:"tournament_teams_aggregate_bool_exp_count"
 	},
@@ -7873,6 +7885,8 @@ export const AllTypesProps: Record<string,any> = {
 		creator_steam_id:"bigint_comparison_exp",
 		id:"uuid_comparison_exp",
 		name:"String_comparison_exp",
+		roster:"tournament_roster_bool_exp",
+		roster_aggregate:"tournament_roster_aggregate_bool_exp",
 		team:"teams_bool_exp",
 		team_id:"uuid_comparison_exp",
 		tournament:"tournaments_bool_exp",
@@ -7886,6 +7900,7 @@ export const AllTypesProps: Record<string,any> = {
 		creator:"players_obj_rel_insert_input",
 		creator_steam_id:"bigint",
 		id:"uuid",
+		roster:"tournament_roster_arr_rel_insert_input",
 		team:"teams_obj_rel_insert_input",
 		team_id:"uuid",
 		tournament:"tournaments_obj_rel_insert_input",
@@ -7919,6 +7934,7 @@ export const AllTypesProps: Record<string,any> = {
 		creator_steam_id:"order_by",
 		id:"order_by",
 		name:"order_by",
+		roster_aggregate:"tournament_roster_aggregate_order_by",
 		team:"teams_order_by",
 		team_id:"order_by",
 		tournament:"tournaments_order_by",
@@ -11919,6 +11935,8 @@ export const ReturnTypes: Record<string,any> = {
 		creator_steam_id:"bigint",
 		id:"uuid",
 		name:"String",
+		roster:"tournament_roster",
+		roster_aggregate:"tournament_roster_aggregate",
 		team:"teams",
 		team_id:"uuid",
 		tournament:"tournaments",

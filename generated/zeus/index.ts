@@ -13130,6 +13130,18 @@ count?: [{	columns?: Array<ValueTypes["tournament_stages_select_column"]> | unde
 	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+roster?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_roster_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_roster_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_roster_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_roster"]],
+roster_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["tournament_roster_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["tournament_roster_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["tournament_roster_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_roster_aggregate"]],
 	/** An object relationship */
 	team?:ValueTypes["teams"],
 	team_id?:boolean | `@${string}`,
@@ -13206,6 +13218,8 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	creator_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	roster?: ValueTypes["tournament_roster_bool_exp"] | undefined | null | Variable<any, string>,
+	roster_aggregate?: ValueTypes["tournament_roster_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
@@ -13223,6 +13237,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	creator_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
+	roster?: ValueTypes["tournament_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -13288,6 +13303,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	creator_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	roster_aggregate?: ValueTypes["tournament_roster_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
@@ -27409,6 +27425,18 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_stages_select_column"]
 	creator_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
+roster?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_roster_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_roster_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_roster_bool_exp"] | undefined | null},ResolverInputTypes["tournament_roster"]],
+roster_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["tournament_roster_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["tournament_roster_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["tournament_roster_bool_exp"] | undefined | null},ResolverInputTypes["tournament_roster_aggregate"]],
 	/** An object relationship */
 	team?:ResolverInputTypes["teams"],
 	team_id?:boolean | `@${string}`,
@@ -27485,6 +27513,8 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	creator_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	roster?: ResolverInputTypes["tournament_roster_bool_exp"] | undefined | null,
+	roster_aggregate?: ResolverInputTypes["tournament_roster_aggregate_bool_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
@@ -27502,6 +27532,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	creator_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
+	roster?: ResolverInputTypes["tournament_roster_arr_rel_insert_input"] | undefined | null,
 	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
@@ -27567,6 +27598,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	creator_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
+	roster_aggregate?: ResolverInputTypes["tournament_roster_aggregate_order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
@@ -39750,6 +39782,10 @@ export type ModelTypes = {
 	creator_steam_id: ModelTypes["bigint"],
 	id: ModelTypes["uuid"],
 	name: string,
+	/** An array relationship */
+	roster: Array<ModelTypes["tournament_roster"]>,
+	/** An aggregate relationship */
+	roster_aggregate: ModelTypes["tournament_roster_aggregate"],
 	/** An object relationship */
 	team?: ModelTypes["teams"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
@@ -39822,6 +39858,8 @@ export type ModelTypes = {
 	creator_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
+	roster?: ModelTypes["tournament_roster_bool_exp"] | undefined,
+	roster_aggregate?: ModelTypes["tournament_roster_aggregate_bool_exp"] | undefined,
 	team?: ModelTypes["teams_bool_exp"] | undefined,
 	team_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	tournament?: ModelTypes["tournaments_bool_exp"] | undefined,
@@ -39838,6 +39876,7 @@ export type ModelTypes = {
 	creator_steam_id?: ModelTypes["bigint"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
+	roster?: ModelTypes["tournament_roster_arr_rel_insert_input"] | undefined,
 	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined,
@@ -39900,6 +39939,7 @@ export type ModelTypes = {
 	creator_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
+	roster_aggregate?: ModelTypes["tournament_roster_aggregate_order_by"] | undefined,
 	team?: ModelTypes["teams_order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined,
 	tournament?: ModelTypes["tournaments_order_by"] | undefined,
@@ -52442,6 +52482,10 @@ export type GraphQLTypes = {
 	creator_steam_id: GraphQLTypes["bigint"],
 	id: GraphQLTypes["uuid"],
 	name: string,
+	/** An array relationship */
+	roster: Array<GraphQLTypes["tournament_roster"]>,
+	/** An aggregate relationship */
+	roster_aggregate: GraphQLTypes["tournament_roster_aggregate"],
 	/** An object relationship */
 	team?: GraphQLTypes["teams"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
@@ -52517,6 +52561,8 @@ export type GraphQLTypes = {
 	creator_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
+	roster?: GraphQLTypes["tournament_roster_bool_exp"] | undefined,
+	roster_aggregate?: GraphQLTypes["tournament_roster_aggregate_bool_exp"] | undefined,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined,
 	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined,
@@ -52534,6 +52580,7 @@ export type GraphQLTypes = {
 	creator_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
+	roster?: GraphQLTypes["tournament_roster_arr_rel_insert_input"] | undefined,
 	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined,
@@ -52599,6 +52646,7 @@ export type GraphQLTypes = {
 	creator_steam_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
+	roster_aggregate?: GraphQLTypes["tournament_roster_aggregate_order_by"] | undefined,
 	team?: GraphQLTypes["teams_order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
 	tournament?: GraphQLTypes["tournaments_order_by"] | undefined,
@@ -55342,7 +55390,8 @@ export const enum tournament_organizers_update_column {
 }
 /** unique or primary key constraints on table "tournament_roster" */
 export const enum tournament_roster_constraint {
-	tournament_roster_pkey = "tournament_roster_pkey"
+	tournament_roster_pkey = "tournament_roster_pkey",
+	tournament_roster_player_steam_id_tournament_id_key = "tournament_roster_player_steam_id_tournament_id_key"
 }
 /** select columns of table "tournament_roster" */
 export const enum tournament_roster_select_column {
@@ -55400,7 +55449,9 @@ export const enum tournament_stages_update_column {
 }
 /** unique or primary key constraints on table "tournament_teams" */
 export const enum tournament_teams_constraint {
-	tournament_teams_pkey = "tournament_teams_pkey"
+	tournament_teams_creator_steam_id_tournament_id_key = "tournament_teams_creator_steam_id_tournament_id_key",
+	tournament_teams_pkey = "tournament_teams_pkey",
+	tournament_teams_tournament_id_team_id_key = "tournament_teams_tournament_id_team_id_key"
 }
 /** select columns of table "tournament_teams" */
 export const enum tournament_teams_select_column {

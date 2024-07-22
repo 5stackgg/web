@@ -59,7 +59,7 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeamTable.vue
       </template>
     </TabsContent>
     <TabsContent value="roster">
-      <pre>{{ myTeam }}</pre>
+      <TournamentTeamTable :team="myTeam"></TournamentTeamTable>
     </TabsContent>
     <TabsContent value="manage">
       <Tabs default-value="organizers">
@@ -78,6 +78,7 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeamTable.vue
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
+import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
@@ -119,18 +120,7 @@ export default {
               ],
               teams: [
                 {},
-                {
-                  id: true,
-                  name: true,
-                  roster_aggregate: [
-                    {},
-                    {
-                      aggregate: {
-                        count: true,
-                      },
-                    },
-                  ],
-                },
+                tournamentTeamFields,
               ],
               teams_aggregate: [
                 {},

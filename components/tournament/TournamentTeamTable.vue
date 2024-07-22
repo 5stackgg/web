@@ -2,34 +2,22 @@
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import TournamentTeamMemberRow from "~/components/tournament/TournamentTeamMemberRow.vue";
 </script>
 
 <template>
-  <Table>
+  <Table v-if="team">
     <TableHeader>
       <TableRow>
         <TableHead>Roster</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow v-for="{ player } of team.roster">
-        <TableCell class="font-medium">
-          <Avatar class="mx-3">
-            <AvatarImage
-              :src="player.avatar_url"
-              :alt="player.name"
-              v-if="player.avatar_url"
-            />
-            <AvatarFallback>{{ player.name }}</AvatarFallback>
-          </Avatar>
-          <p>{{ player.name }}</p>
-        </TableCell>
-      </TableRow>
+      <TournamentTeamMemberRow :member="member" v-for="member of team.roster" :key="member.id"></TournamentTeamMemberRow>
     </TableBody>
   </Table>
 </template>

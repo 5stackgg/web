@@ -16,6 +16,7 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeamTable.vue
 <script lang="ts">
 import { $ } from "~/generated/zeus/index";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 
 export default {
   data() {
@@ -31,24 +32,7 @@ export default {
             {
               id: $("teamId", "uuid!"),
             },
-            {
-              id: true,
-              name: true,
-              team: {
-                name: true,
-              },
-              roster: [
-                {},
-                {
-                  player: {
-                    name: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
-                },
-              ],
-              // matches: [{}, matchFields],
-            },
+            tournamentTeamFields
           ],
         }),
         variables: function () {

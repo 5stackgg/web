@@ -21,7 +21,7 @@ import {CaretSortIcon} from "@radix-icons/vue";
                   Selected {{ componentField.modelValue.length}} servers
                 </template>
                 <template v-else>
-                  Servers
+                  Using On Demand Servers
                 </template>
                 <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>

@@ -12,7 +12,7 @@ const props = defineProps<{
     :class="
       cn(
         'p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-0.5',
-        props.class
+        props.class,
       )
     "
   >

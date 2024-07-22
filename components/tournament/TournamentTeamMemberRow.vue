@@ -1,17 +1,31 @@
 <script lang="ts" setup>
 import {
   AlertDialog,
-  AlertDialogAction, AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
+  AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
-import {TableCell, TableRow} from "~/components/ui/table";
-import {Button} from "~/components/ui/button";
-import {Popover, PopoverContent, PopoverTrigger} from "~/components/ui/popover";
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "~/components/ui/command";
-import {ChevronDownIcon} from "lucide-vue-next";
+import { TableCell, TableRow } from "~/components/ui/table";
+import { Button } from "~/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "~/components/ui/command";
+import { ChevronDownIcon } from "lucide-vue-next";
 </script>
 
 <template>
@@ -19,9 +33,9 @@ import {ChevronDownIcon} from "lucide-vue-next";
     <TableCell class="font-medium">
       <Avatar class="mx-3">
         <AvatarImage
-            :src="member.player.avatar_url"
-            :alt="member.player.name"
-            v-if="member.player.avatar_url"
+          :src="member.player.avatar_url"
+          :alt="member.player.name"
+          v-if="member.player.avatar_url"
         />
         <AvatarFallback>{{ member.player.name }}</AvatarFallback>
       </Avatar>
@@ -42,26 +56,41 @@ import {ChevronDownIcon} from "lucide-vue-next";
             <CommandList>
               <CommandEmpty>No roles found.</CommandEmpty>
               <CommandGroup>
-                <CommandItem :value="role.value" class="flex flex-col items-start px-4 py-2" v-for="role of e_team_roles">
-                  <p>{{role.value }}</p>
+                <CommandItem
+                  :value="role.value"
+                  class="flex flex-col items-start px-4 py-2"
+                  v-for="role of roles"
+                >
+                  <p>{{ role.value }}</p>
                   <p class="text-sm text-muted-foreground">
                     {{ role.description }}
                   </p>
                 </CommandItem>
 
-                <CommandItem :value="false" class="flex flex-col items-start px-4 py-2">
+                <CommandItem
+                  :value="false"
+                  class="flex flex-col items-start px-4 py-2"
+                >
                   <AlertDialog>
-                    <AlertDialogTrigger @click.stop>Remove From Team</AlertDialogTrigger>
+                    <AlertDialogTrigger @click.stop
+                      >Remove From Team</AlertDialogTrigger
+                    >
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogTitle
+                          >Are you absolutely sure?</AlertDialogTitle
+                        >
                         <AlertDialogDescription>
-                          This will remove {{ member.player.name }} ({{ member.player.steam_id }}) from the team.
+                          This will remove {{ member.player.name }} ({{
+                            member.player.steam_id
+                          }}) from the team.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction @click.stop="removeMember">Continue</AlertDialogAction>
+                        <AlertDialogAction @click.stop="removeMember"
+                          >Continue</AlertDialogAction
+                        >
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -76,55 +105,38 @@ import {ChevronDownIcon} from "lucide-vue-next";
 </template>
 
 <script lang="ts">
-import {e_team_roles_enum} from "~/generated/zeus";
-import {generateMutation} from "~/graphql/graphqlGen";
-import {typedGql} from "~/generated/zeus/typedDocumentNode";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {
     member: {
       type: Object,
       required: true,
-    }
+    },
+    roles: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
       memberRole: undefined,
-    }
+    };
   },
   watch: {
-    ["member.role"] : {
+    ["member.role"]: {
       immediate: true,
       handler(role) {
         this.memberRole = role;
-      }
+      },
     },
     memberRole: {
       handler(role) {
-        if(role) {
+        if (role) {
           this.publishRole();
           return;
         }
-      }
-    }
-  },
-  apollo: {
-    e_team_roles: {
-      query: typedGql("query")({
-        e_team_roles: [
-          {
-            where: {
-              value: {
-                _nin: [e_team_roles_enum.Invite, e_team_roles_enum.Pending],
-              },
-            },
-          },
-          {
-            value: true,
-            description: true,
-          },
-        ],
-      }),
+      },
     },
   },
   methods: {
@@ -134,12 +146,12 @@ export default {
           update_tournament_team_roster_by_pk: [
             {
               _set: {
-                role: this.memberRole
+                role: this.memberRole,
               },
               pk_columns: {
                 player_steam_id: this.member.player.steam_id,
                 tournament_id: this.$route.params.id,
-              }
+              },
             },
             {
               __typename: true,
@@ -163,6 +175,6 @@ export default {
         }),
       });
     },
-  }
-}
+  },
+};
 </script>

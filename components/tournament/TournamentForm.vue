@@ -108,7 +108,7 @@ export default {
             type: z.string(),
             start: z.date(),
             description: z.string().nullable().default(null),
-          })
+          }),
         ),
       }),
     };

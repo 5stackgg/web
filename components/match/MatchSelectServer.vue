@@ -86,7 +86,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             server_id: z.string(),
-          })
+          }),
         ),
       }),
     };

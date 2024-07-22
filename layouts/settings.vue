@@ -44,7 +44,7 @@ const sidebarNavItems: Item[] = [
                 cn(
                   'w-full text-left justify-start',
                   $route.path === `${item.href}.html` &&
-                    'bg-muted hover:bg-muted'
+                    'bg-muted hover:bg-muted',
                 )
               "
             >

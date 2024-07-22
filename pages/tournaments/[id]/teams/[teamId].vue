@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TournamentTeamTable from "~/components/tournament/TournamentTeamTable.vue";
+import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
 </script>
 <template>
   <div v-if="team">
@@ -32,7 +32,7 @@ export default {
             {
               id: $("teamId", "uuid!"),
             },
-            tournamentTeamFields
+            tournamentTeamFields,
           ],
         }),
         variables: function () {

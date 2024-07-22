@@ -328,7 +328,7 @@ export default {
             team_1: z.string().optional(),
             team_2: z.string().optional(),
             map_pool: z.string().array().default([]),
-          })
+          }),
         ),
       }),
     };

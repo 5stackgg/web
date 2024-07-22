@@ -27,7 +27,7 @@ const delegatedProps = computed(() => {
     :class="
       cn(
         'relative h-2 w-full overflow-hidden rounded-full bg-primary/20',
-        props.class
+        props.class,
       )
     "
   >

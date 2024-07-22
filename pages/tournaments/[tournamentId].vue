@@ -2,7 +2,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
-import TournamentTeamTable from "~/components/tournament/TournamentTeamTable.vue";
+import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
 </script>
 
 <template>
@@ -118,10 +118,7 @@ export default {
                   },
                 },
               ],
-              teams: [
-                {},
-                tournamentTeamFields,
-              ],
+              teams: [{}, tournamentTeamFields],
               teams_aggregate: [
                 {},
                 {
@@ -189,7 +186,7 @@ export default {
                 },
                 _or: [
                   {
-                    creator_steam_id: {
+                    owner_steam_id: {
                       _eq: $("steam_id", "bigint!"),
                     },
                   },
@@ -203,24 +200,7 @@ export default {
                 ],
               },
             },
-            {
-              id: true,
-              name: true,
-              team: {
-                name: true,
-              },
-              roster: [
-                {},
-                {
-                  player: {
-                    name: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
-                },
-              ],
-              // matches: [{}, matchFields],
-            },
+            tournamentTeamFields,
           ],
         }),
         variables: function () {

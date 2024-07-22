@@ -1,27 +1,28 @@
 export default {
-    id: true,
+  id: true,
+  name: true,
+  team_id: true,
+  team: {
     name: true,
-    team: {
+  },
+  roster: [
+    {},
+    {
+      role: true,
+      player: {
         name: true,
+        steam_id: true,
+        avatar_url: true,
+      },
     },
-    roster: [
-        {},
-        {
-           role: true,
-            player: {
-                name: true,
-                steam_id: true,
-                avatar_url: true,
-            },
-        },
-    ],
-    roster_aggregate: [
-        {},
-        {
-            aggregate: {
-                count: true,
-            },
-        },
-    ],
-    // matches: [{}, matchFields],
-}
+  ],
+  roster_aggregate: [
+    {},
+    {
+      aggregate: {
+        count: true,
+      },
+    },
+  ],
+  // matches: [{}, matchFields],
+};

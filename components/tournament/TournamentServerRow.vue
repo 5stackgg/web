@@ -19,9 +19,9 @@ import { Button } from "~/components/ui/button";
     <TableCell class="font-medium">
       <Avatar class="mx-3">
         <AvatarImage
-          :src="organizer.avatar_url"
-          :alt="organizer.name"
-          v-if="organizer.avatar_url"
+            :src="organizer.avatar_url"
+            :alt="organizer.name"
+            v-if="organizer.avatar_url"
         />
         <AvatarFallback>{{ organizer.name }}</AvatarFallback>
       </Avatar>
@@ -43,7 +43,7 @@ import { Button } from "~/components/ui/button";
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction @click.stop="removeOrganizer"
-                >Continue</AlertDialogAction
+              >Continue</AlertDialogAction
               >
             </AlertDialogFooter>
           </AlertDialogContent>

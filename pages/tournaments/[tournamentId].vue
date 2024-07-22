@@ -4,6 +4,7 @@ import TournamentStageBuilder from "~/components/tournament/TournamentStageBuild
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
+import TournamentServers from "~/components/tournament/TournamentServers.vue";
 </script>
 
 <template>
@@ -72,7 +73,9 @@ import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.v
           <TournamentOrganizers :tournament="tournament">
           </TournamentOrganizers>
         </TabsContent>
-        <TabsContent value="servers">servers</TabsContent>
+        <TabsContent value="servers">
+          <TournamentServers :tournament="tournament"></TournamentServers>
+        </TabsContent>
       </Tabs>
     </TabsContent>
   </Tabs>
@@ -131,6 +134,12 @@ export default {
                     count: true,
                   },
                 },
+              ],
+              servers: [
+                {},
+                {
+                  server_id: true,
+                }
               ],
               stages: [
                 {

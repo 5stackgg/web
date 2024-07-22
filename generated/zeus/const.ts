@@ -2590,7 +2590,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"tournament_servers_bool_exp"
 		},
 		delete_tournament_servers_by_pk:{
-			id:"uuid"
+			server_id:"uuid",
+			tournament_id:"uuid"
 		},
 		delete_tournament_stages:{
 			where:"tournament_stages_bool_exp"
@@ -5652,7 +5653,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"tournament_servers_bool_exp"
 		},
 		tournament_servers_by_pk:{
-			id:"uuid"
+			server_id:"uuid",
+			tournament_id:"uuid"
 		},
 		tournament_stages:{
 			distinct_on:"tournament_stages_select_column",
@@ -6493,7 +6495,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"tournament_servers_bool_exp"
 		},
 		tournament_servers_by_pk:{
-			id:"uuid"
+			server_id:"uuid",
+			tournament_id:"uuid"
 		},
 		tournament_servers_stream:{
 			cursor:"tournament_servers_stream_cursor_input",
@@ -7347,7 +7350,6 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"tournament_organizers_bool_exp",
 		_or:"tournament_organizers_bool_exp",
 		organizer:"players_bool_exp",
-		role:"String_comparison_exp",
 		steam_id:"bigint_comparison_exp",
 		tournament:"tournaments_bool_exp",
 		tournament_id:"uuid_comparison_exp"
@@ -7363,12 +7365,10 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	tournament_organizers_max_order_by:{
-		role:"order_by",
 		steam_id:"order_by",
 		tournament_id:"order_by"
 	},
 	tournament_organizers_min_order_by:{
-		role:"order_by",
 		steam_id:"order_by",
 		tournament_id:"order_by"
 	},
@@ -7379,7 +7379,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_organizers_order_by:{
 		organizer:"players_order_by",
-		role:"order_by",
 		steam_id:"order_by",
 		tournament:"tournaments_order_by",
 		tournament_id:"order_by"
@@ -7454,7 +7453,6 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"tournament_servers_bool_exp",
 		_not:"tournament_servers_bool_exp",
 		_or:"tournament_servers_bool_exp",
-		id:"uuid_comparison_exp",
 		server:"servers_bool_exp",
 		server_id:"uuid_comparison_exp",
 		tournament:"tournaments_bool_exp",
@@ -7462,19 +7460,16 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_servers_constraint: "enum" as const,
 	tournament_servers_insert_input:{
-		id:"uuid",
 		server:"servers_obj_rel_insert_input",
 		server_id:"uuid",
 		tournament:"tournaments_obj_rel_insert_input",
 		tournament_id:"uuid"
 	},
 	tournament_servers_max_order_by:{
-		id:"order_by",
 		server_id:"order_by",
 		tournament_id:"order_by"
 	},
 	tournament_servers_min_order_by:{
-		id:"order_by",
 		server_id:"order_by",
 		tournament_id:"order_by"
 	},
@@ -7484,18 +7479,17 @@ export const AllTypesProps: Record<string,any> = {
 		where:"tournament_servers_bool_exp"
 	},
 	tournament_servers_order_by:{
-		id:"order_by",
 		server:"servers_order_by",
 		server_id:"order_by",
 		tournament:"tournaments_order_by",
 		tournament_id:"order_by"
 	},
 	tournament_servers_pk_columns_input:{
-		id:"uuid"
+		server_id:"uuid",
+		tournament_id:"uuid"
 	},
 	tournament_servers_select_column: "enum" as const,
 	tournament_servers_set_input:{
-		id:"uuid",
 		server_id:"uuid",
 		tournament_id:"uuid"
 	},
@@ -7504,7 +7498,6 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	tournament_servers_stream_cursor_value_input:{
-		id:"uuid",
 		server_id:"uuid",
 		tournament_id:"uuid"
 	},
@@ -11695,7 +11688,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournament_organizers:{
 		organizer:"players",
-		role:"String",
 		steam_id:"bigint",
 		tournament:"tournaments",
 		tournament_id:"uuid"
@@ -11721,12 +11713,10 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	tournament_organizers_max_fields:{
-		role:"String",
 		steam_id:"bigint",
 		tournament_id:"uuid"
 	},
 	tournament_organizers_min_fields:{
-		role:"String",
 		steam_id:"bigint",
 		tournament_id:"uuid"
 	},
@@ -11756,7 +11746,6 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	tournament_servers:{
-		id:"uuid",
 		server:"servers",
 		server_id:"uuid",
 		tournament:"tournaments",
@@ -11772,12 +11761,10 @@ export const ReturnTypes: Record<string,any> = {
 		min:"tournament_servers_min_fields"
 	},
 	tournament_servers_max_fields:{
-		id:"uuid",
 		server_id:"uuid",
 		tournament_id:"uuid"
 	},
 	tournament_servers_min_fields:{
-		id:"uuid",
 		server_id:"uuid",
 		tournament_id:"uuid"
 	},

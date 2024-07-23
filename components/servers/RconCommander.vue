@@ -63,7 +63,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             command: z.string().min(1),
-          }),
+          })
         ),
       }),
     };

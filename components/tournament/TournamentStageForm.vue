@@ -111,7 +111,7 @@ export default {
             type: z.string(),
             min_teams: z.number().min(4),
             max_teams: z.number().max(16),
-          }),
+          })
         ),
       }),
     };

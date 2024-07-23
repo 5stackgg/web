@@ -27,7 +27,7 @@ import formatStatValue from "~/utilities/formatStatValue";
         {{
           formatStatValue(
             member.player.damage_dealt_aggregate.aggregate.sum.damage /
-              totalRounds,
+              totalRounds
           )
         }}
         ADR
@@ -162,7 +162,7 @@ export default {
       }
       return formatStatValue(
         this.member.player.kills_aggregate.aggregate.count /
-          this.member.player.deaths_aggregate.aggregate.count,
+          this.member.player.deaths_aggregate.aggregate.count
       );
     },
     hs() {
@@ -172,7 +172,7 @@ export default {
       return (
         formatStatValue(
           this.member.player.hs_kills_aggregate.aggregate.count /
-            this.member.player.kills_aggregate.aggregate.count,
+            this.member.player.kills_aggregate.aggregate.count
         ) *
           100 +
         "%"

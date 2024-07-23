@@ -5,6 +5,7 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentServers from "~/components/tournament/TournamentServers.vue";
+import TournamentMapPool from "~/components/tournament/TournamentMapPool.vue";
 </script>
 
 <template>
@@ -67,11 +68,15 @@ import TournamentServers from "~/components/tournament/TournamentServers.vue";
       <Tabs default-value="organizers">
         <TabsList>
           <TabsTrigger value="organizers"> Organizers </TabsTrigger>
+          <TabsTrigger value="map_pool"> Map Pool </TabsTrigger>
           <TabsTrigger value="servers"> Servers </TabsTrigger>
         </TabsList>
         <TabsContent value="organizers">
           <TournamentOrganizers :tournament="tournament">
           </TournamentOrganizers>
+        </TabsContent>
+        <TabsContent value="map_pool">
+          <TournamentMapPool :tournament="tournament"></TournamentMapPool>
         </TabsContent>
         <TabsContent value="servers">
           <TournamentServers :tournament="tournament"></TournamentServers>
@@ -135,11 +140,17 @@ export default {
                   },
                 },
               ],
+              map_pool: [
+                {},
+                {
+                  id: true,
+                },
+              ],
               servers: [
                 {},
                 {
                   server_id: true,
-                }
+                },
               ],
               stages: [
                 {

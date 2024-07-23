@@ -132,7 +132,7 @@ export default {
   methods: {
     linkDiscord() {
       window.location = `https://5stack.gg/auth/discord?redirect=${encodeURIComponent(
-        window.location.toString(),
+        window.location.toString()
       )}`;
     },
   },

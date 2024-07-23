@@ -36,7 +36,7 @@ const forwardedProps = useForwardProps(delegatedProps);
         'data-[unavailable]:text-destructive-foreground data-[unavailable]:line-through',
         // Outside months
         'data-[outside-month]:pointer-events-none data-[outside-month]:text-muted-foreground data-[outside-month]:opacity-50 [&[data-outside-month][data-selected]]:bg-accent/50 [&[data-outside-month][data-selected]]:text-muted-foreground [&[data-outside-month][data-selected]]:opacity-30',
-        props.class,
+        props.class
       )
     "
     v-bind="forwardedProps"

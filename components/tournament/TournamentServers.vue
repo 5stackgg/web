@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { Check } from 'lucide-vue-next'
-import {FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
-import {CaretSortIcon} from "@radix-icons/vue";
+import { Check } from "lucide-vue-next";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
+import { CaretSortIcon } from "@radix-icons/vue";
 </script>
 
 <template>
@@ -13,16 +18,14 @@ import {CaretSortIcon} from "@radix-icons/vue";
           <Popover>
             <PopoverTrigger as-child>
               <Button
-                  variant="outline"
-                  role="combobox"
-                  class="w-[200px] justify-between"
+                variant="outline"
+                role="combobox"
+                class="w-[200px] justify-between"
               >
                 <template v-if="componentField.modelValue.length > 0">
-                  Selected {{ componentField.modelValue.length}} servers
+                  Selected {{ componentField.modelValue.length }} servers
                 </template>
-                <template v-else>
-                  Using On Demand Servers
-                </template>
+                <template v-else> Using On Demand Servers </template>
                 <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -33,13 +36,15 @@ import {CaretSortIcon} from "@radix-icons/vue";
                 <CommandList>
                   <CommandGroup>
                     <CommandItem
-                        v-for="server in servers"
-                        :key="server.value"
-                        :value="server.value"
-                        @select="updateServerList(server.value)"
+                      v-for="server in servers"
+                      :key="server.value"
+                      :value="server.value"
+                      @select="updateServerList(server.value)"
                     >
                       {{ server.display }}
-                      <Check v-if="form.values.serverIds.includes(server.value)"></Check>
+                      <Check
+                        v-if="form.values.serverIds.includes(server.value)"
+                      ></Check>
                     </CommandItem>
                   </CommandGroup>
                 </CommandList>
@@ -55,10 +60,10 @@ import {CaretSortIcon} from "@radix-icons/vue";
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
-import {useForm} from "vee-validate";
-import {toTypedSchema} from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
-import {typedGql} from "~/generated/zeus/typedDocumentNode";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 export default {
   props: {
@@ -71,19 +76,20 @@ export default {
     return {
       servers: [],
       form: useForm({
-        validationSchema: toTypedSchema(
-            z.string().array().default([]),
-        ),
+        validationSchema: toTypedSchema(z.string().array().default([])),
       }),
-    }
+    };
   },
   watch: {
     tournament: {
       immediate: true,
       handler(tournament) {
-        this.form.setFieldValue('serverIds', tournament?.servers.map((server) => server.server_id ) || [])
-      }
-    }
+        this.form.setFieldValue(
+          "serverIds",
+          tournament?.servers.map((server) => server.server_id) || []
+        );
+      },
+    },
   },
   apollo: {
     $subscribe: {
@@ -120,12 +126,12 @@ export default {
               {
                 where: {
                   server_id: {
-                    _eq: serverId
+                    _eq: serverId,
                   },
                   tournament_id: {
-                    _eq: this.$route.params.tournamentId
+                    _eq: this.$route.params.tournamentId,
                   },
-                }
+                },
               },
               {
                 __typename: true,
@@ -144,7 +150,7 @@ export default {
                 },
               },
               {
-                __typename: true
+                __typename: true,
               },
             ],
           }),

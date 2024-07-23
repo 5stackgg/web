@@ -22,6 +22,7 @@ import {
         <FormMessage />
       </FormItem>
     </FormField>
+
     <FormField v-slot="{ componentField }" name="description">
       <FormItem>
         <FormLabel>Description</FormLabel>
@@ -31,13 +32,29 @@ import {
         </FormControl>
       </FormItem>
     </FormField>
+
     <FormField v-slot="{ componentField }" name="type">
       <FormItem>
-        <FormLabel>Type</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" />
-          <FormMessage />
-        </FormControl>
+        <FormLabel>Match Type </FormLabel>
+
+        <Select v-bind="componentField">
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder="Select the match type" />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem :value="type.value" v-for="type of e_match_types">
+                {{ type.value }}
+                <div class="text-xs">
+                  {{ type.description }}
+                </div>
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <FormMessage />
       </FormItem>
     </FormField>
 
@@ -87,7 +104,9 @@ import {
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { mapFields } from "~/graphql/mapGraphql";
+import { e_match_types_enum } from "~/generated/zeus";
 
 export default {
   emits: ["updated"],
@@ -97,6 +116,47 @@ export default {
       required: false,
     },
   },
+  apollo: {
+    e_match_types: {
+      query: generateQuery({
+        e_match_types: [
+          {
+            where: {
+              value: {
+                _neq: e_match_types_enum.Custom,
+              },
+            },
+          },
+          {
+            value: true,
+            description: true,
+          },
+        ],
+      }),
+    },
+    map_pools: {
+      query: generateQuery({
+        map_pools: [
+          {
+            where: {
+              enabled: {
+                _eq: true,
+              },
+              seed: {
+                _eq: true,
+              },
+            },
+          },
+          {
+            id: true,
+            type: true,
+            maps: [{}, mapFields],
+          },
+        ],
+      }),
+    },
+  },
+
   data() {
     return {
       startDate: undefined,
@@ -105,10 +165,10 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             name: z.string().min(1),
-            type: z.string(),
+            type: z.string().default(e_match_types_enum.Competitive),
             start: z.date(),
             description: z.string().nullable().default(null),
-          }),
+          })
         ),
       }),
     };
@@ -138,6 +198,13 @@ export default {
           });
         }
       },
+    },
+  },
+  computed: {
+    defaultMapPool() {
+      return this.map_pools?.find((pool) => {
+        return pool.type === this.form.values.type;
+      });
     },
   },
   methods: {
@@ -189,6 +256,7 @@ export default {
                 name: this.form.values.name,
                 type: this.form.values.type,
                 start: this.form.values.start,
+                map_pool_id: this.defaultMapPool.id,
                 description: this.form.values.description,
               },
             },

@@ -948,26 +948,19 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"map_pools_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
-		label:"String_comparison_exp",
 		maps:"v_pool_maps_bool_exp",
 		maps_aggregate:"v_pool_maps_aggregate_bool_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
-		owner_steam_id:"bigint_comparison_exp",
-		tournament:"tournaments_bool_exp",
-		tournament_id:"uuid_comparison_exp"
+		seed:"Boolean_comparison_exp",
+		type:"e_match_types_enum_comparison_exp"
 	},
 	map_pools_constraint: "enum" as const,
-	map_pools_inc_input:{
-		owner_steam_id:"bigint"
-	},
 	map_pools_insert_input:{
 		id:"uuid",
 		maps:"v_pool_maps_arr_rel_insert_input",
 		matches:"matches_arr_rel_insert_input",
-		owner_steam_id:"bigint",
-		tournament:"tournaments_obj_rel_insert_input",
-		tournament_id:"uuid"
+		type:"e_match_types_enum"
 	},
 	map_pools_obj_rel_insert_input:{
 		data:"map_pools_insert_input",
@@ -981,12 +974,10 @@ export const AllTypesProps: Record<string,any> = {
 	map_pools_order_by:{
 		enabled:"order_by",
 		id:"order_by",
-		label:"order_by",
 		maps_aggregate:"v_pool_maps_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
-		owner_steam_id:"order_by",
-		tournament:"tournaments_order_by",
-		tournament_id:"order_by"
+		seed:"order_by",
+		type:"order_by"
 	},
 	map_pools_pk_columns_input:{
 		id:"uuid"
@@ -994,8 +985,7 @@ export const AllTypesProps: Record<string,any> = {
 	map_pools_select_column: "enum" as const,
 	map_pools_set_input:{
 		id:"uuid",
-		owner_steam_id:"bigint",
-		tournament_id:"uuid"
+		type:"e_match_types_enum"
 	},
 	map_pools_stream_cursor_input:{
 		initial_value:"map_pools_stream_cursor_value_input",
@@ -1003,12 +993,10 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	map_pools_stream_cursor_value_input:{
 		id:"uuid",
-		owner_steam_id:"bigint",
-		tournament_id:"uuid"
+		type:"e_match_types_enum"
 	},
 	map_pools_update_column: "enum" as const,
 	map_pools_updates:{
-		_inc:"map_pools_inc_input",
 		_set:"map_pools_set_input",
 		where:"map_pools_bool_exp"
 	},
@@ -3305,12 +3293,10 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"e_veto_pick_types_updates"
 		},
 		update_map_pools:{
-			_inc:"map_pools_inc_input",
 			_set:"map_pools_set_input",
 			where:"map_pools_bool_exp"
 		},
 		update_map_pools_by_pk:{
-			_inc:"map_pools_inc_input",
 			_set:"map_pools_set_input",
 			pk_columns:"map_pools_pk_columns_input"
 		},
@@ -9354,71 +9340,31 @@ export const ReturnTypes: Record<string,any> = {
 	map_pools:{
 		enabled:"Boolean",
 		id:"uuid",
-		label:"String",
 		maps:"v_pool_maps",
 		maps_aggregate:"v_pool_maps_aggregate",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
-		owner_steam_id:"bigint",
-		tournament:"tournaments",
-		tournament_id:"uuid"
+		seed:"Boolean",
+		type:"e_match_types_enum"
 	},
 	map_pools_aggregate:{
 		aggregate:"map_pools_aggregate_fields",
 		nodes:"map_pools"
 	},
 	map_pools_aggregate_fields:{
-		avg:"map_pools_avg_fields",
 		count:"Int",
 		max:"map_pools_max_fields",
-		min:"map_pools_min_fields",
-		stddev:"map_pools_stddev_fields",
-		stddev_pop:"map_pools_stddev_pop_fields",
-		stddev_samp:"map_pools_stddev_samp_fields",
-		sum:"map_pools_sum_fields",
-		var_pop:"map_pools_var_pop_fields",
-		var_samp:"map_pools_var_samp_fields",
-		variance:"map_pools_variance_fields"
-	},
-	map_pools_avg_fields:{
-		owner_steam_id:"Float"
+		min:"map_pools_min_fields"
 	},
 	map_pools_max_fields:{
-		id:"uuid",
-		label:"String",
-		owner_steam_id:"bigint",
-		tournament_id:"uuid"
+		id:"uuid"
 	},
 	map_pools_min_fields:{
-		id:"uuid",
-		label:"String",
-		owner_steam_id:"bigint",
-		tournament_id:"uuid"
+		id:"uuid"
 	},
 	map_pools_mutation_response:{
 		affected_rows:"Int",
 		returning:"map_pools"
-	},
-	map_pools_stddev_fields:{
-		owner_steam_id:"Float"
-	},
-	map_pools_stddev_pop_fields:{
-		owner_steam_id:"Float"
-	},
-	map_pools_stddev_samp_fields:{
-		owner_steam_id:"Float"
-	},
-	map_pools_sum_fields:{
-		owner_steam_id:"bigint"
-	},
-	map_pools_var_pop_fields:{
-		owner_steam_id:"Float"
-	},
-	map_pools_var_samp_fields:{
-		owner_steam_id:"Float"
-	},
-	map_pools_variance_fields:{
-		owner_steam_id:"Float"
 	},
 	maps:{
 		active_pool:"Boolean",

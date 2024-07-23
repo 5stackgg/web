@@ -27,7 +27,7 @@ const delegatedProps = computed(() => {
       :class="
         cn(
           'p-4 whitespace-nowrap align-middle text-sm text-foreground',
-          props.class,
+          props.class
         )
       "
       v-bind="delegatedProps"

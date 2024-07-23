@@ -275,7 +275,13 @@ export default {
     e_match_types: {
       query: generateQuery({
         e_match_types: [
-          {},
+          {
+            where: {
+              value: {
+                _neq: e_match_types_enum.Custom,
+              },
+            },
+          },
           {
             value: true,
             description: true,
@@ -296,14 +302,14 @@ export default {
               enabled: {
                 _eq: true,
               },
-              owner_steam_id: {
-                _is_null: true,
+              seed: {
+                _eq: true,
               },
             },
           },
           {
             id: true,
-            label: true,
+            type: true,
             maps: [{}, mapFields],
           },
         ],
@@ -328,7 +334,7 @@ export default {
             team_1: z.string().optional(),
             team_2: z.string().optional(),
             map_pool: z.string().array().default([]),
-          }),
+          })
         ),
       }),
     };
@@ -383,13 +389,14 @@ export default {
               : null,
           ...(mapPoolLength === 0
             ? {
-                match_pool_id: this.defaultMapPool.id,
+                map_pool_id: this.defaultMapPool.id,
               }
             : {}),
           map_pool:
             mapPoolLength > 0
               ? {
                   data: {
+                    type: e_match_types_enum.Custom,
                     enabled: false,
                     maps: {
                       data: form?.map_pool?.map((map_id) => {
@@ -422,7 +429,7 @@ export default {
                   ],
                 },
                 ...(mapPoolLength === 0
-                  ? { match_pool_id: $("match_pool_id", "uuid") }
+                  ? { map_pool_id: $("match_pool_id", "uuid") }
                   : {}),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
               },
@@ -451,7 +458,7 @@ export default {
     },
     defaultMapPool() {
       return this.map_pools.find((pool) => {
-        return pool.label === this.form.values.type;
+        return pool.type === this.form.values.type;
       });
     },
     availableMaps() {

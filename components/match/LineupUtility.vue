@@ -42,7 +42,7 @@ import LineupMember from "~/components/match/LineupMember.vue";
           duration
           {{
             formatStatValue(
-              member.player.avg_flash_duration_aggregate.aggregate.avg.duration,
+              member.player.avg_flash_duration_aggregate.aggregate.avg.duration
             )
           }}
         </TableCell>

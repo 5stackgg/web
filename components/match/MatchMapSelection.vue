@@ -100,7 +100,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             map_id: z.string(),
-          }),
+          })
         ),
       }),
     };

@@ -58,7 +58,7 @@ class Socket extends EventEmitter {
         JSON.stringify({
           event,
           data,
-        }),
+        })
       );
     }
   }

@@ -84,7 +84,7 @@ export default {
               type: true,
               scheduled_at: true,
               map_pool: {
-                label: true,
+                type: true,
               },
               match_maps: [
                 {

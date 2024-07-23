@@ -76,8 +76,8 @@ export default {
             {
               object: {
                 player_steam_id: member.steam_id,
-                tournament_id: this.$route.params.id,
                 tournament_team_id: this.$route.params.teamId,
+                tournament_id: this.$route.params.tournamentId || this.$route.params.id,
               },
             },
             {

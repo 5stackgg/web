@@ -263,7 +263,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
-import { $, e_match_types_enum } from "~/generated/zeus";
+import { $, e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useForm } from "vee-validate";
@@ -275,13 +275,7 @@ export default {
     e_match_types: {
       query: generateQuery({
         e_match_types: [
-          {
-            where: {
-              value: {
-                _neq: e_match_types_enum.Custom,
-              },
-            },
-          },
+          {},
           {
             value: true,
             description: true,
@@ -396,7 +390,7 @@ export default {
             mapPoolLength > 0
               ? {
                   data: {
-                    type: e_match_types_enum.Custom,
+                    type: e_map_pool_types_enum.Custom,
                     enabled: false,
                     maps: {
                       data: form?.map_pool?.map((map_id) => {
@@ -429,7 +423,7 @@ export default {
                   ],
                 },
                 ...(mapPoolLength === 0
-                  ? { map_pool_id: $("match_pool_id", "uuid") }
+                  ? { map_pool_id: $("map_pool_id", "uuid!") }
                   : {}),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
               },

@@ -92,6 +92,57 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"date",
 		_nin:"date"
 	},
+	e_map_pool_types_aggregate_fields:{
+		count:{
+			columns:"e_map_pool_types_select_column"
+		}
+	},
+	e_map_pool_types_bool_exp:{
+		_and:"e_map_pool_types_bool_exp",
+		_not:"e_map_pool_types_bool_exp",
+		_or:"e_map_pool_types_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_map_pool_types_constraint: "enum" as const,
+	e_map_pool_types_enum: "enum" as const,
+	e_map_pool_types_enum_comparison_exp:{
+		_eq:"e_map_pool_types_enum",
+		_in:"e_map_pool_types_enum",
+		_neq:"e_map_pool_types_enum",
+		_nin:"e_map_pool_types_enum"
+	},
+	e_map_pool_types_insert_input:{
+
+	},
+	e_map_pool_types_on_conflict:{
+		constraint:"e_map_pool_types_constraint",
+		update_columns:"e_map_pool_types_update_column",
+		where:"e_map_pool_types_bool_exp"
+	},
+	e_map_pool_types_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_map_pool_types_pk_columns_input:{
+
+	},
+	e_map_pool_types_select_column: "enum" as const,
+	e_map_pool_types_set_input:{
+
+	},
+	e_map_pool_types_stream_cursor_input:{
+		initial_value:"e_map_pool_types_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_map_pool_types_stream_cursor_value_input:{
+
+	},
+	e_map_pool_types_update_column: "enum" as const,
+	e_map_pool_types_updates:{
+		_set:"e_map_pool_types_set_input",
+		where:"e_map_pool_types_bool_exp"
+	},
 	e_match_map_status:{
 		match_maps:{
 			distinct_on:"match_maps_select_column",
@@ -953,14 +1004,14 @@ export const AllTypesProps: Record<string,any> = {
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
 		seed:"Boolean_comparison_exp",
-		type:"e_match_types_enum_comparison_exp"
+		type:"e_map_pool_types_enum_comparison_exp"
 	},
 	map_pools_constraint: "enum" as const,
 	map_pools_insert_input:{
 		id:"uuid",
 		maps:"v_pool_maps_arr_rel_insert_input",
 		matches:"matches_arr_rel_insert_input",
-		type:"e_match_types_enum"
+		type:"e_map_pool_types_enum"
 	},
 	map_pools_obj_rel_insert_input:{
 		data:"map_pools_insert_input",
@@ -985,7 +1036,7 @@ export const AllTypesProps: Record<string,any> = {
 	map_pools_select_column: "enum" as const,
 	map_pools_set_input:{
 		id:"uuid",
-		type:"e_match_types_enum"
+		type:"e_map_pool_types_enum"
 	},
 	map_pools_stream_cursor_input:{
 		initial_value:"map_pools_stream_cursor_value_input",
@@ -993,7 +1044,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	map_pools_stream_cursor_value_input:{
 		id:"uuid",
-		type:"e_match_types_enum"
+		type:"e_map_pool_types_enum"
 	},
 	map_pools_update_column: "enum" as const,
 	map_pools_updates:{
@@ -2585,6 +2636,12 @@ export const AllTypesProps: Record<string,any> = {
 			map_id:"uuid",
 			map_pool_id:"uuid"
 		},
+		delete_e_map_pool_types:{
+			where:"e_map_pool_types_bool_exp"
+		},
+		delete_e_map_pool_types_by_pk:{
+
+		},
 		delete_e_match_map_status:{
 			where:"e_match_map_status_bool_exp"
 		},
@@ -2836,6 +2893,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert__map_pool_one:{
 			object:"_map_pool_insert_input",
 			on_conflict:"_map_pool_on_conflict"
+		},
+		insert_e_map_pool_types:{
+			objects:"e_map_pool_types_insert_input",
+			on_conflict:"e_map_pool_types_on_conflict"
+		},
+		insert_e_map_pool_types_one:{
+			object:"e_map_pool_types_insert_input",
+			on_conflict:"e_map_pool_types_on_conflict"
 		},
 		insert_e_match_map_status:{
 			objects:"e_match_map_status_insert_input",
@@ -3179,6 +3244,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update__map_pool_many:{
 			updates:"_map_pool_updates"
+		},
+		update_e_map_pool_types:{
+			_set:"e_map_pool_types_set_input",
+			where:"e_map_pool_types_bool_exp"
+		},
+		update_e_map_pool_types_by_pk:{
+			_set:"e_map_pool_types_set_input",
+			pk_columns:"e_map_pool_types_pk_columns_input"
+		},
+		update_e_map_pool_types_many:{
+			updates:"e_map_pool_types_updates"
 		},
 		update_e_match_map_status:{
 			_set:"e_match_map_status_set_input",
@@ -5442,6 +5518,19 @@ export const AllTypesProps: Record<string,any> = {
 			map_id:"uuid",
 			map_pool_id:"uuid"
 		},
+		e_map_pool_types:{
+			distinct_on:"e_map_pool_types_select_column",
+			order_by:"e_map_pool_types_order_by",
+			where:"e_map_pool_types_bool_exp"
+		},
+		e_map_pool_types_aggregate:{
+			distinct_on:"e_map_pool_types_select_column",
+			order_by:"e_map_pool_types_order_by",
+			where:"e_map_pool_types_bool_exp"
+		},
+		e_map_pool_types_by_pk:{
+
+		},
 		e_match_map_status:{
 			distinct_on:"e_match_map_status_select_column",
 			order_by:"e_match_map_status_order_by",
@@ -6164,6 +6253,23 @@ export const AllTypesProps: Record<string,any> = {
 		_map_pool_stream:{
 			cursor:"_map_pool_stream_cursor_input",
 			where:"_map_pool_bool_exp"
+		},
+		e_map_pool_types:{
+			distinct_on:"e_map_pool_types_select_column",
+			order_by:"e_map_pool_types_order_by",
+			where:"e_map_pool_types_bool_exp"
+		},
+		e_map_pool_types_aggregate:{
+			distinct_on:"e_map_pool_types_select_column",
+			order_by:"e_map_pool_types_order_by",
+			where:"e_map_pool_types_bool_exp"
+		},
+		e_map_pool_types_by_pk:{
+
+		},
+		e_map_pool_types_stream:{
+			cursor:"e_map_pool_types_stream_cursor_input",
+			where:"e_map_pool_types_bool_exp"
 		},
 		e_match_map_status:{
 			distinct_on:"e_match_map_status_select_column",
@@ -9040,6 +9146,31 @@ export const ReturnTypes: Record<string,any> = {
 	bigint: `scalar.bigint` as const,
 	bytea: `scalar.bytea` as const,
 	date: `scalar.date` as const,
+	e_map_pool_types:{
+		description:"String",
+		value:"String"
+	},
+	e_map_pool_types_aggregate:{
+		aggregate:"e_map_pool_types_aggregate_fields",
+		nodes:"e_map_pool_types"
+	},
+	e_map_pool_types_aggregate_fields:{
+		count:"Int",
+		max:"e_map_pool_types_max_fields",
+		min:"e_map_pool_types_min_fields"
+	},
+	e_map_pool_types_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_map_pool_types_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_map_pool_types_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_map_pool_types"
+	},
 	e_match_map_status:{
 		description:"String",
 		match_maps:"match_maps",
@@ -9354,7 +9485,7 @@ export const ReturnTypes: Record<string,any> = {
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
 		seed:"Boolean",
-		type:"e_match_types_enum"
+		type:"e_map_pool_types_enum"
 	},
 	map_pools_aggregate:{
 		aggregate:"map_pools_aggregate_fields",
@@ -10117,6 +10248,8 @@ export const ReturnTypes: Record<string,any> = {
 		cancelMatch:"SuccessOutput",
 		delete__map_pool:"_map_pool_mutation_response",
 		delete__map_pool_by_pk:"_map_pool",
+		delete_e_map_pool_types:"e_map_pool_types_mutation_response",
+		delete_e_map_pool_types_by_pk:"e_map_pool_types",
 		delete_e_match_map_status:"e_match_map_status_mutation_response",
 		delete_e_match_map_status_by_pk:"e_match_map_status",
 		delete_e_match_status:"e_match_status_mutation_response",
@@ -10199,6 +10332,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
+		insert_e_map_pool_types:"e_map_pool_types_mutation_response",
+		insert_e_map_pool_types_one:"e_map_pool_types",
 		insert_e_match_map_status:"e_match_map_status_mutation_response",
 		insert_e_match_map_status_one:"e_match_map_status",
 		insert_e_match_status:"e_match_status_mutation_response",
@@ -10286,6 +10421,9 @@ export const ReturnTypes: Record<string,any> = {
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",
 		update__map_pool_many:"_map_pool_mutation_response",
+		update_e_map_pool_types:"e_map_pool_types_mutation_response",
+		update_e_map_pool_types_by_pk:"e_map_pool_types",
+		update_e_map_pool_types_many:"e_map_pool_types_mutation_response",
 		update_e_match_map_status:"e_match_map_status_mutation_response",
 		update_e_match_map_status_by_pk:"e_match_map_status",
 		update_e_match_map_status_many:"e_match_map_status_mutation_response",
@@ -11269,6 +11407,9 @@ export const ReturnTypes: Record<string,any> = {
 		_map_pool:"_map_pool",
 		_map_pool_aggregate:"_map_pool_aggregate",
 		_map_pool_by_pk:"_map_pool",
+		e_map_pool_types:"e_map_pool_types",
+		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
+		e_map_pool_types_by_pk:"e_map_pool_types",
 		e_match_map_status:"e_match_map_status",
 		e_match_map_status_aggregate:"e_match_map_status_aggregate",
 		e_match_map_status_by_pk:"e_match_map_status",
@@ -11508,6 +11649,10 @@ export const ReturnTypes: Record<string,any> = {
 		_map_pool_aggregate:"_map_pool_aggregate",
 		_map_pool_by_pk:"_map_pool",
 		_map_pool_stream:"_map_pool",
+		e_map_pool_types:"e_map_pool_types",
+		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
+		e_map_pool_types_by_pk:"e_map_pool_types",
+		e_map_pool_types_stream:"e_map_pool_types",
 		e_match_map_status:"e_match_map_status",
 		e_match_map_status_aggregate:"e_match_map_status_aggregate",
 		e_match_map_status_by_pk:"e_match_map_status",

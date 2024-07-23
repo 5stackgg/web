@@ -1077,6 +1077,111 @@ count?: [{	columns?: Array<ValueTypes["_map_pool_select_column"]> | undefined | 
 	_neq?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	_nin?: Array<ValueTypes["date"]> | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "e_map_pool_types" */
+["e_map_pool_types"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_map_pool_types" */
+["e_map_pool_types_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_map_pool_types_aggregate_fields"],
+	nodes?:ValueTypes["e_map_pool_types"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_map_pool_types" */
+["e_map_pool_types_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_map_pool_types_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_map_pool_types_max_fields"],
+	min?:ValueTypes["e_map_pool_types_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_map_pool_types". All fields are combined with a logical 'AND'. */
+["e_map_pool_types_bool_exp"]: {
+	_and?: Array<ValueTypes["e_map_pool_types_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_map_pool_types_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_map_pool_types" */
+["e_map_pool_types_constraint"]:e_map_pool_types_constraint;
+	["e_map_pool_types_enum"]:e_map_pool_types_enum;
+	/** Boolean expression to compare columns of type "e_map_pool_types_enum". All fields are combined with logical 'AND'. */
+["e_map_pool_types_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_map_pool_types_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_map_pool_types_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_map_pool_types_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_map_pool_types_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_map_pool_types" */
+["e_map_pool_types_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_map_pool_types_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_map_pool_types_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_map_pool_types" */
+["e_map_pool_types_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_map_pool_types"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_map_pool_types" */
+["e_map_pool_types_on_conflict"]: {
+	constraint: ValueTypes["e_map_pool_types_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_map_pool_types_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_map_pool_types". */
+["e_map_pool_types_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_map_pool_types */
+["e_map_pool_types_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_map_pool_types" */
+["e_map_pool_types_select_column"]:e_map_pool_types_select_column;
+	/** input type for updating data in table "e_map_pool_types" */
+["e_map_pool_types_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_map_pool_types" */
+["e_map_pool_types_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_map_pool_types_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_map_pool_types_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_map_pool_types" */
+["e_map_pool_types_update_column"]:e_map_pool_types_update_column;
+	["e_map_pool_types_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_map_pool_types_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_map_pool_types_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "e_match_map_status" */
 ["e_match_map_status"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -2592,7 +2697,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	seed?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	type?: ValueTypes["e_match_types_enum_comparison_exp"] | undefined | null | Variable<any, string>
+	type?: ValueTypes["e_map_pool_types_enum_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "map_pools" */
 ["map_pools_constraint"]:map_pools_constraint;
@@ -2603,7 +2708,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 	maps?: ValueTypes["v_pool_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	seed?: boolean | undefined | null | Variable<any, string>,
-	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>
+	type?: ValueTypes["e_map_pool_types_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["map_pools_max_fields"]: AliasType<{
@@ -2655,7 +2760,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	seed?: boolean | undefined | null | Variable<any, string>,
-	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>
+	type?: ValueTypes["e_map_pool_types_enum"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "map_pools" */
 ["map_pools_stream_cursor_input"]: {
@@ -2669,7 +2774,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	seed?: boolean | undefined | null | Variable<any, string>,
-	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>
+	type?: ValueTypes["e_map_pool_types_enum"] | undefined | null | Variable<any, string>
 };
 	/** update columns of table "map_pools" */
 ["map_pools_update_column"]:map_pools_update_column;
@@ -5566,6 +5671,9 @@ cancelMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueType
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["_map_pool_bool_exp"] | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
 delete__map_pool_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	map_pool_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["_map_pool"]],
+delete_e_map_pool_types?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_map_pool_types_bool_exp"] | Variable<any, string>},ValueTypes["e_map_pool_types_mutation_response"]],
+delete_e_map_pool_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_map_pool_types"]],
 delete_e_match_map_status?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_match_map_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_map_status_mutation_response"]],
 delete_e_match_map_status_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_match_map_status"]],
@@ -5693,6 +5801,12 @@ insert__map_pool?: [{	/** the rows to be inserted */
 insert__map_pool_one?: [{	/** the row to be inserted */
 	object: ValueTypes["_map_pool_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool"]],
+insert_e_map_pool_types?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_map_pool_types_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_map_pool_types_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types_mutation_response"]],
+insert_e_map_pool_types_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_map_pool_types_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_map_pool_types_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types"]],
 insert_e_match_map_status?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_match_map_status_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_match_map_status_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_match_map_status_mutation_response"]],
@@ -5944,6 +6058,13 @@ update__map_pool_by_pk?: [{	/** sets the columns of the filtered rows to the giv
 	_set?: ValueTypes["_map_pool_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["_map_pool_pk_columns_input"] | Variable<any, string>},ValueTypes["_map_pool"]],
 update__map_pool_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["_map_pool_updates"]> | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
+update_e_map_pool_types?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_map_pool_types_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_map_pool_types_bool_exp"] | Variable<any, string>},ValueTypes["e_map_pool_types_mutation_response"]],
+update_e_map_pool_types_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_map_pool_types_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_map_pool_types_pk_columns_input"] | Variable<any, string>},ValueTypes["e_map_pool_types"]],
+update_e_map_pool_types_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_map_pool_types_updates"]> | Variable<any, string>},ValueTypes["e_map_pool_types_mutation_response"]],
 update_e_match_map_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_match_map_status_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_match_map_status_bool_exp"] | Variable<any, string>},ValueTypes["e_match_map_status_mutation_response"]],
@@ -9521,6 +9642,19 @@ _map_pool_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool_aggregate"]],
 _map_pool_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	map_pool_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["_map_pool"]],
+e_map_pool_types?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_map_pool_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_map_pool_types_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types"]],
+e_map_pool_types_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_map_pool_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_map_pool_types_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types_aggregate"]],
+e_map_pool_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_map_pool_types"]],
 e_match_map_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_match_map_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -10423,6 +10557,23 @@ _map_pool_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["_map_pool_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool"]],
+e_map_pool_types?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_map_pool_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_map_pool_types_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types"]],
+e_map_pool_types_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_map_pool_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_map_pool_types_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types_aggregate"]],
+e_map_pool_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_map_pool_types"]],
+e_map_pool_types_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_map_pool_types_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types"]],
 e_match_map_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_match_map_status_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -15648,6 +15799,111 @@ count?: [{	columns?: Array<ResolverInputTypes["_map_pool_select_column"]> | unde
 	_neq?: ResolverInputTypes["date"] | undefined | null,
 	_nin?: Array<ResolverInputTypes["date"]> | undefined | null
 };
+	/** columns and relationships of "e_map_pool_types" */
+["e_map_pool_types"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_map_pool_types" */
+["e_map_pool_types_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_map_pool_types_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_map_pool_types"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_map_pool_types" */
+["e_map_pool_types_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_map_pool_types_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_map_pool_types_max_fields"],
+	min?:ResolverInputTypes["e_map_pool_types_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_map_pool_types". All fields are combined with a logical 'AND'. */
+["e_map_pool_types_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_map_pool_types_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_map_pool_types_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_map_pool_types" */
+["e_map_pool_types_constraint"]:e_map_pool_types_constraint;
+	["e_map_pool_types_enum"]:e_map_pool_types_enum;
+	/** Boolean expression to compare columns of type "e_map_pool_types_enum". All fields are combined with logical 'AND'. */
+["e_map_pool_types_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_map_pool_types_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_map_pool_types_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_map_pool_types_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_map_pool_types_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_map_pool_types" */
+["e_map_pool_types_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_map_pool_types_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_map_pool_types_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_map_pool_types" */
+["e_map_pool_types_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_map_pool_types"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_map_pool_types" */
+["e_map_pool_types_on_conflict"]: {
+	constraint: ResolverInputTypes["e_map_pool_types_constraint"],
+	update_columns: Array<ResolverInputTypes["e_map_pool_types_update_column"]>,
+	where?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_map_pool_types". */
+["e_map_pool_types_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_map_pool_types */
+["e_map_pool_types_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_map_pool_types" */
+["e_map_pool_types_select_column"]:e_map_pool_types_select_column;
+	/** input type for updating data in table "e_map_pool_types" */
+["e_map_pool_types_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_map_pool_types" */
+["e_map_pool_types_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_map_pool_types_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_map_pool_types_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_map_pool_types" */
+["e_map_pool_types_update_column"]:e_map_pool_types_update_column;
+	["e_map_pool_types_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_map_pool_types_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_map_pool_types_bool_exp"]
+};
 	/** columns and relationships of "e_match_map_status" */
 ["e_match_map_status"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -17163,7 +17419,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_bool_exp"] | undefined | null,
 	seed?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	type?: ResolverInputTypes["e_match_types_enum_comparison_exp"] | undefined | null
+	type?: ResolverInputTypes["e_map_pool_types_enum_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "map_pools" */
 ["map_pools_constraint"]:map_pools_constraint;
@@ -17174,7 +17430,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 	maps?: ResolverInputTypes["v_pool_maps_arr_rel_insert_input"] | undefined | null,
 	matches?: ResolverInputTypes["matches_arr_rel_insert_input"] | undefined | null,
 	seed?: boolean | undefined | null,
-	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null
+	type?: ResolverInputTypes["e_map_pool_types_enum"] | undefined | null
 };
 	/** aggregate max on columns */
 ["map_pools_max_fields"]: AliasType<{
@@ -17226,7 +17482,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	seed?: boolean | undefined | null,
-	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null
+	type?: ResolverInputTypes["e_map_pool_types_enum"] | undefined | null
 };
 	/** Streaming cursor of the table "map_pools" */
 ["map_pools_stream_cursor_input"]: {
@@ -17240,7 +17496,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	seed?: boolean | undefined | null,
-	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null
+	type?: ResolverInputTypes["e_map_pool_types_enum"] | undefined | null
 };
 	/** update columns of table "map_pools" */
 ["map_pools_update_column"]:map_pools_update_column;
@@ -20137,6 +20393,9 @@ cancelMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["Succe
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["_map_pool_bool_exp"]},ResolverInputTypes["_map_pool_mutation_response"]],
 delete__map_pool_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	map_pool_id: ResolverInputTypes["uuid"]},ResolverInputTypes["_map_pool"]],
+delete_e_map_pool_types?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_map_pool_types_bool_exp"]},ResolverInputTypes["e_map_pool_types_mutation_response"]],
+delete_e_map_pool_types_by_pk?: [{	value: string},ResolverInputTypes["e_map_pool_types"]],
 delete_e_match_map_status?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_match_map_status_bool_exp"]},ResolverInputTypes["e_match_map_status_mutation_response"]],
 delete_e_match_map_status_by_pk?: [{	value: string},ResolverInputTypes["e_match_map_status"]],
@@ -20264,6 +20523,12 @@ insert__map_pool?: [{	/** the rows to be inserted */
 insert__map_pool_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["_map_pool_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["_map_pool"]],
+insert_e_map_pool_types?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_map_pool_types_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_map_pool_types_on_conflict"] | undefined | null},ResolverInputTypes["e_map_pool_types_mutation_response"]],
+insert_e_map_pool_types_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_map_pool_types_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_map_pool_types_on_conflict"] | undefined | null},ResolverInputTypes["e_map_pool_types"]],
 insert_e_match_map_status?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_match_map_status_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_match_map_status_on_conflict"] | undefined | null},ResolverInputTypes["e_match_map_status_mutation_response"]],
@@ -20515,6 +20780,13 @@ update__map_pool_by_pk?: [{	/** sets the columns of the filtered rows to the giv
 	_set?: ResolverInputTypes["_map_pool_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["_map_pool_pk_columns_input"]},ResolverInputTypes["_map_pool"]],
 update__map_pool_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["_map_pool_updates"]>},ResolverInputTypes["_map_pool_mutation_response"]],
+update_e_map_pool_types?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_map_pool_types_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_map_pool_types_bool_exp"]},ResolverInputTypes["e_map_pool_types_mutation_response"]],
+update_e_map_pool_types_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_map_pool_types_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_map_pool_types_pk_columns_input"]},ResolverInputTypes["e_map_pool_types"]],
+update_e_map_pool_types_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_map_pool_types_updates"]>},ResolverInputTypes["e_map_pool_types_mutation_response"]],
 update_e_match_map_status?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_match_map_status_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_match_map_status_bool_exp"]},ResolverInputTypes["e_match_map_status_mutation_response"]],
@@ -24092,6 +24364,19 @@ _map_pool_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["_map_pool_aggregate"]],
 _map_pool_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	map_pool_id: ResolverInputTypes["uuid"]},ResolverInputTypes["_map_pool"]],
+e_map_pool_types?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_map_pool_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_map_pool_types_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null},ResolverInputTypes["e_map_pool_types"]],
+e_map_pool_types_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_map_pool_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_map_pool_types_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null},ResolverInputTypes["e_map_pool_types_aggregate"]],
+e_map_pool_types_by_pk?: [{	value: string},ResolverInputTypes["e_map_pool_types"]],
 e_match_map_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_match_map_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -24994,6 +25279,23 @@ _map_pool_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["_map_pool_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["_map_pool"]],
+e_map_pool_types?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_map_pool_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_map_pool_types_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null},ResolverInputTypes["e_map_pool_types"]],
+e_map_pool_types_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_map_pool_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_map_pool_types_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null},ResolverInputTypes["e_map_pool_types_aggregate"]],
+e_map_pool_types_by_pk?: [{	value: string},ResolverInputTypes["e_map_pool_types"]],
+e_map_pool_types_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_map_pool_types_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null},ResolverInputTypes["e_map_pool_types"]],
 e_match_map_status?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_match_map_status_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -30206,6 +30508,102 @@ export type ModelTypes = {
 	_neq?: ModelTypes["date"] | undefined,
 	_nin?: Array<ModelTypes["date"]> | undefined
 };
+	/** columns and relationships of "e_map_pool_types" */
+["e_map_pool_types"]: {
+		description?: string | undefined,
+	value: string
+};
+	/** aggregated selection of "e_map_pool_types" */
+["e_map_pool_types_aggregate"]: {
+		aggregate?: ModelTypes["e_map_pool_types_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["e_map_pool_types"]>
+};
+	/** aggregate fields of "e_map_pool_types" */
+["e_map_pool_types_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_map_pool_types_max_fields"] | undefined,
+	min?: ModelTypes["e_map_pool_types_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_map_pool_types". All fields are combined with a logical 'AND'. */
+["e_map_pool_types_bool_exp"]: {
+	_and?: Array<ModelTypes["e_map_pool_types_bool_exp"]> | undefined,
+	_not?: ModelTypes["e_map_pool_types_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["e_map_pool_types_bool_exp"]> | undefined,
+	description?: ModelTypes["String_comparison_exp"] | undefined,
+	value?: ModelTypes["String_comparison_exp"] | undefined
+};
+	["e_map_pool_types_constraint"]:e_map_pool_types_constraint;
+	["e_map_pool_types_enum"]:e_map_pool_types_enum;
+	/** Boolean expression to compare columns of type "e_map_pool_types_enum". All fields are combined with logical 'AND'. */
+["e_map_pool_types_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_map_pool_types_enum"] | undefined,
+	_in?: Array<ModelTypes["e_map_pool_types_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: ModelTypes["e_map_pool_types_enum"] | undefined,
+	_nin?: Array<ModelTypes["e_map_pool_types_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_map_pool_types" */
+["e_map_pool_types_insert_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_map_pool_types_max_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_map_pool_types_min_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_map_pool_types" */
+["e_map_pool_types_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_map_pool_types"]>
+};
+	/** on_conflict condition type for table "e_map_pool_types" */
+["e_map_pool_types_on_conflict"]: {
+	constraint: ModelTypes["e_map_pool_types_constraint"],
+	update_columns: Array<ModelTypes["e_map_pool_types_update_column"]>,
+	where?: ModelTypes["e_map_pool_types_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_map_pool_types". */
+["e_map_pool_types_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined,
+	value?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_map_pool_types */
+["e_map_pool_types_pk_columns_input"]: {
+	value: string
+};
+	["e_map_pool_types_select_column"]:e_map_pool_types_select_column;
+	/** input type for updating data in table "e_map_pool_types" */
+["e_map_pool_types_set_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_map_pool_types" */
+["e_map_pool_types_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_map_pool_types_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_map_pool_types_stream_cursor_value_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	["e_map_pool_types_update_column"]:e_map_pool_types_update_column;
+	["e_map_pool_types_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_map_pool_types_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_map_pool_types_bool_exp"]
+};
 	/** columns and relationships of "e_match_map_status" */
 ["e_match_map_status"]: {
 		description: string,
@@ -31458,7 +31856,7 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	matches_aggregate: ModelTypes["matches_aggregate"],
 	seed: boolean,
-	type: ModelTypes["e_match_types_enum"]
+	type: ModelTypes["e_map_pool_types_enum"]
 };
 	/** aggregated selection of "map_pools" */
 ["map_pools_aggregate"]: {
@@ -31483,7 +31881,7 @@ export type ModelTypes = {
 	matches?: ModelTypes["matches_bool_exp"] | undefined,
 	matches_aggregate?: ModelTypes["matches_aggregate_bool_exp"] | undefined,
 	seed?: ModelTypes["Boolean_comparison_exp"] | undefined,
-	type?: ModelTypes["e_match_types_enum_comparison_exp"] | undefined
+	type?: ModelTypes["e_map_pool_types_enum_comparison_exp"] | undefined
 };
 	["map_pools_constraint"]:map_pools_constraint;
 	/** input type for inserting data into table "map_pools" */
@@ -31493,7 +31891,7 @@ export type ModelTypes = {
 	maps?: ModelTypes["v_pool_maps_arr_rel_insert_input"] | undefined,
 	matches?: ModelTypes["matches_arr_rel_insert_input"] | undefined,
 	seed?: boolean | undefined,
-	type?: ModelTypes["e_match_types_enum"] | undefined
+	type?: ModelTypes["e_map_pool_types_enum"] | undefined
 };
 	/** aggregate max on columns */
 ["map_pools_max_fields"]: {
@@ -31541,7 +31939,7 @@ export type ModelTypes = {
 	enabled?: boolean | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	seed?: boolean | undefined,
-	type?: ModelTypes["e_match_types_enum"] | undefined
+	type?: ModelTypes["e_map_pool_types_enum"] | undefined
 };
 	/** Streaming cursor of the table "map_pools" */
 ["map_pools_stream_cursor_input"]: {
@@ -31555,7 +31953,7 @@ export type ModelTypes = {
 	enabled?: boolean | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	seed?: boolean | undefined,
-	type?: ModelTypes["e_match_types_enum"] | undefined
+	type?: ModelTypes["e_map_pool_types_enum"] | undefined
 };
 	["map_pools_update_column"]:map_pools_update_column;
 	["map_pools_updates"]: {
@@ -34132,6 +34530,10 @@ export type ModelTypes = {
 	delete__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
 	/** delete single row from the table: "_map_pool" */
 	delete__map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
+	/** delete data from the table: "e_map_pool_types" */
+	delete_e_map_pool_types?: ModelTypes["e_map_pool_types_mutation_response"] | undefined,
+	/** delete single row from the table: "e_map_pool_types" */
+	delete_e_map_pool_types_by_pk?: ModelTypes["e_map_pool_types"] | undefined,
 	/** delete data from the table: "e_match_map_status" */
 	delete_e_match_map_status?: ModelTypes["e_match_map_status_mutation_response"] | undefined,
 	/** delete single row from the table: "e_match_map_status" */
@@ -34296,6 +34698,10 @@ export type ModelTypes = {
 	insert__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
 	/** insert a single row into the table: "_map_pool" */
 	insert__map_pool_one?: ModelTypes["_map_pool"] | undefined,
+	/** insert data into the table: "e_map_pool_types" */
+	insert_e_map_pool_types?: ModelTypes["e_map_pool_types_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_map_pool_types" */
+	insert_e_map_pool_types_one?: ModelTypes["e_map_pool_types"] | undefined,
 	/** insert data into the table: "e_match_map_status" */
 	insert_e_match_map_status?: ModelTypes["e_match_map_status_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_match_map_status" */
@@ -34470,6 +34876,12 @@ export type ModelTypes = {
 	update__map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
 	/** update multiples rows of table: "_map_pool" */
 	update__map_pool_many?: Array<ModelTypes["_map_pool_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "e_map_pool_types" */
+	update_e_map_pool_types?: ModelTypes["e_map_pool_types_mutation_response"] | undefined,
+	/** update single row of the table: "e_map_pool_types" */
+	update_e_map_pool_types_by_pk?: ModelTypes["e_map_pool_types"] | undefined,
+	/** update multiples rows of table: "e_map_pool_types" */
+	update_e_map_pool_types_many?: Array<ModelTypes["e_map_pool_types_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_match_map_status" */
 	update_e_match_map_status?: ModelTypes["e_match_map_status_mutation_response"] | undefined,
 	/** update single row of the table: "e_match_map_status" */
@@ -37613,6 +38025,12 @@ export type ModelTypes = {
 	_map_pool_aggregate: ModelTypes["_map_pool_aggregate"],
 	/** fetch data from the table: "_map_pool" using primary key columns */
 	_map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
+	/** fetch data from the table: "e_map_pool_types" */
+	e_map_pool_types: Array<ModelTypes["e_map_pool_types"]>,
+	/** fetch aggregated fields from the table: "e_map_pool_types" */
+	e_map_pool_types_aggregate: ModelTypes["e_map_pool_types_aggregate"],
+	/** fetch data from the table: "e_map_pool_types" using primary key columns */
+	e_map_pool_types_by_pk?: ModelTypes["e_map_pool_types"] | undefined,
 	/** fetch data from the table: "e_match_map_status" */
 	e_match_map_status: Array<ModelTypes["e_match_map_status"]>,
 	/** fetch aggregated fields from the table: "e_match_map_status" */
@@ -38135,6 +38553,14 @@ export type ModelTypes = {
 	_map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
 	/** fetch data from the table in a streaming manner: "_map_pool" */
 	_map_pool_stream: Array<ModelTypes["_map_pool"]>,
+	/** fetch data from the table: "e_map_pool_types" */
+	e_map_pool_types: Array<ModelTypes["e_map_pool_types"]>,
+	/** fetch aggregated fields from the table: "e_map_pool_types" */
+	e_map_pool_types_aggregate: ModelTypes["e_map_pool_types_aggregate"],
+	/** fetch data from the table: "e_map_pool_types" using primary key columns */
+	e_map_pool_types_by_pk?: ModelTypes["e_map_pool_types"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_map_pool_types" */
+	e_map_pool_types_stream: Array<ModelTypes["e_map_pool_types"]>,
 	/** fetch data from the table: "e_match_map_status" */
 	e_match_map_status: Array<ModelTypes["e_match_map_status"]>,
 	/** fetch aggregated fields from the table: "e_match_map_status" */
@@ -42559,6 +42985,111 @@ export type GraphQLTypes = {
 	_neq?: GraphQLTypes["date"] | undefined,
 	_nin?: Array<GraphQLTypes["date"]> | undefined
 };
+	/** columns and relationships of "e_map_pool_types" */
+["e_map_pool_types"]: {
+	__typename: "e_map_pool_types",
+	description?: string | undefined,
+	value: string
+};
+	/** aggregated selection of "e_map_pool_types" */
+["e_map_pool_types_aggregate"]: {
+	__typename: "e_map_pool_types_aggregate",
+	aggregate?: GraphQLTypes["e_map_pool_types_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["e_map_pool_types"]>
+};
+	/** aggregate fields of "e_map_pool_types" */
+["e_map_pool_types_aggregate_fields"]: {
+	__typename: "e_map_pool_types_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_map_pool_types_max_fields"] | undefined,
+	min?: GraphQLTypes["e_map_pool_types_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_map_pool_types". All fields are combined with a logical 'AND'. */
+["e_map_pool_types_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_map_pool_types_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["e_map_pool_types_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["e_map_pool_types_bool_exp"]> | undefined,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "e_map_pool_types" */
+["e_map_pool_types_constraint"]: e_map_pool_types_constraint;
+	["e_map_pool_types_enum"]: e_map_pool_types_enum;
+	/** Boolean expression to compare columns of type "e_map_pool_types_enum". All fields are combined with logical 'AND'. */
+["e_map_pool_types_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_map_pool_types_enum"] | undefined,
+	_in?: Array<GraphQLTypes["e_map_pool_types_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: GraphQLTypes["e_map_pool_types_enum"] | undefined,
+	_nin?: Array<GraphQLTypes["e_map_pool_types_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_map_pool_types" */
+["e_map_pool_types_insert_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_map_pool_types_max_fields"]: {
+	__typename: "e_map_pool_types_max_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_map_pool_types_min_fields"]: {
+	__typename: "e_map_pool_types_min_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_map_pool_types" */
+["e_map_pool_types_mutation_response"]: {
+	__typename: "e_map_pool_types_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_map_pool_types"]>
+};
+	/** on_conflict condition type for table "e_map_pool_types" */
+["e_map_pool_types_on_conflict"]: {
+		constraint: GraphQLTypes["e_map_pool_types_constraint"],
+	update_columns: Array<GraphQLTypes["e_map_pool_types_update_column"]>,
+	where?: GraphQLTypes["e_map_pool_types_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_map_pool_types". */
+["e_map_pool_types_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined,
+	value?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_map_pool_types */
+["e_map_pool_types_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_map_pool_types" */
+["e_map_pool_types_select_column"]: e_map_pool_types_select_column;
+	/** input type for updating data in table "e_map_pool_types" */
+["e_map_pool_types_set_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_map_pool_types" */
+["e_map_pool_types_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_map_pool_types_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_map_pool_types_stream_cursor_value_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** update columns of table "e_map_pool_types" */
+["e_map_pool_types_update_column"]: e_map_pool_types_update_column;
+	["e_map_pool_types_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_map_pool_types_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_map_pool_types_bool_exp"]
+};
 	/** columns and relationships of "e_match_map_status" */
 ["e_match_map_status"]: {
 	__typename: "e_match_map_status",
@@ -43911,7 +44442,7 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	matches_aggregate: GraphQLTypes["matches_aggregate"],
 	seed: boolean,
-	type: GraphQLTypes["e_match_types_enum"]
+	type: GraphQLTypes["e_map_pool_types_enum"]
 };
 	/** aggregated selection of "map_pools" */
 ["map_pools_aggregate"]: {
@@ -43938,7 +44469,7 @@ export type GraphQLTypes = {
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_bool_exp"] | undefined,
 	seed?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
-	type?: GraphQLTypes["e_match_types_enum_comparison_exp"] | undefined
+	type?: GraphQLTypes["e_map_pool_types_enum_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "map_pools" */
 ["map_pools_constraint"]: map_pools_constraint;
@@ -43949,7 +44480,7 @@ export type GraphQLTypes = {
 	maps?: GraphQLTypes["v_pool_maps_arr_rel_insert_input"] | undefined,
 	matches?: GraphQLTypes["matches_arr_rel_insert_input"] | undefined,
 	seed?: boolean | undefined,
-	type?: GraphQLTypes["e_match_types_enum"] | undefined
+	type?: GraphQLTypes["e_map_pool_types_enum"] | undefined
 };
 	/** aggregate max on columns */
 ["map_pools_max_fields"]: {
@@ -44001,7 +44532,7 @@ export type GraphQLTypes = {
 		enabled?: boolean | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	seed?: boolean | undefined,
-	type?: GraphQLTypes["e_match_types_enum"] | undefined
+	type?: GraphQLTypes["e_map_pool_types_enum"] | undefined
 };
 	/** Streaming cursor of the table "map_pools" */
 ["map_pools_stream_cursor_input"]: {
@@ -44015,7 +44546,7 @@ export type GraphQLTypes = {
 		enabled?: boolean | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	seed?: boolean | undefined,
-	type?: GraphQLTypes["e_match_types_enum"] | undefined
+	type?: GraphQLTypes["e_map_pool_types_enum"] | undefined
 };
 	/** update columns of table "map_pools" */
 ["map_pools_update_column"]: map_pools_update_column;
@@ -46720,6 +47251,10 @@ export type GraphQLTypes = {
 	delete__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,
 	/** delete single row from the table: "_map_pool" */
 	delete__map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
+	/** delete data from the table: "e_map_pool_types" */
+	delete_e_map_pool_types?: GraphQLTypes["e_map_pool_types_mutation_response"] | undefined,
+	/** delete single row from the table: "e_map_pool_types" */
+	delete_e_map_pool_types_by_pk?: GraphQLTypes["e_map_pool_types"] | undefined,
 	/** delete data from the table: "e_match_map_status" */
 	delete_e_match_map_status?: GraphQLTypes["e_match_map_status_mutation_response"] | undefined,
 	/** delete single row from the table: "e_match_map_status" */
@@ -46884,6 +47419,10 @@ export type GraphQLTypes = {
 	insert__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,
 	/** insert a single row into the table: "_map_pool" */
 	insert__map_pool_one?: GraphQLTypes["_map_pool"] | undefined,
+	/** insert data into the table: "e_map_pool_types" */
+	insert_e_map_pool_types?: GraphQLTypes["e_map_pool_types_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_map_pool_types" */
+	insert_e_map_pool_types_one?: GraphQLTypes["e_map_pool_types"] | undefined,
 	/** insert data into the table: "e_match_map_status" */
 	insert_e_match_map_status?: GraphQLTypes["e_match_map_status_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_match_map_status" */
@@ -47058,6 +47597,12 @@ export type GraphQLTypes = {
 	update__map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
 	/** update multiples rows of table: "_map_pool" */
 	update__map_pool_many?: Array<GraphQLTypes["_map_pool_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "e_map_pool_types" */
+	update_e_map_pool_types?: GraphQLTypes["e_map_pool_types_mutation_response"] | undefined,
+	/** update single row of the table: "e_map_pool_types" */
+	update_e_map_pool_types_by_pk?: GraphQLTypes["e_map_pool_types"] | undefined,
+	/** update multiples rows of table: "e_map_pool_types" */
+	update_e_map_pool_types_many?: Array<GraphQLTypes["e_map_pool_types_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_match_map_status" */
 	update_e_match_map_status?: GraphQLTypes["e_match_map_status_mutation_response"] | undefined,
 	/** update single row of the table: "e_match_map_status" */
@@ -50345,6 +50890,12 @@ export type GraphQLTypes = {
 	_map_pool_aggregate: GraphQLTypes["_map_pool_aggregate"],
 	/** fetch data from the table: "_map_pool" using primary key columns */
 	_map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
+	/** fetch data from the table: "e_map_pool_types" */
+	e_map_pool_types: Array<GraphQLTypes["e_map_pool_types"]>,
+	/** fetch aggregated fields from the table: "e_map_pool_types" */
+	e_map_pool_types_aggregate: GraphQLTypes["e_map_pool_types_aggregate"],
+	/** fetch data from the table: "e_map_pool_types" using primary key columns */
+	e_map_pool_types_by_pk?: GraphQLTypes["e_map_pool_types"] | undefined,
 	/** fetch data from the table: "e_match_map_status" */
 	e_match_map_status: Array<GraphQLTypes["e_match_map_status"]>,
 	/** fetch aggregated fields from the table: "e_match_map_status" */
@@ -50885,6 +51436,14 @@ export type GraphQLTypes = {
 	_map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
 	/** fetch data from the table in a streaming manner: "_map_pool" */
 	_map_pool_stream: Array<GraphQLTypes["_map_pool"]>,
+	/** fetch data from the table: "e_map_pool_types" */
+	e_map_pool_types: Array<GraphQLTypes["e_map_pool_types"]>,
+	/** fetch aggregated fields from the table: "e_map_pool_types" */
+	e_map_pool_types_aggregate: GraphQLTypes["e_map_pool_types_aggregate"],
+	/** fetch data from the table: "e_map_pool_types" using primary key columns */
+	e_map_pool_types_by_pk?: GraphQLTypes["e_map_pool_types"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_map_pool_types" */
+	e_map_pool_types_stream: Array<GraphQLTypes["e_map_pool_types"]>,
 	/** fetch data from the table: "e_match_map_status" */
 	e_match_map_status: Array<GraphQLTypes["e_match_map_status"]>,
 	/** fetch aggregated fields from the table: "e_match_map_status" */
@@ -55389,6 +55948,26 @@ export const enum cursor_ordering {
 	ASC = "ASC",
 	DESC = "DESC"
 }
+/** unique or primary key constraints on table "e_map_pool_types" */
+export const enum e_map_pool_types_constraint {
+	e_map_pool_types_pkey = "e_map_pool_types_pkey"
+}
+export const enum e_map_pool_types_enum {
+	Competitive = "Competitive",
+	Custom = "Custom",
+	Scrimmage = "Scrimmage",
+	Wingman = "Wingman"
+}
+/** select columns of table "e_map_pool_types" */
+export const enum e_map_pool_types_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_map_pool_types" */
+export const enum e_map_pool_types_update_column {
+	description = "description",
+	value = "value"
+}
 /** unique or primary key constraints on table "e_match_map_status" */
 export const enum e_match_map_status_constraint {
 	match_map_status_pkey = "match_map_status_pkey"
@@ -55441,7 +56020,6 @@ export const enum e_match_types_constraint {
 }
 export const enum e_match_types_enum {
 	Competitive = "Competitive",
-	Custom = "Custom",
 	Scrimmage = "Scrimmage",
 	Wingman = "Wingman"
 }
@@ -56514,6 +57092,20 @@ type ZEUS_VARIABLES = {
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
 	["date"]: ValueTypes["date"];
 	["date_comparison_exp"]: ValueTypes["date_comparison_exp"];
+	["e_map_pool_types_bool_exp"]: ValueTypes["e_map_pool_types_bool_exp"];
+	["e_map_pool_types_constraint"]: ValueTypes["e_map_pool_types_constraint"];
+	["e_map_pool_types_enum"]: ValueTypes["e_map_pool_types_enum"];
+	["e_map_pool_types_enum_comparison_exp"]: ValueTypes["e_map_pool_types_enum_comparison_exp"];
+	["e_map_pool_types_insert_input"]: ValueTypes["e_map_pool_types_insert_input"];
+	["e_map_pool_types_on_conflict"]: ValueTypes["e_map_pool_types_on_conflict"];
+	["e_map_pool_types_order_by"]: ValueTypes["e_map_pool_types_order_by"];
+	["e_map_pool_types_pk_columns_input"]: ValueTypes["e_map_pool_types_pk_columns_input"];
+	["e_map_pool_types_select_column"]: ValueTypes["e_map_pool_types_select_column"];
+	["e_map_pool_types_set_input"]: ValueTypes["e_map_pool_types_set_input"];
+	["e_map_pool_types_stream_cursor_input"]: ValueTypes["e_map_pool_types_stream_cursor_input"];
+	["e_map_pool_types_stream_cursor_value_input"]: ValueTypes["e_map_pool_types_stream_cursor_value_input"];
+	["e_map_pool_types_update_column"]: ValueTypes["e_map_pool_types_update_column"];
+	["e_map_pool_types_updates"]: ValueTypes["e_map_pool_types_updates"];
 	["e_match_map_status_bool_exp"]: ValueTypes["e_match_map_status_bool_exp"];
 	["e_match_map_status_constraint"]: ValueTypes["e_match_map_status_constraint"];
 	["e_match_map_status_enum"]: ValueTypes["e_match_map_status_enum"];

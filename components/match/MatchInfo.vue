@@ -105,7 +105,7 @@ import { e_match_status_enum } from "~/generated/zeus";
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Map Pool </span>
           <span>
-            {{ match.map_pool?.label }}
+            {{ match.map_pool.type }}
           </span>
         </li>
 

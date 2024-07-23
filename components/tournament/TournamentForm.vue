@@ -120,13 +120,7 @@ export default {
     e_match_types: {
       query: generateQuery({
         e_match_types: [
-          {
-            where: {
-              value: {
-                _neq: e_match_types_enum.Custom,
-              },
-            },
-          },
+          {},
           {
             value: true,
             description: true,

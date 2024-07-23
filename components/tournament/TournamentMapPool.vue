@@ -8,7 +8,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
       <FormItem>
         <FormLabel>Map Pool</FormLabel>
         <div class="flex">
-          <template v-for="map in availableMaps">
+          <template v-for="map in maps">
             <div class="relative cursor-pointer" @click="updateMapPool(map.id)">
               <MapDisplay :map="map"></MapDisplay>
               <div
@@ -143,26 +143,6 @@ export default {
       }
 
       this.form.setFieldValue("map_pool", pool);
-    },
-  },
-  computed: {
-    availableMaps() {
-      if (!this.maps) {
-        return [];
-      }
-      return this.maps.filter((map) => {
-        switch (this.tournament.type) {
-          case e_match_types_enum.Competitive:
-            return (
-              map.type === e_match_types_enum.Competitive &&
-              map.active_pool === true
-            );
-          case e_match_types_enum.Scrimmage:
-            return map.type === e_match_types_enum.Competitive;
-          case e_match_types_enum.Wingman:
-            return map.type === e_match_types_enum.Wingman;
-        }
-      });
     },
   },
 };

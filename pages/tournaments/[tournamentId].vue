@@ -6,6 +6,7 @@ import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentServers from "~/components/tournament/TournamentServers.vue";
 import TournamentMapPool from "~/components/tournament/TournamentMapPool.vue";
+import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
 <template>
@@ -34,6 +35,15 @@ import TournamentMapPool from "~/components/tournament/TournamentMapPool.vue";
       <p v-for="{ organizer } of tournament.organizers">
         {{ organizer.name }}
       </p>
+
+
+      <h1>Maps</h1>
+      <div class="flex">
+        <template v-for="map in tournament.map_pool.maps">
+          <MapDisplay :map="map"></MapDisplay>
+        </template>
+      </div>
+
       <Drawer :open="tournamentDialog">
         <DrawerTrigger @click="tournamentDialog = true">
           <Button> Join Tournament </Button>

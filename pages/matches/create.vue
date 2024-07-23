@@ -391,7 +391,6 @@ export default {
               ? {
                   data: {
                     type: e_map_pool_types_enum.Custom,
-                    enabled: false,
                     maps: {
                       data: form?.map_pool?.map((map_id) => {
                         return {

@@ -46,6 +46,7 @@ import { useForm } from "vee-validate";
 import { $, e_sides_enum, order_by } from "~/generated/zeus";
 import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import {mapFields} from "~/graphql/mapGraphql";
 
 export default {
   props: {
@@ -78,12 +79,7 @@ export default {
                           name: order_by.asc,
                         },
                       },
-                      {
-                        id: true,
-                        name: true,
-                        poster: true,
-                        patch: true,
-                      },
+                      mapFields,
                     ],
                   },
                 ],

@@ -33,6 +33,7 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import {mapFields} from "~/graphql/mapGraphql";
 
 export default {
   data() {
@@ -97,11 +98,7 @@ export default {
                   order: true,
                   lineup_1_side: true,
                   lineup_2_side: true,
-                  map: {
-                    name: true,
-                    patch: true,
-                    poster: true,
-                  },
+                  map: mapFields,
                   vetos: {
                     side: true,
                     type: true,

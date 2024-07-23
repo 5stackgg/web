@@ -91,6 +91,7 @@ import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
+import {mapFields} from "~/graphql/mapGraphql";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
@@ -144,6 +145,15 @@ export default {
                 {},
                 {
                   id: true,
+                  type: true,
+                  maps: [
+                    {
+                      order_by: {
+                        name: order_by.asc,
+                      },
+                    },
+                    mapFields
+                  ]
                 },
               ],
               servers: [

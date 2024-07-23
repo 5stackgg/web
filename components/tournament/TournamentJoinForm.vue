@@ -87,9 +87,19 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
+import {
+  e_match_types_enum,
+  e_tournament_stage_types_enum,
+} from "~/generated/zeus";
 
 export default {
   emits: ["close"],
+  props: {
+    tournamentType: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       form: useForm({
@@ -130,6 +140,14 @@ export default {
     },
     teams() {
       return this.me.player.teams;
+    },
+  },
+  watch: {
+    tournamentType: {
+      immediate: true,
+      handler(type) {
+        this.form.setFieldValue("newTeam", type === e_match_types_enum.Wingman);
+      },
     },
   },
   methods: {

@@ -172,7 +172,8 @@ export default {
                 type: this.form.values.type,
                 min_teams: this.form.values.min_teams,
                 max_teams: this.form.values.max_teams,
-                tournament_id: this.$route.params.tournamentId || this.$route.params.id,
+                tournament_id:
+                  this.$route.params.tournamentId || this.$route.params.id,
               },
             },
             {

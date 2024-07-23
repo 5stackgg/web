@@ -26,12 +26,12 @@ import MapDisplay from "~/components/MapDisplay.vue";
 </template>
 
 <script lang="ts">
-import {generateMutation, generateQuery} from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
-import {$, e_map_pool_types_enum, e_match_types_enum} from "~/generated/zeus";
+import { $, e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -83,13 +83,16 @@ export default {
     tournament: {
       immediate: true,
       handler() {
-        this.form.setFieldValue("map_pool", this.tournament.map_pool.maps.map(( {id }) => id)  || []);
-      }
-    }
+        this.form.setFieldValue(
+          "map_pool",
+          this.tournament.map_pool.maps.map(({ id }) => id) || []
+        );
+      },
+    },
   },
   methods: {
     async updateTournamentMapPool() {
-      console.info("update map pool!", );
+      console.info("update map pool!");
 
       const { data } = await this.$apollo.mutate({
         variables: {
@@ -102,12 +105,12 @@ export default {
                 };
               }),
             },
-          }
+          },
         },
         mutation: generateMutation({
           insert_map_pools_one: [
             {
-              object: $("map_pool", "map_pools_insert_input!")
+              object: $("map_pool", "map_pools_insert_input!"),
             },
             {
               id: true,
@@ -125,7 +128,7 @@ export default {
               },
               _set: {
                 map_pool_id: data.insert_map_pools_one.id,
-              }
+              },
             },
             {
               id: true,

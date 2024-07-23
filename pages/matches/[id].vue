@@ -33,7 +33,7 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import {mapFields} from "~/graphql/mapGraphql";
+import { mapFields } from "~/graphql/mapGraphql";
 
 export default {
   data() {

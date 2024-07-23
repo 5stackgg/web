@@ -36,7 +36,6 @@ import MapDisplay from "~/components/MapDisplay.vue";
         {{ organizer.name }}
       </p>
 
-
       <h1>Maps</h1>
       <div class="flex">
         <template v-for="map in tournament.map_pool.maps">
@@ -54,6 +53,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
           </DrawerHeader>
           <DrawerFooter>
             <TournamentJoinForm
+              :tournament-type="tournament.type"
               @close="tournamentDialog = false"
             ></TournamentJoinForm>
           </DrawerFooter>
@@ -101,7 +101,7 @@ import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
-import {mapFields} from "~/graphql/mapGraphql";
+import { mapFields } from "~/graphql/mapGraphql";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
@@ -162,8 +162,8 @@ export default {
                         name: order_by.asc,
                       },
                     },
-                    mapFields
-                  ]
+                    mapFields,
+                  ],
                 },
               ],
               servers: [

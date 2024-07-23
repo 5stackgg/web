@@ -150,7 +150,8 @@ export default {
               },
               pk_columns: {
                 player_steam_id: this.member.player.steam_id,
-                tournament_id: this.$route.params.tournamentId || this.$route.params.id,
+                tournament_id:
+                  this.$route.params.tournamentId || this.$route.params.id,
               },
             },
             {
@@ -166,7 +167,8 @@ export default {
           delete_tournament_team_roster_by_pk: [
             {
               player_steam_id: this.member.player.steam_id,
-              tournament_id: this.$route.params.tournamentId || this.$route.params.id,
+              tournament_id:
+                this.$route.params.tournamentId || this.$route.params.id,
             },
             {
               __typename: true,

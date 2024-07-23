@@ -1,5 +1,5 @@
 import { order_by, Selector } from "@/generated/zeus";
-import {mapFields} from "~/graphql/mapGraphql";
+import { mapFields } from "~/graphql/mapGraphql";
 
 export const matchFields = Selector("servers")({
   id: true,

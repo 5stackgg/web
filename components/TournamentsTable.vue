@@ -15,8 +15,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
     <TableHeader>
       <TableRow>
         <TableHead>Tournament</TableHead>
-        <TableHead>Type</TableHead>
         <TableHead>Status</TableHead>
+        <TableHead>Type</TableHead>
         <TableHead>Teams</TableHead>
         <TableHead>Starts</TableHead>
       </TableRow>
@@ -34,7 +34,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <Badge>{{ tournament.status }}</Badge>
         </TableCell>
         <TableCell>
-          {{ tournament.type }}
+          {{ tournament.options.type }}
         </TableCell>
         <TableCell>
           {{ tournament.teams_aggregate.aggregate.count }}

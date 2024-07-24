@@ -182,7 +182,9 @@ export default {
               object: {
                 tournament_id: this.$route.params.tournamentId,
                 name: teamName,
-                team_id: !this.form.values.newTeam && this.form.values.team_id,
+                team_id: this.form.values.newTeam
+                  ? null
+                  : this.form.values.team_id,
                 roster: {
                   data: [
                     {

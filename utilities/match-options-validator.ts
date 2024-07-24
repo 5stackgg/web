@@ -13,6 +13,9 @@ export default function matchOptionsValidator(additional: any) {
       best_of: z.string().default("1"),
       number_of_substitutes: z.number().min(0).max(5).default(0),
       type: z.string().default(e_match_types_enum.Competitive),
+      map_pool_id: z.string().nullable(),
+      map_pool: z.string().array().default([]),
+      custom_map_pool: z.boolean().default(false),
       ...additional,
     }),
   );

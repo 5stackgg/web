@@ -61,9 +61,11 @@ export default {
             {
               id: true,
               name: true,
-              type: true,
               start: true,
               status: true,
+              options: {
+                type: true,
+              },
               teams_aggregate: [
                 {},
                 {

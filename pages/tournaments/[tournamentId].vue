@@ -5,8 +5,8 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentServers from "~/components/tournament/TournamentServers.vue";
-import TournamentMapPool from "~/components/tournament/TournamentMapPool.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
+import TournamentForm from "~/components/tournament/TournamentForm.vue";
 </script>
 
 <template>
@@ -23,7 +23,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
     <TabsContent value="info">
       {{ tournament.name }} : {{ tournament.description }}
       <Badge>{{ tournament.status }}</Badge>
-      <Badge>{{ tournament.type }}</Badge>
+      <Badge>{{ tournament.options.type }}</Badge>
       <Badge>{{ tournament.start }}</Badge>
 
       <p>
@@ -38,7 +38,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 
       <h1>Maps</h1>
       <div class="flex">
-        <template v-for="map in tournament.map_pool.maps">
+        <template v-for="map in tournament.options.map_pool.maps">
           <MapDisplay :map="map"></MapDisplay>
         </template>
       </div>
@@ -53,7 +53,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
           </DrawerHeader>
           <DrawerFooter>
             <TournamentJoinForm
-              :tournament-type="tournament.type"
+              :tournament-type="tournament.options.type"
               @close="tournamentDialog = false"
             ></TournamentJoinForm>
           </DrawerFooter>
@@ -77,18 +77,16 @@ import MapDisplay from "~/components/MapDisplay.vue";
     <TabsContent value="manage">
       <Tabs default-value="match-options">
         <TabsList>
-          <TabsTrigger value="match-options"> Map Options </TabsTrigger>
+          <TabsTrigger value="match-options"> Match Options </TabsTrigger>
           <TabsTrigger value="organizers"> Organizers </TabsTrigger>
-          <TabsTrigger value="map-pool"> Map Pool </TabsTrigger>
           <TabsTrigger value="servers"> Servers </TabsTrigger>
         </TabsList>
-        <TabsContent value="match-options"> </TabsContent>
+        <TabsContent value="match-options">
+          <TournamentForm :tournament="tournament"></TournamentForm>
+        </TabsContent>
         <TabsContent value="organizers">
           <TournamentOrganizers :tournament="tournament">
           </TournamentOrganizers>
-        </TabsContent>
-        <TabsContent value="map-pool">
-          <TournamentMapPool :tournament="tournament"></TournamentMapPool>
         </TabsContent>
         <TabsContent value="servers">
           <TournamentServers :tournament="tournament"></TournamentServers>
@@ -127,12 +125,30 @@ export default {
             {
               id: true,
               name: true,
-              status: true,
-              type: true,
               start: true,
+              status: true,
               description: true,
               admin: {
                 name: true,
+              },
+              options: {
+                id: true,
+                type: true,
+                mr: true,
+                map_veto: true,
+                coaches: true,
+                knife_round: true,
+                overtime: true,
+                best_of: true,
+                number_of_substitutes: true,
+                map_pool: [
+                  {},
+                  {
+                    id: true,
+                    type: true,
+                    maps: [{}, mapFields],
+                  },
+                ],
               },
               organizers: [
                 {},
@@ -163,21 +179,6 @@ export default {
                   aggregate: {
                     count: true,
                   },
-                },
-              ],
-              map_pool: [
-                {},
-                {
-                  id: true,
-                  type: true,
-                  maps: [
-                    {
-                      order_by: {
-                        name: order_by.asc,
-                      },
-                    },
-                    mapFields,
-                  ],
                 },
               ],
               servers: [

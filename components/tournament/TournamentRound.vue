@@ -91,4 +91,21 @@ export default {
   width: 1.25rem; /* round margin-left */
   border-top: 2px solid #e2e8f0;
 }
+
+/*
+  Byes
+*/
+.with-connector.with-bye {
+  margin-top: 33px;
+  margin-bottom: 33px;
+}
+
+.round .with-connector.with-bye:after {
+  height: 0;
+}
+
+.with-connector.with-bye + .with-connector {
+  display: none;
+}
+
 </style>

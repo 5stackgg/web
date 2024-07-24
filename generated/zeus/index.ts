@@ -13530,6 +13530,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 ["tournament_teams"]: AliasType<{
 	/** An object relationship */
 	creator?:ValueTypes["players"],
+	eligible_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
@@ -13545,6 +13546,7 @@ roster_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["tournament_team_roster_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["tournament_team_roster_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["tournament_team_roster_aggregate"]],
+	seed?:boolean | `@${string}`,
 	/** An object relationship */
 	team?:ValueTypes["teams"],
 	team_id?:boolean | `@${string}`,
@@ -13606,11 +13608,13 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	/** aggregate avg on columns */
 ["tournament_teams_avg_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by avg() on columns of table "tournament_teams" */
 ["tournament_teams_avg_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
@@ -13618,11 +13622,13 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	_not?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["tournament_teams_bool_exp"]> | undefined | null | Variable<any, string>,
 	creator?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	eligible_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	roster?: ValueTypes["tournament_team_roster_bool_exp"] | undefined | null | Variable<any, string>,
 	roster_aggregate?: ValueTypes["tournament_team_roster_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
@@ -13632,15 +13638,18 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 ["tournament_teams_constraint"]:tournament_teams_constraint;
 	/** input type for incrementing numeric columns in table "tournament_teams" */
 ["tournament_teams_inc_input"]: {
-	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	seed?: number | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
 	creator?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	eligible_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	roster?: ValueTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	seed?: number | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -13648,35 +13657,43 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 };
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: AliasType<{
+	eligible_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
+	eligible_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: AliasType<{
+	eligible_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
+	eligible_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -13703,10 +13720,12 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
 	creator?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	eligible_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	roster_aggregate?: ValueTypes["tournament_team_roster_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
@@ -13720,38 +13739,46 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 ["tournament_teams_select_column"]:tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
+	eligible_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	seed?: number | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["tournament_teams_stddev_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_pop on columns */
 ["tournament_teams_stddev_pop_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_pop() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_pop_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_samp on columns */
 ["tournament_teams_stddev_samp_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_samp() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_samp_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -13762,20 +13789,24 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
+	eligible_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	owner_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	seed?: number | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["tournament_teams_sum_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by sum() on columns of table "tournament_teams" */
 ["tournament_teams_sum_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** update columns of table "tournament_teams" */
 ["tournament_teams_update_column"]:tournament_teams_update_column;
@@ -13790,29 +13821,35 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	/** aggregate var_pop on columns */
 ["tournament_teams_var_pop_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_pop() on columns of table "tournament_teams" */
 ["tournament_teams_var_pop_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate var_samp on columns */
 ["tournament_teams_var_samp_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_samp() on columns of table "tournament_teams" */
 ["tournament_teams_var_samp_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate variance on columns */
 ["tournament_teams_variance_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by variance() on columns of table "tournament_teams" */
 ["tournament_teams_variance_order_by"]: {
-	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seed?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: AliasType<{
@@ -28252,6 +28289,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 ["tournament_teams"]: AliasType<{
 	/** An object relationship */
 	creator?:ResolverInputTypes["players"],
+	eligible_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
@@ -28267,6 +28305,7 @@ roster_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["tournament_team_roster_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["tournament_team_roster_bool_exp"] | undefined | null},ResolverInputTypes["tournament_team_roster_aggregate"]],
+	seed?:boolean | `@${string}`,
 	/** An object relationship */
 	team?:ResolverInputTypes["teams"],
 	team_id?:boolean | `@${string}`,
@@ -28328,11 +28367,13 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	/** aggregate avg on columns */
 ["tournament_teams_avg_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by avg() on columns of table "tournament_teams" */
 ["tournament_teams_avg_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
@@ -28340,11 +28381,13 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	_not?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["tournament_teams_bool_exp"]> | undefined | null,
 	creator?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	eligible_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	roster?: ResolverInputTypes["tournament_team_roster_bool_exp"] | undefined | null,
 	roster_aggregate?: ResolverInputTypes["tournament_team_roster_aggregate_bool_exp"] | undefined | null,
+	seed?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
@@ -28354,15 +28397,18 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 ["tournament_teams_constraint"]:tournament_teams_constraint;
 	/** input type for incrementing numeric columns in table "tournament_teams" */
 ["tournament_teams_inc_input"]: {
-	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	seed?: number | undefined | null
 };
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
 	creator?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	eligible_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	roster?: ResolverInputTypes["tournament_team_roster_arr_rel_insert_input"] | undefined | null,
+	seed?: number | undefined | null,
 	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
@@ -28370,35 +28416,43 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 };
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: AliasType<{
+	eligible_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
+	eligible_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: AliasType<{
+	eligible_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 	team_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
+	eligible_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -28425,10 +28479,12 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
 	creator?: ResolverInputTypes["players_order_by"] | undefined | null,
+	eligible_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	roster_aggregate?: ResolverInputTypes["tournament_team_roster_aggregate_order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
@@ -28442,38 +28498,46 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 ["tournament_teams_select_column"]:tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
+	eligible_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	seed?: number | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["tournament_teams_stddev_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["tournament_teams_stddev_pop_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_pop() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_pop_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["tournament_teams_stddev_samp_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by stddev_samp() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_samp_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -28484,20 +28548,24 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
+	eligible_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	name?: string | undefined | null,
 	owner_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	seed?: number | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["tournament_teams_sum_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by sum() on columns of table "tournament_teams" */
 ["tournament_teams_sum_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** update columns of table "tournament_teams" */
 ["tournament_teams_update_column"]:tournament_teams_update_column;
@@ -28512,29 +28580,35 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	/** aggregate var_pop on columns */
 ["tournament_teams_var_pop_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_pop() on columns of table "tournament_teams" */
 ["tournament_teams_var_pop_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["tournament_teams_var_samp_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by var_samp() on columns of table "tournament_teams" */
 ["tournament_teams_var_samp_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate variance on columns */
 ["tournament_teams_variance_fields"]: AliasType<{
 	owner_steam_id?:boolean | `@${string}`,
+	seed?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by variance() on columns of table "tournament_teams" */
 ["tournament_teams_variance_order_by"]: {
-	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	seed?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: AliasType<{
@@ -40912,6 +40986,7 @@ export type ModelTypes = {
 ["tournament_teams"]: {
 		/** An object relationship */
 	creator: ModelTypes["players"],
+	eligible_at?: ModelTypes["timestamptz"] | undefined,
 	id: ModelTypes["uuid"],
 	name: string,
 	owner_steam_id: ModelTypes["bigint"],
@@ -40919,6 +40994,7 @@ export type ModelTypes = {
 	roster: Array<ModelTypes["tournament_team_roster"]>,
 	/** An aggregate relationship */
 	roster_aggregate: ModelTypes["tournament_team_roster_aggregate"],
+	seed?: number | undefined,
 	/** An object relationship */
 	team?: ModelTypes["teams"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
@@ -40976,11 +41052,13 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["tournament_teams_avg_fields"]: {
-		owner_steam_id?: number | undefined
+		owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by avg() on columns of table "tournament_teams" */
 ["tournament_teams_avg_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
@@ -40988,11 +41066,13 @@ export type ModelTypes = {
 	_not?: ModelTypes["tournament_teams_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["tournament_teams_bool_exp"]> | undefined,
 	creator?: ModelTypes["players_bool_exp"] | undefined,
+	eligible_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
 	owner_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	roster?: ModelTypes["tournament_team_roster_bool_exp"] | undefined,
 	roster_aggregate?: ModelTypes["tournament_team_roster_aggregate_bool_exp"] | undefined,
+	seed?: ModelTypes["Int_comparison_exp"] | undefined,
 	team?: ModelTypes["teams_bool_exp"] | undefined,
 	team_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	tournament?: ModelTypes["tournaments_bool_exp"] | undefined,
@@ -41001,15 +41081,18 @@ export type ModelTypes = {
 	["tournament_teams_constraint"]:tournament_teams_constraint;
 	/** input type for incrementing numeric columns in table "tournament_teams" */
 ["tournament_teams_inc_input"]: {
-	owner_steam_id?: ModelTypes["bigint"] | undefined
+	owner_steam_id?: ModelTypes["bigint"] | undefined,
+	seed?: number | undefined
 };
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
 	creator?: ModelTypes["players_obj_rel_insert_input"] | undefined,
+	eligible_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: ModelTypes["bigint"] | undefined,
 	roster?: ModelTypes["tournament_team_roster_arr_rel_insert_input"] | undefined,
+	seed?: number | undefined,
 	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined,
@@ -41017,33 +41100,41 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		eligible_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: ModelTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
+	eligible_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined,
 	tournament_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: {
-		id?: ModelTypes["uuid"] | undefined,
+		eligible_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: ModelTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
+	eligible_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined,
 	tournament_id?: ModelTypes["order_by"] | undefined
 };
@@ -41069,10 +41160,12 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
 	creator?: ModelTypes["players_order_by"] | undefined,
+	eligible_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	owner_steam_id?: ModelTypes["order_by"] | undefined,
 	roster_aggregate?: ModelTypes["tournament_team_roster_aggregate_order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined,
 	team?: ModelTypes["teams_order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined,
 	tournament?: ModelTypes["tournaments_order_by"] | undefined,
@@ -41085,35 +41178,43 @@ export type ModelTypes = {
 	["tournament_teams_select_column"]:tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
+	eligible_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: ModelTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["tournament_teams_stddev_fields"]: {
-		owner_steam_id?: number | undefined
+		owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by stddev() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["tournament_teams_stddev_pop_fields"]: {
-		owner_steam_id?: number | undefined
+		owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_pop_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["tournament_teams_stddev_samp_fields"]: {
-		owner_steam_id?: number | undefined
+		owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_samp_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -41124,19 +41225,23 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
+	eligible_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: ModelTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	tournament_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["tournament_teams_sum_fields"]: {
-		owner_steam_id?: ModelTypes["bigint"] | undefined
+		owner_steam_id?: ModelTypes["bigint"] | undefined,
+	seed?: number | undefined
 };
 	/** order by sum() on columns of table "tournament_teams" */
 ["tournament_teams_sum_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	["tournament_teams_update_column"]:tournament_teams_update_column;
 	["tournament_teams_updates"]: {
@@ -41149,27 +41254,33 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["tournament_teams_var_pop_fields"]: {
-		owner_steam_id?: number | undefined
+		owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by var_pop() on columns of table "tournament_teams" */
 ["tournament_teams_var_pop_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate var_samp on columns */
 ["tournament_teams_var_samp_fields"]: {
-		owner_steam_id?: number | undefined
+		owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by var_samp() on columns of table "tournament_teams" */
 ["tournament_teams_var_samp_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate variance on columns */
 ["tournament_teams_variance_fields"]: {
-		owner_steam_id?: number | undefined
+		owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by variance() on columns of table "tournament_teams" */
 ["tournament_teams_variance_order_by"]: {
-	owner_steam_id?: ModelTypes["order_by"] | undefined
+	owner_steam_id?: ModelTypes["order_by"] | undefined,
+	seed?: ModelTypes["order_by"] | undefined
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: {
@@ -53924,6 +54035,7 @@ export type GraphQLTypes = {
 	__typename: "tournament_teams",
 	/** An object relationship */
 	creator: GraphQLTypes["players"],
+	eligible_at?: GraphQLTypes["timestamptz"] | undefined,
 	id: GraphQLTypes["uuid"],
 	name: string,
 	owner_steam_id: GraphQLTypes["bigint"],
@@ -53931,6 +54043,7 @@ export type GraphQLTypes = {
 	roster: Array<GraphQLTypes["tournament_team_roster"]>,
 	/** An aggregate relationship */
 	roster_aggregate: GraphQLTypes["tournament_team_roster_aggregate"],
+	seed?: number | undefined,
 	/** An object relationship */
 	team?: GraphQLTypes["teams"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
@@ -53991,11 +54104,13 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["tournament_teams_avg_fields"]: {
 	__typename: "tournament_teams_avg_fields",
-	owner_steam_id?: number | undefined
+	owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by avg() on columns of table "tournament_teams" */
 ["tournament_teams_avg_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "tournament_teams". All fields are combined with a logical 'AND'. */
 ["tournament_teams_bool_exp"]: {
@@ -54003,11 +54118,13 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["tournament_teams_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["tournament_teams_bool_exp"]> | undefined,
 	creator?: GraphQLTypes["players_bool_exp"] | undefined,
+	eligible_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
 	owner_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	roster?: GraphQLTypes["tournament_team_roster_bool_exp"] | undefined,
 	roster_aggregate?: GraphQLTypes["tournament_team_roster_aggregate_bool_exp"] | undefined,
+	seed?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined,
 	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined,
@@ -54017,15 +54134,18 @@ export type GraphQLTypes = {
 ["tournament_teams_constraint"]: tournament_teams_constraint;
 	/** input type for incrementing numeric columns in table "tournament_teams" */
 ["tournament_teams_inc_input"]: {
-		owner_steam_id?: GraphQLTypes["bigint"] | undefined
+		owner_steam_id?: GraphQLTypes["bigint"] | undefined,
+	seed?: number | undefined
 };
 	/** input type for inserting data into table "tournament_teams" */
 ["tournament_teams_insert_input"]: {
 		creator?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
+	eligible_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
 	roster?: GraphQLTypes["tournament_team_roster_arr_rel_insert_input"] | undefined,
+	seed?: number | undefined,
 	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined,
@@ -54034,34 +54154,42 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["tournament_teams_max_fields"]: {
 	__typename: "tournament_teams_max_fields",
+	eligible_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "tournament_teams" */
 ["tournament_teams_max_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		eligible_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
 	tournament_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["tournament_teams_min_fields"]: {
 	__typename: "tournament_teams_min_fields",
+	eligible_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "tournament_teams" */
 ["tournament_teams_min_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		eligible_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
 	tournament_id?: GraphQLTypes["order_by"] | undefined
 };
@@ -54088,10 +54216,12 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "tournament_teams". */
 ["tournament_teams_order_by"]: {
 		creator?: GraphQLTypes["players_order_by"] | undefined,
+	eligible_at?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	owner_steam_id?: GraphQLTypes["order_by"] | undefined,
 	roster_aggregate?: GraphQLTypes["tournament_team_roster_aggregate_order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined,
 	team?: GraphQLTypes["teams_order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
 	tournament?: GraphQLTypes["tournaments_order_by"] | undefined,
@@ -54105,38 +54235,46 @@ export type GraphQLTypes = {
 ["tournament_teams_select_column"]: tournament_teams_select_column;
 	/** input type for updating data in table "tournament_teams" */
 ["tournament_teams_set_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		eligible_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["tournament_teams_stddev_fields"]: {
 	__typename: "tournament_teams_stddev_fields",
-	owner_steam_id?: number | undefined
+	owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by stddev() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["tournament_teams_stddev_pop_fields"]: {
 	__typename: "tournament_teams_stddev_pop_fields",
-	owner_steam_id?: number | undefined
+	owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_pop_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["tournament_teams_stddev_samp_fields"]: {
 	__typename: "tournament_teams_stddev_samp_fields",
-	owner_steam_id?: number | undefined
+	owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "tournament_teams" */
 ["tournament_teams_stddev_samp_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "tournament_teams" */
 ["tournament_teams_stream_cursor_input"]: {
@@ -54147,20 +54285,24 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["tournament_teams_stream_cursor_value_input"]: {
-		id?: GraphQLTypes["uuid"] | undefined,
+		eligible_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
 	name?: string | undefined,
 	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
+	seed?: number | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	tournament_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["tournament_teams_sum_fields"]: {
 	__typename: "tournament_teams_sum_fields",
-	owner_steam_id?: GraphQLTypes["bigint"] | undefined
+	owner_steam_id?: GraphQLTypes["bigint"] | undefined,
+	seed?: number | undefined
 };
 	/** order by sum() on columns of table "tournament_teams" */
 ["tournament_teams_sum_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** update columns of table "tournament_teams" */
 ["tournament_teams_update_column"]: tournament_teams_update_column;
@@ -54175,29 +54317,35 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["tournament_teams_var_pop_fields"]: {
 	__typename: "tournament_teams_var_pop_fields",
-	owner_steam_id?: number | undefined
+	owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by var_pop() on columns of table "tournament_teams" */
 ["tournament_teams_var_pop_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate var_samp on columns */
 ["tournament_teams_var_samp_fields"]: {
 	__typename: "tournament_teams_var_samp_fields",
-	owner_steam_id?: number | undefined
+	owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by var_samp() on columns of table "tournament_teams" */
 ["tournament_teams_var_samp_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate variance on columns */
 ["tournament_teams_variance_fields"]: {
 	__typename: "tournament_teams_variance_fields",
-	owner_steam_id?: number | undefined
+	owner_steam_id?: number | undefined,
+	seed?: number | undefined
 };
 	/** order by variance() on columns of table "tournament_teams" */
 ["tournament_teams_variance_order_by"]: {
-		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+		owner_steam_id?: GraphQLTypes["order_by"] | undefined,
+	seed?: GraphQLTypes["order_by"] | undefined
 };
 	/** columns and relationships of "tournaments" */
 ["tournaments"]: {
@@ -56959,17 +57107,21 @@ export const enum tournament_teams_constraint {
 }
 /** select columns of table "tournament_teams" */
 export const enum tournament_teams_select_column {
+	eligible_at = "eligible_at",
 	id = "id",
 	name = "name",
 	owner_steam_id = "owner_steam_id",
+	seed = "seed",
 	team_id = "team_id",
 	tournament_id = "tournament_id"
 }
 /** update columns of table "tournament_teams" */
 export const enum tournament_teams_update_column {
+	eligible_at = "eligible_at",
 	id = "id",
 	name = "name",
 	owner_steam_id = "owner_steam_id",
+	seed = "seed",
 	team_id = "team_id",
 	tournament_id = "tournament_id"
 }

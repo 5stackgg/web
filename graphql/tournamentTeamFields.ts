@@ -2,6 +2,7 @@ export default {
   id: true,
   name: true,
   team_id: true,
+  eligible_at: true,
   team: {
     name: true,
   },

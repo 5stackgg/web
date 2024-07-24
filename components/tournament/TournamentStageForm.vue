@@ -22,7 +22,7 @@ import {
   <form @submit.prevent="updateCreateStage">
     <FormField v-slot="{ componentField }" name="type">
       <FormItem>
-        <FormLabel>Assign Match Server</FormLabel>
+        <FormLabel>Stage Type</FormLabel>
         <Select v-bind="componentField">
           <FormControl>
             <SelectTrigger>
@@ -49,7 +49,24 @@ import {
       <FormItem>
         <FormLabel>Min Teams</FormLabel>
         <FormControl>
-          <Input type="number" v-bind="componentField" />
+          <Select v-bind="componentField">
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Min Teams" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  v-for="option in minTeamOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.display }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -59,7 +76,24 @@ import {
       <FormItem>
         <FormLabel>Max Teams</FormLabel>
         <FormControl>
-          <Input type="number" v-bind="componentField" />
+          <Select v-bind="componentField">
+            <FormControl :disabled="!form.values.min_teams">
+              <SelectTrigger>
+                <SelectValue placeholder="Max Teams" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  v-for="option in maxTeamOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.display }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -77,6 +111,7 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { e_tournament_stage_types_enum } from "~/generated/zeus";
 
 export default {
   emits: ["updated"],
@@ -107,11 +142,23 @@ export default {
     return {
       form: useForm({
         validationSchema: toTypedSchema(
-          z.object({
-            type: z.string(),
-            min_teams: z.number().min(4),
-            max_teams: z.number().max(16),
-          })
+          z
+            .object({
+              type: z.string(),
+              min_teams: z.string().refine((val) => !isNaN(parseInt(val)), {
+                message: "min teams must be a number",
+              }),
+              max_teams: z.string().refine((val) => !isNaN(parseInt(val)), {
+                message: "max teams must be a number",
+              }),
+            })
+            .refine(
+              (data) => parseInt(data.min_teams) < parseInt(data.max_teams),
+              {
+                message: "max teams must be greater than min teams",
+                path: ["min_teams"],
+              }
+            )
         ),
       }),
     };
@@ -123,11 +170,44 @@ export default {
         if (stage) {
           this.form.setValues({
             type: stage.type,
-            min_teams: stage.min_teams,
-            max_teams: stage.max_teams,
+            min_teams: stage.min_teams.toString(),
+            max_teams: stage.max_teams.toString(),
           });
         }
       },
+    },
+  },
+  computed: {
+    minTeamOptions() {
+      return this.baseNumberOfTeamsOptions;
+    },
+    maxTeamOptions() {
+      if (!this.form.values.min_teams) {
+        return;
+      }
+      return this.baseNumberOfTeamsOptions.filter((option) => {
+        return parseInt(option.value) >= parseInt(this.form.values.min_teams);
+      });
+    },
+    baseNumberOfTeamsOptions() {
+      let options = [];
+      switch (this.form.values.type) {
+        case e_tournament_stage_types_enum.SingleElimination:
+          let max = 256;
+
+          while (max > 1) {
+            options.push({
+              value: max.toString(),
+              display: max,
+            });
+
+            max = max / 2;
+          }
+
+          break;
+      }
+
+      return options.reverse();
     },
   },
   methods: {

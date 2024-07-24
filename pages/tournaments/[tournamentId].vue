@@ -7,6 +7,7 @@ import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.v
 import TournamentServers from "~/components/tournament/TournamentServers.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
+import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
 </script>
 
 <template>
@@ -64,11 +65,15 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
       <TournamentStageBuilder :tournament="tournament"></TournamentStageBuilder>
     </TabsContent>
     <TabsContent value="teams">
+      <TournamentAddTeam :tournament="tournament" v-if="canAddTeams"></TournamentAddTeam>
+
       <div v-for="team of tournament.teams">
         <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
           {{ team.name }}: {{ team.roster_aggregate.aggregate.count }} players
           registered ({{ team.eligible_at }})
         </NuxtLink>
+
+        <Button @click="removeTeam(team.id)">Remove Team</Button>
       </div>
     </TabsContent>
     <TabsContent value="roster" v-if="myTeam">
@@ -97,11 +102,12 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
 </template>
 
 <script lang="ts">
-import { $, order_by } from "~/generated/zeus";
+import {$, e_map_pool_types_enum, order_by} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
+import {generateMutation} from "~/graphql/graphqlGen";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
@@ -280,6 +286,27 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    canAddTeams() {
+      return this.tournament.orgnaier_steam_id === this.me.id || this.tournament.organizers.find(({ steam_id }) => {
+        return steam_id === this.me.id;
+      });
+    }
   },
+  methods: {
+    async removeTeam(teamId) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_tournament_teams_by_pk: [
+            {
+              id: teamId,
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
+      });
+    }
+  }
 };
 </script>

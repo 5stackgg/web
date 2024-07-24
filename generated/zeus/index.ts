@@ -56569,6 +56569,7 @@ export const enum e_match_types_constraint {
 }
 export const enum e_match_types_enum {
 	Competitive = "Competitive",
+	Custom = "Custom",
 	Scrimmage = "Scrimmage",
 	Wingman = "Wingman"
 }
@@ -56683,7 +56684,9 @@ export const enum e_tournament_status_constraint {
 }
 export const enum e_tournament_status_enum {
 	Cancelled = "Cancelled",
+	Finished = "Finished",
 	Live = "Live",
+	Scheduled = "Scheduled",
 	Setup = "Setup"
 }
 /** select columns of table "e_tournament_status" */

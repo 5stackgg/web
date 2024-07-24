@@ -12,7 +12,7 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
 <template>
   <Tabs default-value="info" v-if="tournament">
     <TabsList>
-      <TabsTrigger value="info"> Information </TabsTrigger>
+      <TabsTrigger value="info"> <Badge>{{ tournament.status }}</Badge> Information </TabsTrigger>
       <TabsTrigger value="bracket"> Bracket </TabsTrigger>
       <TabsTrigger value="teams">
         Teams ({{ tournament.teams_aggregate.aggregate.count }})

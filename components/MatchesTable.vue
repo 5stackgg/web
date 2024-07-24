@@ -30,7 +30,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
             {{ lineup1(match).name }} vs {{ lineup2(match).name }}
           </TableCell>
           <TableCell>{{ match.status }}</TableCell>
-          <TableCell>{{ match.type }} (MR {{ match.mr }})</TableCell>
+          <TableCell
+            >{{ match.options.type }} (MR {{ match.options.mr }})</TableCell
+          >
           <TableCell>
             <template v-for="(match_map, index) of match.match_maps">
               <template v-if="index > 0">,</template>

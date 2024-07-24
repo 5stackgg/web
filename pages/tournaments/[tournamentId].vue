@@ -75,17 +75,19 @@ import MapDisplay from "~/components/MapDisplay.vue";
       <TournamentTeamTable :team="myTeam"></TournamentTeamTable>
     </TabsContent>
     <TabsContent value="manage">
-      <Tabs default-value="organizers">
+      <Tabs default-value="match-options">
         <TabsList>
+          <TabsTrigger value="match-options"> Map Options </TabsTrigger>
           <TabsTrigger value="organizers"> Organizers </TabsTrigger>
-          <TabsTrigger value="map_pool"> Map Pool </TabsTrigger>
+          <TabsTrigger value="map-pool"> Map Pool </TabsTrigger>
           <TabsTrigger value="servers"> Servers </TabsTrigger>
         </TabsList>
+        <TabsContent value="match-options"> </TabsContent>
         <TabsContent value="organizers">
           <TournamentOrganizers :tournament="tournament">
           </TournamentOrganizers>
         </TabsContent>
-        <TabsContent value="map_pool">
+        <TabsContent value="map-pool">
           <TournamentMapPool :tournament="tournament"></TournamentMapPool>
         </TabsContent>
         <TabsContent value="servers">

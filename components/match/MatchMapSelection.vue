@@ -8,10 +8,12 @@ import MapSelector from "~/components/match/MapSelector.vue";
   <MatchMapVeto
     :match="match"
     :map-pool="mapPool"
-    v-if="match.map_veto"
+    v-if="match.options.map_veto"
   ></MatchMapVeto>
   <template
-    v-else-if="canAssignMap && assigningMaps && match.map_veto === false"
+    v-else-if="
+      canAssignMap && assigningMaps && match.options.map_veto === false
+    "
   >
     <Card class="sm:col-span-4">
       <CardHeader class="pb-3">
@@ -70,19 +72,21 @@ export default {
                 id: $("match_id", "uuid!"),
               },
               {
-                map_pool: [
-                  {},
-                  {
-                    maps: [
-                      {
-                        order_by: {
-                          name: order_by.asc,
+                options: {
+                  map_pool: [
+                    {},
+                    {
+                      maps: [
+                        {
+                          order_by: {
+                            name: order_by.asc,
+                          },
                         },
-                      },
-                      mapFields,
-                    ],
-                  },
-                ],
+                        mapFields,
+                      ],
+                    },
+                  ],
+                },
               },
             ],
           },
@@ -142,7 +146,9 @@ export default {
       return this.match.organizer_steam_id === this.me.steam_id;
     },
     assigningMaps() {
-      return this.match.best_of > Object.keys(this.match.match_maps).length;
+      return (
+        this.match.options.best_of > Object.keys(this.match.match_maps).length
+      );
     },
   },
 };

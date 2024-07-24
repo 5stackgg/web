@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
+import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
@@ -8,255 +9,74 @@ import MapDisplay from "~/components/MapDisplay.vue";
     <div>
       <h3 class="mb-4 text-lg font-medium">Match Details</h3>
 
-      <div class="flex">
-        <FormField v-slot="{ value, handleChange }" name="coaches">
-          <FormItem
-            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-            @click="handleChange(!value)"
-          >
-            <div class="space-y-0.5">
-              <FormLabel class="text-base"> Allow Coaches </FormLabel>
-              <FormDescription>
-                Coaches will be spawned and killed at the start of each round
-              </FormDescription>
-            </div>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
+      <match-options :form="form"></match-options>
 
-        <FormField v-slot="{ value, handleChange }" name="overtime">
-          <FormItem
-            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-            @click="handleChange(!value)"
-          >
-            <div class="space-y-0.5">
-              <FormLabel class="text-base"> Overtime </FormLabel>
-              <FormDescription>
-                Each overtime is set of best of 4.
-              </FormDescription>
-            </div>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
-      </div>
+      <FormField v-slot="{ value, handleChange }" name="custom_map_pool">
+        <FormItem
+          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+          @click="handleChange(!value)"
+        >
+          <div class="space-y-0.5">
+            <FormLabel class="text-base"> Custom Map Pool </FormLabel>
+          </div>
+          <FormControl>
+            <Switch
+              class="pointer-events-none"
+              :checked="value"
+              @update:checked="handleChange"
+            />
+          </FormControl>
+        </FormItem>
+      </FormField>
 
-      <div class="flex">
-        <FormField v-slot="{ value, handleChange }" name="map_veto">
-          <FormItem
-            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-            @click="handleChange(!value)"
-          >
-            <div class="space-y-0.5">
-              <FormLabel class="text-base"> Map Veto </FormLabel>
-              <FormDescription>
-                Map Veto process is team 1 ban, team 2 ban, team 1 pick, team 2
-                pick side, team 2 pick, team 1 pick side, team 2 ban ... The
-                process then repeats till a final map is remaining.
-              </FormDescription>
-            </div>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ value, handleChange }" name="knife_round">
-          <FormItem
-            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-            @click="handleChange(!value)"
-          >
-            <div class="space-y-0.5">
-              <FormLabel class="text-base"> Knife Rond </FormLabel>
-              <FormDescription>
-                Knife Rounds are only played when neither team did not pick the
-                map in the map veto.
-              </FormDescription>
-            </div>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
-      </div>
-
-      <div>
-        <FormField v-slot="{ componentField }" name="number_of_substitutes">
-          <FormItem
-            class="flex flex-row items-center justify-between rounded-lg border p-4"
-          >
-            <div class="space-y-0.5">
-              <FormLabel class="text-base"> Substitutes </FormLabel>
-              <FormDescription> Number of Substitutes </FormDescription>
-            </div>
-            <FormControl>
-              <Input type="number" v-bind="componentField"></Input>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="type">
+      <div v-show="form.values.custom_map_pool">
+        <FormField name="map_pool">
           <FormItem>
-            <FormLabel>Match Type </FormLabel>
-
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select the match type" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem :value="type.value" v-for="type of e_match_types">
-                    {{ type.value }}
-                    <div class="text-xs">
-                      {{ type.description }}
-                    </div>
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="best_of">
-          <FormItem>
-            <FormLabel>Best Of</FormLabel>
-
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a best of value" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="bestOf.value"
-                    v-for="bestOf of bestOfOptions"
-                  >
-                    {{ bestOf.display }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="mr">
-          <FormItem>
-            <FormLabel>Max Rounds</FormLabel>
-
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select the max number of rounds" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="rounds"
-                    v-for="rounds of [`8`, '12', '15']"
-                  >
-                    {{ rounds }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ value, handleChange }" name="custom_map_pool">
-          <FormItem
-            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-            @click="handleChange(!value)"
-          >
-            <div class="space-y-0.5">
-              <FormLabel class="text-base"> Custom Map Pool </FormLabel>
-            </div>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
-
-        <div v-show="form.values.custom_map_pool">
-          <FormField name="map_pool">
-            <FormItem>
-              <FormLabel>Custom Map Pool</FormLabel>
-              <div class="flex">
-                <template v-for="map in availableMaps">
+            <FormLabel>Custom Map Pool</FormLabel>
+            <div class="flex">
+              <template v-for="map in availableMaps">
+                <div
+                  class="relative cursor-pointer"
+                  @click="updateMapPool(map.id)"
+                >
+                  <MapDisplay :map="map"></MapDisplay>
                   <div
-                    class="relative cursor-pointer"
-                    @click="updateMapPool(map.id)"
-                  >
-                    <MapDisplay :map="map"></MapDisplay>
-                    <div
-                      class="absolute inset-0 bg-black bg-opacity-55"
-                      v-if="!form.values.map_pool.includes(map.id)"
-                    ></div>
-                  </div>
-                </template>
-              </div>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </div>
+                    class="absolute inset-0 bg-black bg-opacity-55"
+                    v-if="!form.values.map_pool.includes(map.id)"
+                  ></div>
+                </div>
+              </template>
+            </div>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
-
-      <FormField v-slot="{ handleChange, componentField }" name="team_1">
-        <FormItem>
-          <FormLabel>Team 1</FormLabel>
-          <team-search
-            label="Search for a Team ..."
-            @selected="(team) => handleChange(team.id)"
-            v-model="componentField.modelValue"
-          ></team-search>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ handleChange, componentField }" name="team_2">
-        <FormItem>
-          <FormLabel>Team 2</FormLabel>
-          <team-search
-            label="Search for a Team ..."
-            @selected="(team) => handleChange(team.id)"
-            :exclude="[form.values.team_1]"
-            v-model="componentField.modelValue"
-          ></team-search>
-          <FormMessage />
-        </FormItem>
-      </FormField>
     </div>
+
+    <FormField v-slot="{ handleChange, componentField }" name="team_1">
+      <FormItem>
+        <FormLabel>Team 1</FormLabel>
+        <team-search
+          label="Search for a Team ..."
+          @selected="(team) => handleChange(team.id)"
+          v-model="componentField.modelValue"
+        ></team-search>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
+    <FormField v-slot="{ handleChange, componentField }" name="team_2">
+      <FormItem>
+        <FormLabel>Team 2</FormLabel>
+        <team-search
+          label="Search for a Team ..."
+          @selected="(team) => handleChange(team.id)"
+          :exclude="[form.values.team_1]"
+          v-model="componentField.modelValue"
+        ></team-search>
+        <FormMessage />
+      </FormItem>
+    </FormField>
     <Button type="submit"> Submit </Button>
   </form>
 </template>
@@ -269,20 +89,10 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
+import matchOptionsValidator from "~/utilities/match-options-validator";
 
 export default {
   apollo: {
-    e_match_types: {
-      query: generateQuery({
-        e_match_types: [
-          {},
-          {
-            value: true,
-            description: true,
-          },
-        ],
-      }),
-    },
     maps: {
       query: generateQuery({
         maps: [{}, mapFields],
@@ -313,23 +123,13 @@ export default {
   data() {
     return {
       form: useForm({
-        validationSchema: toTypedSchema(
-          z.object({
-            mr: z.string().default("12"),
-            map_veto: z.boolean().default(false),
-            coaches: z.boolean().default(false),
-            knife_round: z.boolean().default(true),
-            overtime: z.boolean().default(true),
-            best_of: z.string().default("1"),
-            custom_map_pool: z.boolean().default(false),
-            number_of_substitutes: z.number().min(0).max(5).default(0),
-            type: z.string().default(e_match_types_enum.Competitive),
-            match_maps: z.string().array().default([]),
-            team_1: z.string().optional(),
-            team_2: z.string().optional(),
-            map_pool: z.string().array().default([]),
-          })
-        ),
+        validationSchema: matchOptionsValidator({
+          custom_map_pool: z.boolean().default(false),
+          match_maps: z.string().array().default([]),
+          team_1: z.string().optional(),
+          team_2: z.string().optional(),
+          map_pool: z.string().array().default([]),
+        }),
       }),
     };
   },
@@ -354,6 +154,13 @@ export default {
       this.form.setFieldValue("map_pool", pool);
     },
     async setupMatch() {
+      const { valid } = await this.form.validate();
+
+      console.info("VALID", valid);
+      if (!valid) {
+        return;
+      }
+
       const form = this.form.values;
 
       let order = 0;
@@ -406,25 +213,29 @@ export default {
           insert_matches_one: [
             {
               object: {
-                mr: $("mr", "Int!"),
-                type: $("type", "e_match_types_enum!"),
-                best_of: $("best_of", "Int!"),
+                options: {
+                  data: {
+                    mr: $("mr", "Int!"),
+                    type: $("type", "e_match_types_enum!"),
+                    best_of: $("best_of", "Int!"),
+                    map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
+                    knife_round: $("knife_round", "Boolean!"),
+                    overtime: $("overtime", "Boolean!"),
+                    map_veto: $("map_veto", "Boolean!"),
+                    coaches: $("coaches", "Boolean!"),
+                    ...(mapPoolLength === 0
+                      ? { map_pool_id: $("map_pool_id", "uuid!") }
+                      : {}),
+                    number_of_substitutes: $("number_of_substitutes", "Int!"),
+                  },
+                },
                 match_maps: $("maps", "match_maps_arr_rel_insert_input"),
-                map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
-                knife_round: $("knife_round", "Boolean!"),
-                overtime: $("overtime", "Boolean!"),
-                map_veto: $("map_veto", "Boolean!"),
-                coaches: $("coaches", "Boolean!"),
                 lineups: {
                   data: [
                     { lineup_players: { data: [] } },
                     { lineup_players: { data: [] } },
                   ],
                 },
-                ...(mapPoolLength === 0
-                  ? { map_pool_id: $("map_pool_id", "uuid!") }
-                  : {}),
-                number_of_substitutes: $("number_of_substitutes", "Int!"),
               },
             },
             {
@@ -440,14 +251,6 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    bestOfOptions() {
-      return [1, 3, 5].map((rounds) => {
-        return {
-          value: rounds.toString(),
-          display: `Best of ${rounds}`,
-        };
-      });
     },
     defaultMapPool() {
       return this.map_pools.find((pool) => {

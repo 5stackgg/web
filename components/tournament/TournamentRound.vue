@@ -93,7 +93,6 @@ export default {
 }
 
 .with-bye + .with-connector {
-  visibility: hidden
+  visibility: hidden;
 }
-
 </style>

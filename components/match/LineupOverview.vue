@@ -108,7 +108,7 @@ export default {
     maxPlayersPerLineup() {
       return (
         (this.match?.type === e_match_types_enum.Wingman ? 2 : 5) +
-        this.match.number_of_substitutes
+        this.match.options.number_of_substitutes
       );
     },
     canAddToLineup() {
@@ -124,7 +124,7 @@ export default {
       );
     },
     canUpdateCoach() {
-      return this.canUpdateLineup && this.match.coaches;
+      return this.canUpdateLineup && this.match.options.coaches;
     },
     coaches() {
       const coaches = [];

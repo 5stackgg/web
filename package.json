@@ -42,7 +42,7 @@
     "clsx": "^2.1.0",
     "eventemitter3": "^5.0.1",
     "graphql-ws": "^5.15.0",
-    "graphql-zeus": "^5.3.3",
+    "graphql-zeus": "^5.4.4",
     "javascript-time-ago": "^2.5.9",
     "lucide-vue-next": "^0.368.0",
     "node-fetch": "^2.7.0",

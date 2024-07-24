@@ -285,7 +285,7 @@ export default {
       return useAuthStore().me;
     },
     bestOf() {
-      return this.match.best_of;
+      return this.match.options.best_of;
     },
     isCaptain() {
       return this.myLineup?.captain?.player.steam_id === this.me.steam_id;

@@ -3,12 +3,14 @@ import { mapFields } from "~/graphql/mapGraphql";
 
 export const matchFields = Selector("servers")({
   id: true,
-  mr: true,
-  best_of: true,
   status: true,
-  type: true,
   lineup_1_id: true,
   lineup_2_id: true,
+  options: {
+    mr: true,
+    best_of: true,
+    type: true,
+  },
   match_maps: [
     {
       order_by: [

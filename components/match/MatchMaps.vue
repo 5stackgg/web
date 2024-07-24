@@ -11,7 +11,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
         <badge class="mb-2">{{ matchMap.status }}</badge>
       </div>
 
-      <badge variant="destructive" v-if="isDecider && match.best_of > 1"
+      <badge variant="destructive" v-if="isDecider && match.options.best_of > 1"
         >Decider</badge
       >
     </template>

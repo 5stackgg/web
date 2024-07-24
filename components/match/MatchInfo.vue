@@ -53,7 +53,10 @@ import { e_match_status_enum } from "~/generated/zeus";
           >
             Start
             <template
-              v-if="match.map_veto && match.best_of != match.match_maps.length"
+              v-if="
+                match.options.map_veto &&
+                match.options.best_of != match.match_maps.length
+              "
             >
               Veto
             </template>
@@ -69,7 +72,7 @@ import { e_match_status_enum } from "~/generated/zeus";
       <ul class="grid gap-3">
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Match Type </span>
-          <span>{{ match.type }}</span>
+          <span>{{ match.options.type }}</span>
         </li>
 
         <li class="flex items-center justify-between">
@@ -79,39 +82,39 @@ import { e_match_status_enum } from "~/generated/zeus";
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Max Rounds </span>
-          <span>{{ match.mr }}</span>
+          <span>{{ match.options.mr }}</span>
         </li>
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Coaches </span>
-          <BooleanToText :value="match.coaches"></BooleanToText>
+          <BooleanToText :value="match.options.coaches"></BooleanToText>
         </li>
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Overtime </span>
-          <BooleanToText :value="match.overtime"></BooleanToText>
+          <BooleanToText :value="match.options.overtime"></BooleanToText>
         </li>
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Knife Round </span>
-          <BooleanToText :value="match.knife_round"></BooleanToText>
+          <BooleanToText :value="match.options.knife_round"></BooleanToText>
         </li>
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Map Veto </span>
-          <BooleanToText :value="match.map_veto"></BooleanToText>
+          <BooleanToText :value="match.options.map_veto"></BooleanToText>
         </li>
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Map Pool </span>
           <span>
-            {{ match.map_pool.type }}
+            {{ match.options.map_pool.type }}
           </span>
         </li>
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Substitutes </span>
-          <span>{{ match.number_of_substitutes }}</span>
+          <span>{{ match.options.number_of_substitutes }}</span>
         </li>
       </ul>
 
@@ -143,7 +146,7 @@ import { e_match_status_enum } from "~/generated/zeus";
         </ul>
       </div>
 
-      <div class="grid gap-3" v-if="match.coaches">
+      <div class="grid gap-3" v-if="match.options.coaches">
         <div class="font-semibold">Coaches</div>
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">

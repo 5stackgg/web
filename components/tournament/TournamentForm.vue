@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
@@ -33,30 +34,7 @@ import {
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ componentField }" name="type">
-      <FormItem>
-        <FormLabel>Match Type </FormLabel>
-
-        <Select v-bind="componentField">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder="Select the match type" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem :value="type.value" v-for="type of e_match_types">
-                {{ type.value }}
-                <div class="text-xs">
-                  {{ type.description }}
-                </div>
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+    <match-options :form="form"></match-options>
 
     <FormField v-slot="{ componentField }" name="start">
       <FormItem>
@@ -107,6 +85,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
 import { e_match_types_enum } from "~/generated/zeus";
+import matchOptionsValidator from "~/utilities/match-options-validator";
 
 export default {
   emits: ["updated"],
@@ -156,14 +135,11 @@ export default {
       startDate: undefined,
       startTime: undefined,
       form: useForm({
-        validationSchema: toTypedSchema(
-          z.object({
-            name: z.string().min(1),
-            type: z.string().default(e_match_types_enum.Competitive),
-            start: z.date(),
-            description: z.string().nullable().default(null),
-          })
-        ),
+        validationSchema: matchOptionsValidator({
+          name: z.string().min(1),
+          start: z.date(),
+          description: z.string().nullable().default(null),
+        }),
       }),
     };
   },

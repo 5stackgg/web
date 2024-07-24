@@ -63,9 +63,6 @@ export default {
   methods: {
     async setupMatch() {
       const { valid } = await this.form.validate();
-      console.info({
-        valid,
-      });
 
       if (!valid) {
         return;

@@ -256,7 +256,6 @@ export default {
 
         let mapPoolId = form.map_pool_id;
 
-        console.info(form.custom_map_pool);
         if (form.custom_map_pool) {
           const { data } = await this.$apollo.mutate({
             variables: {

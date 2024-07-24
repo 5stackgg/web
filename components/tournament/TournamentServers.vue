@@ -86,7 +86,7 @@ export default {
       handler(tournament) {
         this.form.setFieldValue(
           "serverIds",
-          tournament?.servers.map((server) => server.server_id) || []
+          tournament?.servers.map((server) => server.server_id) || [],
         );
       },
     },

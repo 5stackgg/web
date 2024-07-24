@@ -14,6 +14,6 @@ export default function matchOptionsValidator(additional: any) {
       number_of_substitutes: z.number().min(0).max(5).default(0),
       type: z.string().default(e_match_types_enum.Competitive),
       ...additional,
-    })
+    }),
   );
 }

@@ -115,7 +115,7 @@ export default {
                   }
                   return value !== undefined;
                 },
-                { message: "team name is required" }
+                { message: "team name is required" },
               ),
             team_id: z
               .string()
@@ -127,9 +127,9 @@ export default {
                   }
                   return value !== undefined;
                 },
-                { message: "team is required" }
+                { message: "team is required" },
               ),
-          })
+          }),
         ),
       }),
     };

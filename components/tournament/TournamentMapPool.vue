@@ -74,7 +74,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             map_pool: z.string().array().default([]),
-          })
+          }),
         ),
       }),
     };
@@ -85,7 +85,7 @@ export default {
       handler() {
         this.form.setFieldValue(
           "map_pool",
-          this.tournament.map_pool.maps.map(({ id }) => id) || []
+          this.tournament.map_pool.maps.map(({ id }) => id) || [],
         );
       },
     },

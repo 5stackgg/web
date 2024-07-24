@@ -210,7 +210,7 @@ export default {
                   }
                   return value !== undefined;
                 },
-                { message: "side is required" }
+                { message: "side is required" },
               ),
             side: z
               .string()
@@ -222,9 +222,9 @@ export default {
                   }
                   return true;
                 },
-                { message: "side is required" }
+                { message: "side is required" },
               ),
-          })
+          }),
         ),
       }),
     };

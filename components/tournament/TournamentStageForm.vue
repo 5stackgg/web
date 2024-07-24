@@ -157,8 +157,8 @@ export default {
               {
                 message: "max teams must be greater than min teams",
                 path: ["min_teams"],
-              }
-            )
+              },
+            ),
         ),
       }),
     };

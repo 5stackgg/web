@@ -77,7 +77,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Best of </span>
-          <span>{{ match.best_of }}</span>
+          <span>{{ match.options.best_of }}</span>
         </li>
 
         <li class="flex items-center justify-between">

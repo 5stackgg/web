@@ -100,7 +100,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             map_id: z.string(),
-          })
+          }),
         ),
       }),
     };
@@ -140,7 +140,7 @@ export default {
       return useAuthStore().me;
     },
     mapPool() {
-      return this.match_maps?.map_pool?.maps;
+      return this.match_maps?.options?.map_pool?.maps;
     },
     canAssignMap() {
       return this.match.organizer_steam_id === this.me.steam_id;

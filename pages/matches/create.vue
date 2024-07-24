@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
-import MapDisplay from "~/components/MapDisplay.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 

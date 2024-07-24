@@ -3,7 +3,6 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
 </script>
 
 <template>
-  <pre>{{ form.values }}</pre>
   <form class="w-1/2 space-y-6" @submit.prevent="addTeamToTournament">
     <FormField v-slot="{ handleChange, componentField }" name="team_id">
       <FormItem>

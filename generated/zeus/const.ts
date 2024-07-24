@@ -2058,6 +2058,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"match_options_bool_exp",
 		best_of:"Int_comparison_exp",
 		coaches:"Boolean_comparison_exp",
+		has_active_matches:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		knife_round:"Boolean_comparison_exp",
 		map_pool:"map_pools_bool_exp",
@@ -2099,6 +2100,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_options_order_by:{
 		best_of:"order_by",
 		coaches:"order_by",
+		has_active_matches:"order_by",
 		id:"order_by",
 		knife_round:"order_by",
 		map_pool:"map_pools_order_by",
@@ -8500,6 +8502,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		match_options_id:"uuid_comparison_exp",
 		name:"String_comparison_exp",
+		options:"match_options_bool_exp",
 		organizer_steam_id:"bigint_comparison_exp",
 		organizers:"tournament_organizers_bool_exp",
 		organizers_aggregate:"tournament_organizers_aggregate_bool_exp",
@@ -8512,8 +8515,7 @@ export const AllTypesProps: Record<string,any> = {
 		start:"timestamptz_comparison_exp",
 		status:"e_tournament_status_enum_comparison_exp",
 		teams:"tournament_teams_bool_exp",
-		teams_aggregate:"tournament_teams_aggregate_bool_exp",
-		type:"String_comparison_exp"
+		teams_aggregate:"tournament_teams_aggregate_bool_exp"
 	},
 	tournaments_constraint: "enum" as const,
 	tournaments_inc_input:{
@@ -8524,6 +8526,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_tournament_status:"e_tournament_status_obj_rel_insert_input",
 		id:"uuid",
 		match_options_id:"uuid",
+		options:"match_options_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
 		organizers:"tournament_organizers_arr_rel_insert_input",
 		rosters:"tournament_team_roster_arr_rel_insert_input",
@@ -8539,8 +8542,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
-		start:"order_by",
-		type:"order_by"
+		start:"order_by"
 	},
 	tournaments_min_order_by:{
 		description:"order_by",
@@ -8548,8 +8550,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"order_by",
 		name:"order_by",
 		organizer_steam_id:"order_by",
-		start:"order_by",
-		type:"order_by"
+		start:"order_by"
 	},
 	tournaments_obj_rel_insert_input:{
 		data:"tournaments_insert_input",
@@ -8567,6 +8568,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		match_options_id:"order_by",
 		name:"order_by",
+		options:"match_options_order_by",
 		organizer_steam_id:"order_by",
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		rosters_aggregate:"tournament_team_roster_aggregate_order_by",
@@ -8574,8 +8576,7 @@ export const AllTypesProps: Record<string,any> = {
 		stages_aggregate:"tournament_stages_aggregate_order_by",
 		start:"order_by",
 		status:"order_by",
-		teams_aggregate:"tournament_teams_aggregate_order_by",
-		type:"order_by"
+		teams_aggregate:"tournament_teams_aggregate_order_by"
 	},
 	tournaments_pk_columns_input:{
 		id:"uuid"
@@ -10067,6 +10068,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_options:{
 		best_of:"Int",
 		coaches:"Boolean",
+		has_active_matches:"Boolean",
 		id:"uuid",
 		knife_round:"Boolean",
 		map_pool:"map_pools",
@@ -12567,6 +12569,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		match_options_id:"uuid",
 		name:"String",
+		options:"match_options",
 		organizer_steam_id:"bigint",
 		organizers:"tournament_organizers",
 		organizers_aggregate:"tournament_organizers_aggregate",
@@ -12579,8 +12582,7 @@ export const ReturnTypes: Record<string,any> = {
 		start:"timestamptz",
 		status:"e_tournament_status_enum",
 		teams:"tournament_teams",
-		teams_aggregate:"tournament_teams_aggregate",
-		type:"String"
+		teams_aggregate:"tournament_teams_aggregate"
 	},
 	tournaments_aggregate:{
 		aggregate:"tournaments_aggregate_fields",
@@ -12608,8 +12610,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_options_id:"uuid",
 		name:"String",
 		organizer_steam_id:"bigint",
-		start:"timestamptz",
-		type:"String"
+		start:"timestamptz"
 	},
 	tournaments_min_fields:{
 		description:"String",
@@ -12617,8 +12618,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_options_id:"uuid",
 		name:"String",
 		organizer_steam_id:"bigint",
-		start:"timestamptz",
-		type:"String"
+		start:"timestamptz"
 	},
 	tournaments_mutation_response:{
 		affected_rows:"Int",

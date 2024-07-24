@@ -8497,6 +8497,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"tournaments_bool_exp",
 		_or:"tournaments_bool_exp",
 		admin:"players_bool_exp",
+		can_join_tournament:"Boolean_comparison_exp",
 		description:"String_comparison_exp",
 		e_tournament_status:"e_tournament_status_bool_exp",
 		id:"uuid_comparison_exp",
@@ -8563,6 +8564,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournaments_order_by:{
 		admin:"players_order_by",
+		can_join_tournament:"order_by",
 		description:"order_by",
 		e_tournament_status:"e_tournament_status_order_by",
 		id:"order_by",
@@ -12564,6 +12566,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournaments:{
 		admin:"players",
+		can_join_tournament:"Boolean",
 		description:"String",
 		e_tournament_status:"e_tournament_status",
 		id:"uuid",

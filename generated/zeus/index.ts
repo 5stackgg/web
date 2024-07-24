@@ -13963,6 +13963,8 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 ["tournaments"]: AliasType<{
 	/** An object relationship */
 	admin?:ValueTypes["players"],
+	/** A computed field, executes function "can_join_tournament" */
+	can_join_tournament?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	/** An object relationship */
 	e_tournament_status?:ValueTypes["e_tournament_status"],
@@ -14101,6 +14103,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	_not?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["tournaments_bool_exp"]> | undefined | null | Variable<any, string>,
 	admin?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	can_join_tournament?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_tournament_status?: ValueTypes["e_tournament_status_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -14206,6 +14209,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	/** Ordering options when selecting data from "tournaments". */
 ["tournaments_order_by"]: {
 	admin?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	can_join_tournament?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_tournament_status?: ValueTypes["e_tournament_status_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -28820,6 +28824,8 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 ["tournaments"]: AliasType<{
 	/** An object relationship */
 	admin?:ResolverInputTypes["players"],
+	/** A computed field, executes function "can_join_tournament" */
+	can_join_tournament?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	/** An object relationship */
 	e_tournament_status?:ResolverInputTypes["e_tournament_status"],
@@ -28958,6 +28964,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	_not?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["tournaments_bool_exp"]> | undefined | null,
 	admin?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	can_join_tournament?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	e_tournament_status?: ResolverInputTypes["e_tournament_status_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -29063,6 +29070,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	/** Ordering options when selecting data from "tournaments". */
 ["tournaments_order_by"]: {
 	admin?: ResolverInputTypes["players_order_by"] | undefined | null,
+	can_join_tournament?: ResolverInputTypes["order_by"] | undefined | null,
 	description?: ResolverInputTypes["order_by"] | undefined | null,
 	e_tournament_status?: ResolverInputTypes["e_tournament_status_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -41579,6 +41587,8 @@ export type ModelTypes = {
 ["tournaments"]: {
 		/** An object relationship */
 	admin: ModelTypes["players"],
+	/** A computed field, executes function "can_join_tournament" */
+	can_join_tournament?: boolean | undefined,
 	description?: string | undefined,
 	/** An object relationship */
 	e_tournament_status: ModelTypes["e_tournament_status"],
@@ -41673,6 +41683,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["tournaments_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["tournaments_bool_exp"]> | undefined,
 	admin?: ModelTypes["players_bool_exp"] | undefined,
+	can_join_tournament?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	description?: ModelTypes["String_comparison_exp"] | undefined,
 	e_tournament_status?: ModelTypes["e_tournament_status_bool_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -41774,6 +41785,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "tournaments". */
 ["tournaments_order_by"]: {
 	admin?: ModelTypes["players_order_by"] | undefined,
+	can_join_tournament?: ModelTypes["order_by"] | undefined,
 	description?: ModelTypes["order_by"] | undefined,
 	e_tournament_status?: ModelTypes["e_tournament_status_order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -54747,6 +54759,8 @@ export type GraphQLTypes = {
 	__typename: "tournaments",
 	/** An object relationship */
 	admin: GraphQLTypes["players"],
+	/** A computed field, executes function "can_join_tournament" */
+	can_join_tournament?: boolean | undefined,
 	description?: string | undefined,
 	/** An object relationship */
 	e_tournament_status: GraphQLTypes["e_tournament_status"],
@@ -54844,6 +54858,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["tournaments_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["tournaments_bool_exp"]> | undefined,
 	admin?: GraphQLTypes["players_bool_exp"] | undefined,
+	can_join_tournament?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	description?: GraphQLTypes["String_comparison_exp"] | undefined,
 	e_tournament_status?: GraphQLTypes["e_tournament_status_bool_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -54949,6 +54964,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "tournaments". */
 ["tournaments_order_by"]: {
 		admin?: GraphQLTypes["players_order_by"] | undefined,
+	can_join_tournament?: GraphQLTypes["order_by"] | undefined,
 	description?: GraphQLTypes["order_by"] | undefined,
 	e_tournament_status?: GraphQLTypes["e_tournament_status_order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,

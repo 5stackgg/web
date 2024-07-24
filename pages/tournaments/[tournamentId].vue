@@ -43,7 +43,7 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
         </template>
       </div>
 
-      <Drawer :open="tournamentDialog">
+      <Drawer :open="tournamentDialog" v-if="tournament.can_join_tournament">
         <DrawerTrigger @click="tournamentDialog = true">
           <Button> Join Tournament </Button>
         </DrawerTrigger>
@@ -128,6 +128,7 @@ export default {
               start: true,
               status: true,
               description: true,
+              can_join_tournament: true,
               admin: {
                 name: true,
               },

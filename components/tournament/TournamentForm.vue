@@ -194,8 +194,6 @@ export default {
             return id;
           }),
         });
-
-        console.info("FINAL", this.form.values.map_pool);
       },
     },
   },

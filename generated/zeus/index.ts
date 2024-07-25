@@ -56569,7 +56569,6 @@ export const enum e_match_types_constraint {
 }
 export const enum e_match_types_enum {
 	Competitive = "Competitive",
-	Custom = "Custom",
 	Scrimmage = "Scrimmage",
 	Wingman = "Wingman"
 }

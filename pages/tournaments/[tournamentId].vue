@@ -107,7 +107,6 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
-import {generateMutation} from "~/graphql/graphqlGen";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
@@ -226,6 +225,20 @@ export default {
                       id: true,
                       round: true,
                       match_number: true,
+                      team_1: {
+                        id: true,
+                        name: true,
+                        team: {
+                          name: true,
+                        }
+                      },
+                      team_2: {
+                        id: true,
+                        name: true,
+                        team: {
+                          name: true,
+                        }
+                      },
                       created_at: true,
                     },
                   ],

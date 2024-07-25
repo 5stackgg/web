@@ -4,7 +4,6 @@ import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
-  <pre>{{ form.errors }}</pre>
   <form class="w-1/2 space-y-6" @submit.prevent="setupMatch">
     <div>
       <h3 class="mb-4 text-lg font-medium">Match Details</h3>

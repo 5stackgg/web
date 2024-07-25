@@ -12340,12 +12340,16 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
-	roster_1_id?:boolean | `@${string}`,
-	roster_2_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	/** An object relationship */
 	stage?:ValueTypes["tournament_stages"],
+	/** An object relationship */
+	team_1?:ValueTypes["tournament_teams"],
+	/** An object relationship */
+	team_2?:ValueTypes["tournament_teams"],
 	tournament_stage_id?:boolean | `@${string}`,
+	tournament_team_id_1?:boolean | `@${string}`,
+	tournament_team_id_2?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "tournament_brackets" */
@@ -12419,11 +12423,13 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_number?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	roster_1_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	roster_2_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	stage?: ValueTypes["tournament_stages_bool_exp"] | undefined | null | Variable<any, string>,
-	tournament_stage_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
+	team_1?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
+	team_2?: ValueTypes["tournament_teams_bool_exp"] | undefined | null | Variable<any, string>,
+	tournament_stage_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	tournament_team_id_1?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	tournament_team_id_2?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "tournament_brackets" */
 ["tournament_brackets_constraint"]:tournament_brackets_constraint;
@@ -12439,11 +12445,13 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_number?: number | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	roster_1_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	roster_2_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
 	stage?: ValueTypes["tournament_stages_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
-	tournament_stage_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+	team_1?: ValueTypes["tournament_teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	team_2?: ValueTypes["tournament_teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tournament_stage_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id_1?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id_2?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["tournament_brackets_max_fields"]: AliasType<{
@@ -12452,10 +12460,10 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
-	roster_1_id?:boolean | `@${string}`,
-	roster_2_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	tournament_stage_id?:boolean | `@${string}`,
+	tournament_team_id_1?:boolean | `@${string}`,
+	tournament_team_id_2?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "tournament_brackets" */
@@ -12465,10 +12473,10 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_number?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	roster_1_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	roster_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_stage_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	tournament_stage_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id_1?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id_2?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["tournament_brackets_min_fields"]: AliasType<{
@@ -12477,10 +12485,10 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
-	roster_1_id?:boolean | `@${string}`,
-	roster_2_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	tournament_stage_id?:boolean | `@${string}`,
+	tournament_team_id_1?:boolean | `@${string}`,
+	tournament_team_id_2?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "tournament_brackets" */
@@ -12490,10 +12498,10 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_number?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	roster_1_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	roster_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	tournament_stage_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	tournament_stage_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id_1?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id_2?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** response of any mutation on the table "tournament_brackets" */
 ["tournament_brackets_mutation_response"]: AliasType<{
@@ -12516,11 +12524,13 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_number?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	roster_1_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	roster_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	stage?: ValueTypes["tournament_stages_order_by"] | undefined | null | Variable<any, string>,
-	tournament_stage_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	team_1?: ValueTypes["tournament_teams_order_by"] | undefined | null | Variable<any, string>,
+	team_2?: ValueTypes["tournament_teams_order_by"] | undefined | null | Variable<any, string>,
+	tournament_stage_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id_1?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	tournament_team_id_2?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: tournament_brackets */
 ["tournament_brackets_pk_columns_input"]: {
@@ -12535,10 +12545,10 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_number?: number | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	roster_1_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	roster_2_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
-	tournament_stage_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+	tournament_stage_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id_1?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id_2?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["tournament_brackets_stddev_fields"]: AliasType<{
@@ -12587,10 +12597,10 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_number?: number | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	roster_1_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	roster_2_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	round?: number | undefined | null | Variable<any, string>,
-	tournament_stage_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+	tournament_stage_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id_1?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	tournament_team_id_2?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["tournament_brackets_sum_fields"]: AliasType<{
@@ -27201,12 +27211,16 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
-	roster_1_id?:boolean | `@${string}`,
-	roster_2_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	/** An object relationship */
 	stage?:ResolverInputTypes["tournament_stages"],
+	/** An object relationship */
+	team_1?:ResolverInputTypes["tournament_teams"],
+	/** An object relationship */
+	team_2?:ResolverInputTypes["tournament_teams"],
 	tournament_stage_id?:boolean | `@${string}`,
+	tournament_team_id_1?:boolean | `@${string}`,
+	tournament_team_id_2?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "tournament_brackets" */
@@ -27280,11 +27294,13 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_number?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	roster_1_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	roster_2_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	round?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	stage?: ResolverInputTypes["tournament_stages_bool_exp"] | undefined | null,
-	tournament_stage_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
+	team_1?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
+	team_2?: ResolverInputTypes["tournament_teams_bool_exp"] | undefined | null,
+	tournament_stage_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	tournament_team_id_1?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	tournament_team_id_2?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "tournament_brackets" */
 ["tournament_brackets_constraint"]:tournament_brackets_constraint;
@@ -27300,11 +27316,13 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_number?: number | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["uuid"] | undefined | null,
-	roster_1_id?: ResolverInputTypes["uuid"] | undefined | null,
-	roster_2_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
 	stage?: ResolverInputTypes["tournament_stages_obj_rel_insert_input"] | undefined | null,
-	tournament_stage_id?: ResolverInputTypes["uuid"] | undefined | null
+	team_1?: ResolverInputTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
+	team_2?: ResolverInputTypes["tournament_teams_obj_rel_insert_input"] | undefined | null,
+	tournament_stage_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id_1?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id_2?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate max on columns */
 ["tournament_brackets_max_fields"]: AliasType<{
@@ -27313,10 +27331,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
-	roster_1_id?:boolean | `@${string}`,
-	roster_2_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	tournament_stage_id?:boolean | `@${string}`,
+	tournament_team_id_1?:boolean | `@${string}`,
+	tournament_team_id_2?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "tournament_brackets" */
@@ -27326,10 +27344,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_number?: ResolverInputTypes["order_by"] | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["order_by"] | undefined | null,
-	roster_1_id?: ResolverInputTypes["order_by"] | undefined | null,
-	roster_2_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_stage_id?: ResolverInputTypes["order_by"] | undefined | null
+	tournament_stage_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id_1?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id_2?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["tournament_brackets_min_fields"]: AliasType<{
@@ -27338,10 +27356,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
-	roster_1_id?:boolean | `@${string}`,
-	roster_2_id?:boolean | `@${string}`,
 	round?:boolean | `@${string}`,
 	tournament_stage_id?:boolean | `@${string}`,
+	tournament_team_id_1?:boolean | `@${string}`,
+	tournament_team_id_2?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "tournament_brackets" */
@@ -27351,10 +27369,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_number?: ResolverInputTypes["order_by"] | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["order_by"] | undefined | null,
-	roster_1_id?: ResolverInputTypes["order_by"] | undefined | null,
-	roster_2_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
-	tournament_stage_id?: ResolverInputTypes["order_by"] | undefined | null
+	tournament_stage_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id_1?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id_2?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "tournament_brackets" */
 ["tournament_brackets_mutation_response"]: AliasType<{
@@ -27377,11 +27395,13 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_number?: ResolverInputTypes["order_by"] | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["order_by"] | undefined | null,
-	roster_1_id?: ResolverInputTypes["order_by"] | undefined | null,
-	roster_2_id?: ResolverInputTypes["order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
 	stage?: ResolverInputTypes["tournament_stages_order_by"] | undefined | null,
-	tournament_stage_id?: ResolverInputTypes["order_by"] | undefined | null
+	team_1?: ResolverInputTypes["tournament_teams_order_by"] | undefined | null,
+	team_2?: ResolverInputTypes["tournament_teams_order_by"] | undefined | null,
+	tournament_stage_id?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id_1?: ResolverInputTypes["order_by"] | undefined | null,
+	tournament_team_id_2?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: tournament_brackets */
 ["tournament_brackets_pk_columns_input"]: {
@@ -27396,10 +27416,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_number?: number | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["uuid"] | undefined | null,
-	roster_1_id?: ResolverInputTypes["uuid"] | undefined | null,
-	roster_2_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
-	tournament_stage_id?: ResolverInputTypes["uuid"] | undefined | null
+	tournament_stage_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id_1?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id_2?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["tournament_brackets_stddev_fields"]: AliasType<{
@@ -27448,10 +27468,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_number?: number | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["uuid"] | undefined | null,
-	roster_1_id?: ResolverInputTypes["uuid"] | undefined | null,
-	roster_2_id?: ResolverInputTypes["uuid"] | undefined | null,
 	round?: number | undefined | null,
-	tournament_stage_id?: ResolverInputTypes["uuid"] | undefined | null
+	tournament_stage_id?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id_1?: ResolverInputTypes["uuid"] | undefined | null,
+	tournament_team_id_2?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["tournament_brackets_sum_fields"]: AliasType<{
@@ -40075,12 +40095,16 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
-	roster_1_id?: ModelTypes["uuid"] | undefined,
-	roster_2_id?: ModelTypes["uuid"] | undefined,
 	round: number,
 	/** An object relationship */
 	stage: ModelTypes["tournament_stages"],
-	tournament_stage_id: ModelTypes["uuid"]
+	/** An object relationship */
+	team_1?: ModelTypes["tournament_teams"] | undefined,
+	/** An object relationship */
+	team_2?: ModelTypes["tournament_teams"] | undefined,
+	tournament_stage_id: ModelTypes["uuid"],
+	tournament_team_id_1?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_2?: ModelTypes["uuid"] | undefined
 };
 	/** aggregated selection of "tournament_brackets" */
 ["tournament_brackets_aggregate"]: {
@@ -40150,11 +40174,13 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match_number?: ModelTypes["Int_comparison_exp"] | undefined,
 	parent_bracket_id?: ModelTypes["uuid_comparison_exp"] | undefined,
-	roster_1_id?: ModelTypes["uuid_comparison_exp"] | undefined,
-	roster_2_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	round?: ModelTypes["Int_comparison_exp"] | undefined,
 	stage?: ModelTypes["tournament_stages_bool_exp"] | undefined,
-	tournament_stage_id?: ModelTypes["uuid_comparison_exp"] | undefined
+	team_1?: ModelTypes["tournament_teams_bool_exp"] | undefined,
+	team_2?: ModelTypes["tournament_teams_bool_exp"] | undefined,
+	tournament_stage_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	tournament_team_id_1?: ModelTypes["uuid_comparison_exp"] | undefined,
+	tournament_team_id_2?: ModelTypes["uuid_comparison_exp"] | undefined
 };
 	["tournament_brackets_constraint"]:tournament_brackets_constraint;
 	/** input type for incrementing numeric columns in table "tournament_brackets" */
@@ -40169,11 +40195,13 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
-	roster_1_id?: ModelTypes["uuid"] | undefined,
-	roster_2_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
 	stage?: ModelTypes["tournament_stages_obj_rel_insert_input"] | undefined,
-	tournament_stage_id?: ModelTypes["uuid"] | undefined
+	team_1?: ModelTypes["tournament_teams_obj_rel_insert_input"] | undefined,
+	team_2?: ModelTypes["tournament_teams_obj_rel_insert_input"] | undefined,
+	tournament_stage_id?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_1?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_2?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate max on columns */
 ["tournament_brackets_max_fields"]: {
@@ -40182,10 +40210,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
-	roster_1_id?: ModelTypes["uuid"] | undefined,
-	roster_2_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: ModelTypes["uuid"] | undefined
+	tournament_stage_id?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_1?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_2?: ModelTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "tournament_brackets" */
 ["tournament_brackets_max_order_by"]: {
@@ -40194,10 +40222,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_number?: ModelTypes["order_by"] | undefined,
 	parent_bracket_id?: ModelTypes["order_by"] | undefined,
-	roster_1_id?: ModelTypes["order_by"] | undefined,
-	roster_2_id?: ModelTypes["order_by"] | undefined,
 	round?: ModelTypes["order_by"] | undefined,
-	tournament_stage_id?: ModelTypes["order_by"] | undefined
+	tournament_stage_id?: ModelTypes["order_by"] | undefined,
+	tournament_team_id_1?: ModelTypes["order_by"] | undefined,
+	tournament_team_id_2?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["tournament_brackets_min_fields"]: {
@@ -40206,10 +40234,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
-	roster_1_id?: ModelTypes["uuid"] | undefined,
-	roster_2_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: ModelTypes["uuid"] | undefined
+	tournament_stage_id?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_1?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_2?: ModelTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "tournament_brackets" */
 ["tournament_brackets_min_order_by"]: {
@@ -40218,10 +40246,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_number?: ModelTypes["order_by"] | undefined,
 	parent_bracket_id?: ModelTypes["order_by"] | undefined,
-	roster_1_id?: ModelTypes["order_by"] | undefined,
-	roster_2_id?: ModelTypes["order_by"] | undefined,
 	round?: ModelTypes["order_by"] | undefined,
-	tournament_stage_id?: ModelTypes["order_by"] | undefined
+	tournament_stage_id?: ModelTypes["order_by"] | undefined,
+	tournament_team_id_1?: ModelTypes["order_by"] | undefined,
+	tournament_team_id_2?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "tournament_brackets" */
 ["tournament_brackets_mutation_response"]: {
@@ -40243,11 +40271,13 @@ export type ModelTypes = {
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_number?: ModelTypes["order_by"] | undefined,
 	parent_bracket_id?: ModelTypes["order_by"] | undefined,
-	roster_1_id?: ModelTypes["order_by"] | undefined,
-	roster_2_id?: ModelTypes["order_by"] | undefined,
 	round?: ModelTypes["order_by"] | undefined,
 	stage?: ModelTypes["tournament_stages_order_by"] | undefined,
-	tournament_stage_id?: ModelTypes["order_by"] | undefined
+	team_1?: ModelTypes["tournament_teams_order_by"] | undefined,
+	team_2?: ModelTypes["tournament_teams_order_by"] | undefined,
+	tournament_stage_id?: ModelTypes["order_by"] | undefined,
+	tournament_team_id_1?: ModelTypes["order_by"] | undefined,
+	tournament_team_id_2?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: tournament_brackets */
 ["tournament_brackets_pk_columns_input"]: {
@@ -40261,10 +40291,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
-	roster_1_id?: ModelTypes["uuid"] | undefined,
-	roster_2_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: ModelTypes["uuid"] | undefined
+	tournament_stage_id?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_1?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_2?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["tournament_brackets_stddev_fields"]: {
@@ -40310,10 +40340,10 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
-	roster_1_id?: ModelTypes["uuid"] | undefined,
-	roster_2_id?: ModelTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: ModelTypes["uuid"] | undefined
+	tournament_stage_id?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_1?: ModelTypes["uuid"] | undefined,
+	tournament_team_id_2?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["tournament_brackets_sum_fields"]: {
@@ -53153,12 +53183,16 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
-	roster_1_id?: GraphQLTypes["uuid"] | undefined,
-	roster_2_id?: GraphQLTypes["uuid"] | undefined,
 	round: number,
 	/** An object relationship */
 	stage: GraphQLTypes["tournament_stages"],
-	tournament_stage_id: GraphQLTypes["uuid"]
+	/** An object relationship */
+	team_1?: GraphQLTypes["tournament_teams"] | undefined,
+	/** An object relationship */
+	team_2?: GraphQLTypes["tournament_teams"] | undefined,
+	tournament_stage_id: GraphQLTypes["uuid"],
+	tournament_team_id_1?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregated selection of "tournament_brackets" */
 ["tournament_brackets_aggregate"]: {
@@ -53231,11 +53265,13 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match_number?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
-	roster_1_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
-	roster_2_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	round?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	stage?: GraphQLTypes["tournament_stages_bool_exp"] | undefined,
-	tournament_stage_id?: GraphQLTypes["uuid_comparison_exp"] | undefined
+	team_1?: GraphQLTypes["tournament_teams_bool_exp"] | undefined,
+	team_2?: GraphQLTypes["tournament_teams_bool_exp"] | undefined,
+	tournament_stage_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["uuid_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "tournament_brackets" */
 ["tournament_brackets_constraint"]: tournament_brackets_constraint;
@@ -53251,11 +53287,13 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
-	roster_1_id?: GraphQLTypes["uuid"] | undefined,
-	roster_2_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
 	stage?: GraphQLTypes["tournament_stages_obj_rel_insert_input"] | undefined,
-	tournament_stage_id?: GraphQLTypes["uuid"] | undefined
+	team_1?: GraphQLTypes["tournament_teams_obj_rel_insert_input"] | undefined,
+	team_2?: GraphQLTypes["tournament_teams_obj_rel_insert_input"] | undefined,
+	tournament_stage_id?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate max on columns */
 ["tournament_brackets_max_fields"]: {
@@ -53265,10 +53303,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
-	roster_1_id?: GraphQLTypes["uuid"] | undefined,
-	roster_2_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: GraphQLTypes["uuid"] | undefined
+	tournament_stage_id?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "tournament_brackets" */
 ["tournament_brackets_max_order_by"]: {
@@ -53277,10 +53315,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_number?: GraphQLTypes["order_by"] | undefined,
 	parent_bracket_id?: GraphQLTypes["order_by"] | undefined,
-	roster_1_id?: GraphQLTypes["order_by"] | undefined,
-	roster_2_id?: GraphQLTypes["order_by"] | undefined,
 	round?: GraphQLTypes["order_by"] | undefined,
-	tournament_stage_id?: GraphQLTypes["order_by"] | undefined
+	tournament_stage_id?: GraphQLTypes["order_by"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["order_by"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["tournament_brackets_min_fields"]: {
@@ -53290,10 +53328,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
-	roster_1_id?: GraphQLTypes["uuid"] | undefined,
-	roster_2_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: GraphQLTypes["uuid"] | undefined
+	tournament_stage_id?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "tournament_brackets" */
 ["tournament_brackets_min_order_by"]: {
@@ -53302,10 +53340,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_number?: GraphQLTypes["order_by"] | undefined,
 	parent_bracket_id?: GraphQLTypes["order_by"] | undefined,
-	roster_1_id?: GraphQLTypes["order_by"] | undefined,
-	roster_2_id?: GraphQLTypes["order_by"] | undefined,
 	round?: GraphQLTypes["order_by"] | undefined,
-	tournament_stage_id?: GraphQLTypes["order_by"] | undefined
+	tournament_stage_id?: GraphQLTypes["order_by"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["order_by"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "tournament_brackets" */
 ["tournament_brackets_mutation_response"]: {
@@ -53328,11 +53366,13 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_number?: GraphQLTypes["order_by"] | undefined,
 	parent_bracket_id?: GraphQLTypes["order_by"] | undefined,
-	roster_1_id?: GraphQLTypes["order_by"] | undefined,
-	roster_2_id?: GraphQLTypes["order_by"] | undefined,
 	round?: GraphQLTypes["order_by"] | undefined,
 	stage?: GraphQLTypes["tournament_stages_order_by"] | undefined,
-	tournament_stage_id?: GraphQLTypes["order_by"] | undefined
+	team_1?: GraphQLTypes["tournament_teams_order_by"] | undefined,
+	team_2?: GraphQLTypes["tournament_teams_order_by"] | undefined,
+	tournament_stage_id?: GraphQLTypes["order_by"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["order_by"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: tournament_brackets */
 ["tournament_brackets_pk_columns_input"]: {
@@ -53347,10 +53387,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
-	roster_1_id?: GraphQLTypes["uuid"] | undefined,
-	roster_2_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: GraphQLTypes["uuid"] | undefined
+	tournament_stage_id?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["tournament_brackets_stddev_fields"]: {
@@ -53399,10 +53439,10 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
-	roster_1_id?: GraphQLTypes["uuid"] | undefined,
-	roster_2_id?: GraphQLTypes["uuid"] | undefined,
 	round?: number | undefined,
-	tournament_stage_id?: GraphQLTypes["uuid"] | undefined
+	tournament_stage_id?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_1?: GraphQLTypes["uuid"] | undefined,
+	tournament_team_id_2?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["tournament_brackets_sum_fields"]: {
@@ -57404,7 +57444,8 @@ export const enum teams_update_column {
 }
 /** unique or primary key constraints on table "tournament_brackets" */
 export const enum tournament_brackets_constraint {
-	touarnment_brackets_pkey = "touarnment_brackets_pkey"
+	touarnment_brackets_pkey = "touarnment_brackets_pkey",
+	tournament_brackets_id_tournament_team_id_1_tournament_team_id_ = "tournament_brackets_id_tournament_team_id_1_tournament_team_id_"
 }
 /** select columns of table "tournament_brackets" */
 export const enum tournament_brackets_select_column {
@@ -57413,10 +57454,10 @@ export const enum tournament_brackets_select_column {
 	match_id = "match_id",
 	match_number = "match_number",
 	parent_bracket_id = "parent_bracket_id",
-	roster_1_id = "roster_1_id",
-	roster_2_id = "roster_2_id",
 	round = "round",
-	tournament_stage_id = "tournament_stage_id"
+	tournament_stage_id = "tournament_stage_id",
+	tournament_team_id_1 = "tournament_team_id_1",
+	tournament_team_id_2 = "tournament_team_id_2"
 }
 /** update columns of table "tournament_brackets" */
 export const enum tournament_brackets_update_column {
@@ -57425,10 +57466,10 @@ export const enum tournament_brackets_update_column {
 	match_id = "match_id",
 	match_number = "match_number",
 	parent_bracket_id = "parent_bracket_id",
-	roster_1_id = "roster_1_id",
-	roster_2_id = "roster_2_id",
 	round = "round",
-	tournament_stage_id = "tournament_stage_id"
+	tournament_stage_id = "tournament_stage_id",
+	tournament_team_id_1 = "tournament_team_id_1",
+	tournament_team_id_2 = "tournament_team_id_2"
 }
 /** unique or primary key constraints on table "tournament_organizers" */
 export const enum tournament_organizers_constraint {

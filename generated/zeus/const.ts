@@ -7592,11 +7592,13 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid_comparison_exp",
 		match_number:"Int_comparison_exp",
 		parent_bracket_id:"uuid_comparison_exp",
-		roster_1_id:"uuid_comparison_exp",
-		roster_2_id:"uuid_comparison_exp",
 		round:"Int_comparison_exp",
 		stage:"tournament_stages_bool_exp",
-		tournament_stage_id:"uuid_comparison_exp"
+		team_1:"tournament_teams_bool_exp",
+		team_2:"tournament_teams_bool_exp",
+		tournament_stage_id:"uuid_comparison_exp",
+		tournament_team_id_1:"uuid_comparison_exp",
+		tournament_team_id_2:"uuid_comparison_exp"
 	},
 	tournament_brackets_constraint: "enum" as const,
 	tournament_brackets_inc_input:{
@@ -7607,10 +7609,12 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		parent_bracket_id:"uuid",
-		roster_1_id:"uuid",
-		roster_2_id:"uuid",
 		stage:"tournament_stages_obj_rel_insert_input",
-		tournament_stage_id:"uuid"
+		team_1:"tournament_teams_obj_rel_insert_input",
+		team_2:"tournament_teams_obj_rel_insert_input",
+		tournament_stage_id:"uuid",
+		tournament_team_id_1:"uuid",
+		tournament_team_id_2:"uuid"
 	},
 	tournament_brackets_max_order_by:{
 		created_at:"order_by",
@@ -7618,10 +7622,10 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_number:"order_by",
 		parent_bracket_id:"order_by",
-		roster_1_id:"order_by",
-		roster_2_id:"order_by",
 		round:"order_by",
-		tournament_stage_id:"order_by"
+		tournament_stage_id:"order_by",
+		tournament_team_id_1:"order_by",
+		tournament_team_id_2:"order_by"
 	},
 	tournament_brackets_min_order_by:{
 		created_at:"order_by",
@@ -7629,10 +7633,10 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_number:"order_by",
 		parent_bracket_id:"order_by",
-		roster_1_id:"order_by",
-		roster_2_id:"order_by",
 		round:"order_by",
-		tournament_stage_id:"order_by"
+		tournament_stage_id:"order_by",
+		tournament_team_id_1:"order_by",
+		tournament_team_id_2:"order_by"
 	},
 	tournament_brackets_on_conflict:{
 		constraint:"tournament_brackets_constraint",
@@ -7645,11 +7649,13 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_number:"order_by",
 		parent_bracket_id:"order_by",
-		roster_1_id:"order_by",
-		roster_2_id:"order_by",
 		round:"order_by",
 		stage:"tournament_stages_order_by",
-		tournament_stage_id:"order_by"
+		team_1:"tournament_teams_order_by",
+		team_2:"tournament_teams_order_by",
+		tournament_stage_id:"order_by",
+		tournament_team_id_1:"order_by",
+		tournament_team_id_2:"order_by"
 	},
 	tournament_brackets_pk_columns_input:{
 		id:"uuid"
@@ -7660,9 +7666,9 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		parent_bracket_id:"uuid",
-		roster_1_id:"uuid",
-		roster_2_id:"uuid",
-		tournament_stage_id:"uuid"
+		tournament_stage_id:"uuid",
+		tournament_team_id_1:"uuid",
+		tournament_team_id_2:"uuid"
 	},
 	tournament_brackets_stddev_order_by:{
 		match_number:"order_by",
@@ -7685,9 +7691,9 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		parent_bracket_id:"uuid",
-		roster_1_id:"uuid",
-		roster_2_id:"uuid",
-		tournament_stage_id:"uuid"
+		tournament_stage_id:"uuid",
+		tournament_team_id_1:"uuid",
+		tournament_team_id_2:"uuid"
 	},
 	tournament_brackets_sum_order_by:{
 		match_number:"order_by",
@@ -12159,11 +12165,13 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_number:"Int",
 		parent_bracket_id:"uuid",
-		roster_1_id:"uuid",
-		roster_2_id:"uuid",
 		round:"Int",
 		stage:"tournament_stages",
-		tournament_stage_id:"uuid"
+		team_1:"tournament_teams",
+		team_2:"tournament_teams",
+		tournament_stage_id:"uuid",
+		tournament_team_id_1:"uuid",
+		tournament_team_id_2:"uuid"
 	},
 	tournament_brackets_aggregate:{
 		aggregate:"tournament_brackets_aggregate_fields",
@@ -12192,10 +12200,10 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_number:"Int",
 		parent_bracket_id:"uuid",
-		roster_1_id:"uuid",
-		roster_2_id:"uuid",
 		round:"Int",
-		tournament_stage_id:"uuid"
+		tournament_stage_id:"uuid",
+		tournament_team_id_1:"uuid",
+		tournament_team_id_2:"uuid"
 	},
 	tournament_brackets_min_fields:{
 		created_at:"timestamptz",
@@ -12203,10 +12211,10 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_number:"Int",
 		parent_bracket_id:"uuid",
-		roster_1_id:"uuid",
-		roster_2_id:"uuid",
 		round:"Int",
-		tournament_stage_id:"uuid"
+		tournament_stage_id:"uuid",
+		tournament_team_id_1:"uuid",
+		tournament_team_id_2:"uuid"
 	},
 	tournament_brackets_mutation_response:{
 		affected_rows:"Int",

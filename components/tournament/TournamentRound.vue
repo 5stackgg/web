@@ -8,6 +8,9 @@
           class="w-6 h-6 ml-1 mr-1 inline-block bg-gray-300 rounded-full"
         ></span>
         <pre>Match #{{ match.match_number }}</pre>
+        <template v-if="match.team_1">
+          {{ match.team_1.team?.name || match.team_1.name }}
+        </template>
       </li>
       <li
         class="flex items-center m-2 p-1 leading-relaxed bg-gray-600 text-gray-300 rounded-full relative with-connector"
@@ -15,6 +18,9 @@
         <span
           class="w-6 h-6 ml-1 mr-1 inline-block bg-gray-300 rounded-full"
         ></span>
+        <template v-if="match.team_2">
+          {{ match.team_2.team?.name || match.team_2.name }}
+        </template>
       </li>
     </template>
   </ol>

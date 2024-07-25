@@ -230,6 +230,25 @@ export default {
                       id: true,
                       round: true,
                       match_number: true,
+                      match: {
+                        id: true,
+                        status: true,
+                        match_maps: [
+                          {
+                            order_by: [
+                              {
+                                order: order_by.asc,
+                              },
+                            ],
+                          },
+                          {
+                            map: mapFields,
+                            order: true,
+                            lineup_1_score: true,
+                            lineup_2_score: true,
+                          },
+                        ],
+                      },
                       team_1: {
                         id: true,
                         name: true,

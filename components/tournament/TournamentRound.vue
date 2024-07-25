@@ -1,36 +1,42 @@
 <template>
-  <ol class="flex flex-1 flex-col justify-around mr-5 ml-5 round">
-    <template v-for="match in matches">
-      <li
+  <div class="flex flex-1 flex-col justify-around mr-5 ml-5 round">
+    <template v-for="bracket in brackets">
+      <div
         class="flex items-center m-2 p-1 leading-relaxed bg-gray-600 text-gray-300 rounded-full relative with-connector"
       >
         <span
           class="w-6 h-6 ml-1 mr-1 inline-block bg-gray-300 rounded-full"
         ></span>
-        <template v-if="match.team_1">
-          {{ match.team_1.team?.name || match.team_1.name }}
+        <template v-if="bracket.team_1">
+          {{ bracket.team_1.team?.name || bracket.team_1.name }}
         </template>
-      </li>
-      <li
+
+        <Badge v-if="bracket.match">
+          <NuxtLink :to="`/matches/${bracket.match.id}`">{{ bracket.match.status }}</NuxtLink>
+        </Badge>
+
+        <pre>{{ bracket.match }}</pre>
+      </div>
+      <div
         class="flex items-center m-2 p-1 leading-relaxed bg-gray-600 text-gray-300 rounded-full relative with-connector"
         :class="{
-          ['with-bye']: match.team_1 && !match.team_2,
+          ['with-bye']: bracket.team_1 && !bracket.team_2,
         }"
       >
         <span
           class="w-6 h-6 ml-1 mr-1 inline-block bg-gray-300 rounded-full"
         ></span>
-        <template v-if="match.team_2">
-          {{ match.team_2.team?.name || match.team_2.name }}
+        <template v-if="bracket.team_2">
+          {{ bracket.team_2.team?.name || bracket.team_2.name }}
         </template>
-      </li>
+      </div>
     </template>
-  </ol>
+  </div>
 </template>
 <script lang="ts">
 export default {
   props: {
-    matches: {
+    brackets: {
       type: Array,
       required: true,
     },

@@ -7589,6 +7589,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"tournament_brackets_bool_exp",
 		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
+		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_number:"Int_comparison_exp",
 		parent_bracket_id:"uuid_comparison_exp",
@@ -7607,6 +7608,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_insert_input:{
 		created_at:"timestamptz",
 		id:"uuid",
+		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		parent_bracket_id:"uuid",
 		stage:"tournament_stages_obj_rel_insert_input",
@@ -7646,6 +7648,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_order_by:{
 		created_at:"order_by",
 		id:"order_by",
+		match:"matches_order_by",
 		match_id:"order_by",
 		match_number:"order_by",
 		parent_bracket_id:"order_by",
@@ -12162,6 +12165,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_brackets:{
 		created_at:"timestamptz",
 		id:"uuid",
+		match:"matches",
 		match_id:"uuid",
 		match_number:"Int",
 		parent_bracket_id:"uuid",

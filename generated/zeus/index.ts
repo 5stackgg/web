@@ -12337,6 +12337,8 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 ["tournament_brackets"]: AliasType<{
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
@@ -12420,6 +12422,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 	_or?: Array<ValueTypes["tournament_brackets_bool_exp"]> | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_number?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -12442,6 +12445,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 ["tournament_brackets_insert_input"]: {
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_number?: number | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -12521,6 +12525,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_brackets_select_column"]> | un
 ["tournament_brackets_order_by"]: {
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_number?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	parent_bracket_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -27208,6 +27213,8 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 ["tournament_brackets"]: AliasType<{
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** An object relationship */
+	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
 	match_number?:boolean | `@${string}`,
 	parent_bracket_id?:boolean | `@${string}`,
@@ -27291,6 +27298,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 	_or?: Array<ResolverInputTypes["tournament_brackets_bool_exp"]> | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_number?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -27313,6 +27321,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 ["tournament_brackets_insert_input"]: {
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_number?: number | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -27392,6 +27401,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_brackets_select_column
 ["tournament_brackets_order_by"]: {
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_number?: ResolverInputTypes["order_by"] | undefined | null,
 	parent_bracket_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -40092,6 +40102,8 @@ export type ModelTypes = {
 ["tournament_brackets"]: {
 		created_at: ModelTypes["timestamptz"],
 	id: ModelTypes["uuid"],
+	/** An object relationship */
+	match?: ModelTypes["matches"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
@@ -40171,6 +40183,7 @@ export type ModelTypes = {
 	_or?: Array<ModelTypes["tournament_brackets_bool_exp"]> | undefined,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match_number?: ModelTypes["Int_comparison_exp"] | undefined,
 	parent_bracket_id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -40192,6 +40205,7 @@ export type ModelTypes = {
 ["tournament_brackets_insert_input"]: {
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: ModelTypes["uuid"] | undefined,
@@ -40268,6 +40282,7 @@ export type ModelTypes = {
 ["tournament_brackets_order_by"]: {
 	created_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_number?: ModelTypes["order_by"] | undefined,
 	parent_bracket_id?: ModelTypes["order_by"] | undefined,
@@ -53180,6 +53195,8 @@ export type GraphQLTypes = {
 	__typename: "tournament_brackets",
 	created_at: GraphQLTypes["timestamptz"],
 	id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	match?: GraphQLTypes["matches"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
@@ -53262,6 +53279,7 @@ export type GraphQLTypes = {
 	_or?: Array<GraphQLTypes["tournament_brackets_bool_exp"]> | undefined,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match_number?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -53284,6 +53302,7 @@ export type GraphQLTypes = {
 ["tournament_brackets_insert_input"]: {
 		created_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_number?: number | undefined,
 	parent_bracket_id?: GraphQLTypes["uuid"] | undefined,
@@ -53363,6 +53382,7 @@ export type GraphQLTypes = {
 ["tournament_brackets_order_by"]: {
 		created_at?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_number?: GraphQLTypes["order_by"] | undefined,
 	parent_bracket_id?: GraphQLTypes["order_by"] | undefined,

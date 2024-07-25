@@ -13,7 +13,9 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
 <template>
   <Tabs default-value="info" v-if="tournament">
     <TabsList>
-      <TabsTrigger value="info"> <Badge>{{ tournament.status }}</Badge> Information </TabsTrigger>
+      <TabsTrigger value="info">
+        <Badge>{{ tournament.status }}</Badge> Information
+      </TabsTrigger>
       <TabsTrigger value="bracket"> Bracket </TabsTrigger>
       <TabsTrigger value="teams">
         Teams ({{ tournament.teams_aggregate.aggregate.count }})
@@ -65,7 +67,10 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
       <TournamentStageBuilder :tournament="tournament"></TournamentStageBuilder>
     </TabsContent>
     <TabsContent value="teams">
-      <TournamentAddTeam :tournament="tournament" v-if="canAddTeams"></TournamentAddTeam>
+      <TournamentAddTeam
+        :tournament="tournament"
+        v-if="canAddTeams"
+      ></TournamentAddTeam>
 
       <div v-for="team of tournament.teams">
         <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
@@ -102,7 +107,7 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
 </template>
 
 <script lang="ts">
-import {$, e_map_pool_types_enum, order_by} from "~/generated/zeus";
+import { $, e_map_pool_types_enum, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
@@ -230,14 +235,14 @@ export default {
                         name: true,
                         team: {
                           name: true,
-                        }
+                        },
                       },
                       team_2: {
                         id: true,
                         name: true,
                         team: {
                           name: true,
-                        }
+                        },
                       },
                       created_at: true,
                     },
@@ -300,10 +305,13 @@ export default {
       return useAuthStore().me;
     },
     canAddTeams() {
-      return this.tournament.orgnaier_steam_id === this.me.id || this.tournament.organizers.find(({ steam_id }) => {
-        return steam_id === this.me.id;
-      });
-    }
+      return (
+        this.tournament.orgnaier_steam_id === this.me.id ||
+        this.tournament.organizers.find(({ steam_id }) => {
+          return steam_id === this.me.id;
+        })
+      );
+    },
   },
   methods: {
     async removeTeam(teamId) {
@@ -319,7 +327,7 @@ export default {
           ],
         }),
       });
-    }
-  }
+    },
+  },
 };
 </script>

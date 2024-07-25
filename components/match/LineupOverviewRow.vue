@@ -7,13 +7,13 @@ import formatStatValue from "~/utilities/formatStatValue";
       <lineup-member :member="member" :lineup_id="lineup_id"></lineup-member>
     </TableCell>
     <TableCell class="hidden sm:table-cell">
-      {{ member.player.kills_aggregate.aggregate.count }}
+      {{ member.player?.kills_aggregate.aggregate.count }}
     </TableCell>
     <TableCell class="hidden sm:table-cell">
-      {{ member.player.assists_aggregate.aggregate.count }}
+      {{ member.player?.assists_aggregate.aggregate.count }}
     </TableCell>
     <TableCell class="hidden md:table-cell">
-      {{ member.player.deaths_aggregate.aggregate.count }}
+      {{ member.player?.deaths_aggregate.aggregate.count }}
     </TableCell>
     <TableCell>
       {{ kd }}
@@ -22,11 +22,11 @@ import formatStatValue from "~/utilities/formatStatValue";
       {{ hs }}
     </TableCell>
     <TableCell>
-      {{ member.player.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
+      {{ member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
       <Badge class="text-xs" variant="outline">
         {{
           formatStatValue(
-            member.player.damage_dealt_aggregate.aggregate.sum.damage /
+            member.player?.damage_dealt_aggregate.aggregate.sum.damage /
               totalRounds,
           )
         }}
@@ -34,7 +34,7 @@ import formatStatValue from "~/utilities/formatStatValue";
       </Badge>
     </TableCell>
     <TableCell>
-      {{ member.player.team_damage_aggregate.aggregate.sum.damage || 0 }}
+      {{ member.player?.team_damage_aggregate.aggregate.sum.damage || 0 }}
     </TableCell>
     <TableCell>
       {{ twoKills }}
@@ -49,10 +49,10 @@ import formatStatValue from "~/utilities/formatStatValue";
       {{ fiveKills }}
     </TableCell>
     <TableCell>
-      {{ member.player.knife_kills_aggregate.aggregate.count }}
+      {{ member.player?.knife_kills_aggregate.aggregate.count }}
     </TableCell>
     <TableCell>
-      {{ member.player.zeus_kills_aggregate.aggregate.count }}
+      {{ member.player?.zeus_kills_aggregate.aggregate.count }}
     </TableCell>
     <TableCell>
       <DropdownMenu>
@@ -157,44 +157,44 @@ export default {
   },
   computed: {
     kd() {
-      if (this.member.player.deaths_aggregate.aggregate.count === 0) {
-        return this.member.player.kills_aggregate.aggregate.count;
+      if (this.member.player?.deaths_aggregate.aggregate.count === 0) {
+        return this.member.player?.kills_aggregate.aggregate.count;
       }
       return formatStatValue(
-        this.member.player.kills_aggregate.aggregate.count /
-          this.member.player.deaths_aggregate.aggregate.count,
+        this.member.player?.kills_aggregate.aggregate.count /
+          this.member.player?.deaths_aggregate.aggregate.count,
       );
     },
     hs() {
-      if (this.member.player.kills_aggregate.aggregate.count === 0) {
+      if (this.member.player?.kills_aggregate.aggregate.count === 0) {
         return 0;
       }
       return (
         formatStatValue(
-          this.member.player.hs_kills_aggregate.aggregate.count /
-            this.member.player.kills_aggregate.aggregate.count,
+          this.member.player?.hs_kills_aggregate.aggregate.count /
+            this.member.player?.kills_aggregate.aggregate.count,
         ) *
           100 +
         "%"
       );
     },
     twoKills() {
-      return this.member.player.multi_kills.filter(({ kills }) => {
+      return this.member.player?.multi_kills.filter(({ kills }) => {
         return kills == 2;
       }).length;
     },
     threeKills() {
-      return this.member.player.multi_kills.filter(({ kills }) => {
+      return this.member.player?.multi_kills.filter(({ kills }) => {
         return kills == 3;
       }).length;
     },
     fourKills() {
-      return this.member.player.multi_kills.filter(({ kills }) => {
+      return this.member.player?.multi_kills.filter(({ kills }) => {
         return kills == 4;
       }).length;
     },
     fiveKills() {
-      return this.member.player.multi_kills.filter(({ kills }) => {
+      return this.member.player?.multi_kills.filter(({ kills }) => {
         return kills == 5;
       }).length;
     },

@@ -15,7 +15,7 @@
           <NuxtLink :to="`/matches/${bracket.match.id}`">{{ bracket.match.status }}</NuxtLink>
         </Badge>
 
-        <pre>{{ bracket.match }}</pre>
+        <pre>{{ bracket.match.match_maps }}</pre>
       </div>
       <div
         class="flex items-center m-2 p-1 leading-relaxed bg-gray-600 text-gray-300 rounded-full relative with-connector"

@@ -242,8 +242,8 @@ export default {
                             ],
                           },
                           {
-                            map: mapFields,
                             order: true,
+                            status: true,
                             lineup_1_score: true,
                             lineup_2_score: true,
                           },

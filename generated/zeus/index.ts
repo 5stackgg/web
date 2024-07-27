@@ -5317,6 +5317,9 @@ veto_picks_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_veto_picks_aggregate"]],
 	/** A computed field, executes function "get_veto_type" */
 	veto_type?:boolean | `@${string}`,
+	/** An object relationship */
+	winner?:ValueTypes["match_lineups"],
+	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "matches" */
@@ -5428,7 +5431,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	veto_picking_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	veto_picks?: ValueTypes["match_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
 	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	veto_type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+	veto_type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	winner?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "matches" */
 ["matches_constraint"]:matches_constraint;
@@ -5461,7 +5466,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
 	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	veto_picks?: ValueTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>
+	veto_picks?: ValueTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	winner?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["matches_max_fields"]: AliasType<{
@@ -5494,6 +5501,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	veto_picking_lineup_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_type" */
 	veto_type?:boolean | `@${string}`,
+	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "matches" */
@@ -5506,7 +5514,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["matches_min_fields"]: AliasType<{
@@ -5539,6 +5548,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	veto_picking_lineup_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_type" */
 	veto_type?:boolean | `@${string}`,
+	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "matches" */
@@ -5551,7 +5561,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** response of any mutation on the table "matches" */
 ["matches_mutation_response"]: AliasType<{
@@ -5610,7 +5621,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	updated_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	veto_picking_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
-	veto_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	veto_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	winner?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {
@@ -5629,7 +5642,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: AliasType<{
@@ -5676,7 +5690,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	scheduled_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
-	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>
+	updated_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: AliasType<{
@@ -20193,6 +20208,9 @@ veto_picks_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_veto_picks_aggregate"]],
 	/** A computed field, executes function "get_veto_type" */
 	veto_type?:boolean | `@${string}`,
+	/** An object relationship */
+	winner?:ResolverInputTypes["match_lineups"],
+	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregated selection of "matches" */
@@ -20304,7 +20322,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	veto_picking_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	veto_picks?: ResolverInputTypes["match_veto_picks_bool_exp"] | undefined | null,
 	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null,
-	veto_type?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+	veto_type?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	winner?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "matches" */
 ["matches_constraint"]:matches_constraint;
@@ -20337,7 +20357,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
 	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	veto_picks?: ResolverInputTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null
+	veto_picks?: ResolverInputTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null,
+	winner?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate max on columns */
 ["matches_max_fields"]: AliasType<{
@@ -20370,6 +20392,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	veto_picking_lineup_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_type" */
 	veto_type?:boolean | `@${string}`,
+	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by max() on columns of table "matches" */
@@ -20382,7 +20405,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	password?: ResolverInputTypes["order_by"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	server_id?: ResolverInputTypes["order_by"] | undefined | null,
-	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["matches_min_fields"]: AliasType<{
@@ -20415,6 +20439,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	veto_picking_lineup_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_veto_type" */
 	veto_type?:boolean | `@${string}`,
+	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** order by min() on columns of table "matches" */
@@ -20427,7 +20452,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	password?: ResolverInputTypes["order_by"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	server_id?: ResolverInputTypes["order_by"] | undefined | null,
-	updated_at?: ResolverInputTypes["order_by"] | undefined | null
+	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "matches" */
 ["matches_mutation_response"]: AliasType<{
@@ -20486,7 +20512,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	updated_at?: ResolverInputTypes["order_by"] | undefined | null,
 	veto_picking_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
 	veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null,
-	veto_type?: ResolverInputTypes["order_by"] | undefined | null
+	veto_type?: ResolverInputTypes["order_by"] | undefined | null,
+	winner?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {
@@ -20505,7 +20533,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["date"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: AliasType<{
@@ -20552,7 +20581,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	scheduled_at?: ResolverInputTypes["date"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
-	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null
+	updated_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: AliasType<{
@@ -34506,7 +34536,10 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	veto_picks_aggregate: ModelTypes["match_veto_picks_aggregate"],
 	/** A computed field, executes function "get_veto_type" */
-	veto_type?: string | undefined
+	veto_type?: string | undefined,
+	/** An object relationship */
+	winner?: ModelTypes["match_lineups"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregated selection of "matches" */
 ["matches_aggregate"]: {
@@ -34614,7 +34647,9 @@ export type ModelTypes = {
 	veto_picking_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	veto_picks?: ModelTypes["match_veto_picks_bool_exp"] | undefined,
 	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
-	veto_type?: ModelTypes["String_comparison_exp"] | undefined
+	veto_type?: ModelTypes["String_comparison_exp"] | undefined,
+	winner?: ModelTypes["match_lineups_bool_exp"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined
 };
 	["matches_constraint"]:matches_constraint;
 	/** input type for incrementing numeric columns in table "matches" */
@@ -34646,7 +34681,9 @@ export type ModelTypes = {
 	server_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_status_enum"] | undefined,
 	updated_at?: ModelTypes["timestamptz"] | undefined,
-	veto_picks?: ModelTypes["match_veto_picks_arr_rel_insert_input"] | undefined
+	veto_picks?: ModelTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
+	winner?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate max on columns */
 ["matches_max_fields"]: {
@@ -34678,7 +34715,8 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_veto_type" */
-	veto_type?: string | undefined
+	veto_type?: string | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -34690,7 +34728,8 @@ export type ModelTypes = {
 	password?: ModelTypes["order_by"] | undefined,
 	scheduled_at?: ModelTypes["order_by"] | undefined,
 	server_id?: ModelTypes["order_by"] | undefined,
-	updated_at?: ModelTypes["order_by"] | undefined
+	updated_at?: ModelTypes["order_by"] | undefined,
+	winning_lineup_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["matches_min_fields"]: {
@@ -34722,7 +34761,8 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_veto_type" */
-	veto_type?: string | undefined
+	veto_type?: string | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
@@ -34734,7 +34774,8 @@ export type ModelTypes = {
 	password?: ModelTypes["order_by"] | undefined,
 	scheduled_at?: ModelTypes["order_by"] | undefined,
 	server_id?: ModelTypes["order_by"] | undefined,
-	updated_at?: ModelTypes["order_by"] | undefined
+	updated_at?: ModelTypes["order_by"] | undefined,
+	winning_lineup_id?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "matches" */
 ["matches_mutation_response"]: {
@@ -34792,7 +34833,9 @@ export type ModelTypes = {
 	updated_at?: ModelTypes["order_by"] | undefined,
 	veto_picking_lineup_id?: ModelTypes["order_by"] | undefined,
 	veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined,
-	veto_type?: ModelTypes["order_by"] | undefined
+	veto_type?: ModelTypes["order_by"] | undefined,
+	winner?: ModelTypes["match_lineups_order_by"] | undefined,
+	winning_lineup_id?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {
@@ -34810,7 +34853,8 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["date"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_status_enum"] | undefined,
-	updated_at?: ModelTypes["timestamptz"] | undefined
+	updated_at?: ModelTypes["timestamptz"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: {
@@ -34854,7 +34898,8 @@ export type ModelTypes = {
 	scheduled_at?: ModelTypes["date"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_status_enum"] | undefined,
-	updated_at?: ModelTypes["timestamptz"] | undefined
+	updated_at?: ModelTypes["timestamptz"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: {
@@ -47368,7 +47413,10 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	veto_picks_aggregate: GraphQLTypes["match_veto_picks_aggregate"],
 	/** A computed field, executes function "get_veto_type" */
-	veto_type?: string | undefined
+	veto_type?: string | undefined,
+	/** An object relationship */
+	winner?: GraphQLTypes["match_lineups"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregated selection of "matches" */
 ["matches_aggregate"]: {
@@ -47479,7 +47527,9 @@ export type GraphQLTypes = {
 	veto_picking_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	veto_picks?: GraphQLTypes["match_veto_picks_bool_exp"] | undefined,
 	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
-	veto_type?: GraphQLTypes["String_comparison_exp"] | undefined
+	veto_type?: GraphQLTypes["String_comparison_exp"] | undefined,
+	winner?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "matches" */
 ["matches_constraint"]: matches_constraint;
@@ -47512,7 +47562,9 @@ export type GraphQLTypes = {
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined,
 	updated_at?: GraphQLTypes["timestamptz"] | undefined,
-	veto_picks?: GraphQLTypes["match_veto_picks_arr_rel_insert_input"] | undefined
+	veto_picks?: GraphQLTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
+	winner?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate max on columns */
 ["matches_max_fields"]: {
@@ -47545,7 +47597,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_veto_type" */
-	veto_type?: string | undefined
+	veto_type?: string | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
@@ -47557,7 +47610,8 @@ export type GraphQLTypes = {
 	password?: GraphQLTypes["order_by"] | undefined,
 	scheduled_at?: GraphQLTypes["order_by"] | undefined,
 	server_id?: GraphQLTypes["order_by"] | undefined,
-	updated_at?: GraphQLTypes["order_by"] | undefined
+	updated_at?: GraphQLTypes["order_by"] | undefined,
+	winning_lineup_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["matches_min_fields"]: {
@@ -47590,7 +47644,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_veto_picking_lineup_id" */
 	veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_veto_type" */
-	veto_type?: string | undefined
+	veto_type?: string | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
@@ -47602,7 +47657,8 @@ export type GraphQLTypes = {
 	password?: GraphQLTypes["order_by"] | undefined,
 	scheduled_at?: GraphQLTypes["order_by"] | undefined,
 	server_id?: GraphQLTypes["order_by"] | undefined,
-	updated_at?: GraphQLTypes["order_by"] | undefined
+	updated_at?: GraphQLTypes["order_by"] | undefined,
+	winning_lineup_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "matches" */
 ["matches_mutation_response"]: {
@@ -47661,7 +47717,9 @@ export type GraphQLTypes = {
 	updated_at?: GraphQLTypes["order_by"] | undefined,
 	veto_picking_lineup_id?: GraphQLTypes["order_by"] | undefined,
 	veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined,
-	veto_type?: GraphQLTypes["order_by"] | undefined
+	veto_type?: GraphQLTypes["order_by"] | undefined,
+	winner?: GraphQLTypes["match_lineups_order_by"] | undefined,
+	winning_lineup_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: matches */
 ["matches_pk_columns_input"]: {
@@ -47680,7 +47738,8 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["date"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined
+	updated_at?: GraphQLTypes["timestamptz"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: {
@@ -47727,7 +47786,8 @@ export type GraphQLTypes = {
 	scheduled_at?: GraphQLTypes["date"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined,
-	updated_at?: GraphQLTypes["timestamptz"] | undefined
+	updated_at?: GraphQLTypes["timestamptz"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: {
@@ -56608,6 +56668,7 @@ export const enum e_match_status_constraint {
 export const enum e_match_status_enum {
 	Canceled = "Canceled",
 	Finished = "Finished",
+	Forfeit = "Forfeit",
 	Live = "Live",
 	PickingPlayers = "PickingPlayers",
 	Scheduled = "Scheduled",
@@ -56745,6 +56806,7 @@ export const enum e_tournament_status_enum {
 	Cancelled = "Cancelled",
 	Finished = "Finished",
 	Live = "Live",
+	Planned = "Planned",
 	Scheduled = "Scheduled",
 	Setup = "Setup"
 }
@@ -57058,7 +57120,8 @@ export const enum matches_select_column {
 	scheduled_at = "scheduled_at",
 	server_id = "server_id",
 	status = "status",
-	updated_at = "updated_at"
+	updated_at = "updated_at",
+	winning_lineup_id = "winning_lineup_id"
 }
 /** update columns of table "matches" */
 export const enum matches_update_column {
@@ -57071,7 +57134,8 @@ export const enum matches_update_column {
 	scheduled_at = "scheduled_at",
 	server_id = "server_id",
 	status = "status",
-	updated_at = "updated_at"
+	updated_at = "updated_at",
+	winning_lineup_id = "winning_lineup_id"
 }
 /** column ordering options */
 export const enum order_by {

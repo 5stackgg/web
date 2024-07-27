@@ -2443,7 +2443,9 @@ export const AllTypesProps: Record<string,any> = {
 		veto_picking_lineup_id:"uuid_comparison_exp",
 		veto_picks:"match_veto_picks_bool_exp",
 		veto_picks_aggregate:"match_veto_picks_aggregate_bool_exp",
-		veto_type:"String_comparison_exp"
+		veto_type:"String_comparison_exp",
+		winner:"match_lineups_bool_exp",
+		winning_lineup_id:"uuid_comparison_exp"
 	},
 	matches_constraint: "enum" as const,
 	matches_inc_input:{
@@ -2471,7 +2473,9 @@ export const AllTypesProps: Record<string,any> = {
 		server_id:"uuid",
 		status:"e_match_status_enum",
 		updated_at:"timestamptz",
-		veto_picks:"match_veto_picks_arr_rel_insert_input"
+		veto_picks:"match_veto_picks_arr_rel_insert_input",
+		winner:"match_lineups_obj_rel_insert_input",
+		winning_lineup_id:"uuid"
 	},
 	matches_max_order_by:{
 		created_at:"order_by",
@@ -2482,7 +2486,8 @@ export const AllTypesProps: Record<string,any> = {
 		password:"order_by",
 		scheduled_at:"order_by",
 		server_id:"order_by",
-		updated_at:"order_by"
+		updated_at:"order_by",
+		winning_lineup_id:"order_by"
 	},
 	matches_min_order_by:{
 		created_at:"order_by",
@@ -2493,7 +2498,8 @@ export const AllTypesProps: Record<string,any> = {
 		password:"order_by",
 		scheduled_at:"order_by",
 		server_id:"order_by",
-		updated_at:"order_by"
+		updated_at:"order_by",
+		winning_lineup_id:"order_by"
 	},
 	matches_obj_rel_insert_input:{
 		data:"matches_insert_input",
@@ -2540,7 +2546,9 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"order_by",
 		veto_picking_lineup_id:"order_by",
 		veto_picks_aggregate:"match_veto_picks_aggregate_order_by",
-		veto_type:"order_by"
+		veto_type:"order_by",
+		winner:"match_lineups_order_by",
+		winning_lineup_id:"order_by"
 	},
 	matches_pk_columns_input:{
 		id:"uuid"
@@ -2554,7 +2562,8 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"date",
 		server_id:"uuid",
 		status:"e_match_status_enum",
-		updated_at:"timestamptz"
+		updated_at:"timestamptz",
+		winning_lineup_id:"uuid"
 	},
 	matches_stddev_order_by:{
 		organizer_steam_id:"order_by"
@@ -2577,7 +2586,8 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"date",
 		server_id:"uuid",
 		status:"e_match_status_enum",
-		updated_at:"timestamptz"
+		updated_at:"timestamptz",
+		winning_lineup_id:"uuid"
 	},
 	matches_sum_order_by:{
 		organizer_steam_id:"order_by"
@@ -10257,7 +10267,9 @@ export const ReturnTypes: Record<string,any> = {
 		veto_picking_lineup_id:"uuid",
 		veto_picks:"match_veto_picks",
 		veto_picks_aggregate:"match_veto_picks_aggregate",
-		veto_type:"String"
+		veto_type:"String",
+		winner:"match_lineups",
+		winning_lineup_id:"uuid"
 	},
 	matches_aggregate:{
 		aggregate:"matches_aggregate_fields",
@@ -10298,7 +10310,8 @@ export const ReturnTypes: Record<string,any> = {
 		tv_connection_string:"String",
 		updated_at:"timestamptz",
 		veto_picking_lineup_id:"uuid",
-		veto_type:"String"
+		veto_type:"String",
+		winning_lineup_id:"uuid"
 	},
 	matches_min_fields:{
 		connection_link:"String",
@@ -10319,7 +10332,8 @@ export const ReturnTypes: Record<string,any> = {
 		tv_connection_string:"String",
 		updated_at:"timestamptz",
 		veto_picking_lineup_id:"uuid",
-		veto_type:"String"
+		veto_type:"String",
+		winning_lineup_id:"uuid"
 	},
 	matches_mutation_response:{
 		affected_rows:"Int",

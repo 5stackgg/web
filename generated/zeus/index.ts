@@ -56672,6 +56672,7 @@ export const enum e_match_status_enum {
 	Live = "Live",
 	PickingPlayers = "PickingPlayers",
 	Scheduled = "Scheduled",
+	Tie = "Tie",
 	Veto = "Veto"
 }
 /** select columns of table "e_match_status" */

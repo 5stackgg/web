@@ -7,15 +7,11 @@
         <span
           class="w-6 h-6 ml-1 mr-1 inline-block bg-gray-300 rounded-full"
         ></span>
-        <template v-if="bracket.team_1">
-          {{ bracket.team_1.team?.name || bracket.team_1.name }}
-        </template>
-
-        <Badge v-if="bracket.match">
-          <NuxtLink :to="`/matches/${bracket.match.id}`">{{ bracket.match.status }}</NuxtLink>
-        </Badge>
-
-        <pre>{{ bracket.match.match_maps }}</pre>
+        <TournamentRoundLineup
+          :bracket="bracket"
+          lineup="1"
+          v-if="bracket.team_1"
+        ></TournamentRoundLineup>
       </div>
       <div
         class="flex items-center m-2 p-1 leading-relaxed bg-gray-600 text-gray-300 rounded-full relative with-connector"
@@ -26,15 +22,20 @@
         <span
           class="w-6 h-6 ml-1 mr-1 inline-block bg-gray-300 rounded-full"
         ></span>
-        <template v-if="bracket.team_2">
-          {{ bracket.team_2.team?.name || bracket.team_2.name }}
-        </template>
+        <TournamentRoundLineup
+          :bracket="bracket"
+          lineup="2"
+          v-if="bracket.team_2"
+        ></TournamentRoundLineup>
       </div>
     </template>
   </div>
 </template>
 <script lang="ts">
+import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
+
 export default {
+  components: { TournamentRoundLineup },
   props: {
     brackets: {
       type: Array,

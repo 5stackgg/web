@@ -21,7 +21,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
           <match-map-display-lineup
             :match="match"
             :match-map="matchMap"
-            :lineup="matchLineups.lineup1"
+            :lineup="match.lineup_1"
             :showTeamPatch="showTeamPatch"
           ></match-map-display-lineup>
         </div>
@@ -30,7 +30,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
             :reverse="true"
             :match="match"
             :match-map="matchMap"
-            :lineup="matchLineups.lineup2"
+            :lineup="match.lineup_2"
             :showTeamPatch="showTeamPatch"
           ></match-map-display-lineup>
         </div>
@@ -40,7 +40,6 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 </template>
 
 <script lang="ts">
-import getMatchLineups from "~/utilities/getMatchLineups";
 import { e_match_status_enum, e_veto_pick_types_enum } from "~/generated/zeus";
 
 export default {
@@ -55,9 +54,6 @@ export default {
     },
   },
   computed: {
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
     showTeamPatch() {
       return (
         !this.isDecider || this.matchMap.status === e_match_status_enum.Live

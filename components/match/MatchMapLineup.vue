@@ -31,7 +31,6 @@ import { Badge } from "~/components/ui/badge";
 </template>
 
 <script lang="ts">
-import getMatchLineups from "~/utilities/getMatchLineups";
 
 export default {
   props: {
@@ -56,11 +55,8 @@ export default {
     },
   },
   computed: {
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
     teamPatch() {
-      return (this.matchLineups.lineup1.id === this.lineup.id
+      return (this.match.lineup_1_id === this.lineup.id
         ? this.matchMap.lineup_1_side
         : this.matchMap.lineup_2_side) === "TERRORIST"
         ? "/img/teams/patches/t.png"

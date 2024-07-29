@@ -291,7 +291,16 @@ export default {
       return this.myLineup?.captain?.player.steam_id === this.me.steam_id;
     },
     myLineup() {
-      return this.match?.lineups.find((lineup) => {
+      if(!this.match) {
+        return;
+      }
+
+      const lineups = [
+        this.match.lineup_1,
+        this.match.lineup_2
+      ]
+
+      return lineups.find((lineup) => {
         return lineup?.lineup_players.find((player) => {
           return player.steam_id === this.me.steam_id;
         });

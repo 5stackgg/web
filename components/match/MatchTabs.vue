@@ -42,14 +42,14 @@ import RconCommander from "~/components/servers/RconCommander.vue";
         <CardContent>
           <lineup-overview
             :match="match"
-            :lineup="matchLineups.lineup1"
+            :lineup="match.lineup_1"
           ></lineup-overview>
         </CardContent>
 
         <CardContent>
           <lineup-overview
             :match="match"
-            :lineup="matchLineups.lineup2"
+            :lineup="match.lineup_2"
           ></lineup-overview>
         </CardContent>
       </Card>
@@ -63,13 +63,13 @@ import RconCommander from "~/components/servers/RconCommander.vue";
         <CardContent>
           <lineup-utility
             :match="match"
-            :lineup="matchLineups.lineup1"
+            :lineup="match.lineup_1"
           ></lineup-utility>
         </CardContent>
         <CardContent>
           <lineup-utility
             :match="match"
-            :lineup="matchLineups.lineup2"
+            :lineup="match.lineup_2"
           ></lineup-utility>
         </CardContent>
       </Card>
@@ -83,13 +83,13 @@ import RconCommander from "~/components/servers/RconCommander.vue";
         <CardContent>
           <lineup-opening-duels
             :match="match"
-            :lineup="matchLineups.lineup1"
+            :lineup="match.lineup_1"
           ></lineup-opening-duels>
         </CardContent>
         <CardContent>
           <lineup-opening-duels
             :match="match"
-            :lineup="matchLineups.lineup2"
+            :lineup="match.lineup_2"
           ></lineup-opening-duels>
         </CardContent>
       </Card>
@@ -103,8 +103,8 @@ import RconCommander from "~/components/servers/RconCommander.vue";
         <CardContent>
           <lineup-clutches
             :match="match"
-            :lineup1="matchLineups.lineup1"
-            :lineup2="matchLineups.lineup2"
+            :lineup_1="match.lineup_1"
+            :lineup_2="match.lineup_2"
           ></lineup-clutches>
         </CardContent>
       </Card>
@@ -116,7 +116,6 @@ import RconCommander from "~/components/servers/RconCommander.vue";
 </template>
 
 <script lang="ts">
-import getMatchLineups from "~/utilities/getMatchLineups";
 import { e_match_status_enum } from "~/generated/zeus";
 
 export default {
@@ -127,9 +126,6 @@ export default {
     },
   },
   computed: {
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
     disableStats() {
       return e_match_status_enum.PickingPlayers === this.match.status;
     },

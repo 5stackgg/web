@@ -33,8 +33,8 @@ import { e_match_status_enum } from "~/generated/zeus";
 
         <div class="flex py-2 items-center justify-between">
           <div>
-            {{ matchLineups.lineup1.name }} vs
-            {{ matchLineups.lineup2.name }}
+            {{ match.lineup_1.name }} vs
+            {{ match.lineup_2.name }}
           </div>
 
           <MatchActions :match="match"></MatchActions>
@@ -49,7 +49,7 @@ import { e_match_status_enum } from "~/generated/zeus";
           <Button
             @click.prevent.stop="startMatch"
             class="-mr-2"
-            :disabled="canAddToLineup1 || canAddToLineup2"
+            :disabled="canAddTolineup_1 || canAddTolineup_2"
           >
             Start
             <template
@@ -125,21 +125,21 @@ import { e_match_status_enum } from "~/generated/zeus";
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">
             <span class="text-muted-foreground">
-              {{ matchLineups.lineup1.name }}
+              {{ match.lineup_1.name }}
             </span>
             <span>
               <captain-info
-                :captain="matchLineups.lineup1.captain"
+                :captain="match.lineup_1.captain"
               ></captain-info>
             </span>
           </li>
           <li class="flex items-center justify-between">
             <span class="text-muted-foreground">
-              {{ matchLineups.lineup2.name }}
+              {{ match.lineup_2.name }}
             </span>
             <span>
               <captain-info
-                :captain="matchLineups.lineup2.captain"
+                :captain="match.lineup_2.captain"
               ></captain-info>
             </span>
           </li>
@@ -151,40 +151,40 @@ import { e_match_status_enum } from "~/generated/zeus";
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">
             <span class="text-muted-foreground">
-              {{ matchLineups.lineup1.name }}
+              {{ match.lineup_1.name }}
             </span>
-            <div v-if="matchLineups.lineup1.coach">
+            <div v-if="match.lineup_1.coach">
               <Avatar>
                 <AvatarImage
-                  :src="matchLineups.lineup1.coach.avatar_url"
-                  :alt="matchLineups.lineup1.coach.name"
-                  v-if="matchLineups.lineup1.coach.avatar_url"
+                  :src="match.lineup_1.coach.avatar_url"
+                  :alt="match.lineup_1.coach.name"
+                  v-if="match.lineup_1.coach.avatar_url"
                 />
                 <AvatarFallback>{{
-                  matchLineups.lineup1.coach.name
+                  match.lineup_1.coach.name
                 }}</AvatarFallback>
               </Avatar>
 
-              {{ matchLineups.lineup1.coach.name }}
+              {{ match.lineup_1.coach.name }}
             </div>
           </li>
           <li class="flex items-center justify-between">
             <span class="text-muted-foreground">
-              {{ matchLineups.lineup2.name }}
+              {{ match.lineup_2.name }}
             </span>
-            <div v-if="matchLineups.lineup2.coach">
+            <div v-if="match.lineup_2.coach">
               <Avatar>
                 <AvatarImage
-                  :src="matchLineups.lineup2.coach.avatar_url"
-                  :alt="matchLineups.lineup2.coach.name"
-                  v-if="matchLineups.lineup2.coach.avatar_url"
+                  :src="match.lineup_2.coach.avatar_url"
+                  :alt="match.lineup_2.coach.name"
+                  v-if="match.lineup_2.coach.avatar_url"
                 />
                 <AvatarFallback>{{
-                  matchLineups.lineup2.coach.name
+                  match.lineup_2.coach.name
                 }}</AvatarFallback>
               </Avatar>
 
-              {{ matchLineups.lineup2.coach.name }}
+              {{ match.lineup_2.coach.name }}
             </div>
           </li>
         </ul>
@@ -195,7 +195,6 @@ import { e_match_status_enum } from "~/generated/zeus";
 
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
-import getMatchLineups from "~/utilities/getMatchLineups";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
@@ -239,21 +238,18 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
     maxPlayersPerLineup() {
       return this.match?.type === "Wingman" ? 2 : 5;
     },
-    canAddToLineup1() {
+    canAddTolineup_1() {
       return (
-        this.matchLineups.lineup1?.lineup_players.length <
+        this.match.lineup_1?.lineup_players.length <
         this.maxPlayersPerLineup
       );
     },
-    canAddToLineup2() {
+    canAddTolineup_2() {
       return (
-        this.matchLineups.lineup2?.lineup_players.length <
+        this.match.lineup_2?.lineup_players.length <
         this.maxPlayersPerLineup
       );
     },

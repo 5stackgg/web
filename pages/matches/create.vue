@@ -118,12 +118,6 @@ export default {
                       : {}),
                   },
                 },
-                lineups: {
-                  data: [
-                    { lineup_players: { data: [] } },
-                    { lineup_players: { data: [] } },
-                  ],
-                },
               },
             },
             {

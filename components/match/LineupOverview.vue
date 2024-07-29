@@ -60,7 +60,6 @@ import {
 } from "~/components/ui/table";
 import { Badge } from "~/components/ui/badge";
 import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
-import getMatchLineups from "~/utilities/getMatchLineups";
 import { e_match_types_enum } from "~/generated/zeus";
 import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 
@@ -102,9 +101,6 @@ export default {
         this.canAddToLineup
       );
     },
-    matchLineups() {
-      return getMatchLineups(this.match);
-    },
     maxPlayersPerLineup() {
       return (
         (this.match?.type === e_match_types_enum.Wingman ? 2 : 5) +
@@ -129,21 +125,26 @@ export default {
     coaches() {
       const coaches = [];
 
-      if (this.matchLineups.lineup1.coach) {
-        coaches.push(this.matchLineups.lineup1.coach);
+      if (this.match.lineup_1.coach) {
+        coaches.push(this.match.lineup_1.coach);
       }
 
-      if (this.matchLineups.lineup2.coach) {
-        coaches.push(this.matchLineups.lineup2.coach);
+      if (this.match.lineup_2.coach) {
+        coaches.push(this.match.lineup_2.coach);
       }
 
       return coaches;
     },
     players() {
-      const players = [];
-      for (const lineup of this.match.lineups) {
-        players.push(...lineup.lineup_players);
+      if(!this.match) {
+        return [];
       }
+      
+      const players = [];
+
+      players.push(...this.match.lineup_1.lineup_players);
+      players.push(...this.match.lineup_2.lineup_players);
+
       return players;
     },
   },

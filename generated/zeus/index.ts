@@ -5162,7 +5162,11 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
+	/** An object relationship */
+	lineup_1?:ValueTypes["match_lineups"],
 	lineup_1_id?:boolean | `@${string}`,
+	/** An object relationship */
+	lineup_2?:ValueTypes["match_lineups"],
 	lineup_2_id?:boolean | `@${string}`,
 match_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["match_maps_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -5378,7 +5382,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_1?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	lineup_1_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_2?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -5429,7 +5435,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_match_status?: ValueTypes["e_match_status_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
+	lineup_1?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	lineup_1_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	lineup_2?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -5577,7 +5585,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_1?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	lineup_1_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_2?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -20206,7 +20216,11 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
+	/** An object relationship */
+	lineup_1?:ResolverInputTypes["match_lineups"],
 	lineup_1_id?:boolean | `@${string}`,
+	/** An object relationship */
+	lineup_2?:ResolverInputTypes["match_lineups"],
 	lineup_2_id?:boolean | `@${string}`,
 match_maps?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["match_maps_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -20422,7 +20436,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	label?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	lineup_1?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	lineup_1_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	lineup_2?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_bool_exp"] | undefined | null,
@@ -20473,7 +20489,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_match_status?: ResolverInputTypes["e_match_status_obj_rel_insert_input"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
+	lineup_1?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	lineup_1_id?: ResolverInputTypes["uuid"] | undefined | null,
+	lineup_2?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["uuid"] | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_arr_rel_insert_input"] | undefined | null,
 	match_options_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -20621,7 +20639,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_1?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	lineup_1_id?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_2?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_order_by"] | undefined | null,
 	match_options_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -34768,7 +34788,11 @@ export type ModelTypes = {
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?: boolean | undefined,
 	label?: string | undefined,
+	/** An object relationship */
+	lineup_1: ModelTypes["match_lineups"],
 	lineup_1_id: ModelTypes["uuid"],
+	/** An object relationship */
+	lineup_2: ModelTypes["match_lineups"],
 	lineup_2_id: ModelTypes["uuid"],
 	/** An array relationship */
 	match_maps: Array<ModelTypes["match_maps"]>,
@@ -34904,7 +34928,9 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	is_match_server_available?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	label?: ModelTypes["String_comparison_exp"] | undefined,
+	lineup_1?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	lineup_1_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	lineup_2?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	lineup_2_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match_maps?: ModelTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_bool_exp"] | undefined,
@@ -34954,7 +34980,9 @@ export type ModelTypes = {
 	e_match_status?: ModelTypes["e_match_status_obj_rel_insert_input"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
+	lineup_1?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_1_id?: ModelTypes["uuid"] | undefined,
+	lineup_2?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_2_id?: ModelTypes["uuid"] | undefined,
 	match_maps?: ModelTypes["match_maps_arr_rel_insert_input"] | undefined,
 	match_options_id?: ModelTypes["uuid"] | undefined,
@@ -35099,7 +35127,9 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined,
 	is_match_server_available?: ModelTypes["order_by"] | undefined,
 	label?: ModelTypes["order_by"] | undefined,
+	lineup_1?: ModelTypes["match_lineups_order_by"] | undefined,
 	lineup_1_id?: ModelTypes["order_by"] | undefined,
+	lineup_2?: ModelTypes["match_lineups_order_by"] | undefined,
 	lineup_2_id?: ModelTypes["order_by"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_order_by"] | undefined,
 	match_options_id?: ModelTypes["order_by"] | undefined,
@@ -47770,7 +47800,11 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?: boolean | undefined,
 	label?: string | undefined,
+	/** An object relationship */
+	lineup_1: GraphQLTypes["match_lineups"],
 	lineup_1_id: GraphQLTypes["uuid"],
+	/** An object relationship */
+	lineup_2: GraphQLTypes["match_lineups"],
 	lineup_2_id: GraphQLTypes["uuid"],
 	/** An array relationship */
 	match_maps: Array<GraphQLTypes["match_maps"]>,
@@ -47909,7 +47943,9 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	is_match_server_available?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	label?: GraphQLTypes["String_comparison_exp"] | undefined,
+	lineup_1?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	lineup_1_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	lineup_2?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	lineup_2_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match_maps?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_bool_exp"] | undefined,
@@ -47960,7 +47996,9 @@ export type GraphQLTypes = {
 	e_match_status?: GraphQLTypes["e_match_status_obj_rel_insert_input"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
+	lineup_1?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_1_id?: GraphQLTypes["uuid"] | undefined,
+	lineup_2?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_2_id?: GraphQLTypes["uuid"] | undefined,
 	match_maps?: GraphQLTypes["match_maps_arr_rel_insert_input"] | undefined,
 	match_options_id?: GraphQLTypes["uuid"] | undefined,
@@ -48108,7 +48146,9 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined,
 	is_match_server_available?: GraphQLTypes["order_by"] | undefined,
 	label?: GraphQLTypes["order_by"] | undefined,
+	lineup_1?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	lineup_1_id?: GraphQLTypes["order_by"] | undefined,
+	lineup_2?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	lineup_2_id?: GraphQLTypes["order_by"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_order_by"] | undefined,
 	match_options_id?: GraphQLTypes["order_by"] | undefined,

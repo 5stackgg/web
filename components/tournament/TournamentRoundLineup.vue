@@ -11,7 +11,7 @@
         }}</NuxtLink>
       </Badge>
 
-      <template v-if="!matchFinished">
+      <template v-if="!matchFinished && bracket.match.match_maps.length > 0">
         <span
           :class="{
             [`text-green-400`]: mapScores.current.winning,

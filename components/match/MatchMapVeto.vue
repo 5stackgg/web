@@ -291,14 +291,11 @@ export default {
       return this.myLineup?.captain?.player.steam_id === this.me.steam_id;
     },
     myLineup() {
-      if(!this.match) {
+      if (!this.match) {
         return;
       }
 
-      const lineups = [
-        this.match.lineup_1,
-        this.match.lineup_2
-      ]
+      const lineups = [this.match.lineup_1, this.match.lineup_2];
 
       return lineups.find((lineup) => {
         return lineup?.lineup_players.find((player) => {
@@ -348,7 +345,8 @@ export default {
       ];
     },
     teamName() {
-      return this.match?.lineups.find((lineup) => {
+      const lineups = [this.match.lineup_1, this.match.lineup_2];
+      return lineups.find((lineup) => {
         return lineup.id === this.match.veto_picking_lineup_id;
       }).name;
     },

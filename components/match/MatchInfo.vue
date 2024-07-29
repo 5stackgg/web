@@ -128,9 +128,7 @@ import { e_match_status_enum } from "~/generated/zeus";
               {{ match.lineup_1.name }}
             </span>
             <span>
-              <captain-info
-                :captain="match.lineup_1.captain"
-              ></captain-info>
+              <captain-info :captain="match.lineup_1.captain"></captain-info>
             </span>
           </li>
           <li class="flex items-center justify-between">
@@ -138,9 +136,7 @@ import { e_match_status_enum } from "~/generated/zeus";
               {{ match.lineup_2.name }}
             </span>
             <span>
-              <captain-info
-                :captain="match.lineup_2.captain"
-              ></captain-info>
+              <captain-info :captain="match.lineup_2.captain"></captain-info>
             </span>
           </li>
         </ul>
@@ -160,9 +156,7 @@ import { e_match_status_enum } from "~/generated/zeus";
                   :alt="match.lineup_1.coach.name"
                   v-if="match.lineup_1.coach.avatar_url"
                 />
-                <AvatarFallback>{{
-                  match.lineup_1.coach.name
-                }}</AvatarFallback>
+                <AvatarFallback>{{ match.lineup_1.coach.name }}</AvatarFallback>
               </Avatar>
 
               {{ match.lineup_1.coach.name }}
@@ -179,9 +173,7 @@ import { e_match_status_enum } from "~/generated/zeus";
                   :alt="match.lineup_2.coach.name"
                   v-if="match.lineup_2.coach.avatar_url"
                 />
-                <AvatarFallback>{{
-                  match.lineup_2.coach.name
-                }}</AvatarFallback>
+                <AvatarFallback>{{ match.lineup_2.coach.name }}</AvatarFallback>
               </Avatar>
 
               {{ match.lineup_2.coach.name }}
@@ -243,14 +235,12 @@ export default {
     },
     canAddTolineup_1() {
       return (
-        this.match.lineup_1?.lineup_players.length <
-        this.maxPlayersPerLineup
+        this.match.lineup_1?.lineup_players.length < this.maxPlayersPerLineup
       );
     },
     canAddTolineup_2() {
       return (
-        this.match.lineup_2?.lineup_players.length <
-        this.maxPlayersPerLineup
+        this.match.lineup_2?.lineup_players.length < this.maxPlayersPerLineup
       );
     },
   },

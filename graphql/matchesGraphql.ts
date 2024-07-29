@@ -26,7 +26,11 @@ export const matchFields = Selector("servers")({
       lineup_2_score: true,
     },
   ],
-  lineups: {
+  lineup_1: {
+    id: true,
+    name: true,
+  },
+  lineup_2: {
     id: true,
     name: true,
   },

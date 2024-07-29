@@ -34,7 +34,7 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
-import {matchLineups} from "~/graphql/matchLineupsGraphql";
+import { matchLineups } from "~/graphql/matchLineupsGraphql";
 
 export default {
   data() {
@@ -131,7 +131,7 @@ export default {
                 },
               ],
               lineup_1: [{}, matchLineups],
-              lineup_2: [{}, matchLineups]
+              lineup_2: [{}, matchLineups],
             },
           ],
         }),

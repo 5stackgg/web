@@ -136,10 +136,10 @@ export default {
       return coaches;
     },
     players() {
-      if(!this.match) {
+      if (!this.match) {
         return [];
       }
-      
+
       const players = [];
 
       players.push(...this.match.lineup_1.lineup_players);

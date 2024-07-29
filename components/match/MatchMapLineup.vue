@@ -31,7 +31,6 @@ import { Badge } from "~/components/ui/badge";
 </template>
 
 <script lang="ts">
-
 export default {
   props: {
     match: {

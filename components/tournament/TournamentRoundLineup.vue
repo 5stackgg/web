@@ -105,7 +105,6 @@ export default {
         };
       }
 
-      console.info("FFS", results);
       return results;
     },
   },

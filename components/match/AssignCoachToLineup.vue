@@ -14,7 +14,6 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 </template>
 
 <script lang="ts">
-import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
@@ -48,11 +47,6 @@ export default {
           ],
         }),
       });
-    },
-  },
-  computed: {
-    me() {
-      return useAuthStore().me;
     },
   },
 };

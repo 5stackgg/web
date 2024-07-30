@@ -227,9 +227,6 @@ export default {
     },
   },
   computed: {
-    me() {
-      return useAuthStore().me;
-    },
     maxPlayersPerLineup() {
       return this.match?.type === "Wingman" ? 2 : 5;
     },

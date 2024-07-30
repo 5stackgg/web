@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { MoreVertical } from "lucide-vue-next";
-import { e_match_status_enum } from "~/generated/zeus";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 </script>
 
@@ -57,9 +56,6 @@ export default {
     },
   },
   computed: {
-    me() {
-      return useAuthStore().me;
-    },
     cancelable() {
       return this.match.status !== e_match_status_enum.Canceled;
     },

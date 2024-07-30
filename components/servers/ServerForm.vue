@@ -90,7 +90,9 @@ export default {
               .string()
               .ip({ version: "v4" })
               .or(
-                z.string().regex(/^(?!:\/\/)(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/)
+                z
+                  .string()
+                  .regex(/^(?!:\/\/)(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/),
               ),
             label: z.string().min(3),
             port: z.number().min(2).max(65535),
@@ -98,7 +100,7 @@ export default {
             rcon_password: this.server
               ? z.string().min(1).optional()
               : z.string().min(1),
-          })
+          }),
         ),
       }),
     };

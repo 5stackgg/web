@@ -20,7 +20,7 @@ import {
   <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="server_id">
       <FormItem>
-        <FormLabel>Server</FormLabel>
+        <FormLabel>Assign Match Server</FormLabel>
         <Select v-bind="componentField" @update:modelValue="updateMatchServer">
           <FormControl>
             <SelectTrigger>
@@ -86,7 +86,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             server_id: z.string(),
-          })
+          }),
         ),
       }),
     };
@@ -105,10 +105,6 @@ export default {
   },
   methods: {
     async updateMatchServer() {
-      let serverId: string | null = this.form.values.server_id;
-      if (serverId === "0") {
-        serverId = null;
-      }
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_matches_by_pk: [
@@ -117,7 +113,10 @@ export default {
                 id: this.match.id,
               },
               _set: {
-                server_id: serverId,
+                server_id:
+                  this.form.values.server_id === "0"
+                    ? null
+                    : this.form.values.server_id,
               },
             },
             {
@@ -138,7 +137,8 @@ export default {
       });
 
       servers.unshift({
-        value: "0",
+        value:
+          this.match.server_type === "OnDemand" ? this.match.server_id : "0",
         display: "On Demand",
       });
 

@@ -19,6 +19,13 @@ export default defineEventHandler(async (event) => {
 
   let queryBy = "name,steam_id";
 
+  let exclude = "";
+  if (body.exclude && Array.isArray(body.exclude)) {
+    body.exclude.forEach((steamId: string) => {
+      exclude += (exclude ? " && " : "") + `steam_id:!=${steamId}`;
+    });
+  }
+
   return await client
     .collections("players")
     .documents()
@@ -26,6 +33,7 @@ export default defineEventHandler(async (event) => {
       q: query ?? "*",
       query_by: queryBy,
       sort_by: "name:asc",
+      ...(body.exclude ? { filter_by: exclude } : {}),
       ...(body.teamId ? { filter_by: `teams:${body.teamId}` } : {}),
       ...(body.page ? { page: body.page } : {}),
       ...(body.per_page ? { per_page: body.per_page } : {}),

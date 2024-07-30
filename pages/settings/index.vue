@@ -4,6 +4,4 @@ definePageMeta({
 });
 </script>
 
-<template>
-  TODO
-</template>
+<template>TODO</template>

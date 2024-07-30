@@ -54,10 +54,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
           {{ me.player.name }}
         </span>
       </nuxt-link>
-      <div @click="linkDiscord" v-if="!me.discord_id">
-        Link Discord
-      </div>
-
+      <div @click="linkDiscord" v-if="!me.discord_id">Link Discord</div>
     </nav>
   </aside>
 
@@ -98,7 +95,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
 </template>
 
 <script lang="ts">
-import { Swords, Server, Users, ShieldHalf } from "lucide-vue-next";
+import { Swords, Server, Users, ShieldHalf, Trophy } from "lucide-vue-next";
 
 export default {
   data() {
@@ -108,6 +105,11 @@ export default {
           to: "/matches",
           title: "Matches",
           icon: Swords,
+        },
+        {
+          to: "/tournaments",
+          title: "Tournaments",
+          icon: Trophy,
         },
         {
           to: "/teams",
@@ -128,11 +130,11 @@ export default {
     };
   },
   methods: {
-    linkDiscord(){
+    linkDiscord() {
       window.location = `https://5stack.gg/auth/discord?redirect=${encodeURIComponent(
-          window.location.toString(),
+        window.location.toString(),
       )}`;
-    }
+    },
   },
   computed: {
     me() {

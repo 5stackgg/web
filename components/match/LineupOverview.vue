@@ -20,6 +20,21 @@
         <TableHead> zeus </TableHead>
         <TableHead> </TableHead>
       </TableRow>
+      <TableRow v-if="assigningLineups || canUpdateCoach">
+        <div>
+          <AssignPlayerToLineup
+            :lineup="lineup"
+            :exclude="players"
+            v-if="canAddToLineup"
+          ></AssignPlayerToLineup>
+
+          <AssignCoachToLineup
+            :lineup="lineup"
+            :exclude="players.concat(coaches)"
+            v-if="canUpdateCoach"
+          ></AssignCoachToLineup>
+        </div>
+      </TableRow>
     </TableHeader>
     <TableBody>
       <lineup-overview-row
@@ -44,9 +59,14 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Badge } from "~/components/ui/badge";
+import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
+import { e_match_types_enum } from "~/generated/zeus";
+import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 
 export default {
   components: {
+    AssignCoachToLineup,
+    AssignPlayerToLineup,
     Table,
     TableBody,
     TableHead,
@@ -65,6 +85,67 @@ export default {
     lineup: {
       required: true,
       type: Object,
+    },
+  },
+  computed: {
+    me() {
+      return useAuthStore().me;
+    },
+    assigningLineups() {
+      const currentStatus = this.match.status;
+      return (
+        this.match.organizer_steam_id == this.me?.steam_id &&
+        (currentStatus == "Warmup" ||
+          currentStatus == "PickingPlayers" ||
+          currentStatus == "Scheduled") &&
+        this.canAddToLineup
+      );
+    },
+    maxPlayersPerLineup() {
+      return (
+        (this.match?.type === e_match_types_enum.Wingman ? 2 : 5) +
+        this.match.options.number_of_substitutes
+      );
+    },
+    canAddToLineup() {
+      return (
+        this.canUpdateLineup &&
+        this.lineup.lineup_players.length < this.maxPlayersPerLineup
+      );
+    },
+    canUpdateLineup() {
+      return (
+        this.match.organizer_steam_id === this.me.steam_id ||
+        this.lineup.captain.player.steam_id === this.me.steam_id
+      );
+    },
+    canUpdateCoach() {
+      return this.canUpdateLineup && this.match.options.coaches;
+    },
+    coaches() {
+      const coaches = [];
+
+      if (this.match.lineup_1.coach) {
+        coaches.push(this.match.lineup_1.coach);
+      }
+
+      if (this.match.lineup_2.coach) {
+        coaches.push(this.match.lineup_2.coach);
+      }
+
+      return coaches;
+    },
+    players() {
+      if (!this.match) {
+        return [];
+      }
+
+      const players = [];
+
+      players.push(...this.match.lineup_1.lineup_players);
+      players.push(...this.match.lineup_2.lineup_players);
+
+      return players;
     },
   },
 };

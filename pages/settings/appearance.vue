@@ -28,7 +28,7 @@ const appearanceFormSchema = toTypedSchema(
     theme: z.enum(["light", "dark"], {
       required_error: "Please select a theme.",
     }),
-  })
+  }),
 );
 
 const { handleSubmit } = useForm({
@@ -45,7 +45,7 @@ const onSubmit = handleSubmit((values) => {
     description: h(
       "pre",
       { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-      h("code", { class: "text-white" }, JSON.stringify(values, null, 2))
+      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
     ),
   });
 });

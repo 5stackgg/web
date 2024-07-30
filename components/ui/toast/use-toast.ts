@@ -77,13 +77,13 @@ function dispatch(action: Action) {
     case actionTypes.ADD_TOAST:
       state.value.toasts = [action.toast, ...state.value.toasts].slice(
         0,
-        TOAST_LIMIT
+        TOAST_LIMIT,
       );
       break;
 
     case actionTypes.UPDATE_TOAST:
       state.value.toasts = state.value.toasts.map((t) =>
-        t.id === action.toast.id ? { ...t, ...action.toast } : t
+        t.id === action.toast.id ? { ...t, ...action.toast } : t,
       );
       break;
 
@@ -104,7 +104,7 @@ function dispatch(action: Action) {
               ...t,
               open: false,
             }
-          : t
+          : t,
       );
       break;
     }
@@ -113,7 +113,7 @@ function dispatch(action: Action) {
       if (action.toastId === undefined) state.value.toasts = [];
       else
         state.value.toasts = state.value.toasts.filter(
-          (t) => t.id !== action.toastId
+          (t) => t.id !== action.toastId,
         );
 
       break;

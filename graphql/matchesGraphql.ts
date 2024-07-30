@@ -1,13 +1,16 @@
 import { order_by, Selector } from "@/generated/zeus";
+import { mapFields } from "~/graphql/mapGraphql";
 
 export const matchFields = Selector("servers")({
   id: true,
-  mr: true,
-  best_of: true,
   status: true,
-  type: true,
   lineup_1_id: true,
   lineup_2_id: true,
+  options: {
+    mr: true,
+    best_of: true,
+    type: true,
+  },
   match_maps: [
     {
       order_by: [
@@ -17,16 +20,17 @@ export const matchFields = Selector("servers")({
       ],
     },
     {
-      map: {
-        id: true,
-        name: true,
-      },
+      map: mapFields,
       order: true,
       lineup_1_score: true,
       lineup_2_score: true,
     },
   ],
-  lineups: {
+  lineup_1: {
+    id: true,
+    name: true,
+  },
+  lineup_2: {
     id: true,
     name: true,
   },

@@ -52,7 +52,7 @@ export default {
           z.object({
             team_name: z.string().min(1),
             short_name: z.string().min(1).max(3),
-          })
+          }),
         ),
       }),
     };

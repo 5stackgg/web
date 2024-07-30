@@ -10,12 +10,12 @@
         <AvatarFallback>{{ member.player.name }}</AvatarFallback>
       </Avatar>
       {{ member.player.name }}
-      <div class="text-xs">[{{ member.player.steam_id }}]</div>
+      <br />
+      <Badge variant="outline" v-if="member.captain"> Captain </Badge>
     </template>
     <template v-else>
       {{ member.name }}
     </template>
-    <Badge variant="outline" v-if="member.captain"> Captain </Badge>
   </div>
 </template>
 

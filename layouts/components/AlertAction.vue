@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {Alert, AlertDescription, AlertTitle} from "~/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 </script>
 
 <template>

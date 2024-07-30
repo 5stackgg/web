@@ -19,78 +19,92 @@ import RconCommander from "~/components/servers/RconCommander.vue";
     <div class="flex items-center">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
-        <TabsTrigger value="utility"> Utility </TabsTrigger>
-        <TabsTrigger value="opening-duels"> Opening Duels </TabsTrigger>
-        <TabsTrigger value="clutches"> Clutches </TabsTrigger>
-        <TabsTrigger value="server"> Server </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="utility">
+          Utility
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="opening-duels">
+          Opening Duels
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="clutches">
+          Clutches
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="server">
+          Server Console
+        </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent value="overview">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Match Overview</CardTitle>
           <CardDescription> Overview of basic stats </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-overview
             :match="match"
-            :lineup="matchLineups.lineup1"
+            :lineup="match.lineup_1"
           ></lineup-overview>
+        </CardContent>
 
+        <CardContent>
           <lineup-overview
             :match="match"
-            :lineup="matchLineups.lineup2"
+            :lineup="match.lineup_2"
           ></lineup-overview>
         </CardContent>
       </Card>
     </TabsContent>
     <TabsContent value="utility">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Utility Usage</CardTitle>
           <CardDescription> Utility usage per player </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-utility
             :match="match"
-            :lineup="matchLineups.lineup1"
+            :lineup="match.lineup_1"
           ></lineup-utility>
+        </CardContent>
+        <CardContent>
           <lineup-utility
             :match="match"
-            :lineup="matchLineups.lineup2"
+            :lineup="match.lineup_2"
           ></lineup-utility>
         </CardContent>
       </Card>
     </TabsContent>
     <TabsContent value="opening-duels">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Opening Duels</CardTitle>
           <CardDescription> Opening Duels </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-opening-duels
             :match="match"
-            :lineup="matchLineups.lineup1"
+            :lineup="match.lineup_1"
           ></lineup-opening-duels>
+        </CardContent>
+        <CardContent>
           <lineup-opening-duels
             :match="match"
-            :lineup="matchLineups.lineup2"
+            :lineup="match.lineup_2"
           ></lineup-opening-duels>
         </CardContent>
       </Card>
     </TabsContent>
     <TabsContent value="clutches">
       <Card>
-        <CardHeader class="px-7">
+        <CardHeader>
           <CardTitle>Clutches</CardTitle>
           <CardDescription> Clutches </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-clutches
             :match="match"
-            :lineup1="matchLineups.lineup1"
-            :lineup2="matchLineups.lineup2"
+            :lineup_1="match.lineup_1"
+            :lineup_2="match.lineup_2"
           ></lineup-clutches>
         </CardContent>
       </Card>
@@ -102,7 +116,7 @@ import RconCommander from "~/components/servers/RconCommander.vue";
 </template>
 
 <script lang="ts">
-import getMatchLineups from "~/utilities/getMatchLineups";
+import { e_match_status_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -112,8 +126,8 @@ export default {
     },
   },
   computed: {
-    matchLineups() {
-      return getMatchLineups(this.match);
+    disableStats() {
+      return e_match_status_enum.PickingPlayers === this.match.status;
     },
   },
 };

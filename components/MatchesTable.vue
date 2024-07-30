@@ -27,10 +27,12 @@ import TimeAgo from "~/components/TimeAgo.vue";
           class="cursor-pointer"
         >
           <TableCell class="font-medium">
-            {{ lineup1(match).name }} vs {{ lineup2(match).name }}
+            {{ match.lineup_1.name }} vs {{ match.lineup_2.name }}
           </TableCell>
           <TableCell>{{ match.status }}</TableCell>
-          <TableCell>{{ match.type }} (MR {{ match.mr }})</TableCell>
+          <TableCell
+            >{{ match.options.type }} (MR {{ match.options.mr }})</TableCell
+          >
           <TableCell>
             <template v-for="(match_map, index) of match.match_maps">
               <template v-if="index > 0">,</template>
@@ -57,16 +59,6 @@ export default {
   methods: {
     viewMatch(matchId) {
       this.$router.push(`/matches/${matchId}`);
-    },
-    lineup1(match) {
-      return match?.lineups.find((lineup) => {
-        return lineup.id === match.lineup_1_id;
-      });
-    },
-    lineup2(match) {
-      return match?.lineups?.find((lineup) => {
-        return lineup.id === match.lineup_2_id;
-      });
     },
   },
 };

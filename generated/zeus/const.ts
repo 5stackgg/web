@@ -2426,7 +2426,6 @@ export const AllTypesProps: Record<string,any> = {
 		teams:"teams_bool_exp",
 		tv_connection_link:"String_comparison_exp",
 		tv_connection_string:"String_comparison_exp",
-		updated_at:"timestamptz_comparison_exp",
 		veto_picking_lineup_id:"uuid_comparison_exp",
 		veto_picks:"match_veto_picks_bool_exp",
 		veto_picks_aggregate:"match_veto_picks_aggregate_bool_exp",
@@ -2462,7 +2461,6 @@ export const AllTypesProps: Record<string,any> = {
 		server:"servers_obj_rel_insert_input",
 		server_id:"uuid",
 		status:"e_match_status_enum",
-		updated_at:"timestamptz",
 		veto_picks:"match_veto_picks_arr_rel_insert_input",
 		winner:"match_lineups_obj_rel_insert_input",
 		winning_lineup_id:"uuid"
@@ -2478,7 +2476,6 @@ export const AllTypesProps: Record<string,any> = {
 		password:"order_by",
 		scheduled_at:"order_by",
 		server_id:"order_by",
-		updated_at:"order_by",
 		winning_lineup_id:"order_by"
 	},
 	matches_min_order_by:{
@@ -2492,7 +2489,6 @@ export const AllTypesProps: Record<string,any> = {
 		password:"order_by",
 		scheduled_at:"order_by",
 		server_id:"order_by",
-		updated_at:"order_by",
 		winning_lineup_id:"order_by"
 	},
 	matches_obj_rel_insert_input:{
@@ -2538,7 +2534,6 @@ export const AllTypesProps: Record<string,any> = {
 		teams_aggregate:"teams_aggregate_order_by",
 		tv_connection_link:"order_by",
 		tv_connection_string:"order_by",
-		updated_at:"order_by",
 		veto_picking_lineup_id:"order_by",
 		veto_picks_aggregate:"match_veto_picks_aggregate_order_by",
 		veto_type:"order_by",
@@ -2559,7 +2554,6 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"date",
 		server_id:"uuid",
 		status:"e_match_status_enum",
-		updated_at:"timestamptz",
 		winning_lineup_id:"uuid"
 	},
 	matches_stddev_order_by:{
@@ -2585,7 +2579,6 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"date",
 		server_id:"uuid",
 		status:"e_match_status_enum",
-		updated_at:"timestamptz",
 		winning_lineup_id:"uuid"
 	},
 	matches_sum_order_by:{
@@ -5413,7 +5406,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_rosters_aggregate:"tournament_team_roster_aggregate_bool_exp",
 		tournaments:"tournaments_bool_exp",
 		tournaments_aggregate:"tournaments_aggregate_bool_exp",
-		updated_at:"timestamptz_comparison_exp",
 		utility_thrown:"player_utility_bool_exp",
 		utility_thrown_aggregate:"player_utility_aggregate_bool_exp"
 	},
@@ -5445,7 +5437,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_organizers:"tournament_organizers_arr_rel_insert_input",
 		tournament_rosters:"tournament_team_roster_arr_rel_insert_input",
 		tournaments:"tournaments_arr_rel_insert_input",
-		updated_at:"timestamptz",
 		utility_thrown:"player_utility_arr_rel_insert_input"
 	},
 	players_obj_rel_insert_input:{
@@ -5487,7 +5478,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		tournament_rosters_aggregate:"tournament_team_roster_aggregate_order_by",
 		tournaments_aggregate:"tournaments_aggregate_order_by",
-		updated_at:"order_by",
 		utility_thrown_aggregate:"player_utility_aggregate_order_by"
 	},
 	players_pk_columns_input:{
@@ -5496,8 +5486,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_select_column: "enum" as const,
 	players_set_input:{
 		created_at:"timestamptz",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_stream_cursor_input:{
 		initial_value:"players_stream_cursor_value_input",
@@ -5505,8 +5494,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_stream_cursor_value_input:{
 		created_at:"timestamptz",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_update_column: "enum" as const,
 	players_updates:{
@@ -10329,7 +10317,6 @@ export const ReturnTypes: Record<string,any> = {
 		teams:"teams",
 		tv_connection_link:"String",
 		tv_connection_string:"String",
-		updated_at:"timestamptz",
 		veto_picking_lineup_id:"uuid",
 		veto_picks:"match_veto_picks",
 		veto_picks_aggregate:"match_veto_picks_aggregate",
@@ -10374,7 +10361,6 @@ export const ReturnTypes: Record<string,any> = {
 		server_type:"String",
 		tv_connection_link:"String",
 		tv_connection_string:"String",
-		updated_at:"timestamptz",
 		veto_picking_lineup_id:"uuid",
 		veto_type:"String",
 		winning_lineup_id:"uuid"
@@ -10396,7 +10382,6 @@ export const ReturnTypes: Record<string,any> = {
 		server_type:"String",
 		tv_connection_link:"String",
 		tv_connection_string:"String",
-		updated_at:"timestamptz",
 		veto_picking_lineup_id:"uuid",
 		veto_type:"String",
 		winning_lineup_id:"uuid"
@@ -11526,7 +11511,6 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_rosters_aggregate:"tournament_team_roster_aggregate",
 		tournaments:"tournaments",
 		tournaments_aggregate:"tournaments_aggregate",
-		updated_at:"timestamptz",
 		utility_thrown:"player_utility",
 		utility_thrown_aggregate:"player_utility_aggregate"
 	},
@@ -11556,8 +11540,7 @@ export const ReturnTypes: Record<string,any> = {
 		discord_id:"String",
 		name:"String",
 		profile_url:"String",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_min_fields:{
 		avatar_url:"String",
@@ -11565,8 +11548,7 @@ export const ReturnTypes: Record<string,any> = {
 		discord_id:"String",
 		name:"String",
 		profile_url:"String",
-		steam_id:"bigint",
-		updated_at:"timestamptz"
+		steam_id:"bigint"
 	},
 	players_mutation_response:{
 		affected_rows:"Int",

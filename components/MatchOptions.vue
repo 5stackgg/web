@@ -323,6 +323,8 @@ export default {
             );
           case e_match_types_enum.Scrimmage:
             return map.type === e_match_types_enum.Competitive;
+          case e_match_types_enum.ScrimmageNight:
+            return map.type === e_match_types_enum.ScrimmageNight;
           case e_match_types_enum.Wingman:
             return map.type === e_match_types_enum.Wingman;
         }

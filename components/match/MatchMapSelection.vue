@@ -137,7 +137,7 @@ export default {
   },
   computed: {
     canAssignMap() {
-      return this.match.is_match_organizer;
+      return this.match.is_organizer;
     },
     mapPool() {
       return this.match_maps?.options?.map_pool?.maps;

@@ -94,7 +94,7 @@ export default {
     assigningLineups() {
       const currentStatus = this.match.status;
       return (
-        this.match.is_match_organizer &&
+        this.match.is_organizer &&
         (currentStatus == "Warmup" ||
           currentStatus == "PickingPlayers" ||
           currentStatus == "Scheduled") &&
@@ -116,7 +116,7 @@ export default {
     canUpdateLineup() {
       return (
         this.match.is_captain ||
-        this.match.is_match_organizer
+        this.match.is_organizer
       );
     },
     canUpdateCoach() {

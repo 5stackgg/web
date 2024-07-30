@@ -5158,10 +5158,10 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 	is_captain?:boolean | `@${string}`,
 	/** A computed field, executes function "is_coach" */
 	is_coach?:boolean | `@${string}`,
-	/** A computed field, executes function "is_match_organizer" */
-	is_match_organizer?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?:boolean | `@${string}`,
+	/** A computed field, executes function "is_match_organizer" */
+	is_organizer?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	/** An object relationship */
 	lineup_1?:ValueTypes["match_lineups"],
@@ -5382,8 +5382,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	is_match_organizer?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_organizer?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_1?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	lineup_1_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5582,8 +5582,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	is_match_organizer?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_organizer?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_1?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	lineup_1_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -14012,6 +14012,8 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	/** An object relationship */
 	e_tournament_status?:ValueTypes["e_tournament_status"],
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_tournament_organizer" */
+	is_organizer?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	/** An object relationship */
@@ -14150,6 +14152,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_tournament_status?: ValueTypes["e_tournament_status_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_organizer?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	options?: ValueTypes["match_options_bool_exp"] | undefined | null | Variable<any, string>,
@@ -14256,6 +14259,7 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_tournament_status?: ValueTypes["e_tournament_status_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_organizer?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	options?: ValueTypes["match_options_order_by"] | undefined | null | Variable<any, string>,
@@ -20201,10 +20205,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 	is_captain?:boolean | `@${string}`,
 	/** A computed field, executes function "is_coach" */
 	is_coach?:boolean | `@${string}`,
-	/** A computed field, executes function "is_match_organizer" */
-	is_match_organizer?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?:boolean | `@${string}`,
+	/** A computed field, executes function "is_match_organizer" */
+	is_organizer?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	/** An object relationship */
 	lineup_1?:ResolverInputTypes["match_lineups"],
@@ -20425,8 +20429,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_captain?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_coach?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	is_match_organizer?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	is_organizer?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	label?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	lineup_1?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	lineup_1_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -20625,8 +20629,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_captain?: ResolverInputTypes["order_by"] | undefined | null,
 	is_coach?: ResolverInputTypes["order_by"] | undefined | null,
-	is_match_organizer?: ResolverInputTypes["order_by"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["order_by"] | undefined | null,
+	is_organizer?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_1?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	lineup_1_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -29055,6 +29059,8 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	/** An object relationship */
 	e_tournament_status?:ResolverInputTypes["e_tournament_status"],
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_tournament_organizer" */
+	is_organizer?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	/** An object relationship */
@@ -29193,6 +29199,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	e_tournament_status?: ResolverInputTypes["e_tournament_status_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	is_organizer?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	match_options_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	options?: ResolverInputTypes["match_options_bool_exp"] | undefined | null,
@@ -29299,6 +29306,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	description?: ResolverInputTypes["order_by"] | undefined | null,
 	e_tournament_status?: ResolverInputTypes["e_tournament_status_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	is_organizer?: ResolverInputTypes["order_by"] | undefined | null,
 	match_options_id?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	options?: ResolverInputTypes["match_options_order_by"] | undefined | null,
@@ -34762,10 +34770,10 @@ export type ModelTypes = {
 	is_captain?: boolean | undefined,
 	/** A computed field, executes function "is_coach" */
 	is_coach?: boolean | undefined,
-	/** A computed field, executes function "is_match_organizer" */
-	is_match_organizer?: boolean | undefined,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?: boolean | undefined,
+	/** A computed field, executes function "is_match_organizer" */
+	is_organizer?: boolean | undefined,
 	label?: string | undefined,
 	/** An object relationship */
 	lineup_1: ModelTypes["match_lineups"],
@@ -34906,8 +34914,8 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	is_captain?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: ModelTypes["Boolean_comparison_exp"] | undefined,
-	is_match_organizer?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_match_server_available?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	is_organizer?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	label?: ModelTypes["String_comparison_exp"] | undefined,
 	lineup_1?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	lineup_1_id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -35102,8 +35110,8 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined,
 	is_captain?: ModelTypes["order_by"] | undefined,
 	is_coach?: ModelTypes["order_by"] | undefined,
-	is_match_organizer?: ModelTypes["order_by"] | undefined,
 	is_match_server_available?: ModelTypes["order_by"] | undefined,
+	is_organizer?: ModelTypes["order_by"] | undefined,
 	label?: ModelTypes["order_by"] | undefined,
 	lineup_1?: ModelTypes["match_lineups_order_by"] | undefined,
 	lineup_1_id?: ModelTypes["order_by"] | undefined,
@@ -41986,6 +41994,8 @@ export type ModelTypes = {
 	/** An object relationship */
 	e_tournament_status: ModelTypes["e_tournament_status"],
 	id: ModelTypes["uuid"],
+	/** A computed field, executes function "is_tournament_organizer" */
+	is_organizer?: boolean | undefined,
 	match_options_id: ModelTypes["uuid"],
 	name: string,
 	/** An object relationship */
@@ -42080,6 +42090,7 @@ export type ModelTypes = {
 	description?: ModelTypes["String_comparison_exp"] | undefined,
 	e_tournament_status?: ModelTypes["e_tournament_status_bool_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	is_organizer?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	match_options_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
 	options?: ModelTypes["match_options_bool_exp"] | undefined,
@@ -42182,6 +42193,7 @@ export type ModelTypes = {
 	description?: ModelTypes["order_by"] | undefined,
 	e_tournament_status?: ModelTypes["e_tournament_status_order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	is_organizer?: ModelTypes["order_by"] | undefined,
 	match_options_id?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	options?: ModelTypes["match_options_order_by"] | undefined,
@@ -47763,10 +47775,10 @@ export type GraphQLTypes = {
 	is_captain?: boolean | undefined,
 	/** A computed field, executes function "is_coach" */
 	is_coach?: boolean | undefined,
-	/** A computed field, executes function "is_match_organizer" */
-	is_match_organizer?: boolean | undefined,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?: boolean | undefined,
+	/** A computed field, executes function "is_match_organizer" */
+	is_organizer?: boolean | undefined,
 	label?: string | undefined,
 	/** An object relationship */
 	lineup_1: GraphQLTypes["match_lineups"],
@@ -47910,8 +47922,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	is_captain?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
-	is_match_organizer?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_match_server_available?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	is_organizer?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	label?: GraphQLTypes["String_comparison_exp"] | undefined,
 	lineup_1?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	lineup_1_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -48110,8 +48122,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined,
 	is_captain?: GraphQLTypes["order_by"] | undefined,
 	is_coach?: GraphQLTypes["order_by"] | undefined,
-	is_match_organizer?: GraphQLTypes["order_by"] | undefined,
 	is_match_server_available?: GraphQLTypes["order_by"] | undefined,
+	is_organizer?: GraphQLTypes["order_by"] | undefined,
 	label?: GraphQLTypes["order_by"] | undefined,
 	lineup_1?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	lineup_1_id?: GraphQLTypes["order_by"] | undefined,
@@ -55312,6 +55324,8 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	e_tournament_status: GraphQLTypes["e_tournament_status"],
 	id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "is_tournament_organizer" */
+	is_organizer?: boolean | undefined,
 	match_options_id: GraphQLTypes["uuid"],
 	name: string,
 	/** An object relationship */
@@ -55409,6 +55423,7 @@ export type GraphQLTypes = {
 	description?: GraphQLTypes["String_comparison_exp"] | undefined,
 	e_tournament_status?: GraphQLTypes["e_tournament_status_bool_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	is_organizer?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	match_options_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
 	options?: GraphQLTypes["match_options_bool_exp"] | undefined,
@@ -55515,6 +55530,7 @@ export type GraphQLTypes = {
 	description?: GraphQLTypes["order_by"] | undefined,
 	e_tournament_status?: GraphQLTypes["e_tournament_status_order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	is_organizer?: GraphQLTypes["order_by"] | undefined,
 	match_options_id?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	options?: GraphQLTypes["match_options_order_by"] | undefined,

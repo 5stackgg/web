@@ -63,7 +63,7 @@ export default {
               status: true,
               is_coach: true,
               is_captain: true,
-              is_match_organizer: true,
+              is_organizer: true,
               server_id: true,
               server_type: true,
               lineup_1_id: true,

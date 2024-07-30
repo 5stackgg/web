@@ -62,7 +62,7 @@ import { Separator } from "~/components/ui/separator";
       <div
         class="flex items-center space-x-2 cursor-pointer"
         @click="override = !override"
-        v-if="match.is_match_organizer"
+        v-if="match.is_organizer"
       >
         <Label>Match Organizer Override</Label>
         <Switch :checked="override" />
@@ -298,7 +298,7 @@ export default {
 
       return (
         this.myLineup.id === this.match.veto_picking_lineup_id &&
-        (this.match.is_captain || this.match.is_match_organizer)
+        (this.match.is_captain || this.match.is_organizer)
       );
     },
     pickType() {

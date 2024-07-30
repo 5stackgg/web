@@ -138,6 +138,7 @@ export default {
               start: true,
               status: true,
               description: true,
+              is_organizer: true,
               can_join_tournament: true,
               admin: {
                 name: true,
@@ -324,12 +325,7 @@ export default {
       return useAuthStore().me;
     },
     canAddTeams() {
-      return (
-        this.tournament.orgnaier_steam_id === this.me.id ||
-        this.tournament.organizers.find(({ steam_id }) => {
-          return steam_id === this.me.id;
-        })
-      );
+      return this.tournament.is_organizer;
     },
   },
   methods: {

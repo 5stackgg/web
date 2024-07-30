@@ -34,7 +34,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
       </FormItem>
     </FormField>
 
-    <match-options :form="form"></match-options>
+    <match-options :form="form" :force-veto="true"></match-options>
 
     <FormField v-slot="{ componentField }" name="start">
       <FormItem>
@@ -164,12 +164,11 @@ export default {
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
 
           this.form.setValues({
+            map_veto: true,
             name: tournament.name,
-            // start: tournament.start,
             description: tournament.description,
             type: tournament.options.type,
             mr: tournament.options.mr.toString(),
-            map_veto: tournament.options.map_veto,
             coaches: tournament.options.coaches,
             knife_round: tournament.options.knife_round,
             overtime: tournament.options.overtime,
@@ -292,7 +291,6 @@ export default {
             best_of: form.best_of,
             knife_round: form.knife_round,
             overtime: form.overtime,
-            map_veto: form.map_veto,
             coaches: form.coaches,
             number_of_substitutes: form.number_of_substitutes,
             map_pool_id: mapPoolId,
@@ -309,7 +307,7 @@ export default {
                   best_of: $("best_of", "Int!"),
                   knife_round: $("knife_round", "Boolean!"),
                   overtime: $("overtime", "Boolean!"),
-                  map_veto: $("map_veto", "Boolean!"),
+                  map_veto: true,
                   coaches: $("coaches", "Boolean!"),
                   number_of_substitutes: $("number_of_substitutes", "Int!"),
                   map_pool_id: $("map_pool_id", "uuid!"),
@@ -331,7 +329,6 @@ export default {
           best_of: form.best_of,
           knife_round: form.knife_round,
           overtime: form.overtime,
-          map_veto: form.map_veto,
           coaches: form.coaches,
           number_of_substitutes: form.number_of_substitutes,
           ...(form.map_pool_id
@@ -368,7 +365,7 @@ export default {
                     best_of: $("best_of", "Int!"),
                     knife_round: $("knife_round", "Boolean!"),
                     overtime: $("overtime", "Boolean!"),
-                    map_veto: $("map_veto", "Boolean!"),
+                    map_veto: true,
                     coaches: $("coaches", "Boolean!"),
                     number_of_substitutes: $("number_of_substitutes", "Int!"),
                     map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),

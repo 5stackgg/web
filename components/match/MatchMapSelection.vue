@@ -12,7 +12,7 @@ import MapSelector from "~/components/match/MapSelector.vue";
   ></MatchMapVeto>
   <template
     v-else-if="
-      canAssignMap && assigningMaps && match.options.map_veto === false
+      match.can_assign_map && assigningMaps && match.options.map_veto === false
     "
   >
     <Card class="sm:col-span-4">
@@ -136,9 +136,6 @@ export default {
     },
   },
   computed: {
-    canAssignMap() {
-      return this.match.is_organizer;
-    },
     mapPool() {
       return this.match_maps?.options?.map_pool?.maps;
     },

@@ -2385,6 +2385,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"matches_bool_exp",
 		_not:"matches_bool_exp",
 		_or:"matches_bool_exp",
+		can_assign_map:"Boolean_comparison_exp",
 		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
@@ -2504,6 +2505,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"matches_bool_exp"
 	},
 	matches_order_by:{
+		can_assign_map:"order_by",
 		connection_link:"order_by",
 		connection_string:"order_by",
 		created_at:"order_by",
@@ -10284,6 +10286,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_veto_picks"
 	},
 	matches:{
+		can_assign_map:"Boolean",
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",

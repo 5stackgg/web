@@ -70,7 +70,6 @@ export default {
               lineup_2_id: true,
               veto_type: true,
               veto_picking_lineup_id: true,
-              organizer_steam_id: true,
               connection_link: true,
               connection_string: true,
               tv_connection_string: true,

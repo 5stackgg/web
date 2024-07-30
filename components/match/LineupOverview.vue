@@ -94,7 +94,7 @@ export default {
     assigningLineups() {
       const currentStatus = this.match.status;
       return (
-        this.match.organizer_steam_id == this.me?.steam_id &&
+        this.match.is_match_organizer &&
         (currentStatus == "Warmup" ||
           currentStatus == "PickingPlayers" ||
           currentStatus == "Scheduled") &&
@@ -115,8 +115,8 @@ export default {
     },
     canUpdateLineup() {
       return (
-        this.match.organizer_steam_id === this.me.steam_id ||
-        this.lineup.captain.player.steam_id === this.me.steam_id
+        this.match.is_captain ||
+        this.match.is_match_organizer
       );
     },
     canUpdateCoach() {

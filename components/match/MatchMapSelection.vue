@@ -136,14 +136,11 @@ export default {
     },
   },
   computed: {
-    me() {
-      return useAuthStore().me;
+    canAssignMap() {
+      return this.match.is_match_organizer;
     },
     mapPool() {
       return this.match_maps?.options?.map_pool?.maps;
-    },
-    canAssignMap() {
-      return this.match.organizer_steam_id === this.me.steam_id;
     },
     assigningMaps() {
       return (

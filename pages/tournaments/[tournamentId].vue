@@ -69,7 +69,7 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
     <TabsContent value="teams">
       <TournamentAddTeam
         :tournament="tournament"
-        v-if="canAddTeams"
+        v-if="tournament.is_organizer"
       ></TournamentAddTeam>
 
       <div v-for="team of tournament.teams">
@@ -323,9 +323,6 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    canAddTeams() {
-      return this.tournament.is_organizer;
     },
   },
   methods: {

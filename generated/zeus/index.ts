@@ -3276,8 +3276,6 @@ matches?: [{	/** distinct select on columns */
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
 	/** An object relationship */
-	player?:ValueTypes["players"],
-	/** An object relationship */
 	team?:ValueTypes["teams"],
 	team_id?:boolean | `@${string}`,
 	/** An object relationship */
@@ -3358,7 +3356,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match_veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	v_match_lineup?: ValueTypes["v_match_lineups_bool_exp"] | undefined | null | Variable<any, string>
@@ -3377,7 +3374,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_players?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_veto_picks?: ValueTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	v_match_lineup?: ValueTypes["v_match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>
@@ -3442,7 +3438,6 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	match_veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	team?: ValueTypes["teams_order_by"] | undefined | null | Variable<any, string>,
 	team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	v_match_lineup?: ValueTypes["v_match_lineups_order_by"] | undefined | null | Variable<any, string>
@@ -18330,8 +18325,6 @@ matches?: [{	/** distinct select on columns */
 	/** A computed field, executes function "get_team_name" */
 	name?:boolean | `@${string}`,
 	/** An object relationship */
-	player?:ResolverInputTypes["players"],
-	/** An object relationship */
 	team?:ResolverInputTypes["teams"],
 	team_id?:boolean | `@${string}`,
 	/** An object relationship */
@@ -18412,7 +18405,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match_veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_bool_exp"] | undefined | null,
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	team?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	v_match_lineup?: ResolverInputTypes["v_match_lineups_bool_exp"] | undefined | null
@@ -18431,7 +18423,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_players?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
 	match_veto_picks?: ResolverInputTypes["match_veto_picks_arr_rel_insert_input"] | undefined | null,
-	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	team?: ResolverInputTypes["teams_obj_rel_insert_input"] | undefined | null,
 	team_id?: ResolverInputTypes["uuid"] | undefined | null,
 	v_match_lineup?: ResolverInputTypes["v_match_lineups_obj_rel_insert_input"] | undefined | null
@@ -18496,7 +18487,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	match_veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
-	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	team?: ResolverInputTypes["teams_order_by"] | undefined | null,
 	team_id?: ResolverInputTypes["order_by"] | undefined | null,
 	v_match_lineup?: ResolverInputTypes["v_match_lineups_order_by"] | undefined | null
@@ -33084,8 +33074,6 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
 	/** An object relationship */
-	player?: ModelTypes["players"] | undefined,
-	/** An object relationship */
 	team?: ModelTypes["teams"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	/** An object relationship */
@@ -33162,7 +33150,6 @@ export type ModelTypes = {
 	match_veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
 	matches?: ModelTypes["matches_bool_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
-	player?: ModelTypes["players_bool_exp"] | undefined,
 	team?: ModelTypes["teams_bool_exp"] | undefined,
 	team_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	v_match_lineup?: ModelTypes["v_match_lineups_bool_exp"] | undefined
@@ -33180,7 +33167,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	lineup_players?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match_veto_picks?: ModelTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
-	player?: ModelTypes["players_obj_rel_insert_input"] | undefined,
 	team?: ModelTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: ModelTypes["uuid"] | undefined,
 	v_match_lineup?: ModelTypes["v_match_lineups_obj_rel_insert_input"] | undefined
@@ -33242,7 +33228,6 @@ export type ModelTypes = {
 	match_veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
-	player?: ModelTypes["players_order_by"] | undefined,
 	team?: ModelTypes["teams_order_by"] | undefined,
 	team_id?: ModelTypes["order_by"] | undefined,
 	v_match_lineup?: ModelTypes["v_match_lineups_order_by"] | undefined
@@ -46002,8 +45987,6 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_team_name" */
 	name?: string | undefined,
 	/** An object relationship */
-	player?: GraphQLTypes["players"] | undefined,
-	/** An object relationship */
 	team?: GraphQLTypes["teams"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	/** An object relationship */
@@ -46083,7 +46066,6 @@ export type GraphQLTypes = {
 	match_veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_bool_exp"] | undefined,
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
-	player?: GraphQLTypes["players_bool_exp"] | undefined,
 	team?: GraphQLTypes["teams_bool_exp"] | undefined,
 	team_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	v_match_lineup?: GraphQLTypes["v_match_lineups_bool_exp"] | undefined
@@ -46102,7 +46084,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	lineup_players?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	match_veto_picks?: GraphQLTypes["match_veto_picks_arr_rel_insert_input"] | undefined,
-	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined,
 	team?: GraphQLTypes["teams_obj_rel_insert_input"] | undefined,
 	team_id?: GraphQLTypes["uuid"] | undefined,
 	v_match_lineup?: GraphQLTypes["v_match_lineups_obj_rel_insert_input"] | undefined
@@ -46167,7 +46148,6 @@ export type GraphQLTypes = {
 	match_veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
-	player?: GraphQLTypes["players_order_by"] | undefined,
 	team?: GraphQLTypes["teams_order_by"] | undefined,
 	team_id?: GraphQLTypes["order_by"] | undefined,
 	v_match_lineup?: GraphQLTypes["v_match_lineups_order_by"] | undefined

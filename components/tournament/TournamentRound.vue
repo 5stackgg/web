@@ -4,6 +4,9 @@
       <div
         class="flex items-center m-2 p-1 leading-relaxed bg-gray-600 text-gray-300 rounded-full relative with-connector"
       >
+        <div>
+          <Badge>#{{ bracket.match_number }}</Badge>
+        </div>
         <span
           class="w-6 h-6 ml-1 mr-1 inline-block bg-gray-300 rounded-full"
         ></span>
@@ -16,7 +19,7 @@
       <div
         class="flex items-center m-2 p-1 leading-relaxed bg-gray-600 text-gray-300 rounded-full relative with-connector"
         :class="{
-          ['with-bye']: bracket.team_1 && !bracket.team_2,
+          ['with-bye']: round === 1 && bracket.team_1 && !bracket.team_2,
         }"
       >
         <span
@@ -37,6 +40,10 @@ import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup
 export default {
   components: { TournamentRoundLineup },
   props: {
+    round: {
+      type: Number,
+      required: true,
+    },
     brackets: {
       type: Array,
       required: true,

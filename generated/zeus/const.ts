@@ -1352,7 +1352,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_veto_picks_aggregate:"match_veto_picks_aggregate_bool_exp",
 		matches:"matches_bool_exp",
 		name:"String_comparison_exp",
-		player:"players_bool_exp",
 		team:"teams_bool_exp",
 		team_id:"uuid_comparison_exp",
 		v_match_lineup:"v_match_lineups_bool_exp"
@@ -1368,7 +1367,6 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lineup_players:"match_lineup_players_arr_rel_insert_input",
 		match_veto_picks:"match_veto_picks_arr_rel_insert_input",
-		player:"players_obj_rel_insert_input",
 		team:"teams_obj_rel_insert_input",
 		team_id:"uuid",
 		v_match_lineup:"v_match_lineups_obj_rel_insert_input"
@@ -1401,7 +1399,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_veto_picks_aggregate:"match_veto_picks_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		name:"order_by",
-		player:"players_order_by",
 		team:"teams_order_by",
 		team_id:"order_by",
 		v_match_lineup:"v_match_lineups_order_by"
@@ -9759,7 +9756,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_veto_picks_aggregate:"match_veto_picks_aggregate",
 		matches:"matches",
 		name:"String",
-		player:"players",
 		team:"teams",
 		team_id:"uuid",
 		v_match_lineup:"v_match_lineups"

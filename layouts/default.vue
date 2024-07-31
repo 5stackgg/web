@@ -32,8 +32,5 @@ export default {
   created() {
     socket.connect();
   },
-  mounted() {
-    this.$pwa?.install()
-  }
 };
 </script>

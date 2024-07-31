@@ -17,13 +17,15 @@ export default defineNuxtConfig({
   ],
 
   pwa: {
+    injectRegister: 'auto',
     registerType: 'autoUpdate',
-    devOptions: {
-      enabled: true,
-      suppressWarnings: true,
-      navigateFallback: '/',
-      navigateFallbackAllowlist: [/^\/$/],
-      type: 'module',
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      runtimeCaching: [{
+        urlPattern: "/",
+        handler: 'NetworkFirst',
+      }],
+      navigateFallback: undefined,
     },
   },
 

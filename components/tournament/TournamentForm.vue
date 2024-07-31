@@ -13,7 +13,6 @@ import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
-  <pre>{{ form.values }}</pre>
   <form @submit.prevent="updateCreateTournament">
     <FormField v-slot="{ componentField }" name="name">
       <FormItem>

@@ -48,7 +48,11 @@ import MapDisplay from "~/components/MapDisplay.vue";
   </div>
 
   <div class="flex">
-    <FormField v-slot="{ value, handleChange }" name="map_veto" v-if="!forceVeto">
+    <FormField
+      v-slot="{ value, handleChange }"
+      name="map_veto"
+      v-if="!forceVeto"
+    >
       <FormItem
         class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
         @click="handleChange(!value)"
@@ -234,7 +238,7 @@ export default {
       required: false,
       type: Boolean,
       default: false,
-    }
+    },
   },
   apollo: {
     e_match_types: {

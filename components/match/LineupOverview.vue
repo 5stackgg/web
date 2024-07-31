@@ -108,10 +108,7 @@ export default {
       );
     },
     canUpdateLineup() {
-      return (
-        this.match.is_captain ||
-        this.match.is_organizer
-      );
+      return this.match.is_captain || this.match.is_organizer;
     },
     canUpdateCoach() {
       return this.canUpdateLineup && this.match.options.coaches;

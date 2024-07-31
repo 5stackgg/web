@@ -65,6 +65,7 @@ export default {
               is_captain: true,
               is_organizer: true,
               can_assign_map: true,
+              min_players_per_lineup: true,
               max_players_per_lineup: true,
               server_id: true,
               server_type: true,

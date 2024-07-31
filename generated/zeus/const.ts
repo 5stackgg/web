@@ -2404,6 +2404,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_maps:"match_maps_bool_exp",
 		match_maps_aggregate:"match_maps_aggregate_bool_exp",
 		match_options_id:"uuid_comparison_exp",
+		max_players_per_lineup:"Int_comparison_exp",
+		min_players_per_lineup:"Int_comparison_exp",
 		options:"match_options_bool_exp",
 		organizer:"players_bool_exp",
 		organizer_steam_id:"bigint_comparison_exp",
@@ -2523,6 +2525,8 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"order_by",
 		match_maps_aggregate:"match_maps_aggregate_order_by",
 		match_options_id:"order_by",
+		max_players_per_lineup:"order_by",
+		min_players_per_lineup:"order_by",
 		options:"match_options_order_by",
 		organizer:"players_order_by",
 		organizer_steam_id:"order_by",
@@ -10305,6 +10309,8 @@ export const ReturnTypes: Record<string,any> = {
 		match_maps:"match_maps",
 		match_maps_aggregate:"match_maps_aggregate",
 		match_options_id:"uuid",
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		options:"match_options",
 		organizer:"players",
 		organizer_steam_id:"bigint",
@@ -10356,6 +10362,8 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"matches_variance_fields"
 	},
 	matches_avg_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	matches_max_fields:{
@@ -10368,6 +10376,8 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_1_id:"uuid",
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
 		scheduled_at:"date",
@@ -10389,6 +10399,8 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_1_id:"uuid",
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
 		scheduled_at:"date",
@@ -10405,24 +10417,38 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"matches"
 	},
 	matches_stddev_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	matches_stddev_pop_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	matches_stddev_samp_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	matches_sum_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint"
 	},
 	matches_var_pop_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	matches_var_samp_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	matches_variance_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	mutation_root:{

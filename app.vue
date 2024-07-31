@@ -54,9 +54,6 @@ export default {
     useHead({
       title: "5stack",
       meta: [{ name: "description", content: "5stack.gg" }],
-      link: [
-      
-      ],
     });
   },
 };

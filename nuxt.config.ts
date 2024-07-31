@@ -1,7 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-const sw = process.env.SW === 'true'
-
 export default defineNuxtConfig({
   ssr: false,
   plugins: [],

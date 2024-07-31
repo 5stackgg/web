@@ -212,7 +212,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
               <MapDisplay :map="map"></MapDisplay>
               <div
                 class="absolute inset-0 bg-black bg-opacity-55"
-                v-if="!form.values.map_pool.includes(map.id)"
+                v-if="!form.values.map_pool?.includes(map.id)"
               ></div>
             </div>
           </template>

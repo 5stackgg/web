@@ -19,7 +19,6 @@ export default defineNuxtConfig({
   pwa: {
     injectRegister: 'auto',
     registerType: 'autoUpdate',
-    devOptions: { enabled: true },
     manifest: {
       name: '5stack',
       short_name: '5stack',
@@ -44,14 +43,6 @@ export default defineNuxtConfig({
       theme_color: '#000000',
       background_color: '#000000',
       display: 'standalone'
-    },
-    workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico,jpeg,webp}'],
-      runtimeCaching: [{
-        urlPattern: "/",
-        handler: 'NetworkFirst',
-      }],
-      navigateFallback: undefined,
     },
   },
 

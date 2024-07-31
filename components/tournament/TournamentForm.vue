@@ -13,6 +13,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
+  <pre>{{ form.values }}</pre>
   <form @submit.prevent="updateCreateTournament">
     <FormField v-slot="{ componentField }" name="name">
       <FormItem>
@@ -189,7 +190,7 @@ export default {
         this.form.setValues({
           map_pool_id: null,
           custom_map_pool: true,
-          map_pool: this.tournament.options.map_pool.maps.map(({ id }) => {
+          map_pool: this.tournament?.options.map_pool.maps.map(({ id }) => {
             return id;
           }),
         });
@@ -203,7 +204,7 @@ export default {
       });
     },
     isDefaultMapPool() {
-      if (!this.defaultMapPool) {
+      if (!this.defaultMapPool || !this.tournament) {
         return true;
       }
       return this.defaultMapPool.id === this.tournament.options.map_pool.id;

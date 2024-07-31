@@ -11,11 +11,12 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "shadcn-nuxt",
     "@nuxt/image",
+    '@vite-pwa/nuxt'
   ],
 
-  buildModules: [
-    '@nuxtjs/pwa',
-  ],
+  pwa: {
+
+  },
 
   colorMode: {
     classSuffix: "",

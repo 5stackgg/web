@@ -19,8 +19,34 @@ export default defineNuxtConfig({
   pwa: {
     injectRegister: 'auto',
     registerType: 'autoUpdate',
+    devOptions: { enabled: true },
+    manifest: {
+      name: '5stack',
+      short_name: '5stack',
+      icons: [
+        // {
+        //   src: '/assets/favicon/android-chrome-96x96.png',
+        //   sizes: '96x96',
+        //   type : 'image/png'
+        // },
+        // {
+        //   src: '/assets/favicon/android-chrome-192x192.png',
+        //   sizes: '192x192',
+        //   type : 'image/png'
+        // },
+        // {
+        //   src: '/assets/favicon/android-chrome-512x512.png',
+        //   sizes: '512x512',
+        //   type: 'image/png',
+        //   purpose: 'any'
+        // },
+      ],
+      theme_color: '#000000',
+      background_color: '#000000',
+      display: 'standalone'
+    },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,jpeg,webp}'],
       runtimeCaching: [{
         urlPattern: "/",
         handler: 'NetworkFirst',

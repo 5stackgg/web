@@ -25,17 +25,17 @@ export default defineNuxtConfig({
       short_name: '5stack',
       icons: [
         {
-          src: '/assets/favicon/64.png',
+          src: '/favicon/64.png',
           sizes: '64x64',
           type : 'image/png'
         },
         {
-          src: '/assets/favicon/192.png',
+          src: '/favicon/192.png',
           sizes: '192x192',
           type : 'image/png'
         },
         {
-          src: '/assets/favicon/512.png',
+          src: '/favicon/512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any'

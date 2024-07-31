@@ -62,7 +62,7 @@ import { Separator } from "~/components/ui/separator";
       <div
         class="flex items-center space-x-2 cursor-pointer"
         @click="override = !override"
-        v-if="isMatchOrganizer"
+        v-if="match.is_organizer"
       >
         <Label>Match Organizer Override</Label>
         <Switch :checked="override" />
@@ -287,22 +287,6 @@ export default {
     bestOf() {
       return this.match.options.best_of;
     },
-    isCaptain() {
-      return this.myLineup?.captain?.player.steam_id === this.me.steam_id;
-    },
-    myLineup() {
-      if (!this.match) {
-        return;
-      }
-
-      const lineups = [this.match.lineup_1, this.match.lineup_2];
-
-      return lineups.find((lineup) => {
-        return lineup?.lineup_players.find((player) => {
-          return player.steam_id === this.me.steam_id;
-        });
-      });
-    },
     isPicking() {
       if (this.override) {
         return true;
@@ -314,11 +298,8 @@ export default {
 
       return (
         this.myLineup.id === this.match.veto_picking_lineup_id &&
-        (this.isCaptain || this.isMatchOrganizer)
+        (this.match.is_captain || this.match.is_organizer)
       );
-    },
-    isMatchOrganizer() {
-      return this.match.organizer_steam_id === this.me.steam_id;
     },
     pickType() {
       if (!this.match) {

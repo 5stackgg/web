@@ -58,7 +58,10 @@ import {
   </h1>
   <div class="flex">
     <template v-for="round of Array.from(rounds.keys())">
-      <TournamentRound :round="round" :brackets="rounds.get(round)"></TournamentRound>
+      <TournamentRound
+        :round="round"
+        :brackets="rounds.get(round)"
+      ></TournamentRound>
     </template>
   </div>
 

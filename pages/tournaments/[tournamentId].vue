@@ -69,7 +69,7 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
     <TabsContent value="teams">
       <TournamentAddTeam
         :tournament="tournament"
-        v-if="canAddTeams"
+        v-if="tournament.is_organizer"
       ></TournamentAddTeam>
 
       <div v-for="team of tournament.teams">
@@ -138,6 +138,7 @@ export default {
               start: true,
               status: true,
               description: true,
+              is_organizer: true,
               can_join_tournament: true,
               admin: {
                 name: true,
@@ -322,14 +323,6 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    canAddTeams() {
-      return (
-        this.tournament.orgnaier_steam_id === this.me.id ||
-        this.tournament.organizers.find(({ steam_id }) => {
-          return steam_id === this.me.id;
-        })
-      );
     },
   },
   methods: {

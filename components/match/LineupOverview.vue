@@ -94,30 +94,21 @@ export default {
     assigningLineups() {
       const currentStatus = this.match.status;
       return (
-        this.match.organizer_steam_id == this.me?.steam_id &&
+        this.match.is_organizer &&
         (currentStatus == "Warmup" ||
           currentStatus == "PickingPlayers" ||
           currentStatus == "Scheduled") &&
         this.canAddToLineup
       );
     },
-    maxPlayersPerLineup() {
-      return (
-        (this.match?.type === e_match_types_enum.Wingman ? 2 : 5) +
-        this.match.options.number_of_substitutes
-      );
-    },
     canAddToLineup() {
       return (
         this.canUpdateLineup &&
-        this.lineup.lineup_players.length < this.maxPlayersPerLineup
+        this.lineup.lineup_players.length < this.match.max_players_per_lineup
       );
     },
     canUpdateLineup() {
-      return (
-        this.match.organizer_steam_id === this.me.steam_id ||
-        this.lineup.captain.player.steam_id === this.me.steam_id
-      );
+      return this.match.is_captain || this.match.is_organizer;
     },
     canUpdateCoach() {
       return this.canUpdateLineup && this.match.options.coaches;

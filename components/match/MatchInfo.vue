@@ -49,7 +49,7 @@ import { e_match_status_enum } from "~/generated/zeus";
           <Button
             @click.prevent.stop="startMatch"
             class="-mr-2"
-            :disabled="canAddTolineup_1 || canAddTolineup_2"
+            :disabled="!hasMinimumLineupPlayers"
           >
             Start
             <template
@@ -227,17 +227,12 @@ export default {
     },
   },
   computed: {
-    maxPlayersPerLineup() {
-      return this.match?.type === "Wingman" ? 2 : 5;
-    },
-    canAddTolineup_1() {
+    hasMinimumLineupPlayers() {
       return (
-        this.match.lineup_1?.lineup_players.length < this.maxPlayersPerLineup
-      );
-    },
-    canAddTolineup_2() {
-      return (
-        this.match.lineup_2?.lineup_players.length < this.maxPlayersPerLineup
+        this.match.lineup_1?.lineup_players.length >=
+          this.match.min_players_per_lineup &&
+        this.match.lineup_2?.lineup_players.length >=
+          this.match.min_players_per_lineup
       );
     },
   },

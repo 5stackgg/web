@@ -6,7 +6,7 @@ export default function matchOptionsValidator(additional: any) {
   return toTypedSchema(
     z.object({
       mr: z.string().default("12"),
-      map_veto: z.boolean().default(false),
+      map_veto: z.boolean().default(true),
       coaches: z.boolean().default(false),
       knife_round: z.boolean().default(true),
       overtime: z.boolean().default(true),

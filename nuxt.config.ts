@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+const sw = process.env.SW === 'true'
+
 export default defineNuxtConfig({
   ssr: false,
   plugins: [],
@@ -15,7 +17,14 @@ export default defineNuxtConfig({
   ],
 
   pwa: {
-
+    registerType: 'autoUpdate',
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+      navigateFallback: '/',
+      navigateFallbackAllowlist: [/^\/$/],
+      type: 'module',
+    },
   },
 
   colorMode: {

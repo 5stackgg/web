@@ -13,6 +13,10 @@ export default defineNuxtConfig({
     "@nuxt/image",
   ],
 
+  buildModules: [
+    '@nuxtjs/pwa',
+  ],
+
   colorMode: {
     classSuffix: "",
     preference: "dark",

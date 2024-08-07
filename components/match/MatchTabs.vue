@@ -164,7 +164,7 @@ enum AvailableCommands {
   Resume = 'css_resume',
   SkipKnife = 'skip_knife',
   ForceReady = 'force_ready',
-  RestoreRound = 'css_reset',
+  RestoreRound = 'restore_round',
 }
 
 const CommandDetails = {
@@ -204,16 +204,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
             z.object({
-              round: z.number().refine(
-                  (value) => {
-                    return !!this.currentMap?.rounds.find(({ round }) => {
-                      return value - 1 === round;
-                    });
-                  },
-                  {
-                    message: "Round does not exist.",
-                  }
-              )
+              round: z.number()
             }),
         ),
       }),

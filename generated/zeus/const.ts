@@ -1858,6 +1858,7 @@ export const AllTypesProps: Record<string,any> = {
 		flashes:"player_flashes_bool_exp",
 		flashes_aggregate:"player_flashes_aggregate_bool_exp",
 		id:"uuid_comparison_exp",
+		is_current_map:"Boolean_comparison_exp",
 		lineup_1_score:"Int_comparison_exp",
 		lineup_1_side:"e_sides_enum_comparison_exp",
 		lineup_1_timeouts_available:"Int_comparison_exp",
@@ -1944,6 +1945,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_match_map_status:"e_match_map_status_order_by",
 		flashes_aggregate:"player_flashes_aggregate_order_by",
 		id:"order_by",
+		is_current_map:"order_by",
 		lineup_1_score:"order_by",
 		lineup_1_side:"order_by",
 		lineup_1_timeouts_available:"order_by",
@@ -2881,6 +2883,10 @@ export const AllTypesProps: Record<string,any> = {
 		delete_v_pool_maps:{
 			where:"v_pool_maps_bool_exp"
 		},
+		forfeitMatch:{
+			match_id:"uuid",
+			winning_lineup_id:"uuid"
+		},
 		insert__map_pool:{
 			objects:"_map_pool_insert_input",
 			on_conflict:"_map_pool_on_conflict"
@@ -3232,6 +3238,10 @@ export const AllTypesProps: Record<string,any> = {
 		scheduleMatch:{
 			match_id:"uuid",
 			time:"timestamptz"
+		},
+		setMatchWinner:{
+			match_id:"uuid",
+			winning_lineup_id:"uuid"
 		},
 		startMatch:{
 			match_id:"uuid",
@@ -10026,6 +10036,7 @@ export const ReturnTypes: Record<string,any> = {
 		flashes:"player_flashes",
 		flashes_aggregate:"player_flashes_aggregate",
 		id:"uuid",
+		is_current_map:"Boolean",
 		lineup_1_score:"Int",
 		lineup_1_side:"e_sides_enum",
 		lineup_1_timeouts_available:"Int",
@@ -10540,6 +10551,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournaments_by_pk:"tournaments",
 		delete_v_match_captains:"v_match_captains_mutation_response",
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
+		forfeitMatch:"SuccessOutput",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
 		insert_e_map_pool_types:"e_map_pool_types_mutation_response",
@@ -10629,6 +10641,7 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
 		scheduleMatch:"SuccessOutput",
+		setMatchWinner:"SuccessOutput",
 		startMatch:"SuccessOutput",
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",

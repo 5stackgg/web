@@ -21,9 +21,11 @@ import { Badge } from "~/components/ui/badge";
     />
     <div>
       <span class="font-bold">{{ matchMap.lineup_1_score }}</span>
-      [<span class="text-yellow-500">0</span>:<span class="text-blue-400"
-        >0</span
+      <template v-if="match.match_maps.length > 1">
+        [<span class="text-yellow-500">0</span>:<span class="text-blue-400"
+      >0</span
       >]
+      </template>
     </div>
   </div>
 

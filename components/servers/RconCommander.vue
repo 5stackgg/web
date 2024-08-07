@@ -1,8 +1,28 @@
+<script lang="ts" setup>
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { FormControl, FormField, FormItem } from "~/components/ui/form";
+import { CornerDownLeft } from "lucide-vue-next";
+import { Badge } from "~/components/ui/badge";
+import { TrashIcon } from "@radix-icons/vue";
+</script>
+
 <template>
+  <div>
+    <Button @click="commander('get_match')">Send Match Information to Server</Button>
+    <Button @click="commander('meta version')">Metamod Info</Button>
+    <Button @click="commander(['css_plugins list', 'css'])">Counter Strike Sharp Info</Button>
+    <slot :commander="commander"></slot>
+  </div>
   <div
     class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
   >
-    <Badge variant="outline" class="absolute right-3 top-3"> Output </Badge>
+    <div class="absolute right-3 top-3">
+      <div class="flex">
+        <TrashIcon @click="logs = []" class="cursor-pointer"></TrashIcon>
+        <Badge variant="outline"> Output </Badge>
+      </div>
+    </div>
     <div class="flex-1 overflow-scroll max-h-screen">
       <p v-for="log in logs" :key="log" class="whitespace-pre my-2">
         {{ log }}
@@ -32,17 +52,9 @@
     </form>
   </div>
 </template>
-<script setup lang="ts">
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { FormControl, FormField, FormItem } from "~/components/ui/form";
-import { CornerDownLeft } from "lucide-vue-next";
-import { Badge } from "~/components/ui/badge";
-</script>
-
 <script lang="ts">
 import socket from "~/web-sockets/Socket";
-import { useForm } from "vee-validate";
+import {useForm} from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { v4 as uuidv4 } from "uuid";
@@ -59,6 +71,22 @@ export default {
       logs: [],
       uuid: undefined,
       rconListener: undefined,
+      commander: (commands: string | Array<string>, value: string) => {
+        if(!Array.isArray(commands)) {
+          commands = [commands]
+        }
+
+        for(let command of commands) {
+
+          if(value) {
+            command = `${command} ${value}`
+          }
+
+          this.form.setFieldValue('command', command);
+          this.sendCommand()
+          this.logs.push(command);
+        }
+      },
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -99,6 +127,7 @@ export default {
         serverId: this.serverId,
         command: command,
       });
+
       this.form.resetForm();
     },
   },

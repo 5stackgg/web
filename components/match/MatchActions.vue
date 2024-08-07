@@ -21,7 +21,7 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
       <!--        SCHEDULE MATCH HERE-->
       <!--      </DropdownMenuItem>-->
 
-      <template v-if="cancelable">
+      <template v-if="canCancel">
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
       </template>
@@ -30,6 +30,7 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 </template>
 
 <script lang="ts">
+import {e_match_status_enum} from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
@@ -56,7 +57,7 @@ export default {
     },
   },
   computed: {
-    cancelable() {
+    canCancel() {
       return this.match.status !== e_match_status_enum.Canceled;
     },
   },

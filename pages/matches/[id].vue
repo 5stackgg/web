@@ -51,6 +51,7 @@ export default {
             order_by_name: order_by.asc,
             order_by_kills: order_by.desc,
             order_by_round_kills: order_by.asc,
+            order_by_round: order_by.asc,
           };
         },
         query: typedGql("subscription")({
@@ -107,6 +108,7 @@ export default {
                   lineup_1_side: true,
                   lineup_2_side: true,
                   map: mapFields,
+                  is_current_map: true,
                   vetos: {
                     side: true,
                     type: true,
@@ -115,7 +117,11 @@ export default {
                   status: true,
                   lineup_1_score: true,
                   lineup_2_score: true,
-                  rounds: {
+                  rounds: [{
+                    order_by: {
+                      round: $("order_by_round", "order_by"),
+                    },
+                  }, {
                     round: true,
                     kills: [
                       {
@@ -132,7 +138,7 @@ export default {
                         },
                       },
                     ],
-                  },
+                  }],
                 },
               ],
               lineup_1: [{}, matchLineups],

@@ -4166,6 +4166,8 @@ flashes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_flashes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_flashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_flashes_aggregate"]],
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_current_match_map" */
+	is_current_map?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_side?:boolean | `@${string}`,
@@ -4357,6 +4359,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	flashes?: ValueTypes["player_flashes_bool_exp"] | undefined | null | Variable<any, string>,
 	flashes_aggregate?: ValueTypes["player_flashes_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_current_map?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_1_score?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_1_timeouts_available?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -4495,6 +4498,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	e_match_map_status?: ValueTypes["e_match_map_status_order_by"] | undefined | null | Variable<any, string>,
 	flashes_aggregate?: ValueTypes["player_flashes_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_current_map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_1_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_1_side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_1_timeouts_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -5918,6 +5922,7 @@ delete_v_match_captains?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["v_match_captains_bool_exp"] | Variable<any, string>},ValueTypes["v_match_captains_mutation_response"]],
 delete_v_pool_maps?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["v_pool_maps_bool_exp"] | Variable<any, string>},ValueTypes["v_pool_maps_mutation_response"]],
+forfeitMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["_map_pool_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
@@ -6179,6 +6184,7 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ValueTypes["v_pool_maps_insert_input"] | Variable<any, string>},ValueTypes["v_pool_maps"]],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["_map_pool_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -19265,6 +19271,8 @@ flashes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_flashes_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_flashes_bool_exp"] | undefined | null},ResolverInputTypes["player_flashes_aggregate"]],
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_current_match_map" */
+	is_current_map?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_side?:boolean | `@${string}`,
@@ -19456,6 +19464,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	flashes?: ResolverInputTypes["player_flashes_bool_exp"] | undefined | null,
 	flashes_aggregate?: ResolverInputTypes["player_flashes_aggregate_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	is_current_map?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	lineup_1_score?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
 	lineup_1_timeouts_available?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -19594,6 +19603,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	e_match_map_status?: ResolverInputTypes["e_match_map_status_order_by"] | undefined | null,
 	flashes_aggregate?: ResolverInputTypes["player_flashes_aggregate_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	is_current_map?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_1_score?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_1_side?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_1_timeouts_available?: ResolverInputTypes["order_by"] | undefined | null,
@@ -21017,6 +21027,7 @@ delete_v_match_captains?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["v_match_captains_bool_exp"]},ResolverInputTypes["v_match_captains_mutation_response"]],
 delete_v_pool_maps?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["v_pool_maps_bool_exp"]},ResolverInputTypes["v_pool_maps_mutation_response"]],
+forfeitMatch?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["_map_pool_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["_map_pool_mutation_response"]],
@@ -21278,6 +21289,7 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["v_pool_maps_insert_input"]},ResolverInputTypes["v_pool_maps"]],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["_map_pool_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -33997,6 +34009,8 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	flashes_aggregate: ModelTypes["player_flashes_aggregate"],
 	id: ModelTypes["uuid"],
+	/** A computed field, executes function "is_current_match_map" */
+	is_current_map?: boolean | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_side: ModelTypes["e_sides_enum"],
@@ -34120,6 +34134,7 @@ export type ModelTypes = {
 	flashes?: ModelTypes["player_flashes_bool_exp"] | undefined,
 	flashes_aggregate?: ModelTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	is_current_map?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	lineup_1_score?: ModelTypes["Int_comparison_exp"] | undefined,
 	lineup_1_side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined,
 	lineup_1_timeouts_available?: ModelTypes["Int_comparison_exp"] | undefined,
@@ -34254,6 +34269,7 @@ export type ModelTypes = {
 	e_match_map_status?: ModelTypes["e_match_map_status_order_by"] | undefined,
 	flashes_aggregate?: ModelTypes["player_flashes_aggregate_order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	is_current_map?: ModelTypes["order_by"] | undefined,
 	lineup_1_score?: ModelTypes["order_by"] | undefined,
 	lineup_1_side?: ModelTypes["order_by"] | undefined,
 	lineup_1_timeouts_available?: ModelTypes["order_by"] | undefined,
@@ -35585,6 +35601,7 @@ export type ModelTypes = {
 	delete_v_match_captains?: ModelTypes["v_match_captains_mutation_response"] | undefined,
 	/** delete data from the table: "v_pool_maps" */
 	delete_v_pool_maps?: ModelTypes["v_pool_maps_mutation_response"] | undefined,
+	forfeitMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
 	/** insert a single row into the table: "_map_pool" */
@@ -35763,6 +35780,8 @@ export type ModelTypes = {
 	insert_v_pool_maps_one?: ModelTypes["v_pool_maps"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined,
+	/** setMatchWinner */
+	setMatchWinner?: ModelTypes["SuccessOutput"] | undefined,
 	/** startMatch */
 	startMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */
@@ -47011,6 +47030,8 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	flashes_aggregate: GraphQLTypes["player_flashes_aggregate"],
 	id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "is_current_match_map" */
+	is_current_map?: boolean | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_side: GraphQLTypes["e_sides_enum"],
@@ -47137,6 +47158,7 @@ export type GraphQLTypes = {
 	flashes?: GraphQLTypes["player_flashes_bool_exp"] | undefined,
 	flashes_aggregate?: GraphQLTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	is_current_map?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	lineup_1_score?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	lineup_1_side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined,
 	lineup_1_timeouts_available?: GraphQLTypes["Int_comparison_exp"] | undefined,
@@ -47275,6 +47297,7 @@ export type GraphQLTypes = {
 	e_match_map_status?: GraphQLTypes["e_match_map_status_order_by"] | undefined,
 	flashes_aggregate?: GraphQLTypes["player_flashes_aggregate_order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	is_current_map?: GraphQLTypes["order_by"] | undefined,
 	lineup_1_score?: GraphQLTypes["order_by"] | undefined,
 	lineup_1_side?: GraphQLTypes["order_by"] | undefined,
 	lineup_1_timeouts_available?: GraphQLTypes["order_by"] | undefined,
@@ -48659,6 +48682,7 @@ export type GraphQLTypes = {
 	delete_v_match_captains?: GraphQLTypes["v_match_captains_mutation_response"] | undefined,
 	/** delete data from the table: "v_pool_maps" */
 	delete_v_pool_maps?: GraphQLTypes["v_pool_maps_mutation_response"] | undefined,
+	forfeitMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,
 	/** insert a single row into the table: "_map_pool" */
@@ -48837,6 +48861,8 @@ export type GraphQLTypes = {
 	insert_v_pool_maps_one?: GraphQLTypes["v_pool_maps"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined,
+	/** setMatchWinner */
+	setMatchWinner?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** startMatch */
 	startMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */

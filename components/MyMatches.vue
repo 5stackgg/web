@@ -72,7 +72,7 @@ export default {
           limit: this.per_page,
           offset: (this.page - 1) * this.per_page,
           statuses: this.upcoming
-            ? [e_match_status_enum.Canceled, e_match_status_enum.Finished]
+            ? [e_match_status_enum.Canceled, e_match_status_enum.Forfeit, e_match_status_enum.Tie, e_match_status_enum.Finished]
             : [],
         };
       },

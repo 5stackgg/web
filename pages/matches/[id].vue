@@ -117,28 +117,31 @@ export default {
                   status: true,
                   lineup_1_score: true,
                   lineup_2_score: true,
-                  rounds: [{
-                    order_by: {
-                      round: $("order_by_round", "order_by"),
+                  rounds: [
+                    {
+                      order_by: {
+                        round: $("order_by_round", "order_by"),
+                      },
                     },
-                  }, {
-                    round: true,
-                    kills: [
-                      {
-                        order_by: {
-                          time: $("order_by_round_kills", "order_by"),
+                    {
+                      round: true,
+                      kills: [
+                        {
+                          order_by: {
+                            time: $("order_by_round_kills", "order_by"),
+                          },
                         },
-                      },
-                      {
-                        player: {
-                          steam_id: true,
+                        {
+                          player: {
+                            steam_id: true,
+                          },
+                          attacked_player: {
+                            steam_id: true,
+                          },
                         },
-                        attacked_player: {
-                          steam_id: true,
-                        },
-                      },
-                    ],
-                  }],
+                      ],
+                    },
+                  ],
                 },
               ],
               lineup_1: [{}, matchLineups],

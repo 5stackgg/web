@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-const sw = process.env.SW === 'true'
+const sw = process.env.SW === "true";
 
 export default defineNuxtConfig({
   ssr: false,
@@ -13,36 +13,36 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "shadcn-nuxt",
     "@nuxt/image",
-    '@vite-pwa/nuxt'
+    "@vite-pwa/nuxt",
   ],
 
   pwa: {
-    injectRegister: 'auto',
-    registerType: 'autoUpdate',
+    injectRegister: "auto",
+    registerType: "autoUpdate",
     manifest: {
-      name: '5stack',
-      short_name: '5stack',
+      name: "5stack",
+      short_name: "5stack",
       icons: [
         {
-          src: '/favicon/64.png',
-          sizes: '64x64',
-          type : 'image/png'
+          src: "/favicon/64.png",
+          sizes: "64x64",
+          type: "image/png",
         },
         {
-          src: '/favicon/192.png',
-          sizes: '192x192',
-          type : 'image/png'
+          src: "/favicon/192.png",
+          sizes: "192x192",
+          type: "image/png",
         },
         {
-          src: '/favicon/512.png',
-          sizes: '512x512',
-          type: 'image/png',
-          purpose: 'any'
+          src: "/favicon/512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any",
         },
       ],
-      theme_color: '#000000',
-      background_color: '#000000',
-      display: 'standalone'
+      theme_color: "#000000",
+      background_color: "#000000",
+      display: "standalone",
     },
   },
 

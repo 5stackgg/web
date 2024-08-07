@@ -30,7 +30,7 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 </template>
 
 <script lang="ts">
-import {e_match_status_enum} from "~/generated/zeus";
+import { e_match_status_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {

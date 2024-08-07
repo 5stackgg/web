@@ -9,9 +9,13 @@ import { TrashIcon } from "@radix-icons/vue";
 
 <template>
   <div>
-    <Button @click="commander('get_match')">Send Match Information to Server</Button>
+    <Button @click="commander('get_match')"
+      >Send Match Information to Server</Button
+    >
     <Button @click="commander('meta version')">Metamod Info</Button>
-    <Button @click="commander(['css_plugins list', 'css'])">Counter Strike Sharp Info</Button>
+    <Button @click="commander(['css_plugins list', 'css'])"
+      >Counter Strike Sharp Info</Button
+    >
     <slot :commander="commander"></slot>
   </div>
   <div
@@ -54,7 +58,7 @@ import { TrashIcon } from "@radix-icons/vue";
 </template>
 <script lang="ts">
 import socket from "~/web-sockets/Socket";
-import {useForm} from "vee-validate";
+import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { v4 as uuidv4 } from "uuid";
@@ -72,18 +76,17 @@ export default {
       uuid: undefined,
       rconListener: undefined,
       commander: (commands: string | Array<string>, value: string) => {
-        if(!Array.isArray(commands)) {
-          commands = [commands]
+        if (!Array.isArray(commands)) {
+          commands = [commands];
         }
 
-        for(let command of commands) {
-
-          if(value) {
-            command = `${command} ${value}`
+        for (let command of commands) {
+          if (value) {
+            command = `${command} ${value}`;
           }
 
-          this.form.setFieldValue('command', command);
-          this.sendCommand()
+          this.form.setFieldValue("command", command);
+          this.sendCommand();
           this.logs.push(command);
         }
       },

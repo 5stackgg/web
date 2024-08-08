@@ -60,8 +60,8 @@ export default {
       return (this.match.lineup_1_id === this.lineup.id
         ? this.matchMap.lineup_1_side
         : this.matchMap.lineup_2_side) === "TERRORIST"
-        ? "/img/teams/patches/t.png"
-        : "/img/teams/patches/ct.webp";
+        ? "/img/teams/t_logo.svg"
+        : "/img/teams/ct_logo.svg";
     },
   },
 };

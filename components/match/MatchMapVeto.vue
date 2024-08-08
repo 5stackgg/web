@@ -15,8 +15,8 @@ import { Separator } from "~/components/ui/separator";
             <NuxtImg
               :src="
                 pick.side === 'CT'
-                  ? '/img/teams/patches/ct.webp'
-                  : '/img/teams/patches/t.png'
+                  ? '/img/teams/ct_logo.svg'
+                  : '/img/teams/t_logo.svg'
               "
             ></NuxtImg>
             <div class="absolute bottom-3 text-sm">

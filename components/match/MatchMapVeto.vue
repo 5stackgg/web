@@ -316,12 +316,12 @@ export default {
         {
           value: e_sides_enum.CT,
           display: "Counter-Terrorist",
-          img: "/img/teams/patches/ct.webp",
+          img: "/img/teams/ct_logo.svg",
         },
         {
           value: e_sides_enum.TERRORIST,
           display: "Terrorist",
-          img: "/img/teams/patches/t.png",
+          img: "/img/teams/t_logo.svg",
         },
       ];
     },

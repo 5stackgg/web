@@ -2034,6 +2034,74 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_timeouts_available:"order_by",
 		order:"order_by"
 	},
+	match_messages_aggregate_fields:{
+		count:{
+			columns:"match_messages_select_column"
+		}
+	},
+	match_messages_bool_exp:{
+		_and:"match_messages_bool_exp",
+		_not:"match_messages_bool_exp",
+		_or:"match_messages_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		match_id:"uuid_comparison_exp",
+		message:"String_comparison_exp",
+		player_steam_id:"bigint_comparison_exp",
+		updated_at:"timestamptz_comparison_exp"
+	},
+	match_messages_constraint: "enum" as const,
+	match_messages_inc_input:{
+		player_steam_id:"bigint"
+	},
+	match_messages_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	match_messages_on_conflict:{
+		constraint:"match_messages_constraint",
+		update_columns:"match_messages_update_column",
+		where:"match_messages_bool_exp"
+	},
+	match_messages_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		match_id:"order_by",
+		message:"order_by",
+		player_steam_id:"order_by",
+		updated_at:"order_by"
+	},
+	match_messages_pk_columns_input:{
+		id:"uuid"
+	},
+	match_messages_select_column: "enum" as const,
+	match_messages_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	match_messages_stream_cursor_input:{
+		initial_value:"match_messages_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	match_messages_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_id:"uuid",
+		player_steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	match_messages_update_column: "enum" as const,
+	match_messages_updates:{
+		_inc:"match_messages_inc_input",
+		_set:"match_messages_set_input",
+		where:"match_messages_bool_exp"
+	},
 	match_options:{
 		matches:{
 			distinct_on:"matches_select_column",
@@ -2741,6 +2809,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_match_maps_by_pk:{
 			id:"uuid"
 		},
+		delete_match_messages:{
+			where:"match_messages_bool_exp"
+		},
+		delete_match_messages_by_pk:{
+			id:"uuid"
+		},
 		delete_match_options:{
 			where:"match_options_bool_exp"
 		},
@@ -3046,6 +3120,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_match_maps_one:{
 			object:"match_maps_insert_input",
 			on_conflict:"match_maps_on_conflict"
+		},
+		insert_match_messages:{
+			objects:"match_messages_insert_input",
+			on_conflict:"match_messages_on_conflict"
+		},
+		insert_match_messages_one:{
+			object:"match_messages_insert_input",
+			on_conflict:"match_messages_on_conflict"
 		},
 		insert_match_options:{
 			objects:"match_options_insert_input",
@@ -3476,6 +3558,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_match_maps_many:{
 			updates:"match_maps_updates"
+		},
+		update_match_messages:{
+			_inc:"match_messages_inc_input",
+			_set:"match_messages_set_input",
+			where:"match_messages_bool_exp"
+		},
+		update_match_messages_by_pk:{
+			_inc:"match_messages_inc_input",
+			_set:"match_messages_set_input",
+			pk_columns:"match_messages_pk_columns_input"
+		},
+		update_match_messages_many:{
+			updates:"match_messages_updates"
 		},
 		update_match_options:{
 			_inc:"match_options_inc_input",
@@ -5786,6 +5881,19 @@ export const AllTypesProps: Record<string,any> = {
 		match_maps_by_pk:{
 			id:"uuid"
 		},
+		match_messages:{
+			distinct_on:"match_messages_select_column",
+			order_by:"match_messages_order_by",
+			where:"match_messages_bool_exp"
+		},
+		match_messages_aggregate:{
+			distinct_on:"match_messages_select_column",
+			order_by:"match_messages_order_by",
+			where:"match_messages_bool_exp"
+		},
+		match_messages_by_pk:{
+			id:"uuid"
+		},
 		match_options:{
 			distinct_on:"match_options_select_column",
 			order_by:"match_options_order_by",
@@ -6620,6 +6728,23 @@ export const AllTypesProps: Record<string,any> = {
 		match_maps_stream:{
 			cursor:"match_maps_stream_cursor_input",
 			where:"match_maps_bool_exp"
+		},
+		match_messages:{
+			distinct_on:"match_messages_select_column",
+			order_by:"match_messages_order_by",
+			where:"match_messages_bool_exp"
+		},
+		match_messages_aggregate:{
+			distinct_on:"match_messages_select_column",
+			order_by:"match_messages_order_by",
+			where:"match_messages_bool_exp"
+		},
+		match_messages_by_pk:{
+			id:"uuid"
+		},
+		match_messages_stream:{
+			cursor:"match_messages_stream_cursor_input",
+			where:"match_messages_bool_exp"
 		},
 		match_options:{
 			distinct_on:"match_options_select_column",
@@ -10165,6 +10290,77 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_2_timeouts_available:"Float",
 		order:"Float"
 	},
+	match_messages:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match:"matches",
+		match_id:"uuid",
+		message:"String",
+		player:"players",
+		player_steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	match_messages_aggregate:{
+		aggregate:"match_messages_aggregate_fields",
+		nodes:"match_messages"
+	},
+	match_messages_aggregate_fields:{
+		avg:"match_messages_avg_fields",
+		count:"Int",
+		max:"match_messages_max_fields",
+		min:"match_messages_min_fields",
+		stddev:"match_messages_stddev_fields",
+		stddev_pop:"match_messages_stddev_pop_fields",
+		stddev_samp:"match_messages_stddev_samp_fields",
+		sum:"match_messages_sum_fields",
+		var_pop:"match_messages_var_pop_fields",
+		var_samp:"match_messages_var_samp_fields",
+		variance:"match_messages_variance_fields"
+	},
+	match_messages_avg_fields:{
+		player_steam_id:"Float"
+	},
+	match_messages_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_id:"uuid",
+		message:"String",
+		player_steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	match_messages_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_id:"uuid",
+		message:"String",
+		player_steam_id:"bigint",
+		updated_at:"timestamptz"
+	},
+	match_messages_mutation_response:{
+		affected_rows:"Int",
+		returning:"match_messages"
+	},
+	match_messages_stddev_fields:{
+		player_steam_id:"Float"
+	},
+	match_messages_stddev_pop_fields:{
+		player_steam_id:"Float"
+	},
+	match_messages_stddev_samp_fields:{
+		player_steam_id:"Float"
+	},
+	match_messages_sum_fields:{
+		player_steam_id:"bigint"
+	},
+	match_messages_var_pop_fields:{
+		player_steam_id:"Float"
+	},
+	match_messages_var_samp_fields:{
+		player_steam_id:"Float"
+	},
+	match_messages_variance_fields:{
+		player_steam_id:"Float"
+	},
 	match_options:{
 		best_of:"Int",
 		coaches:"Boolean",
@@ -10505,6 +10701,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_match_map_rounds_by_pk:"match_map_rounds",
 		delete_match_maps:"match_maps_mutation_response",
 		delete_match_maps_by_pk:"match_maps",
+		delete_match_messages:"match_messages_mutation_response",
+		delete_match_messages_by_pk:"match_messages",
 		delete_match_options:"match_options_mutation_response",
 		delete_match_options_by_pk:"match_options",
 		delete_match_veto_picks:"match_veto_picks_mutation_response",
@@ -10592,6 +10790,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_match_map_rounds_one:"match_map_rounds",
 		insert_match_maps:"match_maps_mutation_response",
 		insert_match_maps_one:"match_maps",
+		insert_match_messages:"match_messages_mutation_response",
+		insert_match_messages_one:"match_messages",
 		insert_match_options:"match_options_mutation_response",
 		insert_match_options_one:"match_options",
 		insert_match_veto_picks:"match_veto_picks_mutation_response",
@@ -10703,6 +10903,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_match_maps:"match_maps_mutation_response",
 		update_match_maps_by_pk:"match_maps",
 		update_match_maps_many:"match_maps_mutation_response",
+		update_match_messages:"match_messages_mutation_response",
+		update_match_messages_by_pk:"match_messages",
+		update_match_messages_many:"match_messages_mutation_response",
 		update_match_options:"match_options_mutation_response",
 		update_match_options_by_pk:"match_options",
 		update_match_options_many:"match_options_mutation_response",
@@ -11689,6 +11892,9 @@ export const ReturnTypes: Record<string,any> = {
 		match_maps:"match_maps",
 		match_maps_aggregate:"match_maps_aggregate",
 		match_maps_by_pk:"match_maps",
+		match_messages:"match_messages",
+		match_messages_aggregate:"match_messages_aggregate",
+		match_messages_by_pk:"match_messages",
 		match_options:"match_options",
 		match_options_aggregate:"match_options_aggregate",
 		match_options_by_pk:"match_options",
@@ -11955,6 +12161,10 @@ export const ReturnTypes: Record<string,any> = {
 		match_maps_aggregate:"match_maps_aggregate",
 		match_maps_by_pk:"match_maps",
 		match_maps_stream:"match_maps",
+		match_messages:"match_messages",
+		match_messages_aggregate:"match_messages_aggregate",
+		match_messages_by_pk:"match_messages",
+		match_messages_stream:"match_messages",
 		match_options:"match_options",
 		match_options_aggregate:"match_options_aggregate",
 		match_options_by_pk:"match_options",

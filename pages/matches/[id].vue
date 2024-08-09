@@ -35,11 +35,13 @@ import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
+import socket from "~/web-sockets/Socket";
 
 export default {
   data() {
     return {
       match: undefined,
+      matchListener: undefined,
     };
   },
   apollo: {
@@ -154,6 +156,40 @@ export default {
         },
       },
     },
+  },
+  mounted() {
+    this.matchListener?.stop();
+    this.matchListener = socket.listen("lobby", (data) => {
+      switch(data.event){
+        case "list":
+          useMatchLobbyStore().set(this.matchId, data.lobby)
+          break;
+        case "joined":
+          useMatchLobbyStore().add(this.matchId, data.user)
+          break;
+        case "left":
+          useMatchLobbyStore().remove(this.matchId, data.user)
+          break;
+      }
+    });
+  },
+  watch: {
+    ['$route.params.id']: {
+      immediate: true,
+      handler() {
+        socket.event('lobby:join', {
+          matchId: this.matchId
+        })
+      }
+    }
+  },
+  computed: {
+    matchId() {
+      return this.$route.params.id;
+    },
+  },
+  beforeUnmount() {
+    this.matchListener?.stop();
   },
 };
 </script>

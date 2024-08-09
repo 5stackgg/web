@@ -18,7 +18,7 @@ class Socket extends EventEmitter {
     this.connection = webSocket;
 
     webSocket.addEventListener("message", (message) => {
-      const { event, id, data } = JSON.parse(message.data);
+      const { event, data } = JSON.parse(message.data);
       this.emit(event, data);
     });
 
@@ -28,8 +28,8 @@ class Socket extends EventEmitter {
       console.info("Connected to 5Stack");
       setTimeout(() => {
         for (let i = 0; i < this.offlineQueue.length; i++) {
-          const { event, id, data } = this.offlineQueue[i];
-          this.event(event, id, data);
+          const { event, data } = this.offlineQueue[i];
+          this.event(event, data);
           this.offlineQueue.shift();
           i--;
         }
@@ -52,7 +52,7 @@ class Socket extends EventEmitter {
 
   public event(event: string, data: Record<string, unknown>) {
     if (!this.connected || !this.connection) {
-      this.offlineQueue.push({ event, id, data });
+      this.offlineQueue.push({ event, data });
     } else {
       this.connection.send(
         JSON.stringify({

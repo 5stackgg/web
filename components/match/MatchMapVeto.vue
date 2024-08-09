@@ -309,7 +309,7 @@ export default {
       return this.match.veto_type;
     },
     previousMap() {
-      return this.picks.at(-1).map;
+      return this.picks?.at(-1).map;
     },
     sideOptions() {
       return [

@@ -1,4 +1,4 @@
-import alertStore from "~/stores/alertStore";
+import alertStore from "~/stores/AlertStore";
 import { AlertStatuses } from "~/constants/AlertStatuses";
 
 export default defineNuxtPlugin((nuxtApp) => {

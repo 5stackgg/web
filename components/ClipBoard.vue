@@ -28,7 +28,7 @@ import { Copy } from "lucide-vue-next";
 
 <script lang="ts">
 import ClipboardJS from "clipboard";
-import alertStore from "@/stores/alertStore";
+import alertStore from "~/stores/AlertStore";
 import { AlertStatuses } from "@/constants/AlertStatuses";
 export default {
   props: {

@@ -27,8 +27,7 @@ class Socket extends EventEmitter {
       this.connected = true;
       console.info("[ws] connected");
 
-
-      for(const [room, data] of Array.from(this.rooms).values()) {
+      for (const [room, data] of Array.from(this.rooms).values()) {
         this.join(room, data);
       }
 
@@ -56,16 +55,16 @@ class Socket extends EventEmitter {
     };
   }
 
-  private rooms: Map<string , Record<string, unknown>> = new Map();
+  private rooms: Map<string, Record<string, unknown>> = new Map();
 
   public join(room: string, data: Record<string, unknown>) {
-      this.rooms.set(room, data);
+    this.rooms.set(room, data);
 
-      if (!this.connected || !this.connection) {
-        return;
-      }
-      this.event(`${room}:join`, data);
-      console.info(`[ws] joining room ${room}`);
+    if (!this.connected || !this.connection) {
+      return;
+    }
+    this.event(`${room}:join`, data);
+    console.info(`[ws] joining room ${room}`);
   }
 
   public event(event: string, data: Record<string, unknown>) {

@@ -163,28 +163,28 @@ export default {
   mounted() {
     this.matchListener?.stop();
     this.matchListener = socket.listen("lobby", (data) => {
-      switch(data.event){
+      switch (data.event) {
         case "list":
-          useMatchLobbyStore().set(this.matchId, data.lobby)
+          useMatchLobbyStore().set(this.matchId, data.lobby);
           break;
         case "joined":
-          useMatchLobbyStore().add(this.matchId, data.user)
+          useMatchLobbyStore().add(this.matchId, data.user);
           break;
         case "left":
-          useMatchLobbyStore().remove(this.matchId, data.user)
+          useMatchLobbyStore().remove(this.matchId, data.user);
           break;
       }
     });
   },
   watch: {
-    ['$route.params.id']: {
+    ["$route.params.id"]: {
       immediate: true,
       handler() {
-        socket.join('lobby', {
-          matchId: this.matchId
-        })
-      }
-    }
+        socket.join("lobby", {
+          matchId: this.matchId,
+        });
+      },
+    },
   },
   computed: {
     matchId() {

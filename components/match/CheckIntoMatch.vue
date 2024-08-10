@@ -8,8 +8,9 @@
         </template>
       </CardTitle>
       <CardDescription>
-        A minimum of {{ playersRequiredToStart }} players must check in before you can start the match.
-        {{ totalCheckedIn }} / {{ playersRequiredToStart }} checked in.
+        A minimum of {{ playersRequiredToStart }} players must check in before
+        you can start the match. {{ totalCheckedIn }} /
+        {{ playersRequiredToStart }} checked in.
       </CardDescription>
     </CardHeader>
     <CardContent class="p-2 pt-0 md:p-4 md:pt-0">
@@ -21,14 +22,14 @@
 </template>
 
 <script lang="ts">
-import {generateMutation} from "~/graphql/graphqlGen";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {
     match: {
       type: Object,
       required: true,
-    }
+    },
   },
   computed: {
     me() {
@@ -40,7 +41,7 @@ export default {
     isInMatch() {
       return this.players.find((player) => {
         return player.steam_id === this.me?.steam_id;
-      })
+      });
     },
     players() {
       if (!this.match) {
@@ -61,7 +62,7 @@ export default {
     },
     playersRequiredToStart() {
       return this.match.min_players_per_lineup;
-    }
+    },
   },
   methods: {
     async checkIn() {
@@ -77,7 +78,7 @@ export default {
           ],
         }),
       });
-    }
-  }
-}
+    },
+  },
+};
 </script>

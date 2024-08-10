@@ -10,11 +10,14 @@
         <AvatarFallback>{{ member.player.name }}</AvatarFallback>
       </Avatar>
       <div class="flex">
-         <span class="flex h-2 w-2 rounded-full" :class="{
-          ['bg-red-600']: !isOnline && !isReady,
-          ['bg-yellow-600']: isOnline && !isReady,
-          ['bg-green-600']: isReady,
-      }"></span>
+        <span
+          class="flex h-2 w-2 rounded-full"
+          :class="{
+            ['bg-red-600']: !isOnline && !isReady,
+            ['bg-yellow-600']: isOnline && !isReady,
+            ['bg-green-600']: isReady,
+          }"
+        ></span>
         {{ member.player.name }}
       </div>
       <Badge variant="outline" v-if="member.captain"> Captain </Badge>
@@ -54,7 +57,7 @@ export default {
     },
     isReady() {
       return this.member.checked_in;
-    }
-  }
+    },
+  },
 };
 </script>

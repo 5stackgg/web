@@ -32,6 +32,7 @@ export const matchLineups = Selector("match_lineups")({
     {
       captain: true,
       steam_id: true,
+      checked_in: true,
       player: {
         name: true,
         steam_id: true,

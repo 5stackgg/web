@@ -11,9 +11,9 @@
       </Avatar>
       <div class="flex">
          <span class="flex h-2 w-2 rounded-full" :class="{
-          ['bg-red-600']: !isOnline,
+          ['bg-red-600']: !isOnline && !isReady,
           ['bg-yellow-600']: isOnline && !isReady,
-          ['bg-green-600']: isOnline && isReady,
+          ['bg-green-600']: isReady,
       }"></span>
         {{ member.player.name }}
       </div>
@@ -53,7 +53,7 @@ export default {
       return !!this.lobby?.get(this.member.player.steam_id);
     },
     isReady() {
-      return false;
+      return this.member.checked_in;
     }
   }
 };

@@ -3,6 +3,7 @@ import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
+import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 </script>
 
 <template>
@@ -10,8 +11,10 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
     <div
       class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
     >
-      <MatchInfo :match="match"></MatchInfo>
-
+      <div>
+        <CheckIntoMatch :match="match"></CheckIntoMatch>
+        <MatchInfo :match="match"></MatchInfo>
+      </div>
       <div class="grid gap-y-4">
         <div
           class="flex gap-4 max-h-[500px] justify-around"
@@ -177,7 +180,7 @@ export default {
     ['$route.params.id']: {
       immediate: true,
       handler() {
-        socket.event('lobby:join', {
+        socket.join('lobby', {
           matchId: this.matchId
         })
       }

@@ -12,7 +12,7 @@ class Socket extends EventEmitter {
 
   public connect() {
     const wsHost = `${import.meta.env.VITE_WS_HOST || "wss://ws.5stack.gg"}`;
-    console.info(`connecting to ws: ${wsHost}`);
+    console.info(`[ws] connecting to ws: ${wsHost}`);
     const webSocket = new WebSocket(wsHost);
 
     this.connection = webSocket;
@@ -25,7 +25,13 @@ class Socket extends EventEmitter {
     webSocket.addEventListener("open", () => {
       this.emit("online");
       this.connected = true;
-      console.info("Connected to 5Stack");
+      console.info("[ws] connected");
+
+
+      for(const [room, data] of Array.from(this.rooms).values()) {
+        this.join(room, data);
+      }
+
       setTimeout(() => {
         for (let i = 0; i < this.offlineQueue.length; i++) {
           const { event, data } = this.offlineQueue[i];
@@ -39,15 +45,27 @@ class Socket extends EventEmitter {
     webSocket.onclose = (closeEvent) => {
       this.emit("offline");
       this.connected = false;
-      console.warn("Lost connection to websocket server", closeEvent);
+      console.warn("[ws] lost connection to websocket server", closeEvent);
       setTimeout(() => {
-        this.connect();
+        this.connect(true);
       }, 1000);
     };
 
     webSocket.onerror = (error) => {
-      console.warn("web socket error", error);
+      console.warn("[ws] web socket error", error);
     };
+  }
+
+  private rooms: Map<string , Record<string, unknown>> = new Map();
+
+  public join(room: string, data: Record<string, unknown>) {
+      this.rooms.set(room, data);
+
+      if (!this.connected || !this.connection) {
+        return;
+      }
+      this.event(`${room}:join`, data);
+      console.info(`[ws] joining room ${room}`);
   }
 
   public event(event: string, data: Record<string, unknown>) {

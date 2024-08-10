@@ -18,7 +18,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", {
             if(!this.lobbies[matchId]) {
                 this.lobbies[matchId] = new Map()
             }
-
             this.lobbies[matchId].set(user.steam_id, user);
         },
         set(matchId, users) {

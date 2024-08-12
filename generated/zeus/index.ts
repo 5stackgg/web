@@ -58135,10 +58135,10 @@ export const enum e_player_roles_constraint {
 	e_player_roles_pkey = "e_player_roles_pkey"
 }
 export const enum e_player_roles_enum {
-	Admin = "Admin",
-	MatchOrganizer = "MatchOrganizer",
-	TournamentOrganizer = "TournamentOrganizer",
-	User = "User"
+	admin = "admin",
+	match_organizer = "match_organizer",
+	tournament_organizer = "tournament_organizer",
+	user = "user"
 }
 /** select columns of table "e_player_roles" */
 export const enum e_player_roles_select_column {

@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
       q: query ?? "*",
       query_by: queryBy,
       sort_by: "name:asc",
+        infix: ["fallback", "off"],
       ...(body.exclude ? { filter_by: exclude } : {}),
       ...(body.teamId ? { filter_by: `teams:${body.teamId}` } : {}),
       ...(body.page ? { page: body.page } : {}),

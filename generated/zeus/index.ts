@@ -1684,6 +1684,111 @@ count?: [{	columns?: Array<ValueTypes["e_objective_types_select_column"]> | unde
 	/** filter the rows which have to be updated */
 	where: ValueTypes["e_objective_types_bool_exp"] | Variable<any, string>
 };
+	/** columns and relationships of "e_player_roles" */
+["e_player_roles"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_player_roles" */
+["e_player_roles_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_player_roles_aggregate_fields"],
+	nodes?:ValueTypes["e_player_roles"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_player_roles" */
+["e_player_roles_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_player_roles_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_player_roles_max_fields"],
+	min?:ValueTypes["e_player_roles_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_player_roles". All fields are combined with a logical 'AND'. */
+["e_player_roles_bool_exp"]: {
+	_and?: Array<ValueTypes["e_player_roles_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_player_roles_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_player_roles_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_player_roles" */
+["e_player_roles_constraint"]:e_player_roles_constraint;
+	["e_player_roles_enum"]:e_player_roles_enum;
+	/** Boolean expression to compare columns of type "e_player_roles_enum". All fields are combined with logical 'AND'. */
+["e_player_roles_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_player_roles_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_player_roles_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_player_roles" */
+["e_player_roles_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_player_roles_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_player_roles_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_player_roles" */
+["e_player_roles_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_player_roles"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_player_roles" */
+["e_player_roles_on_conflict"]: {
+	constraint: ValueTypes["e_player_roles_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_player_roles_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_player_roles_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_player_roles". */
+["e_player_roles_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_player_roles */
+["e_player_roles_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_player_roles" */
+["e_player_roles_select_column"]:e_player_roles_select_column;
+	/** input type for updating data in table "e_player_roles" */
+["e_player_roles_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_player_roles" */
+["e_player_roles_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_player_roles_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_player_roles_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_player_roles" */
+["e_player_roles_update_column"]:e_player_roles_update_column;
+	["e_player_roles_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_player_roles_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_player_roles_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "e_sides" */
 ["e_sides"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -5809,6 +5914,9 @@ delete_e_match_types_by_pk?: [{	value: string | Variable<any, string>},ValueType
 delete_e_objective_types?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_objective_types_bool_exp"] | Variable<any, string>},ValueTypes["e_objective_types_mutation_response"]],
 delete_e_objective_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_objective_types"]],
+delete_e_player_roles?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_player_roles_bool_exp"] | Variable<any, string>},ValueTypes["e_player_roles_mutation_response"]],
+delete_e_player_roles_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_player_roles"]],
 delete_e_sides?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_sides_bool_exp"] | Variable<any, string>},ValueTypes["e_sides_mutation_response"]],
 delete_e_sides_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_sides"]],
@@ -5958,6 +6066,12 @@ insert_e_objective_types?: [{	/** the rows to be inserted */
 insert_e_objective_types_one?: [{	/** the row to be inserted */
 	object: ValueTypes["e_objective_types_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_objective_types_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_objective_types"]],
+insert_e_player_roles?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_player_roles_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_player_roles_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_player_roles_mutation_response"]],
+insert_e_player_roles_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_player_roles_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_player_roles_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_player_roles"]],
 insert_e_sides?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_sides_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_sides_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_sides_mutation_response"]],
@@ -6227,6 +6341,13 @@ update_e_objective_types_by_pk?: [{	/** sets the columns of the filtered rows to
 	_set?: ValueTypes["e_objective_types_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_objective_types_pk_columns_input"] | Variable<any, string>},ValueTypes["e_objective_types"]],
 update_e_objective_types_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["e_objective_types_updates"]> | Variable<any, string>},ValueTypes["e_objective_types_mutation_response"]],
+update_e_player_roles?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_player_roles_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_player_roles_bool_exp"] | Variable<any, string>},ValueTypes["e_player_roles_mutation_response"]],
+update_e_player_roles_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_player_roles_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_player_roles_pk_columns_input"] | Variable<any, string>},ValueTypes["e_player_roles"]],
+update_e_player_roles_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_player_roles_updates"]> | Variable<any, string>},ValueTypes["e_player_roles_mutation_response"]],
 update_e_sides?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_sides_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_sides_bool_exp"] | Variable<any, string>},ValueTypes["e_sides_mutation_response"]],
@@ -9412,6 +9533,7 @@ player_unused_utilities_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_unused_utility_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_unused_utility_aggregate"]],
 	profile_url?:boolean | `@${string}`,
+	role?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 team_invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -9562,6 +9684,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	player_unused_utilities?: ValueTypes["player_unused_utility_bool_exp"] | undefined | null | Variable<any, string>,
 	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	role?: ValueTypes["e_player_roles_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	team_invites?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>,
 	team_invites_aggregate?: ValueTypes["team_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -9606,6 +9729,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	player_lineup?: ValueTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_unused_utilities?: ValueTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	team_invites?: ValueTypes["team_invites_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	team_members?: ValueTypes["team_roster_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -9678,6 +9802,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	player_lineup_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	profile_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	team_invites_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	team_members_aggregate?: ValueTypes["team_roster_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -9700,6 +9825,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	discord_id?: string | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
@@ -9731,6 +9857,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	discord_id?: string | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	profile_url?: string | undefined | null | Variable<any, string>,
+	role?: ValueTypes["e_player_roles_enum"] | undefined | null | Variable<any, string>,
 	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
@@ -9842,6 +9969,19 @@ e_objective_types_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["e_objective_types_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_objective_types_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_objective_types_aggregate"]],
 e_objective_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_objective_types"]],
+e_player_roles?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_player_roles_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_player_roles_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_player_roles_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_player_roles"]],
+e_player_roles_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_player_roles_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_player_roles_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_player_roles_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_player_roles_aggregate"]],
+e_player_roles_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_player_roles"]],
 e_sides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_sides_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -10802,6 +10942,23 @@ e_objective_types_stream?: [{	/** maximum number of rows returned in a single ba
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["e_objective_types_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_objective_types_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_objective_types"]],
+e_player_roles?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_player_roles_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_player_roles_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_player_roles_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_player_roles"]],
+e_player_roles_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_player_roles_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_player_roles_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_player_roles_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_player_roles_aggregate"]],
+e_player_roles_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_player_roles"]],
+e_player_roles_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_player_roles_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_player_roles_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_player_roles"]],
 e_sides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_sides_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -16788,6 +16945,111 @@ count?: [{	columns?: Array<ResolverInputTypes["e_objective_types_select_column"]
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_objective_types_bool_exp"]
 };
+	/** columns and relationships of "e_player_roles" */
+["e_player_roles"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_player_roles" */
+["e_player_roles_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_player_roles_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_player_roles"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_player_roles" */
+["e_player_roles_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_player_roles_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_player_roles_max_fields"],
+	min?:ResolverInputTypes["e_player_roles_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_player_roles". All fields are combined with a logical 'AND'. */
+["e_player_roles_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_player_roles_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_player_roles_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_player_roles_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_player_roles" */
+["e_player_roles_constraint"]:e_player_roles_constraint;
+	["e_player_roles_enum"]:e_player_roles_enum;
+	/** Boolean expression to compare columns of type "e_player_roles_enum". All fields are combined with logical 'AND'. */
+["e_player_roles_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_player_roles_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_player_roles_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_player_roles" */
+["e_player_roles_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_player_roles_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_player_roles_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_player_roles" */
+["e_player_roles_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_player_roles"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_player_roles" */
+["e_player_roles_on_conflict"]: {
+	constraint: ResolverInputTypes["e_player_roles_constraint"],
+	update_columns: Array<ResolverInputTypes["e_player_roles_update_column"]>,
+	where?: ResolverInputTypes["e_player_roles_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_player_roles". */
+["e_player_roles_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_player_roles */
+["e_player_roles_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_player_roles" */
+["e_player_roles_select_column"]:e_player_roles_select_column;
+	/** input type for updating data in table "e_player_roles" */
+["e_player_roles_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_player_roles" */
+["e_player_roles_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_player_roles_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_player_roles_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_player_roles" */
+["e_player_roles_update_column"]:e_player_roles_update_column;
+	["e_player_roles_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_player_roles_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_player_roles_bool_exp"]
+};
 	/** columns and relationships of "e_sides" */
 ["e_sides"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -20913,6 +21175,9 @@ delete_e_match_types_by_pk?: [{	value: string},ResolverInputTypes["e_match_types
 delete_e_objective_types?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_objective_types_bool_exp"]},ResolverInputTypes["e_objective_types_mutation_response"]],
 delete_e_objective_types_by_pk?: [{	value: string},ResolverInputTypes["e_objective_types"]],
+delete_e_player_roles?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_player_roles_bool_exp"]},ResolverInputTypes["e_player_roles_mutation_response"]],
+delete_e_player_roles_by_pk?: [{	value: string},ResolverInputTypes["e_player_roles"]],
 delete_e_sides?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_sides_bool_exp"]},ResolverInputTypes["e_sides_mutation_response"]],
 delete_e_sides_by_pk?: [{	value: string},ResolverInputTypes["e_sides"]],
@@ -21062,6 +21327,12 @@ insert_e_objective_types?: [{	/** the rows to be inserted */
 insert_e_objective_types_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["e_objective_types_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_objective_types_on_conflict"] | undefined | null},ResolverInputTypes["e_objective_types"]],
+insert_e_player_roles?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_player_roles_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_player_roles_on_conflict"] | undefined | null},ResolverInputTypes["e_player_roles_mutation_response"]],
+insert_e_player_roles_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_player_roles_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_player_roles_on_conflict"] | undefined | null},ResolverInputTypes["e_player_roles"]],
 insert_e_sides?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_sides_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_sides_on_conflict"] | undefined | null},ResolverInputTypes["e_sides_mutation_response"]],
@@ -21331,6 +21602,13 @@ update_e_objective_types_by_pk?: [{	/** sets the columns of the filtered rows to
 	_set?: ResolverInputTypes["e_objective_types_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_objective_types_pk_columns_input"]},ResolverInputTypes["e_objective_types"]],
 update_e_objective_types_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["e_objective_types_updates"]>},ResolverInputTypes["e_objective_types_mutation_response"]],
+update_e_player_roles?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_player_roles_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_player_roles_bool_exp"]},ResolverInputTypes["e_player_roles_mutation_response"]],
+update_e_player_roles_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_player_roles_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_player_roles_pk_columns_input"]},ResolverInputTypes["e_player_roles"]],
+update_e_player_roles_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_player_roles_updates"]>},ResolverInputTypes["e_player_roles_mutation_response"]],
 update_e_sides?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_sides_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_sides_bool_exp"]},ResolverInputTypes["e_sides_mutation_response"]],
@@ -24516,6 +24794,7 @@ player_unused_utilities_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_unused_utility_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null},ResolverInputTypes["player_unused_utility_aggregate"]],
 	profile_url?:boolean | `@${string}`,
+	role?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
 team_invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -24666,6 +24945,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	player_unused_utilities?: ResolverInputTypes["player_unused_utility_bool_exp"] | undefined | null,
 	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null,
 	profile_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	role?: ResolverInputTypes["e_player_roles_enum_comparison_exp"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	team_invites?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null,
 	team_invites_aggregate?: ResolverInputTypes["team_invites_aggregate_bool_exp"] | undefined | null,
@@ -24710,6 +24990,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	player_lineup?: ResolverInputTypes["match_lineup_players_arr_rel_insert_input"] | undefined | null,
 	player_unused_utilities?: ResolverInputTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null,
 	profile_url?: string | undefined | null,
+	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	team_invites?: ResolverInputTypes["team_invites_arr_rel_insert_input"] | undefined | null,
 	team_members?: ResolverInputTypes["team_roster_arr_rel_insert_input"] | undefined | null,
@@ -24782,6 +25063,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	player_lineup_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
 	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_order_by"] | undefined | null,
 	profile_url?: ResolverInputTypes["order_by"] | undefined | null,
+	role?: ResolverInputTypes["order_by"] | undefined | null,
 	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	team_invites_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
 	team_members_aggregate?: ResolverInputTypes["team_roster_aggregate_order_by"] | undefined | null,
@@ -24804,6 +25086,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	discord_id?: string | undefined | null,
 	name?: string | undefined | null,
 	profile_url?: string | undefined | null,
+	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -24835,6 +25118,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	discord_id?: string | undefined | null,
 	name?: string | undefined | null,
 	profile_url?: string | undefined | null,
+	role?: ResolverInputTypes["e_player_roles_enum"] | undefined | null,
 	steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** aggregate sum on columns */
@@ -24946,6 +25230,19 @@ e_objective_types_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["e_objective_types_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_objective_types_bool_exp"] | undefined | null},ResolverInputTypes["e_objective_types_aggregate"]],
 e_objective_types_by_pk?: [{	value: string},ResolverInputTypes["e_objective_types"]],
+e_player_roles?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_player_roles_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_player_roles_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_player_roles_bool_exp"] | undefined | null},ResolverInputTypes["e_player_roles"]],
+e_player_roles_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_player_roles_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_player_roles_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_player_roles_bool_exp"] | undefined | null},ResolverInputTypes["e_player_roles_aggregate"]],
+e_player_roles_by_pk?: [{	value: string},ResolverInputTypes["e_player_roles"]],
 e_sides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_sides_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -25906,6 +26203,23 @@ e_objective_types_stream?: [{	/** maximum number of rows returned in a single ba
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["e_objective_types_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_objective_types_bool_exp"] | undefined | null},ResolverInputTypes["e_objective_types"]],
+e_player_roles?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_player_roles_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_player_roles_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_player_roles_bool_exp"] | undefined | null},ResolverInputTypes["e_player_roles"]],
+e_player_roles_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_player_roles_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_player_roles_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_player_roles_bool_exp"] | undefined | null},ResolverInputTypes["e_player_roles_aggregate"]],
+e_player_roles_by_pk?: [{	value: string},ResolverInputTypes["e_player_roles"]],
+e_player_roles_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_player_roles_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_player_roles_bool_exp"] | undefined | null},ResolverInputTypes["e_player_roles"]],
 e_sides?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_sides_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -31802,6 +32116,102 @@ export type ModelTypes = {
 	/** filter the rows which have to be updated */
 	where: ModelTypes["e_objective_types_bool_exp"]
 };
+	/** columns and relationships of "e_player_roles" */
+["e_player_roles"]: {
+		description: string,
+	value: string
+};
+	/** aggregated selection of "e_player_roles" */
+["e_player_roles_aggregate"]: {
+		aggregate?: ModelTypes["e_player_roles_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["e_player_roles"]>
+};
+	/** aggregate fields of "e_player_roles" */
+["e_player_roles_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_player_roles_max_fields"] | undefined,
+	min?: ModelTypes["e_player_roles_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_player_roles". All fields are combined with a logical 'AND'. */
+["e_player_roles_bool_exp"]: {
+	_and?: Array<ModelTypes["e_player_roles_bool_exp"]> | undefined,
+	_not?: ModelTypes["e_player_roles_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["e_player_roles_bool_exp"]> | undefined,
+	description?: ModelTypes["String_comparison_exp"] | undefined,
+	value?: ModelTypes["String_comparison_exp"] | undefined
+};
+	["e_player_roles_constraint"]:e_player_roles_constraint;
+	["e_player_roles_enum"]:e_player_roles_enum;
+	/** Boolean expression to compare columns of type "e_player_roles_enum". All fields are combined with logical 'AND'. */
+["e_player_roles_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_player_roles_enum"] | undefined,
+	_in?: Array<ModelTypes["e_player_roles_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: ModelTypes["e_player_roles_enum"] | undefined,
+	_nin?: Array<ModelTypes["e_player_roles_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_player_roles" */
+["e_player_roles_insert_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_player_roles_max_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_player_roles_min_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_player_roles" */
+["e_player_roles_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_player_roles"]>
+};
+	/** on_conflict condition type for table "e_player_roles" */
+["e_player_roles_on_conflict"]: {
+	constraint: ModelTypes["e_player_roles_constraint"],
+	update_columns: Array<ModelTypes["e_player_roles_update_column"]>,
+	where?: ModelTypes["e_player_roles_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_player_roles". */
+["e_player_roles_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined,
+	value?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_player_roles */
+["e_player_roles_pk_columns_input"]: {
+	value: string
+};
+	["e_player_roles_select_column"]:e_player_roles_select_column;
+	/** input type for updating data in table "e_player_roles" */
+["e_player_roles_set_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_player_roles" */
+["e_player_roles_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_player_roles_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_player_roles_stream_cursor_value_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	["e_player_roles_update_column"]:e_player_roles_update_column;
+	["e_player_roles_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_player_roles_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_player_roles_bool_exp"]
+};
 	/** columns and relationships of "e_sides" */
 ["e_sides"]: {
 		description: string,
@@ -35455,6 +35865,10 @@ export type ModelTypes = {
 	delete_e_objective_types?: ModelTypes["e_objective_types_mutation_response"] | undefined,
 	/** delete single row from the table: "e_objective_types" */
 	delete_e_objective_types_by_pk?: ModelTypes["e_objective_types"] | undefined,
+	/** delete data from the table: "e_player_roles" */
+	delete_e_player_roles?: ModelTypes["e_player_roles_mutation_response"] | undefined,
+	/** delete single row from the table: "e_player_roles" */
+	delete_e_player_roles_by_pk?: ModelTypes["e_player_roles"] | undefined,
 	/** delete data from the table: "e_sides" */
 	delete_e_sides?: ModelTypes["e_sides_mutation_response"] | undefined,
 	/** delete single row from the table: "e_sides" */
@@ -35628,6 +36042,10 @@ export type ModelTypes = {
 	insert_e_objective_types?: ModelTypes["e_objective_types_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_objective_types" */
 	insert_e_objective_types_one?: ModelTypes["e_objective_types"] | undefined,
+	/** insert data into the table: "e_player_roles" */
+	insert_e_player_roles?: ModelTypes["e_player_roles_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_player_roles" */
+	insert_e_player_roles_one?: ModelTypes["e_player_roles"] | undefined,
 	/** insert data into the table: "e_sides" */
 	insert_e_sides?: ModelTypes["e_sides_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_sides" */
@@ -35822,6 +36240,12 @@ export type ModelTypes = {
 	update_e_objective_types_by_pk?: ModelTypes["e_objective_types"] | undefined,
 	/** update multiples rows of table: "e_objective_types" */
 	update_e_objective_types_many?: Array<ModelTypes["e_objective_types_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "e_player_roles" */
+	update_e_player_roles?: ModelTypes["e_player_roles_mutation_response"] | undefined,
+	/** update single row of the table: "e_player_roles" */
+	update_e_player_roles_by_pk?: ModelTypes["e_player_roles"] | undefined,
+	/** update multiples rows of table: "e_player_roles" */
+	update_e_player_roles_many?: Array<ModelTypes["e_player_roles_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_sides" */
 	update_e_sides?: ModelTypes["e_sides_mutation_response"] | undefined,
 	/** update single row of the table: "e_sides" */
@@ -38650,6 +39074,7 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	player_unused_utilities_aggregate: ModelTypes["player_unused_utility_aggregate"],
 	profile_url?: string | undefined,
+	role: ModelTypes["e_player_roles_enum"],
 	steam_id: ModelTypes["bigint"],
 	/** An array relationship */
 	team_invites: Array<ModelTypes["team_invites"]>,
@@ -38744,6 +39169,7 @@ export type ModelTypes = {
 	player_unused_utilities?: ModelTypes["player_unused_utility_bool_exp"] | undefined,
 	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	profile_url?: ModelTypes["String_comparison_exp"] | undefined,
+	role?: ModelTypes["e_player_roles_enum_comparison_exp"] | undefined,
 	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	team_invites?: ModelTypes["team_invites_bool_exp"] | undefined,
 	team_invites_aggregate?: ModelTypes["team_invites_aggregate_bool_exp"] | undefined,
@@ -38787,6 +39213,7 @@ export type ModelTypes = {
 	player_lineup?: ModelTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	player_unused_utilities?: ModelTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	profile_url?: string | undefined,
+	role?: ModelTypes["e_player_roles_enum"] | undefined,
 	steam_id?: ModelTypes["bigint"] | undefined,
 	team_invites?: ModelTypes["team_invites_arr_rel_insert_input"] | undefined,
 	team_members?: ModelTypes["team_roster_arr_rel_insert_input"] | undefined,
@@ -38856,6 +39283,7 @@ export type ModelTypes = {
 	player_lineup_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	profile_url?: ModelTypes["order_by"] | undefined,
+	role?: ModelTypes["order_by"] | undefined,
 	steam_id?: ModelTypes["order_by"] | undefined,
 	team_invites_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined,
 	team_members_aggregate?: ModelTypes["team_roster_aggregate_order_by"] | undefined,
@@ -38877,6 +39305,7 @@ export type ModelTypes = {
 	discord_id?: string | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
+	role?: ModelTypes["e_player_roles_enum"] | undefined,
 	steam_id?: ModelTypes["bigint"] | undefined
 };
 	/** aggregate stddev on columns */
@@ -38905,6 +39334,7 @@ export type ModelTypes = {
 	discord_id?: string | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
+	role?: ModelTypes["e_player_roles_enum"] | undefined,
 	steam_id?: ModelTypes["bigint"] | undefined
 };
 	/** aggregate sum on columns */
@@ -38969,6 +39399,12 @@ export type ModelTypes = {
 	e_objective_types_aggregate: ModelTypes["e_objective_types_aggregate"],
 	/** fetch data from the table: "e_objective_types" using primary key columns */
 	e_objective_types_by_pk?: ModelTypes["e_objective_types"] | undefined,
+	/** fetch data from the table: "e_player_roles" */
+	e_player_roles: Array<ModelTypes["e_player_roles"]>,
+	/** fetch aggregated fields from the table: "e_player_roles" */
+	e_player_roles_aggregate: ModelTypes["e_player_roles_aggregate"],
+	/** fetch data from the table: "e_player_roles" using primary key columns */
+	e_player_roles_by_pk?: ModelTypes["e_player_roles"] | undefined,
 	/** fetch data from the table: "e_sides" */
 	e_sides: Array<ModelTypes["e_sides"]>,
 	/** fetch aggregated fields from the table: "e_sides" */
@@ -39517,6 +39953,14 @@ export type ModelTypes = {
 	e_objective_types_by_pk?: ModelTypes["e_objective_types"] | undefined,
 	/** fetch data from the table in a streaming manner: "e_objective_types" */
 	e_objective_types_stream: Array<ModelTypes["e_objective_types"]>,
+	/** fetch data from the table: "e_player_roles" */
+	e_player_roles: Array<ModelTypes["e_player_roles"]>,
+	/** fetch aggregated fields from the table: "e_player_roles" */
+	e_player_roles_aggregate: ModelTypes["e_player_roles_aggregate"],
+	/** fetch data from the table: "e_player_roles" using primary key columns */
+	e_player_roles_by_pk?: ModelTypes["e_player_roles"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_player_roles" */
+	e_player_roles_stream: Array<ModelTypes["e_player_roles"]>,
 	/** fetch data from the table: "e_sides" */
 	e_sides: Array<ModelTypes["e_sides"]>,
 	/** fetch aggregated fields from the table: "e_sides" */
@@ -44673,6 +45117,111 @@ export type GraphQLTypes = {
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["e_objective_types_bool_exp"]
 };
+	/** columns and relationships of "e_player_roles" */
+["e_player_roles"]: {
+	__typename: "e_player_roles",
+	description: string,
+	value: string
+};
+	/** aggregated selection of "e_player_roles" */
+["e_player_roles_aggregate"]: {
+	__typename: "e_player_roles_aggregate",
+	aggregate?: GraphQLTypes["e_player_roles_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["e_player_roles"]>
+};
+	/** aggregate fields of "e_player_roles" */
+["e_player_roles_aggregate_fields"]: {
+	__typename: "e_player_roles_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_player_roles_max_fields"] | undefined,
+	min?: GraphQLTypes["e_player_roles_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_player_roles". All fields are combined with a logical 'AND'. */
+["e_player_roles_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_player_roles_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["e_player_roles_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["e_player_roles_bool_exp"]> | undefined,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "e_player_roles" */
+["e_player_roles_constraint"]: e_player_roles_constraint;
+	["e_player_roles_enum"]: e_player_roles_enum;
+	/** Boolean expression to compare columns of type "e_player_roles_enum". All fields are combined with logical 'AND'. */
+["e_player_roles_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_player_roles_enum"] | undefined,
+	_in?: Array<GraphQLTypes["e_player_roles_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: GraphQLTypes["e_player_roles_enum"] | undefined,
+	_nin?: Array<GraphQLTypes["e_player_roles_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_player_roles" */
+["e_player_roles_insert_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_player_roles_max_fields"]: {
+	__typename: "e_player_roles_max_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_player_roles_min_fields"]: {
+	__typename: "e_player_roles_min_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_player_roles" */
+["e_player_roles_mutation_response"]: {
+	__typename: "e_player_roles_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_player_roles"]>
+};
+	/** on_conflict condition type for table "e_player_roles" */
+["e_player_roles_on_conflict"]: {
+		constraint: GraphQLTypes["e_player_roles_constraint"],
+	update_columns: Array<GraphQLTypes["e_player_roles_update_column"]>,
+	where?: GraphQLTypes["e_player_roles_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_player_roles". */
+["e_player_roles_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined,
+	value?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_player_roles */
+["e_player_roles_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_player_roles" */
+["e_player_roles_select_column"]: e_player_roles_select_column;
+	/** input type for updating data in table "e_player_roles" */
+["e_player_roles_set_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_player_roles" */
+["e_player_roles_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_player_roles_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_player_roles_stream_cursor_value_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** update columns of table "e_player_roles" */
+["e_player_roles_update_column"]: e_player_roles_update_column;
+	["e_player_roles_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_player_roles_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_player_roles_bool_exp"]
+};
 	/** columns and relationships of "e_sides" */
 ["e_sides"]: {
 	__typename: "e_sides",
@@ -48540,6 +49089,10 @@ export type GraphQLTypes = {
 	delete_e_objective_types?: GraphQLTypes["e_objective_types_mutation_response"] | undefined,
 	/** delete single row from the table: "e_objective_types" */
 	delete_e_objective_types_by_pk?: GraphQLTypes["e_objective_types"] | undefined,
+	/** delete data from the table: "e_player_roles" */
+	delete_e_player_roles?: GraphQLTypes["e_player_roles_mutation_response"] | undefined,
+	/** delete single row from the table: "e_player_roles" */
+	delete_e_player_roles_by_pk?: GraphQLTypes["e_player_roles"] | undefined,
 	/** delete data from the table: "e_sides" */
 	delete_e_sides?: GraphQLTypes["e_sides_mutation_response"] | undefined,
 	/** delete single row from the table: "e_sides" */
@@ -48713,6 +49266,10 @@ export type GraphQLTypes = {
 	insert_e_objective_types?: GraphQLTypes["e_objective_types_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_objective_types" */
 	insert_e_objective_types_one?: GraphQLTypes["e_objective_types"] | undefined,
+	/** insert data into the table: "e_player_roles" */
+	insert_e_player_roles?: GraphQLTypes["e_player_roles_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_player_roles" */
+	insert_e_player_roles_one?: GraphQLTypes["e_player_roles"] | undefined,
 	/** insert data into the table: "e_sides" */
 	insert_e_sides?: GraphQLTypes["e_sides_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_sides" */
@@ -48907,6 +49464,12 @@ export type GraphQLTypes = {
 	update_e_objective_types_by_pk?: GraphQLTypes["e_objective_types"] | undefined,
 	/** update multiples rows of table: "e_objective_types" */
 	update_e_objective_types_many?: Array<GraphQLTypes["e_objective_types_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "e_player_roles" */
+	update_e_player_roles?: GraphQLTypes["e_player_roles_mutation_response"] | undefined,
+	/** update single row of the table: "e_player_roles" */
+	update_e_player_roles_by_pk?: GraphQLTypes["e_player_roles"] | undefined,
+	/** update multiples rows of table: "e_player_roles" */
+	update_e_player_roles_many?: Array<GraphQLTypes["e_player_roles_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_sides" */
 	update_e_sides?: GraphQLTypes["e_sides_mutation_response"] | undefined,
 	/** update single row of the table: "e_sides" */
@@ -51862,6 +52425,7 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	player_unused_utilities_aggregate: GraphQLTypes["player_unused_utility_aggregate"],
 	profile_url?: string | undefined,
+	role: GraphQLTypes["e_player_roles_enum"],
 	steam_id: GraphQLTypes["bigint"],
 	/** An array relationship */
 	team_invites: Array<GraphQLTypes["team_invites"]>,
@@ -51959,6 +52523,7 @@ export type GraphQLTypes = {
 	player_unused_utilities?: GraphQLTypes["player_unused_utility_bool_exp"] | undefined,
 	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	profile_url?: GraphQLTypes["String_comparison_exp"] | undefined,
+	role?: GraphQLTypes["e_player_roles_enum_comparison_exp"] | undefined,
 	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	team_invites?: GraphQLTypes["team_invites_bool_exp"] | undefined,
 	team_invites_aggregate?: GraphQLTypes["team_invites_aggregate_bool_exp"] | undefined,
@@ -52003,6 +52568,7 @@ export type GraphQLTypes = {
 	player_lineup?: GraphQLTypes["match_lineup_players_arr_rel_insert_input"] | undefined,
 	player_unused_utilities?: GraphQLTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	profile_url?: string | undefined,
+	role?: GraphQLTypes["e_player_roles_enum"] | undefined,
 	steam_id?: GraphQLTypes["bigint"] | undefined,
 	team_invites?: GraphQLTypes["team_invites_arr_rel_insert_input"] | undefined,
 	team_members?: GraphQLTypes["team_roster_arr_rel_insert_input"] | undefined,
@@ -52075,6 +52641,7 @@ export type GraphQLTypes = {
 	player_lineup_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_order_by"] | undefined,
 	profile_url?: GraphQLTypes["order_by"] | undefined,
+	role?: GraphQLTypes["order_by"] | undefined,
 	steam_id?: GraphQLTypes["order_by"] | undefined,
 	team_invites_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined,
 	team_members_aggregate?: GraphQLTypes["team_roster_aggregate_order_by"] | undefined,
@@ -52097,6 +52664,7 @@ export type GraphQLTypes = {
 	discord_id?: string | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
+	role?: GraphQLTypes["e_player_roles_enum"] | undefined,
 	steam_id?: GraphQLTypes["bigint"] | undefined
 };
 	/** aggregate stddev on columns */
@@ -52128,6 +52696,7 @@ export type GraphQLTypes = {
 	discord_id?: string | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
+	role?: GraphQLTypes["e_player_roles_enum"] | undefined,
 	steam_id?: GraphQLTypes["bigint"] | undefined
 };
 	/** aggregate sum on columns */
@@ -52198,6 +52767,12 @@ export type GraphQLTypes = {
 	e_objective_types_aggregate: GraphQLTypes["e_objective_types_aggregate"],
 	/** fetch data from the table: "e_objective_types" using primary key columns */
 	e_objective_types_by_pk?: GraphQLTypes["e_objective_types"] | undefined,
+	/** fetch data from the table: "e_player_roles" */
+	e_player_roles: Array<GraphQLTypes["e_player_roles"]>,
+	/** fetch aggregated fields from the table: "e_player_roles" */
+	e_player_roles_aggregate: GraphQLTypes["e_player_roles_aggregate"],
+	/** fetch data from the table: "e_player_roles" using primary key columns */
+	e_player_roles_by_pk?: GraphQLTypes["e_player_roles"] | undefined,
 	/** fetch data from the table: "e_sides" */
 	e_sides: Array<GraphQLTypes["e_sides"]>,
 	/** fetch aggregated fields from the table: "e_sides" */
@@ -52764,6 +53339,14 @@ export type GraphQLTypes = {
 	e_objective_types_by_pk?: GraphQLTypes["e_objective_types"] | undefined,
 	/** fetch data from the table in a streaming manner: "e_objective_types" */
 	e_objective_types_stream: Array<GraphQLTypes["e_objective_types"]>,
+	/** fetch data from the table: "e_player_roles" */
+	e_player_roles: Array<GraphQLTypes["e_player_roles"]>,
+	/** fetch aggregated fields from the table: "e_player_roles" */
+	e_player_roles_aggregate: GraphQLTypes["e_player_roles_aggregate"],
+	/** fetch data from the table: "e_player_roles" using primary key columns */
+	e_player_roles_by_pk?: GraphQLTypes["e_player_roles"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_player_roles" */
+	e_player_roles_stream: Array<GraphQLTypes["e_player_roles"]>,
 	/** fetch data from the table: "e_sides" */
 	e_sides: Array<GraphQLTypes["e_sides"]>,
 	/** fetch aggregated fields from the table: "e_sides" */
@@ -57547,6 +58130,26 @@ export const enum e_objective_types_update_column {
 	description = "description",
 	value = "value"
 }
+/** unique or primary key constraints on table "e_player_roles" */
+export const enum e_player_roles_constraint {
+	e_player_roles_pkey = "e_player_roles_pkey"
+}
+export const enum e_player_roles_enum {
+	Admin = "Admin",
+	MatchOrganizer = "MatchOrganizer",
+	TournamentOrganizer = "TournamentOrganizer",
+	User = "User"
+}
+/** select columns of table "e_player_roles" */
+export const enum e_player_roles_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_player_roles" */
+export const enum e_player_roles_update_column {
+	description = "description",
+	value = "value"
+}
 /** unique or primary key constraints on table "e_sides" */
 export const enum e_sides_constraint {
 	e_teams_pkey = "e_teams_pkey"
@@ -58259,6 +58862,7 @@ export const enum players_select_column {
 	discord_id = "discord_id",
 	name = "name",
 	profile_url = "profile_url",
+	role = "role",
 	steam_id = "steam_id"
 }
 /** update columns of table "players" */
@@ -58268,6 +58872,7 @@ export const enum players_update_column {
 	discord_id = "discord_id",
 	name = "name",
 	profile_url = "profile_url",
+	role = "role",
 	steam_id = "steam_id"
 }
 /** unique or primary key constraints on table "servers" */
@@ -58681,6 +59286,20 @@ type ZEUS_VARIABLES = {
 	["e_objective_types_stream_cursor_value_input"]: ValueTypes["e_objective_types_stream_cursor_value_input"];
 	["e_objective_types_update_column"]: ValueTypes["e_objective_types_update_column"];
 	["e_objective_types_updates"]: ValueTypes["e_objective_types_updates"];
+	["e_player_roles_bool_exp"]: ValueTypes["e_player_roles_bool_exp"];
+	["e_player_roles_constraint"]: ValueTypes["e_player_roles_constraint"];
+	["e_player_roles_enum"]: ValueTypes["e_player_roles_enum"];
+	["e_player_roles_enum_comparison_exp"]: ValueTypes["e_player_roles_enum_comparison_exp"];
+	["e_player_roles_insert_input"]: ValueTypes["e_player_roles_insert_input"];
+	["e_player_roles_on_conflict"]: ValueTypes["e_player_roles_on_conflict"];
+	["e_player_roles_order_by"]: ValueTypes["e_player_roles_order_by"];
+	["e_player_roles_pk_columns_input"]: ValueTypes["e_player_roles_pk_columns_input"];
+	["e_player_roles_select_column"]: ValueTypes["e_player_roles_select_column"];
+	["e_player_roles_set_input"]: ValueTypes["e_player_roles_set_input"];
+	["e_player_roles_stream_cursor_input"]: ValueTypes["e_player_roles_stream_cursor_input"];
+	["e_player_roles_stream_cursor_value_input"]: ValueTypes["e_player_roles_stream_cursor_value_input"];
+	["e_player_roles_update_column"]: ValueTypes["e_player_roles_update_column"];
+	["e_player_roles_updates"]: ValueTypes["e_player_roles_updates"];
 	["e_sides_bool_exp"]: ValueTypes["e_sides_bool_exp"];
 	["e_sides_constraint"]: ValueTypes["e_sides_constraint"];
 	["e_sides_enum"]: ValueTypes["e_sides_enum"];

@@ -419,6 +419,57 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_objective_types_set_input",
 		where:"e_objective_types_bool_exp"
 	},
+	e_player_roles_aggregate_fields:{
+		count:{
+			columns:"e_player_roles_select_column"
+		}
+	},
+	e_player_roles_bool_exp:{
+		_and:"e_player_roles_bool_exp",
+		_not:"e_player_roles_bool_exp",
+		_or:"e_player_roles_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_player_roles_constraint: "enum" as const,
+	e_player_roles_enum: "enum" as const,
+	e_player_roles_enum_comparison_exp:{
+		_eq:"e_player_roles_enum",
+		_in:"e_player_roles_enum",
+		_neq:"e_player_roles_enum",
+		_nin:"e_player_roles_enum"
+	},
+	e_player_roles_insert_input:{
+
+	},
+	e_player_roles_on_conflict:{
+		constraint:"e_player_roles_constraint",
+		update_columns:"e_player_roles_update_column",
+		where:"e_player_roles_bool_exp"
+	},
+	e_player_roles_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_player_roles_pk_columns_input:{
+
+	},
+	e_player_roles_select_column: "enum" as const,
+	e_player_roles_set_input:{
+
+	},
+	e_player_roles_stream_cursor_input:{
+		initial_value:"e_player_roles_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_player_roles_stream_cursor_value_input:{
+
+	},
+	e_player_roles_update_column: "enum" as const,
+	e_player_roles_updates:{
+		_set:"e_player_roles_set_input",
+		where:"e_player_roles_bool_exp"
+	},
 	e_sides:{
 		match_map_lineup_1:{
 			distinct_on:"match_maps_select_column",
@@ -2655,6 +2706,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_objective_types_by_pk:{
 
 		},
+		delete_e_player_roles:{
+			where:"e_player_roles_bool_exp"
+		},
+		delete_e_player_roles_by_pk:{
+
+		},
 		delete_e_sides:{
 			where:"e_sides_bool_exp"
 		},
@@ -2932,6 +2989,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_objective_types_one:{
 			object:"e_objective_types_insert_input",
 			on_conflict:"e_objective_types_on_conflict"
+		},
+		insert_e_player_roles:{
+			objects:"e_player_roles_insert_input",
+			on_conflict:"e_player_roles_on_conflict"
+		},
+		insert_e_player_roles_one:{
+			object:"e_player_roles_insert_input",
+			on_conflict:"e_player_roles_on_conflict"
 		},
 		insert_e_sides:{
 			objects:"e_sides_insert_input",
@@ -3310,6 +3375,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_objective_types_many:{
 			updates:"e_objective_types_updates"
+		},
+		update_e_player_roles:{
+			_set:"e_player_roles_set_input",
+			where:"e_player_roles_bool_exp"
+		},
+		update_e_player_roles_by_pk:{
+			_set:"e_player_roles_set_input",
+			pk_columns:"e_player_roles_pk_columns_input"
+		},
+		update_e_player_roles_many:{
+			updates:"e_player_roles_updates"
 		},
 		update_e_sides:{
 			_set:"e_sides_set_input",
@@ -5414,6 +5490,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities:"player_unused_utility_bool_exp",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
 		profile_url:"String_comparison_exp",
+		role:"e_player_roles_enum_comparison_exp",
 		steam_id:"bigint_comparison_exp",
 		team_invites:"team_invites_bool_exp",
 		team_invites_aggregate:"team_invites_aggregate_bool_exp",
@@ -5451,6 +5528,7 @@ export const AllTypesProps: Record<string,any> = {
 		owned_teams:"teams_arr_rel_insert_input",
 		player_lineup:"match_lineup_players_arr_rel_insert_input",
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
+		role:"e_player_roles_enum",
 		steam_id:"bigint",
 		team_invites:"team_invites_arr_rel_insert_input",
 		team_members:"team_roster_arr_rel_insert_input",
@@ -5491,6 +5569,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_lineup_aggregate:"match_lineup_players_aggregate_order_by",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_order_by",
 		profile_url:"order_by",
+		role:"order_by",
 		steam_id:"order_by",
 		team_invites_aggregate:"team_invites_aggregate_order_by",
 		team_members_aggregate:"team_roster_aggregate_order_by",
@@ -5506,6 +5585,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_select_column: "enum" as const,
 	players_set_input:{
 		created_at:"timestamptz",
+		role:"e_player_roles_enum",
 		steam_id:"bigint"
 	},
 	players_stream_cursor_input:{
@@ -5514,6 +5594,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		role:"e_player_roles_enum",
 		steam_id:"bigint"
 	},
 	players_update_column: "enum" as const,
@@ -5600,6 +5681,19 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_objective_types_bool_exp"
 		},
 		e_objective_types_by_pk:{
+
+		},
+		e_player_roles:{
+			distinct_on:"e_player_roles_select_column",
+			order_by:"e_player_roles_order_by",
+			where:"e_player_roles_bool_exp"
+		},
+		e_player_roles_aggregate:{
+			distinct_on:"e_player_roles_select_column",
+			order_by:"e_player_roles_order_by",
+			where:"e_player_roles_bool_exp"
+		},
+		e_player_roles_by_pk:{
 
 		},
 		e_sides:{
@@ -6380,6 +6474,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_objective_types_stream:{
 			cursor:"e_objective_types_stream_cursor_input",
 			where:"e_objective_types_bool_exp"
+		},
+		e_player_roles:{
+			distinct_on:"e_player_roles_select_column",
+			order_by:"e_player_roles_order_by",
+			where:"e_player_roles_bool_exp"
+		},
+		e_player_roles_aggregate:{
+			distinct_on:"e_player_roles_select_column",
+			order_by:"e_player_roles_order_by",
+			where:"e_player_roles_bool_exp"
+		},
+		e_player_roles_by_pk:{
+
+		},
+		e_player_roles_stream:{
+			cursor:"e_player_roles_stream_cursor_input",
+			where:"e_player_roles_bool_exp"
 		},
 		e_sides:{
 			distinct_on:"e_sides_select_column",
@@ -9426,6 +9537,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_objective_types"
 	},
+	e_player_roles:{
+		description:"String",
+		value:"String"
+	},
+	e_player_roles_aggregate:{
+		aggregate:"e_player_roles_aggregate_fields",
+		nodes:"e_player_roles"
+	},
+	e_player_roles_aggregate_fields:{
+		count:"Int",
+		max:"e_player_roles_max_fields",
+		min:"e_player_roles_min_fields"
+	},
+	e_player_roles_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_player_roles_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_player_roles_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_player_roles"
+	},
 	e_sides:{
 		description:"String",
 		match_map_lineup_1:"match_maps",
@@ -10476,6 +10612,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_match_types_by_pk:"e_match_types",
 		delete_e_objective_types:"e_objective_types_mutation_response",
 		delete_e_objective_types_by_pk:"e_objective_types",
+		delete_e_player_roles:"e_player_roles_mutation_response",
+		delete_e_player_roles_by_pk:"e_player_roles",
 		delete_e_sides:"e_sides_mutation_response",
 		delete_e_sides_by_pk:"e_sides",
 		delete_e_team_roles:"e_team_roles_mutation_response",
@@ -10563,6 +10701,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_match_types_one:"e_match_types",
 		insert_e_objective_types:"e_objective_types_mutation_response",
 		insert_e_objective_types_one:"e_objective_types",
+		insert_e_player_roles:"e_player_roles_mutation_response",
+		insert_e_player_roles_one:"e_player_roles",
 		insert_e_sides:"e_sides_mutation_response",
 		insert_e_sides_one:"e_sides",
 		insert_e_team_roles:"e_team_roles_mutation_response",
@@ -10660,6 +10800,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_objective_types:"e_objective_types_mutation_response",
 		update_e_objective_types_by_pk:"e_objective_types",
 		update_e_objective_types_many:"e_objective_types_mutation_response",
+		update_e_player_roles:"e_player_roles_mutation_response",
+		update_e_player_roles_by_pk:"e_player_roles",
+		update_e_player_roles_many:"e_player_roles_mutation_response",
 		update_e_sides:"e_sides_mutation_response",
 		update_e_sides_by_pk:"e_sides",
 		update_e_sides_many:"e_sides_mutation_response",
@@ -11551,6 +11694,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utilities:"player_unused_utility",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
 		profile_url:"String",
+		role:"e_player_roles_enum",
 		steam_id:"bigint",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
@@ -11646,6 +11790,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_objective_types:"e_objective_types",
 		e_objective_types_aggregate:"e_objective_types_aggregate",
 		e_objective_types_by_pk:"e_objective_types",
+		e_player_roles:"e_player_roles",
+		e_player_roles_aggregate:"e_player_roles_aggregate",
+		e_player_roles_by_pk:"e_player_roles",
 		e_sides:"e_sides",
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",
@@ -11898,6 +12045,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_objective_types_aggregate:"e_objective_types_aggregate",
 		e_objective_types_by_pk:"e_objective_types",
 		e_objective_types_stream:"e_objective_types",
+		e_player_roles:"e_player_roles",
+		e_player_roles_aggregate:"e_player_roles_aggregate",
+		e_player_roles_by_pk:"e_player_roles",
+		e_player_roles_stream:"e_player_roles",
 		e_sides:"e_sides",
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",

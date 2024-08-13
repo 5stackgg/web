@@ -25,7 +25,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
       <!--        SCHEDULE MATCH HERE-->
       <!--      </DropdownMenuItem>-->
 
-      <template v-if="canCancel">
+      <template v-if="match.can_cancel">
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
       </template>
@@ -58,19 +58,6 @@ export default {
           ],
         }),
       });
-    },
-  },
-  computed: {
-    canCancel() {
-      return this.match.is_organizer && (
-          this.match.status !== e_match_status_enum.Finished
-          &&
-          this.match.status !== e_match_status_enum.Tie
-          &&
-          this.match.status !== e_match_status_enum.Canceled
-          &&
-          this.match.status !== e_match_status_enum.Forfeit
-      );
     },
   },
 };

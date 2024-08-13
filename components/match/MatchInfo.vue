@@ -32,9 +32,33 @@ import { e_match_status_enum } from "~/generated/zeus";
         </div>
 
         <div class="flex py-2 items-center justify-between">
+          // TODO - show winner somewhere...
           <div>
-            {{ match.lineup_1.name }} vs
-            {{ match.lineup_2.name }}
+            <span
+              :class="{
+                [`text-green-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_1.id === match.winning_lineup_id,
+                [`text-red-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_1.id !== match.winning_lineup_id,
+              }"
+            >
+              {{ match.lineup_1.name }}
+            </span>
+            vs
+            <span
+              :class="{
+                [`text-green-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_2.id === match.winning_lineup_id,
+                [`text-red-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_2.id !== match.winning_lineup_id,
+              }"
+            >
+              {{ match.lineup_2.name }}
+            </span>
           </div>
 
           <MatchActions :match="match"></MatchActions>

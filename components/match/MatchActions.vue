@@ -65,8 +65,13 @@ export default {
       return this.match.status !== e_match_status_enum.Canceled;
     },
     canAssignWinner() {
-      return this.match.status === e_match_status_enum.Finished || this.match.status === e_match_status_enum.Canceled || this.match.status === e_match_status_enum.Tie || this.match.status === e_match_status_enum.Forfeit;
-    }
+      return (
+        this.match.status === e_match_status_enum.Finished ||
+        this.match.status === e_match_status_enum.Canceled ||
+        this.match.status === e_match_status_enum.Tie ||
+        this.match.status === e_match_status_enum.Forfeit
+      );
+    },
   },
 };
 </script>

@@ -77,6 +77,7 @@ export default {
               server_type: true,
               lineup_1_id: true,
               lineup_2_id: true,
+              winning_lineup_id: true,
               veto_type: true,
               veto_picking_lineup_id: true,
               connection_link: true,

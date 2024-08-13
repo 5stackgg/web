@@ -70,6 +70,14 @@ export default {
       }),
     };
   },
+  watch: {
+    match: {
+      immediate: true,
+      handler() {
+        this.form.setFieldValue("lineup_id", this.match.winning_lineup_id);
+      },
+    },
+  },
   methods: {
     async updateMatchWinner() {
       await this.$apollo.mutate({
@@ -80,7 +88,7 @@ export default {
                 id: this.match.id,
               },
               _set: {
-                winning_lineup_id: this.form.values.lineup_id
+                winning_lineup_id: this.form.values.lineup_id,
               },
             },
             {
@@ -93,16 +101,16 @@ export default {
   },
   computed: {
     availableLineups() {
-     return [
-       {
-         value: this.match.lineup_1.id,
-         display: this.match.lineup_1.name,
-       },
-       {
-         value: this.match.lineup_2.id,
-         display: this.match.lineup_2.name,
-       }
-     ]
+      return [
+        {
+          value: this.match.lineup_1.id,
+          display: this.match.lineup_1.name,
+        },
+        {
+          value: this.match.lineup_2.id,
+          display: this.match.lineup_2.name,
+        },
+      ];
     },
   },
 };

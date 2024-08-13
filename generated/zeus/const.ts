@@ -1494,10 +1494,38 @@ export const AllTypesProps: Record<string,any> = {
 	match_lineups_variance_order_by:{
 		coach_steam_id:"order_by"
 	},
+	match_map_demos_aggregate_bool_exp:{
+		count:"match_map_demos_aggregate_bool_exp_count"
+	},
+	match_map_demos_aggregate_bool_exp_count:{
+		arguments:"match_map_demos_select_column",
+		filter:"match_map_demos_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	match_map_demos_aggregate_fields:{
 		count:{
 			columns:"match_map_demos_select_column"
 		}
+	},
+	match_map_demos_aggregate_order_by:{
+		avg:"match_map_demos_avg_order_by",
+		count:"order_by",
+		max:"match_map_demos_max_order_by",
+		min:"match_map_demos_min_order_by",
+		stddev:"match_map_demos_stddev_order_by",
+		stddev_pop:"match_map_demos_stddev_pop_order_by",
+		stddev_samp:"match_map_demos_stddev_samp_order_by",
+		sum:"match_map_demos_sum_order_by",
+		var_pop:"match_map_demos_var_pop_order_by",
+		var_samp:"match_map_demos_var_samp_order_by",
+		variance:"match_map_demos_variance_order_by"
+	},
+	match_map_demos_arr_rel_insert_input:{
+		data:"match_map_demos_insert_input",
+		on_conflict:"match_map_demos_on_conflict"
+	},
+	match_map_demos_avg_order_by:{
+		size:"order_by"
 	},
 	match_map_demos_bool_exp:{
 		_and:"match_map_demos_bool_exp",
@@ -1517,6 +1545,20 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid"
+	},
+	match_map_demos_max_order_by:{
+		file:"order_by",
+		id:"order_by",
+		match_id:"order_by",
+		match_map_id:"order_by",
+		size:"order_by"
+	},
+	match_map_demos_min_order_by:{
+		file:"order_by",
+		id:"order_by",
+		match_id:"order_by",
+		match_map_id:"order_by",
+		size:"order_by"
 	},
 	match_map_demos_on_conflict:{
 		constraint:"match_map_demos_constraint",
@@ -1539,6 +1581,15 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid"
 	},
+	match_map_demos_stddev_order_by:{
+		size:"order_by"
+	},
+	match_map_demos_stddev_pop_order_by:{
+		size:"order_by"
+	},
+	match_map_demos_stddev_samp_order_by:{
+		size:"order_by"
+	},
 	match_map_demos_stream_cursor_input:{
 		initial_value:"match_map_demos_stream_cursor_value_input",
 		ordering:"cursor_ordering"
@@ -1548,11 +1599,23 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid"
 	},
+	match_map_demos_sum_order_by:{
+		size:"order_by"
+	},
 	match_map_demos_update_column: "enum" as const,
 	match_map_demos_updates:{
 		_inc:"match_map_demos_inc_input",
 		_set:"match_map_demos_set_input",
 		where:"match_map_demos_bool_exp"
+	},
+	match_map_demos_var_pop_order_by:{
+		size:"order_by"
+	},
+	match_map_demos_var_samp_order_by:{
+		size:"order_by"
+	},
+	match_map_demos_variance_order_by:{
+		size:"order_by"
 	},
 	match_map_rounds:{
 		kills:{
@@ -2300,6 +2363,16 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_veto_picks_bool_exp"
 	},
 	matches:{
+		demos:{
+			distinct_on:"match_map_demos_select_column",
+			order_by:"match_map_demos_order_by",
+			where:"match_map_demos_bool_exp"
+		},
+		demos_aggregate:{
+			distinct_on:"match_map_demos_select_column",
+			order_by:"match_map_demos_order_by",
+			where:"match_map_demos_bool_exp"
+		},
 		match_maps:{
 			distinct_on:"match_maps_select_column",
 			order_by:"match_maps_order_by",
@@ -2385,6 +2458,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"teams_order_by",
 			where:"teams_bool_exp"
 		},
+		tournament_brackets:{
+			distinct_on:"tournament_brackets_select_column",
+			order_by:"tournament_brackets_order_by",
+			where:"tournament_brackets_bool_exp"
+		},
+		tournament_brackets_aggregate:{
+			distinct_on:"tournament_brackets_select_column",
+			order_by:"tournament_brackets_order_by",
+			where:"tournament_brackets_bool_exp"
+		},
 		veto_picks:{
 			distinct_on:"match_veto_picks_select_column",
 			order_by:"match_veto_picks_order_by",
@@ -2438,8 +2521,11 @@ export const AllTypesProps: Record<string,any> = {
 		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		current_match_map_id:"uuid_comparison_exp",
+		demos:"match_map_demos_bool_exp",
+		demos_aggregate:"match_map_demos_aggregate_bool_exp",
 		e_match_status:"e_match_status_bool_exp",
 		id:"uuid_comparison_exp",
+		isTournamentMatch:"Boolean_comparison_exp",
 		is_captain:"Boolean_comparison_exp",
 		is_coach:"Boolean_comparison_exp",
 		is_match_server_available:"Boolean_comparison_exp",
@@ -2478,6 +2564,8 @@ export const AllTypesProps: Record<string,any> = {
 		server_type:"String_comparison_exp",
 		status:"e_match_status_enum_comparison_exp",
 		teams:"teams_bool_exp",
+		tournament_brackets:"tournament_brackets_bool_exp",
+		tournament_brackets_aggregate:"tournament_brackets_aggregate_bool_exp",
 		tv_connection_link:"String_comparison_exp",
 		tv_connection_string:"String_comparison_exp",
 		veto_picking_lineup_id:"uuid_comparison_exp",
@@ -2493,6 +2581,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	matches_insert_input:{
 		created_at:"timestamptz",
+		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_status:"e_match_status_obj_rel_insert_input",
 		id:"uuid",
 		lineup_1:"match_lineups_obj_rel_insert_input",
@@ -2515,6 +2604,7 @@ export const AllTypesProps: Record<string,any> = {
 		server:"servers_obj_rel_insert_input",
 		server_id:"uuid",
 		status:"e_match_status_enum",
+		tournament_brackets:"tournament_brackets_arr_rel_insert_input",
 		veto_picks:"match_veto_picks_arr_rel_insert_input",
 		winner:"match_lineups_obj_rel_insert_input",
 		winning_lineup_id:"uuid"
@@ -2560,8 +2650,10 @@ export const AllTypesProps: Record<string,any> = {
 		connection_string:"order_by",
 		created_at:"order_by",
 		current_match_map_id:"order_by",
+		demos_aggregate:"match_map_demos_aggregate_order_by",
 		e_match_status:"e_match_status_order_by",
 		id:"order_by",
+		isTournamentMatch:"order_by",
 		is_captain:"order_by",
 		is_coach:"order_by",
 		is_match_server_available:"order_by",
@@ -2592,6 +2684,7 @@ export const AllTypesProps: Record<string,any> = {
 		server_type:"order_by",
 		status:"order_by",
 		teams_aggregate:"teams_aggregate_order_by",
+		tournament_brackets_aggregate:"tournament_brackets_aggregate_order_by",
 		tv_connection_link:"order_by",
 		tv_connection_string:"order_by",
 		veto_picking_lineup_id:"order_by",
@@ -6295,10 +6388,10 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"Boolean_comparison_exp",
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		is_on_demand:"Boolean_comparison_exp",
 		label:"String_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
-		on_demand:"Boolean_comparison_exp",
 		owner:"players_bool_exp",
 		owner_steam_id:"bigint_comparison_exp",
 		port:"Int_comparison_exp",
@@ -6335,9 +6428,9 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"order_by",
 		host:"order_by",
 		id:"order_by",
+		is_on_demand:"order_by",
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
-		on_demand:"order_by",
 		owner:"players_order_by",
 		owner_steam_id:"order_by",
 		port:"order_by",
@@ -9371,6 +9464,7 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		player:"players",
 		profile_url:"String",
+		role:"String",
 		steam_id:"String"
 	},
 	SuccessOutput:{
@@ -10440,8 +10534,11 @@ export const ReturnTypes: Record<string,any> = {
 		connection_string:"String",
 		created_at:"timestamptz",
 		current_match_map_id:"uuid",
+		demos:"match_map_demos",
+		demos_aggregate:"match_map_demos_aggregate",
 		e_match_status:"e_match_status",
 		id:"uuid",
+		isTournamentMatch:"Boolean",
 		is_captain:"Boolean",
 		is_coach:"Boolean",
 		is_match_server_available:"Boolean",
@@ -10480,6 +10577,8 @@ export const ReturnTypes: Record<string,any> = {
 		server_type:"String",
 		status:"e_match_status_enum",
 		teams:"teams",
+		tournament_brackets:"tournament_brackets",
+		tournament_brackets_aggregate:"tournament_brackets_aggregate",
 		tv_connection_link:"String",
 		tv_connection_string:"String",
 		veto_picking_lineup_id:"uuid",
@@ -11927,10 +12026,10 @@ export const ReturnTypes: Record<string,any> = {
 		enabled:"Boolean",
 		host:"String",
 		id:"uuid",
+		is_on_demand:"Boolean",
 		label:"String",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
-		on_demand:"Boolean",
 		owner:"players",
 		owner_steam_id:"bigint",
 		port:"Int",

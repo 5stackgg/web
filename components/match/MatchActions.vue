@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MoreVertical } from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
+import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 </script>
 
 <template>
@@ -13,7 +14,10 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
       <DropdownMenuItem>
-        <match-select-server :match="match"></match-select-server>
+        <MatchSelectServer :match="match"></MatchSelectServer>
+      </DropdownMenuItem>
+      <DropdownMenuItem v-if="canAssignWinner">
+        <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>
       <!--      <DropdownMenuItem-->
       <!--        v-if="match.status == e_match_status_enum.PickingPlayers"-->
@@ -60,6 +64,9 @@ export default {
     canCancel() {
       return this.match.status !== e_match_status_enum.Canceled;
     },
+    canAssignWinner() {
+      return this.match.status === e_match_status_enum.Finished || this.match.status === e_match_status_enum.Canceled || this.match.status === e_match_status_enum.Tie || this.match.status === e_match_status_enum.Forfeit;
+    }
   },
 };
 </script>

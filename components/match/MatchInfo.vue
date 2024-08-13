@@ -64,12 +64,7 @@ import { e_match_status_enum } from "~/generated/zeus";
           <MatchActions :match="match"></MatchActions>
         </div>
 
-        <template
-          v-if="
-            match.status == e_match_status_enum.PickingPlayers ||
-            match.status == e_match_status_enum.Scheduled
-          "
-        >
+        <template v-if="canStartMatch">
           <Button
             @click.prevent.stop="startMatch"
             class="-mr-2"
@@ -212,6 +207,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { e_match_status_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -251,6 +247,13 @@ export default {
     },
   },
   computed: {
+    canStartMatch() {
+      return (
+        this.match.is_organizer &&
+        (this.match.status == e_match_status_enum.PickingPlayers ||
+          this.match.status == e_match_status_enum.Scheduled)
+      );
+    },
     hasMinimumLineupPlayers() {
       return (
         this.match.lineup_1?.lineup_players.length >=

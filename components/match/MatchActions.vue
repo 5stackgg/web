@@ -16,7 +16,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
       <DropdownMenuItem>
         <MatchSelectServer :match="match"></MatchSelectServer>
       </DropdownMenuItem>
-      <DropdownMenuItem v-if="canAssignWinner">
+      <DropdownMenuItem v-if="match.is_organizer">
         <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>
       <!--      <DropdownMenuItem-->
@@ -62,14 +62,14 @@ export default {
   },
   computed: {
     canCancel() {
-      return this.match.status !== e_match_status_enum.Canceled;
-    },
-    canAssignWinner() {
-      return (
-        this.match.status === e_match_status_enum.Finished ||
-        this.match.status === e_match_status_enum.Canceled ||
-        this.match.status === e_match_status_enum.Tie ||
-        this.match.status === e_match_status_enum.Forfeit
+      return this.match.is_organizer && (
+          this.match.status !== e_match_status_enum.Finished
+          &&
+          this.match.status !== e_match_status_enum.Tie
+          &&
+          this.match.status !== e_match_status_enum.Canceled
+          &&
+          this.match.status !== e_match_status_enum.Forfeit
       );
     },
   },

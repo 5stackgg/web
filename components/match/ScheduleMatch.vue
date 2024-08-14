@@ -35,7 +35,11 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
                 </Button>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
-                <Calendar :is-date-disabled="checkDate" v-model="startDate" initial-focus />
+                <Calendar
+                  :is-date-disabled="checkDate"
+                  v-model="startDate"
+                  initial-focus
+                />
               </PopoverContent>
             </Popover>
 

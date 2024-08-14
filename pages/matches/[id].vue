@@ -16,7 +16,7 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
         <CheckIntoMatch :match="match"></CheckIntoMatch>
         <MatchInfo :match="match"></MatchInfo>
         <MatchLobbyChat
-          v-if="match.is_in_lineup"
+          v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
           :match-id="match.id"
           :messages="messages"
         ></MatchLobbyChat>
@@ -205,25 +205,42 @@ export default {
       }),
     );
   },
-  watch: {
-    ["match.is_in_lineup"]: {
-      immediate: true,
-      handler() {
-        if (this.match?.is_in_lineup) {
-          socket.join("lobby", {
-            matchId: this.matchId,
-          });
-        }
-      },
-    },
-  },
   computed: {
     matchId() {
       return this.$route.params.id;
     },
   },
+  mounted() {
+    this.$watch(
+      () => [
+        this.match?.is_in_lineup,
+        this.match?.is_rganizer,
+        this.match?.is_coach,
+      ],
+      {
+        immediate: true,
+        handler() {
+          if (
+            this.match &&
+            (this.match.is_in_lineup ||
+              this.match.is_organizer ||
+              this.match.is_coach)
+          ) {
+            socket.join("lobby", {
+              matchId: this.matchId,
+            });
+          }
+        },
+      },
+    );
+  },
   unmounted() {
-    if (this.match?.is_in_lineup) {
+    if (
+      this.match &&
+      (this.match.is_in_lineup ||
+        this.match.is_organizer ||
+        this.match.is_coach)
+    ) {
       socket.leave("lobby", {
         matchId: this.matchId,
       });

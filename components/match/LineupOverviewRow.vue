@@ -54,7 +54,7 @@ import formatStatValue from "~/utilities/formatStatValue";
     <TableCell>
       {{ member.player?.zeus_kills_aggregate.aggregate.count }}
     </TableCell>
-    <TableCell>
+    <TableCell v-if="match.is_organizer">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="outline" size="icon">

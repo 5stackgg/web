@@ -2520,6 +2520,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"matches_bool_exp",
 		can_assign_map:"Boolean_comparison_exp",
 		can_cancel:"Boolean_comparison_exp",
+		can_schedule:"Boolean_comparison_exp",
 		can_start:"Boolean_comparison_exp",
 		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
@@ -2652,6 +2653,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_order_by:{
 		can_assign_map:"order_by",
 		can_cancel:"order_by",
+		can_schedule:"order_by",
 		can_start:"order_by",
 		connection_link:"order_by",
 		connection_string:"order_by",
@@ -10540,6 +10542,7 @@ export const ReturnTypes: Record<string,any> = {
 	matches:{
 		can_assign_map:"Boolean",
 		can_cancel:"Boolean",
+		can_schedule:"Boolean",
 		can_start:"Boolean",
 		connection_link:"String",
 		connection_string:"String",

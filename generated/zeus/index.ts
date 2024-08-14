@@ -5337,6 +5337,8 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 	can_assign_map?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?:boolean | `@${string}`,
+	/** A computed field, executes function "can_schedule_match" */
+	can_schedule?:boolean | `@${string}`,
 	/** A computed field, executes function "can_start_match" */
 	can_start?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
@@ -5607,6 +5609,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	_or?: Array<ValueTypes["matches_bool_exp"]> | undefined | null | Variable<any, string>,
 	can_assign_map?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	can_schedule?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_start?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	connection_link?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5828,6 +5831,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_order_by"]: {
 	can_assign_map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	can_schedule?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	connection_link?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -6426,7 +6430,7 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["v_pool_maps_insert_input"]> | Variable<any, string>},ValueTypes["v_pool_maps_mutation_response"]],
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ValueTypes["v_pool_maps_insert_input"] | Variable<any, string>},ValueTypes["v_pool_maps"]],
-scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time: ValueTypes["timestamptz"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
@@ -20728,6 +20732,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 	can_assign_map?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?:boolean | `@${string}`,
+	/** A computed field, executes function "can_schedule_match" */
+	can_schedule?:boolean | `@${string}`,
 	/** A computed field, executes function "can_start_match" */
 	can_start?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
@@ -20998,6 +21004,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	_or?: Array<ResolverInputTypes["matches_bool_exp"]> | undefined | null,
 	can_assign_map?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_cancel?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	can_schedule?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_start?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	connection_link?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -21219,6 +21226,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_order_by"]: {
 	can_assign_map?: ResolverInputTypes["order_by"] | undefined | null,
 	can_cancel?: ResolverInputTypes["order_by"] | undefined | null,
+	can_schedule?: ResolverInputTypes["order_by"] | undefined | null,
 	can_start?: ResolverInputTypes["order_by"] | undefined | null,
 	connection_link?: ResolverInputTypes["order_by"] | undefined | null,
 	connection_string?: ResolverInputTypes["order_by"] | undefined | null,
@@ -21817,7 +21825,7 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["v_pool_maps_insert_input"]>},ResolverInputTypes["v_pool_maps_mutation_response"]],
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["v_pool_maps_insert_input"]},ResolverInputTypes["v_pool_maps"]],
-scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time: ResolverInputTypes["timestamptz"]},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
@@ -35632,6 +35640,8 @@ export type ModelTypes = {
 	can_assign_map?: boolean | undefined,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?: boolean | undefined,
+	/** A computed field, executes function "can_schedule_match" */
+	can_schedule?: boolean | undefined,
 	/** A computed field, executes function "can_start_match" */
 	can_start?: boolean | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
@@ -35806,6 +35816,7 @@ export type ModelTypes = {
 	_or?: Array<ModelTypes["matches_bool_exp"]> | undefined,
 	can_assign_map?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_cancel?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	can_schedule?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_start?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	connection_link?: ModelTypes["String_comparison_exp"] | undefined,
 	connection_string?: ModelTypes["String_comparison_exp"] | undefined,
@@ -36023,6 +36034,7 @@ export type ModelTypes = {
 ["matches_order_by"]: {
 	can_assign_map?: ModelTypes["order_by"] | undefined,
 	can_cancel?: ModelTypes["order_by"] | undefined,
+	can_schedule?: ModelTypes["order_by"] | undefined,
 	can_start?: ModelTypes["order_by"] | undefined,
 	connection_link?: ModelTypes["order_by"] | undefined,
 	connection_string?: ModelTypes["order_by"] | undefined,
@@ -48953,6 +48965,8 @@ export type GraphQLTypes = {
 	can_assign_map?: boolean | undefined,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?: boolean | undefined,
+	/** A computed field, executes function "can_schedule_match" */
+	can_schedule?: boolean | undefined,
 	/** A computed field, executes function "can_start_match" */
 	can_start?: boolean | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
@@ -49130,6 +49144,7 @@ export type GraphQLTypes = {
 	_or?: Array<GraphQLTypes["matches_bool_exp"]> | undefined,
 	can_assign_map?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_cancel?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	can_schedule?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_start?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	connection_link?: GraphQLTypes["String_comparison_exp"] | undefined,
 	connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -49351,6 +49366,7 @@ export type GraphQLTypes = {
 ["matches_order_by"]: {
 		can_assign_map?: GraphQLTypes["order_by"] | undefined,
 	can_cancel?: GraphQLTypes["order_by"] | undefined,
+	can_schedule?: GraphQLTypes["order_by"] | undefined,
 	can_start?: GraphQLTypes["order_by"] | undefined,
 	connection_link?: GraphQLTypes["order_by"] | undefined,
 	connection_string?: GraphQLTypes["order_by"] | undefined,

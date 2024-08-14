@@ -81,7 +81,6 @@ import MatchOptions from "~/components/MatchOptions.vue";
 <script lang="ts">
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
 import { $, e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";

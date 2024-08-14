@@ -79,6 +79,7 @@ export default {
               is_in_lineup: true,
               is_organizer: true,
               can_start: true,
+              can_schedule: true,
               is_tournament_match: true,
               can_cancel: true,
               can_assign_map: true,

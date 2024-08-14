@@ -14,7 +14,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import BooleanToText from "~/components/BooleanToText.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { Separator } from "~/components/ui/separator";
-import { e_match_status_enum } from "~/generated/zeus";
+import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 </script>
 
 <template>
@@ -81,6 +81,9 @@ import { e_match_status_enum } from "~/generated/zeus";
             </template>
             <template v-else> Match </template>
           </Button>
+        </template>
+        <template v-if="match.can_schedule">
+          <ScheduleMatch :match="match"></ScheduleMatch>
         </template>
       </CardTitle>
       <CardDescription>
@@ -205,9 +208,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 </template>
 
 <script lang="ts">
-import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { e_match_status_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -217,20 +218,6 @@ export default {
     },
   },
   methods: {
-    async scheduleMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          scheduleMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
     async startMatch() {
       await this.$apollo.mutate({
         mutation: generateMutation({

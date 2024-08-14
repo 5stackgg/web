@@ -17,14 +17,18 @@ import TimeAgo from "~/components/TimeAgo.vue";
       </div>
     </div>
     <div class="flex-1 overflow-scroll max-h-screen">
-      <p v-for="{message, from, timestamp  } in messages" :key="message" class="whitespace-pre my-2">
+      <div
+        v-for="{ message, from, timestamp } in messages"
+        :key="message"
+        class="whitespace-pre my-2"
+      >
         <div class="flex justify-between">
           <div>
             <Avatar class="mx-3">
               <AvatarImage
-                  :src="from.avatar_url"
-                  :alt="from.name"
-                  v-if="from.avatar_url"
+                :src="from.avatar_url"
+                :alt="from.name"
+                v-if="from.avatar_url"
               />
             </Avatar>
             {{ from.name }}[{{ from.role }}]: {{ message }}
@@ -33,7 +37,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
             <time-ago :date="timestamp"></time-ago>
           </small>
         </div>
-      </p>
+      </div>
     </div>
     <form
       class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
@@ -60,8 +64,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
   </div>
 </template>
 <script lang="ts">
-import {useForm} from "vee-validate";
-import {toTypedSchema} from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import socket from "~/web-sockets/Socket";
 
@@ -73,8 +77,8 @@ export default {
     },
     messages: {
       default: [],
-      type: Array<string>
-    }
+      type: Array<string>,
+    },
   },
   data() {
     return {
@@ -82,9 +86,9 @@ export default {
 
       form: useForm({
         validationSchema: toTypedSchema(
-            z.object({
-              message: z.string().min(1),
-            }),
+          z.object({
+            message: z.string().min(1),
+          }),
         ),
       }),
     };
@@ -94,12 +98,12 @@ export default {
       immediate: true,
       handler() {
         this.lobbyListener = socket.listen("lobby:chat", (message) => {
-          if(this.matchId === message.matchId) {
-            this.messages.push(message)
+          if (this.matchId === message.matchId) {
+            this.messages.push(message);
           }
         });
-      }
-    }
+      },
+    },
   },
   methods: {
     sendMessage() {

@@ -16,6 +16,7 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
         <CheckIntoMatch :match="match"></CheckIntoMatch>
         <MatchInfo :match="match"></MatchInfo>
         <MatchLobbyChat
+          v-if="match.is_in_lineup"
           :match-id="match.id"
           :messages="messages"
         ></MatchLobbyChat>
@@ -75,6 +76,7 @@ export default {
               status: true,
               is_coach: true,
               is_captain: true,
+              is_in_lineup: true,
               is_organizer: true,
               can_start: true,
               is_tournament_match: true,
@@ -204,12 +206,14 @@ export default {
     );
   },
   watch: {
-    ["$route.params.id"]: {
+    ["match.is_in_lineup"]: {
       immediate: true,
       handler() {
-        socket.join("lobby", {
-          matchId: this.matchId,
-        });
+        if (this.match?.is_in_lineup) {
+          socket.join("lobby", {
+            matchId: this.matchId,
+          });
+        }
       },
     },
   },

@@ -67,6 +67,12 @@ class Socket extends EventEmitter {
     console.info(`[ws] joining room ${room}`);
   }
 
+  public leave(room: string, data: Record<string, unknown>) {
+    this.rooms.delete(room);
+    this.event(`${room}:leave`, data);
+    console.info(`[ws] leaving room ${room}`);
+  }
+
   public event(event: string, data: Record<string, unknown>) {
     if (!this.connected || !this.connection) {
       this.offlineQueue.push({ event, data });

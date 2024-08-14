@@ -27,7 +27,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                   v-if="from.avatar_url"
               />
             </Avatar>
-            {{ from.name }}: {{ message }}
+            {{ from.name }}[{{ from.role }}]: {{ message }}
           </div>
           <small>
             <time-ago :date="timestamp"></time-ago>
@@ -93,11 +93,9 @@ export default {
     matchId: {
       immediate: true,
       handler() {
-        this.lobbyListener = socket.listen("lobby:chat", (data) => {
-          switch (data.event) {
-            case "message":
-              this.messages.push(data.data)
-              break;
+        this.lobbyListener = socket.listen("lobby:chat", (message) => {
+          if(this.matchId === message.matchId) {
+            this.messages.push(message)
           }
         });
       }

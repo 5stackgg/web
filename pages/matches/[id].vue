@@ -50,7 +50,7 @@ export default {
     return {
       messages: [],
       match: undefined,
-      matchListener: undefined,
+      listeners: [],
     };
   },
   apollo: {
@@ -170,25 +170,38 @@ export default {
       },
     },
   },
-  mounted() {
-    this.matchListener?.stop();
-
-    this.matchListener = socket.listen("lobby", (data) => {
-      switch (data.event) {
-        case "list":
+  created() {
+    this.listeners.push(
+      socket.listen("lobby:list", (data) => {
+        if (data.matchId == this.matchId) {
           useMatchLobbyStore().set(this.matchId, data.lobby);
-          break;
-        case "joined":
+        }
+      }),
+    );
+
+    this.listeners.push(
+      socket.listen("lobby:joined", (data) => {
+        if (data.matchId == this.matchId) {
           useMatchLobbyStore().add(this.matchId, data.user);
-          break;
-        case "left":
+        }
+      }),
+    );
+
+    this.listeners.push(
+      socket.listen("lobby:left", (data) => {
+        if (data.matchId == this.matchId) {
           useMatchLobbyStore().remove(this.matchId, data.user);
-          break;
-        case "messages":
+        }
+      }),
+    );
+
+    this.listeners.push(
+      socket.listen("lobby:messages", (data) => {
+        if (data.matchId == this.matchId) {
           this.messages = data.messages;
-          break;
-      }
-    });
+        }
+      }),
+    );
   },
   watch: {
     ["$route.params.id"]: {
@@ -205,8 +218,14 @@ export default {
       return this.$route.params.id;
     },
   },
-  beforeUnmount() {
-    this.matchListener?.stop();
+  unmounted() {
+    socket.leave("lobby", {
+      matchId: this.matchId,
+    });
+
+    for (const listener of this.listeners) {
+      listener.stop();
+    }
   },
 };
 </script>

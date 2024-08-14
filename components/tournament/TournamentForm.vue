@@ -135,7 +135,9 @@ export default {
       form: useForm({
         validationSchema: matchOptionsValidator({
           name: z.string().min(1),
-          start: z.date(),
+          start: z.date().refine((date) => date > new Date(), {
+            message: "Date must be in the future",
+          }),
           description: z.string().nullable().default(null),
         }),
       }),

@@ -55,7 +55,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
                 </Button>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
-                <Calendar v-model="startDate" initial-focus />
+                <Calendar :is-date-disabled="checkDate" v-model="startDate" initial-focus />
               </PopoverContent>
             </Popover>
 
@@ -211,6 +211,9 @@ export default {
     },
   },
   methods: {
+    checkDate({ day, month, year }) {
+      return new Date(year, month - 1, day + 1) < new Date();
+    },
     setStart() {
       if (!this.startDate || !this.startTime) {
         return;

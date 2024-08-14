@@ -70,6 +70,8 @@ export default {
               is_coach: true,
               is_captain: true,
               is_organizer: true,
+              can_start: true,
+              is_tournament_match: true,
               can_cancel: true,
               can_assign_map: true,
               min_players_per_lineup: true,

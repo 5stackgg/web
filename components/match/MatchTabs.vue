@@ -28,6 +28,9 @@ provide("commander", commander);
 </script>
 
 <template>
+  <pre>Lineup 1 Ready {{ match.lineup_1.is_ready }}</pre>
+  <pre>Lineup 2 Ready {{ match.lineup_2.is_ready }}</pre>
+
   <Tabs default-value="overview">
     <div class="flex items-center">
       <TabsList>

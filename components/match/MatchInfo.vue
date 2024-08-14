@@ -64,7 +64,7 @@ import { e_match_status_enum } from "~/generated/zeus";
           <MatchActions :match="match"></MatchActions>
         </div>
 
-        <template v-if="canStartMatch">
+        <template v-if="match.can_start">
           <Button
             @click.prevent.stop="startMatch"
             class="-mr-2"
@@ -247,13 +247,6 @@ export default {
     },
   },
   computed: {
-    canStartMatch() {
-      return (
-        this.match.is_organizer &&
-        (this.match.status == e_match_status_enum.PickingPlayers ||
-          this.match.status == e_match_status_enum.Scheduled)
-      );
-    },
     hasMinimumLineupPlayers() {
       return (
         this.match.lineup_1?.lineup_players.length >=

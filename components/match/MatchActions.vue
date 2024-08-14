@@ -5,7 +5,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 </script>
 
 <template>
-  <DropdownMenu>
+  <DropdownMenu v-if="match.is_organizer">
     <DropdownMenuTrigger as-child>
       <Button size="icon" variant="outline">
         <MoreVertical class="h-3.5 w-3.5" />
@@ -16,7 +16,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
       <DropdownMenuItem>
         <MatchSelectServer :match="match"></MatchSelectServer>
       </DropdownMenuItem>
-      <DropdownMenuItem v-if="match.is_organizer">
+      <DropdownMenuItem>
         <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>
       <!--      <DropdownMenuItem-->
@@ -34,7 +34,6 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 </template>
 
 <script lang="ts">
-import { e_match_status_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {

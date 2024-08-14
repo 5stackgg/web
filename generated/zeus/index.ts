@@ -5365,6 +5365,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	is_captain?:boolean | `@${string}`,
 	/** A computed field, executes function "is_coach" */
 	is_coach?:boolean | `@${string}`,
+	/** A computed field, executes function "is_in_lineup" */
+	is_in_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_organizer" */
@@ -5616,6 +5618,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_in_lineup?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_organizer?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_tournament_match?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5835,6 +5838,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_in_lineup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_organizer?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_tournament_match?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -20752,6 +20756,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	is_captain?:boolean | `@${string}`,
 	/** A computed field, executes function "is_coach" */
 	is_coach?:boolean | `@${string}`,
+	/** A computed field, executes function "is_in_lineup" */
+	is_in_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_organizer" */
@@ -21003,6 +21009,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_captain?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_coach?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	is_in_lineup?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_organizer?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_tournament_match?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -21222,6 +21229,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_captain?: ResolverInputTypes["order_by"] | undefined | null,
 	is_coach?: ResolverInputTypes["order_by"] | undefined | null,
+	is_in_lineup?: ResolverInputTypes["order_by"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["order_by"] | undefined | null,
 	is_organizer?: ResolverInputTypes["order_by"] | undefined | null,
 	is_tournament_match?: ResolverInputTypes["order_by"] | undefined | null,
@@ -35644,6 +35652,8 @@ export type ModelTypes = {
 	is_captain?: boolean | undefined,
 	/** A computed field, executes function "is_coach" */
 	is_coach?: boolean | undefined,
+	/** A computed field, executes function "is_in_lineup" */
+	is_in_lineup?: boolean | undefined,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?: boolean | undefined,
 	/** A computed field, executes function "is_match_organizer" */
@@ -35807,6 +35817,7 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	is_captain?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	is_in_lineup?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_match_server_available?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_organizer?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_tournament_match?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -36022,6 +36033,7 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined,
 	is_captain?: ModelTypes["order_by"] | undefined,
 	is_coach?: ModelTypes["order_by"] | undefined,
+	is_in_lineup?: ModelTypes["order_by"] | undefined,
 	is_match_server_available?: ModelTypes["order_by"] | undefined,
 	is_organizer?: ModelTypes["order_by"] | undefined,
 	is_tournament_match?: ModelTypes["order_by"] | undefined,
@@ -48961,6 +48973,8 @@ export type GraphQLTypes = {
 	is_captain?: boolean | undefined,
 	/** A computed field, executes function "is_coach" */
 	is_coach?: boolean | undefined,
+	/** A computed field, executes function "is_in_lineup" */
+	is_in_lineup?: boolean | undefined,
 	/** A computed field, executes function "is_match_server_available" */
 	is_match_server_available?: boolean | undefined,
 	/** A computed field, executes function "is_match_organizer" */
@@ -49127,6 +49141,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	is_captain?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	is_in_lineup?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_match_server_available?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_organizer?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_tournament_match?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -49346,6 +49361,7 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined,
 	is_captain?: GraphQLTypes["order_by"] | undefined,
 	is_coach?: GraphQLTypes["order_by"] | undefined,
+	is_in_lineup?: GraphQLTypes["order_by"] | undefined,
 	is_match_server_available?: GraphQLTypes["order_by"] | undefined,
 	is_organizer?: GraphQLTypes["order_by"] | undefined,
 	is_tournament_match?: GraphQLTypes["order_by"] | undefined,

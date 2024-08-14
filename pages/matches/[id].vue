@@ -9,7 +9,6 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
 
 <template>
   <template v-if="match">
-    <pre>{{ match.can_cancel }}</pre>
     <div
       class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
     >

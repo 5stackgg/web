@@ -223,9 +223,11 @@ export default {
     },
   },
   unmounted() {
-    socket.leave("lobby", {
-      matchId: this.matchId,
-    });
+    if (this.match?.is_in_lineup) {
+      socket.leave("lobby", {
+        matchId: this.matchId,
+      });
+    }
 
     for (const listener of this.listeners) {
       listener.stop();

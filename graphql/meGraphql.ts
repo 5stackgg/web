@@ -3,6 +3,7 @@ import { Selector } from "@/generated/zeus";
 export const meFields = Selector("MeResponse")({
   steam_id: true,
   discord_id: true,
+  role: true,
   player: {
     name: true,
     profile_url: true,

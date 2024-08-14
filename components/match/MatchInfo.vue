@@ -14,7 +14,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import BooleanToText from "~/components/BooleanToText.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { Separator } from "~/components/ui/separator";
-import { e_match_status_enum } from "~/generated/zeus";
+import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 </script>
 
 <template>
@@ -32,20 +32,39 @@ import { e_match_status_enum } from "~/generated/zeus";
         </div>
 
         <div class="flex py-2 items-center justify-between">
+          // TODO - show winner somewhere...
           <div>
-            {{ match.lineup_1.name }} vs
-            {{ match.lineup_2.name }}
+            <span
+              :class="{
+                [`text-green-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_1.id === match.winning_lineup_id,
+                [`text-red-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_1.id !== match.winning_lineup_id,
+              }"
+            >
+              {{ match.lineup_1.name }}
+            </span>
+            vs
+            <span
+              :class="{
+                [`text-green-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_2.id === match.winning_lineup_id,
+                [`text-red-400`]:
+                  match.winning_lineup_id &&
+                  match.lineup_2.id !== match.winning_lineup_id,
+              }"
+            >
+              {{ match.lineup_2.name }}
+            </span>
           </div>
 
           <MatchActions :match="match"></MatchActions>
         </div>
 
-        <template
-          v-if="
-            match.status == e_match_status_enum.PickingPlayers ||
-            match.status == e_match_status_enum.Scheduled
-          "
-        >
+        <template v-if="match.can_start">
           <Button
             @click.prevent.stop="startMatch"
             class="-mr-2"
@@ -62,6 +81,9 @@ import { e_match_status_enum } from "~/generated/zeus";
             </template>
             <template v-else> Match </template>
           </Button>
+        </template>
+        <template v-if="match.can_schedule">
+          <ScheduleMatch :match="match"></ScheduleMatch>
         </template>
       </CardTitle>
       <CardDescription>
@@ -186,7 +208,6 @@ import { e_match_status_enum } from "~/generated/zeus";
 </template>
 
 <script lang="ts">
-import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
@@ -197,20 +218,6 @@ export default {
     },
   },
   methods: {
-    async scheduleMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          scheduleMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
     async startMatch() {
       await this.$apollo.mutate({
         mutation: generateMutation({

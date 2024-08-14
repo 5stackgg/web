@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { MoreVertical } from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
+import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 </script>
 
 <template>
-  <DropdownMenu>
+  <DropdownMenu v-if="match.is_organizer">
     <DropdownMenuTrigger as-child>
       <Button size="icon" variant="outline">
         <MoreVertical class="h-3.5 w-3.5" />
@@ -13,7 +14,10 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
       <DropdownMenuItem>
-        <match-select-server :match="match"></match-select-server>
+        <MatchSelectServer :match="match"></MatchSelectServer>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
+        <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>
       <!--      <DropdownMenuItem-->
       <!--        v-if="match.status == e_match_status_enum.PickingPlayers"-->
@@ -21,7 +25,7 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
       <!--        SCHEDULE MATCH HERE-->
       <!--      </DropdownMenuItem>-->
 
-      <template v-if="canCancel">
+      <template v-if="match.can_cancel">
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
       </template>
@@ -30,7 +34,6 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 </template>
 
 <script lang="ts">
-import { e_match_status_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
@@ -54,11 +57,6 @@ export default {
           ],
         }),
       });
-    },
-  },
-  computed: {
-    canCancel() {
-      return this.match.status !== e_match_status_enum.Canceled;
     },
   },
 };

@@ -1,9 +1,10 @@
-import { $, e_utility_types_enum, Selector } from "~/generated/zeus";
+import { $, Selector } from "~/generated/zeus";
 
 export const matchLineups = Selector("match_lineups")({
   id: true,
   name: true,
   team_id: true,
+  is_ready: true,
   coach: {
     name: true,
     steam_id: true,
@@ -32,6 +33,7 @@ export const matchLineups = Selector("match_lineups")({
     {
       captain: true,
       steam_id: true,
+      checked_in: true,
       player: {
         name: true,
         steam_id: true,

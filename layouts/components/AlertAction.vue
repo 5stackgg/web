@@ -14,7 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 </template>
 
 <script lang="ts">
-import alertStore from "@/stores/alertStore";
+import alertStore from "~/stores/AlertStore";
 
 export default {
   props: {

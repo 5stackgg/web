@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import alertStore from "@/stores/alertStore";
+import alertStore from "~/stores/AlertStore";
 import AlertAction from "~/layouts/components/AlertAction.vue";
 
 export default {

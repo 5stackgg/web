@@ -12,24 +12,29 @@ class Socket extends EventEmitter {
 
   public connect() {
     const wsHost = `${import.meta.env.VITE_WS_HOST || "wss://ws.5stack.gg"}`;
-    console.info(`connecting to ws: ${wsHost}`);
+    console.info(`[ws] connecting to ws: ${wsHost}`);
     const webSocket = new WebSocket(wsHost);
 
     this.connection = webSocket;
 
     webSocket.addEventListener("message", (message) => {
-      const { event, id, data } = JSON.parse(message.data);
+      const { event, data } = JSON.parse(message.data);
       this.emit(event, data);
     });
 
     webSocket.addEventListener("open", () => {
       this.emit("online");
       this.connected = true;
-      console.info("Connected to 5Stack");
+      console.info("[ws] connected");
+
+      for (const [room, data] of Array.from(this.rooms).values()) {
+        this.join(room, data);
+      }
+
       setTimeout(() => {
         for (let i = 0; i < this.offlineQueue.length; i++) {
-          const { event, id, data } = this.offlineQueue[i];
-          this.event(event, id, data);
+          const { event, data } = this.offlineQueue[i];
+          this.event(event, data);
           this.offlineQueue.shift();
           i--;
         }
@@ -39,20 +44,38 @@ class Socket extends EventEmitter {
     webSocket.onclose = (closeEvent) => {
       this.emit("offline");
       this.connected = false;
-      console.warn("Lost connection to websocket server", closeEvent);
+      console.warn("[ws] lost connection to websocket server", closeEvent);
       setTimeout(() => {
-        this.connect();
+        this.connect(true);
       }, 1000);
     };
 
     webSocket.onerror = (error) => {
-      console.warn("web socket error", error);
+      console.warn("[ws] web socket error", error);
     };
+  }
+
+  private rooms: Map<string, Record<string, unknown>> = new Map();
+
+  public join(room: string, data: Record<string, unknown>) {
+    this.rooms.set(room, data);
+
+    if (!this.connected || !this.connection) {
+      return;
+    }
+    this.event(`${room}:join`, data);
+    console.info(`[ws] joining room ${room}`);
+  }
+
+  public leave(room: string, data: Record<string, unknown>) {
+    this.rooms.delete(room);
+    this.event(`${room}:leave`, data);
+    console.info(`[ws] leaving room ${room}`);
   }
 
   public event(event: string, data: Record<string, unknown>) {
     if (!this.connected || !this.connection) {
-      this.offlineQueue.push({ event, id, data });
+      this.offlineQueue.push({ event, data });
     } else {
       this.connection.send(
         JSON.stringify({

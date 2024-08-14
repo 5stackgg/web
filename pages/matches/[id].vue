@@ -3,6 +3,8 @@ import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
+import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
+import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
 </script>
 
 <template>
@@ -10,8 +12,15 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
     <div
       class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
     >
-      <MatchInfo :match="match"></MatchInfo>
-
+      <div>
+        <CheckIntoMatch :match="match"></CheckIntoMatch>
+        <MatchInfo :match="match"></MatchInfo>
+        <MatchLobbyChat
+          v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
+          :match-id="match.id"
+          :messages="messages"
+        ></MatchLobbyChat>
+      </div>
       <div class="grid gap-y-4">
         <div
           class="flex gap-4 max-h-[500px] justify-around"
@@ -35,11 +44,14 @@ import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
+import socket from "~/web-sockets/Socket";
 
 export default {
   data() {
     return {
+      messages: [],
       match: undefined,
+      listeners: [],
     };
   },
   apollo: {
@@ -64,7 +76,12 @@ export default {
               status: true,
               is_coach: true,
               is_captain: true,
+              is_in_lineup: true,
               is_organizer: true,
+              can_start: true,
+              can_schedule: true,
+              is_tournament_match: true,
+              can_cancel: true,
               can_assign_map: true,
               min_players_per_lineup: true,
               max_players_per_lineup: true,
@@ -72,6 +89,7 @@ export default {
               server_type: true,
               lineup_1_id: true,
               lineup_2_id: true,
+              winning_lineup_id: true,
               veto_type: true,
               veto_picking_lineup_id: true,
               connection_link: true,
@@ -154,6 +172,84 @@ export default {
         },
       },
     },
+  },
+  created() {
+    this.listeners.push(
+      socket.listen("lobby:list", (data) => {
+        if (data.matchId == this.matchId) {
+          useMatchLobbyStore().set(this.matchId, data.lobby);
+        }
+      }),
+    );
+
+    this.listeners.push(
+      socket.listen("lobby:joined", (data) => {
+        if (data.matchId == this.matchId) {
+          useMatchLobbyStore().add(this.matchId, data.user);
+        }
+      }),
+    );
+
+    this.listeners.push(
+      socket.listen("lobby:left", (data) => {
+        if (data.matchId == this.matchId) {
+          useMatchLobbyStore().remove(this.matchId, data.user);
+        }
+      }),
+    );
+
+    this.listeners.push(
+      socket.listen("lobby:messages", (data) => {
+        if (data.matchId == this.matchId) {
+          this.messages = data.messages;
+        }
+      }),
+    );
+  },
+  computed: {
+    matchId() {
+      return this.$route.params.id;
+    },
+  },
+  mounted() {
+    this.$watch(
+      () => [
+        this.match?.is_in_lineup,
+        this.match?.is_rganizer,
+        this.match?.is_coach,
+      ],
+      {
+        immediate: true,
+        handler() {
+          if (
+            this.match &&
+            (this.match.is_in_lineup ||
+              this.match.is_organizer ||
+              this.match.is_coach)
+          ) {
+            socket.join("lobby", {
+              matchId: this.matchId,
+            });
+          }
+        },
+      },
+    );
+  },
+  unmounted() {
+    if (
+      this.match &&
+      (this.match.is_in_lineup ||
+        this.match.is_organizer ||
+        this.match.is_coach)
+    ) {
+      socket.leave("lobby", {
+        matchId: this.matchId,
+      });
+    }
+
+    for (const listener of this.listeners) {
+      listener.stop();
+    }
   },
 };
 </script>

@@ -55,7 +55,11 @@ import MatchOptions from "~/components/MatchOptions.vue";
                 </Button>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
-                <Calendar v-model="startDate" initial-focus />
+                <Calendar
+                  :is-date-disabled="checkDate"
+                  v-model="startDate"
+                  initial-focus
+                />
               </PopoverContent>
             </Popover>
 
@@ -81,7 +85,6 @@ import MatchOptions from "~/components/MatchOptions.vue";
 <script lang="ts">
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
 import { $, e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
@@ -136,7 +139,9 @@ export default {
       form: useForm({
         validationSchema: matchOptionsValidator({
           name: z.string().min(1),
-          start: z.date(),
+          start: z.date().refine((date) => date > new Date(), {
+            message: "Date must be in the future",
+          }),
           description: z.string().nullable().default(null),
         }),
       }),
@@ -210,6 +215,9 @@ export default {
     },
   },
   methods: {
+    checkDate({ day, month, year }) {
+      return new Date(year, month - 1, day + 1) < new Date();
+    },
     setStart() {
       if (!this.startDate || !this.startTime) {
         return;

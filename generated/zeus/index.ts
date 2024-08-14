@@ -861,7 +861,6 @@ type ZEUS_INTERFACES = never
 export type ScalarCoders = {
 	bigint?: ScalarResolver;
 	bytea?: ScalarResolver;
-	date?: ScalarResolver;
 	jsonb?: ScalarResolver;
 	numeric?: ScalarResolver;
 	timestamptz?: ScalarResolver;
@@ -1065,19 +1064,6 @@ count?: [{	columns?: Array<ValueTypes["_map_pool_select_column"]> | undefined | 
 };
 	/** ordering argument of a cursor */
 ["cursor_ordering"]:cursor_ordering;
-	["date"]:unknown;
-	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
-["date_comparison_exp"]: {
-	_eq?: ValueTypes["date"] | undefined | null | Variable<any, string>,
-	_gt?: ValueTypes["date"] | undefined | null | Variable<any, string>,
-	_gte?: ValueTypes["date"] | undefined | null | Variable<any, string>,
-	_in?: Array<ValueTypes["date"]> | undefined | null | Variable<any, string>,
-	_is_null?: boolean | undefined | null | Variable<any, string>,
-	_lt?: ValueTypes["date"] | undefined | null | Variable<any, string>,
-	_lte?: ValueTypes["date"] | undefined | null | Variable<any, string>,
-	_neq?: ValueTypes["date"] | undefined | null | Variable<any, string>,
-	_nin?: Array<ValueTypes["date"]> | undefined | null | Variable<any, string>
-};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -5333,8 +5319,6 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 };
 	/** columns and relationships of "matches" */
 ["matches"]: AliasType<{
-	/** A computed field, executes function "is_match_organizer" */
-	can_assign_map?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?:boolean | `@${string}`,
 	/** A computed field, executes function "can_schedule_match" */
@@ -5607,7 +5591,6 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	_and?: Array<ValueTypes["matches_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["matches_bool_exp"]> | undefined | null | Variable<any, string>,
-	can_assign_map?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_schedule?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_start?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5653,7 +5636,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_unused_utilities_aggregate?: ValueTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	player_utility?: ValueTypes["player_utility_bool_exp"] | undefined | null | Variable<any, string>,
 	player_utility_aggregate?: ValueTypes["player_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	scheduled_at?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>,
+	scheduled_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	server_type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5700,7 +5683,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_objectives?: ValueTypes["player_objectives_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_unused_utilities?: ValueTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_utility?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	scheduled_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
@@ -5829,7 +5812,6 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
-	can_assign_map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_schedule?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_start?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -5897,7 +5879,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	match_options_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	password?: string | undefined | null | Variable<any, string>,
-	scheduled_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
 	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
@@ -5958,7 +5940,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	match_options_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	password?: string | undefined | null | Variable<any, string>,
-	scheduled_at?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
 	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
@@ -16460,19 +16442,6 @@ count?: [{	columns?: Array<ResolverInputTypes["_map_pool_select_column"]> | unde
 };
 	/** ordering argument of a cursor */
 ["cursor_ordering"]:cursor_ordering;
-	["date"]:unknown;
-	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
-["date_comparison_exp"]: {
-	_eq?: ResolverInputTypes["date"] | undefined | null,
-	_gt?: ResolverInputTypes["date"] | undefined | null,
-	_gte?: ResolverInputTypes["date"] | undefined | null,
-	_in?: Array<ResolverInputTypes["date"]> | undefined | null,
-	_is_null?: boolean | undefined | null,
-	_lt?: ResolverInputTypes["date"] | undefined | null,
-	_lte?: ResolverInputTypes["date"] | undefined | null,
-	_neq?: ResolverInputTypes["date"] | undefined | null,
-	_nin?: Array<ResolverInputTypes["date"]> | undefined | null
-};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -20728,8 +20697,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 };
 	/** columns and relationships of "matches" */
 ["matches"]: AliasType<{
-	/** A computed field, executes function "is_match_organizer" */
-	can_assign_map?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?:boolean | `@${string}`,
 	/** A computed field, executes function "can_schedule_match" */
@@ -21002,7 +20969,6 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	_and?: Array<ResolverInputTypes["matches_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["matches_bool_exp"]> | undefined | null,
-	can_assign_map?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_cancel?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_schedule?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_start?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -21048,7 +21014,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_unused_utilities_aggregate?: ResolverInputTypes["player_unused_utility_aggregate_bool_exp"] | undefined | null,
 	player_utility?: ResolverInputTypes["player_utility_bool_exp"] | undefined | null,
 	player_utility_aggregate?: ResolverInputTypes["player_utility_aggregate_bool_exp"] | undefined | null,
-	scheduled_at?: ResolverInputTypes["date_comparison_exp"] | undefined | null,
+	scheduled_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	server_type?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -21095,7 +21061,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_objectives?: ResolverInputTypes["player_objectives_arr_rel_insert_input"] | undefined | null,
 	player_unused_utilities?: ResolverInputTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null,
 	player_utility?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null,
-	scheduled_at?: ResolverInputTypes["date"] | undefined | null,
+	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
@@ -21224,7 +21190,6 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
-	can_assign_map?: ResolverInputTypes["order_by"] | undefined | null,
 	can_cancel?: ResolverInputTypes["order_by"] | undefined | null,
 	can_schedule?: ResolverInputTypes["order_by"] | undefined | null,
 	can_start?: ResolverInputTypes["order_by"] | undefined | null,
@@ -21292,7 +21257,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	match_options_id?: ResolverInputTypes["uuid"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	password?: string | undefined | null,
-	scheduled_at?: ResolverInputTypes["date"] | undefined | null,
+	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
 	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
@@ -21353,7 +21318,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	match_options_id?: ResolverInputTypes["uuid"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	password?: string | undefined | null,
-	scheduled_at?: ResolverInputTypes["date"] | undefined | null,
+	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
 	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
@@ -31842,19 +31807,6 @@ export type ModelTypes = {
 	_nin?: Array<ModelTypes["bytea"]> | undefined
 };
 	["cursor_ordering"]:cursor_ordering;
-	["date"]:any;
-	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
-["date_comparison_exp"]: {
-	_eq?: ModelTypes["date"] | undefined,
-	_gt?: ModelTypes["date"] | undefined,
-	_gte?: ModelTypes["date"] | undefined,
-	_in?: Array<ModelTypes["date"]> | undefined,
-	_is_null?: boolean | undefined,
-	_lt?: ModelTypes["date"] | undefined,
-	_lte?: ModelTypes["date"] | undefined,
-	_neq?: ModelTypes["date"] | undefined,
-	_nin?: Array<ModelTypes["date"]> | undefined
-};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: {
 		description?: string | undefined,
@@ -35636,9 +35588,7 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "matches" */
 ["matches"]: {
-		/** A computed field, executes function "is_match_organizer" */
-	can_assign_map?: boolean | undefined,
-	/** A computed field, executes function "can_cancel_match" */
+		/** A computed field, executes function "can_cancel_match" */
 	can_cancel?: boolean | undefined,
 	/** A computed field, executes function "can_schedule_match" */
 	can_schedule?: boolean | undefined,
@@ -35720,7 +35670,7 @@ export type ModelTypes = {
 	player_utility: Array<ModelTypes["player_utility"]>,
 	/** An aggregate relationship */
 	player_utility_aggregate: ModelTypes["player_utility_aggregate"],
-	scheduled_at?: ModelTypes["date"] | undefined,
+	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	/** An object relationship */
 	server?: ModelTypes["servers"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
@@ -35814,7 +35764,6 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["matches_bool_exp"]> | undefined,
 	_not?: ModelTypes["matches_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["matches_bool_exp"]> | undefined,
-	can_assign_map?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_cancel?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_schedule?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_start?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -35860,7 +35809,7 @@ export type ModelTypes = {
 	player_unused_utilities_aggregate?: ModelTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	player_utility?: ModelTypes["player_utility_bool_exp"] | undefined,
 	player_utility_aggregate?: ModelTypes["player_utility_aggregate_bool_exp"] | undefined,
-	scheduled_at?: ModelTypes["date_comparison_exp"] | undefined,
+	scheduled_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	server?: ModelTypes["servers_bool_exp"] | undefined,
 	server_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	server_type?: ModelTypes["String_comparison_exp"] | undefined,
@@ -35906,7 +35855,7 @@ export type ModelTypes = {
 	player_objectives?: ModelTypes["player_objectives_arr_rel_insert_input"] | undefined,
 	player_unused_utilities?: ModelTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	player_utility?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined,
-	scheduled_at?: ModelTypes["date"] | undefined,
+	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_status_enum"] | undefined,
@@ -35935,7 +35884,7 @@ export type ModelTypes = {
 	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: ModelTypes["date"] | undefined,
+	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined,
@@ -35983,7 +35932,7 @@ export type ModelTypes = {
 	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: ModelTypes["date"] | undefined,
+	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined,
@@ -36032,7 +35981,6 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
-	can_assign_map?: ModelTypes["order_by"] | undefined,
 	can_cancel?: ModelTypes["order_by"] | undefined,
 	can_schedule?: ModelTypes["order_by"] | undefined,
 	can_start?: ModelTypes["order_by"] | undefined,
@@ -36099,7 +36047,7 @@ export type ModelTypes = {
 	match_options_id?: ModelTypes["uuid"] | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: ModelTypes["date"] | undefined,
+	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_status_enum"] | undefined,
 	winning_lineup_id?: ModelTypes["uuid"] | undefined
@@ -36157,7 +36105,7 @@ export type ModelTypes = {
 	match_options_id?: ModelTypes["uuid"] | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: ModelTypes["date"] | undefined,
+	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_status_enum"] | undefined,
 	winning_lineup_id?: ModelTypes["uuid"] | undefined
@@ -44916,19 +44864,6 @@ export type GraphQLTypes = {
 };
 	/** ordering argument of a cursor */
 ["cursor_ordering"]: cursor_ordering;
-	["date"]: "scalar" & { name: "date" };
-	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
-["date_comparison_exp"]: {
-		_eq?: GraphQLTypes["date"] | undefined,
-	_gt?: GraphQLTypes["date"] | undefined,
-	_gte?: GraphQLTypes["date"] | undefined,
-	_in?: Array<GraphQLTypes["date"]> | undefined,
-	_is_null?: boolean | undefined,
-	_lt?: GraphQLTypes["date"] | undefined,
-	_lte?: GraphQLTypes["date"] | undefined,
-	_neq?: GraphQLTypes["date"] | undefined,
-	_nin?: Array<GraphQLTypes["date"]> | undefined
-};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: {
 	__typename: "e_map_pool_types",
@@ -48961,8 +48896,6 @@ export type GraphQLTypes = {
 	/** columns and relationships of "matches" */
 ["matches"]: {
 	__typename: "matches",
-	/** A computed field, executes function "is_match_organizer" */
-	can_assign_map?: boolean | undefined,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?: boolean | undefined,
 	/** A computed field, executes function "can_schedule_match" */
@@ -49045,7 +48978,7 @@ export type GraphQLTypes = {
 	player_utility: Array<GraphQLTypes["player_utility"]>,
 	/** An aggregate relationship */
 	player_utility_aggregate: GraphQLTypes["player_utility_aggregate"],
-	scheduled_at?: GraphQLTypes["date"] | undefined,
+	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** An object relationship */
 	server?: GraphQLTypes["servers"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
@@ -49142,7 +49075,6 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["matches_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["matches_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["matches_bool_exp"]> | undefined,
-	can_assign_map?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_cancel?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_schedule?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_start?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -49188,7 +49120,7 @@ export type GraphQLTypes = {
 	player_unused_utilities_aggregate?: GraphQLTypes["player_unused_utility_aggregate_bool_exp"] | undefined,
 	player_utility?: GraphQLTypes["player_utility_bool_exp"] | undefined,
 	player_utility_aggregate?: GraphQLTypes["player_utility_aggregate_bool_exp"] | undefined,
-	scheduled_at?: GraphQLTypes["date_comparison_exp"] | undefined,
+	scheduled_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	server?: GraphQLTypes["servers_bool_exp"] | undefined,
 	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	server_type?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -49235,7 +49167,7 @@ export type GraphQLTypes = {
 	player_objectives?: GraphQLTypes["player_objectives_arr_rel_insert_input"] | undefined,
 	player_unused_utilities?: GraphQLTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	player_utility?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined,
-	scheduled_at?: GraphQLTypes["date"] | undefined,
+	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined,
@@ -49265,7 +49197,7 @@ export type GraphQLTypes = {
 	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: GraphQLTypes["date"] | undefined,
+	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined,
@@ -49314,7 +49246,7 @@ export type GraphQLTypes = {
 	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: GraphQLTypes["date"] | undefined,
+	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "get_match_server_type" */
 	server_type?: string | undefined,
@@ -49364,8 +49296,7 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
-		can_assign_map?: GraphQLTypes["order_by"] | undefined,
-	can_cancel?: GraphQLTypes["order_by"] | undefined,
+		can_cancel?: GraphQLTypes["order_by"] | undefined,
 	can_schedule?: GraphQLTypes["order_by"] | undefined,
 	can_start?: GraphQLTypes["order_by"] | undefined,
 	connection_link?: GraphQLTypes["order_by"] | undefined,
@@ -49432,7 +49363,7 @@ export type GraphQLTypes = {
 	match_options_id?: GraphQLTypes["uuid"] | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: GraphQLTypes["date"] | undefined,
+	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined,
 	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
@@ -49493,7 +49424,7 @@ export type GraphQLTypes = {
 	match_options_id?: GraphQLTypes["uuid"] | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	password?: string | undefined,
-	scheduled_at?: GraphQLTypes["date"] | undefined,
+	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined,
 	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
@@ -59715,8 +59646,6 @@ type ZEUS_VARIABLES = {
 	["bytea"]: ValueTypes["bytea"];
 	["bytea_comparison_exp"]: ValueTypes["bytea_comparison_exp"];
 	["cursor_ordering"]: ValueTypes["cursor_ordering"];
-	["date"]: ValueTypes["date"];
-	["date_comparison_exp"]: ValueTypes["date_comparison_exp"];
 	["e_map_pool_types_bool_exp"]: ValueTypes["e_map_pool_types_bool_exp"];
 	["e_map_pool_types_constraint"]: ValueTypes["e_map_pool_types_constraint"];
 	["e_map_pool_types_enum"]: ValueTypes["e_map_pool_types_enum"];

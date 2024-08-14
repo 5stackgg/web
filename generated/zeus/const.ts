@@ -81,17 +81,6 @@ export const AllTypesProps: Record<string,any> = {
 		_nin:"bytea"
 	},
 	cursor_ordering: "enum" as const,
-	date: `scalar.date` as const,
-	date_comparison_exp:{
-		_eq:"date",
-		_gt:"date",
-		_gte:"date",
-		_in:"date",
-		_lt:"date",
-		_lte:"date",
-		_neq:"date",
-		_nin:"date"
-	},
 	e_map_pool_types_aggregate_fields:{
 		count:{
 			columns:"e_map_pool_types_select_column"
@@ -2518,7 +2507,6 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"matches_bool_exp",
 		_not:"matches_bool_exp",
 		_or:"matches_bool_exp",
-		can_assign_map:"Boolean_comparison_exp",
 		can_cancel:"Boolean_comparison_exp",
 		can_schedule:"Boolean_comparison_exp",
 		can_start:"Boolean_comparison_exp",
@@ -2564,7 +2552,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
 		player_utility:"player_utility_bool_exp",
 		player_utility_aggregate:"player_utility_aggregate_bool_exp",
-		scheduled_at:"date_comparison_exp",
+		scheduled_at:"timestamptz_comparison_exp",
 		server:"servers_bool_exp",
 		server_id:"uuid_comparison_exp",
 		server_type:"String_comparison_exp",
@@ -2606,7 +2594,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_objectives:"player_objectives_arr_rel_insert_input",
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		player_utility:"player_utility_arr_rel_insert_input",
-		scheduled_at:"date",
+		scheduled_at:"timestamptz",
 		server:"servers_obj_rel_insert_input",
 		server_id:"uuid",
 		status:"e_match_status_enum",
@@ -2651,7 +2639,6 @@ export const AllTypesProps: Record<string,any> = {
 		where:"matches_bool_exp"
 	},
 	matches_order_by:{
-		can_assign_map:"order_by",
 		can_cancel:"order_by",
 		can_schedule:"order_by",
 		can_start:"order_by",
@@ -2714,7 +2701,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
-		scheduled_at:"date",
+		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		status:"e_match_status_enum",
 		winning_lineup_id:"uuid"
@@ -2739,7 +2726,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
-		scheduled_at:"date",
+		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		status:"e_match_status_enum",
 		winning_lineup_id:"uuid"
@@ -9507,7 +9494,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	bigint: `scalar.bigint` as const,
 	bytea: `scalar.bytea` as const,
-	date: `scalar.date` as const,
 	e_map_pool_types:{
 		description:"String",
 		value:"String"
@@ -10540,7 +10526,6 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_veto_picks"
 	},
 	matches:{
-		can_assign_map:"Boolean",
 		can_cancel:"Boolean",
 		can_schedule:"Boolean",
 		can_start:"Boolean",
@@ -10586,7 +10571,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
 		player_utility:"player_utility",
 		player_utility_aggregate:"player_utility_aggregate",
-		scheduled_at:"date",
+		scheduled_at:"timestamptz",
 		server:"servers",
 		server_id:"uuid",
 		server_type:"String",
@@ -10639,7 +10624,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
-		scheduled_at:"date",
+		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		server_type:"String",
 		tv_connection_link:"String",
@@ -10662,7 +10647,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
-		scheduled_at:"date",
+		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		server_type:"String",
 		tv_connection_link:"String",

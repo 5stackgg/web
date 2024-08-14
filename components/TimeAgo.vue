@@ -40,7 +40,12 @@ export default {
   methods: {
     updateText() {
       const timeAgo = new TimeAgo("en-US");
-      this.text = timeAgo.format(new Date(this.date));
+
+      const time = new Date(this.date);
+
+      time.setSeconds(time.getSeconds() - 1);
+
+      this.text = timeAgo.format(time);
     },
   },
 };

@@ -4,6 +4,7 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
+import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
 </script>
 
 <template>
@@ -14,6 +15,10 @@ import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
       <div>
         <CheckIntoMatch :match="match"></CheckIntoMatch>
         <MatchInfo :match="match"></MatchInfo>
+        <MatchLobbyChat
+          :match-id="match.id"
+          :messages="messages"
+        ></MatchLobbyChat>
       </div>
       <div class="grid gap-y-4">
         <div
@@ -43,6 +48,7 @@ import socket from "~/web-sockets/Socket";
 export default {
   data() {
     return {
+      messages: [],
       match: undefined,
       matchListener: undefined,
     };
@@ -166,6 +172,7 @@ export default {
   },
   mounted() {
     this.matchListener?.stop();
+
     this.matchListener = socket.listen("lobby", (data) => {
       switch (data.event) {
         case "list":
@@ -176,6 +183,9 @@ export default {
           break;
         case "left":
           useMatchLobbyStore().remove(this.matchId, data.user);
+          break;
+        case "messages":
+          this.messages = data.messages;
           break;
       }
     });

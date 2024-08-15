@@ -5319,6 +5319,8 @@ count?: [{	columns?: Array<ValueTypes["match_veto_picks_select_column"]> | undef
 };
 	/** columns and relationships of "matches" */
 ["matches"]: AliasType<{
+	/** A computed field, executes function "can_assign_server_to_match" */
+	can_assign_server?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?:boolean | `@${string}`,
 	/** A computed field, executes function "can_check_in" */
@@ -5595,6 +5597,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	_and?: Array<ValueTypes["matches_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["matches_bool_exp"]> | undefined | null | Variable<any, string>,
+	can_assign_server?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_check_in?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_schedule?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -5822,6 +5825,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
+	can_assign_server?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_cancel?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_check_in?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_schedule?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -20709,6 +20713,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_veto_picks_select_column"]>
 };
 	/** columns and relationships of "matches" */
 ["matches"]: AliasType<{
+	/** A computed field, executes function "can_assign_server_to_match" */
+	can_assign_server?:boolean | `@${string}`,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?:boolean | `@${string}`,
 	/** A computed field, executes function "can_check_in" */
@@ -20985,6 +20991,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	_and?: Array<ResolverInputTypes["matches_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["matches_bool_exp"]> | undefined | null,
+	can_assign_server?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_cancel?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_check_in?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_schedule?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -21212,6 +21219,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
+	can_assign_server?: ResolverInputTypes["order_by"] | undefined | null,
 	can_cancel?: ResolverInputTypes["order_by"] | undefined | null,
 	can_check_in?: ResolverInputTypes["order_by"] | undefined | null,
 	can_schedule?: ResolverInputTypes["order_by"] | undefined | null,
@@ -35612,7 +35620,9 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "matches" */
 ["matches"]: {
-		/** A computed field, executes function "can_cancel_match" */
+		/** A computed field, executes function "can_assign_server_to_match" */
+	can_assign_server?: boolean | undefined,
+	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?: boolean | undefined,
 	/** A computed field, executes function "can_check_in" */
 	can_check_in?: boolean | undefined,
@@ -35792,6 +35802,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["matches_bool_exp"]> | undefined,
 	_not?: ModelTypes["matches_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["matches_bool_exp"]> | undefined,
+	can_assign_server?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_cancel?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_check_in?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_schedule?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -36015,6 +36026,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
+	can_assign_server?: ModelTypes["order_by"] | undefined,
 	can_cancel?: ModelTypes["order_by"] | undefined,
 	can_check_in?: ModelTypes["order_by"] | undefined,
 	can_schedule?: ModelTypes["order_by"] | undefined,
@@ -48932,6 +48944,8 @@ export type GraphQLTypes = {
 	/** columns and relationships of "matches" */
 ["matches"]: {
 	__typename: "matches",
+	/** A computed field, executes function "can_assign_server_to_match" */
+	can_assign_server?: boolean | undefined,
 	/** A computed field, executes function "can_cancel_match" */
 	can_cancel?: boolean | undefined,
 	/** A computed field, executes function "can_check_in" */
@@ -49115,6 +49129,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["matches_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["matches_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["matches_bool_exp"]> | undefined,
+	can_assign_server?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_cancel?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_check_in?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_schedule?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -49342,7 +49357,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "matches". */
 ["matches_order_by"]: {
-		can_cancel?: GraphQLTypes["order_by"] | undefined,
+		can_assign_server?: GraphQLTypes["order_by"] | undefined,
+	can_cancel?: GraphQLTypes["order_by"] | undefined,
 	can_check_in?: GraphQLTypes["order_by"] | undefined,
 	can_schedule?: GraphQLTypes["order_by"] | undefined,
 	can_start?: GraphQLTypes["order_by"] | undefined,

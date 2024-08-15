@@ -2507,6 +2507,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"matches_bool_exp",
 		_not:"matches_bool_exp",
 		_or:"matches_bool_exp",
+		can_assign_server:"Boolean_comparison_exp",
 		can_cancel:"Boolean_comparison_exp",
 		can_check_in:"Boolean_comparison_exp",
 		can_schedule:"Boolean_comparison_exp",
@@ -2641,6 +2642,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"matches_bool_exp"
 	},
 	matches_order_by:{
+		can_assign_server:"order_by",
 		can_cancel:"order_by",
 		can_check_in:"order_by",
 		can_schedule:"order_by",
@@ -10530,6 +10532,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_veto_picks"
 	},
 	matches:{
+		can_assign_server:"Boolean",
 		can_cancel:"Boolean",
 		can_check_in:"Boolean",
 		can_schedule:"Boolean",

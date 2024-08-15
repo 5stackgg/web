@@ -86,6 +86,7 @@ export default {
               can_check_in: true,
               is_tournament_match: true,
               can_cancel: true,
+              can_assign_server: true,
               min_players_per_lineup: true,
               max_players_per_lineup: true,
               server_id: true,

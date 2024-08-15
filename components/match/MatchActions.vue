@@ -13,7 +13,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
-      <DropdownMenuItem>
+      <DropdownMenuItem v-if="match.can_assign_server">
         <MatchSelectServer :match="match"></MatchSelectServer>
       </DropdownMenuItem>
       <DropdownMenuItem>

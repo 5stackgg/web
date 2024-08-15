@@ -55,7 +55,13 @@ import { Separator } from "~/components/ui/separator";
 
     <div class="flex justify-between">
       <h1>
-        {{ teamName }} is Picking a
+        <template v-if="match.lineup_1.is_picking_veto">
+          {{ match.lineup_1.name }}
+        </template>
+        <template v-else-if="match.lineup_2.is_picking_veto">
+          {{ match.lineup_2.name }}
+        </template>
+        is Picking a
         <span class="underline">{{ pickType }}</span>
       </h1>
 
@@ -288,17 +294,12 @@ export default {
       return this.match.options.best_of;
     },
     isPicking() {
-      if (this.override) {
+      if (this.override && this.match.is_organizer) {
         return true;
       }
 
-      if (!this.match || !this.myLineup) {
-        return false;
-      }
-
       return (
-        this.myLineup.id === this.match.veto_picking_lineup_id &&
-        (this.match.is_captain || this.match.is_organizer)
+        this.match.lineup_1.can_pick_veto || this.match.lineup_2.can_pick_veto
       );
     },
     pickType() {
@@ -324,12 +325,6 @@ export default {
           img: "/img/teams/t_logo.svg",
         },
       ];
-    },
-    teamName() {
-      const lineups = [this.match.lineup_1, this.match.lineup_2];
-      return lineups.find((lineup) => {
-        return lineup.id === this.match.veto_picking_lineup_id;
-      }).name;
     },
   },
 };

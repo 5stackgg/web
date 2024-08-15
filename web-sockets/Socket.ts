@@ -29,7 +29,7 @@ class Socket extends EventEmitter {
       clearInterval(this.heartBeat);
       this.heartBeat = setInterval(() => {
         this.connection?.send("ping");
-      }, 15000)
+      }, 15000);
 
       console.info("[ws] connected");
 

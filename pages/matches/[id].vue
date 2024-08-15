@@ -169,6 +169,9 @@ export default {
               ],
               lineup_1: [{}, matchLineups],
               lineup_2: [{}, matchLineups],
+              demos: {
+                id: true,
+              },
             },
           ],
         }),

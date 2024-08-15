@@ -3341,6 +3341,10 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 	coach?:ValueTypes["players"],
 	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_on_lineup" */
+	is_on_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_is_picking_veto" */
+	is_picking_veto?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_lineup_ready" */
 	is_ready?:boolean | `@${string}`,
 lineup_players?: [{	/** distinct select on columns */
@@ -3444,6 +3448,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	coach?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	coach_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_on_lineup?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_picking_veto?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_ready?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_players?: ValueTypes["match_lineup_players_bool_exp"] | undefined | null | Variable<any, string>,
 	lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -3528,6 +3534,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	coach?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_on_lineup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_picking_veto?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_ready?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_players_aggregate?: ValueTypes["match_lineup_players_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_veto_picks_aggregate?: ValueTypes["match_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -18735,6 +18743,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 	coach?:ResolverInputTypes["players"],
 	coach_steam_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_on_lineup" */
+	is_on_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "lineup_is_picking_veto" */
+	is_picking_veto?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_lineup_ready" */
 	is_ready?:boolean | `@${string}`,
 lineup_players?: [{	/** distinct select on columns */
@@ -18838,6 +18850,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	coach?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	coach_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	is_on_lineup?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	is_picking_veto?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_ready?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	lineup_players?: ResolverInputTypes["match_lineup_players_bool_exp"] | undefined | null,
 	lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_bool_exp"] | undefined | null,
@@ -18922,6 +18936,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	coach?: ResolverInputTypes["players_order_by"] | undefined | null,
 	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	is_on_lineup?: ResolverInputTypes["order_by"] | undefined | null,
+	is_picking_veto?: ResolverInputTypes["order_by"] | undefined | null,
 	is_ready?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_players_aggregate?: ResolverInputTypes["match_lineup_players_aggregate_order_by"] | undefined | null,
 	match_veto_picks_aggregate?: ResolverInputTypes["match_veto_picks_aggregate_order_by"] | undefined | null,
@@ -33840,6 +33856,10 @@ export type ModelTypes = {
 	coach?: ModelTypes["players"] | undefined,
 	coach_steam_id?: ModelTypes["bigint"] | undefined,
 	id: ModelTypes["uuid"],
+	/** A computed field, executes function "is_on_lineup" */
+	is_on_lineup?: boolean | undefined,
+	/** A computed field, executes function "lineup_is_picking_veto" */
+	is_picking_veto?: boolean | undefined,
 	/** A computed field, executes function "is_match_lineup_ready" */
 	is_ready?: boolean | undefined,
 	/** An array relationship */
@@ -33923,6 +33943,8 @@ export type ModelTypes = {
 	coach?: ModelTypes["players_bool_exp"] | undefined,
 	coach_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	is_on_lineup?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	is_picking_veto?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_ready?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	lineup_players?: ModelTypes["match_lineup_players_bool_exp"] | undefined,
 	lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
@@ -34003,6 +34025,8 @@ export type ModelTypes = {
 	coach?: ModelTypes["players_order_by"] | undefined,
 	coach_steam_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	is_on_lineup?: ModelTypes["order_by"] | undefined,
+	is_picking_veto?: ModelTypes["order_by"] | undefined,
 	is_ready?: ModelTypes["order_by"] | undefined,
 	lineup_players_aggregate?: ModelTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	match_veto_picks_aggregate?: ModelTypes["match_veto_picks_aggregate_order_by"] | undefined,
@@ -47070,6 +47094,10 @@ export type GraphQLTypes = {
 	coach?: GraphQLTypes["players"] | undefined,
 	coach_steam_id?: GraphQLTypes["bigint"] | undefined,
 	id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "is_on_lineup" */
+	is_on_lineup?: boolean | undefined,
+	/** A computed field, executes function "lineup_is_picking_veto" */
+	is_picking_veto?: boolean | undefined,
 	/** A computed field, executes function "is_match_lineup_ready" */
 	is_ready?: boolean | undefined,
 	/** An array relationship */
@@ -47156,6 +47184,8 @@ export type GraphQLTypes = {
 	coach?: GraphQLTypes["players_bool_exp"] | undefined,
 	coach_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	is_on_lineup?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	is_picking_veto?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_ready?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	lineup_players?: GraphQLTypes["match_lineup_players_bool_exp"] | undefined,
 	lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_bool_exp"] | undefined,
@@ -47240,6 +47270,8 @@ export type GraphQLTypes = {
 	coach?: GraphQLTypes["players_order_by"] | undefined,
 	coach_steam_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	is_on_lineup?: GraphQLTypes["order_by"] | undefined,
+	is_picking_veto?: GraphQLTypes["order_by"] | undefined,
 	is_ready?: GraphQLTypes["order_by"] | undefined,
 	lineup_players_aggregate?: GraphQLTypes["match_lineup_players_aggregate_order_by"] | undefined,
 	match_veto_picks_aggregate?: GraphQLTypes["match_veto_picks_aggregate_order_by"] | undefined,

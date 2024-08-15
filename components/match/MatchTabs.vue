@@ -44,6 +44,9 @@ provide("commander", commander);
         <TabsTrigger :disabled="disableStats" value="clutches">
           Clutches
         </TabsTrigger>
+        <TabsTrigger :disabled="match.demos.length === 0" value="demos">
+          Demos
+        </TabsTrigger>
         <TabsTrigger :disabled="!match.server_id" value="server">
           Server Console
         </TabsTrigger>
@@ -124,6 +127,9 @@ provide("commander", commander);
           ></lineup-clutches>
         </CardContent>
       </Card>
+    </TabsContent>
+    <TabsContent value="demos">
+      <pre>{{ match.demos }}</pre>
     </TabsContent>
     <TabsContent value="server">
       <rcon-commander :server-id="match.server_id" v-slot="{ commander }">

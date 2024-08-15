@@ -17,7 +17,7 @@ import { CaretSortIcon } from "@radix-icons/vue";
     </PopoverTrigger>
     <PopoverContent class="p-0">
       <Command @update:searchTerm="(term) => searchPlayers(term)">
-        <CommandInput class="h-9" @keydown.enter.stop="select(players.at(0))" />
+        <CommandInput class="h-9" />
         <CommandEmpty>No Players Found.</CommandEmpty>
         <CommandList>
           <CommandGroup>

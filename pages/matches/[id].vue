@@ -182,6 +182,8 @@ export default {
     },
   },
   created() {
+    this.stopListeners();
+
     this.listeners.push(
       socket.listen("lobby:list", (data) => {
         if (data.matchId == this.matchId) {
@@ -209,7 +211,9 @@ export default {
     this.listeners.push(
       socket.listen("lobby:messages", (data) => {
         if (data.matchId == this.matchId) {
-          this.messages = data.messages;
+          this.messages = data.messages.sort((a, b) => {
+            return a.timestamp - b.timestamp;
+          });
         }
       }),
     );
@@ -243,6 +247,13 @@ export default {
       },
     );
   },
+  methods: {
+    stopListeners() {
+      for (const listener of this.listeners) {
+        listener.stop();
+      }
+    }
+  },
   unmounted() {
     if (
       this.match &&
@@ -254,10 +265,7 @@ export default {
         matchId: this.matchId,
       });
     }
-
-    for (const listener of this.listeners) {
-      listener.stop();
-    }
+    this.stopListeners();
   },
 };
 </script>

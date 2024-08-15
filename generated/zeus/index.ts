@@ -3335,6 +3335,10 @@ count?: [{	columns?: Array<ValueTypes["match_lineup_players_select_column"]> | u
 };
 	/** relational table for assigning a team to a match and lineup */
 ["match_lineups"]: AliasType<{
+	/** A computed field, executes function "can_pick_veto" */
+	can_pick_veto?:boolean | `@${string}`,
+	/** A computed field, executes function "can_update_lineup" */
+	can_update_lineup?:boolean | `@${string}`,
 	/** An object relationship */
 	captain?:ValueTypes["v_match_captains"],
 	/** An object relationship */
@@ -3444,6 +3448,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 	_and?: Array<ValueTypes["match_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_lineups_bool_exp"]> | undefined | null | Variable<any, string>,
+	can_pick_veto?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	can_update_lineup?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["v_match_captains_bool_exp"] | undefined | null | Variable<any, string>,
 	coach?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	coach_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -3530,6 +3536,8 @@ count?: [{	columns?: Array<ValueTypes["match_lineups_select_column"]> | undefine
 };
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
+	can_pick_veto?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	can_update_lineup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	captain?: ValueTypes["v_match_captains_order_by"] | undefined | null | Variable<any, string>,
 	coach?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	coach_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -18737,6 +18745,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineup_players_select_colum
 };
 	/** relational table for assigning a team to a match and lineup */
 ["match_lineups"]: AliasType<{
+	/** A computed field, executes function "can_pick_veto" */
+	can_pick_veto?:boolean | `@${string}`,
+	/** A computed field, executes function "can_update_lineup" */
+	can_update_lineup?:boolean | `@${string}`,
 	/** An object relationship */
 	captain?:ResolverInputTypes["v_match_captains"],
 	/** An object relationship */
@@ -18846,6 +18858,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 	_and?: Array<ResolverInputTypes["match_lineups_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_lineups_bool_exp"]> | undefined | null,
+	can_pick_veto?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	can_update_lineup?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	captain?: ResolverInputTypes["v_match_captains_bool_exp"] | undefined | null,
 	coach?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	coach_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
@@ -18932,6 +18946,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_lineups_select_column"]> | 
 };
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
+	can_pick_veto?: ResolverInputTypes["order_by"] | undefined | null,
+	can_update_lineup?: ResolverInputTypes["order_by"] | undefined | null,
 	captain?: ResolverInputTypes["v_match_captains_order_by"] | undefined | null,
 	coach?: ResolverInputTypes["players_order_by"] | undefined | null,
 	coach_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -33850,7 +33866,11 @@ export type ModelTypes = {
 };
 	/** relational table for assigning a team to a match and lineup */
 ["match_lineups"]: {
-		/** An object relationship */
+		/** A computed field, executes function "can_pick_veto" */
+	can_pick_veto?: boolean | undefined,
+	/** A computed field, executes function "can_update_lineup" */
+	can_update_lineup?: boolean | undefined,
+	/** An object relationship */
 	captain?: ModelTypes["v_match_captains"] | undefined,
 	/** An object relationship */
 	coach?: ModelTypes["players"] | undefined,
@@ -33939,6 +33959,8 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["match_lineups_bool_exp"]> | undefined,
 	_not?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_lineups_bool_exp"]> | undefined,
+	can_pick_veto?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	can_update_lineup?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	captain?: ModelTypes["v_match_captains_bool_exp"] | undefined,
 	coach?: ModelTypes["players_bool_exp"] | undefined,
 	coach_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
@@ -34021,6 +34043,8 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
+	can_pick_veto?: ModelTypes["order_by"] | undefined,
+	can_update_lineup?: ModelTypes["order_by"] | undefined,
 	captain?: ModelTypes["v_match_captains_order_by"] | undefined,
 	coach?: ModelTypes["players_order_by"] | undefined,
 	coach_steam_id?: ModelTypes["order_by"] | undefined,
@@ -47088,6 +47112,10 @@ export type GraphQLTypes = {
 	/** relational table for assigning a team to a match and lineup */
 ["match_lineups"]: {
 	__typename: "match_lineups",
+	/** A computed field, executes function "can_pick_veto" */
+	can_pick_veto?: boolean | undefined,
+	/** A computed field, executes function "can_update_lineup" */
+	can_update_lineup?: boolean | undefined,
 	/** An object relationship */
 	captain?: GraphQLTypes["v_match_captains"] | undefined,
 	/** An object relationship */
@@ -47180,6 +47208,8 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["match_lineups_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_lineups_bool_exp"]> | undefined,
+	can_pick_veto?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	can_update_lineup?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	captain?: GraphQLTypes["v_match_captains_bool_exp"] | undefined,
 	coach?: GraphQLTypes["players_bool_exp"] | undefined,
 	coach_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
@@ -47266,7 +47296,9 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "match_lineups". */
 ["match_lineups_order_by"]: {
-		captain?: GraphQLTypes["v_match_captains_order_by"] | undefined,
+		can_pick_veto?: GraphQLTypes["order_by"] | undefined,
+	can_update_lineup?: GraphQLTypes["order_by"] | undefined,
+	captain?: GraphQLTypes["v_match_captains_order_by"] | undefined,
 	coach?: GraphQLTypes["players_order_by"] | undefined,
 	coach_steam_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,

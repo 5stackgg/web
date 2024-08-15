@@ -4,7 +4,7 @@ import formatStatValue from "~/utilities/formatStatValue";
 <template>
   <TableRow>
     <TableCell>
-      <lineup-member :member="member" :lineup_id="lineup_id"></lineup-member>
+      <LineupMember :member="member"></LineupMember>
     </TableCell>
     <TableCell class="hidden sm:table-cell">
       {{ member.player?.kills_aggregate.aggregate.count }}
@@ -54,7 +54,7 @@ import formatStatValue from "~/utilities/formatStatValue";
     <TableCell>
       {{ member.player?.zeus_kills_aggregate.aggregate.count }}
     </TableCell>
-    <TableCell v-if="match.is_organizer">
+    <TableCell v-if="lineup.can_update_lineup">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="outline" size="icon">
@@ -92,9 +92,9 @@ export default {
       required: true,
       type: Object,
     },
-    lineup_id: {
+    lineup: {
       required: true,
-      type: String,
+      type: Object,
     },
   },
   methods: {
@@ -125,7 +125,7 @@ export default {
         }),
         variables: {
           steam_id: this.member.steam_id,
-          match_lineup_id: this.lineup_id,
+          match_lineup_id: this.lineup.id,
         },
       });
     },
@@ -150,7 +150,7 @@ export default {
         }),
         variables: {
           steam_id: this.member.steam_id,
-          match_lineup_id: this.lineup_id,
+          match_lineup_id: this.lineup.id,
         },
       });
     },

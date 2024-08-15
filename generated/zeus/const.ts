@@ -1379,6 +1379,8 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_lineups_bool_exp",
 		_not:"match_lineups_bool_exp",
 		_or:"match_lineups_bool_exp",
+		can_pick_veto:"Boolean_comparison_exp",
+		can_update_lineup:"Boolean_comparison_exp",
 		captain:"v_match_captains_bool_exp",
 		coach:"players_bool_exp",
 		coach_steam_id:"bigint_comparison_exp",
@@ -1430,6 +1432,8 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_lineups_bool_exp"
 	},
 	match_lineups_order_by:{
+		can_pick_veto:"order_by",
+		can_update_lineup:"order_by",
 		captain:"v_match_captains_order_by",
 		coach:"players_order_by",
 		coach_steam_id:"order_by",
@@ -9993,6 +9997,8 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	match_lineups:{
+		can_pick_veto:"Boolean",
+		can_update_lineup:"Boolean",
 		captain:"v_match_captains",
 		coach:"players",
 		coach_steam_id:"bigint",

@@ -20,7 +20,7 @@
         <TableHead> zeus </TableHead>
         <TableHead> </TableHead>
       </TableRow>
-      <TableRow v-if="assigningLineups || canUpdateCoach">
+      <TableRow v-if="lineup.can_update_lineup">
         <div>
           <AssignPlayerToLineup
             :lineup="lineup"
@@ -37,12 +37,12 @@
       </TableRow>
     </TableHeader>
     <TableBody>
-      <lineup-overview-row
+      <LineupOverviewRow
         :match="match"
         :member="member"
+        :lineup="lineup"
         v-for="member of lineup.lineup_players"
-        :lineup_id="lineup.id"
-      ></lineup-overview-row>
+      ></LineupOverviewRow>
     </TableBody>
   </Table>
 </template>
@@ -91,27 +91,14 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    assigningLineups() {
-      const currentStatus = this.match.status;
-      return (
-        this.match.is_organizer &&
-        (currentStatus == "Warmup" ||
-          currentStatus == "PickingPlayers" ||
-          currentStatus == "Scheduled") &&
-        this.canAddToLineup
-      );
-    },
     canAddToLineup() {
       return (
-        this.canUpdateLineup &&
+        this.lineup.can_update_lineup &&
         this.lineup.lineup_players.length < this.match.max_players_per_lineup
       );
     },
-    canUpdateLineup() {
-      return this.match.is_captain || this.match.is_organizer;
-    },
     canUpdateCoach() {
-      return this.canUpdateLineup && this.match.options.coaches;
+      return this.match.options.coaches;
     },
     coaches() {
       const coaches = [];

@@ -38,10 +38,6 @@ export default {
       type: Object,
       required: true,
     },
-    lineup_id: {
-      type: String,
-      required: true,
-    },
   },
   methods: {
     viewPlayer() {

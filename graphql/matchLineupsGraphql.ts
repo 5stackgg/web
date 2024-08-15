@@ -7,6 +7,7 @@ export const matchLineups = Selector("match_lineups")({
   is_ready: true,
   is_on_lineup: true,
   can_pick_veto: true,
+  can_update_lineup: true,
   is_picking_veto: true,
   coach: {
     name: true,

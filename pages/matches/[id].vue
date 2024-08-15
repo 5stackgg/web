@@ -252,7 +252,7 @@ export default {
       for (const listener of this.listeners) {
         listener.stop();
       }
-    }
+    },
   },
   unmounted() {
     if (

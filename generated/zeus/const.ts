@@ -2508,8 +2508,10 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"matches_bool_exp",
 		_or:"matches_bool_exp",
 		can_cancel:"Boolean_comparison_exp",
+		can_check_in:"Boolean_comparison_exp",
 		can_schedule:"Boolean_comparison_exp",
 		can_start:"Boolean_comparison_exp",
+		cancels_at:"timestamptz_comparison_exp",
 		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
@@ -2640,8 +2642,10 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	matches_order_by:{
 		can_cancel:"order_by",
+		can_check_in:"order_by",
 		can_schedule:"order_by",
 		can_start:"order_by",
+		cancels_at:"order_by",
 		connection_link:"order_by",
 		connection_string:"order_by",
 		created_at:"order_by",
@@ -10527,8 +10531,10 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	matches:{
 		can_cancel:"Boolean",
+		can_check_in:"Boolean",
 		can_schedule:"Boolean",
 		can_start:"Boolean",
+		cancels_at:"timestamptz",
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
@@ -10611,6 +10617,7 @@ export const ReturnTypes: Record<string,any> = {
 		organizer_steam_id:"Float"
 	},
 	matches_max_fields:{
+		cancels_at:"timestamptz",
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
@@ -10634,6 +10641,7 @@ export const ReturnTypes: Record<string,any> = {
 		winning_lineup_id:"uuid"
 	},
 	matches_min_fields:{
+		cancels_at:"timestamptz",
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",

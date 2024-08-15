@@ -11,6 +11,10 @@
         A minimum of {{ playersRequiredToStart }} players must check in before
         you can start the match. {{ totalCheckedIn }} /
         {{ playersRequiredToStart }} checked in.
+
+        <badge
+          >Auto Canceling &nbsp; <time-ago :date="match.cancels_at"></time-ago
+        ></badge>
       </CardDescription>
     </CardHeader>
     <CardContent class="p-2 pt-0 md:p-4 md:pt-0">
@@ -23,8 +27,10 @@
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
+import TimeAgo from "~/components/TimeAgo.vue";
 
 export default {
+  components: { TimeAgo },
   props: {
     match: {
       type: Object,
@@ -61,7 +67,7 @@ export default {
       }).length;
     },
     playersRequiredToStart() {
-      return this.match.min_players_per_lineup;
+      return this.match.min_players_per_lineup * 2;
     },
   },
   methods: {

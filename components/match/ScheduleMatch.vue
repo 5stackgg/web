@@ -83,9 +83,12 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            scheduled_at: z.date().refine((date) => date > new Date(), {
-              message: "Date must be in the future",
-            }),
+            scheduled_at: z
+              .date()
+              .refine((date) => date > new Date(), {
+                message: "Date must be in the future",
+              })
+              .optional(),
           }),
         ),
       }),

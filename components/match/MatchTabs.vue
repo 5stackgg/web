@@ -44,7 +44,7 @@ provide("commander", commander);
         <TabsTrigger :disabled="disableStats" value="clutches">
           Clutches
         </TabsTrigger>
-        <TabsTrigger :disabled="!match.server" value="server">
+        <TabsTrigger :disabled="!match.server_id" value="server">
           Server Console
         </TabsTrigger>
       </TabsList>

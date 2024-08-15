@@ -19,12 +19,6 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
       <DropdownMenuItem>
         <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>
-      <!--      <DropdownMenuItem-->
-      <!--        v-if="match.status == e_match_status_enum.PickingPlayers"-->
-      <!--      >-->
-      <!--        SCHEDULE MATCH HERE-->
-      <!--      </DropdownMenuItem>-->
-
       <template v-if="match.can_cancel">
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>

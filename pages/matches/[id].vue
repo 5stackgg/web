@@ -13,7 +13,10 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
       class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
     >
       <div>
-        <CheckIntoMatch :match="match"></CheckIntoMatch>
+        <CheckIntoMatch
+          :match="match"
+          v-if="match.can_check_in"
+        ></CheckIntoMatch>
         <MatchInfo :match="match"></MatchInfo>
         <MatchLobbyChat
           v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
@@ -80,6 +83,7 @@ export default {
               is_organizer: true,
               can_start: true,
               can_schedule: true,
+              can_check_in: true,
               is_tournament_match: true,
               can_cancel: true,
               min_players_per_lineup: true,
@@ -96,6 +100,8 @@ export default {
               tv_connection_string: true,
               tv_connection_link: true,
               is_match_server_available: true,
+              cancels_at: true,
+              scheduled_at: true,
               options: {
                 type: true,
                 mr: true,
@@ -112,7 +118,6 @@ export default {
               e_match_status: {
                 description: true,
               },
-              scheduled_at: true,
               match_maps: [
                 {
                   order_by: {

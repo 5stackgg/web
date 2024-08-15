@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed right-2.5 top-16 w-88 z-1000">
+  <div class="fixed right-2.5 top-16 w-88 z-50">
     <transition-group name="alert-animation">
       <alert-action
         v-for="alert in alerts"

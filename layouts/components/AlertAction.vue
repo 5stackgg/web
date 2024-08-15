@@ -24,11 +24,11 @@ export default {
     },
   },
   created() {
-    setTimeout(() => {
-      if (this.alert.duration && this.alert.duration > 0) {
+    if (this.alert.duration && this.alert.duration > 0) {
+      setTimeout(() => {
         this.close();
-      }
-    }, this.alert.duration);
+      }, this.alert.duration);
+    }
   },
   methods: {
     close() {

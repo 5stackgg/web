@@ -3,7 +3,7 @@ import EventEmitter from "eventemitter3";
 class Socket extends EventEmitter {
   private connection?: WebSocket;
   private connected = false;
-
+  private heartBeat?: NodeJS.Timeout;
   private offlineQueue: Array<{
     event: string;
     id: string;
@@ -25,6 +25,12 @@ class Socket extends EventEmitter {
     webSocket.addEventListener("open", () => {
       this.emit("online");
       this.connected = true;
+
+      clearInterval(this.heartBeat);
+      this.heartBeat = setInterval(() => {
+        this.connection?.send("ping");
+      }, 15000)
+
       console.info("[ws] connected");
 
       for (const [room, data] of Array.from(this.rooms).values()) {

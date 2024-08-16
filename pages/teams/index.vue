@@ -55,7 +55,7 @@ import PageHeading from "~/components/PageHeading.vue";
             page = _page;
           }
         "
-        :total="Math.ceil(teams_aggregate.aggregate.count / perPage)"
+        :total="teams_aggregate.aggregate.count"
         v-if="teams_aggregate"
       ></pagination>
     </TabsContent>

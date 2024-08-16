@@ -12,12 +12,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
           page = _page;
         }
       "
-      :total="
-        Math.ceil(
-          myTotalMatches.player.player_lineup_aggregate.aggregate.count /
-            per_page,
-        )
-      "
+      :total="myTotalMatches.player.player_lineup_aggregate.aggregate.count"
       :per-page="per_page"
       v-if="myTotalMatches"
     ></pagination>

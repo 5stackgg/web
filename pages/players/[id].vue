@@ -33,10 +33,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
         }
       "
       :total="
-        Math.ceil(
-          playerWithMatchesAggregate.player_lineup_aggregate.aggregate.count /
-            per_page,
-        )
+        playerWithMatchesAggregate.player_lineup_aggregate.aggregate.count
       "
       v-if="playerWithMatchesAggregate"
     ></Pagination>

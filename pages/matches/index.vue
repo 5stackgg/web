@@ -40,7 +40,7 @@ import PageHeading from "~/components/PageHeading.vue";
             page = _page;
           }
         "
-        :total="Math.ceil(matches_aggregate.aggregate.count / perPage)"
+        :total="matches_aggregate.aggregate.count"
         v-if="matches_aggregate"
       ></Pagination>
     </TabsContent>

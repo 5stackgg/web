@@ -55,7 +55,7 @@ import PageHeading from "~/components/PageHeading.vue";
         page = _page;
       }
     "
-    :total="Math.ceil(servers_aggregate.aggregate.count / perPage)"
+    :total="servers_aggregate.aggregate.count"
     v-if="servers_aggregate"
   ></Pagination>
 </template>

@@ -24,7 +24,7 @@ import { Button } from "~/components/ui/button";
         page = _page;
       }
     "
-    :total="Math.ceil(tournaments_aggregate.aggregate.count / perPage)"
+    :total="tournaments_aggregate.aggregate.count"
     v-if="tournaments_aggregate"
   ></pagination>
 </template>

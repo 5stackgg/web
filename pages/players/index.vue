@@ -67,7 +67,7 @@ import PageHeading from "~/components/PageHeading.vue";
         page = _page;
       }
     "
-    :total="Math.ceil(pagination.total / per_page)"
+    :total="pagination.total"
     v-if="pagination"
   ></Pagination>
 </template>

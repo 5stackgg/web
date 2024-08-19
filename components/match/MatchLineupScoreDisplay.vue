@@ -44,6 +44,12 @@ export default {
   },
   computed: {
     winning() {
+      if (this.matchMap) {
+        return !this.tied && this.isLineup1
+          ? this.matchMap.lineup_1_score > this.matchMap.lineup_2_score
+          : this.matchMap.lineup_2_score > this.matchMap.lineup_1_score;
+      }
+
       if (
         this.match.winning_lineup_id &&
         this.match.winning_lineup_id === this.lineup.id
@@ -58,6 +64,12 @@ export default {
       return this.matchStats.won > this.matchStats.lost;
     },
     losing() {
+      if (this.matchMap) {
+        return !this.tied && this.isLineup1
+          ? this.matchMap.lineup_1_score < this.matchMap.lineup_2_score
+          : this.matchMap.lineup_2_score < this.matchMap.lineup_1_score;
+      }
+
       if (
         this.match.winning_lineup_id &&
         this.match.winning_lineup_id !== this.lineup.id
@@ -72,6 +84,10 @@ export default {
       return this.matchStats.lost > this.matchStats.won;
     },
     tied() {
+      if (this.matchMap) {
+        return this.matchMap.lineup_1_score === this.matchMap.lineup_2_score;
+      }
+
       return this.matchStats.won === this.matchStats.lost;
     },
     matchStats() {
@@ -133,7 +149,7 @@ export default {
         : lastCtRound.lineup_2_score;
     },
     tWins() {
-      if (!this.matchmap) {
+      if (!this.matchMap) {
         return;
       }
       const lastTRound = this.matchMap.rounds

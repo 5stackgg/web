@@ -234,6 +234,15 @@ export default {
                       match: {
                         id: true,
                         status: true,
+                        winning_lineup_id: true,
+                        lineup_1: {
+                          id: true,
+                          name: true,
+                        },
+                        lineup_2: {
+                          id: true,
+                          name: true,
+                        },
                         match_maps: [
                           {
                             order_by: [

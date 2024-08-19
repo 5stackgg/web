@@ -34,9 +34,15 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
 
         <div class="flex py-2 items-center justify-between">
           <div>
-            {{ match.lineup_1.name }} (<MatchLineupScoreDisplay :match="match" :lineup="match.lineup_1"></MatchLineupScoreDisplay>)
-            vs
-            {{ match.lineup_2.name }} (<MatchLineupScoreDisplay :match="match" :lineup="match.lineup_2"></MatchLineupScoreDisplay>)
+            {{ match.lineup_1.name }} (<MatchLineupScoreDisplay
+              :match="match"
+              :lineup="match.lineup_1"
+            ></MatchLineupScoreDisplay
+            >) vs {{ match.lineup_2.name }} (<MatchLineupScoreDisplay
+              :match="match"
+              :lineup="match.lineup_2"
+            ></MatchLineupScoreDisplay
+            >)
           </div>
 
           <MatchActions :match="match"></MatchActions>

@@ -21,7 +21,11 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
       sizes="sm:18px"
     />
     <div>
-      <MatchLineupScoreDisplay :match="match" :lineup="lineup" :match-map="matchMap"></MatchLineupScoreDisplay>
+      <MatchLineupScoreDisplay
+        :match="match"
+        :lineup="lineup"
+        :match-map="matchMap"
+      ></MatchLineupScoreDisplay>
     </div>
   </div>
 

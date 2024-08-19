@@ -5,10 +5,13 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 </script>
 
 <template>
-  jh:{{ matchMap.is_current_map}}
-  <MapDisplay :map="matchMap.map" :class="{
-    'border-red-600': true,
-  }">
+  jh:{{ matchMap.is_current_map }}
+  <MapDisplay
+    :map="matchMap.map"
+    :class="{
+      'border-red-600': true,
+    }"
+  >
     <template v-slot:header>
       <div class="absolute top-3">
         <badge class="mb-2">{{ matchMap.status }}</badge>

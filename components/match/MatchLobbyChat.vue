@@ -9,11 +9,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
 
 <template>
   <div
-    class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
+    class="relative flex h-full min-h-[25vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
   >
     <div class="absolute right-3 top-3">
       <div class="flex">
-        <Badge variant="outline"> {{ matchId }} </Badge>
+        <Badge variant="outline"> Lobby Chat </Badge>
       </div>
     </div>
     <div class="flex-1 overflow-scroll max-h-screen">
@@ -49,7 +49,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
             <Input
               placeholder="..."
               v-bind="componentField"
-              class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+              class="resize-none border-0 p-3 shadow-none focus-visible:ring-0"
             />
           </FormControl>
         </FormItem>

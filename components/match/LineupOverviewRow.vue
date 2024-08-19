@@ -4,7 +4,7 @@ import formatStatValue from "~/utilities/formatStatValue";
 <template>
   <TableRow>
     <TableCell>
-      <LineupMember :member="member"></LineupMember>
+      <LineupMember :match="match" :member="member"></LineupMember>
     </TableCell>
     <TableCell class="hidden sm:table-cell">
       {{ member.player?.kills_aggregate.aggregate.count }}

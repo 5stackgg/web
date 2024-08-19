@@ -49,7 +49,10 @@ import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
           <MatchActions :match="match"></MatchActions>
         </div>
 
-        <template v-if="match.can_start">
+        <template v-if="match.can_schedule">
+          <ScheduleMatch :match="match"></ScheduleMatch>
+        </template>
+        <template v-else-if="match.can_start">
           <Button
             @click.prevent.stop="startMatch"
             class="-mr-2"
@@ -66,9 +69,6 @@ import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
             </template>
             <template v-else> Match </template>
           </Button>
-        </template>
-        <template v-if="match.can_schedule">
-          <ScheduleMatch :match="match"></ScheduleMatch>
         </template>
       </CardTitle>
       <CardDescription>

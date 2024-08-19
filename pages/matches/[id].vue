@@ -12,7 +12,7 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
     <div
       class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
     >
-      <div>
+      <div class="grid grid-cols-1 gap-y-4">
         <CheckIntoMatch
           :match="match"
           v-if="match.can_check_in"

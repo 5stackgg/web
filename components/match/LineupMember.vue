@@ -17,6 +17,7 @@
             ['bg-yellow-600']: isOnline && !isReady,
             ['bg-green-600']: isReady,
           }"
+          v-if="match && match.status === e_match_status_enum.WaitingForCheckIn"
         ></span>
         {{ member.player.name }}
       </div>
@@ -30,6 +31,7 @@
 
 <script lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { e_match_status_enum } from "~/generated/zeus";
 
 export default {
   components: { Avatar, AvatarFallback, AvatarImage },
@@ -38,6 +40,10 @@ export default {
       type: Object,
       required: true,
     },
+    match: {
+      type: Object,
+      required: false,
+    },
   },
   methods: {
     viewPlayer() {
@@ -45,6 +51,9 @@ export default {
     },
   },
   computed: {
+    e_match_status_enum() {
+      return e_match_status_enum;
+    },
     lobby() {
       return useMatchLobbyStore().lobbies[this.$route.params.id];
     },

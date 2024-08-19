@@ -227,7 +227,12 @@ export default {
   },
   computed: {
     disableStats() {
-      return e_match_status_enum.PickingPlayers === this.match.status;
+      return [
+        e_match_map_status_enum.PickingPlayers,
+        e_match_map_status_enum.Scheduled,
+        e_match_map_status_enum.Veto,
+        e_match_map_status_enum.WaitingForCheckIn,
+      ].includes(this.match.status);
     },
     currentMap() {
       return this.match.match_maps.find((match_map) => {

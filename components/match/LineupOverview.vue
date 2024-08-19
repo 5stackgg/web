@@ -6,6 +6,7 @@
           <div class="flex">
             {{ lineup.name }}
             <span
+              v-if="match.status === e_match_status_enum.WaitingForCheckIn"
               class="flex h-2 w-2 rounded-full"
               :class="{
                 ['bg-red-600']: !lineup.is_ready,
@@ -69,7 +70,7 @@ import {
 } from "~/components/ui/table";
 import { Badge } from "~/components/ui/badge";
 import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
-import { e_match_types_enum } from "~/generated/zeus";
+import { e_match_status_enum, e_match_types_enum } from "~/generated/zeus";
 import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 
 export default {
@@ -97,6 +98,9 @@ export default {
     },
   },
   computed: {
+    e_match_status_enum() {
+      return e_match_status_enum;
+    },
     me() {
       return useAuthStore().me;
     },

@@ -8,7 +8,7 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
   <MapDisplay
     :map="matchMap.map"
     :class="{
-      'border-red-600': matchMap.is_current_map,
+      'ring-1 ring-red-500': matchMap.is_current_map,
     }"
   >
     <template v-slot:header>

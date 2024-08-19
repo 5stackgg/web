@@ -15,6 +15,7 @@ import BooleanToText from "~/components/BooleanToText.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { Separator } from "~/components/ui/separator";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 </script>
 
 <template>
@@ -32,33 +33,10 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
         </div>
 
         <div class="flex py-2 items-center justify-between">
-          // TODO - show winner somewhere...
           <div>
-            <span
-              :class="{
-                [`text-green-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_1.id === match.winning_lineup_id,
-                [`text-red-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_1.id !== match.winning_lineup_id,
-              }"
-            >
-              {{ match.lineup_1.name }}
-            </span>
+            {{ match.lineup_1.name }} (<MatchLineupScoreDisplay :match="match" :lineup="match.lineup_1"></MatchLineupScoreDisplay>)
             vs
-            <span
-              :class="{
-                [`text-green-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_2.id === match.winning_lineup_id,
-                [`text-red-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_2.id !== match.winning_lineup_id,
-              }"
-            >
-              {{ match.lineup_2.name }}
-            </span>
+            {{ match.lineup_2.name }} (<MatchLineupScoreDisplay :match="match" :lineup="match.lineup_2"></MatchLineupScoreDisplay>)
           </div>
 
           <MatchActions :match="match"></MatchActions>

@@ -152,6 +152,10 @@ export default {
                       },
                     },
                     {
+                      lineup_1_score: true,
+                      lineup_2_score: true,
+                      lineup_1_side: true,
+                      lineup_2_side: true,
                       round: true,
                       kills: [
                         {

@@ -1677,9 +1677,11 @@ export const AllTypesProps: Record<string,any> = {
 		kills_aggregate:"player_kills_aggregate_bool_exp",
 		lineup_1_money:"Int_comparison_exp",
 		lineup_1_score:"Int_comparison_exp",
+		lineup_1_side:"e_sides_enum_comparison_exp",
 		lineup_1_timeouts_available:"Int_comparison_exp",
 		lineup_2_money:"Int_comparison_exp",
 		lineup_2_score:"Int_comparison_exp",
+		lineup_2_side:"e_sides_enum_comparison_exp",
 		lineup_2_timeouts_available:"Int_comparison_exp",
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
@@ -1693,6 +1695,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_rounds_insert_input:{
 		id:"uuid",
 		kills:"player_kills_arr_rel_insert_input",
+		lineup_1_side:"e_sides_enum",
+		lineup_2_side:"e_sides_enum",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
 		time:"timestamptz"
@@ -1734,9 +1738,11 @@ export const AllTypesProps: Record<string,any> = {
 		kills_aggregate:"player_kills_aggregate_order_by",
 		lineup_1_money:"order_by",
 		lineup_1_score:"order_by",
+		lineup_1_side:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_money:"order_by",
 		lineup_2_score:"order_by",
+		lineup_2_side:"order_by",
 		lineup_2_timeouts_available:"order_by",
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
@@ -1749,6 +1755,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_rounds_select_column: "enum" as const,
 	match_map_rounds_set_input:{
 		id:"uuid",
+		lineup_1_side:"e_sides_enum",
+		lineup_2_side:"e_sides_enum",
 		match_map_id:"uuid",
 		time:"timestamptz"
 	},
@@ -1785,6 +1793,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_rounds_stream_cursor_value_input:{
 		id:"uuid",
+		lineup_1_side:"e_sides_enum",
+		lineup_2_side:"e_sides_enum",
 		match_map_id:"uuid",
 		time:"timestamptz"
 	},
@@ -10145,9 +10155,11 @@ export const ReturnTypes: Record<string,any> = {
 		kills_aggregate:"player_kills_aggregate",
 		lineup_1_money:"Int",
 		lineup_1_score:"Int",
+		lineup_1_side:"e_sides_enum",
 		lineup_1_timeouts_available:"Int",
 		lineup_2_money:"Int",
 		lineup_2_score:"Int",
+		lineup_2_side:"e_sides_enum",
 		lineup_2_timeouts_available:"Int",
 		match_map:"match_maps",
 		match_map_id:"uuid",

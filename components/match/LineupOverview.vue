@@ -3,7 +3,16 @@
     <TableHeader>
       <TableRow>
         <TableHead class="hidden sm:table-cell">
-          {{ lineup.name }}
+          <div class="flex">
+            {{ lineup.name }}
+            <span
+              class="flex h-2 w-2 rounded-full"
+              :class="{
+                ['bg-red-600']: !lineup.is_ready,
+                ['bg-green-600']: lineup.is_ready,
+              }"
+            ></span>
+          </div>
         </TableHead>
         <TableHead class="hidden sm:table-cell"> Kills </TableHead>
         <TableHead class="hidden md:table-cell"> Assists </TableHead>

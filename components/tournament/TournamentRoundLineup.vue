@@ -1,4 +1,6 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
+</script>
 
 <template>
   <div>
@@ -10,38 +12,7 @@
           bracket.match.status
         }}</NuxtLink>
       </Badge>
-
-      <template v-if="!matchFinished && bracket.match.match_maps.length > 0">
-        <span
-          :class="{
-            [`text-green-400`]: mapScores.current.winning,
-            [`text-red-400`]: !mapScores.current.winning,
-          }"
-        >
-          {{ mapScores.current.score }}
-        </span>
-
-        (
-        <span
-          :class="{
-            [`text-green-400`]: mapScores.won > mapScores.lost,
-            [`text-red-400`]: mapScores.lost > mapScores.won,
-          }"
-        >
-          {{ mapScores.won }}
-        </span>
-        )
-      </template>
-      <template v-else>
-        <div
-          :class="{
-            [`text-green-400`]: mapScores.won > mapScores.lost,
-            [`text-red-400`]: mapScores.lost > mapScores.won,
-          }"
-        >
-          {{ mapScores.won }}
-        </div>
-      </template>
+      <MatchLineupScoreDisplay :match="bracket.match" :lineup="bracket.match.lineup_1" ></MatchLineupScoreDisplay>
     </template>
   </div>
 </template>

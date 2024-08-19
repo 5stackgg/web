@@ -5,7 +5,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 </script>
 
 <template>
-  <DropdownMenu v-if="match.is_organizer">
+  <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button size="icon" variant="outline">
         <MoreVertical class="h-3.5 w-3.5" />
@@ -23,6 +23,8 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
       </template>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Call for Organizer</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </template>

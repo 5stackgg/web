@@ -128,7 +128,6 @@ provide("commander", commander);
     <TabsContent value="demos">
       <pre>{{ match.demos }}</pre>
     </TabsContent>
-    <pre>{{ form.values }}</pre>
     <TabsContent value="server">
       <RconCommander :server-id="match.server_id" v-slot="{ commander }">
         <template v-for="command of availableCommands">

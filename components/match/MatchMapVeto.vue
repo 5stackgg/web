@@ -11,16 +11,17 @@ import { Separator } from "~/components/ui/separator";
     <div class="flex gap-4 h-[200px] overflow-hidden" v-if="picks?.length > 0">
       <template v-for="pick of picks">
         <template v-if="pick.type === 'Side'">
-          <div class="relative">
-            <NuxtImg
+          <div class="relative flex flex-col items-center justify-center">
+            <img
+                class="max-w-[96px]"
               :src="
                 pick.side === 'CT'
                   ? '/img/teams/ct_logo.svg'
                   : '/img/teams/t_logo.svg'
               "
-            ></NuxtImg>
+            ></img>
             <div class="absolute bottom-3 text-sm">
-              {{ pick.match_lineup.name }}
+                {{ pick.match_lineup.name }}
             </div>
           </div>
         </template>

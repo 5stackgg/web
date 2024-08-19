@@ -119,6 +119,9 @@ export default {
                 number_of_substitutes: true,
                 map_pool: {
                   type: true,
+                  e_type: {
+                    description: true,
+                  },
                 },
               },
               e_match_status: {

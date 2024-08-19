@@ -5,11 +5,10 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 </script>
 
 <template>
-  jh:{{ matchMap.is_current_map }}
   <MapDisplay
     :map="matchMap.map"
     :class="{
-      'border-red-600': true,
+      'border-red-600': matchMap.is_current_map,
     }"
   >
     <template v-slot:header>

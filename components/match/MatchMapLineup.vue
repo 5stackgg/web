@@ -14,9 +14,9 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
     class="flex items-center gap-2"
     :class="`${reverse ? 'flex-row-reverse' : ''}`"
   >
-    <NuxtImg
+    <img
       v-if="showTeamPatch"
-      class="inline-block"
+      class="max-w-[24px] w-full inline-block"
       :src="teamPatch"
       sizes="sm:18px"
     />

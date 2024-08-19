@@ -16,6 +16,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { Separator } from "~/components/ui/separator";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
+import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
 </script>
 
 <template>
@@ -113,8 +114,12 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Map Pool </span>
-          <span>
-            {{ match.options.map_pool.type }}
+          <span class="text-right">
+            {{ separateByCapitalLetters(match.options.map_pool.type) }}
+            <br />
+            <small>
+              {{ match.options.map_pool.e_type.description }}
+            </small>
           </span>
         </li>
 

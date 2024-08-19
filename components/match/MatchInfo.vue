@@ -203,6 +203,31 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
           </li>
         </ul>
       </div>
+
+      <Separator class="my-8" />
+
+      <div class="grid gap-3">
+        <div class="font-semibold">Match Organizers</div>
+        <ul class="grid gap-3">
+          <li class="flex items-center justify-between">
+            <Avatar class="mx-3">
+              <AvatarImage
+                :src="match.organizer.avatar_url"
+                :alt="match.organizer.name"
+                v-if="match.organizer.avatar_url"
+              />
+              <AvatarFallback>{{ match.organizer.name }}</AvatarFallback>
+            </Avatar>
+
+            <div>
+              {{ match.organizer.name }}
+              <p class="text-xs">
+                {{ match.organizer.steam_id }}
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </CardContent>
   </Card>
 </template>

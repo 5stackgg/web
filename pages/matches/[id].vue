@@ -103,6 +103,11 @@ export default {
               is_match_server_available: true,
               cancels_at: true,
               scheduled_at: true,
+              organizer: {
+                name: true,
+                steam_id: true,
+                avatar_url: true,
+              },
               options: {
                 type: true,
                 mr: true,

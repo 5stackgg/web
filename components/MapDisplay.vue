@@ -8,7 +8,7 @@
     <div class="absolute inset-0 bg-black bg-opacity-45"></div>
     <div class="absolute inset-0 flex flex-col items-center justify-center">
       <slot name="header"></slot>
-      <img :src="map.patch" class="max-w-[128px] w-full" v-if="map.patch" />
+      <img :src="map.patch" class="max-w-[96px] w-full" v-if="map.patch" />
       <template v-else>
         <span class="text-white text-xl font-bold uppercase">
           {{ map.name.replace("de_", "").replace("_", " ") }}

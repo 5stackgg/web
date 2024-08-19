@@ -15,7 +15,6 @@ import RconCommander from "~/components/servers/RconCommander.vue";
 import { provide } from "vue";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import {
   FormControl,
   FormField,

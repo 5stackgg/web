@@ -75,7 +75,7 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
       <div v-for="team of tournament.teams">
         <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
           {{ team.name }}: {{ team.roster_aggregate.aggregate.count }} players
-          registered ({{ team.eligible_at }})
+          registered
         </NuxtLink>
 
         <Button @click="removeTeam(team.id)">Remove Team</Button>

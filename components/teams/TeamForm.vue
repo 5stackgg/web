@@ -3,6 +3,7 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import PlayerSearch from "~/components/PlayerSearch.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -44,9 +45,9 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             <SelectGroup>
               <SelectItem
                 :value="player.steam_id"
-                v-for="player of team.roster"
+                v-for="{player} of team.roster"
               >
-                <pre>{{ player }}</pre>
+               <PlayerDisplay :player="player"></PlayerDisplay>
               </SelectItem>
             </SelectGroup>
           </SelectContent>

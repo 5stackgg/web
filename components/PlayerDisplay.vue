@@ -7,7 +7,16 @@
       v-if="player.avatar_url"
     />
   </Avatar>
-  <slot>{{ player.name }}</slot>
+  <slot>
+    <div class="text-left pl-3 text-sm">
+      <p>
+        {{ player.name }}
+      </p>
+      <p class="text-muted-foreground">
+        {{ player.steam_id }}
+      </p>
+    </div>
+  </slot>
 </template>
 
 <script lang="ts">

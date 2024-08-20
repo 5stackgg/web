@@ -3,10 +3,11 @@
     <template v-if="member.player">
       <div class="grid grid-cols-[64px_1fr] items-center">
         <div class="mx-3 my-3 flex flex-col items-center">
-          <PlayerDisplay :player="member.player"></PlayerDisplay>
-          <Badge variant="outline" class="mt-3" v-if="member.captain">
-            Captain
-          </Badge>
+          <PlayerDisplay :player="member.player">
+            <Badge variant="outline" class="mt-3" v-if="member.captain">
+              Captain
+            </Badge>
+          </PlayerDisplay>
         </div>
         <div class="ml-3">
           {{ member.player.name }}
@@ -36,7 +37,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 export default {
-  components: { PlayerDisplay, Avatar, AvatarFallback, AvatarImage },
+  components: {PlayerDisplay, Avatar, AvatarFallback, AvatarImage },
   props: {
     member: {
       type: Object,

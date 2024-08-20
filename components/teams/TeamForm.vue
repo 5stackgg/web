@@ -128,6 +128,7 @@ export default {
                 _set: {
                   name: this.form.values.team_name,
                   short_name: this.form.values.short_name,
+                  owner_steam_id: this.form.values.owner_steam_id,
                 },
               },
               {

@@ -35,6 +35,7 @@ import {
 import TeamForm from "~/components/teams/TeamForm.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 const teamMenu = ref(false);
 </script>
@@ -67,7 +68,11 @@ const teamMenu = ref(false);
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <template #description> [{{ team.short_name }}] </template>
+      <template #description>
+        [{{ team.short_name }}]
+        <br />
+        Owner : <PlayerDisplay :player="team.owner"></PlayerDisplay>
+      </template>
     </PageHeading>
 
     <div class="grid grid-cols-2 gap-4">
@@ -147,6 +152,11 @@ export default {
               name: true,
               short_name: true,
               owner_steam_id: true,
+              owner: {
+                name: true,
+                steam_id: true,
+                avatar_url: true,
+              },
               roster: [
                 {},
                 {

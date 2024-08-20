@@ -26,20 +26,13 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { ChevronDownIcon } from "lucide-vue-next";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
   <TableRow>
     <TableCell class="font-medium">
-      <Avatar class="mx-3">
-        <AvatarImage
-          :src="member.player.avatar_url"
-          :alt="member.player.name"
-          v-if="member.player.avatar_url"
-        />
-        <AvatarFallback>{{ member.player.name }}</AvatarFallback>
-      </Avatar>
-      <p>{{ member.player.name }}</p>
+      <PlayerDisplay :player="member.player"></PlayerDisplay>
     </TableCell>
 
     <TableCell>

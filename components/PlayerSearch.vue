@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CaretSortIcon } from "@radix-icons/vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -27,14 +28,7 @@ import { CaretSortIcon } from "@radix-icons/vue";
               :value="player"
               @select="select(player)"
             >
-              <Avatar class="mx-3">
-                <AvatarImage
-                  :src="player.avatar_url"
-                  :alt="player.name"
-                  v-if="player.avatar_url"
-                />
-                <AvatarFallback>{{ player.name }}</AvatarFallback>
-              </Avatar>
+              <PlayerDisplay class="mx-3" :player="player" />
 
               <div>
                 {{ player.name }}

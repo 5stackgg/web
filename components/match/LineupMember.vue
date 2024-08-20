@@ -3,14 +3,7 @@
     <template v-if="member.player">
       <div class="grid grid-cols-[64px_1fr] items-center">
         <div class="mx-3 my-3 flex flex-col items-center">
-          <Avatar>
-            <AvatarImage
-              :src="member.player.avatar_url"
-              :alt="member.player.name"
-              v-if="member.player.avatar_url"
-            />
-            <AvatarFallback>{{ member.player.name }}</AvatarFallback>
-          </Avatar>
+          <PlayerDisplay :player="member.player"></PlayerDisplay>
           <Badge variant="outline" class="mt-3" v-if="member.captain">
             Captain
           </Badge>
@@ -40,9 +33,10 @@
 <script lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { e_match_status_enum } from "~/generated/zeus";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 export default {
-  components: { Avatar, AvatarFallback, AvatarImage },
+  components: { PlayerDisplay, Avatar, AvatarFallback, AvatarImage },
   props: {
     member: {
       type: Object,

@@ -146,6 +146,7 @@ export default {
               id: true,
               name: true,
               short_name: true,
+              owner_steam_id: true,
               roster: [
                 {},
                 {

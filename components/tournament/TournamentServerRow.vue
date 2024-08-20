@@ -12,20 +12,13 @@ import {
 } from "~/components/ui/alert-dialog";
 import { TableCell, TableRow } from "~/components/ui/table";
 import { Button } from "~/components/ui/button";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
   <TableRow>
     <TableCell class="font-medium">
-      <Avatar class="mx-3">
-        <AvatarImage
-          :src="organizer.avatar_url"
-          :alt="organizer.name"
-          v-if="organizer.avatar_url"
-        />
-        <AvatarFallback>{{ organizer.name }}</AvatarFallback>
-      </Avatar>
-      <p>{{ organizer.name }}</p>
+      <PlayerDisplay class="mx-3" :player="organizer"></PlayerDisplay>
     </TableCell>
 
     <TableCell>

@@ -5,7 +5,12 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 </script>
 
 <template>
-  <MapDisplay :map="matchMap.map">
+  <MapDisplay
+    :map="matchMap.map"
+    :class="{
+      'ring-1 ring-red-500': matchMap.is_current_map,
+    }"
+  >
     <template v-slot:header>
       <div class="absolute top-3">
         <badge class="mb-2">{{ matchMap.status }}</badge>

@@ -15,6 +15,8 @@ import BooleanToText from "~/components/BooleanToText.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { Separator } from "~/components/ui/separator";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
+import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
 </script>
 
 <template>
@@ -32,39 +34,25 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
         </div>
 
         <div class="flex py-2 items-center justify-between">
-          // TODO - show winner somewhere...
           <div>
-            <span
-              :class="{
-                [`text-green-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_1.id === match.winning_lineup_id,
-                [`text-red-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_1.id !== match.winning_lineup_id,
-              }"
-            >
-              {{ match.lineup_1.name }}
-            </span>
-            vs
-            <span
-              :class="{
-                [`text-green-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_2.id === match.winning_lineup_id,
-                [`text-red-400`]:
-                  match.winning_lineup_id &&
-                  match.lineup_2.id !== match.winning_lineup_id,
-              }"
-            >
-              {{ match.lineup_2.name }}
-            </span>
+            {{ match.lineup_1.name }} (<MatchLineupScoreDisplay
+              :match="match"
+              :lineup="match.lineup_1"
+            ></MatchLineupScoreDisplay
+            >) vs {{ match.lineup_2.name }} (<MatchLineupScoreDisplay
+              :match="match"
+              :lineup="match.lineup_2"
+            ></MatchLineupScoreDisplay
+            >)
           </div>
 
           <MatchActions :match="match"></MatchActions>
         </div>
 
-        <template v-if="match.can_start">
+        <template v-if="match.can_schedule">
+          <ScheduleMatch :match="match"></ScheduleMatch>
+        </template>
+        <template v-else-if="match.can_start">
           <Button
             @click.prevent.stop="startMatch"
             class="-mr-2"
@@ -81,9 +69,6 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
             </template>
             <template v-else> Match </template>
           </Button>
-        </template>
-        <template v-if="match.can_schedule">
-          <ScheduleMatch :match="match"></ScheduleMatch>
         </template>
       </CardTitle>
       <CardDescription>
@@ -129,8 +114,12 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Map Pool </span>
-          <span>
-            {{ match.options.map_pool.type }}
+          <span class="text-right">
+            {{ separateByCapitalLetters(match.options.map_pool.type) }}
+            <br />
+            <small>
+              {{ match.options.map_pool.e_type.description }}
+            </small>
           </span>
         </li>
 
@@ -199,6 +188,31 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
               </Avatar>
 
               {{ match.lineup_2.coach.name }}
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <Separator class="my-8" />
+
+      <div class="grid gap-3">
+        <div class="font-semibold">Match Organizers</div>
+        <ul class="grid gap-3">
+          <li class="flex items-center justify-between">
+            <Avatar class="mx-3">
+              <AvatarImage
+                :src="match.organizer.avatar_url"
+                :alt="match.organizer.name"
+                v-if="match.organizer.avatar_url"
+              />
+              <AvatarFallback>{{ match.organizer.name }}</AvatarFallback>
+            </Avatar>
+
+            <div>
+              {{ match.organizer.name }}
+              <p class="text-xs">
+                {{ match.organizer.steam_id }}
+              </p>
             </div>
           </li>
         </ul>

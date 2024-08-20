@@ -5,7 +5,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 </script>
 
 <template>
-  <DropdownMenu v-if="match.is_organizer">
+  <DropdownMenu>
     <DropdownMenuTrigger as-child>
       <Button size="icon" variant="outline">
         <MoreVertical class="h-3.5 w-3.5" />
@@ -13,16 +13,40 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
+      <template v-if="match.can_start">
+        <DropdownMenuItem
+          @click.prevent.stop="startMatch"
+          class="-mr-2"
+          :disabled="!hasMinimumLineupPlayers"
+        >
+          Start
+          <template
+            v-if="
+              match.options.map_veto &&
+              match.options.best_of != match.match_maps.length
+            "
+          >
+            Veto
+          </template>
+          <template v-else> Match </template>
+        </DropdownMenuItem>
+      </template>
+
+      <template v-if="match.can_cancel">
+        <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
+      </template>
+
+      <DropdownMenuSeparator v-if="match.can_start || match.can_cancel" />
+
       <DropdownMenuItem v-if="match.can_assign_server">
         <MatchSelectServer :match="match"></MatchSelectServer>
       </DropdownMenuItem>
       <DropdownMenuItem>
         <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>
-      <template v-if="match.can_cancel">
-        <DropdownMenuSeparator />
-        <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
-      </template>
+
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Call for Organizer</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </template>
@@ -51,6 +75,30 @@ export default {
           ],
         }),
       });
+    },
+    async startMatch() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          startMatch: [
+            {
+              match_id: this.match.id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+  },
+  computed: {
+    hasMinimumLineupPlayers() {
+      return (
+        this.match.lineup_1?.lineup_players.length >=
+          this.match.min_players_per_lineup &&
+        this.match.lineup_2?.lineup_players.length >=
+          this.match.min_players_per_lineup
+      );
     },
   },
 };

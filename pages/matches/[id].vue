@@ -12,7 +12,7 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
     <div
       class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
     >
-      <div>
+      <div class="grid grid-cols-1 gap-y-4">
         <CheckIntoMatch
           :match="match"
           v-if="match.can_check_in"
@@ -26,15 +26,20 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
       </div>
       <div class="grid gap-y-4">
         <div
-          class="flex gap-4 max-h-[500px] justify-around"
+          class="flex gap-4 justify-around flex-col lg:flex-row"
           v-if="match.match_maps.length > 0"
         >
-          <template v-for="match_map of match.match_maps">
+          <div
+            v-for="match_map of match.match_maps"
+            class="max-h-[150px] md:max-h-[500px]"
+          >
             <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
-          </template>
+          </div>
         </div>
 
-        <MatchMapSelection :match="match"></MatchMapSelection>
+        <div class="hidden lg:block">
+          <MatchMapSelection :match="match"></MatchMapSelection>
+        </div>
 
         <MatchTabs :match="match"></MatchTabs>
       </div>
@@ -103,6 +108,11 @@ export default {
               is_match_server_available: true,
               cancels_at: true,
               scheduled_at: true,
+              organizer: {
+                name: true,
+                steam_id: true,
+                avatar_url: true,
+              },
               options: {
                 type: true,
                 mr: true,
@@ -114,6 +124,9 @@ export default {
                 number_of_substitutes: true,
                 map_pool: {
                   type: true,
+                  e_type: {
+                    description: true,
+                  },
                 },
               },
               e_match_status: {
@@ -147,6 +160,10 @@ export default {
                       },
                     },
                     {
+                      lineup_1_score: true,
+                      lineup_2_score: true,
+                      lineup_1_side: true,
+                      lineup_2_side: true,
                       round: true,
                       kills: [
                         {

@@ -4,41 +4,28 @@ import { Input } from "~/components/ui/input";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { CornerDownLeft } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
-import TimeAgo from "~/components/TimeAgo.vue";
+import MatchLobbyChatMessage from "~/components/match/MatchLobbyChatMessage.vue";
 </script>
 
 <template>
   <div
-    class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
+    class="relative flex max-h-[500px] min-h-[25vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
   >
     <div class="absolute right-3 top-3">
       <div class="flex">
-        <Badge variant="outline"> {{ matchId }} </Badge>
+        <Badge variant="outline"> Lobby Chat </Badge>
       </div>
     </div>
+
     <div class="flex-1 overflow-scroll max-h-screen">
-      <div
-        v-for="{ message, from, timestamp } in messages"
-        :key="message"
-        class="whitespace-pre my-2"
-      >
-        <div class="flex justify-between">
-          <div>
-            <Avatar class="mx-3">
-              <AvatarImage
-                :src="from.avatar_url"
-                :alt="from.name"
-                v-if="from.avatar_url"
-              />
-            </Avatar>
-            {{ from.name }}[{{ from.role }}]: {{ message }}
-          </div>
-          <small>
-            <time-ago :date="timestamp"></time-ago>
-          </small>
-        </div>
-      </div>
+      <MatchLobbyChatMessage
+        :message="message"
+        :previous-message="messages[index - 1]"
+        v-for="(message, index) in messages"
+        :key="index"
+      ></MatchLobbyChatMessage>
     </div>
+
     <form
       class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
       @submit.prevent="sendMessage"
@@ -46,20 +33,19 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <FormField v-slot="{ componentField }" name="message">
         <FormItem>
           <FormControl>
-            <Input
-              placeholder="..."
-              v-bind="componentField"
-              class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
-            />
+            <div class="p-3 flex justify-between">
+              <Input
+                placeholder="..."
+                v-bind="componentField"
+                class="resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+              />
+              <Button type="submit" size="sm" class="ml-auto gap-1.5">
+                <CornerDownLeft class="size-3.5" />
+              </Button>
+            </div>
           </FormControl>
         </FormItem>
       </FormField>
-      <div class="flex items-center p-3 pt-0">
-        <Button type="submit" size="sm" class="ml-auto gap-1.5">
-          Send Message
-          <CornerDownLeft class="size-3.5" />
-        </Button>
-      </div>
     </form>
   </div>
 </template>

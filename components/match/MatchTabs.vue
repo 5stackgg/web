@@ -15,26 +15,26 @@ import RconCommander from "~/components/servers/RconCommander.vue";
 import { provide } from "vue";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
 } from "~/components/ui/form";
+import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
 </script>
 
 <template>
-  <pre>Lineup 1 Ready {{ match.lineup_1.is_ready }}</pre>
-  <pre>Lineup 2 Ready {{ match.lineup_2.is_ready }}</pre>
-
-  <Tabs default-value="overview">
+  <Tabs :default-value="defaultTab">
     <div class="flex items-center">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
+        <TabsTrigger class="block sm:hidden md:block lg:hidden" value="veto">
+          Map Veto
+        </TabsTrigger>
         <TabsTrigger :disabled="disableStats" value="utility">
           Utility
         </TabsTrigger>
@@ -70,6 +70,16 @@ provide("commander", commander);
             :match="match"
             :lineup="match.lineup_2"
           ></lineup-overview>
+        </CardContent>
+      </Card>
+    </TabsContent>
+    <TabsContent value="veto">
+      <Card>
+        <CardHeader>
+          <CardTitle>Map Veto</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <MatchMapSelection :match="match"></MatchMapSelection>
         </CardContent>
       </Card>
     </TabsContent>
@@ -132,41 +142,49 @@ provide("commander", commander);
       <pre>{{ match.demos }}</pre>
     </TabsContent>
     <TabsContent value="server">
-      <rcon-commander :server-id="match.server_id" v-slot="{ commander }">
+      <RconCommander :server-id="match.server_id" v-slot="{ commander }">
         <template v-for="command of availableCommands">
-          <template v-if="command.input">
-            <!-- TDOO: there is an issue where nested form does not get updated properly -->
-            <form @submit.prevent="handleCommand(commander, command)">
-              <FormField v-slot="{ componentField }" name="round">
-                <FormItem>
-                  <FormLabel>Reset Round</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      @update:model-value="
-                        (value) => form.setFieldValue('round', value)
-                      "
-                      v-bind="componentField"
-                    />
-                  </FormControl>
-                </FormItem>
-                <p v-if="form.errors.round" class="text-red-500">
-                  {{ form.errors.round }}
-                </p>
-              </FormField>
-
-              <Button type="submit">
-                {{ command.display }}
-              </Button>
-            </form>
-          </template>
-          <template v-else>
-            <Button @click="handleCommand(commander, command)">{{
-              command.display
-            }}</Button>
-          </template>
+          <Button @click="commander(command.value)">{{
+            command.display
+          }}</Button>
         </template>
-      </rcon-commander>
+
+        <form
+          @submit.prevent="commander('restore_round', form.values.round)"
+          v-if="currentMap?.rounds.length > 0"
+        >
+          <FormField v-slot="{ componentField }" name="round">
+            <FormItem>
+              <FormLabel>Match Type </FormLabel>
+              <Select
+                v-bind="componentField"
+                @update:model-value="
+                  (value) => form.setFieldValue('round', value)
+                "
+                >>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select the match type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="round.round.toString()"
+                      v-for="round of currentMap.rounds"
+                    >
+                      Round {{ round.round.toString() }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <Button type="submit"> Restore Round </Button>
+        </form>
+      </RconCommander>
     </TabsContent>
   </Tabs>
 </template>
@@ -182,7 +200,6 @@ enum AvailableCommands {
   Resume = "css_resume",
   SkipKnife = "skip_knife",
   ForceReady = "force_ready",
-  RestoreRound = "restore_round",
 }
 
 const CommandDetails = {
@@ -202,12 +219,6 @@ const CommandDetails = {
     display: "Force Ready",
     value: AvailableCommands.ForceReady,
   },
-  [AvailableCommands.RestoreRound]: {
-    input: true,
-    type: "number",
-    display: "Restore a Round",
-    value: AvailableCommands.RestoreRound,
-  },
 };
 
 export default {
@@ -222,15 +233,25 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            round: z.number(),
+            round: z.string(),
           }),
         ),
       }),
     };
   },
   computed: {
+    defaultTab() {
+      return this.match.status === e_match_status_enum.Veto
+        ? "veto"
+        : "overview";
+    },
     disableStats() {
-      return e_match_status_enum.PickingPlayers === this.match.status;
+      return [
+        e_match_status_enum.PickingPlayers,
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.Veto,
+        e_match_status_enum.WaitingForCheckIn,
+      ].includes(this.match.status);
     },
     currentMap() {
       return this.match.match_maps.find((match_map) => {
@@ -250,31 +271,14 @@ export default {
           break;
         case e_match_map_status_enum.Paused:
           commands.push(CommandDetails[AvailableCommands.Resume]);
-          commands.push(CommandDetails[AvailableCommands.RestoreRound]);
           break;
         case e_match_map_status_enum.Live:
         case e_match_map_status_enum.Overtime:
           commands.push(CommandDetails[AvailableCommands.Pause]);
-          commands.push(CommandDetails[AvailableCommands.RestoreRound]);
           break;
       }
 
       return commands;
-    },
-  },
-  methods: {
-    async handleCommand(commander, command: string) {
-      if (command.input === true) {
-        const { valid } = await this.form.validate();
-
-        if (!valid) {
-          return;
-        }
-        commander(command.value, this.form.values.round.toString());
-
-        return;
-      }
-      commander(command.value);
     },
   },
 };

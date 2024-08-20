@@ -6,12 +6,12 @@ import LineupMember from "~/components/match/LineupMember.vue";
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead class="hidden sm:table-cell">
+        <TableHead class="w-[200px] text-left">
           {{ lineup.name }}
         </TableHead>
-        <TableHead class="hidden sm:table-cell"> Flashes Thrown </TableHead>
-        <TableHead class="hidden sm:table-cell"> Flash Assists </TableHead>
-        <TableHead class="hidden md:table-cell"> Enemies Flashed </TableHead>
+        <TableHead> Flashes Thrown </TableHead>
+        <TableHead> Flash Assists </TableHead>
+        <TableHead> Enemies Flashed </TableHead>
         <TableHead> Team Flashed </TableHead>
         <TableHead> Avg bling time </TableHead>
         <TableHead> HE Damage </TableHead>

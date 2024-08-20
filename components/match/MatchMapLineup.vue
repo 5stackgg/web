@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Badge } from "~/components/ui/badge";
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 </script>
 
 <template>
@@ -13,19 +14,18 @@ import { Badge } from "~/components/ui/badge";
     class="flex items-center gap-2"
     :class="`${reverse ? 'flex-row-reverse' : ''}`"
   >
-    <NuxtImg
+    <img
       v-if="showTeamPatch"
-      class="inline-block"
+      class="max-w-[24px] w-full inline-block"
       :src="teamPatch"
       sizes="sm:18px"
     />
     <div>
-      <span class="font-bold">{{ matchMap.lineup_1_score }}</span>
-      <template v-if="match.match_maps.length > 1">
-        [<span class="text-yellow-500">0</span>:<span class="text-blue-400"
-          >0</span
-        >]
-      </template>
+      <MatchLineupScoreDisplay
+        :match="match"
+        :lineup="lineup"
+        :match-map="matchMap"
+      ></MatchLineupScoreDisplay>
     </div>
   </div>
 

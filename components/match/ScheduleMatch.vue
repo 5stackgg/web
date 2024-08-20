@@ -13,7 +13,7 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
 
 <template>
   <form
-    class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
+    class="p-3 relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
     @submit.prevent="scheduleMatch"
   >
     <FormField v-slot="{ componentField }" name="scheduled_at">

@@ -12,8 +12,8 @@
         ></span>
         <TournamentRoundLineup
           :bracket="bracket"
-          lineup="1"
-          v-if="bracket.team_1"
+          :match="bracket.match"
+          :lineup="bracket.match.lineup_1"
         ></TournamentRoundLineup>
       </div>
       <div
@@ -27,8 +27,8 @@
         ></span>
         <TournamentRoundLineup
           :bracket="bracket"
-          lineup="2"
-          v-if="bracket.team_2"
+          :match="bracket.match"
+          :lineup="bracket.match.lineup_2"
         ></TournamentRoundLineup>
       </div>
     </template>

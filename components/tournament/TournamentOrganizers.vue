@@ -15,7 +15,7 @@ import TournamentTeamOrganizerRow from "~/components/tournament/TournamentOrgani
     <player-search
       label="Add Player as Organizer ..."
       :exclude="
-        tournament.organizers?.map((organizer) => organizer.steam_id) || []
+        tournament.organizers?.map(({organizer}) => organizer.steam_id) || []
       "
       @selected="addOrganizer"
     ></player-search>

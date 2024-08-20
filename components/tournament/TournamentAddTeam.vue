@@ -43,7 +43,6 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
               <SelectGroup>
                 <SelectItem :value="team.id" v-for="team of teams">
                   {{ team.name }} [{{ team.short_name }}]
-                  <pre>{{ team }}</pre>
                 </SelectItem>
               </SelectGroup>
             </SelectContent>

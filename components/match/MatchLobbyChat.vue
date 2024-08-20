@@ -4,13 +4,12 @@ import { Input } from "~/components/ui/input";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { CornerDownLeft } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
-import TimeAgo from "~/components/TimeAgo.vue";
 import MatchLobbyChatMessage from "~/components/match/MatchLobbyChatMessage.vue";
 </script>
 
 <template>
   <div
-    class="relative flex h-full min-h-[25vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
+    class="relative flex max-h-[500px] min-h-[25vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
   >
     <div class="absolute right-3 top-3">
       <div class="flex">

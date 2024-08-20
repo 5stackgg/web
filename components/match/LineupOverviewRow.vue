@@ -6,52 +6,58 @@ import formatStatValue from "~/utilities/formatStatValue";
     <TableCell>
       <LineupMember :match="match" :member="member"></LineupMember>
     </TableCell>
-    <TableCell class="hidden sm:table-cell">
+    <TableCell>
       {{ member.player?.kills_aggregate.aggregate.count }}
     </TableCell>
-    <TableCell class="hidden sm:table-cell">
+    <TableCell class="hidden md:table-cell">
       {{ member.player?.assists_aggregate.aggregate.count }}
     </TableCell>
-    <TableCell class="hidden md:table-cell">
+    <TableCell>
       {{ member.player?.deaths_aggregate.aggregate.count }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden md:table-cell">
       {{ kd }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ hs }}
     </TableCell>
     <TableCell>
-      {{ member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
-      <Badge class="text-xs" variant="outline">
-        {{
-          formatStatValue(
-            member.player?.damage_dealt_aggregate.aggregate.sum.damage /
-              totalRounds,
-          )
-        }}
-        ADR
-      </Badge>
+      <div class="flex flex-col flex-auto items-center">
+        <div>
+          {{ member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
+        </div>
+        <div>
+          <Badge class="text-xs my-3" variant="outline">
+            {{
+              formatStatValue(
+                member.player?.damage_dealt_aggregate.aggregate.sum.damage /
+                  totalRounds,
+              )
+            }}
+            ADR
+          </Badge>
+        </div>
+      </div>
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ member.player?.team_damage_aggregate.aggregate.sum.damage || 0 }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ twoKills }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ threeKills }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ fourKills }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ fiveKills }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ member.player?.knife_kills_aggregate.aggregate.count }}
     </TableCell>
-    <TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ member.player?.zeus_kills_aggregate.aggregate.count }}
     </TableCell>
     <TableCell v-if="lineup.can_update_lineup">

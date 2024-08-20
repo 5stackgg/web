@@ -26,15 +26,17 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
       </div>
       <div class="grid gap-y-4">
         <div
-          class="flex gap-4 max-h-[500px] justify-around"
+          class="flex gap-4 max-h-[500px] justify-around md:flex-col lg:flex-row"
           v-if="match.match_maps.length > 0"
         >
-          <template v-for="match_map of match.match_maps">
+          <div v-for="match_map of match.match_maps">
             <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
-          </template>
+          </div>
         </div>
 
-        <MatchMapSelection :match="match"></MatchMapSelection>
+        <div class="hidden lg:block">
+          <MatchMapSelection :match="match"></MatchMapSelection>
+        </div>
 
         <MatchTabs :match="match"></MatchTabs>
       </div>

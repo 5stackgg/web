@@ -21,16 +21,20 @@ import {
   FormItem,
   FormLabel,
 } from "~/components/ui/form";
+import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
 </script>
 
 <template>
-  <Tabs default-value="overview">
+  <Tabs :default-value="defaultTab">
     <div class="flex items-center">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
+        <TabsTrigger class="block sm:hidden md:block lg:hidden" value="veto">
+          Map Veto
+        </TabsTrigger>
         <TabsTrigger :disabled="disableStats" value="utility">
           Utility
         </TabsTrigger>
@@ -66,6 +70,16 @@ provide("commander", commander);
             :match="match"
             :lineup="match.lineup_2"
           ></lineup-overview>
+        </CardContent>
+      </Card>
+    </TabsContent>
+    <TabsContent value="veto">
+      <Card>
+        <CardHeader>
+          <CardTitle>Map Veto</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <MatchMapSelection :match="match"></MatchMapSelection>
         </CardContent>
       </Card>
     </TabsContent>
@@ -226,6 +240,11 @@ export default {
     };
   },
   computed: {
+    defaultTab() {
+      return this.match.status === e_match_status_enum.Veto
+        ? "veto"
+        : "overview";
+    },
     disableStats() {
       return [
         e_match_status_enum.PickingPlayers,

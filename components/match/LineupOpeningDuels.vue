@@ -5,11 +5,11 @@ import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead class="hidden sm:table-cell">
+        <TableHead class="w-[200px] text-left">
           {{ lineup.name }}
         </TableHead>
-        <TableHead class="hidden sm:table-cell"> Attempts </TableHead>
-        <TableHead class="hidden sm:table-cell"> Success </TableHead>
+        <TableHead> Attempts </TableHead>
+        <TableHead> Success </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

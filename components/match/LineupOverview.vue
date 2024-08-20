@@ -2,7 +2,7 @@
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead class="hidden sm:table-cell">
+        <TableHead class="w-[200px] text-left">
           <div class="flex">
             {{ lineup.name }}
             <span
@@ -15,20 +15,20 @@
             ></span>
           </div>
         </TableHead>
-        <TableHead class="hidden sm:table-cell"> Kills </TableHead>
+        <TableHead>Kills </TableHead>
         <TableHead class="hidden md:table-cell"> Assists </TableHead>
         <TableHead> Deaths </TableHead>
-        <TableHead> K/D </TableHead>
-        <TableHead> HS% </TableHead>
-        <TableHead> Total Damage </TableHead>
-        <TableHead> Team Damage </TableHead>
-        <TableHead> 2k </TableHead>
-        <TableHead> 3k </TableHead>
-        <TableHead> 4k </TableHead>
-        <TableHead> 5k </TableHead>
-        <TableHead> knifes </TableHead>
-        <TableHead> zeus </TableHead>
-        <TableHead> </TableHead>
+        <TableHead class="hidden md:table-cell"> K/D </TableHead>
+        <TableHead class="hidden lg:table-cell"> HS% </TableHead>
+        <TableHead>Total Damage </TableHead>
+        <TableHead class="hidden lg:table-cell"> Team Damage </TableHead>
+        <TableHead class="hidden lg:table-cell"> 2k </TableHead>
+        <TableHead class="hidden lg:table-cell"> 3k </TableHead>
+        <TableHead class="hidden lg:table-cell"> 4k </TableHead>
+        <TableHead class="hidden lg:table-cell"> 5k </TableHead>
+        <TableHead class="hidden lg:table-cell"> knifes </TableHead>
+        <TableHead class="hidden lg:table-cell"> zeus </TableHead>
+        <TableHead v-if="lineup.can_update_lineup"> </TableHead>
       </TableRow>
       <TableRow v-if="lineup.can_update_lineup">
         <div>

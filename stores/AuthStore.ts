@@ -3,6 +3,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { meFields } from "~/graphql/meGraphql";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 export const useAuthStore = defineStore("auth", () => {
   const me = ref<typeof meFields>();
@@ -21,9 +22,18 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
+  const isAdmin = computed(
+    () => me.value?.role === e_player_roles_enum.administrator,
+  );
+  const isTournamentOrganizer = computed(
+    () => me.value?.role === e_player_roles_enum.tournament_organizer,
+  );
+
   return {
     me,
     getMe,
+    isAdmin,
+    isTournamentOrganizer,
   };
 });
 

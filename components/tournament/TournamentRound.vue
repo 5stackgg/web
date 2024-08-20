@@ -14,6 +14,7 @@
           :bracket="bracket"
           :match="bracket.match"
           :lineup="bracket.match.lineup_1"
+          v-if="bracket.match"
         ></TournamentRoundLineup>
       </div>
       <div
@@ -29,6 +30,7 @@
           :bracket="bracket"
           :match="bracket.match"
           :lineup="bracket.match.lineup_2"
+          v-if="bracket.match"
         ></TournamentRoundLineup>
       </div>
     </template>

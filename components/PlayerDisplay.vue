@@ -1,22 +1,27 @@
 <script lang="ts" setup></script>
 <template>
-  <Avatar>
-    <AvatarImage
-      :src="player.avatar_url"
-      :alt="player.name"
-      v-if="player.avatar_url"
-    />
-  </Avatar>
-  <slot>
-    <div class="text-left pl-3 text-sm">
-      <p>
-        {{ player.name }}
-      </p>
-      <p class="text-muted-foreground">
-        {{ player.steam_id }}
-      </p>
+  <div class="grid grid-cols-[64px_1fr]">
+    <div class="grid grid-cols-1 gap-3 place-items-center">
+      <Avatar>
+        <AvatarImage
+          :src="player.avatar_url"
+          :alt="player.name"
+          v-if="player.avatar_url"
+        />
+      </Avatar>
+      <slot name="avatar-sub"></slot>
     </div>
-  </slot>
+    <div>
+      <slot>
+        <div class="text-left text-sm">
+          <p>{{ player.name }} <slot name="name-postfix"></slot></p>
+          <p class="text-muted-foreground">
+            {{ player.steam_id }}
+          </p>
+        </div>
+      </slot>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

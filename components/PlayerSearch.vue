@@ -29,13 +29,6 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
               @select="select(player)"
             >
               <PlayerDisplay class="mx-3" :player="player" />
-
-              <div>
-                {{ player.name }}
-                <p class="text-xs">
-                  {{ player.steam_id }}
-                </p>
-              </div>
             </CommandItem>
           </CommandGroup>
         </CommandList>

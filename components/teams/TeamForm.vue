@@ -45,9 +45,9 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
             <SelectGroup>
               <SelectItem
                 :value="player.steam_id"
-                v-for="{player} of team.roster"
+                v-for="{ player } of team.roster"
               >
-               <PlayerDisplay :player="player"></PlayerDisplay>
+                <PlayerDisplay :player="player"></PlayerDisplay>
               </SelectItem>
             </SelectGroup>
           </SelectContent>

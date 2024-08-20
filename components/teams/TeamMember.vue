@@ -32,15 +32,9 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 <template>
   <div class="flex items-center space-x-4">
     <PlayerDisplay :player="member.player">
-      <div class="text-left">
-        here?
-        <p class="text-sm font-medium leading-none">
-          {{ member.player.name }} <badge>{{ memberRole }}</badge>
-        </p>
-        <p class="text-sm text-muted-foreground">
-          {{ member.player.steam_id }}
-        </p>
-      </div>
+      <template v-slot:avatar-sub>
+        <badge v-if="memberRole">{{ memberRole }}</badge>
+      </template>
     </PlayerDisplay>
   </div>
   <Popover v-if="!isInvite">

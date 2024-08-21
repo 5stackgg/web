@@ -102,6 +102,24 @@ export default {
           insert_matches_one: [
             {
               object: {
+                ...(this.form.values.team_1
+                  ? {
+                      lineup_1: {
+                        data: {
+                          team_id: this.form.values.team_1,
+                        },
+                      },
+                    }
+                  : {}),
+                ...(this.form.values.team_2
+                  ? {
+                      lineup_1: {
+                        data: {
+                          team_id: this.form.values.team_2,
+                        },
+                      },
+                    }
+                  : {}),
                 options: {
                   data: {
                     mr: $("mr", "Int!"),

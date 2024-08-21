@@ -27,7 +27,10 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ handleChange, componentField }" name="team_id">
+    <template v-if="form.values.my_teams && teams?.length === 0">
+      You do not have any eligible teams at this time.
+    </template>
+    <FormField v-slot="{ handleChange, componentField }" name="team_id" v-else>
       <FormItem>
         <FormLabel>Team</FormLabel>
         <template v-if="form.values.my_teams">
@@ -49,7 +52,7 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
           </Select>
         </template>
         <template v-else>
-          <team-search
+          <TeamSearch
             label="Search for a Team ..."
             @selected="
               (team) => {
@@ -57,13 +60,19 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
               }
             "
             v-model="componentField.modelValue"
-          ></team-search>
+            :exclude="tournament.teams.map(({ team_id }) => team_id)"
+          ></TeamSearch>
         </template>
         <FormMessage />
       </FormItem>
     </FormField>
 
-    <Button type="submit"> Add Team </Button>
+    <Button
+      type="submit"
+      :disabled="form.values.my_teams && teams?.length === 0"
+    >
+      Add Team
+    </Button>
   </form>
 </template>
 
@@ -171,6 +180,12 @@ export default {
   },
   methods: {
     async addTeamToTournament() {
+      const { valid } = await this.form.validate();
+
+      if (!valid) {
+        return;
+      }
+
       const { data } = await this.$apollo.query({
         query: generateQuery({
           teams_by_pk: [

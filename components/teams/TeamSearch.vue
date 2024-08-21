@@ -94,19 +94,33 @@ export default {
     async searchTeams(query?: string) {
       let teams = [];
       if (!query || query.trim().length === 0) {
-        teams = this.me.player.teams;
-      } else {
+        teams = this.me.player.teams.filter((team) => {
+          return !this.exclude.includes(team.id);
+        });
+      }
+
+      if (teams.length === 0) {
+        console.info("OK SEARCH...");
         const { data } = await this.$apollo.query({
           query: generateQuery({
             teams: [
               {
                 where: {
-                  _or: [
+                  _and: [
                     {
-                      name: {
-                        _ilike: `%${query}%`,
+                      id: {
+                        _nin: this.exclude,
                       },
                     },
+                    ...[
+                      query
+                        ? {
+                            name: {
+                              _ilike: `%${query}%`,
+                            },
+                          }
+                        : {},
+                    ],
                   ],
                 },
               },
@@ -121,9 +135,7 @@ export default {
         teams = data.teams;
       }
 
-      this.teams = teams.filter((team) => {
-        return this.exclude.includes(team.id) === false;
-      });
+      this.teams = teams;
     },
   },
   computed: {

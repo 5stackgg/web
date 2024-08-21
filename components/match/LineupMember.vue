@@ -1,24 +1,14 @@
 <template>
   <div @click="viewPlayer" class="cursor-pointer text-left">
     <template v-if="member.player">
-      <div class="grid grid-cols-[64px_1fr] items-center">
-        <div class="mx-3 my-3 flex flex-col items-center">
-          <Avatar>
-            <AvatarImage
-              :src="member.player.avatar_url"
-              :alt="member.player.name"
-              v-if="member.player.avatar_url"
-            />
-            <AvatarFallback>{{ member.player.name }}</AvatarFallback>
-          </Avatar>
-          <Badge variant="outline" class="mt-3" v-if="member.captain">
-            Captain
-          </Badge>
-        </div>
-        <div class="ml-3">
-          {{ member.player.name }}
+      <PlayerDisplay :player="member.player">
+        <template v-slot:avatar-sub>
+          <Badge variant="outline" v-if="member.captain"> Captain </Badge>
+        </template>
+
+        <template v-slot:name-postfix>
           <span
-            class="flex h-2 w-2 rounded-full"
+            class="ml-1 inline-block h-2 w-2 rounded-full"
             :class="{
               ['bg-red-600']: !isOnline && !isReady,
               ['bg-yellow-600']: isOnline && !isReady,
@@ -28,8 +18,8 @@
               match && match.status === e_match_status_enum.WaitingForCheckIn
             "
           ></span>
-        </div>
-      </div>
+        </template>
+      </PlayerDisplay>
     </template>
     <template v-else>
       {{ member.name }}
@@ -40,9 +30,10 @@
 <script lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { e_match_status_enum } from "~/generated/zeus";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 export default {
-  components: { Avatar, AvatarFallback, AvatarImage },
+  components: { PlayerDisplay, Avatar, AvatarFallback, AvatarImage },
   props: {
     member: {
       type: Object,

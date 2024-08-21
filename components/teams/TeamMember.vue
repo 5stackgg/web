@@ -26,22 +26,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
   <div class="flex items-center space-x-4">
-    <Avatar>
-      <AvatarImage :src="member.player.avatar_url" />
-      <AvatarFallback>{{ member.player.name }}</AvatarFallback>
-    </Avatar>
-    <div>
-      <p class="text-sm font-medium leading-none">
-        {{ member.player.name }} <badge>{{ memberRole }}</badge>
-      </p>
-      <p class="text-sm text-muted-foreground">
-        {{ member.player.steam_id }}
-      </p>
-    </div>
+    <PlayerDisplay :player="member.player">
+      <template v-slot:avatar-sub>
+        <badge v-if="memberRole">{{ memberRole }}</badge>
+      </template>
+    </PlayerDisplay>
   </div>
   <Popover v-if="!isInvite">
     <PopoverTrigger as-child>

@@ -2,6 +2,8 @@
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
+import PlayerSearch from "~/components/PlayerSearch.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -24,6 +26,36 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
         </FormControl>
       </FormItem>
     </FormField>
+
+    <FormField
+      v-slot="{ componentField }"
+      name="owner_steam_id"
+      v-if="team && canUpdateOwner"
+    >
+      <FormItem>
+        <FormLabel>Owner </FormLabel>
+
+        <Select v-bind="componentField">
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder="Update Owner" />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem
+                :value="player.steam_id"
+                v-for="{ player } of team.roster"
+              >
+                <PlayerDisplay :player="player"></PlayerDisplay>
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
       <template v-if="team"> Update </template
       ><template v-else> Create </template> Team
@@ -36,6 +68,7 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   emits: ["updated"],
@@ -47,6 +80,7 @@ export default {
   },
   data() {
     return {
+      owner: undefined,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -70,6 +104,17 @@ export default {
       },
     },
   },
+  computed: {
+    me() {
+      return useAuthStore().me;
+    },
+    canUpdateOwner() {
+      return (
+        this.team.owner_steam_id === this.me?.steam_id ||
+        this.me?.role === e_player_roles_enum.tournament_organizer
+      );
+    },
+  },
   methods: {
     async updateCreateTeam() {
       if (this.team) {
@@ -83,6 +128,7 @@ export default {
                 _set: {
                   name: this.form.values.team_name,
                   short_name: this.form.values.short_name,
+                  owner_steam_id: this.form.values.owner_steam_id,
                 },
               },
               {

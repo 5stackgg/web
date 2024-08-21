@@ -14,11 +14,11 @@ import MatchOptions from "~/components/MatchOptions.vue";
     <FormField v-slot="{ handleChange, componentField }" name="team_1">
       <FormItem>
         <FormLabel>Team 1</FormLabel>
-        <team-search
+        <TeamSearch
           label="Search for a Team ..."
           @selected="(team) => handleChange(team.id)"
           v-model="componentField.modelValue"
-        ></team-search>
+        ></TeamSearch>
         <FormMessage />
       </FormItem>
     </FormField>
@@ -26,12 +26,12 @@ import MatchOptions from "~/components/MatchOptions.vue";
     <FormField v-slot="{ handleChange, componentField }" name="team_2">
       <FormItem>
         <FormLabel>Team 2</FormLabel>
-        <team-search
+        <TeamSearch
           label="Search for a Team ..."
           @selected="(team) => handleChange(team.id)"
           :exclude="[form.values.team_1]"
           v-model="componentField.modelValue"
-        ></team-search>
+        ></TeamSearch>
         <FormMessage />
       </FormItem>
     </FormField>
@@ -102,6 +102,24 @@ export default {
           insert_matches_one: [
             {
               object: {
+                ...(this.form.values.team_1
+                  ? {
+                      lineup_1: {
+                        data: {
+                          team_id: this.form.values.team_1,
+                        },
+                      },
+                    }
+                  : {}),
+                ...(this.form.values.team_2
+                  ? {
+                      lineup_1: {
+                        data: {
+                          team_id: this.form.values.team_2,
+                        },
+                      },
+                    }
+                  : {}),
                 options: {
                   data: {
                     mr: $("mr", "Int!"),

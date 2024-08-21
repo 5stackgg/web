@@ -117,7 +117,6 @@ import MapDisplay from "~/components/MapDisplay.vue";
     <FormField v-slot="{ componentField }" name="type">
       <FormItem>
         <FormLabel>Match Type </FormLabel>
-
         <Select v-bind="componentField">
           <FormControl>
             <SelectTrigger>

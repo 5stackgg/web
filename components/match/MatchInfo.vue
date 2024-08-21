@@ -17,6 +17,7 @@ import { Separator } from "~/components/ui/separator";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -160,35 +161,19 @@ import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
             <span class="text-muted-foreground">
               {{ match.lineup_1.name }}
             </span>
-            <div v-if="match.lineup_1.coach">
-              <Avatar>
-                <AvatarImage
-                  :src="match.lineup_1.coach.avatar_url"
-                  :alt="match.lineup_1.coach.name"
-                  v-if="match.lineup_1.coach.avatar_url"
-                />
-                <AvatarFallback>{{ match.lineup_1.coach.name }}</AvatarFallback>
-              </Avatar>
-
-              {{ match.lineup_1.coach.name }}
-            </div>
+            <PlayerDisplay
+              :player="match.lineup_1.coach"
+              v-if="match.lineup_1.coach"
+            ></PlayerDisplay>
           </li>
           <li class="flex items-center justify-between">
             <span class="text-muted-foreground">
               {{ match.lineup_2.name }}
             </span>
-            <div v-if="match.lineup_2.coach">
-              <Avatar>
-                <AvatarImage
-                  :src="match.lineup_2.coach.avatar_url"
-                  :alt="match.lineup_2.coach.name"
-                  v-if="match.lineup_2.coach.avatar_url"
-                />
-                <AvatarFallback>{{ match.lineup_2.coach.name }}</AvatarFallback>
-              </Avatar>
-
-              {{ match.lineup_2.coach.name }}
-            </div>
+            <PlayerDisplay
+              :player="match.lineup_2.coach"
+              v-if="match.lineup_2.coach"
+            ></PlayerDisplay>
           </li>
         </ul>
       </div>
@@ -199,21 +184,10 @@ import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
         <div class="font-semibold">Match Organizers</div>
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">
-            <Avatar class="mx-3">
-              <AvatarImage
-                :src="match.organizer.avatar_url"
-                :alt="match.organizer.name"
-                v-if="match.organizer.avatar_url"
-              />
-              <AvatarFallback>{{ match.organizer.name }}</AvatarFallback>
-            </Avatar>
-
-            <div>
-              {{ match.organizer.name }}
-              <p class="text-xs">
-                {{ match.organizer.steam_id }}
-              </p>
-            </div>
+            <PlayerDisplay
+              class="mx-3"
+              :player="match.organizer"
+            ></PlayerDisplay>
           </li>
         </ul>
       </div>

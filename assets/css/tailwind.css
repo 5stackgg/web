@@ -74,3 +74,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  /* WebKit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2); /* Color of the scrollbar thumb */
+    border-radius: 6px; /* Rounded corners */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.4); /* Darker color on hover */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* Track color */
+  }
+
+  /* Firefox */
+  html {
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Thumb color and track color */
+  }
+
+  html:hover {
+    scrollbar-color: rgba(0, 0, 0, 0.4) transparent; /* Darker color on hover */
+  }
+}

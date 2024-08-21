@@ -75,7 +75,7 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
       <div v-for="team of tournament.teams">
         <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
           {{ team.name }}: {{ team.roster_aggregate.aggregate.count }} players
-          registered ({{ team.eligible_at }})
+          registered
         </NuxtLink>
 
         <Button @click="removeTeam(team.id)">Remove Team</Button>
@@ -107,11 +107,12 @@ import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
 </template>
 
 <script lang="ts">
-import { $, e_map_pool_types_enum, order_by } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww

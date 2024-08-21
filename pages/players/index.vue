@@ -5,6 +5,7 @@ import { Separator } from "~/components/ui/separator";
 import Pagination from "@/components/Pagination.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PageHeading from "~/components/PageHeading.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -40,20 +41,7 @@ import PageHeading from "~/components/PageHeading.vue";
       >
         <TableCell class="font-medium">
           <div class="flex">
-            <Avatar class="mx-3">
-              <AvatarImage
-                :src="player.avatar_url"
-                :alt="player.name"
-                v-if="player.avatar_url"
-              />
-              <AvatarFallback>{{ player.name }}</AvatarFallback>
-            </Avatar>
-            <div>
-              {{ player.name }}
-              <p class="text-xs">
-                {{ player.steam_id }}
-              </p>
-            </div>
+            <PlayerDisplay :player="player"></PlayerDisplay>
           </div>
         </TableCell>
       </TableRow>

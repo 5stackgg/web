@@ -3,11 +3,11 @@
     <TableHeader>
       <TableRow>
         <TableHead class="w-[200px] text-left">
-          <div class="flex">
+          <div class="flex items-center">
             {{ lineup.name }}
             <span
               v-if="match.status === e_match_status_enum.WaitingForCheckIn"
-              class="flex h-2 w-2 rounded-full"
+              class="flex h-2 w-2 rounded-full mx-3"
               :class="{
                 ['bg-red-600']: !lineup.is_ready,
                 ['bg-green-600']: lineup.is_ready,

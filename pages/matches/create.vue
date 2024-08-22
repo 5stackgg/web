@@ -77,6 +77,7 @@ export default {
           overtime: form.overtime,
           map_veto: form.map_veto,
           coaches: form.coaches,
+          tv_delay: form.tv_delay,
           number_of_substitutes: form.number_of_substitutes,
           ...(form.map_pool_id
             ? {
@@ -125,6 +126,7 @@ export default {
                     mr: $("mr", "Int!"),
                     type: $("type", "e_match_types_enum!"),
                     coaches: $("coaches", "Boolean!"),
+                    tv_delay: $("tv_delay", "Int!"),
                     knife_round: $("knife_round", "Boolean!"),
                     best_of: $("best_of", "Int!"),
                     overtime: $("overtime", "Boolean!"),

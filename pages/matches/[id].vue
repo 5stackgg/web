@@ -120,6 +120,7 @@ export default {
                 mr: true,
                 best_of: true,
                 coaches: true,
+                tv_delay: true,
                 map_veto: true,
                 overtime: true,
                 knife_round: true,

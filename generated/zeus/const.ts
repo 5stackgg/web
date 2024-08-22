@@ -2214,6 +2214,7 @@ export const AllTypesProps: Record<string,any> = {
 		tech_timeout_setting:"e_timeout_settings_enum_comparison_exp",
 		timeout_setting:"e_timeout_settings_enum_comparison_exp",
 		tournament:"tournaments_bool_exp",
+		tv_delay:"Int_comparison_exp",
 		type:"e_match_types_enum_comparison_exp"
 	},
 	match_options_constraint: "enum" as const,
@@ -2255,6 +2256,7 @@ export const AllTypesProps: Record<string,any> = {
 		tech_timeout_setting:"order_by",
 		timeout_setting:"order_by",
 		tournament:"tournaments_order_by",
+		tv_delay:"order_by",
 		type:"order_by"
 	},
 	match_options_pk_columns_input:{
@@ -10578,6 +10580,7 @@ export const ReturnTypes: Record<string,any> = {
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		tournament:"tournaments",
+		tv_delay:"Int",
 		type:"e_match_types_enum"
 	},
 	match_options_aggregate:{
@@ -10600,21 +10603,24 @@ export const ReturnTypes: Record<string,any> = {
 	match_options_avg_fields:{
 		best_of:"Float",
 		mr:"Float",
-		number_of_substitutes:"Float"
+		number_of_substitutes:"Float",
+		tv_delay:"Float"
 	},
 	match_options_max_fields:{
 		best_of:"Int",
 		id:"uuid",
 		map_pool_id:"uuid",
 		mr:"Int",
-		number_of_substitutes:"Int"
+		number_of_substitutes:"Int",
+		tv_delay:"Int"
 	},
 	match_options_min_fields:{
 		best_of:"Int",
 		id:"uuid",
 		map_pool_id:"uuid",
 		mr:"Int",
-		number_of_substitutes:"Int"
+		number_of_substitutes:"Int",
+		tv_delay:"Int"
 	},
 	match_options_mutation_response:{
 		affected_rows:"Int",
@@ -10623,37 +10629,44 @@ export const ReturnTypes: Record<string,any> = {
 	match_options_stddev_fields:{
 		best_of:"Float",
 		mr:"Float",
-		number_of_substitutes:"Float"
+		number_of_substitutes:"Float",
+		tv_delay:"Float"
 	},
 	match_options_stddev_pop_fields:{
 		best_of:"Float",
 		mr:"Float",
-		number_of_substitutes:"Float"
+		number_of_substitutes:"Float",
+		tv_delay:"Float"
 	},
 	match_options_stddev_samp_fields:{
 		best_of:"Float",
 		mr:"Float",
-		number_of_substitutes:"Float"
+		number_of_substitutes:"Float",
+		tv_delay:"Float"
 	},
 	match_options_sum_fields:{
 		best_of:"Int",
 		mr:"Int",
-		number_of_substitutes:"Int"
+		number_of_substitutes:"Int",
+		tv_delay:"Int"
 	},
 	match_options_var_pop_fields:{
 		best_of:"Float",
 		mr:"Float",
-		number_of_substitutes:"Float"
+		number_of_substitutes:"Float",
+		tv_delay:"Float"
 	},
 	match_options_var_samp_fields:{
 		best_of:"Float",
 		mr:"Float",
-		number_of_substitutes:"Float"
+		number_of_substitutes:"Float",
+		tv_delay:"Float"
 	},
 	match_options_variance_fields:{
 		best_of:"Float",
 		mr:"Float",
-		number_of_substitutes:"Float"
+		number_of_substitutes:"Float",
+		tv_delay:"Float"
 	},
 	match_veto_picks:{
 		created_at:"timestamptz",

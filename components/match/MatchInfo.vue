@@ -94,6 +94,11 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         </li>
 
         <li class="flex items-center justify-between">
+          <span class="text-muted-foreground"> TV Delay </span>
+          <span>{{ match.options.tv_delay }} seconds</span>
+        </li>
+
+        <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Coaches </span>
           <BooleanToText :value="match.options.coaches"></BooleanToText>
         </li>

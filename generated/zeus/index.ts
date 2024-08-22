@@ -4977,6 +4977,7 @@ matches_aggregate?: [{	/** distinct select on columns */
 	timeout_setting?:boolean | `@${string}`,
 	/** An object relationship */
 	tournament?:ValueTypes["tournaments"],
+	tv_delay?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -5006,6 +5007,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Boolean expression to filter rows from the table "match_options". All fields are combined with a logical 'AND'. */
@@ -5029,6 +5031,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
+	tv_delay?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum_comparison_exp"] | undefined | null | Variable<any, string>
 };
 	/** unique or primary key constraints on table "match_options" */
@@ -5037,7 +5040,8 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 ["match_options_inc_input"]: {
 	best_of?: number | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
-	number_of_substitutes?: number | undefined | null | Variable<any, string>
+	number_of_substitutes?: number | undefined | null | Variable<any, string>,
+	tv_delay?: number | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "match_options" */
 ["match_options_insert_input"]: {
@@ -5055,6 +5059,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	tv_delay?: number | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
@@ -5064,6 +5069,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -5073,6 +5079,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "match_options" */
@@ -5112,6 +5119,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	tech_timeout_setting?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_order_by"] | undefined | null | Variable<any, string>,
+	tv_delay?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** primary key columns input for table: match_options */
@@ -5133,6 +5141,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	overtime?: boolean | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
+	tv_delay?: number | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
@@ -5140,6 +5149,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
@@ -5147,6 +5157,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
@@ -5154,6 +5165,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Streaming cursor of the table "match_options" */
@@ -5176,6 +5188,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	overtime?: boolean | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
+	tv_delay?: number | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
@@ -5183,6 +5196,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** update columns of table "match_options" */
@@ -5200,6 +5214,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
@@ -5207,6 +5222,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
@@ -5214,6 +5230,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "match_veto_picks" */
@@ -20600,6 +20617,7 @@ matches_aggregate?: [{	/** distinct select on columns */
 	timeout_setting?:boolean | `@${string}`,
 	/** An object relationship */
 	tournament?:ResolverInputTypes["tournaments"],
+	tv_delay?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -20629,6 +20647,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Boolean expression to filter rows from the table "match_options". All fields are combined with a logical 'AND'. */
@@ -20652,6 +20671,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
+	tv_delay?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum_comparison_exp"] | undefined | null
 };
 	/** unique or primary key constraints on table "match_options" */
@@ -20660,7 +20680,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 ["match_options_inc_input"]: {
 	best_of?: number | undefined | null,
 	mr?: number | undefined | null,
-	number_of_substitutes?: number | undefined | null
+	number_of_substitutes?: number | undefined | null,
+	tv_delay?: number | undefined | null
 };
 	/** input type for inserting data into table "match_options" */
 ["match_options_insert_input"]: {
@@ -20678,6 +20699,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
+	tv_delay?: number | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null
 };
 	/** aggregate max on columns */
@@ -20687,6 +20709,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate min on columns */
@@ -20696,6 +20719,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** response of any mutation on the table "match_options" */
@@ -20735,6 +20759,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	tech_timeout_setting?: ResolverInputTypes["order_by"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_order_by"] | undefined | null,
+	tv_delay?: ResolverInputTypes["order_by"] | undefined | null,
 	type?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** primary key columns input for table: match_options */
@@ -20756,6 +20781,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	overtime?: boolean | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
+	tv_delay?: number | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null
 };
 	/** aggregate stddev on columns */
@@ -20763,6 +20789,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_pop on columns */
@@ -20770,6 +20797,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate stddev_samp on columns */
@@ -20777,6 +20805,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Streaming cursor of the table "match_options" */
@@ -20799,6 +20828,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	overtime?: boolean | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
+	tv_delay?: number | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null
 };
 	/** aggregate sum on columns */
@@ -20806,6 +20836,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** update columns of table "match_options" */
@@ -20823,6 +20854,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate var_samp on columns */
@@ -20830,6 +20862,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** aggregate variance on columns */
@@ -20837,6 +20870,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "match_veto_picks" */
@@ -35754,6 +35788,7 @@ export type ModelTypes = {
 	timeout_setting: ModelTypes["e_timeout_settings_enum"],
 	/** An object relationship */
 	tournament?: ModelTypes["tournaments"] | undefined,
+	tv_delay: number,
 	type: ModelTypes["e_match_types_enum"]
 };
 	/** aggregated selection of "match_options" */
@@ -35779,7 +35814,8 @@ export type ModelTypes = {
 ["match_options_avg_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** Boolean expression to filter rows from the table "match_options". All fields are combined with a logical 'AND'. */
 ["match_options_bool_exp"]: {
@@ -35802,6 +35838,7 @@ export type ModelTypes = {
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	tournament?: ModelTypes["tournaments_bool_exp"] | undefined,
+	tv_delay?: ModelTypes["Int_comparison_exp"] | undefined,
 	type?: ModelTypes["e_match_types_enum_comparison_exp"] | undefined
 };
 	["match_options_constraint"]:match_options_constraint;
@@ -35809,7 +35846,8 @@ export type ModelTypes = {
 ["match_options_inc_input"]: {
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** input type for inserting data into table "match_options" */
 ["match_options_insert_input"]: {
@@ -35827,6 +35865,7 @@ export type ModelTypes = {
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined,
+	tv_delay?: number | undefined,
 	type?: ModelTypes["e_match_types_enum"] | undefined
 };
 	/** aggregate max on columns */
@@ -35835,7 +35874,8 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate min on columns */
 ["match_options_min_fields"]: {
@@ -35843,7 +35883,8 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** response of any mutation on the table "match_options" */
 ["match_options_mutation_response"]: {
@@ -35881,6 +35922,7 @@ export type ModelTypes = {
 	tech_timeout_setting?: ModelTypes["order_by"] | undefined,
 	timeout_setting?: ModelTypes["order_by"] | undefined,
 	tournament?: ModelTypes["tournaments_order_by"] | undefined,
+	tv_delay?: ModelTypes["order_by"] | undefined,
 	type?: ModelTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: match_options */
@@ -35901,25 +35943,29 @@ export type ModelTypes = {
 	overtime?: boolean | undefined,
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
+	tv_delay?: number | undefined,
 	type?: ModelTypes["e_match_types_enum"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_options_stddev_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["match_options_stddev_pop_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["match_options_stddev_samp_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** Streaming cursor of the table "match_options" */
 ["match_options_stream_cursor_input"]: {
@@ -35941,13 +35987,15 @@ export type ModelTypes = {
 	overtime?: boolean | undefined,
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
+	tv_delay?: number | undefined,
 	type?: ModelTypes["e_match_types_enum"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_options_sum_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	["match_options_update_column"]:match_options_update_column;
 	["match_options_updates"]: {
@@ -35962,19 +36010,22 @@ export type ModelTypes = {
 ["match_options_var_pop_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate var_samp on columns */
 ["match_options_var_samp_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate variance on columns */
 ["match_options_variance_fields"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** columns and relationships of "match_veto_picks" */
 ["match_veto_picks"]: {
@@ -49246,6 +49297,7 @@ export type GraphQLTypes = {
 	timeout_setting: GraphQLTypes["e_timeout_settings_enum"],
 	/** An object relationship */
 	tournament?: GraphQLTypes["tournaments"] | undefined,
+	tv_delay: number,
 	type: GraphQLTypes["e_match_types_enum"]
 };
 	/** aggregated selection of "match_options" */
@@ -49274,7 +49326,8 @@ export type GraphQLTypes = {
 	__typename: "match_options_avg_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** Boolean expression to filter rows from the table "match_options". All fields are combined with a logical 'AND'. */
 ["match_options_bool_exp"]: {
@@ -49297,6 +49350,7 @@ export type GraphQLTypes = {
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined,
+	tv_delay?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	type?: GraphQLTypes["e_match_types_enum_comparison_exp"] | undefined
 };
 	/** unique or primary key constraints on table "match_options" */
@@ -49305,7 +49359,8 @@ export type GraphQLTypes = {
 ["match_options_inc_input"]: {
 		best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** input type for inserting data into table "match_options" */
 ["match_options_insert_input"]: {
@@ -49323,6 +49378,7 @@ export type GraphQLTypes = {
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined,
+	tv_delay?: number | undefined,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined
 };
 	/** aggregate max on columns */
@@ -49332,7 +49388,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate min on columns */
 ["match_options_min_fields"]: {
@@ -49341,7 +49398,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** response of any mutation on the table "match_options" */
 ["match_options_mutation_response"]: {
@@ -49380,6 +49438,7 @@ export type GraphQLTypes = {
 	tech_timeout_setting?: GraphQLTypes["order_by"] | undefined,
 	timeout_setting?: GraphQLTypes["order_by"] | undefined,
 	tournament?: GraphQLTypes["tournaments_order_by"] | undefined,
+	tv_delay?: GraphQLTypes["order_by"] | undefined,
 	type?: GraphQLTypes["order_by"] | undefined
 };
 	/** primary key columns input for table: match_options */
@@ -49401,6 +49460,7 @@ export type GraphQLTypes = {
 	overtime?: boolean | undefined,
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
+	tv_delay?: number | undefined,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined
 };
 	/** aggregate stddev on columns */
@@ -49408,21 +49468,24 @@ export type GraphQLTypes = {
 	__typename: "match_options_stddev_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate stddev_pop on columns */
 ["match_options_stddev_pop_fields"]: {
 	__typename: "match_options_stddev_pop_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate stddev_samp on columns */
 ["match_options_stddev_samp_fields"]: {
 	__typename: "match_options_stddev_samp_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** Streaming cursor of the table "match_options" */
 ["match_options_stream_cursor_input"]: {
@@ -49444,6 +49507,7 @@ export type GraphQLTypes = {
 	overtime?: boolean | undefined,
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
+	tv_delay?: number | undefined,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined
 };
 	/** aggregate sum on columns */
@@ -49451,7 +49515,8 @@ export type GraphQLTypes = {
 	__typename: "match_options_sum_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** update columns of table "match_options" */
 ["match_options_update_column"]: match_options_update_column;
@@ -49468,21 +49533,24 @@ export type GraphQLTypes = {
 	__typename: "match_options_var_pop_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate var_samp on columns */
 ["match_options_var_samp_fields"]: {
 	__typename: "match_options_var_samp_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** aggregate variance on columns */
 ["match_options_variance_fields"]: {
 	__typename: "match_options_variance_fields",
 	best_of?: number | undefined,
 	mr?: number | undefined,
-	number_of_substitutes?: number | undefined
+	number_of_substitutes?: number | undefined,
+	tv_delay?: number | undefined
 };
 	/** columns and relationships of "match_veto_picks" */
 ["match_veto_picks"]: {
@@ -59853,6 +59921,7 @@ export const enum match_options_select_column {
 	overtime = "overtime",
 	tech_timeout_setting = "tech_timeout_setting",
 	timeout_setting = "timeout_setting",
+	tv_delay = "tv_delay",
 	type = "type"
 }
 /** update columns of table "match_options" */
@@ -59868,6 +59937,7 @@ export const enum match_options_update_column {
 	overtime = "overtime",
 	tech_timeout_setting = "tech_timeout_setting",
 	timeout_setting = "timeout_setting",
+	tv_delay = "tv_delay",
 	type = "type"
 }
 /** unique or primary key constraints on table "match_veto_picks" */

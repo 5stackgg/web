@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
+import { Input } from "~/components/ui/input";
+import { FormControl } from "~/components/ui/form";
 </script>
 
 <template>
@@ -178,6 +180,17 @@ import MapDisplay from "~/components/MapDisplay.vue";
             </SelectGroup>
           </SelectContent>
         </Select>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
+    <FormField v-slot="{ componentField }" name="tv_delay">
+      <FormItem>
+        <FormLabel>Tv Delay</FormLabel>
+        <FormControl>
+          <Input type="number" v-bind="componentField" />
+          <FormMessage />
+        </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>

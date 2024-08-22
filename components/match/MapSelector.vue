@@ -10,6 +10,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
       :class="{
         grayscale: modelValue && modelValue !== map.id,
         ring: modelValue === map.id,
+        'opacity-10 pointer-events-none': !availableMaps.includes(map),
       }"
       @click="$emit('update:modelValue', map.id)"
       v-for="map of mapPool"

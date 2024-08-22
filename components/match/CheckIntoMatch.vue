@@ -12,13 +12,13 @@
         you can start the match. {{ totalCheckedIn }} /
         {{ playersRequiredToStart }} checked in.
 
-        <badge
+        <badge class="my-3"
           >Auto Canceling &nbsp; <time-ago :date="match.cancels_at"></time-ago
         ></badge>
       </CardDescription>
     </CardHeader>
-    <CardContent class="p-2 pt-0 md:p-4 md:pt-0">
-      <Button size="sm" class="w-full" @click="checkIn" v-if="!isCheckedIn">
+    <CardContent class="p-2 pt-0 md:p-4 md:pt-0" v-if="!isCheckedIn">
+      <Button size="sm" class="w-full" @click="checkIn">
         Check In
       </Button>
     </CardContent>

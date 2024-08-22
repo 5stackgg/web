@@ -228,7 +228,7 @@ export default {
   },
   data() {
     return {
-      activeTab: undefined,
+      activeTab: "overview",
       vetoTabViewable: true,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -260,11 +260,9 @@ export default {
       observer.observe(this.$refs.mapVetoTab);
     }
 
-    this.activeTab =
-      this.match.options.map_veto &&
-      this.match.status === e_match_status_enum.Veto
-        ? "veto"
-        : "overview";
+    if(this.match.options.map_veto && this.match.status === e_match_status_enum.Veto) {
+      this.activeTab = "veto";
+    }
   },
   computed: {
     disableStats() {

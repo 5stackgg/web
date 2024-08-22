@@ -2,6 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import { Badge } from "~/components/ui/badge";
 import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
+import formatBits from "~/utilities/formatBits";
 </script>
 
 <template>
@@ -19,6 +20,21 @@ import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
       <badge variant="destructive" v-if="isDecider && match.options.best_of > 1"
         >Decider</badge
       >
+
+      <!-- TODO - env variable url -->
+      <div class="absolute top-3 right-3">
+        <a
+          target="_blank"
+          :href="`https://5stack.gg/${matchMap.demos_download_url}`"
+        >
+          <Button size="sm" variant="outline">
+            Download Demos (<small>{{
+              formatBits(matchMap.demos_total_size)
+            }}</small
+            >)
+          </Button>
+        </a>
+      </div>
     </template>
     <template v-slot:default>
       <div class="absolute bottom-3 left-3 right-3 flex justify-between">

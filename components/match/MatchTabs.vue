@@ -32,7 +32,11 @@ provide("commander", commander);
     <div class="flex items-center">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
-        <TabsTrigger class="block sm:hidden md:block lg:hidden" value="veto">
+        <TabsTrigger
+          class="block sm:hidden md:block lg:hidden"
+          value="veto"
+          v-if="match.options.map_veto"
+        >
           Map Veto
         </TabsTrigger>
         <TabsTrigger :disabled="disableStats" value="utility">
@@ -43,9 +47,6 @@ provide("commander", commander);
         </TabsTrigger>
         <TabsTrigger :disabled="disableStats" value="clutches">
           Clutches
-        </TabsTrigger>
-        <TabsTrigger :disabled="match.demos.length === 0" value="demos">
-          Demos
         </TabsTrigger>
         <TabsTrigger :disabled="!match.server_id" value="server">
           Server Console
@@ -138,9 +139,6 @@ provide("commander", commander);
         </CardContent>
       </Card>
     </TabsContent>
-    <TabsContent value="demos">
-      <pre>{{ match.demos }}</pre>
-    </TabsContent>
     <TabsContent value="server">
       <RconCommander :server-id="match.server_id" v-slot="{ commander }">
         <template v-for="command of availableCommands">
@@ -155,16 +153,16 @@ provide("commander", commander);
         >
           <FormField v-slot="{ componentField }" name="round">
             <FormItem>
-              <FormLabel>Match Type </FormLabel>
+              <FormLabel>Restore Round</FormLabel>
               <Select
                 v-bind="componentField"
                 @update:model-value="
                   (value) => form.setFieldValue('round', value)
                 "
-                >>
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select the match type" />
+                    <SelectValue placeholder="Select the round to restore" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -241,7 +239,8 @@ export default {
   },
   computed: {
     defaultTab() {
-      return this.match.status === e_match_status_enum.Veto
+      return this.match.options.map_veto &&
+        this.match.status === e_match_status_enum.Veto
         ? "veto"
         : "overview";
     },

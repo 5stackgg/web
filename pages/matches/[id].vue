@@ -145,6 +145,8 @@ export default {
                   lineup_2_side: true,
                   map: mapFields,
                   is_current_map: true,
+                  demos_total_size: true,
+                  demos_download_url: true,
                   vetos: {
                     side: true,
                     type: true,
@@ -186,9 +188,6 @@ export default {
               ],
               lineup_1: [{}, matchLineups],
               lineup_2: [{}, matchLineups],
-              demos: {
-                id: true,
-              },
             },
           ],
         }),

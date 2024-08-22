@@ -1127,6 +1127,12 @@ count?: [{	columns?: Array<ValueTypes["e_map_pool_types_select_column"]> | undef
 	returning?:ValueTypes["e_map_pool_types"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "e_map_pool_types" */
+["e_map_pool_types_obj_rel_insert_input"]: {
+	data: ValueTypes["e_map_pool_types_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["e_map_pool_types_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** on_conflict condition type for table "e_map_pool_types" */
 ["e_map_pool_types_on_conflict"]: {
 	constraint: ValueTypes["e_map_pool_types_constraint"] | Variable<any, string>,
@@ -2686,6 +2692,8 @@ count?: [{	columns?: Array<ValueTypes["e_veto_pick_types_select_column"]> | unde
 };
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: AliasType<{
+	/** An object relationship */
+	e_type?:ValueTypes["e_map_pool_types"],
 	enabled?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 maps?: [{	/** distinct select on columns */
@@ -2722,6 +2730,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 	_and?: Array<ValueTypes["map_pools_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["map_pools_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["map_pools_bool_exp"]> | undefined | null | Variable<any, string>,
+	e_type?: ValueTypes["e_map_pool_types_bool_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	maps?: ValueTypes["v_pool_maps_bool_exp"] | undefined | null | Variable<any, string>,
@@ -2733,6 +2742,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 ["map_pools_constraint"]:map_pools_constraint;
 	/** input type for inserting data into table "map_pools" */
 ["map_pools_insert_input"]: {
+	e_type?: ValueTypes["e_map_pool_types_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	maps?: ValueTypes["v_pool_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -2771,6 +2781,7 @@ count?: [{	columns?: Array<ValueTypes["map_pools_select_column"]> | undefined | 
 };
 	/** Ordering options when selecting data from "map_pools". */
 ["map_pools_order_by"]: {
+	e_type?: ValueTypes["e_map_pool_types_order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	maps_aggregate?: ValueTypes["v_pool_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -4350,6 +4361,22 @@ count?: [{	columns?: Array<ValueTypes["match_map_rounds_select_column"]> | undef
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+demos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_demos_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_demos_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos"]],
+demos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_demos_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_demos_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos_aggregate"]],
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?:boolean | `@${string}`,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_map_status?:ValueTypes["e_match_map_status"],
 flashes?: [{	/** distinct select on columns */
@@ -4533,6 +4560,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate avg on columns */
 ["match_maps_avg_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -4554,6 +4583,10 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	_not?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["match_maps_bool_exp"]> | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	demos?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>,
+	demos_aggregate?: ValueTypes["match_map_demos_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	demos_download_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	demos_total_size?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_match_map_status?: ValueTypes["e_match_map_status_bool_exp"] | undefined | null | Variable<any, string>,
 	flashes?: ValueTypes["player_flashes_bool_exp"] | undefined | null | Variable<any, string>,
 	flashes_aggregate?: ValueTypes["player_flashes_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -4599,6 +4632,7 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	demos?: ValueTypes["match_map_demos_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	e_match_map_status?: ValueTypes["e_match_map_status_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	flashes?: ValueTypes["player_flashes_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -4624,6 +4658,10 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?:boolean | `@${string}`,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
@@ -4649,6 +4687,10 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?:boolean | `@${string}`,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
@@ -4694,6 +4736,9 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	demos_aggregate?: ValueTypes["match_map_demos_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	demos_download_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	demos_total_size?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_match_map_status?: ValueTypes["e_match_map_status_order_by"] | undefined | null | Variable<any, string>,
 	flashes_aggregate?: ValueTypes["player_flashes_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -4740,6 +4785,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -4757,6 +4804,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate stddev_pop on columns */
 ["match_maps_stddev_pop_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -4774,6 +4823,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate stddev_samp on columns */
 ["match_maps_stddev_samp_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -4811,6 +4862,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -4838,6 +4891,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate var_pop on columns */
 ["match_maps_var_pop_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -4855,6 +4910,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate var_samp on columns */
 ["match_maps_var_samp_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -4872,6 +4929,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 };
 	/** aggregate variance on columns */
 ["match_maps_variance_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -6051,6 +6110,102 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_variance_order_by"]: {
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "migration_hashes.hashes" */
+["migration_hashes_hashes"]: AliasType<{
+	hash?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["migration_hashes_hashes_aggregate_fields"],
+	nodes?:ValueTypes["migration_hashes_hashes"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["migration_hashes_hashes_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["migration_hashes_hashes_max_fields"],
+	min?:ValueTypes["migration_hashes_hashes_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "migration_hashes.hashes". All fields are combined with a logical 'AND'. */
+["migration_hashes_hashes_bool_exp"]: {
+	_and?: Array<ValueTypes["migration_hashes_hashes_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["migration_hashes_hashes_bool_exp"]> | undefined | null | Variable<any, string>,
+	hash?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "migration_hashes.hashes" */
+["migration_hashes_hashes_constraint"]:migration_hashes_hashes_constraint;
+	/** input type for inserting data into table "migration_hashes.hashes" */
+["migration_hashes_hashes_insert_input"]: {
+	hash?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["migration_hashes_hashes_max_fields"]: AliasType<{
+	hash?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["migration_hashes_hashes_min_fields"]: AliasType<{
+	hash?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "migration_hashes.hashes" */
+["migration_hashes_hashes_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["migration_hashes_hashes"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "migration_hashes.hashes" */
+["migration_hashes_hashes_on_conflict"]: {
+	constraint: ValueTypes["migration_hashes_hashes_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["migration_hashes_hashes_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "migration_hashes.hashes". */
+["migration_hashes_hashes_order_by"]: {
+	hash?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: migration_hashes.hashes */
+["migration_hashes_hashes_pk_columns_input"]: {
+	name: string | Variable<any, string>
+};
+	/** select columns of table "migration_hashes.hashes" */
+["migration_hashes_hashes_select_column"]:migration_hashes_hashes_select_column;
+	/** input type for updating data in table "migration_hashes.hashes" */
+["migration_hashes_hashes_set_input"]: {
+	hash?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "migration_hashes_hashes" */
+["migration_hashes_hashes_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["migration_hashes_hashes_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["migration_hashes_hashes_stream_cursor_value_input"]: {
+	hash?: string | undefined | null | Variable<any, string>,
+	name?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "migration_hashes.hashes" */
+["migration_hashes_hashes_update_column"]:migration_hashes_hashes_update_column;
+	["migration_hashes_hashes_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["migration_hashes_hashes_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["migration_hashes_hashes_bool_exp"] | Variable<any, string>
+};
 	/** mutation root */
 ["mutation_root"]: AliasType<{
 acceptTeamInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -6128,6 +6283,9 @@ delete_match_veto_picks_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string
 delete_matches?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["matches_bool_exp"] | Variable<any, string>},ValueTypes["matches_mutation_response"]],
 delete_matches_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["matches"]],
+delete_migration_hashes_hashes?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["migration_hashes_hashes_bool_exp"] | Variable<any, string>},ValueTypes["migration_hashes_hashes_mutation_response"]],
+delete_migration_hashes_hashes_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
 delete_player_assists?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["player_assists_bool_exp"] | Variable<any, string>},ValueTypes["player_assists_mutation_response"]],
 delete_player_assists_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["player_assists"]],
@@ -6334,6 +6492,12 @@ insert_matches?: [{	/** the rows to be inserted */
 insert_matches_one?: [{	/** the row to be inserted */
 	object: ValueTypes["matches_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["matches_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["matches"]],
+insert_migration_hashes_hashes?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["migration_hashes_hashes_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["migration_hashes_hashes_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes_mutation_response"]],
+insert_migration_hashes_hashes_one?: [{	/** the row to be inserted */
+	object: ValueTypes["migration_hashes_hashes_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["migration_hashes_hashes_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
 insert_player_assists?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["player_assists_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["player_assists_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["player_assists_mutation_response"]],
@@ -6641,6 +6805,13 @@ update_matches_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ValueTypes["matches_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["matches_pk_columns_input"] | Variable<any, string>},ValueTypes["matches"]],
 update_matches_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["matches_updates"]> | Variable<any, string>},ValueTypes["matches_mutation_response"]],
+update_migration_hashes_hashes?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["migration_hashes_hashes_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["migration_hashes_hashes_bool_exp"] | Variable<any, string>},ValueTypes["migration_hashes_hashes_mutation_response"]],
+update_migration_hashes_hashes_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["migration_hashes_hashes_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["migration_hashes_hashes_pk_columns_input"] | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
+update_migration_hashes_hashes_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["migration_hashes_hashes_updates"]> | Variable<any, string>},ValueTypes["migration_hashes_hashes_mutation_response"]],
 update_player_assists?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["player_assists_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["player_assists_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -10365,6 +10536,19 @@ matches_aggregate?: [{	/** distinct select on columns */
 matches_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["matches"]],
 	/** Gets Current User */
 	me?:ValueTypes["MeResponse"],
+migration_hashes_hashes?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["migration_hashes_hashes_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["migration_hashes_hashes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
+migration_hashes_hashes_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["migration_hashes_hashes_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["migration_hashes_hashes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes_aggregate"]],
+migration_hashes_hashes_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
 player_assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_assists_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -11408,6 +11592,23 @@ matches_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["matches_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches"]],
+migration_hashes_hashes?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["migration_hashes_hashes_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["migration_hashes_hashes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
+migration_hashes_hashes_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["migration_hashes_hashes_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["migration_hashes_hashes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes_aggregate"]],
+migration_hashes_hashes_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
+migration_hashes_hashes_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["migration_hashes_hashes_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
 player_assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_assists_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -16549,6 +16750,12 @@ count?: [{	columns?: Array<ResolverInputTypes["e_map_pool_types_select_column"]>
 	returning?:ResolverInputTypes["e_map_pool_types"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "e_map_pool_types" */
+["e_map_pool_types_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["e_map_pool_types_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_map_pool_types_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "e_map_pool_types" */
 ["e_map_pool_types_on_conflict"]: {
 	constraint: ResolverInputTypes["e_map_pool_types_constraint"],
@@ -18108,6 +18315,8 @@ count?: [{	columns?: Array<ResolverInputTypes["e_veto_pick_types_select_column"]
 };
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: AliasType<{
+	/** An object relationship */
+	e_type?:ResolverInputTypes["e_map_pool_types"],
 	enabled?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 maps?: [{	/** distinct select on columns */
@@ -18144,6 +18353,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 	_and?: Array<ResolverInputTypes["map_pools_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["map_pools_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["map_pools_bool_exp"]> | undefined | null,
+	e_type?: ResolverInputTypes["e_map_pool_types_bool_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	maps?: ResolverInputTypes["v_pool_maps_bool_exp"] | undefined | null,
@@ -18155,6 +18365,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 ["map_pools_constraint"]:map_pools_constraint;
 	/** input type for inserting data into table "map_pools" */
 ["map_pools_insert_input"]: {
+	e_type?: ResolverInputTypes["e_map_pool_types_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	maps?: ResolverInputTypes["v_pool_maps_arr_rel_insert_input"] | undefined | null,
@@ -18193,6 +18404,7 @@ count?: [{	columns?: Array<ResolverInputTypes["map_pools_select_column"]> | unde
 };
 	/** Ordering options when selecting data from "map_pools". */
 ["map_pools_order_by"]: {
+	e_type?: ResolverInputTypes["e_map_pool_types_order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	maps_aggregate?: ResolverInputTypes["v_pool_maps_aggregate_order_by"] | undefined | null,
@@ -19772,6 +19984,22 @@ count?: [{	columns?: Array<ResolverInputTypes["match_map_rounds_select_column"]>
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+demos?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_demos_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_demos_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos"]],
+demos_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_demos_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_demos_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos_aggregate"]],
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?:boolean | `@${string}`,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** An object relationship */
 	e_match_map_status?:ResolverInputTypes["e_match_map_status"],
 flashes?: [{	/** distinct select on columns */
@@ -19955,6 +20183,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate avg on columns */
 ["match_maps_avg_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -19976,6 +20206,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	_not?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["match_maps_bool_exp"]> | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	demos?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null,
+	demos_aggregate?: ResolverInputTypes["match_map_demos_aggregate_bool_exp"] | undefined | null,
+	demos_download_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	demos_total_size?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	e_match_map_status?: ResolverInputTypes["e_match_map_status_bool_exp"] | undefined | null,
 	flashes?: ResolverInputTypes["player_flashes_bool_exp"] | undefined | null,
 	flashes_aggregate?: ResolverInputTypes["player_flashes_aggregate_bool_exp"] | undefined | null,
@@ -20021,6 +20255,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	demos?: ResolverInputTypes["match_map_demos_arr_rel_insert_input"] | undefined | null,
 	e_match_map_status?: ResolverInputTypes["e_match_map_status_obj_rel_insert_input"] | undefined | null,
 	flashes?: ResolverInputTypes["player_flashes_arr_rel_insert_input"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -20046,6 +20281,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?:boolean | `@${string}`,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
@@ -20071,6 +20310,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?:boolean | `@${string}`,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
@@ -20116,6 +20359,9 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	demos_aggregate?: ResolverInputTypes["match_map_demos_aggregate_order_by"] | undefined | null,
+	demos_download_url?: ResolverInputTypes["order_by"] | undefined | null,
+	demos_total_size?: ResolverInputTypes["order_by"] | undefined | null,
 	e_match_map_status?: ResolverInputTypes["e_match_map_status_order_by"] | undefined | null,
 	flashes_aggregate?: ResolverInputTypes["player_flashes_aggregate_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -20162,6 +20408,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -20179,6 +20427,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate stddev_pop on columns */
 ["match_maps_stddev_pop_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -20196,6 +20446,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate stddev_samp on columns */
 ["match_maps_stddev_samp_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -20233,6 +20485,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -20260,6 +20514,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate var_pop on columns */
 ["match_maps_var_pop_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -20277,6 +20533,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate var_samp on columns */
 ["match_maps_var_samp_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -20294,6 +20552,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 };
 	/** aggregate variance on columns */
 ["match_maps_variance_fields"]: AliasType<{
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?:boolean | `@${string}`,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?:boolean | `@${string}`,
 	lineup_1_timeouts_available?:boolean | `@${string}`,
@@ -21473,6 +21733,102 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_variance_order_by"]: {
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "migration_hashes.hashes" */
+["migration_hashes_hashes"]: AliasType<{
+	hash?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["migration_hashes_hashes_aggregate_fields"],
+	nodes?:ResolverInputTypes["migration_hashes_hashes"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["migration_hashes_hashes_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["migration_hashes_hashes_max_fields"],
+	min?:ResolverInputTypes["migration_hashes_hashes_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "migration_hashes.hashes". All fields are combined with a logical 'AND'. */
+["migration_hashes_hashes_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["migration_hashes_hashes_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["migration_hashes_hashes_bool_exp"]> | undefined | null,
+	hash?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "migration_hashes.hashes" */
+["migration_hashes_hashes_constraint"]:migration_hashes_hashes_constraint;
+	/** input type for inserting data into table "migration_hashes.hashes" */
+["migration_hashes_hashes_insert_input"]: {
+	hash?: string | undefined | null,
+	name?: string | undefined | null
+};
+	/** aggregate max on columns */
+["migration_hashes_hashes_max_fields"]: AliasType<{
+	hash?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["migration_hashes_hashes_min_fields"]: AliasType<{
+	hash?:boolean | `@${string}`,
+	name?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "migration_hashes.hashes" */
+["migration_hashes_hashes_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["migration_hashes_hashes"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "migration_hashes.hashes" */
+["migration_hashes_hashes_on_conflict"]: {
+	constraint: ResolverInputTypes["migration_hashes_hashes_constraint"],
+	update_columns: Array<ResolverInputTypes["migration_hashes_hashes_update_column"]>,
+	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "migration_hashes.hashes". */
+["migration_hashes_hashes_order_by"]: {
+	hash?: ResolverInputTypes["order_by"] | undefined | null,
+	name?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: migration_hashes.hashes */
+["migration_hashes_hashes_pk_columns_input"]: {
+	name: string
+};
+	/** select columns of table "migration_hashes.hashes" */
+["migration_hashes_hashes_select_column"]:migration_hashes_hashes_select_column;
+	/** input type for updating data in table "migration_hashes.hashes" */
+["migration_hashes_hashes_set_input"]: {
+	hash?: string | undefined | null,
+	name?: string | undefined | null
+};
+	/** Streaming cursor of the table "migration_hashes_hashes" */
+["migration_hashes_hashes_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["migration_hashes_hashes_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["migration_hashes_hashes_stream_cursor_value_input"]: {
+	hash?: string | undefined | null,
+	name?: string | undefined | null
+};
+	/** update columns of table "migration_hashes.hashes" */
+["migration_hashes_hashes_update_column"]:migration_hashes_hashes_update_column;
+	["migration_hashes_hashes_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["migration_hashes_hashes_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["migration_hashes_hashes_bool_exp"]
+};
 	/** mutation root */
 ["mutation_root"]: AliasType<{
 acceptTeamInvite?: [{	invite_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
@@ -21550,6 +21906,9 @@ delete_match_veto_picks_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInput
 delete_matches?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["matches_bool_exp"]},ResolverInputTypes["matches_mutation_response"]],
 delete_matches_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["matches"]],
+delete_migration_hashes_hashes?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["migration_hashes_hashes_bool_exp"]},ResolverInputTypes["migration_hashes_hashes_mutation_response"]],
+delete_migration_hashes_hashes_by_pk?: [{	name: string},ResolverInputTypes["migration_hashes_hashes"]],
 delete_player_assists?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["player_assists_bool_exp"]},ResolverInputTypes["player_assists_mutation_response"]],
 delete_player_assists_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["player_assists"]],
@@ -21756,6 +22115,12 @@ insert_matches?: [{	/** the rows to be inserted */
 insert_matches_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["matches_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["matches_on_conflict"] | undefined | null},ResolverInputTypes["matches"]],
+insert_migration_hashes_hashes?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["migration_hashes_hashes_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["migration_hashes_hashes_on_conflict"] | undefined | null},ResolverInputTypes["migration_hashes_hashes_mutation_response"]],
+insert_migration_hashes_hashes_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["migration_hashes_hashes_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["migration_hashes_hashes_on_conflict"] | undefined | null},ResolverInputTypes["migration_hashes_hashes"]],
 insert_player_assists?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["player_assists_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["player_assists_on_conflict"] | undefined | null},ResolverInputTypes["player_assists_mutation_response"]],
@@ -22063,6 +22428,13 @@ update_matches_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ResolverInputTypes["matches_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["matches_pk_columns_input"]},ResolverInputTypes["matches"]],
 update_matches_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["matches_updates"]>},ResolverInputTypes["matches_mutation_response"]],
+update_migration_hashes_hashes?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["migration_hashes_hashes_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["migration_hashes_hashes_bool_exp"]},ResolverInputTypes["migration_hashes_hashes_mutation_response"]],
+update_migration_hashes_hashes_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["migration_hashes_hashes_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["migration_hashes_hashes_pk_columns_input"]},ResolverInputTypes["migration_hashes_hashes"]],
+update_migration_hashes_hashes_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["migration_hashes_hashes_updates"]>},ResolverInputTypes["migration_hashes_hashes_mutation_response"]],
 update_player_assists?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["player_assists_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["player_assists_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -25787,6 +26159,19 @@ matches_aggregate?: [{	/** distinct select on columns */
 matches_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["matches"]],
 	/** Gets Current User */
 	me?:ResolverInputTypes["MeResponse"],
+migration_hashes_hashes?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["migration_hashes_hashes_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["migration_hashes_hashes_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null},ResolverInputTypes["migration_hashes_hashes"]],
+migration_hashes_hashes_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["migration_hashes_hashes_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["migration_hashes_hashes_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null},ResolverInputTypes["migration_hashes_hashes_aggregate"]],
+migration_hashes_hashes_by_pk?: [{	name: string},ResolverInputTypes["migration_hashes_hashes"]],
 player_assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_assists_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -26830,6 +27215,23 @@ matches_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["matches_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches"]],
+migration_hashes_hashes?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["migration_hashes_hashes_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["migration_hashes_hashes_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null},ResolverInputTypes["migration_hashes_hashes"]],
+migration_hashes_hashes_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["migration_hashes_hashes_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["migration_hashes_hashes_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null},ResolverInputTypes["migration_hashes_hashes_aggregate"]],
+migration_hashes_hashes_by_pk?: [{	name: string},ResolverInputTypes["migration_hashes_hashes"]],
+migration_hashes_hashes_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["migration_hashes_hashes_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null},ResolverInputTypes["migration_hashes_hashes"]],
 player_assists?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_assists_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -31951,6 +32353,12 @@ export type ModelTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<ModelTypes["e_map_pool_types"]>
 };
+	/** input type for inserting object relation for remote table "e_map_pool_types" */
+["e_map_pool_types_obj_rel_insert_input"]: {
+	data: ModelTypes["e_map_pool_types_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["e_map_pool_types_on_conflict"] | undefined
+};
 	/** on_conflict condition type for table "e_map_pool_types" */
 ["e_map_pool_types_on_conflict"]: {
 	constraint: ModelTypes["e_map_pool_types_constraint"],
@@ -33304,7 +33712,9 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: {
-		enabled: boolean,
+		/** An object relationship */
+	e_type: ModelTypes["e_map_pool_types"],
+	enabled: boolean,
 	id: ModelTypes["uuid"],
 	/** An array relationship */
 	maps: Array<ModelTypes["v_pool_maps"]>,
@@ -33329,6 +33739,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["map_pools_bool_exp"]> | undefined,
 	_not?: ModelTypes["map_pools_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["map_pools_bool_exp"]> | undefined,
+	e_type?: ModelTypes["e_map_pool_types_bool_exp"] | undefined,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	maps?: ModelTypes["v_pool_maps_bool_exp"] | undefined,
@@ -33339,6 +33750,7 @@ export type ModelTypes = {
 	["map_pools_constraint"]:map_pools_constraint;
 	/** input type for inserting data into table "map_pools" */
 ["map_pools_insert_input"]: {
+	e_type?: ModelTypes["e_map_pool_types_obj_rel_insert_input"] | undefined,
 	enabled?: boolean | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	maps?: ModelTypes["v_pool_maps_arr_rel_insert_input"] | undefined,
@@ -33374,6 +33786,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "map_pools". */
 ["map_pools_order_by"]: {
+	e_type?: ModelTypes["e_map_pool_types_order_by"] | undefined,
 	enabled?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	maps_aggregate?: ModelTypes["v_pool_maps_aggregate_order_by"] | undefined,
@@ -34830,6 +35243,14 @@ export type ModelTypes = {
 	/** columns and relationships of "match_maps" */
 ["match_maps"]: {
 		created_at: ModelTypes["timestamptz"],
+	/** An array relationship */
+	demos: Array<ModelTypes["match_map_demos"]>,
+	/** An aggregate relationship */
+	demos_aggregate: ModelTypes["match_map_demos_aggregate"],
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?: string | undefined,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** An object relationship */
 	e_match_map_status: ModelTypes["e_match_map_status"],
 	/** An array relationship */
@@ -34938,7 +35359,9 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["match_maps_avg_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -34958,6 +35381,10 @@ export type ModelTypes = {
 	_not?: ModelTypes["match_maps_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["match_maps_bool_exp"]> | undefined,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
+	demos?: ModelTypes["match_map_demos_bool_exp"] | undefined,
+	demos_aggregate?: ModelTypes["match_map_demos_aggregate_bool_exp"] | undefined,
+	demos_download_url?: ModelTypes["String_comparison_exp"] | undefined,
+	demos_total_size?: ModelTypes["Int_comparison_exp"] | undefined,
 	e_match_map_status?: ModelTypes["e_match_map_status_bool_exp"] | undefined,
 	flashes?: ModelTypes["player_flashes_bool_exp"] | undefined,
 	flashes_aggregate?: ModelTypes["player_flashes_aggregate_bool_exp"] | undefined,
@@ -35002,6 +35429,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 	created_at?: ModelTypes["timestamptz"] | undefined,
+	demos?: ModelTypes["match_map_demos_arr_rel_insert_input"] | undefined,
 	e_match_map_status?: ModelTypes["e_match_map_status_obj_rel_insert_input"] | undefined,
 	flashes?: ModelTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -35027,6 +35455,10 @@ export type ModelTypes = {
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
 		created_at?: ModelTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?: string | undefined,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -35051,6 +35483,10 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
 		created_at?: ModelTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?: string | undefined,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -35094,6 +35530,9 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 	created_at?: ModelTypes["order_by"] | undefined,
+	demos_aggregate?: ModelTypes["match_map_demos_aggregate_order_by"] | undefined,
+	demos_download_url?: ModelTypes["order_by"] | undefined,
+	demos_total_size?: ModelTypes["order_by"] | undefined,
 	e_match_map_status?: ModelTypes["e_match_map_status_order_by"] | undefined,
 	flashes_aggregate?: ModelTypes["player_flashes_aggregate_order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -35139,7 +35578,9 @@ export type ModelTypes = {
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -35155,7 +35596,9 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_pop on columns */
 ["match_maps_stddev_pop_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -35171,7 +35614,9 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_samp on columns */
 ["match_maps_stddev_samp_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -35207,7 +35652,9 @@ export type ModelTypes = {
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -35232,7 +35679,9 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["match_maps_var_pop_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -35248,7 +35697,9 @@ export type ModelTypes = {
 };
 	/** aggregate var_samp on columns */
 ["match_maps_var_samp_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -35264,7 +35715,9 @@ export type ModelTypes = {
 };
 	/** aggregate variance on columns */
 ["match_maps_variance_fields"]: {
-		/** A computed field, executes function "lineup_1_score" */
+		/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
+	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
 	/** A computed field, executes function "lineup_2_score" */
@@ -36299,6 +36752,93 @@ export type ModelTypes = {
 ["matches_variance_order_by"]: {
 	organizer_steam_id?: ModelTypes["order_by"] | undefined
 };
+	/** columns and relationships of "migration_hashes.hashes" */
+["migration_hashes_hashes"]: {
+		hash: string,
+	name: string
+};
+	/** aggregated selection of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate"]: {
+		aggregate?: ModelTypes["migration_hashes_hashes_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["migration_hashes_hashes"]>
+};
+	/** aggregate fields of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["migration_hashes_hashes_max_fields"] | undefined,
+	min?: ModelTypes["migration_hashes_hashes_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "migration_hashes.hashes". All fields are combined with a logical 'AND'. */
+["migration_hashes_hashes_bool_exp"]: {
+	_and?: Array<ModelTypes["migration_hashes_hashes_bool_exp"]> | undefined,
+	_not?: ModelTypes["migration_hashes_hashes_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["migration_hashes_hashes_bool_exp"]> | undefined,
+	hash?: ModelTypes["String_comparison_exp"] | undefined,
+	name?: ModelTypes["String_comparison_exp"] | undefined
+};
+	["migration_hashes_hashes_constraint"]:migration_hashes_hashes_constraint;
+	/** input type for inserting data into table "migration_hashes.hashes" */
+["migration_hashes_hashes_insert_input"]: {
+	hash?: string | undefined,
+	name?: string | undefined
+};
+	/** aggregate max on columns */
+["migration_hashes_hashes_max_fields"]: {
+		hash?: string | undefined,
+	name?: string | undefined
+};
+	/** aggregate min on columns */
+["migration_hashes_hashes_min_fields"]: {
+		hash?: string | undefined,
+	name?: string | undefined
+};
+	/** response of any mutation on the table "migration_hashes.hashes" */
+["migration_hashes_hashes_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["migration_hashes_hashes"]>
+};
+	/** on_conflict condition type for table "migration_hashes.hashes" */
+["migration_hashes_hashes_on_conflict"]: {
+	constraint: ModelTypes["migration_hashes_hashes_constraint"],
+	update_columns: Array<ModelTypes["migration_hashes_hashes_update_column"]>,
+	where?: ModelTypes["migration_hashes_hashes_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "migration_hashes.hashes". */
+["migration_hashes_hashes_order_by"]: {
+	hash?: ModelTypes["order_by"] | undefined,
+	name?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: migration_hashes.hashes */
+["migration_hashes_hashes_pk_columns_input"]: {
+	name: string
+};
+	["migration_hashes_hashes_select_column"]:migration_hashes_hashes_select_column;
+	/** input type for updating data in table "migration_hashes.hashes" */
+["migration_hashes_hashes_set_input"]: {
+	hash?: string | undefined,
+	name?: string | undefined
+};
+	/** Streaming cursor of the table "migration_hashes_hashes" */
+["migration_hashes_hashes_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["migration_hashes_hashes_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["migration_hashes_hashes_stream_cursor_value_input"]: {
+	hash?: string | undefined,
+	name?: string | undefined
+};
+	["migration_hashes_hashes_update_column"]:migration_hashes_hashes_update_column;
+	["migration_hashes_hashes_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["migration_hashes_hashes_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["migration_hashes_hashes_bool_exp"]
+};
 	/** mutation root */
 ["mutation_root"]: {
 		/** accept team invite */
@@ -36403,6 +36943,10 @@ export type ModelTypes = {
 	delete_matches?: ModelTypes["matches_mutation_response"] | undefined,
 	/** delete single row from the table: "matches" */
 	delete_matches_by_pk?: ModelTypes["matches"] | undefined,
+	/** delete data from the table: "migration_hashes.hashes" */
+	delete_migration_hashes_hashes?: ModelTypes["migration_hashes_hashes_mutation_response"] | undefined,
+	/** delete single row from the table: "migration_hashes.hashes" */
+	delete_migration_hashes_hashes_by_pk?: ModelTypes["migration_hashes_hashes"] | undefined,
 	/** delete data from the table: "player_assists" */
 	delete_player_assists?: ModelTypes["player_assists_mutation_response"] | undefined,
 	/** delete single row from the table: "player_assists" */
@@ -36580,6 +37124,10 @@ export type ModelTypes = {
 	insert_matches?: ModelTypes["matches_mutation_response"] | undefined,
 	/** insert a single row into the table: "matches" */
 	insert_matches_one?: ModelTypes["matches"] | undefined,
+	/** insert data into the table: "migration_hashes.hashes" */
+	insert_migration_hashes_hashes?: ModelTypes["migration_hashes_hashes_mutation_response"] | undefined,
+	/** insert a single row into the table: "migration_hashes.hashes" */
+	insert_migration_hashes_hashes_one?: ModelTypes["migration_hashes_hashes"] | undefined,
 	/** insert data into the table: "player_assists" */
 	insert_player_assists?: ModelTypes["player_assists_mutation_response"] | undefined,
 	/** insert a single row into the table: "player_assists" */
@@ -36814,6 +37362,12 @@ export type ModelTypes = {
 	update_matches_by_pk?: ModelTypes["matches"] | undefined,
 	/** update multiples rows of table: "matches" */
 	update_matches_many?: Array<ModelTypes["matches_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "migration_hashes.hashes" */
+	update_migration_hashes_hashes?: ModelTypes["migration_hashes_hashes_mutation_response"] | undefined,
+	/** update single row of the table: "migration_hashes.hashes" */
+	update_migration_hashes_hashes_by_pk?: ModelTypes["migration_hashes_hashes"] | undefined,
+	/** update multiples rows of table: "migration_hashes.hashes" */
+	update_migration_hashes_hashes_many?: Array<ModelTypes["migration_hashes_hashes_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "player_assists" */
 	update_player_assists?: ModelTypes["player_assists_mutation_response"] | undefined,
 	/** update single row of the table: "player_assists" */
@@ -39975,6 +40529,12 @@ export type ModelTypes = {
 	matches_by_pk?: ModelTypes["matches"] | undefined,
 	/** Gets Current User */
 	me: ModelTypes["MeResponse"],
+	/** fetch data from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes: Array<ModelTypes["migration_hashes_hashes"]>,
+	/** fetch aggregated fields from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes_aggregate: ModelTypes["migration_hashes_hashes_aggregate"],
+	/** fetch data from the table: "migration_hashes.hashes" using primary key columns */
+	migration_hashes_hashes_by_pk?: ModelTypes["migration_hashes_hashes"] | undefined,
 	/** An array relationship */
 	player_assists: Array<ModelTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -40563,6 +41123,14 @@ export type ModelTypes = {
 	matches_by_pk?: ModelTypes["matches"] | undefined,
 	/** fetch data from the table in a streaming manner: "matches" */
 	matches_stream: Array<ModelTypes["matches"]>,
+	/** fetch data from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes: Array<ModelTypes["migration_hashes_hashes"]>,
+	/** fetch aggregated fields from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes_aggregate: ModelTypes["migration_hashes_hashes_aggregate"],
+	/** fetch data from the table: "migration_hashes.hashes" using primary key columns */
+	migration_hashes_hashes_by_pk?: ModelTypes["migration_hashes_hashes"] | undefined,
+	/** fetch data from the table in a streaming manner: "migration_hashes.hashes" */
+	migration_hashes_hashes_stream: Array<ModelTypes["migration_hashes_hashes"]>,
 	/** An array relationship */
 	player_assists: Array<ModelTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -45059,6 +45627,12 @@ export type GraphQLTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<GraphQLTypes["e_map_pool_types"]>
 };
+	/** input type for inserting object relation for remote table "e_map_pool_types" */
+["e_map_pool_types_obj_rel_insert_input"]: {
+		data: GraphQLTypes["e_map_pool_types_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["e_map_pool_types_on_conflict"] | undefined
+};
 	/** on_conflict condition type for table "e_map_pool_types" */
 ["e_map_pool_types_on_conflict"]: {
 		constraint: GraphQLTypes["e_map_pool_types_constraint"],
@@ -46523,6 +47097,8 @@ export type GraphQLTypes = {
 	/** columns and relationships of "map_pools" */
 ["map_pools"]: {
 	__typename: "map_pools",
+	/** An object relationship */
+	e_type: GraphQLTypes["e_map_pool_types"],
 	enabled: boolean,
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
@@ -46550,6 +47126,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["map_pools_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["map_pools_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["map_pools_bool_exp"]> | undefined,
+	e_type?: GraphQLTypes["e_map_pool_types_bool_exp"] | undefined,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	maps?: GraphQLTypes["v_pool_maps_bool_exp"] | undefined,
@@ -46561,7 +47138,8 @@ export type GraphQLTypes = {
 ["map_pools_constraint"]: map_pools_constraint;
 	/** input type for inserting data into table "map_pools" */
 ["map_pools_insert_input"]: {
-		enabled?: boolean | undefined,
+		e_type?: GraphQLTypes["e_map_pool_types_obj_rel_insert_input"] | undefined,
+	enabled?: boolean | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	maps?: GraphQLTypes["v_pool_maps_arr_rel_insert_input"] | undefined,
 	seed?: boolean | undefined,
@@ -46599,7 +47177,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "map_pools". */
 ["map_pools_order_by"]: {
-		enabled?: GraphQLTypes["order_by"] | undefined,
+		e_type?: GraphQLTypes["e_map_pool_types_order_by"] | undefined,
+	enabled?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	maps_aggregate?: GraphQLTypes["v_pool_maps_aggregate_order_by"] | undefined,
 	seed?: GraphQLTypes["order_by"] | undefined,
@@ -48139,6 +48718,14 @@ export type GraphQLTypes = {
 ["match_maps"]: {
 	__typename: "match_maps",
 	created_at: GraphQLTypes["timestamptz"],
+	/** An array relationship */
+	demos: Array<GraphQLTypes["match_map_demos"]>,
+	/** An aggregate relationship */
+	demos_aggregate: GraphQLTypes["match_map_demos_aggregate"],
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?: string | undefined,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** An object relationship */
 	e_match_map_status: GraphQLTypes["e_match_map_status"],
 	/** An array relationship */
@@ -48250,6 +48837,8 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["match_maps_avg_fields"]: {
 	__typename: "match_maps_avg_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -48270,6 +48859,10 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["match_maps_bool_exp"]> | undefined,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
+	demos?: GraphQLTypes["match_map_demos_bool_exp"] | undefined,
+	demos_aggregate?: GraphQLTypes["match_map_demos_aggregate_bool_exp"] | undefined,
+	demos_download_url?: GraphQLTypes["String_comparison_exp"] | undefined,
+	demos_total_size?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	e_match_map_status?: GraphQLTypes["e_match_map_status_bool_exp"] | undefined,
 	flashes?: GraphQLTypes["player_flashes_bool_exp"] | undefined,
 	flashes_aggregate?: GraphQLTypes["player_flashes_aggregate_bool_exp"] | undefined,
@@ -48315,6 +48908,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "match_maps" */
 ["match_maps_insert_input"]: {
 		created_at?: GraphQLTypes["timestamptz"] | undefined,
+	demos?: GraphQLTypes["match_map_demos_arr_rel_insert_input"] | undefined,
 	e_match_map_status?: GraphQLTypes["e_match_map_status_obj_rel_insert_input"] | undefined,
 	flashes?: GraphQLTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
@@ -48341,6 +48935,10 @@ export type GraphQLTypes = {
 ["match_maps_max_fields"]: {
 	__typename: "match_maps_max_fields",
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?: string | undefined,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -48366,6 +48964,10 @@ export type GraphQLTypes = {
 ["match_maps_min_fields"]: {
 	__typename: "match_maps_min_fields",
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
+	/** A computed field, executes function "demo_download_url" */
+	demos_download_url?: string | undefined,
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
@@ -48410,6 +49012,9 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "match_maps". */
 ["match_maps_order_by"]: {
 		created_at?: GraphQLTypes["order_by"] | undefined,
+	demos_aggregate?: GraphQLTypes["match_map_demos_aggregate_order_by"] | undefined,
+	demos_download_url?: GraphQLTypes["order_by"] | undefined,
+	demos_total_size?: GraphQLTypes["order_by"] | undefined,
 	e_match_map_status?: GraphQLTypes["e_match_map_status_order_by"] | undefined,
 	flashes_aggregate?: GraphQLTypes["player_flashes_aggregate_order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
@@ -48457,6 +49062,8 @@ export type GraphQLTypes = {
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: {
 	__typename: "match_maps_stddev_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -48474,6 +49081,8 @@ export type GraphQLTypes = {
 	/** aggregate stddev_pop on columns */
 ["match_maps_stddev_pop_fields"]: {
 	__typename: "match_maps_stddev_pop_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -48491,6 +49100,8 @@ export type GraphQLTypes = {
 	/** aggregate stddev_samp on columns */
 ["match_maps_stddev_samp_fields"]: {
 	__typename: "match_maps_stddev_samp_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -48528,6 +49139,8 @@ export type GraphQLTypes = {
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: {
 	__typename: "match_maps_sum_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -48555,6 +49168,8 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["match_maps_var_pop_fields"]: {
 	__typename: "match_maps_var_pop_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -48572,6 +49187,8 @@ export type GraphQLTypes = {
 	/** aggregate var_samp on columns */
 ["match_maps_var_samp_fields"]: {
 	__typename: "match_maps_var_samp_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -48589,6 +49206,8 @@ export type GraphQLTypes = {
 	/** aggregate variance on columns */
 ["match_maps_variance_fields"]: {
 	__typename: "match_maps_variance_fields",
+	/** A computed field, executes function "match_map_demo_total_size" */
+	demos_total_size?: number | undefined,
 	/** A computed field, executes function "lineup_1_score" */
 	lineup_1_score?: number | undefined,
 	lineup_1_timeouts_available?: number | undefined,
@@ -49667,6 +50286,102 @@ export type GraphQLTypes = {
 ["matches_variance_order_by"]: {
 		organizer_steam_id?: GraphQLTypes["order_by"] | undefined
 };
+	/** columns and relationships of "migration_hashes.hashes" */
+["migration_hashes_hashes"]: {
+	__typename: "migration_hashes_hashes",
+	hash: string,
+	name: string
+};
+	/** aggregated selection of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate"]: {
+	__typename: "migration_hashes_hashes_aggregate",
+	aggregate?: GraphQLTypes["migration_hashes_hashes_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["migration_hashes_hashes"]>
+};
+	/** aggregate fields of "migration_hashes.hashes" */
+["migration_hashes_hashes_aggregate_fields"]: {
+	__typename: "migration_hashes_hashes_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["migration_hashes_hashes_max_fields"] | undefined,
+	min?: GraphQLTypes["migration_hashes_hashes_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "migration_hashes.hashes". All fields are combined with a logical 'AND'. */
+["migration_hashes_hashes_bool_exp"]: {
+		_and?: Array<GraphQLTypes["migration_hashes_hashes_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["migration_hashes_hashes_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["migration_hashes_hashes_bool_exp"]> | undefined,
+	hash?: GraphQLTypes["String_comparison_exp"] | undefined,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "migration_hashes.hashes" */
+["migration_hashes_hashes_constraint"]: migration_hashes_hashes_constraint;
+	/** input type for inserting data into table "migration_hashes.hashes" */
+["migration_hashes_hashes_insert_input"]: {
+		hash?: string | undefined,
+	name?: string | undefined
+};
+	/** aggregate max on columns */
+["migration_hashes_hashes_max_fields"]: {
+	__typename: "migration_hashes_hashes_max_fields",
+	hash?: string | undefined,
+	name?: string | undefined
+};
+	/** aggregate min on columns */
+["migration_hashes_hashes_min_fields"]: {
+	__typename: "migration_hashes_hashes_min_fields",
+	hash?: string | undefined,
+	name?: string | undefined
+};
+	/** response of any mutation on the table "migration_hashes.hashes" */
+["migration_hashes_hashes_mutation_response"]: {
+	__typename: "migration_hashes_hashes_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["migration_hashes_hashes"]>
+};
+	/** on_conflict condition type for table "migration_hashes.hashes" */
+["migration_hashes_hashes_on_conflict"]: {
+		constraint: GraphQLTypes["migration_hashes_hashes_constraint"],
+	update_columns: Array<GraphQLTypes["migration_hashes_hashes_update_column"]>,
+	where?: GraphQLTypes["migration_hashes_hashes_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "migration_hashes.hashes". */
+["migration_hashes_hashes_order_by"]: {
+		hash?: GraphQLTypes["order_by"] | undefined,
+	name?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: migration_hashes.hashes */
+["migration_hashes_hashes_pk_columns_input"]: {
+		name: string
+};
+	/** select columns of table "migration_hashes.hashes" */
+["migration_hashes_hashes_select_column"]: migration_hashes_hashes_select_column;
+	/** input type for updating data in table "migration_hashes.hashes" */
+["migration_hashes_hashes_set_input"]: {
+		hash?: string | undefined,
+	name?: string | undefined
+};
+	/** Streaming cursor of the table "migration_hashes_hashes" */
+["migration_hashes_hashes_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["migration_hashes_hashes_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["migration_hashes_hashes_stream_cursor_value_input"]: {
+		hash?: string | undefined,
+	name?: string | undefined
+};
+	/** update columns of table "migration_hashes.hashes" */
+["migration_hashes_hashes_update_column"]: migration_hashes_hashes_update_column;
+	["migration_hashes_hashes_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["migration_hashes_hashes_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["migration_hashes_hashes_bool_exp"]
+};
 	/** mutation root */
 ["mutation_root"]: {
 	__typename: "mutation_root",
@@ -49772,6 +50487,10 @@ export type GraphQLTypes = {
 	delete_matches?: GraphQLTypes["matches_mutation_response"] | undefined,
 	/** delete single row from the table: "matches" */
 	delete_matches_by_pk?: GraphQLTypes["matches"] | undefined,
+	/** delete data from the table: "migration_hashes.hashes" */
+	delete_migration_hashes_hashes?: GraphQLTypes["migration_hashes_hashes_mutation_response"] | undefined,
+	/** delete single row from the table: "migration_hashes.hashes" */
+	delete_migration_hashes_hashes_by_pk?: GraphQLTypes["migration_hashes_hashes"] | undefined,
 	/** delete data from the table: "player_assists" */
 	delete_player_assists?: GraphQLTypes["player_assists_mutation_response"] | undefined,
 	/** delete single row from the table: "player_assists" */
@@ -49949,6 +50668,10 @@ export type GraphQLTypes = {
 	insert_matches?: GraphQLTypes["matches_mutation_response"] | undefined,
 	/** insert a single row into the table: "matches" */
 	insert_matches_one?: GraphQLTypes["matches"] | undefined,
+	/** insert data into the table: "migration_hashes.hashes" */
+	insert_migration_hashes_hashes?: GraphQLTypes["migration_hashes_hashes_mutation_response"] | undefined,
+	/** insert a single row into the table: "migration_hashes.hashes" */
+	insert_migration_hashes_hashes_one?: GraphQLTypes["migration_hashes_hashes"] | undefined,
 	/** insert data into the table: "player_assists" */
 	insert_player_assists?: GraphQLTypes["player_assists_mutation_response"] | undefined,
 	/** insert a single row into the table: "player_assists" */
@@ -50183,6 +50906,12 @@ export type GraphQLTypes = {
 	update_matches_by_pk?: GraphQLTypes["matches"] | undefined,
 	/** update multiples rows of table: "matches" */
 	update_matches_many?: Array<GraphQLTypes["matches_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "migration_hashes.hashes" */
+	update_migration_hashes_hashes?: GraphQLTypes["migration_hashes_hashes_mutation_response"] | undefined,
+	/** update single row of the table: "migration_hashes.hashes" */
+	update_migration_hashes_hashes_by_pk?: GraphQLTypes["migration_hashes_hashes"] | undefined,
+	/** update multiples rows of table: "migration_hashes.hashes" */
+	update_migration_hashes_hashes_many?: Array<GraphQLTypes["migration_hashes_hashes_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "player_assists" */
 	update_player_assists?: GraphQLTypes["player_assists_mutation_response"] | undefined,
 	/** update single row of the table: "player_assists" */
@@ -53488,6 +54217,12 @@ export type GraphQLTypes = {
 	matches_by_pk?: GraphQLTypes["matches"] | undefined,
 	/** Gets Current User */
 	me: GraphQLTypes["MeResponse"],
+	/** fetch data from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes: Array<GraphQLTypes["migration_hashes_hashes"]>,
+	/** fetch aggregated fields from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes_aggregate: GraphQLTypes["migration_hashes_hashes_aggregate"],
+	/** fetch data from the table: "migration_hashes.hashes" using primary key columns */
+	migration_hashes_hashes_by_pk?: GraphQLTypes["migration_hashes_hashes"] | undefined,
 	/** An array relationship */
 	player_assists: Array<GraphQLTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -54094,6 +54829,14 @@ export type GraphQLTypes = {
 	matches_by_pk?: GraphQLTypes["matches"] | undefined,
 	/** fetch data from the table in a streaming manner: "matches" */
 	matches_stream: Array<GraphQLTypes["matches"]>,
+	/** fetch data from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes: Array<GraphQLTypes["migration_hashes_hashes"]>,
+	/** fetch aggregated fields from the table: "migration_hashes.hashes" */
+	migration_hashes_hashes_aggregate: GraphQLTypes["migration_hashes_hashes_aggregate"],
+	/** fetch data from the table: "migration_hashes.hashes" using primary key columns */
+	migration_hashes_hashes_by_pk?: GraphQLTypes["migration_hashes_hashes"] | undefined,
+	/** fetch data from the table in a streaming manner: "migration_hashes.hashes" */
+	migration_hashes_hashes_stream: Array<GraphQLTypes["migration_hashes_hashes"]>,
 	/** An array relationship */
 	player_assists: Array<GraphQLTypes["player_assists"]>,
 	/** An aggregate relationship */
@@ -59188,6 +59931,20 @@ export const enum matches_update_column {
 	status = "status",
 	winning_lineup_id = "winning_lineup_id"
 }
+/** unique or primary key constraints on table "migration_hashes.hashes" */
+export const enum migration_hashes_hashes_constraint {
+	functions_pkey = "functions_pkey"
+}
+/** select columns of table "migration_hashes.hashes" */
+export const enum migration_hashes_hashes_select_column {
+	hash = "hash",
+	name = "name"
+}
+/** update columns of table "migration_hashes.hashes" */
+export const enum migration_hashes_hashes_update_column {
+	hash = "hash",
+	name = "name"
+}
 /** column ordering options */
 export const enum order_by {
 	asc = "asc",
@@ -59832,6 +60589,7 @@ type ZEUS_VARIABLES = {
 	["e_map_pool_types_enum"]: ValueTypes["e_map_pool_types_enum"];
 	["e_map_pool_types_enum_comparison_exp"]: ValueTypes["e_map_pool_types_enum_comparison_exp"];
 	["e_map_pool_types_insert_input"]: ValueTypes["e_map_pool_types_insert_input"];
+	["e_map_pool_types_obj_rel_insert_input"]: ValueTypes["e_map_pool_types_obj_rel_insert_input"];
 	["e_map_pool_types_on_conflict"]: ValueTypes["e_map_pool_types_on_conflict"];
 	["e_map_pool_types_order_by"]: ValueTypes["e_map_pool_types_order_by"];
 	["e_map_pool_types_pk_columns_input"]: ValueTypes["e_map_pool_types_pk_columns_input"];
@@ -60255,6 +61013,18 @@ type ZEUS_VARIABLES = {
 	["matches_var_pop_order_by"]: ValueTypes["matches_var_pop_order_by"];
 	["matches_var_samp_order_by"]: ValueTypes["matches_var_samp_order_by"];
 	["matches_variance_order_by"]: ValueTypes["matches_variance_order_by"];
+	["migration_hashes_hashes_bool_exp"]: ValueTypes["migration_hashes_hashes_bool_exp"];
+	["migration_hashes_hashes_constraint"]: ValueTypes["migration_hashes_hashes_constraint"];
+	["migration_hashes_hashes_insert_input"]: ValueTypes["migration_hashes_hashes_insert_input"];
+	["migration_hashes_hashes_on_conflict"]: ValueTypes["migration_hashes_hashes_on_conflict"];
+	["migration_hashes_hashes_order_by"]: ValueTypes["migration_hashes_hashes_order_by"];
+	["migration_hashes_hashes_pk_columns_input"]: ValueTypes["migration_hashes_hashes_pk_columns_input"];
+	["migration_hashes_hashes_select_column"]: ValueTypes["migration_hashes_hashes_select_column"];
+	["migration_hashes_hashes_set_input"]: ValueTypes["migration_hashes_hashes_set_input"];
+	["migration_hashes_hashes_stream_cursor_input"]: ValueTypes["migration_hashes_hashes_stream_cursor_input"];
+	["migration_hashes_hashes_stream_cursor_value_input"]: ValueTypes["migration_hashes_hashes_stream_cursor_value_input"];
+	["migration_hashes_hashes_update_column"]: ValueTypes["migration_hashes_hashes_update_column"];
+	["migration_hashes_hashes_updates"]: ValueTypes["migration_hashes_hashes_updates"];
 	["numeric"]: ValueTypes["numeric"];
 	["numeric_comparison_exp"]: ValueTypes["numeric_comparison_exp"];
 	["order_by"]: ValueTypes["order_by"];

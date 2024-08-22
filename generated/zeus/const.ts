@@ -104,6 +104,10 @@ export const AllTypesProps: Record<string,any> = {
 	e_map_pool_types_insert_input:{
 
 	},
+	e_map_pool_types_obj_rel_insert_input:{
+		data:"e_map_pool_types_insert_input",
+		on_conflict:"e_map_pool_types_on_conflict"
+	},
 	e_map_pool_types_on_conflict:{
 		constraint:"e_map_pool_types_constraint",
 		update_columns:"e_map_pool_types_update_column",
@@ -984,6 +988,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"map_pools_bool_exp",
 		_not:"map_pools_bool_exp",
 		_or:"map_pools_bool_exp",
+		e_type:"e_map_pool_types_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		maps:"v_pool_maps_bool_exp",
@@ -993,6 +998,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	map_pools_constraint: "enum" as const,
 	map_pools_insert_input:{
+		e_type:"e_map_pool_types_obj_rel_insert_input",
 		id:"uuid",
 		maps:"v_pool_maps_arr_rel_insert_input",
 		type:"e_map_pool_types_enum"
@@ -1007,6 +1013,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"map_pools_bool_exp"
 	},
 	map_pools_order_by:{
+		e_type:"e_map_pool_types_order_by",
 		enabled:"order_by",
 		id:"order_by",
 		maps_aggregate:"v_pool_maps_aggregate_order_by",
@@ -1841,6 +1848,16 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by"
 	},
 	match_maps:{
+		demos:{
+			distinct_on:"match_map_demos_select_column",
+			order_by:"match_map_demos_order_by",
+			where:"match_map_demos_bool_exp"
+		},
+		demos_aggregate:{
+			distinct_on:"match_map_demos_select_column",
+			order_by:"match_map_demos_order_by",
+			where:"match_map_demos_bool_exp"
+		},
 		flashes:{
 			distinct_on:"player_flashes_select_column",
 			order_by:"player_flashes_order_by",
@@ -1972,6 +1989,10 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_maps_bool_exp",
 		_or:"match_maps_bool_exp",
 		created_at:"timestamptz_comparison_exp",
+		demos:"match_map_demos_bool_exp",
+		demos_aggregate:"match_map_demos_aggregate_bool_exp",
+		demos_download_url:"String_comparison_exp",
+		demos_total_size:"Int_comparison_exp",
 		e_match_map_status:"e_match_map_status_bool_exp",
 		flashes:"player_flashes_bool_exp",
 		flashes_aggregate:"player_flashes_aggregate_bool_exp",
@@ -2012,6 +2033,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_maps_insert_input:{
 		created_at:"timestamptz",
+		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_map_status:"e_match_map_status_obj_rel_insert_input",
 		flashes:"player_flashes_arr_rel_insert_input",
 		id:"uuid",
@@ -2060,6 +2082,9 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_maps_order_by:{
 		created_at:"order_by",
+		demos_aggregate:"match_map_demos_aggregate_order_by",
+		demos_download_url:"order_by",
+		demos_total_size:"order_by",
 		e_match_map_status:"e_match_map_status_order_by",
 		flashes_aggregate:"player_flashes_aggregate_order_by",
 		id:"order_by",
@@ -2773,6 +2798,50 @@ export const AllTypesProps: Record<string,any> = {
 	matches_variance_order_by:{
 		organizer_steam_id:"order_by"
 	},
+	migration_hashes_hashes_aggregate_fields:{
+		count:{
+			columns:"migration_hashes_hashes_select_column"
+		}
+	},
+	migration_hashes_hashes_bool_exp:{
+		_and:"migration_hashes_hashes_bool_exp",
+		_not:"migration_hashes_hashes_bool_exp",
+		_or:"migration_hashes_hashes_bool_exp",
+		hash:"String_comparison_exp",
+		name:"String_comparison_exp"
+	},
+	migration_hashes_hashes_constraint: "enum" as const,
+	migration_hashes_hashes_insert_input:{
+
+	},
+	migration_hashes_hashes_on_conflict:{
+		constraint:"migration_hashes_hashes_constraint",
+		update_columns:"migration_hashes_hashes_update_column",
+		where:"migration_hashes_hashes_bool_exp"
+	},
+	migration_hashes_hashes_order_by:{
+		hash:"order_by",
+		name:"order_by"
+	},
+	migration_hashes_hashes_pk_columns_input:{
+
+	},
+	migration_hashes_hashes_select_column: "enum" as const,
+	migration_hashes_hashes_set_input:{
+
+	},
+	migration_hashes_hashes_stream_cursor_input:{
+		initial_value:"migration_hashes_hashes_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	migration_hashes_hashes_stream_cursor_value_input:{
+
+	},
+	migration_hashes_hashes_update_column: "enum" as const,
+	migration_hashes_hashes_updates:{
+		_set:"migration_hashes_hashes_set_input",
+		where:"migration_hashes_hashes_bool_exp"
+	},
 	mutation_root:{
 		acceptTeamInvite:{
 			invite_id:"uuid"
@@ -2927,6 +2996,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_matches_by_pk:{
 			id:"uuid"
+		},
+		delete_migration_hashes_hashes:{
+			where:"migration_hashes_hashes_bool_exp"
+		},
+		delete_migration_hashes_hashes_by_pk:{
+
 		},
 		delete_player_assists:{
 			where:"player_assists_bool_exp"
@@ -3247,6 +3322,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_matches_one:{
 			object:"matches_insert_input",
 			on_conflict:"matches_on_conflict"
+		},
+		insert_migration_hashes_hashes:{
+			objects:"migration_hashes_hashes_insert_input",
+			on_conflict:"migration_hashes_hashes_on_conflict"
+		},
+		insert_migration_hashes_hashes_one:{
+			object:"migration_hashes_hashes_insert_input",
+			on_conflict:"migration_hashes_hashes_on_conflict"
 		},
 		insert_player_assists:{
 			objects:"player_assists_insert_input",
@@ -3701,6 +3784,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_matches_many:{
 			updates:"matches_updates"
+		},
+		update_migration_hashes_hashes:{
+			_set:"migration_hashes_hashes_set_input",
+			where:"migration_hashes_hashes_bool_exp"
+		},
+		update_migration_hashes_hashes_by_pk:{
+			_set:"migration_hashes_hashes_set_input",
+			pk_columns:"migration_hashes_hashes_pk_columns_input"
+		},
+		update_migration_hashes_hashes_many:{
+			updates:"migration_hashes_hashes_updates"
 		},
 		update_player_assists:{
 			_inc:"player_assists_inc_input",
@@ -6031,6 +6125,19 @@ export const AllTypesProps: Record<string,any> = {
 		matches_by_pk:{
 			id:"uuid"
 		},
+		migration_hashes_hashes:{
+			distinct_on:"migration_hashes_hashes_select_column",
+			order_by:"migration_hashes_hashes_order_by",
+			where:"migration_hashes_hashes_bool_exp"
+		},
+		migration_hashes_hashes_aggregate:{
+			distinct_on:"migration_hashes_hashes_select_column",
+			order_by:"migration_hashes_hashes_order_by",
+			where:"migration_hashes_hashes_bool_exp"
+		},
+		migration_hashes_hashes_by_pk:{
+
+		},
 		player_assists:{
 			distinct_on:"player_assists_select_column",
 			order_by:"player_assists_order_by",
@@ -6894,6 +7001,23 @@ export const AllTypesProps: Record<string,any> = {
 		matches_stream:{
 			cursor:"matches_stream_cursor_input",
 			where:"matches_bool_exp"
+		},
+		migration_hashes_hashes:{
+			distinct_on:"migration_hashes_hashes_select_column",
+			order_by:"migration_hashes_hashes_order_by",
+			where:"migration_hashes_hashes_bool_exp"
+		},
+		migration_hashes_hashes_aggregate:{
+			distinct_on:"migration_hashes_hashes_select_column",
+			order_by:"migration_hashes_hashes_order_by",
+			where:"migration_hashes_hashes_bool_exp"
+		},
+		migration_hashes_hashes_by_pk:{
+
+		},
+		migration_hashes_hashes_stream:{
+			cursor:"migration_hashes_hashes_stream_cursor_input",
+			where:"migration_hashes_hashes_bool_exp"
 		},
 		player_assists:{
 			distinct_on:"player_assists_select_column",
@@ -9869,6 +9993,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	jsonb: `scalar.jsonb` as const,
 	map_pools:{
+		e_type:"e_map_pool_types",
 		enabled:"Boolean",
 		id:"uuid",
 		maps:"v_pool_maps",
@@ -10287,6 +10412,10 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_maps:{
 		created_at:"timestamptz",
+		demos:"match_map_demos",
+		demos_aggregate:"match_map_demos_aggregate",
+		demos_download_url:"String",
+		demos_total_size:"Int",
 		e_match_map_status:"e_match_map_status",
 		flashes:"player_flashes",
 		flashes_aggregate:"player_flashes_aggregate",
@@ -10339,6 +10468,7 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"match_maps_variance_fields"
 	},
 	match_maps_avg_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
@@ -10347,6 +10477,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_maps_max_fields:{
 		created_at:"timestamptz",
+		demos_download_url:"String",
+		demos_total_size:"Int",
 		id:"uuid",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Int",
@@ -10358,6 +10490,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_maps_min_fields:{
 		created_at:"timestamptz",
+		demos_download_url:"String",
+		demos_total_size:"Int",
 		id:"uuid",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Int",
@@ -10372,6 +10506,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_maps"
 	},
 	match_maps_stddev_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
@@ -10379,6 +10514,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_maps_stddev_pop_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
@@ -10386,6 +10522,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_maps_stddev_samp_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
@@ -10393,6 +10530,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_maps_sum_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Int",
 		lineup_2_score:"Int",
@@ -10400,6 +10538,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Int"
 	},
 	match_maps_var_pop_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
@@ -10407,6 +10546,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_maps_var_samp_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
@@ -10414,6 +10554,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_maps_variance_fields:{
+		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
@@ -10730,6 +10871,31 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
+	migration_hashes_hashes:{
+		hash:"String",
+		name:"String"
+	},
+	migration_hashes_hashes_aggregate:{
+		aggregate:"migration_hashes_hashes_aggregate_fields",
+		nodes:"migration_hashes_hashes"
+	},
+	migration_hashes_hashes_aggregate_fields:{
+		count:"Int",
+		max:"migration_hashes_hashes_max_fields",
+		min:"migration_hashes_hashes_min_fields"
+	},
+	migration_hashes_hashes_max_fields:{
+		hash:"String",
+		name:"String"
+	},
+	migration_hashes_hashes_min_fields:{
+		hash:"String",
+		name:"String"
+	},
+	migration_hashes_hashes_mutation_response:{
+		affected_rows:"Int",
+		returning:"migration_hashes_hashes"
+	},
 	mutation_root:{
 		acceptTeamInvite:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
@@ -10782,6 +10948,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_match_veto_picks_by_pk:"match_veto_picks",
 		delete_matches:"matches_mutation_response",
 		delete_matches_by_pk:"matches",
+		delete_migration_hashes_hashes:"migration_hashes_hashes_mutation_response",
+		delete_migration_hashes_hashes_by_pk:"migration_hashes_hashes",
 		delete_player_assists:"player_assists_mutation_response",
 		delete_player_assists_by_pk:"player_assists",
 		delete_player_damages:"player_damages_mutation_response",
@@ -10871,6 +11039,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_match_veto_picks_one:"match_veto_picks",
 		insert_matches:"matches_mutation_response",
 		insert_matches_one:"matches",
+		insert_migration_hashes_hashes:"migration_hashes_hashes_mutation_response",
+		insert_migration_hashes_hashes_one:"migration_hashes_hashes",
 		insert_player_assists:"player_assists_mutation_response",
 		insert_player_assists_one:"player_assists",
 		insert_player_damages:"player_damages_mutation_response",
@@ -10988,6 +11158,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_matches:"matches_mutation_response",
 		update_matches_by_pk:"matches",
 		update_matches_many:"matches_mutation_response",
+		update_migration_hashes_hashes:"migration_hashes_hashes_mutation_response",
+		update_migration_hashes_hashes_by_pk:"migration_hashes_hashes",
+		update_migration_hashes_hashes_many:"migration_hashes_hashes_mutation_response",
 		update_player_assists:"player_assists_mutation_response",
 		update_player_assists_by_pk:"player_assists",
 		update_player_assists_many:"player_assists_mutation_response",
@@ -11979,6 +12152,9 @@ export const ReturnTypes: Record<string,any> = {
 		matches_aggregate:"matches_aggregate",
 		matches_by_pk:"matches",
 		me:"MeResponse",
+		migration_hashes_hashes:"migration_hashes_hashes",
+		migration_hashes_hashes_aggregate:"migration_hashes_hashes_aggregate",
+		migration_hashes_hashes_by_pk:"migration_hashes_hashes",
 		player_assists:"player_assists",
 		player_assists_aggregate:"player_assists_aggregate",
 		player_assists_by_pk:"player_assists",
@@ -12251,6 +12427,10 @@ export const ReturnTypes: Record<string,any> = {
 		matches_aggregate:"matches_aggregate",
 		matches_by_pk:"matches",
 		matches_stream:"matches",
+		migration_hashes_hashes:"migration_hashes_hashes",
+		migration_hashes_hashes_aggregate:"migration_hashes_hashes_aggregate",
+		migration_hashes_hashes_by_pk:"migration_hashes_hashes",
+		migration_hashes_hashes_stream:"migration_hashes_hashes",
 		player_assists:"player_assists",
 		player_assists_aggregate:"player_assists_aggregate",
 		player_assists_by_pk:"player_assists",

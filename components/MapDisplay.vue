@@ -3,7 +3,7 @@
     <NuxtImg
       :src="map.poster"
       class="w-full h-full object-cover min-w-[150px]"
-      sizes="sm:200px md:400px lg:1200"
+      sizes="sm:200px md:400px lg:600"
     />
     <div class="absolute inset-0 bg-black bg-opacity-45"></div>
     <div class="absolute inset-0 flex flex-col items-center justify-center">

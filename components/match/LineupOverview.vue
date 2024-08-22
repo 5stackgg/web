@@ -22,12 +22,13 @@
         <TableHead class="hidden lg:table-cell"> HS% </TableHead>
         <TableHead>Total Damage </TableHead>
         <TableHead class="hidden lg:table-cell"> Team Damage </TableHead>
-        <TableHead class="hidden lg:table-cell"> 2k </TableHead>
-        <TableHead class="hidden lg:table-cell"> 3k </TableHead>
-        <TableHead class="hidden lg:table-cell"> 4k </TableHead>
-        <TableHead class="hidden lg:table-cell"> 5k </TableHead>
-        <TableHead class="hidden lg:table-cell"> knifes </TableHead>
-        <TableHead class="hidden lg:table-cell"> zeus </TableHead>
+        <TableHead class="hidden md:table-cell"> Multi Kill Rounds </TableHead>
+        <TableHead class="hidden lg:table-cell"> 2K </TableHead>
+        <TableHead class="hidden lg:table-cell"> 3K </TableHead>
+        <TableHead class="hidden lg:table-cell"> 4K </TableHead>
+        <TableHead class="hidden lg:table-cell"> 5K </TableHead>
+        <TableHead class="hidden lg:table-cell"> Knifes </TableHead>
+        <TableHead class="hidden lg:table-cell"> Zeus </TableHead>
         <TableHead v-if="lineup.can_update_lineup"> </TableHead>
       </TableRow>
       <TableRow v-if="lineup.can_update_lineup">

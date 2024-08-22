@@ -43,6 +43,9 @@ import formatStatValue from "~/utilities/formatStatValue";
       {{ member.player?.team_damage_aggregate.aggregate.sum.damage || 0 }}
     </TableCell>
     <TableCell class="hidden lg:table-cell">
+      {{ member.player?.multi_kills.length }}
+    </TableCell>
+    <TableCell class="hidden lg:table-cell">
       {{ twoKills }}
     </TableCell>
     <TableCell class="hidden lg:table-cell">

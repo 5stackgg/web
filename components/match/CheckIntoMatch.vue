@@ -2,7 +2,7 @@
   <Card v-if="isInMatch">
     <CardHeader class="p-2 pt-0 md:p-4">
       <CardTitle class="flex justify-between">
-        Check In
+        Check In Status
         <template v-if="isCheckedIn">
           <Badge variant="secondary">Checked In</Badge>
         </template>

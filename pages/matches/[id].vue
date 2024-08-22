@@ -18,11 +18,13 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
           v-if="match.can_check_in"
         ></CheckIntoMatch>
         <MatchInfo :match="match"></MatchInfo>
-        <MatchLobbyChat
-          v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
-          :match-id="match.id"
-          :messages="messages"
-        ></MatchLobbyChat>
+        <div>
+          <MatchLobbyChat
+            v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
+            :match-id="match.id"
+            :messages="messages"
+          ></MatchLobbyChat>
+        </div>
       </div>
       <div class="grid gap-y-4">
         <div

@@ -55,7 +55,7 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
       </FormItem>
     </FormField>
 
-    <div class="flex items-center p-3 pt-0">
+    <div class="pt-3">
       <Button class="-mr-2" :disabled="!hasMinimumLineupPlayers">
         Schedule Match
       </Button>

@@ -28,16 +28,16 @@ provide("commander", commander);
 </script>
 
 <template>
-  <Tabs :default-value="defaultTab">
+  <Tabs v-model="activeTab">
     <div class="flex items-center">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
         <TabsTrigger
-          class="block sm:hidden md:block lg:hidden"
+          class="hidden sm:block md:block lg:hidden"
           value="veto"
           v-if="match.options.map_veto"
         >
-          Map Veto
+          <span ref="mapVetoTab"> Map Veto </span>
         </TabsTrigger>
         <TabsTrigger :disabled="disableStats" value="utility">
           Utility
@@ -74,7 +74,7 @@ provide("commander", commander);
         </CardContent>
       </Card>
     </TabsContent>
-    <TabsContent value="veto">
+    <TabsContent value="veto" v-if="vetoTabViewable">
       <Card>
         <CardHeader>
           <CardTitle>Map Veto</CardTitle>
@@ -228,6 +228,8 @@ export default {
   },
   data() {
     return {
+      activeTab: undefined,
+      vetoTabViewable: true,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -237,13 +239,34 @@ export default {
       }),
     };
   },
-  computed: {
-    defaultTab() {
-      return this.match.options.map_veto &&
-        this.match.status === e_match_status_enum.Veto
+  watch: {
+    vetoTabViewable: {
+      immediate: true,
+      handler() {
+        if (this.activeTab === "veto" && !this.vetoTabViewable) {
+          this.activeTab = "overview";
+        }
+      },
+    },
+  },
+  mounted() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        this.vetoTabViewable = entry.isIntersecting;
+      });
+    });
+
+    if (this.$refs.mapVetoTab) {
+      observer.observe(this.$refs.mapVetoTab);
+    }
+
+    this.activeTab =
+      this.match.options.map_veto &&
+      this.match.status === e_match_status_enum.Veto
         ? "veto"
         : "overview";
-    },
+  },
+  computed: {
     disableStats() {
       return [
         e_match_status_enum.PickingPlayers,

@@ -20,14 +20,13 @@ import formatBits from "~/utilities/formatBits";
       <badge variant="destructive" v-if="isDecider && match.options.best_of > 1"
         >Decider</badge
       >
-
       <!-- TODO - env variable url -->
       <div class="absolute top-3 right-3">
         <a
           target="_blank"
           :href="`https://5stack.gg/${matchMap.demos_download_url}`"
         >
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="outline" v-if="matchMap.demos_total_size">
             Download Demos (<small>{{
               formatBits(matchMap.demos_total_size)
             }}</small

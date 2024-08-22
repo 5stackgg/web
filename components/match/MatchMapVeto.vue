@@ -92,48 +92,52 @@ import { Separator } from "~/components/ui/separator";
     </div>
 
     <form @submit.prevent="vetoPick" v-if="isPicking">
-      <template v-if="pickType === 'Side'">
-        <div class="grid grid-cols-2">
-          <div class="flex items-center justify-center">
-            <MapDisplay :map="previousMap" />
-          </div>
-
-          <div class="mx-3 flex flex-col">
-            <p class="mb-4">Select the Side your team wants to start on</p>
-
-            <div class="flex-1 flex items-center justify-center">
-              <div class="flex justify-around w-full max-w-[500px]">
-                <!-- Adjust max-w as needed -->
-                <template
-                  v-for="sideOption in sideOptions"
-                  :key="sideOption.value"
+      <template v-if="pickType === e_veto_pick_types_enum.Side">
+        <div class="relative max-w-[800px] mx-auto">
+          <MapDisplay class="w-full" :map="previousMap" />
+          <div
+            class="absolute inset-0 flex flex-col items-center justify-center space-y-4 z-50"
+          >
+            <p class="text-lg font-bold text-center shadow-lg">
+              Select the Side your team wants to start on
+            </p>
+            <div class="grid grid-cols-2 gap-8 w-full">
+              <template
+                v-for="sideOption in sideOptions"
+                :key="sideOption.value"
+              >
+                <div
+                  class="cursor-pointer flex flex-col items-center"
+                  @click="form.setFieldValue('side', sideOption.value)"
                 >
-                  <div
-                    class="cursor-pointer"
-                    @click="form.setFieldValue('side', sideOption.value)"
-                  >
-                    <NuxtImg
-                      :src="sideOption.img"
-                      class="max-w-[120px] w-full inline-block"
-                      :class="{
-                        grayscale:
-                          !form.values.side ||
-                          sideOption.value !== form.values.side,
-                        'ring rounded-[120px]':
-                          form.values.side &&
-                          sideOption.value === form.values.side,
-                      }"
-                    />
-                    <div class="text-center mt-2">
-                      {{ sideOption.display }}
-                    </div>
+                  <NuxtImg
+                    :src="sideOption.img"
+                    class="w-full max-w-[120px] drop-shadow-xl"
+                    :class="{
+                      grayscale:
+                        !form.values.side ||
+                        sideOption.value !== form.values.side,
+                      'ring rounded-full':
+                        form.values.side &&
+                        sideOption.value === form.values.side,
+                    }"
+                  />
+                  <div class="mt-2 text-center">
+                    {{ sideOption.display }}
                   </div>
-                </template>
-              </div>
+                </div>
+              </template>
             </div>
+            <Button
+              class="w-full max-w-[200px]"
+              type="submit"
+              :disabled="Object.keys(form.errors).length > 0"
+            >
+              Pick {{ pickType }}
+            </Button>
           </div>
+          <Separator />
         </div>
-        <Separator></Separator>
       </template>
 
       <MapSelector
@@ -142,15 +146,19 @@ import { Separator } from "~/components/ui/separator";
         :picks="picks"
         @update:modelValue="
           (mapId) => {
-            if (pickType !== 'Side') {
+            if (pickType !== e_veto_pick_types_enum.Side) {
               form.setFieldValue('map_id', mapId);
             }
           }
         "
       ></MapSelector>
 
-      <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-        {{ pickType }}
+      <Button
+        type="submit"
+        :disabled="Object.keys(form.errors).length > 0"
+        v-if="pickType !== e_veto_pick_types_enum.Side"
+      >
+        Select {{ pickType }}
       </Button>
     </form>
     <template v-else>

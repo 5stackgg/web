@@ -260,7 +260,10 @@ export default {
       observer.observe(this.$refs.mapVetoTab);
     }
 
-    if(this.match.options.map_veto && this.match.status === e_match_status_enum.Veto) {
+    if (
+      this.match.options.map_veto &&
+      this.match.status === e_match_status_enum.Veto
+    ) {
       this.activeTab = "veto";
     }
   },

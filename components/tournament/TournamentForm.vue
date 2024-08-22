@@ -87,8 +87,9 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
-import { $, e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
+import { $, e_map_pool_types_enum } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
+import { fromDate, toCalendarDate } from "@internationalized/date";
 
 export default {
   emits: ["updated"],
@@ -165,7 +166,7 @@ export default {
       handler(tournament) {
         if (tournament) {
           const startDate = new Date(tournament.start);
-          this.startDate = startDate.toDateString();
+          this.startDate = toCalendarDate(fromDate(startDate));
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
 
           this.form.setValues({

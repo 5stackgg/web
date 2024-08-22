@@ -68,6 +68,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
+import { fromDate, toCalendarDate } from "@internationalized/date";
 
 export default {
   props: {
@@ -112,7 +113,7 @@ export default {
       handler(match) {
         if (match?.scheduled_at) {
           const startDate = new Date(match.scheduled_at);
-          this.startDate = startDate.toDateString();
+          this.startDate = toCalendarDate(fromDate(startDate));
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
         }
       },

@@ -21,6 +21,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
         <nuxt-link
           :to="link.to"
           class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+          v-if="!link.role || link.role === me.role"
         >
           <component class="h-5 w-5" :is="link.icon"></component>
           <span class="sr-only">{{ link.title }}</span>
@@ -82,6 +83,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
             <nuxt-link
               :to="link.to"
               class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              v-if="!link.role || link.role === me.role"
             >
               <component :is="link.icon" class="h-5 w-5"></component>
               {{ link.title }}
@@ -95,7 +97,15 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
 </template>
 
 <script lang="ts">
-import { Swords, Server, Users, ShieldHalf, Trophy } from "lucide-vue-next";
+import {
+  Swords,
+  Server,
+  ServerCog,
+  Users,
+  ShieldHalf,
+  Trophy,
+} from "lucide-vue-next";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   data() {
@@ -125,6 +135,12 @@ export default {
           to: "/servers",
           title: "Manage Servers",
           icon: Server,
+        },
+        {
+          to: "/server-nodes",
+          title: "Manage Server Nodes",
+          icon: ServerCog,
+          role: e_player_roles_enum.administrator,
         },
       ],
     };

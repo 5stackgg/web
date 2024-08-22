@@ -3053,6 +3053,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_players_by_pk:{
 			steam_id:"bigint"
 		},
+		delete_server_nodes:{
+			where:"server_nodes_bool_exp"
+		},
+		delete_server_nodes_by_pk:{
+			id:"uuid"
+		},
 		delete_servers:{
 			where:"servers_bool_exp"
 		},
@@ -3396,6 +3402,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_players_one:{
 			object:"players_insert_input",
 			on_conflict:"players_on_conflict"
+		},
+		insert_server_nodes:{
+			objects:"server_nodes_insert_input",
+			on_conflict:"server_nodes_on_conflict"
+		},
+		insert_server_nodes_one:{
+			object:"server_nodes_insert_input",
+			on_conflict:"server_nodes_on_conflict"
 		},
 		insert_servers:{
 			objects:"servers_insert_input",
@@ -3901,6 +3915,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_players_many:{
 			updates:"players_updates"
+		},
+		update_server_nodes:{
+			_inc:"server_nodes_inc_input",
+			_set:"server_nodes_set_input",
+			where:"server_nodes_bool_exp"
+		},
+		update_server_nodes_by_pk:{
+			_inc:"server_nodes_inc_input",
+			_set:"server_nodes_set_input",
+			pk_columns:"server_nodes_pk_columns_input"
+		},
+		update_server_nodes_many:{
+			updates:"server_nodes_updates"
 		},
 		update_servers:{
 			_inc:"servers_inc_input",
@@ -6244,6 +6271,19 @@ export const AllTypesProps: Record<string,any> = {
 		players_by_pk:{
 			steam_id:"bigint"
 		},
+		server_nodes:{
+			distinct_on:"server_nodes_select_column",
+			order_by:"server_nodes_order_by",
+			where:"server_nodes_bool_exp"
+		},
+		server_nodes_aggregate:{
+			distinct_on:"server_nodes_select_column",
+			order_by:"server_nodes_order_by",
+			where:"server_nodes_bool_exp"
+		},
+		server_nodes_by_pk:{
+			id:"uuid"
+		},
 		servers:{
 			distinct_on:"servers_select_column",
 			order_by:"servers_order_by",
@@ -6481,6 +6521,62 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_pool_maps_order_by",
 			where:"v_pool_maps_bool_exp"
 		}
+	},
+	server_nodes_aggregate_fields:{
+		count:{
+			columns:"server_nodes_select_column"
+		}
+	},
+	server_nodes_bool_exp:{
+		_and:"server_nodes_bool_exp",
+		_not:"server_nodes_bool_exp",
+		_or:"server_nodes_bool_exp",
+		enabled:"Boolean_comparison_exp",
+		end_port_range:"Int_comparison_exp",
+		id:"uuid_comparison_exp",
+		region:"String_comparison_exp",
+		start_port_range:"Int_comparison_exp",
+		status:"String_comparison_exp"
+	},
+	server_nodes_constraint: "enum" as const,
+	server_nodes_inc_input:{
+
+	},
+	server_nodes_insert_input:{
+		id:"uuid"
+	},
+	server_nodes_on_conflict:{
+		constraint:"server_nodes_constraint",
+		update_columns:"server_nodes_update_column",
+		where:"server_nodes_bool_exp"
+	},
+	server_nodes_order_by:{
+		enabled:"order_by",
+		end_port_range:"order_by",
+		id:"order_by",
+		region:"order_by",
+		start_port_range:"order_by",
+		status:"order_by"
+	},
+	server_nodes_pk_columns_input:{
+		id:"uuid"
+	},
+	server_nodes_select_column: "enum" as const,
+	server_nodes_set_input:{
+		id:"uuid"
+	},
+	server_nodes_stream_cursor_input:{
+		initial_value:"server_nodes_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_nodes_stream_cursor_value_input:{
+		id:"uuid"
+	},
+	server_nodes_update_column: "enum" as const,
+	server_nodes_updates:{
+		_inc:"server_nodes_inc_input",
+		_set:"server_nodes_set_input",
+		where:"server_nodes_bool_exp"
 	},
 	servers:{
 		matches:{
@@ -7156,6 +7252,23 @@ export const AllTypesProps: Record<string,any> = {
 		players_stream:{
 			cursor:"players_stream_cursor_input",
 			where:"players_bool_exp"
+		},
+		server_nodes:{
+			distinct_on:"server_nodes_select_column",
+			order_by:"server_nodes_order_by",
+			where:"server_nodes_bool_exp"
+		},
+		server_nodes_aggregate:{
+			distinct_on:"server_nodes_select_column",
+			order_by:"server_nodes_order_by",
+			where:"server_nodes_bool_exp"
+		},
+		server_nodes_by_pk:{
+			id:"uuid"
+		},
+		server_nodes_stream:{
+			cursor:"server_nodes_stream_cursor_input",
+			where:"server_nodes_bool_exp"
 		},
 		servers:{
 			distinct_on:"servers_select_column",
@@ -9614,6 +9727,10 @@ export const ReturnTypes: Record<string,any> = {
 		role:"String",
 		steam_id:"String"
 	},
+	SetupGameServeOutput:{
+		id:"uuid",
+		script:"String"
+	},
 	SuccessOutput:{
 		success:"Boolean"
 	},
@@ -10979,6 +11096,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_utility_by_pk:"player_utility",
 		delete_players:"players_mutation_response",
 		delete_players_by_pk:"players",
+		delete_server_nodes:"server_nodes_mutation_response",
+		delete_server_nodes_by_pk:"server_nodes",
 		delete_servers:"servers_mutation_response",
 		delete_servers_by_pk:"servers",
 		delete_team_invites:"team_invites_mutation_response",
@@ -11070,6 +11189,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_utility_one:"player_utility",
 		insert_players:"players_mutation_response",
 		insert_players_one:"players",
+		insert_server_nodes:"server_nodes_mutation_response",
+		insert_server_nodes_one:"server_nodes",
 		insert_servers:"servers_mutation_response",
 		insert_servers_one:"servers",
 		insert_team_invites:"team_invites_mutation_response",
@@ -11098,6 +11219,7 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_pool_maps_one:"v_pool_maps",
 		scheduleMatch:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
+		setupGameServer:"SetupGameServeOutput",
 		startMatch:"SuccessOutput",
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",
@@ -11198,6 +11320,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_players:"players_mutation_response",
 		update_players_by_pk:"players",
 		update_players_many:"players_mutation_response",
+		update_server_nodes:"server_nodes_mutation_response",
+		update_server_nodes_by_pk:"server_nodes",
+		update_server_nodes_many:"server_nodes_mutation_response",
 		update_servers:"servers_mutation_response",
 		update_servers_by_pk:"servers",
 		update_servers_many:"servers_mutation_response",
@@ -12192,6 +12317,9 @@ export const ReturnTypes: Record<string,any> = {
 		players:"players",
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
+		server_nodes:"server_nodes",
+		server_nodes_aggregate:"server_nodes_aggregate",
+		server_nodes_by_pk:"server_nodes",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",
@@ -12243,6 +12371,81 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_opening_duels_aggregate:"v_player_opening_duels_aggregate",
 		v_pool_maps:"v_pool_maps",
 		v_pool_maps_aggregate:"v_pool_maps_aggregate"
+	},
+	server_nodes:{
+		enabled:"Boolean",
+		end_port_range:"Int",
+		id:"uuid",
+		region:"String",
+		start_port_range:"Int",
+		status:"String"
+	},
+	server_nodes_aggregate:{
+		aggregate:"server_nodes_aggregate_fields",
+		nodes:"server_nodes"
+	},
+	server_nodes_aggregate_fields:{
+		avg:"server_nodes_avg_fields",
+		count:"Int",
+		max:"server_nodes_max_fields",
+		min:"server_nodes_min_fields",
+		stddev:"server_nodes_stddev_fields",
+		stddev_pop:"server_nodes_stddev_pop_fields",
+		stddev_samp:"server_nodes_stddev_samp_fields",
+		sum:"server_nodes_sum_fields",
+		var_pop:"server_nodes_var_pop_fields",
+		var_samp:"server_nodes_var_samp_fields",
+		variance:"server_nodes_variance_fields"
+	},
+	server_nodes_avg_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	server_nodes_max_fields:{
+		end_port_range:"Int",
+		id:"uuid",
+		region:"String",
+		start_port_range:"Int",
+		status:"String"
+	},
+	server_nodes_min_fields:{
+		end_port_range:"Int",
+		id:"uuid",
+		region:"String",
+		start_port_range:"Int",
+		status:"String"
+	},
+	server_nodes_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_nodes"
+	},
+	server_nodes_stddev_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	server_nodes_stddev_pop_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	server_nodes_stddev_samp_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	server_nodes_sum_fields:{
+		end_port_range:"Int",
+		start_port_range:"Int"
+	},
+	server_nodes_var_pop_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	server_nodes_var_samp_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	server_nodes_variance_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
 	},
 	servers:{
 		api_password:"uuid",
@@ -12476,6 +12679,10 @@ export const ReturnTypes: Record<string,any> = {
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
 		players_stream:"players",
+		server_nodes:"server_nodes",
+		server_nodes_aggregate:"server_nodes_aggregate",
+		server_nodes_by_pk:"server_nodes",
+		server_nodes_stream:"server_nodes",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",

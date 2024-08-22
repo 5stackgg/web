@@ -17,6 +17,7 @@ const delegatedProps = computed(() => {
 <template>
   <Separator
     v-bind="delegatedProps"
+    class="my-3"
     :class="
       cn(
         'shrink-0 bg-border relative',

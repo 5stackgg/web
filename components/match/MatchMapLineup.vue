@@ -16,8 +16,8 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
   >
     <img
       v-if="showTeamPatch"
-      class="max-w-[24px] w-full inline-block"
       :src="teamPatch"
+      class="max-w-[24px] w-full inline-block"
       sizes="sm:18px"
     />
     <div>

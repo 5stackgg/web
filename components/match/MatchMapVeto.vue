@@ -63,10 +63,13 @@ import { Separator } from "~/components/ui/separator";
     </div>
   </template>
 
-  <div v-if="match.status === 'Veto' && match.match_maps.length < bestOf">
+  <div
+    v-if="match.status === 'Veto' && match.match_maps.length < bestOf"
+    class="py-3"
+  >
     <Separator v-if="picks?.length > 0"></Separator>
 
-    <div class="flex justify-between">
+    <div class="flex justify-between my-3">
       <h1>
         <template v-if="match.lineup_1.is_picking_veto">
           {{ match.lineup_1.name }}
@@ -90,26 +93,44 @@ import { Separator } from "~/components/ui/separator";
 
     <form @submit.prevent="vetoPick" v-if="isPicking">
       <template v-if="pickType === 'Side'">
-        <div class="flex">
-          <MapDisplay :map="previousMap"></MapDisplay>
+        <div class="grid grid-cols-2">
+          <div class="flex items-center justify-center">
+            <MapDisplay :map="previousMap" />
+          </div>
 
-          <div>
-            <p>Select the Side your team wants to start on</p>
+          <div class="mx-3 flex flex-col">
+            <p class="mb-4">Select the Side your team wants to start on</p>
 
-            <template v-for="sideOption in sideOptions" :key="sideOption.value">
-              <div
-                class="relative"
-                :class="{
-                  'bg-red-500': sideOption.value === form.values.side,
-                }"
-                @click="form.setFieldValue('side', sideOption.value)"
-              >
-                <NuxtImg :src="sideOption.img" />
-                <div>
-                  {{ sideOption.display }}
-                </div>
+            <div class="flex-1 flex items-center justify-center">
+              <div class="flex justify-around w-full max-w-[500px]">
+                <!-- Adjust max-w as needed -->
+                <template
+                  v-for="sideOption in sideOptions"
+                  :key="sideOption.value"
+                >
+                  <div
+                    class="cursor-pointer"
+                    @click="form.setFieldValue('side', sideOption.value)"
+                  >
+                    <NuxtImg
+                      :src="sideOption.img"
+                      class="max-w-[120px] w-full inline-block"
+                      :class="{
+                        grayscale:
+                          !form.values.side ||
+                          sideOption.value !== form.values.side,
+                        'ring rounded-[120px]':
+                          form.values.side &&
+                          sideOption.value === form.values.side,
+                      }"
+                    />
+                    <div class="text-center mt-2">
+                      {{ sideOption.display }}
+                    </div>
+                  </div>
+                </template>
               </div>
-            </template>
+            </div>
           </div>
         </div>
         <Separator></Separator>
@@ -121,7 +142,9 @@ import { Separator } from "~/components/ui/separator";
         :picks="picks"
         @update:modelValue="
           (mapId) => {
-            form.setFieldValue('map_id', mapId);
+            if (pickType !== 'Side') {
+              form.setFieldValue('map_id', mapId);
+            }
           }
         "
       ></MapSelector>

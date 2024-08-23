@@ -137,8 +137,8 @@ export default {
           icon: Server,
         },
         {
-          to: "/server-nodes",
-          title: "Manage Server Nodes",
+          to: "/game-server-nodes",
+          title: "Manage Game Server Nodes",
           icon: ServerCog,
           role: e_player_roles_enum.administrator,
         },

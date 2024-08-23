@@ -81,6 +81,108 @@ export const AllTypesProps: Record<string,any> = {
 		_nin:"bytea"
 	},
 	cursor_ordering: "enum" as const,
+	e_game_server_node_regions_aggregate_fields:{
+		count:{
+			columns:"e_game_server_node_regions_select_column"
+		}
+	},
+	e_game_server_node_regions_bool_exp:{
+		_and:"e_game_server_node_regions_bool_exp",
+		_not:"e_game_server_node_regions_bool_exp",
+		_or:"e_game_server_node_regions_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_game_server_node_regions_constraint: "enum" as const,
+	e_game_server_node_regions_enum: "enum" as const,
+	e_game_server_node_regions_enum_comparison_exp:{
+		_eq:"e_game_server_node_regions_enum",
+		_in:"e_game_server_node_regions_enum",
+		_neq:"e_game_server_node_regions_enum",
+		_nin:"e_game_server_node_regions_enum"
+	},
+	e_game_server_node_regions_insert_input:{
+
+	},
+	e_game_server_node_regions_on_conflict:{
+		constraint:"e_game_server_node_regions_constraint",
+		update_columns:"e_game_server_node_regions_update_column",
+		where:"e_game_server_node_regions_bool_exp"
+	},
+	e_game_server_node_regions_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_game_server_node_regions_pk_columns_input:{
+
+	},
+	e_game_server_node_regions_select_column: "enum" as const,
+	e_game_server_node_regions_set_input:{
+
+	},
+	e_game_server_node_regions_stream_cursor_input:{
+		initial_value:"e_game_server_node_regions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_game_server_node_regions_stream_cursor_value_input:{
+
+	},
+	e_game_server_node_regions_update_column: "enum" as const,
+	e_game_server_node_regions_updates:{
+		_set:"e_game_server_node_regions_set_input",
+		where:"e_game_server_node_regions_bool_exp"
+	},
+	e_game_server_node_statuses_aggregate_fields:{
+		count:{
+			columns:"e_game_server_node_statuses_select_column"
+		}
+	},
+	e_game_server_node_statuses_bool_exp:{
+		_and:"e_game_server_node_statuses_bool_exp",
+		_not:"e_game_server_node_statuses_bool_exp",
+		_or:"e_game_server_node_statuses_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_game_server_node_statuses_constraint: "enum" as const,
+	e_game_server_node_statuses_enum: "enum" as const,
+	e_game_server_node_statuses_enum_comparison_exp:{
+		_eq:"e_game_server_node_statuses_enum",
+		_in:"e_game_server_node_statuses_enum",
+		_neq:"e_game_server_node_statuses_enum",
+		_nin:"e_game_server_node_statuses_enum"
+	},
+	e_game_server_node_statuses_insert_input:{
+
+	},
+	e_game_server_node_statuses_on_conflict:{
+		constraint:"e_game_server_node_statuses_constraint",
+		update_columns:"e_game_server_node_statuses_update_column",
+		where:"e_game_server_node_statuses_bool_exp"
+	},
+	e_game_server_node_statuses_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_game_server_node_statuses_pk_columns_input:{
+
+	},
+	e_game_server_node_statuses_select_column: "enum" as const,
+	e_game_server_node_statuses_set_input:{
+
+	},
+	e_game_server_node_statuses_stream_cursor_input:{
+		initial_value:"e_game_server_node_statuses_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_game_server_node_statuses_stream_cursor_value_input:{
+
+	},
+	e_game_server_node_statuses_update_column: "enum" as const,
+	e_game_server_node_statuses_updates:{
+		_set:"e_game_server_node_statuses_set_input",
+		where:"e_game_server_node_statuses_bool_exp"
+	},
 	e_map_pool_types_aggregate_fields:{
 		count:{
 			columns:"e_map_pool_types_select_column"
@@ -949,6 +1051,65 @@ export const AllTypesProps: Record<string,any> = {
 	e_veto_pick_types_updates:{
 		_set:"e_veto_pick_types_set_input",
 		where:"e_veto_pick_types_bool_exp"
+	},
+	game_server_nodes_aggregate_fields:{
+		count:{
+			columns:"game_server_nodes_select_column"
+		}
+	},
+	game_server_nodes_bool_exp:{
+		_and:"game_server_nodes_bool_exp",
+		_not:"game_server_nodes_bool_exp",
+		_or:"game_server_nodes_bool_exp",
+		enabled:"Boolean_comparison_exp",
+		end_port_range:"Int_comparison_exp",
+		id:"String_comparison_exp",
+		region:"e_game_server_node_regions_enum_comparison_exp",
+		start_port_range:"Int_comparison_exp",
+		status:"e_game_server_node_statuses_enum_comparison_exp"
+	},
+	game_server_nodes_constraint: "enum" as const,
+	game_server_nodes_inc_input:{
+
+	},
+	game_server_nodes_insert_input:{
+		region:"e_game_server_node_regions_enum",
+		status:"e_game_server_node_statuses_enum"
+	},
+	game_server_nodes_on_conflict:{
+		constraint:"game_server_nodes_constraint",
+		update_columns:"game_server_nodes_update_column",
+		where:"game_server_nodes_bool_exp"
+	},
+	game_server_nodes_order_by:{
+		enabled:"order_by",
+		end_port_range:"order_by",
+		id:"order_by",
+		region:"order_by",
+		start_port_range:"order_by",
+		status:"order_by"
+	},
+	game_server_nodes_pk_columns_input:{
+
+	},
+	game_server_nodes_select_column: "enum" as const,
+	game_server_nodes_set_input:{
+		region:"e_game_server_node_regions_enum",
+		status:"e_game_server_node_statuses_enum"
+	},
+	game_server_nodes_stream_cursor_input:{
+		initial_value:"game_server_nodes_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	game_server_nodes_stream_cursor_value_input:{
+		region:"e_game_server_node_regions_enum",
+		status:"e_game_server_node_statuses_enum"
+	},
+	game_server_nodes_update_column: "enum" as const,
+	game_server_nodes_updates:{
+		_inc:"game_server_nodes_inc_input",
+		_set:"game_server_nodes_set_input",
+		where:"game_server_nodes_bool_exp"
 	},
 	jsonb: `scalar.jsonb` as const,
 	jsonb_cast_exp:{
@@ -2861,6 +3022,18 @@ export const AllTypesProps: Record<string,any> = {
 			map_id:"uuid",
 			map_pool_id:"uuid"
 		},
+		delete_e_game_server_node_regions:{
+			where:"e_game_server_node_regions_bool_exp"
+		},
+		delete_e_game_server_node_regions_by_pk:{
+
+		},
+		delete_e_game_server_node_statuses:{
+			where:"e_game_server_node_statuses_bool_exp"
+		},
+		delete_e_game_server_node_statuses_by_pk:{
+
+		},
 		delete_e_map_pool_types:{
 			where:"e_map_pool_types_bool_exp"
 		},
@@ -2937,6 +3110,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_veto_pick_types_bool_exp"
 		},
 		delete_e_veto_pick_types_by_pk:{
+
+		},
+		delete_game_server_nodes:{
+			where:"game_server_nodes_bool_exp"
+		},
+		delete_game_server_nodes_by_pk:{
 
 		},
 		delete_map_pools:{
@@ -3053,12 +3232,6 @@ export const AllTypesProps: Record<string,any> = {
 		delete_players_by_pk:{
 			steam_id:"bigint"
 		},
-		delete_server_nodes:{
-			where:"server_nodes_bool_exp"
-		},
-		delete_server_nodes_by_pk:{
-			id:"uuid"
-		},
 		delete_servers:{
 			where:"servers_bool_exp"
 		},
@@ -3146,6 +3319,22 @@ export const AllTypesProps: Record<string,any> = {
 		insert__map_pool_one:{
 			object:"_map_pool_insert_input",
 			on_conflict:"_map_pool_on_conflict"
+		},
+		insert_e_game_server_node_regions:{
+			objects:"e_game_server_node_regions_insert_input",
+			on_conflict:"e_game_server_node_regions_on_conflict"
+		},
+		insert_e_game_server_node_regions_one:{
+			object:"e_game_server_node_regions_insert_input",
+			on_conflict:"e_game_server_node_regions_on_conflict"
+		},
+		insert_e_game_server_node_statuses:{
+			objects:"e_game_server_node_statuses_insert_input",
+			on_conflict:"e_game_server_node_statuses_on_conflict"
+		},
+		insert_e_game_server_node_statuses_one:{
+			object:"e_game_server_node_statuses_insert_input",
+			on_conflict:"e_game_server_node_statuses_on_conflict"
 		},
 		insert_e_map_pool_types:{
 			objects:"e_map_pool_types_insert_input",
@@ -3250,6 +3439,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_veto_pick_types_one:{
 			object:"e_veto_pick_types_insert_input",
 			on_conflict:"e_veto_pick_types_on_conflict"
+		},
+		insert_game_server_nodes:{
+			objects:"game_server_nodes_insert_input",
+			on_conflict:"game_server_nodes_on_conflict"
+		},
+		insert_game_server_nodes_one:{
+			object:"game_server_nodes_insert_input",
+			on_conflict:"game_server_nodes_on_conflict"
 		},
 		insert_map_pools:{
 			objects:"map_pools_insert_input",
@@ -3403,14 +3600,6 @@ export const AllTypesProps: Record<string,any> = {
 			object:"players_insert_input",
 			on_conflict:"players_on_conflict"
 		},
-		insert_server_nodes:{
-			objects:"server_nodes_insert_input",
-			on_conflict:"server_nodes_on_conflict"
-		},
-		insert_server_nodes_one:{
-			object:"server_nodes_insert_input",
-			on_conflict:"server_nodes_on_conflict"
-		},
 		insert_servers:{
 			objects:"servers_insert_input",
 			on_conflict:"servers_on_conflict"
@@ -3533,6 +3722,28 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update__map_pool_many:{
 			updates:"_map_pool_updates"
+		},
+		update_e_game_server_node_regions:{
+			_set:"e_game_server_node_regions_set_input",
+			where:"e_game_server_node_regions_bool_exp"
+		},
+		update_e_game_server_node_regions_by_pk:{
+			_set:"e_game_server_node_regions_set_input",
+			pk_columns:"e_game_server_node_regions_pk_columns_input"
+		},
+		update_e_game_server_node_regions_many:{
+			updates:"e_game_server_node_regions_updates"
+		},
+		update_e_game_server_node_statuses:{
+			_set:"e_game_server_node_statuses_set_input",
+			where:"e_game_server_node_statuses_bool_exp"
+		},
+		update_e_game_server_node_statuses_by_pk:{
+			_set:"e_game_server_node_statuses_set_input",
+			pk_columns:"e_game_server_node_statuses_pk_columns_input"
+		},
+		update_e_game_server_node_statuses_many:{
+			updates:"e_game_server_node_statuses_updates"
 		},
 		update_e_map_pool_types:{
 			_set:"e_map_pool_types_set_input",
@@ -3676,6 +3887,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_veto_pick_types_many:{
 			updates:"e_veto_pick_types_updates"
+		},
+		update_game_server_nodes:{
+			_inc:"game_server_nodes_inc_input",
+			_set:"game_server_nodes_set_input",
+			where:"game_server_nodes_bool_exp"
+		},
+		update_game_server_nodes_by_pk:{
+			_inc:"game_server_nodes_inc_input",
+			_set:"game_server_nodes_set_input",
+			pk_columns:"game_server_nodes_pk_columns_input"
+		},
+		update_game_server_nodes_many:{
+			updates:"game_server_nodes_updates"
 		},
 		update_map_pools:{
 			_set:"map_pools_set_input",
@@ -3915,19 +4139,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_players_many:{
 			updates:"players_updates"
-		},
-		update_server_nodes:{
-			_inc:"server_nodes_inc_input",
-			_set:"server_nodes_set_input",
-			where:"server_nodes_bool_exp"
-		},
-		update_server_nodes_by_pk:{
-			_inc:"server_nodes_inc_input",
-			_set:"server_nodes_set_input",
-			pk_columns:"server_nodes_pk_columns_input"
-		},
-		update_server_nodes_many:{
-			updates:"server_nodes_updates"
 		},
 		update_servers:{
 			_inc:"servers_inc_input",
@@ -5855,6 +6066,32 @@ export const AllTypesProps: Record<string,any> = {
 			map_id:"uuid",
 			map_pool_id:"uuid"
 		},
+		e_game_server_node_regions:{
+			distinct_on:"e_game_server_node_regions_select_column",
+			order_by:"e_game_server_node_regions_order_by",
+			where:"e_game_server_node_regions_bool_exp"
+		},
+		e_game_server_node_regions_aggregate:{
+			distinct_on:"e_game_server_node_regions_select_column",
+			order_by:"e_game_server_node_regions_order_by",
+			where:"e_game_server_node_regions_bool_exp"
+		},
+		e_game_server_node_regions_by_pk:{
+
+		},
+		e_game_server_node_statuses:{
+			distinct_on:"e_game_server_node_statuses_select_column",
+			order_by:"e_game_server_node_statuses_order_by",
+			where:"e_game_server_node_statuses_bool_exp"
+		},
+		e_game_server_node_statuses_aggregate:{
+			distinct_on:"e_game_server_node_statuses_select_column",
+			order_by:"e_game_server_node_statuses_order_by",
+			where:"e_game_server_node_statuses_bool_exp"
+		},
+		e_game_server_node_statuses_by_pk:{
+
+		},
 		e_map_pool_types:{
 			distinct_on:"e_map_pool_types_select_column",
 			order_by:"e_map_pool_types_order_by",
@@ -6022,6 +6259,19 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_veto_pick_types_bool_exp"
 		},
 		e_veto_pick_types_by_pk:{
+
+		},
+		game_server_nodes:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		},
+		game_server_nodes_aggregate:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		},
+		game_server_nodes_by_pk:{
 
 		},
 		map_pools:{
@@ -6271,19 +6521,6 @@ export const AllTypesProps: Record<string,any> = {
 		players_by_pk:{
 			steam_id:"bigint"
 		},
-		server_nodes:{
-			distinct_on:"server_nodes_select_column",
-			order_by:"server_nodes_order_by",
-			where:"server_nodes_bool_exp"
-		},
-		server_nodes_aggregate:{
-			distinct_on:"server_nodes_select_column",
-			order_by:"server_nodes_order_by",
-			where:"server_nodes_bool_exp"
-		},
-		server_nodes_by_pk:{
-			id:"uuid"
-		},
 		servers:{
 			distinct_on:"servers_select_column",
 			order_by:"servers_order_by",
@@ -6522,62 +6759,6 @@ export const AllTypesProps: Record<string,any> = {
 			where:"v_pool_maps_bool_exp"
 		}
 	},
-	server_nodes_aggregate_fields:{
-		count:{
-			columns:"server_nodes_select_column"
-		}
-	},
-	server_nodes_bool_exp:{
-		_and:"server_nodes_bool_exp",
-		_not:"server_nodes_bool_exp",
-		_or:"server_nodes_bool_exp",
-		enabled:"Boolean_comparison_exp",
-		end_port_range:"Int_comparison_exp",
-		id:"uuid_comparison_exp",
-		region:"String_comparison_exp",
-		start_port_range:"Int_comparison_exp",
-		status:"String_comparison_exp"
-	},
-	server_nodes_constraint: "enum" as const,
-	server_nodes_inc_input:{
-
-	},
-	server_nodes_insert_input:{
-		id:"uuid"
-	},
-	server_nodes_on_conflict:{
-		constraint:"server_nodes_constraint",
-		update_columns:"server_nodes_update_column",
-		where:"server_nodes_bool_exp"
-	},
-	server_nodes_order_by:{
-		enabled:"order_by",
-		end_port_range:"order_by",
-		id:"order_by",
-		region:"order_by",
-		start_port_range:"order_by",
-		status:"order_by"
-	},
-	server_nodes_pk_columns_input:{
-		id:"uuid"
-	},
-	server_nodes_select_column: "enum" as const,
-	server_nodes_set_input:{
-		id:"uuid"
-	},
-	server_nodes_stream_cursor_input:{
-		initial_value:"server_nodes_stream_cursor_value_input",
-		ordering:"cursor_ordering"
-	},
-	server_nodes_stream_cursor_value_input:{
-		id:"uuid"
-	},
-	server_nodes_update_column: "enum" as const,
-	server_nodes_updates:{
-		_inc:"server_nodes_inc_input",
-		_set:"server_nodes_set_input",
-		where:"server_nodes_bool_exp"
-	},
 	servers:{
 		matches:{
 			distinct_on:"matches_select_column",
@@ -6708,6 +6889,40 @@ export const AllTypesProps: Record<string,any> = {
 		_map_pool_stream:{
 			cursor:"_map_pool_stream_cursor_input",
 			where:"_map_pool_bool_exp"
+		},
+		e_game_server_node_regions:{
+			distinct_on:"e_game_server_node_regions_select_column",
+			order_by:"e_game_server_node_regions_order_by",
+			where:"e_game_server_node_regions_bool_exp"
+		},
+		e_game_server_node_regions_aggregate:{
+			distinct_on:"e_game_server_node_regions_select_column",
+			order_by:"e_game_server_node_regions_order_by",
+			where:"e_game_server_node_regions_bool_exp"
+		},
+		e_game_server_node_regions_by_pk:{
+
+		},
+		e_game_server_node_regions_stream:{
+			cursor:"e_game_server_node_regions_stream_cursor_input",
+			where:"e_game_server_node_regions_bool_exp"
+		},
+		e_game_server_node_statuses:{
+			distinct_on:"e_game_server_node_statuses_select_column",
+			order_by:"e_game_server_node_statuses_order_by",
+			where:"e_game_server_node_statuses_bool_exp"
+		},
+		e_game_server_node_statuses_aggregate:{
+			distinct_on:"e_game_server_node_statuses_select_column",
+			order_by:"e_game_server_node_statuses_order_by",
+			where:"e_game_server_node_statuses_bool_exp"
+		},
+		e_game_server_node_statuses_by_pk:{
+
+		},
+		e_game_server_node_statuses_stream:{
+			cursor:"e_game_server_node_statuses_stream_cursor_input",
+			where:"e_game_server_node_statuses_bool_exp"
 		},
 		e_map_pool_types:{
 			distinct_on:"e_map_pool_types_select_column",
@@ -6929,6 +7144,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_veto_pick_types_stream:{
 			cursor:"e_veto_pick_types_stream_cursor_input",
 			where:"e_veto_pick_types_bool_exp"
+		},
+		game_server_nodes:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		},
+		game_server_nodes_aggregate:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		},
+		game_server_nodes_by_pk:{
+
+		},
+		game_server_nodes_stream:{
+			cursor:"game_server_nodes_stream_cursor_input",
+			where:"game_server_nodes_bool_exp"
 		},
 		map_pools:{
 			distinct_on:"map_pools_select_column",
@@ -7252,23 +7484,6 @@ export const AllTypesProps: Record<string,any> = {
 		players_stream:{
 			cursor:"players_stream_cursor_input",
 			where:"players_bool_exp"
-		},
-		server_nodes:{
-			distinct_on:"server_nodes_select_column",
-			order_by:"server_nodes_order_by",
-			where:"server_nodes_bool_exp"
-		},
-		server_nodes_aggregate:{
-			distinct_on:"server_nodes_select_column",
-			order_by:"server_nodes_order_by",
-			where:"server_nodes_bool_exp"
-		},
-		server_nodes_by_pk:{
-			id:"uuid"
-		},
-		server_nodes_stream:{
-			cursor:"server_nodes_stream_cursor_input",
-			where:"server_nodes_bool_exp"
 		},
 		servers:{
 			distinct_on:"servers_select_column",
@@ -9761,6 +9976,56 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	bigint: `scalar.bigint` as const,
 	bytea: `scalar.bytea` as const,
+	e_game_server_node_regions:{
+		description:"String",
+		value:"String"
+	},
+	e_game_server_node_regions_aggregate:{
+		aggregate:"e_game_server_node_regions_aggregate_fields",
+		nodes:"e_game_server_node_regions"
+	},
+	e_game_server_node_regions_aggregate_fields:{
+		count:"Int",
+		max:"e_game_server_node_regions_max_fields",
+		min:"e_game_server_node_regions_min_fields"
+	},
+	e_game_server_node_regions_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_game_server_node_regions_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_game_server_node_regions_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_game_server_node_regions"
+	},
+	e_game_server_node_statuses:{
+		description:"String",
+		value:"String"
+	},
+	e_game_server_node_statuses_aggregate:{
+		aggregate:"e_game_server_node_statuses_aggregate_fields",
+		nodes:"e_game_server_node_statuses"
+	},
+	e_game_server_node_statuses_aggregate_fields:{
+		count:"Int",
+		max:"e_game_server_node_statuses_max_fields",
+		min:"e_game_server_node_statuses_min_fields"
+	},
+	e_game_server_node_statuses_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_game_server_node_statuses_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_game_server_node_statuses_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_game_server_node_statuses"
+	},
 	e_map_pool_types:{
 		description:"String",
 		value:"String"
@@ -10109,6 +10374,77 @@ export const ReturnTypes: Record<string,any> = {
 	e_veto_pick_types_mutation_response:{
 		affected_rows:"Int",
 		returning:"e_veto_pick_types"
+	},
+	game_server_nodes:{
+		enabled:"Boolean",
+		end_port_range:"Int",
+		id:"String",
+		region:"e_game_server_node_regions_enum",
+		start_port_range:"Int",
+		status:"e_game_server_node_statuses_enum"
+	},
+	game_server_nodes_aggregate:{
+		aggregate:"game_server_nodes_aggregate_fields",
+		nodes:"game_server_nodes"
+	},
+	game_server_nodes_aggregate_fields:{
+		avg:"game_server_nodes_avg_fields",
+		count:"Int",
+		max:"game_server_nodes_max_fields",
+		min:"game_server_nodes_min_fields",
+		stddev:"game_server_nodes_stddev_fields",
+		stddev_pop:"game_server_nodes_stddev_pop_fields",
+		stddev_samp:"game_server_nodes_stddev_samp_fields",
+		sum:"game_server_nodes_sum_fields",
+		var_pop:"game_server_nodes_var_pop_fields",
+		var_samp:"game_server_nodes_var_samp_fields",
+		variance:"game_server_nodes_variance_fields"
+	},
+	game_server_nodes_avg_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	game_server_nodes_max_fields:{
+		end_port_range:"Int",
+		id:"String",
+		start_port_range:"Int"
+	},
+	game_server_nodes_min_fields:{
+		end_port_range:"Int",
+		id:"String",
+		start_port_range:"Int"
+	},
+	game_server_nodes_mutation_response:{
+		affected_rows:"Int",
+		returning:"game_server_nodes"
+	},
+	game_server_nodes_stddev_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	game_server_nodes_stddev_pop_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	game_server_nodes_stddev_samp_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	game_server_nodes_sum_fields:{
+		end_port_range:"Int",
+		start_port_range:"Int"
+	},
+	game_server_nodes_var_pop_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	game_server_nodes_var_samp_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
+	},
+	game_server_nodes_variance_fields:{
+		end_port_range:"Float",
+		start_port_range:"Float"
 	},
 	jsonb: `scalar.jsonb` as const,
 	map_pools:{
@@ -11032,6 +11368,10 @@ export const ReturnTypes: Record<string,any> = {
 		checkIntoMatch:"SuccessOutput",
 		delete__map_pool:"_map_pool_mutation_response",
 		delete__map_pool_by_pk:"_map_pool",
+		delete_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
+		delete_e_game_server_node_regions_by_pk:"e_game_server_node_regions",
+		delete_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
+		delete_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		delete_e_map_pool_types:"e_map_pool_types_mutation_response",
 		delete_e_map_pool_types_by_pk:"e_map_pool_types",
 		delete_e_match_map_status:"e_match_map_status_mutation_response",
@@ -11058,6 +11398,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_utility_types_by_pk:"e_utility_types",
 		delete_e_veto_pick_types:"e_veto_pick_types_mutation_response",
 		delete_e_veto_pick_types_by_pk:"e_veto_pick_types",
+		delete_game_server_nodes:"game_server_nodes_mutation_response",
+		delete_game_server_nodes_by_pk:"game_server_nodes",
 		delete_map_pools:"map_pools_mutation_response",
 		delete_map_pools_by_pk:"map_pools",
 		delete_maps:"maps_mutation_response",
@@ -11096,8 +11438,6 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_utility_by_pk:"player_utility",
 		delete_players:"players_mutation_response",
 		delete_players_by_pk:"players",
-		delete_server_nodes:"server_nodes_mutation_response",
-		delete_server_nodes_by_pk:"server_nodes",
 		delete_servers:"servers_mutation_response",
 		delete_servers_by_pk:"servers",
 		delete_team_invites:"team_invites_mutation_response",
@@ -11125,6 +11465,10 @@ export const ReturnTypes: Record<string,any> = {
 		forfeitMatch:"SuccessOutput",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
+		insert_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
+		insert_e_game_server_node_regions_one:"e_game_server_node_regions",
+		insert_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
+		insert_e_game_server_node_statuses_one:"e_game_server_node_statuses",
 		insert_e_map_pool_types:"e_map_pool_types_mutation_response",
 		insert_e_map_pool_types_one:"e_map_pool_types",
 		insert_e_match_map_status:"e_match_map_status_mutation_response",
@@ -11151,6 +11495,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_utility_types_one:"e_utility_types",
 		insert_e_veto_pick_types:"e_veto_pick_types_mutation_response",
 		insert_e_veto_pick_types_one:"e_veto_pick_types",
+		insert_game_server_nodes:"game_server_nodes_mutation_response",
+		insert_game_server_nodes_one:"game_server_nodes",
 		insert_map_pools:"map_pools_mutation_response",
 		insert_map_pools_one:"map_pools",
 		insert_maps:"maps_mutation_response",
@@ -11189,8 +11535,6 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_utility_one:"player_utility",
 		insert_players:"players_mutation_response",
 		insert_players_one:"players",
-		insert_server_nodes:"server_nodes_mutation_response",
-		insert_server_nodes_one:"server_nodes",
 		insert_servers:"servers_mutation_response",
 		insert_servers_one:"servers",
 		insert_team_invites:"team_invites_mutation_response",
@@ -11224,6 +11568,12 @@ export const ReturnTypes: Record<string,any> = {
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",
 		update__map_pool_many:"_map_pool_mutation_response",
+		update_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
+		update_e_game_server_node_regions_by_pk:"e_game_server_node_regions",
+		update_e_game_server_node_regions_many:"e_game_server_node_regions_mutation_response",
+		update_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
+		update_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
+		update_e_game_server_node_statuses_many:"e_game_server_node_statuses_mutation_response",
 		update_e_map_pool_types:"e_map_pool_types_mutation_response",
 		update_e_map_pool_types_by_pk:"e_map_pool_types",
 		update_e_map_pool_types_many:"e_map_pool_types_mutation_response",
@@ -11263,6 +11613,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_veto_pick_types:"e_veto_pick_types_mutation_response",
 		update_e_veto_pick_types_by_pk:"e_veto_pick_types",
 		update_e_veto_pick_types_many:"e_veto_pick_types_mutation_response",
+		update_game_server_nodes:"game_server_nodes_mutation_response",
+		update_game_server_nodes_by_pk:"game_server_nodes",
+		update_game_server_nodes_many:"game_server_nodes_mutation_response",
 		update_map_pools:"map_pools_mutation_response",
 		update_map_pools_by_pk:"map_pools",
 		update_map_pools_many:"map_pools_mutation_response",
@@ -11320,9 +11673,6 @@ export const ReturnTypes: Record<string,any> = {
 		update_players:"players_mutation_response",
 		update_players_by_pk:"players",
 		update_players_many:"players_mutation_response",
-		update_server_nodes:"server_nodes_mutation_response",
-		update_server_nodes_by_pk:"server_nodes",
-		update_server_nodes_many:"server_nodes_mutation_response",
 		update_servers:"servers_mutation_response",
 		update_servers_by_pk:"servers",
 		update_servers_many:"servers_mutation_response",
@@ -12220,6 +12570,12 @@ export const ReturnTypes: Record<string,any> = {
 		_map_pool:"_map_pool",
 		_map_pool_aggregate:"_map_pool_aggregate",
 		_map_pool_by_pk:"_map_pool",
+		e_game_server_node_regions:"e_game_server_node_regions",
+		e_game_server_node_regions_aggregate:"e_game_server_node_regions_aggregate",
+		e_game_server_node_regions_by_pk:"e_game_server_node_regions",
+		e_game_server_node_statuses:"e_game_server_node_statuses",
+		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
+		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		e_map_pool_types:"e_map_pool_types",
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",
@@ -12259,6 +12615,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_veto_pick_types:"e_veto_pick_types",
 		e_veto_pick_types_aggregate:"e_veto_pick_types_aggregate",
 		e_veto_pick_types_by_pk:"e_veto_pick_types",
+		game_server_nodes:"game_server_nodes",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate",
+		game_server_nodes_by_pk:"game_server_nodes",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",
@@ -12317,9 +12676,6 @@ export const ReturnTypes: Record<string,any> = {
 		players:"players",
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
-		server_nodes:"server_nodes",
-		server_nodes_aggregate:"server_nodes_aggregate",
-		server_nodes_by_pk:"server_nodes",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",
@@ -12371,81 +12727,6 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_opening_duels_aggregate:"v_player_opening_duels_aggregate",
 		v_pool_maps:"v_pool_maps",
 		v_pool_maps_aggregate:"v_pool_maps_aggregate"
-	},
-	server_nodes:{
-		enabled:"Boolean",
-		end_port_range:"Int",
-		id:"uuid",
-		region:"String",
-		start_port_range:"Int",
-		status:"String"
-	},
-	server_nodes_aggregate:{
-		aggregate:"server_nodes_aggregate_fields",
-		nodes:"server_nodes"
-	},
-	server_nodes_aggregate_fields:{
-		avg:"server_nodes_avg_fields",
-		count:"Int",
-		max:"server_nodes_max_fields",
-		min:"server_nodes_min_fields",
-		stddev:"server_nodes_stddev_fields",
-		stddev_pop:"server_nodes_stddev_pop_fields",
-		stddev_samp:"server_nodes_stddev_samp_fields",
-		sum:"server_nodes_sum_fields",
-		var_pop:"server_nodes_var_pop_fields",
-		var_samp:"server_nodes_var_samp_fields",
-		variance:"server_nodes_variance_fields"
-	},
-	server_nodes_avg_fields:{
-		end_port_range:"Float",
-		start_port_range:"Float"
-	},
-	server_nodes_max_fields:{
-		end_port_range:"Int",
-		id:"uuid",
-		region:"String",
-		start_port_range:"Int",
-		status:"String"
-	},
-	server_nodes_min_fields:{
-		end_port_range:"Int",
-		id:"uuid",
-		region:"String",
-		start_port_range:"Int",
-		status:"String"
-	},
-	server_nodes_mutation_response:{
-		affected_rows:"Int",
-		returning:"server_nodes"
-	},
-	server_nodes_stddev_fields:{
-		end_port_range:"Float",
-		start_port_range:"Float"
-	},
-	server_nodes_stddev_pop_fields:{
-		end_port_range:"Float",
-		start_port_range:"Float"
-	},
-	server_nodes_stddev_samp_fields:{
-		end_port_range:"Float",
-		start_port_range:"Float"
-	},
-	server_nodes_sum_fields:{
-		end_port_range:"Int",
-		start_port_range:"Int"
-	},
-	server_nodes_var_pop_fields:{
-		end_port_range:"Float",
-		start_port_range:"Float"
-	},
-	server_nodes_var_samp_fields:{
-		end_port_range:"Float",
-		start_port_range:"Float"
-	},
-	server_nodes_variance_fields:{
-		end_port_range:"Float",
-		start_port_range:"Float"
 	},
 	servers:{
 		api_password:"uuid",
@@ -12551,6 +12832,14 @@ export const ReturnTypes: Record<string,any> = {
 		_map_pool_aggregate:"_map_pool_aggregate",
 		_map_pool_by_pk:"_map_pool",
 		_map_pool_stream:"_map_pool",
+		e_game_server_node_regions:"e_game_server_node_regions",
+		e_game_server_node_regions_aggregate:"e_game_server_node_regions_aggregate",
+		e_game_server_node_regions_by_pk:"e_game_server_node_regions",
+		e_game_server_node_regions_stream:"e_game_server_node_regions",
+		e_game_server_node_statuses:"e_game_server_node_statuses",
+		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
+		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
+		e_game_server_node_statuses_stream:"e_game_server_node_statuses",
 		e_map_pool_types:"e_map_pool_types",
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",
@@ -12603,6 +12892,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_veto_pick_types_aggregate:"e_veto_pick_types_aggregate",
 		e_veto_pick_types_by_pk:"e_veto_pick_types",
 		e_veto_pick_types_stream:"e_veto_pick_types",
+		game_server_nodes:"game_server_nodes",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate",
+		game_server_nodes_by_pk:"game_server_nodes",
+		game_server_nodes_stream:"game_server_nodes",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",
@@ -12679,10 +12972,6 @@ export const ReturnTypes: Record<string,any> = {
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
 		players_stream:"players",
-		server_nodes:"server_nodes",
-		server_nodes_aggregate:"server_nodes_aggregate",
-		server_nodes_by_pk:"server_nodes",
-		server_nodes_stream:"server_nodes",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",

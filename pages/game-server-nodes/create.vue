@@ -4,6 +4,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
 
 <template>
   <Button @click="setupGameServer">Generate Script</Button>
+  <p>Note: Make sure to run as root</p>
   <div class="relative">
     <clip-board class="absolute top-3 right-3" :data="script"></clip-board>
     <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto">{{

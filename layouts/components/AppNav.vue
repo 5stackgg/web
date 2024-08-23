@@ -104,6 +104,7 @@ import {
   Users,
   ShieldHalf,
   Trophy,
+  HeartPulse,
 } from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
 
@@ -141,6 +142,11 @@ export default {
           title: "Manage Game Server Nodes",
           icon: ServerCog,
           role: e_player_roles_enum.administrator,
+        },
+        {
+          to: "/status",
+          title: "status",
+          icon: HeartPulse,
         },
       ],
     };

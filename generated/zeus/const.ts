@@ -104,6 +104,10 @@ export const AllTypesProps: Record<string,any> = {
 	e_game_server_node_regions_insert_input:{
 
 	},
+	e_game_server_node_regions_obj_rel_insert_input:{
+		data:"e_game_server_node_regions_insert_input",
+		on_conflict:"e_game_server_node_regions_on_conflict"
+	},
 	e_game_server_node_regions_on_conflict:{
 		constraint:"e_game_server_node_regions_constraint",
 		update_columns:"e_game_server_node_regions_update_column",
@@ -154,6 +158,10 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	e_game_server_node_statuses_insert_input:{
 
+	},
+	e_game_server_node_statuses_obj_rel_insert_input:{
+		data:"e_game_server_node_statuses_insert_input",
+		on_conflict:"e_game_server_node_statuses_on_conflict"
 	},
 	e_game_server_node_statuses_on_conflict:{
 		constraint:"e_game_server_node_statuses_constraint",
@@ -1061,6 +1069,8 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"game_server_nodes_bool_exp",
 		_not:"game_server_nodes_bool_exp",
 		_or:"game_server_nodes_bool_exp",
+		e_region:"e_game_server_node_regions_bool_exp",
+		e_status:"e_game_server_node_statuses_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		end_port_range:"Int_comparison_exp",
 		id:"String_comparison_exp",
@@ -1073,6 +1083,8 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_server_nodes_insert_input:{
+		e_region:"e_game_server_node_regions_obj_rel_insert_input",
+		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
 		region:"e_game_server_node_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
@@ -1082,6 +1094,8 @@ export const AllTypesProps: Record<string,any> = {
 		where:"game_server_nodes_bool_exp"
 	},
 	game_server_nodes_order_by:{
+		e_region:"e_game_server_node_regions_order_by",
+		e_status:"e_game_server_node_statuses_order_by",
 		enabled:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
@@ -10376,6 +10390,8 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"e_veto_pick_types"
 	},
 	game_server_nodes:{
+		e_region:"e_game_server_node_regions",
+		e_status:"e_game_server_node_statuses",
 		enabled:"Boolean",
 		end_port_range:"Int",
 		id:"String",

@@ -1,24 +1,15 @@
-<script setup lang="ts">
-import { Button } from "~/components/ui/button";
+<script lang="ts" setup>
 import PageHeading from "~/components/PageHeading.vue";
-import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.vue";
+import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
 </script>
 
 <template>
-  <PageHeading>
-    Game Server Nodes
-    <NuxtLink to="/game-server-nodes/create">
-      <Button>Create Game Server Node</Button>
-    </NuxtLink>
-  </PageHeading>
+  <PageHeading> 5Stack Status </PageHeading>
 
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead>Node</TableHead>
-        <TableHead>Region</TableHead>
-        <TableHead>Ports</TableHead>
-        <TableHead>Enabled</TableHead>
+        <TableHead class="text-left">Status</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -30,11 +21,10 @@ import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.
         </TableRow>
       </template>
       <template v-else>
-        <GameServerNodeRow
+        <GameServerNodeDisplay
           :game-server-node="gameServerNode"
-          :key="gameServerNode.id"
           v-for="gameServerNode of gameServerNodes"
-        ></GameServerNodeRow>
+        ></GameServerNodeDisplay>
       </template>
     </TableBody>
   </Table>
@@ -56,12 +46,8 @@ export default {
           game_server_nodes: [
             {},
             {
-              id: true,
               status: true,
               region: true,
-              enabled: true,
-              start_port_range: true,
-              end_port_range: true,
               e_region: {
                 description: true,
               },

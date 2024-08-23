@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 import { Input } from "~/components/ui/input";
 import {
   FormControl,
@@ -16,30 +15,15 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
+import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
 </script>
 
 <template>
   <TableRow>
     <TableCell>
-      <div>
-        <span
-          class="ml-1 inline-block h-2 w-2 rounded-full"
-          :class="{
-            ['bg-red-600']:
-              gameServerNode.status ===
-              e_game_server_node_statuses_enum.Offline,
-            ['bg-green-600']:
-              gameServerNode.status === e_game_server_node_statuses_enum.Online,
-            ['bg-yellow-600']:
-              gameServerNode.status ===
-                e_game_server_node_statuses_enum.Setup ||
-              gameServerNode.status ===
-                e_game_server_node_statuses_enum.NotAcceptingNewMatches,
-          }"
-        >
-        </span>
-        {{ gameServerNode.id }}
-      </div>
+      <GameServerNodeDisplay
+        :game-server-node="gameServerNode"
+      ></GameServerNodeDisplay>
     </TableCell>
     <TableCell>
       <Select
@@ -131,7 +115,7 @@ export default {
             start_port_range: z
               .number()
               .min(27000)
-              .max(28000)
+              .max(37000)
               .refine(
                 () => {
                   return (
@@ -146,7 +130,7 @@ export default {
             end_port_range: z
               .number()
               .min(27000)
-              .max(28000)
+              .max(37000)
               .refine(
                 () => {
                   return (

@@ -1132,6 +1132,12 @@ count?: [{	columns?: Array<ValueTypes["e_game_server_node_regions_select_column"
 	returning?:ValueTypes["e_game_server_node_regions"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "e_game_server_node_regions" */
+["e_game_server_node_regions_obj_rel_insert_input"]: {
+	data: ValueTypes["e_game_server_node_regions_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["e_game_server_node_regions_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** on_conflict condition type for table "e_game_server_node_regions" */
 ["e_game_server_node_regions_on_conflict"]: {
 	constraint: ValueTypes["e_game_server_node_regions_constraint"] | Variable<any, string>,
@@ -1237,6 +1243,12 @@ count?: [{	columns?: Array<ValueTypes["e_game_server_node_statuses_select_column
 	returning?:ValueTypes["e_game_server_node_statuses"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "e_game_server_node_statuses" */
+["e_game_server_node_statuses_obj_rel_insert_input"]: {
+	data: ValueTypes["e_game_server_node_statuses_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["e_game_server_node_statuses_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** on_conflict condition type for table "e_game_server_node_statuses" */
 ["e_game_server_node_statuses_on_conflict"]: {
 	constraint: ValueTypes["e_game_server_node_statuses_constraint"] | Variable<any, string>,
@@ -2880,6 +2892,10 @@ count?: [{	columns?: Array<ValueTypes["e_veto_pick_types_select_column"]> | unde
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: AliasType<{
+	/** An object relationship */
+	e_region?:ValueTypes["e_game_server_node_regions"],
+	/** An object relationship */
+	e_status?:ValueTypes["e_game_server_node_statuses"],
 	enabled?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -2920,6 +2936,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 	_and?: Array<ValueTypes["game_server_nodes_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["game_server_nodes_bool_exp"]> | undefined | null | Variable<any, string>,
+	e_region?: ValueTypes["e_game_server_node_regions_bool_exp"] | undefined | null | Variable<any, string>,
+	e_status?: ValueTypes["e_game_server_node_statuses_bool_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -2936,6 +2954,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	e_region?: ValueTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	e_status?: ValueTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	end_port_range?: number | undefined | null | Variable<any, string>,
 	id?: string | undefined | null | Variable<any, string>,
@@ -2973,6 +2993,8 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	e_region?: ValueTypes["e_game_server_node_regions_order_by"] | undefined | null | Variable<any, string>,
+	e_status?: ValueTypes["e_game_server_node_statuses_order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -17313,6 +17335,12 @@ count?: [{	columns?: Array<ResolverInputTypes["e_game_server_node_regions_select
 	returning?:ResolverInputTypes["e_game_server_node_regions"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "e_game_server_node_regions" */
+["e_game_server_node_regions_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["e_game_server_node_regions_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_game_server_node_regions_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "e_game_server_node_regions" */
 ["e_game_server_node_regions_on_conflict"]: {
 	constraint: ResolverInputTypes["e_game_server_node_regions_constraint"],
@@ -17418,6 +17446,12 @@ count?: [{	columns?: Array<ResolverInputTypes["e_game_server_node_statuses_selec
 	returning?:ResolverInputTypes["e_game_server_node_statuses"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "e_game_server_node_statuses" */
+["e_game_server_node_statuses_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["e_game_server_node_statuses_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_game_server_node_statuses_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "e_game_server_node_statuses" */
 ["e_game_server_node_statuses_on_conflict"]: {
 	constraint: ResolverInputTypes["e_game_server_node_statuses_constraint"],
@@ -19061,6 +19095,10 @@ count?: [{	columns?: Array<ResolverInputTypes["e_veto_pick_types_select_column"]
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: AliasType<{
+	/** An object relationship */
+	e_region?:ResolverInputTypes["e_game_server_node_regions"],
+	/** An object relationship */
+	e_status?:ResolverInputTypes["e_game_server_node_statuses"],
 	enabled?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -19101,6 +19139,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 	_and?: Array<ResolverInputTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["game_server_nodes_bool_exp"]> | undefined | null,
+	e_region?: ResolverInputTypes["e_game_server_node_regions_bool_exp"] | undefined | null,
+	e_status?: ResolverInputTypes["e_game_server_node_statuses_bool_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	end_port_range?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -19117,6 +19157,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	e_region?: ResolverInputTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined | null,
+	e_status?: ResolverInputTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	end_port_range?: number | undefined | null,
 	id?: string | undefined | null,
@@ -19154,6 +19196,8 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	e_region?: ResolverInputTypes["e_game_server_node_regions_order_by"] | undefined | null,
+	e_status?: ResolverInputTypes["e_game_server_node_statuses_order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -33473,6 +33517,12 @@ export type ModelTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<ModelTypes["e_game_server_node_regions"]>
 };
+	/** input type for inserting object relation for remote table "e_game_server_node_regions" */
+["e_game_server_node_regions_obj_rel_insert_input"]: {
+	data: ModelTypes["e_game_server_node_regions_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["e_game_server_node_regions_on_conflict"] | undefined
+};
 	/** on_conflict condition type for table "e_game_server_node_regions" */
 ["e_game_server_node_regions_on_conflict"]: {
 	constraint: ModelTypes["e_game_server_node_regions_constraint"],
@@ -33568,6 +33618,12 @@ export type ModelTypes = {
 	affected_rows: number,
 	/** data from the rows affected by the mutation */
 	returning: Array<ModelTypes["e_game_server_node_statuses"]>
+};
+	/** input type for inserting object relation for remote table "e_game_server_node_statuses" */
+["e_game_server_node_statuses_obj_rel_insert_input"]: {
+	data: ModelTypes["e_game_server_node_statuses_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["e_game_server_node_statuses_on_conflict"] | undefined
 };
 	/** on_conflict condition type for table "e_game_server_node_statuses" */
 ["e_game_server_node_statuses_on_conflict"]: {
@@ -34997,12 +35053,16 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: {
-		enabled: boolean,
+		/** An object relationship */
+	e_region?: ModelTypes["e_game_server_node_regions"] | undefined,
+	/** An object relationship */
+	e_status?: ModelTypes["e_game_server_node_statuses"] | undefined,
+	enabled: boolean,
 	end_port_range?: number | undefined,
 	id: string,
 	region?: ModelTypes["e_game_server_node_regions_enum"] | undefined,
 	start_port_range?: number | undefined,
-	status: ModelTypes["e_game_server_node_statuses_enum"]
+	status?: ModelTypes["e_game_server_node_statuses_enum"] | undefined
 };
 	/** aggregated selection of "game_server_nodes" */
 ["game_server_nodes_aggregate"]: {
@@ -35033,6 +35093,8 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["game_server_nodes_bool_exp"]> | undefined,
 	_not?: ModelTypes["game_server_nodes_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["game_server_nodes_bool_exp"]> | undefined,
+	e_region?: ModelTypes["e_game_server_node_regions_bool_exp"] | undefined,
+	e_status?: ModelTypes["e_game_server_node_statuses_bool_exp"] | undefined,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	end_port_range?: ModelTypes["Int_comparison_exp"] | undefined,
 	id?: ModelTypes["String_comparison_exp"] | undefined,
@@ -35048,6 +35110,8 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
+	e_region?: ModelTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined,
+	e_status?: ModelTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined,
 	enabled?: boolean | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
@@ -35082,6 +35146,8 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
+	e_region?: ModelTypes["e_game_server_node_regions_order_by"] | undefined,
+	e_status?: ModelTypes["e_game_server_node_statuses_order_by"] | undefined,
 	enabled?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -47214,6 +47280,12 @@ export type GraphQLTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<GraphQLTypes["e_game_server_node_regions"]>
 };
+	/** input type for inserting object relation for remote table "e_game_server_node_regions" */
+["e_game_server_node_regions_obj_rel_insert_input"]: {
+		data: GraphQLTypes["e_game_server_node_regions_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["e_game_server_node_regions_on_conflict"] | undefined
+};
 	/** on_conflict condition type for table "e_game_server_node_regions" */
 ["e_game_server_node_regions_on_conflict"]: {
 		constraint: GraphQLTypes["e_game_server_node_regions_constraint"],
@@ -47318,6 +47390,12 @@ export type GraphQLTypes = {
 	affected_rows: number,
 	/** data from the rows affected by the mutation */
 	returning: Array<GraphQLTypes["e_game_server_node_statuses"]>
+};
+	/** input type for inserting object relation for remote table "e_game_server_node_statuses" */
+["e_game_server_node_statuses_obj_rel_insert_input"]: {
+		data: GraphQLTypes["e_game_server_node_statuses_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["e_game_server_node_statuses_on_conflict"] | undefined
 };
 	/** on_conflict condition type for table "e_game_server_node_statuses" */
 ["e_game_server_node_statuses_on_conflict"]: {
@@ -48867,12 +48945,16 @@ export type GraphQLTypes = {
 	/** columns and relationships of "game_server_nodes" */
 ["game_server_nodes"]: {
 	__typename: "game_server_nodes",
+	/** An object relationship */
+	e_region?: GraphQLTypes["e_game_server_node_regions"] | undefined,
+	/** An object relationship */
+	e_status?: GraphQLTypes["e_game_server_node_statuses"] | undefined,
 	enabled: boolean,
 	end_port_range?: number | undefined,
 	id: string,
 	region?: GraphQLTypes["e_game_server_node_regions_enum"] | undefined,
 	start_port_range?: number | undefined,
-	status: GraphQLTypes["e_game_server_node_statuses_enum"]
+	status?: GraphQLTypes["e_game_server_node_statuses_enum"] | undefined
 };
 	/** aggregated selection of "game_server_nodes" */
 ["game_server_nodes_aggregate"]: {
@@ -48906,6 +48988,8 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["game_server_nodes_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["game_server_nodes_bool_exp"]> | undefined,
+	e_region?: GraphQLTypes["e_game_server_node_regions_bool_exp"] | undefined,
+	e_status?: GraphQLTypes["e_game_server_node_statuses_bool_exp"] | undefined,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	end_port_range?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	id?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -48922,7 +49006,9 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
-		enabled?: boolean | undefined,
+		e_region?: GraphQLTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined,
+	e_status?: GraphQLTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined,
+	enabled?: boolean | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
 	region?: GraphQLTypes["e_game_server_node_regions_enum"] | undefined,
@@ -48959,7 +49045,9 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "game_server_nodes". */
 ["game_server_nodes_order_by"]: {
-		enabled?: GraphQLTypes["order_by"] | undefined,
+		e_region?: GraphQLTypes["e_game_server_node_regions_order_by"] | undefined,
+	e_status?: GraphQLTypes["e_game_server_node_statuses_order_by"] | undefined,
+	enabled?: GraphQLTypes["order_by"] | undefined,
 	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	region?: GraphQLTypes["order_by"] | undefined,
@@ -61776,7 +61864,7 @@ export const enum e_veto_pick_types_update_column {
 }
 /** unique or primary key constraints on table "game_server_nodes" */
 export const enum game_server_nodes_constraint {
-	server_nodes_pkey = "server_nodes_pkey"
+	game_server_nodes_pkey = "game_server_nodes_pkey"
 }
 /** select columns of table "game_server_nodes" */
 export const enum game_server_nodes_select_column {
@@ -62743,6 +62831,7 @@ type ZEUS_VARIABLES = {
 	["e_game_server_node_regions_enum"]: ValueTypes["e_game_server_node_regions_enum"];
 	["e_game_server_node_regions_enum_comparison_exp"]: ValueTypes["e_game_server_node_regions_enum_comparison_exp"];
 	["e_game_server_node_regions_insert_input"]: ValueTypes["e_game_server_node_regions_insert_input"];
+	["e_game_server_node_regions_obj_rel_insert_input"]: ValueTypes["e_game_server_node_regions_obj_rel_insert_input"];
 	["e_game_server_node_regions_on_conflict"]: ValueTypes["e_game_server_node_regions_on_conflict"];
 	["e_game_server_node_regions_order_by"]: ValueTypes["e_game_server_node_regions_order_by"];
 	["e_game_server_node_regions_pk_columns_input"]: ValueTypes["e_game_server_node_regions_pk_columns_input"];
@@ -62757,6 +62846,7 @@ type ZEUS_VARIABLES = {
 	["e_game_server_node_statuses_enum"]: ValueTypes["e_game_server_node_statuses_enum"];
 	["e_game_server_node_statuses_enum_comparison_exp"]: ValueTypes["e_game_server_node_statuses_enum_comparison_exp"];
 	["e_game_server_node_statuses_insert_input"]: ValueTypes["e_game_server_node_statuses_insert_input"];
+	["e_game_server_node_statuses_obj_rel_insert_input"]: ValueTypes["e_game_server_node_statuses_obj_rel_insert_input"];
 	["e_game_server_node_statuses_on_conflict"]: ValueTypes["e_game_server_node_statuses_on_conflict"];
 	["e_game_server_node_statuses_order_by"]: ValueTypes["e_game_server_node_statuses_order_by"];
 	["e_game_server_node_statuses_pk_columns_input"]: ValueTypes["e_game_server_node_statuses_pk_columns_input"];

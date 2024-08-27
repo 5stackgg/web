@@ -29,12 +29,24 @@ import {
           </FormControl>
           <SelectContent>
             <SelectGroup>
+              <SelectLabel>Dedicated Servers</SelectLabel>
               <SelectItem
                 v-for="server in availableServers"
                 :key="server.value"
                 :value="server.value"
               >
                 {{ server.display }}
+              </SelectItem>
+            </SelectGroup>
+
+            <SelectGroup>
+              <SelectLabel>On Demand</SelectLabel>
+              <SelectItem
+                v-for="region in regions"
+                :key="region.value"
+                :value="`0:${region.value}`"
+              >
+                {{ region.description }}
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -64,7 +76,13 @@ export default {
       servers: {
         query: typedGql("subscription")({
           servers: [
-            {},
+            {
+              where: {
+                is_dedicated: {
+                  _eq: true,
+                },
+              },
+            },
             {
               id: true,
               host: true,
@@ -77,14 +95,40 @@ export default {
           this.servers = data.servers;
         },
       },
+      e_game_server_node_regions: {
+        query: typedGql("subscription")({
+          e_game_server_node_regions: [
+            {
+              where: {
+                game_server_nodes_aggregate: {
+                  count: {
+                    predicate: {
+                      _gt: 0,
+                    },
+                  },
+                },
+              },
+            },
+            {
+              value: true,
+              description: true,
+            },
+          ],
+        }),
+        result({ data }) {
+          this.regions = data.e_game_server_node_regions;
+        },
+      },
     },
   },
   data() {
     return {
       servers: [],
+      regions: [],
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
+            region: z.string(),
             server_id: z.string(),
           }),
         ),
@@ -96,8 +140,14 @@ export default {
       immediate: true,
       handler(match) {
         if (match) {
+          let server_id = match.server_id;
+
+          if (!server_id || !match.server?.is_dedicated) {
+            server_id = `${match.region ? `0:${match.region}` : "0"}`;
+          }
+
           this.form.setValues({
-            server_id: match.server_id || "0",
+            server_id,
           });
         }
       },
@@ -105,6 +155,8 @@ export default {
   },
   methods: {
     async updateMatchServer() {
+      const [serverId, region] = this.form.values.server_id?.split(":");
+
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_matches_by_pk: [
@@ -113,10 +165,8 @@ export default {
                 id: this.match.id,
               },
               _set: {
-                server_id:
-                  this.form.values.server_id === "0"
-                    ? null
-                    : this.form.values.server_id,
+                region,
+                server_id: serverId === "0" ? null : this.form.values.server_id,
               },
             },
             {
@@ -129,20 +179,12 @@ export default {
   },
   computed: {
     availableServers() {
-      const servers = this.servers.map((server) => {
+      return this.servers.map((server) => {
         return {
           value: server.id,
           display: `${server.label} (${server.host}:${server.port})`,
         };
       });
-
-      servers.unshift({
-        value:
-          this.match.server_type === "OnDemand" ? this.match.server_id : "0",
-        display: "On Demand",
-      });
-
-      return servers;
     },
   },
 };

@@ -81,6 +81,18 @@ export const AllTypesProps: Record<string,any> = {
 		_nin:"bytea"
 	},
 	cursor_ordering: "enum" as const,
+	e_game_server_node_regions:{
+		game_server_nodes:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		},
+		game_server_nodes_aggregate:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		}
+	},
 	e_game_server_node_regions_aggregate_fields:{
 		count:{
 			columns:"e_game_server_node_regions_select_column"
@@ -91,6 +103,8 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"e_game_server_node_regions_bool_exp",
 		_or:"e_game_server_node_regions_bool_exp",
 		description:"String_comparison_exp",
+		game_server_nodes:"game_server_nodes_bool_exp",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate_bool_exp",
 		value:"String_comparison_exp"
 	},
 	e_game_server_node_regions_constraint: "enum" as const,
@@ -102,7 +116,7 @@ export const AllTypesProps: Record<string,any> = {
 		_nin:"e_game_server_node_regions_enum"
 	},
 	e_game_server_node_regions_insert_input:{
-
+		game_server_nodes:"game_server_nodes_arr_rel_insert_input"
 	},
 	e_game_server_node_regions_obj_rel_insert_input:{
 		data:"e_game_server_node_regions_insert_input",
@@ -115,6 +129,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	e_game_server_node_regions_order_by:{
 		description:"order_by",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate_order_by",
 		value:"order_by"
 	},
 	e_game_server_node_regions_pk_columns_input:{
@@ -1072,10 +1087,51 @@ export const AllTypesProps: Record<string,any> = {
 			where:"servers_bool_exp"
 		}
 	},
+	game_server_nodes_aggregate_bool_exp:{
+		bool_and:"game_server_nodes_aggregate_bool_exp_bool_and",
+		bool_or:"game_server_nodes_aggregate_bool_exp_bool_or",
+		count:"game_server_nodes_aggregate_bool_exp_count"
+	},
+	game_server_nodes_aggregate_bool_exp_bool_and:{
+		arguments:"game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"game_server_nodes_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	game_server_nodes_aggregate_bool_exp_bool_or:{
+		arguments:"game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"game_server_nodes_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	game_server_nodes_aggregate_bool_exp_count:{
+		arguments:"game_server_nodes_select_column",
+		filter:"game_server_nodes_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	game_server_nodes_aggregate_fields:{
 		count:{
 			columns:"game_server_nodes_select_column"
 		}
+	},
+	game_server_nodes_aggregate_order_by:{
+		avg:"game_server_nodes_avg_order_by",
+		count:"order_by",
+		max:"game_server_nodes_max_order_by",
+		min:"game_server_nodes_min_order_by",
+		stddev:"game_server_nodes_stddev_order_by",
+		stddev_pop:"game_server_nodes_stddev_pop_order_by",
+		stddev_samp:"game_server_nodes_stddev_samp_order_by",
+		sum:"game_server_nodes_sum_order_by",
+		var_pop:"game_server_nodes_var_pop_order_by",
+		var_samp:"game_server_nodes_var_samp_order_by",
+		variance:"game_server_nodes_variance_order_by"
+	},
+	game_server_nodes_arr_rel_insert_input:{
+		data:"game_server_nodes_insert_input",
+		on_conflict:"game_server_nodes_on_conflict"
+	},
+	game_server_nodes_avg_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
 	},
 	game_server_nodes_bool_exp:{
 		_and:"game_server_nodes_bool_exp",
@@ -1105,6 +1161,16 @@ export const AllTypesProps: Record<string,any> = {
 		servers:"servers_arr_rel_insert_input",
 		status:"e_game_server_node_statuses_enum"
 	},
+	game_server_nodes_max_order_by:{
+		end_port_range:"order_by",
+		id:"order_by",
+		start_port_range:"order_by"
+	},
+	game_server_nodes_min_order_by:{
+		end_port_range:"order_by",
+		id:"order_by",
+		start_port_range:"order_by"
+	},
 	game_server_nodes_obj_rel_insert_input:{
 		data:"game_server_nodes_insert_input",
 		on_conflict:"game_server_nodes_on_conflict"
@@ -1130,10 +1196,24 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_server_nodes_select_column: "enum" as const,
+	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	game_server_nodes_set_input:{
 		public_ip:"inet",
 		region:"e_game_server_node_regions_enum",
 		status:"e_game_server_node_statuses_enum"
+	},
+	game_server_nodes_stddev_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
+	},
+	game_server_nodes_stddev_pop_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
+	},
+	game_server_nodes_stddev_samp_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
 	},
 	game_server_nodes_stream_cursor_input:{
 		initial_value:"game_server_nodes_stream_cursor_value_input",
@@ -1144,11 +1224,27 @@ export const AllTypesProps: Record<string,any> = {
 		region:"e_game_server_node_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
+	game_server_nodes_sum_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
+	},
 	game_server_nodes_update_column: "enum" as const,
 	game_server_nodes_updates:{
 		_inc:"game_server_nodes_inc_input",
 		_set:"game_server_nodes_set_input",
 		where:"game_server_nodes_bool_exp"
+	},
+	game_server_nodes_var_pop_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
+	},
+	game_server_nodes_var_samp_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
+	},
+	game_server_nodes_variance_order_by:{
+		end_port_range:"order_by",
+		start_port_range:"order_by"
 	},
 	inet: `scalar.inet` as const,
 	inet_comparison_exp:{
@@ -2811,6 +2907,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
 		player_utility:"player_utility_bool_exp",
 		player_utility_aggregate:"player_utility_aggregate_bool_exp",
+		region:"e_game_server_node_regions_enum_comparison_exp",
 		scheduled_at:"timestamptz_comparison_exp",
 		server:"servers_bool_exp",
 		server_id:"uuid_comparison_exp",
@@ -2854,6 +2951,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_objectives:"player_objectives_arr_rel_insert_input",
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		player_utility:"player_utility_arr_rel_insert_input",
+		region:"e_game_server_node_regions_enum",
 		scheduled_at:"timestamptz",
 		server:"servers_obj_rel_insert_input",
 		server_id:"uuid",
@@ -2938,6 +3036,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_objectives_aggregate:"player_objectives_aggregate_order_by",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_order_by",
 		player_utility_aggregate:"player_utility_aggregate_order_by",
+		region:"order_by",
 		scheduled_at:"order_by",
 		server:"servers_order_by",
 		server_id:"order_by",
@@ -2965,6 +3064,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
+		region:"e_game_server_node_regions_enum",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		status:"e_match_status_enum",
@@ -2990,6 +3090,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
+		region:"e_game_server_node_regions_enum",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		status:"e_match_status_enum",
@@ -6891,6 +6992,7 @@ export const AllTypesProps: Record<string,any> = {
 		game_server_node_id:"String_comparison_exp",
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		is_dedicated:"Boolean_comparison_exp",
 		label:"String_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
@@ -6958,6 +7060,7 @@ export const AllTypesProps: Record<string,any> = {
 		game_server_node_id:"order_by",
 		host:"order_by",
 		id:"order_by",
+		is_dedicated:"order_by",
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		owner:"players_order_by",
@@ -10140,6 +10243,8 @@ export const ReturnTypes: Record<string,any> = {
 	bytea: `scalar.bytea` as const,
 	e_game_server_node_regions:{
 		description:"String",
+		game_server_nodes:"game_server_nodes",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate",
 		value:"String"
 	},
 	e_game_server_node_regions_aggregate:{
@@ -11379,6 +11484,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
 		player_utility:"player_utility",
 		player_utility_aggregate:"player_utility_aggregate",
+		region:"e_game_server_node_regions_enum",
 		scheduled_at:"timestamptz",
 		server:"servers",
 		server_id:"uuid",
@@ -12907,6 +13013,7 @@ export const ReturnTypes: Record<string,any> = {
 		game_server_node_id:"String",
 		host:"String",
 		id:"uuid",
+		is_dedicated:"Boolean",
 		label:"String",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",

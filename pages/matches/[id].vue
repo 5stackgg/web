@@ -84,6 +84,7 @@ export default {
             {
               id: true,
               status: true,
+              region: true,
               is_coach: true,
               is_captain: true,
               is_in_lineup: true,

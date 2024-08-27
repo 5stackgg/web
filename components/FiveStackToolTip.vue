@@ -9,7 +9,7 @@ import { Info } from "lucide-vue-next";
         <Info :size="12"></Info>
       </TooltipTrigger>
       <TooltipContent>
-         <slot></slot>
+        <slot></slot>
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>

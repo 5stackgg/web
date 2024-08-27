@@ -26,6 +26,9 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
       ></GameServerNodeDisplay>
     </TableCell>
     <TableCell>
+      {{ gameServerNode.public_ip }}
+    </TableCell>
+    <TableCell>
       <Select
         :model-value="form.region"
         @update:model-value="(value) => updateRegion(value)"
@@ -44,6 +47,10 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
           </SelectGroup>
         </SelectContent>
       </Select>
+    </TableCell>
+    <TableCell>
+      {{ gameServerNode.reserved_servers_aggregate.aggregate.count }} /
+      {{ gameServerNode.servers_aggregate.aggregate.count }}
     </TableCell>
     <TableCell>
       <form @submit.prevent="updateServerPorts" class="flex">
@@ -114,8 +121,8 @@ export default {
           z.object({
             start_port_range: z
               .number()
-              .min(27000)
-              .max(37000)
+              .min(30000)
+              .max(32767) // https://kubernetes.io/docs/reference/networking/ports-and-protocols/
               .refine(
                 () => {
                   return (

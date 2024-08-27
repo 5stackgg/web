@@ -16,7 +16,9 @@ import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.
     <TableHeader>
       <TableRow>
         <TableHead>Node</TableHead>
+        <TableHead>Public IP</TableHead>
         <TableHead>Region</TableHead>
+        <TableHead>Capacity</TableHead>
         <TableHead>Ports</TableHead>
         <TableHead>Enabled</TableHead>
       </TableRow>
@@ -60,6 +62,7 @@ export default {
               status: true,
               region: true,
               enabled: true,
+              public_ip: true,
               start_port_range: true,
               end_port_range: true,
               e_region: {
@@ -67,6 +70,29 @@ export default {
               },
               e_status: {
                 description: true,
+              },
+              servers_aggregate: {
+                aggregate: {
+                  count: true,
+                },
+              },
+              __alias: {
+                reserved_servers_aggregate: {
+                  servers_aggregate: [
+                    {
+                      where: {
+                        reserved_by_match_id: {
+                          _is_null: true,
+                        },
+                      },
+                    },
+                    {
+                      aggregate: {
+                        count: true,
+                      },
+                    },
+                  ],
+                },
               },
             },
           ],

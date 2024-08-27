@@ -98,6 +98,7 @@ export default {
               max_players_per_lineup: true,
               server_id: true,
               server_type: true,
+              server_region: true,
               lineup_1_id: true,
               lineup_2_id: true,
               winning_lineup_id: true,

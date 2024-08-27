@@ -1060,6 +1060,18 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_veto_pick_types_set_input",
 		where:"e_veto_pick_types_bool_exp"
 	},
+	game_server_nodes:{
+		servers:{
+			distinct_on:"servers_select_column",
+			order_by:"servers_order_by",
+			where:"servers_bool_exp"
+		},
+		servers_aggregate:{
+			distinct_on:"servers_select_column",
+			order_by:"servers_order_by",
+			where:"servers_bool_exp"
+		}
+	},
 	game_server_nodes_aggregate_fields:{
 		count:{
 			columns:"game_server_nodes_select_column"
@@ -1074,7 +1086,10 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"Boolean_comparison_exp",
 		end_port_range:"Int_comparison_exp",
 		id:"String_comparison_exp",
+		public_ip:"inet_comparison_exp",
 		region:"e_game_server_node_regions_enum_comparison_exp",
+		servers:"servers_bool_exp",
+		servers_aggregate:"servers_aggregate_bool_exp",
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp"
 	},
@@ -1085,8 +1100,14 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_insert_input:{
 		e_region:"e_game_server_node_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
+		public_ip:"inet",
 		region:"e_game_server_node_regions_enum",
+		servers:"servers_arr_rel_insert_input",
 		status:"e_game_server_node_statuses_enum"
+	},
+	game_server_nodes_obj_rel_insert_input:{
+		data:"game_server_nodes_insert_input",
+		on_conflict:"game_server_nodes_on_conflict"
 	},
 	game_server_nodes_on_conflict:{
 		constraint:"game_server_nodes_constraint",
@@ -1099,7 +1120,9 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
+		public_ip:"order_by",
 		region:"order_by",
+		servers_aggregate:"servers_aggregate_order_by",
 		start_port_range:"order_by",
 		status:"order_by"
 	},
@@ -1108,6 +1131,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_server_nodes_select_column: "enum" as const,
 	game_server_nodes_set_input:{
+		public_ip:"inet",
 		region:"e_game_server_node_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
@@ -1116,6 +1140,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	game_server_nodes_stream_cursor_value_input:{
+		public_ip:"inet",
 		region:"e_game_server_node_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
@@ -1124,6 +1149,17 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"game_server_nodes_inc_input",
 		_set:"game_server_nodes_set_input",
 		where:"game_server_nodes_bool_exp"
+	},
+	inet: `scalar.inet` as const,
+	inet_comparison_exp:{
+		_eq:"inet",
+		_gt:"inet",
+		_gte:"inet",
+		_in:"inet",
+		_lt:"inet",
+		_lte:"inet",
+		_neq:"inet",
+		_nin:"inet"
 	},
 	jsonb: `scalar.jsonb` as const,
 	jsonb_cast_exp:{
@@ -2778,6 +2814,7 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"timestamptz_comparison_exp",
 		server:"servers_bool_exp",
 		server_id:"uuid_comparison_exp",
+		server_region:"String_comparison_exp",
 		server_type:"String_comparison_exp",
 		status:"e_match_status_enum_comparison_exp",
 		teams:"teams_bool_exp",
@@ -2904,6 +2941,7 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_at:"order_by",
 		server:"servers_order_by",
 		server_id:"order_by",
+		server_region:"order_by",
 		server_type:"order_by",
 		status:"order_by",
 		teams_aggregate:"teams_aggregate_order_by",
@@ -6795,21 +6833,64 @@ export const AllTypesProps: Record<string,any> = {
 			where:"tournament_servers_bool_exp"
 		}
 	},
+	servers_aggregate_bool_exp:{
+		bool_and:"servers_aggregate_bool_exp_bool_and",
+		bool_or:"servers_aggregate_bool_exp_bool_or",
+		count:"servers_aggregate_bool_exp_count"
+	},
+	servers_aggregate_bool_exp_bool_and:{
+		arguments:"servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"servers_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	servers_aggregate_bool_exp_bool_or:{
+		arguments:"servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"servers_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	servers_aggregate_bool_exp_count:{
+		arguments:"servers_select_column",
+		filter:"servers_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	servers_aggregate_fields:{
 		count:{
 			columns:"servers_select_column"
 		}
+	},
+	servers_aggregate_order_by:{
+		avg:"servers_avg_order_by",
+		count:"order_by",
+		max:"servers_max_order_by",
+		min:"servers_min_order_by",
+		stddev:"servers_stddev_order_by",
+		stddev_pop:"servers_stddev_pop_order_by",
+		stddev_samp:"servers_stddev_samp_order_by",
+		sum:"servers_sum_order_by",
+		var_pop:"servers_var_pop_order_by",
+		var_samp:"servers_var_samp_order_by",
+		variance:"servers_variance_order_by"
+	},
+	servers_arr_rel_insert_input:{
+		data:"servers_insert_input",
+		on_conflict:"servers_on_conflict"
+	},
+	servers_avg_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
 	},
 	servers_bool_exp:{
 		_and:"servers_bool_exp",
 		_not:"servers_bool_exp",
 		_or:"servers_bool_exp",
 		api_password:"uuid_comparison_exp",
-		current_match_id:"String_comparison_exp",
+		current_match:"matches_bool_exp",
 		enabled:"Boolean_comparison_exp",
+		game_server_node:"game_server_nodes_bool_exp",
+		game_server_node_id:"String_comparison_exp",
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
-		is_on_demand:"Boolean_comparison_exp",
 		label:"String_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
@@ -6817,6 +6898,7 @@ export const AllTypesProps: Record<string,any> = {
 		owner_steam_id:"bigint_comparison_exp",
 		port:"Int_comparison_exp",
 		rcon_password:"bytea_comparison_exp",
+		reserved_by_match_id:"uuid_comparison_exp",
 		tournament_servers:"tournament_servers_bool_exp",
 		tournament_servers_aggregate:"tournament_servers_aggregate_bool_exp",
 		tv_port:"Int_comparison_exp"
@@ -6827,12 +6909,37 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_insert_input:{
 		api_password:"uuid",
+		current_match:"matches_obj_rel_insert_input",
+		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		id:"uuid",
 		matches:"matches_arr_rel_insert_input",
 		owner:"players_obj_rel_insert_input",
 		owner_steam_id:"bigint",
 		rcon_password:"bytea",
+		reserved_by_match_id:"uuid",
 		tournament_servers:"tournament_servers_arr_rel_insert_input"
+	},
+	servers_max_order_by:{
+		api_password:"order_by",
+		game_server_node_id:"order_by",
+		host:"order_by",
+		id:"order_by",
+		label:"order_by",
+		owner_steam_id:"order_by",
+		port:"order_by",
+		reserved_by_match_id:"order_by",
+		tv_port:"order_by"
+	},
+	servers_min_order_by:{
+		api_password:"order_by",
+		game_server_node_id:"order_by",
+		host:"order_by",
+		id:"order_by",
+		label:"order_by",
+		owner_steam_id:"order_by",
+		port:"order_by",
+		reserved_by_match_id:"order_by",
+		tv_port:"order_by"
 	},
 	servers_obj_rel_insert_input:{
 		data:"servers_insert_input",
@@ -6845,17 +6952,19 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_order_by:{
 		api_password:"order_by",
-		current_match_id:"order_by",
+		current_match:"matches_order_by",
 		enabled:"order_by",
+		game_server_node:"game_server_nodes_order_by",
+		game_server_node_id:"order_by",
 		host:"order_by",
 		id:"order_by",
-		is_on_demand:"order_by",
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		owner:"players_order_by",
 		owner_steam_id:"order_by",
 		port:"order_by",
 		rcon_password:"order_by",
+		reserved_by_match_id:"order_by",
 		tournament_servers_aggregate:"tournament_servers_aggregate_order_by",
 		tv_port:"order_by"
 	},
@@ -6863,11 +6972,29 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid"
 	},
 	servers_select_column: "enum" as const,
+	servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	servers_set_input:{
 		api_password:"uuid",
 		id:"uuid",
 		owner_steam_id:"bigint",
-		rcon_password:"bytea"
+		rcon_password:"bytea",
+		reserved_by_match_id:"uuid"
+	},
+	servers_stddev_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
+	},
+	servers_stddev_pop_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
+	},
+	servers_stddev_samp_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
 	},
 	servers_stream_cursor_input:{
 		initial_value:"servers_stream_cursor_value_input",
@@ -6877,13 +7004,34 @@ export const AllTypesProps: Record<string,any> = {
 		api_password:"uuid",
 		id:"uuid",
 		owner_steam_id:"bigint",
-		rcon_password:"bytea"
+		rcon_password:"bytea",
+		reserved_by_match_id:"uuid"
+	},
+	servers_sum_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
 	},
 	servers_update_column: "enum" as const,
 	servers_updates:{
 		_inc:"servers_inc_input",
 		_set:"servers_set_input",
 		where:"servers_bool_exp"
+	},
+	servers_var_pop_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
+	},
+	servers_var_samp_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
+	},
+	servers_variance_order_by:{
+		owner_steam_id:"order_by",
+		port:"order_by",
+		tv_port:"order_by"
 	},
 	subscription_root:{
 		_map_pool:{
@@ -10395,7 +10543,10 @@ export const ReturnTypes: Record<string,any> = {
 		enabled:"Boolean",
 		end_port_range:"Int",
 		id:"String",
+		public_ip:"inet",
 		region:"e_game_server_node_regions_enum",
+		servers:"servers",
+		servers_aggregate:"servers_aggregate",
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum"
 	},
@@ -10462,6 +10613,7 @@ export const ReturnTypes: Record<string,any> = {
 		end_port_range:"Float",
 		start_port_range:"Float"
 	},
+	inet: `scalar.inet` as const,
 	jsonb: `scalar.jsonb` as const,
 	map_pools:{
 		e_type:"e_map_pool_types",
@@ -11230,6 +11382,7 @@ export const ReturnTypes: Record<string,any> = {
 		scheduled_at:"timestamptz",
 		server:"servers",
 		server_id:"uuid",
+		server_region:"String",
 		server_type:"String",
 		status:"e_match_status_enum",
 		teams:"teams",
@@ -11283,6 +11436,7 @@ export const ReturnTypes: Record<string,any> = {
 		password:"String",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
+		server_region:"String",
 		server_type:"String",
 		tv_connection_link:"String",
 		tv_connection_string:"String",
@@ -11307,6 +11461,7 @@ export const ReturnTypes: Record<string,any> = {
 		password:"String",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
+		server_region:"String",
 		server_type:"String",
 		tv_connection_link:"String",
 		tv_connection_string:"String",
@@ -12746,11 +12901,12 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	servers:{
 		api_password:"uuid",
-		current_match_id:"String",
+		current_match:"matches",
 		enabled:"Boolean",
+		game_server_node:"game_server_nodes",
+		game_server_node_id:"String",
 		host:"String",
 		id:"uuid",
-		is_on_demand:"Boolean",
 		label:"String",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
@@ -12758,6 +12914,7 @@ export const ReturnTypes: Record<string,any> = {
 		owner_steam_id:"bigint",
 		port:"Int",
 		rcon_password:"bytea",
+		reserved_by_match_id:"uuid",
 		tournament_servers:"tournament_servers",
 		tournament_servers_aggregate:"tournament_servers_aggregate",
 		tv_port:"Int"
@@ -12786,22 +12943,24 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	servers_max_fields:{
 		api_password:"uuid",
-		current_match_id:"String",
+		game_server_node_id:"String",
 		host:"String",
 		id:"uuid",
 		label:"String",
 		owner_steam_id:"bigint",
 		port:"Int",
+		reserved_by_match_id:"uuid",
 		tv_port:"Int"
 	},
 	servers_min_fields:{
 		api_password:"uuid",
-		current_match_id:"String",
+		game_server_node_id:"String",
 		host:"String",
 		id:"uuid",
 		label:"String",
 		owner_steam_id:"bigint",
 		port:"Int",
+		reserved_by_match_id:"uuid",
 		tv_port:"Int"
 	},
 	servers_mutation_response:{

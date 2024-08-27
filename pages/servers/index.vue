@@ -88,6 +88,9 @@ export default {
               label: true,
               tv_port: true,
               enabled: true,
+              current_match: {
+                id: true,
+              },
             },
           ],
         }),

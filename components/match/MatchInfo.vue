@@ -186,6 +186,26 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       <Separator class="my-8" />
 
       <div class="grid gap-3">
+        <div class="font-semibold">Server Information</div>
+        <ul class="grid gap-3">
+          <li class="flex items-center justify-between">
+            <span class="text-muted-foreground"> Type </span>
+            <span>
+              {{ match.server_type }}
+            </span>
+          </li>
+          <li class="flex items-center justify-between">
+            <span class="text-muted-foreground"> Region </span>
+            <span>
+              {{ match.server_region }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <Separator class="my-8" />
+
+      <div class="grid gap-3">
         <div class="font-semibold">Match Organizers</div>
         <ul class="grid gap-3">
           <li class="flex items-center justify-between">

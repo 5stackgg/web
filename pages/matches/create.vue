@@ -76,6 +76,7 @@ export default {
           knife_round: form.knife_round,
           overtime: form.overtime,
           map_veto: form.map_veto,
+          region_veto: form.region_veto,
           coaches: form.coaches,
           tv_delay: form.tv_delay,
           number_of_substitutes: form.number_of_substitutes,
@@ -131,6 +132,7 @@ export default {
                     best_of: $("best_of", "Int!"),
                     overtime: $("overtime", "Boolean!"),
                     map_veto: $("map_veto", "Boolean!"),
+                    region_veto: $("region_veto", "Boolean!"),
                     number_of_substitutes: $("number_of_substitutes", "Int!"),
                     map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
                     ...(form.map_pool_id

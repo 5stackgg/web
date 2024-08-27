@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from "~/components/ui/button";
-import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
+import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 </script>
 
 <template>

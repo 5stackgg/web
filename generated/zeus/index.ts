@@ -6034,6 +6034,15 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	nodes?:ValueTypes["match_region_veto_picks"],
 		__typename?: boolean | `@${string}`
 }>;
+	["match_region_veto_picks_aggregate_bool_exp"]: {
+	count?: ValueTypes["match_region_veto_picks_aggregate_bool_exp_count"] | undefined | null | Variable<any, string>
+};
+	["match_region_veto_picks_aggregate_bool_exp_count"]: {
+	arguments?: Array<ValueTypes["match_region_veto_picks_select_column"]> | undefined | null | Variable<any, string>,
+	distinct?: boolean | undefined | null | Variable<any, string>,
+	filter?: ValueTypes["match_region_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
+	predicate: ValueTypes["Int_comparison_exp"] | Variable<any, string>
+};
 	/** aggregate fields of "match_region_veto_picks" */
 ["match_region_veto_picks_aggregate_fields"]: AliasType<{
 count?: [{	columns?: Array<ValueTypes["match_region_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
@@ -6041,6 +6050,18 @@ count?: [{	columns?: Array<ValueTypes["match_region_veto_picks_select_column"]> 
 	min?:ValueTypes["match_region_veto_picks_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by aggregate values of table "match_region_veto_picks" */
+["match_region_veto_picks_aggregate_order_by"]: {
+	count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max?: ValueTypes["match_region_veto_picks_max_order_by"] | undefined | null | Variable<any, string>,
+	min?: ValueTypes["match_region_veto_picks_min_order_by"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting array relation for remote table "match_region_veto_picks" */
+["match_region_veto_picks_arr_rel_insert_input"]: {
+	data: Array<ValueTypes["match_region_veto_picks_insert_input"]> | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["match_region_veto_picks_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** Boolean expression to filter rows from the table "match_region_veto_picks". All fields are combined with a logical 'AND'. */
 ["match_region_veto_picks_bool_exp"]: {
 	_and?: Array<ValueTypes["match_region_veto_picks_bool_exp"]> | undefined | null | Variable<any, string>,
@@ -6076,6 +6097,13 @@ count?: [{	columns?: Array<ValueTypes["match_region_veto_picks_select_column"]> 
 	match_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by max() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_max_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** aggregate min on columns */
 ["match_region_veto_picks_min_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -6084,6 +6112,13 @@ count?: [{	columns?: Array<ValueTypes["match_region_veto_picks_select_column"]> 
 	match_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by min() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_min_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
 	/** response of any mutation on the table "match_region_veto_picks" */
 ["match_region_veto_picks_mutation_response"]: AliasType<{
 	/** number of rows affected by the mutation */
@@ -6183,6 +6218,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_demos_aggregate"]],
 	/** An object relationship */
 	e_match_status?:ValueTypes["e_match_status"],
+	/** An object relationship */
+	e_region?:ValueTypes["e_game_server_node_regions"],
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "is_captain" */
 	is_captain?:boolean | `@${string}`,
@@ -6205,6 +6242,18 @@ demos_aggregate?: [{	/** distinct select on columns */
 	lineup_2_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?:boolean | `@${string}`,
+map_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_veto_picks"]],
+map_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_map_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_map_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_veto_picks_aggregate"]],
 	/** A computed field, executes function "get_map_veto_type" */
 	map_veto_type?:boolean | `@${string}`,
 match_maps?: [{	/** distinct select on columns */
@@ -6317,6 +6366,18 @@ player_utility_aggregate?: [{	/** distinct select on columns */
 	region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_region_veto_picking_lineup_id" */
 	region_veto_picking_lineup_id?:boolean | `@${string}`,
+region_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_region_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_region_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_region_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_region_veto_picks"]],
+region_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_region_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_region_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_region_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_region_veto_picks_aggregate"]],
 	scheduled_at?:boolean | `@${string}`,
 	/** An object relationship */
 	server?:ValueTypes["servers"],
@@ -6348,18 +6409,6 @@ tournament_brackets_aggregate?: [{	/** distinct select on columns */
 	tv_connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?:boolean | `@${string}`,
-veto_picks?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["match_map_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["match_map_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_veto_picks"]],
-veto_picks_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["match_map_veto_picks_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["match_map_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_veto_picks_aggregate"]],
 	/** An object relationship */
 	winner?:ValueTypes["match_lineups"],
 	winning_lineup_id?:boolean | `@${string}`,
@@ -6440,12 +6489,13 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	can_start?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	cancels_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	connection_link?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	connection_string?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	current_match_map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	demos?: ValueTypes["match_map_demos_bool_exp"] | undefined | null | Variable<any, string>,
 	demos_aggregate?: ValueTypes["match_map_demos_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	e_match_status?: ValueTypes["e_match_status_bool_exp"] | undefined | null | Variable<any, string>,
+	e_region?: ValueTypes["e_game_server_node_regions_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -6459,6 +6509,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineup_2?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_veto_picking_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	map_veto_picks?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
+	map_veto_picks_aggregate?: ValueTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	map_veto_type?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -6485,6 +6537,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_utility_aggregate?: ValueTypes["player_utility_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	region?: ValueTypes["e_game_server_node_regions_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	region_veto_picking_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	region_veto_picks?: ValueTypes["match_region_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
+	region_veto_picks_aggregate?: ValueTypes["match_region_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -6496,8 +6550,6 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	tournament_brackets_aggregate?: ValueTypes["tournament_brackets_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	tv_connection_link?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	tv_connection_string?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
-	veto_picks?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
-	veto_picks_aggregate?: ValueTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	winner?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	winning_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>
 };
@@ -6512,12 +6564,14 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	demos?: ValueTypes["match_map_demos_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	e_match_status?: ValueTypes["e_match_status_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	e_region?: ValueTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	label?: string | undefined | null | Variable<any, string>,
 	lineup_1?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	lineup_1_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	lineup_2?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	map_veto_picks?: ValueTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_maps?: ValueTypes["match_maps_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	options?: ValueTypes["match_options_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -6532,12 +6586,12 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_unused_utilities?: ValueTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_utility?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	region?: ValueTypes["e_game_server_node_regions_enum"] | undefined | null | Variable<any, string>,
+	region_veto_picks?: ValueTypes["match_region_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_status_enum"] | undefined | null | Variable<any, string>,
 	tournament_brackets?: ValueTypes["tournament_brackets_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	veto_picks?: ValueTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	winner?: ValueTypes["match_lineups_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
@@ -6547,6 +6601,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
@@ -6600,6 +6656,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
@@ -6681,6 +6739,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	current_match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	demos_aggregate?: ValueTypes["match_map_demos_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	e_match_status?: ValueTypes["e_match_status_order_by"] | undefined | null | Variable<any, string>,
+	e_region?: ValueTypes["e_game_server_node_regions_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -6694,6 +6753,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineup_2?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_veto_picking_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	map_veto_picks_aggregate?: ValueTypes["match_map_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	map_veto_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_maps_aggregate?: ValueTypes["match_maps_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -6712,6 +6772,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	player_utility_aggregate?: ValueTypes["player_utility_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	region?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	region_veto_picking_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	region_veto_picks_aggregate?: ValueTypes["match_region_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	scheduled_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	server?: ValueTypes["servers_order_by"] | undefined | null | Variable<any, string>,
 	server_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -6722,7 +6783,6 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	tournament_brackets_aggregate?: ValueTypes["tournament_brackets_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	tv_connection_link?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tv_connection_string?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	veto_picks_aggregate?: ValueTypes["match_map_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	winner?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -22740,6 +22800,15 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	nodes?:ResolverInputTypes["match_region_veto_picks"],
 		__typename?: boolean | `@${string}`
 }>;
+	["match_region_veto_picks_aggregate_bool_exp"]: {
+	count?: ResolverInputTypes["match_region_veto_picks_aggregate_bool_exp_count"] | undefined | null
+};
+	["match_region_veto_picks_aggregate_bool_exp_count"]: {
+	arguments?: Array<ResolverInputTypes["match_region_veto_picks_select_column"]> | undefined | null,
+	distinct?: boolean | undefined | null,
+	filter?: ResolverInputTypes["match_region_veto_picks_bool_exp"] | undefined | null,
+	predicate: ResolverInputTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "match_region_veto_picks" */
 ["match_region_veto_picks_aggregate_fields"]: AliasType<{
 count?: [{	columns?: Array<ResolverInputTypes["match_region_veto_picks_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
@@ -22747,6 +22816,18 @@ count?: [{	columns?: Array<ResolverInputTypes["match_region_veto_picks_select_co
 	min?:ResolverInputTypes["match_region_veto_picks_min_fields"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by aggregate values of table "match_region_veto_picks" */
+["match_region_veto_picks_aggregate_order_by"]: {
+	count?: ResolverInputTypes["order_by"] | undefined | null,
+	max?: ResolverInputTypes["match_region_veto_picks_max_order_by"] | undefined | null,
+	min?: ResolverInputTypes["match_region_veto_picks_min_order_by"] | undefined | null
+};
+	/** input type for inserting array relation for remote table "match_region_veto_picks" */
+["match_region_veto_picks_arr_rel_insert_input"]: {
+	data: Array<ResolverInputTypes["match_region_veto_picks_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["match_region_veto_picks_on_conflict"] | undefined | null
+};
 	/** Boolean expression to filter rows from the table "match_region_veto_picks". All fields are combined with a logical 'AND'. */
 ["match_region_veto_picks_bool_exp"]: {
 	_and?: Array<ResolverInputTypes["match_region_veto_picks_bool_exp"]> | undefined | null,
@@ -22782,6 +22863,13 @@ count?: [{	columns?: Array<ResolverInputTypes["match_region_veto_picks_select_co
 	match_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by max() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_max_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** aggregate min on columns */
 ["match_region_veto_picks_min_fields"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -22790,6 +22878,13 @@ count?: [{	columns?: Array<ResolverInputTypes["match_region_veto_picks_select_co
 	match_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** order by min() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_min_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
+};
 	/** response of any mutation on the table "match_region_veto_picks" */
 ["match_region_veto_picks_mutation_response"]: AliasType<{
 	/** number of rows affected by the mutation */
@@ -22889,6 +22984,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null},ResolverInputTypes["match_map_demos_aggregate"]],
 	/** An object relationship */
 	e_match_status?:ResolverInputTypes["e_match_status"],
+	/** An object relationship */
+	e_region?:ResolverInputTypes["e_game_server_node_regions"],
 	id?:boolean | `@${string}`,
 	/** A computed field, executes function "is_captain" */
 	is_captain?:boolean | `@${string}`,
@@ -22911,6 +23008,18 @@ demos_aggregate?: [{	/** distinct select on columns */
 	lineup_2_id?:boolean | `@${string}`,
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?:boolean | `@${string}`,
+map_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_map_veto_picks"]],
+map_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_map_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_map_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_map_veto_picks_aggregate"]],
 	/** A computed field, executes function "get_map_veto_type" */
 	map_veto_type?:boolean | `@${string}`,
 match_maps?: [{	/** distinct select on columns */
@@ -23023,6 +23132,18 @@ player_utility_aggregate?: [{	/** distinct select on columns */
 	region?:boolean | `@${string}`,
 	/** A computed field, executes function "get_region_veto_picking_lineup_id" */
 	region_veto_picking_lineup_id?:boolean | `@${string}`,
+region_veto_picks?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_region_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_region_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_region_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_region_veto_picks"]],
+region_veto_picks_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_region_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_region_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_region_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_region_veto_picks_aggregate"]],
 	scheduled_at?:boolean | `@${string}`,
 	/** An object relationship */
 	server?:ResolverInputTypes["servers"],
@@ -23054,18 +23175,6 @@ tournament_brackets_aggregate?: [{	/** distinct select on columns */
 	tv_connection_link?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?:boolean | `@${string}`,
-veto_picks?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["match_map_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["match_map_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_map_veto_picks"]],
-veto_picks_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["match_map_veto_picks_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["match_map_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_map_veto_picks_aggregate"]],
 	/** An object relationship */
 	winner?:ResolverInputTypes["match_lineups"],
 	winning_lineup_id?:boolean | `@${string}`,
@@ -23146,12 +23255,13 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	can_start?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	cancels_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	connection_link?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	connection_string?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	current_match_map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	demos?: ResolverInputTypes["match_map_demos_bool_exp"] | undefined | null,
 	demos_aggregate?: ResolverInputTypes["match_map_demos_aggregate_bool_exp"] | undefined | null,
 	e_match_status?: ResolverInputTypes["e_match_status_bool_exp"] | undefined | null,
+	e_region?: ResolverInputTypes["e_game_server_node_regions_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_captain?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_coach?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -23165,6 +23275,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineup_2?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	map_veto_picking_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	map_veto_picks?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null,
+	map_veto_picks_aggregate?: ResolverInputTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined | null,
 	map_veto_type?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_bool_exp"] | undefined | null,
@@ -23191,6 +23303,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_utility_aggregate?: ResolverInputTypes["player_utility_aggregate_bool_exp"] | undefined | null,
 	region?: ResolverInputTypes["e_game_server_node_regions_enum_comparison_exp"] | undefined | null,
 	region_veto_picking_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	region_veto_picks?: ResolverInputTypes["match_region_veto_picks_bool_exp"] | undefined | null,
+	region_veto_picks_aggregate?: ResolverInputTypes["match_region_veto_picks_aggregate_bool_exp"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	server?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -23202,8 +23316,6 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	tournament_brackets_aggregate?: ResolverInputTypes["tournament_brackets_aggregate_bool_exp"] | undefined | null,
 	tv_connection_link?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	tv_connection_string?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
-	veto_picks?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null,
-	veto_picks_aggregate?: ResolverInputTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined | null,
 	winner?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	winning_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null
 };
@@ -23218,12 +23330,14 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	demos?: ResolverInputTypes["match_map_demos_arr_rel_insert_input"] | undefined | null,
 	e_match_status?: ResolverInputTypes["e_match_status_obj_rel_insert_input"] | undefined | null,
+	e_region?: ResolverInputTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	label?: string | undefined | null,
 	lineup_1?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	lineup_1_id?: ResolverInputTypes["uuid"] | undefined | null,
 	lineup_2?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["uuid"] | undefined | null,
+	map_veto_picks?: ResolverInputTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null,
 	match_maps?: ResolverInputTypes["match_maps_arr_rel_insert_input"] | undefined | null,
 	match_options_id?: ResolverInputTypes["uuid"] | undefined | null,
 	options?: ResolverInputTypes["match_options_obj_rel_insert_input"] | undefined | null,
@@ -23238,12 +23352,12 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_unused_utilities?: ResolverInputTypes["player_unused_utility_arr_rel_insert_input"] | undefined | null,
 	player_utility?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null,
 	region?: ResolverInputTypes["e_game_server_node_regions_enum"] | undefined | null,
+	region_veto_picks?: ResolverInputTypes["match_region_veto_picks_arr_rel_insert_input"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	server?: ResolverInputTypes["servers_obj_rel_insert_input"] | undefined | null,
 	server_id?: ResolverInputTypes["uuid"] | undefined | null,
 	status?: ResolverInputTypes["e_match_status_enum"] | undefined | null,
 	tournament_brackets?: ResolverInputTypes["tournament_brackets_arr_rel_insert_input"] | undefined | null,
-	veto_picks?: ResolverInputTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null,
 	winner?: ResolverInputTypes["match_lineups_obj_rel_insert_input"] | undefined | null,
 	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
 };
@@ -23253,6 +23367,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
@@ -23306,6 +23422,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
@@ -23387,6 +23505,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	current_match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	demos_aggregate?: ResolverInputTypes["match_map_demos_aggregate_order_by"] | undefined | null,
 	e_match_status?: ResolverInputTypes["e_match_status_order_by"] | undefined | null,
+	e_region?: ResolverInputTypes["e_game_server_node_regions_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_captain?: ResolverInputTypes["order_by"] | undefined | null,
 	is_coach?: ResolverInputTypes["order_by"] | undefined | null,
@@ -23400,6 +23519,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineup_2?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["order_by"] | undefined | null,
 	map_veto_picking_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	map_veto_picks_aggregate?: ResolverInputTypes["match_map_veto_picks_aggregate_order_by"] | undefined | null,
 	map_veto_type?: ResolverInputTypes["order_by"] | undefined | null,
 	match_maps_aggregate?: ResolverInputTypes["match_maps_aggregate_order_by"] | undefined | null,
 	match_options_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -23418,6 +23538,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	player_utility_aggregate?: ResolverInputTypes["player_utility_aggregate_order_by"] | undefined | null,
 	region?: ResolverInputTypes["order_by"] | undefined | null,
 	region_veto_picking_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
+	region_veto_picks_aggregate?: ResolverInputTypes["match_region_veto_picks_aggregate_order_by"] | undefined | null,
 	scheduled_at?: ResolverInputTypes["order_by"] | undefined | null,
 	server?: ResolverInputTypes["servers_order_by"] | undefined | null,
 	server_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -23428,7 +23549,6 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	tournament_brackets_aggregate?: ResolverInputTypes["tournament_brackets_aggregate_order_by"] | undefined | null,
 	tv_connection_link?: ResolverInputTypes["order_by"] | undefined | null,
 	tv_connection_string?: ResolverInputTypes["order_by"] | undefined | null,
-	veto_picks_aggregate?: ResolverInputTypes["match_map_veto_picks_aggregate_order_by"] | undefined | null,
 	winner?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -38895,11 +39015,32 @@ export type ModelTypes = {
 		aggregate?: ModelTypes["match_region_veto_picks_aggregate_fields"] | undefined,
 	nodes: Array<ModelTypes["match_region_veto_picks"]>
 };
+	["match_region_veto_picks_aggregate_bool_exp"]: {
+	count?: ModelTypes["match_region_veto_picks_aggregate_bool_exp_count"] | undefined
+};
+	["match_region_veto_picks_aggregate_bool_exp_count"]: {
+	arguments?: Array<ModelTypes["match_region_veto_picks_select_column"]> | undefined,
+	distinct?: boolean | undefined,
+	filter?: ModelTypes["match_region_veto_picks_bool_exp"] | undefined,
+	predicate: ModelTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "match_region_veto_picks" */
 ["match_region_veto_picks_aggregate_fields"]: {
 		count: number,
 	max?: ModelTypes["match_region_veto_picks_max_fields"] | undefined,
 	min?: ModelTypes["match_region_veto_picks_min_fields"] | undefined
+};
+	/** order by aggregate values of table "match_region_veto_picks" */
+["match_region_veto_picks_aggregate_order_by"]: {
+	count?: ModelTypes["order_by"] | undefined,
+	max?: ModelTypes["match_region_veto_picks_max_order_by"] | undefined,
+	min?: ModelTypes["match_region_veto_picks_min_order_by"] | undefined
+};
+	/** input type for inserting array relation for remote table "match_region_veto_picks" */
+["match_region_veto_picks_arr_rel_insert_input"]: {
+	data: Array<ModelTypes["match_region_veto_picks_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: ModelTypes["match_region_veto_picks_on_conflict"] | undefined
 };
 	/** Boolean expression to filter rows from the table "match_region_veto_picks". All fields are combined with a logical 'AND'. */
 ["match_region_veto_picks_bool_exp"]: {
@@ -38934,12 +39075,26 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_lineup_id?: ModelTypes["uuid"] | undefined
 };
+	/** order by max() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_max_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
+	id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined,
+	match_lineup_id?: ModelTypes["order_by"] | undefined
+};
 	/** aggregate min on columns */
 ["match_region_veto_picks_min_fields"]: {
 		created_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	match_id?: ModelTypes["uuid"] | undefined,
 	match_lineup_id?: ModelTypes["uuid"] | undefined
+};
+	/** order by min() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_min_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
+	id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined,
+	match_lineup_id?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_region_veto_picks" */
 ["match_region_veto_picks_mutation_response"]: {
@@ -39019,7 +39174,7 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_connection_string" */
-	connection_string?: boolean | undefined,
+	connection_string?: string | undefined,
 	created_at: ModelTypes["timestamptz"],
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: ModelTypes["uuid"] | undefined,
@@ -39029,6 +39184,8 @@ export type ModelTypes = {
 	demos_aggregate: ModelTypes["match_map_demos_aggregate"],
 	/** An object relationship */
 	e_match_status: ModelTypes["e_match_status"],
+	/** An object relationship */
+	e_region?: ModelTypes["e_game_server_node_regions"] | undefined,
 	id: ModelTypes["uuid"],
 	/** A computed field, executes function "is_captain" */
 	is_captain?: boolean | undefined,
@@ -39051,6 +39208,10 @@ export type ModelTypes = {
 	lineup_2_id: ModelTypes["uuid"],
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
+	/** An array relationship */
+	map_veto_picks: Array<ModelTypes["match_map_veto_picks"]>,
+	/** An aggregate relationship */
+	map_veto_picks_aggregate: ModelTypes["match_map_veto_picks_aggregate"],
 	/** A computed field, executes function "get_map_veto_type" */
 	map_veto_type?: string | undefined,
 	/** An array relationship */
@@ -39099,6 +39260,10 @@ export type ModelTypes = {
 	region?: ModelTypes["e_game_server_node_regions_enum"] | undefined,
 	/** A computed field, executes function "get_region_veto_picking_lineup_id" */
 	region_veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
+	/** An array relationship */
+	region_veto_picks: Array<ModelTypes["match_region_veto_picks"]>,
+	/** An aggregate relationship */
+	region_veto_picks_aggregate: ModelTypes["match_region_veto_picks_aggregate"],
 	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	/** An object relationship */
 	server?: ModelTypes["servers"] | undefined,
@@ -39118,10 +39283,6 @@ export type ModelTypes = {
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?: string | undefined,
-	/** An array relationship */
-	veto_picks: Array<ModelTypes["match_map_veto_picks"]>,
-	/** An aggregate relationship */
-	veto_picks_aggregate: ModelTypes["match_map_veto_picks_aggregate"],
 	/** An object relationship */
 	winner?: ModelTypes["match_lineups"] | undefined,
 	winning_lineup_id?: ModelTypes["uuid"] | undefined
@@ -39198,12 +39359,13 @@ export type ModelTypes = {
 	can_start?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	cancels_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	connection_link?: ModelTypes["String_comparison_exp"] | undefined,
-	connection_string?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	connection_string?: ModelTypes["String_comparison_exp"] | undefined,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	current_match_map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	demos?: ModelTypes["match_map_demos_bool_exp"] | undefined,
 	demos_aggregate?: ModelTypes["match_map_demos_aggregate_bool_exp"] | undefined,
 	e_match_status?: ModelTypes["e_match_status_bool_exp"] | undefined,
+	e_region?: ModelTypes["e_game_server_node_regions_bool_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	is_captain?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -39217,6 +39379,8 @@ export type ModelTypes = {
 	lineup_2?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	lineup_2_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	map_veto_picking_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	map_veto_picks?: ModelTypes["match_map_veto_picks_bool_exp"] | undefined,
+	map_veto_picks_aggregate?: ModelTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined,
 	map_veto_type?: ModelTypes["String_comparison_exp"] | undefined,
 	match_maps?: ModelTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_bool_exp"] | undefined,
@@ -39243,6 +39407,8 @@ export type ModelTypes = {
 	player_utility_aggregate?: ModelTypes["player_utility_aggregate_bool_exp"] | undefined,
 	region?: ModelTypes["e_game_server_node_regions_enum_comparison_exp"] | undefined,
 	region_veto_picking_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	region_veto_picks?: ModelTypes["match_region_veto_picks_bool_exp"] | undefined,
+	region_veto_picks_aggregate?: ModelTypes["match_region_veto_picks_aggregate_bool_exp"] | undefined,
 	scheduled_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	server?: ModelTypes["servers_bool_exp"] | undefined,
 	server_id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -39254,8 +39420,6 @@ export type ModelTypes = {
 	tournament_brackets_aggregate?: ModelTypes["tournament_brackets_aggregate_bool_exp"] | undefined,
 	tv_connection_link?: ModelTypes["String_comparison_exp"] | undefined,
 	tv_connection_string?: ModelTypes["String_comparison_exp"] | undefined,
-	veto_picks?: ModelTypes["match_map_veto_picks_bool_exp"] | undefined,
-	veto_picks_aggregate?: ModelTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined,
 	winner?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	winning_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined
 };
@@ -39269,12 +39433,14 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	demos?: ModelTypes["match_map_demos_arr_rel_insert_input"] | undefined,
 	e_match_status?: ModelTypes["e_match_status_obj_rel_insert_input"] | undefined,
+	e_region?: ModelTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	label?: string | undefined,
 	lineup_1?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_1_id?: ModelTypes["uuid"] | undefined,
 	lineup_2?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_2_id?: ModelTypes["uuid"] | undefined,
+	map_veto_picks?: ModelTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined,
 	match_maps?: ModelTypes["match_maps_arr_rel_insert_input"] | undefined,
 	match_options_id?: ModelTypes["uuid"] | undefined,
 	options?: ModelTypes["match_options_obj_rel_insert_input"] | undefined,
@@ -39289,12 +39455,12 @@ export type ModelTypes = {
 	player_unused_utilities?: ModelTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	player_utility?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined,
 	region?: ModelTypes["e_game_server_node_regions_enum"] | undefined,
+	region_veto_picks?: ModelTypes["match_region_veto_picks_arr_rel_insert_input"] | undefined,
 	scheduled_at?: ModelTypes["timestamptz"] | undefined,
 	server?: ModelTypes["servers_obj_rel_insert_input"] | undefined,
 	server_id?: ModelTypes["uuid"] | undefined,
 	status?: ModelTypes["e_match_status_enum"] | undefined,
 	tournament_brackets?: ModelTypes["tournament_brackets_arr_rel_insert_input"] | undefined,
-	veto_picks?: ModelTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined,
 	winner?: ModelTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
@@ -39304,6 +39470,8 @@ export type ModelTypes = {
 	cancels_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: ModelTypes["uuid"] | undefined,
@@ -39356,6 +39524,8 @@ export type ModelTypes = {
 	cancels_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: ModelTypes["uuid"] | undefined,
@@ -39435,6 +39605,7 @@ export type ModelTypes = {
 	current_match_map_id?: ModelTypes["order_by"] | undefined,
 	demos_aggregate?: ModelTypes["match_map_demos_aggregate_order_by"] | undefined,
 	e_match_status?: ModelTypes["e_match_status_order_by"] | undefined,
+	e_region?: ModelTypes["e_game_server_node_regions_order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	is_captain?: ModelTypes["order_by"] | undefined,
 	is_coach?: ModelTypes["order_by"] | undefined,
@@ -39448,6 +39619,7 @@ export type ModelTypes = {
 	lineup_2?: ModelTypes["match_lineups_order_by"] | undefined,
 	lineup_2_id?: ModelTypes["order_by"] | undefined,
 	map_veto_picking_lineup_id?: ModelTypes["order_by"] | undefined,
+	map_veto_picks_aggregate?: ModelTypes["match_map_veto_picks_aggregate_order_by"] | undefined,
 	map_veto_type?: ModelTypes["order_by"] | undefined,
 	match_maps_aggregate?: ModelTypes["match_maps_aggregate_order_by"] | undefined,
 	match_options_id?: ModelTypes["order_by"] | undefined,
@@ -39466,6 +39638,7 @@ export type ModelTypes = {
 	player_utility_aggregate?: ModelTypes["player_utility_aggregate_order_by"] | undefined,
 	region?: ModelTypes["order_by"] | undefined,
 	region_veto_picking_lineup_id?: ModelTypes["order_by"] | undefined,
+	region_veto_picks_aggregate?: ModelTypes["match_region_veto_picks_aggregate_order_by"] | undefined,
 	scheduled_at?: ModelTypes["order_by"] | undefined,
 	server?: ModelTypes["servers_order_by"] | undefined,
 	server_id?: ModelTypes["order_by"] | undefined,
@@ -39476,7 +39649,6 @@ export type ModelTypes = {
 	tournament_brackets_aggregate?: ModelTypes["tournament_brackets_aggregate_order_by"] | undefined,
 	tv_connection_link?: ModelTypes["order_by"] | undefined,
 	tv_connection_string?: ModelTypes["order_by"] | undefined,
-	veto_picks_aggregate?: ModelTypes["match_map_veto_picks_aggregate_order_by"] | undefined,
 	winner?: ModelTypes["match_lineups_order_by"] | undefined,
 	winning_lineup_id?: ModelTypes["order_by"] | undefined
 };
@@ -53396,12 +53568,33 @@ export type GraphQLTypes = {
 	aggregate?: GraphQLTypes["match_region_veto_picks_aggregate_fields"] | undefined,
 	nodes: Array<GraphQLTypes["match_region_veto_picks"]>
 };
+	["match_region_veto_picks_aggregate_bool_exp"]: {
+		count?: GraphQLTypes["match_region_veto_picks_aggregate_bool_exp_count"] | undefined
+};
+	["match_region_veto_picks_aggregate_bool_exp_count"]: {
+		arguments?: Array<GraphQLTypes["match_region_veto_picks_select_column"]> | undefined,
+	distinct?: boolean | undefined,
+	filter?: GraphQLTypes["match_region_veto_picks_bool_exp"] | undefined,
+	predicate: GraphQLTypes["Int_comparison_exp"]
+};
 	/** aggregate fields of "match_region_veto_picks" */
 ["match_region_veto_picks_aggregate_fields"]: {
 	__typename: "match_region_veto_picks_aggregate_fields",
 	count: number,
 	max?: GraphQLTypes["match_region_veto_picks_max_fields"] | undefined,
 	min?: GraphQLTypes["match_region_veto_picks_min_fields"] | undefined
+};
+	/** order by aggregate values of table "match_region_veto_picks" */
+["match_region_veto_picks_aggregate_order_by"]: {
+		count?: GraphQLTypes["order_by"] | undefined,
+	max?: GraphQLTypes["match_region_veto_picks_max_order_by"] | undefined,
+	min?: GraphQLTypes["match_region_veto_picks_min_order_by"] | undefined
+};
+	/** input type for inserting array relation for remote table "match_region_veto_picks" */
+["match_region_veto_picks_arr_rel_insert_input"]: {
+		data: Array<GraphQLTypes["match_region_veto_picks_insert_input"]>,
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["match_region_veto_picks_on_conflict"] | undefined
 };
 	/** Boolean expression to filter rows from the table "match_region_veto_picks". All fields are combined with a logical 'AND'. */
 ["match_region_veto_picks_bool_exp"]: {
@@ -53438,6 +53631,13 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
+	/** order by max() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_max_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined,
+	match_lineup_id?: GraphQLTypes["order_by"] | undefined
+};
 	/** aggregate min on columns */
 ["match_region_veto_picks_min_fields"]: {
 	__typename: "match_region_veto_picks_min_fields",
@@ -53445,6 +53645,13 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	match_lineup_id?: GraphQLTypes["uuid"] | undefined
+};
+	/** order by min() on columns of table "match_region_veto_picks" */
+["match_region_veto_picks_min_order_by"]: {
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined,
+	match_lineup_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_region_veto_picks" */
 ["match_region_veto_picks_mutation_response"]: {
@@ -53528,7 +53735,7 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_connection_string" */
-	connection_string?: boolean | undefined,
+	connection_string?: string | undefined,
 	created_at: GraphQLTypes["timestamptz"],
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
@@ -53538,6 +53745,8 @@ export type GraphQLTypes = {
 	demos_aggregate: GraphQLTypes["match_map_demos_aggregate"],
 	/** An object relationship */
 	e_match_status: GraphQLTypes["e_match_status"],
+	/** An object relationship */
+	e_region?: GraphQLTypes["e_game_server_node_regions"] | undefined,
 	id: GraphQLTypes["uuid"],
 	/** A computed field, executes function "is_captain" */
 	is_captain?: boolean | undefined,
@@ -53560,6 +53769,10 @@ export type GraphQLTypes = {
 	lineup_2_id: GraphQLTypes["uuid"],
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
+	/** An array relationship */
+	map_veto_picks: Array<GraphQLTypes["match_map_veto_picks"]>,
+	/** An aggregate relationship */
+	map_veto_picks_aggregate: GraphQLTypes["match_map_veto_picks_aggregate"],
 	/** A computed field, executes function "get_map_veto_type" */
 	map_veto_type?: string | undefined,
 	/** An array relationship */
@@ -53608,6 +53821,10 @@ export type GraphQLTypes = {
 	region?: GraphQLTypes["e_game_server_node_regions_enum"] | undefined,
 	/** A computed field, executes function "get_region_veto_picking_lineup_id" */
 	region_veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
+	/** An array relationship */
+	region_veto_picks: Array<GraphQLTypes["match_region_veto_picks"]>,
+	/** An aggregate relationship */
+	region_veto_picks_aggregate: GraphQLTypes["match_region_veto_picks_aggregate"],
 	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** An object relationship */
 	server?: GraphQLTypes["servers"] | undefined,
@@ -53627,10 +53844,6 @@ export type GraphQLTypes = {
 	tv_connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_tv_connection_string" */
 	tv_connection_string?: string | undefined,
-	/** An array relationship */
-	veto_picks: Array<GraphQLTypes["match_map_veto_picks"]>,
-	/** An aggregate relationship */
-	veto_picks_aggregate: GraphQLTypes["match_map_veto_picks_aggregate"],
 	/** An object relationship */
 	winner?: GraphQLTypes["match_lineups"] | undefined,
 	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
@@ -53710,12 +53923,13 @@ export type GraphQLTypes = {
 	can_start?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	cancels_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	connection_link?: GraphQLTypes["String_comparison_exp"] | undefined,
-	connection_string?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	current_match_map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	demos?: GraphQLTypes["match_map_demos_bool_exp"] | undefined,
 	demos_aggregate?: GraphQLTypes["match_map_demos_aggregate_bool_exp"] | undefined,
 	e_match_status?: GraphQLTypes["e_match_status_bool_exp"] | undefined,
+	e_region?: GraphQLTypes["e_game_server_node_regions_bool_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	is_captain?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -53729,6 +53943,8 @@ export type GraphQLTypes = {
 	lineup_2?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	lineup_2_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	map_veto_picking_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	map_veto_picks?: GraphQLTypes["match_map_veto_picks_bool_exp"] | undefined,
+	map_veto_picks_aggregate?: GraphQLTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined,
 	map_veto_type?: GraphQLTypes["String_comparison_exp"] | undefined,
 	match_maps?: GraphQLTypes["match_maps_bool_exp"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_bool_exp"] | undefined,
@@ -53755,6 +53971,8 @@ export type GraphQLTypes = {
 	player_utility_aggregate?: GraphQLTypes["player_utility_aggregate_bool_exp"] | undefined,
 	region?: GraphQLTypes["e_game_server_node_regions_enum_comparison_exp"] | undefined,
 	region_veto_picking_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	region_veto_picks?: GraphQLTypes["match_region_veto_picks_bool_exp"] | undefined,
+	region_veto_picks_aggregate?: GraphQLTypes["match_region_veto_picks_aggregate_bool_exp"] | undefined,
 	scheduled_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	server?: GraphQLTypes["servers_bool_exp"] | undefined,
 	server_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -53766,8 +53984,6 @@ export type GraphQLTypes = {
 	tournament_brackets_aggregate?: GraphQLTypes["tournament_brackets_aggregate_bool_exp"] | undefined,
 	tv_connection_link?: GraphQLTypes["String_comparison_exp"] | undefined,
 	tv_connection_string?: GraphQLTypes["String_comparison_exp"] | undefined,
-	veto_picks?: GraphQLTypes["match_map_veto_picks_bool_exp"] | undefined,
-	veto_picks_aggregate?: GraphQLTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined,
 	winner?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	winning_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined
 };
@@ -53782,12 +53998,14 @@ export type GraphQLTypes = {
 		created_at?: GraphQLTypes["timestamptz"] | undefined,
 	demos?: GraphQLTypes["match_map_demos_arr_rel_insert_input"] | undefined,
 	e_match_status?: GraphQLTypes["e_match_status_obj_rel_insert_input"] | undefined,
+	e_region?: GraphQLTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
 	lineup_1?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_1_id?: GraphQLTypes["uuid"] | undefined,
 	lineup_2?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	lineup_2_id?: GraphQLTypes["uuid"] | undefined,
+	map_veto_picks?: GraphQLTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined,
 	match_maps?: GraphQLTypes["match_maps_arr_rel_insert_input"] | undefined,
 	match_options_id?: GraphQLTypes["uuid"] | undefined,
 	options?: GraphQLTypes["match_options_obj_rel_insert_input"] | undefined,
@@ -53802,12 +54020,12 @@ export type GraphQLTypes = {
 	player_unused_utilities?: GraphQLTypes["player_unused_utility_arr_rel_insert_input"] | undefined,
 	player_utility?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined,
 	region?: GraphQLTypes["e_game_server_node_regions_enum"] | undefined,
+	region_veto_picks?: GraphQLTypes["match_region_veto_picks_arr_rel_insert_input"] | undefined,
 	scheduled_at?: GraphQLTypes["timestamptz"] | undefined,
 	server?: GraphQLTypes["servers_obj_rel_insert_input"] | undefined,
 	server_id?: GraphQLTypes["uuid"] | undefined,
 	status?: GraphQLTypes["e_match_status_enum"] | undefined,
 	tournament_brackets?: GraphQLTypes["tournament_brackets_arr_rel_insert_input"] | undefined,
-	veto_picks?: GraphQLTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined,
 	winner?: GraphQLTypes["match_lineups_obj_rel_insert_input"] | undefined,
 	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
@@ -53818,6 +54036,8 @@ export type GraphQLTypes = {
 	cancels_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
@@ -53871,6 +54091,8 @@ export type GraphQLTypes = {
 	cancels_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
+	/** A computed field, executes function "get_match_connection_string" */
+	connection_string?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
@@ -53951,6 +54173,7 @@ export type GraphQLTypes = {
 	current_match_map_id?: GraphQLTypes["order_by"] | undefined,
 	demos_aggregate?: GraphQLTypes["match_map_demos_aggregate_order_by"] | undefined,
 	e_match_status?: GraphQLTypes["e_match_status_order_by"] | undefined,
+	e_region?: GraphQLTypes["e_game_server_node_regions_order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	is_captain?: GraphQLTypes["order_by"] | undefined,
 	is_coach?: GraphQLTypes["order_by"] | undefined,
@@ -53964,6 +54187,7 @@ export type GraphQLTypes = {
 	lineup_2?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	lineup_2_id?: GraphQLTypes["order_by"] | undefined,
 	map_veto_picking_lineup_id?: GraphQLTypes["order_by"] | undefined,
+	map_veto_picks_aggregate?: GraphQLTypes["match_map_veto_picks_aggregate_order_by"] | undefined,
 	map_veto_type?: GraphQLTypes["order_by"] | undefined,
 	match_maps_aggregate?: GraphQLTypes["match_maps_aggregate_order_by"] | undefined,
 	match_options_id?: GraphQLTypes["order_by"] | undefined,
@@ -53982,6 +54206,7 @@ export type GraphQLTypes = {
 	player_utility_aggregate?: GraphQLTypes["player_utility_aggregate_order_by"] | undefined,
 	region?: GraphQLTypes["order_by"] | undefined,
 	region_veto_picking_lineup_id?: GraphQLTypes["order_by"] | undefined,
+	region_veto_picks_aggregate?: GraphQLTypes["match_region_veto_picks_aggregate_order_by"] | undefined,
 	scheduled_at?: GraphQLTypes["order_by"] | undefined,
 	server?: GraphQLTypes["servers_order_by"] | undefined,
 	server_id?: GraphQLTypes["order_by"] | undefined,
@@ -53992,7 +54217,6 @@ export type GraphQLTypes = {
 	tournament_brackets_aggregate?: GraphQLTypes["tournament_brackets_aggregate_order_by"] | undefined,
 	tv_connection_link?: GraphQLTypes["order_by"] | undefined,
 	tv_connection_string?: GraphQLTypes["order_by"] | undefined,
-	veto_picks_aggregate?: GraphQLTypes["match_map_veto_picks_aggregate_order_by"] | undefined,
 	winner?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	winning_lineup_id?: GraphQLTypes["order_by"] | undefined
 };
@@ -65270,9 +65494,15 @@ type ZEUS_VARIABLES = {
 	["match_options_stream_cursor_value_input"]: ValueTypes["match_options_stream_cursor_value_input"];
 	["match_options_update_column"]: ValueTypes["match_options_update_column"];
 	["match_options_updates"]: ValueTypes["match_options_updates"];
+	["match_region_veto_picks_aggregate_bool_exp"]: ValueTypes["match_region_veto_picks_aggregate_bool_exp"];
+	["match_region_veto_picks_aggregate_bool_exp_count"]: ValueTypes["match_region_veto_picks_aggregate_bool_exp_count"];
+	["match_region_veto_picks_aggregate_order_by"]: ValueTypes["match_region_veto_picks_aggregate_order_by"];
+	["match_region_veto_picks_arr_rel_insert_input"]: ValueTypes["match_region_veto_picks_arr_rel_insert_input"];
 	["match_region_veto_picks_bool_exp"]: ValueTypes["match_region_veto_picks_bool_exp"];
 	["match_region_veto_picks_constraint"]: ValueTypes["match_region_veto_picks_constraint"];
 	["match_region_veto_picks_insert_input"]: ValueTypes["match_region_veto_picks_insert_input"];
+	["match_region_veto_picks_max_order_by"]: ValueTypes["match_region_veto_picks_max_order_by"];
+	["match_region_veto_picks_min_order_by"]: ValueTypes["match_region_veto_picks_min_order_by"];
 	["match_region_veto_picks_on_conflict"]: ValueTypes["match_region_veto_picks_on_conflict"];
 	["match_region_veto_picks_order_by"]: ValueTypes["match_region_veto_picks_order_by"];
 	["match_region_veto_picks_pk_columns_input"]: ValueTypes["match_region_veto_picks_pk_columns_input"];

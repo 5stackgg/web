@@ -2711,10 +2711,27 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"match_options_set_input",
 		where:"match_options_bool_exp"
 	},
+	match_region_veto_picks_aggregate_bool_exp:{
+		count:"match_region_veto_picks_aggregate_bool_exp_count"
+	},
+	match_region_veto_picks_aggregate_bool_exp_count:{
+		arguments:"match_region_veto_picks_select_column",
+		filter:"match_region_veto_picks_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	match_region_veto_picks_aggregate_fields:{
 		count:{
 			columns:"match_region_veto_picks_select_column"
 		}
+	},
+	match_region_veto_picks_aggregate_order_by:{
+		count:"order_by",
+		max:"match_region_veto_picks_max_order_by",
+		min:"match_region_veto_picks_min_order_by"
+	},
+	match_region_veto_picks_arr_rel_insert_input:{
+		data:"match_region_veto_picks_insert_input",
+		on_conflict:"match_region_veto_picks_on_conflict"
 	},
 	match_region_veto_picks_bool_exp:{
 		_and:"match_region_veto_picks_bool_exp",
@@ -2739,6 +2756,18 @@ export const AllTypesProps: Record<string,any> = {
 		match_lineup_id:"uuid",
 		region:"e_game_server_node_regions_enum",
 		type:"e_veto_pick_types_enum"
+	},
+	match_region_veto_picks_max_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by"
+	},
+	match_region_veto_picks_min_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by"
 	},
 	match_region_veto_picks_on_conflict:{
 		constraint:"match_region_veto_picks_constraint",
@@ -2794,6 +2823,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"match_map_demos_select_column",
 			order_by:"match_map_demos_order_by",
 			where:"match_map_demos_bool_exp"
+		},
+		map_veto_picks:{
+			distinct_on:"match_map_veto_picks_select_column",
+			order_by:"match_map_veto_picks_order_by",
+			where:"match_map_veto_picks_bool_exp"
+		},
+		map_veto_picks_aggregate:{
+			distinct_on:"match_map_veto_picks_select_column",
+			order_by:"match_map_veto_picks_order_by",
+			where:"match_map_veto_picks_bool_exp"
 		},
 		match_maps:{
 			distinct_on:"match_maps_select_column",
@@ -2875,6 +2914,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_utility_order_by",
 			where:"player_utility_bool_exp"
 		},
+		region_veto_picks:{
+			distinct_on:"match_region_veto_picks_select_column",
+			order_by:"match_region_veto_picks_order_by",
+			where:"match_region_veto_picks_bool_exp"
+		},
+		region_veto_picks_aggregate:{
+			distinct_on:"match_region_veto_picks_select_column",
+			order_by:"match_region_veto_picks_order_by",
+			where:"match_region_veto_picks_bool_exp"
+		},
 		teams:{
 			distinct_on:"teams_select_column",
 			order_by:"teams_order_by",
@@ -2889,16 +2938,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"tournament_brackets_select_column",
 			order_by:"tournament_brackets_order_by",
 			where:"tournament_brackets_bool_exp"
-		},
-		veto_picks:{
-			distinct_on:"match_map_veto_picks_select_column",
-			order_by:"match_map_veto_picks_order_by",
-			where:"match_map_veto_picks_bool_exp"
-		},
-		veto_picks_aggregate:{
-			distinct_on:"match_map_veto_picks_select_column",
-			order_by:"match_map_veto_picks_order_by",
-			where:"match_map_veto_picks_bool_exp"
 		}
 	},
 	matches_aggregate_bool_exp:{
@@ -2945,12 +2984,13 @@ export const AllTypesProps: Record<string,any> = {
 		can_start:"Boolean_comparison_exp",
 		cancels_at:"timestamptz_comparison_exp",
 		connection_link:"String_comparison_exp",
-		connection_string:"Boolean_comparison_exp",
+		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		current_match_map_id:"uuid_comparison_exp",
 		demos:"match_map_demos_bool_exp",
 		demos_aggregate:"match_map_demos_aggregate_bool_exp",
 		e_match_status:"e_match_status_bool_exp",
+		e_region:"e_game_server_node_regions_bool_exp",
 		id:"uuid_comparison_exp",
 		is_captain:"Boolean_comparison_exp",
 		is_coach:"Boolean_comparison_exp",
@@ -2964,6 +3004,8 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2:"match_lineups_bool_exp",
 		lineup_2_id:"uuid_comparison_exp",
 		map_veto_picking_lineup_id:"uuid_comparison_exp",
+		map_veto_picks:"match_map_veto_picks_bool_exp",
+		map_veto_picks_aggregate:"match_map_veto_picks_aggregate_bool_exp",
 		map_veto_type:"String_comparison_exp",
 		match_maps:"match_maps_bool_exp",
 		match_maps_aggregate:"match_maps_aggregate_bool_exp",
@@ -2990,6 +3032,8 @@ export const AllTypesProps: Record<string,any> = {
 		player_utility_aggregate:"player_utility_aggregate_bool_exp",
 		region:"e_game_server_node_regions_enum_comparison_exp",
 		region_veto_picking_lineup_id:"uuid_comparison_exp",
+		region_veto_picks:"match_region_veto_picks_bool_exp",
+		region_veto_picks_aggregate:"match_region_veto_picks_aggregate_bool_exp",
 		scheduled_at:"timestamptz_comparison_exp",
 		server:"servers_bool_exp",
 		server_id:"uuid_comparison_exp",
@@ -3001,8 +3045,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_brackets_aggregate:"tournament_brackets_aggregate_bool_exp",
 		tv_connection_link:"String_comparison_exp",
 		tv_connection_string:"String_comparison_exp",
-		veto_picks:"match_map_veto_picks_bool_exp",
-		veto_picks_aggregate:"match_map_veto_picks_aggregate_bool_exp",
 		winner:"match_lineups_bool_exp",
 		winning_lineup_id:"uuid_comparison_exp"
 	},
@@ -3014,11 +3056,13 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_status:"e_match_status_obj_rel_insert_input",
+		e_region:"e_game_server_node_regions_obj_rel_insert_input",
 		id:"uuid",
 		lineup_1:"match_lineups_obj_rel_insert_input",
 		lineup_1_id:"uuid",
 		lineup_2:"match_lineups_obj_rel_insert_input",
 		lineup_2_id:"uuid",
+		map_veto_picks:"match_map_veto_picks_arr_rel_insert_input",
 		match_maps:"match_maps_arr_rel_insert_input",
 		match_options_id:"uuid",
 		options:"match_options_obj_rel_insert_input",
@@ -3032,12 +3076,12 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		player_utility:"player_utility_arr_rel_insert_input",
 		region:"e_game_server_node_regions_enum",
+		region_veto_picks:"match_region_veto_picks_arr_rel_insert_input",
 		scheduled_at:"timestamptz",
 		server:"servers_obj_rel_insert_input",
 		server_id:"uuid",
 		status:"e_match_status_enum",
 		tournament_brackets:"tournament_brackets_arr_rel_insert_input",
-		veto_picks:"match_map_veto_picks_arr_rel_insert_input",
 		winner:"match_lineups_obj_rel_insert_input",
 		winning_lineup_id:"uuid"
 	},
@@ -3089,6 +3133,7 @@ export const AllTypesProps: Record<string,any> = {
 		current_match_map_id:"order_by",
 		demos_aggregate:"match_map_demos_aggregate_order_by",
 		e_match_status:"e_match_status_order_by",
+		e_region:"e_game_server_node_regions_order_by",
 		id:"order_by",
 		is_captain:"order_by",
 		is_coach:"order_by",
@@ -3102,6 +3147,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2:"match_lineups_order_by",
 		lineup_2_id:"order_by",
 		map_veto_picking_lineup_id:"order_by",
+		map_veto_picks_aggregate:"match_map_veto_picks_aggregate_order_by",
 		map_veto_type:"order_by",
 		match_maps_aggregate:"match_maps_aggregate_order_by",
 		match_options_id:"order_by",
@@ -3120,6 +3166,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_utility_aggregate:"player_utility_aggregate_order_by",
 		region:"order_by",
 		region_veto_picking_lineup_id:"order_by",
+		region_veto_picks_aggregate:"match_region_veto_picks_aggregate_order_by",
 		scheduled_at:"order_by",
 		server:"servers_order_by",
 		server_id:"order_by",
@@ -3130,7 +3177,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_brackets_aggregate:"tournament_brackets_aggregate_order_by",
 		tv_connection_link:"order_by",
 		tv_connection_string:"order_by",
-		veto_picks_aggregate:"match_map_veto_picks_aggregate_order_by",
 		winner:"match_lineups_order_by",
 		winning_lineup_id:"order_by"
 	},
@@ -11617,12 +11663,13 @@ export const ReturnTypes: Record<string,any> = {
 		can_start:"Boolean",
 		cancels_at:"timestamptz",
 		connection_link:"String",
-		connection_string:"Boolean",
+		connection_string:"String",
 		created_at:"timestamptz",
 		current_match_map_id:"uuid",
 		demos:"match_map_demos",
 		demos_aggregate:"match_map_demos_aggregate",
 		e_match_status:"e_match_status",
+		e_region:"e_game_server_node_regions",
 		id:"uuid",
 		is_captain:"Boolean",
 		is_coach:"Boolean",
@@ -11636,6 +11683,8 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_2:"match_lineups",
 		lineup_2_id:"uuid",
 		map_veto_picking_lineup_id:"uuid",
+		map_veto_picks:"match_map_veto_picks",
+		map_veto_picks_aggregate:"match_map_veto_picks_aggregate",
 		map_veto_type:"String",
 		match_maps:"match_maps",
 		match_maps_aggregate:"match_maps_aggregate",
@@ -11662,6 +11711,8 @@ export const ReturnTypes: Record<string,any> = {
 		player_utility_aggregate:"player_utility_aggregate",
 		region:"e_game_server_node_regions_enum",
 		region_veto_picking_lineup_id:"uuid",
+		region_veto_picks:"match_region_veto_picks",
+		region_veto_picks_aggregate:"match_region_veto_picks_aggregate",
 		scheduled_at:"timestamptz",
 		server:"servers",
 		server_id:"uuid",
@@ -11673,8 +11724,6 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_brackets_aggregate:"tournament_brackets_aggregate",
 		tv_connection_link:"String",
 		tv_connection_string:"String",
-		veto_picks:"match_map_veto_picks",
-		veto_picks_aggregate:"match_map_veto_picks_aggregate",
 		winner:"match_lineups",
 		winning_lineup_id:"uuid"
 	},
@@ -11703,6 +11752,7 @@ export const ReturnTypes: Record<string,any> = {
 	matches_max_fields:{
 		cancels_at:"timestamptz",
 		connection_link:"String",
+		connection_string:"String",
 		created_at:"timestamptz",
 		current_match_map_id:"uuid",
 		id:"uuid",
@@ -11728,6 +11778,7 @@ export const ReturnTypes: Record<string,any> = {
 	matches_min_fields:{
 		cancels_at:"timestamptz",
 		connection_link:"String",
+		connection_string:"String",
 		created_at:"timestamptz",
 		current_match_map_id:"uuid",
 		id:"uuid",

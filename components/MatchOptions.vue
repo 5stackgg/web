@@ -6,15 +6,66 @@ import { FormControl } from "~/components/ui/form";
 
 <template>
   <div class="flex">
-    <FormField v-slot="{ value, handleChange }" name="coaches">
+    <FormField
+      v-slot="{ value, handleChange }"
+      name="map_veto"
+      v-if="!forceVeto"
+    >
       <FormItem
         class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
         @click="handleChange(!value)"
       >
         <div class="space-y-0.5">
-          <FormLabel class="text-base"> Allow Coaches </FormLabel>
+          <FormLabel class="text-base"> Map Veto </FormLabel>
           <FormDescription>
-            Coaches will be spawned and killed at the start of each round
+            Map Veto process is team 1 ban, team 2 ban, team 1 pick, team 2 pick
+            side, team 2 pick, team 1 pick side, team 2 ban ... The process then
+            repeats till a final map is remaining.
+          </FormDescription>
+        </div>
+        <FormControl>
+          <Switch
+            class="pointer-events-none"
+            :checked="value"
+            @update:checked="handleChange"
+          />
+        </FormControl>
+      </FormItem>
+    </FormField>
+
+    <FormField v-slot="{ value, handleChange }" name="region_veto">
+      <FormItem
+        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+        @click="handleChange(!value)"
+      >
+        <div class="space-y-0.5">
+          <FormLabel class="text-base"> Region Veto </FormLabel>
+          <FormDescription>
+            Allows veto to pick the region for the server to be used.
+          </FormDescription>
+        </div>
+        <FormControl>
+          <Switch
+            class="pointer-events-none"
+            :checked="value"
+            @update:checked="handleChange"
+          />
+        </FormControl>
+      </FormItem>
+    </FormField>
+  </div>
+
+  <div class="flex">
+    <FormField v-slot="{ value, handleChange }" name="knife_round">
+      <FormItem
+        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+        @click="handleChange(!value)"
+      >
+        <div class="space-y-0.5">
+          <FormLabel class="text-base"> Knife Rond </FormLabel>
+          <FormDescription>
+            Knife Rounds are only played when neither team did not pick the map
+            in the map veto.
           </FormDescription>
         </div>
         <FormControl>
@@ -50,21 +101,15 @@ import { FormControl } from "~/components/ui/form";
   </div>
 
   <div class="flex">
-    <FormField
-      v-slot="{ value, handleChange }"
-      name="map_veto"
-      v-if="!forceVeto"
-    >
+    <FormField v-slot="{ value, handleChange }" name="coaches">
       <FormItem
         class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
         @click="handleChange(!value)"
       >
         <div class="space-y-0.5">
-          <FormLabel class="text-base"> Map Veto </FormLabel>
+          <FormLabel class="text-base"> Allow Coaches </FormLabel>
           <FormDescription>
-            Map Veto process is team 1 ban, team 2 ban, team 1 pick, team 2 pick
-            side, team 2 pick, team 1 pick side, team 2 ban ... The process then
-            repeats till a final map is remaining.
+            Coaches will be spawned and killed at the start of each round
           </FormDescription>
         </div>
         <FormControl>
@@ -77,30 +122,6 @@ import { FormControl } from "~/components/ui/form";
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ value, handleChange }" name="knife_round">
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="handleChange(!value)"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base"> Knife Rond </FormLabel>
-          <FormDescription>
-            Knife Rounds are only played when neither team did not pick the map
-            in the map veto.
-          </FormDescription>
-        </div>
-        <FormControl>
-          <Switch
-            class="pointer-events-none"
-            :checked="value"
-            @update:checked="handleChange"
-          />
-        </FormControl>
-      </FormItem>
-    </FormField>
-  </div>
-
-  <div>
     <FormField v-slot="{ componentField }" name="number_of_substitutes">
       <FormItem
         class="flex flex-row items-center justify-between rounded-lg border p-4"
@@ -115,7 +136,9 @@ import { FormControl } from "~/components/ui/form";
         <FormMessage />
       </FormItem>
     </FormField>
+  </div>
 
+  <div>
     <FormField v-slot="{ componentField }" name="type">
       <FormItem>
         <FormLabel>Match Type </FormLabel>

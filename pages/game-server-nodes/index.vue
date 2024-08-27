@@ -2,6 +2,7 @@
 import { Button } from "~/components/ui/button";
 import PageHeading from "~/components/PageHeading.vue";
 import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
@@ -19,7 +20,12 @@ import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.
         <TableHead>Public IP</TableHead>
         <TableHead>Region</TableHead>
         <TableHead>Capacity</TableHead>
-        <TableHead>Ports</TableHead>
+        <TableHead>
+          <div class="flex">
+            Ports
+            <FiveStackToolTip>Forwarded Ports to Node</FiveStackToolTip>
+          </div>
+        </TableHead>
         <TableHead>Enabled</TableHead>
       </TableRow>
     </TableHeader>

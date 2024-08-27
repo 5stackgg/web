@@ -6,9 +6,11 @@ export const matchLineups = Selector("match_lineups")({
   team_id: true,
   is_ready: true,
   is_on_lineup: true,
-  can_pick_veto: true,
+  can_pick_map_veto: true,
+  can_pick_region_veto: true,
   can_update_lineup: true,
-  is_picking_veto: true,
+  is_picking_map_veto: true,
+  is_picking_region_veto: true,
   coach: {
     name: true,
     steam_id: true,

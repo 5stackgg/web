@@ -71,10 +71,10 @@ import { Separator } from "~/components/ui/separator";
 
     <div class="flex justify-between my-3">
       <h1>
-        <template v-if="match.lineup_1.is_picking_veto">
+        <template v-if="match.lineup_1.is_picking_map_veto">
           {{ match.lineup_1.name }}
         </template>
-        <template v-else-if="match.lineup_2.is_picking_veto">
+        <template v-else-if="match.lineup_2.is_picking_map_veto">
           {{ match.lineup_2.name }}
         </template>
         is Picking a
@@ -195,7 +195,7 @@ export default {
   },
   apollo: {
     $subscribe: {
-      match_veto_picks: {
+      match_map_veto_picks: {
         variables: function () {
           return {
             order_by: order_by.asc,
@@ -203,7 +203,7 @@ export default {
           };
         },
         query: typedGql("subscription")({
-          match_veto_picks: [
+          match_map_veto_picks: [
             {
               where: {
                 match_id: {
@@ -238,7 +238,7 @@ export default {
           ],
         }),
         result: function ({ data }) {
-          this.picks = data.match_veto_picks;
+          this.picks = data.match_map_veto_picks;
         },
       },
     },
@@ -307,10 +307,10 @@ export default {
               }
             : {}),
           match_id: this.$route.params.id,
-          match_lineup_id: this.match.veto_picking_lineup_id,
+          match_lineup_id: this.match.map_veto_picking_lineup_id,
         },
         mutation: generateMutation({
-          insert_match_veto_picks_one: [
+          insert_match_map_veto_picks_one: [
             {
               object: {
                 map_id: $("map_id", "uuid!"),
@@ -343,7 +343,7 @@ export default {
       }
 
       return (
-        this.match.lineup_1.can_pick_veto || this.match.lineup_2.can_pick_veto
+        this.match.lineup_1.can_pick_map_veto || this.match.lineup_2.can_pick_map_veto
       );
     },
     pickType() {
@@ -351,7 +351,7 @@ export default {
         return;
       }
 
-      return this.match.veto_type;
+      return this.match.map_veto_type;
     },
     previousMap() {
       return this.picks?.at(-1).map;

@@ -2,7 +2,7 @@
   <template v-if="captain">
     {{ captain.player?.name || captain.placeholder_name }}
   </template>
-  <template v-else> Captain Has not been picked </template>
+  <template v-else> TBD </template>
 </template>
 
 <script lang="ts">

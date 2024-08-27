@@ -5,6 +5,7 @@ import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
+import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 </script>
 
 <template>
@@ -40,6 +41,7 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
         </div>
 
         <div class="hidden lg:block">
+          <MatchRegionVeto :match="match"></MatchRegionVeto>
           <MatchMapSelection :match="match"></MatchMapSelection>
         </div>
 
@@ -85,6 +87,9 @@ export default {
               id: true,
               status: true,
               region: true,
+              e_region: {
+                description: true,
+              },
               is_coach: true,
               is_captain: true,
               is_in_lineup: true,
@@ -103,8 +108,9 @@ export default {
               lineup_1_id: true,
               lineup_2_id: true,
               winning_lineup_id: true,
-              veto_type: true,
-              veto_picking_lineup_id: true,
+              map_veto_type: true,
+              map_veto_picking_lineup_id: true,
+              region_veto_picking_lineup_id: true,
               connection_link: true,
               connection_string: true,
               tv_connection_string: true,
@@ -124,6 +130,7 @@ export default {
                 coaches: true,
                 tv_delay: true,
                 map_veto: true,
+                region_veto: true,
                 overtime: true,
                 knife_round: true,
                 number_of_substitutes: true,
@@ -133,6 +140,10 @@ export default {
                     description: true,
                   },
                 },
+              },
+              region_veto_picks: {
+                type: true,
+                region: true,
               },
               e_match_status: {
                 description: true,

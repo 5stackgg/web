@@ -119,6 +119,11 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         </li>
 
         <li class="flex items-center justify-between">
+          <span class="text-muted-foreground"> Region Veto </span>
+          <BooleanToText :value="match.options.region_veto"></BooleanToText>
+        </li>
+
+        <li class="flex items-center justify-between">
           <span class="text-muted-foreground"> Map Pool </span>
           <span class="text-right">
             {{ separateByCapitalLetters(match.options.map_pool.type) }}
@@ -191,13 +196,16 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           <li class="flex items-center justify-between">
             <span class="text-muted-foreground"> Type </span>
             <span>
-              {{ match.server_type }}
+              {{ match.server_type || "TBD" }}
             </span>
           </li>
           <li class="flex items-center justify-between">
             <span class="text-muted-foreground"> Region </span>
-            <span>
+            <span v-if="match.server_region">
               {{ match.server_region }}
+            </span>
+            <span v-else-if="match.e_region">
+              {{ match.e_region.description }}
             </span>
           </li>
         </ul>

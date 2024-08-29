@@ -77,29 +77,8 @@ export default {
               e_status: {
                 description: true,
               },
-              servers_aggregate: {
-                aggregate: {
-                  count: true,
-                },
-              },
-              __alias: {
-                reserved_servers_aggregate: {
-                  servers_aggregate: [
-                    {
-                      where: {
-                        reserved_by_match_id: {
-                          _is_null: true,
-                        },
-                      },
-                    },
-                    {
-                      aggregate: {
-                        count: true,
-                      },
-                    },
-                  ],
-                },
-              },
+              total_server_count: true,
+              available_server_count: true,
             },
           ],
         }),

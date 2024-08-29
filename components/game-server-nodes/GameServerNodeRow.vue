@@ -49,8 +49,8 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
       </Select>
     </TableCell>
     <TableCell>
-      {{ gameServerNode.reserved_servers_aggregate.aggregate.count }} /
-      {{ gameServerNode.servers_aggregate.aggregate.count }}
+      {{ gameServerNode.available_server_count }} /
+      {{ gameServerNode.total_server_count }}
     </TableCell>
     <TableCell>
       <form @submit.prevent="updateServerPorts" class="flex">

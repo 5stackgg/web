@@ -284,7 +284,7 @@ export default {
     availableCommands() {
       const commands = [];
 
-      switch (this.currentMap.status) {
+      switch (this.currentMap?.status) {
         case e_match_map_status_enum.Warmup:
         case e_match_map_status_enum.Scheduled:
           commands.push(CommandDetails[AvailableCommands.ForceReady]);

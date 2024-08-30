@@ -203,9 +203,6 @@ export default {
         return;
       }
 
-      console.inof({
-        team,
-      });
       await this.$apollo.mutate({
         mutation: generateMutation({
           insert_tournament_teams_one: [

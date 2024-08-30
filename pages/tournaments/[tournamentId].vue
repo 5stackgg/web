@@ -8,102 +8,107 @@ import TournamentServers from "~/components/tournament/TournamentServers.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
+import TournamentActions from "~/components/tournament/TournamentActions.vue";
 </script>
 
 <template>
-  <Tabs default-value="info" v-if="tournament">
-    <TabsList>
-      <TabsTrigger value="info">
-        <Badge>{{ tournament.status }}</Badge> Information
-      </TabsTrigger>
-      <TabsTrigger value="bracket"> Bracket </TabsTrigger>
-      <TabsTrigger value="teams">
-        Teams ({{ tournament.teams_aggregate.aggregate.count }})
-      </TabsTrigger>
-      <TabsTrigger value="roster" v-if="myTeam"> My Roster </TabsTrigger>
-      <TabsTrigger value="manage"> Manage Tournament </TabsTrigger>
-    </TabsList>
-    <TabsContent value="info">
-      {{ tournament.name }} : {{ tournament.description }}
-      <Badge>{{ tournament.status }}</Badge>
-      <Badge>{{ tournament.options.type }}</Badge>
-      <Badge>{{ tournament.start }}</Badge>
+  <div v-if="tournament">
+    <Tabs default-value="info" >
+      <TabsList>
+        <TabsTrigger value="info">
+          <Badge>{{ tournament.status }}</Badge> Information
+        </TabsTrigger>
+        <TabsTrigger value="bracket"> Bracket </TabsTrigger>
+        <TabsTrigger value="teams">
+          Teams ({{ tournament.teams_aggregate.aggregate.count }})
+        </TabsTrigger>
+        <TabsTrigger value="roster" v-if="myTeam"> My Roster </TabsTrigger>
+        <TabsTrigger value="manage"> Manage Tournament </TabsTrigger>
+      </TabsList>
+      <TabsContent value="info">
+        {{ tournament.name }} : {{ tournament.description }}
+        <Badge>{{ tournament.status }}</Badge>
+        <Badge>{{ tournament.options.type }}</Badge>
+        <Badge>{{ tournament.start }}</Badge>
 
-      <p>
-        Admin:
-        {{ tournament.admin.name }}
-      </p>
+        <p>
+          Admin:
+          {{ tournament.admin.name }}
+        </p>
 
-      <p>Organizers</p>
-      <p v-for="{ organizer } of tournament.organizers">
-        {{ organizer.name }}
-      </p>
+        <p>Organizers</p>
+        <p v-for="{ organizer } of tournament.organizers">
+          {{ organizer.name }}
+        </p>
 
-      <h1>Maps</h1>
-      <div class="flex">
-        <template v-for="map in tournament.options.map_pool.maps">
-          <MapDisplay :map="map"></MapDisplay>
-        </template>
-      </div>
+        <h1>Maps</h1>
+        <div class="flex">
+          <template v-for="map in tournament.options.map_pool.maps">
+            <MapDisplay :map="map"></MapDisplay>
+          </template>
+        </div>
 
-      <Drawer :open="tournamentDialog" v-if="tournament.can_join_tournament">
-        <DrawerTrigger @click="tournamentDialog = true">
-          <Button> Join Tournament </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Which Team do you wish to join with?</DrawerTitle>
-          </DrawerHeader>
-          <DrawerFooter>
-            <TournamentJoinForm
-              :tournament-type="tournament.options.type"
-              @close="tournamentDialog = false"
-            ></TournamentJoinForm>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </TabsContent>
-    <TabsContent value="bracket">
-      <TournamentStageBuilder :tournament="tournament"></TournamentStageBuilder>
-    </TabsContent>
-    <TabsContent value="teams">
-      <TournamentAddTeam
-        :tournament="tournament"
-        v-if="tournament.is_organizer"
-      ></TournamentAddTeam>
+        <Drawer :open="tournamentDialog" v-if="tournament.can_join">
+          <DrawerTrigger @click="tournamentDialog = true">
+            <Button> Join Tournament </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>Which Team do you wish to join with?</DrawerTitle>
+            </DrawerHeader>
+            <DrawerFooter>
+              <TournamentJoinForm
+                  :tournament-type="tournament.options.type"
+                  @close="tournamentDialog = false"
+              ></TournamentJoinForm>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </TabsContent>
+      <TabsContent value="bracket">
+        <TournamentStageBuilder :tournament="tournament"></TournamentStageBuilder>
+      </TabsContent>
+      <TabsContent value="teams">
+        <TournamentAddTeam
+            :tournament="tournament"
+            v-if="tournament.is_organizer"
+        ></TournamentAddTeam>
 
-      <div v-for="team of tournament.teams">
-        <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
-          {{ team.name }}: {{ team.roster_aggregate.aggregate.count }} players
-          registered
-        </NuxtLink>
+        <div v-for="team of tournament.teams">
+          <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
+            {{ team.name }}: {{ team.roster_aggregate.aggregate.count }} players
+            registered
+          </NuxtLink>
 
-        <Button @click="removeTeam(team.id)">Remove Team</Button>
-      </div>
-    </TabsContent>
-    <TabsContent value="roster" v-if="myTeam">
-      <TournamentTeamTable :team="myTeam"></TournamentTeamTable>
-    </TabsContent>
-    <TabsContent value="manage">
-      <Tabs default-value="match-options">
-        <TabsList>
-          <TabsTrigger value="match-options"> Match Options </TabsTrigger>
-          <TabsTrigger value="organizers"> Organizers </TabsTrigger>
-          <TabsTrigger value="servers"> Servers </TabsTrigger>
-        </TabsList>
-        <TabsContent value="match-options">
-          <TournamentForm :tournament="tournament"></TournamentForm>
-        </TabsContent>
-        <TabsContent value="organizers">
-          <TournamentOrganizers :tournament="tournament">
-          </TournamentOrganizers>
-        </TabsContent>
-        <TabsContent value="servers">
-          <TournamentServers :tournament="tournament"></TournamentServers>
-        </TabsContent>
-      </Tabs>
-    </TabsContent>
-  </Tabs>
+          <Button @click="removeTeam(team.id)">Remove Team</Button>
+        </div>
+      </TabsContent>
+      <TabsContent value="roster" v-if="myTeam">
+        <TournamentTeamTable :team="myTeam"></TournamentTeamTable>
+      </TabsContent>
+      <TabsContent value="manage">
+        <Tabs default-value="match-options">
+          <TabsList>
+            <TabsTrigger value="match-options"> Match Options </TabsTrigger>
+            <TabsTrigger value="organizers"> Organizers </TabsTrigger>
+            <TabsTrigger value="servers"> Servers </TabsTrigger>
+          </TabsList>
+          <TabsContent value="match-options">
+            <TournamentForm :tournament="tournament"></TournamentForm>
+          </TabsContent>
+          <TabsContent value="organizers">
+            <TournamentOrganizers :tournament="tournament">
+            </TournamentOrganizers>
+          </TabsContent>
+          <TabsContent value="servers">
+            <TournamentServers :tournament="tournament"></TournamentServers>
+          </TabsContent>
+        </Tabs>
+      </TabsContent>
+    </Tabs>
+
+    <TournamentActions :tournament="tournament"></TournamentActions>
+  </div>
 </template>
 
 <script lang="ts">
@@ -140,7 +145,10 @@ export default {
               status: true,
               description: true,
               is_organizer: true,
-              can_join_tournament: true,
+              can_join: true,
+              can_cancel: true,
+              can_open_registration: true,
+              can_close_registration: true,
               admin: {
                 name: true,
               },

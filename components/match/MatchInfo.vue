@@ -73,9 +73,6 @@ import { e_match_status_enum } from "~/generated/zeus";
           </Button>
         </template>
       </CardTitle>
-      <CardDescription>
-        <QuickServerConnect :match="match"></QuickServerConnect>
-      </CardDescription>
     </CardHeader>
     <CardContent class="p-6">
       <ul class="grid gap-3">

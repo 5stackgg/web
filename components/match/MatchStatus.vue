@@ -22,6 +22,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <template v-else>ASAP</template>)
       </div>
     </template>
+    <template v-else>
+      {{ match.status }}
+    </template>
   </Badge>
 </template>
 

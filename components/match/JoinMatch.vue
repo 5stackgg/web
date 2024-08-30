@@ -1,12 +1,10 @@
 <template>
-  <Card v-if="isInMatch && match.connection_string">
+  <Card v-if="isInMatch && match.connection_string" class="overflow-hidden">
     <CardHeader class="p-2 pt-0 md:p-4">
-      <CardTitle class="flex justify-between"> Match is Ready! </CardTitle>
+      <CardTitle class="flex justify-between"> Match is Ready</CardTitle>
     </CardHeader>
     <CardContent class="p-2 pt-0 md:p-4 md:pt-0">
-      <Button size="sm" class="w-full">
-        <QuickServerConnect :match="match"></QuickServerConnect>
-      </Button>
+      <QuickServerConnect :match="match"></QuickServerConnect>
     </CardContent>
   </Card>
 </template>

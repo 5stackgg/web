@@ -33,7 +33,7 @@ provide("commander", commander);
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
         <TabsTrigger
-          class="hidden sm:block md:block lg:hidden"
+          class="lg:hidden"
           value="veto"
           v-if="match.options.map_veto"
         >

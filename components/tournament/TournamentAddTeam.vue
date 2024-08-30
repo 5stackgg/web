@@ -182,10 +182,6 @@ export default {
     async addTeamToTournament() {
       const { valid } = await this.form.validate();
 
-      if (!valid) {
-        return;
-      }
-
       const { data } = await this.$apollo.query({
         query: generateQuery({
           teams_by_pk: [
@@ -203,6 +199,13 @@ export default {
 
       const team = data.teams_by_pk;
 
+      if (!team) {
+        return;
+      }
+
+      console.inof({
+        team,
+      });
       await this.$apollo.mutate({
         mutation: generateMutation({
           insert_tournament_teams_one: [

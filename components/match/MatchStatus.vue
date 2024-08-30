@@ -9,7 +9,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
       Canceled
     </template>
     <template v-else-if="match.status == e_match_status_enum.Finished">
-      Finished @ {{ endOfMatch }}
+      Finished &nbsp; <time-ago :date="match.ended_at"></time-ago>
     </template>
     <template v-else-if="match.status == e_match_status_enum.Scheduled">
       <div v-if="match.server && !match.is_match_server_available">
@@ -22,13 +22,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <template v-else>ASAP</template>)
       </div>
     </template>
-    <template v-else-if="startOfMatch">
-      {{ match.e_match_status.description }}
-      <time-ago :date="startOfMatch"></time-ago>
-    </template>
-    <template v-else>
-      {{ match.e_match_status.description }}
-    </template>
   </Badge>
 </template>
 
@@ -38,14 +31,6 @@ export default {
     match: {
       type: Object,
       required: true,
-    },
-  },
-  computed: {
-    startOfMatch() {
-      // TODO
-    },
-    endOfMatch() {
-      // TODO
     },
   },
 };

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
-import {FormControl} from "~/components/ui/form";
+import { FormControl } from "~/components/ui/form";
 </script>
 
 <template>
@@ -65,7 +65,11 @@ import {FormControl} from "~/components/ui/form";
       </Button>
     </form>
   </template>
-  <template v-else-if="match.is_organizer && !match.options.region_veto && regions.length > 1">
+  <template
+    v-else-if="
+      match.is_organizer && !match.options.region_veto && regions.length > 1
+    "
+  >
     <Card class="sm:col-span-4">
       <CardHeader class="pb-3">
         <CardContent>
@@ -81,7 +85,10 @@ import {FormControl} from "~/components/ui/form";
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectItem :value="region.value" v-for="region of regions">
+                      <SelectItem
+                        :value="region.value"
+                        v-for="region of regions"
+                      >
                         {{ region.description }}
                       </SelectItem>
                     </SelectGroup>

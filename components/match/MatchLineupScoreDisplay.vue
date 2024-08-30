@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { e_match_map_status_enum, e_sides_enum } from "~/generated/zeus";
+import { e_sides_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -97,23 +97,12 @@ export default {
       };
 
       for (const matchMap of this.match.match_maps) {
-        if (matchMap.status !== e_match_map_status_enum.Finished) {
-          continue;
-        }
-
-        if (
-          this.match.lineup_1_id === this.lineup.id &&
-          matchMap.lineup_1_score > matchMap.lineup_2_score
-        ) {
+        if (matchMap.winning_lineup_id === this.lineup.id) {
           stats.won++;
-        } else if (
-          this.match.lineup_2_id === this.lineup.id &&
-          matchMap.lineup_2_score > matchMap.lineup_1_score
-        ) {
+        } else {
           stats.lost++;
         }
       }
-
       return stats;
     },
     teamScore() {
@@ -131,42 +120,42 @@ export default {
       if (!this.matchMap) {
         return;
       }
-
-      const lastCtRound = this.matchMap.rounds
-        .filter(({ lineup_1_side, lineup_2_side }) => {
-          return this.isLineup1
-            ? lineup_1_side === e_sides_enum.CT
-            : lineup_2_side === e_sides_enum.CT;
-        })
-        .at(-1);
-
-      if (!lastCtRound) {
-        return 0;
+      let wins = 0;
+      for (const round of this.matchMap.rounds) {
+        if (round.winning_side === e_sides_enum.CT) {
+          if (this.isLineup1 && round.lineup_1_side === e_sides_enum.CT) {
+            wins++;
+          } else if (
+            !this.isLineup1 &&
+            round.lineup_2_side === e_sides_enum.CT
+          ) {
+            wins++;
+          }
+        }
       }
-
-      return this.isLineup1
-        ? lastCtRound.lineup_1_score
-        : lastCtRound.lineup_2_score;
+      return wins;
     },
     tWins() {
       if (!this.matchMap) {
         return;
       }
-      const lastTRound = this.matchMap.rounds
-        .filter(({ lineup_1_side, lineup_2_side }) => {
-          return this.isLineup1
-            ? lineup_1_side === e_sides_enum.TERRORIST
-            : lineup_2_side === e_sides_enum.TERRORIST;
-        })
-        .at(-1);
-
-      if (!lastTRound) {
-        return 0;
+      let wins = 0;
+      for (const round of this.matchMap.rounds) {
+        if (round.winning_side === e_sides_enum.TERRORIST) {
+          if (
+            this.isLineup1 &&
+            round.lineup_1_side === e_sides_enum.TERRORIST
+          ) {
+            wins++;
+          } else if (
+            !this.isLineup1 &&
+            round.lineup_2_side === e_sides_enum.TERRORIST
+          ) {
+            wins++;
+          }
+        }
       }
-
-      return this.isLineup1
-        ? lastTRound.lineup_1_score
-        : lastTRound.lineup_2_score;
+      return wins;
     },
   },
 };

@@ -252,7 +252,7 @@ export default {
                 _set: {
                   name: $("name", "String!"),
                   start: $("start", "timestamptz!"),
-                  description: $("description", "String!"),
+                  description: $("description", "String"),
                 },
               },
               {

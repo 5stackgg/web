@@ -18,6 +18,7 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -188,28 +189,30 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         </ul>
       </div>
 
-      <Separator class="my-8" />
+      <template v-if="displayServerInformation">
+        <Separator class="my-8" />
 
-      <div class="grid gap-3">
-        <div class="font-semibold">Server Information</div>
-        <ul class="grid gap-3">
-          <li class="flex items-center justify-between">
-            <span class="text-muted-foreground"> Type </span>
-            <span>
-              {{ match.server_type || "TBD" }}
-            </span>
-          </li>
-          <li class="flex items-center justify-between">
-            <span class="text-muted-foreground"> Region </span>
-            <span v-if="match.server_region">
-              {{ match.server_region }}
-            </span>
-            <span v-else-if="match.e_region">
-              {{ match.e_region.description }}
-            </span>
-          </li>
-        </ul>
-      </div>
+        <div class="grid gap-3">
+          <div class="font-semibold">Server Information</div>
+          <ul class="grid gap-3">
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Type </span>
+              <span>
+                {{ match.server_type || "TBD" }}
+              </span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground"> Region </span>
+              <span v-if="match.server_region">
+                {{ match.server_region }}
+              </span>
+              <span v-else-if="match.e_region">
+                {{ match.e_region.description }}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </template>
 
       <Separator class="my-8" />
 
@@ -262,6 +265,16 @@ export default {
         this.match.lineup_2?.lineup_players.length >=
           this.match.min_players_per_lineup
       );
+    },
+    displayServerInformation() {
+      return [
+        e_match_status_enum.Live,
+        e_match_status_enum.Veto,
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.PickingPlayers,
+      ].includes(this.match.status);
     },
   },
 };

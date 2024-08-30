@@ -6,49 +6,47 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
+import JoinMatch from "~/components/match/JoinMatch.vue";
 </script>
 
 <template>
-  <template v-if="match">
-    <div
-      class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
-    >
-      <div class="grid grid-cols-1 gap-y-4">
-        <CheckIntoMatch
-          :match="match"
-          v-if="match.can_check_in"
-        ></CheckIntoMatch>
-        <MatchInfo :match="match"></MatchInfo>
-        <div>
-          <MatchLobbyChat
-            v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
-            :match-id="match.id"
-            :messages="messages"
-          ></MatchLobbyChat>
-        </div>
-      </div>
-      <div class="grid gap-y-4">
-        <div
-          class="flex gap-4 justify-around flex-col lg:flex-row"
-          v-if="match.match_maps.length > 0"
-        >
-          <div
-            v-for="match_map of match.match_maps"
-            class="max-h-[150px] md:max-h-[500px]"
-          >
-            <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
-          </div>
-        </div>
-
-        <div class="hidden lg:block">
-          <MatchRegionVeto :match="match"></MatchRegionVeto>
-          <MatchMapSelection :match="match"></MatchMapSelection>
-        </div>
-
-        <MatchTabs :match="match"></MatchTabs>
+  <div
+    class="grid items-start gap-8 grid-cols-[1fr] lg:grid-cols-[minmax(320px,_400px)_1fr]"
+    v-if="match"
+  >
+    <div class="grid grid-cols-1 gap-y-4">
+      <CheckIntoMatch :match="match"></CheckIntoMatch>
+      <JoinMatch :match="match"></JoinMatch>
+      <MatchInfo :match="match"></MatchInfo>
+      <div>
+        <MatchLobbyChat
+          v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
+          :match-id="match.id"
+          :messages="messages"
+        ></MatchLobbyChat>
       </div>
     </div>
-  </template>
+    <div class="grid gap-y-4">
+      <div
+        class="flex gap-4 justify-around flex-col lg:flex-row"
+        v-if="match.match_maps.length > 0"
+      >
+        <div
+          v-for="match_map of match.match_maps"
+          class="max-h-[150px] md:max-h-[500px]"
+        >
+          <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
+        </div>
+      </div>
+
+      <div class="hidden lg:block">
+        <MatchRegionVeto :match="match"></MatchRegionVeto>
+        <MatchMapSelection :match="match"></MatchMapSelection>
+      </div>
+
+      <MatchTabs :match="match"></MatchTabs>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -118,6 +116,7 @@ export default {
               is_match_server_available: true,
               cancels_at: true,
               scheduled_at: true,
+              ended_at: true,
               organizer: {
                 name: true,
                 steam_id: true,
@@ -163,14 +162,15 @@ export default {
                   is_current_map: true,
                   demos_total_size: true,
                   demos_download_url: true,
+                  status: true,
+                  lineup_1_score: true,
+                  lineup_2_score: true,
+                  winning_lineup_id: true,
                   vetos: {
                     side: true,
                     type: true,
                     match_lineup_id: true,
                   },
-                  status: true,
-                  lineup_1_score: true,
-                  lineup_2_score: true,
                   rounds: [
                     {
                       order_by: {
@@ -182,6 +182,7 @@ export default {
                       lineup_2_score: true,
                       lineup_1_side: true,
                       lineup_2_side: true,
+                      winning_side: true,
                       round: true,
                       kills: [
                         {

@@ -6,9 +6,14 @@ import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
-  <Separator v-if="picks?.length > 0 || match.options.region_veto && match.e_region"></Separator>
+  <Separator
+    v-if="picks?.length > 0 || (match.options.region_veto && match.e_region)"
+  ></Separator>
 
-  <div class="flex gap-4 h-[200px] overflow-hidden" v-if="match.options.region_veto && match.e_region">
+  <div
+    class="flex gap-4 h-[200px] overflow-hidden"
+    v-if="match.options.region_veto && match.e_region"
+  >
     <div class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]">
       <NuxtImg
         src="/img/maps/screenshots/default.webp"
@@ -355,6 +360,10 @@ export default {
     isPicking() {
       if (this.override && this.match.is_organizer) {
         return true;
+      }
+
+      if (this.match.is_organizer && !this.match.is_captain) {
+        return false;
       }
 
       return (

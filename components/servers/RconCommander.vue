@@ -9,11 +9,13 @@ import { TrashIcon } from "@radix-icons/vue";
 
 <template>
   <div>
-    <Button @click="commander('get_match')"
+    <Button :disabled="!online" @click="commander('get_match')"
       >Send Match Information to Server</Button
     >
-    <Button @click="commander('meta version')">Metamod Info</Button>
-    <Button @click="commander(['css_plugins list', 'css'])"
+    <Button :disabled="!online" @click="commander('meta version')"
+      >Metamod Info</Button
+    >
+    <Button :disabled="!online" @click="commander(['css_plugins list', 'css'])"
       >Counter Strike Sharp Info</Button
     >
     <slot :commander="commander"></slot>
@@ -48,7 +50,12 @@ import { TrashIcon } from "@radix-icons/vue";
         </FormItem>
       </FormField>
       <div class="flex items-center p-3 pt-0">
-        <Button type="submit" size="sm" class="ml-auto gap-1.5">
+        <Button
+          :disabled="!online"
+          type="submit"
+          size="sm"
+          class="ml-auto gap-1.5"
+        >
           Send Command
           <CornerDownLeft class="size-3.5" />
         </Button>
@@ -68,6 +75,10 @@ export default {
     serverId: {
       required: true,
       type: String,
+    },
+    online: {
+      required: true,
+      type: Boolean,
     },
   },
   data() {

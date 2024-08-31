@@ -6406,6 +6406,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	is_match_server_available?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_organizer" */
 	is_organizer?:boolean | `@${string}`,
+	/** A computed field, executes function "is_server_online" */
+	is_server_online?:boolean | `@${string}`,
 	/** A computed field, executes function "is_tournament_match" */
 	is_tournament_match?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
@@ -6679,6 +6681,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	is_in_lineup?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_organizer?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_server_online?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_tournament_match?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_1?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
@@ -6935,6 +6938,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	is_in_lineup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_match_server_available?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_organizer?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_server_online?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_tournament_match?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	label?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_1?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
@@ -23388,6 +23392,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	is_match_server_available?:boolean | `@${string}`,
 	/** A computed field, executes function "is_match_organizer" */
 	is_organizer?:boolean | `@${string}`,
+	/** A computed field, executes function "is_server_online" */
+	is_server_online?:boolean | `@${string}`,
 	/** A computed field, executes function "is_tournament_match" */
 	is_tournament_match?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
@@ -23661,6 +23667,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	is_in_lineup?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_organizer?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	is_server_online?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_tournament_match?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	label?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	lineup_1?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
@@ -23917,6 +23924,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	is_in_lineup?: ResolverInputTypes["order_by"] | undefined | null,
 	is_match_server_available?: ResolverInputTypes["order_by"] | undefined | null,
 	is_organizer?: ResolverInputTypes["order_by"] | undefined | null,
+	is_server_online?: ResolverInputTypes["order_by"] | undefined | null,
 	is_tournament_match?: ResolverInputTypes["order_by"] | undefined | null,
 	label?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_1?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
@@ -39796,6 +39804,8 @@ export type ModelTypes = {
 	is_match_server_available?: boolean | undefined,
 	/** A computed field, executes function "is_match_organizer" */
 	is_organizer?: boolean | undefined,
+	/** A computed field, executes function "is_server_online" */
+	is_server_online?: boolean | undefined,
 	/** A computed field, executes function "is_tournament_match" */
 	is_tournament_match?: boolean | undefined,
 	label?: string | undefined,
@@ -39973,6 +39983,7 @@ export type ModelTypes = {
 	is_in_lineup?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_match_server_available?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_organizer?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	is_server_online?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_tournament_match?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	label?: ModelTypes["String_comparison_exp"] | undefined,
 	lineup_1?: ModelTypes["match_lineups_bool_exp"] | undefined,
@@ -40225,6 +40236,7 @@ export type ModelTypes = {
 	is_in_lineup?: ModelTypes["order_by"] | undefined,
 	is_match_server_available?: ModelTypes["order_by"] | undefined,
 	is_organizer?: ModelTypes["order_by"] | undefined,
+	is_server_online?: ModelTypes["order_by"] | undefined,
 	is_tournament_match?: ModelTypes["order_by"] | undefined,
 	label?: ModelTypes["order_by"] | undefined,
 	lineup_1?: ModelTypes["match_lineups_order_by"] | undefined,
@@ -54573,6 +54585,8 @@ export type GraphQLTypes = {
 	is_match_server_available?: boolean | undefined,
 	/** A computed field, executes function "is_match_organizer" */
 	is_organizer?: boolean | undefined,
+	/** A computed field, executes function "is_server_online" */
+	is_server_online?: boolean | undefined,
 	/** A computed field, executes function "is_tournament_match" */
 	is_tournament_match?: boolean | undefined,
 	label?: string | undefined,
@@ -54753,6 +54767,7 @@ export type GraphQLTypes = {
 	is_in_lineup?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_match_server_available?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_organizer?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	is_server_online?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_tournament_match?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	label?: GraphQLTypes["String_comparison_exp"] | undefined,
 	lineup_1?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
@@ -55009,6 +55024,7 @@ export type GraphQLTypes = {
 	is_in_lineup?: GraphQLTypes["order_by"] | undefined,
 	is_match_server_available?: GraphQLTypes["order_by"] | undefined,
 	is_organizer?: GraphQLTypes["order_by"] | undefined,
+	is_server_online?: GraphQLTypes["order_by"] | undefined,
 	is_tournament_match?: GraphQLTypes["order_by"] | undefined,
 	label?: GraphQLTypes["order_by"] | undefined,
 	lineup_1?: GraphQLTypes["match_lineups_order_by"] | undefined,

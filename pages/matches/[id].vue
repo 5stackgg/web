@@ -103,6 +103,7 @@ export default {
               server_id: true,
               server_type: true,
               server_region: true,
+              is_server_online: true,
               lineup_1_id: true,
               lineup_2_id: true,
               winning_lineup_id: true,

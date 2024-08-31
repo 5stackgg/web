@@ -1,7 +1,7 @@
 <template>
   <Card v-if="isInMatch && match.connection_string" class="overflow-hidden">
     <CardHeader class="p-2 pt-0 md:p-4">
-      <CardTitle class="flex justify-between"> Match is Ready</CardTitle>
+      <CardTitle class="flex justify-between"> Match is Live!</CardTitle>
     </CardHeader>
     <CardContent class="p-2 pt-0 md:p-4 md:pt-0">
       <QuickServerConnect :match="match"></QuickServerConnect>

@@ -324,6 +324,15 @@ export default {
         this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
       },
     },
+    ["form.values.type"]: {
+      handler(type) {
+        if (type === e_match_types_enum.Wingman) {
+          this.form.setFieldValue("mr", "8");
+        } else {
+          this.form.setFieldValue("mr", "12");
+        }
+      },
+    },
     ["form.values.custom_map_pool"]: {
       handler(customMapPool) {
         if (customMapPool === false) {

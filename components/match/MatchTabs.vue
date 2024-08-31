@@ -140,11 +140,17 @@ provide("commander", commander);
       </Card>
     </TabsContent>
     <TabsContent value="server">
-      <RconCommander :server-id="match.server_id" v-slot="{ commander }">
+      <RconCommander
+        :server-id="match.server_id"
+        :online="match.is_server_online"
+        v-slot="{ commander }"
+      >
         <template v-for="command of availableCommands">
-          <Button @click="commander(command.value)">{{
-            command.display
-          }}</Button>
+          <Button
+            :disable="!match.is_server_online"
+            @click="commander(command.value)"
+            >{{ command.display }}</Button
+          >
         </template>
 
         <form

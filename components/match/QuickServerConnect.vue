@@ -1,15 +1,28 @@
 <script setup lang="ts">
+import { Loader } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 </script>
 
 <template>
   <div v-if="match.connection_string">
-    <div class="underline flex" v-if="match.connection_string">
-      <clip-board :data="match.connection_string"></clip-board>
-      <a :href="`https://5stack.gg${match.connection_link}`">
-        {{ match.connection_string }}
-      </a>
-    </div>
+    <template v-if="!match.is_server_online">
+      <template v-if="match.server_type === 'Dedicated'">
+        Server is offline!
+      </template>
+      <template v-else>
+        <div class="flex">
+          Server Booting <Loader class="animate-spin ml-3"></Loader>
+        </div>
+      </template>
+    </template>
+    <template v-else>
+      <div class="underline flex" v-if="match.connection_string">
+        <clip-board :data="match.connection_string"></clip-board>
+        <a :href="`https://5stack.gg${match.connection_link}`">
+          {{ match.connection_string }}
+        </a>
+      </div>
+    </template>
   </div>
 </template>
 

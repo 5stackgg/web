@@ -27,8 +27,8 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead>Label</TableHead>
         <TableHead>Connection Details</TableHead>
+        <TableHead>Label</TableHead>
         <TableHead>TV Port</TableHead>
         <TableHead>Enabled</TableHead>
       </TableRow>
@@ -40,7 +40,6 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
         @click="viewServer(server.id)"
         class="cursor-pointer"
       >
-        <TableCell>{{ server.label }}</TableCell>
         <TableCell>
           <div>
             <span
@@ -55,6 +54,7 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
             {{ server.host }}
           </div>
         </TableCell>
+        <TableCell>{{ server.label }}</TableCell>
         <TableCell>{{ server.tv_port }}</TableCell>
         <TableCell>{{ server.enabled }}</TableCell>
       </TableRow>

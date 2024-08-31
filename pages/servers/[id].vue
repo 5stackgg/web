@@ -76,7 +76,10 @@ const serverMenu = ref(false);
     ></PasswordInput>
   </PageHeading>
 
-  <rcon-commander :server-id="$route.params.id"></rcon-commander>
+  <rcon-commander
+    :server-id="$route.params.id"
+    :online="server?.connected || false"
+  ></rcon-commander>
 
   <Sheet
     :open="editServerSheet"
@@ -137,6 +140,7 @@ export default {
               label: true,
               tv_port: true,
               enabled: true,
+              connected: true,
               api_password: true,
             },
           ],

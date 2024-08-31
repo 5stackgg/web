@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import Pagination from "@/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
+import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -40,7 +41,20 @@ import PageHeading from "~/components/PageHeading.vue";
         class="cursor-pointer"
       >
         <TableCell>{{ server.label }}</TableCell>
-        <TableCell>{{ server.host }}</TableCell>
+        <TableCell>
+          <div>
+            <span
+              class="ml-1 inline-block h-2 w-2 rounded-full"
+              :class="{
+                ['bg-red-600']: !server.connected,
+                ['bg-green-600']: server.connected,
+              }"
+            >
+            </span>
+
+            {{ server.host }}
+          </div>
+        </TableCell>
         <TableCell>{{ server.tv_port }}</TableCell>
         <TableCell>{{ server.enabled }}</TableCell>
       </TableRow>
@@ -88,6 +102,7 @@ export default {
               label: true,
               tv_port: true,
               enabled: true,
+              connected: true,
               current_match: {
                 id: true,
               },

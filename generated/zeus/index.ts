@@ -12044,6 +12044,7 @@ v_pool_maps_aggregate?: [{	/** distinct select on columns */
 	/** columns and relationships of "servers" */
 ["servers"]: AliasType<{
 	api_password?:boolean | `@${string}`,
+	connected?:boolean | `@${string}`,
 	/** An object relationship */
 	current_match?:ValueTypes["matches"],
 	enabled?:boolean | `@${string}`,
@@ -12171,6 +12172,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	_not?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["servers_bool_exp"]> | undefined | null | Variable<any, string>,
 	api_password?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	connected?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	current_match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
@@ -12201,6 +12203,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
 	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	connected?: boolean | undefined | null | Variable<any, string>,
 	current_match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -12290,6 +12293,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
 	api_password?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	connected?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	current_match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_server_node?: ValueTypes["game_server_nodes_order_by"] | undefined | null | Variable<any, string>,
@@ -12320,6 +12324,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
 	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	connected?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
@@ -12380,6 +12385,7 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
 	api_password?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	connected?: boolean | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	game_server_node_id?: string | undefined | null | Variable<any, string>,
 	host?: string | undefined | null | Variable<any, string>,
@@ -29020,6 +29026,7 @@ v_pool_maps_aggregate?: [{	/** distinct select on columns */
 	/** columns and relationships of "servers" */
 ["servers"]: AliasType<{
 	api_password?:boolean | `@${string}`,
+	connected?:boolean | `@${string}`,
 	/** An object relationship */
 	current_match?:ResolverInputTypes["matches"],
 	enabled?:boolean | `@${string}`,
@@ -29147,6 +29154,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	_not?: ResolverInputTypes["servers_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["servers_bool_exp"]> | undefined | null,
 	api_password?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	connected?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	current_match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
@@ -29177,6 +29185,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
 	api_password?: ResolverInputTypes["uuid"] | undefined | null,
+	connected?: boolean | undefined | null,
 	current_match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_obj_rel_insert_input"] | undefined | null,
@@ -29266,6 +29275,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
 	api_password?: ResolverInputTypes["order_by"] | undefined | null,
+	connected?: ResolverInputTypes["order_by"] | undefined | null,
 	current_match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	enabled?: ResolverInputTypes["order_by"] | undefined | null,
 	game_server_node?: ResolverInputTypes["game_server_nodes_order_by"] | undefined | null,
@@ -29296,6 +29306,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
 	api_password?: ResolverInputTypes["uuid"] | undefined | null,
+	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
 	game_server_node_id?: string | undefined | null,
 	host?: string | undefined | null,
@@ -29356,6 +29367,7 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
 	api_password?: ResolverInputTypes["uuid"] | undefined | null,
+	connected?: boolean | undefined | null,
 	enabled?: boolean | undefined | null,
 	game_server_node_id?: string | undefined | null,
 	host?: string | undefined | null,
@@ -44413,6 +44425,7 @@ export type ModelTypes = {
 	/** columns and relationships of "servers" */
 ["servers"]: {
 		api_password: ModelTypes["uuid"],
+	connected: boolean,
 	/** An object relationship */
 	current_match?: ModelTypes["matches"] | undefined,
 	enabled: boolean,
@@ -44520,6 +44533,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["servers_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["servers_bool_exp"]> | undefined,
 	api_password?: ModelTypes["uuid_comparison_exp"] | undefined,
+	connected?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	current_match?: ModelTypes["matches_bool_exp"] | undefined,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	game_server_node?: ModelTypes["game_server_nodes_bool_exp"] | undefined,
@@ -44549,6 +44563,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
 	api_password?: ModelTypes["uuid"] | undefined,
+	connected?: boolean | undefined,
 	current_match?: ModelTypes["matches_obj_rel_insert_input"] | undefined,
 	enabled?: boolean | undefined,
 	game_server_node?: ModelTypes["game_server_nodes_obj_rel_insert_input"] | undefined,
@@ -44635,6 +44650,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
 	api_password?: ModelTypes["order_by"] | undefined,
+	connected?: ModelTypes["order_by"] | undefined,
 	current_match?: ModelTypes["matches_order_by"] | undefined,
 	enabled?: ModelTypes["order_by"] | undefined,
 	game_server_node?: ModelTypes["game_server_nodes_order_by"] | undefined,
@@ -44662,6 +44678,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
 	api_password?: ModelTypes["uuid"] | undefined,
+	connected?: boolean | undefined,
 	enabled?: boolean | undefined,
 	game_server_node_id?: string | undefined,
 	host?: string | undefined,
@@ -44719,6 +44736,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
 	api_password?: ModelTypes["uuid"] | undefined,
+	connected?: boolean | undefined,
 	enabled?: boolean | undefined,
 	game_server_node_id?: string | undefined,
 	host?: string | undefined,
@@ -59355,6 +59373,7 @@ export type GraphQLTypes = {
 ["servers"]: {
 	__typename: "servers",
 	api_password: GraphQLTypes["uuid"],
+	connected: boolean,
 	/** An object relationship */
 	current_match?: GraphQLTypes["matches"] | undefined,
 	enabled: boolean,
@@ -59465,6 +59484,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["servers_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["servers_bool_exp"]> | undefined,
 	api_password?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	connected?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	current_match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	game_server_node?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined,
@@ -59495,6 +59515,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "servers" */
 ["servers_insert_input"]: {
 		api_password?: GraphQLTypes["uuid"] | undefined,
+	connected?: boolean | undefined,
 	current_match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined,
 	enabled?: boolean | undefined,
 	game_server_node?: GraphQLTypes["game_server_nodes_obj_rel_insert_input"] | undefined,
@@ -59584,6 +59605,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "servers". */
 ["servers_order_by"]: {
 		api_password?: GraphQLTypes["order_by"] | undefined,
+	connected?: GraphQLTypes["order_by"] | undefined,
 	current_match?: GraphQLTypes["matches_order_by"] | undefined,
 	enabled?: GraphQLTypes["order_by"] | undefined,
 	game_server_node?: GraphQLTypes["game_server_nodes_order_by"] | undefined,
@@ -59614,6 +59636,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "servers" */
 ["servers_set_input"]: {
 		api_password?: GraphQLTypes["uuid"] | undefined,
+	connected?: boolean | undefined,
 	enabled?: boolean | undefined,
 	game_server_node_id?: string | undefined,
 	host?: string | undefined,
@@ -59674,6 +59697,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["servers_stream_cursor_value_input"]: {
 		api_password?: GraphQLTypes["uuid"] | undefined,
+	connected?: boolean | undefined,
 	enabled?: boolean | undefined,
 	game_server_node_id?: string | undefined,
 	host?: string | undefined,
@@ -65534,6 +65558,7 @@ export const enum servers_constraint {
 /** select columns of table "servers" */
 export const enum servers_select_column {
 	api_password = "api_password",
+	connected = "connected",
 	enabled = "enabled",
 	game_server_node_id = "game_server_node_id",
 	host = "host",
@@ -65547,15 +65572,18 @@ export const enum servers_select_column {
 }
 /** select "servers_aggregate_bool_exp_bool_and_arguments_columns" columns of table "servers" */
 export const enum servers_select_column_servers_aggregate_bool_exp_bool_and_arguments_columns {
+	connected = "connected",
 	enabled = "enabled"
 }
 /** select "servers_aggregate_bool_exp_bool_or_arguments_columns" columns of table "servers" */
 export const enum servers_select_column_servers_aggregate_bool_exp_bool_or_arguments_columns {
+	connected = "connected",
 	enabled = "enabled"
 }
 /** update columns of table "servers" */
 export const enum servers_update_column {
 	api_password = "api_password",
+	connected = "connected",
 	enabled = "enabled",
 	game_server_node_id = "game_server_node_id",
 	host = "host",

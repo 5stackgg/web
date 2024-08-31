@@ -7193,6 +7193,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"servers_bool_exp",
 		_or:"servers_bool_exp",
 		api_password:"uuid_comparison_exp",
+		connected:"Boolean_comparison_exp",
 		current_match:"matches_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		game_server_node:"game_server_nodes_bool_exp",
@@ -7261,6 +7262,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_order_by:{
 		api_password:"order_by",
+		connected:"order_by",
 		current_match:"matches_order_by",
 		enabled:"order_by",
 		game_server_node:"game_server_nodes_order_by",
@@ -13379,6 +13381,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	servers:{
 		api_password:"uuid",
+		connected:"Boolean",
 		current_match:"matches",
 		enabled:"Boolean",
 		game_server_node:"game_server_nodes",

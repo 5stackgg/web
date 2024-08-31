@@ -13,7 +13,7 @@ import TournamentActions from "~/components/tournament/TournamentActions.vue";
 
 <template>
   <div v-if="tournament">
-    <Tabs default-value="info" >
+    <Tabs default-value="info">
       <TabsList>
         <TabsTrigger value="info">
           <Badge>{{ tournament.status }}</Badge> Information
@@ -58,20 +58,22 @@ import TournamentActions from "~/components/tournament/TournamentActions.vue";
             </DrawerHeader>
             <DrawerFooter>
               <TournamentJoinForm
-                  :tournament-type="tournament.options.type"
-                  @close="tournamentDialog = false"
+                :tournament-type="tournament.options.type"
+                @close="tournamentDialog = false"
               ></TournamentJoinForm>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
       </TabsContent>
       <TabsContent value="bracket">
-        <TournamentStageBuilder :tournament="tournament"></TournamentStageBuilder>
+        <TournamentStageBuilder
+          :tournament="tournament"
+        ></TournamentStageBuilder>
       </TabsContent>
       <TabsContent value="teams">
         <TournamentAddTeam
-            :tournament="tournament"
-            v-if="tournament.is_organizer"
+          :tournament="tournament"
+          v-if="tournament.is_organizer"
         ></TournamentAddTeam>
 
         <div v-for="team of tournament.teams">

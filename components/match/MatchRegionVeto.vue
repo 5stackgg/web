@@ -133,6 +133,11 @@ export default {
           e_game_server_node_regions: [
             {
               where: {
+                game_server_nodes : {
+                  enabled:{
+                    _eq:true,
+                  }
+                },
                 game_server_nodes_aggregate: {
                   count: {
                     predicate: {

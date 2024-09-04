@@ -18,7 +18,7 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
       }"
     >
     </span>
-    {{ gameServerNode.id || gameServerNode.e_region.description }}
+    {{ gameServerNode.id || gameServerNode?.e_region?.description }}
   </div>
 </template>
 

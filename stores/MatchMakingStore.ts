@@ -4,16 +4,22 @@ import {
   e_game_server_node_regions_enum,
   e_match_types_enum,
 } from "~/generated/zeus";
-import socket from "~/web-sockets/Socket";
+import { string } from "zod";
 
 export const useMatchMakingStore = defineStore("match-making", () => {
-  const joinedMatchmakingQueues = ref<
-    Array<{
+  const joinedMatchmakingQueues = ref<{
+    details: Array<{
       totalInQueue: number;
       type: e_match_types_enum;
       region: e_game_server_node_regions_enum;
-    }>
-  >([]);
+    }>;
+    confirmation?: {
+      expiresAt: string;
+    };
+  }>({
+    details: [],
+    confirmation: undefined,
+  });
 
   const regionStats = ref<
     Partial<

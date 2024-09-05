@@ -169,7 +169,7 @@ export default {
       return useMatchMakingStore().regionStats;
     },
     joinedMatchmakingQueues() {
-      return useMatchMakingStore().joinedMatchmakingQueues;
+      return useMatchMakingStore().joinedMatchmakingQueues.details;
     },
     joinedWingmanQueue() {
       return this.joinedMatchmakingQueues.find((queue) => {
@@ -180,7 +180,7 @@ export default {
       });
     },
     joinedCompetitiveQueue() {
-      return this.joinedMatchmakingQueues.find((queue) => {
+      return this.joinedMatchmakingQueues?.find((queue) => {
         return (
           queue.region === this.region.value &&
           queue.type === e_match_types_enum.Competitive

@@ -121,7 +121,7 @@ socket.listen("match-making:region-stats", (data) => {
 });
 
 socket.listen(
-  "match-making:joined",
+  "match-making:details",
   (
     data: Array<{
       totalInQueue: number;
@@ -132,10 +132,6 @@ socket.listen(
     useMatchMakingStore().joinedMatchmakingQueues = data;
   },
 );
-
-socket.listen("match-making:confirmation", (data) => {
-  // You might want to update the queue status here if needed
-});
 
 socket.listen("match-making:match-created", (data) => {
   // Remove the queue from joinedMatchmakingQueues when a match is created

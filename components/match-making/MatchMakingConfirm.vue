@@ -1,50 +1,73 @@
 <script setup lang="ts">
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
-  <AlertDialog :open="opened">
+  <AlertDialog :open="confirmation && !expired">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogTitle>Confirm Matchmaking</AlertDialogTitle>
         <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete your
-          account and remove your data from our servers.
+          <pre>{{ confirmation.type }} {{ confirmation.region }}</pre>
         </AlertDialogDescription>
       </AlertDialogHeader>
+
+      {{ confirmation.confirmed }} / {{ confirmation.players }}
+
+      <TimeAgo :date="confirmation.expiresAt"></TimeAgo>
       <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>Continue</AlertDialogAction>
+        <Button @click="ready">Ready</Button>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>
 </template>
 
 <script lang="ts">
+import socket from "~/web-sockets/Socket";
 export default {
-  data() {
-    return {
-      opened: false,
-    };
-  },
-  methods: {
-    confirmMatchMaking() {
-      // TODO
+  computed: {
+    confirmation() {
+      return useMatchMakingStore().joinedMatchmakingQueues?.confirmation;
+    },
+    expired() {
+      if (!this.confirmation?.expiresAt || this.confirmation?.matchId) {
+        return true;
+      }
+
+      return new Date(this.confirmation.expiresAt) < new Date();
     },
   },
-  computed: {
-    matchNeedsConfirmed() {
-      // return useMatchMakingStore().confirmMatch
+  watch: {
+    confirmation: {
+      immediate: true,
+      handler() {
+        if (this.confirmation?.matchId) {
+          const lastMatchRedirect = localStorage.getItem("confirmedMatchId");
+          if (lastMatchRedirect !== this.confirmation.matchId) {
+            localStorage.setItem("confirmedMatchId", this.confirmation.matchId);
+            this.$router.push(`/matches/${this.confirmation.matchId}`);
+          }
+        }
+      },
+    },
+  },
+  methods: {
+    ready() {
+      if (!this.confirmation) {
+        return;
+      }
+
+      socket.event("match-making:confirm", {
+        confirmationId: this.confirmation.confirmationId,
+      });
     },
   },
 };

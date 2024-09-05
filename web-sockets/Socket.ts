@@ -1,6 +1,7 @@
 import EventEmitter from "eventemitter3";
 
 class Socket extends EventEmitter {
+  private listening = new Set();
   private connection?: WebSocket;
   private connected = false;
   private heartBeat?: NodeJS.Timeout;
@@ -93,10 +94,17 @@ class Socket extends EventEmitter {
   }
 
   public listen(event: string, callback: (data: any) => void) {
+    if (this.listening.has(event)) {
+      return;
+    }
+
     this.on(event, callback);
+
+    this.listening.add(event);
 
     return {
       stop: () => {
+        this.listening.delete(event);
         this.removeListener(event, callback);
       },
     };

@@ -8,6 +8,10 @@ import { e_player_roles_enum } from "~/generated/zeus";
 export const useAuthStore = defineStore("auth", () => {
   const me = ref<typeof meFields>();
 
+  // TODO - move the listens to the socket store ?
+  // Initialize MatchMakingStore, this is required for sockets listens to get initialized
+  useMatchMakingStore();
+
   async function getMe() {
     try {
       const response = await getGraphqlClient().query({

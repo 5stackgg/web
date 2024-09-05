@@ -211,19 +211,21 @@ import { e_match_status_enum } from "~/generated/zeus";
         </div>
       </template>
 
-      <Separator class="my-8" />
+      <template v-if="match.organizer">
+        <Separator class="my-8" />
 
-      <div class="grid gap-3">
-        <div class="font-semibold">Match Organizers</div>
-        <ul class="grid gap-3">
-          <li class="flex items-center justify-between">
-            <PlayerDisplay
-              class="mx-3"
-              :player="match.organizer"
-            ></PlayerDisplay>
-          </li>
-        </ul>
-      </div>
+        <div class="grid gap-3">
+          <div class="font-semibold">Match Organizers</div>
+          <ul class="grid gap-3">
+            <li class="flex items-center justify-between">
+              <PlayerDisplay
+                class="mx-3"
+                :player="match.organizer"
+              ></PlayerDisplay>
+            </li>
+          </ul>
+        </div>
+      </template>
     </CardContent>
   </Card>
 </template>

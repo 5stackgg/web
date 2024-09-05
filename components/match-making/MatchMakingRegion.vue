@@ -6,10 +6,7 @@ import {
 import socket from "~/web-sockets/Socket";
 </script>
 <template>
-  <Card
-    class="mb-4 w-64 inline-block mr-4 relative"
-    v-if="!confirmationDetails?.matchId"
-  >
+  <Card class="mb-4 w-64 inline-block mr-4 relative">
     <CardHeader>
       <CardTitle class="text-lg">
         {{ region.description }}
@@ -41,7 +38,7 @@ import socket from "~/web-sockets/Socket";
         class="mb-4 text-center"
       >
         <div class="text-4xl font-bold">
-          {{ matchamkingQueueDetails.currentPosition }}
+          {{ matchamkingQueueDetails.regionPositions[this.region.value] }}
         </div>
         <div class="text-sm text-muted-foreground">Current Position</div>
 
@@ -102,8 +99,6 @@ import socket from "~/web-sockets/Socket";
       </div>
     </CardContent>
   </Card>
-
-  <template v-else> Match Details </template>
 </template>
 
 <script lang="ts">
@@ -139,20 +134,6 @@ export default {
       }),
     },
   },
-  watch: {
-    confirmationDetails: {
-      immediate: true,
-      handler() {
-        // this.match = this.confirmationDetails?.matchId;
-        // TODO - get match
-      },
-    },
-  },
-  data() {
-    return {
-      match: null,
-    };
-  },
   methods: {
     joinMatchMaking(
       type: e_match_types_enum,
@@ -179,9 +160,6 @@ export default {
     },
     regionStats() {
       return useMatchMakingStore().regionStats;
-    },
-    confirmationDetails() {
-      return useMatchMakingStore().joinedMatchmakingQueues.confirmation;
     },
     matchamkingQueueDetails() {
       return useMatchMakingStore().joinedMatchmakingQueues.details;

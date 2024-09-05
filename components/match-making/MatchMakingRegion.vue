@@ -149,7 +149,7 @@ export default {
       type: e_match_types_enum,
       region: e_game_server_node_regions_enum,
     ) {
-      socket.join("match-making", {
+      socket.event("match-making:join-queue", {
         type,
         region,
       });

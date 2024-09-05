@@ -34,11 +34,11 @@ import socket from "~/web-sockets/Socket";
     </CardHeader>
     <CardContent>
       <div
-        v-if="(joinedCompetitiveQueue || joinedWingmanQueue) && matchamkingQueueDetails"
+        v-if="joinedCompetitiveQueue || joinedWingmanQueue && matchamkingQueueDetails"
         class="mb-4 text-center"
       >
         <div class="text-4xl font-bold">
-          {{ matchamkingQueueDetails.regionPositions[this.region.value] }}
+          {{ matchamkingQueueDetails.regionPositions[region.value] }}
         </div>
         <div class="text-sm text-muted-foreground">Current Position</div>
 

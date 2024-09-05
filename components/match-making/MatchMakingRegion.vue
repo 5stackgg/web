@@ -34,7 +34,7 @@ import socket from "~/web-sockets/Socket";
     </CardHeader>
     <CardContent>
       <div
-        v-if="joinedCompetitiveQueue || joinedWingmanQueue"
+        v-if="(joinedCompetitiveQueue || joinedWingmanQueue) && matchamkingQueueDetails"
         class="mb-4 text-center"
       >
         <div class="text-4xl font-bold">

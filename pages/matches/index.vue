@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "~/components/ui/separator";
 import MatchesTable from "~/components/MatchesTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
-import MatchMaking from "~/components/MatchMaking.vue";
+import MatchMaking from "~/components/match-making/MatchMaking.vue";
 </script>
 
 <template>

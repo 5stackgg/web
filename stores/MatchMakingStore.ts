@@ -24,34 +24,6 @@ export const useMatchMakingStore = defineStore("match-making", () => {
     >
   >({});
 
-  socket.listen("match-making:region-stats", (data) => {
-    regionStats.value = data;
-  });
-
-  socket.listen(
-    "match-making:joined",
-    (
-      data: Array<{
-        totalInQueue: number;
-        type: e_match_types_enum;
-        region: e_game_server_node_regions_enum;
-      }>,
-    ) => {
-      console.info("I AM DATA", data);
-      joinedMatchmakingQueues.value = data;
-    },
-  );
-
-  socket.listen("match-making:confirmation", (data) => {
-    // You might want to update the queue status here if needed
-  });
-
-  socket.listen("match-making:match-created", (data) => {
-    // Remove the queue from joinedMatchmakingQueues when a match is created
-    // joinedMatchmakingQueues.value = joinedMatchmakingQueues.value.filter(queueId => queueId !== data.queueId);
-    // this.$router.push(`/matches/${data.matchId}`)
-  });
-
   return {
     regionStats,
     joinedMatchmakingQueues,

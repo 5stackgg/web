@@ -1,4 +1,8 @@
 import EventEmitter from "eventemitter3";
+import type {
+  e_game_server_node_regions_enum,
+  e_match_types_enum,
+} from "~/generated/zeus";
 
 class Socket extends EventEmitter {
   private listening = new Set();
@@ -111,5 +115,32 @@ class Socket extends EventEmitter {
   }
 }
 const socket = new Socket();
+
+socket.listen("match-making:region-stats", (data) => {
+  useMatchMakingStore().regionStats = data;
+});
+
+socket.listen(
+  "match-making:joined",
+  (
+    data: Array<{
+      totalInQueue: number;
+      type: e_match_types_enum;
+      region: e_game_server_node_regions_enum;
+    }>,
+  ) => {
+    useMatchMakingStore().joinedMatchmakingQueues = data;
+  },
+);
+
+socket.listen("match-making:confirmation", (data) => {
+  // You might want to update the queue status here if needed
+});
+
+socket.listen("match-making:match-created", (data) => {
+  // Remove the queue from joinedMatchmakingQueues when a match is created
+  // joinedMatchmakingQueues.value = joinedMatchmakingQueues.value.filter(queueId => queueId !== data.queueId);
+  // this.$router.push(`/matches/${data.matchId}`)
+});
 
 export default socket;

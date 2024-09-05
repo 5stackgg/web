@@ -8,11 +8,11 @@ import { string } from "zod";
 
 export const useMatchMakingStore = defineStore("match-making", () => {
   const joinedMatchmakingQueues = ref<{
-    details: Array<{
+    details?: {
       totalInQueue: number;
       type: e_match_types_enum;
-      region: e_game_server_node_regions_enum;
-    }>;
+      regions: Array<e_game_server_node_regions_enum>;
+    };
     confirmation?: {
       matchId: string;
       isReady: boolean;
@@ -23,7 +23,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
       region: e_game_server_node_regions_enum;
     };
   }>({
-    details: [],
+    details: undefined,
     confirmation: undefined,
   });
 

@@ -129,6 +129,7 @@ socket.listen(
       region: e_game_server_node_regions_enum;
     }>,
   ) => {
+    console.info("match-making:details", data);
     useMatchMakingStore().joinedMatchmakingQueues = data;
   },
 );

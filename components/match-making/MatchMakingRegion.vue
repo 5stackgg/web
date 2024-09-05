@@ -6,7 +6,10 @@ import {
 import socket from "~/web-sockets/Socket";
 </script>
 <template>
-  <Card class="mb-4 w-64 inline-block mr-4 relative">
+  <Card
+    class="mb-4 w-64 inline-block mr-4 relative"
+    v-if="!confirmationDetails?.matchId"
+  >
     <CardHeader>
       <CardTitle class="text-lg">
         {{ region.description }}
@@ -38,22 +41,12 @@ import socket from "~/web-sockets/Socket";
         class="mb-4 text-center"
       >
         <div class="text-4xl font-bold">
-          {{
-            joinedCompetitiveQueue
-              ? joinedCompetitiveQueue.currentPosition
-              : joinedWingmanQueue.currentPosition
-          }}
+          {{ matchamkingQueueDetails.currentPosition }}
         </div>
         <div class="text-sm text-muted-foreground">Current Position</div>
 
         <small>
-          <TimeAgo
-            :date="
-              joinedCompetitiveQueue
-                ? joinedCompetitiveQueue.joinedAt
-                : joinedWingmanQueue.joinedAt
-            "
-          ></TimeAgo>
+          <TimeAgo :date="matchamkingQueueDetails.joinedAt"></TimeAgo>
         </small>
 
         <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2">
@@ -109,6 +102,8 @@ import socket from "~/web-sockets/Socket";
       </div>
     </CardContent>
   </Card>
+
+  <template v-else> Match Details </template>
 </template>
 
 <script lang="ts">
@@ -144,6 +139,20 @@ export default {
       }),
     },
   },
+  watch: {
+    confirmationDetails: {
+      immediate: true,
+      handler() {
+        // this.match = this.confirmationDetails?.matchId;
+        // TODO - get match
+      },
+    },
+  },
+  data() {
+    return {
+      match: null,
+    };
+  },
   methods: {
     joinMatchMaking(
       type: e_match_types_enum,
@@ -151,7 +160,7 @@ export default {
     ) {
       socket.event("match-making:join-queue", {
         type,
-        region,
+        regions: [region],
       });
     },
     leaveMatchMaking(
@@ -165,27 +174,29 @@ export default {
     },
   },
   computed: {
+    isInQueue() {
+      return this.matchamkingQueueDetails;
+    },
     regionStats() {
       return useMatchMakingStore().regionStats;
     },
-    joinedMatchmakingQueues() {
+    confirmationDetails() {
+      return useMatchMakingStore().joinedMatchmakingQueues.confirmation;
+    },
+    matchamkingQueueDetails() {
       return useMatchMakingStore().joinedMatchmakingQueues.details;
     },
     joinedWingmanQueue() {
-      return this.joinedMatchmakingQueues.find((queue) => {
-        return (
-          queue.region === this.region.value &&
-          queue.type === e_match_types_enum.Wingman
-        );
-      });
+      return (
+        this.matchamkingQueueDetails?.type === e_match_types_enum.Wingman &&
+        this.matchamkingQueueDetails?.regions.includes(this.region.value)
+      );
     },
     joinedCompetitiveQueue() {
-      return this.joinedMatchmakingQueues?.find((queue) => {
-        return (
-          queue.region === this.region.value &&
-          queue.type === e_match_types_enum.Competitive
-        );
-      });
+      return (
+        this.matchamkingQueueDetails?.type === e_match_types_enum.Competitive &&
+        this.matchamkingQueueDetails?.regions.includes(this.region.value)
+      );
     },
   },
 };

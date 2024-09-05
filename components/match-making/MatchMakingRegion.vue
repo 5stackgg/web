@@ -46,6 +46,16 @@ import socket from "~/web-sockets/Socket";
         </div>
         <div class="text-sm text-muted-foreground">Current Position</div>
 
+        <small>
+          <TimeAgo
+            :date="
+              joinedCompetitiveQueue
+                ? joinedCompetitiveQueue.joinedAt
+                : joinedWingmanQueue.joinedAt
+            "
+          ></TimeAgo>
+        </small>
+
         <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2">
           <Badge>
             {{ joinedCompetitiveQueue ? "Competitive" : "Wingman" }}
@@ -103,6 +113,7 @@ import socket from "~/web-sockets/Socket";
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import TimeAgo from "../TimeAgo.vue";
 
 export default {
   props: {
@@ -151,11 +162,6 @@ export default {
         type,
         region,
       });
-    },
-    confirmMatchMaking() {
-      // socket.event("match-making:confirm", {
-      //   matchId: this.matchId,
-      // });
     },
   },
   computed: {

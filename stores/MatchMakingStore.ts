@@ -14,7 +14,13 @@ export const useMatchMakingStore = defineStore("match-making", () => {
       region: e_game_server_node_regions_enum;
     }>;
     confirmation?: {
+      matchId: string;
+      isReady: boolean;
       expiresAt: string;
+      confirmed: number;
+      confirmationId: string;
+      type: e_match_types_enum;
+      region: e_game_server_node_regions_enum;
     };
   }>({
     details: [],

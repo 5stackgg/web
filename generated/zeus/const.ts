@@ -1142,6 +1142,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"game_server_nodes_bool_exp",
 		_or:"game_server_nodes_bool_exp",
 		available_server_count:"Int_comparison_exp",
+		build_id:"String_comparison_exp",
 		e_region:"e_game_server_node_regions_bool_exp",
 		e_status:"e_game_server_node_statuses_bool_exp",
 		enabled:"Boolean_comparison_exp",
@@ -1153,6 +1154,7 @@ export const AllTypesProps: Record<string,any> = {
 		servers_aggregate:"servers_aggregate_bool_exp",
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp",
+		token:"String_comparison_exp",
 		total_server_count:"Int_comparison_exp"
 	},
 	game_server_nodes_constraint: "enum" as const,
@@ -1168,14 +1170,18 @@ export const AllTypesProps: Record<string,any> = {
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_max_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
-		start_port_range:"order_by"
+		start_port_range:"order_by",
+		token:"order_by"
 	},
 	game_server_nodes_min_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
-		start_port_range:"order_by"
+		start_port_range:"order_by",
+		token:"order_by"
 	},
 	game_server_nodes_obj_rel_insert_input:{
 		data:"game_server_nodes_insert_input",
@@ -1188,6 +1194,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_server_nodes_order_by:{
 		available_server_count:"order_by",
+		build_id:"order_by",
 		e_region:"e_game_server_node_regions_order_by",
 		e_status:"e_game_server_node_statuses_order_by",
 		enabled:"order_by",
@@ -1198,6 +1205,7 @@ export const AllTypesProps: Record<string,any> = {
 		servers_aggregate:"servers_aggregate_order_by",
 		start_port_range:"order_by",
 		status:"order_by",
+		token:"order_by",
 		total_server_count:"order_by"
 	},
 	game_server_nodes_pk_columns_input:{
@@ -4050,6 +4058,9 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			server_id:"uuid"
 		},
+		updateCs:{
+			gameServerNodeId:"uuid"
+		},
 		update__map_pool:{
 			_set:"_map_pool_set_input",
 			where:"_map_pool_bool_exp"
@@ -6622,6 +6633,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		game_server_nodes_by_pk:{
 
+		},
+		getCsVersion:{
+			gameServerNodeId:"uuid"
 		},
 		map_pools:{
 			distinct_on:"map_pools_select_column",
@@ -10444,8 +10458,7 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"String"
 	},
 	SetupGameServeOutput:{
-		id:"uuid",
-		script:"String"
+		link:"String"
 	},
 	SuccessOutput:{
 		success:"Boolean"
@@ -10926,6 +10939,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_server_nodes:{
 		available_server_count:"Int",
+		build_id:"String",
 		e_region:"e_game_server_node_regions",
 		e_status:"e_game_server_node_statuses",
 		enabled:"Boolean",
@@ -10937,6 +10951,7 @@ export const ReturnTypes: Record<string,any> = {
 		servers_aggregate:"servers_aggregate",
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum",
+		token:"String",
 		total_server_count:"Int"
 	},
 	game_server_nodes_aggregate:{
@@ -10964,16 +10979,20 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_server_nodes_max_fields:{
 		available_server_count:"Int",
+		build_id:"String",
 		end_port_range:"Int",
 		id:"String",
 		start_port_range:"Int",
+		token:"String",
 		total_server_count:"Int"
 	},
 	game_server_nodes_min_fields:{
 		available_server_count:"Int",
+		build_id:"String",
 		end_port_range:"Int",
 		id:"String",
 		start_port_range:"Int",
+		token:"String",
 		total_server_count:"Int"
 	},
 	game_server_nodes_mutation_response:{
@@ -12213,6 +12232,7 @@ export const ReturnTypes: Record<string,any> = {
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		startMatch:"SuccessOutput",
+		updateCs:"SuccessOutput",
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",
 		update__map_pool_many:"_map_pool_mutation_response",
@@ -13269,6 +13289,7 @@ export const ReturnTypes: Record<string,any> = {
 		game_server_nodes:"game_server_nodes",
 		game_server_nodes_aggregate:"game_server_nodes_aggregate",
 		game_server_nodes_by_pk:"game_server_nodes",
+		getCsVersion:"String",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",

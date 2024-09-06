@@ -68,8 +68,10 @@ export default {
               status: true,
               region: true,
               enabled: true,
+              build_id: true,
               public_ip: true,
               start_port_range: true,
+              end_port_range: true,
               e_region: {
                 description: true,
               },

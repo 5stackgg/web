@@ -16,6 +16,8 @@ import {
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
+import { e_game_server_node_statuses_enum } from "~/generated/zeus";
+
 </script>
 
 <template>
@@ -73,6 +75,12 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
 
         <Button type="submit">Update Ports</Button>
       </form>
+
+      <Button @click="updateCs" v-if="gameServerNode.status === e_game_server_node_statuses_enum.Online">Update CS</Button>
+      <Button @click="removeGameNodeServer">Remove Game Node Server</Button>
+    </TableCell>
+    <TableCell>
+      {{ gameServerNode.build_id }}
     </TableCell>
     <TableCell>
       <Switch
@@ -158,7 +166,12 @@ export default {
   watch: {
     gameServerNode: {
       immediate: true,
-      handler({ region, start_port_range, end_port_range }) {
+      handler(gameServerNode) {
+        if(!gameServerNode) {
+            return;
+        }
+        
+        const { region, start_port_range, end_port_range } = gameServerNode;
         this.form.region = region;
 
         this.portForm.setValues({
@@ -169,6 +182,34 @@ export default {
     },
   },
   methods: {
+    async updateCs() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          updateCs: [
+            {
+                gameServerNodeId: this.gameServerNode.id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+    async removeGameNodeServer() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_game_server_nodes_by_pk: [
+            {
+                id: this.gameServerNode.id,
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
     async updateServerPorts() {
       const { valid } = await this.portForm.validate();
 

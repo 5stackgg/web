@@ -35,8 +35,7 @@ export default {
       return useAuthStore().me;
     },
     authLink() {
-      // TODO - use env variable
-      return `${useRuntimeConfig().apiHost}/auth/steam?redirect=${encodeURIComponent(
+      return `${useRuntimeConfig().public.apiHost}/auth/steam?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     linkDiscord() {
-      window.location = `${useRuntimeConfig().apiHost}}/auth/discord?redirect=${encodeURIComponent(
+      window.location = `${useRuntimeConfig().public.apiHost}}/auth/discord?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

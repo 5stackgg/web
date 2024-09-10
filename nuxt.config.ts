@@ -10,7 +10,6 @@ export default defineNuxtConfig({
     public: {
       wsHost: `wss://${process.env.NUXT_PUBLIC_WS_DOMAIN}`,
       webHost: `https://${process.env.NUXT_PUBLIC_WEB_DOMAIN}`,
-      apiHost: `https://${process.env.NUXT_PUBLIC_GRAPHQL_API_DOMAIN}`,
     },
   },  
 

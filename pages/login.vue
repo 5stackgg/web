@@ -36,7 +36,7 @@ export default {
       return useAuthStore().me;
     },
     authLink() {
-      return `${useRuntimeConfig().public.webHost}/auth/steam?redirect=${encodeURIComponent(
+      return `https://${useRuntimeConfig().public.webDomain}/auth/steam?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

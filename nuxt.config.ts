@@ -8,9 +8,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiHost: "",
-      wsHost: "",
-      webHost: "",
+      apiDomain: "",
+      wsDomain: "",
+      webDomain: "",
     },
   },
 

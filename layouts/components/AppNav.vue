@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     linkDiscord() {
-      window.location = `${useRuntimeConfig().public.webHost}}/auth/discord?redirect=${encodeURIComponent(
+      window.location = `https://${useRuntimeConfig().public.webDomain}}/auth/discord?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },

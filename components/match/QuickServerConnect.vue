@@ -19,7 +19,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
       <div class="underline flex" v-if="match.connection_string">
         <clip-board :data="match.connection_string"></clip-board>
         <a
-          :href="`${useRuntimeConfig().public.webHost}${match.connection_link}`"
+          :href="`https://${useRuntimeConfig().public.webDomain}${match.connection_link}`"
         >
           {{ match.connection_string }}
         </a>

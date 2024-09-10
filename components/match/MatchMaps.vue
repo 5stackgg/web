@@ -24,7 +24,7 @@ import formatBits from "~/utilities/formatBits";
       <div class="absolute top-3 right-3">
         <a
           target="_blank"
-          :href="`${useRuntimeConfig().public.webHost}/${matchMap.demos_download_url}`"
+          :href="`https://${useRuntimeConfig().public.webDomain}/${matchMap.demos_download_url}`"
         >
           <Button size="sm" variant="outline" v-if="matchMap.demos_total_size">
             Download Demos (<small>{{

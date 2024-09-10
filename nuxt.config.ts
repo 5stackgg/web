@@ -97,7 +97,9 @@ export default defineNuxtConfig({
   apollo: {
     proxyCookies: true,
     clients: {
-      default: "~/apollo.config.js",
+      default: {
+        httpEndpoint: `https://temp/v1/graphql`,
+      },
     },
   },
 

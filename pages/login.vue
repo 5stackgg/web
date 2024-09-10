@@ -5,7 +5,6 @@ definePageMeta({
 </script>
 
 <template>
-  <pre>{{ useRuntimeConfig() }}</pre>
   <img
     @click="signIn"
     src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_02.png"

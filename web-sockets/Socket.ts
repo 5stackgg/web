@@ -16,7 +16,7 @@ class Socket extends EventEmitter {
   }> = [];
 
   public connect() {
-    const wsHost = `wss://${useRuntimeConfig().webDomain}`;
+    const wsHost = `wss://${useRuntimeConfig().public.wsDomain}`;
     console.info(`[ws] connecting to ws: ${wsHost}`);
     const webSocket = new WebSocket(wsHost);
 
@@ -129,7 +129,6 @@ socket.listen(
       region: e_game_server_node_regions_enum;
     }>,
   ) => {
-    console.info("match-making:details", data);
     useMatchMakingStore().joinedMatchmakingQueues = data;
   },
 );

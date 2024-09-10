@@ -9,7 +9,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "codegen": ". ./.env && zeus $HASURA_GRAPHQL_ENDPOINT/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET"
+    "codegen": ". ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET"
   },
   "devDependencies": {
     "@nuxt/devtools": "^1.3.9",

@@ -97,11 +97,11 @@ export default defineNuxtConfig({
     proxyCookies: true,
     clients: {
       default: {
-        httpEndpoint: `https://${process.env.NUXT_PUBLIC_GRAPHQL_API_DOMAIN}/v1/graphql`,
+        httpEndpoint: `https://${process.env.NUXT_PUBLIC_API_DOMAIN}/v1/graphql`,
         httpLinkOptions: {
           credentials: "include",
         },
-        wsEndpoint: `wss://${process.env.NUXT_PUBLIC_GRAPHQL_API_DOMAIN}/v1/graphql`,
+        wsEndpoint: `wss://${process.env.NUXT_PUBLIC_API_DOMAIN}/v1/graphql`,
         wsLinkOptions: {
           // @ts-ignore
           credentials: "include",

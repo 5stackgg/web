@@ -17,7 +17,6 @@ import {
 import { Button } from "~/components/ui/button";
 import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
 import { e_game_server_node_statuses_enum } from "~/generated/zeus";
-
 </script>
 
 <template>
@@ -76,7 +75,11 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
         <Button type="submit">Update Ports</Button>
       </form>
 
-      <Button @click="updateCs" v-if="gameServerNode.status === e_game_server_node_statuses_enum.Online">Update CS</Button>
+      <Button
+        @click="updateCs"
+        v-if="gameServerNode.status === e_game_server_node_statuses_enum.Online"
+        >Update CS</Button
+      >
       <Button @click="removeGameNodeServer">Remove Game Node Server</Button>
     </TableCell>
     <TableCell>
@@ -167,10 +170,10 @@ export default {
     gameServerNode: {
       immediate: true,
       handler(gameServerNode) {
-        if(!gameServerNode) {
-            return;
+        if (!gameServerNode) {
+          return;
         }
-        
+
         const { region, start_port_range, end_port_range } = gameServerNode;
         this.form.region = region;
 
@@ -187,7 +190,7 @@ export default {
         mutation: generateMutation({
           updateCs: [
             {
-                gameServerNodeId: this.gameServerNode.id,
+              gameServerNodeId: this.gameServerNode.id,
             },
             {
               success: true,
@@ -201,7 +204,7 @@ export default {
         mutation: generateMutation({
           delete_game_server_nodes_by_pk: [
             {
-                id: this.gameServerNode.id,
+              id: this.gameServerNode.id,
             },
             {
               __typename: true,

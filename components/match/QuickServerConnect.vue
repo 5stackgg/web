@@ -18,7 +18,9 @@ import ClipBoard from "~/components/ClipBoard.vue";
     <template v-else>
       <div class="underline flex" v-if="match.connection_string">
         <clip-board :data="match.connection_string"></clip-board>
-        <a :href="`https://5stack.gg${match.connection_link}`">
+        <a
+          :href="`${useRuntimeConfig().webHost}${match.connection_link}`"
+        >
           {{ match.connection_string }}
         </a>
       </div>

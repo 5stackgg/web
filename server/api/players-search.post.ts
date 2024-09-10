@@ -3,7 +3,7 @@ import { Client } from "typesense";
 const client = new Client({
   nodes: [
     {
-      host: "search.5stack.gg",
+      host: process.env.NUXT_PUBLIC_TYPESENSE_HOST as string,
       port: 443,
       protocol: "https",
     },

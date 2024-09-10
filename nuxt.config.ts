@@ -6,6 +6,14 @@ export default defineNuxtConfig({
   ssr: false,
   plugins: [],
 
+  runtimeConfig: {
+    public: {
+      wsHost: `wss://${process.env.NUXT_PUBLIC_WS_DOMAIN}`,
+      webHost: `https://${process.env.NUXT_PUBLIC_WEB_DOMAIN}`,
+      apiHost: `https://${process.env.NUXT_PUBLIC_GRAPHQL_API_DOMAIN}`,
+    },
+  },  
+
   modules: [
     "@nuxtjs/apollo",
     "@pinia/nuxt",
@@ -90,11 +98,11 @@ export default defineNuxtConfig({
     proxyCookies: true,
     clients: {
       default: {
-        httpEndpoint: "https://api.5stack.gg/v1/graphql",
+        httpEndpoint: `https://${process.env.NUXT_PUBLIC_GRAPHQL_API_DOMAIN}/v1/graphql`,
         httpLinkOptions: {
           credentials: "include",
         },
-        wsEndpoint: "wss://api.5stack.gg/v1/graphql",
+        wsEndpoint: `wss://${process.env.NUXT_PUBLIC_GRAPHQL_API_DOMAIN}/v1/graphql`,
         wsLinkOptions: {
           // @ts-ignore
           credentials: "include",

@@ -2,6 +2,8 @@
 
 const sw = process.env.SW === "true";
 
+console.info(process.env)
+
 export default defineNuxtConfig({
   ssr: false,
   plugins: [],

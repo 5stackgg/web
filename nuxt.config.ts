@@ -2,18 +2,17 @@
 
 const sw = process.env.SW === "true";
 
-console.info(process.env)
-
 export default defineNuxtConfig({
   ssr: false,
   plugins: [],
 
   runtimeConfig: {
     public: {
-      wsHost: `wss://${process.env.NUXT_PUBLIC_WS_DOMAIN}`,
-      webHost: `https://${process.env.NUXT_PUBLIC_WEB_DOMAIN}`,
+      apiHost: "",
+      wsHost: "",
+      webHost: "",
     },
-  },  
+  },
 
   modules: [
     "@nuxtjs/apollo",
@@ -98,17 +97,7 @@ export default defineNuxtConfig({
   apollo: {
     proxyCookies: true,
     clients: {
-      default: {
-        httpEndpoint: `https://${process.env.NUXT_PUBLIC_API_DOMAIN}/v1/graphql`,
-        httpLinkOptions: {
-          credentials: "include",
-        },
-        wsEndpoint: `wss://${process.env.NUXT_PUBLIC_API_DOMAIN}/v1/graphql`,
-        wsLinkOptions: {
-          // @ts-ignore
-          credentials: "include",
-        },
-      },
+      default: "~/apollo.config.js",
     },
   },
 

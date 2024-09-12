@@ -13,19 +13,20 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
       </TableRow>
     </TableHeader>
     <TableBody>
-      <template v-if="gameServerNodes?.length === 0">
-        <TableRow>
-          <TableCell colspan="5" class="text-center"
-            >No Game Server Nodes</TableCell
-          >
+        <TableRow v-for="region in gameServerRegions" :key="region.value">
+            <TableCell>
+              <span
+                  class="ml-1 inline-block h-2 w-2 rounded-full"
+                  :class="{
+                    'bg-red-600': region.status === 'Offline',
+                    'bg-green-600': region.status === 'Online',
+                    'bg-yellow-600': region.status === 'Partial'
+                  }"
+                >
+              </span>
+                {{ region.description }}
+            </TableCell>
         </TableRow>
-      </template>
-      <template v-else>
-        <GameServerNodeDisplay
-          :game-server-node="gameServerNode"
-          v-for="gameServerNode of gameServerNodes"
-        ></GameServerNodeDisplay>
-      </template>
     </TableBody>
   </Table>
 </template>
@@ -36,29 +37,30 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 export default {
   data() {
     return {
-      gameServerNodes: [],
+      gameServerRegions: [],
     };
   },
   apollo: {
     $subscribe: {
       game_server_nodes: {
         query: typedGql("subscription")({
-          game_server_nodes: [
-            {},
+          e_game_server_node_regions: [
             {
+              where: {
+                status: {
+                  _neq: "N/A"
+                }
+              }
+            },
+            {
+              value: true,
               status: true,
-              region: true,
-              e_region: {
-                description: true,
-              },
-              e_status: {
-                description: true,
-              },
+              description: true,
             },
           ],
         }),
         result: function ({ data }) {
-          this.gameServerNodes = data.game_server_nodes;
+          this.gameServerRegions = data.e_game_server_node_regions;
         },
       },
     },

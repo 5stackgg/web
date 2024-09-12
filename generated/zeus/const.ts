@@ -106,6 +106,7 @@ export const AllTypesProps: Record<string,any> = {
 		description:"String_comparison_exp",
 		game_server_nodes:"game_server_nodes_bool_exp",
 		game_server_nodes_aggregate:"game_server_nodes_aggregate_bool_exp",
+		status:"String_comparison_exp",
 		total_server_count:"Int_comparison_exp",
 		value:"String_comparison_exp"
 	},
@@ -133,6 +134,7 @@ export const AllTypesProps: Record<string,any> = {
 		available_server_count:"order_by",
 		description:"order_by",
 		game_server_nodes_aggregate:"game_server_nodes_aggregate_order_by",
+		status:"order_by",
 		total_server_count:"order_by",
 		value:"order_by"
 	},
@@ -1134,6 +1136,7 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"game_server_nodes_on_conflict"
 	},
 	game_server_nodes_avg_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
@@ -1142,7 +1145,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"game_server_nodes_bool_exp",
 		_or:"game_server_nodes_bool_exp",
 		available_server_count:"Int_comparison_exp",
-		build_id:"String_comparison_exp",
+		build_id:"Int_comparison_exp",
 		e_region:"e_game_server_node_regions_bool_exp",
 		e_status:"e_game_server_node_statuses_bool_exp",
 		enabled:"Boolean_comparison_exp",
@@ -1220,14 +1223,17 @@ export const AllTypesProps: Record<string,any> = {
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_stddev_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stddev_pop_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stddev_samp_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
@@ -1241,6 +1247,7 @@ export const AllTypesProps: Record<string,any> = {
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_sum_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
@@ -1251,14 +1258,17 @@ export const AllTypesProps: Record<string,any> = {
 		where:"game_server_nodes_bool_exp"
 	},
 	game_server_nodes_var_pop_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_var_samp_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_variance_order_by:{
+		build_id:"order_by",
 		end_port_range:"order_by",
 		start_port_range:"order_by"
 	},
@@ -10495,6 +10505,7 @@ export const ReturnTypes: Record<string,any> = {
 		description:"String",
 		game_server_nodes:"game_server_nodes",
 		game_server_nodes_aggregate:"game_server_nodes_aggregate",
+		status:"String",
 		total_server_count:"Int",
 		value:"String"
 	},
@@ -10522,12 +10533,14 @@ export const ReturnTypes: Record<string,any> = {
 	e_game_server_node_regions_max_fields:{
 		available_server_count:"Int",
 		description:"String",
+		status:"String",
 		total_server_count:"Int",
 		value:"String"
 	},
 	e_game_server_node_regions_min_fields:{
 		available_server_count:"Int",
 		description:"String",
+		status:"String",
 		total_server_count:"Int",
 		value:"String"
 	},
@@ -10939,7 +10952,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_server_nodes:{
 		available_server_count:"Int",
-		build_id:"String",
+		build_id:"Int",
 		e_region:"e_game_server_node_regions",
 		e_status:"e_game_server_node_statuses",
 		enabled:"Boolean",
@@ -10973,13 +10986,14 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_server_nodes_avg_fields:{
 		available_server_count:"Int",
+		build_id:"Float",
 		end_port_range:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
 	game_server_nodes_max_fields:{
 		available_server_count:"Int",
-		build_id:"String",
+		build_id:"Int",
 		end_port_range:"Int",
 		id:"String",
 		start_port_range:"Int",
@@ -10988,7 +11002,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_server_nodes_min_fields:{
 		available_server_count:"Int",
-		build_id:"String",
+		build_id:"Int",
 		end_port_range:"Int",
 		id:"String",
 		start_port_range:"Int",
@@ -11001,42 +11015,49 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	game_server_nodes_stddev_fields:{
 		available_server_count:"Int",
+		build_id:"Float",
 		end_port_range:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
 	game_server_nodes_stddev_pop_fields:{
 		available_server_count:"Int",
+		build_id:"Float",
 		end_port_range:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
 	game_server_nodes_stddev_samp_fields:{
 		available_server_count:"Int",
+		build_id:"Float",
 		end_port_range:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
 	game_server_nodes_sum_fields:{
 		available_server_count:"Int",
+		build_id:"Int",
 		end_port_range:"Int",
 		start_port_range:"Int",
 		total_server_count:"Int"
 	},
 	game_server_nodes_var_pop_fields:{
 		available_server_count:"Int",
+		build_id:"Float",
 		end_port_range:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
 	game_server_nodes_var_samp_fields:{
 		available_server_count:"Int",
+		build_id:"Float",
 		end_port_range:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
 	game_server_nodes_variance_fields:{
 		available_server_count:"Int",
+		build_id:"Float",
 		end_port_range:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"

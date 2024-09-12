@@ -1086,6 +1086,8 @@ game_server_nodes_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["game_server_nodes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_server_nodes_aggregate"]],
+	/** A computed field, executes function "region_status" */
+	status?:boolean | `@${string}`,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?:boolean | `@${string}`,
 	value?:boolean | `@${string}`,
@@ -1129,6 +1131,7 @@ count?: [{	columns?: Array<ValueTypes["e_game_server_node_regions_select_column"
 	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	game_server_nodes?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
 	game_server_nodes_aggregate?: ValueTypes["game_server_nodes_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	total_server_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
 };
@@ -1154,6 +1157,8 @@ count?: [{	columns?: Array<ValueTypes["e_game_server_node_regions_select_column"
 	/** A computed field, executes function "available_region_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	/** A computed field, executes function "region_status" */
+	status?:boolean | `@${string}`,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?:boolean | `@${string}`,
 	value?:boolean | `@${string}`,
@@ -1164,6 +1169,8 @@ count?: [{	columns?: Array<ValueTypes["e_game_server_node_regions_select_column"
 	/** A computed field, executes function "available_region_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	/** A computed field, executes function "region_status" */
+	status?:boolean | `@${string}`,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?:boolean | `@${string}`,
 	value?:boolean | `@${string}`,
@@ -1194,6 +1201,7 @@ count?: [{	columns?: Array<ValueTypes["e_game_server_node_regions_select_column"
 	available_server_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	game_server_nodes_aggregate?: ValueTypes["game_server_nodes_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	total_server_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3095,6 +3103,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_avg_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3103,6 +3112,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by avg() on columns of table "game_server_nodes" */
 ["game_server_nodes_avg_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3112,7 +3122,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 	_not?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["game_server_nodes_bool_exp"]> | undefined | null | Variable<any, string>,
 	available_server_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
-	build_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	build_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_region?: ValueTypes["e_game_server_node_regions_bool_exp"] | undefined | null | Variable<any, string>,
 	e_status?: ValueTypes["e_game_server_node_statuses_bool_exp"] | undefined | null | Variable<any, string>,
 	enabled?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -3131,12 +3141,13 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_constraint"]:game_server_nodes_constraint;
 	/** input type for incrementing numeric columns in table "game_server_nodes" */
 ["game_server_nodes_inc_input"]: {
+	build_id?: number | undefined | null | Variable<any, string>,
 	end_port_range?: number | undefined | null | Variable<any, string>,
 	start_port_range?: number | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
-	build_id?: string | undefined | null | Variable<any, string>,
+	build_id?: number | undefined | null | Variable<any, string>,
 	e_region?: ValueTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	e_status?: ValueTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
@@ -3240,7 +3251,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
-	build_id?: string | undefined | null | Variable<any, string>,
+	build_id?: number | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	end_port_range?: number | undefined | null | Variable<any, string>,
 	id?: string | undefined | null | Variable<any, string>,
@@ -3254,6 +3265,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_stddev_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3262,6 +3274,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by stddev() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3269,6 +3282,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_stddev_pop_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3277,6 +3291,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by stddev_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_pop_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3284,6 +3299,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_stddev_samp_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3292,6 +3308,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by stddev_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_samp_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3304,7 +3321,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
-	build_id?: string | undefined | null | Variable<any, string>,
+	build_id?: number | undefined | null | Variable<any, string>,
 	enabled?: boolean | undefined | null | Variable<any, string>,
 	end_port_range?: number | undefined | null | Variable<any, string>,
 	id?: string | undefined | null | Variable<any, string>,
@@ -3318,6 +3335,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_sum_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3326,6 +3344,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by sum() on columns of table "game_server_nodes" */
 ["game_server_nodes_sum_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3343,6 +3362,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_var_pop_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3351,6 +3371,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by var_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_pop_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3358,6 +3379,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_var_samp_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3366,6 +3388,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by var_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_samp_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -3373,6 +3396,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 ["game_server_nodes_variance_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -3381,6 +3405,7 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 }>;
 	/** order by variance() on columns of table "game_server_nodes" */
 ["game_server_nodes_variance_order_by"]: {
+	build_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	end_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	start_port_range?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -18093,6 +18118,8 @@ game_server_nodes_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["game_server_nodes_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null},ResolverInputTypes["game_server_nodes_aggregate"]],
+	/** A computed field, executes function "region_status" */
+	status?:boolean | `@${string}`,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?:boolean | `@${string}`,
 	value?:boolean | `@${string}`,
@@ -18136,6 +18163,7 @@ count?: [{	columns?: Array<ResolverInputTypes["e_game_server_node_regions_select
 	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	game_server_nodes?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
 	game_server_nodes_aggregate?: ResolverInputTypes["game_server_nodes_aggregate_bool_exp"] | undefined | null,
+	status?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	total_server_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
 };
@@ -18161,6 +18189,8 @@ count?: [{	columns?: Array<ResolverInputTypes["e_game_server_node_regions_select
 	/** A computed field, executes function "available_region_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	/** A computed field, executes function "region_status" */
+	status?:boolean | `@${string}`,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?:boolean | `@${string}`,
 	value?:boolean | `@${string}`,
@@ -18171,6 +18201,8 @@ count?: [{	columns?: Array<ResolverInputTypes["e_game_server_node_regions_select
 	/** A computed field, executes function "available_region_server_count" */
 	available_server_count?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
+	/** A computed field, executes function "region_status" */
+	status?:boolean | `@${string}`,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?:boolean | `@${string}`,
 	value?:boolean | `@${string}`,
@@ -18201,6 +18233,7 @@ count?: [{	columns?: Array<ResolverInputTypes["e_game_server_node_regions_select
 	available_server_count?: ResolverInputTypes["order_by"] | undefined | null,
 	description?: ResolverInputTypes["order_by"] | undefined | null,
 	game_server_nodes_aggregate?: ResolverInputTypes["game_server_nodes_aggregate_order_by"] | undefined | null,
+	status?: ResolverInputTypes["order_by"] | undefined | null,
 	total_server_count?: ResolverInputTypes["order_by"] | undefined | null,
 	value?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20102,6 +20135,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_avg_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20110,6 +20144,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by avg() on columns of table "game_server_nodes" */
 ["game_server_nodes_avg_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20119,7 +20154,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 	_not?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["game_server_nodes_bool_exp"]> | undefined | null,
 	available_server_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
-	build_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	build_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	e_region?: ResolverInputTypes["e_game_server_node_regions_bool_exp"] | undefined | null,
 	e_status?: ResolverInputTypes["e_game_server_node_statuses_bool_exp"] | undefined | null,
 	enabled?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -20138,12 +20173,13 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_constraint"]:game_server_nodes_constraint;
 	/** input type for incrementing numeric columns in table "game_server_nodes" */
 ["game_server_nodes_inc_input"]: {
+	build_id?: number | undefined | null,
 	end_port_range?: number | undefined | null,
 	start_port_range?: number | undefined | null
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
-	build_id?: string | undefined | null,
+	build_id?: number | undefined | null,
 	e_region?: ResolverInputTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined | null,
 	e_status?: ResolverInputTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined | null,
 	enabled?: boolean | undefined | null,
@@ -20247,7 +20283,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
-	build_id?: string | undefined | null,
+	build_id?: number | undefined | null,
 	enabled?: boolean | undefined | null,
 	end_port_range?: number | undefined | null,
 	id?: string | undefined | null,
@@ -20261,6 +20297,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_stddev_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20269,6 +20306,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by stddev() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20276,6 +20314,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_stddev_pop_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20284,6 +20323,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by stddev_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_pop_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20291,6 +20331,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_stddev_samp_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20299,6 +20340,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by stddev_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_samp_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20311,7 +20353,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
-	build_id?: string | undefined | null,
+	build_id?: number | undefined | null,
 	enabled?: boolean | undefined | null,
 	end_port_range?: number | undefined | null,
 	id?: string | undefined | null,
@@ -20325,6 +20367,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_sum_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20333,6 +20376,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by sum() on columns of table "game_server_nodes" */
 ["game_server_nodes_sum_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20350,6 +20394,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_var_pop_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20358,6 +20403,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by var_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_pop_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20365,6 +20411,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_var_samp_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20373,6 +20420,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by var_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_samp_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -20380,6 +20428,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 ["game_server_nodes_variance_fields"]: AliasType<{
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?:boolean | `@${string}`,
+	build_id?:boolean | `@${string}`,
 	end_port_range?:boolean | `@${string}`,
 	start_port_range?:boolean | `@${string}`,
 	/** A computed field, executes function "total_node_server_count" */
@@ -20388,6 +20437,7 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 }>;
 	/** order by variance() on columns of table "game_server_nodes" */
 ["game_server_nodes_variance_order_by"]: {
+	build_id?: ResolverInputTypes["order_by"] | undefined | null,
 	end_port_range?: ResolverInputTypes["order_by"] | undefined | null,
 	start_port_range?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -35078,6 +35128,8 @@ export type ModelTypes = {
 	game_server_nodes: Array<ModelTypes["game_server_nodes"]>,
 	/** An aggregate relationship */
 	game_server_nodes_aggregate: ModelTypes["game_server_nodes_aggregate"],
+	/** A computed field, executes function "region_status" */
+	status?: string | undefined,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined,
 	value: string
@@ -35117,6 +35169,7 @@ export type ModelTypes = {
 	description?: ModelTypes["String_comparison_exp"] | undefined,
 	game_server_nodes?: ModelTypes["game_server_nodes_bool_exp"] | undefined,
 	game_server_nodes_aggregate?: ModelTypes["game_server_nodes_aggregate_bool_exp"] | undefined,
+	status?: ModelTypes["String_comparison_exp"] | undefined,
 	total_server_count?: ModelTypes["Int_comparison_exp"] | undefined,
 	value?: ModelTypes["String_comparison_exp"] | undefined
 };
@@ -35141,6 +35194,8 @@ export type ModelTypes = {
 		/** A computed field, executes function "available_region_server_count" */
 	available_server_count?: number | undefined,
 	description?: string | undefined,
+	/** A computed field, executes function "region_status" */
+	status?: string | undefined,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined,
 	value?: string | undefined
@@ -35150,6 +35205,8 @@ export type ModelTypes = {
 		/** A computed field, executes function "available_region_server_count" */
 	available_server_count?: number | undefined,
 	description?: string | undefined,
+	/** A computed field, executes function "region_status" */
+	status?: string | undefined,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined,
 	value?: string | undefined
@@ -35178,6 +35235,7 @@ export type ModelTypes = {
 	available_server_count?: ModelTypes["order_by"] | undefined,
 	description?: ModelTypes["order_by"] | undefined,
 	game_server_nodes_aggregate?: ModelTypes["game_server_nodes_aggregate_order_by"] | undefined,
+	status?: ModelTypes["order_by"] | undefined,
 	total_server_count?: ModelTypes["order_by"] | undefined,
 	value?: ModelTypes["order_by"] | undefined
 };
@@ -36751,7 +36809,7 @@ export type ModelTypes = {
 ["game_server_nodes"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	/** An object relationship */
 	e_region?: ModelTypes["e_game_server_node_regions"] | undefined,
 	/** An object relationship */
@@ -36837,6 +36895,7 @@ export type ModelTypes = {
 ["game_server_nodes_avg_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -36844,6 +36903,7 @@ export type ModelTypes = {
 };
 	/** order by avg() on columns of table "game_server_nodes" */
 ["game_server_nodes_avg_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -36853,7 +36913,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["game_server_nodes_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["game_server_nodes_bool_exp"]> | undefined,
 	available_server_count?: ModelTypes["Int_comparison_exp"] | undefined,
-	build_id?: ModelTypes["String_comparison_exp"] | undefined,
+	build_id?: ModelTypes["Int_comparison_exp"] | undefined,
 	e_region?: ModelTypes["e_game_server_node_regions_bool_exp"] | undefined,
 	e_status?: ModelTypes["e_game_server_node_statuses_bool_exp"] | undefined,
 	enabled?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -36871,12 +36931,13 @@ export type ModelTypes = {
 	["game_server_nodes_constraint"]:game_server_nodes_constraint;
 	/** input type for incrementing numeric columns in table "game_server_nodes" */
 ["game_server_nodes_inc_input"]: {
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	e_region?: ModelTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined,
 	e_status?: ModelTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined,
 	enabled?: boolean | undefined,
@@ -36893,7 +36954,7 @@ export type ModelTypes = {
 ["game_server_nodes_max_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
 	start_port_range?: number | undefined,
@@ -36913,7 +36974,7 @@ export type ModelTypes = {
 ["game_server_nodes_min_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
 	start_port_range?: number | undefined,
@@ -36974,7 +37035,7 @@ export type ModelTypes = {
 	["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]:game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	enabled?: boolean | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
@@ -36988,6 +37049,7 @@ export type ModelTypes = {
 ["game_server_nodes_stddev_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -36995,6 +37057,7 @@ export type ModelTypes = {
 };
 	/** order by stddev() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -37002,6 +37065,7 @@ export type ModelTypes = {
 ["game_server_nodes_stddev_pop_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -37009,6 +37073,7 @@ export type ModelTypes = {
 };
 	/** order by stddev_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_pop_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -37016,6 +37081,7 @@ export type ModelTypes = {
 ["game_server_nodes_stddev_samp_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -37023,6 +37089,7 @@ export type ModelTypes = {
 };
 	/** order by stddev_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_samp_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -37035,7 +37102,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	enabled?: boolean | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
@@ -37049,6 +37116,7 @@ export type ModelTypes = {
 ["game_server_nodes_sum_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -37056,6 +37124,7 @@ export type ModelTypes = {
 };
 	/** order by sum() on columns of table "game_server_nodes" */
 ["game_server_nodes_sum_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -37072,6 +37141,7 @@ export type ModelTypes = {
 ["game_server_nodes_var_pop_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -37079,6 +37149,7 @@ export type ModelTypes = {
 };
 	/** order by var_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_pop_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -37086,6 +37157,7 @@ export type ModelTypes = {
 ["game_server_nodes_var_samp_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -37093,6 +37165,7 @@ export type ModelTypes = {
 };
 	/** order by var_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_samp_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -37100,6 +37173,7 @@ export type ModelTypes = {
 ["game_server_nodes_variance_fields"]: {
 		/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -37107,6 +37181,7 @@ export type ModelTypes = {
 };
 	/** order by variance() on columns of table "game_server_nodes" */
 ["game_server_nodes_variance_order_by"]: {
+	build_id?: ModelTypes["order_by"] | undefined,
 	end_port_range?: ModelTypes["order_by"] | undefined,
 	start_port_range?: ModelTypes["order_by"] | undefined
 };
@@ -49576,6 +49651,8 @@ export type GraphQLTypes = {
 	game_server_nodes: Array<GraphQLTypes["game_server_nodes"]>,
 	/** An aggregate relationship */
 	game_server_nodes_aggregate: GraphQLTypes["game_server_nodes_aggregate"],
+	/** A computed field, executes function "region_status" */
+	status?: string | undefined,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined,
 	value: string
@@ -49618,6 +49695,7 @@ export type GraphQLTypes = {
 	description?: GraphQLTypes["String_comparison_exp"] | undefined,
 	game_server_nodes?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined,
 	game_server_nodes_aggregate?: GraphQLTypes["game_server_nodes_aggregate_bool_exp"] | undefined,
+	status?: GraphQLTypes["String_comparison_exp"] | undefined,
 	total_server_count?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	value?: GraphQLTypes["String_comparison_exp"] | undefined
 };
@@ -49644,6 +49722,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "available_region_server_count" */
 	available_server_count?: number | undefined,
 	description?: string | undefined,
+	/** A computed field, executes function "region_status" */
+	status?: string | undefined,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined,
 	value?: string | undefined
@@ -49654,6 +49734,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "available_region_server_count" */
 	available_server_count?: number | undefined,
 	description?: string | undefined,
+	/** A computed field, executes function "region_status" */
+	status?: string | undefined,
 	/** A computed field, executes function "total_region_server_count" */
 	total_server_count?: number | undefined,
 	value?: string | undefined
@@ -49683,6 +49765,7 @@ export type GraphQLTypes = {
 		available_server_count?: GraphQLTypes["order_by"] | undefined,
 	description?: GraphQLTypes["order_by"] | undefined,
 	game_server_nodes_aggregate?: GraphQLTypes["game_server_nodes_aggregate_order_by"] | undefined,
+	status?: GraphQLTypes["order_by"] | undefined,
 	total_server_count?: GraphQLTypes["order_by"] | undefined,
 	value?: GraphQLTypes["order_by"] | undefined
 };
@@ -51392,7 +51475,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	/** An object relationship */
 	e_region?: GraphQLTypes["e_game_server_node_regions"] | undefined,
 	/** An object relationship */
@@ -51481,6 +51564,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_avg_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51488,7 +51572,8 @@ export type GraphQLTypes = {
 };
 	/** order by avg() on columns of table "game_server_nodes" */
 ["game_server_nodes_avg_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	/** Boolean expression to filter rows from the table "game_server_nodes". All fields are combined with a logical 'AND'. */
@@ -51497,7 +51582,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["game_server_nodes_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["game_server_nodes_bool_exp"]> | undefined,
 	available_server_count?: GraphQLTypes["Int_comparison_exp"] | undefined,
-	build_id?: GraphQLTypes["String_comparison_exp"] | undefined,
+	build_id?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	e_region?: GraphQLTypes["e_game_server_node_regions_bool_exp"] | undefined,
 	e_status?: GraphQLTypes["e_game_server_node_statuses_bool_exp"] | undefined,
 	enabled?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -51516,12 +51601,13 @@ export type GraphQLTypes = {
 ["game_server_nodes_constraint"]: game_server_nodes_constraint;
 	/** input type for incrementing numeric columns in table "game_server_nodes" */
 ["game_server_nodes_inc_input"]: {
-		end_port_range?: number | undefined,
+		build_id?: number | undefined,
+	end_port_range?: number | undefined,
 	start_port_range?: number | undefined
 };
 	/** input type for inserting data into table "game_server_nodes" */
 ["game_server_nodes_insert_input"]: {
-		build_id?: string | undefined,
+		build_id?: number | undefined,
 	e_region?: GraphQLTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined,
 	e_status?: GraphQLTypes["e_game_server_node_statuses_obj_rel_insert_input"] | undefined,
 	enabled?: boolean | undefined,
@@ -51539,7 +51625,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_max_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
 	start_port_range?: number | undefined,
@@ -51560,7 +51646,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_min_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
-	build_id?: string | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
 	start_port_range?: number | undefined,
@@ -51625,7 +51711,7 @@ export type GraphQLTypes = {
 ["game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns"]: game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "game_server_nodes" */
 ["game_server_nodes_set_input"]: {
-		build_id?: string | undefined,
+		build_id?: number | undefined,
 	enabled?: boolean | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
@@ -51640,6 +51726,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_stddev_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51647,7 +51734,8 @@ export type GraphQLTypes = {
 };
 	/** order by stddev() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_pop on columns */
@@ -51655,6 +51743,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_stddev_pop_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51662,7 +51751,8 @@ export type GraphQLTypes = {
 };
 	/** order by stddev_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_pop_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate stddev_samp on columns */
@@ -51670,6 +51760,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_stddev_samp_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51677,7 +51768,8 @@ export type GraphQLTypes = {
 };
 	/** order by stddev_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_stddev_samp_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	/** Streaming cursor of the table "game_server_nodes" */
@@ -51689,7 +51781,7 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["game_server_nodes_stream_cursor_value_input"]: {
-		build_id?: string | undefined,
+		build_id?: number | undefined,
 	enabled?: boolean | undefined,
 	end_port_range?: number | undefined,
 	id?: string | undefined,
@@ -51704,6 +51796,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_sum_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51711,7 +51804,8 @@ export type GraphQLTypes = {
 };
 	/** order by sum() on columns of table "game_server_nodes" */
 ["game_server_nodes_sum_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	/** update columns of table "game_server_nodes" */
@@ -51729,6 +51823,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_var_pop_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51736,7 +51831,8 @@ export type GraphQLTypes = {
 };
 	/** order by var_pop() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_pop_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate var_samp on columns */
@@ -51744,6 +51840,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_var_samp_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51751,7 +51848,8 @@ export type GraphQLTypes = {
 };
 	/** order by var_samp() on columns of table "game_server_nodes" */
 ["game_server_nodes_var_samp_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate variance on columns */
@@ -51759,6 +51857,7 @@ export type GraphQLTypes = {
 	__typename: "game_server_nodes_variance_fields",
 	/** A computed field, executes function "available_node_server_count" */
 	available_server_count?: number | undefined,
+	build_id?: number | undefined,
 	end_port_range?: number | undefined,
 	start_port_range?: number | undefined,
 	/** A computed field, executes function "total_node_server_count" */
@@ -51766,7 +51865,8 @@ export type GraphQLTypes = {
 };
 	/** order by variance() on columns of table "game_server_nodes" */
 ["game_server_nodes_variance_order_by"]: {
-		end_port_range?: GraphQLTypes["order_by"] | undefined,
+		build_id?: GraphQLTypes["order_by"] | undefined,
+	end_port_range?: GraphQLTypes["order_by"] | undefined,
 	start_port_range?: GraphQLTypes["order_by"] | undefined
 };
 	["inet"]: "scalar" & { name: "inet" };
@@ -65177,7 +65277,7 @@ export const enum match_map_rounds_update_column {
 }
 /** unique or primary key constraints on table "match_map_veto_picks" */
 export const enum match_map_veto_picks_constraint {
-	match_veto_picks_pkey = "match_veto_picks_pkey"
+	match_map_veto_picks_pkey = "match_map_veto_picks_pkey"
 }
 /** select columns of table "match_map_veto_picks" */
 export const enum match_map_veto_picks_select_column {
@@ -65339,7 +65439,7 @@ export const enum matches_update_column {
 }
 /** unique or primary key constraints on table "migration_hashes.hashes" */
 export const enum migration_hashes_hashes_constraint {
-	functions_pkey = "functions_pkey"
+	hashes_pkey = "hashes_pkey"
 }
 /** select columns of table "migration_hashes.hashes" */
 export const enum migration_hashes_hashes_select_column {

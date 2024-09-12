@@ -10,11 +10,11 @@
       <slot name="header"></slot>
       <img
         :src="map.patch"
-        class="max-w-[96px] w-full drop-shadow-xl"
+        class="max-w-[96px] w-full h-auto max-h-[60%] object-contain drop-shadow-xl"
         v-if="map.patch"
       />
       <template v-else>
-        <span class="text-white text-xl font-bold uppercase">
+        <span class="text-white text-xl font-bold uppercase text-center">
           {{ map.name.replace("de_", "").replace("_", " ") }}
         </span>
       </template>

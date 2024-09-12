@@ -35,7 +35,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
         <FormMessage />
       </FormItem>
     </FormField>
-    <Button type="submit"> Submit </Button>
+    <Button type="submit"> Create Match </Button>
   </form>
 </template>
 

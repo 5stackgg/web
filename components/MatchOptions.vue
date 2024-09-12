@@ -237,17 +237,17 @@ import { FormControl } from "~/components/ui/form";
     </FormItem>
   </FormField>
 
-  <div v-show="form.values.custom_map_pool">
-    <FormField name="map_pool">
+
+  <FormField name="map_pool">
       <FormItem>
-        <FormLabel>Custom Map Pool</FormLabel>
-        <div class="flex">
+        <FormLabel>Map Pool</FormLabel>
+        <div class="grid grid-cols-4 gap-4">
           <template v-for="map in availableMaps">
             <div class="relative cursor-pointer" @click="updateMapPool(map.id)">
               <MapDisplay :map="map"></MapDisplay>
               <div
                 class="absolute inset-0 bg-black bg-opacity-55"
-                v-if="!form.values.map_pool?.includes(map.id)"
+                v-if="form.values.custom_map_pool === true && !form.values.map_pool?.includes(map.id)"
               ></div>
             </div>
           </template>
@@ -255,7 +255,7 @@ import { FormControl } from "~/components/ui/form";
         <FormMessage />
       </FormItem>
     </FormField>
-  </div>
+  
 </template>
 
 <script lang="ts">
@@ -363,18 +363,15 @@ export default {
         return [];
       }
       return this.maps.filter((map) => {
+        if(this.form.values.custom_map_pool === false && map.active_pool === false) { 
+          return false;
+        }
+
         switch (this.form.values.type) {
           case e_match_types_enum.Competitive:
-            return (
-              map.type === e_match_types_enum.Competitive &&
-              map.active_pool === true
-            );
-          case e_match_types_enum.Scrimmage:
-            return map.type === e_match_types_enum.Competitive;
-          case e_match_types_enum.ScrimmageNight:
-            return map.type === e_match_types_enum.ScrimmageNight;
+            return  map.type === e_match_types_enum.Competitive;
           case e_match_types_enum.Wingman:
-            return map.type === e_match_types_enum.Wingman;
+            return map.type === e_match_types_enum.Wingman 
         }
       });
     },

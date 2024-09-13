@@ -138,7 +138,7 @@ export default {
         if (match) {
           let server_id = match.server_id;
 
-          if (!server_id || !match.server?.is_dedicated) {
+          if (!server_id || match.server_type === "On Demand") {
             server_id = `${match.region ? `0:${match.region}` : "0"}`;
           }
 

@@ -86,9 +86,6 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
       <Button @click="removeGameNodeServer">Remove Game Node Server</Button>
     </TableCell>
     <TableCell>
-      {{ gameServerNode.build_id }}
-    </TableCell>
-    <TableCell>
       <Switch
         class="cursor-pointer"
         :checked="gameServerNode.enabled"

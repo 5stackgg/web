@@ -18,6 +18,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       <TableRow>
         <TableHead>Node</TableHead>
         <TableHead>Public IP</TableHead>
+        <TableHead>CS Build ID</TableHead>
         <TableHead>Region</TableHead>
         <TableHead>Capacity</TableHead>
         <TableHead>
@@ -50,6 +51,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { order_by } from "~/generated/zeus";
 
 export default {
   data() {
@@ -62,7 +64,14 @@ export default {
       game_server_nodes: {
         query: typedGql("subscription")({
           game_server_nodes: [
-            {},
+            {
+              order_by: [
+                {},
+                {
+                  id: order_by.asc,
+                },
+              ],
+            },
             {
               id: true,
               status: true,

@@ -30,6 +30,9 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
       {{ gameServerNode.public_ip }}
     </TableCell>
     <TableCell>
+      {{ gameServerNode.build_id }}
+    </TableCell>  
+    <TableCell>
       <Select
         :model-value="form.region"
         @update:model-value="(value) => updateRegion(value)"

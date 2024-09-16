@@ -3,6 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
+import { useAuthStore } from "~/stores/AuthStore";
+
 
 interface Item {
   to: string;
@@ -10,6 +12,8 @@ interface Item {
 }
 
 const $route = useRoute();
+
+const role = useAuthStore().me?.role ;
 
 const sidebarNavItems: Item[] = [
   {
@@ -20,10 +24,10 @@ const sidebarNavItems: Item[] = [
     title: "Appearance",
     to: "/settings/appearance",
   },
-  {
+  ...(role === 'administrator' ? [{
     title: "Application Settings",
     to: "/settings/application",
-  },
+  }] : []), 
 ];
 </script>
 

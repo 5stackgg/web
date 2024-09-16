@@ -58,6 +58,62 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"_map_pool_set_input",
 		where:"_map_pool_bool_exp"
 	},
+	abandoned_matches_aggregate_fields:{
+		count:{
+			columns:"abandoned_matches_select_column"
+		}
+	},
+	abandoned_matches_bool_exp:{
+		_and:"abandoned_matches_bool_exp",
+		_not:"abandoned_matches_bool_exp",
+		_or:"abandoned_matches_bool_exp",
+		abandoned_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	abandoned_matches_constraint: "enum" as const,
+	abandoned_matches_inc_input:{
+		steam_id:"bigint"
+	},
+	abandoned_matches_insert_input:{
+		abandoned_at:"timestamptz",
+		id:"uuid",
+		steam_id:"bigint"
+	},
+	abandoned_matches_on_conflict:{
+		constraint:"abandoned_matches_constraint",
+		update_columns:"abandoned_matches_update_column",
+		where:"abandoned_matches_bool_exp"
+	},
+	abandoned_matches_order_by:{
+		abandoned_at:"order_by",
+		id:"order_by",
+		steam_id:"order_by"
+	},
+	abandoned_matches_pk_columns_input:{
+		id:"uuid"
+	},
+	abandoned_matches_select_column: "enum" as const,
+	abandoned_matches_set_input:{
+		abandoned_at:"timestamptz",
+		id:"uuid",
+		steam_id:"bigint"
+	},
+	abandoned_matches_stream_cursor_input:{
+		initial_value:"abandoned_matches_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	abandoned_matches_stream_cursor_value_input:{
+		abandoned_at:"timestamptz",
+		id:"uuid",
+		steam_id:"bigint"
+	},
+	abandoned_matches_update_column: "enum" as const,
+	abandoned_matches_updates:{
+		_inc:"abandoned_matches_inc_input",
+		_set:"abandoned_matches_set_input",
+		where:"abandoned_matches_bool_exp"
+	},
 	bigint: `scalar.bigint` as const,
 	bigint_comparison_exp:{
 		_eq:"bigint",
@@ -3102,6 +3158,7 @@ export const AllTypesProps: Record<string,any> = {
 		organizer_steam_id:"bigint"
 	},
 	matches_insert_input:{
+		cancels_at:"timestamptz",
 		created_at:"timestamptz",
 		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_status:"e_match_status_obj_rel_insert_input",
@@ -3137,6 +3194,7 @@ export const AllTypesProps: Record<string,any> = {
 		winning_lineup_id:"uuid"
 	},
 	matches_max_order_by:{
+		cancels_at:"order_by",
 		created_at:"order_by",
 		ended_at:"order_by",
 		id:"order_by",
@@ -3152,6 +3210,7 @@ export const AllTypesProps: Record<string,any> = {
 		winning_lineup_id:"order_by"
 	},
 	matches_min_order_by:{
+		cancels_at:"order_by",
 		created_at:"order_by",
 		ended_at:"order_by",
 		id:"order_by",
@@ -3243,6 +3302,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	matches_select_column: "enum" as const,
 	matches_set_input:{
+		cancels_at:"timestamptz",
 		created_at:"timestamptz",
 		ended_at:"timestamptz",
 		id:"uuid",
@@ -3271,6 +3331,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	matches_stream_cursor_value_input:{
+		cancels_at:"timestamptz",
 		created_at:"timestamptz",
 		ended_at:"timestamptz",
 		id:"uuid",
@@ -3363,6 +3424,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete__map_pool_by_pk:{
 			map_id:"uuid",
 			map_pool_id:"uuid"
+		},
+		delete_abandoned_matches:{
+			where:"abandoned_matches_bool_exp"
+		},
+		delete_abandoned_matches_by_pk:{
+			id:"uuid"
 		},
 		delete_e_game_server_node_regions:{
 			where:"e_game_server_node_regions_bool_exp"
@@ -3673,6 +3740,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert__map_pool_one:{
 			object:"_map_pool_insert_input",
 			on_conflict:"_map_pool_on_conflict"
+		},
+		insert_abandoned_matches:{
+			objects:"abandoned_matches_insert_input",
+			on_conflict:"abandoned_matches_on_conflict"
+		},
+		insert_abandoned_matches_one:{
+			object:"abandoned_matches_insert_input",
+			on_conflict:"abandoned_matches_on_conflict"
 		},
 		insert_e_game_server_node_regions:{
 			objects:"e_game_server_node_regions_insert_input",
@@ -4095,6 +4170,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update__map_pool_many:{
 			updates:"_map_pool_updates"
+		},
+		update_abandoned_matches:{
+			_inc:"abandoned_matches_inc_input",
+			_set:"abandoned_matches_set_input",
+			where:"abandoned_matches_bool_exp"
+		},
+		update_abandoned_matches_by_pk:{
+			_inc:"abandoned_matches_inc_input",
+			_set:"abandoned_matches_set_input",
+			pk_columns:"abandoned_matches_pk_columns_input"
+		},
+		update_abandoned_matches_many:{
+			updates:"abandoned_matches_updates"
 		},
 		update_e_game_server_node_regions:{
 			_set:"e_game_server_node_regions_set_input",
@@ -6300,6 +6388,7 @@ export const AllTypesProps: Record<string,any> = {
 		assited_by_players:"player_assists_bool_exp",
 		assited_by_players_aggregate:"player_assists_aggregate_bool_exp",
 		avatar_url:"String_comparison_exp",
+		country:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		damage_dealt:"player_damages_bool_exp",
 		damage_dealt_aggregate:"player_damages_aggregate_bool_exp",
@@ -6319,6 +6408,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_lineups:"match_lineups_bool_exp",
 		match_lineups_aggregate:"match_lineups_aggregate_bool_exp",
 		matches:"matches_bool_exp",
+		matchmaking_cooldown:"timestamp_comparison_exp",
 		multi_kills:"v_player_multi_kills_bool_exp",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_bool_exp",
 		name:"String_comparison_exp",
@@ -6393,6 +6483,7 @@ export const AllTypesProps: Record<string,any> = {
 		assists_aggregate:"player_assists_aggregate_order_by",
 		assited_by_players_aggregate:"player_assists_aggregate_order_by",
 		avatar_url:"order_by",
+		country:"order_by",
 		created_at:"order_by",
 		damage_dealt_aggregate:"player_damages_aggregate_order_by",
 		damage_taken_aggregate:"player_damages_aggregate_order_by",
@@ -6404,6 +6495,7 @@ export const AllTypesProps: Record<string,any> = {
 		kills_aggregate:"player_kills_aggregate_order_by",
 		match_lineups_aggregate:"match_lineups_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
+		matchmaking_cooldown:"order_by",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_order_by",
 		name:"order_by",
 		objectives_aggregate:"player_objectives_aggregate_order_by",
@@ -6460,6 +6552,19 @@ export const AllTypesProps: Record<string,any> = {
 		_map_pool_by_pk:{
 			map_id:"uuid",
 			map_pool_id:"uuid"
+		},
+		abandoned_matches:{
+			distinct_on:"abandoned_matches_select_column",
+			order_by:"abandoned_matches_order_by",
+			where:"abandoned_matches_bool_exp"
+		},
+		abandoned_matches_aggregate:{
+			distinct_on:"abandoned_matches_select_column",
+			order_by:"abandoned_matches_order_by",
+			where:"abandoned_matches_bool_exp"
+		},
+		abandoned_matches_by_pk:{
+			id:"uuid"
 		},
 		e_game_server_node_regions:{
 			distinct_on:"e_game_server_node_regions_select_column",
@@ -7468,6 +7573,23 @@ export const AllTypesProps: Record<string,any> = {
 		_map_pool_stream:{
 			cursor:"_map_pool_stream_cursor_input",
 			where:"_map_pool_bool_exp"
+		},
+		abandoned_matches:{
+			distinct_on:"abandoned_matches_select_column",
+			order_by:"abandoned_matches_order_by",
+			where:"abandoned_matches_bool_exp"
+		},
+		abandoned_matches_aggregate:{
+			distinct_on:"abandoned_matches_select_column",
+			order_by:"abandoned_matches_order_by",
+			where:"abandoned_matches_bool_exp"
+		},
+		abandoned_matches_by_pk:{
+			id:"uuid"
+		},
+		abandoned_matches_stream:{
+			cursor:"abandoned_matches_stream_cursor_input",
+			where:"abandoned_matches_bool_exp"
 		},
 		e_game_server_node_regions:{
 			distinct_on:"e_game_server_node_regions_select_column",
@@ -8870,6 +8992,17 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_variance_order_by:{
 		owner_steam_id:"order_by"
+	},
+	timestamp: `scalar.timestamp` as const,
+	timestamp_comparison_exp:{
+		_eq:"timestamp",
+		_gt:"timestamp",
+		_gte:"timestamp",
+		_in:"timestamp",
+		_lt:"timestamp",
+		_lte:"timestamp",
+		_neq:"timestamp",
+		_nin:"timestamp"
 	},
 	timestamptz: `scalar.timestamptz` as const,
 	timestamptz_comparison_exp:{
@@ -10556,6 +10689,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	MeResponse:{
 		avatar_url:"String",
+		country:"String",
 		discord_id:"String",
 		name:"String",
 		player:"players",
@@ -10593,6 +10727,66 @@ export const ReturnTypes: Record<string,any> = {
 	_map_pool_mutation_response:{
 		affected_rows:"Int",
 		returning:"_map_pool"
+	},
+	abandoned_matches:{
+		abandoned_at:"timestamptz",
+		id:"uuid",
+		steam_id:"bigint"
+	},
+	abandoned_matches_aggregate:{
+		aggregate:"abandoned_matches_aggregate_fields",
+		nodes:"abandoned_matches"
+	},
+	abandoned_matches_aggregate_fields:{
+		avg:"abandoned_matches_avg_fields",
+		count:"Int",
+		max:"abandoned_matches_max_fields",
+		min:"abandoned_matches_min_fields",
+		stddev:"abandoned_matches_stddev_fields",
+		stddev_pop:"abandoned_matches_stddev_pop_fields",
+		stddev_samp:"abandoned_matches_stddev_samp_fields",
+		sum:"abandoned_matches_sum_fields",
+		var_pop:"abandoned_matches_var_pop_fields",
+		var_samp:"abandoned_matches_var_samp_fields",
+		variance:"abandoned_matches_variance_fields"
+	},
+	abandoned_matches_avg_fields:{
+		steam_id:"Float"
+	},
+	abandoned_matches_max_fields:{
+		abandoned_at:"timestamptz",
+		id:"uuid",
+		steam_id:"bigint"
+	},
+	abandoned_matches_min_fields:{
+		abandoned_at:"timestamptz",
+		id:"uuid",
+		steam_id:"bigint"
+	},
+	abandoned_matches_mutation_response:{
+		affected_rows:"Int",
+		returning:"abandoned_matches"
+	},
+	abandoned_matches_stddev_fields:{
+		steam_id:"Float"
+	},
+	abandoned_matches_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	abandoned_matches_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	abandoned_matches_sum_fields:{
+		steam_id:"bigint"
+	},
+	abandoned_matches_var_pop_fields:{
+		steam_id:"Float"
+	},
+	abandoned_matches_var_samp_fields:{
+		steam_id:"Float"
+	},
+	abandoned_matches_variance_fields:{
+		steam_id:"Float"
 	},
 	bigint: `scalar.bigint` as const,
 	bytea: `scalar.bytea` as const,
@@ -12148,6 +12342,8 @@ export const ReturnTypes: Record<string,any> = {
 		checkIntoMatch:"SuccessOutput",
 		delete__map_pool:"_map_pool_mutation_response",
 		delete__map_pool_by_pk:"_map_pool",
+		delete_abandoned_matches:"abandoned_matches_mutation_response",
+		delete_abandoned_matches_by_pk:"abandoned_matches",
 		delete_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
 		delete_e_game_server_node_regions_by_pk:"e_game_server_node_regions",
 		delete_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
@@ -12249,6 +12445,8 @@ export const ReturnTypes: Record<string,any> = {
 		forfeitMatch:"SuccessOutput",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
+		insert_abandoned_matches:"abandoned_matches_mutation_response",
+		insert_abandoned_matches_one:"abandoned_matches",
 		insert_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
 		insert_e_game_server_node_regions_one:"e_game_server_node_regions",
 		insert_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
@@ -12357,6 +12555,9 @@ export const ReturnTypes: Record<string,any> = {
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",
 		update__map_pool_many:"_map_pool_mutation_response",
+		update_abandoned_matches:"abandoned_matches_mutation_response",
+		update_abandoned_matches_by_pk:"abandoned_matches",
+		update_abandoned_matches_many:"abandoned_matches_mutation_response",
 		update_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
 		update_e_game_server_node_regions_by_pk:"e_game_server_node_regions",
 		update_e_game_server_node_regions_many:"e_game_server_node_regions_mutation_response",
@@ -13251,6 +13452,7 @@ export const ReturnTypes: Record<string,any> = {
 		assited_by_players:"player_assists",
 		assited_by_players_aggregate:"player_assists_aggregate",
 		avatar_url:"String",
+		country:"String",
 		created_at:"timestamptz",
 		damage_dealt:"player_damages",
 		damage_dealt_aggregate:"player_damages_aggregate",
@@ -13270,6 +13472,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_lineups:"match_lineups",
 		match_lineups_aggregate:"match_lineups_aggregate",
 		matches:"matches",
+		matchmaking_cooldown:"timestamp",
 		multi_kills:"v_player_multi_kills",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate",
 		name:"String",
@@ -13322,16 +13525,20 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	players_max_fields:{
 		avatar_url:"String",
+		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
+		matchmaking_cooldown:"timestamp",
 		name:"String",
 		profile_url:"String",
 		steam_id:"bigint"
 	},
 	players_min_fields:{
 		avatar_url:"String",
+		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
+		matchmaking_cooldown:"timestamp",
 		name:"String",
 		profile_url:"String",
 		steam_id:"bigint"
@@ -13365,6 +13572,9 @@ export const ReturnTypes: Record<string,any> = {
 		_map_pool:"_map_pool",
 		_map_pool_aggregate:"_map_pool_aggregate",
 		_map_pool_by_pk:"_map_pool",
+		abandoned_matches:"abandoned_matches",
+		abandoned_matches_aggregate:"abandoned_matches_aggregate",
+		abandoned_matches_by_pk:"abandoned_matches",
 		e_game_server_node_regions:"e_game_server_node_regions",
 		e_game_server_node_regions_aggregate:"e_game_server_node_regions_aggregate",
 		e_game_server_node_regions_by_pk:"e_game_server_node_regions",
@@ -13664,6 +13874,10 @@ export const ReturnTypes: Record<string,any> = {
 		_map_pool_aggregate:"_map_pool_aggregate",
 		_map_pool_by_pk:"_map_pool",
 		_map_pool_stream:"_map_pool",
+		abandoned_matches:"abandoned_matches",
+		abandoned_matches_aggregate:"abandoned_matches_aggregate",
+		abandoned_matches_by_pk:"abandoned_matches",
+		abandoned_matches_stream:"abandoned_matches",
 		e_game_server_node_regions:"e_game_server_node_regions",
 		e_game_server_node_regions_aggregate:"e_game_server_node_regions_aggregate",
 		e_game_server_node_regions_by_pk:"e_game_server_node_regions",
@@ -14094,6 +14308,7 @@ export const ReturnTypes: Record<string,any> = {
 	teams_variance_fields:{
 		owner_steam_id:"Float"
 	},
+	timestamp: `scalar.timestamp` as const,
 	timestamptz: `scalar.timestamptz` as const,
 	tournament_brackets:{
 		created_at:"timestamptz",

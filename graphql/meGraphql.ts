@@ -8,6 +8,7 @@ export const meFields = Selector("MeResponse")({
     name: true,
     country: true,
     profile_url: true,
+    matchmaking_cooldown: true,
     avatar_url: true,
     teams: [
       {},

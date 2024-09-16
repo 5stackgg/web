@@ -1,24 +1,18 @@
 <script setup lang="ts">
 import CaptainInfo from "~/components/CaptainInfo.vue";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tv } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import BooleanToText from "~/components/BooleanToText.vue";
-import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { Separator } from "~/components/ui/separator";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { e_match_status_enum } from "~/generated/zeus";
+import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
@@ -50,6 +44,10 @@ import { e_match_status_enum } from "~/generated/zeus";
 
           <MatchActions :match="match"></MatchActions>
         </div>
+
+        <badge class="my-3" v-if="match.cancels_at"
+          >Auto Canceling &nbsp; <TimeAgo :date="match.cancels_at"></TimeAgo>
+        </badge>
 
         <template v-if="match.can_schedule">
           <ScheduleMatch :match="match"></ScheduleMatch>

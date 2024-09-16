@@ -14,6 +14,15 @@ definePageMeta({
   <Separator />
 
   <form @submit.prevent="updateMe">
+    <FormField name="steam_id">
+      <FormItem>
+        <FormLabel>Steam ID</FormLabel>
+        <FormControl>
+          <Input :value="me?.steam_id" readonly disabled />
+        </FormControl>
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="name">
       <FormItem>
         <FormLabel>Name</FormLabel>

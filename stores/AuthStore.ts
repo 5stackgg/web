@@ -14,6 +14,7 @@ export const useAuthStore = defineStore("auth", () => {
   useApplicationSettingsStore();
 
   async function getMe() {
+    // TODO - this needs to be a subscription, tired of figuring that out
     try {
       const response = await getGraphqlClient().query({
         query: generateQuery({

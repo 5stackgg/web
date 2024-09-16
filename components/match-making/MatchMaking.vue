@@ -1,11 +1,24 @@
 <script lang="ts" setup>
+import { AlertTriangle } from "lucide-vue-next";
 import MatchMakingRegion from "./MatchMakingRegion.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
   <div v-if="matchMakingAllowed">
-    <template v-if="!confirmationDetails">
+    <template v-if="me?.player.matchmaking_cooldown">
+      <Alert class="my-3">
+        <AlertTitle>Matchmaking Cooldown</AlertTitle>
+
+        <AlertDescription class="flex items-center gap-2">
+          <AlertTriangle class="h-4 w-4" />
+          You are temporarily banned from matchmaking, you will be able to join
+          <TimeAgo :date="me.player.matchmaking_cooldown" />
+        </AlertDescription>
+      </Alert>
+    </template>
+    <template v-else-if="!confirmationDetails">
       <MatchMakingRegion
         :region="region"
         v-for="region in regions"
@@ -97,6 +110,9 @@ export default {
     },
     matchMakingAllowed() {
       return useApplicationSettingsStore().matchMakingAllowed;
+    },
+    me() {
+      return useAuthStore().me;
     },
   },
 };

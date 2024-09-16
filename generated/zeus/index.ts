@@ -864,6 +864,7 @@ export type ScalarCoders = {
 	inet?: ScalarResolver;
 	jsonb?: ScalarResolver;
 	numeric?: ScalarResolver;
+	timestamp?: ScalarResolver;
 	timestamptz?: ScalarResolver;
 	uuid?: ScalarResolver;
 }
@@ -896,6 +897,7 @@ export type ValueTypes = {
 };
 	["MeResponse"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	player?:ValueTypes["players"],
@@ -1041,6 +1043,164 @@ count?: [{	columns?: Array<ValueTypes["_map_pool_select_column"]> | undefined | 
 	/** filter the rows which have to be updated */
 	where: ValueTypes["_map_pool_bool_exp"] | Variable<any, string>
 };
+	/** columns and relationships of "abandoned_matches" */
+["abandoned_matches"]: AliasType<{
+	abandoned_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "abandoned_matches" */
+["abandoned_matches_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["abandoned_matches_aggregate_fields"],
+	nodes?:ValueTypes["abandoned_matches"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "abandoned_matches" */
+["abandoned_matches_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["abandoned_matches_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["abandoned_matches_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["abandoned_matches_max_fields"],
+	min?:ValueTypes["abandoned_matches_min_fields"],
+	stddev?:ValueTypes["abandoned_matches_stddev_fields"],
+	stddev_pop?:ValueTypes["abandoned_matches_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["abandoned_matches_stddev_samp_fields"],
+	sum?:ValueTypes["abandoned_matches_sum_fields"],
+	var_pop?:ValueTypes["abandoned_matches_var_pop_fields"],
+	var_samp?:ValueTypes["abandoned_matches_var_samp_fields"],
+	variance?:ValueTypes["abandoned_matches_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["abandoned_matches_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "abandoned_matches". All fields are combined with a logical 'AND'. */
+["abandoned_matches_bool_exp"]: {
+	_and?: Array<ValueTypes["abandoned_matches_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["abandoned_matches_bool_exp"]> | undefined | null | Variable<any, string>,
+	abandoned_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "abandoned_matches" */
+["abandoned_matches_constraint"]:abandoned_matches_constraint;
+	/** input type for incrementing numeric columns in table "abandoned_matches" */
+["abandoned_matches_inc_input"]: {
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "abandoned_matches" */
+["abandoned_matches_insert_input"]: {
+	abandoned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["abandoned_matches_max_fields"]: AliasType<{
+	abandoned_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["abandoned_matches_min_fields"]: AliasType<{
+	abandoned_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "abandoned_matches" */
+["abandoned_matches_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["abandoned_matches"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "abandoned_matches" */
+["abandoned_matches_on_conflict"]: {
+	constraint: ValueTypes["abandoned_matches_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["abandoned_matches_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "abandoned_matches". */
+["abandoned_matches_order_by"]: {
+	abandoned_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: abandoned_matches */
+["abandoned_matches_pk_columns_input"]: {
+	id: ValueTypes["uuid"] | Variable<any, string>
+};
+	/** select columns of table "abandoned_matches" */
+["abandoned_matches_select_column"]:abandoned_matches_select_column;
+	/** input type for updating data in table "abandoned_matches" */
+["abandoned_matches_set_input"]: {
+	abandoned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["abandoned_matches_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["abandoned_matches_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["abandoned_matches_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "abandoned_matches" */
+["abandoned_matches_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["abandoned_matches_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["abandoned_matches_stream_cursor_value_input"]: {
+	abandoned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["abandoned_matches_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "abandoned_matches" */
+["abandoned_matches_update_column"]:abandoned_matches_update_column;
+	["abandoned_matches_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["abandoned_matches_inc_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["abandoned_matches_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["abandoned_matches_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["abandoned_matches_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["abandoned_matches_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["abandoned_matches_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bigint"]:unknown;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_comparison_exp"]: {
@@ -6413,7 +6573,6 @@ count?: [{	columns?: Array<ValueTypes["match_region_veto_picks_select_column"]> 
 	can_schedule?:boolean | `@${string}`,
 	/** A computed field, executes function "can_start_match" */
 	can_start?:boolean | `@${string}`,
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -6786,6 +6945,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
+	cancels_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	demos?: ValueTypes["match_map_demos_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	e_match_status?: ValueTypes["e_match_status_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -6824,7 +6984,6 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** aggregate max on columns */
 ["matches_max_fields"]: AliasType<{
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -6867,6 +7026,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
+	cancels_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -6883,7 +7043,6 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** aggregate min on columns */
 ["matches_min_fields"]: AliasType<{
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -6926,6 +7085,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
+	cancels_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -7032,6 +7192,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_select_column"]:matches_select_column;
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
+	cancels_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -7096,6 +7257,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
+	cancels_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -7278,6 +7440,9 @@ checkIntoMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueT
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["_map_pool_bool_exp"] | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
 delete__map_pool_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	map_pool_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["_map_pool"]],
+delete_abandoned_matches?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["abandoned_matches_bool_exp"] | Variable<any, string>},ValueTypes["abandoned_matches_mutation_response"]],
+delete_abandoned_matches_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["abandoned_matches"]],
 delete_e_game_server_node_regions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_game_server_node_regions_bool_exp"] | Variable<any, string>},ValueTypes["e_game_server_node_regions_mutation_response"]],
 delete_e_game_server_node_regions_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_game_server_node_regions"]],
@@ -7433,6 +7598,12 @@ insert__map_pool?: [{	/** the rows to be inserted */
 insert__map_pool_one?: [{	/** the row to be inserted */
 	object: ValueTypes["_map_pool_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["_map_pool_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool"]],
+insert_abandoned_matches?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["abandoned_matches_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["abandoned_matches_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches_mutation_response"]],
+insert_abandoned_matches_one?: [{	/** the row to be inserted */
+	object: ValueTypes["abandoned_matches_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["abandoned_matches_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches"]],
 insert_e_game_server_node_regions?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_game_server_node_regions_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_game_server_node_regions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_game_server_node_regions_mutation_response"]],
@@ -7741,6 +7912,15 @@ update__map_pool_by_pk?: [{	/** sets the columns of the filtered rows to the giv
 	_set?: ValueTypes["_map_pool_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["_map_pool_pk_columns_input"] | Variable<any, string>},ValueTypes["_map_pool"]],
 update__map_pool_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["_map_pool_updates"]> | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
+update_abandoned_matches?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["abandoned_matches_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["abandoned_matches_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["abandoned_matches_bool_exp"] | Variable<any, string>},ValueTypes["abandoned_matches_mutation_response"]],
+update_abandoned_matches_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["abandoned_matches_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["abandoned_matches_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["abandoned_matches_pk_columns_input"] | Variable<any, string>},ValueTypes["abandoned_matches"]],
+update_abandoned_matches_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["abandoned_matches_updates"]> | Variable<any, string>},ValueTypes["abandoned_matches_mutation_response"]],
 update_e_game_server_node_regions?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_game_server_node_regions_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_game_server_node_regions_bool_exp"] | Variable<any, string>},ValueTypes["e_game_server_node_regions_mutation_response"]],
@@ -10834,6 +11014,7 @@ assited_by_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_assists_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_assists_aggregate"]],
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 damage_dealt?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_damages_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -10938,6 +11119,8 @@ matches?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches"]],
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?:boolean | `@${string}`,
 multi_kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_player_multi_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -11130,6 +11313,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assited_by_players?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>,
 	assited_by_players_aggregate?: ValueTypes["player_assists_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	country?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	damage_dealt?: ValueTypes["player_damages_bool_exp"] | undefined | null | Variable<any, string>,
 	damage_dealt_aggregate?: ValueTypes["player_damages_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -11149,6 +11333,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	match_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
+	matchmaking_cooldown?: ValueTypes["timestamp_comparison_exp"] | undefined | null | Variable<any, string>,
 	multi_kills?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>,
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -11190,6 +11375,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assists?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	assited_by_players?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
+	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	damage_dealt?: ValueTypes["player_damages_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	damage_taken?: ValueTypes["player_damages_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -11220,8 +11406,11 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** aggregate max on columns */
 ["players_max_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -11230,8 +11419,11 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** aggregate min on columns */
 ["players_min_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -11262,6 +11454,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assists_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	assited_by_players_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	country?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	damage_dealt_aggregate?: ValueTypes["player_damages_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	damage_taken_aggregate?: ValueTypes["player_damages_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -11273,6 +11466,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	matchmaking_cooldown?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	objectives_aggregate?: ValueTypes["player_objectives_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -11300,6 +11494,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
 	avatar_url?: string | undefined | null | Variable<any, string>,
+	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	discord_id?: string | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
@@ -11332,6 +11527,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
 	avatar_url?: string | undefined | null | Variable<any, string>,
+	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	discord_id?: string | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
@@ -11383,6 +11579,19 @@ _map_pool_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["_map_pool_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool_aggregate"]],
 _map_pool_by_pk?: [{	map_id: ValueTypes["uuid"] | Variable<any, string>,	map_pool_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["_map_pool"]],
+abandoned_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["abandoned_matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["abandoned_matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches"]],
+abandoned_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["abandoned_matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["abandoned_matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches_aggregate"]],
+abandoned_matches_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["abandoned_matches"]],
 e_game_server_node_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_game_server_node_regions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -12651,6 +12860,23 @@ _map_pool_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["_map_pool_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["_map_pool_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["_map_pool"]],
+abandoned_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["abandoned_matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["abandoned_matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches"]],
+abandoned_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["abandoned_matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["abandoned_matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches_aggregate"]],
+abandoned_matches_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["abandoned_matches"]],
+abandoned_matches_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["abandoned_matches_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches"]],
 e_game_server_node_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_game_server_node_regions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -14457,6 +14683,19 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	/** order by variance() on columns of table "teams" */
 ["teams_variance_order_by"]: {
 	owner_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	["timestamp"]:unknown;
+	/** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
+["timestamp_comparison_exp"]: {
+	_eq?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+	_gt?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+	_gte?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["timestamp"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_lt?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+	_lte?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["timestamp"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["timestamp"]> | undefined | null | Variable<any, string>
 };
 	["timestamptz"]:unknown;
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
@@ -18069,6 +18308,7 @@ export type ResolverInputTypes = {
 };
 	["MeResponse"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	player?:ResolverInputTypes["players"],
@@ -18214,6 +18454,164 @@ count?: [{	columns?: Array<ResolverInputTypes["_map_pool_select_column"]> | unde
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["_map_pool_bool_exp"]
 };
+	/** columns and relationships of "abandoned_matches" */
+["abandoned_matches"]: AliasType<{
+	abandoned_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "abandoned_matches" */
+["abandoned_matches_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["abandoned_matches_aggregate_fields"],
+	nodes?:ResolverInputTypes["abandoned_matches"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "abandoned_matches" */
+["abandoned_matches_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["abandoned_matches_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["abandoned_matches_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["abandoned_matches_max_fields"],
+	min?:ResolverInputTypes["abandoned_matches_min_fields"],
+	stddev?:ResolverInputTypes["abandoned_matches_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["abandoned_matches_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["abandoned_matches_stddev_samp_fields"],
+	sum?:ResolverInputTypes["abandoned_matches_sum_fields"],
+	var_pop?:ResolverInputTypes["abandoned_matches_var_pop_fields"],
+	var_samp?:ResolverInputTypes["abandoned_matches_var_samp_fields"],
+	variance?:ResolverInputTypes["abandoned_matches_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["abandoned_matches_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "abandoned_matches". All fields are combined with a logical 'AND'. */
+["abandoned_matches_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["abandoned_matches_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["abandoned_matches_bool_exp"]> | undefined | null,
+	abandoned_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "abandoned_matches" */
+["abandoned_matches_constraint"]:abandoned_matches_constraint;
+	/** input type for incrementing numeric columns in table "abandoned_matches" */
+["abandoned_matches_inc_input"]: {
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** input type for inserting data into table "abandoned_matches" */
+["abandoned_matches_insert_input"]: {
+	abandoned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** aggregate max on columns */
+["abandoned_matches_max_fields"]: AliasType<{
+	abandoned_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["abandoned_matches_min_fields"]: AliasType<{
+	abandoned_at?:boolean | `@${string}`,
+	id?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "abandoned_matches" */
+["abandoned_matches_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["abandoned_matches"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "abandoned_matches" */
+["abandoned_matches_on_conflict"]: {
+	constraint: ResolverInputTypes["abandoned_matches_constraint"],
+	update_columns: Array<ResolverInputTypes["abandoned_matches_update_column"]>,
+	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "abandoned_matches". */
+["abandoned_matches_order_by"]: {
+	abandoned_at?: ResolverInputTypes["order_by"] | undefined | null,
+	id?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: abandoned_matches */
+["abandoned_matches_pk_columns_input"]: {
+	id: ResolverInputTypes["uuid"]
+};
+	/** select columns of table "abandoned_matches" */
+["abandoned_matches_select_column"]:abandoned_matches_select_column;
+	/** input type for updating data in table "abandoned_matches" */
+["abandoned_matches_set_input"]: {
+	abandoned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** aggregate stddev on columns */
+["abandoned_matches_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["abandoned_matches_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["abandoned_matches_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "abandoned_matches" */
+["abandoned_matches_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["abandoned_matches_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["abandoned_matches_stream_cursor_value_input"]: {
+	abandoned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	id?: ResolverInputTypes["uuid"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** aggregate sum on columns */
+["abandoned_matches_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** update columns of table "abandoned_matches" */
+["abandoned_matches_update_column"]:abandoned_matches_update_column;
+	["abandoned_matches_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["abandoned_matches_inc_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["abandoned_matches_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["abandoned_matches_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["abandoned_matches_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["abandoned_matches_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["abandoned_matches_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
 	["bigint"]:unknown;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 ["bigint_comparison_exp"]: {
@@ -23586,7 +23984,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_region_veto_picks_select_co
 	can_schedule?:boolean | `@${string}`,
 	/** A computed field, executes function "can_start_match" */
 	can_start?:boolean | `@${string}`,
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -23959,6 +24356,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
+	cancels_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	demos?: ResolverInputTypes["match_map_demos_arr_rel_insert_input"] | undefined | null,
 	e_match_status?: ResolverInputTypes["e_match_status_obj_rel_insert_input"] | undefined | null,
@@ -23997,7 +24395,6 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** aggregate max on columns */
 ["matches_max_fields"]: AliasType<{
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -24040,6 +24437,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
+	cancels_at?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -24056,7 +24454,6 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** aggregate min on columns */
 ["matches_min_fields"]: AliasType<{
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?:boolean | `@${string}`,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?:boolean | `@${string}`,
@@ -24099,6 +24496,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
+	cancels_at?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -24205,6 +24603,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_select_column"]:matches_select_column;
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
+	cancels_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -24269,6 +24668,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
+	cancels_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -24451,6 +24851,9 @@ checkIntoMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["Su
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["_map_pool_bool_exp"]},ResolverInputTypes["_map_pool_mutation_response"]],
 delete__map_pool_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	map_pool_id: ResolverInputTypes["uuid"]},ResolverInputTypes["_map_pool"]],
+delete_abandoned_matches?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["abandoned_matches_bool_exp"]},ResolverInputTypes["abandoned_matches_mutation_response"]],
+delete_abandoned_matches_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["abandoned_matches"]],
 delete_e_game_server_node_regions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_game_server_node_regions_bool_exp"]},ResolverInputTypes["e_game_server_node_regions_mutation_response"]],
 delete_e_game_server_node_regions_by_pk?: [{	value: string},ResolverInputTypes["e_game_server_node_regions"]],
@@ -24606,6 +25009,12 @@ insert__map_pool?: [{	/** the rows to be inserted */
 insert__map_pool_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["_map_pool_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["_map_pool_on_conflict"] | undefined | null},ResolverInputTypes["_map_pool"]],
+insert_abandoned_matches?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["abandoned_matches_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["abandoned_matches_on_conflict"] | undefined | null},ResolverInputTypes["abandoned_matches_mutation_response"]],
+insert_abandoned_matches_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["abandoned_matches_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["abandoned_matches_on_conflict"] | undefined | null},ResolverInputTypes["abandoned_matches"]],
 insert_e_game_server_node_regions?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_game_server_node_regions_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_game_server_node_regions_on_conflict"] | undefined | null},ResolverInputTypes["e_game_server_node_regions_mutation_response"]],
@@ -24914,6 +25323,15 @@ update__map_pool_by_pk?: [{	/** sets the columns of the filtered rows to the giv
 	_set?: ResolverInputTypes["_map_pool_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["_map_pool_pk_columns_input"]},ResolverInputTypes["_map_pool"]],
 update__map_pool_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["_map_pool_updates"]>},ResolverInputTypes["_map_pool_mutation_response"]],
+update_abandoned_matches?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["abandoned_matches_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["abandoned_matches_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["abandoned_matches_bool_exp"]},ResolverInputTypes["abandoned_matches_mutation_response"]],
+update_abandoned_matches_by_pk?: [{	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["abandoned_matches_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["abandoned_matches_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["abandoned_matches_pk_columns_input"]},ResolverInputTypes["abandoned_matches"]],
+update_abandoned_matches_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["abandoned_matches_updates"]>},ResolverInputTypes["abandoned_matches_mutation_response"]],
 update_e_game_server_node_regions?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_game_server_node_regions_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_game_server_node_regions_bool_exp"]},ResolverInputTypes["e_game_server_node_regions_mutation_response"]],
@@ -28007,6 +28425,7 @@ assited_by_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_assists_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null},ResolverInputTypes["player_assists_aggregate"]],
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 damage_dealt?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_damages_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -28111,6 +28530,8 @@ matches?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches"]],
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?:boolean | `@${string}`,
 multi_kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_player_multi_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -28303,6 +28724,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assited_by_players?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null,
 	assited_by_players_aggregate?: ResolverInputTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	avatar_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	country?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	damage_dealt?: ResolverInputTypes["player_damages_bool_exp"] | undefined | null,
 	damage_dealt_aggregate?: ResolverInputTypes["player_damages_aggregate_bool_exp"] | undefined | null,
@@ -28322,6 +28744,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	match_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
+	matchmaking_cooldown?: ResolverInputTypes["timestamp_comparison_exp"] | undefined | null,
 	multi_kills?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null,
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
@@ -28363,6 +28786,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assists?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
+	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	damage_dealt?: ResolverInputTypes["player_damages_arr_rel_insert_input"] | undefined | null,
 	damage_taken?: ResolverInputTypes["player_damages_arr_rel_insert_input"] | undefined | null,
@@ -28393,8 +28817,11 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** aggregate max on columns */
 ["players_max_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -28403,8 +28830,11 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** aggregate min on columns */
 ["players_min_fields"]: AliasType<{
 	avatar_url?:boolean | `@${string}`,
+	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 	discord_id?:boolean | `@${string}`,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	profile_url?:boolean | `@${string}`,
 	steam_id?:boolean | `@${string}`,
@@ -28435,6 +28865,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assists_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
+	country?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	damage_dealt_aggregate?: ResolverInputTypes["player_damages_aggregate_order_by"] | undefined | null,
 	damage_taken_aggregate?: ResolverInputTypes["player_damages_aggregate_order_by"] | undefined | null,
@@ -28446,6 +28877,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
+	matchmaking_cooldown?: ResolverInputTypes["order_by"] | undefined | null,
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	objectives_aggregate?: ResolverInputTypes["player_objectives_aggregate_order_by"] | undefined | null,
@@ -28473,6 +28905,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
 	avatar_url?: string | undefined | null,
+	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	discord_id?: string | undefined | null,
 	name?: string | undefined | null,
@@ -28505,6 +28938,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
 	avatar_url?: string | undefined | null,
+	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	discord_id?: string | undefined | null,
 	name?: string | undefined | null,
@@ -28556,6 +28990,19 @@ _map_pool_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["_map_pool_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["_map_pool_aggregate"]],
 _map_pool_by_pk?: [{	map_id: ResolverInputTypes["uuid"],	map_pool_id: ResolverInputTypes["uuid"]},ResolverInputTypes["_map_pool"]],
+abandoned_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["abandoned_matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["abandoned_matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null},ResolverInputTypes["abandoned_matches"]],
+abandoned_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["abandoned_matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["abandoned_matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null},ResolverInputTypes["abandoned_matches_aggregate"]],
+abandoned_matches_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["abandoned_matches"]],
 e_game_server_node_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_game_server_node_regions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -29824,6 +30271,23 @@ _map_pool_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["_map_pool_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["_map_pool_bool_exp"] | undefined | null},ResolverInputTypes["_map_pool"]],
+abandoned_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["abandoned_matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["abandoned_matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null},ResolverInputTypes["abandoned_matches"]],
+abandoned_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["abandoned_matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["abandoned_matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null},ResolverInputTypes["abandoned_matches_aggregate"]],
+abandoned_matches_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["abandoned_matches"]],
+abandoned_matches_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["abandoned_matches_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null},ResolverInputTypes["abandoned_matches"]],
 e_game_server_node_regions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_game_server_node_regions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -31630,6 +32094,19 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	/** order by variance() on columns of table "teams" */
 ["teams_variance_order_by"]: {
 	owner_steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	["timestamp"]:unknown;
+	/** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
+["timestamp_comparison_exp"]: {
+	_eq?: ResolverInputTypes["timestamp"] | undefined | null,
+	_gt?: ResolverInputTypes["timestamp"] | undefined | null,
+	_gte?: ResolverInputTypes["timestamp"] | undefined | null,
+	_in?: Array<ResolverInputTypes["timestamp"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ResolverInputTypes["timestamp"] | undefined | null,
+	_lte?: ResolverInputTypes["timestamp"] | undefined | null,
+	_neq?: ResolverInputTypes["timestamp"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["timestamp"]> | undefined | null
 };
 	["timestamptz"]:unknown;
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
@@ -35241,6 +35718,7 @@ export type ModelTypes = {
 };
 	["MeResponse"]: {
 		avatar_url: string,
+	country?: string | undefined,
 	discord_id?: string | undefined,
 	name: string,
 	player?: ModelTypes["players"] | undefined,
@@ -35373,6 +35851,147 @@ export type ModelTypes = {
 	_set?: ModelTypes["_map_pool_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: ModelTypes["_map_pool_bool_exp"]
+};
+	/** columns and relationships of "abandoned_matches" */
+["abandoned_matches"]: {
+		abandoned_at: ModelTypes["timestamptz"],
+	id: ModelTypes["uuid"],
+	steam_id: ModelTypes["bigint"]
+};
+	/** aggregated selection of "abandoned_matches" */
+["abandoned_matches_aggregate"]: {
+		aggregate?: ModelTypes["abandoned_matches_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["abandoned_matches"]>
+};
+	/** aggregate fields of "abandoned_matches" */
+["abandoned_matches_aggregate_fields"]: {
+		avg?: ModelTypes["abandoned_matches_avg_fields"] | undefined,
+	count: number,
+	max?: ModelTypes["abandoned_matches_max_fields"] | undefined,
+	min?: ModelTypes["abandoned_matches_min_fields"] | undefined,
+	stddev?: ModelTypes["abandoned_matches_stddev_fields"] | undefined,
+	stddev_pop?: ModelTypes["abandoned_matches_stddev_pop_fields"] | undefined,
+	stddev_samp?: ModelTypes["abandoned_matches_stddev_samp_fields"] | undefined,
+	sum?: ModelTypes["abandoned_matches_sum_fields"] | undefined,
+	var_pop?: ModelTypes["abandoned_matches_var_pop_fields"] | undefined,
+	var_samp?: ModelTypes["abandoned_matches_var_samp_fields"] | undefined,
+	variance?: ModelTypes["abandoned_matches_variance_fields"] | undefined
+};
+	/** aggregate avg on columns */
+["abandoned_matches_avg_fields"]: {
+		steam_id?: number | undefined
+};
+	/** Boolean expression to filter rows from the table "abandoned_matches". All fields are combined with a logical 'AND'. */
+["abandoned_matches_bool_exp"]: {
+	_and?: Array<ModelTypes["abandoned_matches_bool_exp"]> | undefined,
+	_not?: ModelTypes["abandoned_matches_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["abandoned_matches_bool_exp"]> | undefined,
+	abandoned_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
+	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined
+};
+	["abandoned_matches_constraint"]:abandoned_matches_constraint;
+	/** input type for incrementing numeric columns in table "abandoned_matches" */
+["abandoned_matches_inc_input"]: {
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** input type for inserting data into table "abandoned_matches" */
+["abandoned_matches_insert_input"]: {
+	abandoned_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregate max on columns */
+["abandoned_matches_max_fields"]: {
+		abandoned_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregate min on columns */
+["abandoned_matches_min_fields"]: {
+		abandoned_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** response of any mutation on the table "abandoned_matches" */
+["abandoned_matches_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["abandoned_matches"]>
+};
+	/** on_conflict condition type for table "abandoned_matches" */
+["abandoned_matches_on_conflict"]: {
+	constraint: ModelTypes["abandoned_matches_constraint"],
+	update_columns: Array<ModelTypes["abandoned_matches_update_column"]>,
+	where?: ModelTypes["abandoned_matches_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "abandoned_matches". */
+["abandoned_matches_order_by"]: {
+	abandoned_at?: ModelTypes["order_by"] | undefined,
+	id?: ModelTypes["order_by"] | undefined,
+	steam_id?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: abandoned_matches */
+["abandoned_matches_pk_columns_input"]: {
+	id: ModelTypes["uuid"]
+};
+	["abandoned_matches_select_column"]:abandoned_matches_select_column;
+	/** input type for updating data in table "abandoned_matches" */
+["abandoned_matches_set_input"]: {
+	abandoned_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregate stddev on columns */
+["abandoned_matches_stddev_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate stddev_pop on columns */
+["abandoned_matches_stddev_pop_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate stddev_samp on columns */
+["abandoned_matches_stddev_samp_fields"]: {
+		steam_id?: number | undefined
+};
+	/** Streaming cursor of the table "abandoned_matches" */
+["abandoned_matches_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["abandoned_matches_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["abandoned_matches_stream_cursor_value_input"]: {
+	abandoned_at?: ModelTypes["timestamptz"] | undefined,
+	id?: ModelTypes["uuid"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregate sum on columns */
+["abandoned_matches_sum_fields"]: {
+		steam_id?: ModelTypes["bigint"] | undefined
+};
+	["abandoned_matches_update_column"]:abandoned_matches_update_column;
+	["abandoned_matches_updates"]: {
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["abandoned_matches_inc_input"] | undefined,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["abandoned_matches_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["abandoned_matches_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["abandoned_matches_var_pop_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate var_samp on columns */
+["abandoned_matches_var_samp_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate variance on columns */
+["abandoned_matches_variance_fields"]: {
+		steam_id?: number | undefined
 };
 	["bigint"]:any;
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
@@ -40193,7 +40812,6 @@ export type ModelTypes = {
 	can_schedule?: boolean | undefined,
 	/** A computed field, executes function "can_start_match" */
 	can_start?: boolean | undefined,
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
@@ -40461,6 +41079,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
+	cancels_at?: ModelTypes["timestamptz"] | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	demos?: ModelTypes["match_map_demos_arr_rel_insert_input"] | undefined,
 	e_match_status?: ModelTypes["e_match_status_obj_rel_insert_input"] | undefined,
@@ -40499,8 +41118,7 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["matches_max_fields"]: {
-		/** A computed field, executes function "match_cancels_at" */
-	cancels_at?: ModelTypes["timestamptz"] | undefined,
+		cancels_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_connection_string" */
@@ -40541,6 +41159,7 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
+	cancels_at?: ModelTypes["order_by"] | undefined,
 	created_at?: ModelTypes["order_by"] | undefined,
 	ended_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -40557,8 +41176,7 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["matches_min_fields"]: {
-		/** A computed field, executes function "match_cancels_at" */
-	cancels_at?: ModelTypes["timestamptz"] | undefined,
+		cancels_at?: ModelTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
 	/** A computed field, executes function "get_match_connection_string" */
@@ -40599,6 +41217,7 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
+	cancels_at?: ModelTypes["order_by"] | undefined,
 	created_at?: ModelTypes["order_by"] | undefined,
 	ended_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -40703,6 +41322,7 @@ export type ModelTypes = {
 	["matches_select_column"]:matches_select_column;
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
+	cancels_at?: ModelTypes["timestamptz"] | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	ended_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -40764,6 +41384,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
+	cancels_at?: ModelTypes["timestamptz"] | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	ended_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -40936,6 +41557,10 @@ export type ModelTypes = {
 	delete__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
 	/** delete single row from the table: "_map_pool" */
 	delete__map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
+	/** delete data from the table: "abandoned_matches" */
+	delete_abandoned_matches?: ModelTypes["abandoned_matches_mutation_response"] | undefined,
+	/** delete single row from the table: "abandoned_matches" */
+	delete_abandoned_matches_by_pk?: ModelTypes["abandoned_matches"] | undefined,
 	/** delete data from the table: "e_game_server_node_regions" */
 	delete_e_game_server_node_regions?: ModelTypes["e_game_server_node_regions_mutation_response"] | undefined,
 	/** delete single row from the table: "e_game_server_node_regions" */
@@ -41137,6 +41762,10 @@ export type ModelTypes = {
 	insert__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
 	/** insert a single row into the table: "_map_pool" */
 	insert__map_pool_one?: ModelTypes["_map_pool"] | undefined,
+	/** insert data into the table: "abandoned_matches" */
+	insert_abandoned_matches?: ModelTypes["abandoned_matches_mutation_response"] | undefined,
+	/** insert a single row into the table: "abandoned_matches" */
+	insert_abandoned_matches_one?: ModelTypes["abandoned_matches"] | undefined,
 	/** insert data into the table: "e_game_server_node_regions" */
 	insert_e_game_server_node_regions?: ModelTypes["e_game_server_node_regions_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_game_server_node_regions" */
@@ -41351,6 +41980,12 @@ export type ModelTypes = {
 	update__map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
 	/** update multiples rows of table: "_map_pool" */
 	update__map_pool_many?: Array<ModelTypes["_map_pool_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "abandoned_matches" */
+	update_abandoned_matches?: ModelTypes["abandoned_matches_mutation_response"] | undefined,
+	/** update single row of the table: "abandoned_matches" */
+	update_abandoned_matches_by_pk?: ModelTypes["abandoned_matches"] | undefined,
+	/** update multiples rows of table: "abandoned_matches" */
+	update_abandoned_matches_many?: Array<ModelTypes["abandoned_matches_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_game_server_node_regions" */
 	update_e_game_server_node_regions?: ModelTypes["e_game_server_node_regions_mutation_response"] | undefined,
 	/** update single row of the table: "e_game_server_node_regions" */
@@ -44189,6 +44824,7 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	assited_by_players_aggregate: ModelTypes["player_assists_aggregate"],
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	/** An array relationship */
 	damage_dealt: Array<ModelTypes["player_damages"]>,
@@ -44225,6 +44861,8 @@ export type ModelTypes = {
 	match_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
 	/** A computed field, executes function "get_player_matches" */
 	matches?: Array<ModelTypes["matches"]> | undefined,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?: ModelTypes["timestamp"] | undefined,
 	/** An array relationship */
 	multi_kills: Array<ModelTypes["v_player_multi_kills"]>,
 	/** An aggregate relationship */
@@ -44313,6 +44951,7 @@ export type ModelTypes = {
 	assited_by_players?: ModelTypes["player_assists_bool_exp"] | undefined,
 	assited_by_players_aggregate?: ModelTypes["player_assists_aggregate_bool_exp"] | undefined,
 	avatar_url?: ModelTypes["String_comparison_exp"] | undefined,
+	country?: ModelTypes["String_comparison_exp"] | undefined,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	damage_dealt?: ModelTypes["player_damages_bool_exp"] | undefined,
 	damage_dealt_aggregate?: ModelTypes["player_damages_aggregate_bool_exp"] | undefined,
@@ -44332,6 +44971,7 @@ export type ModelTypes = {
 	match_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: ModelTypes["matches_bool_exp"] | undefined,
+	matchmaking_cooldown?: ModelTypes["timestamp_comparison_exp"] | undefined,
 	multi_kills?: ModelTypes["v_player_multi_kills_bool_exp"] | undefined,
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
@@ -44372,6 +45012,7 @@ export type ModelTypes = {
 	assists?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined,
 	assited_by_players?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined,
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	damage_dealt?: ModelTypes["player_damages_arr_rel_insert_input"] | undefined,
 	damage_taken?: ModelTypes["player_damages_arr_rel_insert_input"] | undefined,
@@ -44402,8 +45043,11 @@ export type ModelTypes = {
 	/** aggregate max on columns */
 ["players_max_fields"]: {
 		avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?: ModelTypes["timestamp"] | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
 	steam_id?: ModelTypes["bigint"] | undefined
@@ -44411,8 +45055,11 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["players_min_fields"]: {
 		avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?: ModelTypes["timestamp"] | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
 	steam_id?: ModelTypes["bigint"] | undefined
@@ -44441,6 +45088,7 @@ export type ModelTypes = {
 	assists_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined,
 	assited_by_players_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined,
 	avatar_url?: ModelTypes["order_by"] | undefined,
+	country?: ModelTypes["order_by"] | undefined,
 	created_at?: ModelTypes["order_by"] | undefined,
 	damage_dealt_aggregate?: ModelTypes["player_damages_aggregate_order_by"] | undefined,
 	damage_taken_aggregate?: ModelTypes["player_damages_aggregate_order_by"] | undefined,
@@ -44452,6 +45100,7 @@ export type ModelTypes = {
 	kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined,
+	matchmaking_cooldown?: ModelTypes["order_by"] | undefined,
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	objectives_aggregate?: ModelTypes["player_objectives_aggregate_order_by"] | undefined,
@@ -44478,6 +45127,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
 	name?: string | undefined,
@@ -44507,6 +45157,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
 	name?: string | undefined,
@@ -44546,6 +45197,12 @@ export type ModelTypes = {
 	_map_pool_aggregate: ModelTypes["_map_pool_aggregate"],
 	/** fetch data from the table: "_map_pool" using primary key columns */
 	_map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
+	/** fetch data from the table: "abandoned_matches" */
+	abandoned_matches: Array<ModelTypes["abandoned_matches"]>,
+	/** fetch aggregated fields from the table: "abandoned_matches" */
+	abandoned_matches_aggregate: ModelTypes["abandoned_matches_aggregate"],
+	/** fetch data from the table: "abandoned_matches" using primary key columns */
+	abandoned_matches_by_pk?: ModelTypes["abandoned_matches"] | undefined,
 	/** fetch data from the table: "e_game_server_node_regions" */
 	e_game_server_node_regions: Array<ModelTypes["e_game_server_node_regions"]>,
 	/** fetch aggregated fields from the table: "e_game_server_node_regions" */
@@ -45352,6 +46009,14 @@ export type ModelTypes = {
 	_map_pool_by_pk?: ModelTypes["_map_pool"] | undefined,
 	/** fetch data from the table in a streaming manner: "_map_pool" */
 	_map_pool_stream: Array<ModelTypes["_map_pool"]>,
+	/** fetch data from the table: "abandoned_matches" */
+	abandoned_matches: Array<ModelTypes["abandoned_matches"]>,
+	/** fetch aggregated fields from the table: "abandoned_matches" */
+	abandoned_matches_aggregate: ModelTypes["abandoned_matches_aggregate"],
+	/** fetch data from the table: "abandoned_matches" using primary key columns */
+	abandoned_matches_by_pk?: ModelTypes["abandoned_matches"] | undefined,
+	/** fetch data from the table in a streaming manner: "abandoned_matches" */
+	abandoned_matches_stream: Array<ModelTypes["abandoned_matches"]>,
 	/** fetch data from the table: "e_game_server_node_regions" */
 	e_game_server_node_regions: Array<ModelTypes["e_game_server_node_regions"]>,
 	/** fetch aggregated fields from the table: "e_game_server_node_regions" */
@@ -46548,6 +47213,19 @@ export type ModelTypes = {
 	/** order by variance() on columns of table "teams" */
 ["teams_variance_order_by"]: {
 	owner_steam_id?: ModelTypes["order_by"] | undefined
+};
+	["timestamp"]:any;
+	/** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
+["timestamp_comparison_exp"]: {
+	_eq?: ModelTypes["timestamp"] | undefined,
+	_gt?: ModelTypes["timestamp"] | undefined,
+	_gte?: ModelTypes["timestamp"] | undefined,
+	_in?: Array<ModelTypes["timestamp"]> | undefined,
+	_is_null?: boolean | undefined,
+	_lt?: ModelTypes["timestamp"] | undefined,
+	_lte?: ModelTypes["timestamp"] | undefined,
+	_neq?: ModelTypes["timestamp"] | undefined,
+	_nin?: Array<ModelTypes["timestamp"]> | undefined
 };
 	["timestamptz"]:any;
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
@@ -49865,6 +50543,7 @@ export type GraphQLTypes = {
 	["MeResponse"]: {
 	__typename: "MeResponse",
 	avatar_url: string,
+	country?: string | undefined,
 	discord_id?: string | undefined,
 	name: string,
 	player?: GraphQLTypes["players"] | undefined,
@@ -50008,6 +50687,164 @@ export type GraphQLTypes = {
 	_set?: GraphQLTypes["_map_pool_set_input"] | undefined,
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["_map_pool_bool_exp"]
+};
+	/** columns and relationships of "abandoned_matches" */
+["abandoned_matches"]: {
+	__typename: "abandoned_matches",
+	abandoned_at: GraphQLTypes["timestamptz"],
+	id: GraphQLTypes["uuid"],
+	steam_id: GraphQLTypes["bigint"]
+};
+	/** aggregated selection of "abandoned_matches" */
+["abandoned_matches_aggregate"]: {
+	__typename: "abandoned_matches_aggregate",
+	aggregate?: GraphQLTypes["abandoned_matches_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["abandoned_matches"]>
+};
+	/** aggregate fields of "abandoned_matches" */
+["abandoned_matches_aggregate_fields"]: {
+	__typename: "abandoned_matches_aggregate_fields",
+	avg?: GraphQLTypes["abandoned_matches_avg_fields"] | undefined,
+	count: number,
+	max?: GraphQLTypes["abandoned_matches_max_fields"] | undefined,
+	min?: GraphQLTypes["abandoned_matches_min_fields"] | undefined,
+	stddev?: GraphQLTypes["abandoned_matches_stddev_fields"] | undefined,
+	stddev_pop?: GraphQLTypes["abandoned_matches_stddev_pop_fields"] | undefined,
+	stddev_samp?: GraphQLTypes["abandoned_matches_stddev_samp_fields"] | undefined,
+	sum?: GraphQLTypes["abandoned_matches_sum_fields"] | undefined,
+	var_pop?: GraphQLTypes["abandoned_matches_var_pop_fields"] | undefined,
+	var_samp?: GraphQLTypes["abandoned_matches_var_samp_fields"] | undefined,
+	variance?: GraphQLTypes["abandoned_matches_variance_fields"] | undefined
+};
+	/** aggregate avg on columns */
+["abandoned_matches_avg_fields"]: {
+	__typename: "abandoned_matches_avg_fields",
+	steam_id?: number | undefined
+};
+	/** Boolean expression to filter rows from the table "abandoned_matches". All fields are combined with a logical 'AND'. */
+["abandoned_matches_bool_exp"]: {
+		_and?: Array<GraphQLTypes["abandoned_matches_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["abandoned_matches_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["abandoned_matches_bool_exp"]> | undefined,
+	abandoned_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
+	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "abandoned_matches" */
+["abandoned_matches_constraint"]: abandoned_matches_constraint;
+	/** input type for incrementing numeric columns in table "abandoned_matches" */
+["abandoned_matches_inc_input"]: {
+		steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** input type for inserting data into table "abandoned_matches" */
+["abandoned_matches_insert_input"]: {
+		abandoned_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregate max on columns */
+["abandoned_matches_max_fields"]: {
+	__typename: "abandoned_matches_max_fields",
+	abandoned_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregate min on columns */
+["abandoned_matches_min_fields"]: {
+	__typename: "abandoned_matches_min_fields",
+	abandoned_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** response of any mutation on the table "abandoned_matches" */
+["abandoned_matches_mutation_response"]: {
+	__typename: "abandoned_matches_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["abandoned_matches"]>
+};
+	/** on_conflict condition type for table "abandoned_matches" */
+["abandoned_matches_on_conflict"]: {
+		constraint: GraphQLTypes["abandoned_matches_constraint"],
+	update_columns: Array<GraphQLTypes["abandoned_matches_update_column"]>,
+	where?: GraphQLTypes["abandoned_matches_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "abandoned_matches". */
+["abandoned_matches_order_by"]: {
+		abandoned_at?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
+	steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: abandoned_matches */
+["abandoned_matches_pk_columns_input"]: {
+		id: GraphQLTypes["uuid"]
+};
+	/** select columns of table "abandoned_matches" */
+["abandoned_matches_select_column"]: abandoned_matches_select_column;
+	/** input type for updating data in table "abandoned_matches" */
+["abandoned_matches_set_input"]: {
+		abandoned_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregate stddev on columns */
+["abandoned_matches_stddev_fields"]: {
+	__typename: "abandoned_matches_stddev_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate stddev_pop on columns */
+["abandoned_matches_stddev_pop_fields"]: {
+	__typename: "abandoned_matches_stddev_pop_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate stddev_samp on columns */
+["abandoned_matches_stddev_samp_fields"]: {
+	__typename: "abandoned_matches_stddev_samp_fields",
+	steam_id?: number | undefined
+};
+	/** Streaming cursor of the table "abandoned_matches" */
+["abandoned_matches_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["abandoned_matches_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["abandoned_matches_stream_cursor_value_input"]: {
+		abandoned_at?: GraphQLTypes["timestamptz"] | undefined,
+	id?: GraphQLTypes["uuid"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregate sum on columns */
+["abandoned_matches_sum_fields"]: {
+	__typename: "abandoned_matches_sum_fields",
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** update columns of table "abandoned_matches" */
+["abandoned_matches_update_column"]: abandoned_matches_update_column;
+	["abandoned_matches_updates"]: {
+		/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["abandoned_matches_inc_input"] | undefined,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["abandoned_matches_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["abandoned_matches_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["abandoned_matches_var_pop_fields"]: {
+	__typename: "abandoned_matches_var_pop_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate var_samp on columns */
+["abandoned_matches_var_samp_fields"]: {
+	__typename: "abandoned_matches_var_samp_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate variance on columns */
+["abandoned_matches_variance_fields"]: {
+	__typename: "abandoned_matches_variance_fields",
+	steam_id?: number | undefined
 };
 	["bigint"]: "scalar" & { name: "bigint" };
 	/** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
@@ -55134,7 +55971,6 @@ export type GraphQLTypes = {
 	can_schedule?: boolean | undefined,
 	/** A computed field, executes function "can_start_match" */
 	can_start?: boolean | undefined,
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
@@ -55406,7 +56242,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined,
+		cancels_at?: GraphQLTypes["timestamptz"] | undefined,
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	demos?: GraphQLTypes["match_map_demos_arr_rel_insert_input"] | undefined,
 	e_match_status?: GraphQLTypes["e_match_status_obj_rel_insert_input"] | undefined,
 	e_region?: GraphQLTypes["e_game_server_node_regions_obj_rel_insert_input"] | undefined,
@@ -55445,7 +56282,6 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["matches_max_fields"]: {
 	__typename: "matches_max_fields",
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
@@ -55487,7 +56323,8 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "matches" */
 ["matches_max_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined,
+		cancels_at?: GraphQLTypes["order_by"] | undefined,
+	created_at?: GraphQLTypes["order_by"] | undefined,
 	ended_at?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	label?: GraphQLTypes["order_by"] | undefined,
@@ -55504,7 +56341,6 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["matches_min_fields"]: {
 	__typename: "matches_min_fields",
-	/** A computed field, executes function "match_cancels_at" */
 	cancels_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** A computed field, executes function "get_match_connection_link" */
 	connection_link?: string | undefined,
@@ -55546,7 +56382,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "matches" */
 ["matches_min_order_by"]: {
-		created_at?: GraphQLTypes["order_by"] | undefined,
+		cancels_at?: GraphQLTypes["order_by"] | undefined,
+	created_at?: GraphQLTypes["order_by"] | undefined,
 	ended_at?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	label?: GraphQLTypes["order_by"] | undefined,
@@ -55652,7 +56489,8 @@ export type GraphQLTypes = {
 ["matches_select_column"]: matches_select_column;
 	/** input type for updating data in table "matches" */
 ["matches_set_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined,
+		cancels_at?: GraphQLTypes["timestamptz"] | undefined,
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
@@ -55716,7 +56554,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["matches_stream_cursor_value_input"]: {
-		created_at?: GraphQLTypes["timestamptz"] | undefined,
+		cancels_at?: GraphQLTypes["timestamptz"] | undefined,
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	label?: string | undefined,
@@ -55903,6 +56742,10 @@ export type GraphQLTypes = {
 	delete__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,
 	/** delete single row from the table: "_map_pool" */
 	delete__map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
+	/** delete data from the table: "abandoned_matches" */
+	delete_abandoned_matches?: GraphQLTypes["abandoned_matches_mutation_response"] | undefined,
+	/** delete single row from the table: "abandoned_matches" */
+	delete_abandoned_matches_by_pk?: GraphQLTypes["abandoned_matches"] | undefined,
 	/** delete data from the table: "e_game_server_node_regions" */
 	delete_e_game_server_node_regions?: GraphQLTypes["e_game_server_node_regions_mutation_response"] | undefined,
 	/** delete single row from the table: "e_game_server_node_regions" */
@@ -56104,6 +56947,10 @@ export type GraphQLTypes = {
 	insert__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,
 	/** insert a single row into the table: "_map_pool" */
 	insert__map_pool_one?: GraphQLTypes["_map_pool"] | undefined,
+	/** insert data into the table: "abandoned_matches" */
+	insert_abandoned_matches?: GraphQLTypes["abandoned_matches_mutation_response"] | undefined,
+	/** insert a single row into the table: "abandoned_matches" */
+	insert_abandoned_matches_one?: GraphQLTypes["abandoned_matches"] | undefined,
 	/** insert data into the table: "e_game_server_node_regions" */
 	insert_e_game_server_node_regions?: GraphQLTypes["e_game_server_node_regions_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_game_server_node_regions" */
@@ -56318,6 +57165,12 @@ export type GraphQLTypes = {
 	update__map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
 	/** update multiples rows of table: "_map_pool" */
 	update__map_pool_many?: Array<GraphQLTypes["_map_pool_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "abandoned_matches" */
+	update_abandoned_matches?: GraphQLTypes["abandoned_matches_mutation_response"] | undefined,
+	/** update single row of the table: "abandoned_matches" */
+	update_abandoned_matches_by_pk?: GraphQLTypes["abandoned_matches"] | undefined,
+	/** update multiples rows of table: "abandoned_matches" */
+	update_abandoned_matches_many?: Array<GraphQLTypes["abandoned_matches_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_game_server_node_regions" */
 	update_e_game_server_node_regions?: GraphQLTypes["e_game_server_node_regions_mutation_response"] | undefined,
 	/** update single row of the table: "e_game_server_node_regions" */
@@ -59283,6 +60136,7 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	assited_by_players_aggregate: GraphQLTypes["player_assists_aggregate"],
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** An array relationship */
 	damage_dealt: Array<GraphQLTypes["player_damages"]>,
@@ -59319,6 +60173,8 @@ export type GraphQLTypes = {
 	match_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
 	/** A computed field, executes function "get_player_matches" */
 	matches?: Array<GraphQLTypes["matches"]> | undefined,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?: GraphQLTypes["timestamp"] | undefined,
 	/** An array relationship */
 	multi_kills: Array<GraphQLTypes["v_player_multi_kills"]>,
 	/** An aggregate relationship */
@@ -59410,6 +60266,7 @@ export type GraphQLTypes = {
 	assited_by_players?: GraphQLTypes["player_assists_bool_exp"] | undefined,
 	assited_by_players_aggregate?: GraphQLTypes["player_assists_aggregate_bool_exp"] | undefined,
 	avatar_url?: GraphQLTypes["String_comparison_exp"] | undefined,
+	country?: GraphQLTypes["String_comparison_exp"] | undefined,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	damage_dealt?: GraphQLTypes["player_damages_bool_exp"] | undefined,
 	damage_dealt_aggregate?: GraphQLTypes["player_damages_aggregate_bool_exp"] | undefined,
@@ -59429,6 +60286,7 @@ export type GraphQLTypes = {
 	match_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined,
+	matchmaking_cooldown?: GraphQLTypes["timestamp_comparison_exp"] | undefined,
 	multi_kills?: GraphQLTypes["v_player_multi_kills_bool_exp"] | undefined,
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_bool_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
@@ -59470,6 +60328,7 @@ export type GraphQLTypes = {
 		assists?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined,
 	assited_by_players?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined,
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	damage_dealt?: GraphQLTypes["player_damages_arr_rel_insert_input"] | undefined,
 	damage_taken?: GraphQLTypes["player_damages_arr_rel_insert_input"] | undefined,
@@ -59501,8 +60360,11 @@ export type GraphQLTypes = {
 ["players_max_fields"]: {
 	__typename: "players_max_fields",
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?: GraphQLTypes["timestamp"] | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
 	steam_id?: GraphQLTypes["bigint"] | undefined
@@ -59511,8 +60373,11 @@ export type GraphQLTypes = {
 ["players_min_fields"]: {
 	__typename: "players_min_fields",
 	avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
+	/** A computed field, executes function "get_player_matchmaking_cooldown" */
+	matchmaking_cooldown?: GraphQLTypes["timestamp"] | undefined,
 	name?: string | undefined,
 	profile_url?: string | undefined,
 	steam_id?: GraphQLTypes["bigint"] | undefined
@@ -59542,6 +60407,7 @@ export type GraphQLTypes = {
 		assists_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined,
 	assited_by_players_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined,
 	avatar_url?: GraphQLTypes["order_by"] | undefined,
+	country?: GraphQLTypes["order_by"] | undefined,
 	created_at?: GraphQLTypes["order_by"] | undefined,
 	damage_dealt_aggregate?: GraphQLTypes["player_damages_aggregate_order_by"] | undefined,
 	damage_taken_aggregate?: GraphQLTypes["player_damages_aggregate_order_by"] | undefined,
@@ -59553,6 +60419,7 @@ export type GraphQLTypes = {
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,
+	matchmaking_cooldown?: GraphQLTypes["order_by"] | undefined,
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	objectives_aggregate?: GraphQLTypes["player_objectives_aggregate_order_by"] | undefined,
@@ -59580,6 +60447,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "players" */
 ["players_set_input"]: {
 		avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
 	name?: string | undefined,
@@ -59612,6 +60480,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["players_stream_cursor_value_input"]: {
 		avatar_url?: string | undefined,
+	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	discord_id?: string | undefined,
 	name?: string | undefined,
@@ -59657,6 +60526,12 @@ export type GraphQLTypes = {
 	_map_pool_aggregate: GraphQLTypes["_map_pool_aggregate"],
 	/** fetch data from the table: "_map_pool" using primary key columns */
 	_map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
+	/** fetch data from the table: "abandoned_matches" */
+	abandoned_matches: Array<GraphQLTypes["abandoned_matches"]>,
+	/** fetch aggregated fields from the table: "abandoned_matches" */
+	abandoned_matches_aggregate: GraphQLTypes["abandoned_matches_aggregate"],
+	/** fetch data from the table: "abandoned_matches" using primary key columns */
+	abandoned_matches_by_pk?: GraphQLTypes["abandoned_matches"] | undefined,
 	/** fetch data from the table: "e_game_server_node_regions" */
 	e_game_server_node_regions: Array<GraphQLTypes["e_game_server_node_regions"]>,
 	/** fetch aggregated fields from the table: "e_game_server_node_regions" */
@@ -60492,6 +61367,14 @@ export type GraphQLTypes = {
 	_map_pool_by_pk?: GraphQLTypes["_map_pool"] | undefined,
 	/** fetch data from the table in a streaming manner: "_map_pool" */
 	_map_pool_stream: Array<GraphQLTypes["_map_pool"]>,
+	/** fetch data from the table: "abandoned_matches" */
+	abandoned_matches: Array<GraphQLTypes["abandoned_matches"]>,
+	/** fetch aggregated fields from the table: "abandoned_matches" */
+	abandoned_matches_aggregate: GraphQLTypes["abandoned_matches_aggregate"],
+	/** fetch data from the table: "abandoned_matches" using primary key columns */
+	abandoned_matches_by_pk?: GraphQLTypes["abandoned_matches"] | undefined,
+	/** fetch data from the table in a streaming manner: "abandoned_matches" */
+	abandoned_matches_stream: Array<GraphQLTypes["abandoned_matches"]>,
 	/** fetch data from the table: "e_game_server_node_regions" */
 	e_game_server_node_regions: Array<GraphQLTypes["e_game_server_node_regions"]>,
 	/** fetch aggregated fields from the table: "e_game_server_node_regions" */
@@ -61739,6 +62622,19 @@ export type GraphQLTypes = {
 	/** order by variance() on columns of table "teams" */
 ["teams_variance_order_by"]: {
 		owner_steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	["timestamp"]: "scalar" & { name: "timestamp" };
+	/** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
+["timestamp_comparison_exp"]: {
+		_eq?: GraphQLTypes["timestamp"] | undefined,
+	_gt?: GraphQLTypes["timestamp"] | undefined,
+	_gte?: GraphQLTypes["timestamp"] | undefined,
+	_in?: Array<GraphQLTypes["timestamp"]> | undefined,
+	_is_null?: boolean | undefined,
+	_lt?: GraphQLTypes["timestamp"] | undefined,
+	_lte?: GraphQLTypes["timestamp"] | undefined,
+	_neq?: GraphQLTypes["timestamp"] | undefined,
+	_nin?: Array<GraphQLTypes["timestamp"]> | undefined
 };
 	["timestamptz"]: "scalar" & { name: "timestamptz" };
 	/** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
@@ -65274,6 +66170,22 @@ export const enum _map_pool_update_column {
 	map_id = "map_id",
 	map_pool_id = "map_pool_id"
 }
+/** unique or primary key constraints on table "abandoned_matches" */
+export const enum abandoned_matches_constraint {
+	abandoned_matches_pkey = "abandoned_matches_pkey"
+}
+/** select columns of table "abandoned_matches" */
+export const enum abandoned_matches_select_column {
+	abandoned_at = "abandoned_at",
+	id = "id",
+	steam_id = "steam_id"
+}
+/** update columns of table "abandoned_matches" */
+export const enum abandoned_matches_update_column {
+	abandoned_at = "abandoned_at",
+	id = "id",
+	steam_id = "steam_id"
+}
 /** ordering argument of a cursor */
 export const enum cursor_ordering {
 	ASC = "ASC",
@@ -65918,6 +66830,7 @@ export const enum matches_constraint {
 }
 /** select columns of table "matches" */
 export const enum matches_select_column {
+	cancels_at = "cancels_at",
 	created_at = "created_at",
 	ended_at = "ended_at",
 	id = "id",
@@ -65936,6 +66849,7 @@ export const enum matches_select_column {
 }
 /** update columns of table "matches" */
 export const enum matches_update_column {
+	cancels_at = "cancels_at",
 	created_at = "created_at",
 	ended_at = "ended_at",
 	id = "id",
@@ -66252,6 +67166,7 @@ export const enum players_constraint {
 /** select columns of table "players" */
 export const enum players_select_column {
 	avatar_url = "avatar_url",
+	country = "country",
 	created_at = "created_at",
 	discord_id = "discord_id",
 	name = "name",
@@ -66262,6 +67177,7 @@ export const enum players_select_column {
 /** update columns of table "players" */
 export const enum players_update_column {
 	avatar_url = "avatar_url",
+	country = "country",
 	created_at = "created_at",
 	discord_id = "discord_id",
 	name = "name",
@@ -66629,6 +67545,19 @@ type ZEUS_VARIABLES = {
 	["_map_pool_stream_cursor_value_input"]: ValueTypes["_map_pool_stream_cursor_value_input"];
 	["_map_pool_update_column"]: ValueTypes["_map_pool_update_column"];
 	["_map_pool_updates"]: ValueTypes["_map_pool_updates"];
+	["abandoned_matches_bool_exp"]: ValueTypes["abandoned_matches_bool_exp"];
+	["abandoned_matches_constraint"]: ValueTypes["abandoned_matches_constraint"];
+	["abandoned_matches_inc_input"]: ValueTypes["abandoned_matches_inc_input"];
+	["abandoned_matches_insert_input"]: ValueTypes["abandoned_matches_insert_input"];
+	["abandoned_matches_on_conflict"]: ValueTypes["abandoned_matches_on_conflict"];
+	["abandoned_matches_order_by"]: ValueTypes["abandoned_matches_order_by"];
+	["abandoned_matches_pk_columns_input"]: ValueTypes["abandoned_matches_pk_columns_input"];
+	["abandoned_matches_select_column"]: ValueTypes["abandoned_matches_select_column"];
+	["abandoned_matches_set_input"]: ValueTypes["abandoned_matches_set_input"];
+	["abandoned_matches_stream_cursor_input"]: ValueTypes["abandoned_matches_stream_cursor_input"];
+	["abandoned_matches_stream_cursor_value_input"]: ValueTypes["abandoned_matches_stream_cursor_value_input"];
+	["abandoned_matches_update_column"]: ValueTypes["abandoned_matches_update_column"];
+	["abandoned_matches_updates"]: ValueTypes["abandoned_matches_updates"];
 	["bigint"]: ValueTypes["bigint"];
 	["bigint_comparison_exp"]: ValueTypes["bigint_comparison_exp"];
 	["bytea"]: ValueTypes["bytea"];
@@ -67501,6 +68430,8 @@ type ZEUS_VARIABLES = {
 	["teams_var_pop_order_by"]: ValueTypes["teams_var_pop_order_by"];
 	["teams_var_samp_order_by"]: ValueTypes["teams_var_samp_order_by"];
 	["teams_variance_order_by"]: ValueTypes["teams_variance_order_by"];
+	["timestamp"]: ValueTypes["timestamp"];
+	["timestamp_comparison_exp"]: ValueTypes["timestamp_comparison_exp"];
 	["timestamptz"]: ValueTypes["timestamptz"];
 	["timestamptz_comparison_exp"]: ValueTypes["timestamptz_comparison_exp"];
 	["tournament_brackets_aggregate_bool_exp"]: ValueTypes["tournament_brackets_aggregate_bool_exp"];

@@ -139,7 +139,7 @@ export default {
       return useAuthStore().me;
     },
     teams() {
-      return this.me.player.teams;
+      return this.me.teams;
     },
   },
   watch: {

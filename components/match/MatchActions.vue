@@ -47,13 +47,13 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 
       <template v-if="match.is_in_lineup">
         <DropdownMenuSeparator />
-      <DropdownMenuItem
-        class="text-destructive"
-        @click="callForOrganizer"
-        :disabled="match.requested_organizer"
-      >
-        Request Organizer
-      </DropdownMenuItem>
+        <DropdownMenuItem
+          class="text-destructive"
+          @click="callForOrganizer"
+          :disabled="match.requested_organizer"
+        >
+          Request Organizer
+        </DropdownMenuItem>
       </template>
     </DropdownMenuContent>
   </DropdownMenu>

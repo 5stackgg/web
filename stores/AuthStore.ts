@@ -1,31 +1,62 @@
 import { ref } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { generateQuery } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { meFields } from "~/graphql/meGraphql";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 export const useAuthStore = defineStore("auth", () => {
   const me = ref<typeof meFields>();
+  const hasDiscordLinked = ref<boolean>(false);
 
   // TODO - move the listens to the socket store ?
   // Initialize MatchMakingStore, this is required for sockets listens to get initialized
   useMatchMakingStore();
   useApplicationSettingsStore();
 
-  async function getMe() {
-    // TODO - this needs to be a subscription, tired of figuring that out
-    try {
-      const response = await getGraphqlClient().query({
-        query: generateQuery({
-          me: meFields,
-        }),
-      });
-      me.value = response.data.me;
-      return me.value;
-    } catch (error) {
-      console.info("auth failure", error);
-    }
+  async function getMe(): Promise<boolean> {
+    return await new Promise(async (resolve) => {
+      try {
+        const response = await getGraphqlClient().query({
+          query: generateQuery({
+            me: {
+              steam_id: true,
+              discord_id: true,
+            },
+          }),
+        });
+
+        if (!response.data.me) {
+          resolve(false);
+          return;
+        }
+
+        if (response.data.me.discord_id) {
+          hasDiscordLinked.value = true;
+        }
+
+        const subscription = getGraphqlClient().subscribe({
+          query: generateSubscription({
+            players_by_pk: [
+              {
+                steam_id: response.data.me.steam_id,
+              },
+              meFields,
+            ],
+          }),
+        });
+
+        subscription.subscribe({
+          next: ({ data }) => {
+            me.value = data.players_by_pk;
+            resolve(true);
+          },
+        });
+      } catch (error) {
+        console.warn("auth failure", error);
+        resolve(false);
+      }
+    });
   }
 
   const isAdmin = computed(
@@ -39,6 +70,7 @@ export const useAuthStore = defineStore("auth", () => {
     me,
     getMe,
     isAdmin,
+    hasDiscordLinked,
     isTournamentOrganizer,
   };
 });

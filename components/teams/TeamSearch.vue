@@ -94,13 +94,12 @@ export default {
     async searchTeams(query?: string) {
       let teams = [];
       if (!query || query.trim().length === 0) {
-        teams = this.me.player.teams.filter((team) => {
+        teams = this.me.teams.filter((team) => {
           return !this.exclude.includes(team.id);
         });
       }
 
       if (teams.length === 0) {
-        console.info("OK SEARCH...");
         const { data } = await this.$apollo.query({
           query: generateQuery({
             teams: [

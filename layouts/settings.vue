@@ -5,15 +5,12 @@ import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 
-
 interface Item {
   to: string;
   title: string;
 }
 
 const $route = useRoute();
-
-const role = useAuthStore().me?.role ;
 
 const sidebarNavItems: Item[] = [
   {
@@ -24,10 +21,14 @@ const sidebarNavItems: Item[] = [
     title: "Appearance",
     to: "/settings/appearance",
   },
-  ...(role === 'administrator' ? [{
-    title: "Application Settings",
-    to: "/settings/application",
-  }] : []), 
+  ...(useAuthStore().isAdmin
+    ? [
+        {
+          title: "Application Settings",
+          to: "/settings/application",
+        },
+      ]
+    : []),
 ];
 </script>
 

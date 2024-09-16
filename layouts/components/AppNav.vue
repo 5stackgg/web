@@ -47,15 +47,15 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
         class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
       >
         <Avatar>
-          <AvatarImage :src="me.player.avatar_url" :alt="me.player.name" />
-          <AvatarFallback>{{ me.player.name }}</AvatarFallback>
+          <AvatarImage :src="me.avatar_url" :alt="me.name" />
+          <AvatarFallback>{{ me.name }}</AvatarFallback>
         </Avatar>
 
         <span class="sr-only">
-          {{ me.player.name }}
+          {{ me.name }}
         </span>
       </nuxt-link>
-      <div @click="linkDiscord" v-if="!me.discord_id">Link Discord</div>
+      <div @click="linkDiscord" v-if="!hasDiscordLinked">Link Discord</div>
     </nav>
   </aside>
 
@@ -115,7 +115,7 @@ export default {
     detectedCountry: {
       immediate: true,
       async handler() {
-        if (!this.me || this.me.player.country) {
+        if (!this.me || this.me.country) {
           return;
         }
 
@@ -191,6 +191,9 @@ export default {
   computed: {
     me() {
       return useAuthStore().me!;
+    },
+    hasDiscordLinked() {
+      return useAuthStore().hasDiscordLinked!;
     },
     detectedCountry() {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

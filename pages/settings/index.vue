@@ -143,9 +143,9 @@ export default {
       immediate: true,
       handler() {
         this.form.setValues({
-          name: this.me.player.name,
-          avatar_url: this.me.player.avatar_url,
-          country: this.me.player.country,
+          name: this.me.name,
+          avatar_url: this.me.avatar_url,
+          country: this.me.country,
         });
       },
     },

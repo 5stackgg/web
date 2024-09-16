@@ -7,14 +7,14 @@ import TimeAgo from "~/components/TimeAgo.vue";
 
 <template>
   <div v-if="matchMakingAllowed">
-    <template v-if="me?.player.matchmaking_cooldown">
+    <template v-if="me.matchmaking_cooldown">
       <Alert class="my-3">
         <AlertTitle>Matchmaking Cooldown</AlertTitle>
 
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
           You are temporarily banned from matchmaking, you will be able to join
-          <TimeAgo :date="me.player.matchmaking_cooldown" />
+          <TimeAgo :date="me.matchmaking_cooldown" />
         </AlertDescription>
       </Alert>
     </template>

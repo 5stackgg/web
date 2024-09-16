@@ -120,6 +120,10 @@ socket.listen("match-making:region-stats", (data) => {
   useMatchMakingStore().regionStats = data;
 });
 
+socket.listen("players-online", (playersOnline) => {
+  useMatchMakingStore().playersOnline = playersOnline;
+});
+
 socket.listen(
   "match-making:details",
   (
@@ -132,11 +136,5 @@ socket.listen(
     useMatchMakingStore().joinedMatchmakingQueues = data;
   },
 );
-
-socket.listen("match-making:match-created", (data) => {
-  // Remove the queue from joinedMatchmakingQueues when a match is created
-  // joinedMatchmakingQueues.value = joinedMatchmakingQueues.value.filter(queueId => queueId !== data.queueId);
-  // this.$router.push(`/matches/${data.matchId}`)
-});
 
 export default socket;

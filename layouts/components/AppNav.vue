@@ -92,7 +92,13 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
         </nav>
       </SheetContent>
     </Sheet>
-    <bread-crumbs></bread-crumbs>
+    <div class="flex justify-between items-center w-full">
+      <bread-crumbs></bread-crumbs>
+      <small class="text-muted-foreground ml-4">
+        ({{ playersOnline }}
+        {{ playersOnline === 1 ? "player" : "players" }} online)
+      </small>
+    </div>
   </header>
 </template>
 
@@ -203,6 +209,9 @@ export default {
       if (country) {
         return country.id;
       }
+    },
+    playersOnline() {
+      return useMatchMakingStore().playersOnline;
     },
   },
 };

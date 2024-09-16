@@ -4,9 +4,10 @@ import {
   e_game_server_node_regions_enum,
   e_match_types_enum,
 } from "~/generated/zeus";
-import { string } from "zod";
 
 export const useMatchMakingStore = defineStore("match-making", () => {
+  const playersOnline = ref<number>;
+
   const joinedMatchmakingQueues = ref<{
     details?: {
       totalInQueue: number;

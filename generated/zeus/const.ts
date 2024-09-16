@@ -4999,6 +4999,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"notifications_bool_exp",
 		_not:"notifications_bool_exp",
 		_or:"notifications_bool_exp",
+		created_at:"timestamptz_comparison_exp",
 		deleted_at:"timestamptz_comparison_exp",
 		entity_id:"String_comparison_exp",
 		id:"uuid_comparison_exp",
@@ -5015,6 +5016,7 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"bigint"
 	},
 	notifications_insert_input:{
+		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		id:"uuid",
 		player:"players_obj_rel_insert_input",
@@ -5023,6 +5025,7 @@ export const AllTypesProps: Record<string,any> = {
 		type:"e_notification_types_enum"
 	},
 	notifications_max_order_by:{
+		created_at:"order_by",
 		deleted_at:"order_by",
 		entity_id:"order_by",
 		id:"order_by",
@@ -5031,6 +5034,7 @@ export const AllTypesProps: Record<string,any> = {
 		title:"order_by"
 	},
 	notifications_min_order_by:{
+		created_at:"order_by",
 		deleted_at:"order_by",
 		entity_id:"order_by",
 		id:"order_by",
@@ -5044,6 +5048,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"notifications_bool_exp"
 	},
 	notifications_order_by:{
+		created_at:"order_by",
 		deleted_at:"order_by",
 		entity_id:"order_by",
 		id:"order_by",
@@ -5062,6 +5067,7 @@ export const AllTypesProps: Record<string,any> = {
 	notifications_select_column_notifications_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	notifications_set_input:{
+		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		id:"uuid",
 		role:"e_player_roles_enum",
@@ -5082,6 +5088,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	notifications_stream_cursor_value_input:{
+		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		id:"uuid",
 		role:"e_player_roles_enum",
@@ -13163,6 +13170,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_match_captains_many:"v_match_captains_mutation_response"
 	},
 	notifications:{
+		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		entity_id:"String",
 		id:"uuid",
@@ -13195,6 +13203,7 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	notifications_max_fields:{
+		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		entity_id:"String",
 		id:"uuid",
@@ -13203,6 +13212,7 @@ export const ReturnTypes: Record<string,any> = {
 		title:"String"
 	},
 	notifications_min_fields:{
+		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		entity_id:"String",
 		id:"uuid",

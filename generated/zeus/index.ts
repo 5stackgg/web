@@ -8545,6 +8545,7 @@ update_v_match_captains_many?: [{	/** updates to execute, in order */
 }>;
 	/** columns and relationships of "notifications" */
 ["notifications"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -8636,6 +8637,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 	_and?: Array<ValueTypes["notifications_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["notifications_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["notifications_bool_exp"]> | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	entity_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -8655,6 +8657,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 };
 	/** input type for inserting data into table "notifications" */
 ["notifications_insert_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	entity_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -8668,6 +8671,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 };
 	/** aggregate max on columns */
 ["notifications_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -8678,6 +8682,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 }>;
 	/** order by max() on columns of table "notifications" */
 ["notifications_max_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	entity_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -8687,6 +8692,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 };
 	/** aggregate min on columns */
 ["notifications_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -8697,6 +8703,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 }>;
 	/** order by min() on columns of table "notifications" */
 ["notifications_min_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	entity_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -8720,6 +8727,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 };
 	/** Ordering options when selecting data from "notifications". */
 ["notifications_order_by"]: {
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	entity_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -8743,6 +8751,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 ["notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns"]:notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "notifications" */
 ["notifications_set_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	entity_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -8789,6 +8798,7 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 };
 	/** Initial value of the column from where the streaming should start */
 ["notifications_stream_cursor_value_input"]: {
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	deleted_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	entity_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -26574,6 +26584,7 @@ update_v_match_captains_many?: [{	/** updates to execute, in order */
 }>;
 	/** columns and relationships of "notifications" */
 ["notifications"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -26665,6 +26676,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 	_and?: Array<ResolverInputTypes["notifications_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["notifications_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["notifications_bool_exp"]> | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	entity_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -26684,6 +26696,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 };
 	/** input type for inserting data into table "notifications" */
 ["notifications_insert_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -26697,6 +26710,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 };
 	/** aggregate max on columns */
 ["notifications_max_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -26707,6 +26721,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 }>;
 	/** order by max() on columns of table "notifications" */
 ["notifications_max_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	entity_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -26716,6 +26731,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 };
 	/** aggregate min on columns */
 ["notifications_min_fields"]: AliasType<{
+	created_at?:boolean | `@${string}`,
 	deleted_at?:boolean | `@${string}`,
 	entity_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -26726,6 +26742,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 }>;
 	/** order by min() on columns of table "notifications" */
 ["notifications_min_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	entity_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -26749,6 +26766,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 };
 	/** Ordering options when selecting data from "notifications". */
 ["notifications_order_by"]: {
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	deleted_at?: ResolverInputTypes["order_by"] | undefined | null,
 	entity_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -26772,6 +26790,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 ["notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns"]:notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "notifications" */
 ["notifications_set_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -26818,6 +26837,7 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 };
 	/** Initial value of the column from where the streaming should start */
 ["notifications_stream_cursor_value_input"]: {
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	deleted_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	entity_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -43719,7 +43739,8 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "notifications" */
 ["notifications"]: {
-		deleted_at?: ModelTypes["timestamptz"] | undefined,
+		created_at: ModelTypes["timestamptz"],
+	deleted_at?: ModelTypes["timestamptz"] | undefined,
 	entity_id: string,
 	id: ModelTypes["uuid"],
 	is_read: boolean,
@@ -43806,6 +43827,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["notifications_bool_exp"]> | undefined,
 	_not?: ModelTypes["notifications_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["notifications_bool_exp"]> | undefined,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	deleted_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	entity_id?: ModelTypes["String_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -43824,6 +43846,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "notifications" */
 ["notifications_insert_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	deleted_at?: ModelTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -43837,7 +43860,8 @@ export type ModelTypes = {
 };
 	/** aggregate max on columns */
 ["notifications_max_fields"]: {
-		deleted_at?: ModelTypes["timestamptz"] | undefined,
+		created_at?: ModelTypes["timestamptz"] | undefined,
+	deleted_at?: ModelTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	message?: string | undefined,
@@ -43846,6 +43870,7 @@ export type ModelTypes = {
 };
 	/** order by max() on columns of table "notifications" */
 ["notifications_max_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
 	deleted_at?: ModelTypes["order_by"] | undefined,
 	entity_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -43855,7 +43880,8 @@ export type ModelTypes = {
 };
 	/** aggregate min on columns */
 ["notifications_min_fields"]: {
-		deleted_at?: ModelTypes["timestamptz"] | undefined,
+		created_at?: ModelTypes["timestamptz"] | undefined,
+	deleted_at?: ModelTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	message?: string | undefined,
@@ -43864,6 +43890,7 @@ export type ModelTypes = {
 };
 	/** order by min() on columns of table "notifications" */
 ["notifications_min_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
 	deleted_at?: ModelTypes["order_by"] | undefined,
 	entity_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -43886,6 +43913,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "notifications". */
 ["notifications_order_by"]: {
+	created_at?: ModelTypes["order_by"] | undefined,
 	deleted_at?: ModelTypes["order_by"] | undefined,
 	entity_id?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
@@ -43906,6 +43934,7 @@ export type ModelTypes = {
 	["notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns"]:notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "notifications" */
 ["notifications_set_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	deleted_at?: ModelTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -43949,6 +43978,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["notifications_stream_cursor_value_input"]: {
+	created_at?: ModelTypes["timestamptz"] | undefined,
 	deleted_at?: ModelTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
@@ -59443,6 +59473,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "notifications" */
 ["notifications"]: {
 	__typename: "notifications",
+	created_at: GraphQLTypes["timestamptz"],
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined,
 	entity_id: string,
 	id: GraphQLTypes["uuid"],
@@ -59533,6 +59564,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["notifications_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["notifications_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["notifications_bool_exp"]> | undefined,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	deleted_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	entity_id?: GraphQLTypes["String_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -59552,7 +59584,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "notifications" */
 ["notifications_insert_input"]: {
-		deleted_at?: GraphQLTypes["timestamptz"] | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	is_read?: boolean | undefined,
@@ -59566,6 +59599,7 @@ export type GraphQLTypes = {
 	/** aggregate max on columns */
 ["notifications_max_fields"]: {
 	__typename: "notifications_max_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
@@ -59575,7 +59609,8 @@ export type GraphQLTypes = {
 };
 	/** order by max() on columns of table "notifications" */
 ["notifications_max_order_by"]: {
-		deleted_at?: GraphQLTypes["order_by"] | undefined,
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	deleted_at?: GraphQLTypes["order_by"] | undefined,
 	entity_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	message?: GraphQLTypes["order_by"] | undefined,
@@ -59585,6 +59620,7 @@ export type GraphQLTypes = {
 	/** aggregate min on columns */
 ["notifications_min_fields"]: {
 	__typename: "notifications_min_fields",
+	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	deleted_at?: GraphQLTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
@@ -59594,7 +59630,8 @@ export type GraphQLTypes = {
 };
 	/** order by min() on columns of table "notifications" */
 ["notifications_min_order_by"]: {
-		deleted_at?: GraphQLTypes["order_by"] | undefined,
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	deleted_at?: GraphQLTypes["order_by"] | undefined,
 	entity_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	message?: GraphQLTypes["order_by"] | undefined,
@@ -59617,7 +59654,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "notifications". */
 ["notifications_order_by"]: {
-		deleted_at?: GraphQLTypes["order_by"] | undefined,
+		created_at?: GraphQLTypes["order_by"] | undefined,
+	deleted_at?: GraphQLTypes["order_by"] | undefined,
 	entity_id?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	is_read?: GraphQLTypes["order_by"] | undefined,
@@ -59640,7 +59678,8 @@ export type GraphQLTypes = {
 ["notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns"]: notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "notifications" */
 ["notifications_set_input"]: {
-		deleted_at?: GraphQLTypes["timestamptz"] | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	is_read?: boolean | undefined,
@@ -59686,7 +59725,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["notifications_stream_cursor_value_input"]: {
-		deleted_at?: GraphQLTypes["timestamptz"] | undefined,
+		created_at?: GraphQLTypes["timestamptz"] | undefined,
+	deleted_at?: GraphQLTypes["timestamptz"] | undefined,
 	entity_id?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	is_read?: boolean | undefined,
@@ -69225,6 +69265,7 @@ export const enum notifications_constraint {
 }
 /** select columns of table "notifications" */
 export const enum notifications_select_column {
+	created_at = "created_at",
 	deleted_at = "deleted_at",
 	entity_id = "entity_id",
 	id = "id",
@@ -69245,6 +69286,7 @@ export const enum notifications_select_column_notifications_aggregate_bool_exp_b
 }
 /** update columns of table "notifications" */
 export const enum notifications_update_column {
+	created_at = "created_at",
 	deleted_at = "deleted_at",
 	entity_id = "entity_id",
 	id = "id",

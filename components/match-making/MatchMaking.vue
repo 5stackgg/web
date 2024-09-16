@@ -4,7 +4,7 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 </script>
 
 <template>
-  <div>
+  <div v-if="matchMakingAllowed">
     <template v-if="!confirmationDetails">
       <MatchMakingRegion
         :region="region"
@@ -94,6 +94,9 @@ export default {
   computed: {
     confirmationDetails() {
       return useMatchMakingStore().joinedMatchmakingQueues.confirmation;
+    },
+    matchMakingAllowed() {
+      return useApplicationSettingsStore().matchMakingAllowed;
     },
   },
 };

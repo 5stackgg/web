@@ -20,6 +20,10 @@ const sidebarNavItems: Item[] = [
     title: "Appearance",
     to: "/settings/appearance",
   },
+  {
+    title: "Application Settings",
+    to: "/settings/application",
+  },
 ];
 </script>
 

@@ -1,7 +1,24 @@
+<script setup lang="ts">
+import { AlertTriangle } from "lucide-vue-next";
+</script>
+
 <template>
   <Card v-if="isInMatch && match.connection_string" class="overflow-hidden">
     <CardHeader class="p-2 pt-0 md:p-4">
-      <CardTitle class="flex justify-between"> Match is Live!</CardTitle>
+      <CardTitle class="flex justify-between">
+        <div class="flex items-center gap-2">
+          <AlertTriangle class="h-4 w-4" />
+          Match is Live
+        </div>
+        <Button
+          size="sm"
+          variant="destructive"
+          @click="callForOrganizer"
+          :disabled="match.requested_organizer"
+        >
+          Call For Organizer
+        </Button>
+      </CardTitle>
     </CardHeader>
     <CardContent class="p-2 pt-0 md:p-4 md:pt-0">
       <QuickServerConnect :match="match"></QuickServerConnect>
@@ -12,6 +29,7 @@
 <script lang="ts">
 import TimeAgo from "~/components/TimeAgo.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   components: { QuickServerConnect, TimeAgo },
@@ -19,6 +37,20 @@ export default {
     match: {
       type: Object,
       required: true,
+    },
+  },
+  methods: {
+    callForOrganizer() {
+      this.$apollo.mutate({
+        mutation: generateMutation({
+          callForOrganizer: [
+            { matchId: this.match.id },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
     },
   },
   computed: {

@@ -95,6 +95,7 @@ export default {
               can_start: true,
               can_schedule: true,
               can_check_in: true,
+              requested_organizer: true,
               is_tournament_match: true,
               can_cancel: true,
               can_assign_server: true,

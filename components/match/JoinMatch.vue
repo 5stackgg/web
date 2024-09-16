@@ -3,7 +3,7 @@ import { AlertTriangle } from "lucide-vue-next";
 </script>
 
 <template>
-  <Card v-if="isInMatch && match.connection_string" class="overflow-hidden">
+  <Card v-if="match.is_in_lineup && match.connection_string" class="overflow-hidden">
     <CardHeader class="p-2 pt-0 md:p-4">
       <CardTitle class="flex justify-between">
         <div class="flex items-center gap-2">
@@ -68,11 +68,6 @@ export default {
       players.push(...this.match.lineup_2.lineup_players);
 
       return players;
-    },
-    isInMatch() {
-      return this.players.find((player) => {
-        return player.steam_id === this.me?.steam_id;
-      });
     },
   },
 };

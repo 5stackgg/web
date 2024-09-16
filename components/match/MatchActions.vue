@@ -45,8 +45,16 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
         <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>
 
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>Call for Organizer</DropdownMenuItem>
+      <template v-if="match.is_in_lineup">
+        <DropdownMenuSeparator />
+      <DropdownMenuItem
+        class="text-destructive"
+        @click="callForOrganizer"
+        :disabled="match.requested_organizer"
+      >
+        Request Organizer
+      </DropdownMenuItem>
+      </template>
     </DropdownMenuContent>
   </DropdownMenu>
 </template>
@@ -87,6 +95,13 @@ export default {
               success: true,
             },
           ],
+        }),
+      });
+    },
+    async callForOrganizer() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          callForOrganizer: [{ matchId: this.match.id }, { success: true }],
         }),
       });
     },

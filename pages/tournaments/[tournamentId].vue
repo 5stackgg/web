@@ -178,6 +178,7 @@ export default {
                 {
                   organizer: {
                     name: true,
+                    country: true,
                     steam_id: true,
                     avatar_url: true,
                   },

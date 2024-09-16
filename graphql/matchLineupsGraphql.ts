@@ -44,6 +44,7 @@ export const matchLineups = Selector("match_lineups")({
         name: true,
         steam_id: true,
         avatar_url: true,
+        country: true,
         kills_aggregate: [
           {
             where: {

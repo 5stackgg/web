@@ -3586,6 +3586,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_servers_by_pk:{
 			id:"uuid"
 		},
+		delete_settings:{
+			where:"settings_bool_exp"
+		},
+		delete_settings_by_pk:{
+
+		},
 		delete_team_invites:{
 			where:"team_invites_bool_exp"
 		},
@@ -3963,6 +3969,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_servers_one:{
 			object:"servers_insert_input",
 			on_conflict:"servers_on_conflict"
+		},
+		insert_settings:{
+			objects:"settings_insert_input",
+			on_conflict:"settings_on_conflict"
+		},
+		insert_settings_one:{
+			object:"settings_insert_input",
+			on_conflict:"settings_on_conflict"
 		},
 		insert_team_invites:{
 			objects:"team_invites_insert_input",
@@ -4522,6 +4536,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_servers_many:{
 			updates:"servers_updates"
+		},
+		update_settings:{
+			_set:"settings_set_input",
+			where:"settings_bool_exp"
+		},
+		update_settings_by_pk:{
+			_set:"settings_set_input",
+			pk_columns:"settings_pk_columns_input"
+		},
+		update_settings_many:{
+			updates:"settings_updates"
 		},
 		update_team_invites:{
 			_inc:"team_invites_inc_input",
@@ -6644,9 +6669,6 @@ export const AllTypesProps: Record<string,any> = {
 		game_server_nodes_by_pk:{
 
 		},
-		getCsVersion:{
-			gameServerNodeId:"uuid"
-		},
 		map_pools:{
 			distinct_on:"map_pools_select_column",
 			order_by:"map_pools_order_by",
@@ -6919,6 +6941,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		servers_by_pk:{
 			id:"uuid"
+		},
+		settings:{
+			distinct_on:"settings_select_column",
+			order_by:"settings_order_by",
+			where:"settings_bool_exp"
+		},
+		settings_aggregate:{
+			distinct_on:"settings_select_column",
+			order_by:"settings_order_by",
+			where:"settings_bool_exp"
+		},
+		settings_by_pk:{
+
 		},
 		team_invites:{
 			distinct_on:"team_invites_select_column",
@@ -7370,6 +7405,50 @@ export const AllTypesProps: Record<string,any> = {
 		owner_steam_id:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
+	},
+	settings_aggregate_fields:{
+		count:{
+			columns:"settings_select_column"
+		}
+	},
+	settings_bool_exp:{
+		_and:"settings_bool_exp",
+		_not:"settings_bool_exp",
+		_or:"settings_bool_exp",
+		name:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	settings_constraint: "enum" as const,
+	settings_insert_input:{
+
+	},
+	settings_on_conflict:{
+		constraint:"settings_constraint",
+		update_columns:"settings_update_column",
+		where:"settings_bool_exp"
+	},
+	settings_order_by:{
+		name:"order_by",
+		value:"order_by"
+	},
+	settings_pk_columns_input:{
+
+	},
+	settings_select_column: "enum" as const,
+	settings_set_input:{
+
+	},
+	settings_stream_cursor_input:{
+		initial_value:"settings_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	settings_stream_cursor_value_input:{
+
+	},
+	settings_update_column: "enum" as const,
+	settings_updates:{
+		_set:"settings_set_input",
+		where:"settings_bool_exp"
 	},
 	subscription_root:{
 		_map_pool:{
@@ -8018,6 +8097,23 @@ export const AllTypesProps: Record<string,any> = {
 		servers_stream:{
 			cursor:"servers_stream_cursor_input",
 			where:"servers_bool_exp"
+		},
+		settings:{
+			distinct_on:"settings_select_column",
+			order_by:"settings_order_by",
+			where:"settings_bool_exp"
+		},
+		settings_aggregate:{
+			distinct_on:"settings_select_column",
+			order_by:"settings_order_by",
+			where:"settings_bool_exp"
+		},
+		settings_by_pk:{
+
+		},
+		settings_stream:{
+			cursor:"settings_stream_cursor_input",
+			where:"settings_bool_exp"
 		},
 		team_invites:{
 			distinct_on:"team_invites_select_column",
@@ -12126,6 +12222,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_players_by_pk:"players",
 		delete_servers:"servers_mutation_response",
 		delete_servers_by_pk:"servers",
+		delete_settings:"settings_mutation_response",
+		delete_settings_by_pk:"settings",
 		delete_team_invites:"team_invites_mutation_response",
 		delete_team_invites_by_pk:"team_invites",
 		delete_team_roster:"team_roster_mutation_response",
@@ -12225,6 +12323,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_players_one:"players",
 		insert_servers:"servers_mutation_response",
 		insert_servers_one:"servers",
+		insert_settings:"settings_mutation_response",
+		insert_settings_one:"settings",
 		insert_team_invites:"team_invites_mutation_response",
 		insert_team_invites_one:"team_invites",
 		insert_team_roster:"team_roster_mutation_response",
@@ -12368,6 +12468,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_servers:"servers_mutation_response",
 		update_servers_by_pk:"servers",
 		update_servers_many:"servers_mutation_response",
+		update_settings:"settings_mutation_response",
+		update_settings_by_pk:"settings",
+		update_settings_many:"settings_mutation_response",
 		update_team_invites:"team_invites_mutation_response",
 		update_team_invites_by_pk:"team_invites",
 		update_team_invites_many:"team_invites_mutation_response",
@@ -13310,7 +13413,6 @@ export const ReturnTypes: Record<string,any> = {
 		game_server_nodes:"game_server_nodes",
 		game_server_nodes_aggregate:"game_server_nodes_aggregate",
 		game_server_nodes_by_pk:"game_server_nodes",
-		getCsVersion:"String",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",
@@ -13375,6 +13477,9 @@ export const ReturnTypes: Record<string,any> = {
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",
+		settings:"settings",
+		settings_aggregate:"settings_aggregate",
+		settings_by_pk:"settings",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
 		team_invites_by_pk:"team_invites",
@@ -13529,6 +13634,31 @@ export const ReturnTypes: Record<string,any> = {
 		port:"Float",
 		tv_port:"Float"
 	},
+	settings:{
+		name:"String",
+		value:"String"
+	},
+	settings_aggregate:{
+		aggregate:"settings_aggregate_fields",
+		nodes:"settings"
+	},
+	settings_aggregate_fields:{
+		count:"Int",
+		max:"settings_max_fields",
+		min:"settings_min_fields"
+	},
+	settings_max_fields:{
+		name:"String",
+		value:"String"
+	},
+	settings_min_fields:{
+		name:"String",
+		value:"String"
+	},
+	settings_mutation_response:{
+		affected_rows:"Int",
+		returning:"settings"
+	},
 	subscription_root:{
 		_map_pool:"_map_pool",
 		_map_pool_aggregate:"_map_pool_aggregate",
@@ -13682,6 +13812,10 @@ export const ReturnTypes: Record<string,any> = {
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",
 		servers_stream:"servers",
+		settings:"settings",
+		settings_aggregate:"settings_aggregate",
+		settings_by_pk:"settings",
+		settings_stream:"settings",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
 		team_invites_by_pk:"team_invites",

@@ -6,6 +6,7 @@ export const meFields = Selector("MeResponse")({
   role: true,
   player: {
     name: true,
+    country: true,
     profile_url: true,
     avatar_url: true,
     teams: [

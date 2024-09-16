@@ -98,7 +98,7 @@ export default {
         },
       });
 
-      const { found, request_params } = response.data.value;
+      const { found } = response.data.value;
 
       this.pagination = {
         total: found,

@@ -14,6 +14,7 @@ export default {
         name: true,
         steam_id: true,
         avatar_url: true,
+        country: true,
       },
     },
   ],

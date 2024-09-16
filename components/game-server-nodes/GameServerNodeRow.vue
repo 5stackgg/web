@@ -31,7 +31,7 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
     </TableCell>
     <TableCell>
       {{ gameServerNode.build_id }}
-    </TableCell>  
+    </TableCell>
     <TableCell>
       <Select
         :model-value="form.region"

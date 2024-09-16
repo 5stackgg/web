@@ -13,20 +13,20 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
       </TableRow>
     </TableHeader>
     <TableBody>
-        <TableRow v-for="region in gameServerRegions" :key="region.value">
-            <TableCell>
-              <span
-                  class="ml-1 inline-block h-2 w-2 rounded-full"
-                  :class="{
-                    'bg-red-600': region.status === 'Offline',
-                    'bg-green-600': region.status === 'Online',
-                    'bg-yellow-600': region.status === 'Partial'
-                  }"
-                >
-              </span>
-                {{ region.description }}
-            </TableCell>
-        </TableRow>
+      <TableRow v-for="region in gameServerRegions" :key="region.value">
+        <TableCell>
+          <span
+            class="ml-1 inline-block h-2 w-2 rounded-full"
+            :class="{
+              'bg-red-600': region.status === 'Offline',
+              'bg-green-600': region.status === 'Online',
+              'bg-yellow-600': region.status === 'Partial',
+            }"
+          >
+          </span>
+          {{ region.description }}
+        </TableCell>
+      </TableRow>
     </TableBody>
   </Table>
 </template>
@@ -48,9 +48,9 @@ export default {
             {
               where: {
                 status: {
-                  _neq: "N/A"
-                }
-              }
+                  _neq: "N/A",
+                },
+              },
             },
             {
               value: true,

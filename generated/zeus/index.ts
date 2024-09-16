@@ -7389,6 +7389,9 @@ delete_players_by_pk?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>
 delete_servers?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["servers_bool_exp"] | Variable<any, string>},ValueTypes["servers_mutation_response"]],
 delete_servers_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["servers"]],
+delete_settings?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["settings_bool_exp"] | Variable<any, string>},ValueTypes["settings_mutation_response"]],
+delete_settings_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["settings"]],
 delete_team_invites?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["team_invites_bool_exp"] | Variable<any, string>},ValueTypes["team_invites_mutation_response"]],
 delete_team_invites_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["team_invites"]],
@@ -7652,6 +7655,12 @@ insert_servers?: [{	/** the rows to be inserted */
 insert_servers_one?: [{	/** the row to be inserted */
 	object: ValueTypes["servers_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["servers_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["servers"]],
+insert_settings?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["settings_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["settings_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["settings_mutation_response"]],
+insert_settings_one?: [{	/** the row to be inserted */
+	object: ValueTypes["settings_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["settings_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["settings"]],
 insert_team_invites?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["team_invites_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["team_invites_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["team_invites_mutation_response"]],
@@ -8025,6 +8034,13 @@ update_servers_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ValueTypes["servers_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["servers_pk_columns_input"] | Variable<any, string>},ValueTypes["servers"]],
 update_servers_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["servers_updates"]> | Variable<any, string>},ValueTypes["servers_mutation_response"]],
+update_settings?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["settings_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["settings_bool_exp"] | Variable<any, string>},ValueTypes["settings_mutation_response"]],
+update_settings_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["settings_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["settings_pk_columns_input"] | Variable<any, string>},ValueTypes["settings"]],
+update_settings_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["settings_updates"]> | Variable<any, string>},ValueTypes["settings_mutation_response"]],
 update_team_invites?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ValueTypes["team_invites_inc_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["team_invites_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -11575,7 +11591,6 @@ game_server_nodes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["game_server_nodes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_server_nodes_aggregate"]],
 game_server_nodes_by_pk?: [{	id: string | Variable<any, string>},ValueTypes["game_server_nodes"]],
-getCsVersion?: [{	gameServerNodeId?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},boolean | `@${string}`],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["map_pools_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -11851,6 +11866,19 @@ servers_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["servers_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["servers_aggregate"]],
 servers_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["servers"]],
+settings?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["settings_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["settings_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["settings"]],
+settings_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["settings_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["settings_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["settings_aggregate"]],
+settings_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["settings"]],
 team_invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -12509,6 +12537,102 @@ count?: [{	columns?: Array<ValueTypes["servers_select_column"]> | undefined | nu
 	port?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tv_port?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
+	/** columns and relationships of "settings" */
+["settings"]: AliasType<{
+	name?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "settings" */
+["settings_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["settings_aggregate_fields"],
+	nodes?:ValueTypes["settings"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "settings" */
+["settings_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["settings_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["settings_max_fields"],
+	min?:ValueTypes["settings_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'. */
+["settings_bool_exp"]: {
+	_and?: Array<ValueTypes["settings_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["settings_bool_exp"]> | undefined | null | Variable<any, string>,
+	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "settings" */
+["settings_constraint"]:settings_constraint;
+	/** input type for inserting data into table "settings" */
+["settings_insert_input"]: {
+	name?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["settings_max_fields"]: AliasType<{
+	name?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["settings_min_fields"]: AliasType<{
+	name?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "settings" */
+["settings_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["settings"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "settings" */
+["settings_on_conflict"]: {
+	constraint: ValueTypes["settings_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["settings_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "settings". */
+["settings_order_by"]: {
+	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: settings */
+["settings_pk_columns_input"]: {
+	name: string | Variable<any, string>
+};
+	/** select columns of table "settings" */
+["settings_select_column"]:settings_select_column;
+	/** input type for updating data in table "settings" */
+["settings_set_input"]: {
+	name?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "settings" */
+["settings_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["settings_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["settings_stream_cursor_value_input"]: {
+	name?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "settings" */
+["settings_update_column"]:settings_update_column;
+	["settings_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["settings_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["settings_bool_exp"] | Variable<any, string>
+};
 	["subscription_root"]: AliasType<{
 _map_pool?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["_map_pool_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -13156,6 +13280,23 @@ servers_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["servers_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["servers_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["servers"]],
+settings?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["settings_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["settings_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["settings"]],
+settings_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["settings_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["settings_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["settings_aggregate"]],
+settings_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["settings"]],
+settings_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["settings_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["settings_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["settings"]],
 team_invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -24421,6 +24562,9 @@ delete_players_by_pk?: [{	steam_id: ResolverInputTypes["bigint"]},ResolverInputT
 delete_servers?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["servers_bool_exp"]},ResolverInputTypes["servers_mutation_response"]],
 delete_servers_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["servers"]],
+delete_settings?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["settings_bool_exp"]},ResolverInputTypes["settings_mutation_response"]],
+delete_settings_by_pk?: [{	name: string},ResolverInputTypes["settings"]],
 delete_team_invites?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["team_invites_bool_exp"]},ResolverInputTypes["team_invites_mutation_response"]],
 delete_team_invites_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["team_invites"]],
@@ -24684,6 +24828,12 @@ insert_servers?: [{	/** the rows to be inserted */
 insert_servers_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["servers_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["servers_on_conflict"] | undefined | null},ResolverInputTypes["servers"]],
+insert_settings?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["settings_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["settings_on_conflict"] | undefined | null},ResolverInputTypes["settings_mutation_response"]],
+insert_settings_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["settings_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["settings_on_conflict"] | undefined | null},ResolverInputTypes["settings"]],
 insert_team_invites?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["team_invites_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["team_invites_on_conflict"] | undefined | null},ResolverInputTypes["team_invites_mutation_response"]],
@@ -25057,6 +25207,13 @@ update_servers_by_pk?: [{	/** increments the numeric columns with given value of
 	_set?: ResolverInputTypes["servers_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["servers_pk_columns_input"]},ResolverInputTypes["servers"]],
 update_servers_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["servers_updates"]>},ResolverInputTypes["servers_mutation_response"]],
+update_settings?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["settings_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["settings_bool_exp"]},ResolverInputTypes["settings_mutation_response"]],
+update_settings_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["settings_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["settings_pk_columns_input"]},ResolverInputTypes["settings"]],
+update_settings_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["settings_updates"]>},ResolverInputTypes["settings_mutation_response"]],
 update_team_invites?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?: ResolverInputTypes["team_invites_inc_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["team_invites_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -28607,7 +28764,6 @@ game_server_nodes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["game_server_nodes_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null},ResolverInputTypes["game_server_nodes_aggregate"]],
 game_server_nodes_by_pk?: [{	id: string},ResolverInputTypes["game_server_nodes"]],
-getCsVersion?: [{	gameServerNodeId?: ResolverInputTypes["uuid"] | undefined | null},boolean | `@${string}`],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["map_pools_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -28883,6 +29039,19 @@ servers_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["servers_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["servers_bool_exp"] | undefined | null},ResolverInputTypes["servers_aggregate"]],
 servers_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["servers"]],
+settings?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["settings_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["settings_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["settings_bool_exp"] | undefined | null},ResolverInputTypes["settings"]],
+settings_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["settings_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["settings_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["settings_bool_exp"] | undefined | null},ResolverInputTypes["settings_aggregate"]],
+settings_by_pk?: [{	name: string},ResolverInputTypes["settings"]],
 team_invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -29541,6 +29710,102 @@ count?: [{	columns?: Array<ResolverInputTypes["servers_select_column"]> | undefi
 	port?: ResolverInputTypes["order_by"] | undefined | null,
 	tv_port?: ResolverInputTypes["order_by"] | undefined | null
 };
+	/** columns and relationships of "settings" */
+["settings"]: AliasType<{
+	name?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "settings" */
+["settings_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["settings_aggregate_fields"],
+	nodes?:ResolverInputTypes["settings"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "settings" */
+["settings_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["settings_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["settings_max_fields"],
+	min?:ResolverInputTypes["settings_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'. */
+["settings_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["settings_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["settings_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["settings_bool_exp"]> | undefined | null,
+	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "settings" */
+["settings_constraint"]:settings_constraint;
+	/** input type for inserting data into table "settings" */
+["settings_insert_input"]: {
+	name?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["settings_max_fields"]: AliasType<{
+	name?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["settings_min_fields"]: AliasType<{
+	name?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "settings" */
+["settings_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["settings"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "settings" */
+["settings_on_conflict"]: {
+	constraint: ResolverInputTypes["settings_constraint"],
+	update_columns: Array<ResolverInputTypes["settings_update_column"]>,
+	where?: ResolverInputTypes["settings_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "settings". */
+["settings_order_by"]: {
+	name?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: settings */
+["settings_pk_columns_input"]: {
+	name: string
+};
+	/** select columns of table "settings" */
+["settings_select_column"]:settings_select_column;
+	/** input type for updating data in table "settings" */
+["settings_set_input"]: {
+	name?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "settings" */
+["settings_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["settings_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["settings_stream_cursor_value_input"]: {
+	name?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "settings" */
+["settings_update_column"]:settings_update_column;
+	["settings_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["settings_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["settings_bool_exp"]
+};
 	["subscription_root"]: AliasType<{
 _map_pool?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["_map_pool_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -30188,6 +30453,23 @@ servers_stream?: [{	/** maximum number of rows returned in a single batch */
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["servers_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["servers_bool_exp"] | undefined | null},ResolverInputTypes["servers"]],
+settings?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["settings_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["settings_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["settings_bool_exp"] | undefined | null},ResolverInputTypes["settings"]],
+settings_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["settings_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["settings_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["settings_bool_exp"] | undefined | null},ResolverInputTypes["settings_aggregate"]],
+settings_by_pk?: [{	name: string},ResolverInputTypes["settings"]],
+settings_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["settings_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["settings_bool_exp"] | undefined | null},ResolverInputTypes["settings"]],
 team_invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -40802,6 +41084,10 @@ export type ModelTypes = {
 	delete_servers?: ModelTypes["servers_mutation_response"] | undefined,
 	/** delete single row from the table: "servers" */
 	delete_servers_by_pk?: ModelTypes["servers"] | undefined,
+	/** delete data from the table: "settings" */
+	delete_settings?: ModelTypes["settings_mutation_response"] | undefined,
+	/** delete single row from the table: "settings" */
+	delete_settings_by_pk?: ModelTypes["settings"] | undefined,
 	/** delete data from the table: "team_invites" */
 	delete_team_invites?: ModelTypes["team_invites_mutation_response"] | undefined,
 	/** delete single row from the table: "team_invites" */
@@ -40999,6 +41285,10 @@ export type ModelTypes = {
 	insert_servers?: ModelTypes["servers_mutation_response"] | undefined,
 	/** insert a single row into the table: "servers" */
 	insert_servers_one?: ModelTypes["servers"] | undefined,
+	/** insert data into the table: "settings" */
+	insert_settings?: ModelTypes["settings_mutation_response"] | undefined,
+	/** insert a single row into the table: "settings" */
+	insert_settings_one?: ModelTypes["settings"] | undefined,
 	/** insert data into the table: "team_invites" */
 	insert_team_invites?: ModelTypes["team_invites_mutation_response"] | undefined,
 	/** insert a single row into the table: "team_invites" */
@@ -41283,6 +41573,12 @@ export type ModelTypes = {
 	update_servers_by_pk?: ModelTypes["servers"] | undefined,
 	/** update multiples rows of table: "servers" */
 	update_servers_many?: Array<ModelTypes["servers_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "settings" */
+	update_settings?: ModelTypes["settings_mutation_response"] | undefined,
+	/** update single row of the table: "settings" */
+	update_settings_by_pk?: ModelTypes["settings"] | undefined,
+	/** update multiples rows of table: "settings" */
+	update_settings_many?: Array<ModelTypes["settings_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "team_invites" */
 	update_team_invites?: ModelTypes["team_invites_mutation_response"] | undefined,
 	/** update single row of the table: "team_invites" */
@@ -44346,7 +44642,6 @@ export type ModelTypes = {
 	game_server_nodes_aggregate: ModelTypes["game_server_nodes_aggregate"],
 	/** fetch data from the table: "game_server_nodes" using primary key columns */
 	game_server_nodes_by_pk?: ModelTypes["game_server_nodes"] | undefined,
-	getCsVersion: string,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<ModelTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */
@@ -44475,6 +44770,12 @@ export type ModelTypes = {
 	servers_aggregate: ModelTypes["servers_aggregate"],
 	/** fetch data from the table: "servers" using primary key columns */
 	servers_by_pk?: ModelTypes["servers"] | undefined,
+	/** fetch data from the table: "settings" */
+	settings: Array<ModelTypes["settings"]>,
+	/** fetch aggregated fields from the table: "settings" */
+	settings_aggregate: ModelTypes["settings_aggregate"],
+	/** fetch data from the table: "settings" using primary key columns */
+	settings_by_pk?: ModelTypes["settings"] | undefined,
 	/** An array relationship */
 	team_invites: Array<ModelTypes["team_invites"]>,
 	/** An aggregate relationship */
@@ -44955,6 +45256,93 @@ export type ModelTypes = {
 	port?: ModelTypes["order_by"] | undefined,
 	tv_port?: ModelTypes["order_by"] | undefined
 };
+	/** columns and relationships of "settings" */
+["settings"]: {
+		name: string,
+	value: string
+};
+	/** aggregated selection of "settings" */
+["settings_aggregate"]: {
+		aggregate?: ModelTypes["settings_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["settings"]>
+};
+	/** aggregate fields of "settings" */
+["settings_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["settings_max_fields"] | undefined,
+	min?: ModelTypes["settings_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'. */
+["settings_bool_exp"]: {
+	_and?: Array<ModelTypes["settings_bool_exp"]> | undefined,
+	_not?: ModelTypes["settings_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["settings_bool_exp"]> | undefined,
+	name?: ModelTypes["String_comparison_exp"] | undefined,
+	value?: ModelTypes["String_comparison_exp"] | undefined
+};
+	["settings_constraint"]:settings_constraint;
+	/** input type for inserting data into table "settings" */
+["settings_insert_input"]: {
+	name?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["settings_max_fields"]: {
+		name?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["settings_min_fields"]: {
+		name?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "settings" */
+["settings_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["settings"]>
+};
+	/** on_conflict condition type for table "settings" */
+["settings_on_conflict"]: {
+	constraint: ModelTypes["settings_constraint"],
+	update_columns: Array<ModelTypes["settings_update_column"]>,
+	where?: ModelTypes["settings_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "settings". */
+["settings_order_by"]: {
+	name?: ModelTypes["order_by"] | undefined,
+	value?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: settings */
+["settings_pk_columns_input"]: {
+	name: string
+};
+	["settings_select_column"]:settings_select_column;
+	/** input type for updating data in table "settings" */
+["settings_set_input"]: {
+	name?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "settings" */
+["settings_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["settings_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["settings_stream_cursor_value_input"]: {
+	name?: string | undefined,
+	value?: string | undefined
+};
+	["settings_update_column"]:settings_update_column;
+	["settings_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["settings_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["settings_bool_exp"]
+};
 	["subscription_root"]: {
 		/** fetch data from the table: "_map_pool" */
 	_map_pool: Array<ModelTypes["_map_pool"]>,
@@ -45260,6 +45648,14 @@ export type ModelTypes = {
 	servers_by_pk?: ModelTypes["servers"] | undefined,
 	/** fetch data from the table in a streaming manner: "servers" */
 	servers_stream: Array<ModelTypes["servers"]>,
+	/** fetch data from the table: "settings" */
+	settings: Array<ModelTypes["settings"]>,
+	/** fetch aggregated fields from the table: "settings" */
+	settings_aggregate: ModelTypes["settings_aggregate"],
+	/** fetch data from the table: "settings" using primary key columns */
+	settings_by_pk?: ModelTypes["settings"] | undefined,
+	/** fetch data from the table in a streaming manner: "settings" */
+	settings_stream: Array<ModelTypes["settings"]>,
 	/** An array relationship */
 	team_invites: Array<ModelTypes["team_invites"]>,
 	/** An aggregate relationship */
@@ -55655,6 +56051,10 @@ export type GraphQLTypes = {
 	delete_servers?: GraphQLTypes["servers_mutation_response"] | undefined,
 	/** delete single row from the table: "servers" */
 	delete_servers_by_pk?: GraphQLTypes["servers"] | undefined,
+	/** delete data from the table: "settings" */
+	delete_settings?: GraphQLTypes["settings_mutation_response"] | undefined,
+	/** delete single row from the table: "settings" */
+	delete_settings_by_pk?: GraphQLTypes["settings"] | undefined,
 	/** delete data from the table: "team_invites" */
 	delete_team_invites?: GraphQLTypes["team_invites_mutation_response"] | undefined,
 	/** delete single row from the table: "team_invites" */
@@ -55852,6 +56252,10 @@ export type GraphQLTypes = {
 	insert_servers?: GraphQLTypes["servers_mutation_response"] | undefined,
 	/** insert a single row into the table: "servers" */
 	insert_servers_one?: GraphQLTypes["servers"] | undefined,
+	/** insert data into the table: "settings" */
+	insert_settings?: GraphQLTypes["settings_mutation_response"] | undefined,
+	/** insert a single row into the table: "settings" */
+	insert_settings_one?: GraphQLTypes["settings"] | undefined,
 	/** insert data into the table: "team_invites" */
 	insert_team_invites?: GraphQLTypes["team_invites_mutation_response"] | undefined,
 	/** insert a single row into the table: "team_invites" */
@@ -56136,6 +56540,12 @@ export type GraphQLTypes = {
 	update_servers_by_pk?: GraphQLTypes["servers"] | undefined,
 	/** update multiples rows of table: "servers" */
 	update_servers_many?: Array<GraphQLTypes["servers_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "settings" */
+	update_settings?: GraphQLTypes["settings_mutation_response"] | undefined,
+	/** update single row of the table: "settings" */
+	update_settings_by_pk?: GraphQLTypes["settings"] | undefined,
+	/** update multiples rows of table: "settings" */
+	update_settings_many?: Array<GraphQLTypes["settings_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "team_invites" */
 	update_team_invites?: GraphQLTypes["team_invites_mutation_response"] | undefined,
 	/** update single row of the table: "team_invites" */
@@ -59343,7 +59753,6 @@ export type GraphQLTypes = {
 	game_server_nodes_aggregate: GraphQLTypes["game_server_nodes_aggregate"],
 	/** fetch data from the table: "game_server_nodes" using primary key columns */
 	game_server_nodes_by_pk?: GraphQLTypes["game_server_nodes"] | undefined,
-	getCsVersion: string,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<GraphQLTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */
@@ -59472,6 +59881,12 @@ export type GraphQLTypes = {
 	servers_aggregate: GraphQLTypes["servers_aggregate"],
 	/** fetch data from the table: "servers" using primary key columns */
 	servers_by_pk?: GraphQLTypes["servers"] | undefined,
+	/** fetch data from the table: "settings" */
+	settings: Array<GraphQLTypes["settings"]>,
+	/** fetch aggregated fields from the table: "settings" */
+	settings_aggregate: GraphQLTypes["settings_aggregate"],
+	/** fetch data from the table: "settings" using primary key columns */
+	settings_by_pk?: GraphQLTypes["settings"] | undefined,
 	/** An array relationship */
 	team_invites: Array<GraphQLTypes["team_invites"]>,
 	/** An aggregate relationship */
@@ -59971,6 +60386,102 @@ export type GraphQLTypes = {
 	port?: GraphQLTypes["order_by"] | undefined,
 	tv_port?: GraphQLTypes["order_by"] | undefined
 };
+	/** columns and relationships of "settings" */
+["settings"]: {
+	__typename: "settings",
+	name: string,
+	value: string
+};
+	/** aggregated selection of "settings" */
+["settings_aggregate"]: {
+	__typename: "settings_aggregate",
+	aggregate?: GraphQLTypes["settings_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["settings"]>
+};
+	/** aggregate fields of "settings" */
+["settings_aggregate_fields"]: {
+	__typename: "settings_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["settings_max_fields"] | undefined,
+	min?: GraphQLTypes["settings_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "settings". All fields are combined with a logical 'AND'. */
+["settings_bool_exp"]: {
+		_and?: Array<GraphQLTypes["settings_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["settings_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["settings_bool_exp"]> | undefined,
+	name?: GraphQLTypes["String_comparison_exp"] | undefined,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "settings" */
+["settings_constraint"]: settings_constraint;
+	/** input type for inserting data into table "settings" */
+["settings_insert_input"]: {
+		name?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["settings_max_fields"]: {
+	__typename: "settings_max_fields",
+	name?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["settings_min_fields"]: {
+	__typename: "settings_min_fields",
+	name?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "settings" */
+["settings_mutation_response"]: {
+	__typename: "settings_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["settings"]>
+};
+	/** on_conflict condition type for table "settings" */
+["settings_on_conflict"]: {
+		constraint: GraphQLTypes["settings_constraint"],
+	update_columns: Array<GraphQLTypes["settings_update_column"]>,
+	where?: GraphQLTypes["settings_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "settings". */
+["settings_order_by"]: {
+		name?: GraphQLTypes["order_by"] | undefined,
+	value?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: settings */
+["settings_pk_columns_input"]: {
+		name: string
+};
+	/** select columns of table "settings" */
+["settings_select_column"]: settings_select_column;
+	/** input type for updating data in table "settings" */
+["settings_set_input"]: {
+		name?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "settings" */
+["settings_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["settings_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["settings_stream_cursor_value_input"]: {
+		name?: string | undefined,
+	value?: string | undefined
+};
+	/** update columns of table "settings" */
+["settings_update_column"]: settings_update_column;
+	["settings_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["settings_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["settings_bool_exp"]
+};
 	["subscription_root"]: {
 	__typename: "subscription_root",
 	/** fetch data from the table: "_map_pool" */
@@ -60277,6 +60788,14 @@ export type GraphQLTypes = {
 	servers_by_pk?: GraphQLTypes["servers"] | undefined,
 	/** fetch data from the table in a streaming manner: "servers" */
 	servers_stream: Array<GraphQLTypes["servers"]>,
+	/** fetch data from the table: "settings" */
+	settings: Array<GraphQLTypes["settings"]>,
+	/** fetch aggregated fields from the table: "settings" */
+	settings_aggregate: GraphQLTypes["settings_aggregate"],
+	/** fetch data from the table: "settings" using primary key columns */
+	settings_by_pk?: GraphQLTypes["settings"] | undefined,
+	/** fetch data from the table in a streaming manner: "settings" */
+	settings_stream: Array<GraphQLTypes["settings"]>,
 	/** An array relationship */
 	team_invites: Array<GraphQLTypes["team_invites"]>,
 	/** An aggregate relationship */
@@ -65795,6 +66314,20 @@ export const enum servers_update_column {
 	reserved_by_match_id = "reserved_by_match_id",
 	tv_port = "tv_port"
 }
+/** unique or primary key constraints on table "settings" */
+export const enum settings_constraint {
+	settings_pkey = "settings_pkey"
+}
+/** select columns of table "settings" */
+export const enum settings_select_column {
+	name = "name",
+	value = "value"
+}
+/** update columns of table "settings" */
+export const enum settings_update_column {
+	name = "name",
+	value = "value"
+}
 /** unique or primary key constraints on table "team_invites" */
 export const enum team_invites_constraint {
 	team_invites_id_key = "team_invites_id_key",
@@ -66874,6 +67407,18 @@ type ZEUS_VARIABLES = {
 	["servers_var_pop_order_by"]: ValueTypes["servers_var_pop_order_by"];
 	["servers_var_samp_order_by"]: ValueTypes["servers_var_samp_order_by"];
 	["servers_variance_order_by"]: ValueTypes["servers_variance_order_by"];
+	["settings_bool_exp"]: ValueTypes["settings_bool_exp"];
+	["settings_constraint"]: ValueTypes["settings_constraint"];
+	["settings_insert_input"]: ValueTypes["settings_insert_input"];
+	["settings_on_conflict"]: ValueTypes["settings_on_conflict"];
+	["settings_order_by"]: ValueTypes["settings_order_by"];
+	["settings_pk_columns_input"]: ValueTypes["settings_pk_columns_input"];
+	["settings_select_column"]: ValueTypes["settings_select_column"];
+	["settings_set_input"]: ValueTypes["settings_set_input"];
+	["settings_stream_cursor_input"]: ValueTypes["settings_stream_cursor_input"];
+	["settings_stream_cursor_value_input"]: ValueTypes["settings_stream_cursor_value_input"];
+	["settings_update_column"]: ValueTypes["settings_update_column"];
+	["settings_updates"]: ValueTypes["settings_updates"];
 	["team_invites_aggregate_bool_exp"]: ValueTypes["team_invites_aggregate_bool_exp"];
 	["team_invites_aggregate_bool_exp_count"]: ValueTypes["team_invites_aggregate_bool_exp_count"];
 	["team_invites_aggregate_order_by"]: ValueTypes["team_invites_aggregate_order_by"];

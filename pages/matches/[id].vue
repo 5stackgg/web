@@ -120,6 +120,7 @@ export default {
               ended_at: true,
               organizer: {
                 name: true,
+                country: true,
                 steam_id: true,
                 avatar_url: true,
               },

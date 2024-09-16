@@ -93,6 +93,7 @@ export default {
                   team_id: true,
                   player: {
                     name: true,
+                    country: true,
                     steam_id: true,
                     avatar_url: true,
                   },
@@ -104,6 +105,7 @@ export default {
                   id: true,
                   player: {
                     name: true,
+                    country: true,
                     steam_id: true,
                     avatar_url: true,
                   },

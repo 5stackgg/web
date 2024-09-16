@@ -107,8 +107,38 @@ import {
   HeartPulse,
 } from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { getCountryForTimezone } from "countries-and-timezones";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
+  watch: {
+    detectedCountry: {
+      immediate: true,
+      async handler() {
+        if (!this.me || this.me.player.country) {
+          return;
+        }
+
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_players_by_pk: [
+              {
+                pk_columns: {
+                  steam_id: this.me.steam_id,
+                },
+                _set: {
+                  country: this.detectedCountry,
+                },
+              },
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
+      },
+    },
+  },
   data() {
     return {
       links: [
@@ -153,7 +183,7 @@ export default {
   },
   methods: {
     linkDiscord() {
-      window.location = `https://${useRuntimeConfig().public.webDomain}}/auth/discord?redirect=${encodeURIComponent(
+      window.location = `https://${useRuntimeConfig().public.webDomain}/auth/discord?redirect=${encodeURIComponent(
         window.location.toString(),
       )}`;
     },
@@ -161,6 +191,15 @@ export default {
   computed: {
     me() {
       return useAuthStore().me!;
+    },
+    detectedCountry() {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const country = getCountryForTimezone(timezone);
+
+      if (country) {
+        return country.id;
+      }
     },
   },
 };

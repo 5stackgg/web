@@ -237,25 +237,26 @@ import { FormControl } from "~/components/ui/form";
     </FormItem>
   </FormField>
 
-
   <FormField name="map_pool">
-      <FormItem>
-        <FormLabel>Map Pool</FormLabel>
-        <div class="grid grid-cols-4 gap-4">
-          <template v-for="map in availableMaps">
-            <div class="relative cursor-pointer" @click="updateMapPool(map.id)">
-              <MapDisplay :map="map"></MapDisplay>
-              <div
-                class="absolute inset-0 bg-black bg-opacity-55"
-                v-if="form.values.custom_map_pool === true && !form.values.map_pool?.includes(map.id)"
-              ></div>
-            </div>
-          </template>
-        </div>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-  
+    <FormItem>
+      <FormLabel>Map Pool</FormLabel>
+      <div class="grid grid-cols-4 gap-4">
+        <template v-for="map in availableMaps">
+          <div class="relative cursor-pointer" @click="updateMapPool(map.id)">
+            <MapDisplay :map="map"></MapDisplay>
+            <div
+              class="absolute inset-0 bg-black bg-opacity-55"
+              v-if="
+                form.values.custom_map_pool === true &&
+                !form.values.map_pool?.includes(map.id)
+              "
+            ></div>
+          </div>
+        </template>
+      </div>
+      <FormMessage />
+    </FormItem>
+  </FormField>
 </template>
 
 <script lang="ts">
@@ -363,15 +364,18 @@ export default {
         return [];
       }
       return this.maps.filter((map) => {
-        if(this.form.values.custom_map_pool === false && map.active_pool === false) { 
+        if (
+          this.form.values.custom_map_pool === false &&
+          map.active_pool === false
+        ) {
           return false;
         }
 
         switch (this.form.values.type) {
           case e_match_types_enum.Competitive:
-            return  map.type === e_match_types_enum.Competitive;
+            return map.type === e_match_types_enum.Competitive;
           case e_match_types_enum.Wingman:
-            return map.type === e_match_types_enum.Wingman 
+            return map.type === e_match_types_enum.Wingman;
         }
       });
     },

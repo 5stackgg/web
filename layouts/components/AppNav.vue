@@ -33,7 +33,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <Sheet>
         <SheetTrigger>
           <div class="relative">
-            <Bell class="h-5 w-5 animate-bell" />
+            <Bell class="h-5 w-5" :class="{ 'animate-bell': hasNotifications }" />
             <span
               v-if="hasNotifications"
               class="absolute -top-1 -right-1 inline-block h-2 w-2 rounded-full bg-red-600"

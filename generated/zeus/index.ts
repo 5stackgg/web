@@ -11619,6 +11619,8 @@ invited_players_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["team_invites_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["team_invites_aggregate"]],
+	/** A computed field, executes function "is_in_another_match" */
+	is_in_another_match?:boolean | `@${string}`,
 kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["player_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -11884,6 +11886,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	flashed_players_aggregate?: ValueTypes["player_flashes_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	invited_players?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>,
 	invited_players_aggregate?: ValueTypes["team_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	is_in_another_match?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	match_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
@@ -12027,6 +12030,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	flashed_by_players_aggregate?: ValueTypes["player_flashes_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	flashed_players_aggregate?: ValueTypes["player_flashes_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	invited_players_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	is_in_another_match?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -29644,6 +29648,8 @@ invited_players_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["team_invites_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null},ResolverInputTypes["team_invites_aggregate"]],
+	/** A computed field, executes function "is_in_another_match" */
+	is_in_another_match?:boolean | `@${string}`,
 kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["player_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -29909,6 +29915,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	flashed_players_aggregate?: ResolverInputTypes["player_flashes_aggregate_bool_exp"] | undefined | null,
 	invited_players?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null,
 	invited_players_aggregate?: ResolverInputTypes["team_invites_aggregate_bool_exp"] | undefined | null,
+	is_in_another_match?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	kills?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_bool_exp"] | undefined | null,
 	match_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
@@ -30052,6 +30059,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	flashed_by_players_aggregate?: ResolverInputTypes["player_flashes_aggregate_order_by"] | undefined | null,
 	flashed_players_aggregate?: ResolverInputTypes["player_flashes_aggregate_order_by"] | undefined | null,
 	invited_players_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
+	is_in_another_match?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
@@ -46568,6 +46576,8 @@ export type ModelTypes = {
 	invited_players: Array<ModelTypes["team_invites"]>,
 	/** An aggregate relationship */
 	invited_players_aggregate: ModelTypes["team_invites_aggregate"],
+	/** A computed field, executes function "is_in_another_match" */
+	is_in_another_match?: boolean | undefined,
 	/** An array relationship */
 	kills: Array<ModelTypes["player_kills"]>,
 	/** An aggregate relationship */
@@ -46693,6 +46703,7 @@ export type ModelTypes = {
 	flashed_players_aggregate?: ModelTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	invited_players?: ModelTypes["team_invites_bool_exp"] | undefined,
 	invited_players_aggregate?: ModelTypes["team_invites_aggregate_bool_exp"] | undefined,
+	is_in_another_match?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	kills?: ModelTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_bool_exp"] | undefined,
 	match_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
@@ -46832,6 +46843,7 @@ export type ModelTypes = {
 	flashed_by_players_aggregate?: ModelTypes["player_flashes_aggregate_order_by"] | undefined,
 	flashed_players_aggregate?: ModelTypes["player_flashes_aggregate_order_by"] | undefined,
 	invited_players_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined,
+	is_in_another_match?: ModelTypes["order_by"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined,
@@ -62433,6 +62445,8 @@ export type GraphQLTypes = {
 	invited_players: Array<GraphQLTypes["team_invites"]>,
 	/** An aggregate relationship */
 	invited_players_aggregate: GraphQLTypes["team_invites_aggregate"],
+	/** A computed field, executes function "is_in_another_match" */
+	is_in_another_match?: boolean | undefined,
 	/** An array relationship */
 	kills: Array<GraphQLTypes["player_kills"]>,
 	/** An aggregate relationship */
@@ -62561,6 +62575,7 @@ export type GraphQLTypes = {
 	flashed_players_aggregate?: GraphQLTypes["player_flashes_aggregate_bool_exp"] | undefined,
 	invited_players?: GraphQLTypes["team_invites_bool_exp"] | undefined,
 	invited_players_aggregate?: GraphQLTypes["team_invites_aggregate_bool_exp"] | undefined,
+	is_in_another_match?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	kills?: GraphQLTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_bool_exp"] | undefined,
 	match_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
@@ -62704,6 +62719,7 @@ export type GraphQLTypes = {
 	flashed_by_players_aggregate?: GraphQLTypes["player_flashes_aggregate_order_by"] | undefined,
 	flashed_players_aggregate?: GraphQLTypes["player_flashes_aggregate_order_by"] | undefined,
 	invited_players_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined,
+	is_in_another_match?: GraphQLTypes["order_by"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,

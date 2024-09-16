@@ -8,7 +8,7 @@ definePageMeta({
 
 <template>
   <div>
-    <h3 class="text-lg font-medium">Appearance</h3>
+    <h3 class="text-lg font-medium">Profile</h3>
     <p class="text-sm text-muted-foreground">Your Profile Details</p>
   </div>
   <Separator />

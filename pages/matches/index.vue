@@ -3,51 +3,78 @@ import { Button } from "@/components/ui/button";
 import MyMatches from "~/components/MyMatches.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "~/components/ui/separator";
 import MatchesTable from "~/components/MatchesTable.vue";
-import PageHeading from "~/components/PageHeading.vue";
 import MatchMaking from "~/components/match-making/MatchMaking.vue";
+import { PlusCircle } from "lucide-vue-next";
 </script>
 
 <template>
-  <PageHeading>
-    Matches
-    <NuxtLink to="/matches/create">
-      <Button>Create Match</Button>
-    </NuxtLink>
+  <div class="flex flex-col md:flex-row gap-3">
+    <div class="flex-grow">
+      <Card class="p-3">
+        <Tabs default-value="my" class="relative">
+          <TabsList>
+            <TabsTrigger value="my"> My Matches </TabsTrigger>
+            <TabsTrigger value="other"> Other Matches </TabsTrigger>
+          </TabsList>
 
-    <template v-slot:description>
-      Manage and View upcoming matches that you are assigned to.
-    </template>
-  </PageHeading>
+          <NuxtLink to="/matches/create" class="absolute right-0">
+            <Button size="sm">
+              <PlusCircle class="w-4 h-4" />
+              <span class="hidden md:inline ml-2">Create Match</span>
+            </Button>
+          </NuxtLink>
 
-  <MatchMaking></MatchMaking>
+          <TabsContent value="my">
+            <my-matches></my-matches>
+          </TabsContent>
+          <TabsContent value="other">
+            <matches-table
+              class="p-3"
+              :matches="matches"
+              v-if="matches"
+            ></matches-table>
+          </TabsContent>
+        </Tabs>
+      </Card>
 
-  <Separator class="my-6" />
+      <div class="mt-4">
+        <Card class="p-3 inline-block">
+          <Pagination
+            :page="page"
+            :per-page="perPage"
+            @page="
+              (_page) => {
+                page = _page;
+              }
+            "
+            :total="matches_aggregate?.aggregate?.count"
+            v-if="matches_aggregate"
+          ></Pagination>
+        </Card>
+      </div>
+    </div>
 
-  <Tabs default-value="my">
-    <TabsList>
-      <TabsTrigger value="my"> My Matches </TabsTrigger>
-      <TabsTrigger value="other"> Other Matches </TabsTrigger>
-    </TabsList>
-    <TabsContent value="my">
-      <my-matches></my-matches>
-    </TabsContent>
-    <TabsContent value="other">
-      <matches-table :matches="matches" v-if="matches"></matches-table>
-      <Pagination
-        :page="page"
-        :per-page="perPage"
-        @page="
-          (_page) => {
-            page = _page;
-          }
-        "
-        :total="matches_aggregate.aggregate.count"
-        v-if="matches_aggregate"
-      ></Pagination>
-    </TabsContent>
-  </Tabs>
+    <div class="md:w-1/4">
+      <Card
+        class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900"
+      >
+        <CardHeader>
+          <CardTitle class="text-xl font-bold text-center">
+            Match Making
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div class="relative">
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-lg blur opacity-15 group-hover:opacity-25 transition duration-1000 group-hover:duration-200 pointer-events-none"
+            ></div>
+            <MatchMaking class="w-full"></MatchMaking>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

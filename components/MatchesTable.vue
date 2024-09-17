@@ -3,20 +3,24 @@ import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
-  <Table>
+  <Table hover>
     <TableHeader>
       <TableRow>
-        <TableHead>Teams</TableHead>
-        <TableHead>Status</TableHead>
-        <TableHead>Type</TableHead>
-        <TableHead>Maps</TableHead>
-        <TableHead>Date</TableHead>
+        <TableHead class="w-1/3">Match</TableHead>
+        <TableHead class="w-1/6 hidden sm:table-cell">Type</TableHead>
+        <TableHead class="w-1/6">Status</TableHead>
+        <TableHead class="w-1/6 hidden md:table-cell">Maps</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       <template v-if="matches.length === 0">
         <TableRow>
-          <TableCell colspan="5" class="text-center">No Matches</TableCell>
+          <TableCell colspan="5" class="text-center py-8">
+            <div class="text-gray-500 dark:text-gray-400">
+              <Icon name="mdi:information-outline" size="24" class="mb-2" />
+              <p>No Matches Found</p>
+            </div>
+          </TableCell>
         </TableRow>
       </template>
       <template v-else>
@@ -27,20 +31,34 @@ import TimeAgo from "~/components/TimeAgo.vue";
           class="cursor-pointer"
         >
           <TableCell class="font-medium">
-            {{ match.lineup_1.name }} vs {{ match.lineup_2.name }}
+            <div class="flex items-center space-x-2">
+              <span class="font-bold">{{ match.lineup_1.name }}</span>
+              <span class="text-gray-500">vs</span>
+              <span class="font-bold">{{ match.lineup_2.name }}</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <time-ago
+                :date="match.created_at"
+                class="text-sm text-gray-600 dark:text-gray-400"
+              ></time-ago>
+            </div>
           </TableCell>
-          <TableCell>{{ match.status }}</TableCell>
-          <TableCell
-            >{{ match.options.type }} (MR {{ match.options.mr }})</TableCell
-          >
-          <TableCell>
-            <template v-for="(match_map, index) of match.match_maps">
-              <template v-if="index > 0">,</template>
-              {{ match_map.map.name }}
-            </template>
+          <TableCell class="hidden sm:table-cell">
+            {{ match.options.type }}
           </TableCell>
           <TableCell>
-            <time-ago :date="match.created_at"></time-ago>
+            <Badge>{{ match.status }}</Badge>
+          </TableCell>
+          <TableCell class="hidden md:table-cell">
+            <div class="flex flex-wrap gap-1">
+              <Badge
+                v-for="(match_map, index) of match.match_maps"
+                :key="index"
+                variant="outline"
+              >
+                {{ match_map.map.name }}
+              </Badge>
+            </div>
           </TableCell>
         </TableRow>
       </template>

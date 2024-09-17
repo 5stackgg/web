@@ -6,31 +6,27 @@ import {
 import socket from "~/web-sockets/Socket";
 </script>
 <template>
-  <Card class="mb-4 w-64 inline-block mr-4 relative">
-    <CardHeader>
+  <Card>
+    <CardHeader class="flex justify-between items-center">
       <CardTitle class="text-lg">
         {{ region.description }}
-
-        <div
-          v-if="joinedCompetitiveQueue || joinedWingmanQueue"
-          class="absolute top-3 right-3"
-        >
-          <Button
-            size="sm"
-            variant="outline"
-            @click="
-              leaveMatchMaking(
-                joinedCompetitiveQueue
-                  ? e_match_types_enum.Competitive
-                  : e_match_types_enum.Wingman,
-                region.value,
-              )
-            "
-          >
-            Leave
-          </Button>
-        </div>
       </CardTitle>
+      <div v-if="joinedCompetitiveQueue || joinedWingmanQueue">
+        <Button
+          size="sm"
+          variant="outline"
+          @click="
+            leaveMatchMaking(
+              joinedCompetitiveQueue
+                ? e_match_types_enum.Competitive
+                : e_match_types_enum.Wingman,
+              region.value,
+            )
+          "
+        >
+          Leave
+        </Button>
+      </div>
     </CardHeader>
     <CardContent>
       <div
@@ -49,7 +45,7 @@ import socket from "~/web-sockets/Socket";
           <TimeAgo :date="matchamkingQueueDetails.joinedAt"></TimeAgo>
         </small>
 
-        <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2">
+        <div class="mt-2">
           <Badge>
             {{ joinedCompetitiveQueue ? "Competitive" : "Wingman" }}
           </Badge>

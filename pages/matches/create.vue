@@ -4,38 +4,51 @@ import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
-  <form class="w-1/2 space-y-6" @submit.prevent="setupMatch">
-    <div>
-      <h3 class="mb-4 text-lg font-medium">Match Details</h3>
+  <form @submit.prevent="setupMatch">
+    <match-options :form="form">
+      <div class="flex gap-4">
+        <FormField
+          v-slot="{ handleChange, componentField }"
+          name="team_1"
+          class="flex-1"
+        >
+          <FormItem>
+            <FormLabel>Team 1</FormLabel>
+            <TeamSearch
+              label="Search for a Team ..."
+              @selected="(team) => handleChange(team.id)"
+              v-model="componentField.modelValue"
+              class="w-full"
+            ></TeamSearch>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-      <match-options :form="form"></match-options>
+        <FormField
+          v-slot="{ handleChange, componentField }"
+          name="team_2"
+          class="flex-1"
+        >
+          <FormItem>
+            <FormLabel>Team 2</FormLabel>
+            <TeamSearch
+              label="Search for a Team ..."
+              @selected="(team) => handleChange(team.id)"
+              :exclude="[form.values.team_1]"
+              v-model="componentField.modelValue"
+              class="w-full"
+            ></TeamSearch>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </match-options>
+
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      <Button type="submit" size="lg" class="mt-6 w-full">
+        Create Match
+      </Button>
     </div>
-
-    <FormField v-slot="{ handleChange, componentField }" name="team_1">
-      <FormItem>
-        <FormLabel>Team 1</FormLabel>
-        <TeamSearch
-          label="Search for a Team ..."
-          @selected="(team) => handleChange(team.id)"
-          v-model="componentField.modelValue"
-        ></TeamSearch>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ handleChange, componentField }" name="team_2">
-      <FormItem>
-        <FormLabel>Team 2</FormLabel>
-        <TeamSearch
-          label="Search for a Team ..."
-          @selected="(team) => handleChange(team.id)"
-          :exclude="[form.values.team_1]"
-          v-model="componentField.modelValue"
-        ></TeamSearch>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-    <Button type="submit"> Create Match </Button>
   </form>
 </template>
 

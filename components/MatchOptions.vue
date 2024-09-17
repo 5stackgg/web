@@ -3,260 +3,300 @@ import MapDisplay from "~/components/MapDisplay.vue";
 import { Input } from "~/components/ui/input";
 import { FormControl } from "~/components/ui/form";
 </script>
-
 <template>
-  <div class="flex">
-    <FormField
-      v-slot="{ value, handleChange }"
-      name="map_veto"
-      v-if="!forceVeto"
-    >
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="handleChange(!value)"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base"> Map Veto </FormLabel>
-          <FormDescription>
-            Map Veto process is team 1 ban, team 2 ban, team 1 pick, team 2 pick
-            side, team 2 pick, team 1 pick side, team 2 ban ... The process then
-            repeats till a final map is remaining.
-          </FormDescription>
-        </div>
-        <FormControl>
-          <Switch
-            class="pointer-events-none"
-            :checked="value"
-            @update:checked="handleChange"
-          />
-        </FormControl>
-      </FormItem>
-    </FormField>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Left Column -->
+    <div class="space-y-6">
+      <!-- Match Settings -->
+      <div class="space-y-4">
+        <div class="flex flex-col space-y-3 rounded-lg border p-4">
+          <slot></slot>
 
-    <FormField v-slot="{ value, handleChange }" name="region_veto">
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="handleChange(!value)"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base"> Region Veto </FormLabel>
-          <FormDescription>
-            Allows veto to pick the region for the server to be used.
-          </FormDescription>
-        </div>
-        <FormControl>
-          <Switch
-            class="pointer-events-none"
-            :checked="value"
-            @update:checked="handleChange"
-          />
-        </FormControl>
-      </FormItem>
-    </FormField>
-  </div>
-
-  <div class="flex">
-    <FormField v-slot="{ value, handleChange }" name="knife_round">
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="handleChange(!value)"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base"> Knife Rond </FormLabel>
-          <FormDescription>
-            Knife Rounds are only played when neither team did not pick the map
-            in the map veto.
-          </FormDescription>
-        </div>
-        <FormControl>
-          <Switch
-            class="pointer-events-none"
-            :checked="value"
-            @update:checked="handleChange"
-          />
-        </FormControl>
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ value, handleChange }" name="overtime">
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="handleChange(!value)"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base"> Overtime </FormLabel>
-          <FormDescription>
-            Each overtime is set of best of 4.
-          </FormDescription>
-        </div>
-        <FormControl>
-          <Switch
-            class="pointer-events-none"
-            :checked="value"
-            @update:checked="handleChange"
-          />
-        </FormControl>
-      </FormItem>
-    </FormField>
-  </div>
-
-  <div class="flex">
-    <FormField v-slot="{ value, handleChange }" name="coaches">
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="handleChange(!value)"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base"> Allow Coaches </FormLabel>
-          <FormDescription>
-            Coaches will be spawned and killed at the start of each round
-          </FormDescription>
-        </div>
-        <FormControl>
-          <Switch
-            class="pointer-events-none"
-            :checked="value"
-            @update:checked="handleChange"
-          />
-        </FormControl>
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="number_of_substitutes">
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base"> Substitutes </FormLabel>
-          <FormDescription> Number of Substitutes </FormDescription>
-        </div>
-        <FormControl>
-          <Input type="number" v-bind="componentField"></Input>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-  </div>
-
-  <div>
-    <FormField v-slot="{ componentField }" name="type">
-      <FormItem>
-        <FormLabel>Match Type </FormLabel>
-        <Select v-bind="componentField">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder="Select the match type" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem :value="type.value" v-for="type of e_match_types">
-                {{ type.value }}
-                <div class="text-xs">
-                  {{ type.description }}
+          <FormField v-slot="{ componentField }" name="type">
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">Match Type</FormLabel>
+              <RadioGroup
+                v-bind="componentField"
+                class="grid grid-cols-2 gap-4 w-full"
+              >
+                <div
+                  v-for="type in e_match_types"
+                  :key="type.value"
+                  class="flex items-center space-x-2 cursor-pointer"
+                  @click="form.setFieldValue('type', type.value)"
+                >
+                  <RadioGroupItem :id="type.value" :value="type.value" />
+                  <Label :for="type.value" class="flex flex-col cursor-pointer">
+                    <span>{{ type.value }}</span>
+                    <span class="text-xs text-muted-foreground">
+                      {{ type.description }}
+                    </span>
+                  </Label>
                 </div>
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+              </RadioGroup>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-    <FormField v-slot="{ componentField }" name="best_of">
-      <FormItem>
-        <FormLabel>Best Of</FormLabel>
+          <FormField v-slot="{ componentField }" name="best_of">
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">Best Of</FormLabel>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a best of value" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="bestOf.value"
+                      v-for="bestOf in bestOfOptions"
+                      :key="bestOf.value"
+                    >
+                      {{ bestOf.display }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-        <Select v-bind="componentField">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a best of value" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem :value="bestOf.value" v-for="bestOf of bestOfOptions">
-                {{ bestOf.display }}
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+          <FormField v-slot="{ componentField }" name="mr">
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">Max Rounds</FormLabel>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select max rounds" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="rounds"
+                      v-for="rounds in ['8', '12', '15']"
+                      :key="rounds"
+                    >
+                      {{ rounds }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </div>
 
-    <FormField v-slot="{ componentField }" name="mr">
-      <FormItem>
-        <FormLabel>Max Rounds</FormLabel>
-
-        <Select v-bind="componentField">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder="Select the max number of rounds" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem :value="rounds" v-for="rounds of [`8`, '12', '15']">
-                {{ rounds }}
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="tv_delay">
-      <FormItem>
-        <FormLabel>Tv Delay</FormLabel>
-        <FormControl>
-          <Input type="number" v-bind="componentField" />
+      <!-- Map Pool Selection -->
+      <FormField name="map_pool">
+        <FormItem>
+          <Card>
+            <CardHeader>
+              <CardTitle class="flex justify-between items-center">
+                <FormLabel class="text-lg font-semibold">Map Pool</FormLabel>
+                <FormField
+                  v-slot="{ value, handleChange }"
+                  name="custom_map_pool"
+                >
+                  <FormControl>
+                    <div class="flex items-center gap-2">
+                      <span class="text-muted-foreground">Custom</span>
+                      <Switch
+                        :checked="value"
+                        @update:checked="handleChange"
+                        class="ml-2"
+                      />
+                    </div>
+                  </FormControl>
+                </FormField>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <template v-for="map in availableMaps" :key="map.id">
+                  <div
+                    class="relative cursor-pointer rounded-lg overflow-hidden transition-opacity duration-200"
+                    @click="updateMapPool(map.id)"
+                    :class="{
+                      'opacity-40':
+                        form.values.custom_map_pool &&
+                        !form.values.map_pool?.includes(map.id),
+                    }"
+                  >
+                    <MapDisplay :map="map" />
+                    <div
+                      class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
+                      :class="{
+                        'opacity-100':
+                          form.values.custom_map_pool &&
+                          form.values.map_pool?.includes(map.id),
+                        'opacity-0':
+                          !form.values.custom_map_pool ||
+                          !form.values.map_pool?.includes(map.id),
+                      }"
+                    >
+                      <Icon name="lucide:check" class="text-white text-2xl" />
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </CardContent>
+          </Card>
           <FormMessage />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-  </div>
+        </FormItem>
+      </FormField>
+    </div>
 
-  <FormField v-slot="{ value, handleChange }" name="custom_map_pool">
-    <FormItem
-      class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-      @click="handleChange(!value)"
-    >
-      <div class="space-y-0.5">
-        <FormLabel class="text-base"> Custom Map Pool </FormLabel>
+    <!-- Right Column -->
+    <div class="space-y-6">
+      <div class="grid grid-cols-2 gap-4">
+        <FormField
+          v-slot="{ value, handleChange }"
+          name="map_veto"
+          v-if="!forceVeto"
+        >
+          <FormItem
+            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent h-full"
+            @click="handleChange(!value)"
+          >
+            <div class="flex justify-between items-center">
+              <FormLabel class="text-lg font-semibold">Map Veto</FormLabel>
+              <FormControl>
+                <Switch
+                  class="pointer-events-none"
+                  :checked="value"
+                  @update:checked="handleChange"
+                />
+              </FormControl>
+            </div>
+            <FormDescription>
+              Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick
+              side, team 2 pick, team 1 pick side, team 2 ban. Process repeats
+              until final map is selected.
+            </FormDescription>
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ value, handleChange }" name="region_veto">
+          <FormItem
+            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent h-full"
+            @click="handleChange(!value)"
+          >
+            <div class="flex justify-between items-center">
+              <FormLabel class="text-lg font-semibold">Region Veto</FormLabel>
+              <FormControl>
+                <Switch
+                  class="pointer-events-none"
+                  :checked="value"
+                  @update:checked="handleChange"
+                />
+              </FormControl>
+            </div>
+            <FormDescription>
+              Allows teams to veto and select the server region.
+            </FormDescription>
+          </FormItem>
+        </FormField>
       </div>
-      <FormControl>
-        <Switch
-          class="pointer-events-none"
-          :checked="value"
-          @update:checked="handleChange"
-        />
-      </FormControl>
-    </FormItem>
-  </FormField>
 
-  <FormField name="map_pool">
-    <FormItem>
-      <FormLabel>Map Pool</FormLabel>
-      <div class="grid grid-cols-4 gap-4">
-        <template v-for="map in availableMaps">
-          <div class="relative cursor-pointer" @click="updateMapPool(map.id)">
-            <MapDisplay :map="map"></MapDisplay>
-            <div
-              class="absolute inset-0 bg-black bg-opacity-55"
-              v-if="
-                form.values.custom_map_pool === true &&
-                !form.values.map_pool?.includes(map.id)
-              "
-            ></div>
+      <FormField v-slot="{ value, handleChange }" name="knife_round">
+        <FormItem
+          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+          @click="handleChange(!value)"
+        >
+          <div class="flex justify-between items-center">
+            <FormLabel class="text-lg font-semibold">Knife Round</FormLabel>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :checked="value"
+                @update:checked="handleChange"
+              />
+            </FormControl>
           </div>
-        </template>
+          <FormDescription>
+            Knife rounds are only played when neither team picked the map in the
+            veto.
+          </FormDescription>
+        </FormItem>
+      </FormField>
+
+      <FormField v-slot="{ value, handleChange }" name="overtime">
+        <FormItem
+          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+          @click="handleChange(!value)"
+        >
+          <div class="flex justify-between items-center">
+            <FormLabel class="text-lg font-semibold">Overtime</FormLabel>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :checked="value"
+                @update:checked="handleChange"
+              />
+            </FormControl>
+          </div>
+          <FormDescription>
+            Each overtime is a best of 4 rounds.
+          </FormDescription>
+        </FormItem>
+      </FormField>
+
+      <FormField v-slot="{ value, handleChange }" name="coaches">
+        <FormItem
+          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+          @click="handleChange(!value)"
+        >
+          <div class="flex justify-between items-center">
+            <FormLabel class="text-lg font-semibold">Allow Coaches</FormLabel>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :checked="value"
+                @update:checked="handleChange"
+              />
+            </FormControl>
+          </div>
+          <FormDescription>
+            Coaches will be spawned and killed at the start of each round.
+          </FormDescription>
+        </FormItem>
+      </FormField>
+
+      <div class="flex flex-col space-y-3 rounded-lg border p-4">
+        <FormField v-slot="{ componentField }" name="number_of_substitutes">
+          <FormItem>
+            <FormLabel class="text-lg font-semibold">Substitutes</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                v-bind="componentField"
+                placeholder="Number of substitutes"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ componentField }" name="tv_delay">
+          <FormItem>
+            <FormLabel class="text-lg font-semibold">TV Delay</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                v-bind="componentField"
+                placeholder="Delay in seconds"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
-      <FormMessage />
-    </FormItem>
-  </FormField>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

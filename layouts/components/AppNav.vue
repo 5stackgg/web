@@ -33,7 +33,10 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <Sheet>
         <SheetTrigger>
           <div class="relative">
-            <Bell class="h-5 w-5" :class="{ 'animate-bell': hasNotifications }" />
+            <Bell
+              class="h-5 w-5"
+              :class="{ 'animate-bell': hasNotifications }"
+            />
             <span
               v-if="hasNotifications"
               class="absolute -top-1 -right-1 inline-block h-2 w-2 rounded-full bg-red-600"
@@ -216,7 +219,9 @@ export default {
                           },
                           {
                             created_at: {
-                              _gt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+                              _gt: new Date(
+                                Date.now() - 7 * 24 * 60 * 60 * 1000,
+                              ),
                             },
                           },
                         ],

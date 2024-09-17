@@ -24,15 +24,15 @@ import {
         @click="searchTeams()"
         variant="outline"
         :aria-expanded="open"
-        class="w-[500px] justify-between"
+        class="w-full justify-between"
       >
-        {{ teams?.find((team) => team.id == modelValue)?.name || label }}
+        {{ teams?.find((team) => team.id === modelValue)?.name || label }}
         <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
     <PopoverContent class="w-[500px] p-0">
-      <Command @update:searchTerm="(term) => searchTeams(term)">
-        <CommandInput class="h-9" @keydown.enter="select(teams.at(0))" />
+      <Command @update:searchTerm="searchTeams">
+        <CommandInput class="h-9" @keydown.enter="select(teams?.[0])" />
         <CommandEmpty>No Teams Found.</CommandEmpty>
         <CommandList>
           <CommandGroup>
@@ -42,9 +42,11 @@ import {
               :value="team"
               @select="select(team)"
             >
-              <div>
-                <span class="text-xs"> [{{ team.short_name }}] </span>
-                {{ team.name }}
+              <div class="flex items-center">
+                <span class="text-xs text-muted-foreground mr-2">
+                  [{{ team.short_name }}]
+                </span>
+                <span>{{ team.name }}</span>
               </div>
             </CommandItem>
           </CommandGroup>

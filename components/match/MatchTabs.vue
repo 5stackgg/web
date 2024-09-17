@@ -22,6 +22,9 @@ import {
   FormLabel,
 } from "~/components/ui/form";
 import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
+import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import BooleanToText from "../BooleanToText.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -29,7 +32,7 @@ provide("commander", commander);
 
 <template>
   <Tabs v-model="activeTab">
-    <div class="flex items-center">
+    <div class="flex justify-between items-center">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
         <TabsTrigger
@@ -48,10 +51,19 @@ provide("commander", commander);
         <TabsTrigger :disabled="disableStats" value="clutches">
           Clutches
         </TabsTrigger>
+        <TabsTrigger value="settings"> Match Settings </TabsTrigger>
         <TabsTrigger :disabled="!match.server_id" value="server">
           Server Console
         </TabsTrigger>
       </TabsList>
+      <Badge
+        variant="outline"
+        class="flex items-center gap-2"
+        v-if="match.organizer"
+      >
+        Organized by:
+        {{ match.organizer.name }}
+      </Badge>
     </div>
     <TabsContent value="overview">
       <Card>
@@ -190,6 +202,79 @@ provide("commander", commander);
         </form>
       </RconCommander>
     </TabsContent>
+    <TabsContent value="settings">
+      <Card class="p-3 max-w-[500px]">
+        <CardContent>
+          <ul class="space-y-4">
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Max Rounds</span>
+              <span>{{ match.options.mr }}</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">TV Delay</span>
+              <span>{{ match.options.tv_delay }} seconds</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Coaches</span>
+              <BooleanToText :value="match.options.coaches" />
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Overtime</span>
+              <BooleanToText :value="match.options.overtime" />
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Knife Round</span>
+              <BooleanToText :value="match.options.knife_round" />
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Map Veto</span>
+              <BooleanToText :value="match.options.map_veto" />
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Region Veto</span>
+              <BooleanToText :value="match.options.region_veto" />
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Map Pool</span>
+              <span class="text-right">
+                {{ separateByCapitalLetters(match.options.map_pool.type) }}
+                <br />
+                <small>
+                  {{ match.options.map_pool.e_type.description }}
+                </small>
+              </span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span class="text-muted-foreground">Substitutes</span>
+              <span>{{ match.options.number_of_substitutes }}</span>
+            </li>
+          </ul>
+
+          <template v-if="displayServerInformation">
+            <Separator class="my-8" />
+
+            <div class="space-y-4">
+              <h3 class="font-semibold">Server Information</h3>
+              <ul class="space-y-3">
+                <li class="flex items-center justify-between">
+                  <span class="text-muted-foreground">Type</span>
+                  <span>{{ match.server_type || "TBD" }}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-muted-foreground">Region</span>
+                  <span v-if="match.server_region">
+                    {{ match.server_region }}
+                  </span>
+                  <span v-else-if="match.e_region">
+                    {{ match.e_region.description }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </template>
+        </CardContent>
+      </Card>
+    </TabsContent>
   </Tabs>
 </template>
 
@@ -308,6 +393,16 @@ export default {
       }
 
       return commands;
+    },
+    displayServerInformation() {
+      return [
+        e_match_status_enum.Live,
+        e_match_status_enum.Veto,
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.PickingPlayers,
+      ].includes(this.match.status);
     },
   },
 };

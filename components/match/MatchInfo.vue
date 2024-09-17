@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import CaptainInfo from "~/components/CaptainInfo.vue";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tv } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
-import BooleanToText from "~/components/BooleanToText.vue";
-import { Separator } from "~/components/ui/separator";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
-import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import { e_match_status_enum } from "~/generated/zeus";
 import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
@@ -30,16 +25,43 @@ import TimeAgo from "~/components/TimeAgo.vue";
         </div>
 
         <div class="flex py-2 items-center justify-between">
-          <div>
-            {{ match.lineup_1.name }} (<MatchLineupScoreDisplay
-              :match="match"
-              :lineup="match.lineup_1"
-            ></MatchLineupScoreDisplay
-            >) vs {{ match.lineup_2.name }} (<MatchLineupScoreDisplay
-              :match="match"
-              :lineup="match.lineup_2"
-            ></MatchLineupScoreDisplay
-            >)
+          <div class="flex flex-col space-y-2">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="font-semibold">{{ match.lineup_1.name }}</span>
+                <span>
+                  (<MatchLineupScoreDisplay
+                    :match="match"
+                    :lineup="match.lineup_1"
+                  />)
+                </span>
+              </div>
+
+              <span class="mx-2 text-muted-foreground">vs</span>
+
+              <div>
+                <span class="font-semibold">{{ match.lineup_2.name }}</span>
+
+                <span>
+                  (<MatchLineupScoreDisplay
+                    :match="match"
+                    :lineup="match.lineup_2"
+                  />)
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <Badge variant="outline">
+                {{ match.options.type }}
+                <span
+                  class="text-muted-foreground ml-1"
+                  v-if="match.options.best_of > 1"
+                >
+                  across {{ match.options.best_of }} maps
+                </span>
+              </Badge>
+            </div>
           </div>
 
           <MatchActions :match="match"></MatchActions>
@@ -72,158 +94,20 @@ import TimeAgo from "~/components/TimeAgo.vue";
         </template>
       </CardTitle>
     </CardHeader>
-    <CardContent class="p-6">
-      <ul class="grid gap-3">
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Match Type </span>
-          <span>{{ match.options.type }}</span>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Best of </span>
-          <span>{{ match.options.best_of }}</span>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Max Rounds </span>
-          <span>{{ match.options.mr }}</span>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> TV Delay </span>
-          <span>{{ match.options.tv_delay }} seconds</span>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Coaches </span>
-          <BooleanToText :value="match.options.coaches"></BooleanToText>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Overtime </span>
-          <BooleanToText :value="match.options.overtime"></BooleanToText>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Knife Round </span>
-          <BooleanToText :value="match.options.knife_round"></BooleanToText>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Map Veto </span>
-          <BooleanToText :value="match.options.map_veto"></BooleanToText>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Region Veto </span>
-          <BooleanToText :value="match.options.region_veto"></BooleanToText>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Map Pool </span>
-          <span class="text-right">
-            {{ separateByCapitalLetters(match.options.map_pool.type) }}
-            <br />
-            <small>
-              {{ match.options.map_pool.e_type.description }}
-            </small>
-          </span>
-        </li>
-
-        <li class="flex items-center justify-between">
-          <span class="text-muted-foreground"> Substitutes </span>
-          <span>{{ match.options.number_of_substitutes }}</span>
-        </li>
-      </ul>
-
-      <Separator class="my-8" />
-
-      <div class="grid gap-3">
-        <div class="font-semibold">Captains</div>
-        <ul class="grid gap-3">
-          <li class="flex items-center justify-between">
-            <span class="text-muted-foreground">
-              {{ match.lineup_1.name }}
-            </span>
-            <span>
-              <captain-info :captain="match.lineup_1.captain"></captain-info>
-            </span>
-          </li>
-          <li class="flex items-center justify-between">
-            <span class="text-muted-foreground">
-              {{ match.lineup_2.name }}
-            </span>
-            <span>
-              <captain-info :captain="match.lineup_2.captain"></captain-info>
-            </span>
+    <CardContent class="p-6" v-if="match.options.coaches">
+      <div class="space-y-4">
+        <h3 class="font-semibold text-lg">Coaches</h3>
+        <ul class="space-y-3">
+          <li
+            v-for="lineup in [match.lineup_1, match.lineup_2]"
+            :key="lineup.name"
+            class="flex items-center justify-between"
+          >
+            <span class="text-muted-foreground">{{ lineup.name }}</span>
+            <PlayerDisplay v-if="lineup.coach" :player="lineup.coach" />
           </li>
         </ul>
       </div>
-
-      <div class="grid gap-3" v-if="match.options.coaches">
-        <div class="font-semibold">Coaches</div>
-        <ul class="grid gap-3">
-          <li class="flex items-center justify-between">
-            <span class="text-muted-foreground">
-              {{ match.lineup_1.name }}
-            </span>
-            <PlayerDisplay
-              :player="match.lineup_1.coach"
-              v-if="match.lineup_1.coach"
-            ></PlayerDisplay>
-          </li>
-          <li class="flex items-center justify-between">
-            <span class="text-muted-foreground">
-              {{ match.lineup_2.name }}
-            </span>
-            <PlayerDisplay
-              :player="match.lineup_2.coach"
-              v-if="match.lineup_2.coach"
-            ></PlayerDisplay>
-          </li>
-        </ul>
-      </div>
-
-      <template v-if="displayServerInformation">
-        <Separator class="my-8" />
-
-        <div class="grid gap-3">
-          <div class="font-semibold">Server Information</div>
-          <ul class="grid gap-3">
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Type </span>
-              <span>
-                {{ match.server_type || "TBD" }}
-              </span>
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground"> Region </span>
-              <span v-if="match.server_region">
-                {{ match.server_region }}
-              </span>
-              <span v-else-if="match.e_region">
-                {{ match.e_region.description }}
-              </span>
-            </li>
-          </ul>
-        </div>
-      </template>
-
-      <template v-if="match.organizer">
-        <Separator class="my-8" />
-
-        <div class="grid gap-3">
-          <div class="font-semibold">Match Organizers</div>
-          <ul class="grid gap-3">
-            <li class="flex items-center justify-between">
-              <PlayerDisplay
-                class="mx-3"
-                :player="match.organizer"
-              ></PlayerDisplay>
-            </li>
-          </ul>
-        </div>
-      </template>
     </CardContent>
   </Card>
 </template>
@@ -262,16 +146,6 @@ export default {
         this.match.lineup_2?.lineup_players.length >=
           this.match.min_players_per_lineup
       );
-    },
-    displayServerInformation() {
-      return [
-        e_match_status_enum.Live,
-        e_match_status_enum.Veto,
-        e_match_status_enum.Scheduled,
-        e_match_status_enum.WaitingForServer,
-        e_match_status_enum.WaitingForCheckIn,
-        e_match_status_enum.PickingPlayers,
-      ].includes(this.match.status);
     },
   },
 };

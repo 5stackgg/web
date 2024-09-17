@@ -8,6 +8,7 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 </script>
 
 <template>
@@ -101,10 +102,15 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <li
             v-for="lineup in [match.lineup_1, match.lineup_2]"
             :key="lineup.name"
-            class="flex items-center justify-between"
           >
-            <span class="text-muted-foreground">{{ lineup.name }}</span>
+            <div class="text-muted-foreground">{{ lineup.name }}</div>
             <PlayerDisplay v-if="lineup.coach" :player="lineup.coach" />
+
+            <AssignCoachToLineup
+              :lineup="lineup"
+              :exclude="excludePlayers"
+              v-if="lineup.can_update_lineup"
+            ></AssignCoachToLineup>
           </li>
         </ul>
       </div>
@@ -146,6 +152,22 @@ export default {
         this.match.lineup_2?.lineup_players.length >=
           this.match.min_players_per_lineup
       );
+    },
+    excludePlayers() {
+      const players = [];
+
+      players.push(...this.match.lineup_1.lineup_players);
+      players.push(...this.match.lineup_2.lineup_players);
+
+      if (this.match.lineup_1.coach) {
+        players.push(this.match.lineup_1.coach);
+      }
+
+      if (this.match.lineup_2.coach) {
+        players.push(this.match.lineup_2.coach);
+      }
+
+      return players;
     },
   },
 };

@@ -4,10 +4,8 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 
 <template>
   <div class="p-3">
-    Assign Players to {{ lineup.name }}
-
     <player-search
-      label="Search for a player"
+      label="Add Player to Lineup"
       :exclude="exclude.map((player) => player.steam_id)"
       :team-id="lineup.team_id"
       @selected="(player) => addMember(player.steam_id)"

@@ -23,7 +23,6 @@ import {
 } from "~/components/ui/form";
 import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import BooleanToText from "../BooleanToText.vue";
 
 const commander = new EventEmitter();
@@ -32,7 +31,7 @@ provide("commander", commander);
 
 <template>
   <Tabs v-model="activeTab">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center mb-4">
       <TabsList>
         <TabsTrigger value="overview"> Overview </TabsTrigger>
         <TabsTrigger
@@ -66,18 +65,16 @@ provide("commander", commander);
       </Badge>
     </div>
     <TabsContent value="overview">
-      <Card>
-        <CardHeader>
-          <CardTitle>Match Overview</CardTitle>
-          <CardDescription> Overview of basic stats </CardDescription>
-        </CardHeader>
+      <Card class="mb-4">
         <CardContent>
           <lineup-overview
             :match="match"
             :lineup="match.lineup_1"
           ></lineup-overview>
         </CardContent>
+      </Card>
 
+      <Card>
         <CardContent>
           <lineup-overview
             :match="match"

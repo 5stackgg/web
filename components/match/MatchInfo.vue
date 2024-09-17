@@ -68,7 +68,7 @@ import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
           <MatchActions :match="match"></MatchActions>
         </div>
 
-        <badge class="my-3" v-if="match.cancels_at"
+        <badge class="my-3" v-if="match.cancels_at" variant="destructive"
           >Auto Canceling &nbsp; <TimeAgo :date="match.cancels_at"></TimeAgo>
         </badge>
 

@@ -12,7 +12,7 @@
         you can start the match. {{ totalCheckedIn }} /
         {{ playersRequiredToStart }} checked in.
 
-        <badge class="my-3"
+        <badge class="my-3" variant="destructive"
           >Auto Canceling &nbsp; <time-ago :date="match.cancels_at"></time-ago
         ></badge>
       </CardDescription>

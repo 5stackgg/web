@@ -73,7 +73,7 @@ export default {
     async searchPlayers(query?: string) {
       this.query = query || undefined;
 
-      const response = await useFetch("/api/players-search", {
+      const response = await $fetch("/api/players-search", {
         method: "post",
         body: {
           query,
@@ -82,7 +82,7 @@ export default {
         },
       });
 
-      this.players = response.data.value.hits
+      this.players = response.hits
         .map(({ document }) => {
           return document;
         })

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { InfoIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
@@ -17,7 +18,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <TableRow>
           <TableCell colspan="5" class="text-center py-8">
             <div class="text-gray-500 dark:text-gray-400">
-              <Icon name="mdi:information-outline" size="24" class="mb-2" />
               <p>No Matches Found</p>
             </div>
           </TableCell>

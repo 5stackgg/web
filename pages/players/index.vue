@@ -89,7 +89,7 @@ export default {
       this.$router.push(`/players/${steam_id}`);
     },
     async searchPlayers() {
-      const response = await useFetch("/api/players-search", {
+      const response = await $fetch("/api/players-search", {
         method: "post",
         body: {
           page: this.page,
@@ -98,13 +98,13 @@ export default {
         },
       });
 
-      const { found } = response.data.value;
+      const { found, hits } = response;
 
       this.pagination = {
         total: found,
       };
 
-      this.players = response.data.value.hits.map(({ document }) => {
+      this.players = hits.map(({ document }) => {
         return document;
       });
     },

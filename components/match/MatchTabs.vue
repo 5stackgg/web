@@ -30,9 +30,70 @@ provide("commander", commander);
 </script>
 
 <template>
+
+
+
+<Tabs default-value="account" class="w-[400px]" orientation="vertical">
+    <TabsList class="grid w-full grid-cols-1">
+      <TabsTrigger value="account">
+        Accounts
+      </TabsTrigger>
+      <TabsTrigger value="password">
+        Password
+      </TabsTrigger>
+    </TabsList>
+    <TabsContent value="account">
+      <Card>
+        <CardHeader>
+          <CardTitle>Account</CardTitle>
+          <CardDescription>
+            Make changes to your account here. Click save when you're done.
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-2">
+          <div class="space-y-1">
+            <Label for="name">Name</Label>
+            <Input id="name" default-value="Pedro Duarte" />
+          </div>
+          <div class="space-y-1">
+            <Label for="username">Username</Label>
+            <Input id="username" default-value="@peduarte" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button>Save changes</Button>
+        </CardFooter>
+      </Card>
+    </TabsContent>
+    <TabsContent value="password">
+      <Card>
+        <CardHeader>
+          <CardTitle>Password</CardTitle>
+          <CardDescription>
+            Change your password here. After saving, you'll be logged out.
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-2">
+          <div class="space-y-1">
+            <Label for="current">Current password</Label>
+            <Input id="current" type="password" />
+          </div>
+          <div class="space-y-1">
+            <Label for="new">New password</Label>
+            <Input id="new" type="password" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button>Save password</Button>
+        </CardFooter>
+      </Card>
+    </TabsContent>
+  </Tabs>
+  
+
+
   <Tabs v-model="activeTab">
-    <div class="flex justify-between items-center mb-4">
-      <TabsList>
+    <TabsList class="grid w-full grid-cols-1">
         <TabsTrigger value="overview"> Overview </TabsTrigger>
         <TabsTrigger
           class="lg:hidden"
@@ -54,16 +115,7 @@ provide("commander", commander);
         <TabsTrigger :disabled="!match.server_id" value="server">
           Server Console
         </TabsTrigger>
-      </TabsList>
-      <Badge
-        variant="outline"
-        class="flex items-center gap-2"
-        v-if="match.organizer"
-      >
-        Organized by:
-        {{ match.organizer.name }}
-      </Badge>
-    </div>
+    </TabsList>
     <TabsContent value="overview">
       <Card class="mb-4">
         <CardContent>

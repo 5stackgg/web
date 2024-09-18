@@ -138,7 +138,6 @@ import { FormControl } from "~/components/ui/form";
                           !form.values.map_pool?.includes(map.id),
                       }"
                     >
-                      <Icon name="lucide:check" class="text-white text-2xl" />
                     </div>
                   </div>
                 </template>
@@ -303,6 +302,7 @@ import { FormControl } from "~/components/ui/form";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
+import { Check } from "lucide-vue-next";
 
 export default {
   props: {

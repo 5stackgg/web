@@ -47,7 +47,7 @@ definePageMeta({
       <FormItem>
         <FormLabel>Country </FormLabel>
         <FormControl>
-          <Popover class="w-full" v-model:open="open">
+          <Popover v-model:open="open">
             <PopoverTrigger as-child>
               <Button
                 role="combobox"

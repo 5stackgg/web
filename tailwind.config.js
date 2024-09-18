@@ -14,6 +14,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Twemoji Country Flags", "Inter", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

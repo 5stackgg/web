@@ -3707,6 +3707,11 @@ countries-and-timezones@^3.6.0:
   resolved "https://registry.yarnpkg.com/countries-and-timezones/-/countries-and-timezones-3.6.0.tgz#80716f05ebef270842fd72010f9b33e2848e24c7"
   integrity sha512-8/nHBCs1eKeQ1jnsZVGdqrLYxS8nPcfJn8PnmxdJXWRLZdXsGFR8gnVhRjatGDBjqmPm7H+FtYpBYTPWd0Eiqg==
 
+country-flag-emoji-polyfill@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/country-flag-emoji-polyfill/-/country-flag-emoji-polyfill-0.1.8.tgz#d2cfb23dd2f949b80d83eb9822b613bf62957173"
+  integrity sha512-Mbah52sADS3gshUYhK5142gtUuJpHYOXlXtLFI3Ly4RqgkmPMvhX9kMZSTqDM8P7UqtSW99eHKFphhQSGXA3Cg==
+
 crc-32@^1.2.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/crc-32/-/crc-32-1.2.2.tgz#3cad35a934b8bf71f25ca524b6da51fb7eace2ff"

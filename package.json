@@ -42,6 +42,7 @@
     "clipboard": "^2.0.11",
     "clsx": "^2.1.1",
     "countries-and-timezones": "^3.6.0",
+    "country-flag-emoji-polyfill": "^0.1.8",
     "eventemitter3": "^5.0.1",
     "graphql-ws": "^5.16.0",
     "graphql-zeus": "^5.4.4",

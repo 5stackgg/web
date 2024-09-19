@@ -51,7 +51,9 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
-      <Card class="py-4 w-full lg:w-fit">
+      <Card class="w-full lg:w-fit">
+        <CardHeader>
+        </CardHeader>
         <CardContent>
           <LineupOverview
             :match="match"
@@ -60,7 +62,9 @@ provide("commander", commander);
         </CardContent>
       </Card>
 
-      <Card class="mt-4 w-full lg:w-fit">
+      <Card class="w-full lg:w-fit">
+        <CardHeader>
+        </CardHeader>
         <CardContent>
           <LineupOverview
             :match="match"
@@ -72,7 +76,6 @@ provide("commander", commander);
     <TabsContent value="veto">
       <Card>
         <CardHeader>
-          <CardTitle>Map Veto</CardTitle>
         </CardHeader>
         <CardContent>
           <MatchPicksDisplay :match="match" />
@@ -82,8 +85,6 @@ provide("commander", commander);
     <TabsContent value="utility">
       <Card>
         <CardHeader>
-          <CardTitle>Utility Usage</CardTitle>
-          <CardDescription> Utility usage per player </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-utility
@@ -102,8 +103,6 @@ provide("commander", commander);
     <TabsContent value="opening-duels">
       <Card>
         <CardHeader>
-          <CardTitle>Opening Duels</CardTitle>
-          <CardDescription> Opening Duels </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-opening-duels
@@ -122,8 +121,6 @@ provide("commander", commander);
     <TabsContent value="clutches">
       <Card>
         <CardHeader>
-          <CardTitle>Clutches</CardTitle>
-          <CardDescription> Clutches </CardDescription>
         </CardHeader>
         <CardContent>
           <lineup-clutches

@@ -13,7 +13,7 @@ import MatchLobbyChatMessage from "~/components/match/MatchLobbyChatMessage.vue"
   >
     <div class="absolute right-3 top-3">
       <div class="flex">
-        <Badge variant="outline"> Lobby Chat </Badge>
+        <Badge variant="secondary"> Lobby Chat </Badge>
       </div>
     </div>
 

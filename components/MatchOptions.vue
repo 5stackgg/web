@@ -141,7 +141,15 @@ import { Separator } from "~/components/ui/separator";
                               !form.values.map_pool?.includes(map.id),
                           }"
                         >
-                          <MapDisplay class="h-[150px]" :map="map" />
+                          <MapDisplay class="h-[150px]" :map="map">
+                            <template v-slot:default v-if="map.active_pool">
+                              <div class="absolute bottom-1">
+                                <Badge variant="secondary" class="text-xs"
+                                  >Acitve Duty</Badge
+                                >
+                              </div>
+                            </template>
+                          </MapDisplay>
                           <div
                             class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
                             :class="{

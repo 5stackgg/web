@@ -12,22 +12,18 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
 </script>
 
 <template>
-  <form
-    class="p-3 relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
-    @submit.prevent="scheduleMatch"
-  >
+  <form @submit.prevent="scheduleMatch">
     <FormField v-slot="{ componentField }" name="scheduled_at">
       <FormItem>
-        <FormLabel>Scheduled At</FormLabel>
         <FormControl>
-          <div class="flex">
+          <div class="flex items-center justify-between">
             <Popover>
               <PopoverTrigger as-child>
                 <Button
                   variant="outline"
-                  class="w-[280px] justify-start text-left font-normal"
+                  class="w-[180px] justify-start text-left font-normal"
                   :class="{
-                    ['text-muted-foreground']: !componentField.modelValue,
+                    'text-muted-foreground': !componentField.modelValue,
                   }"
                 >
                   <CalendarIcon class="mr-2 h-4 w-4" />
@@ -47,19 +43,15 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
               type="time"
               v-model="startTime"
               style="color-scheme: dark"
+              class="ml-2 w-[120px]"
             ></Input>
-          </div>
 
+            <Button type="submit" class="ml-4"> Schedule </Button>
+          </div>
           <FormMessage />
         </FormControl>
       </FormItem>
     </FormField>
-
-    <div class="pt-3">
-      <Button class="-mr-2" :disabled="!hasMinimumLineupPlayers">
-        Schedule Match
-      </Button>
-    </div>
   </form>
 </template>
 
@@ -150,16 +142,6 @@ export default {
           ],
         }),
       });
-    },
-  },
-  computed: {
-    hasMinimumLineupPlayers() {
-      return (
-        this.match.lineup_1?.lineup_players.length >=
-          this.match.min_players_per_lineup &&
-        this.match.lineup_2?.lineup_players.length >=
-          this.match.min_players_per_lineup
-      );
     },
   },
 };

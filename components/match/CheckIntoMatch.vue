@@ -17,7 +17,7 @@
         ></badge>
       </CardDescription>
     </CardHeader>
-    <CardContent class="p-2 pt-0 md:p-4 md:pt-0" v-if="!isCheckedIn">
+    <CardContent v-if="!isCheckedIn">
       <Button size="sm" class="w-full" @click="checkIn"> Check In </Button>
     </CardContent>
   </Card>

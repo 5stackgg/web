@@ -2,6 +2,7 @@
 import { MoreVertical } from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
+import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
 </script>
 
 <template>
@@ -41,6 +42,7 @@ import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
       <DropdownMenuItem v-if="match.can_assign_server">
         <MatchSelectServer :match="match"></MatchSelectServer>
       </DropdownMenuItem>
+
       <DropdownMenuItem>
         <MatchSelectWinner :match="match"></MatchSelectWinner>
       </DropdownMenuItem>

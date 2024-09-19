@@ -23,7 +23,7 @@ import { AlertTriangle } from "lucide-vue-next";
         </Button>
       </CardTitle>
     </CardHeader>
-    <CardContent class="p-2 pt-0 md:p-4 md:pt-0">
+    <CardContent>
       <QuickServerConnect :match="match"></QuickServerConnect>
     </CardContent>
   </Card>

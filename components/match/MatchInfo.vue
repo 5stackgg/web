@@ -4,7 +4,6 @@ import { Tv } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
-import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -71,31 +70,9 @@ import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
         <badge class="my-3" v-if="match.cancels_at" variant="destructive"
           >Auto Canceling &nbsp; <TimeAgo :date="match.cancels_at"></TimeAgo>
         </badge>
-
-        <template v-if="match.can_schedule && !match.scheduled_at">
-          <ScheduleMatch :match="match"></ScheduleMatch>
-        </template>
-        <template v-else-if="match.can_start">
-          <Button
-            @click.prevent.stop="startMatch"
-            class="-mr-2"
-            :disabled="!hasMinimumLineupPlayers"
-          >
-            Start
-            <template
-              v-if="
-                match.options.map_veto &&
-                match.options.best_of != match.match_maps.length
-              "
-            >
-              Veto
-            </template>
-            <template v-else> Match </template>
-          </Button>
-        </template>
       </CardTitle>
     </CardHeader>
-    <CardContent class="p-6" v-if="match.options.coaches">
+    <CardContent v-if="match.options.coaches">
       <div class="space-y-4">
         <h3 class="font-semibold text-lg">Coaches</h3>
         <ul class="space-y-3">
@@ -128,31 +105,7 @@ export default {
       required: true,
     },
   },
-  methods: {
-    async startMatch() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          startMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-  },
   computed: {
-    hasMinimumLineupPlayers() {
-      return (
-        this.match.lineup_1?.lineup_players.length >=
-          this.match.min_players_per_lineup &&
-        this.match.lineup_2?.lineup_players.length >=
-          this.match.min_players_per_lineup
-      );
-    },
     excludePlayers() {
       const players = [];
 

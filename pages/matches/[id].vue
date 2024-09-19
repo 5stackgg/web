@@ -7,6 +7,7 @@ import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import JoinMatch from "~/components/match/JoinMatch.vue";
+import StartMatch from "~/components/match/StartMatch.vue";
 </script>
 
 <template>
@@ -15,6 +16,7 @@ import JoinMatch from "~/components/match/JoinMatch.vue";
     v-if="match"
   >
     <div class="grid grid-cols-1 gap-y-4">
+      <StartMatch :match="match"></StartMatch>
       <CheckIntoMatch :match="match"></CheckIntoMatch>
       <JoinMatch :match="match"></JoinMatch>
       <MatchInfo :match="match"></MatchInfo>

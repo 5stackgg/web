@@ -5,12 +5,15 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 <template>
   <div class="my-2">
-    <div class="grid grid-cols-[60px_1fr] gap-x-3">
+    <div class="grid grid-cols-[60px_1fr] gap-x-1">
       <div class="my-1 mx-3">
-        <PlayerDisplay
-          :player="message.from"
-          v-if="!isSameSender || !isCloseTogether"
-        ></PlayerDisplay>
+        <Avatar class="relative">
+          <AvatarImage
+            :src="message.from.avatar_url"
+            :alt="message.from.name"
+            v-if="message.from.avatar_url"
+          />
+        </Avatar>
       </div>
 
       <div>

@@ -74,7 +74,10 @@ import MapDisplay from "~/components/MapDisplay.vue";
 </template>
 
 <script lang="ts">
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useMatchMakingStore } from "~/stores/MatchMakingStore";
+
+import { $, order_by } from "~/generated/zeus/index";
 
 export default {
   props: {
@@ -82,10 +85,61 @@ export default {
       type: Object,
       required: true,
     },
-    picks: {
-      type: Array,
-      required: false,
+  },
+  apollo: {
+    $subscribe: {
+      match_map_veto_picks: {
+        variables: function () {
+          return {
+            order_by: order_by.asc,
+            matchId: this.$route.params.id,
+          };
+        },
+        query: typedGql("subscription")({
+          match_map_veto_picks: [
+            {
+              where: {
+                match_id: {
+                  _eq: $("matchId", "uuid!"),
+                },
+              },
+              order_by: [
+                {},
+                {
+                  created_at: $("order_by", "order_by"),
+                },
+              ],
+            },
+            {
+              id: true,
+              map: {
+                id: true,
+                name: true,
+                patch: true,
+                poster: true,
+              },
+              side: true,
+              type: true,
+              match_lineup_id: true,
+              match_lineup: [
+                {},
+                {
+                  name: true,
+                },
+              ],
+            },
+          ],
+        }),
+        result: function ({ data }) {
+          this.picks = data.match_map_veto_picks;
+        },
+      },
     },
+  },
+  data() {
+    return {
+      picks: undefined,
+    };
   },
   computed: {
     regions() {

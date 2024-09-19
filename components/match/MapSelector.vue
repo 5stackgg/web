@@ -6,7 +6,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 <template>
   <div class="container mx-auto px-4">
     <div
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 my-12"
+      class="grid grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-7 gap-6 my-12"
     >
       <div v-for="map in mapPool" :key="map.id" class="relative group">
         <MapDisplay

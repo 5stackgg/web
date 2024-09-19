@@ -7,10 +7,6 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 </script>
 
 <template>
-  <template v-if="picks?.length > 0 || hasAssignedRegion">
-    <MatchPicksDisplay :match="match" :picks="picks" />
-  </template>
-
   <div
     v-if="
       (!match.options.region_veto || match.region) &&
@@ -18,8 +14,6 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       match.match_maps.length < bestOf
     "
   >
-    <Separator v-if="picks?.length > 0"></Separator>
-
     <div class="flex justify-between my-3">
       <h1>
         <template v-if="match.lineup_1.is_picking_map_veto">
@@ -115,7 +109,11 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       ></MapSelector>
     </template>
 
-    <Separator />
+    <template v-if="picks?.length > 0 || hasAssignedRegion">
+      <Separator />
+      <MatchPicksDisplay :match="match" :picks="picks" />
+      <Separator />
+    </template>
   </div>
 </template>
 

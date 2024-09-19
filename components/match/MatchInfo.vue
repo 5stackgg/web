@@ -13,91 +13,96 @@ import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 <template>
   <Card>
     <CardHeader class="bg-muted/50">
-      <CardTitle class="relative">
-        <div class="flex">
-          <match-status :match="match"></match-status>
-          <clip-board
-            :data="match.tv_connection_string"
+      <CardTitle>
+        <div class="flex items-center">
+          <MatchStatus :match="match" />
+          <ClipBoard
             v-if="match.tv_connection_string"
+            :data="match.tv_connection_string"
+            class="flex items-center"
           >
-            <Tv></Tv>
-          </clip-board>
+            <Tv class="h-4 w-4 mr-2" />
+          </ClipBoard>
         </div>
 
-        <div class="flex py-2 items-center justify-between">
-          <div class="flex flex-col space-y-2">
-            <div class="flex items-center justify-between">
-              <div>
-                <span class="font-semibold">{{ match.lineup_1.name }}</span>
-                <span>
-                  (<MatchLineupScoreDisplay
-                    :match="match"
-                    :lineup="match.lineup_1"
-                  />)
-                </span>
-              </div>
-
-              <span class="mx-2 text-muted-foreground">vs</span>
-
-              <div>
-                <span class="font-semibold">{{ match.lineup_2.name }}</span>
-
-                <span>
-                  (<MatchLineupScoreDisplay
-                    :match="match"
-                    :lineup="match.lineup_2"
-                  />)
-                </span>
-              </div>
-            </div>
-
-            <div>
-              <Badge variant="outline">
-                {{ match.options.type }}
-                <span
-                  class="text-muted-foreground ml-1"
-                  v-if="match.options.best_of > 1"
-                >
-                  across {{ match.options.best_of }} maps
-                </span>
-              </Badge>
-            </div>
+        <div class="flex justify-between items-center">
+          <div>
+            {{ match.options.type }}
+            <Badge class="text-xs"> bo{{ match.options.best_of }} </Badge>
           </div>
 
-          <MatchActions :match="match"></MatchActions>
+          <MatchActions :match="match" />
         </div>
-
-        <badge class="my-3" v-if="match.cancels_at" variant="destructive"
-          >Auto Canceling &nbsp; <TimeAgo :date="match.cancels_at"></TimeAgo>
-        </badge>
       </CardTitle>
     </CardHeader>
-    <CardContent v-if="match.options.coaches">
-      <div class="space-y-4">
-        <h3 class="font-semibold text-lg">Coaches</h3>
-        <ul class="space-y-3">
-          <li
-            v-for="lineup in [match.lineup_1, match.lineup_2]"
-            :key="lineup.name"
+    <CardContent class="p-4">
+      <div
+        class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4"
+      >
+        <div
+          class="flex flex-col items-center md:items-start space-y-2 md:w-2/5"
+        >
+          <span
+            class="font-semibold text-center md:text-left truncate w-full"
+            >{{ match.lineup_1.name }}</span
           >
-            <div class="text-muted-foreground">{{ lineup.name }}</div>
-            <PlayerDisplay v-if="lineup.coach" :player="lineup.coach" />
+          <span class="text-muted-foreground">
+            (<MatchLineupScoreDisplay
+              :match="match"
+              :lineup="match.lineup_1"
+            />)
+          </span>
+        </div>
 
-            <AssignCoachToLineup
-              :lineup="lineup"
-              :exclude="excludePlayers"
-              v-if="lineup.can_update_lineup"
-            ></AssignCoachToLineup>
-          </li>
-        </ul>
+        <span class="text-muted-foreground">vs</span>
+
+        <div class="flex flex-col items-center md:items-end space-y-2 md:w-2/5">
+          <span
+            class="font-semibold text-center md:text-right truncate w-full"
+            >{{ match.lineup_2.name }}</span
+          >
+          <span class="text-muted-foreground">
+            (<MatchLineupScoreDisplay
+              :match="match"
+              :lineup="match.lineup_2"
+            />)
+          </span>
+        </div>
       </div>
+
+      <div class="mt-4 flex flex-wrap justify-center md:justify-end space-x-4">
+        <Badge
+          v-if="match.cancels_at"
+          variant="destructive"
+          class="flex items-center mb-2 md:mb-0"
+        >
+          <span class="mr-2">Auto Canceling</span>
+          <TimeAgo :date="match.cancels_at" />
+        </Badge>
+      </div>
+    </CardContent>
+
+    <CardContent v-if="match.options.coaches">
+      <h3 class="font-semibold text-lg mb-4">Coaches</h3>
+      <ul class="space-y-6">
+        <li
+          v-for="lineup in [match.lineup_1, match.lineup_2]"
+          :key="lineup.name"
+        >
+          <div class="text-muted-foreground mb-2">{{ lineup.name }}</div>
+          <PlayerDisplay v-if="lineup.coach" :player="lineup.coach" />
+          <AssignCoachToLineup
+            v-if="lineup.can_update_lineup"
+            :lineup="lineup"
+            :exclude="excludePlayers"
+          />
+        </li>
+      </ul>
     </CardContent>
   </Card>
 </template>
 
 <script lang="ts">
-import { generateMutation } from "~/graphql/graphqlGen";
-
 export default {
   props: {
     match: {

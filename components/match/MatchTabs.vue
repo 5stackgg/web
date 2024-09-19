@@ -21,20 +21,20 @@ import {
   FormItem,
   FormLabel,
 } from "~/components/ui/form";
-import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
 import BooleanToText from "../BooleanToText.vue";
+import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
 </script>
 
 <template>
-  <Tabs v-model="activeTab">
+  <Tabs default-value="overview">
     <TabsList class="lg:inline-flex grid grid-cols-1 mb-4">
       <TabsTrigger value="overview"> Overview </TabsTrigger>
-      <TabsTrigger class="lg:hidden" value="veto" v-if="match.options.map_veto">
-        <span ref="mapVetoTab"> Map Veto </span>
+      <TabsTrigger value="veto" v-if="match.options.map_veto">
+        Map Veto
       </TabsTrigger>
       <TabsTrigger :disabled="disableStats" value="utility">
         Utility
@@ -51,7 +51,7 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
-      <Card class="py-4 w-fit">
+      <Card class="py-4 w-full lg:w-fit">
         <CardContent>
           <LineupOverview
             :match="match"
@@ -60,7 +60,7 @@ provide("commander", commander);
         </CardContent>
       </Card>
 
-      <Card class="mt-4 w-fit">
+      <Card class="mt-4 w-full lg:w-fit">
         <CardContent>
           <LineupOverview
             :match="match"
@@ -69,13 +69,13 @@ provide("commander", commander);
         </CardContent>
       </Card>
     </TabsContent>
-    <TabsContent value="veto" v-if="vetoTabViewable">
+    <TabsContent value="veto">
       <Card>
         <CardHeader>
           <CardTitle>Map Veto</CardTitle>
         </CardHeader>
         <CardContent>
-          <MatchMapSelection :match="match"></MatchMapSelection>
+          <MatchPicksDisplay :match="match" />
         </CardContent>
       </Card>
     </TabsContent>
@@ -302,8 +302,6 @@ export default {
   },
   data() {
     return {
-      activeTab: "overview",
-      vetoTabViewable: true,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -312,34 +310,6 @@ export default {
         ),
       }),
     };
-  },
-  watch: {
-    vetoTabViewable: {
-      immediate: true,
-      handler() {
-        if (this.activeTab === "veto" && !this.vetoTabViewable) {
-          this.activeTab = "overview";
-        }
-      },
-    },
-  },
-  mounted() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        this.vetoTabViewable = entry.isIntersecting;
-      });
-    });
-
-    if (this.$refs.mapVetoTab) {
-      observer.observe(this.$refs.mapVetoTab);
-    }
-
-    if (
-      this.match.options.map_veto &&
-      this.match.status === e_match_status_enum.Veto
-    ) {
-      this.activeTab = "veto";
-    }
   },
   computed: {
     disableStats() {

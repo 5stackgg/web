@@ -8,6 +8,7 @@ import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import JoinMatch from "~/components/match/JoinMatch.vue";
 import StartMatch from "~/components/match/StartMatch.vue";
+import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -28,7 +29,12 @@ import StartMatch from "~/components/match/StartMatch.vue";
     </div>
 
     <div class="grid grid-cols-1 gap-y-4">
-      <template v-if="match.match_maps.length > 0">
+      <template
+        v-if="
+          match.match_maps.length > 0 &&
+          match.status !== e_match_status_enum.Veto
+        "
+      >
         <div class="flex gap-4 justify-around flex-col lg:flex-row">
           <div
             v-for="match_map of match.match_maps"
@@ -41,14 +47,8 @@ import StartMatch from "~/components/match/StartMatch.vue";
         <Separator />
       </template>
 
-      <MatchRegionVeto
-        :match="match"
-        class="hidden lg:contents"
-      ></MatchRegionVeto>
-      <MatchMapSelection
-        :match="match"
-        class="hidden lg:contents"
-      ></MatchMapSelection>
+      <MatchRegionVeto :match="match"></MatchRegionVeto>
+      <MatchMapSelection :match="match"></MatchMapSelection>
 
       <MatchTabs :match="match"></MatchTabs>
     </div>

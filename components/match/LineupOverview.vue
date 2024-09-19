@@ -36,15 +36,17 @@ PlayerDisplay;
         <TableHead>Deaths</TableHead>
         <TableHead class="hidden md:table-cell">K/D</TableHead>
         <TableHead class="hidden lg:table-cell">HS%</TableHead>
-        <TableHead>Total Damage</TableHead>
         <TableHead class="hidden lg:table-cell">Team Damage</TableHead>
-        <TableHead class="hidden md:table-cell">Multi Kill Rounds</TableHead>
+        <TableHead class="hidden lg:table-cell">Multi Kill Rounds</TableHead>
         <TableHead class="hidden lg:table-cell">2K</TableHead>
         <TableHead class="hidden lg:table-cell">3K</TableHead>
         <TableHead class="hidden lg:table-cell">4K</TableHead>
         <TableHead class="hidden lg:table-cell">5K</TableHead>
         <TableHead class="hidden lg:table-cell">Knifes</TableHead>
         <TableHead class="hidden lg:table-cell">Zeus</TableHead>
+        <TableHead class="text-center">Total Damage</TableHead>
+        <TableHead v-if="lineup.can_update_lineup">
+        </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

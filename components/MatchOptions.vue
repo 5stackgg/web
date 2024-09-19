@@ -23,11 +23,11 @@ import { Separator } from "~/components/ui/separator";
                 <div
                   v-for="type in e_match_types"
                   :key="type.value"
-                  class="flex items-center space-x-2 cursor-pointer"
+                  class="flex items-center space-x-2  p-8 cursor-pointer"
                   @click="form.setFieldValue('type', type.value)"
                 >
                   <RadioGroupItem :id="type.value" :value="type.value" />
-                  <Label :for="type.value" class="flex flex-col cursor-pointer">
+                  <Label :for="type.value" class="flex flex-col">
                     <span>{{ type.value }}</span>
                     <span class="text-xs text-muted-foreground">
                       {{ type.description }}

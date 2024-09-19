@@ -21,24 +21,6 @@ import formatStatValue from "~/utilities/formatStatValue";
     <TableCell class="hidden lg:table-cell">
       {{ hs }}
     </TableCell>
-    <TableCell>
-      <div class="flex flex-col flex-auto items-center">
-        <div>
-          {{ member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
-        </div>
-        <div>
-          <Badge class="text-xs my-3" variant="outline">
-            {{
-              formatStatValue(
-                member.player?.damage_dealt_aggregate.aggregate.sum.damage /
-                  totalRounds,
-              )
-            }}
-            ADR
-          </Badge>
-        </div>
-      </div>
-    </TableCell>
     <TableCell class="hidden lg:table-cell">
       {{ member.player?.team_damage_aggregate.aggregate.sum.damage || 0 }}
     </TableCell>
@@ -62,6 +44,24 @@ import formatStatValue from "~/utilities/formatStatValue";
     </TableCell>
     <TableCell class="hidden lg:table-cell">
       {{ member.player?.zeus_kills_aggregate.aggregate.count }}
+    </TableCell>
+    <TableCell class="hidden lg:table-cell">
+      <div class="flex flex-col flex-auto items-center">
+        <div>
+          {{ member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
+        </div>
+        <div>
+          <Badge class="text-xs my-3" variant="outline">
+            {{
+              formatStatValue(
+                member.player?.damage_dealt_aggregate.aggregate.sum.damage /
+                  totalRounds,
+              )
+            }}
+            ADR
+          </Badge>
+        </div>
+      </div>
     </TableCell>
     <TableCell v-if="lineup.can_update_lineup">
       <DropdownMenu>

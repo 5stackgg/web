@@ -30,94 +30,28 @@ provide("commander", commander);
 </script>
 
 <template>
-
-
-
-<Tabs default-value="account" class="w-[400px]" orientation="vertical">
-    <TabsList class="grid w-full grid-cols-1">
-      <TabsTrigger value="account">
-        Accounts
-      </TabsTrigger>
-      <TabsTrigger value="password">
-        Password
-      </TabsTrigger>
-    </TabsList>
-    <TabsContent value="account">
-      <Card>
-        <CardHeader>
-          <CardTitle>Account</CardTitle>
-          <CardDescription>
-            Make changes to your account here. Click save when you're done.
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="space-y-2">
-          <div class="space-y-1">
-            <Label for="name">Name</Label>
-            <Input id="name" default-value="Pedro Duarte" />
-          </div>
-          <div class="space-y-1">
-            <Label for="username">Username</Label>
-            <Input id="username" default-value="@peduarte" />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button>Save changes</Button>
-        </CardFooter>
-      </Card>
-    </TabsContent>
-    <TabsContent value="password">
-      <Card>
-        <CardHeader>
-          <CardTitle>Password</CardTitle>
-          <CardDescription>
-            Change your password here. After saving, you'll be logged out.
-          </CardDescription>
-        </CardHeader>
-        <CardContent class="space-y-2">
-          <div class="space-y-1">
-            <Label for="current">Current password</Label>
-            <Input id="current" type="password" />
-          </div>
-          <div class="space-y-1">
-            <Label for="new">New password</Label>
-            <Input id="new" type="password" />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button>Save password</Button>
-        </CardFooter>
-      </Card>
-    </TabsContent>
-  </Tabs>
-  
-
-
   <Tabs v-model="activeTab">
-    <TabsList class="grid w-full grid-cols-1">
-        <TabsTrigger value="overview"> Overview </TabsTrigger>
-        <TabsTrigger
-          class="lg:hidden"
-          value="veto"
-          v-if="match.options.map_veto"
-        >
-          <span ref="mapVetoTab"> Map Veto </span>
-        </TabsTrigger>
-        <TabsTrigger :disabled="disableStats" value="utility">
-          Utility
-        </TabsTrigger>
-        <TabsTrigger :disabled="disableStats" value="opening-duels">
-          Opening Duels
-        </TabsTrigger>
-        <TabsTrigger :disabled="disableStats" value="clutches">
-          Clutches
-        </TabsTrigger>
-        <TabsTrigger value="settings"> Match Settings </TabsTrigger>
-        <TabsTrigger :disabled="!match.server_id" value="server">
-          Server Console
-        </TabsTrigger>
+    <TabsList class="lg:inline-flex grid grid-cols-1 mb-4">
+      <TabsTrigger value="overview"> Overview </TabsTrigger>
+      <TabsTrigger class="lg:hidden" value="veto" v-if="match.options.map_veto">
+        <span ref="mapVetoTab"> Map Veto </span>
+      </TabsTrigger>
+      <TabsTrigger :disabled="disableStats" value="utility">
+        Utility
+      </TabsTrigger>
+      <TabsTrigger :disabled="disableStats" value="opening-duels">
+        Opening Duels
+      </TabsTrigger>
+      <TabsTrigger :disabled="disableStats" value="clutches">
+        Clutches
+      </TabsTrigger>
+      <TabsTrigger value="settings"> Match Settings </TabsTrigger>
+      <TabsTrigger :disabled="!match.server_id" value="server">
+        Server Console
+      </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
-      <Card class="mb-4">
+      <Card class="py-4">
         <CardContent>
           <lineup-overview
             :match="match"
@@ -126,7 +60,7 @@ provide("commander", commander);
         </CardContent>
       </Card>
 
-      <Card>
+      <Card class="mt-4">
         <CardContent>
           <lineup-overview
             :match="match"
@@ -252,7 +186,7 @@ provide("commander", commander);
       </RconCommander>
     </TabsContent>
     <TabsContent value="settings">
-      <Card class="p-3 max-w-[500px]">
+      <Card class="p-3 w-full sm:max-w-[500px]">
         <CardContent>
           <ul class="space-y-4">
             <li class="flex items-center justify-between">

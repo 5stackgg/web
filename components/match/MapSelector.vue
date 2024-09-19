@@ -3,17 +3,20 @@ import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
 <template>
-  <div class="flex gap-4 h-[150px] my-8">
+  <div
+    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-4 my-8"
+  >
     <MapDisplay
+      v-for="map of mapPool"
+      :key="map.id"
       :map="map"
-      class="cursor-pointer"
+      class="cursor-pointer h-[150px]"
       :class="{
         grayscale: modelValue && modelValue !== map.id,
         ring: modelValue === map.id,
         'opacity-10 pointer-events-none': !availableMaps.includes(map),
       }"
       @click="$emit('update:modelValue', map.id)"
-      v-for="map of mapPool"
     >
     </MapDisplay>
   </div>

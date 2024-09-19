@@ -137,8 +137,7 @@ import { FormControl } from "~/components/ui/form";
                           !form.values.custom_map_pool ||
                           !form.values.map_pool?.includes(map.id),
                       }"
-                    >
-                    </div>
+                    ></div>
                   </div>
                 </template>
               </div>
@@ -302,7 +301,6 @@ import { FormControl } from "~/components/ui/form";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
-import { Check } from "lucide-vue-next";
 
 export default {
   props: {

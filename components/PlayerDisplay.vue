@@ -14,17 +14,17 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
       </Avatar>
       <slot name="avatar-sub"></slot>
     </div>
-    <div>
+    <div :class="{ 'flex items-center': !showSteamId }">
       <slot>
         <div class="text-left text-sm">
           <div>
             <div class="flex items-center gap-1">
-              <TimezoneFlag :country="player.country" />
+              <TimezoneFlag v-if="showFlag" :country="player.country" />
               <div>{{ player.name }}</div>
             </div>
             <slot name="name-postfix"></slot>
           </div>
-          <p class="text-muted-foreground">
+          <p class="text-muted-foreground hidden sm:block" v-if="showSteamId">
             {{ player.steam_id }}
           </p>
         </div>
@@ -40,6 +40,14 @@ export default {
       type: Object,
       required: true,
     },
+    showFlag: {
+      type: Boolean,
+      default: true,
+    },
+    showSteamId: {
+      type: Boolean,
+      default: true,
+    }
   },
 };
 </script>

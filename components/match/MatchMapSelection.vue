@@ -5,43 +5,41 @@ import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 </script>
 
 <template>
-  <div>
-    <MatchMapVeto
-      :match="match"
-      :map-pool="mapPool"
-      v-if="match.options.map_veto"
-    ></MatchMapVeto>
-    <template
-      v-else-if="
-        match.is_organizer && assigningMaps && match.options.map_veto === false
-      "
-    >
-      <Card class="sm:col-span-4">
-        <CardHeader class="pb-3">
-          <CardContent>
-            <form @submit.prevent="addMap">
-              <MapSelector
-                :model-value="form.values.map_id"
-                :map-pool="mapPool"
-                @update:modelValue="
-                  (mapId) => {
-                    form.setFieldValue('map_id', mapId);
-                  }
-                "
-              ></MapSelector>
+  <MatchMapVeto
+    :match="match"
+    :map-pool="mapPool"
+    v-if="match.options.map_veto"
+  ></MatchMapVeto>
+  <template
+    v-else-if="
+      match.is_organizer && assigningMaps && match.options.map_veto === false
+    "
+  >
+    <Card class="sm:col-span-4">
+      <CardHeader class="pb-3">
+        <CardContent>
+          <form @submit.prevent="addMap">
+            <MapSelector
+              :model-value="form.values.map_id"
+              :map-pool="mapPool"
+              @update:modelValue="
+                (mapId) => {
+                  form.setFieldValue('map_id', mapId);
+                }
+              "
+            ></MapSelector>
 
-              <Button
-                type="submit"
-                :disabled="Object.keys(form.errors).length > 0"
-              >
-                Pick Map
-              </Button>
-            </form>
-          </CardContent>
-        </CardHeader>
-      </Card>
-    </template>
-  </div>
+            <Button
+              type="submit"
+              :disabled="Object.keys(form.errors).length > 0"
+            >
+              Pick Map
+            </Button>
+          </form>
+        </CardContent>
+      </CardHeader>
+    </Card>
+  </template>
 </template>
 
 <script lang="ts">

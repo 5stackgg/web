@@ -24,8 +24,8 @@ export default {
   methods: {
     getFlagEmoji(countryCode: string): string {
       return String.fromCodePoint(
-          ...[...countryCode].map((char) => 127397 + char.charCodeAt(0))
-        );
+        ...[...countryCode].map((char) => 127397 + char.charCodeAt(0)),
+      );
     },
   },
 };

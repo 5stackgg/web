@@ -39,10 +39,11 @@ import JoinMatch from "~/components/match/JoinMatch.vue";
         </div>
       </div>
 
-      <div class="hidden lg:block">
-        <MatchRegionVeto :match="match"></MatchRegionVeto>
-        <MatchMapSelection :match="match"></MatchMapSelection>
-      </div>
+      <MatchRegionVeto :match="match" class="hidden lg:block"></MatchRegionVeto>
+      <MatchMapSelection
+        :match="match"
+        class="hidden lg:block"
+      ></MatchMapSelection>
 
       <MatchTabs :match="match"></MatchTabs>
     </div>

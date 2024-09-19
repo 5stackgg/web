@@ -6,9 +6,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableCell,
 } from "~/components/ui/table";
 import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
 import { e_match_status_enum } from "~/generated/zeus";
+import PlayerDisplay from "../PlayerDisplay.vue";
+PlayerDisplay
 </script>
 
 <template>
@@ -51,15 +54,26 @@ import { e_match_status_enum } from "~/generated/zeus";
         :lineup="lineup"
         v-for="member of lineup.lineup_players"
       ></LineupOverviewRow>
+      <TableRow
+        v-for="slot of Math.max(0, minPlayers - lineup.lineup_players.length)"
+      >
+        <TableCell colspan="15">
+          <PlayerDisplay 
+            :show-flag="false"
+            :show-steam-id="false"
+            :player="{
+                name: `Slot ${slot + lineup.lineup_players.length}`
+            }"/>
+            <template v-if="lineup.can_update_lineup && canAddToLineup">
+              <AssignPlayerToLineup
+                :lineup="lineup"
+                :exclude="excludePlayers"
+              ></AssignPlayerToLineup>
+            </template>
+        </TableCell>
+      </TableRow>
     </TableBody>
   </Table>
-
-  <div v-if="lineup.can_update_lineup && canAddToLineup" class="mt-4">
-    <AssignPlayerToLineup
-      :lineup="lineup"
-      :exclude="excludePlayers"
-    ></AssignPlayerToLineup>
-  </div>
 </template>
 
 <script lang="ts">
@@ -78,8 +92,14 @@ export default {
     canAddToLineup() {
       return (
         this.lineup.can_update_lineup &&
-        this.lineup.lineup_players.length < this.match.max_players_per_lineup
+        this.lineup.lineup_players.length < this.maxPlayers
       );
+    },
+    minPlayers() {
+      return this.match.min_players_per_lineup;
+    },
+    maxPlayers() {
+      return this.match.max_players_per_lineup;
     },
     excludePlayers() {
       if (!this.match) {

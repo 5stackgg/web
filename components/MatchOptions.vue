@@ -27,7 +27,7 @@ import { Separator } from "~/components/ui/separator";
                   @click="form.setFieldValue('type', type.value)"
                 >
                   <RadioGroupItem :id="type.value" :value="type.value" />
-                  <Label :for="type.value" class="flex flex-col">
+                  <Label :for="type.value" class="flex flex-col cursor-pointer">
                     <span>{{ type.value }}</span>
                     <span class="text-xs text-muted-foreground">
                       {{ type.description }}

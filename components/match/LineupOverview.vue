@@ -31,22 +31,50 @@ PlayerDisplay;
             ></span>
           </div>
         </TableHead>
-        <TableHead>Kills</TableHead>
-        <TableHead class="hidden md:table-cell">Assists</TableHead>
-        <TableHead>Deaths</TableHead>
-        <TableHead class="hidden md:table-cell">K/D</TableHead>
-        <TableHead class="hidden lg:table-cell">HS%</TableHead>
-        <TableHead class="hidden lg:table-cell">Team Damage</TableHead>
-        <TableHead class="hidden lg:table-cell">Multi Kill Rounds</TableHead>
-        <TableHead class="hidden lg:table-cell">2K</TableHead>
-        <TableHead class="hidden lg:table-cell">3K</TableHead>
-        <TableHead class="hidden lg:table-cell">4K</TableHead>
-        <TableHead class="hidden lg:table-cell">5K</TableHead>
-        <TableHead class="hidden lg:table-cell">Knifes</TableHead>
-        <TableHead class="hidden lg:table-cell">Zeus</TableHead>
-        <TableHead class="text-center">Total Damage</TableHead>
-        <TableHead v-if="lineup.can_update_lineup">
+        <TableHead class="w-[4ch] text-center">
+          K<span class="hidden xl:inline">ills</span>
         </TableHead>
+        <TableHead class="hidden md:table-cell w-[4ch] text-center">
+          A<span class="hidden xl:inline">ssists</span>
+        </TableHead>
+        <TableHead class="w-[4ch] text-center">
+          D<span class="hidden xl:inline">eaths</span>
+        </TableHead>
+        <TableHead class="hidden md:table-cell w-[16ch] text-center"
+          >K/D</TableHead
+        >
+        <TableHead class="hidden lg:table-cell w-[4ch] text-center"
+          >HS%</TableHead
+        >
+        <TableHead class="hidden 2xl:table-cell w-[16ch] text-center"
+          >Team Damage</TableHead
+        >
+        <TableHead class="hidden xl:table-cell w-[30ch] text-center">
+          <span class="hidden 2xl:inline"> Multi Kill Rounds </span>
+          <span class="2xl:hidden"> MKR </span>
+        </TableHead>
+        <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
+          >2K</TableHead
+        >
+        <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
+          >3K</TableHead
+        >
+        <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
+          >4K</TableHead
+        >
+        <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
+          >5K</TableHead
+        >
+        <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
+          >Knifes</TableHead
+        >
+        <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
+          >Zeus</TableHead
+        >
+        <TableHead class="text-center w-[24ch] text-center"
+          >Total Damage</TableHead
+        >
+        <TableHead v-if="lineup.can_update_lineup"> </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

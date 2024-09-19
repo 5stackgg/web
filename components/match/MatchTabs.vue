@@ -51,21 +51,21 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
-      <Card class="py-4">
+      <Card class="py-4 w-fit">
         <CardContent>
-          <lineup-overview
+          <LineupOverview
             :match="match"
             :lineup="match.lineup_1"
-          ></lineup-overview>
+          ></LineupOverview>
         </CardContent>
       </Card>
 
-      <Card class="mt-4">
+      <Card class="mt-4 w-fit">
         <CardContent>
-          <lineup-overview
+          <LineupOverview
             :match="match"
             :lineup="match.lineup_2"
-          ></lineup-overview>
+          ></LineupOverview>
         </CardContent>
       </Card>
     </TabsContent>

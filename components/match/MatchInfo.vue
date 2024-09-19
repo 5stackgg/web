@@ -72,7 +72,7 @@ import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
           >Auto Canceling &nbsp; <TimeAgo :date="match.cancels_at"></TimeAgo>
         </badge>
 
-        <template v-if="match.can_schedule">
+        <template v-if="match.can_schedule && !match.scheduled_at">
           <ScheduleMatch :match="match"></ScheduleMatch>
         </template>
         <template v-else-if="match.can_start">

@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
 import { FormControl } from "~/components/ui/form";
+import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
-  <div v-if="isRegionVeto">
-    <template v-if="match.options.region_veto && !match.region">
+  <div v-if="isRegionVeto && (isBanning || canSelectRegion)">
+    <template v-if="isBanning">
       <div class="flex justify-between my-3">
         <h1>
           <template v-if="match.lineup_1.is_picking_region_veto">
@@ -66,11 +67,7 @@ import { FormControl } from "~/components/ui/form";
         </Button>
       </form>
     </template>
-    <template
-      v-else-if="
-        match.is_organizer && !match.options.region_veto && regions.length > 1
-      "
-    >
+    <template v-else-if="canSelectRegion">
       <Card class="sm:col-span-4">
         <CardHeader class="pb-3">
           <CardContent>
@@ -110,6 +107,7 @@ import { FormControl } from "~/components/ui/form";
         </CardHeader>
       </Card>
     </template>
+    <Separator></Separator>
   </div>
 </template>
 
@@ -190,8 +188,18 @@ export default {
         this.match.lineup_2.can_pick_region_veto
       );
     },
+    isBanning() {
+      return this.match.options.region_veto && !match.region;
+    },
     isRegionVeto() {
       return this.match.status == e_match_status_enum.Veto;
+    },
+    canSelectRegion() {
+      return (
+        this.match.is_organizer &&
+        !this.match.options.region_veto &&
+        this.regions.length > 1
+      );
     },
   },
   methods: {

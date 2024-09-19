@@ -3,81 +3,13 @@ import { Button } from "~/components/ui/button";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
 import { Separator } from "~/components/ui/separator";
+import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 </script>
 
 <template>
-  <Separator
-    v-if="picks?.length > 0 || (match.options.region_veto && match.e_region)"
-  ></Separator>
-
-  <div
-    class="flex gap-4 h-[200px] overflow-hidden"
-    v-if="match.options.region_veto && match.e_region"
-  >
-    <div class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]">
-      <NuxtImg
-        src="/img/maps/screenshots/default.webp"
-        class="w-full h-full object-cover min-w-[150px]"
-        sizes="sm:200px md:400px lg:1200"
-      />
-      <div class="absolute inset-0 bg-black bg-opacity-45"></div>
-      <div class="absolute inset-0 flex flex-col items-center justify-center">
-        {{ match.e_region.description }}
-      </div>
-    </div>
-
-    <template v-for="pick of picks" v-if="picks?.length > 0">
-      <template v-if="pick.type === 'Side'">
-        <div
-          class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]"
-        >
-          <NuxtImg
-            src="/img/maps/screenshots/random.webp"
-            class="w-full h-full object-cover min-w-[150px]"
-            sizes="sm:200px md:400px lg:1200"
-          />
-          <div class="absolute inset-0 bg-black bg-opacity-45"></div>
-          <div
-            class="absolute inset-0 flex flex-col items-center justify-center"
-          >
-            <img
-              :src="
-                pick.side === 'CT'
-                  ? '/img/teams/ct_logo.svg'
-                  : '/img/teams/t_logo.svg'
-              "
-              class="max-w-[96px] w-full"
-            />
-            <div class="absolute bottom-3 text-sm">
-              {{ pick.match_lineup.name }}
-            </div>
-          </div>
-        </div>
-      </template>
-      <template v-else>
-        <MapDisplay :map="pick.map">
-          <template v-slot:header>
-            <div class="absolute top-3">
-              <badge
-                :variant="pick.type === 'Pick' ? 'default' : 'destructive'"
-              >
-                <template v-if="pick.type === 'Decider'"> Decider </template>
-                <template v-else>
-                  {{ pick.type }}
-                </template>
-              </badge>
-            </div>
-          </template>
-
-          <template v-slot:default>
-            <div class="absolute bottom-3 text-sm">
-              {{ pick.match_lineup.name }}
-            </div>
-          </template>
-        </MapDisplay>
-      </template>
-    </template>
-  </div>
+  <template v-if="picks?.length > 0 || hasAssignedRegion">
+    <MatchPicksDisplay :match="match" :picks="picks" />
+  </template>
 
   <div
     v-if="
@@ -168,18 +100,12 @@ import { Separator } from "~/components/ui/separator";
           (mapId) => {
             if (pickType !== e_veto_pick_types_enum.Side) {
               form.setFieldValue('map_id', mapId);
+              console.info(`LETS GO`);
             }
           }
         "
-      ></MapSelector>
-
-      <Button
-        type="submit"
-        :disabled="Object.keys(form.errors).length > 0"
-        v-if="pickType !== e_veto_pick_types_enum.Side"
+        >Confirm {{ pickType }}</MapSelector
       >
-        Select {{ pickType }}
-      </Button>
     </form>
     <template v-else>
       <MapSelector :map-pool="mapPool" :picks="picks"></MapSelector>
@@ -394,6 +320,9 @@ export default {
           img: "/img/teams/t_logo.svg",
         },
       ];
+    },
+    hasAssignedRegion() {
+      return this.match.options.region_veto && this.match.e_region;
     },
   },
 };

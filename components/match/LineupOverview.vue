@@ -11,7 +11,7 @@ import {
 import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import PlayerDisplay from "../PlayerDisplay.vue";
-PlayerDisplay
+PlayerDisplay;
 </script>
 
 <template>
@@ -58,18 +58,19 @@ PlayerDisplay
         v-for="slot of Math.max(0, minPlayers - lineup.lineup_players.length)"
       >
         <TableCell colspan="15">
-          <PlayerDisplay 
+          <PlayerDisplay
             :show-flag="false"
             :show-steam-id="false"
             :player="{
-                name: `Slot ${slot + lineup.lineup_players.length}`
-            }"/>
-            <template v-if="lineup.can_update_lineup && canAddToLineup">
-              <AssignPlayerToLineup
-                :lineup="lineup"
-                :exclude="excludePlayers"
-              ></AssignPlayerToLineup>
-            </template>
+              name: `Slot ${slot + lineup.lineup_players.length}`,
+            }"
+          />
+          <template v-if="lineup.can_update_lineup && canAddToLineup">
+            <AssignPlayerToLineup
+              :lineup="lineup"
+              :exclude="excludePlayers"
+            ></AssignPlayerToLineup>
+          </template>
         </TableCell>
       </TableRow>
     </TableBody>

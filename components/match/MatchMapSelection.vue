@@ -5,41 +5,39 @@ import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 </script>
 
 <template>
-  <MatchMapVeto
-    :match="match"
-    :map-pool="mapPool"
-    v-if="match.options.map_veto"
-  ></MatchMapVeto>
-  <template
-    v-else-if="
-      match.is_organizer && assigningMaps && match.options.map_veto === false
-    "
-  >
-    <Card class="sm:col-span-4">
-      <CardHeader class="pb-3">
-        <CardContent>
-          <form @submit.prevent="addMap">
-            <MapSelector
-              :model-value="form.values.map_id"
-              :map-pool="mapPool"
-              @update:modelValue="
-                (mapId) => {
-                  form.setFieldValue('map_id', mapId);
-                }
-              "
-            ></MapSelector>
+  <div v-if="match.options.map_veto || canAssignMap">
+    <MatchMapVeto
+      :match="match"
+      :map-pool="mapPool"
+      v-if="match.options.map_veto"
+    ></MatchMapVeto>
+    <template v-else-if="canAssignMap">
+      <Card class="sm:col-span-4">
+        <CardHeader class="pb-3">
+          <CardContent>
+            <form @submit.prevent="addMap">
+              <MapSelector
+                :model-value="form.values.map_id"
+                :map-pool="mapPool"
+                @update:modelValue="
+                  (mapId) => {
+                    form.setFieldValue('map_id', mapId);
+                  }
+                "
+              ></MapSelector>
 
-            <Button
-              type="submit"
-              :disabled="Object.keys(form.errors).length > 0"
-            >
-              Pick Map
-            </Button>
-          </form>
-        </CardContent>
-      </CardHeader>
-    </Card>
-  </template>
+              <Button
+                type="submit"
+                :disabled="Object.keys(form.errors).length > 0"
+              >
+                Pick Map
+              </Button>
+            </form>
+          </CardContent>
+        </CardHeader>
+      </Card>
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
@@ -142,6 +140,13 @@ export default {
     assigningMaps() {
       return (
         this.match.options.best_of > Object.keys(this.match.match_maps).length
+      );
+    },
+    canAssignMap() {
+      return (
+        this.match.is_organizer &&
+        this.assigningMaps &&
+        this.match.options.map_veto === false
       );
     },
   },

@@ -3,22 +3,32 @@ import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
 <template>
-  <div
-    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-4 my-8"
-  >
-    <MapDisplay
-      v-for="map of mapPool"
-      :key="map.id"
-      :map="map"
-      class="cursor-pointer h-[150px]"
-      :class="{
-        grayscale: modelValue && modelValue !== map.id,
-        ring: modelValue === map.id,
-        'opacity-10 pointer-events-none': !availableMaps.includes(map),
-      }"
-      @click="$emit('update:modelValue', map.id)"
+  <div class="container mx-auto px-4">
+    <div
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 my-12"
     >
-    </MapDisplay>
+      <div v-for="map in mapPool" :key="map.id" class="relative group">
+        <MapDisplay
+          :map="map"
+          class="cursor-pointer h-[180px] transition-all duration-300 ease-in-out transform hover:scale-105"
+          :class="{
+            'ring-4 ring-primary ring-opacity-50': selectedMap?.id === map.id,
+            'opacity-30 pointer-events-none filter grayscale':
+              !availableMaps.includes(map),
+          }"
+          @click="selectMap(map)"
+        />
+        <div
+          v-if="selectedMap?.id === map.id"
+          class="absolute inset-0 flex items-start justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
+          @click="confirmMap"
+        >
+          <span class="text-white text-lg font-bold mt-4">
+            <slot></slot>
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -38,6 +48,19 @@ export default {
     picks: {
       type: Array,
       required: false,
+    },
+  },
+  data() {
+    return {
+      selectedMap: undefined,
+    };
+  },
+  methods: {
+    selectMap(map) {
+      this.selectedMap = map;
+    },
+    confirmMap() {
+      this.$emit("update:modelValue", this.selectedMap.id);
     },
   },
   computed: {

@@ -18,42 +18,44 @@ import {
 </script>
 
 <template>
-  <Popover v-model:open="open">
-    <PopoverTrigger as-child>
-      <Button
-        @click="searchTeams()"
-        variant="outline"
-        :aria-expanded="open"
-        class="w-full justify-between"
-      >
-        {{ teams?.find((team) => team.id === modelValue)?.name || label }}
-        <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </Button>
-    </PopoverTrigger>
-    <PopoverContent class="w-[500px] p-0">
-      <Command @update:searchTerm="searchTeams">
-        <CommandInput class="h-9" @keydown.enter="select(teams?.[0])" />
-        <CommandEmpty>No Teams Found.</CommandEmpty>
-        <CommandList>
-          <CommandGroup>
-            <CommandItem
-              v-for="team in teams"
-              :key="team.id"
-              :value="team"
-              @select="select(team)"
-            >
-              <div class="flex items-center">
-                <span class="text-xs text-muted-foreground mr-2">
-                  [{{ team.short_name }}]
-                </span>
-                <span>{{ team.name }}</span>
-              </div>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
-      </Command>
-    </PopoverContent>
-  </Popover>
+  <div>
+    <Popover v-model:open="open">
+      <PopoverTrigger as-child>
+        <Button
+          @click="searchTeams()"
+          variant="outline"
+          :aria-expanded="open"
+          class="w-full justify-between"
+        >
+          {{ teams?.find((team) => team.id === modelValue)?.name || label }}
+          <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <Command @update:searchTerm="searchTeams">
+          <CommandInput class="h-9" @keydown.enter="select(teams?.[0])" />
+          <CommandEmpty>No Teams Found.</CommandEmpty>
+          <CommandList>
+            <CommandGroup>
+              <CommandItem
+                v-for="team in teams"
+                :key="team.id"
+                :value="team"
+                @select="select(team)"
+              >
+                <div class="flex items-center">
+                  <span class="text-xs text-muted-foreground mr-2">
+                    [{{ team.short_name }}]
+                  </span>
+                  <span>{{ team.name }}</span>
+                </div>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  </div>
 </template>
 
 <script lang="ts">

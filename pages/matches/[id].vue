@@ -18,15 +18,14 @@ import JoinMatch from "~/components/match/JoinMatch.vue";
       <CheckIntoMatch :match="match"></CheckIntoMatch>
       <JoinMatch :match="match"></JoinMatch>
       <MatchInfo :match="match"></MatchInfo>
-      <div>
-        <MatchLobbyChat
-          v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
-          :match-id="match.id"
-          :messages="messages"
-        ></MatchLobbyChat>
-      </div>
+      <MatchLobbyChat
+        v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
+        :match-id="match.id"
+        :messages="messages"
+      ></MatchLobbyChat>
     </div>
-    <div class="grid gap-y-4">
+
+    <div class="grid grid-cols-1 gap-y-4">
       <div
         class="flex gap-4 justify-around flex-col lg:flex-row"
         v-if="match.match_maps.length > 0"
@@ -39,10 +38,13 @@ import JoinMatch from "~/components/match/JoinMatch.vue";
         </div>
       </div>
 
-      <MatchRegionVeto :match="match" class="hidden lg:block"></MatchRegionVeto>
+      <MatchRegionVeto
+        :match="match"
+        class="hidden lg:contents"
+      ></MatchRegionVeto>
       <MatchMapSelection
         :match="match"
-        class="hidden lg:block"
+        class="hidden lg:contents"
       ></MatchMapSelection>
 
       <MatchTabs :match="match"></MatchTabs>

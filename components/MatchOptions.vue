@@ -2,6 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import { Input } from "~/components/ui/input";
 import { FormControl } from "~/components/ui/form";
+import { Separator } from "~/components/ui/separator";
 </script>
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -9,7 +10,7 @@ import { FormControl } from "~/components/ui/form";
     <div class="space-y-6">
       <!-- Match Settings -->
       <div class="space-y-4">
-        <div class="flex flex-col space-y-3 rounded-lg border p-4">
+        <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
           <slot></slot>
 
           <FormField v-slot="{ componentField }" name="type">
@@ -115,29 +116,46 @@ import { FormControl } from "~/components/ui/form";
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <template v-for="map in availableMaps" :key="map.id">
-                  <div
-                    class="relative cursor-pointer rounded-lg overflow-hidden transition-opacity duration-200"
-                    @click="updateMapPool(map.id)"
-                    :class="{
-                      'opacity-40':
-                        form.values.custom_map_pool &&
-                        !form.values.map_pool?.includes(map.id),
-                    }"
-                  >
-                    <MapDisplay :map="map" />
-                    <div
-                      class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
-                      :class="{
-                        'opacity-100':
-                          form.values.custom_map_pool &&
-                          form.values.map_pool?.includes(map.id),
-                        'opacity-0':
-                          !form.values.custom_map_pool ||
-                          !form.values.map_pool?.includes(map.id),
-                      }"
-                    ></div>
+              <div class="space-y-6">
+                <template
+                  v-for="(maps, type) in {
+                    'Official Maps': availableMaps.official,
+                    'Workshop Maps': availableMaps.workshop,
+                  }"
+                  :key="type"
+                >
+                  <div v-if="maps && maps.length > 0">
+                    <Separator
+                      v-if="type === 'Workshop Maps'"
+                      class="text-2xl font-bold mb-4 text-center my-8"
+                      :label="type"
+                    ></Separator>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <template v-for="map in maps" :key="map.id">
+                        <div
+                          class="relative cursor-pointer rounded-lg overflow-hidden transition-opacity duration-200"
+                          @click="updateMapPool(map.id)"
+                          :class="{
+                            'opacity-40':
+                              form.values.custom_map_pool &&
+                              !form.values.map_pool?.includes(map.id),
+                          }"
+                        >
+                          <MapDisplay class="h-[150px]" :map="map" />
+                          <div
+                            class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
+                            :class="{
+                              'opacity-100':
+                                form.values.custom_map_pool &&
+                                form.values.map_pool?.includes(map.id),
+                              'opacity-0':
+                                !form.values.custom_map_pool ||
+                                !form.values.map_pool?.includes(map.id),
+                            }"
+                          ></div>
+                        </div>
+                      </template>
+                    </div>
                   </div>
                 </template>
               </div>
@@ -380,6 +398,12 @@ export default {
           return;
         }
         this.form.setFieldValue("map_pool_id", null);
+        this.form.setFieldValue(
+          "map_pool",
+          this.defaultMapPool.maps.map((map) => {
+            return map.id;
+          }),
+        );
       },
     },
   },
@@ -401,21 +425,36 @@ export default {
       if (!this.maps) {
         return [];
       }
-      return this.maps.filter((map) => {
-        if (
-          this.form.values.custom_map_pool === false &&
-          map.active_pool === false
-        ) {
-          return false;
-        }
 
-        switch (this.form.values.type) {
-          case e_match_types_enum.Competitive:
-            return map.type === e_match_types_enum.Competitive;
-          case e_match_types_enum.Wingman:
-            return map.type === e_match_types_enum.Wingman;
-        }
-      });
+      const maps = this.maps
+        .filter((map) => {
+          if (
+            this.form.values.custom_map_pool === false &&
+            map.active_pool === false
+          ) {
+            return false;
+          }
+
+          switch (this.form.values.type) {
+            case e_match_types_enum.Competitive:
+              return map.type === e_match_types_enum.Competitive;
+            case e_match_types_enum.Wingman:
+              return map.type === e_match_types_enum.Wingman;
+          }
+        })
+        .sort((a, b) => {
+          // First, sort active pool maps to the top
+          if (a.active_pool && !b.active_pool) return -1;
+          if (!a.active_pool && b.active_pool) return 1;
+
+          // Finally, sort by name
+          return a.name.localeCompare(b.name);
+        });
+
+      return {
+        official: maps.filter((map) => !map.workshop_map_id),
+        workshop: maps.filter((map) => map.workshop_map_id),
+      };
     },
   },
   methods: {

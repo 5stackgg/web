@@ -47,7 +47,7 @@ export default {
     showSteamId: {
       type: Boolean,
       default: true,
-    }
+    },
   },
 };
 </script>

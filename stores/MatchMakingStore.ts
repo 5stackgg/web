@@ -4,6 +4,8 @@ import {
   e_game_server_node_regions_enum,
   e_match_types_enum,
 } from "~/generated/zeus";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { generateSubscription } from "~/graphql/graphqlGen";
 
 export const useMatchMakingStore = defineStore("match-making", () => {
   const playersOnline = ref<number>;
@@ -37,7 +39,38 @@ export const useMatchMakingStore = defineStore("match-making", () => {
     >
   >({});
 
+  const regions = ref(undefined);
+  const subscribeToRegions = async () => {
+    const subscription = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        e_game_server_node_regions: [
+          {
+            where: {
+              status: {
+                _neq: "N/A",
+              },
+            },
+          },
+          {
+            value: true,
+            status: true,
+            description: true,
+          },
+        ],
+      }),
+    });
+
+    subscription.subscribe({
+      next: ({ data }) => {
+        regions.value = data.e_game_server_node_regions;
+      },
+    });
+  };
+
+  subscribeToRegions();
+
   return {
+    regions,
     regionStats,
     joinedMatchmakingQueues,
   };

@@ -26,17 +26,18 @@ import JoinMatch from "~/components/match/JoinMatch.vue";
     </div>
 
     <div class="grid grid-cols-1 gap-y-4">
-      <div
-        class="flex gap-4 justify-around flex-col lg:flex-row"
-        v-if="match.match_maps.length > 0"
-      >
-        <div
-          v-for="match_map of match.match_maps"
-          class="max-h-[150px] md:max-h-[500px]"
-        >
-          <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
+      <template v-if="match.match_maps.length > 0">
+        <div class="flex gap-4 justify-around flex-col lg:flex-row">
+          <div
+            v-for="match_map of match.match_maps"
+            class="max-h-[150px] md:max-h-[500px]"
+          >
+            <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
+          </div>
         </div>
-      </div>
+
+        <Separator />
+      </template>
 
       <MatchRegionVeto
         :match="match"

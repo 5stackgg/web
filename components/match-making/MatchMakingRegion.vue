@@ -7,9 +7,12 @@ import socket from "~/web-sockets/Socket";
 </script>
 <template>
   <Card>
-    <CardHeader class="flex justify-between items-center">
-      <CardTitle class="text-lg">
-        {{ region.description }}
+    <CardHeader
+      class="flex justify-between items-center"
+      v-if="regions.length > 1 || joinedCompetitiveQueue || joinedWingmanQueue"
+    >
+      <CardTitle v-if="regions.length > 1">
+        <Badge varient="outline">{{ region.description }}</Badge>
       </CardTitle>
       <div v-if="joinedCompetitiveQueue || joinedWingmanQueue">
         <Button
@@ -28,7 +31,12 @@ import socket from "~/web-sockets/Socket";
         </Button>
       </div>
     </CardHeader>
-    <CardContent>
+    <CardContent
+      :class="{
+        'mt-6':
+          regions.length <= 1 && !joinedCompetitiveQueue && !joinedWingmanQueue,
+      }"
+    >
       <div
         v-if="
           joinedCompetitiveQueue ||
@@ -103,6 +111,7 @@ import socket from "~/web-sockets/Socket";
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import TimeAgo from "../TimeAgo.vue";
+import { useMatchMakingStore } from "~/stores/MatchMakingStore";
 
 export default {
   props: {
@@ -174,6 +183,9 @@ export default {
         this.matchamkingQueueDetails?.type === e_match_types_enum.Competitive &&
         this.matchamkingQueueDetails?.regions.includes(this.region.value)
       );
+    },
+    regions() {
+      return useMatchMakingStore().regions;
     },
   },
 };

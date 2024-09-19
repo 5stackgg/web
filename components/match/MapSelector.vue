@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
 import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
@@ -19,13 +20,12 @@ import MapDisplay from "~/components/MapDisplay.vue";
           @click="selectMap(map)"
         />
         <div
-          v-if="selectedMap?.id === map.id"
-          class="absolute inset-0 flex items-start justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
-          @click="confirmMap"
+          v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
+          class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
         >
-          <span class="text-white text-lg font-bold mt-4">
+          <Button variant="destructive" @click="confirmMap">
             <slot></slot>
-          </span>
+          </Button>
         </div>
       </div>
     </div>

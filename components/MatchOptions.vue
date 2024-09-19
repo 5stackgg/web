@@ -168,55 +168,57 @@ import { Separator } from "~/components/ui/separator";
 
     <!-- Right Column -->
     <div class="space-y-6">
-      <div class="grid grid-cols-2 gap-4">
-        <FormField
-          v-slot="{ value, handleChange }"
-          name="map_veto"
-          v-if="!forceVeto"
+      <FormField
+        v-slot="{ value, handleChange }"
+        name="map_veto"
+        v-if="!forceVeto"
+      >
+        <FormItem
+          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+          @click="handleChange(!value)"
         >
-          <FormItem
-            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent h-full"
-            @click="handleChange(!value)"
-          >
-            <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">Map Veto</FormLabel>
-              <FormControl>
-                <Switch
-                  class="pointer-events-none"
-                  :checked="value"
-                  @update:checked="handleChange"
-                />
-              </FormControl>
-            </div>
-            <FormDescription>
-              Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick
-              side, team 2 pick, team 1 pick side, team 2 ban. Process repeats
-              until final map is selected.
-            </FormDescription>
-          </FormItem>
-        </FormField>
+          <div class="flex justify-between items-center">
+            <FormLabel class="text-lg font-semibold">Map Veto</FormLabel>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :checked="value"
+                @update:checked="handleChange"
+              />
+            </FormControl>
+          </div>
+          <FormDescription>
+            Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick
+            side, team 2 pick, team 1 pick side, team 2 ban. Process repeats
+            until final map is selected.
+          </FormDescription>
+        </FormItem>
+      </FormField>
 
-        <FormField v-slot="{ value, handleChange }" name="region_veto">
-          <FormItem
-            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent h-full"
-            @click="handleChange(!value)"
-          >
-            <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">Region Veto</FormLabel>
-              <FormControl>
-                <Switch
-                  class="pointer-events-none"
-                  :checked="value"
-                  @update:checked="handleChange"
-                />
-              </FormControl>
-            </div>
-            <FormDescription>
-              Allows teams to veto and select the server region.
-            </FormDescription>
-          </FormItem>
-        </FormField>
-      </div>
+      <FormField
+        v-slot="{ value, handleChange }"
+        name="region_veto"
+        v-if="regions.length > 1"
+      >
+        <FormItem
+          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+          @click="handleChange(!value)"
+        >
+          <div class="flex justify-between items-center">
+            <FormLabel class="text-lg font-semibold">Region Veto</FormLabel>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :checked="value"
+                @update:checked="handleChange"
+              />
+            </FormControl>
+          </div>
+          <FormDescription>
+            Allows teams to veto and select the server region.
+          </FormDescription>
+        </FormItem>
+      </FormField>
 
       <FormField v-slot="{ value, handleChange }" name="knife_round">
         <FormItem
@@ -319,6 +321,7 @@ import { Separator } from "~/components/ui/separator";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
+import { useMatchMakingStore } from "~/stores/MatchMakingStore";
 
 export default {
   props: {
@@ -455,6 +458,9 @@ export default {
         official: maps.filter((map) => !map.workshop_map_id),
         workshop: maps.filter((map) => map.workshop_map_id),
       };
+    },
+    regions() {
+      return useMatchMakingStore().regions;
     },
   },
   methods: {

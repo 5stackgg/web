@@ -17,7 +17,6 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       match.status === 'Veto' &&
       match.match_maps.length < bestOf
     "
-    class="py-3"
   >
     <Separator v-if="picks?.length > 0"></Separator>
 
@@ -46,7 +45,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
     <form @submit.prevent="vetoPick" v-if="isPicking">
       <template v-if="pickType === e_veto_pick_types_enum.Side">
         <div class="relative max-w-[800px] mx-auto">
-          <MapDisplay class="w-full" :map="previousMap" />
+          <MapDisplay class="w-full opacity-75" :map="previousMap" />
           <div
             class="absolute inset-0 flex flex-col items-center justify-center space-y-4 z-50"
           >
@@ -82,14 +81,14 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
             </div>
             <Button
               class="w-full max-w-[200px]"
-              type="submit"
+              variant="destructive"
               :disabled="Object.keys(form.errors).length > 0"
             >
               Pick {{ pickType }}
             </Button>
           </div>
-          <Separator />
         </div>
+        <Separator />
       </template>
 
       <MapSelector
@@ -100,7 +99,6 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
           (mapId) => {
             if (pickType !== e_veto_pick_types_enum.Side) {
               form.setFieldValue('map_id', mapId);
-              console.info(`LETS GO`);
             }
           }
         "
@@ -108,8 +106,16 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       >
     </form>
     <template v-else>
-      <MapSelector :map-pool="mapPool" :picks="picks"></MapSelector>
+      <MapSelector
+        :class="{
+          'pointer-events-none': true,
+        }"
+        :map-pool="mapPool"
+        :picks="picks"
+      ></MapSelector>
     </template>
+
+    <Separator />
   </div>
 </template>
 

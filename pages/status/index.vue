@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import PageHeading from "~/components/PageHeading.vue";
-import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
 </script>
 
 <template>
@@ -13,7 +12,7 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow v-for="region in gameServerRegions" :key="region.value">
+      <TableRow v-for="region in regions" :key="region.value">
         <TableCell>
           <span
             class="ml-1 inline-block h-2 w-2 rounded-full"
@@ -32,37 +31,12 @@ import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNode
 </template>
 
 <script lang="ts">
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { useMatchMakingStore } from "~/stores/MatchMakingStore";
 
 export default {
-  data() {
-    return {
-      gameServerRegions: [],
-    };
-  },
-  apollo: {
-    $subscribe: {
-      game_server_nodes: {
-        query: typedGql("subscription")({
-          e_game_server_node_regions: [
-            {
-              where: {
-                status: {
-                  _neq: "N/A",
-                },
-              },
-            },
-            {
-              value: true,
-              status: true,
-              description: true,
-            },
-          ],
-        }),
-        result: function ({ data }) {
-          this.gameServerRegions = data.e_game_server_node_regions;
-        },
-      },
+  computed: {
+    regions() {
+      return useMatchMakingStore().regions;
     },
   },
 };

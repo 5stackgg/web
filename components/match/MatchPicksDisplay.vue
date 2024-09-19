@@ -4,7 +4,10 @@ import MapDisplay from "~/components/MapDisplay.vue";
 
 <template>
   <div class="flex gap-4 h-[200px] overflow-hidden">
-    <div class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]">
+    <div
+      class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]"
+      v-if="regions.length > 1"
+    >
       <NuxtImg
         src="/img/maps/screenshots/default.webp"
         class="w-full h-full object-cover min-w-[150px]"
@@ -71,6 +74,8 @@ import MapDisplay from "~/components/MapDisplay.vue";
 </template>
 
 <script lang="ts">
+import { useMatchMakingStore } from "~/stores/MatchMakingStore";
+
 export default {
   props: {
     match: {
@@ -80,6 +85,11 @@ export default {
     picks: {
       type: Array,
       required: false,
+    },
+  },
+  computed: {
+    regions() {
+      return useMatchMakingStore().regions;
     },
   },
 };

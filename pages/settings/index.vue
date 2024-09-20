@@ -14,11 +14,11 @@ definePageMeta({
   <Separator />
 
   <form @submit.prevent="updateMe" class="grid gap-4">
-    <FormField name="steam_id">
+    <FormField v-slot="{ componentField }" name="steam_id">
       <FormItem>
         <FormLabel>Steam ID</FormLabel>
         <FormControl>
-          <Input :value="me.steam_id" disabled />
+          <Input v-bind="componentField" readonly disabled />
         </FormControl>
       </FormItem>
     </FormField>
@@ -145,6 +145,7 @@ export default {
       immediate: true,
       handler() {
         this.form.setValues({
+          steam_id: this.me.steam_id,
           name: this.me.name,
           avatar_url: this.me.avatar_url,
           country: this.me.country,

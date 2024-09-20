@@ -6,26 +6,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MatchesTable from "~/components/MatchesTable.vue";
 import MatchMaking from "~/components/match-making/MatchMaking.vue";
 import { PlusCircle } from "lucide-vue-next";
+import PageHeading from "~/components/PageHeading.vue";
 </script>
 
 <template>
   <div class="flex flex-col md:flex-row gap-4">
     <div class="flex-grow flex flex-col gap-4">
-      <div class="space-y-0.5 flex justify-between items-start items-center">
-        <div>
-          <h2 class="text-2xl font-bold tracking-tight">Upcoming Matches</h2>
-          <p class="text-muted-foreground">
-            Your upcoming matches that either you manage or are in the lineup.
-          </p>
-        </div>
+      <PageHeading>
+        <template #title> Upcoming Matches </template>
 
-        <NuxtLink to="/matches/create">
-          <Button size="lg">
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">Create Match</span>
-          </Button>
-        </NuxtLink>
-      </div>
+        <template #description>
+          Your upcoming matches that either you manage or are in the lineup.
+        </template>
+
+        <template #actions>
+          <NuxtLink to="/matches/create">
+            <Button size="lg">
+              <PlusCircle class="w-4 h-4" />
+              <span class="hidden md:inline ml-2">Create Match</span>
+            </Button>
+          </NuxtLink>
+        </template>
+      </PageHeading>
       <my-matches :upcoming="true"></my-matches>
 
       <Separator />

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/table";
 import Pagination from "@/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
-import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 </script>
 
 <template>

@@ -17,6 +17,7 @@ import {
 import { Button } from "~/components/ui/button";
 import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
 import { e_game_server_node_statuses_enum } from "~/generated/zeus";
+import { Trash2, RefreshCw } from "lucide-vue-next";
 </script>
 
 <template>
@@ -74,23 +75,40 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
             <FormMessage />
           </FormItem>
         </FormField>
-
-        <Button type="submit">Update Ports</Button>
       </form>
-
-      <Button
-        @click="updateCs"
-        v-if="gameServerNode.status === e_game_server_node_statuses_enum.Online"
-        >Update CS</Button
-      >
-      <Button @click="removeGameNodeServer">Remove Game Node Server</Button>
     </TableCell>
-    <TableCell>
+    <TableCell class="flex items-center space-x-2">
       <Switch
         class="cursor-pointer"
         :checked="gameServerNode.enabled"
         @click="toggleEnabled"
       />
+
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="outline" size="icon">
+            <PaginationEllipsis class="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent class="w-56">
+          <DropdownMenuItem
+            @click="updateCs"
+            v-if="
+              gameServerNode.status === e_game_server_node_statuses_enum.Online
+            "
+          >
+            <RefreshCw class="mr-2 h-4 w-4" />
+            <span>Update CS</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem @click="removeGameNodeServer" class="text-red-500">
+            <Trash2 class="mr-2 h-4 w-4" />
+            <span>Remove Node</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </TableCell>
   </TableRow>
 </template>
@@ -100,6 +118,7 @@ import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -166,6 +185,21 @@ export default {
       }),
     };
   },
+  mounted() {
+    this.$watch(
+      () => this.portForm.values,
+      async (newValues) => {
+        const { valid } = await this.portForm.validate();
+
+        if (!valid) {
+          return;
+        }
+
+        this.updateServerPorts();
+      },
+      { deep: true },
+    );
+  },
   watch: {
     gameServerNode: {
       immediate: true,
@@ -197,6 +231,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: "CS2 is being updated on the node",
       });
     },
     async removeGameNodeServer() {
@@ -237,6 +275,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: "Node Ports Updated",
       });
     },
     async updateRegion(region: string) {

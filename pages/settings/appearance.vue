@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { toast } from "@/components/ui/toast";
+import { Button } from "@/components/ui/button";
 
 const colorMode = useColorMode();
 
@@ -40,14 +39,6 @@ const { handleSubmit } = useForm({
 
 const onSubmit = handleSubmit((values) => {
   colorMode.preference = values.theme;
-  toast({
-    title: "You submitted the following values:",
-    description: h(
-      "pre",
-      { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
-    ),
-  });
 });
 </script>
 

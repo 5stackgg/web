@@ -17,7 +17,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
     </template>
     <template v-else>
       <div class="underline flex" v-if="match.connection_string">
-        <clip-board :data="match.connection_string"></clip-board>
+        <ClipBoard :data="match.connection_string"></ClipBoard>
         <a
           :href="`https://${useRuntimeConfig().public.webDomain}${match.connection_link}`"
         >

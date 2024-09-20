@@ -4,6 +4,7 @@ import PageHeading from "~/components/PageHeading.vue";
 import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { PlusCircle } from "lucide-vue-next";
+import ClipBoard from "~/components/ClipBoard.vue";
 </script>
 
 <template>
@@ -12,12 +13,28 @@ import { PlusCircle } from "lucide-vue-next";
       <template #title> Game Server Nodes </template>
 
       <template #actions>
-        <NuxtLink to="/game-server-nodes/create">
-          <Button size="lg">
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">Create Game Server Node</span>
-          </Button>
-        </NuxtLink>
+        <Popover>
+          <PopoverTrigger>
+            <Button size="lg" @click="createGameServerNode">
+              <PlusCircle class="w-4 h-4" />
+              <span class="hidden md:inline ml-2">Create Game Server Node</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div class="relative bg-gray-900 rounded-lg p-4" v-if="script">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-white text-sm font-semibold">
+                  Installation Script
+                </h3>
+                <ClipBoard
+                  :data="script"
+                  class="text-white hover:text-gray-300 transition-colors"
+                ></ClipBoard>
+              </div>
+              <pre class="text-white overflow-x-auto text-sm">{{ script }}</pre>
+            </div>
+          </PopoverContent>
+        </Popover>
       </template>
     </PageHeading>
 
@@ -63,10 +80,12 @@ import { PlusCircle } from "lucide-vue-next";
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { order_by } from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   data() {
     return {
+      script: undefined,
       gameServerNodes: [],
     };
   },
@@ -107,6 +126,20 @@ export default {
           this.gameServerNodes = data.game_server_nodes;
         },
       },
+    },
+  },
+
+  methods: {
+    async createGameServerNode() {
+      const { data } = await this.$apollo.mutate({
+        mutation: generateMutation({
+          setupGameServer: {
+            link: true,
+          },
+        }),
+      });
+
+      this.script = data.setupGameServer.link;
     },
   },
 };

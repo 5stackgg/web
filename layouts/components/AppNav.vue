@@ -177,9 +177,9 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
                 <span
                   class="inline-block w-2 h-2 rounded-full"
                   :class="{
-                    'bg-green-500': overalRegionStatus === 'Online',
-                    'bg-red-500': overalRegionStatus === 'Offline',
-                    'bg-yellow-500': overalRegionStatus === 'Degraded',
+                    'bg-green-600': overalRegionStatus === 'Online',
+                    'bg-red-600': overalRegionStatus === 'Offline',
+                    'bg-yellow-600': overalRegionStatus === 'Degraded',
                   }"
                 ></span>
               </span>

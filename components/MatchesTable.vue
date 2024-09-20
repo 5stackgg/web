@@ -9,7 +9,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <TableRow>
         <TableHead class="w-1/3">Match</TableHead>
         <TableHead class="w-1/6 hidden sm:table-cell">Type</TableHead>
-        <TableHead class="w-1/6">Status</TableHead>
         <TableHead class="w-1/6 hidden md:table-cell">Maps</TableHead>
       </TableRow>
     </TableHeader>
@@ -30,7 +29,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
           @click="viewMatch(match.id)"
           class="cursor-pointer"
         >
-          <TableCell class="font-medium">
+          <TableCell>
+            <Badge>{{ match.status }}</Badge>
             <div class="flex items-center space-x-2">
               <span class="font-bold">{{ match.lineup_1.name }}</span>
               <span class="text-gray-500">vs</span>
@@ -45,9 +45,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
           </TableCell>
           <TableCell class="hidden sm:table-cell">
             {{ match.options.type }}
-          </TableCell>
-          <TableCell>
-            <Badge>{{ match.status }}</Badge>
           </TableCell>
           <TableCell class="hidden md:table-cell">
             <div class="flex flex-wrap gap-1">

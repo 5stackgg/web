@@ -9,9 +9,19 @@ import { PlusCircle } from "lucide-vue-next";
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row gap-3">
-    <div class="flex-grow">
-      <Card class="p-3">
+  <div class="flex flex-col md:flex-row gap-4">
+    <div class="flex-grow flex flex-col gap-4">
+      <div class="space-y-0.5">
+        <h2 class="text-2xl font-bold tracking-tight">Upcoming Matches</h2>
+        <p class="text-muted-foreground">
+          Your upcoming matches that either you manage or are in the lineup.
+        </p>
+      </div>
+      <my-matches :upcoming="true"></my-matches>
+
+      <Separator />
+
+      <Card class="p-4">
         <Tabs default-value="my" class="relative">
           <TabsList>
             <TabsTrigger value="my"> My Matches </TabsTrigger>
@@ -38,21 +48,17 @@ import { PlusCircle } from "lucide-vue-next";
         </Tabs>
       </Card>
 
-      <div class="mt-4">
-        <Card class="p-3 inline-block">
-          <Pagination
-            :page="page"
-            :per-page="perPage"
-            @page="
-              (_page) => {
-                page = _page;
-              }
-            "
-            :total="matches_aggregate?.aggregate?.count"
-            v-if="matches_aggregate"
-          ></Pagination>
-        </Card>
-      </div>
+      <Pagination
+        :page="page"
+        :per-page="perPage"
+        @page="
+          (_page) => {
+            page = _page;
+          }
+        "
+        :total="matches_aggregate?.aggregate?.count"
+        v-if="matches_aggregate"
+      ></Pagination>
     </div>
 
     <div class="md:w-1/4 hidden lg:block">

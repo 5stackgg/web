@@ -3,20 +3,21 @@ import MatchesTable from "~/components/MatchesTable.vue";
 </script>
 
 <template>
-  <div v-if="meWithMatches?.player?.matches">
+  <Card v-if="meWithMatches?.player?.matches" class="p-4">
     <matches-table :matches="meWithMatches.player.matches"></matches-table>
-    <pagination
-      :page="page"
-      @page="
-        (_page) => {
-          page = _page;
-        }
-      "
-      :total="myTotalMatches.player.player_lineup_aggregate.aggregate.count"
-      :per-page="per_page"
-      v-if="myTotalMatches"
-    ></pagination>
-  </div>
+  </Card>
+
+  <pagination
+    :page="page"
+    @page="
+      (_page) => {
+        page = _page;
+      }
+    "
+    :total="myTotalMatches.player.player_lineup_aggregate.aggregate.count"
+    :per-page="per_page"
+    v-if="myTotalMatches"
+  ></pagination>
 </template>
 
 <script lang="ts">

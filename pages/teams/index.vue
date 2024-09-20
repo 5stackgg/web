@@ -5,64 +5,73 @@ import { FormItem, FormControl, Form } from "@/components/ui/form";
 import { Button } from "~/components/ui/button";
 import TeamsTable from "~/components/TeamsTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
+import { PlusCircle } from "lucide-vue-next";
 </script>
 
 <template>
-  <PageHeading>
-    Teams
-    <NuxtLink to="/teams/create">
-      <Button>Create Team</Button>
-    </NuxtLink>
+  <div class="flex-grow flex flex-col gap-4">
+    <PageHeading>
+      <template #title>Teams</template>
+      <template #description>Manage teams and rosters.</template>
+      <template #actions>
+        <div class="flex items-center gap-4">
+          <Form class="flex-grow">
+            <FormField name="teamQuery">
+              <FormItem>
+                <FormControl>
+                  <div class="relative w-full max-w-sm">
+                    <Input
+                      type="text"
+                      placeholder="Search teams..."
+                      v-model="teamQuery"
+                      class="pl-10"
+                    />
+                    <Search
+                      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            </FormField>
+          </Form>
 
-    <template v-slot:description> Manage teams and rosters. </template>
-  </PageHeading>
+          <NuxtLink to="/teams/create">
+            <Button size="lg">
+              <PlusCircle class="w-4 h-4 mr-2" />
+              <span class="hidden md:inline">Create Team</span>
+            </Button>
+          </NuxtLink>
+        </div>
+      </template>
+    </PageHeading>
 
-  <Tabs default-value="my-teams">
-    <TabsList>
-      <TabsTrigger value="my-teams"> My Teams </TabsTrigger>
-      <TabsTrigger value="teams"> Other Teams </TabsTrigger>
-    </TabsList>
-    <TabsContent value="teams">
-      <Form>
-        <FormField name="teamQuery">
-          <FormItem>
-            <FormControl>
-              <div class="relative w-full max-w-sm items-center">
-                <Input
-                  type="text"
-                  placeholder="Search..."
-                  v-model="teamQuery"
-                  class="pl-10"
-                ></Input>
-                <span
-                  class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-                >
-                  <Search class="size-6 text-muted-foreground" />
-                </span>
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </Form>
+    <Card class="p-4">
+      <Tabs default-value="my-teams">
+        <TabsList>
+          <TabsTrigger value="my-teams">My Teams</TabsTrigger>
+          <TabsTrigger value="teams">Other Teams</TabsTrigger>
+        </TabsList>
+        <TabsContent value="teams">
+          <teams-table :teams="teams" v-if="teams"></teams-table>
+        </TabsContent>
+        <TabsContent value="my-teams">
+          <teams-table :teams="myTeams" v-if="myTeams"></teams-table>
+        </TabsContent>
+      </Tabs>
+    </Card>
 
-      <teams-table :teams="teams" v-if="teams"></teams-table>
-      <pagination
-        :page="page"
-        :per-page="perPage"
-        @page="
-          (_page) => {
-            page = _page;
-          }
-        "
-        :total="teams_aggregate.aggregate.count"
-        v-if="teams_aggregate"
-      ></pagination>
-    </TabsContent>
-    <TabsContent value="my-teams">
-      <teams-table :teams="myTeams" v-if="myTeams"></teams-table>
-    </TabsContent>
-  </Tabs>
+    <pagination
+      :page="page"
+      :per-page="perPage"
+      @page="
+        (_page) => {
+          page = _page;
+        }
+      "
+      :total="teams_aggregate.aggregate.count"
+      v-if="teams_aggregate"
+    ></pagination>
+  </div>
 </template>
 
 <script lang="ts">

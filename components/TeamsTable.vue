@@ -20,15 +20,31 @@ import {
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow @click="viewTeam(team.id)" v-for="team of teams" :key="team.id">
-        <TableCell class="font-medium">
-          {{ team.name }}
-        </TableCell>
-        <TableCell>TODO</TableCell>
-        <TableCell>TODO</TableCell>
-        <TableCell>TODO</TableCell>
-        <TableCell>TODO</TableCell>
-      </TableRow>
+      <template v-if="teams.length === 0">
+        <TableRow>
+          <TableCell colspan="4" class="text-center py-8">
+            <div class="text-gray-500 dark:text-gray-400">
+              <p>
+                <slot name="none-found">No Teams Found</slot>
+              </p>
+            </div>
+          </TableCell>
+        </TableRow>
+      </template>
+      <template v-else>
+        <TableRow
+          @click="viewTeam(team.id)"
+          v-for="team in teams"
+          :key="team.id"
+        >
+          <TableCell class="font-medium">
+            {{ team.name }}
+          </TableCell>
+          <TableCell>{{ team.wins }}</TableCell>
+          <TableCell>{{ team.losses }}</TableCell>
+          <TableCell>{{ team.overtimeLosses }}</TableCell>
+        </TableRow>
+      </template>
     </TableBody>
   </Table>
 </template>

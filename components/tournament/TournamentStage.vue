@@ -69,7 +69,7 @@ import {
     <SheetTrigger></SheetTrigger>
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>Editing Team</SheetTitle>
+        <SheetTitle>Editing Touranment</SheetTitle>
         <SheetDescription>
           <TournamentStageForm
             :stage="stage"

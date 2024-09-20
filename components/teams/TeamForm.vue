@@ -7,47 +7,52 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
-  <form @submit.prevent="updateCreateTeam">
+  <form @submit.prevent="updateCreateTeam" class="grid gap-6">
     <FormField v-slot="{ componentField }" name="team_name">
       <FormItem>
-        <FormLabel>Name</FormLabel>
+        <FormLabel>Team Name</FormLabel>
         <FormControl>
-          <Input v-bind="componentField" />
+          <Input v-bind="componentField" placeholder="Enter team name" />
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
+
     <FormField v-slot="{ componentField }" name="short_name">
       <FormItem>
         <FormLabel>Short Name</FormLabel>
         <FormControl>
-          <Input v-bind="componentField" />
-          <FormMessage />
+          <Input
+            v-bind="componentField"
+            placeholder="Max 3 characters"
+            maxlength="3"
+          />
         </FormControl>
+        <FormMessage />
       </FormItem>
     </FormField>
 
     <FormField
+      v-if="team && canUpdateOwner"
       v-slot="{ componentField }"
       name="owner_steam_id"
-      v-if="team && canUpdateOwner"
     >
       <FormItem>
-        <FormLabel>Owner </FormLabel>
-
+        <FormLabel>Team Owner</FormLabel>
         <Select v-bind="componentField">
           <FormControl>
             <SelectTrigger>
-              <SelectValue placeholder="Update Owner" />
+              <SelectValue placeholder="Select Team Owner" />
             </SelectTrigger>
           </FormControl>
           <SelectContent>
             <SelectGroup>
               <SelectItem
+                v-for="{ player } in team.roster"
+                :key="player.steam_id"
                 :value="player.steam_id"
-                v-for="{ player } of team.roster"
               >
-                <PlayerDisplay :player="player"></PlayerDisplay>
+                <PlayerDisplay :player="player" />
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -56,9 +61,12 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       </FormItem>
     </FormField>
 
-    <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      <template v-if="team"> Update </template
-      ><template v-else> Create </template> Team
+    <Button
+      type="submit"
+      :disabled="Object.keys(form.errors).length > 0"
+      class="w-full"
+    >
+      {{ team ? "Update" : "Create" }} Team
     </Button>
   </form>
 </template>

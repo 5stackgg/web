@@ -41,47 +41,55 @@ const teamMenu = ref(false);
 </script>
 
 <template>
-  <template v-if="team">
+  <div v-if="team" class="grid gap-4">
     <PageHeading>
-      {{ team.name }}
+      <template #title>
+        {{ team.name }}
+        <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          [{{ team.short_name }}]
+        </span>
+      </template>
 
-      <DropdownMenu v-model:open="teamMenu">
-        <DropdownMenuTrigger as-child>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" class="w-[200px]">
-          <DropdownMenuGroup>
-            <DropdownMenuItem @click="editTeamSheet = true">
-              Edit
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              class="text-red-600"
-              @click="deleteTeamAlertDialog = true"
-            >
-              <Trash class="mr-2 h-4 w-4 inline" /> Delete
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
       <template #description>
-        [{{ team.short_name }}]
-        <br />
-        Owner : <PlayerDisplay :player="team.owner"></PlayerDisplay>
+        <PlayerDisplay :player="team.owner" :showSteamId="false">
+          <template #name-postfix>
+            <Badge variant="secondary">Team Owner</Badge>
+          </template>
+        </PlayerDisplay>
+      </template>
+
+      <template #actions>
+        <DropdownMenu v-model:open="teamMenu">
+          <DropdownMenuTrigger as-child>
+            <Button variant="ghost" size="sm">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-[200px]">
+            <DropdownMenuGroup>
+              <DropdownMenuItem @click="editTeamSheet = true">
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                class="text-red-600"
+                @click="deleteTeamAlertDialog = true"
+              >
+                <Trash class="mr-2 h-4 w-4 inline" /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </template>
     </PageHeading>
 
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <PageHeading> Recent Matches / Scheduled </PageHeading>
-        <matches-table :matches="team.matches"></matches-table>
+        <PageHeading>Recent Matches / Scheduled</PageHeading>
+        <MatchesTable :matches="team.matches" />
       </div>
       <div>
-        <team-members :team-id="$route.params.id"></team-members>
+        <TeamMembers :team-id="$route.params.id" />
       </div>
     </div>
 
@@ -89,15 +97,11 @@ const teamMenu = ref(false);
       :open="editTeamSheet"
       @update:open="(open) => (editTeamSheet = open)"
     >
-      <SheetTrigger></SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Editing Team</SheetTitle>
           <SheetDescription>
-            <team-form
-              :team="team"
-              @updated="editTeamSheet = false"
-            ></team-form>
+            <TeamForm :team="team" @updated="editTeamSheet = false" />
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
@@ -107,7 +111,6 @@ const teamMenu = ref(false);
       :open="deleteTeamAlertDialog"
       @update:open="(open) => (deleteTeamAlertDialog = open)"
     >
-      <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -122,7 +125,7 @@ const teamMenu = ref(false);
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  </template>
+  </div>
 </template>
 
 <script lang="ts">

@@ -3,5 +3,7 @@ import TeamForm from "~/components/teams/TeamForm.vue";
 </script>
 
 <template>
-  <team-form></team-form>
+  <div class="w-1/2">
+    <team-form></team-form>
+  </div>
 </template>

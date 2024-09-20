@@ -3,5 +3,7 @@ import ServerForm from "~/components/servers/ServerForm.vue";
 </script>
 
 <template>
-  <server-form></server-form>
+  <div class="w-1/2">
+    <server-form></server-form>
+  </div>
 </template>

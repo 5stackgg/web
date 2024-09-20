@@ -17,7 +17,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <TableRow>
           <TableCell colspan="5" class="text-center py-8">
             <div class="text-gray-500 dark:text-gray-400">
-              <p>No Matches Found</p>
+              <p>
+                <slot name="none-found">No Matches Found</slot>
+              </p>
             </div>
           </TableCell>
         </TableRow>

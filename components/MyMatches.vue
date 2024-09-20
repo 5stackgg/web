@@ -4,7 +4,9 @@ import MatchesTable from "~/components/MatchesTable.vue";
 
 <template>
   <Card v-if="meWithMatches?.player?.matches" class="p-4">
-    <matches-table :matches="meWithMatches.player.matches"></matches-table>
+    <matches-table :matches="meWithMatches.player.matches">
+      <template #none-found> No Upcoming Matches </template>
+    </matches-table>
   </Card>
 
   <pagination

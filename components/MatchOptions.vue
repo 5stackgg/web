@@ -133,19 +133,21 @@ import { Separator } from "~/components/ui/separator";
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <template v-for="map in maps" :key="map.id">
                         <div
-                          class="relative cursor-pointer rounded-lg overflow-hidden transition-opacity duration-200"
+                          class="relative rounded-lg overflow-hidden transition-all duration-200 ease-in-out"
                           @click="updateMapPool(map.id)"
                           :class="{
                             'opacity-40':
                               form.values.custom_map_pool &&
                               !form.values.map_pool?.includes(map.id),
+                            'cursor-pointer transform hover:scale-105':
+                              form.values.custom_map_pool,
                           }"
                         >
                           <MapDisplay class="h-[150px]" :map="map">
                             <template v-slot:default v-if="map.active_pool">
                               <div class="absolute bottom-1">
                                 <Badge variant="secondary" class="text-xs"
-                                  >Acitve Duty</Badge
+                                  >Active Duty</Badge
                                 >
                               </div>
                             </template>
@@ -473,6 +475,10 @@ export default {
   },
   methods: {
     updateMapPool(mapId: string) {
+      if (!this.form.values.custom_map_pool) {
+        return;
+      }
+      this.touched++;
       const pool = Object.assign([], this.form.values.map_pool);
       if (pool.includes(mapId)) {
         pool.splice(pool.indexOf(mapId), 1);

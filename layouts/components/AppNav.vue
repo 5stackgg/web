@@ -315,7 +315,7 @@ export default {
           icon: Users,
         },
         {
-          to: "/servers",
+          to: "/dedicated-servers",
           title: "Manage Servers",
           icon: Server,
         },

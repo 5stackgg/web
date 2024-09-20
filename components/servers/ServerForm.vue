@@ -157,7 +157,7 @@ export default {
         }),
       });
 
-      this.$router.push(`/servers/${data.insert_servers_one.id}`);
+      this.$router.push(`/dedicated-servers/${data.insert_servers_one.id}`);
     },
   },
 };

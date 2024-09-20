@@ -197,7 +197,7 @@ export default {
         }),
       });
 
-      this.$router.push("/servers");
+      this.$router.push("/dedicated-servers");
     },
   },
 };

@@ -11,13 +11,15 @@ import { PlusCircle } from "lucide-vue-next";
 <template>
   <div class="flex flex-col md:flex-row gap-4">
     <div class="flex-grow flex flex-col gap-4">
-      <div class="space-y-0.5 relative">
-        <h2 class="text-2xl font-bold tracking-tight">Upcoming Matches</h2>
-        <p class="text-muted-foreground">
-          Your upcoming matches that either you manage or are in the lineup.
-        </p>
+      <div class="space-y-0.5 flex justify-between items-start items-center">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">Upcoming Matches</h2>
+          <p class="text-muted-foreground">
+            Your upcoming matches that either you manage or are in the lineup.
+          </p>
+        </div>
 
-        <NuxtLink to="/matches/create" class="absolute top-3 right-0">
+        <NuxtLink to="/matches/create">
           <Button size="lg">
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">Create Match</span>

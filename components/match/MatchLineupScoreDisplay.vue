@@ -6,7 +6,7 @@
     :class="{
       [`text-green-400`]: winning,
       [`text-red-400`]: losing,
-      [`text-gray-400`]: tied,
+      [`text-white-400`]: tied,
     }"
   >
     <template v-if="matchMap">

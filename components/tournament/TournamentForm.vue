@@ -14,27 +14,27 @@ import MatchOptions from "~/components/MatchOptions.vue";
 
 <template>
   <form @submit.prevent="updateCreateTournament" class="grid gap-4">
-    <FormField v-slot="{ componentField }" name="name">
-      <FormItem>
-        <FormLabel>Name</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="description">
-      <FormItem>
-        <FormLabel>Description</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" />
+    <match-options :form="form" :force-veto="true">
+      <FormField v-slot="{ componentField }" name="name">
+        <FormItem>
+          <FormLabel>Name</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" />
+          </FormControl>
           <FormMessage />
-        </FormControl>
-      </FormItem>
-    </FormField>
+        </FormItem>
+      </FormField>
 
-    <match-options :form="form" :force-veto="true"></match-options>
+      <FormField v-slot="{ componentField }" name="description">
+        <FormItem>
+          <FormLabel>Description</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" />
+            <FormMessage />
+          </FormControl>
+        </FormItem>
+      </FormField>
+    </match-options>
 
     <div class="grid grid-cols-1 md:grid-cols-2">
       <div class="grid gap-4">

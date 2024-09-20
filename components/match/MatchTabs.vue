@@ -44,9 +44,9 @@ provide("commander", commander);
         Server Console
       </TabsTrigger>
     </TabsList>
-    <TabsContent value="overview">
-      <Card class="w-full lg:w-fit">
-        <CardHeader> </CardHeader>
+    <TabsContent value="overview" class="grid gap-4">
+      <Card class="w-full">
+        <CardHeader></CardHeader>
         <CardContent>
           <LineupOverview
             :match="match"
@@ -55,8 +55,8 @@ provide("commander", commander);
         </CardContent>
       </Card>
 
-      <Card class="w-full lg:w-fit">
-        <CardHeader> </CardHeader>
+      <Card class="w-full">
+        <CardHeader></CardHeader>
         <CardContent>
           <LineupOverview
             :match="match"

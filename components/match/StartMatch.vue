@@ -17,11 +17,7 @@ import { Separator } from "~/components/ui/separator";
         <Separator label="or" class="my-12" />
 
         <div v-if="match.can_start">
-          <Button
-            @click.prevent.stop="startMatch"
-            class="w-full"
-            :disabled="!hasMinimumLineupPlayers"
-          >
+          <Button @click.prevent.stop="startMatch" class="w-full">
             Start
             <template
               v-if="
@@ -47,16 +43,6 @@ export default {
     match: {
       type: Object,
       required: true,
-    },
-  },
-  computed: {
-    hasMinimumLineupPlayers() {
-      return (
-        this.match.lineup_1?.lineup_players.length >=
-          this.match.min_players_per_lineup &&
-        this.match.lineup_2?.lineup_players.length >=
-          this.match.min_players_per_lineup
-      );
     },
   },
   methods: {

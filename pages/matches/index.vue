@@ -55,7 +55,7 @@ import { PlusCircle } from "lucide-vue-next";
       </div>
     </div>
 
-    <div class="md:w-1/4">
+    <div class="md:w-1/4 hidden lg:block">
       <Card
         class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900"
       >

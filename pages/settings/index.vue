@@ -13,12 +13,12 @@ definePageMeta({
   </div>
   <Separator />
 
-  <form @submit.prevent="updateMe">
+  <form @submit.prevent="updateMe" class="grid gap-4">
     <FormField name="steam_id">
       <FormItem>
         <FormLabel>Steam ID</FormLabel>
         <FormControl>
-          <Input :value="me?.steam_id" readonly disabled />
+          <Input :value="me.steam_id" disabled />
         </FormControl>
       </FormItem>
     </FormField>
@@ -108,9 +108,11 @@ definePageMeta({
       </FormItem>
     </FormField>
 
-    <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      Update
-    </Button>
+    <div class="flex justify-start">
+      <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+        Update
+      </Button>
+    </div>
   </form>
 </template>
 

@@ -27,7 +27,7 @@ definePageMeta({
     <Switch :checked="matchMakingAllowed" @update:checked="toggleMatchmaking" />
   </div>
 
-  <form @submit.prevent="updateSettings">
+  <form @submit.prevent="updateSettings" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="discord_support_webhook">
       <FormItem>
         <FormLabel>Discord Webhook</FormLabel>
@@ -39,13 +39,16 @@ definePageMeta({
         <FormMessage />
       </FormItem>
     </FormField>
-    <Button
-      type="submit"
-      :disabled="Object.keys(form.errors).length > 0"
-      class="my-3"
-    >
-      Update
-    </Button>
+
+    <div class="flex justify-start">
+      <Button
+        type="submit"
+        :disabled="Object.keys(form.errors).length > 0"
+        class="my-3"
+      >
+        Update
+      </Button>
+    </div>
   </form>
 </template>
 

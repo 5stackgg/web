@@ -51,7 +51,7 @@ const onSubmit = handleSubmit((values) => {
     </p>
   </div>
   <Separator />
-  <form class="space-y-8" @submit="onSubmit">
+  <form class="grid gap-4" @submit="onSubmit">
     <FormField v-slot="{ componentField }" type="radio" name="theme">
       <FormItem class="space-y-1">
         <FormLabel>Theme</FormLabel>

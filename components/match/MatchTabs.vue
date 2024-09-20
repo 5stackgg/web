@@ -126,11 +126,12 @@ provide("commander", commander);
         v-slot="{ commander }"
       >
         <template v-for="command of availableCommands">
-          <Button
-            :disable="!match.is_server_online"
-            @click="commander(command.value)"
-            >{{ command.display }}</Button
+          <DropdownMenuItem
+            :disabled="!match.is_server_online"
+            @click="commander(command.value, '')"
           >
+            {{ command.display }}
+          </DropdownMenuItem>
         </template>
 
         <form

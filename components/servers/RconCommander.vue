@@ -5,44 +5,83 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { CornerDownLeft } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
 import { TrashIcon } from "@radix-icons/vue";
+import { ServerIcon, ChevronDown } from "lucide-vue-next";
+import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
-  <div>
-    <Button :disabled="!online" @click="commander('get_match')"
-      >Send Match Information to Server</Button
-    >
-    <Button :disabled="!online" @click="commander('meta version')"
-      >Metamod Info</Button
-    >
-    <Button :disabled="!online" @click="commander(['css_plugins list', 'css'])"
-      >Counter Strike Sharp Info</Button
-    >
-    <slot :commander="commander"></slot>
-  </div>
   <div
-    class="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2"
+    class="grid grid-rows-[auto_1fr_auto] h-full min-h-[50vh] min-h-[50vh] max-h-[50vh] rounded-xl bg-muted/50 p-4 lg:col-span-2 overflow-hidden"
   >
-    <div class="absolute right-3 top-3">
-      <div class="flex">
-        <TrashIcon @click="logs = []" class="cursor-pointer"></TrashIcon>
-        <Badge variant="outline"> Output </Badge>
+    <div class="grid grid-cols-[1fr_auto] gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button variant="outline">
+              <ServerIcon class="mr-2 h-4 w-4" />
+              Quick Commands
+              <ChevronDown class="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent class="w-56">
+            <DropdownMenuGroup>
+              <slot :commander="commander"></slot>
+
+              <DropdownMenuSeparator v-if="$slots.default">
+              </DropdownMenuSeparator>
+
+              <DropdownMenuItem
+                @click="commander('get_match', '')"
+                :disabled="!online"
+              >
+                Refresh Match Information
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator> </DropdownMenuSeparator>
+
+              <DropdownMenuItem
+                @click="commander('meta version', '')"
+                :disabled="!online"
+              >
+                Metamod Info
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                @click="commander(['css_plugins list', 'css'], '')"
+                :disabled="!online"
+              >
+                Counter Strike Sharp Info
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <div class="flex items-center space-x-2 justify-self-end">
+        <TrashIcon
+          @click="logs = []"
+          class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+        />
+        <Badge variant="outline">Output</Badge>
       </div>
     </div>
-    <div class="flex-1 overflow-scroll max-h-screen">
-      <p v-for="log in logs" :key="log" class="whitespace-pre my-2">
-        {{ log }}
-      </p>
+
+    <div class="overflow-auto max-h-[calc(100vh-200px)]">
+      <template v-for="(log, index) in logs" :key="index">
+        <p class="whitespace-pre my-2 text-sm text-foreground/80">
+          {{ log }}
+        </p>
+        <Separator></Separator>
+      </template>
     </div>
+
     <form
-      class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
+      class="mt-4 overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
       @submit.prevent="sendCommand"
     >
       <FormField v-slot="{ componentField }" name="command">
         <FormItem>
           <FormControl>
             <Input
-              placeholder="..."
+              placeholder="Enter RCON command..."
               v-bind="componentField"
               class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
             />
@@ -57,12 +96,13 @@ import { TrashIcon } from "@radix-icons/vue";
           class="ml-auto gap-1.5"
         >
           Send Command
-          <CornerDownLeft class="size-3.5" />
+          <CornerDownLeft class="h-3.5 w-3.5" />
         </Button>
       </div>
     </form>
   </div>
 </template>
+
 <script lang="ts">
 import socket from "~/web-sockets/Socket";
 import { useForm } from "vee-validate";
@@ -98,7 +138,6 @@ export default {
 
           this.form.setFieldValue("command", command);
           this.sendCommand();
-          this.logs.push(command);
         }
       },
       form: useForm({

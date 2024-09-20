@@ -1,8 +1,8 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="space-y-0.5 flex justify-between items-start items-center">
-    <div>
+  <div class="flex justify-between items-start">
+    <div class="space-y-0.5">
       <h2 class="text-2xl font-bold tracking-tight">
         <slot name="title"></slot>
       </h2>
@@ -11,6 +11,8 @@
       </p>
     </div>
 
-    <slot name="actions"></slot>
+    <div class="flex-shrink-0">
+      <slot name="actions"></slot>
+    </div>
   </div>
 </template>

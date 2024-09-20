@@ -5,7 +5,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 </script>
 
 <template>
-  <form @submit.prevent="updateCreateServer">
+  <form @submit.prevent="updateCreateServer" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="label">
       <FormItem>
         <FormLabel>Label</FormLabel>

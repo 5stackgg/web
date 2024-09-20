@@ -16,7 +16,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "~/components/ui/sheet";
 import {
   AlertDialog,
@@ -27,7 +26,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import { ref } from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
@@ -36,64 +34,68 @@ import RconCommander from "~/components/servers/RconCommander.vue";
 
 const serverMenu = ref(false);
 </script>
-
 <template>
   <PageHeading v-if="server">
-    {{ server.label }} ({{ server.host }}:{{ server.port }})
-    <div class="flex items-center space-x-2">
-      <Switch @click="toggleServerEnabled" :checked="server.enabled" />
-      <Label>Enabled</Label>
-    </div>
+    <template #title>
+      <div class="flex items-center justify-between w-full">
+        <span>{{ server.label }} ({{ server.host }}:{{ server.port }})</span>
+        <div class="flex items-center space-x-2">
+          <Switch @click="toggleServerEnabled" :checked="server.enabled" />
+          <Label>Enabled</Label>
+        </div>
+      </div>
+    </template>
 
-    <DropdownMenu v-model:open="serverMenu">
-      <DropdownMenuTrigger as-child>
-        <Button variant="ghost" size="sm">
-          <MoreHorizontal />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" class="w-[200px]">
-        <DropdownMenuGroup>
-          <DropdownMenuItem @click="editServerSheet = true">
-            Edit
-          </DropdownMenuItem>
+    <template #description>
+      <div class="bg-muted rounded-md p-4 my-4">
+        <h3 class="text-lg font-semibold mb-2">Server API Key</h3>
+        <PasswordInput
+          v-model="server.api_password"
+          description="Used to get matches & connect to redis for match events."
+          :disabled="true"
+        />
+      </div>
+    </template>
 
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            class="text-red-600"
-            @click="deleteServerAlertDialog = true"
-          >
-            <Trash class="mr-2 h-4 w-4 inline" /> Delete
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-
-    <PasswordInput
-      v-model="server.api_password"
-      description="Server API Key use to get matches / connect to redis for match events."
-      :disabled="true"
-    ></PasswordInput>
+    <template #actions>
+      <DropdownMenu v-model:open="serverMenu">
+        <DropdownMenuTrigger as-child>
+          <Button variant="ghost" size="sm">
+            <MoreHorizontal />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" class="w-[200px]">
+          <DropdownMenuGroup>
+            <DropdownMenuItem @click="editServerSheet = true">
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              class="text-red-600"
+              @click="deleteServerAlertDialog = true"
+            >
+              <Trash class="mr-2 h-4 w-4 inline" /> Delete
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </template>
   </PageHeading>
 
-  <rcon-commander
-    :server-id="$route.params.id"
+  <RconCommander
+    :server-id="$route.params.id as string"
     :online="server?.connected || false"
-  ></rcon-commander>
+  />
 
   <Sheet
     :open="editServerSheet"
     @update:open="(open) => (editServerSheet = open)"
   >
-    <SheetTrigger></SheetTrigger>
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>Editing Team</SheetTitle>
+        <SheetTitle>Edit Server</SheetTitle>
         <SheetDescription>
-          <server-form
-            :server="server"
-            @updated="editServerSheet = false"
-          ></server-form>
+          <ServerForm :server="server" @updated="editServerSheet = false" />
         </SheetDescription>
       </SheetHeader>
     </SheetContent>
@@ -103,7 +105,6 @@ const serverMenu = ref(false);
     :open="deleteServerAlertDialog"
     @update:open="(open) => (deleteServerAlertDialog = open)"
   >
-    <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

@@ -12,7 +12,10 @@ import ClipBoard from "~/components/ClipBoard.vue";
     <PageHeading>
       <template #title> Game Server Nodes </template>
 
-      <template #description>Game server nodes expand your server offerings into different regions or provide redundancy for on-demand servers.</template>
+      <template #description
+        >Game server nodes expand your server offerings into different regions
+        or provide redundancy for on-demand servers.</template
+      >
 
       <template #actions>
         <Popover>

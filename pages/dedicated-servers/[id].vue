@@ -37,8 +37,8 @@ const serverMenu = ref(false);
 <template>
   <PageHeading v-if="server">
     <template #title>
-      <div class="flex items-center justify-between w-full">
-        <span>{{ server.label }} ({{ server.host }}:{{ server.port }})</span>
+      <div class="flex items-center justify-between gap-4">
+        <div>{{ server.label }} ({{ server.host }}:{{ server.port }})</div>
         <div class="flex items-center space-x-2">
           <Switch @click="toggleServerEnabled" :checked="server.enabled" />
           <Label>Enabled</Label>

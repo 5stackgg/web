@@ -15,12 +15,19 @@ import formatBits from "~/utilities/formatBits";
   >
     <template v-slot:header>
       <div class="absolute top-3">
-        <badge class="mb-2">{{ matchMap.status }}</badge>
+        <badge
+          class="mb-2"
+          v-if="matchMap.status !== e_match_status_enum.Scheduled"
+          >{{ matchMap.status }}</badge
+        >
+
+        <badge
+          variant="destructive"
+          v-else-if="isDecider && match.options.best_of > 1"
+          >Decider</badge
+        >
       </div>
 
-      <badge variant="destructive" v-if="isDecider && match.options.best_of > 1"
-        >Decider</badge
-      >
       <!-- TODO - env variable url -->
       <div class="absolute top-3 right-3">
         <a
@@ -37,7 +44,7 @@ import formatBits from "~/utilities/formatBits";
       </div>
     </template>
     <template v-slot:default>
-      <div class="absolute bottom-3 left-3 right-3 flex justify-between">
+      <div class="absolute bottom-3 left-3 right-3 grid grid-cols-2 gap-4">
         <div class="flex flex-col items-start justify-end gap-1">
           <match-map-display-lineup
             :match="match"

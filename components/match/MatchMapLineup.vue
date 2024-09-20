@@ -29,7 +29,9 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
     </div>
   </div>
 
-  {{ lineup.name }}
+  <div class="truncate max-w-full" :title="lineup.name">
+    {{ lineup.name }}
+  </div>
 </template>
 
 <script lang="ts">

@@ -83,13 +83,13 @@ const teamMenu = ref(false);
       </template>
     </PageHeading>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid md:grid-cols-2 grid-cols-1 gap-4">
+      <div>
+        <TeamMembers :team-id="$route.params.id" />
+      </div>
       <div>
         <PageHeading>Recent Matches / Scheduled</PageHeading>
         <MatchesTable :matches="team.matches" />
-      </div>
-      <div>
-        <TeamMembers :team-id="$route.params.id" />
       </div>
     </div>
 

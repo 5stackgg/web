@@ -4,6 +4,8 @@ import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import { Users } from "lucide-vue-next";
+import RegionStatuses from "~/components/RegionStatuses.vue";
 </script>
 
 <template>
@@ -166,28 +168,39 @@ import TimeAgo from "~/components/TimeAgo.vue";
     </Sheet>
     <div class="flex justify-between items-center w-full">
       <bread-crumbs></bread-crumbs>
-      <small class="text-muted-foreground ml-4">
-        ({{ playersOnline }}
-        {{ playersOnline === 1 ? "player" : "players" }} online)
-      </small>
+
+      <Popover>
+        <PopoverTrigger>
+          <small class="text-muted-foreground ml-4">
+            <span class="flex items-center gap-3">
+              <span class="flex items-center gap-1">
+                <span
+                  class="inline-block w-2 h-2 rounded-full"
+                  :class="{
+                    'bg-green-500': overalRegionStatus === 'Online',
+                    'bg-red-500': overalRegionStatus === 'Offline',
+                    'bg-yellow-500': overalRegionStatus === 'Degraded',
+                  }"
+                ></span>
+              </span>
+              <Users /> {{ playersOnline }}
+            </span>
+          </small>
+        </PopoverTrigger>
+        <PopoverContent>
+          <RegionStatuses></RegionStatuses>
+        </PopoverContent>
+      </Popover>
     </div>
   </header>
 </template>
 
 <script lang="ts">
-import {
-  Swords,
-  Server,
-  ServerCog,
-  Users,
-  ShieldHalf,
-  Trophy,
-  HeartPulse,
-} from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { getCountryForTimezone } from "countries-and-timezones";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 
 export default {
   apollo: {
@@ -312,11 +325,6 @@ export default {
           icon: ServerCog,
           role: e_player_roles_enum.administrator,
         },
-        {
-          to: "/status",
-          title: "status",
-          icon: HeartPulse,
-        },
       ],
     };
   },
@@ -395,6 +403,19 @@ export default {
     },
     playersOnline() {
       return useMatchMakingStore().playersOnline;
+    },
+    regions() {
+      return useMatchMakingStore().regions;
+    },
+    overalRegionStatus() {
+      const statuses = this.regions.map((region) => region.status);
+      if (statuses.every((status) => status === "Online")) {
+        return "Online";
+      } else if (statuses.every((status) => status === "Offline")) {
+        return "Offline";
+      } else {
+        return "Degraded";
+      }
     },
   },
 };

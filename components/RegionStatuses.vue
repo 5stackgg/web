@@ -3,14 +3,7 @@ import PageHeading from "~/components/PageHeading.vue";
 </script>
 
 <template>
-  <PageHeading> 5Stack Status </PageHeading>
-
   <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead class="text-left">Status</TableHead>
-      </TableRow>
-    </TableHeader>
     <TableBody>
       <TableRow v-for="region in regions" :key="region.value">
         <TableCell>

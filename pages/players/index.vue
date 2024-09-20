@@ -9,55 +9,63 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
-  <PageHeading> Players </PageHeading>
-  <Separator class="my-6" />
+  <div class="flex-grow flex flex-col gap-4">
+    <PageHeading>
+      <template #title> Players </template>
 
-  <div class="relative w-full max-w-sm items-center">
-    <Input
-      id="search"
-      type="text"
-      placeholder="Search..."
-      class="pl-10"
-      v-model="playerQuery"
-    />
-    <span
-      class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-    >
-      <Search class="size-6 text-muted-foreground" />
-    </span>
+      <template #actions>
+        <div class="relative w-full max-w-sm items-center">
+          <Input
+            id="search"
+            type="text"
+            placeholder="Search..."
+            class="pl-10"
+            v-model="playerQuery"
+          />
+          <span
+            class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+          >
+            <Search class="size-6 text-muted-foreground" />
+          </span>
+        </div>
+      </template>
+    </PageHeading>
+
+    <Card class="p-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead class="w-[100px]"> Name </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow
+            v-for="player of players"
+            @click="viewPlayer(player.steam_id)"
+            class="cursor-pointer"
+          >
+            <TableCell class="font-medium">
+              <div class="flex">
+                <PlayerDisplay :player="player"></PlayerDisplay>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </Card>
+
+    <Pagination
+      :page="page"
+      :per-page="per_page"
+      @page="
+        (_page) => {
+          page = _page;
+        }
+      "
+      :total="pagination.total"
+      v-if="pagination"
+    ></Pagination>
   </div>
-
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead class="w-[100px]"> Name </TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      <TableRow
-        v-for="player of players"
-        @click="viewPlayer(player.steam_id)"
-        class="cursor-pointer"
-      >
-        <TableCell class="font-medium">
-          <div class="flex">
-            <PlayerDisplay :player="player"></PlayerDisplay>
-          </div>
-        </TableCell>
-      </TableRow>
-    </TableBody>
-  </Table>
-  <Pagination
-    :page="page"
-    :per-page="per_page"
-    @page="
-      (_page) => {
-        page = _page;
-      }
-    "
-    :total="pagination.total"
-    v-if="pagination"
-  ></Pagination>
 </template>
 
 <script lang="ts">

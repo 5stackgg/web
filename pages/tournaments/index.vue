@@ -2,31 +2,39 @@
 import TournamentsTable from "~/components/TournamentsTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import { Button } from "~/components/ui/button";
+import { PlusCircle } from "lucide-vue-next";
 </script>
 
 <template>
-  <PageHeading>
-    Tournaments
-    <NuxtLink to="/tournaments/create">
-      <Button>Create Tournament</Button>
-    </NuxtLink>
-    <template v-slot:description> Manage tournaments. </template>
-  </PageHeading>
-  <TournamentsTable
-    :tournaments="tournaments"
-    v-if="tournaments"
-  ></TournamentsTable>
-  <pagination
-    :page="page"
-    :per-page="perPage"
-    @page="
-      (_page) => {
-        page = _page;
-      }
-    "
-    :total="tournaments_aggregate.aggregate.count"
-    v-if="tournaments_aggregate"
-  ></pagination>
+  <div class="flex-grow flex flex-col gap-4">
+    <PageHeading>
+      <template #title>Tournaments</template>
+      <template #description>Manage tournaments.</template>
+      <template #actions>
+        <NuxtLink to="/tournaments/create">
+          <Button size="lg">
+            <PlusCircle class="w-4 h-4 mr-2" />
+            <span class="hidden md:inline">Create Tournament</span>
+          </Button>
+        </NuxtLink>
+      </template>
+    </PageHeading>
+
+    <Card class="p-4">
+      <TournamentsTable :tournaments="tournaments || []"></TournamentsTable>
+    </Card>
+
+    <pagination
+      :page="page"
+      :per-page="perPage"
+      @page="
+        (_page: number) => {
+          page = _page;
+        }
+      "
+      :total="tournaments?.aggregate?.count"
+    ></pagination>
+  </div>
 </template>
 
 <script lang="ts">
@@ -38,8 +46,6 @@ export default {
     return {
       page: 1,
       perPage: 10,
-      teamQuery: undefined,
-      mytournaments: undefined,
     };
   },
   apollo: {

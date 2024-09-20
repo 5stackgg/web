@@ -17,32 +17,46 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <TableHead>Tournament</TableHead>
         <TableHead>Status</TableHead>
         <TableHead>Type</TableHead>
-        <TableHead>Teams</TableHead>
+        <TableHead>Teams Joined</TableHead>
         <TableHead>Starts</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow
-        @click="viewTournament(tournament.id)"
-        v-for="tournament of tournaments"
-        :key="tournament.id"
-      >
-        <TableCell class="font-medium">
-          {{ tournament.name }}
-        </TableCell>
-        <TableCell>
-          <Badge>{{ tournament.status }}</Badge>
-        </TableCell>
-        <TableCell>
-          {{ tournament.options.type }}
-        </TableCell>
-        <TableCell>
-          {{ tournament.teams_aggregate.aggregate.count }}
-        </TableCell>
-        <TableCell>
-          <TimeAgo :date="tournament.start"></TimeAgo>
-        </TableCell>
-      </TableRow>
+      <template v-if="tournaments.length === 0">
+        <TableRow>
+          <TableCell colspan="4" class="text-center py-8">
+            <div class="text-gray-500 dark:text-gray-400">
+              <p>
+                <slot name="none-found">No Tournaments Found</slot>
+              </p>
+            </div>
+          </TableCell>
+        </TableRow>
+      </template>
+      <template v-else>
+        <TableRow
+          @click="viewTournament(tournament.id)"
+          v-for="tournament of tournaments"
+          :key="tournament.id"
+          class="cursor-pointer"
+        >
+          <TableCell class="font-medium">
+            {{ tournament.name }}
+          </TableCell>
+          <TableCell>
+            <Badge>{{ tournament.status }}</Badge>
+          </TableCell>
+          <TableCell>
+            {{ tournament.options.type }}
+          </TableCell>
+          <TableCell>
+            {{ tournament.teams_aggregate.aggregate.count }}
+          </TableCell>
+          <TableCell>
+            <TimeAgo :date="tournament.start"></TimeAgo>
+          </TableCell>
+        </TableRow>
+      </template>
     </TableBody>
   </Table>
 </template>

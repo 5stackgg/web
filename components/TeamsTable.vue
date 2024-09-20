@@ -36,6 +36,7 @@ import {
           @click="viewTeam(team.id)"
           v-for="team in teams"
           :key="team.id"
+          class="cursor-pointer"
         >
           <TableCell class="font-medium">
             {{ team.name }}

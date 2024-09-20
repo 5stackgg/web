@@ -35,10 +35,10 @@ import { e_match_status_enum } from "~/generated/zeus";
           match.status !== e_match_status_enum.Veto
         "
       >
-        <div class="flex gap-4 justify-around flex-col lg:flex-row">
+        <div class="flex gap-4 justify-around flex-col 2xl:flex-row">
           <div
             v-for="match_map of match.match_maps"
-            class="max-h-[150px] md:max-h-[500px]"
+            class="max-h-[150px] md:max-h-[250px] lg:max-h-[350px]"
           >
             <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
           </div>

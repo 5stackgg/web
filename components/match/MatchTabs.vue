@@ -1,12 +1,6 @@
 <script lang="ts" setup>
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
@@ -52,8 +46,7 @@ provide("commander", commander);
     </TabsList>
     <TabsContent value="overview">
       <Card class="w-full lg:w-fit">
-        <CardHeader>
-        </CardHeader>
+        <CardHeader> </CardHeader>
         <CardContent>
           <LineupOverview
             :match="match"
@@ -63,8 +56,7 @@ provide("commander", commander);
       </Card>
 
       <Card class="w-full lg:w-fit">
-        <CardHeader>
-        </CardHeader>
+        <CardHeader> </CardHeader>
         <CardContent>
           <LineupOverview
             :match="match"
@@ -75,8 +67,7 @@ provide("commander", commander);
     </TabsContent>
     <TabsContent value="veto">
       <Card>
-        <CardHeader>
-        </CardHeader>
+        <CardHeader> </CardHeader>
         <CardContent>
           <MatchPicksDisplay :match="match" />
         </CardContent>
@@ -84,8 +75,7 @@ provide("commander", commander);
     </TabsContent>
     <TabsContent value="utility">
       <Card>
-        <CardHeader>
-        </CardHeader>
+        <CardHeader> </CardHeader>
         <CardContent>
           <lineup-utility
             :match="match"
@@ -102,8 +92,7 @@ provide("commander", commander);
     </TabsContent>
     <TabsContent value="opening-duels">
       <Card>
-        <CardHeader>
-        </CardHeader>
+        <CardHeader> </CardHeader>
         <CardContent>
           <lineup-opening-duels
             :match="match"
@@ -120,8 +109,7 @@ provide("commander", commander);
     </TabsContent>
     <TabsContent value="clutches">
       <Card>
-        <CardHeader>
-        </CardHeader>
+        <CardHeader> </CardHeader>
         <CardContent>
           <lineup-clutches
             :match="match"

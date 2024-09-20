@@ -4,13 +4,18 @@
       :src="map.poster"
       class="w-full h-full object-cover min-w-[150px]"
       sizes="sm:200px md:400px lg:600"
+      :class="{
+        'brightness-50': darken,
+      }"
     />
+
     <div class="absolute inset-0 bg-black bg-opacity-45"></div>
+
     <div class="absolute inset-0 flex flex-col items-center justify-center">
       <slot name="header"></slot>
       <img
         :src="map.patch"
-        class="max-w-[96px] w-full h-auto max-h-[60%] object-contain drop-shadow-xl"
+        class="max-w-[64px] sm:max-w-[96px] w-full h-auto max-h-[60%] object-contain drop-shadow-xl"
         v-if="map.patch"
       />
       <template v-else>
@@ -30,6 +35,10 @@ export default {
     map: {
       type: Object,
       required: true,
+    },
+    darken: {
+      type: Boolean,
+      default: false,
     },
   },
 };

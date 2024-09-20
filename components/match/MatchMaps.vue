@@ -8,6 +8,7 @@ import formatBits from "~/utilities/formatBits";
 <template>
   <MapDisplay
     :map="matchMap.map"
+    :darken="true"
     :class="{
       'ring-1 ring-red-500': matchMap.is_current_map,
     }"

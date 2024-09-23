@@ -2,7 +2,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
-import TournamentTeamTable from "~/components/tournament/TournamentTeam.vue";
+import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentServers from "~/components/tournament/TournamentServers.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
@@ -25,7 +25,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <TabsTrigger value="teams">
             Teams ({{ tournament?.teams_aggregate?.aggregate?.count || 0 }})
           </TabsTrigger>
-          <TabsTrigger value="roster" v-if="myTeam">My Roster</TabsTrigger>
           <TabsTrigger value="manage">Manage Tournament</TabsTrigger>
         </TabsList>
 
@@ -126,11 +125,17 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <TabsContent value="teams">
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-grow md:w-2/3">
-            <Card
-              v-for="team of tournament.teams"
-              :key="team.id"
-              class="rounded-lg p-4"
-            >
+            <template v-if="myTeam">
+              <Card class="p-4">
+                <TournamentTeam
+                  :tournament="tournament"
+                  :team="myTeam"
+                ></TournamentTeam>
+              </Card>
+              <Separator class="my-8" />
+            </template>
+
+            <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
               <div class="flex justify-between items-center mb-4">
                 <NuxtLink
                   :to="`/tournaments/${tournament.id}/teams/${team.id}`"
@@ -177,9 +182,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
             </Card>
           </div>
         </div>
-      </TabsContent>
-      <TabsContent value="roster" v-if="myTeam">
-        <TournamentTeamTable :team="myTeam"></TournamentTeamTable>
       </TabsContent>
       <TabsContent value="manage">
         <Tabs default-value="match-options">

@@ -173,8 +173,9 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
 
       <div>
         <Popover>
-          <PopoverTrigger class="flex items-center">
-            <small class="text-muted-foreground ml-4">
+          <PopoverTrigger>
+            <div class="flex items-center">
+              <small class="text-muted-foreground ml-4">
               <span class="flex items-center gap-3">
                 <span class="flex items-center gap-1">
                   <span
@@ -189,6 +190,7 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
                 <Users /> {{ playersOnline }}
               </span>
             </small>
+            </div>
           </PopoverTrigger>
           <PopoverContent>
             <RegionStatuses></RegionStatuses>
@@ -224,7 +226,7 @@ export default {
                     _or: [
                       {
                         is_read: {
-                          _is_null: true,
+                          _eq: false,
                         },
                       },
                       {

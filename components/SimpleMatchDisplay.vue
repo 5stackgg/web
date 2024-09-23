@@ -43,7 +43,9 @@ import MatchLineupScoreDisplay from "./match/MatchLineupScoreDisplay.vue";
         <h1 class="text-2xl flex gap-1" v-if="match.match_maps.length > 0">
           <MatchLineupScoreDisplay
             :match="match"
-            :lineup="match.is_on_lineup_1 ? match.lineup_1 : match.lineup_2"
+            :lineup="
+              match.lineup_1.is_on_lineup ? match.lineup_1 : match.lineup_2
+            "
           />:
           <MatchLineupScoreDisplay
             :match="match"
@@ -54,11 +56,15 @@ import MatchLineupScoreDisplay from "./match/MatchLineupScoreDisplay.vue";
         <div>
           <div class="flex items-center space-x-2">
             <span class="font-bold">{{
-              match.is_on_lineup_1 ? match.lineup_1.name : match.lineup_2.name
+              match.lineup_1.is_on_lineup
+                ? match.lineup_1.name
+                : match.lineup_2.name
             }}</span>
             <span class="text-gray-500">vs</span>
             <span class="font-bold">{{
-              match.is_on_lineup_1 ? match.lineup_2.name : match.lineup_1.name
+              match.lineup_1.is_on_lineup
+                ? match.lineup_2.name
+                : match.lineup_1.name
             }}</span>
           </div>
           <div class="flex items-center space-x-2">

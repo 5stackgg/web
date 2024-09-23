@@ -40,7 +40,7 @@ import MatchLineupScoreDisplay from "./match/MatchLineupScoreDisplay.vue";
           <ArrowRight></ArrowRight>
         </div>
 
-        <h1 v-if="match.match_maps.length > 0">
+        <h1 class="text-2xl flex gap-1" v-if="match.match_maps.length > 0">
           <MatchLineupScoreDisplay
             :match="match"
             :lineup="match.is_on_lineup_1 ? match.lineup_1 : match.lineup_2"

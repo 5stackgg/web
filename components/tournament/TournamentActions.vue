@@ -1,15 +1,34 @@
-<script lang="ts" setup></script>
-
+<script lang="ts" setup>
+import { Lock, Unlock, Ban } from "lucide-vue-next";
+</script>
 <template>
-  <Button v-if="tournament.can_cancel" @click="cancel"
-    >Cancel Tournament</Button
-  >
-  <Button v-if="tournament.can_open_registration" @click="openRegistration"
-    >open Registration</Button
-  >
-  <Button v-if="tournament.can_close_registration" @click="closeRegistration"
-    >Close Registration</Button
-  >
+  <DropdownMenu>
+    <DropdownMenuTrigger as-child>
+      <Button variant="outline" size="icon">
+        <PaginationEllipsis class="h-4 w-4" />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent class="w-56">
+      <DropdownMenuItem v-if="tournament.can_cancel" @click="cancel">
+        <Ban class="mr-2 h-4 w-4" />
+        <span>Cancel Tournament</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        v-if="tournament.can_open_registration"
+        @click="openRegistration"
+      >
+        <Unlock class="mr-2 h-4 w-4" />
+        <span>Open Registration</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        v-if="tournament.can_close_registration"
+        @click="closeRegistration"
+      >
+        <Lock class="mr-2 h-4 w-4" />
+        <span>Close Registration</span>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
 </template>
 
 <script lang="ts">

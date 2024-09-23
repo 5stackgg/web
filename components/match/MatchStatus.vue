@@ -15,11 +15,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <div v-if="match.server && !match.is_match_server_available">
         Waiting for server ...
       </div>
-      <div v-else>
-        Scheduled (<template v-if="match.scheduled_at">
-          <time-ago :date="match.scheduled_at"></time-ago>
+      <div class="flex items-center space-x-2" v-else>
+        <template v-if="match.scheduled_at">
+          <TimeAgo :date="match.scheduled_at"></TimeAgo>
         </template>
-        <template v-else>ASAP</template>)
+        <template v-else>Scheduled ASAP</template>
       </div>
     </template>
     <template v-else>

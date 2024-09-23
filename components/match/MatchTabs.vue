@@ -15,9 +15,8 @@ import {
   FormItem,
   FormLabel,
 } from "~/components/ui/form";
-import { separateByCapitalLetters } from "~/utilities/separateByCapitalLetters";
-import BooleanToText from "../BooleanToText.vue";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
+import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -174,50 +173,7 @@ provide("commander", commander);
     <TabsContent value="settings">
       <Card class="p-3 w-full sm:max-w-[500px]">
         <CardContent>
-          <ul class="space-y-4">
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Max Rounds</span>
-              <span>{{ match.options.mr }}</span>
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">TV Delay</span>
-              <span>{{ match.options.tv_delay }} seconds</span>
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Coaches</span>
-              <BooleanToText :value="match.options.coaches" />
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Overtime</span>
-              <BooleanToText :value="match.options.overtime" />
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Knife Round</span>
-              <BooleanToText :value="match.options.knife_round" />
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Map Veto</span>
-              <BooleanToText :value="match.options.map_veto" />
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Region Veto</span>
-              <BooleanToText :value="match.options.region_veto" />
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Map Pool</span>
-              <span class="text-right">
-                {{ separateByCapitalLetters(match.options.map_pool.type) }}
-                <br />
-                <small>
-                  {{ match.options.map_pool.e_type.description }}
-                </small>
-              </span>
-            </li>
-            <li class="flex items-center justify-between">
-              <span class="text-muted-foreground">Substitutes</span>
-              <span>{{ match.options.number_of_substitutes }}</span>
-            </li>
-          </ul>
+          <MatchOptionsDisplay :options="match.options"></MatchOptionsDisplay>
 
           <template v-if="displayServerInformation">
             <Separator class="my-8" />

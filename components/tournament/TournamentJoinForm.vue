@@ -18,7 +18,7 @@ import {
 </script>
 
 <template>
-  <form @submit.prevent="joinTournament">
+  <form @submit.prevent="joinTournament" class="grid gap-4">
     <FormField v-slot="{ value, handleChange }" name="newTeam">
       <FormItem
         class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
@@ -77,8 +77,6 @@ import {
       Join Tournament
     </Button>
   </form>
-
-  <Button variant="outline" @click="$emit('close')"> Cancel </Button>
 </template>
 
 <script lang="ts">
@@ -87,13 +85,9 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
-import {
-  e_match_types_enum,
-  e_tournament_stage_types_enum,
-} from "~/generated/zeus";
+import { e_match_types_enum } from "~/generated/zeus";
 
 export default {
-  emits: ["close"],
   props: {
     tournamentType: {
       type: String,
@@ -202,8 +196,6 @@ export default {
           ],
         }),
       });
-
-      this.$emit("close");
     },
   },
 };

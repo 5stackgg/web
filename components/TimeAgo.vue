@@ -1,8 +1,15 @@
+<script lang="ts" setup>
+import { CalendarIcon } from "lucide-vue-next";
+</script>
+
 <template>
-  <span> {{ text }} </span>
+  <span class="flex items-center gap-2">
+    <CalendarIcon class="h-4 w-4" />
+    {{ text }}
+  </span>
 </template>
 
-<script>
+<script lang="ts">
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 

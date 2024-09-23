@@ -9,61 +9,114 @@ import MapDisplay from "~/components/MapDisplay.vue";
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
 import TournamentActions from "~/components/tournament/TournamentActions.vue";
+import Separator from "~/components/ui/separator/Separator.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
   <div v-if="tournament">
-    <Tabs default-value="info">
-      <TabsList>
-        <TabsTrigger value="info">
-          <Badge>{{ tournament.status }}</Badge> Information
-        </TabsTrigger>
-        <TabsTrigger value="bracket"> Bracket </TabsTrigger>
-        <TabsTrigger value="teams">
-          Teams ({{ tournament.teams_aggregate.aggregate.count }})
-        </TabsTrigger>
-        <TabsTrigger value="roster" v-if="myTeam"> My Roster </TabsTrigger>
-        <TabsTrigger value="manage"> Manage Tournament </TabsTrigger>
-      </TabsList>
-      <TabsContent value="info">
-        {{ tournament.name }} : {{ tournament.description }}
-        <Badge>{{ tournament.status }}</Badge>
-        <Badge>{{ tournament.options.type }}</Badge>
-        <Badge>{{ tournament.start }}</Badge>
+    <Tabs default-value="overview">
+      <div class="flex justify-between">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="bracket">Bracket</TabsTrigger>
+          <TabsTrigger value="teams">
+            Teams ({{ tournament?.teams_aggregate?.aggregate?.count || 0 }})
+          </TabsTrigger>
+          <TabsTrigger value="roster" v-if="myTeam">My Roster</TabsTrigger>
+          <TabsTrigger value="manage">Manage Tournament</TabsTrigger>
+        </TabsList>
 
-        <p>
-          Admin:
-          {{ tournament.admin.name }}
-        </p>
-
-        <p>Organizers</p>
-        <p v-for="{ organizer } of tournament.organizers">
-          {{ organizer.name }}
-        </p>
-
-        <h1>Maps</h1>
-        <div class="flex">
-          <template v-for="map in tournament.options.map_pool.maps">
-            <MapDisplay :map="map"></MapDisplay>
-          </template>
+        <div class="flex items-center justify-center gap-4">
+          <Badge v-if="tournament?.status">{{ tournament.status }}</Badge>
+          <TournamentActions :tournament="tournament"></TournamentActions>
         </div>
+      </div>
 
-        <Drawer :open="tournamentDialog" v-if="tournament.can_join">
-          <DrawerTrigger @click="tournamentDialog = true">
-            <Button> Join Tournament </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Which Team do you wish to join with?</DrawerTitle>
-            </DrawerHeader>
-            <DrawerFooter>
-              <TournamentJoinForm
-                :tournament-type="tournament.options.type"
-                @close="tournamentDialog = false"
-              ></TournamentJoinForm>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
+      <TabsContent value="overview">
+        <div class="flex flex-col md:flex-row gap-6">
+          <Card class="flex-grow p-6 md:w-2/3">
+            <CardHeader>
+              <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4"
+              >
+                <div>
+                  <CardTitle class="text-2xl font-bold mb-2 sm:mb-0">
+                    {{ tournament.name }}
+                  </CardTitle>
+                  <CardDescription class="text-sm text-muted-foreground">
+                    {{ tournament.description }}
+                  </CardDescription>
+                </div>
+                <div class="flex flex-col items-start gap-2 mt-2">
+                  <Badge variant="secondary" class="text-sm">
+                    {{ tournament.options.type }}
+                  </Badge>
+                  <div
+                    class="flex items-center gap-1 text-sm text-muted-foreground"
+                  >
+                    <TimeAgo :date="tournament.start" />
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div class="space-y-4">
+                <h3 class="text-lg font-semibold mb-2">Admin</h3>
+                <PlayerDisplay :player="tournament.admin" />
+
+                <div v-if="tournament.organizers.lenght > 0">
+                  <h3 class="text-lg font-semibold mb-2">Organizers</h3>
+                  <ul class="list-disc list-inside">
+                    <li
+                      v-for="organizer of tournament.organizers"
+                      :key="organizer.id"
+                    >
+                      <PlayerDisplay :player="organizer" />
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <Separator class="my-8" />
+
+              <MatchOptionsDisplay
+                :options="tournament.options"
+              ></MatchOptionsDisplay>
+
+              <Separator class="my-8" />
+
+              <div>
+                <h3 class="text-lg font-semibold mb-2">Map Pool</h3>
+                <div
+                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+                >
+                  <MapDisplay
+                    v-for="map in tournament.options.map_pool.maps"
+                    :key="map.id"
+                    :map="map"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div class="w-full md:w-1/3 space-y-4">
+            <Card class="p-4">
+              <CardHeader>
+                <CardTitle class="text-xl">Join Tournament</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TournamentJoinForm
+                  :tournament-type="tournament.options.type"
+                  @close="tournamentDialog = false"
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </TabsContent>
       <TabsContent value="bracket">
         <TournamentStageBuilder
@@ -108,8 +161,6 @@ import TournamentActions from "~/components/tournament/TournamentActions.vue";
         </Tabs>
       </TabsContent>
     </Tabs>
-
-    <TournamentActions :tournament="tournament"></TournamentActions>
   </div>
 </template>
 
@@ -153,6 +204,9 @@ export default {
               can_close_registration: true,
               admin: {
                 name: true,
+                country: true,
+                steam_id: true,
+                avatar_url: true,
               },
               options: {
                 id: true,
@@ -162,13 +216,18 @@ export default {
                 coaches: true,
                 knife_round: true,
                 overtime: true,
+                region_veto: true,
                 best_of: true,
+                tv_delay: true,
                 number_of_substitutes: true,
                 map_pool: [
                   {},
                   {
                     id: true,
                     type: true,
+                    e_type: {
+                      description: true,
+                    },
                     maps: [{}, mapFields],
                   },
                 ],

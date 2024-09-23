@@ -24,7 +24,7 @@ import MatchLineupScoreDisplay from "./match/MatchLineupScoreDisplay.vue";
         </template>
         <template v-else>
           <MapDisplay
-            class="rounded-[0px]"
+            class="rounded-none"
             v-for="{ map } of match.match_maps"
             :key="map.id"
             :map="map"

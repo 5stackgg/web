@@ -22,26 +22,26 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     </TableCell>
 
     <TableCell>
-      <Button>
-        <AlertDialog>
-          <AlertDialogTrigger @click.stop>Remove Organizer</AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This will remove {{ organizer.name }} ({{ organizer.steam_id }})
-                from being an organizer.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction @click.stop="removeOrganizer"
-                >Continue</AlertDialogAction
-              >
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="destructive" size="sm">Remove Organizer</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Organizer</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove {{ organizer.name }} as an
+              organizer? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction @click="removeOrganizer" variant="destructive">
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </TableCell>
   </TableRow>
 </template>

@@ -10,52 +10,69 @@ import { CaretSortIcon } from "@radix-icons/vue";
 </script>
 
 <template>
-  <div v-if="tournament">
-    <form class="space-y-8">
-      <FormField v-slot="{ componentField }" name="serverIds">
-        <FormItem>
-          <FormLabel>Assign Match Servers</FormLabel>
-          <Popover>
-            <PopoverTrigger as-child>
-              <Button
-                variant="outline"
-                role="combobox"
-                class="w-[200px] justify-between"
-              >
-                <template v-if="componentField.modelValue.length > 0">
-                  Selected {{ componentField.modelValue.length }} servers
-                </template>
-                <template v-else> Using On Demand Servers </template>
-                <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent class="w-[200px] p-0">
-              <Command>
-                <CommandInput class="h-9" placeholder="Search framework..." />
-                <CommandEmpty>No framework found.</CommandEmpty>
-                <CommandList>
-                  <CommandGroup>
-                    <CommandItem
-                      v-for="server in servers"
-                      :key="server.value"
-                      :value="server.value"
-                      @select="updateServerList(server.value)"
-                    >
-                      {{ server.display }}
-                      <Check
-                        v-if="form.values.serverIds.includes(server.value)"
-                      ></Check>
-                    </CommandItem>
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </form>
-  </div>
+  <Card v-if="tournament" class="p-6 w-full max-w-2xl">
+    <CardHeader>
+      <CardTitle>Tournament Servers</CardTitle>
+      <CardDescription>Assign servers for tournament matches</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <form class="space-y-6">
+        <FormField v-slot="{ componentField }" name="serverIds">
+          <FormItem>
+            <FormLabel class="text-lg font-semibold"
+              >Assign Match Servers</FormLabel
+            >
+            <Popover>
+              <PopoverTrigger as-child>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  class="w-full justify-between text-left font-normal"
+                >
+                  <template v-if="componentField.modelValue.length > 0">
+                    {{ componentField.modelValue.length }} server{{
+                      componentField.modelValue.length > 1 ? "s" : ""
+                    }}
+                    selected
+                  </template>
+                  <template v-else>Select servers</template>
+                  <CaretSortIcon class="ml-2 h-5 w-5 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent class="w-[350px] p-0">
+                <Command>
+                  <CommandInput class="h-10" placeholder="Search servers..." />
+                  <CommandEmpty>No servers found.</CommandEmpty>
+                  <CommandList>
+                    <CommandGroup>
+                      <CommandItem
+                        v-for="server in servers"
+                        :key="server.id"
+                        :value="server.id"
+                        @select="updateServerList(server.id)"
+                      >
+                        <div class="flex items-center justify-between w-full">
+                          <span>{{ server.display }}</span>
+                          <Check
+                            v-if="form.values.serverIds.includes(server.id)"
+                            class="h-4 w-4 text-primary"
+                          />
+                        </div>
+                      </CommandItem>
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </form>
+    </CardContent>
+    <CardFooter>
+      <Button class="w-full">Save Server Assignments</Button>
+    </CardFooter>
+  </Card>
 </template>
 
 <script lang="ts">

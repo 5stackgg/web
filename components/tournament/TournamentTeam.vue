@@ -33,7 +33,6 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :key="member.id"
             :member="member"
             :roles="e_team_roles"
-            @remove="removeMember"
           />
           <!-- loop through till enoughs users  -->
         </TableBody>

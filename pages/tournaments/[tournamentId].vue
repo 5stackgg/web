@@ -25,7 +25,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <TabsTrigger value="teams">
             Teams ({{ tournament?.teams_aggregate?.aggregate?.count || 0 }})
           </TabsTrigger>
-          <TabsTrigger value="manage">Manage Tournament</TabsTrigger>
+          <TabsTrigger value="manage" v-if="tournament.is_organizer">Settings</TabsTrigger>
         </TabsList>
 
         <div class="flex items-center justify-center gap-4">

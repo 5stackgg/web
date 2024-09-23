@@ -3,7 +3,7 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
 </script>
 
 <template>
-  <form class="w-1/2 space-y-6" @submit.prevent="addTeamToTournament">
+  <form class="grid gap-4" @submit.prevent="addTeamToTournament">
     <FormField
       v-slot="{ value, handleChange }"
       name="my_teams"
@@ -71,7 +71,7 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
       type="submit"
       :disabled="form.values.my_teams && teams?.length === 0"
     >
-      Add Team
+      Add
     </Button>
   </form>
 </template>

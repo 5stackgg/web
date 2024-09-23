@@ -124,18 +124,58 @@ import TimeAgo from "~/components/TimeAgo.vue";
         ></TournamentStageBuilder>
       </TabsContent>
       <TabsContent value="teams">
-        <TournamentAddTeam
-          :tournament="tournament"
-          v-if="tournament.is_organizer"
-        ></TournamentAddTeam>
+        <div class="flex flex-col md:flex-row gap-6">
+          <div class="flex-grow md:w-2/3">
+            <Card
+              v-for="team of tournament.teams"
+              :key="team.id"
+              class="rounded-lg p-4"
+            >
+              <div class="flex justify-between items-center mb-4">
+                <NuxtLink
+                  :to="`/tournaments/${tournament.id}/teams/${team.id}`"
+                  class="text-lg font-semibold hover:underline"
+                >
+                  {{ team.name }}
+                </NuxtLink>
+                <span class="text-sm text-gray-600">
+                  {{ team.roster_aggregate.aggregate.count }} players registered
+                </span>
+              </div>
 
-        <div v-for="team of tournament.teams">
-          <NuxtLink :to="`/tournaments/${tournament.id}/teams/${team.id}`">
-            {{ team.name }}: {{ team.roster_aggregate.aggregate.count }} players
-            registered
-          </NuxtLink>
+              <div
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4"
+              >
+                <PlayerDisplay
+                  v-for="{ player } of team.roster"
+                  :key="player.steam_id"
+                  :player="player"
+                  class="text-sm"
+                ></PlayerDisplay>
+              </div>
 
-          <Button @click="removeTeam(team.id)">Remove Team</Button>
+              <Button
+                v-if="tournament.is_organizer"
+                @click="removeTeam(team.id)"
+                variant="destructive"
+                size="sm"
+                class="w-full sm:w-auto"
+              >
+                Remove Team
+              </Button>
+            </Card>
+          </div>
+
+          <div class="w-full md:w-1/3 space-y-4" v-if="tournament.is_organizer">
+            <Card class="p-4">
+              <CardHeader>
+                <CardTitle class="text-xl"> Add Team to Tournament </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TournamentAddTeam :tournament="tournament"></TournamentAddTeam>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </TabsContent>
       <TabsContent value="roster" v-if="myTeam">

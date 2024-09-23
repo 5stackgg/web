@@ -25,7 +25,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <TabsTrigger value="teams">
             Teams ({{ tournament?.teams_aggregate?.aggregate?.count || 0 }})
           </TabsTrigger>
-          <TabsTrigger value="manage" v-if="tournament.is_organizer">Settings</TabsTrigger>
+          <TabsTrigger value="manage" v-if="tournament.is_organizer"
+            >Settings</TabsTrigger
+          >
         </TabsList>
 
         <div class="flex items-center justify-center gap-4">
@@ -135,6 +137,14 @@ import TimeAgo from "~/components/TimeAgo.vue";
               <Separator class="my-8" />
             </template>
 
+            <div class="mb-4">
+              <Input
+                v-model="teamSearchQuery"
+                placeholder="Search teams..."
+                class="w-full"
+              />
+            </div>
+
             <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
               <div class="flex justify-between items-center mb-4">
                 <NuxtLink
@@ -223,6 +233,7 @@ export default {
       myTeam: undefined,
       tournament: undefined,
       tournamentDialog: false,
+      teamSearchQuery: undefined,
     };
   },
   apollo: {

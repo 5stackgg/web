@@ -167,30 +167,34 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
       </SheetContent>
     </Sheet>
     <div class="flex justify-between items-center w-full">
-      <bread-crumbs></bread-crumbs>
+      <div>
+        <bread-crumbs></bread-crumbs>
+      </div>
 
-      <Popover>
-        <PopoverTrigger>
-          <small class="text-muted-foreground ml-4">
-            <span class="flex items-center gap-3">
-              <span class="flex items-center gap-1">
-                <span
-                  class="inline-block w-2 h-2 rounded-full"
-                  :class="{
-                    'bg-green-600': overalRegionStatus === 'Online',
-                    'bg-red-600': overalRegionStatus === 'Offline',
-                    'bg-yellow-600': overalRegionStatus === 'Degraded',
-                  }"
-                ></span>
+      <div>
+        <Popover>
+          <PopoverTrigger class="flex items-center">
+            <small class="text-muted-foreground ml-4">
+              <span class="flex items-center gap-3">
+                <span class="flex items-center gap-1">
+                  <span
+                    class="inline-block w-2 h-2 rounded-full"
+                    :class="{
+                      'bg-green-600': overalRegionStatus === 'Online',
+                      'bg-red-600': overalRegionStatus === 'Offline',
+                      'bg-yellow-600': overalRegionStatus === 'Degraded',
+                    }"
+                  ></span>
+                </span>
+                <Users /> {{ playersOnline }}
               </span>
-              <Users /> {{ playersOnline }}
-            </span>
-          </small>
-        </PopoverTrigger>
-        <PopoverContent>
-          <RegionStatuses></RegionStatuses>
-        </PopoverContent>
-      </Popover>
+            </small>
+          </PopoverTrigger>
+          <PopoverContent>
+            <RegionStatuses></RegionStatuses>
+          </PopoverContent>
+        </Popover>
+      </div>
     </div>
   </header>
 </template>

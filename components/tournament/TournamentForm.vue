@@ -34,49 +34,49 @@ import MatchOptions from "~/components/MatchOptions.vue";
           </FormControl>
         </FormItem>
       </FormField>
+
+      <FormField v-slot="{ componentField }" name="start">
+        <FormItem>
+          <FormLabel>Start</FormLabel>
+          <FormControl>
+            <div class="flex">
+              <Popover>
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    class="w-[280px] justify-start text-left font-normal"
+                    :class="{
+                      ['text-muted-foreground']: !componentField.modelValue,
+                    }"
+                  >
+                    <CalendarIcon class="mr-2 h-4 w-4" />
+                    {{ startDate || "Pick a date" }}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-auto p-0">
+                  <Calendar
+                    :is-date-disabled="checkDate"
+                    v-model="startDate"
+                    initial-focus
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <Input
+                type="time"
+                v-model="startTime"
+                style="color-scheme: dark"
+              ></Input>
+            </div>
+
+            <FormMessage />
+          </FormControl>
+        </FormItem>
+      </FormField>
     </match-options>
 
     <div class="grid grid-cols-1 md:grid-cols-2">
       <div class="grid gap-4">
-        <FormField v-slot="{ componentField }" name="start">
-          <FormItem>
-            <FormLabel>Start</FormLabel>
-            <FormControl>
-              <div class="flex">
-                <Popover>
-                  <PopoverTrigger as-child>
-                    <Button
-                      variant="outline"
-                      class="w-[280px] justify-start text-left font-normal"
-                      :class="{
-                        ['text-muted-foreground']: !componentField.modelValue,
-                      }"
-                    >
-                      <CalendarIcon class="mr-2 h-4 w-4" />
-                      {{ startDate || "Pick a date" }}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent class="w-auto p-0">
-                    <Calendar
-                      :is-date-disabled="checkDate"
-                      v-model="startDate"
-                      initial-focus
-                    />
-                  </PopoverContent>
-                </Popover>
-
-                <Input
-                  type="time"
-                  v-model="startTime"
-                  style="color-scheme: dark"
-                ></Input>
-              </div>
-
-              <FormMessage />
-            </FormControl>
-          </FormItem>
-        </FormField>
-
         <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
           <template v-if="tournament"> Update </template
           ><template v-else> Create </template> Tournament

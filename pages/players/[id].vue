@@ -44,7 +44,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { matchFields } from "~/graphql/matchesGraphql";
+import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 
 export default {
   data() {
@@ -120,7 +120,7 @@ export default {
                       },
                     ],
                   },
-                  matchFields,
+                  simpleMatchFields,
                 ],
               },
             ],

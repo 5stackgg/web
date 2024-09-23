@@ -132,7 +132,7 @@ const teamMenu = ref(false);
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { matchFields } from "~/graphql/matchesGraphql";
+import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 
 export default {
   data() {
@@ -184,7 +184,7 @@ export default {
                   },
                 },
               ],
-              matches: [{}, matchFields],
+              matches: [{}, simpleMatchFields],
             },
           ],
         }),

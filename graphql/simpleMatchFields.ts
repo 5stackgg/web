@@ -1,9 +1,10 @@
 import { order_by, Selector } from "@/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 
-export const matchFields = Selector("servers")({
+export const simpleMatchFields = Selector("servers")({
   id: true,
   status: true,
+  winning_lineup_id: true,
   lineup_1_id: true,
   lineup_2_id: true,
   options: {
@@ -21,7 +22,6 @@ export const matchFields = Selector("servers")({
     },
     {
       map: mapFields,
-      order: true,
       lineup_1_score: true,
       lineup_2_score: true,
     },
@@ -29,10 +29,13 @@ export const matchFields = Selector("servers")({
   lineup_1: {
     id: true,
     name: true,
+    is_on_lineup: true,
   },
   lineup_2: {
     id: true,
     name: true,
+    is_on_lineup: true,
   },
   created_at: true,
+  scheduled_at: true,
 });

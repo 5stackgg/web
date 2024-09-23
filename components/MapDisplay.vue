@@ -11,7 +11,10 @@
 
     <div class="absolute inset-0 bg-black bg-opacity-45"></div>
 
-    <div class="absolute inset-0 flex flex-col items-center justify-center">
+    <div
+      class="absolute inset-0 flex flex-col items-center justify-center"
+      v-if="patch"
+    >
       <slot name="header"></slot>
       <img
         :src="map.patch"
@@ -39,6 +42,10 @@ export default {
     darken: {
       type: Boolean,
       default: false,
+    },
+    patch: {
+      type: Boolean,
+      default: true,
     },
   },
 };

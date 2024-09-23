@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import MyMatches from "~/components/MyMatches.vue";
+import MyUpcomingMatches from "~/components/MyUpcomingMatches.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MatchesTable from "~/components/MatchesTable.vue";
@@ -29,22 +29,25 @@ import PageHeading from "~/components/PageHeading.vue";
         </template>
       </PageHeading>
 
-      <MyMatches :upcoming="true"></MyMatches>
+      <MyUpcomingMatches></MyUpcomingMatches>
 
       <Separator />
 
       <Card class="p-4">
         <Tabs default-value="my">
           <TabsList>
-            <TabsTrigger value="my"> My Matches </TabsTrigger>
+            <TabsTrigger value="my"> My Recent Matches </TabsTrigger>
             <TabsTrigger value="other"> Other Matches </TabsTrigger>
           </TabsList>
 
           <TabsContent value="my">
-            <MyMatches
-              :upcoming="false"
-              paginationTeleport="#pagination"
-            ></MyMatches>
+            <div class="flex gap-4">
+              <SimpleMatchDisplay
+                :match="match"
+                v-for="match of matches"
+                :key="match.id"
+              ></SimpleMatchDisplay>
+            </div>
           </TabsContent>
           <TabsContent value="other">
             <matches-table
@@ -62,8 +65,8 @@ import PageHeading from "~/components/PageHeading.vue";
                     page = _page;
                   }
                 "
-                :total="matches_aggregate?.aggregate?.count"
-                v-if="matches_aggregate"
+                :total="otherMatchesAggregate?.aggregate?.count"
+                v-if="otherMatchesAggregate"
               ></Pagination>
             </Teleport>
           </TabsContent>
@@ -97,8 +100,9 @@ import PageHeading from "~/components/PageHeading.vue";
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
-import { matchFields } from "~/graphql/matchesGraphql";
-import { $, order_by } from "~/generated/zeus";
+import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { $, e_match_status_enum, order_by } from "~/generated/zeus";
+import SimpleMatchDisplay from "~/components/SimpleMatchDisplay.vue";
 
 export default {
   data() {
@@ -108,6 +112,44 @@ export default {
     };
   },
   apollo: {
+    matches: {
+      fetchPolicy: "network-only",
+      query: generateQuery({
+        matches: [
+          {
+            limit: $("limit", "Int!"),
+            offset: $("offset", "Int!"),
+            where: {
+              is_in_lineup: {
+                _eq: true,
+              },
+              status: {
+                _nin: $("statuses", "[e_match_status_enum]"),
+              },
+            },
+            order_by: [
+              {},
+              {
+                created_at: order_by.desc,
+              },
+            ],
+          },
+          simpleMatchFields,
+        ],
+      }),
+      variables: function () {
+        return {
+          limit: this.perPage,
+          offset: (this.page - 1) * this.perPage,
+          statuses: [
+            e_match_status_enum.Live,
+            e_match_status_enum.Veto,
+            e_match_status_enum.Scheduled,
+            e_match_status_enum.WaitingForCheckIn,
+          ],
+        };
+      },
+    },
     otherMatches: {
       fetchPolicy: "network-only",
       query: generateQuery({
@@ -124,7 +166,7 @@ export default {
                   },
                 ],
               },
-              matchFields,
+              simpleMatchFields,
             ],
           },
         },
@@ -136,17 +178,21 @@ export default {
         };
       },
     },
-    matches_aggregate: {
+    otherMatchesAggregate: {
       fetchPolicy: "network-only",
       query: generateQuery({
-        matches_aggregate: [
-          {},
-          {
-            aggregate: {
-              count: [{}, true],
-            },
+        __alias: {
+          otherMatchesAggregate: {
+            matches_aggregate: [
+              {},
+              {
+                aggregate: {
+                  count: true,
+                },
+              },
+            ],
           },
-        ],
+        },
       }),
     },
   },

@@ -38,7 +38,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 
     <form @submit.prevent="vetoPick" v-if="isPicking">
       <template v-if="pickType === e_veto_pick_types_enum.Side">
-        <div class="relative max-w-[800px] mx-auto">
+        <div class="relative max-w-[800px] mx-auto py-4">
           <MapDisplay class="w-full opacity-75" :map="previousMap" />
           <div
             class="absolute inset-0 flex flex-col items-center justify-center space-y-4 z-50"
@@ -85,6 +85,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       </template>
 
       <MapSelector
+        v-else
         :model-value="form.values.map_id"
         :map-pool="mapPool"
         :picks="picks"

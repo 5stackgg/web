@@ -1,25 +1,47 @@
 <script lang="ts" setup>
 import MatchesTable from "~/components/MatchesTable.vue";
+import Pagination from "./Pagination.vue";
 </script>
 
 <template>
-  <Card v-if="meWithMatches?.player?.matches" class="p-4">
-    <matches-table :matches="meWithMatches.player.matches">
+  <template v-if="!paginationTeleport">
+    <Card v-if="matches" class="p-4">
+      <matches-table :matches="matches">
+        <template #none-found> No Upcoming Matches </template>
+      </matches-table>
+    </Card>
+
+    <Pagination
+      :page="page"
+      @page="
+        (_page) => {
+          page = _page;
+        }
+      "
+      :total="myTotalMatches.aggregate.count"
+      :per-page="per_page"
+      v-if="myTotalMatches"
+    ></Pagination>
+  </template>
+  <template v-else>
+    <matches-table v-if="matches" :matches="matches">
       <template #none-found> No Upcoming Matches </template>
     </matches-table>
-  </Card>
 
-  <pagination
-    :page="page"
-    @page="
-      (_page) => {
-        page = _page;
-      }
-    "
-    :total="myTotalMatches.player.player_lineup_aggregate.aggregate.count"
-    :per-page="per_page"
-    v-if="myTotalMatches"
-  ></pagination>
+    <Teleport defer :to="paginationTeleport">
+      <Pagination
+        :page="page"
+        @page="
+          (_page) => {
+            page = _page;
+          }
+        "
+        :total="myTotalMatches.aggregate.count"
+        :per-page="per_page"
+        v-if="myTotalMatches"
+      ></Pagination>
+    </Teleport>
+  </template>
 </template>
 
 <script lang="ts">
@@ -33,37 +55,36 @@ export default {
       type: Boolean,
       default: false,
     },
+    paginationTeleport: {
+      type: String,
+      required: false,
+    },
   },
   apollo: {
-    meWithMatches: {
+    matches: {
       fetchPolicy: "network-only",
       query: generateQuery({
-        __alias: {
-          meWithMatches: {
-            me: {
-              player: {
-                matches: [
-                  {
-                    limit: $("limit", "Int!"),
-                    offset: $("offset", "Int!"),
-                    where: {
-                      status: {
-                        _nin: $("statuses", "[e_match_status_enum]"),
-                      },
-                    },
-                    order_by: [
-                      {},
-                      {
-                        created_at: order_by.desc,
-                      },
-                    ],
-                  },
-                  matchFields,
-                ],
+        matches: [
+          {
+            limit: $("limit", "Int!"),
+            offset: $("offset", "Int!"),
+            where: {
+              is_in_lineup: {
+                _eq: true,
+              },
+              status: {
+                _nin: $("statuses", "[e_match_status_enum]"),
               },
             },
+            order_by: [
+              {},
+              {
+                created_at: order_by.desc,
+              },
+            ],
           },
-        },
+          matchFields,
+        ],
       }),
       variables: function () {
         return {
@@ -85,26 +106,35 @@ export default {
       query: generateQuery({
         __alias: {
           myTotalMatches: {
-            me: {
-              player: {
-                name: true,
-                player_lineup_aggregate: [
-                  {},
-                  {
-                    aggregate: {
-                      count: true,
-                    },
+            matches_aggregate: [
+              {
+                where: {
+                  is_in_lineup: {
+                    _eq: true,
                   },
-                ],
+                  status: {
+                    _nin: $("statuses", "[e_match_status_enum]"),
+                  },
+                },
               },
-            },
+              {
+                aggregate: {
+                  count: true,
+                },
+              },
+            ],
           },
         },
       }),
       variables: function () {
         return {
           statuses: this.upcoming
-            ? [e_match_status_enum.Canceled, e_match_status_enum.Finished]
+            ? [
+                e_match_status_enum.Canceled,
+                e_match_status_enum.Forfeit,
+                e_match_status_enum.Tie,
+                e_match_status_enum.Finished,
+              ]
             : [],
         };
       },

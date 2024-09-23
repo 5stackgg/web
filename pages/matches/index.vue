@@ -28,7 +28,8 @@ import PageHeading from "~/components/PageHeading.vue";
           </NuxtLink>
         </template>
       </PageHeading>
-      <my-matches :upcoming="true"></my-matches>
+
+      <MyMatches :upcoming="true"></MyMatches>
 
       <Separator />
 
@@ -40,29 +41,36 @@ import PageHeading from "~/components/PageHeading.vue";
           </TabsList>
 
           <TabsContent value="my">
-            <my-matches></my-matches>
+            <MyMatches
+              :upcoming="false"
+              paginationTeleport="#pagination"
+            ></MyMatches>
           </TabsContent>
           <TabsContent value="other">
             <matches-table
               class="p-3"
-              :matches="matches"
-              v-if="matches"
+              :matches="otherMatches"
+              v-if="otherMatches"
             ></matches-table>
+
+            <Teleport defer to="#pagination">
+              <Pagination
+                :page="page"
+                :per-page="perPage"
+                @page="
+                  (_page) => {
+                    page = _page;
+                  }
+                "
+                :total="matches_aggregate?.aggregate?.count"
+                v-if="matches_aggregate"
+              ></Pagination>
+            </Teleport>
           </TabsContent>
         </Tabs>
       </Card>
 
-      <Pagination
-        :page="page"
-        :per-page="perPage"
-        @page="
-          (_page) => {
-            page = _page;
-          }
-        "
-        :total="matches_aggregate?.aggregate?.count"
-        v-if="matches_aggregate"
-      ></Pagination>
+      <div id="pagination"></div>
     </div>
 
     <div class="md:w-1/4 hidden lg:block">
@@ -100,22 +108,26 @@ export default {
     };
   },
   apollo: {
-    matches: {
+    otherMatches: {
       fetchPolicy: "network-only",
       query: generateQuery({
-        matches: [
-          {
-            limit: $("limit", "Int!"),
-            offset: $("offset", "Int!"),
-            order_by: [
-              {},
+        __alias: {
+          otherMatches: {
+            matches: [
               {
-                created_at: order_by.desc,
+                limit: $("limit", "Int!"),
+                offset: $("offset", "Int!"),
+                order_by: [
+                  {},
+                  {
+                    created_at: order_by.desc,
+                  },
+                ],
               },
+              matchFields,
             ],
           },
-          matchFields,
-        ],
+        },
       }),
       variables: function () {
         return {

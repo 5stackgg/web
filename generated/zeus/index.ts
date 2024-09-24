@@ -15002,6 +15002,8 @@ count?: [{	columns?: Array<ValueTypes["team_roster_select_column"]> | undefined 
 };
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
+	/** A computed field, executes function "can_invite_to_team" */
+	can_invite?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["team_invites_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -15128,6 +15130,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	_and?: Array<ValueTypes["teams_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["teams_bool_exp"]> | undefined | null | Variable<any, string>,
+	can_invite?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	invites?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>,
 	invites_aggregate?: ValueTypes["team_invites_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -15213,6 +15216,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
+	can_invite?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invites_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -33089,6 +33093,8 @@ count?: [{	columns?: Array<ResolverInputTypes["team_roster_select_column"]> | un
 };
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
+	/** A computed field, executes function "can_invite_to_team" */
+	can_invite?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 invites?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["team_invites_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -33215,6 +33221,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	_and?: Array<ResolverInputTypes["teams_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["teams_bool_exp"]> | undefined | null,
+	can_invite?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	invites?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null,
 	invites_aggregate?: ResolverInputTypes["team_invites_aggregate_bool_exp"] | undefined | null,
@@ -33300,6 +33307,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
+	can_invite?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	invites_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
 	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
@@ -48848,7 +48856,9 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "teams" */
 ["teams"]: {
-		id: ModelTypes["uuid"],
+		/** A computed field, executes function "can_invite_to_team" */
+	can_invite?: boolean | undefined,
+	id: ModelTypes["uuid"],
 	/** An array relationship */
 	invites: Array<ModelTypes["team_invites"]>,
 	/** An aggregate relationship */
@@ -48934,6 +48944,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["teams_bool_exp"]> | undefined,
 	_not?: ModelTypes["teams_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["teams_bool_exp"]> | undefined,
+	can_invite?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	invites?: ModelTypes["team_invites_bool_exp"] | undefined,
 	invites_aggregate?: ModelTypes["team_invites_aggregate_bool_exp"] | undefined,
@@ -49015,6 +49026,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
+	can_invite?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	invites_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
@@ -64856,6 +64868,8 @@ export type GraphQLTypes = {
 	/** columns and relationships of "teams" */
 ["teams"]: {
 	__typename: "teams",
+	/** A computed field, executes function "can_invite_to_team" */
+	can_invite?: boolean | undefined,
 	id: GraphQLTypes["uuid"],
 	/** An array relationship */
 	invites: Array<GraphQLTypes["team_invites"]>,
@@ -64945,6 +64959,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["teams_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["teams_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["teams_bool_exp"]> | undefined,
+	can_invite?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	invites?: GraphQLTypes["team_invites_bool_exp"] | undefined,
 	invites_aggregate?: GraphQLTypes["team_invites_aggregate_bool_exp"] | undefined,
@@ -65030,7 +65045,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
-		id?: GraphQLTypes["order_by"] | undefined,
+		can_invite?: GraphQLTypes["order_by"] | undefined,
+	id?: GraphQLTypes["order_by"] | undefined,
 	invites_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,

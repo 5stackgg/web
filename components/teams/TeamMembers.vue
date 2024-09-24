@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TeamMember } from "~/components/teams";
 import { Separator } from "~/components/ui/separator";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 </script>
 
 <template>
-  <Card>
+  <Card v-if="team">
     <CardHeader>
       <CardTitle>Team Members</CardTitle>
-      <CardDescription>
-        Invite your team members to collaborate.
-      </CardDescription>
     </CardHeader>
     <CardContent class="grid gap-6">
       <div
@@ -31,23 +22,25 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         ></team-member>
       </div>
 
-      <Separator class="my-3" />
+      <template v-if="team.can_invite">
+        <Separator class="my-3" />
 
-      <player-search
-        label="Invite Player to Team ..."
-        :exclude="team?.roster.map((member) => member.player.steam_id) || []"
-        @selected="addMember"
-      ></player-search>
+        <player-search
+          label="Invite Player to Team ..."
+          :exclude="team?.roster.map((member) => member.player.steam_id) || []"
+          @selected="addMember"
+        ></player-search>
 
-      <template v-if="team?.invites.length > 0">
-        <h1>Pending Invites</h1>
+        <template v-if="team?.invites.length > 0">
+          <h1>Pending Invites</h1>
 
-        <div
-          class="flex items-center justify-between space-x-4"
-          v-for="member of team?.invites"
-        >
-          <team-member :member="member" :is-invite="true"></team-member>
-        </div>
+          <div
+            class="flex items-center justify-between space-x-4"
+            v-for="member of team?.invites"
+          >
+            <team-member :member="member" :is-invite="true"></team-member>
+          </div>
+        </template>
       </template>
     </CardContent>
   </Card>
@@ -80,6 +73,7 @@ export default {
               id: $("teamId", "uuid!"),
             },
             {
+              can_invite: true,
               roster: [
                 {
                   order_by: {

@@ -9323,6 +9323,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"teams_bool_exp",
 		_not:"teams_bool_exp",
 		_or:"teams_bool_exp",
+		can_invite:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		invites:"team_invites_bool_exp",
 		invites_aggregate:"team_invites_aggregate_bool_exp",
@@ -9373,6 +9374,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"teams_bool_exp"
 	},
 	teams_order_by:{
+		can_invite:"order_by",
 		id:"order_by",
 		invites_aggregate:"team_invites_aggregate_order_by",
 		match_lineups_aggregate:"match_lineups_aggregate_order_by",
@@ -14801,6 +14803,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	teams:{
+		can_invite:"Boolean",
 		id:"uuid",
 		invites:"team_invites",
 		invites_aggregate:"team_invites_aggregate",

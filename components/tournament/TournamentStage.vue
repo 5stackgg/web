@@ -56,7 +56,8 @@ import {
     <Badge>{{ stage.e_tournament_stage_type.description }}</Badge>
     Min Teams {{ stage.min_teams }} Max Teams {{ stage.max_teams }}
   </h1>
-  <div class="flex">
+
+  <div :class="`grid  grid-cols-${rounds.size}`">
     <template v-for="round of Array.from(rounds.keys())">
       <TournamentRound
         :round="round"

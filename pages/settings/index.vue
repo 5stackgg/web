@@ -46,64 +46,63 @@ definePageMeta({
     <FormField v-slot="{ componentField }" name="country">
       <FormItem>
         <FormLabel>Country </FormLabel>
-        <FormControl>
-          <Popover v-model:open="open">
-            <PopoverTrigger as-child>
-              <Button
-                role="combobox"
-                variant="outline"
-                class="w-full justify-between"
-              >
-                <div class="flex items-center gap-2">
-                  <TimezoneFlag
-                    v-if="form.values.country"
-                    :country="form.values.country"
-                  />
-                  {{
-                    form.values.country
-                      ? countries[form.values.country]?.name
-                      : "Select country..."
-                  }}
-                </div>
-                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent class="w-full p-0">
-              <Command class="w-[300px]">
-                <CommandInput placeholder="Search country..." />
-                <CommandEmpty>No country found.</CommandEmpty>
-                <CommandList>
-                  <CommandGroup>
-                    <CommandItem
-                      v-for="country in Object.values(countries)"
-                      :key="country.id"
-                      :value="country.name"
-                      @select="
-                        () => {
-                          form.setFieldValue('country', country.id);
-                          open = false;
-                        }
-                      "
-                    >
-                      <div class="flex items-center gap-2 w-full">
-                        <TimezoneFlag :country="country.id" />
-                        <span class="truncate">{{ country.name }}</span>
-                      </div>
-                      <Check
-                        :class="[
-                          'ml-auto h-4 w-4 flex-shrink-0',
-                          form.values.country === country.id
-                            ? 'opacity-100'
-                            : 'opacity-0',
-                        ]"
-                      />
-                    </CommandItem>
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </FormControl>
+
+        <Popover v-model:open="open">
+          <PopoverTrigger as-child>
+            <Button
+              role="combobox"
+              variant="outline"
+              class="w-full justify-between"
+            >
+              <div class="flex items-center gap-2">
+                <TimezoneFlag
+                  v-if="form.values.country"
+                  :country="form.values.country"
+                />
+                {{
+                  form.values.country
+                    ? countries[form.values.country]?.name
+                    : "Select country..."
+                }}
+              </div>
+              <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="w-full p-0">
+            <Command class="w-[300px]">
+              <CommandInput placeholder="Search country..." />
+              <CommandEmpty>No country found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="country in Object.values(countries)"
+                    :key="country.id"
+                    :value="country.name"
+                    @select="
+                      () => {
+                        form.setFieldValue('country', country.id);
+                        open = false;
+                      }
+                    "
+                  >
+                    <div class="flex items-center gap-2 w-full">
+                      <TimezoneFlag :country="country.id" />
+                      <span class="truncate">{{ country.name }}</span>
+                    </div>
+                    <Check
+                      :class="[
+                        'ml-auto h-4 w-4 flex-shrink-0',
+                        form.values.country === country.id
+                          ? 'opacity-100'
+                          : 'opacity-0',
+                      ]"
+                    />
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
         <FormMessage />
       </FormItem>
     </FormField>

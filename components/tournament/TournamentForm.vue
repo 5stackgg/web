@@ -184,6 +184,8 @@ export default {
             overtime: tournament.options.overtime,
             best_of: tournament.options.best_of.toString(),
             number_of_substitutes: tournament.options.number_of_substitutes,
+            timeout_setting: tournament.options.timeout_setting,
+            tech_timeout_setting: tournament.options.tech_timeout_setting,
             map_pool_id: tournament.options.map_pool.id,
           });
         }
@@ -306,6 +308,8 @@ export default {
             overtime: form.overtime,
             coaches: form.coaches,
             number_of_substitutes: form.number_of_substitutes,
+            timeout_setting: form.timeout_setting,
+            tech_timeout_setting: form.tech_timeout_setting,
             map_pool_id: mapPoolId,
           },
           mutation: generateMutation({
@@ -323,6 +327,14 @@ export default {
                   map_veto: true,
                   coaches: $("coaches", "Boolean!"),
                   number_of_substitutes: $("number_of_substitutes", "Int!"),
+                  timeout_setting: $(
+                    "timeout_setting",
+                    "e_timeout_settings_enum!",
+                  ),
+                  tech_timeout_setting: $(
+                    "tech_timeout_setting",
+                    "e_timeout_settings_enum!",
+                  ),
                   map_pool_id: $("map_pool_id", "uuid!"),
                 },
               },
@@ -344,6 +356,8 @@ export default {
           overtime: form.overtime,
           coaches: form.coaches,
           number_of_substitutes: form.number_of_substitutes,
+          timeout_setting: form.timeout_setting,
+          tech_timeout_setting: form.tech_timeout_setting,
           ...(form.map_pool_id
             ? {
                 map_pool_id: form.map_pool_id,
@@ -381,6 +395,14 @@ export default {
                     map_veto: true,
                     coaches: $("coaches", "Boolean!"),
                     number_of_substitutes: $("number_of_substitutes", "Int!"),
+                    timeout_setting: $(
+                      "timeout_setting",
+                      "e_timeout_settings_enum!",
+                    ),
+                    tech_timeout_setting: $(
+                      "tech_timeout_setting",
+                      "e_timeout_settings_enum!",
+                    ),
                     map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
                     ...(form.map_pool_id
                       ? { map_pool_id: $("map_pool_id", "uuid!") }

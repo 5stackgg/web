@@ -142,6 +142,8 @@ export default {
                 overtime: true,
                 knife_round: true,
                 number_of_substitutes: true,
+                timeout_setting: true,
+                tech_timeout_setting: true,
                 map_pool: {
                   type: true,
                   e_type: {

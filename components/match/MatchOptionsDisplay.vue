@@ -36,6 +36,15 @@ import BooleanToText from "../BooleanToText.vue";
       <span class="text-muted-foreground">Substitutes</span>
       <span>{{ options.number_of_substitutes }}</span>
     </li>
+
+    <li class="flex items-center justify-between">
+      <span class="text-muted-foreground">Timeout Setting</span>
+      <span>{{ options.timeout_setting }}</span>
+    </li>
+    <li class="flex items-center justify-between">
+      <span class="text-muted-foreground">Tech Timeout Setting</span>
+      <span>{{ options.tech_timeout_setting }}</span>
+    </li>
   </ul>
 </template>
 

@@ -1,6 +1,6 @@
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
-import { e_match_types_enum } from "~/generated/zeus";
+import { e_match_types_enum, e_timeout_settings_enum } from "~/generated/zeus";
 
 export default function matchOptionsValidator(additional: any) {
   return toTypedSchema(
@@ -15,6 +15,10 @@ export default function matchOptionsValidator(additional: any) {
       best_of: z.string().default("1"),
       number_of_substitutes: z.number().min(0).max(5).default(0),
       type: z.string().default(e_match_types_enum.Competitive),
+      timeout_setting: z.string().default(e_timeout_settings_enum.Admin),
+      tech_timeout_setting: z
+        .string()
+        .default(e_timeout_settings_enum.CoachAndPlayers),
       map_pool_id: z.string().nullable(),
       map_pool: z.string().array().default([]),
       custom_map_pool: z.boolean().default(false),

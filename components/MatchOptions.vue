@@ -323,13 +323,73 @@ import { Separator } from "~/components/ui/separator";
           </FormItem>
         </FormField>
       </div>
+
+      <div class="flex flex-col space-y-3 rounded-lg border p-4">
+        <FormField v-slot="{ componentField }" name="timeout_setting">
+          <FormItem>
+            <FormLabel class="text-lg font-semibold"
+              >Timeout Settings</FormLabel
+            >
+            <FormControl>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="timeoutSetting.value"
+                      v-for="timeoutSetting in timeoutSettings"
+                      :key="timeoutSetting.value"
+                    >
+                      {{ timeoutSetting.display }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+
+        <FormField v-slot="{ componentField }" name="tech_timeout_setting">
+          <FormItem>
+            <FormLabel class="text-lg font-semibold"
+              >Tech Timeout Settings</FormLabel
+            >
+            <FormControl>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="timeoutSetting.value"
+                      v-for="timeoutSetting in timeoutSettings"
+                      :key="timeoutSetting.value"
+                    >
+                      {{ timeoutSetting.display }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
-import { e_match_types_enum } from "~/generated/zeus";
+import { e_match_types_enum, e_timeout_settings_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useMatchMakingStore } from "~/stores/MatchMakingStore";
 
@@ -430,6 +490,22 @@ export default {
           display: `Best of ${rounds}`,
         };
       });
+    },
+    timeoutSettings() {
+      return [
+        {
+          display: "Admins",
+          value: e_timeout_settings_enum.Admin,
+        },
+        {
+          display: "Coches",
+          value: e_timeout_settings_enum.Coach,
+        },
+        {
+          display: "Everyone",
+          value: e_timeout_settings_enum.CoachAndPlayers,
+        },
+      ];
     },
     defaultMapPool() {
       return this.map_pools?.find((pool) => {

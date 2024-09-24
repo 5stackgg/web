@@ -90,6 +90,8 @@ export default {
           map_veto: form.map_veto,
           region_veto: form.region_veto,
           coaches: form.coaches,
+          timeout_setting: form.timeout_setting,
+          tech_timeout_setting: form.tech_timeout_setting,
           tv_delay: form.tv_delay,
           number_of_substitutes: form.number_of_substitutes,
           ...(form.map_pool_id
@@ -145,6 +147,14 @@ export default {
                     overtime: $("overtime", "Boolean!"),
                     map_veto: $("map_veto", "Boolean!"),
                     region_veto: $("region_veto", "Boolean!"),
+                    timeout_setting: $(
+                      "timeout_setting",
+                      "e_timeout_settings_enum!",
+                    ),
+                    tech_timeout_setting: $(
+                      "tech_timeout_setting",
+                      "e_timeout_settings_enum!",
+                    ),
                     number_of_substitutes: $("number_of_substitutes", "Int!"),
                     map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
                     ...(form.map_pool_id

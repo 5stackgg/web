@@ -276,6 +276,8 @@ export default {
                 best_of: true,
                 tv_delay: true,
                 number_of_substitutes: true,
+                timeout_setting: true,
+                tech_timeout_setting: true,
                 map_pool: [
                   {},
                   {

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { Gamepad, PanelLeft, Bell, Trash2 } from "lucide-vue-next";
+import { Gamepad, PanelLeft } from "lucide-vue-next";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 import { Users } from "lucide-vue-next";
 import RegionStatuses from "~/components/RegionStatuses.vue";
+import AppNavFooter from "./AppNavFooter.vue";
 </script>
 
 <template>
@@ -32,129 +32,7 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
       </template>
     </nav>
     <nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-      <Sheet>
-        <SheetTrigger>
-          <div class="relative">
-            <Bell
-              class="h-5 w-5"
-              :class="{ 'animate-bell': hasNotifications }"
-            />
-            <span
-              v-if="hasNotifications"
-              class="absolute -top-1 -right-1 inline-block h-2 w-2 rounded-full bg-red-600"
-            ></span>
-          </div>
-          <span class="sr-only">Notifications</span>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Notifications</SheetTitle>
-            <SheetDescription>
-              <template v-if="invites.length > 0">
-                <div
-                  v-for="invite of invites"
-                  :key="invite.id"
-                  class="mb-4 p-4 bg-accent rounded-lg"
-                >
-                  <h3 class="text-lg font-semibold mb-2">
-                    Team Invite: {{ invite.team.name }}
-                  </h3>
-                  <p class="text-sm text-muted-foreground mb-2">
-                    Invited by {{ invite.invited_by.name }}
-                    <TimeAgo :date="invite.created_at" class="text-xs" />
-                  </p>
-                  <div class="flex justify-end space-x-2 mt-3">
-                    <Button variant="outline" @click="denyInvite(invite.id)"
-                      >Deny</Button
-                    >
-                    <Button variant="default" @click="acceptInvite(invite.id)"
-                      >Accept</Button
-                    >
-                  </div>
-                </div>
-                <Separator></Separator>
-              </template>
-
-              <template
-                v-for="notification of notifications"
-                :key="notification.id"
-              >
-                <div :class="['mb-4 p-4 rounded-lg shadow-md relative']">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    @click="deleteNotification(notification.id)"
-                    class="absolute top-2 right-2"
-                  >
-                    <Trash2 class="h-4 w-4" />
-                    <span class="sr-only">Delete</span>
-                  </Button>
-                  <h3
-                    :class="[
-                      'text-lg font-semibold mb-2',
-                      notification.is_read ? 'text-muted-foreground' : '',
-                    ]"
-                  >
-                    {{ notification.title }}
-                  </h3>
-                  <p
-                    :class="[
-                      'text-sm mb-2',
-                      notification.is_read
-                        ? 'text-muted-foreground/70'
-                        : 'text-muted-foreground',
-                    ]"
-                    v-html="notification.message"
-                  ></p>
-                  <div class="flex justify-between items-center">
-                    <span
-                      :class="[
-                        'text-xs',
-                        notification.is_read
-                          ? 'text-muted-foreground/50'
-                          : 'text-muted-foreground',
-                      ]"
-                    >
-                      <TimeAgo :date="notification.created_at" />
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      @click="dismissNotification(notification.id)"
-                      v-if="!notification.is_read"
-                    >
-                      Dismiss
-                    </Button>
-                  </div>
-                </div>
-              </template>
-              <Button
-                size="sm"
-                variant="outline"
-                @click="deleteAllReadNotifications"
-                class="mt-4 w-full"
-              >
-                Delete All Read Notifications
-              </Button>
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
-
-      <nuxt-link
-        to="/settings"
-        class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-      >
-        <Avatar>
-          <AvatarImage :src="me?.avatar_url" :alt="me?.name" />
-          <AvatarFallback>{{ me?.name?.charAt(0) }}</AvatarFallback>
-        </Avatar>
-
-        <span class="sr-only">
-          {{ me?.name }}
-        </span>
-      </nuxt-link>
-      <div @click="linkDiscord" v-if="!hasDiscordLinked">Link Discord</div>
+      <AppNavFooter />
     </nav>
   </aside>
 
@@ -168,7 +46,7 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
           <span class="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" class="sm:max-w-xs">
+      <SheetContent side="left" class="flex flex-col sm:max-w-xs">
         <nav class="grid gap-6 text-lg font-medium">
           <nuxt-link
             to="/"
@@ -188,6 +66,9 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
               {{ link.title }}
             </nuxt-link>
           </template>
+        </nav>
+        <nav class="mt-auto">
+          <AppNavFooter :mobile="true" />
         </nav>
       </SheetContent>
     </Sheet>
@@ -228,123 +109,11 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
 
 <script lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
-import { getCountryForTimezone } from "countries-and-timezones";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 
 export default {
-  apollo: {
-    $subscribe: {
-      team_invites: {
-        query: typedGql("subscription")({
-          team_invites: [
-            {},
-            {
-              id: true,
-              team: {
-                name: true,
-              },
-              invited_by: {
-                name: true,
-              },
-              created_at: true,
-            },
-          ],
-        }),
-        result({ data }: { data: any }) {
-          this.invites = data.team_invites;
-        },
-      },
-      notifications: {
-        query: typedGql("subscription")({
-          notifications: [
-            {
-              where: {
-                _and: [
-                  {
-                    deleted_at: {
-                      _is_null: true,
-                    },
-                  },
-                  {
-                    _or: [
-                      {
-                        is_read: {
-                          _eq: false,
-                        },
-                      },
-                      {
-                        _and: [
-                          {
-                            is_read: {
-                              _eq: true,
-                            },
-                          },
-                          {
-                            created_at: {
-                              _gt: new Date(
-                                Date.now() - 7 * 24 * 60 * 60 * 1000,
-                              ),
-                            },
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-            },
-            {
-              id: true,
-              title: true,
-              message: true,
-              steam_id: true,
-              type: true,
-              entity_id: true,
-              is_read: true,
-              created_at: true,
-            },
-          ],
-        }),
-        result({ data }: { data: any }) {
-          this.notifications = data.notifications;
-        },
-      },
-    },
-  },
-  watch: {
-    detectedCountry: {
-      immediate: true,
-      async handler() {
-        if (!this.me || this.me.country) {
-          return;
-        }
-
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_players_by_pk: [
-              {
-                pk_columns: {
-                  steam_id: this.me.steam_id,
-                },
-                _set: {
-                  country: this.detectedCountry,
-                },
-              },
-              {
-                __typename: true,
-              },
-            ],
-          }),
-        });
-      },
-    },
-  },
   data() {
     return {
-      invites: [],
-      notifications: [],
       links: [
         {
           to: "/matches",
@@ -380,114 +149,9 @@ export default {
       ],
     };
   },
-  methods: {
-    linkDiscord() {
-      window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord?redirect=${encodeURIComponent(
-        window.location.toString(),
-      )}`;
-    },
-    async dismissNotification(id: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_notifications_by_pk: [
-            {
-              pk_columns: { id },
-              _set: {
-                is_read: true,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async deleteNotification(id: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_notifications_by_pk: [
-            {
-              pk_columns: { id },
-              _set: {
-                is_read: true,
-                deleted_at: new Date(),
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async deleteAllReadNotifications() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_notifications: [
-            {
-              where: { is_read: true },
-              _set: { deleted_at: new Date() },
-            },
-          ],
-        }),
-      });
-    },
-    async acceptInvite(inviteId: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          acceptTeamInvite: [
-            {
-              invite_id: inviteId,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-    async denyInvite(inviteId: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          denyTeamInvite: [
-            {
-              invite_id: inviteId,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-  },
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    hasNotifications() {
-      if (this.invites.length > 0) {
-        return true;
-      }
-
-      return (
-        this.notifications.filter((notification) => {
-          return notification.is_read === false;
-        }).length > 0
-      );
-    },
-    hasDiscordLinked() {
-      return useAuthStore().hasDiscordLinked;
-    },
-    detectedCountry() {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      const country = getCountryForTimezone(timezone);
-
-      if (country) {
-        return country.id;
-      }
     },
     playersOnline() {
       return useMatchMakingStore().playersOnline;
@@ -508,28 +172,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-.animate-bell {
-  animation: bell 2s ease-in-out infinite;
-}
-
-@keyframes bell {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  20% {
-    transform: rotate(10deg);
-  }
-  40% {
-    transform: rotate(-10deg);
-  }
-  60% {
-    transform: rotate(5deg);
-  }
-  80% {
-    transform: rotate(-5deg);
-  }
-}
-</style>

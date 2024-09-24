@@ -20,11 +20,11 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
           <div>
             <div class="flex items-center gap-1">
               <TimezoneFlag v-if="showFlag" :country="player.country" />
-              <div>{{ player.name }}</div>
+              <div v-if="showName">{{ player.name }}</div>
             </div>
             <slot name="name-postfix"></slot>
           </div>
-          <p class="text-muted-foreground hidden sm:block" v-if="showSteamId">
+          <p class="text-muted-foreground" v-if="showSteamId">
             {{ player.steam_id }}
           </p>
         </div>
@@ -39,6 +39,10 @@ export default {
     player: {
       type: Object,
       required: true,
+    },
+    showName: {
+      type: Boolean,
+      default: true,
     },
     showFlag: {
       type: Boolean,

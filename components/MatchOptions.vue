@@ -391,6 +391,11 @@ export default {
         if (!defaultMapPool) {
           return;
         }
+
+        if (this.form.values.custom_map_pool) {
+          return;
+        }
+
         this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
       },
     },
@@ -401,6 +406,10 @@ export default {
         } else {
           this.form.setFieldValue("mr", "12");
         }
+
+        this.form.setFieldValue("custom_map_pool", false);
+        this.form.setFieldValue("map_pool", []);
+        this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
       },
     },
     ["form.values.custom_map_pool"]: {
@@ -410,13 +419,6 @@ export default {
           this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
           return;
         }
-        this.form.setFieldValue("map_pool_id", null);
-        this.form.setFieldValue(
-          "map_pool",
-          this.defaultMapPool.maps.map((map) => {
-            return map.id;
-          }),
-        );
       },
     },
   },

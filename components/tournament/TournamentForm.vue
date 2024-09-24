@@ -197,8 +197,8 @@ export default {
         }
 
         this.form.setValues({
-          map_pool_id: null,
           custom_map_pool: true,
+          map_pool_id: this.tournament?.options.map_pool.id,
           map_pool: this.tournament?.options.map_pool.maps.map(({ id }) => {
             return id;
           }),

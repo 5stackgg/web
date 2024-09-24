@@ -60,7 +60,7 @@ const serverMenu = ref(false);
     <template #actions>
       <DropdownMenu v-model:open="serverMenu">
         <DropdownMenuTrigger as-child>
-          <Button variant="ghost" size="sm">
+          <Button variant="outline" size="icon">
             <MoreHorizontal />
           </Button>
         </DropdownMenuTrigger>

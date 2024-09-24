@@ -12,24 +12,27 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
       <template #title> Players </template>
-
-      <template #actions>
-        <div class="relative w-full max-w-sm items-center">
-          <Input
-            id="search"
-            type="text"
-            placeholder="Search..."
-            class="pl-10"
-            v-model="playerQuery"
-          />
-          <span
-            class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-          >
-            <Search class="size-6 text-muted-foreground" />
-          </span>
-        </div>
-      </template>
     </PageHeading>
+
+    <Form class="flex-grow flex justify-end">
+      <FormField name="teamQuery">
+        <FormItem>
+          <FormControl>
+            <div class="relative w-full max-w-sm">
+              <Input
+                type="text"
+                placeholder="Search..."
+                v-model="playerQuery"
+                class="pl-10"
+              />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+              />
+            </div>
+          </FormControl>
+        </FormItem>
+      </FormField>
+    </Form>
 
     <Card class="p-4">
       <Table>

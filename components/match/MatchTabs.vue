@@ -26,9 +26,6 @@ provide("commander", commander);
   <Tabs default-value="overview">
     <TabsList class="lg:inline-flex grid grid-cols-1 mb-4">
       <TabsTrigger value="overview"> Overview </TabsTrigger>
-      <TabsTrigger value="veto" v-if="match.options.map_veto">
-        Map Veto
-      </TabsTrigger>
       <TabsTrigger :disabled="disableStats" value="utility">
         Utility
       </TabsTrigger>
@@ -37,6 +34,9 @@ provide("commander", commander);
       </TabsTrigger>
       <TabsTrigger :disabled="disableStats" value="clutches">
         Clutches
+      </TabsTrigger>
+      <TabsTrigger value="veto" v-if="match.options.map_veto">
+        Map Veto
       </TabsTrigger>
       <TabsTrigger value="settings"> Match Settings </TabsTrigger>
       <TabsTrigger :disabled="!match.server_id" value="server">
@@ -61,14 +61,6 @@ provide("commander", commander);
             :match="match"
             :lineup="match.lineup_2"
           ></LineupOverview>
-        </CardContent>
-      </Card>
-    </TabsContent>
-    <TabsContent value="veto">
-      <Card>
-        <CardHeader> </CardHeader>
-        <CardContent>
-          <MatchPicksDisplay :match="match" />
         </CardContent>
       </Card>
     </TabsContent>
@@ -115,6 +107,14 @@ provide("commander", commander);
             :lineup1="match.lineup_1"
             :lineup2="match.lineup_2"
           ></lineup-clutches>
+        </CardContent>
+      </Card>
+    </TabsContent>
+    <TabsContent value="veto">
+      <Card>
+        <CardHeader> </CardHeader>
+        <CardContent>
+          <MatchPicksDisplay :match="match" />
         </CardContent>
       </Card>
     </TabsContent>

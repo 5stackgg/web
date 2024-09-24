@@ -14,36 +14,34 @@ import { PlusCircle } from "lucide-vue-next";
       <template #title>Teams</template>
       <template #description>Manage teams and rosters.</template>
       <template #actions>
-        <div class="flex items-center gap-4">
-          <Form class="flex-grow">
-            <FormField name="teamQuery">
-              <FormItem>
-                <FormControl>
-                  <div class="relative w-full max-w-sm">
-                    <Input
-                      type="text"
-                      placeholder="Search teams..."
-                      v-model="teamQuery"
-                      class="pl-10"
-                    />
-                    <Search
-                      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-                    />
-                  </div>
-                </FormControl>
-              </FormItem>
-            </FormField>
-          </Form>
-
-          <NuxtLink to="/teams/create">
-            <Button size="lg">
-              <PlusCircle class="w-4 h-4 mr-2" />
-              <span class="hidden md:inline">Create Team</span>
-            </Button>
-          </NuxtLink>
-        </div>
+        <NuxtLink to="/teams/create">
+          <Button size="lg">
+            <PlusCircle class="w-4 h-4 mr-2" />
+            <span class="hidden md:inline">Create Team</span>
+          </Button>
+        </NuxtLink>
       </template>
     </PageHeading>
+
+    <Form class="flex-grow flex justify-end">
+      <FormField name="teamQuery">
+        <FormItem>
+          <FormControl>
+            <div class="relative w-full max-w-sm">
+              <Input
+                type="text"
+                placeholder="Search..."
+                v-model="teamQuery"
+                class="pl-10"
+              />
+              <Search
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+              />
+            </div>
+          </FormControl>
+        </FormItem>
+      </FormField>
+    </Form>
 
     <Card class="p-4">
       <Tabs default-value="my-teams">

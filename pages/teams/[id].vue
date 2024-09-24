@@ -61,7 +61,7 @@ const teamMenu = ref(false);
       <template #actions>
         <DropdownMenu v-model:open="teamMenu">
           <DropdownMenuTrigger as-child>
-            <Button variant="ghost" size="sm">
+            <Button variant="outline" size="icon">
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>

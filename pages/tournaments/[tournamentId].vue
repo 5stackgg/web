@@ -5,7 +5,6 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentServers from "~/components/tournament/TournamentServers.vue";
-import MapDisplay from "~/components/MapDisplay.vue";
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
 import TournamentActions from "~/components/tournament/TournamentActions.vue";
@@ -95,21 +94,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
               <MatchOptionsDisplay
                 :options="tournament.options"
               ></MatchOptionsDisplay>
-
-              <Separator class="my-8" />
-
-              <div>
-                <h3 class="text-lg font-semibold mb-2">Map Pool</h3>
-                <div
-                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
-                >
-                  <MapDisplay
-                    v-for="map in tournament.options.map_pool.maps"
-                    :key="map.id"
-                    :map="map"
-                  />
-                </div>
-              </div>
             </CardContent>
           </Card>
 

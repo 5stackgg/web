@@ -149,6 +149,7 @@ export default {
                   e_type: {
                     description: true,
                   },
+                  maps: [{}, mapFields],
                 },
               },
               region_veto_picks: {

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import BooleanToText from "../BooleanToText.vue";
+import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
 <template>
@@ -46,6 +47,19 @@ import BooleanToText from "../BooleanToText.vue";
       <span>{{ options.tech_timeout_setting }}</span>
     </li>
   </ul>
+
+  <Separator class="my-8" />
+
+  <div>
+    <h3 class="text-lg font-semibold mb-2">Map Pool</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <MapDisplay
+        v-for="map in options.map_pool.maps"
+        :key="map.id"
+        :map="map"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

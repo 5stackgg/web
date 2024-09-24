@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
-import { Input } from "~/components/ui/input";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
 </script>
@@ -502,12 +501,23 @@ export default {
       },
     },
     ["form.values.custom_map_pool"]: {
-      handler(customMapPool) {
-        if (customMapPool === false) {
-          this.form.setFieldValue("map_pool", []);
-          this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
+      handler(custom_map_pool) {
+        if (
+          custom_map_pool &&
+          this.form.values.map_pool_id !== this.defaultMapPool.id
+        ) {
+          console.info("UM");
           return;
         }
+
+        this.form.setFieldValue("map_pool", []);
+
+        if (custom_map_pool) {
+          this.form.setFieldValue("map_pool_id", null);
+          return;
+        }
+
+        this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
       },
     },
   },

@@ -12,11 +12,12 @@ import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDis
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
       <template #title>Upcoming Tournaments</template>
+
       <template #actions>
         <NuxtLink to="/tournaments/create">
           <Button size="lg">
-            <PlusCircle class="w-4 h-4 mr-2" />
-            <span class="hidden md:inline">Create Tournament</span>
+            <PlusCircle class="w-4 h-4" />
+            <span class="hidden md:inline ml-2">Create Tournament</span>
           </Button>
         </NuxtLink>
       </template>

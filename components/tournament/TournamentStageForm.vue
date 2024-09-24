@@ -153,7 +153,7 @@ export default {
               }),
             })
             .refine(
-              (data) => parseInt(data.min_teams) < parseInt(data.max_teams),
+              (data) => parseInt(data.min_teams) <= parseInt(data.max_teams),
               {
                 message: "max teams must be greater than min teams",
                 path: ["min_teams"],
@@ -195,7 +195,7 @@ export default {
         case e_tournament_stage_types_enum.SingleElimination:
           let max = 256;
 
-          while (max > 1) {
+          while (max > 2) {
             options.push({
               value: max.toString(),
               display: max,

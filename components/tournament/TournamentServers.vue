@@ -47,14 +47,14 @@ import { CaretSortIcon } from "@radix-icons/vue";
                     <CommandGroup>
                       <CommandItem
                         v-for="server in servers"
-                        :key="server.id"
-                        :value="server.id"
-                        @select="updateServerList(server.id)"
+                        :key="server.value"
+                        :value="server.value"
+                        @select="updateServerList(server.value)"
                       >
                         <div class="flex items-center justify-between w-full">
                           <span>{{ server.display }}</span>
                           <Check
-                            v-if="form.values.serverIds.includes(server.id)"
+                            v-if="form.values.serverIds.includes(server.value)"
                             class="h-4 w-4 text-primary"
                           />
                         </div>
@@ -69,9 +69,6 @@ import { CaretSortIcon } from "@radix-icons/vue";
         </FormField>
       </form>
     </CardContent>
-    <CardFooter>
-      <Button class="w-full">Save Server Assignments</Button>
-    </CardFooter>
   </Card>
 </template>
 

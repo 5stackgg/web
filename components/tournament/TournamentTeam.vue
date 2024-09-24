@@ -44,7 +44,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
       </Button>
     </div>
 
-    <div v-if="team.roster && team.roster.length > 0">
+    <div v-if="team.roster">
       <Table>
         <TableHeader>
           <TableRow>

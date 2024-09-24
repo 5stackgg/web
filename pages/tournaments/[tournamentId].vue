@@ -68,17 +68,20 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 <h3 class="text-lg font-semibold mb-2">Admin</h3>
                 <PlayerDisplay :player="tournament.admin" />
 
-                <div v-if="tournament.organizers.lenght > 0">
+                <template v-if="tournament.organizers.length > 0">
+                  <Separator class="my-8" />
+
                   <h3 class="text-lg font-semibold mb-2">Organizers</h3>
-                  <ul class="list-disc list-inside">
-                    <li
-                      v-for="organizer of tournament.organizers"
-                      :key="organizer.id"
+                  <div class="grid grid-cols-4 gap-4">
+                    <div
+                      v-for="{ organizer } of tournament.organizers"
+                      :key="organizer.steam_id"
+                      class="flex items-center space-x-2"
                     >
                       <PlayerDisplay :player="organizer" />
-                    </li>
-                  </ul>
-                </div>
+                    </div>
+                  </div>
+                </template>
               </div>
 
               <Separator class="my-8" />

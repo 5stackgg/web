@@ -3,7 +3,7 @@ import SimpleMatchDisplay from "./SimpleMatchDisplay.vue";
 </script>
 
 <template>
-  <div class="flex gap-4">
+  <div class="flex gap-4 overflow-x-auto">
     <SimpleMatchDisplay
       :key="match.id"
       :match="match"

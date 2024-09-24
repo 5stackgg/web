@@ -10,8 +10,8 @@ import PageHeading from "~/components/PageHeading.vue";
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row gap-4">
-    <div class="flex-grow flex flex-col gap-4">
+  <div class="flex flex-col lg:flex-row gap-4">
+    <div class="lg:w-3/4 flex flex-col gap-4 overflow-hidden">
       <PageHeading>
         <template #title> Upcoming Matches </template>
 
@@ -41,11 +41,12 @@ import PageHeading from "~/components/PageHeading.vue";
           </TabsList>
 
           <TabsContent value="my">
-            <div class="flex gap-4">
+            <div class="flex gap-4 overflow-x-auto">
               <SimpleMatchDisplay
                 :match="match"
                 v-for="match of matches"
                 :key="match.id"
+                class="flex-shrink-0"
               ></SimpleMatchDisplay>
             </div>
           </TabsContent>
@@ -76,7 +77,7 @@ import PageHeading from "~/components/PageHeading.vue";
       <div id="pagination"></div>
     </div>
 
-    <div class="md:w-1/4 hidden lg:block">
+    <div class="hidden lg:w-1/4 lg:block">
       <Card
         class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900"
       >

@@ -93,6 +93,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -205,6 +206,12 @@ export default {
           ],
         }),
       });
+
+      toast({
+        title: "Joined Tournament",
+      });
+
+      this.form.resetForm();
     },
   },
 };

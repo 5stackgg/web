@@ -119,10 +119,16 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 <CardTitle class="text-xl">Join Tournament</CardTitle>
               </CardHeader>
               <CardContent>
-                <TournamentJoinForm
-                  :tournament="tournament"
-                  @close="tournamentDialog = false"
-                />
+                <template v-if="tournament.can_join">
+                  <TournamentJoinForm
+                    :tournament="tournament"
+                    @close="tournamentDialog = false"
+                  />
+                </template>
+                <template v-else>
+                  Joined with <span class="underline">{{ myTeam.name }}</span
+                  >.
+                </template>
               </CardContent>
             </Card>
           </div>

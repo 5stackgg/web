@@ -53,9 +53,10 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
         </template>
         <template v-else>
           <TeamSearch
-            label="Search for a Team ..."
+            :label="tempTeam ? tempTeam.name : 'Search for a team...'"
             @selected="
               (team) => {
+                this.tempTeam = team;
                 handleChange(team.id);
               }
             "
@@ -71,7 +72,7 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
       type="submit"
       :disabled="form.values.my_teams && teams?.length === 0"
     >
-      Add
+      Add Team to Tournament
     </Button>
   </form>
 </template>
@@ -82,6 +83,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { $, order_by } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -156,6 +158,7 @@ export default {
   },
   data() {
     return {
+      tempTeam: undefined,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -180,8 +183,6 @@ export default {
   },
   methods: {
     async addTeamToTournament() {
-      const { valid } = await this.form.validate();
-
       const { data } = await this.$apollo.query({
         query: generateQuery({
           teams_by_pk: [
@@ -203,6 +204,8 @@ export default {
         return;
       }
 
+      this.form.resetForm();
+
       await this.$apollo.mutate({
         mutation: generateMutation({
           insert_tournament_teams_one: [
@@ -219,6 +222,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: "Added team to tournament.",
       });
     },
   },

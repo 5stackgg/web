@@ -295,30 +295,59 @@ import { Separator } from "~/components/ui/separator";
       </FormField>
 
       <div class="flex flex-col space-y-3 rounded-lg border p-4">
-        <FormField v-slot="{ componentField }" name="number_of_substitutes">
+        <FormField v-slot="{ value }" name="number_of_substitutes">
           <FormItem>
-            <FormLabel class="text-lg font-semibold">Substitutes</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                v-bind="componentField"
-                placeholder="Number of substitutes"
-              />
-            </FormControl>
+            <FormLabel>Number of Substitutes</FormLabel>
+            <NumberField
+              class="gap-2"
+              :min="0"
+              :max="10"
+              :model-value="value"
+              @update:model-value="
+                (number_of_substitutes) => {
+                  form.setFieldValue(
+                    'number_of_substitutes',
+                    number_of_substitutes,
+                  );
+                }
+              "
+            >
+              <NumberFieldContent>
+                <NumberFieldDecrement />
+                <FormControl>
+                  <NumberFieldInput />
+                </FormControl>
+                <NumberFieldIncrement />
+              </NumberFieldContent>
+            </NumberField>
+            <FormDescription> Enter value between 0 and 10. </FormDescription>
             <FormMessage />
           </FormItem>
         </FormField>
 
-        <FormField v-slot="{ componentField }" name="tv_delay">
+        <FormField v-slot="{ value }" name="tv_delay">
           <FormItem>
-            <FormLabel class="text-lg font-semibold">TV Delay</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                v-bind="componentField"
-                placeholder="Delay in seconds"
-              />
-            </FormControl>
+            <FormLabel>TV Delay</FormLabel>
+            <NumberField
+              class="gap-2"
+              :min="0"
+              :max="120"
+              :model-value="value"
+              @update:model-value="
+                (delay) => {
+                  form.setFieldValue('tv_delay', delay);
+                }
+              "
+            >
+              <NumberFieldContent>
+                <NumberFieldDecrement />
+                <FormControl>
+                  <NumberFieldInput />
+                </FormControl>
+                <NumberFieldIncrement />
+              </NumberFieldContent>
+            </NumberField>
+            <FormDescription> Enter value between 0 and 120. </FormDescription>
             <FormMessage />
           </FormItem>
         </FormField>

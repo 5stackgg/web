@@ -125,6 +125,12 @@ export default {
   },
   methods: {
     async updateCreateTeam() {
+      const { valid } = await this.form.validate();
+
+      if (!valid) {
+        return;
+      }
+
       if (this.team) {
         await this.$apollo.mutate({
           mutation: generateMutation({

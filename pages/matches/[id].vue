@@ -90,6 +90,9 @@ export default {
             {
               id: true,
               status: true,
+              e_match_status: {
+                description: true,
+              },
               region: true,
               e_region: {
                 description: true,

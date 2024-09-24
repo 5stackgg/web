@@ -4,6 +4,9 @@ import { mapFields } from "~/graphql/mapGraphql";
 export const simpleMatchFields = Selector("servers")({
   id: true,
   status: true,
+  e_match_status: {
+    description: true,
+  },
   winning_lineup_id: true,
   lineup_1_id: true,
   lineup_2_id: true,

@@ -36,7 +36,7 @@ import MatchLineupScoreDisplay from "./match/MatchLineupScoreDisplay.vue";
       class="absolute inset-0 bg-black bg-opacity-50 flex flex-col p-4 justify-between hover:bg-opacity-10 duration-300"
     >
       <div class="flex justify-between items-start w-full">
-        <Badge>{{ match.status }}</Badge>
+        <Badge>{{ match.e_match_status.description }}</Badge>
         <ArrowRight></ArrowRight>
       </div>
 

@@ -8,7 +8,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import { TableCell, TableRow } from "~/components/ui/table";
 import { Button } from "~/components/ui/button";
@@ -52,7 +51,7 @@ import Separator from "../ui/separator/Separator.vue";
               <CommandGroup>
                 <CommandItem
                   :value="role.value"
-                  class="flex flex-col items-start px-4 py-2"
+                  class="flex flex-col items-start px-4 py-2 cursor-pointer"
                   v-for="role of roles"
                 >
                   <p>{{ role.value }}</p>
@@ -65,31 +64,10 @@ import Separator from "../ui/separator/Separator.vue";
 
                 <CommandItem
                   :value="false"
-                  class="flex flex-col items-start px-4 py-2"
+                  class="flex px-4 py-2 cursor-pointer"
+                  @click.stop="removeMemberDialog = true"
                 >
-                  <AlertDialog>
-                    <AlertDialogTrigger @click.stop>
-                      <span class="text-red-600">Remove From Team</span>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This will remove {{ member.player.name }} ({{
-                            member.player.steam_id
-                          }}) from the team.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction @click.stop="removeMember"
-                          >Continue</AlertDialogAction
-                        >
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <div class="text-red-600">Remove From Team</div>
                 </CommandItem>
               </CommandGroup>
             </CommandList>
@@ -98,6 +76,27 @@ import Separator from "../ui/separator/Separator.vue";
       </Popover>
     </TableCell>
   </TableRow>
+
+  <AlertDialog :open="removeMemberDialog">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle> Are you absolutely sure </AlertDialogTitle>
+        <AlertDialogDescription>
+          This will remove {{ member.player.name }} ({{
+            member.player.steam_id
+          }}) from the team.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="removeMemberDialog = false"
+          >Cancel</AlertDialogCancel
+        >
+        <AlertDialogAction @click.stop="removeMember"
+          >Continue</AlertDialogAction
+        >
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts">
@@ -117,6 +116,7 @@ export default {
   data() {
     return {
       memberRole: undefined,
+      removeMemberDialog: false,
     };
   },
   watch: {
@@ -158,6 +158,7 @@ export default {
       });
     },
     async removeMember() {
+      this.removeMemberDialog = false;
       await this.$apollo.mutate({
         mutation: generateMutation({
           delete_tournament_team_roster_by_pk: [

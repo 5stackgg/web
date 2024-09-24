@@ -15,12 +15,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { MessageCircleWarning } from "lucide-vue-next";
 </script>
 
 <template>
-  min_players_per_lineup: true, max_players_per_lineup: true,
-
   <form @submit.prevent="joinTournament" class="grid gap-4">
+    <h1 class="flex gap-2">
+      <MessageCircleWarning />
+      This tournament requires at least
+      {{ tournament.min_players_per_lineup }} players
+    </h1>
+
     <FormField v-slot="{ value, handleChange }" name="newTeam">
       <FormItem
         class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
@@ -91,8 +96,8 @@ import { e_match_types_enum } from "~/generated/zeus";
 
 export default {
   props: {
-    tournamentType: {
-      type: String,
+    tournament: {
+      type: Object,
       required: true,
     },
   },
@@ -139,9 +144,11 @@ export default {
     },
   },
   watch: {
-    tournamentType: {
+    tournament: {
+      deep: true,
       immediate: true,
-      handler(type) {
+      handler() {
+        const type = this.tournament.options.type;
         this.form.setFieldValue("newTeam", type === e_match_types_enum.Wingman);
       },
     },

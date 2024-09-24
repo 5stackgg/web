@@ -114,7 +114,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
               </CardHeader>
               <CardContent>
                 <TournamentJoinForm
-                  :tournament-type="tournament.options.type"
+                  :tournament="tournament"
                   @close="tournamentDialog = false"
                 />
               </CardContent>

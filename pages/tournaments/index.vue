@@ -3,13 +3,15 @@ import TournamentsTable from "~/components/TournamentsTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import { Button } from "~/components/ui/button";
 import { PlusCircle } from "lucide-vue-next";
+import MyUpcomingTournaments from "~/components/tournament/MyUpcomingTournaments.vue";
+import Separator from "~/components/ui/separator/Separator.vue";
+import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDisplay.vue";
 </script>
 
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title>Tournaments</template>
-      <template #description>Manage tournaments.</template>
+      <template #title>Upcoming Tournaments</template>
       <template #actions>
         <NuxtLink to="/tournaments/create">
           <Button size="lg">
@@ -20,26 +22,64 @@ import { PlusCircle } from "lucide-vue-next";
       </template>
     </PageHeading>
 
+    <MyUpcomingTournaments></MyUpcomingTournaments>
+
+    <Separator></Separator>
+
     <Card class="p-4">
-      <TournamentsTable :tournaments="tournaments || []"></TournamentsTable>
+      <Tabs default-value="other">
+        <TabsList>
+          <TabsTrigger value="other"> Tournaments </TabsTrigger>
+          <TabsTrigger value="my"> My Recent Tournaments </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="other">
+          <TournamentsTable :tournaments="tournaments || []"></TournamentsTable>
+
+          <Teleport defer to="#pagination">
+            <pagination
+              :page="page"
+              :per-page="perPage"
+              @page="
+                (_page: number) => {
+                  page = _page;
+                }
+              "
+              :total="tournaments?.aggregate?.count"
+            ></pagination>
+          </Teleport>
+        </TabsContent>
+
+        <TabsContent value="my">
+          <div class="flex gap-4 overflow-x-auto">
+            <template v-if="myRecentTournaments?.length > 0">
+              <SimpleTournamentDisplay
+                :key="tournament.id"
+                :tournament="tournament"
+                class="flex-shrink-0"
+                v-for="tournament of myRecentTournaments"
+              ></SimpleTournamentDisplay>
+            </template>
+            <template v-else>
+              <div class="text-center w-full p-4">
+                <p class="text-muted-foreground">
+                  You don't have any recent tournaments.
+                </p>
+              </div>
+            </template>
+          </div>
+        </TabsContent>
+      </Tabs>
     </Card>
 
-    <pagination
-      :page="page"
-      :per-page="perPage"
-      @page="
-        (_page: number) => {
-          page = _page;
-        }
-      "
-      :total="tournaments?.aggregate?.count"
-    ></pagination>
+    <div id="pagination"></div>
   </div>
 </template>
 
 <script lang="ts">
+import { mapFields } from "~/graphql/mapGraphql";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { $, order_by } from "~/generated/zeus";
+import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 
 export default {
   data() {
@@ -105,6 +145,59 @@ export default {
           },
         ],
       }),
+    },
+    myRecentTournaments: {
+      fetchPolicy: "network-only",
+      query: generateQuery({
+        __alias: {
+          myRecentTournaments: {
+            tournaments: [
+              {
+                limit: 10,
+                where: {
+                  status: {
+                    _in: $("statuses", "[e_tournament_status_enum]"),
+                  },
+                  rosters: {
+                    player_steam_id: {
+                      _eq: $("steam_id", "bigint"),
+                    },
+                  },
+                },
+                order_by: [
+                  {},
+                  {
+                    start: order_by.desc,
+                  },
+                ],
+              },
+              {
+                id: true,
+                name: true,
+                start: true,
+                e_tournament_status: {
+                  description: true,
+                },
+                options: {
+                  map_pool: {
+                    maps: [{}, mapFields],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      }),
+      variables: function () {
+        return {
+          steam_id: useAuthStore().me.steam_id,
+          statuses: [
+            e_tournament_status_enum.Cancelled,
+            e_tournament_status_enum.CancelledMinTeams,
+            e_tournament_status_enum.Finished,
+          ],
+        };
+      },
     },
   },
 };

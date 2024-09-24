@@ -47,7 +47,15 @@ import PageHeading from "~/components/PageHeading.vue";
                 v-for="match of matches"
                 :key="match.id"
                 class="flex-shrink-0"
+                v-if="matches?.length > 0"
               ></SimpleMatchDisplay>
+              <template v-else>
+                <div class="text-center w-full p-4">
+                  <p class="text-muted-foreground">
+                    You don't have any recent matches.
+                  </p>
+                </div>
+              </template>
             </div>
           </TabsContent>
           <TabsContent value="other">
@@ -118,8 +126,7 @@ export default {
       query: generateQuery({
         matches: [
           {
-            limit: $("limit", "Int!"),
-            offset: $("offset", "Int!"),
+            limit: 10,
             where: {
               is_in_lineup: {
                 _eq: true,
@@ -140,8 +147,6 @@ export default {
       }),
       variables: function () {
         return {
-          limit: this.perPage,
-          offset: (this.page - 1) * this.perPage,
           statuses: [
             e_match_status_enum.Live,
             e_match_status_enum.Veto,

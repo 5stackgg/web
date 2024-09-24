@@ -131,7 +131,18 @@ export default {
   },
   methods: {
     async leaveTournament() {
-      console.info("leave tournament");
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_tournament_teams_by_pk: [
+            {
+              id: this.team.id,
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
     },
     async addMember(member) {
       await this.$apollo.mutate({

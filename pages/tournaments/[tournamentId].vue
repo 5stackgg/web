@@ -29,11 +29,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
             >Settings</TabsTrigger
           >
         </TabsList>
-
-        <div class="flex items-center justify-center gap-4">
-          <Badge v-if="tournament?.status">{{ tournament.status }}</Badge>
-          <TournamentActions :tournament="tournament"></TournamentActions>
-        </div>
       </div>
 
       <TabsContent value="overview">
@@ -44,27 +39,38 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4"
               >
                 <div>
+                  <Badge v-if="tournament?.status">{{
+                    tournament.status
+                  }}</Badge>
+
                   <CardTitle class="text-2xl font-bold mb-2 sm:mb-0">
                     {{ tournament.name }}
+                    <Badge variant="secondary" class="text-sm ml-2">
+                      {{ tournament.options.type }}
+                    </Badge>
                   </CardTitle>
-                  <CardDescription class="text-sm text-muted-foreground">
-                    {{ tournament.description }}
-                  </CardDescription>
+
+                  <TimeAgo
+                    :date="tournament.start"
+                    class="text-sm text-muted-foreground"
+                  />
                 </div>
+
                 <div class="flex flex-col items-start gap-2 mt-2">
-                  <Badge variant="secondary" class="text-sm">
-                    {{ tournament.options.type }}
-                  </Badge>
-                  <div
-                    class="flex items-center gap-1 text-sm text-muted-foreground"
-                  >
-                    <TimeAgo :date="tournament.start" />
-                  </div>
+                  <TournamentActions
+                    :tournament="tournament"
+                  ></TournamentActions>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div class="space-y-4">
+              <Card class="py-4">
+                <CardContent>
+                  <div class="prose">{{ tournament.description }}</div>
+                </CardContent>
+              </Card>
+
+              <div class="mt-4 space-y-4">
                 <h3 class="text-lg font-semibold mb-2">Admin</h3>
                 <PlayerDisplay :player="tournament.admin" />
 

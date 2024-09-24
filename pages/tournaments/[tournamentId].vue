@@ -258,6 +258,8 @@ export default {
               can_cancel: true,
               can_open_registration: true,
               can_close_registration: true,
+              min_players_per_lineup: true,
+              max_players_per_lineup: true,
               admin: {
                 name: true,
                 country: true,

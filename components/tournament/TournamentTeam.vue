@@ -8,17 +8,42 @@ import {
 } from "~/components/ui/table";
 import TournamentTeamMemberRow from "~/components/tournament/TournamentTeamMemberRow.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
+import PlayerDisplay from "../PlayerDisplay.vue";
 </script>
 
 <!-- // TODO - tournament max players per lineup -->
 <template>
-  <div v-if="team && e_team_roles">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-2xl font-bold">Manage Team Roster</h2>
-      <Button @click="leaveTournament" variant="destructive"
-        >Leave Tournament</Button
+  <div v-if="team && e_team_roles" class="grid gap-4">
+    <div
+      class="flex flex-col md:flex-row justify-between items-center mb-4 p-4 shadow rounded-lg"
+    >
+      <div>
+        <h2 class="text-2xl font-bold mb-2">
+          Manage Team Roster
+          <small>
+            ({{ team.roster.length }} / {{ tournament.max_players_per_lineup }})
+          </small>
+        </h2>
+        <template v-if="team.eligible_at">
+          <Badge> Eligible </Badge>
+        </template>
+        <template v-else>
+          <div class="text-sm text-red-600">
+            Not eligible, requires
+            {{ tournament.min_players_per_lineup - team.roster.length }} more
+            member(s).
+          </div>
+        </template>
+      </div>
+      <Button
+        @click="leaveTournament"
+        variant="destructive"
+        class="mt-4 md:mt-0"
       >
+        Leave Tournament
+      </Button>
     </div>
+
     <div v-if="team.roster && team.roster.length > 0">
       <Table>
         <TableHeader>
@@ -34,17 +59,37 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :member="member"
             :roles="e_team_roles"
           />
-          <!-- loop through till enoughs users  -->
+          <TableRow
+            v-for="slot of Math.max(
+              0,
+              tournament.max_players_per_lineup - team.roster.length,
+            )"
+          >
+            <TableCell colspan="100%">
+              <div class="flex space-x-3">
+                <PlayerDisplay
+                  :show-flag="false"
+                  :show-steam-id="false"
+                  :player="{
+                    name: `Slot ${slot + team.roster.length}`,
+                  }"
+                />
+                <template v-if="slot === 1">
+                  <player-search
+                    label="Add Player to Team..."
+                    :exclude="
+                      team.roster?.map((member) => member.player.steam_id) || []
+                    "
+                    :team-id="team.team_id"
+                    @selected="addMember"
+                  />
+                </template>
+              </div>
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </div>
-
-    <player-search
-      label="Search for a player..."
-      :exclude="team.roster?.map((member) => member.player.steam_id) || []"
-      :team-id="team.team_id"
-      @selected="addMember"
-    />
   </div>
 </template>
 
@@ -52,6 +97,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import { e_team_roles_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
+import Badge from "../ui/badge/Badge.vue";
 
 export default {
   props: {
@@ -94,7 +140,7 @@ export default {
             {
               object: {
                 player_steam_id: member.steam_id,
-                tournament_team_id: this.$route.params.teamId,
+                tournament_team_id: this.team.id,
                 tournament_id:
                   this.$route.params.tournamentId || this.$route.params.id,
               },

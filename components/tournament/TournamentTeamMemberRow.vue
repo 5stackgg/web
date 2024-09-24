@@ -27,6 +27,7 @@ import {
 } from "~/components/ui/command";
 import { ChevronDownIcon } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import Separator from "../ui/separator/Separator.vue";
 </script>
 
 <template>
@@ -60,19 +61,21 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
                   </p>
                 </CommandItem>
 
+                <Separator></Separator>
+
                 <CommandItem
                   :value="false"
                   class="flex flex-col items-start px-4 py-2"
                 >
                   <AlertDialog>
-                    <AlertDialogTrigger @click.stop
-                      >Remove From Team</AlertDialogTrigger
-                    >
+                    <AlertDialogTrigger @click.stop>
+                      <span class="text-red-600">Remove From Team</span>
+                    </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle
-                          >Are you absolutely sure?</AlertDialogTitle
-                        >
+                        <AlertDialogTitle>
+                          Are you absolutely sure
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
                           This will remove {{ member.player.name }} ({{
                             member.player.steam_id

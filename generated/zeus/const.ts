@@ -6503,6 +6503,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_assists_order_by",
 			where:"player_assists_bool_exp"
 		},
+		coach_lineups:{
+			distinct_on:"match_lineups_select_column",
+			order_by:"match_lineups_order_by",
+			where:"match_lineups_bool_exp"
+		},
+		coach_lineups_aggregate:{
+			distinct_on:"match_lineups_select_column",
+			order_by:"match_lineups_order_by",
+			where:"match_lineups_bool_exp"
+		},
 		damage_dealt:{
 			distinct_on:"player_damages_select_column",
 			order_by:"player_damages_order_by",
@@ -6572,16 +6582,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_kills_select_column",
 			order_by:"player_kills_order_by",
 			where:"player_kills_bool_exp"
-		},
-		match_lineups:{
-			distinct_on:"match_lineups_select_column",
-			order_by:"match_lineups_order_by",
-			where:"match_lineups_bool_exp"
-		},
-		match_lineups_aggregate:{
-			distinct_on:"match_lineups_select_column",
-			order_by:"match_lineups_order_by",
-			where:"match_lineups_bool_exp"
 		},
 		matches:{
 			distinct_on:"matches_select_column",
@@ -6750,6 +6750,8 @@ export const AllTypesProps: Record<string,any> = {
 		assited_by_players:"player_assists_bool_exp",
 		assited_by_players_aggregate:"player_assists_aggregate_bool_exp",
 		avatar_url:"String_comparison_exp",
+		coach_lineups:"match_lineups_bool_exp",
+		coach_lineups_aggregate:"match_lineups_aggregate_bool_exp",
 		country:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		damage_dealt:"player_damages_bool_exp",
@@ -6768,8 +6770,6 @@ export const AllTypesProps: Record<string,any> = {
 		is_in_another_match:"Boolean_comparison_exp",
 		kills:"player_kills_bool_exp",
 		kills_aggregate:"player_kills_aggregate_bool_exp",
-		match_lineups:"match_lineups_bool_exp",
-		match_lineups_aggregate:"match_lineups_aggregate_bool_exp",
 		matches:"matches_bool_exp",
 		matchmaking_cooldown:"timestamptz_comparison_exp",
 		multi_kills:"v_player_multi_kills_bool_exp",
@@ -6814,6 +6814,7 @@ export const AllTypesProps: Record<string,any> = {
 		abandoned_matches:"abandoned_matches_arr_rel_insert_input",
 		assists:"player_assists_arr_rel_insert_input",
 		assited_by_players:"player_assists_arr_rel_insert_input",
+		coach_lineups:"match_lineups_arr_rel_insert_input",
 		created_at:"timestamptz",
 		damage_dealt:"player_damages_arr_rel_insert_input",
 		damage_taken:"player_damages_arr_rel_insert_input",
@@ -6822,7 +6823,6 @@ export const AllTypesProps: Record<string,any> = {
 		flashed_players:"player_flashes_arr_rel_insert_input",
 		invited_players:"team_invites_arr_rel_insert_input",
 		kills:"player_kills_arr_rel_insert_input",
-		match_lineups:"match_lineups_arr_rel_insert_input",
 		multi_kills:"v_player_multi_kills_arr_rel_insert_input",
 		notifications:"notifications_arr_rel_insert_input",
 		objectives:"player_objectives_arr_rel_insert_input",
@@ -6854,6 +6854,7 @@ export const AllTypesProps: Record<string,any> = {
 		assists_aggregate:"player_assists_aggregate_order_by",
 		assited_by_players_aggregate:"player_assists_aggregate_order_by",
 		avatar_url:"order_by",
+		coach_lineups_aggregate:"match_lineups_aggregate_order_by",
 		country:"order_by",
 		created_at:"order_by",
 		damage_dealt_aggregate:"player_damages_aggregate_order_by",
@@ -6865,7 +6866,6 @@ export const AllTypesProps: Record<string,any> = {
 		invited_players_aggregate:"team_invites_aggregate_order_by",
 		is_in_another_match:"order_by",
 		kills_aggregate:"player_kills_aggregate_order_by",
-		match_lineups_aggregate:"match_lineups_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		matchmaking_cooldown:"order_by",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_order_by",
@@ -10405,6 +10405,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		is_organizer:"Boolean_comparison_exp",
 		match_options_id:"uuid_comparison_exp",
+		max_players_per_lineup:"Int_comparison_exp",
+		min_players_per_lineup:"Int_comparison_exp",
 		name:"String_comparison_exp",
 		options:"match_options_bool_exp",
 		organizer_steam_id:"bigint_comparison_exp",
@@ -10477,6 +10479,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		is_organizer:"order_by",
 		match_options_id:"order_by",
+		max_players_per_lineup:"order_by",
+		min_players_per_lineup:"order_by",
 		name:"order_by",
 		options:"match_options_order_by",
 		organizer_steam_id:"order_by",
@@ -13994,6 +13998,8 @@ export const ReturnTypes: Record<string,any> = {
 		assited_by_players:"player_assists",
 		assited_by_players_aggregate:"player_assists_aggregate",
 		avatar_url:"String",
+		coach_lineups:"match_lineups",
+		coach_lineups_aggregate:"match_lineups_aggregate",
 		country:"String",
 		created_at:"timestamptz",
 		damage_dealt:"player_damages",
@@ -14012,8 +14018,6 @@ export const ReturnTypes: Record<string,any> = {
 		is_in_another_match:"Boolean",
 		kills:"player_kills",
 		kills_aggregate:"player_kills_aggregate",
-		match_lineups:"match_lineups",
-		match_lineups_aggregate:"match_lineups_aggregate",
 		matches:"matches",
 		matchmaking_cooldown:"timestamptz",
 		multi_kills:"v_player_multi_kills",
@@ -15296,6 +15300,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		is_organizer:"Boolean",
 		match_options_id:"uuid",
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		name:"String",
 		options:"match_options",
 		organizer_steam_id:"bigint",
@@ -15330,12 +15336,16 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"tournaments_variance_fields"
 	},
 	tournaments_avg_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_max_fields:{
 		description:"String",
 		id:"uuid",
 		match_options_id:"uuid",
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
 		start:"timestamptz"
@@ -15344,6 +15354,8 @@ export const ReturnTypes: Record<string,any> = {
 		description:"String",
 		id:"uuid",
 		match_options_id:"uuid",
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		name:"String",
 		organizer_steam_id:"bigint",
 		start:"timestamptz"
@@ -15353,24 +15365,38 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"tournaments"
 	},
 	tournaments_stddev_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_stddev_pop_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_stddev_samp_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_sum_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint"
 	},
 	tournaments_var_pop_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_var_samp_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	tournaments_variance_fields:{
+		max_players_per_lineup:"Int",
+		min_players_per_lineup:"Int",
 		organizer_steam_id:"Float"
 	},
 	uuid: `scalar.uuid` as const,

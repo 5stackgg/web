@@ -11554,6 +11554,18 @@ assited_by_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["player_assists_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_assists_aggregate"]],
 	avatar_url?:boolean | `@${string}`,
+coach_lineups?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
+coach_lineups_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
 	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 damage_dealt?: [{	/** distinct select on columns */
@@ -11643,18 +11655,6 @@ kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["player_kills_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["player_kills_aggregate"]],
-match_lineups?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups"]],
-match_lineups_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ValueTypes["match_lineups_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
-	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
-	order_by?: Array<ValueTypes["match_lineups_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
-	where?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_lineups_aggregate"]],
 matches?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -11881,6 +11881,8 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assited_by_players?: ValueTypes["player_assists_bool_exp"] | undefined | null | Variable<any, string>,
 	assited_by_players_aggregate?: ValueTypes["player_assists_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	coach_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
+	coach_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	country?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	damage_dealt?: ValueTypes["player_damages_bool_exp"] | undefined | null | Variable<any, string>,
@@ -11899,8 +11901,6 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	is_in_another_match?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["player_kills_bool_exp"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
-	match_lineups?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
-	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	matches?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	matchmaking_cooldown?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	multi_kills?: ValueTypes["v_player_multi_kills_bool_exp"] | undefined | null | Variable<any, string>,
@@ -11949,6 +11949,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assists?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	assited_by_players?: ValueTypes["player_assists_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
+	coach_lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	damage_dealt?: ValueTypes["player_damages_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -11959,7 +11960,6 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	flashed_players?: ValueTypes["player_flashes_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	invited_players?: ValueTypes["team_invites_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["player_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	match_lineups?: ValueTypes["match_lineups_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	multi_kills?: ValueTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	name?: string | undefined | null | Variable<any, string>,
 	notifications?: ValueTypes["notifications_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -12031,6 +12031,7 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	assists_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	assited_by_players_aggregate?: ValueTypes["player_assists_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	coach_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	country?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	damage_dealt_aggregate?: ValueTypes["player_damages_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -12042,7 +12043,6 @@ count?: [{	columns?: Array<ValueTypes["players_select_column"]> | undefined | nu
 	invited_players_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	is_in_another_match?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills_aggregate?: ValueTypes["player_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
-	match_lineups_aggregate?: ValueTypes["match_lineups_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matches_aggregate?: ValueTypes["matches_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	matchmaking_cooldown?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	multi_kills_aggregate?: ValueTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -16999,6 +16999,10 @@ count?: [{	columns?: Array<ValueTypes["tournament_teams_select_column"]> | undef
 	/** A computed field, executes function "is_tournament_organizer" */
 	is_organizer?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	/** An object relationship */
 	options?:ValueTypes["match_options"],
@@ -17119,6 +17123,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate avg on columns */
 ["tournaments_avg_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -17142,6 +17150,8 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_organizer?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	max_players_per_lineup?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	min_players_per_lineup?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	options?: ValueTypes["match_options_bool_exp"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -17187,6 +17197,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	description?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
@@ -17206,6 +17220,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	description?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
@@ -17253,6 +17271,8 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_organizer?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_options_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	max_players_per_lineup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	min_players_per_lineup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	options?: ValueTypes["match_options_order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -17282,6 +17302,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -17291,6 +17315,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate stddev_pop on columns */
 ["tournaments_stddev_pop_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -17300,6 +17328,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate stddev_samp on columns */
 ["tournaments_stddev_samp_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -17326,6 +17358,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -17345,6 +17381,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate var_pop on columns */
 ["tournaments_var_pop_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -17354,6 +17394,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate var_samp on columns */
 ["tournaments_var_samp_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -17363,6 +17407,10 @@ count?: [{	columns?: Array<ValueTypes["tournaments_select_column"]> | undefined 
 };
 	/** aggregate variance on columns */
 ["tournaments_variance_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -29593,6 +29641,18 @@ assited_by_players_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["player_assists_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null},ResolverInputTypes["player_assists_aggregate"]],
 	avatar_url?:boolean | `@${string}`,
+coach_lineups?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups"]],
+coach_lineups_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
 	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
 damage_dealt?: [{	/** distinct select on columns */
@@ -29682,18 +29742,6 @@ kills_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["player_kills_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null},ResolverInputTypes["player_kills_aggregate"]],
-match_lineups?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups"]],
-match_lineups_aggregate?: [{	/** distinct select on columns */
-	distinct_on?: Array<ResolverInputTypes["match_lineups_select_column"]> | undefined | null,	/** limit the number of rows returned */
-	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
-	offset?: number | undefined | null,	/** sort the rows by one or more columns */
-	order_by?: Array<ResolverInputTypes["match_lineups_order_by"]> | undefined | null,	/** filter the rows returned */
-	where?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null},ResolverInputTypes["match_lineups_aggregate"]],
 matches?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -29920,6 +29968,8 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assited_by_players?: ResolverInputTypes["player_assists_bool_exp"] | undefined | null,
 	assited_by_players_aggregate?: ResolverInputTypes["player_assists_aggregate_bool_exp"] | undefined | null,
 	avatar_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	coach_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
+	coach_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	country?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	damage_dealt?: ResolverInputTypes["player_damages_bool_exp"] | undefined | null,
@@ -29938,8 +29988,6 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	is_in_another_match?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	kills?: ResolverInputTypes["player_kills_bool_exp"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_bool_exp"] | undefined | null,
-	match_lineups?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
-	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_bool_exp"] | undefined | null,
 	matches?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	matchmaking_cooldown?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	multi_kills?: ResolverInputTypes["v_player_multi_kills_bool_exp"] | undefined | null,
@@ -29988,6 +30036,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assists?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	assited_by_players?: ResolverInputTypes["player_assists_arr_rel_insert_input"] | undefined | null,
 	avatar_url?: string | undefined | null,
+	coach_lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	damage_dealt?: ResolverInputTypes["player_damages_arr_rel_insert_input"] | undefined | null,
@@ -29998,7 +30047,6 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	flashed_players?: ResolverInputTypes["player_flashes_arr_rel_insert_input"] | undefined | null,
 	invited_players?: ResolverInputTypes["team_invites_arr_rel_insert_input"] | undefined | null,
 	kills?: ResolverInputTypes["player_kills_arr_rel_insert_input"] | undefined | null,
-	match_lineups?: ResolverInputTypes["match_lineups_arr_rel_insert_input"] | undefined | null,
 	multi_kills?: ResolverInputTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined | null,
 	name?: string | undefined | null,
 	notifications?: ResolverInputTypes["notifications_arr_rel_insert_input"] | undefined | null,
@@ -30070,6 +30118,7 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	assists_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	assited_by_players_aggregate?: ResolverInputTypes["player_assists_aggregate_order_by"] | undefined | null,
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
+	coach_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	country?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	damage_dealt_aggregate?: ResolverInputTypes["player_damages_aggregate_order_by"] | undefined | null,
@@ -30081,7 +30130,6 @@ count?: [{	columns?: Array<ResolverInputTypes["players_select_column"]> | undefi
 	invited_players_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
 	is_in_another_match?: ResolverInputTypes["order_by"] | undefined | null,
 	kills_aggregate?: ResolverInputTypes["player_kills_aggregate_order_by"] | undefined | null,
-	match_lineups_aggregate?: ResolverInputTypes["match_lineups_aggregate_order_by"] | undefined | null,
 	matches_aggregate?: ResolverInputTypes["matches_aggregate_order_by"] | undefined | null,
 	matchmaking_cooldown?: ResolverInputTypes["order_by"] | undefined | null,
 	multi_kills_aggregate?: ResolverInputTypes["v_player_multi_kills_aggregate_order_by"] | undefined | null,
@@ -35038,6 +35086,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_teams_select_column"]>
 	/** A computed field, executes function "is_tournament_organizer" */
 	is_organizer?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	/** An object relationship */
 	options?:ResolverInputTypes["match_options"],
@@ -35158,6 +35210,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate avg on columns */
 ["tournaments_avg_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -35181,6 +35237,8 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	is_organizer?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	match_options_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	max_players_per_lineup?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	min_players_per_lineup?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	options?: ResolverInputTypes["match_options_bool_exp"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
@@ -35226,6 +35284,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	description?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
@@ -35245,6 +35307,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	description?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	match_options_id?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 	start?:boolean | `@${string}`,
@@ -35292,6 +35358,8 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	is_organizer?: ResolverInputTypes["order_by"] | undefined | null,
 	match_options_id?: ResolverInputTypes["order_by"] | undefined | null,
+	max_players_per_lineup?: ResolverInputTypes["order_by"] | undefined | null,
+	min_players_per_lineup?: ResolverInputTypes["order_by"] | undefined | null,
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	options?: ResolverInputTypes["match_options_order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -35321,6 +35389,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -35330,6 +35402,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate stddev_pop on columns */
 ["tournaments_stddev_pop_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -35339,6 +35415,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate stddev_samp on columns */
 ["tournaments_stddev_samp_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -35365,6 +35445,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -35384,6 +35468,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate var_pop on columns */
 ["tournaments_var_pop_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -35393,6 +35481,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate var_samp on columns */
 ["tournaments_var_samp_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -35402,6 +35494,10 @@ count?: [{	columns?: Array<ResolverInputTypes["tournaments_select_column"]> | un
 };
 	/** aggregate variance on columns */
 ["tournaments_variance_fields"]: AliasType<{
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?:boolean | `@${string}`,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?:boolean | `@${string}`,
 	organizer_steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -46579,6 +46675,10 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	assited_by_players_aggregate: ModelTypes["player_assists_aggregate"],
 	avatar_url?: string | undefined,
+	/** An array relationship */
+	coach_lineups: Array<ModelTypes["match_lineups"]>,
+	/** An aggregate relationship */
+	coach_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
 	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	/** An array relationship */
@@ -46612,10 +46712,6 @@ export type ModelTypes = {
 	kills: Array<ModelTypes["player_kills"]>,
 	/** An aggregate relationship */
 	kills_aggregate: ModelTypes["player_kills_aggregate"],
-	/** An array relationship */
-	match_lineups: Array<ModelTypes["match_lineups"]>,
-	/** An aggregate relationship */
-	match_lineups_aggregate: ModelTypes["match_lineups_aggregate"],
 	/** A computed field, executes function "get_player_matches" */
 	matches?: Array<ModelTypes["matches"]> | undefined,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -46718,6 +46814,8 @@ export type ModelTypes = {
 	assited_by_players?: ModelTypes["player_assists_bool_exp"] | undefined,
 	assited_by_players_aggregate?: ModelTypes["player_assists_aggregate_bool_exp"] | undefined,
 	avatar_url?: ModelTypes["String_comparison_exp"] | undefined,
+	coach_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
+	coach_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	country?: ModelTypes["String_comparison_exp"] | undefined,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	damage_dealt?: ModelTypes["player_damages_bool_exp"] | undefined,
@@ -46736,8 +46834,6 @@ export type ModelTypes = {
 	is_in_another_match?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	kills?: ModelTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_bool_exp"] | undefined,
-	match_lineups?: ModelTypes["match_lineups_bool_exp"] | undefined,
-	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: ModelTypes["matches_bool_exp"] | undefined,
 	matchmaking_cooldown?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	multi_kills?: ModelTypes["v_player_multi_kills_bool_exp"] | undefined,
@@ -46785,6 +46881,7 @@ export type ModelTypes = {
 	assists?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined,
 	assited_by_players?: ModelTypes["player_assists_arr_rel_insert_input"] | undefined,
 	avatar_url?: string | undefined,
+	coach_lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	country?: string | undefined,
 	created_at?: ModelTypes["timestamptz"] | undefined,
 	damage_dealt?: ModelTypes["player_damages_arr_rel_insert_input"] | undefined,
@@ -46795,7 +46892,6 @@ export type ModelTypes = {
 	flashed_players?: ModelTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	invited_players?: ModelTypes["team_invites_arr_rel_insert_input"] | undefined,
 	kills?: ModelTypes["player_kills_arr_rel_insert_input"] | undefined,
-	match_lineups?: ModelTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	multi_kills?: ModelTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	notifications?: ModelTypes["notifications_arr_rel_insert_input"] | undefined,
@@ -46864,6 +46960,7 @@ export type ModelTypes = {
 	assists_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined,
 	assited_by_players_aggregate?: ModelTypes["player_assists_aggregate_order_by"] | undefined,
 	avatar_url?: ModelTypes["order_by"] | undefined,
+	coach_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
 	country?: ModelTypes["order_by"] | undefined,
 	created_at?: ModelTypes["order_by"] | undefined,
 	damage_dealt_aggregate?: ModelTypes["player_damages_aggregate_order_by"] | undefined,
@@ -46875,7 +46972,6 @@ export type ModelTypes = {
 	invited_players_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined,
 	is_in_another_match?: ModelTypes["order_by"] | undefined,
 	kills_aggregate?: ModelTypes["player_kills_aggregate_order_by"] | undefined,
-	match_lineups_aggregate?: ModelTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: ModelTypes["matches_aggregate_order_by"] | undefined,
 	matchmaking_cooldown?: ModelTypes["order_by"] | undefined,
 	multi_kills_aggregate?: ModelTypes["v_player_multi_kills_aggregate_order_by"] | undefined,
@@ -50585,6 +50681,10 @@ export type ModelTypes = {
 	/** A computed field, executes function "is_tournament_organizer" */
 	is_organizer?: boolean | undefined,
 	match_options_id: ModelTypes["uuid"],
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	name: string,
 	/** An object relationship */
 	options: ModelTypes["match_options"],
@@ -50662,7 +50762,11 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["tournaments_avg_fields"]: {
-		organizer_steam_id?: number | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: number | undefined
 };
 	/** order by avg() on columns of table "tournaments" */
 ["tournaments_avg_order_by"]: {
@@ -50684,6 +50788,8 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	is_organizer?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	match_options_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	max_players_per_lineup?: ModelTypes["Int_comparison_exp"] | undefined,
+	min_players_per_lineup?: ModelTypes["Int_comparison_exp"] | undefined,
 	name?: ModelTypes["String_comparison_exp"] | undefined,
 	options?: ModelTypes["match_options_bool_exp"] | undefined,
 	organizer_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined,
@@ -50728,6 +50834,10 @@ export type ModelTypes = {
 		description?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	match_options_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	name?: string | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	start?: ModelTypes["timestamptz"] | undefined
@@ -50746,6 +50856,10 @@ export type ModelTypes = {
 		description?: string | undefined,
 	id?: ModelTypes["uuid"] | undefined,
 	match_options_id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	name?: string | undefined,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined,
 	start?: ModelTypes["timestamptz"] | undefined
@@ -50791,6 +50905,8 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined,
 	is_organizer?: ModelTypes["order_by"] | undefined,
 	match_options_id?: ModelTypes["order_by"] | undefined,
+	max_players_per_lineup?: ModelTypes["order_by"] | undefined,
+	min_players_per_lineup?: ModelTypes["order_by"] | undefined,
 	name?: ModelTypes["order_by"] | undefined,
 	options?: ModelTypes["match_options_order_by"] | undefined,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined,
@@ -50819,7 +50935,11 @@ export type ModelTypes = {
 };
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: {
-		organizer_steam_id?: number | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: number | undefined
 };
 	/** order by stddev() on columns of table "tournaments" */
 ["tournaments_stddev_order_by"]: {
@@ -50827,7 +50947,11 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_pop on columns */
 ["tournaments_stddev_pop_fields"]: {
-		organizer_steam_id?: number | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "tournaments" */
 ["tournaments_stddev_pop_order_by"]: {
@@ -50835,7 +50959,11 @@ export type ModelTypes = {
 };
 	/** aggregate stddev_samp on columns */
 ["tournaments_stddev_samp_fields"]: {
-		organizer_steam_id?: number | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "tournaments" */
 ["tournaments_stddev_samp_order_by"]: {
@@ -50860,7 +50988,11 @@ export type ModelTypes = {
 };
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: {
-		organizer_steam_id?: ModelTypes["bigint"] | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: ModelTypes["bigint"] | undefined
 };
 	/** order by sum() on columns of table "tournaments" */
 ["tournaments_sum_order_by"]: {
@@ -50877,7 +51009,11 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["tournaments_var_pop_fields"]: {
-		organizer_steam_id?: number | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: number | undefined
 };
 	/** order by var_pop() on columns of table "tournaments" */
 ["tournaments_var_pop_order_by"]: {
@@ -50885,7 +51021,11 @@ export type ModelTypes = {
 };
 	/** aggregate var_samp on columns */
 ["tournaments_var_samp_fields"]: {
-		organizer_steam_id?: number | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: number | undefined
 };
 	/** order by var_samp() on columns of table "tournaments" */
 ["tournaments_var_samp_order_by"]: {
@@ -50893,7 +51033,11 @@ export type ModelTypes = {
 };
 	/** aggregate variance on columns */
 ["tournaments_variance_fields"]: {
-		organizer_steam_id?: number | undefined
+		/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
+	organizer_steam_id?: number | undefined
 };
 	/** order by variance() on columns of table "tournaments" */
 ["tournaments_variance_order_by"]: {
@@ -62458,6 +62602,10 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	assited_by_players_aggregate: GraphQLTypes["player_assists_aggregate"],
 	avatar_url?: string | undefined,
+	/** An array relationship */
+	coach_lineups: Array<GraphQLTypes["match_lineups"]>,
+	/** An aggregate relationship */
+	coach_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
 	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	/** An array relationship */
@@ -62491,10 +62639,6 @@ export type GraphQLTypes = {
 	kills: Array<GraphQLTypes["player_kills"]>,
 	/** An aggregate relationship */
 	kills_aggregate: GraphQLTypes["player_kills_aggregate"],
-	/** An array relationship */
-	match_lineups: Array<GraphQLTypes["match_lineups"]>,
-	/** An aggregate relationship */
-	match_lineups_aggregate: GraphQLTypes["match_lineups_aggregate"],
 	/** A computed field, executes function "get_player_matches" */
 	matches?: Array<GraphQLTypes["matches"]> | undefined,
 	/** A computed field, executes function "get_player_matchmaking_cooldown" */
@@ -62600,6 +62744,8 @@ export type GraphQLTypes = {
 	assited_by_players?: GraphQLTypes["player_assists_bool_exp"] | undefined,
 	assited_by_players_aggregate?: GraphQLTypes["player_assists_aggregate_bool_exp"] | undefined,
 	avatar_url?: GraphQLTypes["String_comparison_exp"] | undefined,
+	coach_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
+	coach_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	country?: GraphQLTypes["String_comparison_exp"] | undefined,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	damage_dealt?: GraphQLTypes["player_damages_bool_exp"] | undefined,
@@ -62618,8 +62764,6 @@ export type GraphQLTypes = {
 	is_in_another_match?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	kills?: GraphQLTypes["player_kills_bool_exp"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_bool_exp"] | undefined,
-	match_lineups?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
-	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_bool_exp"] | undefined,
 	matches?: GraphQLTypes["matches_bool_exp"] | undefined,
 	matchmaking_cooldown?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	multi_kills?: GraphQLTypes["v_player_multi_kills_bool_exp"] | undefined,
@@ -62668,6 +62812,7 @@ export type GraphQLTypes = {
 	assists?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined,
 	assited_by_players?: GraphQLTypes["player_assists_arr_rel_insert_input"] | undefined,
 	avatar_url?: string | undefined,
+	coach_lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	country?: string | undefined,
 	created_at?: GraphQLTypes["timestamptz"] | undefined,
 	damage_dealt?: GraphQLTypes["player_damages_arr_rel_insert_input"] | undefined,
@@ -62678,7 +62823,6 @@ export type GraphQLTypes = {
 	flashed_players?: GraphQLTypes["player_flashes_arr_rel_insert_input"] | undefined,
 	invited_players?: GraphQLTypes["team_invites_arr_rel_insert_input"] | undefined,
 	kills?: GraphQLTypes["player_kills_arr_rel_insert_input"] | undefined,
-	match_lineups?: GraphQLTypes["match_lineups_arr_rel_insert_input"] | undefined,
 	multi_kills?: GraphQLTypes["v_player_multi_kills_arr_rel_insert_input"] | undefined,
 	name?: string | undefined,
 	notifications?: GraphQLTypes["notifications_arr_rel_insert_input"] | undefined,
@@ -62750,6 +62894,7 @@ export type GraphQLTypes = {
 	assists_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined,
 	assited_by_players_aggregate?: GraphQLTypes["player_assists_aggregate_order_by"] | undefined,
 	avatar_url?: GraphQLTypes["order_by"] | undefined,
+	coach_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	country?: GraphQLTypes["order_by"] | undefined,
 	created_at?: GraphQLTypes["order_by"] | undefined,
 	damage_dealt_aggregate?: GraphQLTypes["player_damages_aggregate_order_by"] | undefined,
@@ -62761,7 +62906,6 @@ export type GraphQLTypes = {
 	invited_players_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined,
 	is_in_another_match?: GraphQLTypes["order_by"] | undefined,
 	kills_aggregate?: GraphQLTypes["player_kills_aggregate_order_by"] | undefined,
-	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,
 	matches_aggregate?: GraphQLTypes["matches_aggregate_order_by"] | undefined,
 	matchmaking_cooldown?: GraphQLTypes["order_by"] | undefined,
 	multi_kills_aggregate?: GraphQLTypes["v_player_multi_kills_aggregate_order_by"] | undefined,
@@ -66656,6 +66800,10 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "is_tournament_organizer" */
 	is_organizer?: boolean | undefined,
 	match_options_id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	name: string,
 	/** An object relationship */
 	options: GraphQLTypes["match_options"],
@@ -66736,6 +66884,10 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["tournaments_avg_fields"]: {
 	__typename: "tournaments_avg_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by avg() on columns of table "tournaments" */
@@ -66758,6 +66910,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	is_organizer?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	match_options_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	max_players_per_lineup?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	min_players_per_lineup?: GraphQLTypes["Int_comparison_exp"] | undefined,
 	name?: GraphQLTypes["String_comparison_exp"] | undefined,
 	options?: GraphQLTypes["match_options_bool_exp"] | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined,
@@ -66804,6 +66958,10 @@ export type GraphQLTypes = {
 	description?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	match_options_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	name?: string | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	start?: GraphQLTypes["timestamptz"] | undefined
@@ -66823,6 +66981,10 @@ export type GraphQLTypes = {
 	description?: string | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
 	match_options_id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	name?: string | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined,
 	start?: GraphQLTypes["timestamptz"] | undefined
@@ -66869,6 +67031,8 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined,
 	is_organizer?: GraphQLTypes["order_by"] | undefined,
 	match_options_id?: GraphQLTypes["order_by"] | undefined,
+	max_players_per_lineup?: GraphQLTypes["order_by"] | undefined,
+	min_players_per_lineup?: GraphQLTypes["order_by"] | undefined,
 	name?: GraphQLTypes["order_by"] | undefined,
 	options?: GraphQLTypes["match_options_order_by"] | undefined,
 	organizer_steam_id?: GraphQLTypes["order_by"] | undefined,
@@ -66899,6 +67063,10 @@ export type GraphQLTypes = {
 	/** aggregate stddev on columns */
 ["tournaments_stddev_fields"]: {
 	__typename: "tournaments_stddev_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev() on columns of table "tournaments" */
@@ -66908,6 +67076,10 @@ export type GraphQLTypes = {
 	/** aggregate stddev_pop on columns */
 ["tournaments_stddev_pop_fields"]: {
 	__typename: "tournaments_stddev_pop_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_pop() on columns of table "tournaments" */
@@ -66917,6 +67089,10 @@ export type GraphQLTypes = {
 	/** aggregate stddev_samp on columns */
 ["tournaments_stddev_samp_fields"]: {
 	__typename: "tournaments_stddev_samp_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by stddev_samp() on columns of table "tournaments" */
@@ -66943,6 +67119,10 @@ export type GraphQLTypes = {
 	/** aggregate sum on columns */
 ["tournaments_sum_fields"]: {
 	__typename: "tournaments_sum_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: GraphQLTypes["bigint"] | undefined
 };
 	/** order by sum() on columns of table "tournaments" */
@@ -66962,6 +67142,10 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["tournaments_var_pop_fields"]: {
 	__typename: "tournaments_var_pop_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by var_pop() on columns of table "tournaments" */
@@ -66971,6 +67155,10 @@ export type GraphQLTypes = {
 	/** aggregate var_samp on columns */
 ["tournaments_var_samp_fields"]: {
 	__typename: "tournaments_var_samp_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by var_samp() on columns of table "tournaments" */
@@ -66980,6 +67168,10 @@ export type GraphQLTypes = {
 	/** aggregate variance on columns */
 ["tournaments_variance_fields"]: {
 	__typename: "tournaments_variance_fields",
+	/** A computed field, executes function "tournament_max_players_per_lineup" */
+	max_players_per_lineup?: number | undefined,
+	/** A computed field, executes function "tournament_min_players_per_lineup" */
+	min_players_per_lineup?: number | undefined,
 	organizer_steam_id?: number | undefined
 };
 	/** order by variance() on columns of table "tournaments" */

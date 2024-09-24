@@ -87,20 +87,24 @@ PlayerDisplay;
       <TableRow
         v-for="slot of Math.max(0, minPlayers - lineup.lineup_players.length)"
       >
-        <TableCell colspan="15">
-          <PlayerDisplay
-            :show-flag="false"
-            :show-steam-id="false"
-            :player="{
-              name: `Slot ${slot + lineup.lineup_players.length}`,
-            }"
-          />
-          <template v-if="lineup.can_update_lineup && canAddToLineup">
-            <AssignPlayerToLineup
-              :lineup="lineup"
-              :exclude="excludePlayers"
-            ></AssignPlayerToLineup>
-          </template>
+        <TableCell colspan="100%">
+          <div class="flex">
+            <PlayerDisplay
+              :show-flag="false"
+              :show-steam-id="false"
+              :player="{
+                name: `Slot ${slot + lineup.lineup_players.length}`,
+              }"
+            />
+            <template
+              v-if="lineup.can_update_lineup && canAddToLineup && slot === 1"
+            >
+              <AssignPlayerToLineup
+                :lineup="lineup"
+                :exclude="excludePlayers"
+              ></AssignPlayerToLineup>
+            </template>
+          </div>
         </TableCell>
       </TableRow>
     </TableBody>

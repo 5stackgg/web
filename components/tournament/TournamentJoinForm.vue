@@ -18,6 +18,8 @@ import {
 </script>
 
 <template>
+  min_players_per_lineup: true, max_players_per_lineup: true,
+
   <form @submit.prevent="joinTournament" class="grid gap-4">
     <FormField v-slot="{ value, handleChange }" name="newTeam">
       <FormItem

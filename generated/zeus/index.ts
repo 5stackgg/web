@@ -68997,8 +68997,7 @@ export const enum e_team_roles_constraint {
 export const enum e_team_roles_enum {
 	Admin = "Admin",
 	Invite = "Invite",
-	Member = "Member",
-	Pending = "Pending"
+	Member = "Member"
 }
 /** select columns of table "e_team_roles" */
 export const enum e_team_roles_select_column {

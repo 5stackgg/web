@@ -117,7 +117,7 @@ export default {
           {
             where: {
               value: {
-                _nin: [e_team_roles_enum.Invite, e_team_roles_enum.Pending],
+                _nin: [e_team_roles_enum.Invite],
               },
             },
           },

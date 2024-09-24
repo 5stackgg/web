@@ -127,11 +127,7 @@ export default {
         query: typedGql("subscription")({
           e_team_roles: [
             {
-              where: {
-                value: {
-                  _nin: [e_team_roles_enum.Invite, e_team_roles_enum.Pending],
-                },
-              },
+             
             },
             {
               value: true,

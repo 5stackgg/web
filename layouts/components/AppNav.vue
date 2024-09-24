@@ -47,26 +47,28 @@ import AppNavFooter from "./AppNavFooter.vue";
         </Button>
       </SheetTrigger>
       <SheetContent side="left" class="flex flex-col sm:max-w-xs">
-        <nav class="grid gap-6 text-lg font-medium">
-          <nuxt-link
-            to="/"
-            class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-          >
-            <Gamepad class="h-5 w-5 transition-all group-hover:scale-110" />
-            <span class="sr-only">5stack</span>
-          </nuxt-link>
-
-          <template v-for="link of links" :key="link.to">
+        <SheetClose as-child>
+          <nav class="grid gap-6 text-lg font-medium">
             <nuxt-link
-              :to="link.to"
-              class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-              v-if="!link.role || link.role === me?.role"
+              to="/"
+              class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
             >
-              <component :is="link.icon" class="h-5 w-5"></component>
-              {{ link.title }}
+              <Gamepad class="h-5 w-5 transition-all group-hover:scale-110" />
+              <span class="sr-only">5stack</span>
             </nuxt-link>
-          </template>
-        </nav>
+
+            <template v-for="link of links" :key="link.to">
+              <nuxt-link
+                :to="link.to"
+                class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                v-if="!link.role || link.role === me?.role"
+              >
+                <component :is="link.icon" class="h-5 w-5"></component>
+                {{ link.title }}
+              </nuxt-link>
+            </template>
+          </nav>
+        </SheetClose>
         <nav class="mt-auto">
           <AppNavFooter :mobile="true" />
         </nav>

@@ -6,6 +6,7 @@ import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import { Users } from "lucide-vue-next";
 import RegionStatuses from "~/components/RegionStatuses.vue";
 import AppNavFooter from "./AppNavFooter.vue";
+import AppNotifications from "./AppNotifications.vue";
 </script>
 
 <template>
@@ -79,31 +80,29 @@ import AppNavFooter from "./AppNavFooter.vue";
         <bread-crumbs></bread-crumbs>
       </div>
 
-      <div>
+      <div class="flex gap-4">
         <Popover>
           <PopoverTrigger>
-            <div class="flex items-center">
-              <small class="text-muted-foreground ml-4">
-                <span class="flex items-center gap-3">
-                  <span class="flex items-center gap-1">
-                    <span
-                      class="inline-block w-2 h-2 rounded-full"
-                      :class="{
-                        'bg-green-600': overalRegionStatus === 'Online',
-                        'bg-red-600': overalRegionStatus === 'Offline',
-                        'bg-yellow-600': overalRegionStatus === 'Degraded',
-                      }"
-                    ></span>
-                  </span>
-                  <Users /> {{ playersOnline }}
-                </span>
-              </small>
+            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+              <span
+                class="inline-block w-2 h-2 rounded-full"
+                :class="{
+                  'bg-green-500': overalRegionStatus === 'Online',
+                  'bg-red-500': overalRegionStatus === 'Offline',
+                  'bg-yellow-500': overalRegionStatus === 'Degraded',
+                }"
+                :title="overalRegionStatus"
+              ></span>
+              <span>{{ playersOnline }}</span>
+              <Users class="h-4 w-4" />
             </div>
           </PopoverTrigger>
           <PopoverContent>
             <RegionStatuses></RegionStatuses>
           </PopoverContent>
         </Popover>
+
+        <AppNotifications></AppNotifications>
       </div>
     </div>
   </header>

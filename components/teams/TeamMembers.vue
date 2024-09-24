@@ -16,6 +16,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         v-for="member of team?.roster"
       >
         <team-member
+          :team="team"
           :member="member"
           :roles="roles"
           :is-invite="false"
@@ -74,6 +75,7 @@ export default {
             },
             {
               can_invite: true,
+              can_change_role: true,
               roster: [
                 {
                   order_by: {

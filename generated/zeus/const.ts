@@ -3856,6 +3856,9 @@ export const AllTypesProps: Record<string,any> = {
 		delete_v_pool_maps:{
 			where:"v_pool_maps_bool_exp"
 		},
+		denyTeamInvite:{
+			invite_id:"uuid"
+		},
 		forfeitMatch:{
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
@@ -9323,6 +9326,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"teams_bool_exp",
 		_not:"teams_bool_exp",
 		_or:"teams_bool_exp",
+		can_change_role:"Boolean_comparison_exp",
 		can_invite:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		invites:"team_invites_bool_exp",
@@ -9374,6 +9378,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"teams_bool_exp"
 	},
 	teams_order_by:{
+		can_change_role:"order_by",
 		can_invite:"order_by",
 		id:"order_by",
 		invites_aggregate:"team_invites_aggregate_order_by",
@@ -12902,6 +12907,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournaments_by_pk:"tournaments",
 		delete_v_match_captains:"v_match_captains_mutation_response",
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
+		denyTeamInvite:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
@@ -14803,6 +14809,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	teams:{
+		can_change_role:"Boolean",
 		can_invite:"Boolean",
 		id:"uuid",
 		invites:"team_invites",

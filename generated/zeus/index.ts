@@ -7779,6 +7779,7 @@ delete_v_match_captains?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["v_match_captains_bool_exp"] | Variable<any, string>},ValueTypes["v_match_captains_mutation_response"]],
 delete_v_pool_maps?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["v_pool_maps_bool_exp"] | Variable<any, string>},ValueTypes["v_pool_maps_mutation_response"]],
+denyTeamInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 forfeitMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["_map_pool_insert_input"]> | Variable<any, string>,	/** upsert condition */
@@ -15002,6 +15003,8 @@ count?: [{	columns?: Array<ValueTypes["team_roster_select_column"]> | undefined 
 };
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
+	/** A computed field, executes function "can_change_team_role" */
+	can_change_role?:boolean | `@${string}`,
 	/** A computed field, executes function "can_invite_to_team" */
 	can_invite?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -15130,6 +15133,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 	_and?: Array<ValueTypes["teams_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["teams_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["teams_bool_exp"]> | undefined | null | Variable<any, string>,
+	can_change_role?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	can_invite?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	invites?: ValueTypes["team_invites_bool_exp"] | undefined | null | Variable<any, string>,
@@ -15216,6 +15220,7 @@ count?: [{	columns?: Array<ValueTypes["teams_select_column"]> | undefined | null
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
+	can_change_role?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	can_invite?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invites_aggregate?: ValueTypes["team_invites_aggregate_order_by"] | undefined | null | Variable<any, string>,
@@ -25870,6 +25875,7 @@ delete_v_match_captains?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["v_match_captains_bool_exp"]},ResolverInputTypes["v_match_captains_mutation_response"]],
 delete_v_pool_maps?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["v_pool_maps_bool_exp"]},ResolverInputTypes["v_pool_maps_mutation_response"]],
+denyTeamInvite?: [{	invite_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 forfeitMatch?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 insert__map_pool?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["_map_pool_insert_input"]>,	/** upsert condition */
@@ -33093,6 +33099,8 @@ count?: [{	columns?: Array<ResolverInputTypes["team_roster_select_column"]> | un
 };
 	/** columns and relationships of "teams" */
 ["teams"]: AliasType<{
+	/** A computed field, executes function "can_change_team_role" */
+	can_change_role?:boolean | `@${string}`,
 	/** A computed field, executes function "can_invite_to_team" */
 	can_invite?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -33221,6 +33229,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 	_and?: Array<ResolverInputTypes["teams_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["teams_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["teams_bool_exp"]> | undefined | null,
+	can_change_role?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	can_invite?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	invites?: ResolverInputTypes["team_invites_bool_exp"] | undefined | null,
@@ -33307,6 +33316,7 @@ count?: [{	columns?: Array<ResolverInputTypes["teams_select_column"]> | undefine
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
+	can_change_role?: ResolverInputTypes["order_by"] | undefined | null,
 	can_invite?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	invites_aggregate?: ResolverInputTypes["team_invites_aggregate_order_by"] | undefined | null,
@@ -43299,6 +43309,7 @@ export type ModelTypes = {
 	delete_v_match_captains?: ModelTypes["v_match_captains_mutation_response"] | undefined,
 	/** delete data from the table: "v_pool_maps" */
 	delete_v_pool_maps?: ModelTypes["v_pool_maps_mutation_response"] | undefined,
+	denyTeamInvite?: ModelTypes["SuccessOutput"] | undefined,
 	forfeitMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
@@ -48856,7 +48867,9 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "teams" */
 ["teams"]: {
-		/** A computed field, executes function "can_invite_to_team" */
+		/** A computed field, executes function "can_change_team_role" */
+	can_change_role?: boolean | undefined,
+	/** A computed field, executes function "can_invite_to_team" */
 	can_invite?: boolean | undefined,
 	id: ModelTypes["uuid"],
 	/** An array relationship */
@@ -48944,6 +48957,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["teams_bool_exp"]> | undefined,
 	_not?: ModelTypes["teams_bool_exp"] | undefined,
 	_or?: Array<ModelTypes["teams_bool_exp"]> | undefined,
+	can_change_role?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	can_invite?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	invites?: ModelTypes["team_invites_bool_exp"] | undefined,
@@ -49026,6 +49040,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
+	can_change_role?: ModelTypes["order_by"] | undefined,
 	can_invite?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	invites_aggregate?: ModelTypes["team_invites_aggregate_order_by"] | undefined,
@@ -59084,6 +59099,7 @@ export type GraphQLTypes = {
 	delete_v_match_captains?: GraphQLTypes["v_match_captains_mutation_response"] | undefined,
 	/** delete data from the table: "v_pool_maps" */
 	delete_v_pool_maps?: GraphQLTypes["v_pool_maps_mutation_response"] | undefined,
+	denyTeamInvite?: GraphQLTypes["SuccessOutput"] | undefined,
 	forfeitMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** insert data into the table: "_map_pool" */
 	insert__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,
@@ -64868,6 +64884,8 @@ export type GraphQLTypes = {
 	/** columns and relationships of "teams" */
 ["teams"]: {
 	__typename: "teams",
+	/** A computed field, executes function "can_change_team_role" */
+	can_change_role?: boolean | undefined,
 	/** A computed field, executes function "can_invite_to_team" */
 	can_invite?: boolean | undefined,
 	id: GraphQLTypes["uuid"],
@@ -64959,6 +64977,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["teams_bool_exp"]> | undefined,
 	_not?: GraphQLTypes["teams_bool_exp"] | undefined,
 	_or?: Array<GraphQLTypes["teams_bool_exp"]> | undefined,
+	can_change_role?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	can_invite?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	invites?: GraphQLTypes["team_invites_bool_exp"] | undefined,
@@ -65045,7 +65064,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "teams". */
 ["teams_order_by"]: {
-		can_invite?: GraphQLTypes["order_by"] | undefined,
+		can_change_role?: GraphQLTypes["order_by"] | undefined,
+	can_invite?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	invites_aggregate?: GraphQLTypes["team_invites_aggregate_order_by"] | undefined,
 	match_lineups_aggregate?: GraphQLTypes["match_lineups_aggregate_order_by"] | undefined,

@@ -50,6 +50,31 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
           <SheetHeader>
             <SheetTitle>Notifications</SheetTitle>
             <SheetDescription>
+              <template v-if="invites.length > 0">
+                <div
+                  v-for="invite of invites"
+                  :key="invite.id"
+                  class="mb-4 p-4 bg-accent rounded-lg"
+                >
+                  <h3 class="text-lg font-semibold mb-2">
+                    Team Invite: {{ invite.team.name }}
+                  </h3>
+                  <p class="text-sm text-muted-foreground mb-2">
+                    Invited by {{ invite.invited_by.name }}
+                    <TimeAgo :date="invite.created_at" class="text-xs" />
+                  </p>
+                  <div class="flex justify-end space-x-2 mt-3">
+                    <Button variant="outline" @click="denyInvite(invite.id)"
+                      >Deny</Button
+                    >
+                    <Button variant="default" @click="acceptInvite(invite.id)"
+                      >Accept</Button
+                    >
+                  </div>
+                </div>
+                <Separator></Separator>
+              </template>
+
               <template
                 v-for="notification of notifications"
                 :key="notification.id"
@@ -211,6 +236,26 @@ import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 export default {
   apollo: {
     $subscribe: {
+      team_invites: {
+        query: typedGql("subscription")({
+          team_invites: [
+            {},
+            {
+              id: true,
+              team: {
+                name: true,
+              },
+              invited_by: {
+                name: true,
+              },
+              created_at: true,
+            },
+          ],
+        }),
+        result({ data }: { data: any }) {
+          this.invites = data.team_invites;
+        },
+      },
       notifications: {
         query: typedGql("subscription")({
           notifications: [
@@ -298,6 +343,7 @@ export default {
   },
   data() {
     return {
+      invites: [],
       notifications: [],
       links: [
         {
@@ -387,13 +433,49 @@ export default {
         }),
       });
     },
+    async acceptInvite(inviteId: string) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          acceptTeamInvite: [
+            {
+              invite_id: inviteId,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+    async denyInvite(inviteId: string) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          denyTeamInvite: [
+            {
+              invite_id: inviteId,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
   },
   computed: {
     me() {
       return useAuthStore().me;
     },
     hasNotifications() {
-      return this.notifications.length > 0;
+      if (this.invites.length > 0) {
+        return true;
+      }
+
+      return (
+        this.notifications.filter((notification) => {
+          return notification.is_read === false;
+        }).length > 0
+      );
     },
     hasDiscordLinked() {
       return useAuthStore().hasDiscordLinked;

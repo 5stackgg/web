@@ -37,7 +37,7 @@ import Separator from "../ui/separator/Separator.vue";
       </template>
     </PlayerDisplay>
   </div>
-  <Popover v-if="!isInvite">
+  <Popover v-if="!isInvite && team.can_change_role">
     <PopoverTrigger as-child>
       <Button variant="outline" class="ml-auto">
         {{ member.role }}
@@ -68,14 +68,14 @@ import Separator from "../ui/separator/Separator.vue";
               class="flex flex-col items-start px-4 py-2 cursor-pointer"
               @click.stop="removeMemberDialog = true"
             >
-            <div class="text-red-600">Remove From Team</div>
+              <div class="text-red-600">Remove From Team</div>
             </CommandItem>
           </CommandGroup>
         </CommandList>
       </Command>
     </PopoverContent>
   </Popover>
-  <template v-else>
+  <template v-else-if="isInvite">
     <AlertDialog>
       <AlertDialogTrigger>
         <Button>Cancel Invite</Button>
@@ -97,27 +97,26 @@ import Separator from "../ui/separator/Separator.vue";
     </AlertDialog>
   </template>
 
-
-  <AlertDialog  :open="removeMemberDialog">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle
-            >Are you absolutely sure?</AlertDialogTitle
-          >
-          <AlertDialogDescription>
-            This will remove {{ member.player.name }} ({{
-              member.player.steam_id
-            }}) from the team.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel @click="removeMemberDialog = false">Cancel</AlertDialogCancel>
-          <AlertDialogAction @click.stop="removeMember"
-            >Continue</AlertDialogAction
-          >
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+  <AlertDialog :open="removeMemberDialog">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogDescription>
+          This will remove {{ member.player.name }} ({{
+            member.player.steam_id
+          }}) from the team.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="removeMemberDialog = false"
+          >Cancel</AlertDialogCancel
+        >
+        <AlertDialogAction @click.stop="removeMember"
+          >Continue</AlertDialogAction
+        >
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts">
@@ -141,6 +140,10 @@ interface Member {
 
 export default {
   props: {
+    team: {
+      type: Object,
+      required: true,
+    },
     member: {
       type: Object as PropType<Member>,
       required: true,

@@ -22,7 +22,9 @@
         v-if="map.patch"
       />
       <template v-else>
-        <span class="text-white text-xl font-bold uppercase text-center font-sans">
+        <span
+          class="text-white text-xl font-bold uppercase text-center font-sans"
+        >
           {{ map.name.replace("de_", "").replace("_", " ") }}
         </span>
       </template>

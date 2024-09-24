@@ -44,7 +44,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
             {{ tournament.name }}
           </TableCell>
           <TableCell>
-            <Badge>{{ tournament.status }}</Badge>
+            <Badge>{{ tournament.e_tournament_status.description }}</Badge>
           </TableCell>
           <TableCell>
             {{ tournament.options.type }}

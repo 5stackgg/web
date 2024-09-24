@@ -39,8 +39,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4"
               >
                 <div>
-                  <Badge v-if="tournament?.status">{{
-                    tournament.status
+                  <Badge v-if="tournament">{{
+                    tournament.e_tournament_status.description
                   }}</Badge>
 
                   <CardTitle class="text-2xl font-bold mb-2 sm:mb-0">
@@ -255,7 +255,9 @@ export default {
               id: true,
               name: true,
               start: true,
-              status: true,
+              e_tournament_status: {
+                description: true,
+              },
               description: true,
               is_organizer: true,
               can_join: true,

@@ -68,7 +68,9 @@ export default {
               id: true,
               name: true,
               start: true,
-              status: true,
+              e_tournament_status: {
+                description: true,
+              },
               options: {
                 type: true,
               },

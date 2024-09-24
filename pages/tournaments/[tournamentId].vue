@@ -141,7 +141,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
               <Separator class="my-8" />
             </template>
 
-            <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
+            <div class="grid gap-4">
+              <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
               <div class="flex justify-between items-center mb-4">
                 <NuxtLink
                   :to="`/tournaments/${tournament.id}/teams/${team.id}`"
@@ -175,6 +176,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 Remove Team
               </Button>
             </Card>
+          </div>
           </div>
 
           <div class="w-full md:w-1/3 space-y-4" v-if="tournament.is_organizer">

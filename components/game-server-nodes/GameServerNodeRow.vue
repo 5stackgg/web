@@ -86,7 +86,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
 
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <Button variant="outline" size="icon">
+          <Button variant="secondary" size="icon">
             <PaginationEllipsis class="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

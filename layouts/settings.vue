@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import { computed } from "vue";
 
 interface Item {
   to: string;
@@ -24,12 +25,24 @@ const sidebarNavItems: Item[] = [
   ...(useAuthStore().isAdmin
     ? [
         {
-          title: "Application Settings",
+          title: "App Settings",
           to: "/settings/application",
         },
       ]
     : []),
 ];
+
+const hasDiscordLinked = computed(() => useAuthStore().hasDiscordLinked);
+
+const linkDiscord = () => {
+  if (hasDiscordLinked.value) {
+    return;
+  }
+
+  window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord?redirect=${encodeURIComponent(
+    window.location.toString(),
+  )}`;
+};
 </script>
 
 <template>
@@ -58,6 +71,17 @@ const sidebarNavItems: Item[] = [
               "
             >
               {{ item.title }}
+            </Button>
+          </nuxt-link>
+
+          <nuxt-link @click.native="linkDiscord">
+            <Button
+              variant="ghost"
+              class="w-full text-left justify-start"
+              :disabled="hasDiscordLinked"
+            >
+              <template v-if="hasDiscordLinked"> Discord Linked </template>
+              <template v-else> Link Discord for Bot Support </template>
             </Button>
           </nuxt-link>
         </nav>

@@ -4,14 +4,12 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 <template>
   <div
-    class="flex gap-4"
+    class="flex flex-col gap-4"
     :class="{
-      'flex-col items-center': !mobile,
-      'flex-row-reverse justify-between': mobile,
+      'flex-start': mobile,
+      'items-center': !mobile,
     }"
   >
-    <div @click="linkDiscord" v-if="!hasDiscordLinked">Link Discord</div>
-
     <nuxt-link
       to="/settings"
       class="text-muted-foreground transition-colors hover:text-foreground"
@@ -69,11 +67,6 @@ export default {
     },
   },
   methods: {
-    linkDiscord() {
-      window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord?redirect=${encodeURIComponent(
-        window.location.toString(),
-      )}`;
-    },
     async dismissNotification(id: string) {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -155,9 +148,6 @@ export default {
       return useAuthStore().me;
     },
 
-    hasDiscordLinked() {
-      return useAuthStore().hasDiscordLinked;
-    },
     detectedCountry() {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

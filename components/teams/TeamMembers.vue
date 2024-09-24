@@ -15,22 +15,22 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         class="flex items-center justify-between space-x-4"
         v-for="member of team?.roster"
       >
-        <team-member
+        <TeamMember
           :team="team"
           :member="member"
           :roles="roles"
           :is-invite="false"
-        ></team-member>
+        ></TeamMember>
       </div>
 
       <template v-if="team.can_invite">
         <Separator class="my-3" />
 
-        <player-search
+        <PlayerSearch
           label="Invite Player to Team ..."
           :exclude="team?.roster.map((member) => member.player.steam_id) || []"
           @selected="addMember"
-        ></player-search>
+        ></PlayerSearch>
 
         <template v-if="team?.invites.length > 0">
           <h1>Pending Invites</h1>
@@ -39,7 +39,11 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             class="flex items-center justify-between space-x-4"
             v-for="member of team?.invites"
           >
-            <team-member :member="member" :is-invite="true"></team-member>
+            <TeamMember
+              :team="team"
+              :member="member"
+              :is-invite="true"
+            ></TeamMember>
           </div>
         </template>
       </template>

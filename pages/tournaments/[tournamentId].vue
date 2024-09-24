@@ -113,7 +113,12 @@ import TimeAgo from "~/components/TimeAgo.vue";
             </CardContent>
           </Card>
 
-          <div class="w-full md:w-1/3 space-y-4">
+          <div
+            class="w-full md:w-1/3 space-y-4"
+            v-if="
+              tournament.status === e_tournament_status_enum.RegistrationOpen
+            "
+          >
             <Card class="p-4">
               <CardHeader>
                 <CardTitle class="text-xl">Join Tournament</CardTitle>
@@ -125,7 +130,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                     @close="tournamentDialog = false"
                   />
                 </template>
-                <template v-else>
+                <template v-else-if="myTeam">
                   Joined with <span class="underline">{{ myTeam.name }}</span
                   >.
                 </template>
@@ -224,7 +229,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 </template>
 
 <script lang="ts">
-import { $, order_by } from "~/generated/zeus";
+import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
@@ -255,6 +260,7 @@ export default {
               id: true,
               name: true,
               start: true,
+              status: true,
               e_tournament_status: {
                 description: true,
               },

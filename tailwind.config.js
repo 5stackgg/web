@@ -16,7 +16,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ["Twemoji Country Flags", "Inter", "sans-serif"],
+        sans: ["Twemoji Country Flags", "Stratum2", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

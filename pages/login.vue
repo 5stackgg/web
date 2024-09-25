@@ -4,7 +4,7 @@ definePageMeta({
 });
 </script>
 <template>
-  <div class="flex items-center justify-center min-h-screen">
+  <div class="flex items-center justify-center min-h-screen p-4">
     <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-3xl font-bold text-center">5Stack</CardTitle>

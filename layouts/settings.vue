@@ -65,8 +65,7 @@ const linkDiscord = () => {
               :class="
                 cn(
                   'w-full text-left justify-start',
-                  $route.path === `${item.href}.html` &&
-                    'bg-muted hover:bg-muted',
+                  $route.path === `${item.to}` && 'bg-muted hover:bg-muted',
                 )
               "
             >

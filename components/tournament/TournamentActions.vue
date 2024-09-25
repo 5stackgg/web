@@ -2,7 +2,13 @@
 import { Lock, Unlock, Ban } from "lucide-vue-next";
 </script>
 <template>
-  <DropdownMenu v-if="tournament.can_open_registration || tournament.can_close_registration || tournament.can_cancel">
+  <DropdownMenu
+    v-if="
+      tournament.can_open_registration ||
+      tournament.can_close_registration ||
+      tournament.can_cancel
+    "
+  >
     <DropdownMenuTrigger as-child>
       <Button variant="secondary" size="icon">
         <PaginationEllipsis class="h-4 w-4" />

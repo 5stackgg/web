@@ -161,7 +161,12 @@ export default {
       return useMatchMakingStore().regions;
     },
     overalRegionStatus() {
-      const statuses = this.regions.map((region) => region.status);
+      const statuses = this.regions?.map((region) => region.status);
+
+      if (!statuses) {
+        return;
+      }
+
       if (statuses.every((status) => status === "Online")) {
         return "Online";
       } else if (statuses.every((status) => status === "Offline")) {

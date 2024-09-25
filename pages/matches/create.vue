@@ -86,7 +86,7 @@ import { Info } from "lucide-vue-next";
       </match-options>
 
       <div class="grid grid-cols-1 md:grid-cols-2">
-        <Button type="submit" size="lg" class="mt-6 w-full" >
+        <Button type="submit" size="lg" class="mt-6 w-full">
           Create Match
         </Button>
       </div>

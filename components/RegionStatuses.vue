@@ -6,17 +6,16 @@ import PageHeading from "~/components/PageHeading.vue";
   <Table>
     <TableBody>
       <TableRow v-for="region in regions" :key="region.value">
-        <TableCell>
+        <TableCell class="flex items-center gap-4">
           <span
-            class="ml-1 inline-block h-2 w-2 rounded-full"
+            class="inline-block h-2 w-2 rounded-full"
             :class="{
               'bg-red-600': region.status === 'Offline',
               'bg-green-600': region.status === 'Online',
               'bg-yellow-600': region.status === 'Partial',
             }"
-          >
-          </span>
-          {{ region.description }}
+          ></span>
+          <span>{{ region.description }}</span>
         </TableCell>
       </TableRow>
     </TableBody>

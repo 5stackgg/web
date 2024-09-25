@@ -126,9 +126,7 @@ export default {
       e_team_roles: {
         query: typedGql("subscription")({
           e_team_roles: [
-            {
-             
-            },
+            {},
             {
               value: true,
               description: true,

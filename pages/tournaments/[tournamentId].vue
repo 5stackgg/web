@@ -143,40 +143,41 @@ import TimeAgo from "~/components/TimeAgo.vue";
 
             <div class="grid gap-4">
               <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
-              <div class="flex justify-between items-center mb-4">
-                <NuxtLink
-                  :to="`/tournaments/${tournament.id}/teams/${team.id}`"
-                  class="text-lg font-semibold hover:underline"
+                <div class="flex justify-between items-center mb-4">
+                  <NuxtLink
+                    :to="`/tournaments/${tournament.id}/teams/${team.id}`"
+                    class="text-lg font-semibold hover:underline"
+                  >
+                    {{ team.name }}
+                  </NuxtLink>
+                  <span class="text-sm text-gray-600">
+                    {{ team.roster_aggregate.aggregate.count }} players
+                    registered
+                  </span>
+                </div>
+
+                <div
+                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4"
                 >
-                  {{ team.name }}
-                </NuxtLink>
-                <span class="text-sm text-gray-600">
-                  {{ team.roster_aggregate.aggregate.count }} players registered
-                </span>
-              </div>
+                  <PlayerDisplay
+                    v-for="{ player } of team.roster"
+                    :key="player.steam_id"
+                    :player="player"
+                    class="text-sm"
+                  ></PlayerDisplay>
+                </div>
 
-              <div
-                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4"
-              >
-                <PlayerDisplay
-                  v-for="{ player } of team.roster"
-                  :key="player.steam_id"
-                  :player="player"
-                  class="text-sm"
-                ></PlayerDisplay>
-              </div>
-
-              <Button
-                v-if="tournament.is_organizer"
-                @click="removeTeam(team.id)"
-                variant="destructive"
-                size="sm"
-                class="w-full sm:w-auto"
-              >
-                Remove Team
-              </Button>
-            </Card>
-          </div>
+                <Button
+                  v-if="tournament.is_organizer"
+                  @click="removeTeam(team.id)"
+                  variant="destructive"
+                  size="sm"
+                  class="w-full sm:w-auto"
+                >
+                  Remove Team
+                </Button>
+              </Card>
+            </div>
           </div>
 
           <div class="w-full md:w-1/3 space-y-4" v-if="tournament.is_organizer">

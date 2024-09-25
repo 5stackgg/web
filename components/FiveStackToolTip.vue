@@ -22,7 +22,7 @@ export default {
     size: {
       type: Number,
       default: 12,
-    }
-  }
-}
+    },
+  },
+};
 </script>

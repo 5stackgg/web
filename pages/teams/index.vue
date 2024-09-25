@@ -15,11 +15,11 @@ import { PlusCircle } from "lucide-vue-next";
       <template #description>Manage teams and rosters.</template>
       <template #actions>
         <NuxtLink to="/teams/create">
-            <Button size="lg">
-              <PlusCircle class="w-4 h-4" />
-              <span class="hidden md:inline ml-2">Create Team</span>
-            </Button>
-          </NuxtLink>
+          <Button size="lg">
+            <PlusCircle class="w-4 h-4" />
+            <span class="hidden md:inline ml-2">Create Team</span>
+          </Button>
+        </NuxtLink>
       </template>
     </PageHeading>
 

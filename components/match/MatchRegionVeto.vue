@@ -28,44 +28,56 @@ import { Separator } from "~/components/ui/separator";
         </div>
       </div>
 
-      <form @submit.prevent="vetoPick">
-        <div class="flex gap-4">
+      <div class="container mx-auto px-4">
+        <div
+          class="grid grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-7 gap-6"
+        >
           <div
-            class="cursor-pointer relative w-auto max-h-[100%] overflow-hidden rounded-[12px]"
-            :class="{
-              grayscale: isPicking && region.value !== form.values.region,
-              ring: isPicking && region.value === form.values.region,
-              'opacity-10': match.region_veto_picks.find(
-                (pick) => pick.region === region.value,
-              ),
-            }"
-            v-for="region of regions"
-            @click="form.setFieldValue('region', region.value)"
+            v-for="region in regions"
+            :key="region.value"
+            class="relative group"
           >
-            <NuxtImg
-              src="/img/maps/screenshots/default.webp"
-              class="w-full h-full object-cover max-w-[128px] rounded-[12px]"
-              sizes="sm:128px"
-            />
-            <div class="absolute inset-0 bg-black bg-opacity-45"></div>
             <div
-              class="absolute inset-0 flex flex-col items-center justify-center"
+              @click="isPicking && form.setFieldValue('region', region.value)"
+              class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px] h-[180px] transform"
+              :class="{
+                'cursor-pointer transition-all duration-300 ease-in-out hover:scale-105':
+                  isPicking,
+                'ring-4 ring-primary ring-opacity-50':
+                  form.values.region === region.value,
+                'opacity-30 pointer-events-none filter grayscale':
+                  !availableRegions.includes(region.value),
+              }"
             >
-              <div class="absolute bottom-3 text-sm">
-                {{ region.description }}
+              <NuxtImg
+                src="/img/maps/screenshots/default.webp"
+                class="w-full h-full object-cover min-w-[150px]"
+                sizes="sm:200px md:400px lg:600"
+              />
+              <div class="absolute inset-0 bg-black bg-opacity-45"></div>
+
+              <div
+                class="absolute inset-0 flex flex-col items-center justify-center"
+              >
+                <span
+                  class="text-white text-xl font-bold uppercase text-center font-sans"
+                >
+                  {{ region.description }}
+                </span>
               </div>
+            </div>
+
+            <div
+              v-if="form.values.region === region.value"
+              class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
+            >
+              <Button variant="destructive" @click="vetoPick">
+                Confirm Ban
+              </Button>
             </div>
           </div>
         </div>
-
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          v-if="isPicking"
-        >
-          Ban
-        </Button>
-      </form>
+      </div>
     </template>
     <template v-else-if="canSelectRegion">
       <Card class="sm:col-span-4">
@@ -137,9 +149,9 @@ export default {
           e_game_server_node_regions: [
             {
               where: {
-                total_server_count: {
-                  _gt: 0,
-                },
+                // total_server_count: {
+                //   _gt: 0,
+                // },
               },
             },
             {
@@ -150,6 +162,30 @@ export default {
         }),
         result({ data }) {
           this.regions = data.e_game_server_node_regions;
+        },
+      },
+      match_map_veto_picks: {
+        variables: function () {
+          return {
+            matchId: this.$route.params.id,
+          };
+        },
+        query: typedGql("subscription")({
+          match_region_veto_picks: [
+            {
+              where: {
+                match_id: {
+                  _eq: $("matchId", "uuid!"),
+                },
+              },
+            },
+            {
+              region: true,
+            },
+          ],
+        }),
+        result: function ({ data }) {
+          this.picks = data.match_region_veto_picks;
         },
       },
     },
@@ -166,6 +202,7 @@ export default {
   },
   data() {
     return {
+      picks: [],
       regions: [],
       override: false,
       form: useForm({
@@ -188,8 +225,24 @@ export default {
         this.match.lineup_2.can_pick_region_veto
       );
     },
+    availableRegions() {
+      return this.regions
+        .filter(({ value }) => {
+          if (
+            this.picks.find(({ region }) => {
+              return region === value;
+            })
+          ) {
+            return false;
+          }
+          return true;
+        })
+        .map(({ value }) => {
+          return value;
+        });
+    },
     isBanning() {
-      return this.match.options.region_veto && !match.region;
+      return this.match.options.region_veto && !this.match.region;
     },
     isRegionVeto() {
       return this.match.status == e_match_status_enum.Veto;

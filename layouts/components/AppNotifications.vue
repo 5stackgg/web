@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { Gamepad, PanelLeft, Bell, Trash2 } from "lucide-vue-next";
+import { Bell, Trash2 } from "lucide-vue-next";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
-import BreadCrumbs from "~/components/BreadCrumbs.vue";
-import { Users } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
@@ -261,12 +259,30 @@ export default {
       });
     },
     async deleteAllReadNotifications() {
+      console.info("ffs", {
+        update_notifications: [
+          {
+            where: {
+              is_read: {
+                _eq: true,
+              },
+            },
+            _set: {
+              deleted_at: new Date(),
+            },
+          },
+        ],
+      });
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_notifications: [
             {
-              where: { is_read: true },
-              _set: { deleted_at: new Date() },
+              where: {
+                is_read: true,
+              },
+              _set: {
+                deleted_at: new Date(),
+              },
             },
           ],
         }),

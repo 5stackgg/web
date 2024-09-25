@@ -6,6 +6,7 @@ import { PlusCircle } from "lucide-vue-next";
 import MyUpcomingTournaments from "~/components/tournament/MyUpcomingTournaments.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDisplay.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
@@ -14,8 +15,13 @@ import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDis
       <template #title>Upcoming Tournaments</template>
 
       <template #actions>
-        <NuxtLink to="/tournaments/create">
-          <Button size="lg">
+        <NuxtLink to="/matches/create" class="flex gap-4 items-center">
+          <template v-if="!canCreateTournament">
+            <FiveStackToolTip :size="16" class="text-red-600"
+              >Admin is disabled creation of tournaments</FiveStackToolTip
+            >
+          </template>
+          <Button size="lg" :disabled="!canCreateTournament">
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">Create Tournament</span>
           </Button>
@@ -81,6 +87,7 @@ import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDis
 import { mapFields } from "~/graphql/mapGraphql";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   data() {
@@ -199,6 +206,39 @@ export default {
           ],
         };
       },
+    },
+  },
+  computed: {
+    me() {
+      return useAuthStore().me;
+    },
+    canCreateTournament() {
+      const allowedRole = useApplicationSettingsStore().tournamentCreateRole;
+
+      if (allowedRole === e_player_roles_enum.user) {
+        return true;
+      }
+
+      if (allowedRole === e_player_roles_enum.match_organizer) {
+        return [
+          e_player_roles_enum.match_organizer,
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
+        ].includes(this.me.role);
+      }
+
+      if (allowedRole === e_player_roles_enum.tournament_organizer) {
+        return [
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
+        ].includes(this.me.role);
+      }
+
+      if (allowedRole === e_player_roles_enum.administrator) {
+        return this.me.role === e_player_roles_enum.administrator;
+      }
+
+      return false;
     },
   },
 };

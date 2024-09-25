@@ -7,6 +7,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import MatchMaking from "~/components/match-making/MatchMaking.vue";
 import { PlusCircle } from "lucide-vue-next";
 import PageHeading from "~/components/PageHeading.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
@@ -22,7 +23,9 @@ import PageHeading from "~/components/PageHeading.vue";
         <template #actions>
           <NuxtLink to="/matches/create" class="flex gap-4 items-center">
             <template v-if="!canCreateMatch">
-              <FiveStackToolTip :size=16 class="text-red-600">Admin is disabled creation of matches</FiveStackToolTip>
+              <FiveStackToolTip :size="16" class="text-red-600"
+                >Admin is disabled creation of matches</FiveStackToolTip
+              >
             </template>
             <Button size="lg" :disabled="!canCreateMatch">
               <PlusCircle class="w-4 h-4" />
@@ -113,9 +116,13 @@ import PageHeading from "~/components/PageHeading.vue";
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import { $, e_match_status_enum, e_player_roles_enum, order_by } from "~/generated/zeus";
+import {
+  $,
+  e_match_status_enum,
+  e_player_roles_enum,
+  order_by,
+} from "~/generated/zeus";
 import SimpleMatchDisplay from "~/components/SimpleMatchDisplay.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 export default {
   data() {
@@ -231,32 +238,31 @@ export default {
     canCreateMatch() {
       const allowedRole = useApplicationSettingsStore().matchCreateRole;
 
-      if(allowedRole === e_player_roles_enum.user) {
+      if (allowedRole === e_player_roles_enum.user) {
         return true;
       }
 
-      if(allowedRole === e_player_roles_enum.match_organizer) {
+      if (allowedRole === e_player_roles_enum.match_organizer) {
         return [
-        e_player_roles_enum.match_organizer,
-        e_player_roles_enum.tournament_organizer,
-        e_player_roles_enum.administrator,
+          e_player_roles_enum.match_organizer,
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
         ].includes(this.me.role);
       }
 
-
-      if(allowedRole === e_player_roles_enum.tournament_organizer) {
+      if (allowedRole === e_player_roles_enum.tournament_organizer) {
         return [
-        e_player_roles_enum.tournament_organizer,
-        e_player_roles_enum.administrator,
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
         ].includes(this.me.role);
       }
 
-      if(allowedRole === e_player_roles_enum.administrator) {
-        return this.me.role ===  e_player_roles_enum.administrator
+      if (allowedRole === e_player_roles_enum.administrator) {
+        return this.me.role === e_player_roles_enum.administrator;
       }
 
       return false;
-    }
-  }
+    },
+  },
 };
 </script>

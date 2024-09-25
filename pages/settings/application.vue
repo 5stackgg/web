@@ -26,37 +26,71 @@ definePageMeta({
     </div>
     <Switch :checked="matchMakingAllowed" @update:checked="toggleMatchmaking" />
   </div>
-  
+
   <form @submit.prevent="updateSettings" class="grid gap-4">
     <div class="flex flex-col space-y-3 rounded-lg border p-4">
-        <FormField v-slot="{ componentField }" name="public.create_matches_role">
-          <FormItem>
-            <FormLabel class="text-lg font-semibold"
-              >Minimum Role Allowed to Create Matches</FormLabel
-            >
-            <FormControl>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      :value="role"
-                      v-for="role in e_player_roles_enum"
-                      :key="role"
-                    >
-                      <span class="capitalize">{{ role.replace('_', ' ') }}</span>
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
+      <FormField v-slot="{ componentField }" name="public.create_matches_role">
+        <FormItem>
+          <FormLabel class="text-lg font-semibold"
+            >Minimum Role Allowed to Create Matches</FormLabel
+          >
+          <FormControl>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    :value="role"
+                    v-for="role in e_player_roles_enum"
+                    :key="role"
+                  >
+                    <span class="capitalize">{{ role.replace("_", " ") }}</span>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </div>
+
+    <div class="flex flex-col space-y-3 rounded-lg border p-4">
+      <FormField
+        v-slot="{ componentField }"
+        name="public.create_tournament_role"
+      >
+        <FormItem>
+          <FormLabel class="text-lg font-semibold"
+            >Minimum Role Allowed to Create Tournaments</FormLabel
+          >
+          <FormControl>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    :value="role"
+                    v-for="role in e_player_roles_enum"
+                    :key="role"
+                  >
+                    <span class="capitalize">{{ role.replace("_", " ") }}</span>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
     </div>
 
     <FormField v-slot="{ componentField }" name="discord_support_webhook">
@@ -84,7 +118,11 @@ definePageMeta({
 </template>
 
 <script lang="ts">
-import { e_player_roles_enum, settings_constraint, settings_update_column } from "~/generated/zeus";
+import {
+  e_player_roles_enum,
+  settings_constraint,
+  settings_update_column,
+} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
@@ -100,7 +138,10 @@ export default {
           z.object({
             discord_support_webhook: z.string().optional(),
             public: z.object({
-              create_matches_role: z.string().default(e_player_roles_enum.user)
+              create_matches_role: z.string().default(e_player_roles_enum.user),
+              create_tournament_role: z
+                .string()
+                .default(e_player_roles_enum.user),
             }),
           }),
         ),
@@ -163,6 +204,10 @@ export default {
                 {
                   name: "public.create_matches_role",
                   value: this.form.values.public.create_matches_role,
+                },
+                {
+                  name: "public.create_tournament_role",
+                  value: this.form.values.public.create_tournament_role,
                 },
               ],
               on_conflict: {

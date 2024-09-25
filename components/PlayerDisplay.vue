@@ -26,7 +26,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
         >
           <div>
             <div class="flex items-center gap-1">
-              <TimezoneFlag v-if="showFlag" :country="player.country" />
+              <TimezoneFlag class="mt-1" v-if="showFlag" :country="player.country" />
               <div v-if="showName">{{ player.name }}</div>
             </div>
             <slot name="name-postfix"></slot>

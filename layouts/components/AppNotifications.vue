@@ -259,26 +259,14 @@ export default {
       });
     },
     async deleteAllReadNotifications() {
-      console.info("ffs", {
-        update_notifications: [
-          {
-            where: {
-              is_read: {
-                _eq: true,
-              },
-            },
-            _set: {
-              deleted_at: new Date(),
-            },
-          },
-        ],
-      });
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_notifications: [
             {
               where: {
-                is_read: true,
+                is_read: {
+                  _eq: true,
+                },
               },
               _set: {
                 deleted_at: new Date(),

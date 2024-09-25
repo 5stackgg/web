@@ -80,7 +80,7 @@ import formatStatValue from "~/utilities/formatStatValue";
     <TableCell v-if="lineup.can_update_lineup">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <Button variant="outline" size="icon">
+          <Button variant="secondary" size="icon">
             <PaginationEllipsis></PaginationEllipsis>
           </Button>
         </DropdownMenuTrigger>

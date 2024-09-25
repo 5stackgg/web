@@ -48,11 +48,11 @@ export const useApplicationSettingsStore = defineStore(
         return false;
       }
 
-      const create_tournament_role = settings.value.find(
-        (setting) => setting.name === "public.create_tournament_role",
+      const create_tournaments_role = settings.value.find(
+        (setting) => setting.name === "public.create_tournaments_role",
       );
 
-      return create_tournament_role?.value || e_player_roles_enum.user;
+      return create_tournaments_role?.value || e_player_roles_enum.user;
     });
 
     const matchMakingAllowed = computed(() => {

@@ -62,7 +62,7 @@ definePageMeta({
     <div class="flex flex-col space-y-3 rounded-lg border p-4">
       <FormField
         v-slot="{ componentField }"
-        name="public.create_tournament_role"
+        name="public.create_tournaments_role"
       >
         <FormItem>
           <FormLabel class="text-lg font-semibold"
@@ -139,7 +139,7 @@ export default {
             discord_support_webhook: z.string().optional(),
             public: z.object({
               create_matches_role: z.string().default(e_player_roles_enum.user),
-              create_tournament_role: z
+              create_tournaments_role: z
                 .string()
                 .default(e_player_roles_enum.user),
             }),
@@ -206,8 +206,8 @@ export default {
                   value: this.form.values.public.create_matches_role,
                 },
                 {
-                  name: "public.create_tournament_role",
-                  value: this.form.values.public.create_tournament_role,
+                  name: "public.create_tournaments_role",
+                  value: this.form.values.public.create_tournaments_role,
                 },
               ],
               on_conflict: {

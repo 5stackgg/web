@@ -620,7 +620,7 @@ export default {
       };
     },
     hasLanRegion() {
-      return useMatchMakingStore().regions.filter((region) => {
+      return useMatchMakingStore().regions.find((region) => {
         return region.value === "Lan";
       });
     },

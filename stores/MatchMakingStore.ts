@@ -39,15 +39,24 @@ export const useMatchMakingStore = defineStore("match-making", () => {
     >
   >({});
 
-  const regions = ref(undefined);
+  const regions = ref([]);
   const subscribeToRegions = async () => {
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
         e_game_server_node_regions: [
           {
             where: {
-              status: {
-                _neq: "N/A",
+              game_server_nodes: {
+                enabled: {
+                  _eq: true,
+                },
+              },
+              game_server_nodes_aggregate: {
+                count: {
+                  predicate: {
+                    _gt: 0,
+                  },
+                },
               },
             },
           },

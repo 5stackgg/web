@@ -166,8 +166,10 @@ export default {
               {
                 limit: $("limit", "Int!"),
                 offset: $("offset", "Int!"),
-                status: {
-                  _nin: $("statuses", "[e_match_status_enum]"),
+                where: {
+                  status: {
+                    _nin: $("statuses", "[e_match_status_enum]"),
+                  },
                 },
                 order_by: [
                   {},
@@ -195,7 +197,13 @@ export default {
         __alias: {
           otherMatchesAggregate: {
             matches_aggregate: [
-              {},
+              {
+                where: {
+                  status: {
+                    _nin: $("statuses", "[e_match_status_enum]"),
+                  },
+                },
+              },
               {
                 aggregate: {
                   count: true,
@@ -205,6 +213,11 @@ export default {
           },
         },
       }),
+      variables: function () {
+        return {
+          statuses: [e_match_status_enum.PickingPlayers],
+        };
+      },
     },
   },
 };

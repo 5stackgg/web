@@ -17,6 +17,7 @@ definePageMeta({
           src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png"
           alt="Steam login"
           class="cursor-pointer"
+          @click="signIn"
         />
       </CardContent>
     </Card>

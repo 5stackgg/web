@@ -21,93 +21,100 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <SheetHeader>
         <SheetTitle>Notifications</SheetTitle>
         <SheetDescription>
-          <template v-if="invites.length > 0">
-            <div
-              v-for="invite of invites"
-              :key="invite.id"
-              class="mb-4 p-4 bg-accent rounded-lg"
-            >
-              <h3 class="text-lg font-semibold mb-2">
-                Team Invite: {{ invite.team.name }}
-              </h3>
-              <p class="text-sm text-muted-foreground mb-2">
-                Invited by {{ invite.invited_by.name }}
-                <TimeAgo :date="invite.created_at" class="text-xs" />
-              </p>
-              <div class="flex justify-end space-x-2 mt-3">
-                <Button variant="outline" @click="denyInvite(invite.id)"
-                  >Deny</Button
-                >
-                <Button variant="default" @click="acceptInvite(invite.id)"
-                  >Accept</Button
-                >
+          <template v-if="invites.length > 0 || notifications.length > 0">
+            <template v-if="invites.length > 0">
+              <div
+                v-for="invite of invites"
+                :key="invite.id"
+                class="mb-4 p-4 bg-accent rounded-lg"
+              >
+                <h3 class="text-lg font-semibold mb-2">
+                  Team Invite: {{ invite.team.name }}
+                </h3>
+                <p class="text-sm text-muted-foreground mb-2">
+                  Invited by {{ invite.invited_by.name }}
+                  <TimeAgo :date="invite.created_at" class="text-xs" />
+                </p>
+                <div class="flex justify-end space-x-2 mt-3">
+                  <Button variant="outline" @click="denyInvite(invite.id)"
+                    >Deny</Button
+                  >
+                  <Button variant="default" @click="acceptInvite(invite.id)"
+                    >Accept</Button
+                  >
+                </div>
               </div>
-            </div>
-            <Separator v-if="notifications.length > 0"></Separator>
-          </template>
+              <Separator v-if="notifications.length > 0"></Separator>
+            </template>
 
-          <template
-            v-for="notification of notifications"
-            :key="notification.id"
-          >
-            <div :class="['mb-4 p-4 rounded-lg shadow-md relative']">
-              <Button
-                size="icon"
-                variant="ghost"
-                @click="deleteNotification(notification.id)"
-                class="absolute top-2 right-2"
-              >
-                <Trash2 class="h-4 w-4" />
-                <span class="sr-only">Delete</span>
-              </Button>
-              <h3
-                :class="[
-                  'text-lg font-semibold mb-2',
-                  notification.is_read ? 'text-muted-foreground' : '',
-                ]"
-              >
-                {{ notification.title }}
-              </h3>
-              <p
-                :class="[
-                  'text-sm mb-2',
-                  notification.is_read
-                    ? 'text-muted-foreground/70'
-                    : 'text-muted-foreground',
-                ]"
-                v-html="notification.message"
-              ></p>
-              <div class="flex justify-between items-center">
-                <span
+            <template
+              v-for="notification of notifications"
+              :key="notification.id"
+            >
+              <div :class="['mb-4 p-4 rounded-lg shadow-md relative']">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  @click="deleteNotification(notification.id)"
+                  class="absolute top-2 right-2"
+                >
+                  <Trash2 class="h-4 w-4" />
+                  <span class="sr-only">Delete</span>
+                </Button>
+                <h3
                   :class="[
-                    'text-xs',
-                    notification.is_read
-                      ? 'text-muted-foreground/50'
-                      : 'text-muted-foreground',
+                    'text-lg font-semibold mb-2',
+                    notification.is_read ? 'text-muted-foreground' : '',
                   ]"
                 >
-                  <TimeAgo :date="notification.created_at" />
-                </span>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  @click="dismissNotification(notification.id)"
-                  v-if="!notification.is_read"
-                >
-                  Dismiss
-                </Button>
+                  {{ notification.title }}
+                </h3>
+                <p
+                  :class="[
+                    'text-sm mb-2',
+                    notification.is_read
+                      ? 'text-muted-foreground/70'
+                      : 'text-muted-foreground',
+                  ]"
+                  v-html="notification.message"
+                ></p>
+                <div class="flex justify-between items-center">
+                  <span
+                    :class="[
+                      'text-xs',
+                      notification.is_read
+                        ? 'text-muted-foreground/50'
+                        : 'text-muted-foreground',
+                    ]"
+                  >
+                    <TimeAgo :date="notification.created_at" />
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    @click="dismissNotification(notification.id)"
+                    v-if="!notification.is_read"
+                  >
+                    Dismiss
+                  </Button>
+                </div>
               </div>
-            </div>
+            </template>
+            <Button
+              size="sm"
+              variant="outline"
+              @click="deleteAllReadNotifications"
+              class="mt-4 w-full"
+              v-if="notifications.length > 0"
+            >
+              Delete All Read Notifications
+            </Button>
           </template>
-          <Button
-            size="sm"
-            variant="outline"
-            @click="deleteAllReadNotifications"
-            class="mt-4 w-full"
-            v-if="notifications.length > 0"
-          >
-            Delete All Read Notifications
-          </Button>
+          <template v-else>
+            <p class="mt-8 text-center text-muted-foreground">
+              No notifications at the moment.
+            </p>
+          </template>
         </SheetDescription>
       </SheetHeader>
     </SheetContent>

@@ -46,9 +46,7 @@ import Separator from "../ui/separator/Separator.vue";
     </PopoverTrigger>
     <PopoverContent class="p-0" align="end">
       <Command v-model="memberRole">
-        <CommandInput placeholder="Select new role..." />
         <CommandList>
-          <CommandEmpty>No roles found.</CommandEmpty>
           <CommandGroup>
             <CommandItem
               :value="role.value"

@@ -16,7 +16,14 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
     </div>
     <div :class="{ 'flex items-center': !showSteamId }">
       <slot>
-        <div class="text-left text-sm">
+        <div
+          class="text-left"
+          :class="{
+            'text-sm': size === 'sm',
+            'text-lg': size === 'lg',
+            'text-xl': size === 'xl',
+          }"
+        >
           <div>
             <div class="flex items-center gap-1">
               <TimezoneFlag v-if="showFlag" :country="player.country" />
@@ -36,6 +43,10 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
 <script lang="ts">
 export default {
   props: {
+    size: {
+      type: String,
+      default: "sm",
+    },
     player: {
       type: Object,
       required: true,

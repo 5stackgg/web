@@ -272,6 +272,9 @@ export default {
                 deleted_at: new Date(),
               },
             },
+            {
+              __typename: true,
+            },
           ],
         }),
       });

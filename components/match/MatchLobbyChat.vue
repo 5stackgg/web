@@ -17,7 +17,7 @@ import MatchLobbyChatMessage from "~/components/match/MatchLobbyChatMessage.vue"
       </div>
     </div>
 
-    <div class="flex-1 overflow-scroll max-h-screen">
+    <div class="flex-1 overflow-y-auto max-h-screen">
       <MatchLobbyChatMessage
         :message="message"
         :previous-message="messages[index - 1]"

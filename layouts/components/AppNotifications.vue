@@ -117,10 +117,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
 </template>
 
 <script lang="ts">
-import { e_player_roles_enum } from "~/generated/zeus";
-import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   data() {

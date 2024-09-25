@@ -122,6 +122,7 @@ import * as z from "zod";
 import { getAllCountries } from "countries-and-timezones";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { toast } from "@/components/ui/toast";
 
 export default {
   data() {
@@ -178,6 +179,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: "Updated Profile",
       });
     },
   },

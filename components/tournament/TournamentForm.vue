@@ -94,6 +94,7 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { fromDate, toCalendarDate } from "@internationalized/date";
+import { toast } from "@/components/ui/toast";
 
 export default {
   emits: ["updated"],
@@ -343,6 +344,10 @@ export default {
               },
             ],
           }),
+        });
+
+        toast({
+          title: "Updated Tournament",
         });
         return;
       }

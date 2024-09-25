@@ -50,6 +50,7 @@ import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -96,6 +97,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: "Set Match Winner",
       });
     },
   },

@@ -128,6 +128,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
+import { toast } from "@/components/ui/toast";
 
 export default {
   data() {
@@ -220,6 +221,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: "Updated Application Settings",
       });
     },
   },

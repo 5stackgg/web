@@ -63,7 +63,7 @@ import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
-
+import { toast } from "@/components/ui/toast";
 export default {
   props: {
     match: {
@@ -105,6 +105,10 @@ export default {
         mutation: generateMutation({
           callForOrganizer: [{ matchId: this.match.id }, { success: true }],
         }),
+      });
+
+      toast({
+        title: "Requestd Organizer",
       });
     },
   },

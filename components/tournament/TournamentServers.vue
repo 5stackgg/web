@@ -78,6 +78,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -153,23 +154,33 @@ export default {
             ],
           }),
         });
-      } else {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            insert_tournament_servers_one: [
-              {
-                object: {
-                  server_id: serverId,
-                  tournament_id: this.$route.params.tournamentId,
-                },
-              },
-              {
-                __typename: true,
-              },
-            ],
-          }),
+
+        toast({
+          title: "Removed Server",
         });
+
+        return;
       }
+
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          insert_tournament_servers_one: [
+            {
+              object: {
+                server_id: serverId,
+                tournament_id: this.$route.params.tournamentId,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: "Added Server",
+      });
     },
   },
 };

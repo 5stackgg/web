@@ -63,6 +63,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -170,6 +171,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: "Assgined Match Server",
       });
     },
   },

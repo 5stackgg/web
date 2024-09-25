@@ -35,7 +35,11 @@ provide("commander", commander);
       <TabsTrigger :disabled="disableStats" value="clutches">
         Clutches
       </TabsTrigger>
-      <TabsTrigger value="veto" v-if="match.options.map_veto">
+      <TabsTrigger
+        value="veto"
+        :disabled="match.match_maps.length === 0"
+        v-if="match.options.map_veto"
+      >
         Map Veto
       </TabsTrigger>
       <TabsTrigger value="settings"> Match Settings </TabsTrigger>
@@ -44,7 +48,7 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview" class="grid gap-4">
-      <Card class="w-full">
+      <Card class="w-fit">
         <CardHeader></CardHeader>
         <CardContent>
           <LineupOverview
@@ -54,7 +58,7 @@ provide("commander", commander);
         </CardContent>
       </Card>
 
-      <Card class="w-full">
+      <Card class="w-fit">
         <CardHeader></CardHeader>
         <CardContent>
           <LineupOverview

@@ -6,7 +6,7 @@ import { Info } from "lucide-vue-next";
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger as-child>
-        <Info :size="12"></Info>
+        <Info :size="size" v-bind="$attrs"></Info>
       </TooltipTrigger>
       <TooltipContent>
         <slot></slot>
@@ -14,3 +14,15 @@ import { Info } from "lucide-vue-next";
     </Tooltip>
   </TooltipProvider>
 </template>
+
+<script lang="ts">
+export default {
+  inheritAttrs: false,
+  props: {
+    size: {
+      type: Number,
+      default: 12,
+    }
+  }
+}
+</script>

@@ -225,6 +225,83 @@ export default {
       },
     },
   },
+  methods: {
+    async dismissNotification(id: string) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_notifications_by_pk: [
+            {
+              pk_columns: { id },
+              _set: {
+                is_read: true,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    async deleteNotification(id: string) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_notifications_by_pk: [
+            {
+              pk_columns: { id },
+              _set: {
+                is_read: true,
+                deleted_at: new Date(),
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    async deleteAllReadNotifications() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_notifications: [
+            {
+              where: { is_read: true },
+              _set: { deleted_at: new Date() },
+            },
+          ],
+        }),
+      });
+    },
+    async acceptInvite(inviteId: string) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          acceptTeamInvite: [
+            {
+              invite_id: inviteId,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+    async denyInvite(inviteId: string) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          denyTeamInvite: [
+            {
+              invite_id: inviteId,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+    },
+  },
   computed: {
     me() {
       return useAuthStore().me;

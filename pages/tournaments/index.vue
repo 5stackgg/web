@@ -15,7 +15,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       <template #title>Upcoming Tournaments</template>
 
       <template #actions>
-        <NuxtLink to="/matches/create" class="flex gap-4 items-center">
+        <NuxtLink to="/tournaments/create" class="flex gap-4 items-center">
           <template v-if="!canCreateTournament">
             <FiveStackToolTip :size="16" class="text-red-600"
               >Admin is disabled creation of tournaments</FiveStackToolTip

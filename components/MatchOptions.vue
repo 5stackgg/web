@@ -208,20 +208,44 @@ import { Separator } from "~/components/ui/separator";
 
       <FormField
         v-slot="{ value, handleChange }"
-        name="region_veto"
-        v-if="regions.length > 1"
+        name="lan"
+        v-if="hasLanRegion && canSetLan"
       >
         <FormItem
           class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
           @click="handleChange(!value)"
         >
           <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">Region Veto</FormLabel>
+            <FormLabel class="text-lg font-semibold">Lan</FormLabel>
             <FormControl>
               <Switch
                 class="pointer-events-none"
                 :checked="value"
                 @update:checked="handleChange"
+              />
+            </FormControl>
+          </div>
+          <FormDescription> Use LAN Servers </FormDescription>
+        </FormItem>
+      </FormField>
+
+      <FormField
+        v-slot="{ value, handleChange }"
+        name="region_veto"
+        v-if="regions.length > 1"
+      >
+        <FormItem
+          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+          @click="form.values.lan === false && handleChange(!value)"
+        >
+          <div class="flex justify-between items-center">
+            <FormLabel class="text-lg font-semibold">Region Veto</FormLabel>
+            <FormControl>
+              <Switch
+                :disabled="form.values.lan"
+                class="pointer-events-none"
+                :checked="value"
+                @update:checked="form.values.lan === false && handleChange"
               />
             </FormControl>
           </div>
@@ -491,6 +515,11 @@ export default {
         this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
       },
     },
+    ["form.values.lan"]: {
+      handler(lan) {
+        this.form.setFieldValue("region_veto", !lan && this.regions.length > 0);
+      },
+    },
     ["form.values.type"]: {
       handler(type) {
         if (type === e_match_types_enum.Wingman) {
@@ -590,8 +619,20 @@ export default {
         workshop: maps.filter((map) => map.workshop_map_id),
       };
     },
+    hasLanRegion() {
+      return useMatchMakingStore().regions.filter((region) => {
+        return region.value === "Lan";
+      });
+    },
     regions() {
-      return useMatchMakingStore().regions;
+      return useMatchMakingStore().regions.filter((region) => {
+        return region.value !== "Lan";
+      });
+    },
+    canSetLan() {
+      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
+        useAuthStore();
+      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
     },
   },
   methods: {

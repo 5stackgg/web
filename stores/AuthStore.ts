@@ -62,6 +62,11 @@ export const useAuthStore = defineStore("auth", () => {
   const isAdmin = computed(
     () => me.value?.role === e_player_roles_enum.administrator,
   );
+
+  const isMatchOrganizer = computed(
+    () => me.value?.role === e_player_roles_enum.match_organizer,
+  );
+
   const isTournamentOrganizer = computed(
     () => me.value?.role === e_player_roles_enum.tournament_organizer,
   );
@@ -71,6 +76,7 @@ export const useAuthStore = defineStore("auth", () => {
     getMe,
     isAdmin,
     hasDiscordLinked,
+    isMatchOrganizer,
     isTournamentOrganizer,
   };
 });

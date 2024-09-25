@@ -132,6 +132,11 @@ export default {
           knife_round: form.knife_round,
           overtime: form.overtime,
           map_veto: form.map_veto,
+          ...(this.canSetLan
+            ? {
+                lan: form.lan,
+              }
+            : {}),
           region_veto: form.region_veto,
           coaches: form.coaches,
           timeout_setting: form.timeout_setting,
@@ -191,6 +196,12 @@ export default {
                     overtime: $("overtime", "Boolean!"),
                     map_veto: $("map_veto", "Boolean!"),
                     region_veto: $("region_veto", "Boolean!"),
+
+                    ...(this.canSetLan
+                      ? {
+                          lan: $("lan", "Boolean!"),
+                        }
+                      : {}),
                     timeout_setting: $(
                       "timeout_setting",
                       "e_timeout_settings_enum!",
@@ -221,6 +232,11 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    canSetLan() {
+      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
+        useAuthStore();
+      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
     },
   },
 };

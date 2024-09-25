@@ -274,6 +274,7 @@ export default {
                 knife_round: true,
                 overtime: true,
                 region_veto: true,
+                lan: true,
                 best_of: true,
                 tv_delay: true,
                 number_of_substitutes: true,

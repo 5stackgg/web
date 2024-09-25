@@ -42,7 +42,7 @@ import socket from "~/web-sockets/Socket";
           joinedCompetitiveQueue ||
           (joinedWingmanQueue && matchamkingQueueDetails)
         "
-        class="mb-4 text-center"
+        class="mb-4 flex flex-col items-center"
       >
         <div class="text-4xl font-bold">
           {{ matchamkingQueueDetails.regionPositions[region.value] }}

@@ -2,6 +2,7 @@
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 import PageHeading from "~/components/PageHeading.vue";
+import { Info } from "lucide-vue-next";
 </script>
 
 <template>
@@ -12,34 +13,76 @@ import PageHeading from "~/components/PageHeading.vue";
 
     <form @submit.prevent="setupMatch">
       <match-options :form="form">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          <FormField v-slot="{ handleChange, componentField }" name="team_1">
-            <FormItem>
-              <FormLabel>Team 1</FormLabel>
-              <TeamSearch
-                label="Search for a Team ..."
-                @selected="(team) => handleChange(team.id)"
-                v-model="componentField.modelValue"
-                class="w-full"
-              ></TeamSearch>
-              <FormMessage />
+        <template #left>
+          <FormField v-slot="{ value, handleChange }" name="pug">
+            <FormItem
+              class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+              @click="handleChange(!value)"
+            >
+              <div class="flex justify-between items-center">
+                <FormLabel class="text-lg font-semibold"
+                  >Pick Up Game</FormLabel
+                >
+                <FormControl>
+                  <Switch
+                    class="pointer-events-none"
+                    :checked="value"
+                    @update:checked="handleChange"
+                  />
+                </FormControl>
+              </div>
+              <FormDescription>
+                A Pick up game does not require selection of teams.
+              </FormDescription>
             </FormItem>
           </FormField>
 
-          <FormField v-slot="{ handleChange, componentField }" name="team_2">
-            <FormItem>
-              <FormLabel>Team 2</FormLabel>
-              <TeamSearch
-                label="Search for a Team ..."
-                @selected="(team) => handleChange(team.id)"
-                :exclude="[form.values.team_1]"
-                v-model="componentField.modelValue"
-                class="w-full"
-              ></TeamSearch>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </div>
+          <div
+            class="flex flex-col gap-4 rounded-lg border p-4"
+            v-if="!form.values.pug"
+          >
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <FormField
+                v-slot="{ handleChange, componentField }"
+                name="team_1"
+              >
+                <FormItem>
+                  <FormLabel>Team 1</FormLabel>
+                  <TeamSearch
+                    label="Search for a Team ..."
+                    @selected="(team) => handleChange(team.id)"
+                    v-model="componentField.modelValue"
+                    class="w-full"
+                  ></TeamSearch>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+
+              <FormField
+                v-slot="{ handleChange, componentField }"
+                name="team_2"
+              >
+                <FormItem>
+                  <FormLabel>Team 2</FormLabel>
+                  <TeamSearch
+                    label="Search for a Team ..."
+                    @selected="(team) => handleChange(team.id)"
+                    :exclude="[form.values.team_1]"
+                    v-model="componentField.modelValue"
+                    class="w-full"
+                  ></TeamSearch>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+
+            <div class="text-sm text-muted-foreground italic">
+              <Info class="inline-block mr-1 w-4 h-4" />
+              You can select the same team for both slots to create an
+              intra-team scrimmage.
+            </div>
+          </div>
+        </template>
       </match-options>
 
       <div class="grid grid-cols-1 md:grid-cols-2">
@@ -64,6 +107,7 @@ export default {
     return {
       form: useForm({
         validationSchema: matchOptionsValidator({
+          pug: z.boolean().default(true),
           team_1: z.string().optional(),
           team_2: z.string().optional(),
         }),

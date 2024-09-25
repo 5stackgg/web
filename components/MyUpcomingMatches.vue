@@ -25,7 +25,6 @@ import SimpleMatchDisplay from "./SimpleMatchDisplay.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { $, e_match_status_enum, order_by } from "~/generated/zeus";
-import SimpleMatchDisplay from "./SimpleMatchDisplay.vue";
 
 export default {
   apollo: {
@@ -35,12 +34,24 @@ export default {
         matches: [
           {
             where: {
-              is_in_lineup: {
-                _eq: true,
-              },
-              status: {
-                _in: $("statuses", "[e_match_status_enum]"),
-              },
+              _or: [
+                {
+                  organizer_steam_id: {
+                    _eq: $("steam_id", "bigint!"),
+                  },
+                  status: {
+                    _in: [e_match_status_enum.PickingPlayers],
+                  },
+                },
+                {
+                  is_in_lineup: {
+                    _eq: true,
+                  },
+                  status: {
+                    _in: $("statuses", "[e_match_status_enum]"),
+                  },
+                },
+              ],
             },
             order_by: [
               {},
@@ -54,11 +65,11 @@ export default {
       }),
       variables: function () {
         return {
+          steam_id: useAuthStore().me?.steam_id,
           statuses: [
             e_match_status_enum.Live,
             e_match_status_enum.Veto,
             e_match_status_enum.Scheduled,
-            e_match_status_enum.PickingPlayers,
             e_match_status_enum.WaitingForCheckIn,
           ],
         };

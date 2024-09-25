@@ -9,6 +9,8 @@ import { Separator } from "~/components/ui/separator";
     <div class="space-y-6">
       <!-- Match Settings -->
       <div class="space-y-4">
+        <slot name="left"></slot>
+
         <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
           <slot></slot>
 
@@ -296,7 +298,9 @@ import { Separator } from "~/components/ui/separator";
       <div class="flex flex-col space-y-3 rounded-lg border p-4">
         <FormField v-slot="{ value }" name="number_of_substitutes">
           <FormItem>
-            <FormLabel>Number of Substitutes</FormLabel>
+            <FormLabel class="text-lg font-semibold"
+              >Number of Substitutes</FormLabel
+            >
             <NumberField
               class="gap-2"
               :min="0"
@@ -326,7 +330,7 @@ import { Separator } from "~/components/ui/separator";
 
         <FormField v-slot="{ value }" name="tv_delay">
           <FormItem>
-            <FormLabel>TV Delay</FormLabel>
+            <FormLabel class="text-lg font-semibold">TV Delay</FormLabel>
             <NumberField
               class="gap-2"
               :min="0"

@@ -133,3 +133,18 @@
     -ms-overflow-style: -ms-autohiding-scrollbar;
   }
 }
+
+@layer base {
+  html {
+    touch-action: manipulation;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  @layer base {
+    html {
+      -webkit-text-size-adjust: none;
+      text-size-adjust: none;
+    }
+  }
+}

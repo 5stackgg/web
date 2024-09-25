@@ -3,12 +3,24 @@ definePageMeta({
   layout: "public",
 });
 </script>
-
 <template>
-  <img
-    @click="signIn"
-    src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_02.png"
-  />
+  <div class="flex items-center justify-center min-h-screen">
+    <Card class="w-full max-w-md">
+      <CardHeader>
+        <CardTitle class="text-3xl font-bold text-center">5Stack</CardTitle>
+        <CardDescription class="text-center"
+          >Sign in with your Steam account to get started</CardDescription
+        >
+      </CardHeader>
+      <CardContent class="flex flex-col items-center">
+        <img
+          src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png"
+          alt="Steam login"
+          class="cursor-pointer"
+        />
+      </CardContent>
+    </Card>
+  </div>
 </template>
 
 <script lang="ts">

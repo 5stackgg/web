@@ -22,6 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
+import TournamentBracketViewer from "./TournamentBracketViewer.vue";
 </script>
 
 <template>
@@ -57,14 +58,7 @@ import {
     Min Teams {{ stage.min_teams }} Max Teams {{ stage.max_teams }}
   </h1>
 
-  <div :class="`grid  grid-cols-${rounds.size}`">
-    <template v-for="round of Array.from(rounds.keys())">
-      <TournamentRound
-        :round="round"
-        :brackets="rounds.get(round)"
-      ></TournamentRound>
-    </template>
-  </div>
+  <TournamentBracketViewer :rounds="rounds"></TournamentBracketViewer>
 
   <Sheet :open="editStage" @update:open="(open) => (editStage = open)">
     <SheetTrigger></SheetTrigger>

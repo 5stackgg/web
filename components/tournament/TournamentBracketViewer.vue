@@ -1,16 +1,20 @@
 <script lang="ts" setup>
-import TournamentRound from "~/components/tournament/TournamentRound.vue";
+import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 </script>
 
 <template>
   <div class="tournament-bracket">
-    <div :class="`grid grid-cols-${rounds.size}`">
-      <template v-for="round of Array.from(rounds.keys())">
-        <TournamentRound
+    <div :class="`grid grid-cols-${rounds.size} tourament-round`">
+      <div
+        v-for="round of Array.from(rounds.keys())"
+        class="flex flex-col justify-around mr-20"
+      >
+        <TournamentMatch
+          class="tourament-match"
           :round="round"
           :brackets="rounds.get(round)"
-        ></TournamentRound>
-      </template>
+        ></TournamentMatch>
+      </div>
     </div>
   </div>
 </template>
@@ -25,3 +29,8 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.touranment-round {
+}
+</style>

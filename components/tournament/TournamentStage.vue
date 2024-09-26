@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import TournamentRound from "~/components/tournament/TournamentRound.vue";
 import {
   DropdownMenu,
   DropdownMenuContent,

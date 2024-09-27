@@ -86,7 +86,7 @@ const drawConnectingLines = () => {
 
 <template>
   <div class="tournament-bracket" ref="bracketContainer">
-    <div :class="`grid grid-cols-${rounds.size}`">
+    <div :class="`grid grid-cols-9`">
       <div
         v-for="round of Array.from(rounds.keys())"
         class="flex flex-col justify-around mr-20 bracket-column"
@@ -95,6 +95,16 @@ const drawConnectingLines = () => {
           :round="round"
           :brackets="rounds.get(round)"
         ></TournamentMatch>
+      </div>
+
+      <div class="flex flex-col justify-around bracket-column">
+        <div class="tournament-match">
+          <div class="items-center m-2">
+            <div class="bg-gray-600 text-gray-300 rounded-lg p-3 shadow-md">
+              <span class="font-bold text-xl"> WINNER! </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

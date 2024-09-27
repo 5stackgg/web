@@ -40,7 +40,7 @@ const drawConnectingLines = () => {
 
   // Set SVG dimensions to match the full content size of the container
   const containerRect = container.getBoundingClientRect();
-  const fullHeight = container.scrollHeight;
+  const fullHeight = container.scrollHeight + container.offsetTop;
   svg.setAttribute("width", containerRect.width + "px");
   svg.setAttribute("height", fullHeight + "px");
   svg.style.position = "absolute";

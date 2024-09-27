@@ -32,22 +32,23 @@ const redrawLines = () => {
 
 // Expose redrawLines method to parent components if needed
 defineExpose({ redrawLines });
-
 const drawConnectingLines = () => {
   if (!bracketContainer.value) return;
 
+  const container = bracketContainer.value as HTMLElement;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
-  svg.setAttribute("width", "100%");
-  svg.setAttribute("height", "100%");
+  // Set SVG dimensions to match the full content size of the container
+  const containerRect = container.getBoundingClientRect();
+  const fullHeight = container.scrollHeight;
+  svg.setAttribute("width", containerRect.width + "px");
+  svg.setAttribute("height", fullHeight + "px");
   svg.style.position = "absolute";
   svg.style.top = "0";
   svg.style.left = "0";
   svg.style.pointerEvents = "none";
 
-  const columns = (bracketContainer.value as HTMLElement).querySelectorAll(
-    ".bracket-column",
-  );
+  const columns = container.querySelectorAll(".bracket-column");
 
   for (let i = 0; i < columns.length - 1; i++) {
     const currentColumn = columns[i];
@@ -79,7 +80,7 @@ const drawConnectingLines = () => {
     });
   }
 
-  bracketContainer.value.appendChild(svg);
+  container.appendChild(svg);
 };
 </script>
 

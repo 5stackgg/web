@@ -65,10 +65,16 @@ const drawConnectingLines = () => {
       const matchEl = currentMatches[index]  as HTMLElement;
       
       const nextMatchEl = nextMatches[Math.floor(index / 2)] as HTMLElement;
+
+      // TODO - how to calcualte this
+      const margins = 12.5;
+
       const startX = matchEl.offsetLeft + matchEl.offsetWidth;
-      const startY = matchEl.offsetTop + matchEl.offsetHeight / 2;
+      const startY = matchEl.offsetTop + matchEl.offsetHeight / 2 - margins;
+
       const endX = nextMatchEl.offsetLeft;
-      const endY = nextMatchEl.offsetTop + nextMatchEl.offsetHeight / 2;
+      const endY = nextMatchEl.offsetTop + nextMatchEl.offsetHeight / 2 - margins;
+
       const midX = (startX + endX) / 2;
 
       const path = document.createElementNS(

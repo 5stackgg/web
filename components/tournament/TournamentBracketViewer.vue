@@ -62,8 +62,8 @@ const drawConnectingLines = () => {
     const nextMatches = nextColumn.querySelectorAll(".tournament-match");
 
     for (let index = 0; index < currentMatches.length; index++) {
-      const match = currentMatches[index];
-      const matchEl = match as HTMLElement;
+      const matchEl = currentMatches[index]  as HTMLElement;
+      
       const nextMatchEl = nextMatches[Math.floor(index / 2)] as HTMLElement;
       const startX = matchEl.offsetLeft + matchEl.offsetWidth;
       const startY = matchEl.offsetTop + matchEl.offsetHeight / 2;
@@ -75,13 +75,16 @@ const drawConnectingLines = () => {
         "http://www.w3.org/2000/svg",
         "path",
       );
+
       path.setAttribute(
         "d",
         `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`,
       );
+
       path.setAttribute("fill", "none");
       path.setAttribute("stroke", "white");
       path.setAttribute("stroke-width", "2");
+
       svg.appendChild(path);
     }
   }

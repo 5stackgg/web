@@ -40,14 +40,9 @@ const drawConnectingLines = () => {
 
   // Set SVG dimensions to match the full content size of the container
   const containerRect = container.getBoundingClientRect();
-  const tournamentBracket = container.closest(".tournament-bracket");
-  const topOffset = tournamentBracket
-    ? tournamentBracket.getBoundingClientRect().top
-    : 0;
   const fullHeight = container.scrollHeight;
   svg.setAttribute("width", containerRect.width + "px");
-  svg.setAttribute("height", fullHeight - topOffset + "px");
-  svg.style.top = topOffset + "px";
+  svg.setAttribute("height", fullHeight + "px");
   svg.style.position = "absolute";
   svg.style.top = "0";
   svg.style.left = "0";

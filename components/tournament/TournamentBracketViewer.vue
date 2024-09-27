@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import { ref, onMounted, watch } from "vue";
-import { useWindowSize } from "@vueuse/core";
+import { useWindowSize, useScroll } from "@vueuse/core";
 
 const bracketContainer = ref<HTMLElement | null>(null);
 
@@ -10,8 +10,9 @@ onMounted(() => {
 });
 
 const { width, height } = useWindowSize();
+const { x: scrollX } = useScroll(bracketContainer);
 
-watch([width, height], () => {
+watch([width, height, scrollX], () => {
   clearConnectingLines();
   requestAnimationFrame(drawConnectingLines);
 });
@@ -62,8 +63,8 @@ const drawConnectingLines = () => {
     const nextMatches = nextColumn.querySelectorAll(".tournament-match");
 
     for (let index = 0; index < currentMatches.length; index++) {
-      const matchEl = currentMatches[index]  as HTMLElement;
-      
+      const matchEl = currentMatches[index] as HTMLElement;
+
       const nextMatchEl = nextMatches[Math.floor(index / 2)] as HTMLElement;
 
       // TODO - how to calcualte this
@@ -73,7 +74,8 @@ const drawConnectingLines = () => {
       const startY = matchEl.offsetTop + matchEl.offsetHeight / 2 - margins;
 
       const endX = nextMatchEl.offsetLeft;
-      const endY = nextMatchEl.offsetTop + nextMatchEl.offsetHeight / 2 - margins;
+      const endY =
+        nextMatchEl.offsetTop + nextMatchEl.offsetHeight / 2 - margins;
 
       const midX = (startX + endX) / 2;
 
@@ -100,11 +102,11 @@ const drawConnectingLines = () => {
 </script>
 
 <template>
-  <div class="tournament-bracket" ref="bracketContainer">
-    <div :class="`grid grid-cols-9`">
+  <div class="tournament-bracket overflow-x-auto" ref="bracketContainer">
+    <div class="grid grid-flow-col auto-cols-max gap-20 min-w-max">
       <div
         v-for="round of Array.from(rounds.keys())"
-        class="flex flex-col justify-around mr-20 bracket-column"
+        class="flex flex-col justify-around bracket-column"
       >
         <TournamentMatch
           :round="round"

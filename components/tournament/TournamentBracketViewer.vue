@@ -102,7 +102,10 @@ const drawConnectingLines = () => {
 </script>
 
 <template>
-  <div class="tournament-bracket overflow-x-auto" ref="bracketContainer">
+  <div
+    class="tournament-bracket overflow-x-auto cursor-move"
+    ref="bracketContainer"
+  >
     <div class="grid grid-flow-col auto-cols-max gap-20 min-w-max">
       <div
         v-for="round of Array.from(rounds.keys())"

@@ -4,13 +4,12 @@ import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 
 <template>
   <div class="tournament-bracket">
-    <div :class="`grid grid-cols-${rounds.size} tourament-round`">
+    <div :class="`grid grid-cols-${rounds.size}`">
       <div
         v-for="round of Array.from(rounds.keys())"
         class="flex flex-col justify-around mr-20"
       >
         <TournamentMatch
-          class="tourament-match"
           :round="round"
           :brackets="rounds.get(round)"
         ></TournamentMatch>
@@ -31,6 +30,5 @@ export default {
 </script>
 
 <style lang="scss">
-.touranment-round {
-}
+
 </style>

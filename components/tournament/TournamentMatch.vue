@@ -9,7 +9,7 @@ import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup
     class="tournament-match my-4"
   >
     <div class="items-center m-2">
-      <div class="bg-gray-600 text-gray-300 rounded p-1">
+      <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
         <TournamentRoundLineup
           :bracket="bracket"
           :match="bracket.match"
@@ -21,7 +21,7 @@ import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup
     </div>
 
     <div class="items-center m-2">
-      <div class="bg-gray-600 text-gray-300 rounded p-1">
+      <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
         <TournamentRoundLineup
           :bracket="bracket"
           :match="bracket.match"

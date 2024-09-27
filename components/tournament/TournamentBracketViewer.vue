@@ -121,9 +121,11 @@ const drawConnectingLines = () => {
 
       <div class="flex flex-col justify-around bracket-column">
         <div class="tournament-match">
-          <div class="items-center m-2">
-            <div class="bg-gray-600 text-gray-300 rounded-lg p-3 shadow-md">
-              <span class="font-bold text-xl"> WINNER! </span>
+          <div class="items-center mx-4">
+            <div
+              class="bg-gray-600 text-gray-300 rounded-lg p-3 shadow-md -mt-6"
+            >
+              <span class="font-bold text-xl"> </span>
             </div>
           </div>
         </div>

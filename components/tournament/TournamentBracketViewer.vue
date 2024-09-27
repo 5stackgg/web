@@ -6,14 +6,14 @@ import { useWindowSize } from "@vueuse/core";
 const bracketContainer = ref<HTMLElement | null>(null);
 
 onMounted(() => {
-  drawConnectingLines();
+  requestAnimationFrame(drawConnectingLines);
 });
 
 const { width, height } = useWindowSize();
 
 watch([width, height], () => {
   clearConnectingLines();
-  drawConnectingLines();
+  requestAnimationFrame(drawConnectingLines);
 });
 
 const clearConnectingLines = () => {
@@ -27,7 +27,7 @@ const clearConnectingLines = () => {
 
 const redrawLines = () => {
   clearConnectingLines();
-  drawConnectingLines();
+  requestAnimationFrame(drawConnectingLines);
 };
 
 // Expose redrawLines method to parent components if needed
@@ -37,6 +37,7 @@ const drawConnectingLines = () => {
   if (!bracketContainer.value) return;
 
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
   svg.setAttribute("width", "100%");
   svg.setAttribute("height", "100%");
   svg.style.position = "absolute";
@@ -47,6 +48,7 @@ const drawConnectingLines = () => {
   const columns = (bracketContainer.value as HTMLElement).querySelectorAll(
     ".bracket-column",
   );
+
   for (let i = 0; i < columns.length - 1; i++) {
     const currentColumn = columns[i];
     const nextColumn = columns[i + 1];

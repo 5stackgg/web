@@ -1,20 +1,28 @@
 <script lang="ts" setup>
+import { ref, watch } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
-import { ref, onMounted, watch } from "vue";
-import { useWindowSize, useScroll } from "@vueuse/core";
+
+const props = defineProps({
+  rounds: {
+    type: Map,
+    required: true,
+  },
+});
+
+watch(
+  () => props.rounds,
+  () => {
+    nextTick(() => {
+      clearConnectingLines();
+      requestAnimationFrame(() => {
+        drawConnectingLines();
+      });
+    });
+  },
+  { deep: true, immediate: true },
+);
 
 const bracketContainer = ref<HTMLElement | null>(null);
-
-onMounted(() => {
-  requestAnimationFrame(drawConnectingLines);
-});
-
-const { width, height } = useWindowSize();
-
-watch([width, height], () => {
-  clearConnectingLines();
-  requestAnimationFrame(drawConnectingLines);
-});
 
 const clearConnectingLines = () => {
   if (!bracketContainer.value) return;
@@ -25,13 +33,6 @@ const clearConnectingLines = () => {
   }
 };
 
-const redrawLines = () => {
-  clearConnectingLines();
-  requestAnimationFrame(drawConnectingLines);
-};
-
-// Expose redrawLines method to parent components if needed
-defineExpose({ redrawLines });
 const drawConnectingLines = () => {
   if (!bracketContainer.value) {
     return;
@@ -109,12 +110,12 @@ const drawConnectingLines = () => {
   >
     <div class="grid grid-flow-col auto-cols-max gap-20 min-w-max">
       <div
-        v-for="round of Array.from(rounds.keys())"
+        v-for="round of Array.from(props.rounds.keys())"
         class="flex flex-col justify-around bracket-column"
       >
         <TournamentMatch
           :round="round"
-          :brackets="rounds.get(round)"
+          :brackets="props.rounds.get(round)"
         ></TournamentMatch>
       </div>
 
@@ -130,14 +131,3 @@ const drawConnectingLines = () => {
     </div>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  props: {
-    rounds: {
-      type: Map,
-      required: true,
-    },
-  },
-};
-</script>

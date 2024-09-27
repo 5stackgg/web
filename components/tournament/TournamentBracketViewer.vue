@@ -60,18 +60,20 @@ const drawConnectingLines = () => {
       const startY = matchEl.offsetTop + matchEl.offsetHeight / 2;
       const endX = nextMatchEl.offsetLeft;
       const endY = nextMatchEl.offsetTop + nextMatchEl.offsetHeight / 2;
+      const midX = (startX + endX) / 2;
 
-      const line = document.createElementNS(
+      const path = document.createElementNS(
         "http://www.w3.org/2000/svg",
-        "line",
+        "path",
       );
-      line.setAttribute("x1", startX.toString());
-      line.setAttribute("y1", startY.toString());
-      line.setAttribute("x2", endX.toString());
-      line.setAttribute("y2", endY.toString());
-      line.setAttribute("stroke", "white");
-      line.setAttribute("stroke-width", "2");
-      svg.appendChild(line);
+      path.setAttribute(
+        "d",
+        `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`,
+      );
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", "white");
+      path.setAttribute("stroke-width", "2");
+      svg.appendChild(path);
     });
   }
 
@@ -105,9 +107,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.tournament-bracket {
-  position: relative;
-}
-</style>

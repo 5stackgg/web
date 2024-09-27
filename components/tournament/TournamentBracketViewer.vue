@@ -3,7 +3,7 @@ import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import { ref, onMounted, watch } from "vue";
 import { useWindowSize } from "@vueuse/core";
 
-const bracketContainer = ref(null);
+const bracketContainer = ref<HTMLElement | null>(null);
 
 onMounted(() => {
   drawConnectingLines();
@@ -18,7 +18,8 @@ watch([width, height], () => {
 
 const clearConnectingLines = () => {
   if (!bracketContainer.value) return;
-  const existingSvg = bracketContainer.value.querySelector("svg");
+  const container = bracketContainer.value as HTMLElement;
+  const existingSvg = container.querySelector("svg");
   if (existingSvg) {
     existingSvg.remove();
   }
@@ -43,7 +44,9 @@ const drawConnectingLines = () => {
   svg.style.left = "0";
   svg.style.pointerEvents = "none";
 
-  const columns = bracketContainer.value.querySelectorAll(".bracket-column");
+  const columns = (bracketContainer.value as HTMLElement).querySelectorAll(
+    ".bracket-column",
+  );
   for (let i = 0; i < columns.length - 1; i++) {
     const currentColumn = columns[i];
     const nextColumn = columns[i + 1];
@@ -51,12 +54,12 @@ const drawConnectingLines = () => {
     const nextMatches = nextColumn.querySelectorAll(".tournament-match");
 
     currentMatches.forEach((match, index) => {
-      const startX = match.offsetLeft + match.offsetWidth;
-      const startY = match.offsetTop + match.offsetHeight / 2;
-      const endX = nextMatches[Math.floor(index / 2)].offsetLeft;
-      const endY =
-        nextMatches[Math.floor(index / 2)].offsetTop +
-        nextMatches[Math.floor(index / 2)].offsetHeight / 2;
+      const matchEl = match as HTMLElement;
+      const nextMatchEl = nextMatches[Math.floor(index / 2)] as HTMLElement;
+      const startX = matchEl.offsetLeft + matchEl.offsetWidth;
+      const startY = matchEl.offsetTop + matchEl.offsetHeight / 2;
+      const endX = nextMatchEl.offsetLeft;
+      const endY = nextMatchEl.offsetTop + nextMatchEl.offsetHeight / 2;
 
       const line = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -84,7 +87,6 @@ const drawConnectingLines = () => {
         class="flex flex-col justify-around mr-20 bracket-column"
       >
         <TournamentMatch
-          class="tournament-match"
           :round="round"
           :brackets="rounds.get(round)"
         ></TournamentMatch>

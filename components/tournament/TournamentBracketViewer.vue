@@ -10,9 +10,8 @@ onMounted(() => {
 });
 
 const { width, height } = useWindowSize();
-const { x: scrollX } = useScroll(bracketContainer);
 
-watch([width, height, scrollX], () => {
+watch([width, height], () => {
   clearConnectingLines();
   requestAnimationFrame(drawConnectingLines);
 });
@@ -51,6 +50,7 @@ const drawConnectingLines = () => {
   svg.style.position = "absolute";
   svg.style.top = "0";
   svg.style.left = "0";
+
   svg.style.pointerEvents = "none";
 
   const columns = container.querySelectorAll(".bracket-column");
@@ -103,7 +103,7 @@ const drawConnectingLines = () => {
 
 <template>
   <div
-    class="tournament-bracket overflow-x-auto cursor-move"
+    class="tournament-bracket overflow-x-auto cursor-move relative"
     ref="bracketContainer"
   >
     <div class="grid grid-flow-col auto-cols-max gap-20 min-w-max">

@@ -33,7 +33,9 @@ const redrawLines = () => {
 // Expose redrawLines method to parent components if needed
 defineExpose({ redrawLines });
 const drawConnectingLines = () => {
-  if (!bracketContainer.value) return;
+  if (!bracketContainer.value) {
+    return;
+  }
 
   const container = bracketContainer.value as HTMLElement;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -41,8 +43,10 @@ const drawConnectingLines = () => {
   // Set SVG dimensions to match the full content size of the container
   const containerRect = container.getBoundingClientRect();
   const fullHeight = container.scrollHeight + container.offsetTop;
+
   svg.setAttribute("width", containerRect.width + "px");
   svg.setAttribute("height", fullHeight + "px");
+
   svg.style.position = "absolute";
   svg.style.top = "0";
   svg.style.left = "0";
@@ -53,10 +57,12 @@ const drawConnectingLines = () => {
   for (let i = 0; i < columns.length - 1; i++) {
     const currentColumn = columns[i];
     const nextColumn = columns[i + 1];
+
     const currentMatches = currentColumn.querySelectorAll(".tournament-match");
     const nextMatches = nextColumn.querySelectorAll(".tournament-match");
 
-    currentMatches.forEach((match, index) => {
+    for (let index = 0; index < currentMatches.length; index++) {
+      const match = currentMatches[index];
       const matchEl = match as HTMLElement;
       const nextMatchEl = nextMatches[Math.floor(index / 2)] as HTMLElement;
       const startX = matchEl.offsetLeft + matchEl.offsetWidth;
@@ -77,7 +83,7 @@ const drawConnectingLines = () => {
       path.setAttribute("stroke", "white");
       path.setAttribute("stroke-width", "2");
       svg.appendChild(path);
-    });
+    }
   }
 
   container.appendChild(svg);

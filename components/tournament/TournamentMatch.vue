@@ -6,7 +6,7 @@ import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup
   <div
     :key="bracket.id"
     v-for="bracket in brackets"
-    class="tournament-match my-12"
+    class="tournament-match my-4"
   >
     <div class="items-center m-2">
       <div class="bg-gray-600 text-gray-300 rounded p-1">

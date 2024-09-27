@@ -78,8 +78,9 @@ import { Separator } from "~/components/ui/separator";
           </div>
         </div>
       </div>
+      <Separator></Separator>
     </template>
-    <template v-else-if="canSelectRegion">
+    <template v-else-if="canSelectRegion && !match.region">
       <Card class="sm:col-span-4">
         <CardHeader class="pb-3">
           <CardContent>
@@ -118,8 +119,8 @@ import { Separator } from "~/components/ui/separator";
           </CardContent>
         </CardHeader>
       </Card>
+      <Separator></Separator>
     </template>
-    <Separator></Separator>
   </div>
 </template>
 

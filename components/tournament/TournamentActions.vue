@@ -18,6 +18,7 @@ import { Lock, Unlock, Ban } from "lucide-vue-next";
       <DropdownMenuItem
         v-if="tournament.can_open_registration"
         @click="openRegistration"
+        class="cursor-pointer"
       >
         <Unlock class="mr-2 h-4 w-4" />
         <span>Open Registration</span>
@@ -25,17 +26,22 @@ import { Lock, Unlock, Ban } from "lucide-vue-next";
       <DropdownMenuItem
         v-if="tournament.can_close_registration"
         @click="closeRegistration"
+        class="cursor-pointer"
       >
         <Lock class="mr-2 h-4 w-4" />
         <span>Close Registration</span>
       </DropdownMenuItem>
 
-      <DropdownMenuSeparator />
+      <DropdownMenuSeparator
+        v-if="
+          tournament.can_open_registration || tournament.can_close_registration
+        "
+      />
 
       <DropdownMenuItem
         v-if="tournament.can_cancel"
         @click="cancel"
-        class="text-destructive"
+        class="text-destructive cursor-pointer"
       >
         <Ban class="mr-2 h-4 w-4" />
         <span>Cancel Tournament</span>

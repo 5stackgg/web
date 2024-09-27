@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import TournamentRound from "~/components/tournament/TournamentRound.vue";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,49 +21,46 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
+import TournamentBracketViewer from "./TournamentBracketViewer.vue";
 </script>
 
 <template>
-  <h1>
-    <div>
-      Stage {{ stage.order }}
-      <DropdownMenu v-model:open="stageMenu">
-        <DropdownMenuTrigger as-child>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" class="w-[200px]">
-          <DropdownMenuGroup>
-            <DropdownMenuItem @click="editStage = true">
-              Edit
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              class="text-red-600"
-              @click="deleteAlertDialog = true"
-            >
-              <Trash class="mr-2 h-4 w-4 inline" /> Delete
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+  <h1 class="flex justify-between items-center mb-8">
+    <div class="flex flex-col space-y-2">
+      <h2 class="text-xl">Stage {{ stage.order }}</h2>
+      <div class="flex items-center space-x-2">
+        <Badge class="text-sm">{{
+          stage.e_tournament_stage_type.description
+        }}</Badge>
+        <Badge variant="secondary" class="text-sm"
+          >Teams: {{ stage.min_teams }} - {{ stage.max_teams }}</Badge
+        >
+      </div>
     </div>
+    <DropdownMenu v-model:open="stageMenu">
+      <DropdownMenuTrigger as-child>
+        <Button variant="secondary" size="sm">
+          <MoreHorizontal />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" class="w-[200px]">
+        <DropdownMenuGroup>
+          <DropdownMenuItem @click="editStage = true"> Edit </DropdownMenuItem>
 
-    <Badge>{{ stage.e_tournament_stage_type.description }}</Badge>
-    Min Teams {{ stage.min_teams }} Max Teams {{ stage.max_teams }}
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            class="text-red-600"
+            @click="deleteAlertDialog = true"
+          >
+            <Trash class="mr-2 h-4 w-4 inline" /> Delete
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   </h1>
 
-  <div :class="`grid  grid-cols-${rounds.size}`">
-    <template v-for="round of Array.from(rounds.keys())">
-      <TournamentRound
-        :round="round"
-        :brackets="rounds.get(round)"
-      ></TournamentRound>
-    </template>
-  </div>
+  <TournamentBracketViewer :rounds="rounds"></TournamentBracketViewer>
 
   <Sheet :open="editStage" @update:open="(open) => (editStage = open)">
     <SheetTrigger></SheetTrigger>

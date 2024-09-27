@@ -104,7 +104,7 @@ const drawConnectingLines = () => {
 
 <template>
   <div
-    class="tournament-bracket overflow-x-auto cursor-move relative"
+    class="tournament-bracket overflow-x-auto relative"
     ref="bracketContainer"
   >
     <div class="grid grid-flow-col auto-cols-max gap-20 min-w-max">

@@ -98,22 +98,27 @@ import { Separator } from "~/components/ui/separator";
           <Card>
             <CardHeader>
               <CardTitle class="flex justify-between items-center">
-                <FormLabel class="text-lg font-semibold">Map Pool</FormLabel>
-                <FormField
-                  v-slot="{ value, handleChange }"
-                  name="custom_map_pool"
-                >
-                  <FormControl>
-                    <div class="flex items-center gap-2">
-                      <span class="text-muted-foreground">Custom</span>
-                      <Switch
-                        :checked="value"
-                        @update:checked="handleChange"
-                        class="ml-2"
-                      />
-                    </div>
-                  </FormControl>
-                </FormField>
+                <FormLabel class="text-lg font-semibold">
+                  <template v-if="form.values.map_veto"> Map Pool </template>
+                  <template v-else> Map Selection </template>
+                </FormLabel>
+                <div v-show="form.values.map_veto">
+                  <FormField
+                    v-slot="{ value, handleChange }"
+                    name="custom_map_pool"
+                  >
+                    <FormControl>
+                      <div class="flex items-center gap-2">
+                        <span class="text-muted-foreground">Custom</span>
+                        <Switch
+                          :checked="value"
+                          @update:checked="handleChange"
+                          class="ml-2"
+                        />
+                      </div>
+                    </FormControl>
+                  </FormField>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -155,14 +160,6 @@ import { Separator } from "~/components/ui/separator";
                           </MapDisplay>
                           <div
                             class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
-                            :class="{
-                              'opacity-100':
-                                form.values.custom_map_pool &&
-                                form.values.map_pool?.includes(map.id),
-                              'opacity-0':
-                                !form.values.custom_map_pool ||
-                                !form.values.map_pool?.includes(map.id),
-                            }"
                           ></div>
                         </div>
                       </template>
@@ -292,9 +289,7 @@ import { Separator } from "~/components/ui/separator";
               />
             </FormControl>
           </div>
-          <FormDescription>
-            Each overtime is a best of 4 rounds.
-          </FormDescription>
+          <FormDescription> Each overtime is a best of 6. </FormDescription>
         </FormItem>
       </FormField>
 
@@ -535,22 +530,46 @@ export default {
     },
     ["form.values.custom_map_pool"]: {
       handler(custom_map_pool) {
+        // only update if its a custom map pool and it matches the default
+        // this helps the UI know wether to reset the map pool list or not
         if (
           custom_map_pool &&
           this.form.values.map_pool_id !== this.defaultMapPool.id
         ) {
-          console.info("UM");
           return;
         }
 
         this.form.setFieldValue("map_pool", []);
 
-        if (custom_map_pool) {
+        if (!this.form.values.map_veto || custom_map_pool) {
           this.form.setFieldValue("map_pool_id", null);
           return;
         }
 
         this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
+      },
+    },
+    ["form.values.map_veto"]: {
+      handler(mapVeto) {
+        if (mapVeto) {
+          this.form.setFieldValue("custom_map_pool", false);
+          return;
+        }
+
+        this.form.setFieldValue("custom_map_pool", true);
+      },
+    },
+    ["form.values.map_pool"]: {
+      handler() {
+        if (this.form.values.map_veto) {
+          return;
+        }
+
+        if (this.form.values.map_pool.length === 1) {
+          return;
+        }
+
+        this.form.setFieldValue("map_pool", [this.form.values.map_pool.at(-1)]);
       },
     },
   },

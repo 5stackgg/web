@@ -3,62 +3,67 @@ import { MoreVertical } from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
+import MatchLobbyAccess from "./MatchLobbyAccess.vue";
 </script>
 
 <template>
-  <DropdownMenu>
-    <DropdownMenuTrigger as-child>
-      <Button size="icon" variant="outline">
-        <MoreVertical class="h-3.5 w-3.5" />
-        <span class="sr-only">More</span>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-      <template v-if="match.can_start">
-        <DropdownMenuItem
-          @click.prevent.stop="startMatch"
-          class="-mr-2"
-          :disabled="!hasMinimumLineupPlayers"
-        >
-          Start
-          <template
-            v-if="
-              match.options.map_veto &&
-              match.options.best_of != match.match_maps.length
-            "
+  <div class="flex gap-2 items-center">
+    <MatchLobbyAccess :match="match" />
+
+    <DropdownMenu>
+      <DropdownMenuTrigger as-child>
+        <Button size="icon" variant="outline">
+          <MoreVertical class="h-3.5 w-3.5" />
+          <span class="sr-only">More</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <template v-if="match.can_start">
+          <DropdownMenuItem
+            @click.prevent.stop="startMatch"
+            class="-mr-2"
+            :disabled="!hasMinimumLineupPlayers"
           >
-            Veto
-          </template>
-          <template v-else> Match </template>
+            Start
+            <template
+              v-if="
+                match.options.map_veto &&
+                match.options.best_of != match.match_maps.length
+              "
+            >
+              Veto
+            </template>
+            <template v-else> Match </template>
+          </DropdownMenuItem>
+        </template>
+
+        <template v-if="match.can_cancel">
+          <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
+        </template>
+
+        <DropdownMenuSeparator v-if="match.can_start || match.can_cancel" />
+
+        <DropdownMenuItem v-if="match.can_assign_server">
+          <MatchSelectServer :match="match"></MatchSelectServer>
         </DropdownMenuItem>
-      </template>
 
-      <template v-if="match.can_cancel">
-        <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
-      </template>
-
-      <DropdownMenuSeparator v-if="match.can_start || match.can_cancel" />
-
-      <DropdownMenuItem v-if="match.can_assign_server">
-        <MatchSelectServer :match="match"></MatchSelectServer>
-      </DropdownMenuItem>
-
-      <DropdownMenuItem>
-        <MatchSelectWinner :match="match"></MatchSelectWinner>
-      </DropdownMenuItem>
-
-      <template v-if="match.is_in_lineup">
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          class="text-destructive"
-          @click="callForOrganizer"
-          :disabled="match.requested_organizer"
-        >
-          Request Organizer
+        <DropdownMenuItem>
+          <MatchSelectWinner :match="match"></MatchSelectWinner>
         </DropdownMenuItem>
-      </template>
-    </DropdownMenuContent>
-  </DropdownMenu>
+
+        <template v-if="match.is_in_lineup">
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            class="text-destructive"
+            @click="callForOrganizer"
+            :disabled="match.requested_organizer"
+          >
+            Request Organizer
+          </DropdownMenuItem>
+        </template>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
 </template>
 
 <script lang="ts">

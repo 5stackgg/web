@@ -90,6 +90,7 @@ export default {
             {
               id: true,
               status: true,
+              invite_code: true,
               e_match_status: {
                 description: true,
               },
@@ -135,6 +136,7 @@ export default {
                 avatar_url: true,
               },
               options: {
+                id: true,
                 type: true,
                 mr: true,
                 best_of: true,
@@ -148,6 +150,7 @@ export default {
                 number_of_substitutes: true,
                 timeout_setting: true,
                 tech_timeout_setting: true,
+                lobby_access: true,
                 map_pool: {
                   type: true,
                   e_type: {

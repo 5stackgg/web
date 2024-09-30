@@ -1635,6 +1635,111 @@ count?: [{	columns?: Array<ValueTypes["e_game_server_node_statuses_select_column
 	/** filter the rows which have to be updated */
 	where: ValueTypes["e_game_server_node_statuses_bool_exp"] | Variable<any, string>
 };
+	/** columns and relationships of "e_lobby_access" */
+["e_lobby_access"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_lobby_access" */
+["e_lobby_access_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["e_lobby_access_aggregate_fields"],
+	nodes?:ValueTypes["e_lobby_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_lobby_access" */
+["e_lobby_access_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ValueTypes["e_lobby_access_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["e_lobby_access_max_fields"],
+	min?:ValueTypes["e_lobby_access_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_lobby_access". All fields are combined with a logical 'AND'. */
+["e_lobby_access_bool_exp"]: {
+	_and?: Array<ValueTypes["e_lobby_access_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["e_lobby_access_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["e_lobby_access_bool_exp"]> | undefined | null | Variable<any, string>,
+	description?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** unique or primary key constraints on table "e_lobby_access" */
+["e_lobby_access_constraint"]:e_lobby_access_constraint;
+	["e_lobby_access_enum"]:e_lobby_access_enum;
+	/** Boolean expression to compare columns of type "e_lobby_access_enum". All fields are combined with logical 'AND'. */
+["e_lobby_access_enum_comparison_exp"]: {
+	_eq?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["e_lobby_access_enum"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["e_lobby_access_enum"]> | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "e_lobby_access" */
+["e_lobby_access_insert_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["e_lobby_access_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_lobby_access_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_lobby_access" */
+["e_lobby_access_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["e_lobby_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_lobby_access" */
+["e_lobby_access_on_conflict"]: {
+	constraint: ValueTypes["e_lobby_access_constraint"] | Variable<any, string>,
+	update_columns: Array<ValueTypes["e_lobby_access_update_column"]> | Variable<any, string>,
+	where?: ValueTypes["e_lobby_access_bool_exp"] | undefined | null | Variable<any, string>
+};
+	/** Ordering options when selecting data from "e_lobby_access". */
+["e_lobby_access_order_by"]: {
+	description?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	value?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** primary key columns input for table: e_lobby_access */
+["e_lobby_access_pk_columns_input"]: {
+	value: string | Variable<any, string>
+};
+	/** select columns of table "e_lobby_access" */
+["e_lobby_access_select_column"]:e_lobby_access_select_column;
+	/** input type for updating data in table "e_lobby_access" */
+["e_lobby_access_set_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** Streaming cursor of the table "e_lobby_access" */
+["e_lobby_access_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["e_lobby_access_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["e_lobby_access_stream_cursor_value_input"]: {
+	description?: string | undefined | null | Variable<any, string>,
+	value?: string | undefined | null | Variable<any, string>
+};
+	/** update columns of table "e_lobby_access" */
+["e_lobby_access_update_column"]:e_lobby_access_update_column;
+	["e_lobby_access_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_lobby_access_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["e_lobby_access_bool_exp"] | Variable<any, string>
+};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -6283,8 +6388,10 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	/** A computed field, executes function "has_active_matches" */
 	has_active_matches?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	invite_code?:boolean | `@${string}`,
 	knife_round?:boolean | `@${string}`,
 	lan?:boolean | `@${string}`,
+	lobby_access?:boolean | `@${string}`,
 	/** An object relationship */
 	map_pool?:ValueTypes["map_pools"],
 	map_pool_id?:boolean | `@${string}`,
@@ -6351,8 +6458,10 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	coaches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	has_active_matches?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	invite_code?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	knife_round?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	lan?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	lobby_access?: ValueTypes["e_lobby_access_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_pool?: ValueTypes["map_pools_bool_exp"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_veto?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -6382,8 +6491,10 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?: number | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	invite_code?: string | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
 	lan?: boolean | undefined | null | Variable<any, string>,
+	lobby_access?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
 	map_pool?: ValueTypes["map_pools_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	map_veto?: boolean | undefined | null | Variable<any, string>,
@@ -6402,6 +6513,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 ["match_options_max_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	invite_code?:boolean | `@${string}`,
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
@@ -6412,6 +6524,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 ["match_options_min_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	invite_code?:boolean | `@${string}`,
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
@@ -6444,8 +6557,10 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	coaches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	has_active_matches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	invite_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	knife_round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lan?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lobby_access?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_pool?: ValueTypes["map_pools_order_by"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_veto?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -6471,8 +6586,10 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?: number | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	invite_code?: string | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
 	lan?: boolean | undefined | null | Variable<any, string>,
+	lobby_access?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	map_veto?: boolean | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
@@ -6520,8 +6637,10 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	best_of?: number | undefined | null | Variable<any, string>,
 	coaches?: boolean | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	invite_code?: string | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
 	lan?: boolean | undefined | null | Variable<any, string>,
+	lobby_access?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	map_veto?: boolean | undefined | null | Variable<any, string>,
 	mr?: number | undefined | null | Variable<any, string>,
@@ -6782,6 +6901,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	e_region?:ValueTypes["e_game_server_node_regions"],
 	ended_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?:boolean | `@${string}`,
 	/** A computed field, executes function "is_captain" */
 	is_captain?:boolean | `@${string}`,
 	/** A computed field, executes function "is_coach" */
@@ -7064,6 +7185,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_region?: ValueTypes["e_game_server_node_regions_bool_exp"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	invite_code?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	is_in_lineup?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -7180,6 +7302,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	current_match_map_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	lineup_1_id?:boolean | `@${string}`,
 	lineup_2_id?:boolean | `@${string}`,
@@ -7239,6 +7363,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	current_match_map_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	lineup_1_id?:boolean | `@${string}`,
 	lineup_2_id?:boolean | `@${string}`,
@@ -7323,6 +7449,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_region?: ValueTypes["e_game_server_node_regions_order_by"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	invite_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_captain?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_coach?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	is_in_lineup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -7637,6 +7764,9 @@ delete_e_game_server_node_regions_by_pk?: [{	value: string | Variable<any, strin
 delete_e_game_server_node_statuses?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_game_server_node_statuses_bool_exp"] | Variable<any, string>},ValueTypes["e_game_server_node_statuses_mutation_response"]],
 delete_e_game_server_node_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_game_server_node_statuses"]],
+delete_e_lobby_access?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["e_lobby_access_bool_exp"] | Variable<any, string>},ValueTypes["e_lobby_access_mutation_response"]],
+delete_e_lobby_access_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_lobby_access"]],
 delete_e_map_pool_types?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["e_map_pool_types_bool_exp"] | Variable<any, string>},ValueTypes["e_map_pool_types_mutation_response"]],
 delete_e_map_pool_types_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_map_pool_types"]],
@@ -7811,6 +7941,12 @@ insert_e_game_server_node_statuses?: [{	/** the rows to be inserted */
 insert_e_game_server_node_statuses_one?: [{	/** the row to be inserted */
 	object: ValueTypes["e_game_server_node_statuses_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_game_server_node_statuses_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_game_server_node_statuses"]],
+insert_e_lobby_access?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["e_lobby_access_insert_input"]> | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_lobby_access_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_lobby_access_mutation_response"]],
+insert_e_lobby_access_one?: [{	/** the row to be inserted */
+	object: ValueTypes["e_lobby_access_insert_input"] | Variable<any, string>,	/** upsert condition */
+	on_conflict?: ValueTypes["e_lobby_access_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_lobby_access"]],
 insert_e_map_pool_types?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["e_map_pool_types_insert_input"]> | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["e_map_pool_types_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["e_map_pool_types_mutation_response"]],
@@ -8107,6 +8243,7 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["v_pool_maps_insert_input"]> | Variable<any, string>},ValueTypes["v_pool_maps_mutation_response"]],
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ValueTypes["v_pool_maps_insert_input"] | Variable<any, string>},ValueTypes["v_pool_maps"]],
+joinLineup?: [{	code?: string | undefined | null | Variable<any, string>,	lineup_id: string | Variable<any, string>,	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
@@ -8142,6 +8279,13 @@ update_e_game_server_node_statuses_by_pk?: [{	/** sets the columns of the filter
 	_set?: ValueTypes["e_game_server_node_statuses_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_game_server_node_statuses_pk_columns_input"] | Variable<any, string>},ValueTypes["e_game_server_node_statuses"]],
 update_e_game_server_node_statuses_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["e_game_server_node_statuses_updates"]> | Variable<any, string>},ValueTypes["e_game_server_node_statuses_mutation_response"]],
+update_e_lobby_access?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_lobby_access_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["e_lobby_access_bool_exp"] | Variable<any, string>},ValueTypes["e_lobby_access_mutation_response"]],
+update_e_lobby_access_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["e_lobby_access_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["e_lobby_access_pk_columns_input"] | Variable<any, string>},ValueTypes["e_lobby_access"]],
+update_e_lobby_access_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["e_lobby_access_updates"]> | Variable<any, string>},ValueTypes["e_lobby_access_mutation_response"]],
 update_e_map_pool_types?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["e_map_pool_types_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["e_map_pool_types_bool_exp"] | Variable<any, string>},ValueTypes["e_map_pool_types_mutation_response"]],
@@ -12205,6 +12349,19 @@ e_game_server_node_statuses_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["e_game_server_node_statuses_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_game_server_node_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_game_server_node_statuses_aggregate"]],
 e_game_server_node_statuses_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_game_server_node_statuses"]],
+e_lobby_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_lobby_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_lobby_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_lobby_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_lobby_access"]],
+e_lobby_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_lobby_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_lobby_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_lobby_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_lobby_access_aggregate"]],
+e_lobby_access_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_lobby_access"]],
 e_map_pool_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_map_pool_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -13524,6 +13681,23 @@ e_game_server_node_statuses_stream?: [{	/** maximum number of rows returned in a
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["e_game_server_node_statuses_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["e_game_server_node_statuses_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_game_server_node_statuses"]],
+e_lobby_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_lobby_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_lobby_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_lobby_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_lobby_access"]],
+e_lobby_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["e_lobby_access_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["e_lobby_access_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_lobby_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_lobby_access_aggregate"]],
+e_lobby_access_by_pk?: [{	value: string | Variable<any, string>},ValueTypes["e_lobby_access"]],
+e_lobby_access_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["e_lobby_access_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["e_lobby_access_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["e_lobby_access"]],
 e_map_pool_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["e_map_pool_types_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -19737,6 +19911,111 @@ count?: [{	columns?: Array<ResolverInputTypes["e_game_server_node_statuses_selec
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_game_server_node_statuses_bool_exp"]
 };
+	/** columns and relationships of "e_lobby_access" */
+["e_lobby_access"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "e_lobby_access" */
+["e_lobby_access_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["e_lobby_access_aggregate_fields"],
+	nodes?:ResolverInputTypes["e_lobby_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "e_lobby_access" */
+["e_lobby_access_aggregate_fields"]: AliasType<{
+count?: [{	columns?: Array<ResolverInputTypes["e_lobby_access_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["e_lobby_access_max_fields"],
+	min?:ResolverInputTypes["e_lobby_access_min_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "e_lobby_access". All fields are combined with a logical 'AND'. */
+["e_lobby_access_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["e_lobby_access_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["e_lobby_access_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["e_lobby_access_bool_exp"]> | undefined | null,
+	description?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	value?: ResolverInputTypes["String_comparison_exp"] | undefined | null
+};
+	/** unique or primary key constraints on table "e_lobby_access" */
+["e_lobby_access_constraint"]:e_lobby_access_constraint;
+	["e_lobby_access_enum"]:e_lobby_access_enum;
+	/** Boolean expression to compare columns of type "e_lobby_access_enum". All fields are combined with logical 'AND'. */
+["e_lobby_access_enum_comparison_exp"]: {
+	_eq?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
+	_in?: Array<ResolverInputTypes["e_lobby_access_enum"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_neq?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["e_lobby_access_enum"]> | undefined | null
+};
+	/** input type for inserting data into table "e_lobby_access" */
+["e_lobby_access_insert_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** aggregate max on columns */
+["e_lobby_access_max_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["e_lobby_access_min_fields"]: AliasType<{
+	description?:boolean | `@${string}`,
+	value?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "e_lobby_access" */
+["e_lobby_access_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["e_lobby_access"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** on_conflict condition type for table "e_lobby_access" */
+["e_lobby_access_on_conflict"]: {
+	constraint: ResolverInputTypes["e_lobby_access_constraint"],
+	update_columns: Array<ResolverInputTypes["e_lobby_access_update_column"]>,
+	where?: ResolverInputTypes["e_lobby_access_bool_exp"] | undefined | null
+};
+	/** Ordering options when selecting data from "e_lobby_access". */
+["e_lobby_access_order_by"]: {
+	description?: ResolverInputTypes["order_by"] | undefined | null,
+	value?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** primary key columns input for table: e_lobby_access */
+["e_lobby_access_pk_columns_input"]: {
+	value: string
+};
+	/** select columns of table "e_lobby_access" */
+["e_lobby_access_select_column"]:e_lobby_access_select_column;
+	/** input type for updating data in table "e_lobby_access" */
+["e_lobby_access_set_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** Streaming cursor of the table "e_lobby_access" */
+["e_lobby_access_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["e_lobby_access_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["e_lobby_access_stream_cursor_value_input"]: {
+	description?: string | undefined | null,
+	value?: string | undefined | null
+};
+	/** update columns of table "e_lobby_access" */
+["e_lobby_access_update_column"]:e_lobby_access_update_column;
+	["e_lobby_access_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_lobby_access_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_lobby_access_bool_exp"]
+};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: AliasType<{
 	description?:boolean | `@${string}`,
@@ -24385,8 +24664,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	/** A computed field, executes function "has_active_matches" */
 	has_active_matches?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	invite_code?:boolean | `@${string}`,
 	knife_round?:boolean | `@${string}`,
 	lan?:boolean | `@${string}`,
+	lobby_access?:boolean | `@${string}`,
 	/** An object relationship */
 	map_pool?:ResolverInputTypes["map_pools"],
 	map_pool_id?:boolean | `@${string}`,
@@ -24453,8 +24734,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	coaches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	has_active_matches?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	invite_code?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	knife_round?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	lan?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	lobby_access?: ResolverInputTypes["e_lobby_access_enum_comparison_exp"] | undefined | null,
 	map_pool?: ResolverInputTypes["map_pools_bool_exp"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	map_veto?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -24484,8 +24767,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?: number | undefined | null,
 	coaches?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	invite_code?: string | undefined | null,
 	knife_round?: boolean | undefined | null,
 	lan?: boolean | undefined | null,
+	lobby_access?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
 	map_pool?: ResolverInputTypes["map_pools_obj_rel_insert_input"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
 	map_veto?: boolean | undefined | null,
@@ -24504,6 +24789,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 ["match_options_max_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	invite_code?:boolean | `@${string}`,
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
@@ -24514,6 +24800,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 ["match_options_min_fields"]: AliasType<{
 	best_of?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	invite_code?:boolean | `@${string}`,
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
@@ -24546,8 +24833,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	coaches?: ResolverInputTypes["order_by"] | undefined | null,
 	has_active_matches?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	invite_code?: ResolverInputTypes["order_by"] | undefined | null,
 	knife_round?: ResolverInputTypes["order_by"] | undefined | null,
 	lan?: ResolverInputTypes["order_by"] | undefined | null,
+	lobby_access?: ResolverInputTypes["order_by"] | undefined | null,
 	map_pool?: ResolverInputTypes["map_pools_order_by"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["order_by"] | undefined | null,
 	map_veto?: ResolverInputTypes["order_by"] | undefined | null,
@@ -24573,8 +24862,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?: number | undefined | null,
 	coaches?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	invite_code?: string | undefined | null,
 	knife_round?: boolean | undefined | null,
 	lan?: boolean | undefined | null,
+	lobby_access?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
 	map_veto?: boolean | undefined | null,
 	mr?: number | undefined | null,
@@ -24622,8 +24913,10 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	best_of?: number | undefined | null,
 	coaches?: boolean | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
+	invite_code?: string | undefined | null,
 	knife_round?: boolean | undefined | null,
 	lan?: boolean | undefined | null,
+	lobby_access?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
 	map_veto?: boolean | undefined | null,
 	mr?: number | undefined | null,
@@ -24884,6 +25177,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	e_region?:ResolverInputTypes["e_game_server_node_regions"],
 	ended_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?:boolean | `@${string}`,
 	/** A computed field, executes function "is_captain" */
 	is_captain?:boolean | `@${string}`,
 	/** A computed field, executes function "is_coach" */
@@ -25166,6 +25461,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_region?: ResolverInputTypes["e_game_server_node_regions_bool_exp"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	invite_code?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	is_captain?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_coach?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	is_in_lineup?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
@@ -25282,6 +25578,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	current_match_map_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	lineup_1_id?:boolean | `@${string}`,
 	lineup_2_id?:boolean | `@${string}`,
@@ -25341,6 +25639,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	current_match_map_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?:boolean | `@${string}`,
 	label?:boolean | `@${string}`,
 	lineup_1_id?:boolean | `@${string}`,
 	lineup_2_id?:boolean | `@${string}`,
@@ -25425,6 +25725,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_region?: ResolverInputTypes["e_game_server_node_regions_order_by"] | undefined | null,
 	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	invite_code?: ResolverInputTypes["order_by"] | undefined | null,
 	is_captain?: ResolverInputTypes["order_by"] | undefined | null,
 	is_coach?: ResolverInputTypes["order_by"] | undefined | null,
 	is_in_lineup?: ResolverInputTypes["order_by"] | undefined | null,
@@ -25739,6 +26040,9 @@ delete_e_game_server_node_regions_by_pk?: [{	value: string},ResolverInputTypes["
 delete_e_game_server_node_statuses?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_game_server_node_statuses_bool_exp"]},ResolverInputTypes["e_game_server_node_statuses_mutation_response"]],
 delete_e_game_server_node_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_game_server_node_statuses"]],
+delete_e_lobby_access?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["e_lobby_access_bool_exp"]},ResolverInputTypes["e_lobby_access_mutation_response"]],
+delete_e_lobby_access_by_pk?: [{	value: string},ResolverInputTypes["e_lobby_access"]],
 delete_e_map_pool_types?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["e_map_pool_types_bool_exp"]},ResolverInputTypes["e_map_pool_types_mutation_response"]],
 delete_e_map_pool_types_by_pk?: [{	value: string},ResolverInputTypes["e_map_pool_types"]],
@@ -25913,6 +26217,12 @@ insert_e_game_server_node_statuses?: [{	/** the rows to be inserted */
 insert_e_game_server_node_statuses_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["e_game_server_node_statuses_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_game_server_node_statuses_on_conflict"] | undefined | null},ResolverInputTypes["e_game_server_node_statuses"]],
+insert_e_lobby_access?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["e_lobby_access_insert_input"]>,	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_lobby_access_on_conflict"] | undefined | null},ResolverInputTypes["e_lobby_access_mutation_response"]],
+insert_e_lobby_access_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["e_lobby_access_insert_input"],	/** upsert condition */
+	on_conflict?: ResolverInputTypes["e_lobby_access_on_conflict"] | undefined | null},ResolverInputTypes["e_lobby_access"]],
 insert_e_map_pool_types?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["e_map_pool_types_insert_input"]>,	/** upsert condition */
 	on_conflict?: ResolverInputTypes["e_map_pool_types_on_conflict"] | undefined | null},ResolverInputTypes["e_map_pool_types_mutation_response"]],
@@ -26209,6 +26519,7 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["v_pool_maps_insert_input"]>},ResolverInputTypes["v_pool_maps_mutation_response"]],
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["v_pool_maps_insert_input"]},ResolverInputTypes["v_pool_maps"]],
+joinLineup?: [{	code?: string | undefined | null,	lineup_id: string,	match_id: string},ResolverInputTypes["SuccessOutput"]],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
@@ -26244,6 +26555,13 @@ update_e_game_server_node_statuses_by_pk?: [{	/** sets the columns of the filter
 	_set?: ResolverInputTypes["e_game_server_node_statuses_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_game_server_node_statuses_pk_columns_input"]},ResolverInputTypes["e_game_server_node_statuses"]],
 update_e_game_server_node_statuses_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["e_game_server_node_statuses_updates"]>},ResolverInputTypes["e_game_server_node_statuses_mutation_response"]],
+update_e_lobby_access?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_lobby_access_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["e_lobby_access_bool_exp"]},ResolverInputTypes["e_lobby_access_mutation_response"]],
+update_e_lobby_access_by_pk?: [{	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["e_lobby_access_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["e_lobby_access_pk_columns_input"]},ResolverInputTypes["e_lobby_access"]],
+update_e_lobby_access_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["e_lobby_access_updates"]>},ResolverInputTypes["e_lobby_access_mutation_response"]],
 update_e_map_pool_types?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["e_map_pool_types_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["e_map_pool_types_bool_exp"]},ResolverInputTypes["e_map_pool_types_mutation_response"]],
@@ -30307,6 +30625,19 @@ e_game_server_node_statuses_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["e_game_server_node_statuses_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_game_server_node_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_game_server_node_statuses_aggregate"]],
 e_game_server_node_statuses_by_pk?: [{	value: string},ResolverInputTypes["e_game_server_node_statuses"]],
+e_lobby_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_lobby_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_lobby_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_lobby_access_bool_exp"] | undefined | null},ResolverInputTypes["e_lobby_access"]],
+e_lobby_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_lobby_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_lobby_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_lobby_access_bool_exp"] | undefined | null},ResolverInputTypes["e_lobby_access_aggregate"]],
+e_lobby_access_by_pk?: [{	value: string},ResolverInputTypes["e_lobby_access"]],
 e_map_pool_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_map_pool_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -31626,6 +31957,23 @@ e_game_server_node_statuses_stream?: [{	/** maximum number of rows returned in a
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["e_game_server_node_statuses_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["e_game_server_node_statuses_bool_exp"] | undefined | null},ResolverInputTypes["e_game_server_node_statuses"]],
+e_lobby_access?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_lobby_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_lobby_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_lobby_access_bool_exp"] | undefined | null},ResolverInputTypes["e_lobby_access"]],
+e_lobby_access_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["e_lobby_access_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["e_lobby_access_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_lobby_access_bool_exp"] | undefined | null},ResolverInputTypes["e_lobby_access_aggregate"]],
+e_lobby_access_by_pk?: [{	value: string},ResolverInputTypes["e_lobby_access"]],
+e_lobby_access_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["e_lobby_access_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["e_lobby_access_bool_exp"] | undefined | null},ResolverInputTypes["e_lobby_access"]],
 e_map_pool_types?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["e_map_pool_types_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -37774,6 +38122,102 @@ export type ModelTypes = {
 	/** filter the rows which have to be updated */
 	where: ModelTypes["e_game_server_node_statuses_bool_exp"]
 };
+	/** columns and relationships of "e_lobby_access" */
+["e_lobby_access"]: {
+		description: string,
+	value: string
+};
+	/** aggregated selection of "e_lobby_access" */
+["e_lobby_access_aggregate"]: {
+		aggregate?: ModelTypes["e_lobby_access_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["e_lobby_access"]>
+};
+	/** aggregate fields of "e_lobby_access" */
+["e_lobby_access_aggregate_fields"]: {
+		count: number,
+	max?: ModelTypes["e_lobby_access_max_fields"] | undefined,
+	min?: ModelTypes["e_lobby_access_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_lobby_access". All fields are combined with a logical 'AND'. */
+["e_lobby_access_bool_exp"]: {
+	_and?: Array<ModelTypes["e_lobby_access_bool_exp"]> | undefined,
+	_not?: ModelTypes["e_lobby_access_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["e_lobby_access_bool_exp"]> | undefined,
+	description?: ModelTypes["String_comparison_exp"] | undefined,
+	value?: ModelTypes["String_comparison_exp"] | undefined
+};
+	["e_lobby_access_constraint"]:e_lobby_access_constraint;
+	["e_lobby_access_enum"]:e_lobby_access_enum;
+	/** Boolean expression to compare columns of type "e_lobby_access_enum". All fields are combined with logical 'AND'. */
+["e_lobby_access_enum_comparison_exp"]: {
+	_eq?: ModelTypes["e_lobby_access_enum"] | undefined,
+	_in?: Array<ModelTypes["e_lobby_access_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: ModelTypes["e_lobby_access_enum"] | undefined,
+	_nin?: Array<ModelTypes["e_lobby_access_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_lobby_access" */
+["e_lobby_access_insert_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_lobby_access_max_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_lobby_access_min_fields"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_lobby_access" */
+["e_lobby_access_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["e_lobby_access"]>
+};
+	/** on_conflict condition type for table "e_lobby_access" */
+["e_lobby_access_on_conflict"]: {
+	constraint: ModelTypes["e_lobby_access_constraint"],
+	update_columns: Array<ModelTypes["e_lobby_access_update_column"]>,
+	where?: ModelTypes["e_lobby_access_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_lobby_access". */
+["e_lobby_access_order_by"]: {
+	description?: ModelTypes["order_by"] | undefined,
+	value?: ModelTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_lobby_access */
+["e_lobby_access_pk_columns_input"]: {
+	value: string
+};
+	["e_lobby_access_select_column"]:e_lobby_access_select_column;
+	/** input type for updating data in table "e_lobby_access" */
+["e_lobby_access_set_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_lobby_access" */
+["e_lobby_access_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["e_lobby_access_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_lobby_access_stream_cursor_value_input"]: {
+	description?: string | undefined,
+	value?: string | undefined
+};
+	["e_lobby_access_update_column"]:e_lobby_access_update_column;
+	["e_lobby_access_updates"]: {
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["e_lobby_access_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["e_lobby_access_bool_exp"]
+};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: {
 		description?: string | undefined,
@@ -41929,8 +42373,10 @@ export type ModelTypes = {
 	/** A computed field, executes function "has_active_matches" */
 	has_active_matches?: boolean | undefined,
 	id: ModelTypes["uuid"],
+	invite_code?: string | undefined,
 	knife_round: boolean,
 	lan: boolean,
+	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	/** An object relationship */
 	map_pool: ModelTypes["map_pools"],
 	map_pool_id: ModelTypes["uuid"],
@@ -41985,8 +42431,10 @@ export type ModelTypes = {
 	coaches?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	has_active_matches?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	invite_code?: ModelTypes["String_comparison_exp"] | undefined,
 	knife_round?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	lan?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	lobby_access?: ModelTypes["e_lobby_access_enum_comparison_exp"] | undefined,
 	map_pool?: ModelTypes["map_pools_bool_exp"] | undefined,
 	map_pool_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	map_veto?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -42015,8 +42463,10 @@ export type ModelTypes = {
 	best_of?: number | undefined,
 	coaches?: boolean | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
 	lan?: boolean | undefined,
+	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	map_pool?: ModelTypes["map_pools_obj_rel_insert_input"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
@@ -42035,6 +42485,7 @@ export type ModelTypes = {
 ["match_options_max_fields"]: {
 		best_of?: number | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
@@ -42044,6 +42495,7 @@ export type ModelTypes = {
 ["match_options_min_fields"]: {
 		best_of?: number | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
@@ -42074,8 +42526,10 @@ export type ModelTypes = {
 	coaches?: ModelTypes["order_by"] | undefined,
 	has_active_matches?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	invite_code?: ModelTypes["order_by"] | undefined,
 	knife_round?: ModelTypes["order_by"] | undefined,
 	lan?: ModelTypes["order_by"] | undefined,
+	lobby_access?: ModelTypes["order_by"] | undefined,
 	map_pool?: ModelTypes["map_pools_order_by"] | undefined,
 	map_pool_id?: ModelTypes["order_by"] | undefined,
 	map_veto?: ModelTypes["order_by"] | undefined,
@@ -42100,8 +42554,10 @@ export type ModelTypes = {
 	best_of?: number | undefined,
 	coaches?: boolean | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
 	lan?: boolean | undefined,
+	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
 	mr?: number | undefined,
@@ -42146,8 +42602,10 @@ export type ModelTypes = {
 	best_of?: number | undefined,
 	coaches?: boolean | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
 	lan?: boolean | undefined,
+	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
 	mr?: number | undefined,
@@ -42386,6 +42844,8 @@ export type ModelTypes = {
 	e_region?: ModelTypes["e_game_server_node_regions"] | undefined,
 	ended_at?: ModelTypes["timestamptz"] | undefined,
 	id: ModelTypes["uuid"],
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?: string | undefined,
 	/** A computed field, executes function "is_captain" */
 	is_captain?: boolean | undefined,
 	/** A computed field, executes function "is_coach" */
@@ -42572,6 +43032,7 @@ export type ModelTypes = {
 	e_region?: ModelTypes["e_game_server_node_regions_bool_exp"] | undefined,
 	ended_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	invite_code?: ModelTypes["String_comparison_exp"] | undefined,
 	is_captain?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	is_in_lineup?: ModelTypes["Boolean_comparison_exp"] | undefined,
@@ -42687,6 +43148,8 @@ export type ModelTypes = {
 	current_match_map_id?: ModelTypes["uuid"] | undefined,
 	ended_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?: string | undefined,
 	label?: string | undefined,
 	lineup_1_id?: ModelTypes["uuid"] | undefined,
 	lineup_2_id?: ModelTypes["uuid"] | undefined,
@@ -42745,6 +43208,8 @@ export type ModelTypes = {
 	current_match_map_id?: ModelTypes["uuid"] | undefined,
 	ended_at?: ModelTypes["timestamptz"] | undefined,
 	id?: ModelTypes["uuid"] | undefined,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?: string | undefined,
 	label?: string | undefined,
 	lineup_1_id?: ModelTypes["uuid"] | undefined,
 	lineup_2_id?: ModelTypes["uuid"] | undefined,
@@ -42827,6 +43292,7 @@ export type ModelTypes = {
 	e_region?: ModelTypes["e_game_server_node_regions_order_by"] | undefined,
 	ended_at?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	invite_code?: ModelTypes["order_by"] | undefined,
 	is_captain?: ModelTypes["order_by"] | undefined,
 	is_coach?: ModelTypes["order_by"] | undefined,
 	is_in_lineup?: ModelTypes["order_by"] | undefined,
@@ -43131,6 +43597,10 @@ export type ModelTypes = {
 	delete_e_game_server_node_statuses?: ModelTypes["e_game_server_node_statuses_mutation_response"] | undefined,
 	/** delete single row from the table: "e_game_server_node_statuses" */
 	delete_e_game_server_node_statuses_by_pk?: ModelTypes["e_game_server_node_statuses"] | undefined,
+	/** delete data from the table: "e_lobby_access" */
+	delete_e_lobby_access?: ModelTypes["e_lobby_access_mutation_response"] | undefined,
+	/** delete single row from the table: "e_lobby_access" */
+	delete_e_lobby_access_by_pk?: ModelTypes["e_lobby_access"] | undefined,
 	/** delete data from the table: "e_map_pool_types" */
 	delete_e_map_pool_types?: ModelTypes["e_map_pool_types_mutation_response"] | undefined,
 	/** delete single row from the table: "e_map_pool_types" */
@@ -43345,6 +43815,10 @@ export type ModelTypes = {
 	insert_e_game_server_node_statuses?: ModelTypes["e_game_server_node_statuses_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_game_server_node_statuses" */
 	insert_e_game_server_node_statuses_one?: ModelTypes["e_game_server_node_statuses"] | undefined,
+	/** insert data into the table: "e_lobby_access" */
+	insert_e_lobby_access?: ModelTypes["e_lobby_access_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_lobby_access" */
+	insert_e_lobby_access_one?: ModelTypes["e_lobby_access"] | undefined,
 	/** insert data into the table: "e_map_pool_types" */
 	insert_e_map_pool_types?: ModelTypes["e_map_pool_types_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_map_pool_types" */
@@ -43545,6 +44019,7 @@ export type ModelTypes = {
 	insert_v_pool_maps?: ModelTypes["v_pool_maps_mutation_response"] | undefined,
 	/** insert a single row into the table: "v_pool_maps" */
 	insert_v_pool_maps_one?: ModelTypes["v_pool_maps"] | undefined,
+	joinLineup?: ModelTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** setMatchWinner */
@@ -43577,6 +44052,12 @@ export type ModelTypes = {
 	update_e_game_server_node_statuses_by_pk?: ModelTypes["e_game_server_node_statuses"] | undefined,
 	/** update multiples rows of table: "e_game_server_node_statuses" */
 	update_e_game_server_node_statuses_many?: Array<ModelTypes["e_game_server_node_statuses_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "e_lobby_access" */
+	update_e_lobby_access?: ModelTypes["e_lobby_access_mutation_response"] | undefined,
+	/** update single row of the table: "e_lobby_access" */
+	update_e_lobby_access_by_pk?: ModelTypes["e_lobby_access"] | undefined,
+	/** update multiples rows of table: "e_lobby_access" */
+	update_e_lobby_access_many?: Array<ModelTypes["e_lobby_access_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_map_pool_types" */
 	update_e_map_pool_types?: ModelTypes["e_map_pool_types_mutation_response"] | undefined,
 	/** update single row of the table: "e_map_pool_types" */
@@ -47127,6 +47608,12 @@ export type ModelTypes = {
 	e_game_server_node_statuses_aggregate: ModelTypes["e_game_server_node_statuses_aggregate"],
 	/** fetch data from the table: "e_game_server_node_statuses" using primary key columns */
 	e_game_server_node_statuses_by_pk?: ModelTypes["e_game_server_node_statuses"] | undefined,
+	/** fetch data from the table: "e_lobby_access" */
+	e_lobby_access: Array<ModelTypes["e_lobby_access"]>,
+	/** fetch aggregated fields from the table: "e_lobby_access" */
+	e_lobby_access_aggregate: ModelTypes["e_lobby_access_aggregate"],
+	/** fetch data from the table: "e_lobby_access" using primary key columns */
+	e_lobby_access_by_pk?: ModelTypes["e_lobby_access"] | undefined,
 	/** fetch data from the table: "e_map_pool_types" */
 	e_map_pool_types: Array<ModelTypes["e_map_pool_types"]>,
 	/** fetch aggregated fields from the table: "e_map_pool_types" */
@@ -47957,6 +48444,14 @@ export type ModelTypes = {
 	e_game_server_node_statuses_by_pk?: ModelTypes["e_game_server_node_statuses"] | undefined,
 	/** fetch data from the table in a streaming manner: "e_game_server_node_statuses" */
 	e_game_server_node_statuses_stream: Array<ModelTypes["e_game_server_node_statuses"]>,
+	/** fetch data from the table: "e_lobby_access" */
+	e_lobby_access: Array<ModelTypes["e_lobby_access"]>,
+	/** fetch aggregated fields from the table: "e_lobby_access" */
+	e_lobby_access_aggregate: ModelTypes["e_lobby_access_aggregate"],
+	/** fetch data from the table: "e_lobby_access" using primary key columns */
+	e_lobby_access_by_pk?: ModelTypes["e_lobby_access"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_lobby_access" */
+	e_lobby_access_stream: Array<ModelTypes["e_lobby_access"]>,
 	/** fetch data from the table: "e_map_pool_types" */
 	e_map_pool_types: Array<ModelTypes["e_map_pool_types"]>,
 	/** fetch aggregated fields from the table: "e_map_pool_types" */
@@ -53256,6 +53751,111 @@ export type GraphQLTypes = {
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["e_game_server_node_statuses_bool_exp"]
 };
+	/** columns and relationships of "e_lobby_access" */
+["e_lobby_access"]: {
+	__typename: "e_lobby_access",
+	description: string,
+	value: string
+};
+	/** aggregated selection of "e_lobby_access" */
+["e_lobby_access_aggregate"]: {
+	__typename: "e_lobby_access_aggregate",
+	aggregate?: GraphQLTypes["e_lobby_access_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["e_lobby_access"]>
+};
+	/** aggregate fields of "e_lobby_access" */
+["e_lobby_access_aggregate_fields"]: {
+	__typename: "e_lobby_access_aggregate_fields",
+	count: number,
+	max?: GraphQLTypes["e_lobby_access_max_fields"] | undefined,
+	min?: GraphQLTypes["e_lobby_access_min_fields"] | undefined
+};
+	/** Boolean expression to filter rows from the table "e_lobby_access". All fields are combined with a logical 'AND'. */
+["e_lobby_access_bool_exp"]: {
+		_and?: Array<GraphQLTypes["e_lobby_access_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["e_lobby_access_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["e_lobby_access_bool_exp"]> | undefined,
+	description?: GraphQLTypes["String_comparison_exp"] | undefined,
+	value?: GraphQLTypes["String_comparison_exp"] | undefined
+};
+	/** unique or primary key constraints on table "e_lobby_access" */
+["e_lobby_access_constraint"]: e_lobby_access_constraint;
+	["e_lobby_access_enum"]: e_lobby_access_enum;
+	/** Boolean expression to compare columns of type "e_lobby_access_enum". All fields are combined with logical 'AND'. */
+["e_lobby_access_enum_comparison_exp"]: {
+		_eq?: GraphQLTypes["e_lobby_access_enum"] | undefined,
+	_in?: Array<GraphQLTypes["e_lobby_access_enum"]> | undefined,
+	_is_null?: boolean | undefined,
+	_neq?: GraphQLTypes["e_lobby_access_enum"] | undefined,
+	_nin?: Array<GraphQLTypes["e_lobby_access_enum"]> | undefined
+};
+	/** input type for inserting data into table "e_lobby_access" */
+["e_lobby_access_insert_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate max on columns */
+["e_lobby_access_max_fields"]: {
+	__typename: "e_lobby_access_max_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** aggregate min on columns */
+["e_lobby_access_min_fields"]: {
+	__typename: "e_lobby_access_min_fields",
+	description?: string | undefined,
+	value?: string | undefined
+};
+	/** response of any mutation on the table "e_lobby_access" */
+["e_lobby_access_mutation_response"]: {
+	__typename: "e_lobby_access_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["e_lobby_access"]>
+};
+	/** on_conflict condition type for table "e_lobby_access" */
+["e_lobby_access_on_conflict"]: {
+		constraint: GraphQLTypes["e_lobby_access_constraint"],
+	update_columns: Array<GraphQLTypes["e_lobby_access_update_column"]>,
+	where?: GraphQLTypes["e_lobby_access_bool_exp"] | undefined
+};
+	/** Ordering options when selecting data from "e_lobby_access". */
+["e_lobby_access_order_by"]: {
+		description?: GraphQLTypes["order_by"] | undefined,
+	value?: GraphQLTypes["order_by"] | undefined
+};
+	/** primary key columns input for table: e_lobby_access */
+["e_lobby_access_pk_columns_input"]: {
+		value: string
+};
+	/** select columns of table "e_lobby_access" */
+["e_lobby_access_select_column"]: e_lobby_access_select_column;
+	/** input type for updating data in table "e_lobby_access" */
+["e_lobby_access_set_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** Streaming cursor of the table "e_lobby_access" */
+["e_lobby_access_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["e_lobby_access_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["e_lobby_access_stream_cursor_value_input"]: {
+		description?: string | undefined,
+	value?: string | undefined
+};
+	/** update columns of table "e_lobby_access" */
+["e_lobby_access_update_column"]: e_lobby_access_update_column;
+	["e_lobby_access_updates"]: {
+		/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["e_lobby_access_set_input"] | undefined,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["e_lobby_access_bool_exp"]
+};
 	/** columns and relationships of "e_map_pool_types" */
 ["e_map_pool_types"]: {
 	__typename: "e_map_pool_types",
@@ -57673,8 +58273,10 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "has_active_matches" */
 	has_active_matches?: boolean | undefined,
 	id: GraphQLTypes["uuid"],
+	invite_code?: string | undefined,
 	knife_round: boolean,
 	lan: boolean,
+	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	/** An object relationship */
 	map_pool: GraphQLTypes["map_pools"],
 	map_pool_id: GraphQLTypes["uuid"],
@@ -57732,8 +58334,10 @@ export type GraphQLTypes = {
 	coaches?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	has_active_matches?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	invite_code?: GraphQLTypes["String_comparison_exp"] | undefined,
 	knife_round?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	lan?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	lobby_access?: GraphQLTypes["e_lobby_access_enum_comparison_exp"] | undefined,
 	map_pool?: GraphQLTypes["map_pools_bool_exp"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	map_veto?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -57763,8 +58367,10 @@ export type GraphQLTypes = {
 		best_of?: number | undefined,
 	coaches?: boolean | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
 	lan?: boolean | undefined,
+	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	map_pool?: GraphQLTypes["map_pools_obj_rel_insert_input"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
@@ -57784,6 +58390,7 @@ export type GraphQLTypes = {
 	__typename: "match_options_max_fields",
 	best_of?: number | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
@@ -57794,6 +58401,7 @@ export type GraphQLTypes = {
 	__typename: "match_options_min_fields",
 	best_of?: number | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
@@ -57825,8 +58433,10 @@ export type GraphQLTypes = {
 	coaches?: GraphQLTypes["order_by"] | undefined,
 	has_active_matches?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	invite_code?: GraphQLTypes["order_by"] | undefined,
 	knife_round?: GraphQLTypes["order_by"] | undefined,
 	lan?: GraphQLTypes["order_by"] | undefined,
+	lobby_access?: GraphQLTypes["order_by"] | undefined,
 	map_pool?: GraphQLTypes["map_pools_order_by"] | undefined,
 	map_pool_id?: GraphQLTypes["order_by"] | undefined,
 	map_veto?: GraphQLTypes["order_by"] | undefined,
@@ -57852,8 +58462,10 @@ export type GraphQLTypes = {
 		best_of?: number | undefined,
 	coaches?: boolean | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
 	lan?: boolean | undefined,
+	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
 	mr?: number | undefined,
@@ -57901,8 +58513,10 @@ export type GraphQLTypes = {
 		best_of?: number | undefined,
 	coaches?: boolean | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
 	lan?: boolean | undefined,
+	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
 	mr?: number | undefined,
@@ -58156,6 +58770,8 @@ export type GraphQLTypes = {
 	e_region?: GraphQLTypes["e_game_server_node_regions"] | undefined,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined,
 	id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?: string | undefined,
 	/** A computed field, executes function "is_captain" */
 	is_captain?: boolean | undefined,
 	/** A computed field, executes function "is_coach" */
@@ -58345,6 +58961,7 @@ export type GraphQLTypes = {
 	e_region?: GraphQLTypes["e_game_server_node_regions_bool_exp"] | undefined,
 	ended_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	invite_code?: GraphQLTypes["String_comparison_exp"] | undefined,
 	is_captain?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_coach?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	is_in_lineup?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
@@ -58462,6 +59079,8 @@ export type GraphQLTypes = {
 	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?: string | undefined,
 	label?: string | undefined,
 	lineup_1_id?: GraphQLTypes["uuid"] | undefined,
 	lineup_2_id?: GraphQLTypes["uuid"] | undefined,
@@ -58521,6 +59140,8 @@ export type GraphQLTypes = {
 	current_match_map_id?: GraphQLTypes["uuid"] | undefined,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined,
 	id?: GraphQLTypes["uuid"] | undefined,
+	/** A computed field, executes function "match_invite_code" */
+	invite_code?: string | undefined,
 	label?: string | undefined,
 	lineup_1_id?: GraphQLTypes["uuid"] | undefined,
 	lineup_2_id?: GraphQLTypes["uuid"] | undefined,
@@ -58604,6 +59225,7 @@ export type GraphQLTypes = {
 	e_region?: GraphQLTypes["e_game_server_node_regions_order_by"] | undefined,
 	ended_at?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	invite_code?: GraphQLTypes["order_by"] | undefined,
 	is_captain?: GraphQLTypes["order_by"] | undefined,
 	is_coach?: GraphQLTypes["order_by"] | undefined,
 	is_in_lineup?: GraphQLTypes["order_by"] | undefined,
@@ -58927,6 +59549,10 @@ export type GraphQLTypes = {
 	delete_e_game_server_node_statuses?: GraphQLTypes["e_game_server_node_statuses_mutation_response"] | undefined,
 	/** delete single row from the table: "e_game_server_node_statuses" */
 	delete_e_game_server_node_statuses_by_pk?: GraphQLTypes["e_game_server_node_statuses"] | undefined,
+	/** delete data from the table: "e_lobby_access" */
+	delete_e_lobby_access?: GraphQLTypes["e_lobby_access_mutation_response"] | undefined,
+	/** delete single row from the table: "e_lobby_access" */
+	delete_e_lobby_access_by_pk?: GraphQLTypes["e_lobby_access"] | undefined,
 	/** delete data from the table: "e_map_pool_types" */
 	delete_e_map_pool_types?: GraphQLTypes["e_map_pool_types_mutation_response"] | undefined,
 	/** delete single row from the table: "e_map_pool_types" */
@@ -59141,6 +59767,10 @@ export type GraphQLTypes = {
 	insert_e_game_server_node_statuses?: GraphQLTypes["e_game_server_node_statuses_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_game_server_node_statuses" */
 	insert_e_game_server_node_statuses_one?: GraphQLTypes["e_game_server_node_statuses"] | undefined,
+	/** insert data into the table: "e_lobby_access" */
+	insert_e_lobby_access?: GraphQLTypes["e_lobby_access_mutation_response"] | undefined,
+	/** insert a single row into the table: "e_lobby_access" */
+	insert_e_lobby_access_one?: GraphQLTypes["e_lobby_access"] | undefined,
 	/** insert data into the table: "e_map_pool_types" */
 	insert_e_map_pool_types?: GraphQLTypes["e_map_pool_types_mutation_response"] | undefined,
 	/** insert a single row into the table: "e_map_pool_types" */
@@ -59341,6 +59971,7 @@ export type GraphQLTypes = {
 	insert_v_pool_maps?: GraphQLTypes["v_pool_maps_mutation_response"] | undefined,
 	/** insert a single row into the table: "v_pool_maps" */
 	insert_v_pool_maps_one?: GraphQLTypes["v_pool_maps"] | undefined,
+	joinLineup?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** setMatchWinner */
@@ -59373,6 +60004,12 @@ export type GraphQLTypes = {
 	update_e_game_server_node_statuses_by_pk?: GraphQLTypes["e_game_server_node_statuses"] | undefined,
 	/** update multiples rows of table: "e_game_server_node_statuses" */
 	update_e_game_server_node_statuses_many?: Array<GraphQLTypes["e_game_server_node_statuses_mutation_response"] | undefined> | undefined,
+	/** update data of the table: "e_lobby_access" */
+	update_e_lobby_access?: GraphQLTypes["e_lobby_access_mutation_response"] | undefined,
+	/** update single row of the table: "e_lobby_access" */
+	update_e_lobby_access_by_pk?: GraphQLTypes["e_lobby_access"] | undefined,
+	/** update multiples rows of table: "e_lobby_access" */
+	update_e_lobby_access_many?: Array<GraphQLTypes["e_lobby_access_mutation_response"] | undefined> | undefined,
 	/** update data of the table: "e_map_pool_types" */
 	update_e_map_pool_types?: GraphQLTypes["e_map_pool_types_mutation_response"] | undefined,
 	/** update single row of the table: "e_map_pool_types" */
@@ -63086,6 +63723,12 @@ export type GraphQLTypes = {
 	e_game_server_node_statuses_aggregate: GraphQLTypes["e_game_server_node_statuses_aggregate"],
 	/** fetch data from the table: "e_game_server_node_statuses" using primary key columns */
 	e_game_server_node_statuses_by_pk?: GraphQLTypes["e_game_server_node_statuses"] | undefined,
+	/** fetch data from the table: "e_lobby_access" */
+	e_lobby_access: Array<GraphQLTypes["e_lobby_access"]>,
+	/** fetch aggregated fields from the table: "e_lobby_access" */
+	e_lobby_access_aggregate: GraphQLTypes["e_lobby_access_aggregate"],
+	/** fetch data from the table: "e_lobby_access" using primary key columns */
+	e_lobby_access_by_pk?: GraphQLTypes["e_lobby_access"] | undefined,
 	/** fetch data from the table: "e_map_pool_types" */
 	e_map_pool_types: Array<GraphQLTypes["e_map_pool_types"]>,
 	/** fetch aggregated fields from the table: "e_map_pool_types" */
@@ -63945,6 +64588,14 @@ export type GraphQLTypes = {
 	e_game_server_node_statuses_by_pk?: GraphQLTypes["e_game_server_node_statuses"] | undefined,
 	/** fetch data from the table in a streaming manner: "e_game_server_node_statuses" */
 	e_game_server_node_statuses_stream: Array<GraphQLTypes["e_game_server_node_statuses"]>,
+	/** fetch data from the table: "e_lobby_access" */
+	e_lobby_access: Array<GraphQLTypes["e_lobby_access"]>,
+	/** fetch aggregated fields from the table: "e_lobby_access" */
+	e_lobby_access_aggregate: GraphQLTypes["e_lobby_access_aggregate"],
+	/** fetch data from the table: "e_lobby_access" using primary key columns */
+	e_lobby_access_by_pk?: GraphQLTypes["e_lobby_access"] | undefined,
+	/** fetch data from the table in a streaming manner: "e_lobby_access" */
+	e_lobby_access_stream: Array<GraphQLTypes["e_lobby_access"]>,
 	/** fetch data from the table: "e_map_pool_types" */
 	e_map_pool_types: Array<GraphQLTypes["e_map_pool_types"]>,
 	/** fetch aggregated fields from the table: "e_map_pool_types" */
@@ -68850,6 +69501,25 @@ export const enum e_game_server_node_statuses_update_column {
 	description = "description",
 	value = "value"
 }
+/** unique or primary key constraints on table "e_lobby_access" */
+export const enum e_lobby_access_constraint {
+	e_lobby_access_pkey = "e_lobby_access_pkey"
+}
+export const enum e_lobby_access_enum {
+	Invite = "Invite",
+	Open = "Open",
+	Private = "Private"
+}
+/** select columns of table "e_lobby_access" */
+export const enum e_lobby_access_select_column {
+	description = "description",
+	value = "value"
+}
+/** update columns of table "e_lobby_access" */
+export const enum e_lobby_access_update_column {
+	description = "description",
+	value = "value"
+}
 /** unique or primary key constraints on table "e_map_pool_types" */
 export const enum e_map_pool_types_constraint {
 	e_map_pool_types_pkey = "e_map_pool_types_pkey"
@@ -69400,8 +70070,10 @@ export const enum match_options_select_column {
 	best_of = "best_of",
 	coaches = "coaches",
 	id = "id",
+	invite_code = "invite_code",
 	knife_round = "knife_round",
 	lan = "lan",
+	lobby_access = "lobby_access",
 	map_pool_id = "map_pool_id",
 	map_veto = "map_veto",
 	mr = "mr",
@@ -69418,8 +70090,10 @@ export const enum match_options_update_column {
 	best_of = "best_of",
 	coaches = "coaches",
 	id = "id",
+	invite_code = "invite_code",
 	knife_round = "knife_round",
 	lan = "lan",
+	lobby_access = "lobby_access",
 	map_pool_id = "map_pool_id",
 	map_veto = "map_veto",
 	mr = "mr",
@@ -70277,6 +70951,20 @@ type ZEUS_VARIABLES = {
 	["e_game_server_node_statuses_stream_cursor_value_input"]: ValueTypes["e_game_server_node_statuses_stream_cursor_value_input"];
 	["e_game_server_node_statuses_update_column"]: ValueTypes["e_game_server_node_statuses_update_column"];
 	["e_game_server_node_statuses_updates"]: ValueTypes["e_game_server_node_statuses_updates"];
+	["e_lobby_access_bool_exp"]: ValueTypes["e_lobby_access_bool_exp"];
+	["e_lobby_access_constraint"]: ValueTypes["e_lobby_access_constraint"];
+	["e_lobby_access_enum"]: ValueTypes["e_lobby_access_enum"];
+	["e_lobby_access_enum_comparison_exp"]: ValueTypes["e_lobby_access_enum_comparison_exp"];
+	["e_lobby_access_insert_input"]: ValueTypes["e_lobby_access_insert_input"];
+	["e_lobby_access_on_conflict"]: ValueTypes["e_lobby_access_on_conflict"];
+	["e_lobby_access_order_by"]: ValueTypes["e_lobby_access_order_by"];
+	["e_lobby_access_pk_columns_input"]: ValueTypes["e_lobby_access_pk_columns_input"];
+	["e_lobby_access_select_column"]: ValueTypes["e_lobby_access_select_column"];
+	["e_lobby_access_set_input"]: ValueTypes["e_lobby_access_set_input"];
+	["e_lobby_access_stream_cursor_input"]: ValueTypes["e_lobby_access_stream_cursor_input"];
+	["e_lobby_access_stream_cursor_value_input"]: ValueTypes["e_lobby_access_stream_cursor_value_input"];
+	["e_lobby_access_update_column"]: ValueTypes["e_lobby_access_update_column"];
+	["e_lobby_access_updates"]: ValueTypes["e_lobby_access_updates"];
 	["e_map_pool_types_bool_exp"]: ValueTypes["e_map_pool_types_bool_exp"];
 	["e_map_pool_types_constraint"]: ValueTypes["e_map_pool_types_constraint"];
 	["e_map_pool_types_enum"]: ValueTypes["e_map_pool_types_enum"];

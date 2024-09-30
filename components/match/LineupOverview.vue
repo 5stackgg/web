@@ -9,9 +9,9 @@ import {
   TableCell,
 } from "~/components/ui/table";
 import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
-import { e_match_status_enum } from "~/generated/zeus";
+import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 import PlayerDisplay from "../PlayerDisplay.vue";
-PlayerDisplay;
+import { UserPlusIcon } from "lucide-vue-next";
 </script>
 
 <template>
@@ -88,7 +88,7 @@ PlayerDisplay;
         v-for="slot of Math.max(0, minPlayers - lineup.lineup_players.length)"
       >
         <TableCell colspan="100%">
-          <div class="flex">
+          <div class="flex gap-4">
             <PlayerDisplay
               :show-flag="false"
               :show-steam-id="false"
@@ -96,14 +96,38 @@ PlayerDisplay;
                 name: `Slot ${slot + lineup.lineup_players.length}`,
               }"
             />
-            <template
-              v-if="lineup.can_update_lineup && canAddToLineup && slot === 1"
-            >
-              <AssignPlayerToLineup
-                :lineup="lineup"
-                :exclude="excludePlayers"
-              ></AssignPlayerToLineup>
-            </template>
+            <div v-if="slot === 1">
+              <template v-if="lineup.can_update_lineup && canAddToLineup">
+                <AssignPlayerToLineup
+                  :lineup="lineup"
+                  :exclude="excludePlayers"
+                ></AssignPlayerToLineup>
+              </template>
+              <template
+                v-else-if="match.options.lobby_access && !match.is_in_lineup"
+              >
+                <form @submit.prevent="joinLineup" class="flex gap-4">
+                  <FormField
+                    v-slot="{ componentField }"
+                    name="code"
+                    v-if="
+                      match.options.lobby_access === e_lobby_access_enum.Invite
+                    "
+                  >
+                    <FormItem>
+                      <FormControl>
+                        <Input v-bind="componentField"></Input>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                  <Button variant="outline" class="flex gap-4">
+                    <UserPlusIcon class="h-4 w-4" />
+                    Join
+                  </Button>
+                </form>
+              </template>
+            </div>
           </div>
         </TableCell>
       </TableRow>
@@ -112,6 +136,11 @@ PlayerDisplay;
 </template>
 
 <script lang="ts">
+import { generateMutation } from "~/graphql/graphqlGen";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import * as z from "zod";
+
 export default {
   props: {
     match: {
@@ -121,6 +150,25 @@ export default {
     lineup: {
       required: true,
       type: Object,
+    },
+  },
+  data() {
+    return {
+      form: useForm({
+        validationSchema: toTypedSchema(
+          z.object({
+            code: z.string(),
+          }),
+        ),
+      }),
+    };
+  },
+  watch: {
+    $route: {
+      immediate: true,
+      handler() {
+        this.form.setFieldValue("code", this.$route.query.invite);
+      },
     },
   },
   computed: {
@@ -155,6 +203,24 @@ export default {
       }
 
       return players;
+    },
+  },
+  methods: {
+    async joinLineup() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          joinLineup: [
+            {
+              match_id: this.match.id,
+              lineup_id: this.lineup.id,
+              code: this.form.values.code,
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
     },
   },
 };

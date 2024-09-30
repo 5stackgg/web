@@ -3,14 +3,13 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 </script>
 
 <template>
-  <div class="p-3">
-    <player-search
-      label="Assign Slot"
-      :exclude="exclude.map((player) => player.steam_id)"
-      :team-id="lineup.team_id"
-      @selected="(player) => addMember(player.steam_id)"
-    ></player-search>
-  </div>
+  <player-search
+    label="Assign Slot"
+    :exclude="exclude.map((player) => player.steam_id)"
+    :team-id="lineup.team_id"
+    :self="true"
+    @selected="(player) => addMember(player.steam_id)"
+  ></player-search>
 </template>
 
 <script lang="ts">

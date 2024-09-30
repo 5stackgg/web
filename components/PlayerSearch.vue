@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CaretSortIcon } from "@radix-icons/vue";
+import { BookOpen } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
@@ -22,6 +23,9 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         <CommandEmpty>No Players Found.</CommandEmpty>
         <CommandList>
           <CommandGroup>
+            <CommandItem :value="me" @select="select(me)" v-if="canSelectSelf">
+              <PlayerDisplay class="mx-3" :player="me" />
+            </CommandItem>
             <CommandItem
               v-for="player in players"
               :key="player.steam_id"
@@ -53,6 +57,10 @@ export default {
     teamId: {
       type: String,
       required: false,
+    },
+    self: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -89,6 +97,14 @@ export default {
         .filter((player) => {
           return !this.exclude.includes(player.steam_id);
         });
+    },
+  },
+  computed: {
+    me() {
+      return useAuthStore().me;
+    },
+    canSelectSelf() {
+      return this.self && !this.exclude.includes(this.me.steam_id);
     },
   },
 };

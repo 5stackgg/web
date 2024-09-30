@@ -26,7 +26,7 @@ import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
         </div>
 
         <div class="flex justify-between items-center">
-          <div>
+          <div class="flex gap-1">
             {{ match.options.type }}
             <Badge class="text-xs"> bo{{ match.options.best_of }} </Badge>
           </div>

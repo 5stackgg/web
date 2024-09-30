@@ -327,6 +327,57 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_game_server_node_statuses_set_input",
 		where:"e_game_server_node_statuses_bool_exp"
 	},
+	e_lobby_access_aggregate_fields:{
+		count:{
+			columns:"e_lobby_access_select_column"
+		}
+	},
+	e_lobby_access_bool_exp:{
+		_and:"e_lobby_access_bool_exp",
+		_not:"e_lobby_access_bool_exp",
+		_or:"e_lobby_access_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_lobby_access_constraint: "enum" as const,
+	e_lobby_access_enum: "enum" as const,
+	e_lobby_access_enum_comparison_exp:{
+		_eq:"e_lobby_access_enum",
+		_in:"e_lobby_access_enum",
+		_neq:"e_lobby_access_enum",
+		_nin:"e_lobby_access_enum"
+	},
+	e_lobby_access_insert_input:{
+
+	},
+	e_lobby_access_on_conflict:{
+		constraint:"e_lobby_access_constraint",
+		update_columns:"e_lobby_access_update_column",
+		where:"e_lobby_access_bool_exp"
+	},
+	e_lobby_access_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_lobby_access_pk_columns_input:{
+
+	},
+	e_lobby_access_select_column: "enum" as const,
+	e_lobby_access_set_input:{
+
+	},
+	e_lobby_access_stream_cursor_input:{
+		initial_value:"e_lobby_access_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_lobby_access_stream_cursor_value_input:{
+
+	},
+	e_lobby_access_update_column: "enum" as const,
+	e_lobby_access_updates:{
+		_set:"e_lobby_access_set_input",
+		where:"e_lobby_access_bool_exp"
+	},
 	e_map_pool_types_aggregate_fields:{
 		count:{
 			columns:"e_map_pool_types_select_column"
@@ -2836,8 +2887,10 @@ export const AllTypesProps: Record<string,any> = {
 		coaches:"Boolean_comparison_exp",
 		has_active_matches:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
+		invite_code:"String_comparison_exp",
 		knife_round:"Boolean_comparison_exp",
 		lan:"Boolean_comparison_exp",
+		lobby_access:"e_lobby_access_enum_comparison_exp",
 		map_pool:"map_pools_bool_exp",
 		map_pool_id:"uuid_comparison_exp",
 		map_veto:"Boolean_comparison_exp",
@@ -2859,6 +2912,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_options_insert_input:{
 		id:"uuid",
+		lobby_access:"e_lobby_access_enum",
 		map_pool:"map_pools_obj_rel_insert_input",
 		map_pool_id:"uuid",
 		matches:"matches_arr_rel_insert_input",
@@ -2881,8 +2935,10 @@ export const AllTypesProps: Record<string,any> = {
 		coaches:"order_by",
 		has_active_matches:"order_by",
 		id:"order_by",
+		invite_code:"order_by",
 		knife_round:"order_by",
 		lan:"order_by",
+		lobby_access:"order_by",
 		map_pool:"map_pools_order_by",
 		map_pool_id:"order_by",
 		map_veto:"order_by",
@@ -2903,6 +2959,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_options_select_column: "enum" as const,
 	match_options_set_input:{
 		id:"uuid",
+		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
@@ -2914,6 +2971,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_options_stream_cursor_value_input:{
 		id:"uuid",
+		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
@@ -3207,6 +3265,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_region:"e_game_server_node_regions_bool_exp",
 		ended_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
+		invite_code:"String_comparison_exp",
 		is_captain:"Boolean_comparison_exp",
 		is_coach:"Boolean_comparison_exp",
 		is_in_lineup:"Boolean_comparison_exp",
@@ -3363,6 +3422,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_region:"e_game_server_node_regions_order_by",
 		ended_at:"order_by",
 		id:"order_by",
+		invite_code:"order_by",
 		is_captain:"order_by",
 		is_coach:"order_by",
 		is_in_lineup:"order_by",
@@ -3558,6 +3618,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_game_server_node_statuses_bool_exp"
 		},
 		delete_e_game_server_node_statuses_by_pk:{
+
+		},
+		delete_e_lobby_access:{
+			where:"e_lobby_access_bool_exp"
+		},
+		delete_e_lobby_access_by_pk:{
 
 		},
 		delete_e_map_pool_types:{
@@ -3896,6 +3962,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_game_server_node_statuses_one:{
 			object:"e_game_server_node_statuses_insert_input",
 			on_conflict:"e_game_server_node_statuses_on_conflict"
+		},
+		insert_e_lobby_access:{
+			objects:"e_lobby_access_insert_input",
+			on_conflict:"e_lobby_access_on_conflict"
+		},
+		insert_e_lobby_access_one:{
+			object:"e_lobby_access_insert_input",
+			on_conflict:"e_lobby_access_on_conflict"
 		},
 		insert_e_map_pool_types:{
 			objects:"e_map_pool_types_insert_input",
@@ -4293,6 +4367,9 @@ export const AllTypesProps: Record<string,any> = {
 		insert_v_pool_maps_one:{
 			object:"v_pool_maps_insert_input"
 		},
+		joinLineup:{
+
+		},
 		scheduleMatch:{
 			match_id:"uuid",
 			time:"timestamptz"
@@ -4353,6 +4430,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_game_server_node_statuses_many:{
 			updates:"e_game_server_node_statuses_updates"
+		},
+		update_e_lobby_access:{
+			_set:"e_lobby_access_set_input",
+			where:"e_lobby_access_bool_exp"
+		},
+		update_e_lobby_access_by_pk:{
+			_set:"e_lobby_access_set_input",
+			pk_columns:"e_lobby_access_pk_columns_input"
+		},
+		update_e_lobby_access_many:{
+			updates:"e_lobby_access_updates"
 		},
 		update_e_map_pool_types:{
 			_set:"e_map_pool_types_set_input",
@@ -6971,6 +7059,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_game_server_node_statuses_by_pk:{
 
 		},
+		e_lobby_access:{
+			distinct_on:"e_lobby_access_select_column",
+			order_by:"e_lobby_access_order_by",
+			where:"e_lobby_access_bool_exp"
+		},
+		e_lobby_access_aggregate:{
+			distinct_on:"e_lobby_access_select_column",
+			order_by:"e_lobby_access_order_by",
+			where:"e_lobby_access_bool_exp"
+		},
+		e_lobby_access_by_pk:{
+
+		},
 		e_map_pool_types:{
 			distinct_on:"e_map_pool_types_select_column",
 			order_by:"e_map_pool_types_order_by",
@@ -8029,6 +8130,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_game_server_node_statuses_stream:{
 			cursor:"e_game_server_node_statuses_stream_cursor_input",
 			where:"e_game_server_node_statuses_bool_exp"
+		},
+		e_lobby_access:{
+			distinct_on:"e_lobby_access_select_column",
+			order_by:"e_lobby_access_order_by",
+			where:"e_lobby_access_bool_exp"
+		},
+		e_lobby_access_aggregate:{
+			distinct_on:"e_lobby_access_select_column",
+			order_by:"e_lobby_access_order_by",
+			where:"e_lobby_access_bool_exp"
+		},
+		e_lobby_access_by_pk:{
+
+		},
+		e_lobby_access_stream:{
+			cursor:"e_lobby_access_stream_cursor_input",
+			where:"e_lobby_access_bool_exp"
 		},
 		e_map_pool_types:{
 			distinct_on:"e_map_pool_types_select_column",
@@ -11327,6 +11445,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_game_server_node_statuses"
 	},
+	e_lobby_access:{
+		description:"String",
+		value:"String"
+	},
+	e_lobby_access_aggregate:{
+		aggregate:"e_lobby_access_aggregate_fields",
+		nodes:"e_lobby_access"
+	},
+	e_lobby_access_aggregate_fields:{
+		count:"Int",
+		max:"e_lobby_access_max_fields",
+		min:"e_lobby_access_min_fields"
+	},
+	e_lobby_access_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_lobby_access_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_lobby_access_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_lobby_access"
+	},
 	e_map_pool_types:{
 		description:"String",
 		value:"String"
@@ -12444,8 +12587,10 @@ export const ReturnTypes: Record<string,any> = {
 		coaches:"Boolean",
 		has_active_matches:"Boolean",
 		id:"uuid",
+		invite_code:"String",
 		knife_round:"Boolean",
 		lan:"Boolean",
+		lobby_access:"e_lobby_access_enum",
 		map_pool:"map_pools",
 		map_pool_id:"uuid",
 		map_veto:"Boolean",
@@ -12487,6 +12632,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_options_max_fields:{
 		best_of:"Int",
 		id:"uuid",
+		invite_code:"String",
 		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
@@ -12495,6 +12641,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_options_min_fields:{
 		best_of:"Int",
 		id:"uuid",
+		invite_code:"String",
 		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
@@ -12598,6 +12745,7 @@ export const ReturnTypes: Record<string,any> = {
 		e_region:"e_game_server_node_regions",
 		ended_at:"timestamptz",
 		id:"uuid",
+		invite_code:"String",
 		is_captain:"Boolean",
 		is_coach:"Boolean",
 		is_in_lineup:"Boolean",
@@ -12687,6 +12835,7 @@ export const ReturnTypes: Record<string,any> = {
 		current_match_map_id:"uuid",
 		ended_at:"timestamptz",
 		id:"uuid",
+		invite_code:"String",
 		label:"String",
 		lineup_1_id:"uuid",
 		lineup_2_id:"uuid",
@@ -12715,6 +12864,7 @@ export const ReturnTypes: Record<string,any> = {
 		current_match_map_id:"uuid",
 		ended_at:"timestamptz",
 		id:"uuid",
+		invite_code:"String",
 		label:"String",
 		lineup_1_id:"uuid",
 		lineup_2_id:"uuid",
@@ -12812,6 +12962,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_game_server_node_regions_by_pk:"e_game_server_node_regions",
 		delete_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		delete_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
+		delete_e_lobby_access:"e_lobby_access_mutation_response",
+		delete_e_lobby_access_by_pk:"e_lobby_access",
 		delete_e_map_pool_types:"e_map_pool_types_mutation_response",
 		delete_e_map_pool_types_by_pk:"e_map_pool_types",
 		delete_e_match_map_status:"e_match_map_status_mutation_response",
@@ -12920,6 +13072,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_game_server_node_regions_one:"e_game_server_node_regions",
 		insert_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		insert_e_game_server_node_statuses_one:"e_game_server_node_statuses",
+		insert_e_lobby_access:"e_lobby_access_mutation_response",
+		insert_e_lobby_access_one:"e_lobby_access",
 		insert_e_map_pool_types:"e_map_pool_types_mutation_response",
 		insert_e_map_pool_types_one:"e_map_pool_types",
 		insert_e_match_map_status:"e_match_map_status_mutation_response",
@@ -13020,6 +13174,7 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_match_captains_one:"v_match_captains",
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
+		joinLineup:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
@@ -13037,6 +13192,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		update_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		update_e_game_server_node_statuses_many:"e_game_server_node_statuses_mutation_response",
+		update_e_lobby_access:"e_lobby_access_mutation_response",
+		update_e_lobby_access_by_pk:"e_lobby_access",
+		update_e_lobby_access_many:"e_lobby_access_mutation_response",
 		update_e_map_pool_types:"e_map_pool_types_mutation_response",
 		update_e_map_pool_types_by_pk:"e_map_pool_types",
 		update_e_map_pool_types_many:"e_map_pool_types_mutation_response",
@@ -14143,6 +14301,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_game_server_node_statuses:"e_game_server_node_statuses",
 		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
 		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
+		e_lobby_access:"e_lobby_access",
+		e_lobby_access_aggregate:"e_lobby_access_aggregate",
+		e_lobby_access_by_pk:"e_lobby_access",
 		e_map_pool_types:"e_map_pool_types",
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",
@@ -14454,6 +14615,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
 		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		e_game_server_node_statuses_stream:"e_game_server_node_statuses",
+		e_lobby_access:"e_lobby_access",
+		e_lobby_access_aggregate:"e_lobby_access_aggregate",
+		e_lobby_access_by_pk:"e_lobby_access",
+		e_lobby_access_stream:"e_lobby_access",
 		e_map_pool_types:"e_map_pool_types",
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",

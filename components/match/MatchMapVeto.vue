@@ -138,11 +138,6 @@ export default {
       type: Object,
       required: true,
     },
-    mapPool: {
-      type: Array,
-      required: true,
-      default: [],
-    },
   },
   apollo: {
     $subscribe: {
@@ -328,6 +323,9 @@ export default {
     },
     hasAssignedRegion() {
       return this.match.options.region_veto && this.match.e_region;
+    },
+    mapPool() {
+      return this.match.options?.map_pool?.maps;
     },
   },
 };

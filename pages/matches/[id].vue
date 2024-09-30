@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MatchMapSelection from "~/components/match/MatchMapSelection.vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
@@ -9,6 +8,7 @@ import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import JoinMatch from "~/components/match/JoinMatch.vue";
 import StartMatch from "~/components/match/StartMatch.vue";
 import { e_match_status_enum } from "~/generated/zeus";
+import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 </script>
 
 <template>
@@ -48,7 +48,7 @@ import { e_match_status_enum } from "~/generated/zeus";
       </template>
 
       <MatchRegionVeto :match="match"></MatchRegionVeto>
-      <MatchMapSelection :match="match"></MatchMapSelection>
+      <MatchMapVeto :match="match" v-if="match.options.map_veto"></MatchMapVeto>
 
       <MatchTabs :match="match"></MatchTabs>
     </div>

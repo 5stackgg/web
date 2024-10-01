@@ -18,12 +18,12 @@ import TimeAgo from "~/components/TimeAgo.vue";
         </AlertDescription>
       </Alert>
     </template>
-    <template v-else-if="!confirmationDetails">
+    <div v-else-if="!confirmationDetails" class="flex flex-col gap-4">
       <MatchMakingRegion
         :region="region"
         v-for="region in regions"
       ></MatchMakingRegion>
-    </template>
+    </div>
     <template v-else-if="match">
       <div class="flex justify-between items-center">
         <div>

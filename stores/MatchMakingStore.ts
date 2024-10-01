@@ -40,18 +40,9 @@ export const useMatchMakingStore = defineStore("match-making", () => {
         e_server_regions: [
           {
             where: {
-              game_server_nodes: {
-                enabled: {
-                  _eq: true,
-                },
-              },
-              game_server_nodes_aggregate: {
-                count: {
-                  predicate: {
-                    _gt: 0,
-                  },
-                },
-              },
+              total_server_count: {
+                _gt: 0,
+              }
             },
           },
           {

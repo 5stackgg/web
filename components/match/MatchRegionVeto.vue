@@ -145,9 +145,9 @@ export default {
   },
   apollo: {
     $subscribe: {
-      e_game_server_node_regions: {
+      e_server_regions: {
         query: typedGql("subscription")({
-          e_game_server_node_regions: [
+          e_server_regions: [
             {
               where: {
                 // total_server_count: {
@@ -162,7 +162,7 @@ export default {
           ],
         }),
         result({ data }) {
-          this.regions = data.e_game_server_node_regions;
+          this.regions = data.e_server_regions;
         },
       },
       match_map_veto_picks: {
@@ -271,7 +271,7 @@ export default {
                 id: this.$route.params.id,
               },
               _set: {
-                region: $("region", "e_game_server_node_regions_enum!"),
+                region: $("region", "e_server_regions_enum!"),
               },
             },
             {
@@ -297,7 +297,7 @@ export default {
           insert_match_region_veto_picks_one: [
             {
               object: {
-                region: $("region", "e_game_server_node_regions_enum!"),
+                region: $("region", "e_server_regions_enum!"),
                 type: $("type", "e_veto_pick_types_enum!"),
                 match_id: $("match_id", "uuid!"),
                 match_lineup_id: $("match_lineup_id", "uuid!"),

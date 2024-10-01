@@ -114,6 +114,7 @@ export default {
               host: true,
               port: true,
               label: true,
+              region: true,
               tv_port: true,
               enabled: true,
               connected: true,

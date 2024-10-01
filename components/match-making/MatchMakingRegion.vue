@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import {
-  e_match_types_enum,
-  e_game_server_node_regions_enum,
-} from "~/generated/zeus";
+import { e_match_types_enum, e_server_regions_enum } from "~/generated/zeus";
 import socket from "~/web-sockets/Socket";
 </script>
 <template>
@@ -143,19 +140,13 @@ export default {
     },
   },
   methods: {
-    joinMatchMaking(
-      type: e_match_types_enum,
-      region: e_game_server_node_regions_enum,
-    ) {
+    joinMatchMaking(type: e_match_types_enum, region: e_server_regions_enum) {
       socket.event("match-making:join-queue", {
         type,
         regions: [region],
       });
     },
-    leaveMatchMaking(
-      type: e_match_types_enum,
-      region: e_game_server_node_regions_enum,
-    ) {
+    leaveMatchMaking(type: e_match_types_enum, region: e_server_regions_enum) {
       socket.leave("match-making", {
         type,
         region,

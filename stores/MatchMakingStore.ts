@@ -1,9 +1,6 @@
 import { ref } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import {
-  e_game_server_node_regions_enum,
-  e_match_types_enum,
-} from "~/generated/zeus";
+import { e_server_regions_enum, e_match_types_enum } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 
@@ -14,7 +11,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
     details?: {
       totalInQueue: number;
       type: e_match_types_enum;
-      regions: Array<e_game_server_node_regions_enum>;
+      regions: Array<e_server_regions_enum>;
     };
     confirmation?: {
       matchId: string;
@@ -23,7 +20,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
       confirmed: number;
       confirmationId: string;
       type: e_match_types_enum;
-      region: e_game_server_node_regions_enum;
+      region: e_server_regions_enum;
     };
   }>({
     details: undefined,
@@ -32,10 +29,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
 
   const regionStats = ref<
     Partial<
-      Record<
-        e_game_server_node_regions_enum,
-        Partial<Record<e_match_types_enum, number>>
-      >
+      Record<e_server_regions_enum, Partial<Record<e_match_types_enum, number>>>
     >
   >({});
 
@@ -43,7 +37,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
   const subscribeToRegions = async () => {
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
-        e_game_server_node_regions: [
+        e_server_regions: [
           {
             where: {
               game_server_nodes: {
@@ -71,7 +65,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
 
     subscription.subscribe({
       next: ({ data }) => {
-        regions.value = data.e_game_server_node_regions;
+        regions.value = data.e_server_regions;
       },
     });
   };

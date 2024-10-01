@@ -196,82 +196,6 @@ export const AllTypesProps: Record<string,any> = {
 		_nin:"bytea"
 	},
 	cursor_ordering: "enum" as const,
-	e_game_server_node_regions:{
-		game_server_nodes:{
-			distinct_on:"game_server_nodes_select_column",
-			order_by:"game_server_nodes_order_by",
-			where:"game_server_nodes_bool_exp"
-		},
-		game_server_nodes_aggregate:{
-			distinct_on:"game_server_nodes_select_column",
-			order_by:"game_server_nodes_order_by",
-			where:"game_server_nodes_bool_exp"
-		}
-	},
-	e_game_server_node_regions_aggregate_fields:{
-		count:{
-			columns:"e_game_server_node_regions_select_column"
-		}
-	},
-	e_game_server_node_regions_bool_exp:{
-		_and:"e_game_server_node_regions_bool_exp",
-		_not:"e_game_server_node_regions_bool_exp",
-		_or:"e_game_server_node_regions_bool_exp",
-		available_server_count:"Int_comparison_exp",
-		description:"String_comparison_exp",
-		game_server_nodes:"game_server_nodes_bool_exp",
-		game_server_nodes_aggregate:"game_server_nodes_aggregate_bool_exp",
-		status:"String_comparison_exp",
-		total_server_count:"Int_comparison_exp",
-		value:"String_comparison_exp"
-	},
-	e_game_server_node_regions_constraint: "enum" as const,
-	e_game_server_node_regions_enum: "enum" as const,
-	e_game_server_node_regions_enum_comparison_exp:{
-		_eq:"e_game_server_node_regions_enum",
-		_in:"e_game_server_node_regions_enum",
-		_neq:"e_game_server_node_regions_enum",
-		_nin:"e_game_server_node_regions_enum"
-	},
-	e_game_server_node_regions_insert_input:{
-		game_server_nodes:"game_server_nodes_arr_rel_insert_input"
-	},
-	e_game_server_node_regions_obj_rel_insert_input:{
-		data:"e_game_server_node_regions_insert_input",
-		on_conflict:"e_game_server_node_regions_on_conflict"
-	},
-	e_game_server_node_regions_on_conflict:{
-		constraint:"e_game_server_node_regions_constraint",
-		update_columns:"e_game_server_node_regions_update_column",
-		where:"e_game_server_node_regions_bool_exp"
-	},
-	e_game_server_node_regions_order_by:{
-		available_server_count:"order_by",
-		description:"order_by",
-		game_server_nodes_aggregate:"game_server_nodes_aggregate_order_by",
-		status:"order_by",
-		total_server_count:"order_by",
-		value:"order_by"
-	},
-	e_game_server_node_regions_pk_columns_input:{
-
-	},
-	e_game_server_node_regions_select_column: "enum" as const,
-	e_game_server_node_regions_set_input:{
-
-	},
-	e_game_server_node_regions_stream_cursor_input:{
-		initial_value:"e_game_server_node_regions_stream_cursor_value_input",
-		ordering:"cursor_ordering"
-	},
-	e_game_server_node_regions_stream_cursor_value_input:{
-
-	},
-	e_game_server_node_regions_update_column: "enum" as const,
-	e_game_server_node_regions_updates:{
-		_set:"e_game_server_node_regions_set_input",
-		where:"e_game_server_node_regions_bool_exp"
-	},
 	e_game_server_node_statuses_aggregate_fields:{
 		count:{
 			columns:"e_game_server_node_statuses_select_column"
@@ -810,6 +734,82 @@ export const AllTypesProps: Record<string,any> = {
 	e_player_roles_updates:{
 		_set:"e_player_roles_set_input",
 		where:"e_player_roles_bool_exp"
+	},
+	e_server_regions:{
+		game_server_nodes:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		},
+		game_server_nodes_aggregate:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		}
+	},
+	e_server_regions_aggregate_fields:{
+		count:{
+			columns:"e_server_regions_select_column"
+		}
+	},
+	e_server_regions_bool_exp:{
+		_and:"e_server_regions_bool_exp",
+		_not:"e_server_regions_bool_exp",
+		_or:"e_server_regions_bool_exp",
+		available_server_count:"Int_comparison_exp",
+		description:"String_comparison_exp",
+		game_server_nodes:"game_server_nodes_bool_exp",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate_bool_exp",
+		status:"String_comparison_exp",
+		total_server_count:"Int_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_server_regions_constraint: "enum" as const,
+	e_server_regions_enum: "enum" as const,
+	e_server_regions_enum_comparison_exp:{
+		_eq:"e_server_regions_enum",
+		_in:"e_server_regions_enum",
+		_neq:"e_server_regions_enum",
+		_nin:"e_server_regions_enum"
+	},
+	e_server_regions_insert_input:{
+		game_server_nodes:"game_server_nodes_arr_rel_insert_input"
+	},
+	e_server_regions_obj_rel_insert_input:{
+		data:"e_server_regions_insert_input",
+		on_conflict:"e_server_regions_on_conflict"
+	},
+	e_server_regions_on_conflict:{
+		constraint:"e_server_regions_constraint",
+		update_columns:"e_server_regions_update_column",
+		where:"e_server_regions_bool_exp"
+	},
+	e_server_regions_order_by:{
+		available_server_count:"order_by",
+		description:"order_by",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate_order_by",
+		status:"order_by",
+		total_server_count:"order_by",
+		value:"order_by"
+	},
+	e_server_regions_pk_columns_input:{
+
+	},
+	e_server_regions_select_column: "enum" as const,
+	e_server_regions_set_input:{
+
+	},
+	e_server_regions_stream_cursor_input:{
+		initial_value:"e_server_regions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_server_regions_stream_cursor_value_input:{
+
+	},
+	e_server_regions_update_column: "enum" as const,
+	e_server_regions_updates:{
+		_set:"e_server_regions_set_input",
+		where:"e_server_regions_bool_exp"
 	},
 	e_sides:{
 		match_map_lineup_1:{
@@ -1363,13 +1363,13 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"game_server_nodes_bool_exp",
 		available_server_count:"Int_comparison_exp",
 		build_id:"Int_comparison_exp",
-		e_region:"e_game_server_node_regions_bool_exp",
+		e_region:"e_server_regions_bool_exp",
 		e_status:"e_game_server_node_statuses_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		end_port_range:"Int_comparison_exp",
 		id:"String_comparison_exp",
 		public_ip:"inet_comparison_exp",
-		region:"e_game_server_node_regions_enum_comparison_exp",
+		region:"e_server_regions_enum_comparison_exp",
 		servers:"servers_bool_exp",
 		servers_aggregate:"servers_aggregate_bool_exp",
 		start_port_range:"Int_comparison_exp",
@@ -1382,10 +1382,10 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_server_nodes_insert_input:{
-		e_region:"e_game_server_node_regions_obj_rel_insert_input",
+		e_region:"e_server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
 		public_ip:"inet",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		servers:"servers_arr_rel_insert_input",
 		status:"e_game_server_node_statuses_enum"
 	},
@@ -1415,7 +1415,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_order_by:{
 		available_server_count:"order_by",
 		build_id:"order_by",
-		e_region:"e_game_server_node_regions_order_by",
+		e_region:"e_server_regions_order_by",
 		e_status:"e_game_server_node_statuses_order_by",
 		enabled:"order_by",
 		end_port_range:"order_by",
@@ -1436,7 +1436,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	game_server_nodes_set_input:{
 		public_ip:"inet",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_stddev_order_by:{
@@ -1460,7 +1460,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_server_nodes_stream_cursor_value_input:{
 		public_ip:"inet",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_sum_order_by:{
@@ -3036,7 +3036,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid_comparison_exp",
 		match_lineup:"match_lineups_bool_exp",
 		match_lineup_id:"uuid_comparison_exp",
-		region:"e_game_server_node_regions_enum_comparison_exp",
+		region:"e_server_regions_enum_comparison_exp",
 		type:"e_veto_pick_types_enum_comparison_exp"
 	},
 	match_region_veto_picks_constraint: "enum" as const,
@@ -3047,7 +3047,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_lineup:"match_lineups_obj_rel_insert_input",
 		match_lineup_id:"uuid",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_max_order_by:{
@@ -3086,7 +3086,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_lineup_id:"uuid",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_stream_cursor_input:{
@@ -3098,7 +3098,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_lineup_id:"uuid",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_update_column: "enum" as const,
@@ -3283,7 +3283,7 @@ export const AllTypesProps: Record<string,any> = {
 		demos:"match_map_demos_bool_exp",
 		demos_aggregate:"match_map_demos_aggregate_bool_exp",
 		e_match_status:"e_match_status_bool_exp",
-		e_region:"e_game_server_node_regions_bool_exp",
+		e_region:"e_server_regions_bool_exp",
 		ended_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
@@ -3326,7 +3326,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
 		player_utility:"player_utility_bool_exp",
 		player_utility_aggregate:"player_utility_aggregate_bool_exp",
-		region:"e_game_server_node_regions_enum_comparison_exp",
+		region:"e_server_regions_enum_comparison_exp",
 		region_veto_picking_lineup_id:"uuid_comparison_exp",
 		region_veto_picks:"match_region_veto_picks_bool_exp",
 		region_veto_picks_aggregate:"match_region_veto_picks_aggregate_bool_exp",
@@ -3355,7 +3355,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_status:"e_match_status_obj_rel_insert_input",
-		e_region:"e_game_server_node_regions_obj_rel_insert_input",
+		e_region:"e_server_regions_obj_rel_insert_input",
 		ended_at:"timestamptz",
 		id:"uuid",
 		lineup_1:"match_lineups_obj_rel_insert_input",
@@ -3375,7 +3375,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_objectives:"player_objectives_arr_rel_insert_input",
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		player_utility:"player_utility_arr_rel_insert_input",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		region_veto_picks:"match_region_veto_picks_arr_rel_insert_input",
 		scheduled_at:"timestamptz",
 		server:"servers_obj_rel_insert_input",
@@ -3440,7 +3440,7 @@ export const AllTypesProps: Record<string,any> = {
 		current_match_map_id:"order_by",
 		demos_aggregate:"match_map_demos_aggregate_order_by",
 		e_match_status:"e_match_status_order_by",
-		e_region:"e_game_server_node_regions_order_by",
+		e_region:"e_server_regions_order_by",
 		ended_at:"order_by",
 		id:"order_by",
 		invite_code:"order_by",
@@ -3505,7 +3505,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		started_at:"timestamptz",
@@ -3534,7 +3534,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		started_at:"timestamptz",
@@ -3629,12 +3629,6 @@ export const AllTypesProps: Record<string,any> = {
 		delete_abandoned_matches_by_pk:{
 			id:"uuid"
 		},
-		delete_e_game_server_node_regions:{
-			where:"e_game_server_node_regions_bool_exp"
-		},
-		delete_e_game_server_node_regions_by_pk:{
-
-		},
 		delete_e_game_server_node_statuses:{
 			where:"e_game_server_node_statuses_bool_exp"
 		},
@@ -3687,6 +3681,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_player_roles_bool_exp"
 		},
 		delete_e_player_roles_by_pk:{
+
+		},
+		delete_e_server_regions:{
+			where:"e_server_regions_bool_exp"
+		},
+		delete_e_server_regions_by_pk:{
 
 		},
 		delete_e_sides:{
@@ -3961,14 +3961,6 @@ export const AllTypesProps: Record<string,any> = {
 			object:"abandoned_matches_insert_input",
 			on_conflict:"abandoned_matches_on_conflict"
 		},
-		insert_e_game_server_node_regions:{
-			objects:"e_game_server_node_regions_insert_input",
-			on_conflict:"e_game_server_node_regions_on_conflict"
-		},
-		insert_e_game_server_node_regions_one:{
-			object:"e_game_server_node_regions_insert_input",
-			on_conflict:"e_game_server_node_regions_on_conflict"
-		},
 		insert_e_game_server_node_statuses:{
 			objects:"e_game_server_node_statuses_insert_input",
 			on_conflict:"e_game_server_node_statuses_on_conflict"
@@ -4040,6 +4032,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_player_roles_one:{
 			object:"e_player_roles_insert_input",
 			on_conflict:"e_player_roles_on_conflict"
+		},
+		insert_e_server_regions:{
+			objects:"e_server_regions_insert_input",
+			on_conflict:"e_server_regions_on_conflict"
+		},
+		insert_e_server_regions_one:{
+			object:"e_server_regions_insert_input",
+			on_conflict:"e_server_regions_on_conflict"
 		},
 		insert_e_sides:{
 			objects:"e_sides_insert_input",
@@ -4415,17 +4415,6 @@ export const AllTypesProps: Record<string,any> = {
 		update_abandoned_matches_many:{
 			updates:"abandoned_matches_updates"
 		},
-		update_e_game_server_node_regions:{
-			_set:"e_game_server_node_regions_set_input",
-			where:"e_game_server_node_regions_bool_exp"
-		},
-		update_e_game_server_node_regions_by_pk:{
-			_set:"e_game_server_node_regions_set_input",
-			pk_columns:"e_game_server_node_regions_pk_columns_input"
-		},
-		update_e_game_server_node_regions_many:{
-			updates:"e_game_server_node_regions_updates"
-		},
 		update_e_game_server_node_statuses:{
 			_set:"e_game_server_node_statuses_set_input",
 			where:"e_game_server_node_statuses_bool_exp"
@@ -4524,6 +4513,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_player_roles_many:{
 			updates:"e_player_roles_updates"
+		},
+		update_e_server_regions:{
+			_set:"e_server_regions_set_input",
+			where:"e_server_regions_bool_exp"
+		},
+		update_e_server_regions_by_pk:{
+			_set:"e_server_regions_set_input",
+			pk_columns:"e_server_regions_pk_columns_input"
+		},
+		update_e_server_regions_many:{
+			updates:"e_server_regions_updates"
 		},
 		update_e_sides:{
 			_set:"e_sides_set_input",
@@ -7028,19 +7028,6 @@ export const AllTypesProps: Record<string,any> = {
 		abandoned_matches_by_pk:{
 			id:"uuid"
 		},
-		e_game_server_node_regions:{
-			distinct_on:"e_game_server_node_regions_select_column",
-			order_by:"e_game_server_node_regions_order_by",
-			where:"e_game_server_node_regions_bool_exp"
-		},
-		e_game_server_node_regions_aggregate:{
-			distinct_on:"e_game_server_node_regions_select_column",
-			order_by:"e_game_server_node_regions_order_by",
-			where:"e_game_server_node_regions_bool_exp"
-		},
-		e_game_server_node_regions_by_pk:{
-
-		},
 		e_game_server_node_statuses:{
 			distinct_on:"e_game_server_node_statuses_select_column",
 			order_by:"e_game_server_node_statuses_order_by",
@@ -7156,6 +7143,19 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_player_roles_bool_exp"
 		},
 		e_player_roles_by_pk:{
+
+		},
+		e_server_regions:{
+			distinct_on:"e_server_regions_select_column",
+			order_by:"e_server_regions_order_by",
+			where:"e_server_regions_bool_exp"
+		},
+		e_server_regions_aggregate:{
+			distinct_on:"e_server_regions_select_column",
+			order_by:"e_server_regions_order_by",
+			where:"e_server_regions_bool_exp"
+		},
+		e_server_regions_by_pk:{
 
 		},
 		e_sides:{
@@ -8065,23 +8065,6 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"abandoned_matches_stream_cursor_input",
 			where:"abandoned_matches_bool_exp"
 		},
-		e_game_server_node_regions:{
-			distinct_on:"e_game_server_node_regions_select_column",
-			order_by:"e_game_server_node_regions_order_by",
-			where:"e_game_server_node_regions_bool_exp"
-		},
-		e_game_server_node_regions_aggregate:{
-			distinct_on:"e_game_server_node_regions_select_column",
-			order_by:"e_game_server_node_regions_order_by",
-			where:"e_game_server_node_regions_bool_exp"
-		},
-		e_game_server_node_regions_by_pk:{
-
-		},
-		e_game_server_node_regions_stream:{
-			cursor:"e_game_server_node_regions_stream_cursor_input",
-			where:"e_game_server_node_regions_bool_exp"
-		},
 		e_game_server_node_statuses:{
 			distinct_on:"e_game_server_node_statuses_select_column",
 			order_by:"e_game_server_node_statuses_order_by",
@@ -8234,6 +8217,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_player_roles_stream:{
 			cursor:"e_player_roles_stream_cursor_input",
 			where:"e_player_roles_bool_exp"
+		},
+		e_server_regions:{
+			distinct_on:"e_server_regions_select_column",
+			order_by:"e_server_regions_order_by",
+			where:"e_server_regions_bool_exp"
+		},
+		e_server_regions_aggregate:{
+			distinct_on:"e_server_regions_select_column",
+			order_by:"e_server_regions_order_by",
+			where:"e_server_regions_bool_exp"
+		},
+		e_server_regions_by_pk:{
+
+		},
+		e_server_regions_stream:{
+			cursor:"e_server_regions_stream_cursor_input",
+			where:"e_server_regions_bool_exp"
 		},
 		e_sides:{
 			distinct_on:"e_sides_select_column",
@@ -11201,82 +11201,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	bigint: `scalar.bigint` as const,
 	bytea: `scalar.bytea` as const,
-	e_game_server_node_regions:{
-		available_server_count:"Int",
-		description:"String",
-		game_server_nodes:"game_server_nodes",
-		game_server_nodes_aggregate:"game_server_nodes_aggregate",
-		status:"String",
-		total_server_count:"Int",
-		value:"String"
-	},
-	e_game_server_node_regions_aggregate:{
-		aggregate:"e_game_server_node_regions_aggregate_fields",
-		nodes:"e_game_server_node_regions"
-	},
-	e_game_server_node_regions_aggregate_fields:{
-		avg:"e_game_server_node_regions_avg_fields",
-		count:"Int",
-		max:"e_game_server_node_regions_max_fields",
-		min:"e_game_server_node_regions_min_fields",
-		stddev:"e_game_server_node_regions_stddev_fields",
-		stddev_pop:"e_game_server_node_regions_stddev_pop_fields",
-		stddev_samp:"e_game_server_node_regions_stddev_samp_fields",
-		sum:"e_game_server_node_regions_sum_fields",
-		var_pop:"e_game_server_node_regions_var_pop_fields",
-		var_samp:"e_game_server_node_regions_var_samp_fields",
-		variance:"e_game_server_node_regions_variance_fields"
-	},
-	e_game_server_node_regions_avg_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_game_server_node_regions_max_fields:{
-		available_server_count:"Int",
-		description:"String",
-		status:"String",
-		total_server_count:"Int",
-		value:"String"
-	},
-	e_game_server_node_regions_min_fields:{
-		available_server_count:"Int",
-		description:"String",
-		status:"String",
-		total_server_count:"Int",
-		value:"String"
-	},
-	e_game_server_node_regions_mutation_response:{
-		affected_rows:"Int",
-		returning:"e_game_server_node_regions"
-	},
-	e_game_server_node_regions_stddev_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_game_server_node_regions_stddev_pop_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_game_server_node_regions_stddev_samp_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_game_server_node_regions_sum_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_game_server_node_regions_var_pop_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_game_server_node_regions_var_samp_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_game_server_node_regions_variance_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
 	e_game_server_node_statuses:{
 		description:"String",
 		value:"String"
@@ -11510,6 +11434,82 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_player_roles"
 	},
+	e_server_regions:{
+		available_server_count:"Int",
+		description:"String",
+		game_server_nodes:"game_server_nodes",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate",
+		status:"String",
+		total_server_count:"Int",
+		value:"String"
+	},
+	e_server_regions_aggregate:{
+		aggregate:"e_server_regions_aggregate_fields",
+		nodes:"e_server_regions"
+	},
+	e_server_regions_aggregate_fields:{
+		avg:"e_server_regions_avg_fields",
+		count:"Int",
+		max:"e_server_regions_max_fields",
+		min:"e_server_regions_min_fields",
+		stddev:"e_server_regions_stddev_fields",
+		stddev_pop:"e_server_regions_stddev_pop_fields",
+		stddev_samp:"e_server_regions_stddev_samp_fields",
+		sum:"e_server_regions_sum_fields",
+		var_pop:"e_server_regions_var_pop_fields",
+		var_samp:"e_server_regions_var_samp_fields",
+		variance:"e_server_regions_variance_fields"
+	},
+	e_server_regions_avg_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	e_server_regions_max_fields:{
+		available_server_count:"Int",
+		description:"String",
+		status:"String",
+		total_server_count:"Int",
+		value:"String"
+	},
+	e_server_regions_min_fields:{
+		available_server_count:"Int",
+		description:"String",
+		status:"String",
+		total_server_count:"Int",
+		value:"String"
+	},
+	e_server_regions_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_server_regions"
+	},
+	e_server_regions_stddev_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	e_server_regions_stddev_pop_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	e_server_regions_stddev_samp_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	e_server_regions_sum_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	e_server_regions_var_pop_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	e_server_regions_var_samp_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	e_server_regions_variance_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
 	e_sides:{
 		description:"String",
 		match_map_lineup_1:"match_maps",
@@ -11704,13 +11704,13 @@ export const ReturnTypes: Record<string,any> = {
 	game_server_nodes:{
 		available_server_count:"Int",
 		build_id:"Int",
-		e_region:"e_game_server_node_regions",
+		e_region:"e_server_regions",
 		e_status:"e_game_server_node_statuses",
 		enabled:"Boolean",
 		end_port_range:"Int",
 		id:"String",
 		public_ip:"inet",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		start_port_range:"Int",
@@ -12560,7 +12560,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_lineup:"match_lineups",
 		match_lineup_id:"uuid",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_aggregate:{
@@ -12602,7 +12602,7 @@ export const ReturnTypes: Record<string,any> = {
 		demos:"match_map_demos",
 		demos_aggregate:"match_map_demos_aggregate",
 		e_match_status:"e_match_status",
-		e_region:"e_game_server_node_regions",
+		e_region:"e_server_regions",
 		ended_at:"timestamptz",
 		id:"uuid",
 		invite_code:"String",
@@ -12645,7 +12645,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
 		player_utility:"player_utility",
 		player_utility_aggregate:"player_utility_aggregate",
-		region:"e_game_server_node_regions_enum",
+		region:"e_server_regions_enum",
 		region_veto_picking_lineup_id:"uuid",
 		region_veto_picks:"match_region_veto_picks",
 		region_veto_picks_aggregate:"match_region_veto_picks_aggregate",
@@ -12818,8 +12818,6 @@ export const ReturnTypes: Record<string,any> = {
 		delete__map_pool_by_pk:"_map_pool",
 		delete_abandoned_matches:"abandoned_matches_mutation_response",
 		delete_abandoned_matches_by_pk:"abandoned_matches",
-		delete_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
-		delete_e_game_server_node_regions_by_pk:"e_game_server_node_regions",
 		delete_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		delete_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		delete_e_lobby_access:"e_lobby_access_mutation_response",
@@ -12838,6 +12836,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_objective_types_by_pk:"e_objective_types",
 		delete_e_player_roles:"e_player_roles_mutation_response",
 		delete_e_player_roles_by_pk:"e_player_roles",
+		delete_e_server_regions:"e_server_regions_mutation_response",
+		delete_e_server_regions_by_pk:"e_server_regions",
 		delete_e_sides:"e_sides_mutation_response",
 		delete_e_sides_by_pk:"e_sides",
 		delete_e_team_roles:"e_team_roles_mutation_response",
@@ -12926,8 +12926,6 @@ export const ReturnTypes: Record<string,any> = {
 		insert__map_pool_one:"_map_pool",
 		insert_abandoned_matches:"abandoned_matches_mutation_response",
 		insert_abandoned_matches_one:"abandoned_matches",
-		insert_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
-		insert_e_game_server_node_regions_one:"e_game_server_node_regions",
 		insert_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		insert_e_game_server_node_statuses_one:"e_game_server_node_statuses",
 		insert_e_lobby_access:"e_lobby_access_mutation_response",
@@ -12946,6 +12944,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_objective_types_one:"e_objective_types",
 		insert_e_player_roles:"e_player_roles_mutation_response",
 		insert_e_player_roles_one:"e_player_roles",
+		insert_e_server_regions:"e_server_regions_mutation_response",
+		insert_e_server_regions_one:"e_server_regions",
 		insert_e_sides:"e_sides_mutation_response",
 		insert_e_sides_one:"e_sides",
 		insert_e_team_roles:"e_team_roles_mutation_response",
@@ -13042,9 +13042,6 @@ export const ReturnTypes: Record<string,any> = {
 		update_abandoned_matches:"abandoned_matches_mutation_response",
 		update_abandoned_matches_by_pk:"abandoned_matches",
 		update_abandoned_matches_many:"abandoned_matches_mutation_response",
-		update_e_game_server_node_regions:"e_game_server_node_regions_mutation_response",
-		update_e_game_server_node_regions_by_pk:"e_game_server_node_regions",
-		update_e_game_server_node_regions_many:"e_game_server_node_regions_mutation_response",
 		update_e_game_server_node_statuses:"e_game_server_node_statuses_mutation_response",
 		update_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		update_e_game_server_node_statuses_many:"e_game_server_node_statuses_mutation_response",
@@ -13072,6 +13069,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_player_roles:"e_player_roles_mutation_response",
 		update_e_player_roles_by_pk:"e_player_roles",
 		update_e_player_roles_many:"e_player_roles_mutation_response",
+		update_e_server_regions:"e_server_regions_mutation_response",
+		update_e_server_regions_by_pk:"e_server_regions",
+		update_e_server_regions_many:"e_server_regions_mutation_response",
 		update_e_sides:"e_sides_mutation_response",
 		update_e_sides_by_pk:"e_sides",
 		update_e_sides_many:"e_sides_mutation_response",
@@ -14148,9 +14148,6 @@ export const ReturnTypes: Record<string,any> = {
 		abandoned_matches:"abandoned_matches",
 		abandoned_matches_aggregate:"abandoned_matches_aggregate",
 		abandoned_matches_by_pk:"abandoned_matches",
-		e_game_server_node_regions:"e_game_server_node_regions",
-		e_game_server_node_regions_aggregate:"e_game_server_node_regions_aggregate",
-		e_game_server_node_regions_by_pk:"e_game_server_node_regions",
 		e_game_server_node_statuses:"e_game_server_node_statuses",
 		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
 		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
@@ -14178,6 +14175,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_player_roles:"e_player_roles",
 		e_player_roles_aggregate:"e_player_roles_aggregate",
 		e_player_roles_by_pk:"e_player_roles",
+		e_server_regions:"e_server_regions",
+		e_server_regions_aggregate:"e_server_regions_aggregate",
+		e_server_regions_by_pk:"e_server_regions",
 		e_sides:"e_sides",
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",
@@ -14457,10 +14457,6 @@ export const ReturnTypes: Record<string,any> = {
 		abandoned_matches_aggregate:"abandoned_matches_aggregate",
 		abandoned_matches_by_pk:"abandoned_matches",
 		abandoned_matches_stream:"abandoned_matches",
-		e_game_server_node_regions:"e_game_server_node_regions",
-		e_game_server_node_regions_aggregate:"e_game_server_node_regions_aggregate",
-		e_game_server_node_regions_by_pk:"e_game_server_node_regions",
-		e_game_server_node_regions_stream:"e_game_server_node_regions",
 		e_game_server_node_statuses:"e_game_server_node_statuses",
 		e_game_server_node_statuses_aggregate:"e_game_server_node_statuses_aggregate",
 		e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
@@ -14497,6 +14493,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_player_roles_aggregate:"e_player_roles_aggregate",
 		e_player_roles_by_pk:"e_player_roles",
 		e_player_roles_stream:"e_player_roles",
+		e_server_regions:"e_server_regions",
+		e_server_regions_aggregate:"e_server_regions_aggregate",
+		e_server_regions_by_pk:"e_server_regions",
+		e_server_regions_stream:"e_server_regions",
 		e_sides:"e_sides",
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",

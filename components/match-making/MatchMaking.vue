@@ -51,9 +51,9 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 export default {
   apollo: {
     $subscribe: {
-      e_game_server_node_regions: {
+      e_server_regions: {
         query: typedGql("subscription")({
-          e_game_server_node_regions: [
+          e_server_regions: [
             {
               where: {
                 total_server_count: {
@@ -68,7 +68,7 @@ export default {
           ],
         }),
         result({ data }) {
-          this.regions = data.e_game_server_node_regions;
+          this.regions = data.e_server_regions;
         },
       },
       matches_by_pk: {

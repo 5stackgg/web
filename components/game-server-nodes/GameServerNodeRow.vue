@@ -45,7 +45,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
           <SelectGroup>
             <SelectItem
               :value="region.value"
-              v-for="region of e_game_server_node_regions"
+              v-for="region of e_server_regions"
             >
               {{ region.description }}
             </SelectItem>
@@ -128,9 +128,9 @@ export default {
     },
   },
   apollo: {
-    e_game_server_node_regions: {
+    e_server_regions: {
       query: generateQuery({
-        e_game_server_node_regions: [
+        e_server_regions: [
           {},
           {
             value: true,

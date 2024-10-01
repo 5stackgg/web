@@ -197,7 +197,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <TabsList>
             <TabsTrigger value="match-options"> Match Options </TabsTrigger>
             <TabsTrigger value="organizers"> Organizers </TabsTrigger>
-            <TabsTrigger value="servers"> Servers </TabsTrigger>
           </TabsList>
           <TabsContent value="match-options">
             <TournamentForm :tournament="tournament"></TournamentForm>
@@ -205,9 +204,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <TabsContent value="organizers">
             <TournamentOrganizers :tournament="tournament">
             </TournamentOrganizers>
-          </TabsContent>
-          <TabsContent value="servers">
-            <TournamentServers :tournament="tournament"></TournamentServers>
           </TabsContent>
         </Tabs>
       </TabsContent>
@@ -322,12 +318,6 @@ export default {
                   aggregate: {
                     count: true,
                   },
-                },
-              ],
-              servers: [
-                {},
-                {
-                  server_id: true,
                 },
               ],
               stages: [

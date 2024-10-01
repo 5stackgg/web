@@ -26,6 +26,31 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
       </FormItem>
     </FormField>
 
+    <FormField v-slot="{ componentField }" name="region">
+      <FormItem>
+        <FormLabel class="text-lg font-semibold">Region</FormLabel>
+        <Select v-bind="componentField">
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a region" />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem
+                :value="region.value"
+                v-for="region in e_server_regions"
+                :key="region.value"
+              >
+                {{ region.description }}
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="rcon_password">
       <FormItem>
         <FormLabel>RCON Password</FormLabel>
@@ -71,7 +96,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 
 export default {
   emits: ["updated"],
@@ -79,6 +104,19 @@ export default {
     server: {
       type: Object,
       required: false,
+    },
+  },
+  apollo: {
+    e_server_regions: {
+      query: generateQuery({
+        e_server_regions: [
+          {},
+          {
+            value: true,
+            description: true,
+          },
+        ],
+      }),
     },
   },
   data() {
@@ -95,6 +133,7 @@ export default {
                   .regex(/^(?!:\/\/)(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/),
               ),
             label: z.string().min(3),
+            region: z.string(),
             port: z.number().min(2).max(65535),
             tv_port: z.number().min(2).max(65535),
             rcon_password: this.server
@@ -110,11 +149,12 @@ export default {
       immediate: true,
       handler(server) {
         if (server) {
-          const { host, label, port, tv_port } = server;
+          const { host, label, port, tv_port, region } = server;
           this.form.setValues({
             host,
             label,
             port,
+            region,
             tv_port,
           });
           return;

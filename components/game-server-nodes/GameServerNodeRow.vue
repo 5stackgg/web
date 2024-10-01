@@ -142,7 +142,6 @@ export default {
   },
   data() {
     return {
-      regions: [],
       form: {
         region: null,
       },

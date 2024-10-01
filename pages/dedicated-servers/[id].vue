@@ -38,10 +38,20 @@ const serverMenu = ref(false);
   <PageHeading v-if="server">
     <template #title>
       <div class="flex items-center justify-between gap-4">
-        <div>{{ server.label }} ({{ server.host }}:{{ server.port }})</div>
-        <div class="flex items-center space-x-2">
-          <Switch @click="toggleServerEnabled" :checked="server.enabled" />
-          <Label>Enabled</Label>
+        <div class="flex flex-col">
+          <div>
+            <Badge>{{ server.region }}</Badge>
+          </div>
+          <div class="flex gap-4">
+            <div>
+              {{ server.label }}
+              ({{ server.host }}:{{ server.port }})
+            </div>
+            <div class="flex items-center space-x-2">
+              <Switch @click="toggleServerEnabled" :checked="server.enabled" />
+              <Label>Enabled</Label>
+            </div>
+          </div>
         </div>
       </div>
     </template>
@@ -137,6 +147,7 @@ export default {
             {
               id: true,
               host: true,
+              region: true,
               port: true,
               label: true,
               tv_port: true,

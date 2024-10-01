@@ -41,6 +41,7 @@ import { PlusCircle } from "lucide-vue-next";
           <TableRow>
             <TableHead>Connection Details</TableHead>
             <TableHead>Label</TableHead>
+            <TableHead>Region</TableHead>
             <TableHead>TV Port</TableHead>
             <TableHead>Enabled</TableHead>
           </TableRow>
@@ -67,6 +68,7 @@ import { PlusCircle } from "lucide-vue-next";
               </div>
             </TableCell>
             <TableCell>{{ server.label }}</TableCell>
+            <TableCell>{{ server.region }}</TableCell>
             <TableCell>{{ server.tv_port }}</TableCell>
             <TableCell>{{ server.enabled }}</TableCell>
           </TableRow>

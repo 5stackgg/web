@@ -28,7 +28,7 @@ import {
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            <SelectGroup>
+            <SelectGroup v-if="canSelectDedicatedServer">
               <SelectLabel>Dedicated Servers</SelectLabel>
               <SelectItem
                 v-for="server in availableServers"
@@ -78,11 +78,7 @@ export default {
         query: typedGql("subscription")({
           servers: [
             {
-              where: {
-                is_dedicated: {
-                  _eq: true,
-                },
-              },
+           
             },
             {
               id: true,
@@ -179,6 +175,11 @@ export default {
     },
   },
   computed: {
+    canSelectDedicatedServer() {
+      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
+        useAuthStore();
+      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
+    },
     availableServers() {
       return this.servers.map((server) => {
         return {

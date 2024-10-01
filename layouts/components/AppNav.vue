@@ -140,6 +140,7 @@ export default {
           to: "/dedicated-servers",
           title: "Dedicated Servers",
           icon: Server,
+          role: e_player_roles_enum.administrator,
         },
         {
           to: "/game-server-nodes",

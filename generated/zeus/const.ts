@@ -1500,6 +1500,17 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"inet",
 		_nin:"inet"
 	},
+	json: `scalar.json` as const,
+	json_comparison_exp:{
+		_eq:"json",
+		_gt:"json",
+		_gte:"json",
+		_in:"json",
+		_lt:"json",
+		_lte:"json",
+		_neq:"json",
+		_nin:"json"
+	},
 	jsonb: `scalar.jsonb` as const,
 	jsonb_cast_exp:{
 		String:"String_comparison_exp"
@@ -2872,6 +2883,9 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"matches_select_column",
 			order_by:"matches_order_by",
 			where:"matches_bool_exp"
+		},
+		regions:{
+
 		}
 	},
 	match_options_aggregate_fields:{
@@ -2899,7 +2913,9 @@ export const AllTypesProps: Record<string,any> = {
 		mr:"Int_comparison_exp",
 		number_of_substitutes:"Int_comparison_exp",
 		overtime:"Boolean_comparison_exp",
+		prefer_dedicated_server:"Boolean_comparison_exp",
 		region_veto:"Boolean_comparison_exp",
+		regions:"json_comparison_exp",
 		tech_timeout_setting:"e_timeout_settings_enum_comparison_exp",
 		timeout_setting:"e_timeout_settings_enum_comparison_exp",
 		tournament:"tournaments_bool_exp",
@@ -2916,6 +2932,7 @@ export const AllTypesProps: Record<string,any> = {
 		map_pool:"map_pools_obj_rel_insert_input",
 		map_pool_id:"uuid",
 		matches:"matches_arr_rel_insert_input",
+		regions:"json",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		tournament:"tournaments_obj_rel_insert_input",
@@ -2946,7 +2963,9 @@ export const AllTypesProps: Record<string,any> = {
 		mr:"order_by",
 		number_of_substitutes:"order_by",
 		overtime:"order_by",
+		prefer_dedicated_server:"order_by",
 		region_veto:"order_by",
+		regions:"order_by",
 		tech_timeout_setting:"order_by",
 		timeout_setting:"order_by",
 		tournament:"tournaments_order_by",
@@ -2961,6 +2980,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
+		regions:"json",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		type:"e_match_types_enum"
@@ -2973,6 +2993,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
+		regions:"json",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		type:"e_match_types_enum"
@@ -3886,13 +3907,6 @@ export const AllTypesProps: Record<string,any> = {
 			steam_id:"bigint",
 			tournament_id:"uuid"
 		},
-		delete_tournament_servers:{
-			where:"tournament_servers_bool_exp"
-		},
-		delete_tournament_servers_by_pk:{
-			server_id:"uuid",
-			tournament_id:"uuid"
-		},
 		delete_tournament_stages:{
 			where:"tournament_stages_bool_exp"
 		},
@@ -4314,14 +4328,6 @@ export const AllTypesProps: Record<string,any> = {
 		insert_tournament_organizers_one:{
 			object:"tournament_organizers_insert_input",
 			on_conflict:"tournament_organizers_on_conflict"
-		},
-		insert_tournament_servers:{
-			objects:"tournament_servers_insert_input",
-			on_conflict:"tournament_servers_on_conflict"
-		},
-		insert_tournament_servers_one:{
-			object:"tournament_servers_insert_input",
-			on_conflict:"tournament_servers_on_conflict"
 		},
 		insert_tournament_stages:{
 			objects:"tournament_stages_insert_input",
@@ -4960,17 +4966,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_tournament_organizers_many:{
 			updates:"tournament_organizers_updates"
-		},
-		update_tournament_servers:{
-			_set:"tournament_servers_set_input",
-			where:"tournament_servers_bool_exp"
-		},
-		update_tournament_servers_by_pk:{
-			_set:"tournament_servers_set_input",
-			pk_columns:"tournament_servers_pk_columns_input"
-		},
-		update_tournament_servers_many:{
-			updates:"tournament_servers_updates"
 		},
 		update_tournament_stages:{
 			_append:"tournament_stages_append_input",
@@ -7633,20 +7628,6 @@ export const AllTypesProps: Record<string,any> = {
 			steam_id:"bigint",
 			tournament_id:"uuid"
 		},
-		tournament_servers:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
-		},
-		tournament_servers_aggregate:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
-		},
-		tournament_servers_by_pk:{
-			server_id:"uuid",
-			tournament_id:"uuid"
-		},
 		tournament_stages:{
 			distinct_on:"tournament_stages_select_column",
 			order_by:"tournament_stages_order_by",
@@ -7801,16 +7782,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"matches_select_column",
 			order_by:"matches_order_by",
 			where:"matches_bool_exp"
-		},
-		tournament_servers:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
-		},
-		tournament_servers_aggregate:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
 		}
 	},
 	servers_aggregate_bool_exp:{
@@ -7876,13 +7847,11 @@ export const AllTypesProps: Record<string,any> = {
 		label:"String_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
-		owner:"players_bool_exp",
 		owner_steam_id:"bigint_comparison_exp",
 		port:"Int_comparison_exp",
 		rcon_password:"bytea_comparison_exp",
+		region:"String_comparison_exp",
 		reserved_by_match_id:"uuid_comparison_exp",
-		tournament_servers:"tournament_servers_bool_exp",
-		tournament_servers_aggregate:"tournament_servers_aggregate_bool_exp",
 		tv_port:"Int_comparison_exp"
 	},
 	servers_constraint: "enum" as const,
@@ -7895,11 +7864,9 @@ export const AllTypesProps: Record<string,any> = {
 		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		id:"uuid",
 		matches:"matches_arr_rel_insert_input",
-		owner:"players_obj_rel_insert_input",
 		owner_steam_id:"bigint",
 		rcon_password:"bytea",
-		reserved_by_match_id:"uuid",
-		tournament_servers:"tournament_servers_arr_rel_insert_input"
+		reserved_by_match_id:"uuid"
 	},
 	servers_max_order_by:{
 		api_password:"order_by",
@@ -7909,6 +7876,7 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		owner_steam_id:"order_by",
 		port:"order_by",
+		region:"order_by",
 		reserved_by_match_id:"order_by",
 		tv_port:"order_by"
 	},
@@ -7920,6 +7888,7 @@ export const AllTypesProps: Record<string,any> = {
 		label:"order_by",
 		owner_steam_id:"order_by",
 		port:"order_by",
+		region:"order_by",
 		reserved_by_match_id:"order_by",
 		tv_port:"order_by"
 	},
@@ -7944,12 +7913,11 @@ export const AllTypesProps: Record<string,any> = {
 		is_dedicated:"order_by",
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
-		owner:"players_order_by",
 		owner_steam_id:"order_by",
 		port:"order_by",
 		rcon_password:"order_by",
+		region:"order_by",
 		reserved_by_match_id:"order_by",
-		tournament_servers_aggregate:"tournament_servers_aggregate_order_by",
 		tv_port:"order_by"
 	},
 	servers_pk_columns_input:{
@@ -8880,24 +8848,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_organizers_stream:{
 			cursor:"tournament_organizers_stream_cursor_input",
 			where:"tournament_organizers_bool_exp"
-		},
-		tournament_servers:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
-		},
-		tournament_servers_aggregate:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
-		},
-		tournament_servers_by_pk:{
-			server_id:"uuid",
-			tournament_id:"uuid"
-		},
-		tournament_servers_stream:{
-			cursor:"tournament_servers_stream_cursor_input",
-			where:"tournament_servers_bool_exp"
 		},
 		tournament_stages:{
 			distinct_on:"tournament_stages_select_column",
@@ -9851,85 +9801,6 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_organizers_variance_order_by:{
 		steam_id:"order_by"
 	},
-	tournament_servers_aggregate_bool_exp:{
-		count:"tournament_servers_aggregate_bool_exp_count"
-	},
-	tournament_servers_aggregate_bool_exp_count:{
-		arguments:"tournament_servers_select_column",
-		filter:"tournament_servers_bool_exp",
-		predicate:"Int_comparison_exp"
-	},
-	tournament_servers_aggregate_fields:{
-		count:{
-			columns:"tournament_servers_select_column"
-		}
-	},
-	tournament_servers_aggregate_order_by:{
-		count:"order_by",
-		max:"tournament_servers_max_order_by",
-		min:"tournament_servers_min_order_by"
-	},
-	tournament_servers_arr_rel_insert_input:{
-		data:"tournament_servers_insert_input",
-		on_conflict:"tournament_servers_on_conflict"
-	},
-	tournament_servers_bool_exp:{
-		_and:"tournament_servers_bool_exp",
-		_not:"tournament_servers_bool_exp",
-		_or:"tournament_servers_bool_exp",
-		server:"servers_bool_exp",
-		server_id:"uuid_comparison_exp",
-		tournament:"tournaments_bool_exp",
-		tournament_id:"uuid_comparison_exp"
-	},
-	tournament_servers_constraint: "enum" as const,
-	tournament_servers_insert_input:{
-		server:"servers_obj_rel_insert_input",
-		server_id:"uuid",
-		tournament:"tournaments_obj_rel_insert_input",
-		tournament_id:"uuid"
-	},
-	tournament_servers_max_order_by:{
-		server_id:"order_by",
-		tournament_id:"order_by"
-	},
-	tournament_servers_min_order_by:{
-		server_id:"order_by",
-		tournament_id:"order_by"
-	},
-	tournament_servers_on_conflict:{
-		constraint:"tournament_servers_constraint",
-		update_columns:"tournament_servers_update_column",
-		where:"tournament_servers_bool_exp"
-	},
-	tournament_servers_order_by:{
-		server:"servers_order_by",
-		server_id:"order_by",
-		tournament:"tournaments_order_by",
-		tournament_id:"order_by"
-	},
-	tournament_servers_pk_columns_input:{
-		server_id:"uuid",
-		tournament_id:"uuid"
-	},
-	tournament_servers_select_column: "enum" as const,
-	tournament_servers_set_input:{
-		server_id:"uuid",
-		tournament_id:"uuid"
-	},
-	tournament_servers_stream_cursor_input:{
-		initial_value:"tournament_servers_stream_cursor_value_input",
-		ordering:"cursor_ordering"
-	},
-	tournament_servers_stream_cursor_value_input:{
-		server_id:"uuid",
-		tournament_id:"uuid"
-	},
-	tournament_servers_update_column: "enum" as const,
-	tournament_servers_updates:{
-		_set:"tournament_servers_set_input",
-		where:"tournament_servers_bool_exp"
-	},
 	tournament_stages:{
 		brackets:{
 			distinct_on:"tournament_brackets_select_column",
@@ -10453,16 +10324,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"tournament_team_roster_order_by",
 			where:"tournament_team_roster_bool_exp"
 		},
-		servers:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
-		},
-		servers_aggregate:{
-			distinct_on:"tournament_servers_select_column",
-			order_by:"tournament_servers_order_by",
-			where:"tournament_servers_bool_exp"
-		},
 		stages:{
 			distinct_on:"tournament_stages_select_column",
 			order_by:"tournament_stages_order_by",
@@ -10541,8 +10402,6 @@ export const AllTypesProps: Record<string,any> = {
 		organizers_aggregate:"tournament_organizers_aggregate_bool_exp",
 		rosters:"tournament_team_roster_bool_exp",
 		rosters_aggregate:"tournament_team_roster_aggregate_bool_exp",
-		servers:"tournament_servers_bool_exp",
-		servers_aggregate:"tournament_servers_aggregate_bool_exp",
 		stages:"tournament_stages_bool_exp",
 		stages_aggregate:"tournament_stages_aggregate_bool_exp",
 		start:"timestamptz_comparison_exp",
@@ -10563,7 +10422,6 @@ export const AllTypesProps: Record<string,any> = {
 		organizer_steam_id:"bigint",
 		organizers:"tournament_organizers_arr_rel_insert_input",
 		rosters:"tournament_team_roster_arr_rel_insert_input",
-		servers:"tournament_servers_arr_rel_insert_input",
 		stages:"tournament_stages_arr_rel_insert_input",
 		start:"timestamptz",
 		status:"e_tournament_status_enum",
@@ -10613,7 +10471,6 @@ export const AllTypesProps: Record<string,any> = {
 		organizer_steam_id:"order_by",
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		rosters_aggregate:"tournament_team_roster_aggregate_order_by",
-		servers_aggregate:"tournament_servers_aggregate_order_by",
 		stages_aggregate:"tournament_stages_aggregate_order_by",
 		start:"order_by",
 		status:"order_by",
@@ -11957,6 +11814,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	inet: `scalar.inet` as const,
+	json: `scalar.json` as const,
 	jsonb: `scalar.jsonb` as const,
 	map_pools:{
 		e_type:"e_map_pool_types",
@@ -12599,7 +12457,9 @@ export const ReturnTypes: Record<string,any> = {
 		mr:"Int",
 		number_of_substitutes:"Int",
 		overtime:"Boolean",
+		prefer_dedicated_server:"Boolean",
 		region_veto:"Boolean",
+		regions:"json",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		tournament:"tournaments",
@@ -13050,8 +12910,6 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournament_brackets_by_pk:"tournament_brackets",
 		delete_tournament_organizers:"tournament_organizers_mutation_response",
 		delete_tournament_organizers_by_pk:"tournament_organizers",
-		delete_tournament_servers:"tournament_servers_mutation_response",
-		delete_tournament_servers_by_pk:"tournament_servers",
 		delete_tournament_stages:"tournament_stages_mutation_response",
 		delete_tournament_stages_by_pk:"tournament_stages",
 		delete_tournament_team_roster:"tournament_team_roster_mutation_response",
@@ -13160,8 +13018,6 @@ export const ReturnTypes: Record<string,any> = {
 		insert_tournament_brackets_one:"tournament_brackets",
 		insert_tournament_organizers:"tournament_organizers_mutation_response",
 		insert_tournament_organizers_one:"tournament_organizers",
-		insert_tournament_servers:"tournament_servers_mutation_response",
-		insert_tournament_servers_one:"tournament_servers",
 		insert_tournament_stages:"tournament_stages_mutation_response",
 		insert_tournament_stages_one:"tournament_stages",
 		insert_tournament_team_roster:"tournament_team_roster_mutation_response",
@@ -13324,9 +13180,6 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_organizers:"tournament_organizers_mutation_response",
 		update_tournament_organizers_by_pk:"tournament_organizers",
 		update_tournament_organizers_many:"tournament_organizers_mutation_response",
-		update_tournament_servers:"tournament_servers_mutation_response",
-		update_tournament_servers_by_pk:"tournament_servers",
-		update_tournament_servers_many:"tournament_servers_mutation_response",
 		update_tournament_stages:"tournament_stages_mutation_response",
 		update_tournament_stages_by_pk:"tournament_stages",
 		update_tournament_stages_many:"tournament_stages_mutation_response",
@@ -14434,9 +14287,6 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_organizers:"tournament_organizers",
 		tournament_organizers_aggregate:"tournament_organizers_aggregate",
 		tournament_organizers_by_pk:"tournament_organizers",
-		tournament_servers:"tournament_servers",
-		tournament_servers_aggregate:"tournament_servers_aggregate",
-		tournament_servers_by_pk:"tournament_servers",
 		tournament_stages:"tournament_stages",
 		tournament_stages_aggregate:"tournament_stages_aggregate",
 		tournament_stages_by_pk:"tournament_stages",
@@ -14481,13 +14331,11 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
-		owner:"players",
 		owner_steam_id:"bigint",
 		port:"Int",
 		rcon_password:"bytea",
+		region:"String",
 		reserved_by_match_id:"uuid",
-		tournament_servers:"tournament_servers",
-		tournament_servers_aggregate:"tournament_servers_aggregate",
 		tv_port:"Int"
 	},
 	servers_aggregate:{
@@ -14520,6 +14368,7 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		owner_steam_id:"bigint",
 		port:"Int",
+		region:"String",
 		reserved_by_match_id:"uuid",
 		tv_port:"Int"
 	},
@@ -14531,6 +14380,7 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		owner_steam_id:"bigint",
 		port:"Int",
+		region:"String",
 		reserved_by_match_id:"uuid",
 		tv_port:"Int"
 	},
@@ -14791,10 +14641,6 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_organizers_aggregate:"tournament_organizers_aggregate",
 		tournament_organizers_by_pk:"tournament_organizers",
 		tournament_organizers_stream:"tournament_organizers",
-		tournament_servers:"tournament_servers",
-		tournament_servers_aggregate:"tournament_servers_aggregate",
-		tournament_servers_by_pk:"tournament_servers",
-		tournament_servers_stream:"tournament_servers",
 		tournament_stages:"tournament_stages",
 		tournament_stages_aggregate:"tournament_stages_aggregate",
 		tournament_stages_by_pk:"tournament_stages",
@@ -15201,33 +15047,6 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_organizers_variance_fields:{
 		steam_id:"Float"
 	},
-	tournament_servers:{
-		server:"servers",
-		server_id:"uuid",
-		tournament:"tournaments",
-		tournament_id:"uuid"
-	},
-	tournament_servers_aggregate:{
-		aggregate:"tournament_servers_aggregate_fields",
-		nodes:"tournament_servers"
-	},
-	tournament_servers_aggregate_fields:{
-		count:"Int",
-		max:"tournament_servers_max_fields",
-		min:"tournament_servers_min_fields"
-	},
-	tournament_servers_max_fields:{
-		server_id:"uuid",
-		tournament_id:"uuid"
-	},
-	tournament_servers_min_fields:{
-		server_id:"uuid",
-		tournament_id:"uuid"
-	},
-	tournament_servers_mutation_response:{
-		affected_rows:"Int",
-		returning:"tournament_servers"
-	},
 	tournament_stages:{
 		brackets:"tournament_brackets",
 		brackets_aggregate:"tournament_brackets_aggregate",
@@ -15487,8 +15306,6 @@ export const ReturnTypes: Record<string,any> = {
 		organizers_aggregate:"tournament_organizers_aggregate",
 		rosters:"tournament_team_roster",
 		rosters_aggregate:"tournament_team_roster_aggregate",
-		servers:"tournament_servers",
-		servers_aggregate:"tournament_servers_aggregate",
 		stages:"tournament_stages",
 		stages_aggregate:"tournament_stages_aggregate",
 		start:"timestamptz",

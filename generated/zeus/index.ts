@@ -862,7 +862,6 @@ export type ScalarCoders = {
 	bigint?: ScalarResolver;
 	bytea?: ScalarResolver;
 	inet?: ScalarResolver;
-	json?: ScalarResolver;
 	jsonb?: ScalarResolver;
 	numeric?: ScalarResolver;
 	timestamptz?: ScalarResolver;
@@ -910,6 +909,22 @@ export type ValueTypes = {
 	link?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+["String_array_comparison_exp"]: {
+	/** is the array contained in the given array value */
+	_contained_in?: Array<string> | undefined | null | Variable<any, string>,
+	/** does the array contain the given value */
+	_contains?: Array<string> | undefined | null | Variable<any, string>,
+	_eq?: Array<string> | undefined | null | Variable<any, string>,
+	_gt?: Array<string> | undefined | null | Variable<any, string>,
+	_gte?: Array<string> | undefined | null | Variable<any, string>,
+	_in?: Array<Array<string> | undefined | null> | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_lt?: Array<string> | undefined | null | Variable<any, string>,
+	_lte?: Array<string> | undefined | null | Variable<any, string>,
+	_neq?: Array<string> | undefined | null | Variable<any, string>,
+	_nin?: Array<Array<string> | undefined | null> | Variable<any, string>
+};
 	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 ["String_comparison_exp"]: {
 	_eq?: string | undefined | null | Variable<any, string>,
@@ -3865,19 +3880,6 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 	_neq?: ValueTypes["inet"] | undefined | null | Variable<any, string>,
 	_nin?: Array<ValueTypes["inet"]> | undefined | null | Variable<any, string>
 };
-	["json"]:unknown;
-	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-["json_comparison_exp"]: {
-	_eq?: ValueTypes["json"] | undefined | null | Variable<any, string>,
-	_gt?: ValueTypes["json"] | undefined | null | Variable<any, string>,
-	_gte?: ValueTypes["json"] | undefined | null | Variable<any, string>,
-	_in?: Array<ValueTypes["json"]> | undefined | null | Variable<any, string>,
-	_is_null?: boolean | undefined | null | Variable<any, string>,
-	_lt?: ValueTypes["json"] | undefined | null | Variable<any, string>,
-	_lte?: ValueTypes["json"] | undefined | null | Variable<any, string>,
-	_neq?: ValueTypes["json"] | undefined | null | Variable<any, string>,
-	_nin?: Array<ValueTypes["json"]> | undefined | null | Variable<any, string>
-};
 	["jsonb"]:unknown;
 	["jsonb_cast_exp"]: {
 	String?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
@@ -6404,7 +6406,6 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	id?:boolean | `@${string}`,
 	invite_code?:boolean | `@${string}`,
 	knife_round?:boolean | `@${string}`,
-	lan?:boolean | `@${string}`,
 	lobby_access?:boolean | `@${string}`,
 	/** An object relationship */
 	map_pool?:ValueTypes["map_pools"],
@@ -6427,8 +6428,7 @@ matches_aggregate?: [{	/** distinct select on columns */
 	overtime?:boolean | `@${string}`,
 	prefer_dedicated_server?:boolean | `@${string}`,
 	region_veto?:boolean | `@${string}`,
-regions?: [{	/** JSON select path */
-	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	regions?:boolean | `@${string}`,
 	tech_timeout_setting?:boolean | `@${string}`,
 	timeout_setting?:boolean | `@${string}`,
 	/** An object relationship */
@@ -6477,7 +6477,6 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	invite_code?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	knife_round?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	lan?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	lobby_access?: ValueTypes["e_lobby_access_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_pool?: ValueTypes["map_pools_bool_exp"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -6489,7 +6488,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	overtime?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	prefer_dedicated_server?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	region_veto?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
-	regions?: ValueTypes["json_comparison_exp"] | undefined | null | Variable<any, string>,
+	regions?: ValueTypes["String_array_comparison_exp"] | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_bool_exp"] | undefined | null | Variable<any, string>,
@@ -6512,7 +6511,6 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invite_code?: string | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
-	lan?: boolean | undefined | null | Variable<any, string>,
 	lobby_access?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
 	map_pool?: ValueTypes["map_pools_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -6523,7 +6521,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	overtime?: boolean | undefined | null | Variable<any, string>,
 	prefer_dedicated_server?: boolean | undefined | null | Variable<any, string>,
 	region_veto?: boolean | undefined | null | Variable<any, string>,
-	regions?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	regions?: Array<string> | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	tournament?: ValueTypes["tournaments_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
@@ -6538,6 +6536,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	regions?:boolean | `@${string}`,
 	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -6549,6 +6548,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	regions?:boolean | `@${string}`,
 	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -6580,7 +6580,6 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	invite_code?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	knife_round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	lan?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lobby_access?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_pool?: ValueTypes["map_pools_order_by"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -6611,7 +6610,6 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invite_code?: string | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
-	lan?: boolean | undefined | null | Variable<any, string>,
 	lobby_access?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	map_veto?: boolean | undefined | null | Variable<any, string>,
@@ -6620,7 +6618,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	overtime?: boolean | undefined | null | Variable<any, string>,
 	prefer_dedicated_server?: boolean | undefined | null | Variable<any, string>,
 	region_veto?: boolean | undefined | null | Variable<any, string>,
-	regions?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	regions?: Array<string> | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	tv_delay?: number | undefined | null | Variable<any, string>,
@@ -6664,7 +6662,6 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	invite_code?: string | undefined | null | Variable<any, string>,
 	knife_round?: boolean | undefined | null | Variable<any, string>,
-	lan?: boolean | undefined | null | Variable<any, string>,
 	lobby_access?: ValueTypes["e_lobby_access_enum"] | undefined | null | Variable<any, string>,
 	map_pool_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	map_veto?: boolean | undefined | null | Variable<any, string>,
@@ -6673,7 +6670,7 @@ count?: [{	columns?: Array<ValueTypes["match_options_select_column"]> | undefine
 	overtime?: boolean | undefined | null | Variable<any, string>,
 	prefer_dedicated_server?: boolean | undefined | null | Variable<any, string>,
 	region_veto?: boolean | undefined | null | Variable<any, string>,
-	regions?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	regions?: Array<string> | undefined | null | Variable<any, string>,
 	tech_timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	timeout_setting?: ValueTypes["e_timeout_settings_enum"] | undefined | null | Variable<any, string>,
 	tv_delay?: number | undefined | null | Variable<any, string>,
@@ -18959,6 +18956,22 @@ export type ResolverInputTypes = {
 		__typename?: boolean | `@${string}`
 }>;
 	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+["String_array_comparison_exp"]: {
+	/** is the array contained in the given array value */
+	_contained_in?: Array<string> | undefined | null,
+	/** does the array contain the given value */
+	_contains?: Array<string> | undefined | null,
+	_eq?: Array<string> | undefined | null,
+	_gt?: Array<string> | undefined | null,
+	_gte?: Array<string> | undefined | null,
+	_in?: Array<Array<string> | undefined | null>,
+	_is_null?: boolean | undefined | null,
+	_lt?: Array<string> | undefined | null,
+	_lte?: Array<string> | undefined | null,
+	_neq?: Array<string> | undefined | null,
+	_nin?: Array<Array<string> | undefined | null>
+};
+	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 ["String_comparison_exp"]: {
 	_eq?: string | undefined | null,
 	_gt?: string | undefined | null,
@@ -21913,19 +21926,6 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 	_neq?: ResolverInputTypes["inet"] | undefined | null,
 	_nin?: Array<ResolverInputTypes["inet"]> | undefined | null
 };
-	["json"]:unknown;
-	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-["json_comparison_exp"]: {
-	_eq?: ResolverInputTypes["json"] | undefined | null,
-	_gt?: ResolverInputTypes["json"] | undefined | null,
-	_gte?: ResolverInputTypes["json"] | undefined | null,
-	_in?: Array<ResolverInputTypes["json"]> | undefined | null,
-	_is_null?: boolean | undefined | null,
-	_lt?: ResolverInputTypes["json"] | undefined | null,
-	_lte?: ResolverInputTypes["json"] | undefined | null,
-	_neq?: ResolverInputTypes["json"] | undefined | null,
-	_nin?: Array<ResolverInputTypes["json"]> | undefined | null
-};
 	["jsonb"]:unknown;
 	["jsonb_cast_exp"]: {
 	String?: ResolverInputTypes["String_comparison_exp"] | undefined | null
@@ -24452,7 +24452,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	id?:boolean | `@${string}`,
 	invite_code?:boolean | `@${string}`,
 	knife_round?:boolean | `@${string}`,
-	lan?:boolean | `@${string}`,
 	lobby_access?:boolean | `@${string}`,
 	/** An object relationship */
 	map_pool?:ResolverInputTypes["map_pools"],
@@ -24475,8 +24474,7 @@ matches_aggregate?: [{	/** distinct select on columns */
 	overtime?:boolean | `@${string}`,
 	prefer_dedicated_server?:boolean | `@${string}`,
 	region_veto?:boolean | `@${string}`,
-regions?: [{	/** JSON select path */
-	path?: string | undefined | null},boolean | `@${string}`],
+	regions?:boolean | `@${string}`,
 	tech_timeout_setting?:boolean | `@${string}`,
 	timeout_setting?:boolean | `@${string}`,
 	/** An object relationship */
@@ -24525,7 +24523,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	invite_code?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	knife_round?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	lan?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	lobby_access?: ResolverInputTypes["e_lobby_access_enum_comparison_exp"] | undefined | null,
 	map_pool?: ResolverInputTypes["map_pools_bool_exp"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -24537,7 +24534,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	overtime?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	prefer_dedicated_server?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	region_veto?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
-	regions?: ResolverInputTypes["json_comparison_exp"] | undefined | null,
+	regions?: ResolverInputTypes["String_array_comparison_exp"] | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum_comparison_exp"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_bool_exp"] | undefined | null,
@@ -24560,7 +24557,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	knife_round?: boolean | undefined | null,
-	lan?: boolean | undefined | null,
 	lobby_access?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
 	map_pool?: ResolverInputTypes["map_pools_obj_rel_insert_input"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -24571,7 +24567,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	overtime?: boolean | undefined | null,
 	prefer_dedicated_server?: boolean | undefined | null,
 	region_veto?: boolean | undefined | null,
-	regions?: ResolverInputTypes["json"] | undefined | null,
+	regions?: Array<string> | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	tournament?: ResolverInputTypes["tournaments_obj_rel_insert_input"] | undefined | null,
@@ -24586,6 +24582,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	regions?:boolean | `@${string}`,
 	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -24597,6 +24594,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	map_pool_id?:boolean | `@${string}`,
 	mr?:boolean | `@${string}`,
 	number_of_substitutes?:boolean | `@${string}`,
+	regions?:boolean | `@${string}`,
 	tv_delay?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -24628,7 +24626,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	invite_code?: ResolverInputTypes["order_by"] | undefined | null,
 	knife_round?: ResolverInputTypes["order_by"] | undefined | null,
-	lan?: ResolverInputTypes["order_by"] | undefined | null,
 	lobby_access?: ResolverInputTypes["order_by"] | undefined | null,
 	map_pool?: ResolverInputTypes["map_pools_order_by"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -24659,7 +24656,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	knife_round?: boolean | undefined | null,
-	lan?: boolean | undefined | null,
 	lobby_access?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
 	map_veto?: boolean | undefined | null,
@@ -24668,7 +24664,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	overtime?: boolean | undefined | null,
 	prefer_dedicated_server?: boolean | undefined | null,
 	region_veto?: boolean | undefined | null,
-	regions?: ResolverInputTypes["json"] | undefined | null,
+	regions?: Array<string> | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	tv_delay?: number | undefined | null,
@@ -24712,7 +24708,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	id?: ResolverInputTypes["uuid"] | undefined | null,
 	invite_code?: string | undefined | null,
 	knife_round?: boolean | undefined | null,
-	lan?: boolean | undefined | null,
 	lobby_access?: ResolverInputTypes["e_lobby_access_enum"] | undefined | null,
 	map_pool_id?: ResolverInputTypes["uuid"] | undefined | null,
 	map_veto?: boolean | undefined | null,
@@ -24721,7 +24716,7 @@ count?: [{	columns?: Array<ResolverInputTypes["match_options_select_column"]> | 
 	overtime?: boolean | undefined | null,
 	prefer_dedicated_server?: boolean | undefined | null,
 	region_veto?: boolean | undefined | null,
-	regions?: ResolverInputTypes["json"] | undefined | null,
+	regions?: Array<string> | undefined | null,
 	tech_timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	timeout_setting?: ResolverInputTypes["e_timeout_settings_enum"] | undefined | null,
 	tv_delay?: number | undefined | null,
@@ -37004,6 +36999,22 @@ export type ModelTypes = {
 		link: string
 };
 	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+["String_array_comparison_exp"]: {
+	/** is the array contained in the given array value */
+	_contained_in?: Array<string> | undefined,
+	/** does the array contain the given value */
+	_contains?: Array<string> | undefined,
+	_eq?: Array<string> | undefined,
+	_gt?: Array<string> | undefined,
+	_gte?: Array<string> | undefined,
+	_in?: Array<Array<string> | undefined>,
+	_is_null?: boolean | undefined,
+	_lt?: Array<string> | undefined,
+	_lte?: Array<string> | undefined,
+	_neq?: Array<string> | undefined,
+	_nin?: Array<Array<string> | undefined>
+};
+	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 ["String_comparison_exp"]: {
 	_eq?: string | undefined,
 	_gt?: string | undefined,
@@ -39638,19 +39649,6 @@ export type ModelTypes = {
 	_neq?: ModelTypes["inet"] | undefined,
 	_nin?: Array<ModelTypes["inet"]> | undefined
 };
-	["json"]:any;
-	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-["json_comparison_exp"]: {
-	_eq?: ModelTypes["json"] | undefined,
-	_gt?: ModelTypes["json"] | undefined,
-	_gte?: ModelTypes["json"] | undefined,
-	_in?: Array<ModelTypes["json"]> | undefined,
-	_is_null?: boolean | undefined,
-	_lt?: ModelTypes["json"] | undefined,
-	_lte?: ModelTypes["json"] | undefined,
-	_neq?: ModelTypes["json"] | undefined,
-	_nin?: Array<ModelTypes["json"]> | undefined
-};
 	["jsonb"]:any;
 	["jsonb_cast_exp"]: {
 	String?: ModelTypes["String_comparison_exp"] | undefined
@@ -41933,7 +41931,6 @@ export type ModelTypes = {
 	id: ModelTypes["uuid"],
 	invite_code?: string | undefined,
 	knife_round: boolean,
-	lan: boolean,
 	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	/** An object relationship */
 	map_pool: ModelTypes["map_pools"],
@@ -41948,7 +41945,7 @@ export type ModelTypes = {
 	overtime: boolean,
 	prefer_dedicated_server: boolean,
 	region_veto: boolean,
-	regions?: ModelTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting: ModelTypes["e_timeout_settings_enum"],
 	timeout_setting: ModelTypes["e_timeout_settings_enum"],
 	/** An object relationship */
@@ -41993,7 +41990,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	invite_code?: ModelTypes["String_comparison_exp"] | undefined,
 	knife_round?: ModelTypes["Boolean_comparison_exp"] | undefined,
-	lan?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	lobby_access?: ModelTypes["e_lobby_access_enum_comparison_exp"] | undefined,
 	map_pool?: ModelTypes["map_pools_bool_exp"] | undefined,
 	map_pool_id?: ModelTypes["uuid_comparison_exp"] | undefined,
@@ -42005,7 +42001,7 @@ export type ModelTypes = {
 	overtime?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	prefer_dedicated_server?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	region_veto?: ModelTypes["Boolean_comparison_exp"] | undefined,
-	regions?: ModelTypes["json_comparison_exp"] | undefined,
+	regions?: ModelTypes["String_array_comparison_exp"] | undefined,
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	tournament?: ModelTypes["tournaments_bool_exp"] | undefined,
@@ -42027,7 +42023,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
-	lan?: boolean | undefined,
 	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	map_pool?: ModelTypes["map_pools_obj_rel_insert_input"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
@@ -42038,7 +42033,7 @@ export type ModelTypes = {
 	overtime?: boolean | undefined,
 	prefer_dedicated_server?: boolean | undefined,
 	region_veto?: boolean | undefined,
-	regions?: ModelTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	tournament?: ModelTypes["tournaments_obj_rel_insert_input"] | undefined,
@@ -42053,6 +42048,7 @@ export type ModelTypes = {
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
+	regions?: Array<string> | undefined,
 	tv_delay?: number | undefined
 };
 	/** aggregate min on columns */
@@ -42063,6 +42059,7 @@ export type ModelTypes = {
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
+	regions?: Array<string> | undefined,
 	tv_delay?: number | undefined
 };
 	/** response of any mutation on the table "match_options" */
@@ -42092,7 +42089,6 @@ export type ModelTypes = {
 	id?: ModelTypes["order_by"] | undefined,
 	invite_code?: ModelTypes["order_by"] | undefined,
 	knife_round?: ModelTypes["order_by"] | undefined,
-	lan?: ModelTypes["order_by"] | undefined,
 	lobby_access?: ModelTypes["order_by"] | undefined,
 	map_pool?: ModelTypes["map_pools_order_by"] | undefined,
 	map_pool_id?: ModelTypes["order_by"] | undefined,
@@ -42122,7 +42118,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
-	lan?: boolean | undefined,
 	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
@@ -42131,7 +42126,7 @@ export type ModelTypes = {
 	overtime?: boolean | undefined,
 	prefer_dedicated_server?: boolean | undefined,
 	region_veto?: boolean | undefined,
-	regions?: ModelTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	tv_delay?: number | undefined,
@@ -42172,7 +42167,6 @@ export type ModelTypes = {
 	id?: ModelTypes["uuid"] | undefined,
 	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
-	lan?: boolean | undefined,
 	lobby_access?: ModelTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: ModelTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
@@ -42181,7 +42175,7 @@ export type ModelTypes = {
 	overtime?: boolean | undefined,
 	prefer_dedicated_server?: boolean | undefined,
 	region_veto?: boolean | undefined,
-	regions?: ModelTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: ModelTypes["e_timeout_settings_enum"] | undefined,
 	tv_delay?: number | undefined,
@@ -52401,6 +52395,22 @@ export type GraphQLTypes = {
 	link: string
 };
 	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+["String_array_comparison_exp"]: {
+		/** is the array contained in the given array value */
+	_contained_in?: Array<string> | undefined,
+	/** does the array contain the given value */
+	_contains?: Array<string> | undefined,
+	_eq?: Array<string> | undefined,
+	_gt?: Array<string> | undefined,
+	_gte?: Array<string> | undefined,
+	_in?: Array<Array<string> | undefined>,
+	_is_null?: boolean | undefined,
+	_lt?: Array<string> | undefined,
+	_lte?: Array<string> | undefined,
+	_neq?: Array<string> | undefined,
+	_nin?: Array<Array<string> | undefined>
+};
+	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 ["String_comparison_exp"]: {
 		_eq?: string | undefined,
 	_gt?: string | undefined,
@@ -55243,19 +55253,6 @@ export type GraphQLTypes = {
 	_neq?: GraphQLTypes["inet"] | undefined,
 	_nin?: Array<GraphQLTypes["inet"]> | undefined
 };
-	["json"]: "scalar" & { name: "json" };
-	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-["json_comparison_exp"]: {
-		_eq?: GraphQLTypes["json"] | undefined,
-	_gt?: GraphQLTypes["json"] | undefined,
-	_gte?: GraphQLTypes["json"] | undefined,
-	_in?: Array<GraphQLTypes["json"]> | undefined,
-	_is_null?: boolean | undefined,
-	_lt?: GraphQLTypes["json"] | undefined,
-	_lte?: GraphQLTypes["json"] | undefined,
-	_neq?: GraphQLTypes["json"] | undefined,
-	_nin?: Array<GraphQLTypes["json"]> | undefined
-};
 	["jsonb"]: "scalar" & { name: "jsonb" };
 	["jsonb_cast_exp"]: {
 		String?: GraphQLTypes["String_comparison_exp"] | undefined
@@ -57655,7 +57652,6 @@ export type GraphQLTypes = {
 	id: GraphQLTypes["uuid"],
 	invite_code?: string | undefined,
 	knife_round: boolean,
-	lan: boolean,
 	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	/** An object relationship */
 	map_pool: GraphQLTypes["map_pools"],
@@ -57670,7 +57666,7 @@ export type GraphQLTypes = {
 	overtime: boolean,
 	prefer_dedicated_server: boolean,
 	region_veto: boolean,
-	regions?: GraphQLTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting: GraphQLTypes["e_timeout_settings_enum"],
 	timeout_setting: GraphQLTypes["e_timeout_settings_enum"],
 	/** An object relationship */
@@ -57718,7 +57714,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	invite_code?: GraphQLTypes["String_comparison_exp"] | undefined,
 	knife_round?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
-	lan?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	lobby_access?: GraphQLTypes["e_lobby_access_enum_comparison_exp"] | undefined,
 	map_pool?: GraphQLTypes["map_pools_bool_exp"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
@@ -57730,7 +57725,7 @@ export type GraphQLTypes = {
 	overtime?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	prefer_dedicated_server?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	region_veto?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
-	regions?: GraphQLTypes["json_comparison_exp"] | undefined,
+	regions?: GraphQLTypes["String_array_comparison_exp"] | undefined,
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum_comparison_exp"] | undefined,
 	tournament?: GraphQLTypes["tournaments_bool_exp"] | undefined,
@@ -57753,7 +57748,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
-	lan?: boolean | undefined,
 	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	map_pool?: GraphQLTypes["map_pools_obj_rel_insert_input"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
@@ -57764,7 +57758,7 @@ export type GraphQLTypes = {
 	overtime?: boolean | undefined,
 	prefer_dedicated_server?: boolean | undefined,
 	region_veto?: boolean | undefined,
-	regions?: GraphQLTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	tournament?: GraphQLTypes["tournaments_obj_rel_insert_input"] | undefined,
@@ -57780,6 +57774,7 @@ export type GraphQLTypes = {
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
+	regions?: Array<string> | undefined,
 	tv_delay?: number | undefined
 };
 	/** aggregate min on columns */
@@ -57791,6 +57786,7 @@ export type GraphQLTypes = {
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	mr?: number | undefined,
 	number_of_substitutes?: number | undefined,
+	regions?: Array<string> | undefined,
 	tv_delay?: number | undefined
 };
 	/** response of any mutation on the table "match_options" */
@@ -57821,7 +57817,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["order_by"] | undefined,
 	invite_code?: GraphQLTypes["order_by"] | undefined,
 	knife_round?: GraphQLTypes["order_by"] | undefined,
-	lan?: GraphQLTypes["order_by"] | undefined,
 	lobby_access?: GraphQLTypes["order_by"] | undefined,
 	map_pool?: GraphQLTypes["map_pools_order_by"] | undefined,
 	map_pool_id?: GraphQLTypes["order_by"] | undefined,
@@ -57852,7 +57847,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
-	lan?: boolean | undefined,
 	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
@@ -57861,7 +57855,7 @@ export type GraphQLTypes = {
 	overtime?: boolean | undefined,
 	prefer_dedicated_server?: boolean | undefined,
 	region_veto?: boolean | undefined,
-	regions?: GraphQLTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	tv_delay?: number | undefined,
@@ -57905,7 +57899,6 @@ export type GraphQLTypes = {
 	id?: GraphQLTypes["uuid"] | undefined,
 	invite_code?: string | undefined,
 	knife_round?: boolean | undefined,
-	lan?: boolean | undefined,
 	lobby_access?: GraphQLTypes["e_lobby_access_enum"] | undefined,
 	map_pool_id?: GraphQLTypes["uuid"] | undefined,
 	map_veto?: boolean | undefined,
@@ -57914,7 +57907,7 @@ export type GraphQLTypes = {
 	overtime?: boolean | undefined,
 	prefer_dedicated_server?: boolean | undefined,
 	region_veto?: boolean | undefined,
-	regions?: GraphQLTypes["json"] | undefined,
+	regions?: Array<string> | undefined,
 	tech_timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	timeout_setting?: GraphQLTypes["e_timeout_settings_enum"] | undefined,
 	tv_delay?: number | undefined,
@@ -69252,7 +69245,6 @@ export const enum match_options_select_column {
 	id = "id",
 	invite_code = "invite_code",
 	knife_round = "knife_round",
-	lan = "lan",
 	lobby_access = "lobby_access",
 	map_pool_id = "map_pool_id",
 	map_veto = "map_veto",
@@ -69274,7 +69266,6 @@ export const enum match_options_update_column {
 	id = "id",
 	invite_code = "invite_code",
 	knife_round = "knife_round",
-	lan = "lan",
 	lobby_access = "lobby_access",
 	map_pool_id = "map_pool_id",
 	map_veto = "map_veto",
@@ -70045,6 +70036,7 @@ export const enum v_pool_maps_select_column_v_pool_maps_aggregate_bool_exp_bool_
 type ZEUS_VARIABLES = {
 	["Boolean_comparison_exp"]: ValueTypes["Boolean_comparison_exp"];
 	["Int_comparison_exp"]: ValueTypes["Int_comparison_exp"];
+	["String_array_comparison_exp"]: ValueTypes["String_array_comparison_exp"];
 	["String_comparison_exp"]: ValueTypes["String_comparison_exp"];
 	["_map_pool_bool_exp"]: ValueTypes["_map_pool_bool_exp"];
 	["_map_pool_constraint"]: ValueTypes["_map_pool_constraint"];
@@ -70371,8 +70363,6 @@ type ZEUS_VARIABLES = {
 	["game_server_nodes_variance_order_by"]: ValueTypes["game_server_nodes_variance_order_by"];
 	["inet"]: ValueTypes["inet"];
 	["inet_comparison_exp"]: ValueTypes["inet_comparison_exp"];
-	["json"]: ValueTypes["json"];
-	["json_comparison_exp"]: ValueTypes["json_comparison_exp"];
 	["jsonb"]: ValueTypes["jsonb"];
 	["jsonb_cast_exp"]: ValueTypes["jsonb_cast_exp"];
 	["jsonb_comparison_exp"]: ValueTypes["jsonb_comparison_exp"];

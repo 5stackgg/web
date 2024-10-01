@@ -7,6 +7,9 @@ export const AllTypesProps: Record<string,any> = {
 	Int_comparison_exp:{
 
 	},
+	String_array_comparison_exp:{
+
+	},
 	String_comparison_exp:{
 
 	},
@@ -1500,17 +1503,6 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"inet",
 		_nin:"inet"
 	},
-	json: `scalar.json` as const,
-	json_comparison_exp:{
-		_eq:"json",
-		_gt:"json",
-		_gte:"json",
-		_in:"json",
-		_lt:"json",
-		_lte:"json",
-		_neq:"json",
-		_nin:"json"
-	},
 	jsonb: `scalar.jsonb` as const,
 	jsonb_cast_exp:{
 		String:"String_comparison_exp"
@@ -2883,9 +2875,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"matches_select_column",
 			order_by:"matches_order_by",
 			where:"matches_bool_exp"
-		},
-		regions:{
-
 		}
 	},
 	match_options_aggregate_fields:{
@@ -2903,7 +2892,6 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
 		knife_round:"Boolean_comparison_exp",
-		lan:"Boolean_comparison_exp",
 		lobby_access:"e_lobby_access_enum_comparison_exp",
 		map_pool:"map_pools_bool_exp",
 		map_pool_id:"uuid_comparison_exp",
@@ -2915,7 +2903,7 @@ export const AllTypesProps: Record<string,any> = {
 		overtime:"Boolean_comparison_exp",
 		prefer_dedicated_server:"Boolean_comparison_exp",
 		region_veto:"Boolean_comparison_exp",
-		regions:"json_comparison_exp",
+		regions:"String_array_comparison_exp",
 		tech_timeout_setting:"e_timeout_settings_enum_comparison_exp",
 		timeout_setting:"e_timeout_settings_enum_comparison_exp",
 		tournament:"tournaments_bool_exp",
@@ -2932,7 +2920,6 @@ export const AllTypesProps: Record<string,any> = {
 		map_pool:"map_pools_obj_rel_insert_input",
 		map_pool_id:"uuid",
 		matches:"matches_arr_rel_insert_input",
-		regions:"json",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		tournament:"tournaments_obj_rel_insert_input",
@@ -2954,7 +2941,6 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		invite_code:"order_by",
 		knife_round:"order_by",
-		lan:"order_by",
 		lobby_access:"order_by",
 		map_pool:"map_pools_order_by",
 		map_pool_id:"order_by",
@@ -2980,7 +2966,6 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
-		regions:"json",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		type:"e_match_types_enum"
@@ -2993,7 +2978,6 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
-		regions:"json",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		type:"e_match_types_enum"
@@ -11785,7 +11769,6 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	inet: `scalar.inet` as const,
-	json: `scalar.json` as const,
 	jsonb: `scalar.jsonb` as const,
 	map_pools:{
 		e_type:"e_map_pool_types",
@@ -12418,7 +12401,6 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		invite_code:"String",
 		knife_round:"Boolean",
-		lan:"Boolean",
 		lobby_access:"e_lobby_access_enum",
 		map_pool:"map_pools",
 		map_pool_id:"uuid",
@@ -12430,7 +12412,7 @@ export const ReturnTypes: Record<string,any> = {
 		overtime:"Boolean",
 		prefer_dedicated_server:"Boolean",
 		region_veto:"Boolean",
-		regions:"json",
+		regions:"String",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		tournament:"tournaments",
@@ -12467,6 +12449,7 @@ export const ReturnTypes: Record<string,any> = {
 		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
+		regions:"String",
 		tv_delay:"Int"
 	},
 	match_options_min_fields:{
@@ -12476,6 +12459,7 @@ export const ReturnTypes: Record<string,any> = {
 		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
+		regions:"String",
 		tv_delay:"Int"
 	},
 	match_options_mutation_response:{

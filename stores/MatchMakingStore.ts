@@ -42,7 +42,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
             where: {
               total_server_count: {
                 _gt: 0,
-              }
+              },
             },
           },
           {

@@ -143,7 +143,6 @@ export default {
                 coaches: true,
                 tv_delay: true,
                 map_veto: true,
-                lan: true,
                 region_veto: true,
                 overtime: true,
                 knife_round: true,

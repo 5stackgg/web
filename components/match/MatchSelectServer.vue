@@ -77,9 +77,7 @@ export default {
       servers: {
         query: typedGql("subscription")({
           servers: [
-            {
-           
-            },
+            {},
             {
               id: true,
               host: true,

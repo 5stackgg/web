@@ -6,6 +6,7 @@ import { Info } from "lucide-vue-next";
 </script>
 
 <template>
+  <pre>{{ form.errors }}</pre>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
       <template #title> Create Match </template>
@@ -97,7 +98,6 @@ import { Info } from "lucide-vue-next";
 <script lang="ts">
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
@@ -132,12 +132,8 @@ export default {
           knife_round: form.knife_round,
           overtime: form.overtime,
           map_veto: form.map_veto,
-          ...(this.canSetLan
-            ? {
-                lan: form.lan,
-              }
-            : {}),
           region_veto: form.region_veto,
+          regions: form.regions,
           coaches: form.coaches,
           timeout_setting: form.timeout_setting,
           tech_timeout_setting: form.tech_timeout_setting,
@@ -196,12 +192,7 @@ export default {
                     overtime: $("overtime", "Boolean!"),
                     map_veto: $("map_veto", "Boolean!"),
                     region_veto: $("region_veto", "Boolean!"),
-
-                    ...(this.canSetLan
-                      ? {
-                          lan: $("lan", "Boolean!"),
-                        }
-                      : {}),
+                    regions: $("regions", "[String!]!"),
                     timeout_setting: $(
                       "timeout_setting",
                       "e_timeout_settings_enum!",
@@ -227,16 +218,6 @@ export default {
       });
 
       this.$router.push(`/matches/${data.insert_matches_one.id}`);
-    },
-  },
-  computed: {
-    me() {
-      return useAuthStore().me;
-    },
-    canSetLan() {
-      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
-        useAuthStore();
-      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
     },
   },
 };

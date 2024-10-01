@@ -183,7 +183,6 @@ export default {
             coaches: tournament.options.coaches,
             knife_round: tournament.options.knife_round,
             region_veto: tournament.options.region_veto,
-            lan: tournament.options.lan,
             overtime: tournament.options.overtime,
             best_of: tournament.options.best_of.toString(),
             number_of_substitutes: tournament.options.number_of_substitutes,
@@ -212,11 +211,6 @@ export default {
     },
   },
   computed: {
-    canSetLan() {
-      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
-        useAuthStore();
-      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
-    },
     defaultMapPool() {
       return this.map_pools?.find((pool) => {
         return pool.type === this.form.values.type;
@@ -316,11 +310,7 @@ export default {
             overtime: form.overtime,
             coaches: form.coaches,
             region_veto: form.region_veto,
-            ...(this.canSetLan
-              ? {
-                  lan: form.lan,
-                }
-              : {}),
+            regions: form.regions,
             number_of_substitutes: form.number_of_substitutes,
             timeout_setting: form.timeout_setting,
             tech_timeout_setting: form.tech_timeout_setting,
@@ -340,11 +330,7 @@ export default {
                   overtime: $("overtime", "Boolean!"),
                   map_veto: true,
                   region_veto: $("region_veto", "Boolean!"),
-                  ...(this.canSetLan
-                    ? {
-                        lan: $("lan", "Boolean!"),
-                      }
-                    : {}),
+                  regions: $("regions", "[String!]!"),
                   coaches: $("coaches", "Boolean!"),
                   number_of_substitutes: $("number_of_substitutes", "Int!"),
                   timeout_setting: $(
@@ -380,11 +366,7 @@ export default {
           overtime: form.overtime,
           coaches: form.coaches,
           region_veto: form.region_veto,
-          ...(this.canSetLan
-            ? {
-                lan: form.lan,
-              }
-            : {}),
+          regions: form.regions,
           number_of_substitutes: form.number_of_substitutes,
           timeout_setting: form.timeout_setting,
           tech_timeout_setting: form.tech_timeout_setting,
@@ -424,11 +406,7 @@ export default {
                     overtime: $("overtime", "Boolean!"),
                     map_veto: true,
                     region_veto: $("region_veto", "Boolean!"),
-                    ...(this.canSetLan
-                      ? {
-                          lan: $("lan", "Boolean!"),
-                        }
-                      : {}),
+                    regions: $("regions", "[String!]!"),
                     coaches: $("coaches", "Boolean!"),
                     number_of_substitutes: $("number_of_substitutes", "Int!"),
                     timeout_setting: $(

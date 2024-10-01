@@ -8,7 +8,7 @@ export default function matchOptionsValidator(additional: any) {
       mr: z.string().default("12"),
       map_veto: z.boolean().default(true),
       region_veto: z.boolean().default(true),
-      lan: z.boolean().default(false),
+      regions: z.string().array().default([]),
       coaches: z.boolean().default(false),
       tv_delay: z.number().min(0).max(120).default(115),
       knife_round: z.boolean().default(true),

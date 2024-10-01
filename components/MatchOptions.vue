@@ -2,6 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
+import { Check, ChevronsUpDown } from "lucide-vue-next";
 </script>
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -203,17 +204,13 @@ import { Separator } from "~/components/ui/separator";
         </FormItem>
       </FormField>
 
-      <FormField
-        v-slot="{ value, handleChange }"
-        name="lan"
-        v-if="hasLanRegion && canSetLan"
-      >
+      <FormField v-slot="{ value, handleChange }" name="overtime">
         <FormItem
           class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
           @click="handleChange(!value)"
         >
           <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">Lan</FormLabel>
+            <FormLabel class="text-lg font-semibold">Overtime</FormLabel>
             <FormControl>
               <Switch
                 class="pointer-events-none"
@@ -222,33 +219,7 @@ import { Separator } from "~/components/ui/separator";
               />
             </FormControl>
           </div>
-          <FormDescription> Use LAN Servers </FormDescription>
-        </FormItem>
-      </FormField>
-
-      <FormField
-        v-slot="{ value, handleChange }"
-        name="region_veto"
-        v-if="regions.length > 1"
-      >
-        <FormItem
-          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-          @click="form.values.lan === false && handleChange(!value)"
-        >
-          <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">Region Veto</FormLabel>
-            <FormControl>
-              <Switch
-                :disabled="form.values.lan"
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="form.values.lan === false && handleChange"
-              />
-            </FormControl>
-          </div>
-          <FormDescription>
-            Allows teams to veto and select the server region.
-          </FormDescription>
+          <FormDescription> Each overtime is a best of 6. </FormDescription>
         </FormItem>
       </FormField>
 
@@ -274,25 +245,6 @@ import { Separator } from "~/components/ui/separator";
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ value, handleChange }" name="overtime">
-        <FormItem
-          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-          @click="handleChange(!value)"
-        >
-          <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">Overtime</FormLabel>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </div>
-          <FormDescription> Each overtime is a best of 6. </FormDescription>
-        </FormItem>
-      </FormField>
-
       <FormField v-slot="{ value, handleChange }" name="coaches">
         <FormItem
           class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
@@ -313,6 +265,142 @@ import { Separator } from "~/components/ui/separator";
           </FormDescription>
         </FormItem>
       </FormField>
+
+      <Card>
+        <CardHeader>
+          <CardTitle class="flex justify-between items-center">
+            <div class="text-lg font-semibold">Region Settings</div>
+            <div
+              class="flex items-center gap-4"
+              v-if="hasLanRegion && canSetLan"
+            >
+              <span>LAN Match</span>
+              <Switch
+                :checked="form.values.lan"
+                @update:checked="
+                  (checked) => form.setFieldValue('lan', checked)
+                "
+                aria-label="Toggle LAN Match"
+              />
+            </div>
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent
+          class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+          v-if="canSelectRegions || canSetLan"
+        >
+          <FormField v-slot="{ value, handleChange }" name="region_veto">
+            <FormItem
+              class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+              @click="canSelectRegions && handleChange(!value)"
+            >
+              <div class="flex justify-between items-center">
+                <FormLabel class="text-lg font-semibold">Veto</FormLabel>
+                <FormControl>
+                  <Switch
+                    :disabled="!canSelectRegions"
+                    class="pointer-events-none"
+                    :checked="value"
+                    @update:checked="form.values.lan === false && handleChange"
+                  />
+                </FormControl>
+              </div>
+              <FormDescription>
+                Allows teams to veto and select the server region.
+              </FormDescription>
+            </FormItem>
+          </FormField>
+
+          <FormField name="regions">
+            <FormItem>
+              <FormLabel>
+                <div class="text-lg font-semibold">Preferred Regions</div>
+              </FormLabel>
+
+              <FormControl>
+                <Popover>
+                  <PopoverTrigger as-child>
+                    <Button
+                      :disabled="!canSelectRegions"
+                      variant="outline"
+                      role="combobox"
+                      class="justify-between w-full"
+                    >
+                      <span
+                        v-if="form.values.regions && form.values.regions.length"
+                      >
+                        {{
+                          form.values.regions
+                            .map(
+                              (r) =>
+                                regions.find((region) => region.value === r)
+                                  ?.description,
+                            )
+                            .join(", ")
+                        }}
+                      </span>
+                      <span v-else class="text-muted-foreground"> Any </span>
+                      <ChevronsUpDown
+                        class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                      />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent class="w-[200px] p-0">
+                    <Command>
+                      <CommandList>
+                        <CommandGroup>
+                          <CommandItem
+                            v-for="region in regions"
+                            :key="region.value"
+                            :value="region.value"
+                            :class="{
+                              'cursor-pointer': canSelectRegions,
+                            }"
+                            @select="
+                              () => {
+                                const currentRegions =
+                                  form.values.regions || [];
+                                const index = currentRegions.indexOf(
+                                  region.value,
+                                );
+                                if (index === -1) {
+                                  form.setFieldValue('regions', [
+                                    ...currentRegions,
+                                    region.value,
+                                  ]);
+                                } else {
+                                  const updatedRegions = [...currentRegions];
+                                  updatedRegions.splice(index, 1);
+                                  form.setFieldValue('regions', updatedRegions);
+                                }
+                              }
+                            "
+                          >
+                            {{ region.description }}
+                            <Check
+                              :class="[
+                                'mr-2 h-4 mx-auto',
+                                form.values.regions?.includes(region.value)
+                                  ? 'opacity-100'
+                                  : 'opacity-0',
+                              ]"
+                            />
+                          </CommandItem>
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </FormControl>
+              <FormDescription>
+                Select preferred regions for the match.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </CardContent>
+      </Card>
 
       <div class="flex flex-col space-y-3 rounded-lg border p-4">
         <FormField v-slot="{ value }" name="number_of_substitutes">
@@ -652,6 +740,9 @@ export default {
       const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
         useAuthStore();
       return isAdmin || isMatchOrganizer || isTournamentOrganizer;
+    },
+    canSelectRegions() {
+      return this.regions.length > 1 && !this.form.values.lan;
     },
   },
   methods: {

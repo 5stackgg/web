@@ -17,7 +17,7 @@ import {
 </script>
 
 <template>
-  <form class="space-y-8" v-if="match.is_organizer">
+  <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="lineup_id">
       <FormItem>
         <FormLabel>Set Match Winner</FormLabel>

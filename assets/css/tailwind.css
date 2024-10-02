@@ -148,3 +148,9 @@
     }
   }
 }
+
+
+
+div[role="menuitem"] {
+  cursor: pointer;
+}

@@ -161,7 +161,6 @@ export default {
   },
   data() {
     return {
-      inviteDialog: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -175,8 +174,10 @@ export default {
     $route: {
       immediate: true,
       handler() {
+        if (!this.$route.query.invite) {
+          return;
+        }
         this.form.setFieldValue("code", this.$route.query.invite);
-        this.inviteDialog = true;
       },
     },
   },

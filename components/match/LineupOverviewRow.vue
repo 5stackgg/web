@@ -92,7 +92,14 @@ import formatStatValue from "~/utilities/formatStatValue";
           <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
             <span>Promote to Captain</span>
           </DropdownMenuItem>
-          <DropdownMenuItem @click="removeFromLineup">
+
+          <DropdownMenuItem @click="swapTeams">
+            <span>Swap Teams</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem class="text-destructive" @click="removeFromLineup">
             <span>Remove from Lineup</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -129,6 +136,32 @@ export default {
     },
   },
   methods: {
+    async swapTeams() {
+      await this.removeFromLineup();
+
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          insert_match_lineup_players_one: [
+            {
+              object: {
+                steam_id: $("steam_id", "bigint"),
+                match_lineup_id: $("match_lineup_id", "uuid"),
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+        variables: {
+          steam_id: this.member.steam_id,
+          match_lineup_id:
+            this.lineup.id === this.match.lineup_1_id
+              ? this.match.lineup_2_id
+              : this.match.lineup_1_id,
+        },
+      });
+    },
     async makeCaptain() {
       if (this.member.captain) {
         return;

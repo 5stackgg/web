@@ -47,12 +47,12 @@ import MatchLobbyAccess from "./MatchLobbyAccess.vue";
           <MatchSelectServer :match="match"></MatchSelectServer>
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem v-if="match.is_organizer">
           <MatchSelectWinner :match="match"></MatchSelectWinner>
         </DropdownMenuItem>
 
         <template v-if="match.is_in_lineup">
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator v-if="match.is_organizer" />
           <DropdownMenuItem
             class="text-destructive"
             @click="callForOrganizer"

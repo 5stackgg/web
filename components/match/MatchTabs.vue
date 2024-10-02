@@ -281,7 +281,7 @@ export default {
   },
   data() {
     return {
-      inviteDialog: true,
+      inviteDialog: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -290,6 +290,16 @@ export default {
         ),
       }),
     };
+  },
+  watch: {
+    $route: {
+      immediate: true,
+      handler() {
+        if (this.$route.query.invite) {
+          this.inviteDialog = true;
+        }
+      },
+    },
   },
   computed: {
     disableStats() {

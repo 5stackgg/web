@@ -52,7 +52,7 @@ import { e_match_status_enum } from "~/generated/zeus";
               <template
                 v-if="match.status === e_match_status_enum.PickingPlayers"
               >
-                ({{ totalPlayers(match) }} / {{ match.min_players_per_lineup }})
+                ({{ totalPlayers(match) }} / {{ match.min_players_per_lineup * 2 }})
               </template>
             </Badge>
           </TableCell>

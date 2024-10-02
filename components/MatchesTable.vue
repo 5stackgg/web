@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { InfoIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
+import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -46,7 +47,14 @@ import TimeAgo from "~/components/TimeAgo.vue";
             </div>
           </TableCell>
           <TableCell class="text-center">
-            <Badge>{{ match.status }}</Badge>
+            <Badge>
+              {{ match.status }}
+              <template
+                v-if="match.status === e_match_status_enum.PickingPlayers"
+              >
+                ({{ totalPlayers(match) }} / {{ match.min_players_per_lineup }})
+              </template>
+            </Badge>
           </TableCell>
           <TableCell class="hidden sm:table-cell">
             {{ match.options.type }}
@@ -79,6 +87,18 @@ export default {
   methods: {
     viewMatch(matchId) {
       this.$router.push(`/matches/${matchId}`);
+    },
+    totalPlayers(match) {
+      return (
+        Math.min(
+          match.lineup_counts.lineup_1_count,
+          match.min_players_per_lineup,
+        ) +
+        Math.min(
+          match.lineup_counts.lineup_2_count,
+          match.min_players_per_lineup,
+        )
+      );
     },
   },
 };

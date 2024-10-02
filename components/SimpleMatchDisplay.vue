@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-vue-next";
 import TimeAgo from "./TimeAgo.vue";
 import MapDisplay from "./MapDisplay.vue";
 import MatchLineupScoreDisplay from "./match/MatchLineupScoreDisplay.vue";
+import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -36,7 +37,12 @@ import MatchLineupScoreDisplay from "./match/MatchLineupScoreDisplay.vue";
       class="absolute inset-0 bg-black bg-opacity-50 flex flex-col p-4 justify-between hover:bg-opacity-10 duration-300"
     >
       <div class="flex justify-between items-start w-full">
-        <Badge>{{ match.e_match_status.description }}</Badge>
+        <Badge>
+          {{ match.e_match_status.description }}
+          <template v-if="match.status === e_match_status_enum.PickingPlayers">
+            ({{ totalPlayers }} / {{ match.min_players_per_lineup }})
+          </template>
+        </Badge>
         <ArrowRight></ArrowRight>
       </div>
 
@@ -89,6 +95,20 @@ export default {
   methods: {
     goToMatch() {
       this.$router.push(`/matches/${this.match.id}`);
+    },
+  },
+  computed: {
+    totalPlayers() {
+      return (
+        Math.min(
+          this.match.lineup_counts.lineup_1_count,
+          this.match.min_players_per_lineup,
+        ) +
+        Math.min(
+          this.match.lineup_counts.lineup_2_count,
+          this.match.min_players_per_lineup,
+        )
+      );
     },
   },
 };

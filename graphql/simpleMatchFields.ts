@@ -41,4 +41,6 @@ export const simpleMatchFields = Selector("servers")({
   },
   created_at: true,
   scheduled_at: true,
+  min_players_per_lineup: true,
+  lineup_counts: true,
 });

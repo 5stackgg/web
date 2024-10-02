@@ -1503,6 +1503,17 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"inet",
 		_nin:"inet"
 	},
+	json: `scalar.json` as const,
+	json_comparison_exp:{
+		_eq:"json",
+		_gt:"json",
+		_gte:"json",
+		_in:"json",
+		_lt:"json",
+		_lte:"json",
+		_neq:"json",
+		_nin:"json"
+	},
 	jsonb: `scalar.jsonb` as const,
 	jsonb_cast_exp:{
 		String:"String_comparison_exp"
@@ -3101,6 +3112,9 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"match_map_demos_order_by",
 			where:"match_map_demos_bool_exp"
 		},
+		lineup_counts:{
+
+		},
 		map_veto_picks:{
 			distinct_on:"match_map_veto_picks_select_column",
 			order_by:"match_map_veto_picks_order_by",
@@ -3283,6 +3297,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_1_id:"uuid_comparison_exp",
 		lineup_2:"match_lineups_bool_exp",
 		lineup_2_id:"uuid_comparison_exp",
+		lineup_counts:"json_comparison_exp",
 		map_veto_picking_lineup_id:"uuid_comparison_exp",
 		map_veto_picks:"match_map_veto_picks_bool_exp",
 		map_veto_picks_aggregate:"match_map_veto_picks_aggregate_bool_exp",
@@ -3440,6 +3455,7 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_1_id:"order_by",
 		lineup_2:"match_lineups_order_by",
 		lineup_2_id:"order_by",
+		lineup_counts:"order_by",
 		map_veto_picking_lineup_id:"order_by",
 		map_veto_picks_aggregate:"match_map_veto_picks_aggregate_order_by",
 		map_veto_type:"order_by",
@@ -11769,6 +11785,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_server_count:"Int"
 	},
 	inet: `scalar.inet` as const,
+	json: `scalar.json` as const,
 	jsonb: `scalar.jsonb` as const,
 	map_pools:{
 		e_type:"e_map_pool_types",
@@ -12573,6 +12590,7 @@ export const ReturnTypes: Record<string,any> = {
 		lineup_1_id:"uuid",
 		lineup_2:"match_lineups",
 		lineup_2_id:"uuid",
+		lineup_counts:"json",
 		map_veto_picking_lineup_id:"uuid",
 		map_veto_picks:"match_map_veto_picks",
 		map_veto_picks_aggregate:"match_map_veto_picks_aggregate",

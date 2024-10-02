@@ -862,6 +862,7 @@ export type ScalarCoders = {
 	bigint?: ScalarResolver;
 	bytea?: ScalarResolver;
 	inet?: ScalarResolver;
+	json?: ScalarResolver;
 	jsonb?: ScalarResolver;
 	numeric?: ScalarResolver;
 	timestamptz?: ScalarResolver;
@@ -3879,6 +3880,19 @@ count?: [{	columns?: Array<ValueTypes["game_server_nodes_select_column"]> | unde
 	_lte?: ValueTypes["inet"] | undefined | null | Variable<any, string>,
 	_neq?: ValueTypes["inet"] | undefined | null | Variable<any, string>,
 	_nin?: Array<ValueTypes["inet"]> | undefined | null | Variable<any, string>
+};
+	["json"]:unknown;
+	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
+["json_comparison_exp"]: {
+	_eq?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	_gt?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	_gte?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["json"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_lt?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	_lte?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["json"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["json"]> | undefined | null | Variable<any, string>
 };
 	["jsonb"]:unknown;
 	["jsonb_cast_exp"]: {
@@ -6948,6 +6962,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	lineup_2?:ValueTypes["match_lineups"],
 	lineup_2_id?:boolean | `@${string}`,
+lineup_counts?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?:boolean | `@${string}`,
 map_veto_picks?: [{	/** distinct select on columns */
@@ -7222,6 +7238,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineup_1_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	lineup_2?: ValueTypes["match_lineups_bool_exp"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	lineup_counts?: ValueTypes["json_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_veto_picking_lineup_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	map_veto_picks?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>,
 	map_veto_picks_aggregate?: ValueTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -7486,6 +7503,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	lineup_1_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	lineup_2?: ValueTypes["match_lineups_order_by"] | undefined | null | Variable<any, string>,
 	lineup_2_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	lineup_counts?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_veto_picking_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	map_veto_picks_aggregate?: ValueTypes["match_map_veto_picks_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	map_veto_type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -21926,6 +21944,19 @@ count?: [{	columns?: Array<ResolverInputTypes["game_server_nodes_select_column"]
 	_neq?: ResolverInputTypes["inet"] | undefined | null,
 	_nin?: Array<ResolverInputTypes["inet"]> | undefined | null
 };
+	["json"]:unknown;
+	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
+["json_comparison_exp"]: {
+	_eq?: ResolverInputTypes["json"] | undefined | null,
+	_gt?: ResolverInputTypes["json"] | undefined | null,
+	_gte?: ResolverInputTypes["json"] | undefined | null,
+	_in?: Array<ResolverInputTypes["json"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ResolverInputTypes["json"] | undefined | null,
+	_lte?: ResolverInputTypes["json"] | undefined | null,
+	_neq?: ResolverInputTypes["json"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["json"]> | undefined | null
+};
 	["jsonb"]:unknown;
 	["jsonb_cast_exp"]: {
 	String?: ResolverInputTypes["String_comparison_exp"] | undefined | null
@@ -24994,6 +25025,8 @@ demos_aggregate?: [{	/** distinct select on columns */
 	/** An object relationship */
 	lineup_2?:ResolverInputTypes["match_lineups"],
 	lineup_2_id?:boolean | `@${string}`,
+lineup_counts?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?:boolean | `@${string}`,
 map_veto_picks?: [{	/** distinct select on columns */
@@ -25268,6 +25301,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineup_1_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	lineup_2?: ResolverInputTypes["match_lineups_bool_exp"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	lineup_counts?: ResolverInputTypes["json_comparison_exp"] | undefined | null,
 	map_veto_picking_lineup_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	map_veto_picks?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null,
 	map_veto_picks_aggregate?: ResolverInputTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined | null,
@@ -25532,6 +25566,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	lineup_1_id?: ResolverInputTypes["order_by"] | undefined | null,
 	lineup_2?: ResolverInputTypes["match_lineups_order_by"] | undefined | null,
 	lineup_2_id?: ResolverInputTypes["order_by"] | undefined | null,
+	lineup_counts?: ResolverInputTypes["order_by"] | undefined | null,
 	map_veto_picking_lineup_id?: ResolverInputTypes["order_by"] | undefined | null,
 	map_veto_picks_aggregate?: ResolverInputTypes["match_map_veto_picks_aggregate_order_by"] | undefined | null,
 	map_veto_type?: ResolverInputTypes["order_by"] | undefined | null,
@@ -39649,6 +39684,19 @@ export type ModelTypes = {
 	_neq?: ModelTypes["inet"] | undefined,
 	_nin?: Array<ModelTypes["inet"]> | undefined
 };
+	["json"]:any;
+	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
+["json_comparison_exp"]: {
+	_eq?: ModelTypes["json"] | undefined,
+	_gt?: ModelTypes["json"] | undefined,
+	_gte?: ModelTypes["json"] | undefined,
+	_in?: Array<ModelTypes["json"]> | undefined,
+	_is_null?: boolean | undefined,
+	_lt?: ModelTypes["json"] | undefined,
+	_lte?: ModelTypes["json"] | undefined,
+	_neq?: ModelTypes["json"] | undefined,
+	_nin?: Array<ModelTypes["json"]> | undefined
+};
 	["jsonb"]:any;
 	["jsonb_cast_exp"]: {
 	String?: ModelTypes["String_comparison_exp"] | undefined
@@ -42431,6 +42479,8 @@ export type ModelTypes = {
 	/** An object relationship */
 	lineup_2: ModelTypes["match_lineups"],
 	lineup_2_id: ModelTypes["uuid"],
+	/** A computed field, executes function "get_lineup_counts" */
+	lineup_counts?: ModelTypes["json"] | undefined,
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?: ModelTypes["uuid"] | undefined,
 	/** An array relationship */
@@ -42609,6 +42659,7 @@ export type ModelTypes = {
 	lineup_1_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	lineup_2?: ModelTypes["match_lineups_bool_exp"] | undefined,
 	lineup_2_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	lineup_counts?: ModelTypes["json_comparison_exp"] | undefined,
 	map_veto_picking_lineup_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	map_veto_picks?: ModelTypes["match_map_veto_picks_bool_exp"] | undefined,
 	map_veto_picks_aggregate?: ModelTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined,
@@ -42869,6 +42920,7 @@ export type ModelTypes = {
 	lineup_1_id?: ModelTypes["order_by"] | undefined,
 	lineup_2?: ModelTypes["match_lineups_order_by"] | undefined,
 	lineup_2_id?: ModelTypes["order_by"] | undefined,
+	lineup_counts?: ModelTypes["order_by"] | undefined,
 	map_veto_picking_lineup_id?: ModelTypes["order_by"] | undefined,
 	map_veto_picks_aggregate?: ModelTypes["match_map_veto_picks_aggregate_order_by"] | undefined,
 	map_veto_type?: ModelTypes["order_by"] | undefined,
@@ -55253,6 +55305,19 @@ export type GraphQLTypes = {
 	_neq?: GraphQLTypes["inet"] | undefined,
 	_nin?: Array<GraphQLTypes["inet"]> | undefined
 };
+	["json"]: "scalar" & { name: "json" };
+	/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
+["json_comparison_exp"]: {
+		_eq?: GraphQLTypes["json"] | undefined,
+	_gt?: GraphQLTypes["json"] | undefined,
+	_gte?: GraphQLTypes["json"] | undefined,
+	_in?: Array<GraphQLTypes["json"]> | undefined,
+	_is_null?: boolean | undefined,
+	_lt?: GraphQLTypes["json"] | undefined,
+	_lte?: GraphQLTypes["json"] | undefined,
+	_neq?: GraphQLTypes["json"] | undefined,
+	_nin?: Array<GraphQLTypes["json"]> | undefined
+};
 	["jsonb"]: "scalar" & { name: "jsonb" };
 	["jsonb_cast_exp"]: {
 		String?: GraphQLTypes["String_comparison_exp"] | undefined
@@ -58178,6 +58243,8 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	lineup_2: GraphQLTypes["match_lineups"],
 	lineup_2_id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "get_lineup_counts" */
+	lineup_counts?: GraphQLTypes["json"] | undefined,
 	/** A computed field, executes function "get_map_veto_picking_lineup_id" */
 	map_veto_picking_lineup_id?: GraphQLTypes["uuid"] | undefined,
 	/** An array relationship */
@@ -58359,6 +58426,7 @@ export type GraphQLTypes = {
 	lineup_1_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	lineup_2?: GraphQLTypes["match_lineups_bool_exp"] | undefined,
 	lineup_2_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	lineup_counts?: GraphQLTypes["json_comparison_exp"] | undefined,
 	map_veto_picking_lineup_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	map_veto_picks?: GraphQLTypes["match_map_veto_picks_bool_exp"] | undefined,
 	map_veto_picks_aggregate?: GraphQLTypes["match_map_veto_picks_aggregate_bool_exp"] | undefined,
@@ -58623,6 +58691,7 @@ export type GraphQLTypes = {
 	lineup_1_id?: GraphQLTypes["order_by"] | undefined,
 	lineup_2?: GraphQLTypes["match_lineups_order_by"] | undefined,
 	lineup_2_id?: GraphQLTypes["order_by"] | undefined,
+	lineup_counts?: GraphQLTypes["order_by"] | undefined,
 	map_veto_picking_lineup_id?: GraphQLTypes["order_by"] | undefined,
 	map_veto_picks_aggregate?: GraphQLTypes["match_map_veto_picks_aggregate_order_by"] | undefined,
 	map_veto_type?: GraphQLTypes["order_by"] | undefined,
@@ -70363,6 +70432,8 @@ type ZEUS_VARIABLES = {
 	["game_server_nodes_variance_order_by"]: ValueTypes["game_server_nodes_variance_order_by"];
 	["inet"]: ValueTypes["inet"];
 	["inet_comparison_exp"]: ValueTypes["inet_comparison_exp"];
+	["json"]: ValueTypes["json"];
+	["json_comparison_exp"]: ValueTypes["json_comparison_exp"];
 	["jsonb"]: ValueTypes["jsonb"];
 	["jsonb_cast_exp"]: ValueTypes["jsonb_cast_exp"];
 	["jsonb_comparison_exp"]: ValueTypes["jsonb_comparison_exp"];

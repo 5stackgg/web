@@ -7,6 +7,7 @@ import { Users } from "lucide-vue-next";
 import RegionStatuses from "~/components/RegionStatuses.vue";
 import AppNavFooter from "./AppNavFooter.vue";
 import AppNotifications from "./AppNotifications.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -93,12 +94,26 @@ import AppNotifications from "./AppNotifications.vue";
                 }"
                 :title="overalRegionStatus"
               ></span>
-              <span>{{ playersOnline }}</span>
-              <Users class="h-4 w-4" />
             </div>
           </PopoverTrigger>
           <PopoverContent>
             <RegionStatuses></RegionStatuses>
+          </PopoverContent>
+        </Popover>
+
+        <Popover>
+          <PopoverTrigger>
+            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+              <Users class="h-4 w-4" />
+              <span>{{ playersOnline.length }}</span>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent>
+            <ScrollArea class="max-h-[20vh] overflow-auto">
+              <template :key="player.steam_id" v-for="player of playersOnline">
+                <PlayerDisplay :player="player" class="my-2"></PlayerDisplay>
+              </template>
+            </ScrollArea>
           </PopoverContent>
         </Popover>
 
@@ -109,12 +124,51 @@ import AppNotifications from "./AppNotifications.vue";
 </template>
 
 <script lang="ts">
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
+import { $ } from "~/generated/zeus";
+import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 export default {
+  apollo: {
+    $subscribe: {
+      players: {
+        variables: function () {
+          return {
+            steam_ids: useMatchMakingStore().playersOnline,
+          };
+        },
+        result: function ({ data }) {
+          this.openMatches = data.matches;
+        },
+        query: typedGql("subscription")({
+          players: [
+            {
+              where: {
+                steam_id: {
+                  _in: $("steam_ids", "[bigint]!"),
+                },
+              },
+            },
+            {
+              name: true,
+              steam_id: true,
+              avatar_url: true,
+              country: true,
+            },
+          ],
+        }),
+        result: function ({ data }) {
+          this.playersOnline = data.players;
+        },
+      },
+    },
+  },
   data() {
     return {
+      playersOnline: [],
       links: [
         {
           to: "/matches",
@@ -154,9 +208,6 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    playersOnline() {
-      return useMatchMakingStore().playersOnline;
     },
     regions() {
       return useMatchMakingStore().regions;

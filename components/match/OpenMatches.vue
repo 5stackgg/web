@@ -25,15 +25,9 @@ import MatchesTable from "~/components/MatchesTable.vue";
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import {
-  $,
-  e_lobby_access_enum,
-  e_match_status_enum,
-  order_by,
-} from "~/generated/zeus";
+import { $, e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 
 export default {
   data() {

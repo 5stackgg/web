@@ -40,11 +40,34 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       <Separator />
 
       <Card class="p-4">
-        <Tabs default-value="my">
+        <Tabs default-value="open">
           <TabsList>
+            <TabsTrigger value="open"> Open Lobbies </TabsTrigger>
             <TabsTrigger value="my"> My Recent Matches </TabsTrigger>
             <TabsTrigger value="other"> Other Matches </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="open">
+            <matches-table
+              class="p-3"
+              :matches="openMatches"
+              v-if="openMatches"
+            ></matches-table>
+
+            <Teleport defer to="#pagination">
+              <Pagination
+                :page="page"
+                :per-page="perPage"
+                @page="
+                  (_page) => {
+                    page = _page;
+                  }
+                "
+                :total="openMatchesAggregate?.aggregate?.count"
+                v-if="openMatchesAggregate"
+              ></Pagination>
+            </Teleport>
+          </TabsContent>
 
           <TabsContent value="my">
             <div class="flex gap-4 overflow-x-auto">
@@ -227,9 +250,115 @@ export default {
             matches_aggregate: [
               {
                 where: {
-                  status: {
-                    _nin: $("statuses", "[e_match_status_enum]"),
+                  _or: [
+                    {
+                      is_in_lineup: {
+                        _eq: true,
+                      },
+                    },
+                    {
+                      status: {
+                        _nin: $("statuses", "[e_match_status_enum]"),
+                      },
+                    },
+                    {
+                      options: {
+                        lobby_access: {
+                          _eq: e_lobby_access_enum.Open,
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                aggregate: {
+                  count: true,
+                },
+              },
+            ],
+          },
+        },
+      }),
+      variables: function () {
+        return {
+          statuses: [e_match_status_enum.PickingPlayers],
+        };
+      },
+    },
+    openMatches: {
+      fetchPolicy: "network-only",
+      query: generateQuery({
+        __alias: {
+          openMatches: {
+            matches: [
+              {
+                limit: $("limit", "Int!"),
+                offset: $("offset", "Int!"),
+                where: {
+                  options: {
+                    lobby_access: {
+                      _eq: e_lobby_access_enum.Open,
+                    },
                   },
+                  _or: [
+                    {
+                      is_in_lineup: {
+                        _eq: true,
+                      },
+                    },
+                    {
+                      status: {
+                        _in: $("statuses", "[e_match_status_enum]"),
+                      },
+                    },
+                  ],
+                },
+                order_by: [
+                  {},
+                  {
+                    created_at: order_by.desc,
+                  },
+                ],
+              },
+              simpleMatchFields,
+            ],
+          },
+        },
+      }),
+      variables: function () {
+        return {
+          limit: this.perPage,
+          offset: (this.page - 1) * this.perPage,
+          statuses: [e_match_status_enum.PickingPlayers],
+        };
+      },
+    },
+    openMatchesAggregate: {
+      fetchPolicy: "network-only",
+      query: generateQuery({
+        __alias: {
+          openMatchesAggregate: {
+            matches_aggregate: [
+              {
+                where: {
+                  options: {
+                    lobby_access: {
+                      _eq: e_lobby_access_enum.Open,
+                    },
+                  },
+                  _or: [
+                    {
+                      is_in_lineup: {
+                        _eq: true,
+                      },
+                    },
+                    {
+                      status: {
+                        _in: $("statuses", "[e_match_status_enum]"),
+                      },
+                    },
+                  ],
                 },
               },
               {

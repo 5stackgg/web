@@ -67,6 +67,39 @@ provide("commander", commander);
           ></LineupOverview>
         </CardContent>
       </Card>
+
+      <Dialog :open="inviteDialog" @update:open="inviteDialog = false">
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invited to Match</DialogTitle>
+            <DialogDescription> Join a roster. </DialogDescription>
+          </DialogHeader>
+
+          <div class="w-full flex flex-col gap-4">
+            <Card>
+              <CardHeader></CardHeader>
+              <CardContent>
+                <LineupOverview
+                  :match="match"
+                  :lineup="match.lineup_1"
+                  :show-stats="false"
+                ></LineupOverview>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader></CardHeader>
+              <CardContent>
+                <LineupOverview
+                  :match="match"
+                  :lineup="match.lineup_2"
+                  :show-stats="false"
+                ></LineupOverview>
+              </CardContent>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
     </TabsContent>
     <TabsContent value="utility">
       <Card>
@@ -248,6 +281,7 @@ export default {
   },
   data() {
     return {
+      inviteDialog: true,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({

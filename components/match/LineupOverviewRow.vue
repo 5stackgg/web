@@ -6,77 +6,81 @@ import formatStatValue from "~/utilities/formatStatValue";
     <TableCell>
       <LineupMember :match="match" :member="member"></LineupMember>
     </TableCell>
-    <TableCell class="text-center">
-      {{ member.player?.kills_aggregate.aggregate.count }}
-    </TableCell>
-    <TableCell class="hidden md:table-cell text-center">
-      {{ member.player?.assists_aggregate.aggregate.count }}
-    </TableCell>
-    <TableCell class="text-center">
-      {{ member.player?.deaths_aggregate.aggregate.count }}
-    </TableCell>
-    <TableCell class="hidden md:table-cell text-center">
-      <span
-        :class="{
-          'text-red-500': kd < 0.9,
-          'text-orange-500': kd >= 0.9 && kd < 1,
-          'text-green-400': kd >= 1 && kd < 1.1,
-          'text-green-600': kd >= 1.1,
-        }"
-      >
-        {{ kd }}
-      </span>
-    </TableCell>
-    <TableCell class="hidden lg:table-cell text-center">
-      {{ hs }}
-    </TableCell>
-    <TableCell class="hidden 2xl:table-cell text-center">
-      {{ member.player?.team_damage_aggregate.aggregate.sum.damage || 0 }}
-    </TableCell>
-    <TableCell class="hidden xl:table-cell text-center">
-      {{ member.player?.multi_kills.length }}
-    </TableCell>
-    <TableCell class="hidden 2xl:table-cell text-center">
-      {{ twoKills }}
-    </TableCell>
-    <TableCell class="hidden 2xl:table-cell text-center">
-      {{ threeKills }}
-    </TableCell>
-    <TableCell class="hidden 2xl:table-cell text-center">
-      {{ fourKills }}
-    </TableCell>
-    <TableCell class="hidden 2xl:table-cell text-center">
-      {{ fiveKills }}
-    </TableCell>
-    <TableCell class="hidden 2xl:table-cell text-center">
-      {{ member.player?.knife_kills_aggregate.aggregate.count }}
-    </TableCell>
-    <TableCell class="hidden 2xl:table-cell text-center">
-      {{ member.player?.zeus_kills_aggregate.aggregate.count }}
-    </TableCell>
-    <TableCell class="hidden table-cell text-center">
-      <div class="flex flex-col flex-auto items-center">
-        <div>
-          {{ member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0 }}
+    <template v-if="showStats">
+      <TableCell class="text-center">
+        {{ member.player?.kills_aggregate.aggregate.count }}
+      </TableCell>
+      <TableCell class="hidden md:table-cell text-center">
+        {{ member.player?.assists_aggregate.aggregate.count }}
+      </TableCell>
+      <TableCell class="text-center">
+        {{ member.player?.deaths_aggregate.aggregate.count }}
+      </TableCell>
+      <TableCell class="hidden md:table-cell text-center">
+        <span
+          :class="{
+            'text-red-500': kd < 0.9,
+            'text-orange-500': kd >= 0.9 && kd < 1,
+            'text-green-400': kd >= 1 && kd < 1.1,
+            'text-green-600': kd >= 1.1,
+          }"
+        >
+          {{ kd }}
+        </span>
+      </TableCell>
+      <TableCell class="hidden lg:table-cell text-center">
+        {{ hs }}
+      </TableCell>
+      <TableCell class="hidden 2xl:table-cell text-center">
+        {{ member.player?.team_damage_aggregate.aggregate.sum.damage || 0 }}
+      </TableCell>
+      <TableCell class="hidden xl:table-cell text-center">
+        {{ member.player?.multi_kills.length }}
+      </TableCell>
+      <TableCell class="hidden 2xl:table-cell text-center">
+        {{ twoKills }}
+      </TableCell>
+      <TableCell class="hidden 2xl:table-cell text-center">
+        {{ threeKills }}
+      </TableCell>
+      <TableCell class="hidden 2xl:table-cell text-center">
+        {{ fourKills }}
+      </TableCell>
+      <TableCell class="hidden 2xl:table-cell text-center">
+        {{ fiveKills }}
+      </TableCell>
+      <TableCell class="hidden 2xl:table-cell text-center">
+        {{ member.player?.knife_kills_aggregate.aggregate.count }}
+      </TableCell>
+      <TableCell class="hidden 2xl:table-cell text-center">
+        {{ member.player?.zeus_kills_aggregate.aggregate.count }}
+      </TableCell>
+      <TableCell class="hidden table-cell text-center">
+        <div class="flex flex-col flex-auto items-center">
+          <div>
+            {{
+              member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0
+            }}
+          </div>
+          <div>
+            <Badge class="text-xs my-3" variant="outline">
+              <span
+                :class="{
+                  'text-red-500': adr >= 0 && adr < 50,
+                  'text-orange-500': adr >= 50 && adr < 75,
+                  'text-white': adr >= 75 && adr < 95,
+                  'text-green-400': adr >= 95 && adr < 115,
+                  'text-green-600': adr >= 115,
+                }"
+              >
+                {{ adr }}
+              </span>
+              &nbsp; ADR
+            </Badge>
+          </div>
         </div>
-        <div>
-          <Badge class="text-xs my-3" variant="outline">
-            <span
-              :class="{
-                'text-red-500': adr >= 0 && adr < 50,
-                'text-orange-500': adr >= 50 && adr < 75,
-                'text-white': adr >= 75 && adr < 95,
-                'text-green-400': adr >= 95 && adr < 115,
-                'text-green-600': adr >= 115,
-              }"
-            >
-              {{ adr }}
-            </span>
-            &nbsp; ADR
-          </Badge>
-        </div>
-      </div>
-    </TableCell>
+      </TableCell>
+    </template>
     <TableCell v-if="lineup.can_update_lineup">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
@@ -118,6 +122,10 @@ export default {
     lineup: {
       required: true,
       type: Object,
+    },
+    showStats: {
+      type: Boolean,
+      default: true,
     },
   },
   methods: {

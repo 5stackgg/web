@@ -118,6 +118,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import {
   $,
+  e_lobby_access_enum,
   e_match_status_enum,
   e_player_roles_enum,
   order_by,
@@ -178,9 +179,25 @@ export default {
                 limit: $("limit", "Int!"),
                 offset: $("offset", "Int!"),
                 where: {
-                  status: {
-                    _nin: $("statuses", "[e_match_status_enum]"),
-                  },
+                  _or: [
+                    {
+                      is_in_lineup: {
+                        _eq: true,
+                      },
+                    },
+                    {
+                      status: {
+                        _nin: $("statuses", "[e_match_status_enum]"),
+                      },
+                    },
+                    {
+                      options: {
+                        lobby_access: {
+                          _eq: e_lobby_access_enum.Open,
+                        },
+                      },
+                    },
+                  ],
                 },
                 order_by: [
                   {},

@@ -7,7 +7,8 @@ import TimeAgo from "~/components/TimeAgo.vue";
   <Table hover>
     <TableHeader>
       <TableRow>
-        <TableHead class="w-1/3">Match</TableHead>
+        <TableHead class="w-1/6">Match</TableHead>
+        <TableHead class="w-1/6"></TableHead>
         <TableHead class="w-1/6 hidden sm:table-cell">Type</TableHead>
         <TableHead class="w-1/6 hidden md:table-cell">Maps</TableHead>
       </TableRow>
@@ -32,7 +33,6 @@ import TimeAgo from "~/components/TimeAgo.vue";
           class="cursor-pointer"
         >
           <TableCell>
-            <Badge>{{ match.status }}</Badge>
             <div class="flex items-center space-x-2">
               <span class="font-bold">{{ match.lineup_1.name }}</span>
               <span class="text-gray-500">vs</span>
@@ -44,6 +44,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 class="text-sm text-gray-600 dark:text-gray-400"
               ></time-ago>
             </div>
+          </TableCell>
+          <TableCell class="text-center">
+            <Badge>{{ match.status }}</Badge>
           </TableCell>
           <TableCell class="hidden sm:table-cell">
             {{ match.options.type }}

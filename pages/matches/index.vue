@@ -8,6 +8,7 @@ import MatchMaking from "~/components/match-making/MatchMaking.vue";
 import { PlusCircle } from "lucide-vue-next";
 import PageHeading from "~/components/PageHeading.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import OpenMatches from "~/components/match/OpenMatches.vue";
 </script>
 
 <template>
@@ -48,25 +49,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           </TabsList>
 
           <TabsContent value="open">
-            <matches-table
-              class="p-3"
-              :matches="openMatches"
-              v-if="openMatches"
-            ></matches-table>
-
-            <Teleport defer to="#pagination">
-              <Pagination
-                :page="page"
-                :per-page="perPage"
-                @page="
-                  (_page) => {
-                    page = _page;
-                  }
-                "
-                :total="openMatchesAggregate?.aggregate?.count"
-                v-if="openMatchesAggregate"
-              ></Pagination>
-            </Teleport>
+            <OpenMatches> </OpenMatches>
           </TabsContent>
 
           <TabsContent value="my">
@@ -266,96 +249,6 @@ export default {
                         lobby_access: {
                           _eq: e_lobby_access_enum.Open,
                         },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                aggregate: {
-                  count: true,
-                },
-              },
-            ],
-          },
-        },
-      }),
-      variables: function () {
-        return {
-          statuses: [e_match_status_enum.PickingPlayers],
-        };
-      },
-    },
-    openMatches: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          openMatches: {
-            matches: [
-              {
-                limit: $("limit", "Int!"),
-                offset: $("offset", "Int!"),
-                where: {
-                  options: {
-                    lobby_access: {
-                      _eq: e_lobby_access_enum.Open,
-                    },
-                  },
-                  _or: [
-                    {
-                      is_in_lineup: {
-                        _eq: true,
-                      },
-                    },
-                    {
-                      status: {
-                        _in: $("statuses", "[e_match_status_enum]"),
-                      },
-                    },
-                  ],
-                },
-                order_by: [
-                  {},
-                  {
-                    created_at: order_by.desc,
-                  },
-                ],
-              },
-              simpleMatchFields,
-            ],
-          },
-        },
-      }),
-      variables: function () {
-        return {
-          limit: this.perPage,
-          offset: (this.page - 1) * this.perPage,
-          statuses: [e_match_status_enum.PickingPlayers],
-        };
-      },
-    },
-    openMatchesAggregate: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          openMatchesAggregate: {
-            matches_aggregate: [
-              {
-                where: {
-                  options: {
-                    lobby_access: {
-                      _eq: e_lobby_access_enum.Open,
-                    },
-                  },
-                  _or: [
-                    {
-                      is_in_lineup: {
-                        _eq: true,
-                      },
-                    },
-                    {
-                      status: {
-                        _in: $("statuses", "[e_match_status_enum]"),
                       },
                     },
                   ],

@@ -47,35 +47,20 @@ export default {
   apollo: {
     $subscribe: {
       matches: {
-        variables: function () {
-          return {
-            order_by: order_by.asc,
-            matchId: this.$route.params.id,
-          };
-        },
         query: typedGql("subscription")({
           matches: [
             {
               limit: $("limit", "Int!"),
               offset: $("offset", "Int!"),
               where: {
+                status: {
+                  _in: $("statuses", "[e_match_status_enum]"),
+                },
                 options: {
                   lobby_access: {
                     _eq: e_lobby_access_enum.Open,
                   },
                 },
-                _or: [
-                  {
-                    is_in_lineup: {
-                      _eq: true,
-                    },
-                  },
-                  {
-                    status: {
-                      _in: $("statuses", "[e_match_status_enum]"),
-                    },
-                  },
-                ],
               },
               order_by: [
                 {},
@@ -99,33 +84,18 @@ export default {
         },
       },
       openMatchesAggregate: {
-        variables: function () {
-          return {
-            order_by: order_by.asc,
-            matchId: this.$route.params.id,
-          };
-        },
         query: typedGql("subscription")({
           matches_aggregate: [
             {
               where: {
+                status: {
+                  _in: $("statuses", "[e_match_status_enum]"),
+                },
                 options: {
                   lobby_access: {
                     _eq: e_lobby_access_enum.Open,
                   },
                 },
-                _or: [
-                  {
-                    is_in_lineup: {
-                      _eq: true,
-                    },
-                  },
-                  {
-                    status: {
-                      _in: $("statuses", "[e_match_status_enum]"),
-                    },
-                  },
-                ],
               },
             },
             {

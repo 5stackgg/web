@@ -95,6 +95,7 @@ provide("commander", commander);
                     :match="match"
                     :lineup="match.lineup_1"
                     :show-stats="false"
+                    @joined="inviteDialog = false"
                   ></LineupOverview>
                 </CardContent>
               </Card>
@@ -106,6 +107,7 @@ provide("commander", commander);
                     :match="match"
                     :lineup="match.lineup_2"
                     :show-stats="false"
+                    @joined="inviteDialog = false"
                   ></LineupOverview>
                 </CardContent>
               </Card>

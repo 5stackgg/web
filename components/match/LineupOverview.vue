@@ -145,6 +145,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 
 export default {
+  emits: ["joined"],
   props: {
     match: {
       required: true,
@@ -231,6 +232,13 @@ export default {
           ],
         }),
       });
+
+      this.$emit("joined");
+
+      if (this.$route.query.invite) {
+        const { invite, ...queryWithoutInvite } = this.$route.query;
+        this.$router.replace({ query: queryWithoutInvite });
+      }
     },
   },
 };

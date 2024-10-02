@@ -23,6 +23,26 @@ import socket from "~/web-sockets/Socket";
 export default {
   created() {
     socket.connect();
+    this.setup();
+  },
+  methods: {
+    setup() {
+      if(useAuthStore().isAdmin) {
+        Notification.requestPermission().then((result) => {
+          if (result === "granted") {
+            setTimeout(() => {
+              this.randomNotification();
+            }, 2000)
+          }
+        });    
+      }
+    
+    },
+    randomNotification() {
+      new Notification("Hi there!", {
+        body: "This is a test notification",
+      });
+    }
   },
 };
 </script>

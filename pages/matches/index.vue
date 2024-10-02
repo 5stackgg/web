@@ -9,6 +9,8 @@ import { PlusCircle } from "lucide-vue-next";
 import PageHeading from "~/components/PageHeading.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import OpenMatches from "~/components/match/OpenMatches.vue";
+import MyRecentMatches from "~/components/match/MyRecentMatches.vue";
+import OtherMatches from "~/components/match/OtherMatches.vue";
 </script>
 
 <template>
@@ -53,43 +55,10 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
           </TabsContent>
 
           <TabsContent value="my">
-            <div class="flex gap-4 overflow-x-auto">
-              <SimpleMatchDisplay
-                :match="match"
-                v-for="match of matches"
-                :key="match.id"
-                class="flex-shrink-0"
-                v-if="matches?.length > 0"
-              ></SimpleMatchDisplay>
-              <template v-else>
-                <div class="text-center w-full p-4">
-                  <p class="text-muted-foreground">
-                    You don't have any recent matches.
-                  </p>
-                </div>
-              </template>
-            </div>
+            <MyRecentMatches></MyRecentMatches>
           </TabsContent>
           <TabsContent value="other">
-            <matches-table
-              class="p-3"
-              :matches="otherMatches"
-              v-if="otherMatches"
-            ></matches-table>
-
-            <Teleport defer to="#pagination">
-              <Pagination
-                :page="page"
-                :per-page="perPage"
-                @page="
-                  (_page) => {
-                    page = _page;
-                  }
-                "
-                :total="otherMatchesAggregate?.aggregate?.count"
-                v-if="otherMatchesAggregate"
-              ></Pagination>
-            </Teleport>
+            <OtherMatches></OtherMatches>
           </TabsContent>
         </Tabs>
       </Card>
@@ -120,8 +89,6 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import {
   $,
   e_lobby_access_enum,
@@ -129,7 +96,6 @@ import {
   e_player_roles_enum,
   order_by,
 } from "~/generated/zeus";
-import SimpleMatchDisplay from "~/components/SimpleMatchDisplay.vue";
 
 export default {
   data() {
@@ -137,138 +103,6 @@ export default {
       page: 1,
       perPage: 10,
     };
-  },
-  apollo: {
-    matches: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        matches: [
-          {
-            limit: 10,
-            where: {
-              is_in_lineup: {
-                _eq: true,
-              },
-              status: {
-                _nin: $("statuses", "[e_match_status_enum]"),
-              },
-            },
-            order_by: [
-              {},
-              {
-                created_at: order_by.desc,
-              },
-            ],
-          },
-          simpleMatchFields,
-        ],
-      }),
-      variables: function () {
-        return {
-          statuses: [
-            e_match_status_enum.Live,
-            e_match_status_enum.Veto,
-            e_match_status_enum.Scheduled,
-            e_match_status_enum.PickingPlayers,
-            e_match_status_enum.WaitingForCheckIn,
-          ],
-        };
-      },
-    },
-    otherMatches: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          otherMatches: {
-            matches: [
-              {
-                limit: $("limit", "Int!"),
-                offset: $("offset", "Int!"),
-                where: {
-                  _or: [
-                    {
-                      is_in_lineup: {
-                        _eq: true,
-                      },
-                    },
-                    {
-                      status: {
-                        _nin: $("statuses", "[e_match_status_enum]"),
-                      },
-                    },
-                    {
-                      options: {
-                        lobby_access: {
-                          _eq: e_lobby_access_enum.Open,
-                        },
-                      },
-                    },
-                  ],
-                },
-                order_by: [
-                  {},
-                  {
-                    created_at: order_by.desc,
-                  },
-                ],
-              },
-              simpleMatchFields,
-            ],
-          },
-        },
-      }),
-      variables: function () {
-        return {
-          limit: this.perPage,
-          offset: (this.page - 1) * this.perPage,
-          statuses: [e_match_status_enum.PickingPlayers],
-        };
-      },
-    },
-    otherMatchesAggregate: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          otherMatchesAggregate: {
-            matches_aggregate: [
-              {
-                where: {
-                  _or: [
-                    {
-                      is_in_lineup: {
-                        _eq: true,
-                      },
-                    },
-                    {
-                      status: {
-                        _nin: $("statuses", "[e_match_status_enum]"),
-                      },
-                    },
-                    {
-                      options: {
-                        lobby_access: {
-                          _eq: e_lobby_access_enum.Open,
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                aggregate: {
-                  count: true,
-                },
-              },
-            ],
-          },
-        },
-      }),
-      variables: function () {
-        return {
-          statuses: [e_match_status_enum.PickingPlayers],
-        };
-      },
-    },
   },
   computed: {
     me() {

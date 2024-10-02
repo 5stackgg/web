@@ -17,6 +17,8 @@ import {
 } from "~/components/ui/form";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
+import { Cross2Icon } from "@radix-icons/vue";
+import { ScrollArea } from "~/components/ui/scroll-area";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -68,38 +70,49 @@ provide("commander", commander);
         </CardContent>
       </Card>
 
-      <Dialog :open="inviteDialog" @update:open="inviteDialog = false">
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Invited to Match</DialogTitle>
-            <DialogDescription> Join a roster. </DialogDescription>
-          </DialogHeader>
+      <Drawer :open="inviteDialog">
+        <DrawerContent class="p-4">
+          <div class="flex justify-between items-center">
+            <DrawerHeader>
+              <DrawerTitle>Invited to Match</DrawerTitle>
+              <DrawerDescription> Join a roster. </DrawerDescription>
+            </DrawerHeader>
 
-          <div class="w-full flex flex-col gap-4">
-            <Card>
-              <CardHeader></CardHeader>
-              <CardContent>
-                <LineupOverview
-                  :match="match"
-                  :lineup="match.lineup_1"
-                  :show-stats="false"
-                ></LineupOverview>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader></CardHeader>
-              <CardContent>
-                <LineupOverview
-                  :match="match"
-                  :lineup="match.lineup_2"
-                  :show-stats="false"
-                ></LineupOverview>
-              </CardContent>
-            </Card>
+            <DrawerClose>
+              <Button variant="outline" @click="inviteDialog = false">
+                <Cross2Icon class="w-4 h-4" />
+                <span class="sr-only">Close</span>
+              </Button>
+            </DrawerClose>
           </div>
-        </DialogContent>
-      </Dialog>
+
+          <ScrollArea class="max-h-[60vh] overflow-auto">
+            <div class="w-full flex flex-col md:flex-row gap-4">
+              <Card class="w-full md:w-1/2">
+                <CardHeader></CardHeader>
+                <CardContent>
+                  <LineupOverview
+                    :match="match"
+                    :lineup="match.lineup_1"
+                    :show-stats="false"
+                  ></LineupOverview>
+                </CardContent>
+              </Card>
+
+              <Card class="w-full md:w-1/2">
+                <CardHeader></CardHeader>
+                <CardContent>
+                  <LineupOverview
+                    :match="match"
+                    :lineup="match.lineup_2"
+                    :show-stats="false"
+                  ></LineupOverview>
+                </CardContent>
+              </Card>
+            </div>
+          </ScrollArea>
+        </DrawerContent>
+      </Drawer>
     </TabsContent>
     <TabsContent value="utility">
       <Card>

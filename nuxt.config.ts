@@ -27,6 +27,15 @@ export default defineNuxtConfig({
   pwa: {
     injectRegister: "auto",
     registerType: "autoUpdate",
+    includeAssets: [
+      "img/**/*.svg",
+      "img/**/*.webp",
+      "fonts/*.woff",
+      "favicon/*.png"
+    ],
+    devOptions: {
+      enabled: true,
+    },
     manifest: {
       name: "5stack",
       short_name: "5stack",

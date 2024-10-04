@@ -15,8 +15,6 @@ import LineupMember from "~/components/match/LineupMember.vue";
         <TableHead> Team Flashed </TableHead>
         <TableHead> Avg bling time </TableHead>
         <TableHead> HE Damage </TableHead>
-        <TableHead> Total Damage </TableHead>
-        <TableHead> Team Damage </TableHead>
         <TableHead> Molotov Damage </TableHead>
       </TableRow>
     </TableHeader>
@@ -31,7 +29,10 @@ import LineupMember from "~/components/match/LineupMember.vue";
         <TableCell>
           {{ member.player.flashes_thrown_aggregate.aggregate.count }}
         </TableCell>
-        <TableCell> TODO assits </TableCell>
+        <TableCell> 
+          {{ member.player.flash_assists.aggregate.count }}
+        
+        </TableCell>
         <TableCell>
           {{ member.player.flashed_players_aggregate.aggregate.count }}
         </TableCell>
@@ -39,21 +40,16 @@ import LineupMember from "~/components/match/LineupMember.vue";
           {{ member.player.team_flashes_aggregate.aggregate.count }}
         </TableCell>
         <TableCell>
-          duration
           {{
             formatStatValue(
               member.player.avg_flash_duration_aggregate.aggregate.avg.duration,
             )
-          }}
+          }} seconds
         </TableCell>
         <TableCell>
           {{ member.player.he_damage_aggregate.aggregate.sum.damage || 0 }}
         </TableCell>
-        <TableCell>
-          {{ member.player.molotov_damage_aggregate.aggregate.sum.damage || 0 }}
-        </TableCell>
-        <TableCell> TODO </TableCell>
-        <TableCell> TODO </TableCell>
+        <TableCell> {{ member.player.molotov_damage_aggregate.aggregate.sum.damage || 0 }} </TableCell>
       </TableRow>
     </TableBody>
   </Table>

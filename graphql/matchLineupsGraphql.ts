@@ -1,4 +1,4 @@
-import { $, Selector } from "~/generated/zeus";
+import { $, e_utility_types_enum, Selector } from "~/generated/zeus";
 
 export const matchLineups = Selector("match_lineups")({
   id: true,
@@ -170,6 +170,28 @@ export const matchLineups = Selector("match_lineups")({
               },
             ],
           },
+          flash_assists: {
+            assists_aggregate: [
+              {
+                where: {
+                  match_id: {
+                    _eq: $("matchId", "uuid!"),
+                  },
+                  flash: {
+                    _eq: true,
+                  }
+                },
+              },
+              {
+                aggregate: [
+                  {},
+                  {
+                    count: true,
+                  },
+                ],
+              },
+            ]
+          },
           zeus_kills_aggregate: {
             kills_aggregate: [
               {
@@ -261,10 +283,9 @@ export const matchLineups = Selector("match_lineups")({
             utility_thrown_aggregate: [
               {
                 where: {
-                  // TODO
-                  // type: {
-                  //     _eq: e_utility_types_enum.Flash,
-                  // },
+                  type: {
+                      _eq: e_utility_types_enum.Flash,
+                  },
                   match_id: {
                     _eq: $("matchId", "uuid!"),
                   },

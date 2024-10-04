@@ -47,12 +47,6 @@ export default {
   apollo: {
     $subscribe: {
       matches: {
-        variables: function () {
-          return {
-            order_by: order_by.asc,
-            matchId: this.$route.params.id,
-          };
-        },
         query: typedGql("subscription")({
           matches: [
             {
@@ -97,6 +91,7 @@ export default {
         variables: function () {
           return {
             limit: this.perPage,
+            order_by: order_by.desc,
             offset: (this.page - 1) * this.perPage,
             statuses: [e_match_status_enum.PickingPlayers],
           };

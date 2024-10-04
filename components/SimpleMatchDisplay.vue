@@ -55,7 +55,9 @@ import { e_match_status_enum } from "~/generated/zeus";
         />:
         <MatchLineupScoreDisplay
           :match="match"
-          :lineup="match.is_on_lineup_1 ? match.lineup_2 : match.lineup_1"
+          :lineup="
+            match.lineup_2.is_on_lineup ? match.lineup_1 : match.lineup_2
+          "
         />
       </h1>
 

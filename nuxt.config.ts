@@ -31,7 +31,7 @@ export default defineNuxtConfig({
       "img/**/*.svg",
       "img/**/*.webp",
       "fonts/*.woff",
-      "favicon/*.png"
+      "favicon/*.png",
     ],
     devOptions: {
       enabled: true,

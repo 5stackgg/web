@@ -200,7 +200,7 @@ export const matchLineups = Selector("match_lineups")({
                     _eq: $("matchId", "uuid!"),
                   },
                   with: {
-                    _eq: "knife",
+                    _like: "knife%",
                   },
                 },
               },

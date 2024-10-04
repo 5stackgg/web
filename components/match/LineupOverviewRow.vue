@@ -235,11 +235,10 @@ export default {
       }
       return (
         formatStatValue(
-          this.member.player?.hs_kills_aggregate.aggregate.count /
-            this.member.player?.kills_aggregate.aggregate.count,
-        ) *
-          100 +
-        "%"
+          (this.member.player?.hs_kills_aggregate.aggregate.count /
+            this.member.player?.kills_aggregate.aggregate.count) *
+            100,
+        ) + "%"
       );
     },
     adr() {

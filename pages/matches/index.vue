@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import MyUpcomingMatches from "~/components/MyUpcomingMatches.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import MatchesTable from "~/components/MatchesTable.vue";
 import MatchMaking from "~/components/match-making/MatchMaking.vue";
 import { PlusCircle } from "lucide-vue-next";
 import PageHeading from "~/components/PageHeading.vue";
@@ -89,13 +88,7 @@ import OtherMatches from "~/components/match/OtherMatches.vue";
 </template>
 
 <script lang="ts">
-import {
-  $,
-  e_lobby_access_enum,
-  e_match_status_enum,
-  e_player_roles_enum,
-  order_by,
-} from "~/generated/zeus";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   data() {

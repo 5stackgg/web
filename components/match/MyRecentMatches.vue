@@ -19,15 +19,9 @@ import SimpleMatchDisplay from "~/components/SimpleMatchDisplay.vue";
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import {
-  $,
-  e_lobby_access_enum,
-  e_match_status_enum,
-  order_by,
-} from "~/generated/zeus";
+import { $, e_match_status_enum, order_by } from "~/generated/zeus";
 
 export default {
   data() {
@@ -38,12 +32,6 @@ export default {
   apollo: {
     $subscribe: {
       matches: {
-        variables: function () {
-          return {
-            order_by: order_by.asc,
-            matchId: this.$route.params.id,
-          };
-        },
         query: typedGql("subscription")({
           matches: [
             {
@@ -69,6 +57,7 @@ export default {
         variables: function () {
           return {
             limit: 10,
+            order_by: order_by.desc_nulls_last,
             statuses: [
               e_match_status_enum.Live,
               e_match_status_enum.Veto,

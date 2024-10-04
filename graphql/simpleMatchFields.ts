@@ -14,6 +14,7 @@ export const simpleMatchFields = Selector("servers")({
     mr: true,
     best_of: true,
     type: true,
+    lobby_access: true,
   },
   match_maps: [
     {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { InfoIcon } from "lucide-vue-next";
+import { UserPlusIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { e_match_status_enum } from "~/generated/zeus";
+import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -9,6 +9,7 @@ import { e_match_status_enum } from "~/generated/zeus";
     <TableHeader>
       <TableRow>
         <TableHead class="w-1/6">Match</TableHead>
+        <TableHead class="w-1/6"></TableHead>
         <TableHead class="w-1/6"></TableHead>
         <TableHead class="w-1/6 hidden sm:table-cell">Type</TableHead>
         <TableHead class="w-1/6 hidden md:table-cell">Maps</TableHead>
@@ -47,12 +48,26 @@ import { e_match_status_enum } from "~/generated/zeus";
             </div>
           </TableCell>
           <TableCell class="text-center">
+            <Button
+              @click="viewMatch(match.id)"
+              variant="outline"
+              v-if="
+                match.status === e_match_status_enum.PickingPlayers &&
+                match.options.lobby_access === e_lobby_access_enum.Open
+              "
+            >
+              <UserPlusIcon class="h-4 w-4" />
+              Join
+            </Button>
+          </TableCell>
+          <TableCell class="text-center">
             <Badge>
               {{ match.status }}
               <template
                 v-if="match.status === e_match_status_enum.PickingPlayers"
               >
-                ({{ totalPlayers(match) }} / {{ match.min_players_per_lineup * 2 }})
+                ({{ totalPlayers(match) }} /
+                {{ match.min_players_per_lineup * 2 }})
               </template>
             </Badge>
           </TableCell>

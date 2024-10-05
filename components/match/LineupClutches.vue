@@ -18,6 +18,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
         <div class="flex justify-between items-center mb-4">
           <h4 class="text-xl font-semibold">Round {{ round.round }}</h4>
           <span 
+            v-if="clutches[match_map.id] && clutches[match_map.id][round.round]"
             :class="[
               'px-3 py-1 rounded-full text-sm font-medium',
               clutches[match_map.id][round.round].success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'

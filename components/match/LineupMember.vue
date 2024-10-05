@@ -6,7 +6,7 @@
           <Badge variant="outline" v-if="member.captain"> Captain </Badge>
         </template>
 
-        <template v-slot:name-postfix>
+        <template v-slot:name-prefix>
           <span
             class="ml-1 inline-block h-2 w-2 rounded-full"
             :class="{

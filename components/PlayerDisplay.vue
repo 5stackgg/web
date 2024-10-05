@@ -24,7 +24,8 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
             'text-xl': size === 'xl',
           }"
         >
-          <div>
+          <div class="flex items-center gap-1">
+            <slot name="name-prefix"></slot>
             <div class="flex items-center gap-1">
               <TimezoneFlag
                 class="mt-1"

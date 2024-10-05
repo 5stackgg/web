@@ -18,9 +18,8 @@ import { UserPlusIcon } from "lucide-vue-next";
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead class="w-[200px] text-left">
-          <div class="flex items-center justify-between">
-            <span>{{ lineup.name }}</span>
+        <TableHead class="w-[300px] text-left">
+          <div class="flex items-center gap-4">
             <span
               v-if="match.status === e_match_status_enum.WaitingForCheckIn"
               class="flex h-2 w-2 rounded-full"
@@ -29,6 +28,7 @@ import { UserPlusIcon } from "lucide-vue-next";
                 ['bg-green-600']: lineup.is_ready,
               }"
             ></span>
+            <span>{{ lineup.name }}</span>
           </div>
         </TableHead>
         <template v-if="showStats">

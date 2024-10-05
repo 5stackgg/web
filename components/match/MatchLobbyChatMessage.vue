@@ -7,7 +7,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
   <div class="my-2">
     <div class="grid grid-cols-[60px_1fr] gap-x-1">
       <div class="my-1 mx-3">
-        <Avatar class="relative">
+        <Avatar class="relative" v-if="!isSameSender || !isCloseTogether">
           <AvatarImage
             :src="message.from.avatar_url"
             :alt="message.from.name"

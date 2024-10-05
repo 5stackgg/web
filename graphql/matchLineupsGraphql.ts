@@ -179,7 +179,7 @@ export const matchLineups = Selector("match_lineups")({
                   },
                   flash: {
                     _eq: true,
-                  }
+                  },
                 },
               },
               {
@@ -190,7 +190,7 @@ export const matchLineups = Selector("match_lineups")({
                   },
                 ],
               },
-            ]
+            ],
           },
           zeus_kills_aggregate: {
             kills_aggregate: [
@@ -284,7 +284,7 @@ export const matchLineups = Selector("match_lineups")({
               {
                 where: {
                   type: {
-                      _eq: e_utility_types_enum.Flash,
+                    _eq: e_utility_types_enum.Flash,
                   },
                   match_id: {
                     _eq: $("matchId", "uuid!"),

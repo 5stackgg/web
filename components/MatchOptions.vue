@@ -307,7 +307,7 @@ import {
 
         <CollapsibleContent>
           <div class="flex flex-col gap-4">
-            <Card>
+            <Card v-if="canSelectRegions || canSetLan">
               <CardHeader>
                 <CardTitle class="flex justify-between items-center">
                   <div class="text-lg font-semibold">Region Settings</div>
@@ -327,10 +327,7 @@ import {
                 </CardTitle>
               </CardHeader>
 
-              <CardContent
-                class="grid grid-cols-1 lg:grid-cols-2 gap-4"
-                v-if="canSelectRegions || canSetLan"
-              >
+              <CardContent class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
                   <FormItem
                     class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
@@ -727,8 +724,7 @@ export default {
           return;
         }
 
-
-        if(this.form.values.map_pool.length === 0) {
+        if (this.form.values.map_pool.length === 0) {
           return;
         }
 
@@ -812,6 +808,10 @@ export default {
       });
     },
     canSetLan() {
+      if (!this.hasLanRegion) {
+        return false;
+      }
+
       const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
         useAuthStore();
       return isAdmin || isMatchOrganizer || isTournamentOrganizer;

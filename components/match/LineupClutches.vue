@@ -8,7 +8,9 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     :key="match_map.id"
     class="bg-secondary p-6 rounded-lg mb-8"
   >
-    <h3 class="text-2xl font-bold mb-6 text-primary">{{ match_map.map.name }}</h3>
+    <h3 class="text-2xl font-bold mb-6 text-primary">
+      {{ match_map.map.name }}
+    </h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
         v-for="round in match_map.rounds"
@@ -17,16 +19,18 @@ import PlayerDisplay from "../PlayerDisplay.vue";
       >
         <div class="flex justify-between items-center mb-4">
           <h4 class="text-xl font-semibold">Round {{ round.round }}</h4>
-          <span 
+          <span
             v-if="clutches[match_map.id] && clutches[match_map.id][round.round]"
             :class="[
               'px-3 py-1 rounded-full text-sm font-medium',
-              clutches[match_map.id][round.round].success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+              clutches[match_map.id][round.round].success
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800',
             ]"
           >
             {{ clutches[match_map.id][round.round].success ? "Won" : "Lost" }}
 
-              1 v {{ clutches[match_map.id][round.round].against.length }}
+            1 v {{ clutches[match_map.id][round.round].against.length }}
           </span>
         </div>
         <div
@@ -39,22 +43,26 @@ import PlayerDisplay from "../PlayerDisplay.vue";
                 :player="clutches[match_map.id][round.round].player.player"
                 class="text-lg"
               ></PlayerDisplay>
-    
             </div>
-           
           </div>
           <div class="mt-4">
             <p class="text-sm mb-2 font-medium">Against:</p>
             <div class="flex flex-wrap gap-4">
               <template
-                v-for="{ player } of clutches[match_map.id][round.round].against"
+                v-for="{ player } of clutches[match_map.id][round.round]
+                  .against"
               >
-                <PlayerDisplay :player="player" class="w-full text-sm bg-secondary px-3 py-2 rounded"></PlayerDisplay>
+                <PlayerDisplay
+                  :player="player"
+                  class="w-full text-sm bg-secondary px-3 py-2 rounded"
+                ></PlayerDisplay>
               </template>
             </div>
           </div>
         </div>
-        <p v-else class="text-sm text-gray-500 italic mt-4">No clutches this round</p>
+        <p v-else class="text-sm text-gray-500 italic mt-4">
+          No clutches this round
+        </p>
       </div>
     </div>
   </div>

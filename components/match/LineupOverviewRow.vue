@@ -242,7 +242,10 @@ export default {
       );
     },
     adr() {
-      if (!this.member?.player?.damage_dealt_aggregate) {
+      if (
+        !this.member?.player?.damage_dealt_aggregate ||
+        this.totalRounds === 0
+      ) {
         return 0;
       }
 

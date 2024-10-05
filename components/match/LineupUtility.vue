@@ -29,9 +29,8 @@ import LineupMember from "~/components/match/LineupMember.vue";
         <TableCell>
           {{ member.player.flashes_thrown_aggregate.aggregate.count }}
         </TableCell>
-        <TableCell> 
+        <TableCell>
           {{ member.player.flash_assists.aggregate.count }}
-        
         </TableCell>
         <TableCell>
           {{ member.player.flashed_players_aggregate.aggregate.count }}
@@ -44,12 +43,15 @@ import LineupMember from "~/components/match/LineupMember.vue";
             formatStatValue(
               member.player.avg_flash_duration_aggregate.aggregate.avg.duration,
             )
-          }} seconds
+          }}
+          seconds
         </TableCell>
         <TableCell>
           {{ member.player.he_damage_aggregate.aggregate.sum.damage || 0 }}
         </TableCell>
-        <TableCell> {{ member.player.molotov_damage_aggregate.aggregate.sum.damage || 0 }} </TableCell>
+        <TableCell>
+          {{ member.player.molotov_damage_aggregate.aggregate.sum.damage || 0 }}
+        </TableCell>
       </TableRow>
     </TableBody>
   </Table>

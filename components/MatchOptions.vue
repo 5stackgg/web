@@ -682,7 +682,6 @@ export default {
           this.form.setFieldValue("mr", "12");
         }
 
-        this.form.setFieldValue("custom_map_pool", false);
         this.form.setFieldValue("map_pool", []);
         this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
       },
@@ -725,6 +724,11 @@ export default {
         }
 
         if (this.form.values.map_pool.length === 1) {
+          return;
+        }
+
+
+        if(this.form.values.map_pool.length === 0) {
           return;
         }
 

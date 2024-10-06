@@ -67,7 +67,6 @@ import { Info } from "lucide-vue-next";
                   <TeamSearch
                     label="Search for a Team ..."
                     @selected="(team) => handleChange(team.id)"
-                    :exclude="[form.values.team_1]"
                     v-model="componentField.modelValue"
                     class="w-full"
                   ></TeamSearch>

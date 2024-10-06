@@ -65,7 +65,8 @@ const teamMenu = ref(false);
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" class="w-[200px]">
             <DropdownMenuGroup>
-              <DropdownMenuItem @click="editTeamSheet = true">
+              <template v-if="team.owner.steam_id === me.steam_id && isOnTeam">
+                <DropdownMenuItem @click="editTeamSheet = true">
                 Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -75,6 +76,15 @@ const teamMenu = ref(false);
               >
                 <Trash class="mr-2 h-4 w-4 inline" /> Delete
               </DropdownMenuItem>
+              </template>
+              <template v-else>
+                <DropdownMenuItem
+                class="text-red-600"
+                @click="leaveTeamAlertDialog = true"
+              >
+                <Trash class="mr-2 h-4 w-4 inline" /> Leave Team
+              </DropdownMenuItem>
+              </template>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -123,6 +133,22 @@ const teamMenu = ref(false);
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+
+    <AlertDialog
+      :open="leaveTeamAlertDialog"
+      @update:open="(open) => (leaveTeamAlertDialog = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure you want to leave the team?</AlertDialogTitle>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction @click="leaveTeam">Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
 
@@ -137,6 +163,7 @@ export default {
     return {
       team: undefined,
       editTeamSheet: false,
+      leaveTeamAlertDialog: false,
       deleteTeamAlertDialog: false,
     };
   },
@@ -197,6 +224,16 @@ export default {
       },
     },
   },
+  computed: {
+    me() {
+      return useAuthStore().me
+    },
+    isOnTeam() {
+      return !!this.team?.roster.some(({ player }) => {
+        return player.steam_id === this.me.steam_id;
+      });
+    }
+  },
   methods: {
     async deleteTeam() {
       await this.$apollo.mutate({
@@ -213,6 +250,21 @@ export default {
       });
 
       this.$router.push("/teams");
+    },
+    async leaveTeam() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_team_roster_by_pk: [
+            {
+             team_id: this.$route.params.id,
+             player_steam_id: this.me.steam_id,
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
     },
   },
 };

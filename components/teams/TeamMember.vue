@@ -37,7 +37,7 @@ import Separator from "../ui/separator/Separator.vue";
       </template>
     </PlayerDisplay>
   </div>
-  <Popover v-if="!isInvite && team.can_change_role">
+  <Popover v-if="!isInvite && team.can_change_role && member.player.steam_id != me.steam_id">
     <PopoverTrigger as-child>
       <Button variant="outline" class="ml-auto">
         {{ member.role }}
@@ -175,6 +175,11 @@ export default {
         }
       },
     },
+  },
+  computed: {
+    me() {
+      return useAuthStore().me
+    }
   },
   methods: {
     async removeMember() {

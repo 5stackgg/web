@@ -13,7 +13,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
     <CardContent class="grid gap-6">
       <div
         class="flex items-center justify-between space-x-4"
-        v-for="member of team?.roster"
+        v-for="member of members"
       >
         <TeamMember
           :team="team"
@@ -137,6 +137,14 @@ export default {
           this.roles = data.e_team_roles;
         },
       },
+    },
+  },
+  computed: {
+      members() {
+      return (this.team?.roster || []).sort((a, b) => {
+        const roleOrder = { Admin: 1, Invite: 2, Member: 3 };
+        return (roleOrder[a.role] || 4) - (roleOrder[b.role] || 4);
+      });
     },
   },
   methods: {

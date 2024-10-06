@@ -310,7 +310,10 @@ export default {
     $route: {
       immediate: true,
       handler() {
-        if (this.$route.query.invite) {
+        if (
+          this.$route.query.invite &&
+          this.match.status === e_match_status_enum.PickingPlayers
+        ) {
           this.inviteDialog = true;
         }
       },

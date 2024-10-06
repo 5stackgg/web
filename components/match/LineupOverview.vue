@@ -107,7 +107,11 @@ import { UserPlusIcon } from "lucide-vue-next";
                 ></AssignPlayerToLineup>
               </template>
               <template
-                v-else-if="match.options.lobby_access && !match.is_in_lineup"
+                v-else-if="
+                  match.options.lobby_access &&
+                  !match.is_in_lineup &&
+                  match.status === e_match_status_enum.PickingPlayers
+                "
               >
                 <form @submit.prevent="joinLineup" class="flex gap-4">
                   <FormField

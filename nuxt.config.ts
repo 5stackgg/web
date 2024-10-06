@@ -11,6 +11,7 @@ export default defineNuxtConfig({
       apiDomain: "",
       wsDomain: "",
       webDomain: "",
+      demosDomain: "",
     },
   },
 

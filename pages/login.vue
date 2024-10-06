@@ -4,19 +4,20 @@ definePageMeta({
 });
 </script>
 <template>
-  <div class="flex items-center justify-center min-h-screen p-4">
+  <div class="flex flex-col items-center justify-center min-h-screen p-4">
+    <NuxtImg class="rounded-full w-32 h-32 mb-8 shadow-lg" src="/favicon/512.png" />
     <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-3xl font-bold text-center">5Stack</CardTitle>
-        <CardDescription class="text-center"
-          >Sign in with your Steam account to get started</CardDescription
-        >
+        <CardDescription class="text-center">
+          Sign in with your Steam account to get started
+        </CardDescription>
       </CardHeader>
       <CardContent class="flex flex-col items-center">
         <img
           src="https://community.akamai.steamstatic.com/public/images/signinthroughsteam/sits_01.png"
           alt="Steam login"
-          class="cursor-pointer"
+          class="cursor-pointer hover:opacity-80 transition-opacity"
           @click="signIn"
         />
       </CardContent>

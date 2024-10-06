@@ -33,7 +33,7 @@ const appearanceFormSchema = toTypedSchema(
 const { handleSubmit } = useForm({
   validationSchema: appearanceFormSchema,
   initialValues: {
-    theme: colorMode.preference || "light",
+    theme: colorMode.preference || "dark",
   },
 });
 

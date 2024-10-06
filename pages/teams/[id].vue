@@ -67,23 +67,23 @@ const teamMenu = ref(false);
             <DropdownMenuGroup>
               <template v-if="team.owner.steam_id === me.steam_id && isOnTeam">
                 <DropdownMenuItem @click="editTeamSheet = true">
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                class="text-red-600"
-                @click="deleteTeamAlertDialog = true"
-              >
-                <Trash class="mr-2 h-4 w-4 inline" /> Delete
-              </DropdownMenuItem>
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  class="text-red-600"
+                  @click="deleteTeamAlertDialog = true"
+                >
+                  <Trash class="mr-2 h-4 w-4 inline" /> Delete
+                </DropdownMenuItem>
               </template>
               <template v-else>
                 <DropdownMenuItem
-                class="text-red-600"
-                @click="leaveTeamAlertDialog = true"
-              >
-                <Trash class="mr-2 h-4 w-4 inline" /> Leave Team
-              </DropdownMenuItem>
+                  class="text-red-600"
+                  @click="leaveTeamAlertDialog = true"
+                >
+                  <Trash class="mr-2 h-4 w-4 inline" /> Leave Team
+                </DropdownMenuItem>
               </template>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -134,14 +134,16 @@ const teamMenu = ref(false);
       </AlertDialogContent>
     </AlertDialog>
 
-
     <AlertDialog
       :open="leaveTeamAlertDialog"
       @update:open="(open) => (leaveTeamAlertDialog = open)"
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure you want to leave the team?</AlertDialogTitle>
+          <AlertDialogTitle
+            >Are you absolutely sure you want to leave the
+            team?</AlertDialogTitle
+          >
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -226,13 +228,13 @@ export default {
   },
   computed: {
     me() {
-      return useAuthStore().me
+      return useAuthStore().me;
     },
     isOnTeam() {
       return !!this.team?.roster.some(({ player }) => {
         return player.steam_id === this.me.steam_id;
       });
-    }
+    },
   },
   methods: {
     async deleteTeam() {
@@ -256,8 +258,8 @@ export default {
         mutation: generateMutation({
           delete_team_roster_by_pk: [
             {
-             team_id: this.$route.params.id,
-             player_steam_id: this.me.steam_id,
+              team_id: this.$route.params.id,
+              player_steam_id: this.me.steam_id,
             },
             {
               __typename: true,

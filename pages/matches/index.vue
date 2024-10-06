@@ -23,17 +23,21 @@ import OtherMatches from "~/components/match/OtherMatches.vue";
         </template>
 
         <template #actions>
-          <NuxtLink to="/matches/create" class="flex gap-4 items-center">
+          <div class="flex gap-4 items-center">
             <template v-if="!canCreateMatch">
               <FiveStackToolTip :size="16" class="text-red-600"
-                >Admin is disabled creation of matches</FiveStackToolTip
+                >Admin has disabled creation of matches</FiveStackToolTip
               >
             </template>
-            <Button size="lg" :disabled="!canCreateMatch">
+            <Button
+              size="lg"
+              :disabled="!canCreateMatch"
+              @click="canCreateMatch && navigateTo('/matches/create')"
+            >
               <PlusCircle class="w-4 h-4" />
               <span class="hidden md:inline ml-2">Create Match</span>
             </Button>
-          </NuxtLink>
+          </div>
         </template>
       </PageHeading>
 

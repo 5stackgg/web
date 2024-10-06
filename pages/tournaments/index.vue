@@ -15,17 +15,23 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       <template #title>Upcoming Tournaments</template>
 
       <template #actions>
-        <NuxtLink to="/tournaments/create" class="flex gap-4 items-center">
+        <div class="flex gap-4 items-center">
           <template v-if="!canCreateTournament">
             <FiveStackToolTip :size="16" class="text-red-600"
-              >Admin is disabled creation of tournaments</FiveStackToolTip
+              >Admin has disabled creation of tournaments</FiveStackToolTip
             >
           </template>
-          <Button size="lg" :disabled="!canCreateTournament">
+          <NuxtLink v-if="canCreateTournament" to="/tournaments/create">
+            <Button size="lg">
+              <PlusCircle class="w-4 h-4" />
+              <span class="hidden md:inline ml-2">Create Tournament</span>
+            </Button>
+          </NuxtLink>
+          <Button v-else size="lg" disabled>
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">Create Tournament</span>
           </Button>
-        </NuxtLink>
+        </div>
       </template>
     </PageHeading>
 

@@ -140,7 +140,7 @@ export default {
     },
   },
   computed: {
-      members() {
+    members() {
       return (this.team?.roster || []).sort((a, b) => {
         const roleOrder = { Admin: 1, Invite: 2, Member: 3 };
         return (roleOrder[a.role] || 4) - (roleOrder[b.role] || 4);

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-
 </script>
 
 <template>
@@ -11,7 +10,6 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       'items-center': !mobile,
     }"
   >
-
     <a
       href="https://discord.gg/6xUDQRAaYY"
       target="_blank"
@@ -26,7 +24,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         alt="Discord"
         class="w-5 h-5"
         :class="{
-          'ml-4': mobile
+          'ml-4': mobile,
         }"
       />
       <span v-if="mobile">Join our Discord</span>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+
 </script>
 
 <template>
@@ -10,6 +11,27 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       'items-center': !mobile,
     }"
   >
+
+    <a
+      href="https://discord.gg/6xUDQRAaYY"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-muted-foreground transition-colors hover:text-foreground flex gap-4"
+      :class="{
+        ['flex h-8 w-8 md:items-center justify-center']: !mobile,
+      }"
+    >
+      <NuxtImg
+        src="/img/logos/discord.svg"
+        alt="Discord"
+        class="w-5 h-5"
+        :class="{
+          'ml-4': mobile
+        }"
+      />
+      <span v-if="mobile">Join our Discord</span>
+    </a>
+
     <nuxt-link
       to="/settings"
       class="text-muted-foreground transition-colors hover:text-foreground"

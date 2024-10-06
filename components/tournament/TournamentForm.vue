@@ -143,6 +143,7 @@ export default {
       startDate: undefined,
       startTime: undefined,
       form: useForm({
+        keepValuesOnUnmount: true,
         validationSchema: matchOptionsValidator({
           name: z.string().min(1),
           start: z.date().refine((date) => date > new Date(), {

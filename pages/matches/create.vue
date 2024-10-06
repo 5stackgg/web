@@ -105,6 +105,7 @@ export default {
   data() {
     return {
       form: useForm({
+        keepValuesOnUnmount: true,
         validationSchema: matchOptionsValidator({
           pug: z.boolean().default(true),
           team_1: z.string().optional(),

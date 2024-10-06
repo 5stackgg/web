@@ -76,31 +76,6 @@ import {
               <FormMessage />
             </FormItem>
           </FormField>
-
-          <FormField v-slot="{ componentField }" name="mr">
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">Max Rounds</FormLabel>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select max rounds" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      :value="rounds"
-                      v-for="rounds in ['8', '12', '15']"
-                      :key="rounds"
-                    >
-                      {{ rounds }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
         </div>
 
         <FormField
@@ -308,6 +283,35 @@ import {
 
         <CollapsibleContent>
           <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
+              <FormField v-slot="{ componentField }" name="mr">
+                <FormItem>
+                  <FormLabel class="text-lg font-semibold"
+                    >Max Rounds</FormLabel
+                  >
+                  <Select v-bind="componentField">
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select max rounds" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          :value="rounds"
+                          v-for="rounds in ['8', '12', '15']"
+                          :key="rounds"
+                        >
+                          {{ rounds }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+
             <Card v-if="canSelectRegions || canSetLan">
               <CardHeader>
                 <CardTitle class="flex justify-between items-center">

@@ -37,7 +37,7 @@ definePageMeta({
       <FormItem>
         <FormLabel>Avatar URL</FormLabel>
         <FormControl>
-          <Input v-bind="componentField" />
+          <Input v-bind="componentField" readonly disabled />
           <FormMessage />
         </FormControl>
       </FormItem>

@@ -12,6 +12,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
     <PageHeading>
       <template #title>
         <PlayerDisplay :player="player" size="xl" v-if="player"></PlayerDisplay>
+        <a :href="player.profile_url" target="_blank" rel="noopener noreferrer" class="ml-2 text-md">{{ player.profile_url }}</a>
       </template>
 
       <template #actions v-if="isAdmin">
@@ -126,6 +127,7 @@ export default {
               steam_id: true,
               country: true,
               avatar_url: true,
+              profile_url: true,
               kills_aggregate: [
                 {},
                 {

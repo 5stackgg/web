@@ -111,7 +111,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           <PopoverContent>
             <ScrollArea class="max-h-[20vh] overflow-auto">
               <template :key="player.steam_id" v-for="player of playersOnline">
-                <PlayerDisplay :player="player" class="my-2"></PlayerDisplay>
+                <PlayerDisplay :player="player" class="my-2" :linkable="true"></PlayerDisplay>
               </template>
             </ScrollArea>
           </PopoverContent>

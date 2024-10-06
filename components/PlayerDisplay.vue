@@ -3,7 +3,11 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
 </script>
 
 <template>
-  <div class="grid grid-cols-[64px_1fr]">
+  <div
+    class="grid grid-cols-[64px_1fr]"
+    @click="viewPlayer"
+    :class="{ 'cursor-pointer': linkable }"
+  >
     <div class="grid grid-cols-1 gap-3 place-items-center">
       <Avatar class="relative">
         <AvatarImage
@@ -68,6 +72,17 @@ export default {
       type: Boolean,
       default: true,
     },
+    linkable: {
+      type: Boolean,
+      default: false,
+    }
   },
+  methods: {
+    viewPlayer() {
+      if(this.linkable) {
+        this.$router.push(`/players/${this.player.steam_id}`);
+      }
+    }
+  }
 };
 </script>

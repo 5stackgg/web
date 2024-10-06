@@ -23,14 +23,23 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         <span class="sr-only">5Stack</span>
       </nuxt-link>
       <template v-for="link of links" :key="link.to">
-        <nuxt-link
-          :to="link.to"
-          class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-          v-if="!link.role || link.role === me?.role"
-        >
-          <component :is="link.icon" class="h-5 w-5"></component>
-          <span class="sr-only">{{ link.title }}</span>
-        </nuxt-link>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <nuxt-link
+                :to="link.to"
+                class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                v-if="!link.role || link.role === me?.role"
+              >
+                <component :is="link.icon" class="h-5 w-5"></component>
+                <span class="sr-only">{{ link.title }}</span>
+              </nuxt-link>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              {{ link.title }}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </template>
     </nav>
     <nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
@@ -111,7 +120,11 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           <PopoverContent>
             <ScrollArea class="max-h-[20vh] overflow-auto">
               <template :key="player.steam_id" v-for="player of playersOnline">
-                <PlayerDisplay :player="player" class="my-2" :linkable="true"></PlayerDisplay>
+                <PlayerDisplay
+                  :player="player"
+                  class="my-2"
+                  :linkable="true"
+                ></PlayerDisplay>
               </template>
             </ScrollArea>
           </PopoverContent>

@@ -256,7 +256,8 @@ import {
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ value, handleChange }" name="coaches">
+      <!-- Server does not support coaches yet  -->
+      <!-- <FormField v-slot="{ value, handleChange }" name="coaches">
         <FormItem
           class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
           @click="handleChange(!value)"
@@ -275,7 +276,7 @@ import {
             Coaches will be spawned and killed at the start of each round.
           </FormDescription>
         </FormItem>
-      </FormField>
+      </FormField> -->
 
       <Collapsible v-model:open="showAdvancedSettings">
         <CollapsibleTrigger as-child>

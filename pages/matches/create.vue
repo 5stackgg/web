@@ -50,7 +50,15 @@ import { Info } from "lucide-vue-next";
                   <FormLabel>Team 1</FormLabel>
                   <TeamSearch
                     label="Search for a Team ..."
-                    @selected="(team) => handleChange(team.id)"
+                    @selected="
+                      (team) => {
+                        if (team.id == form.values.team_1) {
+                          handleChange(undefined);
+                          return;
+                        }
+                        handleChange(team.id);
+                      }
+                    "
                     v-model="componentField.modelValue"
                     class="w-full"
                   ></TeamSearch>
@@ -66,7 +74,15 @@ import { Info } from "lucide-vue-next";
                   <FormLabel>Team 2</FormLabel>
                   <TeamSearch
                     label="Search for a Team ..."
-                    @selected="(team) => handleChange(team.id)"
+                    @selected="
+                      (team) => {
+                        if (team.id == form.values.team_2) {
+                          handleChange(undefined);
+                          return;
+                        }
+                        handleChange(team.id);
+                      }
+                    "
                     v-model="componentField.modelValue"
                     class="w-full"
                   ></TeamSearch>

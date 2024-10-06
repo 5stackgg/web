@@ -58,7 +58,7 @@ import MatchLobbyAccess from "./MatchLobbyAccess.vue";
             @click="callForOrganizer"
             :disabled="match.requested_organizer"
           >
-            Request Organizer
+            Call for Support
           </DropdownMenuItem>
         </template>
       </DropdownMenuContent>

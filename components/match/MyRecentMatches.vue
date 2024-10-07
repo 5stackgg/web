@@ -61,6 +61,7 @@ export default {
             statuses: [
               e_match_status_enum.Live,
               e_match_status_enum.Veto,
+              e_match_status_enum.Canceled,
               e_match_status_enum.Scheduled,
               e_match_status_enum.PickingPlayers,
               e_match_status_enum.WaitingForCheckIn,

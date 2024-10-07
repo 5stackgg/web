@@ -91,6 +91,8 @@ export default {
     },
     playerQuery: {
       handler() {
+        this.page = 1;
+
         this.searchPlayers();
       },
     },

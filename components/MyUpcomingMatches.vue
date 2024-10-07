@@ -24,7 +24,12 @@ import SimpleMatchDisplay from "./SimpleMatchDisplay.vue";
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import { $, e_match_status_enum, order_by } from "~/generated/zeus";
+import {
+  $,
+  e_match_status_enum,
+  e_lobby_access_enum,
+  order_by,
+} from "~/generated/zeus";
 
 export default {
   apollo: {
@@ -47,9 +52,23 @@ export default {
                   is_in_lineup: {
                     _eq: true,
                   },
-                  status: {
-                    _in: $("statuses", "[e_match_status_enum]"),
-                  },
+                  _or: [
+                    {
+                      options: {
+                        lobby_access: {
+                          _neq: e_lobby_access_enum.Closed,
+                        },
+                      },
+                      status: {
+                        _in: e_match_status_enum.PickingPlayers,
+                      },
+                    },
+                    {
+                      status: {
+                        _in: $("statuses", "[e_match_status_enum]"),
+                      },
+                    },
+                  ],
                 },
               ],
             },
@@ -70,7 +89,6 @@ export default {
             e_match_status_enum.Live,
             e_match_status_enum.Veto,
             e_match_status_enum.Scheduled,
-            e_match_status_enum.PickingPlayers,
             e_match_status_enum.WaitingForCheckIn,
           ],
         };

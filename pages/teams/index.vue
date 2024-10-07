@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import TeamsTable from "~/components/TeamsTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import { PlusCircle } from "lucide-vue-next";
+import Pagination from "@/components/Pagination.vue";
 </script>
 
 <template>
@@ -51,6 +52,19 @@ import { PlusCircle } from "lucide-vue-next";
         </TabsList>
         <TabsContent value="teams">
           <teams-table :teams="teams" v-if="teams"></teams-table>
+          <Teleport defer to="#pagination">
+            <pagination
+              :page="page"
+              :per-page="perPage"
+              @page="
+                (_page) => {
+                  page = _page;
+                }
+              "
+              :total="teams_aggregate.aggregate.count"
+              v-if="teams_aggregate"
+            ></pagination>
+          </Teleport>
         </TabsContent>
         <TabsContent value="my-teams">
           <teams-table :teams="myTeams" v-if="myTeams"></teams-table>
@@ -58,17 +72,7 @@ import { PlusCircle } from "lucide-vue-next";
       </Tabs>
     </Card>
 
-    <pagination
-      :page="page"
-      :per-page="perPage"
-      @page="
-        (_page) => {
-          page = _page;
-        }
-      "
-      :total="teams_aggregate.aggregate.count"
-      v-if="teams_aggregate"
-    ></pagination>
+    <div id="pagination"></div>
   </div>
 </template>
 
@@ -86,6 +90,13 @@ export default {
       teamQuery: undefined,
       myTeams: undefined,
     };
+  },
+  watch: {
+    teamQuery: {
+      handler() {
+        this.page = 1;
+      },
+    },
   },
   apollo: {
     teams: {

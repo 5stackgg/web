@@ -7,6 +7,19 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { computed } from "vue";
 import { LogOut } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Link, Unlink } from "lucide-vue-next";
+import { toast } from "@/components/ui/toast";
 
 interface Item {
   to: string;
@@ -75,14 +88,39 @@ const linkDiscord = () => {
             </Button>
           </nuxt-link>
 
-          <nuxt-link @click.native="linkDiscord">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start"
-              :disabled="hasDiscordLinked"
-            >
-              <template v-if="hasDiscordLinked"> Discord Linked </template>
-              <template v-else> Link Discord for Bot Support </template>
+          <template v-if="hasDiscordLinked">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" class="w-full text-left justify-start">
+                  <Unlink class="mr-2 h-4 w-4" />
+                  Unlink Discord
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Unlink Discord</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to remove discord accces?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    @click="unlinkDiscord"
+                    variant="destructive"
+                  >
+                    Confirm
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </template>
+
+          <nuxt-link @click.native="linkDiscord" v-else>
+            <Button variant="ghost" class="w-full text-left justify-start">
+              <Link class="mr-2 h-4 w-4" />
+
+              Link Discord for Bot Support
             </Button>
           </nuxt-link>
 
@@ -108,6 +146,24 @@ const linkDiscord = () => {
 <script lang="ts">
 export default {
   methods: {
+    async unlinkDiscord() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          unlinkDiscord: [
+            {},
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+
+      useAuthStore().getMe();
+
+      toast({
+        title: `Unlinked Discord`,
+      });
+    },
     async logout() {
       await this.$apollo.mutate({
         mutation: generateMutation({

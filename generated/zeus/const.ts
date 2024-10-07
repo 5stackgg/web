@@ -13009,6 +13009,7 @@ export const ReturnTypes: Record<string,any> = {
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		startMatch:"SuccessOutput",
+		unlinkDiscord:"SuccessOutput",
 		updateCs:"SuccessOutput",
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",

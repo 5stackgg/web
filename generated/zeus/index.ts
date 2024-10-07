@@ -8283,6 +8283,7 @@ scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: 
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+	unlinkDiscord?:ValueTypes["SuccessOutput"],
 updateCs?: [{	gameServerNodeId?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["_map_pool_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -26348,6 +26349,7 @@ scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTyp
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+	unlinkDiscord?:ResolverInputTypes["SuccessOutput"],
 updateCs?: [{	gameServerNodeId?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["_map_pool_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -43641,6 +43643,7 @@ export type ModelTypes = {
 	setupGameServer?: ModelTypes["SetupGameServeOutput"] | undefined,
 	/** startMatch */
 	startMatch?: ModelTypes["SuccessOutput"] | undefined,
+	unlinkDiscord?: ModelTypes["SuccessOutput"] | undefined,
 	updateCs?: ModelTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */
 	update__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
@@ -59433,6 +59436,7 @@ export type GraphQLTypes = {
 	setupGameServer?: GraphQLTypes["SetupGameServeOutput"] | undefined,
 	/** startMatch */
 	startMatch?: GraphQLTypes["SuccessOutput"] | undefined,
+	unlinkDiscord?: GraphQLTypes["SuccessOutput"] | undefined,
 	updateCs?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */
 	update__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,

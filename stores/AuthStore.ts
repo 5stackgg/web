@@ -25,6 +25,7 @@ export const useAuthStore = defineStore("auth", () => {
               discord_id: true,
             },
           }),
+          fetchPolicy: "network-only", // Disable cache
         });
 
         if (!response.data.me) {
@@ -32,9 +33,7 @@ export const useAuthStore = defineStore("auth", () => {
           return;
         }
 
-        if (response.data.me.discord_id) {
-          hasDiscordLinked.value = true;
-        }
+        hasDiscordLinked.value = !!response.data.me.discord_id;
 
         const subscription = getGraphqlClient().subscribe({
           query: generateSubscription({
@@ -45,6 +44,7 @@ export const useAuthStore = defineStore("auth", () => {
               meFields,
             ],
           }),
+          fetchPolicy: "network-only", // Disable cache
         });
 
         subscription.subscribe({

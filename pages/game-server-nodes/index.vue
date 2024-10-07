@@ -48,7 +48,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
         <TableHeader>
           <TableRow>
             <TableHead>Node</TableHead>
-            <TableHead>Public IP</TableHead>
+            <TableHead>Lan/Public IP</TableHead>
             <TableHead>CS Build ID</TableHead>
             <TableHead>Region</TableHead>
             <TableHead>Capacity</TableHead>
@@ -113,6 +113,7 @@ export default {
               region: true,
               enabled: true,
               build_id: true,
+              lan_ip: true,
               public_ip: true,
               start_port_range: true,
               end_port_range: true,

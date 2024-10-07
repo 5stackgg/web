@@ -28,6 +28,8 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
       ></GameServerNodeDisplay>
     </TableCell>
     <TableCell>
+      {{ gameServerNode.lan_ip }}
+      {{ gameServerNode.lan_ip && gameServerNode.public_ip ? "/" : "" }}
       {{ gameServerNode.public_ip }}
     </TableCell>
     <TableCell>

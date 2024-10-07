@@ -1371,6 +1371,7 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"Boolean_comparison_exp",
 		end_port_range:"Int_comparison_exp",
 		id:"String_comparison_exp",
+		lan_ip:"inet_comparison_exp",
 		public_ip:"inet_comparison_exp",
 		region:"e_server_regions_enum_comparison_exp",
 		servers:"servers_bool_exp",
@@ -1387,6 +1388,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_insert_input:{
 		e_region:"e_server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
+		lan_ip:"inet",
 		public_ip:"inet",
 		region:"e_server_regions_enum",
 		servers:"servers_arr_rel_insert_input",
@@ -1423,6 +1425,7 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
+		lan_ip:"order_by",
 		public_ip:"order_by",
 		region:"order_by",
 		servers_aggregate:"servers_aggregate_order_by",
@@ -1438,6 +1441,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	game_server_nodes_set_input:{
+		lan_ip:"inet",
 		public_ip:"inet",
 		region:"e_server_regions_enum",
 		status:"e_game_server_node_statuses_enum"
@@ -1462,6 +1466,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	game_server_nodes_stream_cursor_value_input:{
+		lan_ip:"inet",
 		public_ip:"inet",
 		region:"e_server_regions_enum",
 		status:"e_game_server_node_statuses_enum"
@@ -11680,6 +11685,7 @@ export const ReturnTypes: Record<string,any> = {
 		enabled:"Boolean",
 		end_port_range:"Int",
 		id:"String",
+		lan_ip:"inet",
 		public_ip:"inet",
 		region:"e_server_regions_enum",
 		servers:"servers",

@@ -4,11 +4,12 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import MatchLobbyAccess from "./MatchLobbyAccess.vue";
+import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
   <div class="flex gap-2 items-center">
-    <MatchLobbyAccess :match="match" />
+    <MatchLobbyAccess :match="match" v-if="match.status === e_match_status_enum.PickingPlayers"/>
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
@@ -69,6 +70,7 @@ import MatchLobbyAccess from "./MatchLobbyAccess.vue";
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
+import { e_match_map_status_enum } from "~/generated/zeus";
 export default {
   props: {
     match: {

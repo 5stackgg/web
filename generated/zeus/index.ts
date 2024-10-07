@@ -8277,6 +8277,8 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ValueTypes["v_pool_maps_insert_input"] | Variable<any, string>},ValueTypes["v_pool_maps"]],
 joinLineup?: [{	code?: string | undefined | null | Variable<any, string>,	lineup_id: string | Variable<any, string>,	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+	/** logout */
+	logout?:ValueTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
@@ -26340,6 +26342,8 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["v_pool_maps_insert_input"]},ResolverInputTypes["v_pool_maps"]],
 joinLineup?: [{	code?: string | undefined | null,	lineup_id: string,	match_id: string},ResolverInputTypes["SuccessOutput"]],
+	/** logout */
+	logout?:ResolverInputTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
@@ -43628,6 +43632,8 @@ export type ModelTypes = {
 	/** insert a single row into the table: "v_pool_maps" */
 	insert_v_pool_maps_one?: ModelTypes["v_pool_maps"] | undefined,
 	joinLineup?: ModelTypes["SuccessOutput"] | undefined,
+	/** logout */
+	logout?: ModelTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** setMatchWinner */
@@ -59418,6 +59424,8 @@ export type GraphQLTypes = {
 	/** insert a single row into the table: "v_pool_maps" */
 	insert_v_pool_maps_one?: GraphQLTypes["v_pool_maps"] | undefined,
 	joinLineup?: GraphQLTypes["SuccessOutput"] | undefined,
+	/** logout */
+	logout?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** setMatchWinner */

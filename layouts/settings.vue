@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { computed } from "vue";
+import { LogOut } from "lucide-vue-next";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 interface Item {
   to: string;
@@ -83,6 +85,15 @@ const linkDiscord = () => {
               <template v-else> Link Discord for Bot Support </template>
             </Button>
           </nuxt-link>
+
+          <Button
+            variant="ghost"
+            class="w-full text-left justify-start"
+            @click="logout"
+          >
+            <LogOut class="mr-2 h-4 w-4" />
+            Logout
+          </Button>
         </nav>
       </aside>
       <div class="flex-1 lg:max-w-2xl">
@@ -93,3 +104,27 @@ const linkDiscord = () => {
     </div>
   </default>
 </template>
+
+<script lang="ts">
+export default {
+  methods: {
+    async logout() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          logout: [
+            {},
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+
+      // Redirect to home page or login page after successful logout
+      navigateTo("/");
+
+      window.location.reload();
+    },
+  },
+};
+</script>

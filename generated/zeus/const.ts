@@ -13004,6 +13004,7 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
 		joinLineup:"SuccessOutput",
+		logout:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",

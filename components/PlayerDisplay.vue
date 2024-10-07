@@ -75,14 +75,14 @@ export default {
     linkable: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   methods: {
     viewPlayer() {
-      if(this.linkable) {
+      if (this.linkable) {
         this.$router.push(`/players/${this.player.steam_id}`);
       }
-    }
-  }
+    },
+  },
 };
 </script>

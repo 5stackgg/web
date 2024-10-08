@@ -16,7 +16,7 @@ class Socket extends EventEmitter {
   }> = [];
 
   public connect() {
-    const wsHost = `wss://${useRuntimeConfig().public.wsDomain}`;
+    const wsHost = `wss://${useRuntimeConfig().public.wsDomain}/web`;
     console.info(`[ws] connecting to ws: ${wsHost}`);
     const webSocket = new WebSocket(wsHost);
 

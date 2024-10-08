@@ -2,8 +2,17 @@
 
 <script lang="ts">
 export default {
-  mounted() {
-    window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord`;
+  watch: {
+    me: {
+      immediate: true,
+      handler() {
+        if (useAuthStore().hasDiscordLinked) {
+          this.$router.push("/");
+          return;
+        }
+        window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord`;
+      },
+    },
   },
 };
 </script>

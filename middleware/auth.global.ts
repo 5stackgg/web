@@ -10,10 +10,16 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   }
 
   if (!hasMe && to.path !== "/login") {
-    return navigateTo("/login");
+    return navigateTo(
+      `/login${to.path === "/" ? "" : `?redirect=${to.fullPath}`}`,
+    );
   }
 
   if (hasMe && to.path === "/login") {
+    console.info("WEE", to.query.redirect);
+    if (to.query.redirect) {
+      return navigateTo(decodeURIComponent(to.query.redirect as string));
+    }
     return navigateTo("/");
   }
 });

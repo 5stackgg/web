@@ -9,7 +9,10 @@ import { e_match_status_enum } from "~/generated/zeus";
 
 <template>
   <div class="flex gap-2 items-center">
-    <MatchLobbyAccess :match="match" v-if="match.status === e_match_status_enum.PickingPlayers"/>
+    <MatchLobbyAccess
+      :match="match"
+      v-if="match.status === e_match_status_enum.PickingPlayers"
+    />
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>

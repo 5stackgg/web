@@ -111,7 +111,7 @@ export default {
       }
     },
     scrollToBottom(force = false) {
-      if ((this.chatMessages && this.isAtBottom) || force) {
+      if (this.chatMessages && (this.isAtBottom || force)) {
         this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
       }
     },
@@ -133,7 +133,7 @@ export default {
     },
   },
   mounted() {
-    this.chatMessages = this.$refs.chatMessages;
+    this.chatMessages = this.$refs.chatMessages as HTMLElement;
     if (this.chatMessages) {
       this.chatMessages.addEventListener("scroll", this.checkIfAtBottom);
     }

@@ -15,7 +15,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead> Name </TableHead>
+            <TableHead class="w-[100px]"> Name </TableHead>
 
             <div class="p-4">
               <form

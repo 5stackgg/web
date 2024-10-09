@@ -15,32 +15,34 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead class="w-[100px]"> Name </TableHead>
+            <TableHead class="flex items-center justify-between mb-4">
+              <span>Name</span>
 
-            <div class="p-4">
-              <form
-                class="flex-grow flex justify-end"
-                @submit.prevent="viewTopPlayer"
-              >
-                <FormField name="teamQuery">
-                  <FormItem>
-                    <FormControl>
-                      <div class="relative w-full max-w-sm">
-                        <Input
-                          type="text"
-                          placeholder="Search..."
-                          v-model="playerQuery"
-                          class="pl-10"
-                        />
-                        <Search
-                          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-                        />
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                </FormField>
-              </form>
-            </div>
+              <div>
+                <form
+                  class="flex-grow flex justify-end"
+                  @submit.prevent="viewTopPlayer"
+                >
+                  <FormField name="teamQuery">
+                    <FormItem>
+                      <FormControl>
+                        <div class="relative w-full max-w-sm">
+                          <Input
+                            type="text"
+                            placeholder="Search..."
+                            v-model="playerQuery"
+                            class="pl-10"
+                          />
+                          <Search
+                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                          />
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  </FormField>
+                </form>
+              </div>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

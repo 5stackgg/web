@@ -108,7 +108,9 @@ import { UserPlusIcon } from "lucide-vue-next";
               </template>
               <template
                 v-else-if="
-                  match.options.lobby_access === e_lobby_access_enum.Invite &&
+                  (match.options.lobby_access === e_lobby_access_enum.Open ||
+                    match.options.lobby_access ===
+                      e_lobby_access_enum.Invite) &&
                   !match.is_in_lineup &&
                   match.status === e_match_status_enum.PickingPlayers
                 "

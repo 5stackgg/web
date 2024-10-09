@@ -24,33 +24,34 @@ import Pagination from "@/components/Pagination.vue";
       </template>
     </PageHeading>
 
-    <Form class="flex-grow flex justify-end">
-      <FormField name="teamQuery">
-        <FormItem>
-          <FormControl>
-            <div class="relative w-full max-w-sm">
-              <Input
-                type="text"
-                placeholder="Search..."
-                v-model="teamQuery"
-                class="pl-10"
-              />
-              <Search
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-              />
-            </div>
-          </FormControl>
-        </FormItem>
-      </FormField>
-    </Form>
-
     <Card class="p-4">
       <Tabs default-value="my-teams">
         <TabsList>
           <TabsTrigger value="my-teams">My Teams</TabsTrigger>
           <TabsTrigger value="teams">Other Teams</TabsTrigger>
         </TabsList>
+
         <TabsContent value="teams">
+          <form class="flex justify-end" @submit.prevent="viewTopTeam">
+            <FormField name="teamQuery">
+              <FormItem>
+                <FormControl>
+                  <div class="relative w-full max-w-sm">
+                    <Input
+                      type="text"
+                      placeholder="Search..."
+                      v-model="teamQuery"
+                      class="pl-10"
+                    />
+                    <Search
+                      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                    />
+                  </div>
+                </FormControl>
+              </FormItem>
+            </FormField>
+          </form>
+
           <teams-table :teams="teams" v-if="teams"></teams-table>
           <Teleport defer to="#pagination">
             <pagination
@@ -177,6 +178,16 @@ export default {
           this.myTeams = data.players?.[0].teams;
         },
       },
+    },
+  },
+  methods: {
+    viewTopTeam() {
+      const team = this.teams?.at(0);
+      if (!team) {
+        return;
+      }
+
+      this.$router.push(`/teams/${team.id}`);
     },
   },
 };

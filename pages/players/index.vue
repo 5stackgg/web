@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { Search } from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
-import { Separator } from "~/components/ui/separator";
 import Pagination from "@/components/Pagination.vue";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
@@ -13,32 +11,36 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     <PageHeading>
       <template #title> Players </template>
     </PageHeading>
-
-    <Form class="flex-grow flex justify-end">
-      <FormField name="teamQuery">
-        <FormItem>
-          <FormControl>
-            <div class="relative w-full max-w-sm">
-              <Input
-                type="text"
-                placeholder="Search..."
-                v-model="playerQuery"
-                class="pl-10"
-              />
-              <Search
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-              />
-            </div>
-          </FormControl>
-        </FormItem>
-      </FormField>
-    </Form>
-
     <Card class="p-4">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead class="w-[100px]"> Name </TableHead>
+            <TableHead> Name </TableHead>
+
+            <div class="p-1">
+              <form
+                class="flex-grow flex justify-end"
+                @submit.prevent="viewTopPlayer"
+              >
+                <FormField name="teamQuery">
+                  <FormItem>
+                    <FormControl>
+                      <div class="relative w-full max-w-sm">
+                        <Input
+                          type="text"
+                          placeholder="Search..."
+                          v-model="playerQuery"
+                          class="pl-10"
+                        />
+                        <Search
+                          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                </FormField>
+              </form>
+            </div>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -98,6 +100,14 @@ export default {
     },
   },
   methods: {
+    viewTopPlayer() {
+      const player = this.players?.at(0);
+      if (!player) {
+        return;
+      }
+
+      this.viewPlayer(player.steam_id);
+    },
     viewPlayer(steam_id) {
       this.$router.push(`/players/${steam_id}`);
     },

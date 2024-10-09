@@ -5,6 +5,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { CornerDownLeft } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
 import MatchLobbyChatMessage from "~/components/match/MatchLobbyChatMessage.vue";
+import { ref } from "vue";
 </script>
 
 <template>
@@ -17,7 +18,7 @@ import MatchLobbyChatMessage from "~/components/match/MatchLobbyChatMessage.vue"
       </div>
     </div>
 
-    <div class="flex-1 overflow-y-auto max-h-screen">
+    <div class="flex-1 overflow-y-auto max-h-screen" ref="chatMessages">
       <MatchLobbyChatMessage
         :message="message"
         :previous-message="messages[index - 1]"
@@ -62,14 +63,15 @@ export default {
       type: String,
     },
     messages: {
-      default: [],
-      type: Array<string>,
+      default: () => [],
+      type: Array as () => Array<Record<string, any>>,
     },
   },
   data() {
     return {
-      lobbyListener: undefined,
-
+      lobbyListener: undefined as { stop: () => void } | undefined,
+      chatMessages: undefined as HTMLElement | undefined,
+      isAtBottom: ref(true),
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -86,12 +88,33 @@ export default {
         this.lobbyListener = socket.listen("lobby:chat", (message) => {
           if (this.matchId === message.matchId) {
             this.messages.push(message);
+            this.$nextTick(() => {
+              this.scrollToBottom();
+            });
           }
+        });
+      },
+    },
+    messages: {
+      handler(current, prev) {
+        this.$nextTick(() => {
+          this.scrollToBottom(prev.length === 0);
         });
       },
     },
   },
   methods: {
+    checkIfAtBottom() {
+      if (this.chatMessages) {
+        const { scrollTop, scrollHeight, clientHeight } = this.chatMessages;
+        this.isAtBottom = scrollTop + clientHeight >= scrollHeight - 10; // 10px threshold
+      }
+    },
+    scrollToBottom(force = false) {
+      if ((this.chatMessages && this.isAtBottom) || force) {
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+      }
+    },
     sendMessage() {
       const { message } = this.form.values;
       if (message?.length === 0) {
@@ -104,10 +127,22 @@ export default {
       });
 
       this.form.resetForm();
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
     },
+  },
+  mounted() {
+    this.chatMessages = this.$refs.chatMessages;
+    if (this.chatMessages) {
+      this.chatMessages.addEventListener("scroll", this.checkIfAtBottom);
+    }
   },
   beforeUnmount() {
     this.lobbyListener?.stop();
+    if (this.chatMessages) {
+      this.chatMessages.removeEventListener("scroll", this.checkIfAtBottom);
+    }
   },
 };
 </script>

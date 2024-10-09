@@ -29,6 +29,12 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
 
 export default {
+  props: {
+    steam_id: {
+      type: String,
+      required: false,
+    }
+  },
   apollo: {
     v_player_map_losses: {
       query: generateQuery({
@@ -50,7 +56,7 @@ export default {
       }),
       variables() {
         return {
-          steam_id: this.me?.steam_id,
+          steam_id: this.steam_id || this.me?.steam_id,
         };
       },
     },

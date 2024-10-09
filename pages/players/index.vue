@@ -17,7 +17,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           <TableRow>
             <TableHead> Name </TableHead>
 
-            <div class="py-4">
+            <div class="p-4">
               <form
                 class="flex-grow flex justify-end"
                 @submit.prevent="viewTopPlayer"

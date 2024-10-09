@@ -99,7 +99,7 @@ import formatStatValue from "~/utilities/formatStatValue";
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <LastTenWins />
+            <LastTenWins :steam_id="$route.params.id"/>
           </CardContent>
         </div>
       </Card>
@@ -112,7 +112,7 @@ import formatStatValue from "~/utilities/formatStatValue";
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <LastTenLosses />
+            <LastTenLosses :steam_id="$route.params.id" />
           </CardContent>
         </div>
       </Card>

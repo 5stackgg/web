@@ -15,7 +15,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead class="flex items-center justify-between mb-4">
+            <TableHead class="flex items-center justify-between m-4">
               <span>Name</span>
 
               <div>

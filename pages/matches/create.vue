@@ -91,10 +91,14 @@ import { Info } from "lucide-vue-next";
               </FormField>
             </div>
 
-            <div class="text-sm text-muted-foreground italic">
-              <Info class="inline-block mr-1 w-4 h-4" />
-              You can select the same team for both slots to create an
-              intra-team scrimmage.
+            <div
+              class="flex items-center gap-2 text-sm text-muted-foreground italic"
+            >
+              <Info class="inline-block w-4 h-4" />
+              <span>
+                You can select the same team for both slots to create an
+                intra-team scrimmage.
+              </span>
             </div>
           </div>
         </template>

@@ -5,8 +5,11 @@ import { Info } from "lucide-vue-next";
 <template>
   <TooltipProvider>
     <Tooltip>
-      <TooltipTrigger as-child>
-        <Info :size="size" v-bind="$attrs"></Info>
+      <TooltipTrigger>
+        <div class="flex items-center gap-2">
+          <Info :size="size" v-bind="$attrs"> </Info>
+          <slot name="trigger"></slot>
+        </div>
       </TooltipTrigger>
       <TooltipContent>
         <slot></slot>

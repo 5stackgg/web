@@ -55,6 +55,10 @@ import {
           <FormField v-slot="{ componentField }" name="best_of">
             <FormItem>
               <FormLabel class="text-lg font-semibold">Best Of</FormLabel>
+              <FormDescription>
+                The winner is determined by who wins the majority of a specified
+                number of games.
+              </FormDescription>
               <Select v-bind="componentField">
                 <FormControl>
                   <SelectTrigger>
@@ -123,7 +127,13 @@ import {
                   >
                     <FormControl>
                       <div class="flex items-center gap-2">
-                        <span class="text-muted-foreground">Custom</span>
+                        <span class="text-muted-foreground">
+                          <FiveStackToolTip>
+                            <template #trigger> Custom Map Pool </template>
+                            Choosing a custom map pool allows you to select maps
+                            outside the current active duty pool.
+                          </FiveStackToolTip>
+                        </span>
                         <Switch
                           :checked="value"
                           @update:checked="handleChange"
@@ -289,6 +299,9 @@ import {
                   <FormLabel class="text-lg font-semibold"
                     >Max Rounds</FormLabel
                   >
+                  <FormDescription>
+                    The number of rounds played before teams switch sides.
+                  </FormDescription>
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
@@ -466,6 +479,9 @@ import {
                   <FormLabel class="text-lg font-semibold"
                     >Number of Substitutes</FormLabel
                   >
+                  <FormDescription>
+                    Adds additional slots to be added to each lineup.
+                  </FormDescription>
                   <NumberField
                     class="gap-2"
                     :min="0"
@@ -529,7 +545,11 @@ import {
               <FormField v-slot="{ componentField }" name="timeout_setting">
                 <FormItem>
                   <FormLabel class="text-lg font-semibold"
-                    >Timeout Settings</FormLabel
+                    >Tactical Timeout Settings</FormLabel
+                  >
+                  <FormDescription
+                    >Tactical Timeouts are called by typing <Badge>.tac</Badge>,
+                    and are 30 seconds long.</FormDescription
                   >
                   <FormControl>
                     <Select v-bind="componentField">
@@ -561,7 +581,12 @@ import {
               >
                 <FormItem>
                   <FormLabel class="text-lg font-semibold"
-                    >Tech Timeout Settings</FormLabel
+                    >Technical Timeout Settings</FormLabel
+                  >
+                  <FormDescription
+                    >Technical timeouts are called by typing
+                    <Badge>.pause</Badge>, and do not have a time
+                    limit.</FormDescription
                   >
                   <FormControl>
                     <Select v-bind="componentField">
@@ -599,6 +624,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum, e_timeout_settings_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useMatchMakingStore } from "~/stores/MatchMakingStore";
+import FiveStackToolTip from "./FiveStackToolTip.vue";
 
 export default {
   props: {

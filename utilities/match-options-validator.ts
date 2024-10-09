@@ -16,7 +16,9 @@ export default function matchOptionsValidator(additional: any) {
       best_of: z.string().default("1"),
       number_of_substitutes: z.number().min(0).max(5).default(0),
       type: z.string().default(e_match_types_enum.Competitive),
-      timeout_setting: z.string().default(e_timeout_settings_enum.Admin),
+      timeout_setting: z
+        .string()
+        .default(e_timeout_settings_enum.CoachAndPlayers),
       tech_timeout_setting: z
         .string()
         .default(e_timeout_settings_enum.CoachAndPlayers),

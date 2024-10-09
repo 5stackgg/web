@@ -1,6 +1,6 @@
 <template>
-  <div @click="viewPlayer" class="cursor-pointer text-left">
-    <template v-if="member.player">
+  <template v-if="member.player">
+    <div @click="viewPlayer" class="cursor-pointer text-left">
       <PlayerDisplay :player="member.player">
         <template v-slot:avatar-sub>
           <Badge variant="outline" v-if="member.captain"> Captain </Badge>
@@ -20,11 +20,30 @@
           ></span>
         </template>
       </PlayerDisplay>
-    </template>
-    <template v-else>
-      {{ member.name }}
-    </template>
-  </div>
+    </div>
+  </template>
+  <template v-else>
+    <div class="ml-1 flex gap-4">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <NuxtImg
+              src="/img/logos/discord.svg"
+              alt="Discord"
+              class="w-5 h-5"
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            This is a Discord user, register your discord id to enable stat
+            tracking by typing <Badge variant="secondary">/link</Badge> in the
+            officla discord channel.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      {{ member.placeholder_name }}
+    </div>
+  </template>
 </template>
 
 <script lang="ts">

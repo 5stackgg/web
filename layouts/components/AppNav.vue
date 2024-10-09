@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Gamepad, PanelLeft } from "lucide-vue-next";
+import { PanelLeft } from "lucide-vue-next";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
@@ -7,7 +7,6 @@ import { Users } from "lucide-vue-next";
 import RegionStatuses from "~/components/RegionStatuses.vue";
 import AppNavFooter from "./AppNavFooter.vue";
 import AppNotifications from "./AppNotifications.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>

@@ -129,6 +129,10 @@ export default {
       const wins: Map<string, number> = new Map();
 
       for (const win of this.v_player_map_wins) {
+        if(!win.map) {
+          console.info('missing', win);
+          continue;
+        }
         const mapName = win.map.name.replace("de_", "");
         if (wins.has(mapName)) {
           wins.set(mapName, wins.get(mapName)! + 1);

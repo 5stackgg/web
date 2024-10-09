@@ -132,6 +132,7 @@ import formatStatValue from "~/utilities/formatStatValue";
       </CardContent>
     </Card>
 
+
     <Pagination
       :page="page"
       :per-page="perPage"
@@ -141,7 +142,7 @@ import formatStatValue from "~/utilities/formatStatValue";
         }
       "
       :total="
-        playerWithMatchesAggregate.player_lineup_aggregate.aggregate.count
+        playerWithMatchesAggregate.total_matches
       "
       v-if="playerWithMatchesAggregate"
     ></Pagination>
@@ -263,14 +264,7 @@ export default {
                 steam_id: $("playerId", "bigint!"),
               },
               {
-                player_lineup_aggregate: [
-                  {},
-                  {
-                    aggregate: {
-                      count: true,
-                    },
-                  },
-                ],
+                total_matches: true
               },
             ],
           },

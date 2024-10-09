@@ -5,6 +5,9 @@ import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { ChevronDownIcon } from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
+import LastTenWins from "~/components/charts/LastTenWins.vue";
+import LastTenLosses from "~/components/charts/LastTenLosses.vue";
+import formatStatValue from "~/utilities/formatStatValue";
 </script>
 
 <template>
@@ -51,34 +54,68 @@ import { e_player_roles_enum } from "~/generated/zeus";
     </PageHeading>
 
     <div
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+      class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4"
       v-if="player"
     >
-      <Card>
+      <Card class="flex flex-col h-full">
         <CardHeader>
           <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Kills</CardTitle
+            >Player Stats</CardTitle
           >
         </CardHeader>
-        <CardContent>
-          <p class="text-2xl font-bold">
-            {{ player.kills_aggregate.aggregate.count }}
-          </p>
+        <CardContent class="flex flex-col flex-grow">
+          <div class="flex justify-between items-center">
+            <div class="text-center">
+              <p class="text-sm text-muted-foreground">Kills</p>
+              <p class="text-2xl font-bold">
+                {{ player.kills_aggregate.aggregate.count }}
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="text-sm text-muted-foreground">Assists</p>
+              <p class="text-2xl font-bold">
+                {{ player.assists_aggregate.aggregate.count }}
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="text-sm text-muted-foreground">Deaths</p>
+              <p class="text-2xl font-bold">
+                {{ player.deaths_aggregate.aggregate.count }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex justify-center items-center mt-4 h-full">
+            <Badge class="text-3xl p-2"> KD: {{ kd }} </Badge>
+          </div>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Assists</CardTitle
-          >
-        </CardHeader>
-        <CardContent>
-          <p class="text-2xl font-bold">
-            {{ player.assists_aggregate.aggregate.count }}
-          </p>
-        </CardContent>
+
+      <Card class="flex justify-center items-center">
+        <div class="text-center">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold text-center">
+              Last 10 Wins
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LastTenWins />
+          </CardContent>
+        </div>
       </Card>
-      <!-- Additional stat cards can be added here in the future -->
+
+      <Card class="flex justify-center items-center">
+        <div class="text-center">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold text-center">
+              Last 10 Losses
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LastTenLosses />
+          </CardContent>
+        </div>
+      </Card>
     </div>
 
     <Separator />
@@ -135,6 +172,17 @@ export default {
               avatar_url: true,
               profile_url: true,
               kills_aggregate: [
+                {},
+                {
+                  aggregate: [
+                    {},
+                    {
+                      count: true,
+                    },
+                  ],
+                },
+              ],
+              deaths_aggregate: [
                 {},
                 {
                   aggregate: [
@@ -256,6 +304,15 @@ export default {
   computed: {
     isAdmin() {
       return useAuthStore().isAdmin;
+    },
+    kd() {
+      if (this.player?.deaths_aggregate.aggregate.count === 0) {
+        return this.player?.kills_aggregate.aggregate.count;
+      }
+      return formatStatValue(
+        this.player?.kills_aggregate.aggregate.count /
+          this.player?.deaths_aggregate.aggregate.count,
+      );
     },
   },
   methods: {

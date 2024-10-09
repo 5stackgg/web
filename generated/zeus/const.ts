@@ -2744,7 +2744,8 @@ export const AllTypesProps: Record<string,any> = {
 		started_at:"timestamptz",
 		status:"e_match_map_status_enum",
 		utility:"player_utility_arr_rel_insert_input",
-		vetos:"match_map_veto_picks_arr_rel_insert_input"
+		vetos:"match_map_veto_picks_arr_rel_insert_input",
+		winning_lineup_id:"uuid"
 	},
 	match_maps_max_order_by:{
 		created_at:"order_by",
@@ -2755,7 +2756,8 @@ export const AllTypesProps: Record<string,any> = {
 		map_id:"order_by",
 		match_id:"order_by",
 		order:"order_by",
-		started_at:"order_by"
+		started_at:"order_by",
+		winning_lineup_id:"order_by"
 	},
 	match_maps_min_order_by:{
 		created_at:"order_by",
@@ -2766,7 +2768,8 @@ export const AllTypesProps: Record<string,any> = {
 		map_id:"order_by",
 		match_id:"order_by",
 		order:"order_by",
-		started_at:"order_by"
+		started_at:"order_by",
+		winning_lineup_id:"order_by"
 	},
 	match_maps_obj_rel_insert_input:{
 		data:"match_maps_insert_input",
@@ -2823,7 +2826,8 @@ export const AllTypesProps: Record<string,any> = {
 		map_id:"uuid",
 		match_id:"uuid",
 		started_at:"timestamptz",
-		status:"e_match_map_status_enum"
+		status:"e_match_map_status_enum",
+		winning_lineup_id:"uuid"
 	},
 	match_maps_stddev_order_by:{
 		lineup_1_timeouts_available:"order_by",
@@ -2853,7 +2857,8 @@ export const AllTypesProps: Record<string,any> = {
 		map_id:"uuid",
 		match_id:"uuid",
 		started_at:"timestamptz",
-		status:"e_match_map_status_enum"
+		status:"e_match_map_status_enum",
+		winning_lineup_id:"uuid"
 	},
 	match_maps_sum_order_by:{
 		lineup_1_timeouts_available:"order_by",
@@ -7722,6 +7727,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_player_killed_player_counts_order_by",
 			where:"v_player_killed_player_counts_bool_exp"
 		},
+		v_player_map_wins:{
+			distinct_on:"v_player_map_wins_select_column",
+			order_by:"v_player_map_wins_order_by",
+			where:"v_player_map_wins_bool_exp"
+		},
+		v_player_map_wins_aggregate:{
+			distinct_on:"v_player_map_wins_select_column",
+			order_by:"v_player_map_wins_order_by",
+			where:"v_player_map_wins_bool_exp"
+		},
 		v_player_match_kills:{
 			distinct_on:"v_player_match_kills_select_column",
 			order_by:"v_player_match_kills_order_by",
@@ -8963,6 +8978,20 @@ export const AllTypesProps: Record<string,any> = {
 		v_player_killed_player_counts_stream:{
 			cursor:"v_player_killed_player_counts_stream_cursor_input",
 			where:"v_player_killed_player_counts_bool_exp"
+		},
+		v_player_map_wins:{
+			distinct_on:"v_player_map_wins_select_column",
+			order_by:"v_player_map_wins_order_by",
+			where:"v_player_map_wins_bool_exp"
+		},
+		v_player_map_wins_aggregate:{
+			distinct_on:"v_player_map_wins_select_column",
+			order_by:"v_player_map_wins_order_by",
+			where:"v_player_map_wins_bool_exp"
+		},
+		v_player_map_wins_stream:{
+			cursor:"v_player_map_wins_stream_cursor_input",
+			where:"v_player_map_wins_bool_exp"
 		},
 		v_player_match_kills:{
 			distinct_on:"v_player_match_kills_select_column",
@@ -10711,6 +10740,39 @@ export const AllTypesProps: Record<string,any> = {
 		kill_count:"bigint",
 		player_id:"bigint",
 		victim_id:"bigint"
+	},
+	v_player_map_wins_aggregate_fields:{
+		count:{
+			columns:"v_player_map_wins_select_column"
+		}
+	},
+	v_player_map_wins_bool_exp:{
+		_and:"v_player_map_wins_bool_exp",
+		_not:"v_player_map_wins_bool_exp",
+		_or:"v_player_map_wins_bool_exp",
+		map:"maps_bool_exp",
+		map_id:"uuid_comparison_exp",
+		match_id:"uuid_comparison_exp",
+		started_at:"timestamptz_comparison_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	v_player_map_wins_order_by:{
+		map:"maps_order_by",
+		map_id:"order_by",
+		match_id:"order_by",
+		started_at:"order_by",
+		steam_id:"order_by"
+	},
+	v_player_map_wins_select_column: "enum" as const,
+	v_player_map_wins_stream_cursor_input:{
+		initial_value:"v_player_map_wins_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_player_map_wins_stream_cursor_value_input:{
+		map_id:"uuid",
+		match_id:"uuid",
+		started_at:"timestamptz",
+		steam_id:"bigint"
 	},
 	v_player_match_kills_aggregate_fields:{
 		count:{
@@ -14288,6 +14350,8 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_damage_aggregate:"v_player_damage_aggregate",
 		v_player_killed_player_counts:"v_player_killed_player_counts",
 		v_player_killed_player_counts_aggregate:"v_player_killed_player_counts_aggregate",
+		v_player_map_wins:"v_player_map_wins",
+		v_player_map_wins_aggregate:"v_player_map_wins_aggregate",
 		v_player_match_kills:"v_player_match_kills",
 		v_player_match_kills_aggregate:"v_player_match_kills_aggregate",
 		v_player_multi_kills:"v_player_multi_kills",
@@ -14640,6 +14704,9 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_killed_player_counts:"v_player_killed_player_counts",
 		v_player_killed_player_counts_aggregate:"v_player_killed_player_counts_aggregate",
 		v_player_killed_player_counts_stream:"v_player_killed_player_counts",
+		v_player_map_wins:"v_player_map_wins",
+		v_player_map_wins_aggregate:"v_player_map_wins_aggregate",
+		v_player_map_wins_stream:"v_player_map_wins",
 		v_player_match_kills:"v_player_match_kills",
 		v_player_match_kills_aggregate:"v_player_match_kills_aggregate",
 		v_player_match_kills_stream:"v_player_match_kills",
@@ -15722,6 +15789,66 @@ export const ReturnTypes: Record<string,any> = {
 		kill_count:"Float",
 		player_id:"Float",
 		victim_id:"Float"
+	},
+	v_player_map_wins:{
+		map:"maps",
+		map_id:"uuid",
+		match_id:"uuid",
+		started_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	v_player_map_wins_aggregate:{
+		aggregate:"v_player_map_wins_aggregate_fields",
+		nodes:"v_player_map_wins"
+	},
+	v_player_map_wins_aggregate_fields:{
+		avg:"v_player_map_wins_avg_fields",
+		count:"Int",
+		max:"v_player_map_wins_max_fields",
+		min:"v_player_map_wins_min_fields",
+		stddev:"v_player_map_wins_stddev_fields",
+		stddev_pop:"v_player_map_wins_stddev_pop_fields",
+		stddev_samp:"v_player_map_wins_stddev_samp_fields",
+		sum:"v_player_map_wins_sum_fields",
+		var_pop:"v_player_map_wins_var_pop_fields",
+		var_samp:"v_player_map_wins_var_samp_fields",
+		variance:"v_player_map_wins_variance_fields"
+	},
+	v_player_map_wins_avg_fields:{
+		steam_id:"Float"
+	},
+	v_player_map_wins_max_fields:{
+		map_id:"uuid",
+		match_id:"uuid",
+		started_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	v_player_map_wins_min_fields:{
+		map_id:"uuid",
+		match_id:"uuid",
+		started_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	v_player_map_wins_stddev_fields:{
+		steam_id:"Float"
+	},
+	v_player_map_wins_stddev_pop_fields:{
+		steam_id:"Float"
+	},
+	v_player_map_wins_stddev_samp_fields:{
+		steam_id:"Float"
+	},
+	v_player_map_wins_sum_fields:{
+		steam_id:"bigint"
+	},
+	v_player_map_wins_var_pop_fields:{
+		steam_id:"Float"
+	},
+	v_player_map_wins_var_samp_fields:{
+		steam_id:"Float"
+	},
+	v_player_map_wins_variance_fields:{
+		steam_id:"Float"
 	},
 	v_player_match_kills:{
 		avg_kills_per_game:"bigint",

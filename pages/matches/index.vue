@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import MyUpcomingMatches from "~/components/MyUpcomingMatches.vue";
-import Pagination from "~/components/Pagination.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MatchMaking from "~/components/match-making/MatchMaking.vue";
 import { PlusCircle } from "lucide-vue-next";
@@ -10,6 +9,8 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import OpenMatches from "~/components/match/OpenMatches.vue";
 import MyRecentMatches from "~/components/match/MyRecentMatches.vue";
 import OtherMatches from "~/components/match/OtherMatches.vue";
+import LastTenWins from "~/components/charts/LastTenWins.vue";
+import LastTenLosses from "~/components/charts/LastTenLosses.vue";
 </script>
 
 <template>
@@ -69,9 +70,9 @@ import OtherMatches from "~/components/match/OtherMatches.vue";
       <div id="pagination"></div>
     </div>
 
-    <div class="hidden lg:w-1/4 lg:block">
+    <div class="lg:w-1/4 flex flex-col gap-4">
       <Card
-        class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900"
+        class="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 hidden lg:block"
       >
         <CardHeader>
           <CardTitle class="text-xl font-bold text-center">
@@ -86,6 +87,31 @@ import OtherMatches from "~/components/match/OtherMatches.vue";
             <MatchMaking class="w-full"></MatchMaking>
           </div>
         </CardContent>
+      </Card>
+
+      <Card class="flex justify-center items-center">
+        <div class="text-center">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold text-center">
+              Last 10 Wins
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LastTenWins />
+          </CardContent>
+        </div>
+      </Card>
+      <Card class="flex justify-center items-center">
+        <div class="text-center">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold text-center">
+              Last 10 Losses
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LastTenLosses />
+          </CardContent>
+        </div>
       </Card>
     </div>
   </div>

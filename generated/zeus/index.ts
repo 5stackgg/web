@@ -5951,7 +5951,6 @@ vetos_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["match_map_veto_picks_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["match_map_veto_picks_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["match_map_veto_picks_aggregate"]],
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -6105,7 +6104,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>,
 	utility?: ValueTypes["player_utility_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
-	vetos?: ValueTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>
+	vetos?: ValueTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
@@ -6126,7 +6126,6 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -6140,7 +6139,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
@@ -6161,7 +6161,6 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -6175,7 +6174,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	order?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: AliasType<{
@@ -6250,7 +6250,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>
+	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: AliasType<{
@@ -6329,7 +6330,8 @@ count?: [{	columns?: Array<ValueTypes["match_maps_select_column"]> | undefined |
 	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	order?: number | undefined | null | Variable<any, string>,
 	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
-	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>
+	status?: ValueTypes["e_match_map_status_enum"] | undefined | null | Variable<any, string>,
+	winning_lineup_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: AliasType<{
@@ -13054,6 +13056,18 @@ v_player_killed_player_counts_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["v_player_killed_player_counts_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_killed_player_counts_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_killed_player_counts_aggregate"]],
+v_player_map_wins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_map_wins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_map_wins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_map_wins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_map_wins"]],
+v_player_map_wins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_map_wins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_map_wins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_map_wins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_map_wins_aggregate"]],
 v_player_match_kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_player_match_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -14545,6 +14559,22 @@ v_player_killed_player_counts_stream?: [{	/** maximum number of rows returned in
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["v_player_killed_player_counts_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_killed_player_counts_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_killed_player_counts"]],
+v_player_map_wins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_map_wins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_map_wins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_map_wins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_map_wins"]],
+v_player_map_wins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["v_player_map_wins_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["v_player_map_wins_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_map_wins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_map_wins_aggregate"]],
+v_player_map_wins_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["v_player_map_wins_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["v_player_map_wins_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_map_wins"]],
 v_player_match_kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["v_player_match_kills_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -18144,6 +18174,128 @@ count?: [{	columns?: Array<ValueTypes["v_player_killed_player_counts_select_colu
 	kill_count?:boolean | `@${string}`,
 	player_id?:boolean | `@${string}`,
 	victim_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** columns and relationships of "v_player_map_wins" */
+["v_player_map_wins"]: AliasType<{
+	/** An object relationship */
+	map?:ValueTypes["maps"],
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_map_wins" */
+["v_player_map_wins_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["v_player_map_wins_aggregate_fields"],
+	nodes?:ValueTypes["v_player_map_wins"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_map_wins" */
+["v_player_map_wins_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["v_player_map_wins_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["v_player_map_wins_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["v_player_map_wins_max_fields"],
+	min?:ValueTypes["v_player_map_wins_min_fields"],
+	stddev?:ValueTypes["v_player_map_wins_stddev_fields"],
+	stddev_pop?:ValueTypes["v_player_map_wins_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["v_player_map_wins_stddev_samp_fields"],
+	sum?:ValueTypes["v_player_map_wins_sum_fields"],
+	var_pop?:ValueTypes["v_player_map_wins_var_pop_fields"],
+	var_samp?:ValueTypes["v_player_map_wins_var_samp_fields"],
+	variance?:ValueTypes["v_player_map_wins_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_map_wins_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_map_wins". All fields are combined with a logical 'AND'. */
+["v_player_map_wins_bool_exp"]: {
+	_and?: Array<ValueTypes["v_player_map_wins_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["v_player_map_wins_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["v_player_map_wins_bool_exp"]> | undefined | null | Variable<any, string>,
+	map?: ValueTypes["maps_bool_exp"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["v_player_map_wins_max_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_map_wins_min_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_map_wins". */
+["v_player_map_wins_order_by"]: {
+	map?: ValueTypes["maps_order_by"] | undefined | null | Variable<any, string>,
+	map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "v_player_map_wins" */
+["v_player_map_wins_select_column"]:v_player_map_wins_select_column;
+	/** aggregate stddev on columns */
+["v_player_map_wins_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_map_wins_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_map_wins_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_map_wins" */
+["v_player_map_wins_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["v_player_map_wins_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_map_wins_stream_cursor_value_input"]: {
+	map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	started_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["v_player_map_wins_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_map_wins_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_map_wins_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_map_wins_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "v_player_match_kills" */
@@ -24023,7 +24175,6 @@ vetos_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["match_map_veto_picks_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["match_map_veto_picks_bool_exp"] | undefined | null},ResolverInputTypes["match_map_veto_picks_aggregate"]],
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -24177,7 +24328,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null,
 	utility?: ResolverInputTypes["player_utility_arr_rel_insert_input"] | undefined | null,
-	vetos?: ResolverInputTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null
+	vetos?: ResolverInputTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: AliasType<{
@@ -24198,7 +24350,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -24212,7 +24363,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	order?: ResolverInputTypes["order_by"] | undefined | null,
-	started_at?: ResolverInputTypes["order_by"] | undefined | null
+	started_at?: ResolverInputTypes["order_by"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: AliasType<{
@@ -24233,7 +24385,6 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	match_id?:boolean | `@${string}`,
 	order?:boolean | `@${string}`,
 	started_at?:boolean | `@${string}`,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -24247,7 +24398,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	map_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	order?: ResolverInputTypes["order_by"] | undefined | null,
-	started_at?: ResolverInputTypes["order_by"] | undefined | null
+	started_at?: ResolverInputTypes["order_by"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: AliasType<{
@@ -24322,7 +24474,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
 	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null
+	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: AliasType<{
@@ -24401,7 +24554,8 @@ count?: [{	columns?: Array<ResolverInputTypes["match_maps_select_column"]> | und
 	match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	order?: number | undefined | null,
 	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
-	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null
+	status?: ResolverInputTypes["e_match_map_status_enum"] | undefined | null,
+	winning_lineup_id?: ResolverInputTypes["uuid"] | undefined | null
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: AliasType<{
@@ -31126,6 +31280,18 @@ v_player_killed_player_counts_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["v_player_killed_player_counts_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_killed_player_counts_bool_exp"] | undefined | null},ResolverInputTypes["v_player_killed_player_counts_aggregate"]],
+v_player_map_wins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_map_wins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_map_wins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_map_wins_bool_exp"] | undefined | null},ResolverInputTypes["v_player_map_wins"]],
+v_player_map_wins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_map_wins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_map_wins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_map_wins_bool_exp"] | undefined | null},ResolverInputTypes["v_player_map_wins_aggregate"]],
 v_player_match_kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_player_match_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -32617,6 +32783,22 @@ v_player_killed_player_counts_stream?: [{	/** maximum number of rows returned in
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["v_player_killed_player_counts_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_killed_player_counts_bool_exp"] | undefined | null},ResolverInputTypes["v_player_killed_player_counts"]],
+v_player_map_wins?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_map_wins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_map_wins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_map_wins_bool_exp"] | undefined | null},ResolverInputTypes["v_player_map_wins"]],
+v_player_map_wins_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["v_player_map_wins_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["v_player_map_wins_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_map_wins_bool_exp"] | undefined | null},ResolverInputTypes["v_player_map_wins_aggregate"]],
+v_player_map_wins_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["v_player_map_wins_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["v_player_map_wins_bool_exp"] | undefined | null},ResolverInputTypes["v_player_map_wins"]],
 v_player_match_kills?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["v_player_match_kills_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -36216,6 +36398,128 @@ count?: [{	columns?: Array<ResolverInputTypes["v_player_killed_player_counts_sel
 	kill_count?:boolean | `@${string}`,
 	player_id?:boolean | `@${string}`,
 	victim_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** columns and relationships of "v_player_map_wins" */
+["v_player_map_wins"]: AliasType<{
+	/** An object relationship */
+	map?:ResolverInputTypes["maps"],
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "v_player_map_wins" */
+["v_player_map_wins_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["v_player_map_wins_aggregate_fields"],
+	nodes?:ResolverInputTypes["v_player_map_wins"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "v_player_map_wins" */
+["v_player_map_wins_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["v_player_map_wins_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["v_player_map_wins_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["v_player_map_wins_max_fields"],
+	min?:ResolverInputTypes["v_player_map_wins_min_fields"],
+	stddev?:ResolverInputTypes["v_player_map_wins_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["v_player_map_wins_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["v_player_map_wins_stddev_samp_fields"],
+	sum?:ResolverInputTypes["v_player_map_wins_sum_fields"],
+	var_pop?:ResolverInputTypes["v_player_map_wins_var_pop_fields"],
+	var_samp?:ResolverInputTypes["v_player_map_wins_var_samp_fields"],
+	variance?:ResolverInputTypes["v_player_map_wins_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate avg on columns */
+["v_player_map_wins_avg_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "v_player_map_wins". All fields are combined with a logical 'AND'. */
+["v_player_map_wins_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["v_player_map_wins_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["v_player_map_wins_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["v_player_map_wins_bool_exp"]> | undefined | null,
+	map?: ResolverInputTypes["maps_bool_exp"] | undefined | null,
+	map_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null
+};
+	/** aggregate max on columns */
+["v_player_map_wins_max_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["v_player_map_wins_min_fields"]: AliasType<{
+	map_id?:boolean | `@${string}`,
+	match_id?:boolean | `@${string}`,
+	started_at?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "v_player_map_wins". */
+["v_player_map_wins_order_by"]: {
+	map?: ResolverInputTypes["maps_order_by"] | undefined | null,
+	map_id?: ResolverInputTypes["order_by"] | undefined | null,
+	match_id?: ResolverInputTypes["order_by"] | undefined | null,
+	started_at?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** select columns of table "v_player_map_wins" */
+["v_player_map_wins_select_column"]:v_player_map_wins_select_column;
+	/** aggregate stddev on columns */
+["v_player_map_wins_stddev_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["v_player_map_wins_stddev_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["v_player_map_wins_stddev_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "v_player_map_wins" */
+["v_player_map_wins_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["v_player_map_wins_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_map_wins_stream_cursor_value_input"]: {
+	map_id?: ResolverInputTypes["uuid"] | undefined | null,
+	match_id?: ResolverInputTypes["uuid"] | undefined | null,
+	started_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null
+};
+	/** aggregate sum on columns */
+["v_player_map_wins_sum_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_pop on columns */
+["v_player_map_wins_var_pop_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["v_player_map_wins_var_samp_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["v_player_map_wins_variance_fields"]: AliasType<{
+	steam_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** columns and relationships of "v_player_match_kills" */
@@ -41545,7 +41849,6 @@ export type ModelTypes = {
 	vetos: Array<ModelTypes["match_map_veto_picks"]>,
 	/** An aggregate relationship */
 	vetos_aggregate: ModelTypes["match_map_veto_picks_aggregate"],
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregated selection of "match_maps" */
@@ -41694,7 +41997,8 @@ export type ModelTypes = {
 	started_at?: ModelTypes["timestamptz"] | undefined,
 	status?: ModelTypes["e_match_map_status_enum"] | undefined,
 	utility?: ModelTypes["player_utility_arr_rel_insert_input"] | undefined,
-	vetos?: ModelTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined
+	vetos?: ModelTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
@@ -41715,7 +42019,6 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: ModelTypes["timestamptz"] | undefined,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "match_maps" */
@@ -41728,7 +42031,8 @@ export type ModelTypes = {
 	map_id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	order?: ModelTypes["order_by"] | undefined,
-	started_at?: ModelTypes["order_by"] | undefined
+	started_at?: ModelTypes["order_by"] | undefined,
+	winning_lineup_id?: ModelTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
@@ -41749,7 +42053,6 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: ModelTypes["timestamptz"] | undefined,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "match_maps" */
@@ -41762,7 +42065,8 @@ export type ModelTypes = {
 	map_id?: ModelTypes["order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	order?: ModelTypes["order_by"] | undefined,
-	started_at?: ModelTypes["order_by"] | undefined
+	started_at?: ModelTypes["order_by"] | undefined,
+	winning_lineup_id?: ModelTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: {
@@ -41835,7 +42139,8 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: ModelTypes["timestamptz"] | undefined,
-	status?: ModelTypes["e_match_map_status_enum"] | undefined
+	status?: ModelTypes["e_match_map_status_enum"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: {
@@ -41911,7 +42216,8 @@ export type ModelTypes = {
 	match_id?: ModelTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: ModelTypes["timestamptz"] | undefined,
-	status?: ModelTypes["e_match_map_status_enum"] | undefined
+	status?: ModelTypes["e_match_map_status_enum"] | undefined,
+	winning_lineup_id?: ModelTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: {
@@ -47539,6 +47845,10 @@ export type ModelTypes = {
 	v_player_killed_player_counts: Array<ModelTypes["v_player_killed_player_counts"]>,
 	/** fetch aggregated fields from the table: "v_player_killed_player_counts" */
 	v_player_killed_player_counts_aggregate: ModelTypes["v_player_killed_player_counts_aggregate"],
+	/** fetch data from the table: "v_player_map_wins" */
+	v_player_map_wins: Array<ModelTypes["v_player_map_wins"]>,
+	/** fetch aggregated fields from the table: "v_player_map_wins" */
+	v_player_map_wins_aggregate: ModelTypes["v_player_map_wins_aggregate"],
 	/** fetch data from the table: "v_player_match_kills" */
 	v_player_match_kills: Array<ModelTypes["v_player_match_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_match_kills" */
@@ -48443,6 +48753,12 @@ export type ModelTypes = {
 	v_player_killed_player_counts_aggregate: ModelTypes["v_player_killed_player_counts_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_killed_player_counts" */
 	v_player_killed_player_counts_stream: Array<ModelTypes["v_player_killed_player_counts"]>,
+	/** fetch data from the table: "v_player_map_wins" */
+	v_player_map_wins: Array<ModelTypes["v_player_map_wins"]>,
+	/** fetch aggregated fields from the table: "v_player_map_wins" */
+	v_player_map_wins_aggregate: ModelTypes["v_player_map_wins_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_map_wins" */
+	v_player_map_wins_stream: Array<ModelTypes["v_player_map_wins"]>,
 	/** fetch data from the table: "v_player_match_kills" */
 	v_player_match_kills: Array<ModelTypes["v_player_match_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_match_kills" */
@@ -51693,6 +52009,114 @@ export type ModelTypes = {
 		kill_count?: number | undefined,
 	player_id?: number | undefined,
 	victim_id?: number | undefined
+};
+	/** columns and relationships of "v_player_map_wins" */
+["v_player_map_wins"]: {
+		/** An object relationship */
+	map?: ModelTypes["maps"] | undefined,
+	map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	started_at?: ModelTypes["timestamptz"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregated selection of "v_player_map_wins" */
+["v_player_map_wins_aggregate"]: {
+		aggregate?: ModelTypes["v_player_map_wins_aggregate_fields"] | undefined,
+	nodes: Array<ModelTypes["v_player_map_wins"]>
+};
+	/** aggregate fields of "v_player_map_wins" */
+["v_player_map_wins_aggregate_fields"]: {
+		avg?: ModelTypes["v_player_map_wins_avg_fields"] | undefined,
+	count: number,
+	max?: ModelTypes["v_player_map_wins_max_fields"] | undefined,
+	min?: ModelTypes["v_player_map_wins_min_fields"] | undefined,
+	stddev?: ModelTypes["v_player_map_wins_stddev_fields"] | undefined,
+	stddev_pop?: ModelTypes["v_player_map_wins_stddev_pop_fields"] | undefined,
+	stddev_samp?: ModelTypes["v_player_map_wins_stddev_samp_fields"] | undefined,
+	sum?: ModelTypes["v_player_map_wins_sum_fields"] | undefined,
+	var_pop?: ModelTypes["v_player_map_wins_var_pop_fields"] | undefined,
+	var_samp?: ModelTypes["v_player_map_wins_var_samp_fields"] | undefined,
+	variance?: ModelTypes["v_player_map_wins_variance_fields"] | undefined
+};
+	/** aggregate avg on columns */
+["v_player_map_wins_avg_fields"]: {
+		steam_id?: number | undefined
+};
+	/** Boolean expression to filter rows from the table "v_player_map_wins". All fields are combined with a logical 'AND'. */
+["v_player_map_wins_bool_exp"]: {
+	_and?: Array<ModelTypes["v_player_map_wins_bool_exp"]> | undefined,
+	_not?: ModelTypes["v_player_map_wins_bool_exp"] | undefined,
+	_or?: Array<ModelTypes["v_player_map_wins_bool_exp"]> | undefined,
+	map?: ModelTypes["maps_bool_exp"] | undefined,
+	map_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	started_at?: ModelTypes["timestamptz_comparison_exp"] | undefined,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined
+};
+	/** aggregate max on columns */
+["v_player_map_wins_max_fields"]: {
+		map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	started_at?: ModelTypes["timestamptz"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregate min on columns */
+["v_player_map_wins_min_fields"]: {
+		map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	started_at?: ModelTypes["timestamptz"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** Ordering options when selecting data from "v_player_map_wins". */
+["v_player_map_wins_order_by"]: {
+	map?: ModelTypes["maps_order_by"] | undefined,
+	map_id?: ModelTypes["order_by"] | undefined,
+	match_id?: ModelTypes["order_by"] | undefined,
+	started_at?: ModelTypes["order_by"] | undefined,
+	steam_id?: ModelTypes["order_by"] | undefined
+};
+	["v_player_map_wins_select_column"]:v_player_map_wins_select_column;
+	/** aggregate stddev on columns */
+["v_player_map_wins_stddev_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate stddev_pop on columns */
+["v_player_map_wins_stddev_pop_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate stddev_samp on columns */
+["v_player_map_wins_stddev_samp_fields"]: {
+		steam_id?: number | undefined
+};
+	/** Streaming cursor of the table "v_player_map_wins" */
+["v_player_map_wins_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["v_player_map_wins_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_map_wins_stream_cursor_value_input"]: {
+	map_id?: ModelTypes["uuid"] | undefined,
+	match_id?: ModelTypes["uuid"] | undefined,
+	started_at?: ModelTypes["timestamptz"] | undefined,
+	steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregate sum on columns */
+["v_player_map_wins_sum_fields"]: {
+		steam_id?: ModelTypes["bigint"] | undefined
+};
+	/** aggregate var_pop on columns */
+["v_player_map_wins_var_pop_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate var_samp on columns */
+["v_player_map_wins_var_samp_fields"]: {
+		steam_id?: number | undefined
+};
+	/** aggregate variance on columns */
+["v_player_map_wins_variance_fields"]: {
+		steam_id?: number | undefined
 };
 	/** columns and relationships of "v_player_match_kills" */
 ["v_player_match_kills"]: {
@@ -57275,7 +57699,6 @@ export type GraphQLTypes = {
 	vetos: Array<GraphQLTypes["match_map_veto_picks"]>,
 	/** An aggregate relationship */
 	vetos_aggregate: GraphQLTypes["match_map_veto_picks_aggregate"],
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregated selection of "match_maps" */
@@ -57428,7 +57851,8 @@ export type GraphQLTypes = {
 	started_at?: GraphQLTypes["timestamptz"] | undefined,
 	status?: GraphQLTypes["e_match_map_status_enum"] | undefined,
 	utility?: GraphQLTypes["player_utility_arr_rel_insert_input"] | undefined,
-	vetos?: GraphQLTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined
+	vetos?: GraphQLTypes["match_map_veto_picks_arr_rel_insert_input"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate max on columns */
 ["match_maps_max_fields"]: {
@@ -57450,7 +57874,6 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: GraphQLTypes["timestamptz"] | undefined,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by max() on columns of table "match_maps" */
@@ -57463,7 +57886,8 @@ export type GraphQLTypes = {
 	map_id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	order?: GraphQLTypes["order_by"] | undefined,
-	started_at?: GraphQLTypes["order_by"] | undefined
+	started_at?: GraphQLTypes["order_by"] | undefined,
+	winning_lineup_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** aggregate min on columns */
 ["match_maps_min_fields"]: {
@@ -57485,7 +57909,6 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: GraphQLTypes["timestamptz"] | undefined,
-	/** A computed field, executes function "get_match_map_winning_lineup_id" */
 	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** order by min() on columns of table "match_maps" */
@@ -57498,7 +57921,8 @@ export type GraphQLTypes = {
 	map_id?: GraphQLTypes["order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	order?: GraphQLTypes["order_by"] | undefined,
-	started_at?: GraphQLTypes["order_by"] | undefined
+	started_at?: GraphQLTypes["order_by"] | undefined,
+	winning_lineup_id?: GraphQLTypes["order_by"] | undefined
 };
 	/** response of any mutation on the table "match_maps" */
 ["match_maps_mutation_response"]: {
@@ -57573,7 +57997,8 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: GraphQLTypes["timestamptz"] | undefined,
-	status?: GraphQLTypes["e_match_map_status_enum"] | undefined
+	status?: GraphQLTypes["e_match_map_status_enum"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate stddev on columns */
 ["match_maps_stddev_fields"]: {
@@ -57652,7 +58077,8 @@ export type GraphQLTypes = {
 	match_id?: GraphQLTypes["uuid"] | undefined,
 	order?: number | undefined,
 	started_at?: GraphQLTypes["timestamptz"] | undefined,
-	status?: GraphQLTypes["e_match_map_status_enum"] | undefined
+	status?: GraphQLTypes["e_match_map_status_enum"] | undefined,
+	winning_lineup_id?: GraphQLTypes["uuid"] | undefined
 };
 	/** aggregate sum on columns */
 ["match_maps_sum_fields"]: {
@@ -63501,6 +63927,10 @@ export type GraphQLTypes = {
 	v_player_killed_player_counts: Array<GraphQLTypes["v_player_killed_player_counts"]>,
 	/** fetch aggregated fields from the table: "v_player_killed_player_counts" */
 	v_player_killed_player_counts_aggregate: GraphQLTypes["v_player_killed_player_counts_aggregate"],
+	/** fetch data from the table: "v_player_map_wins" */
+	v_player_map_wins: Array<GraphQLTypes["v_player_map_wins"]>,
+	/** fetch aggregated fields from the table: "v_player_map_wins" */
+	v_player_map_wins_aggregate: GraphQLTypes["v_player_map_wins_aggregate"],
 	/** fetch data from the table: "v_player_match_kills" */
 	v_player_match_kills: Array<GraphQLTypes["v_player_match_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_match_kills" */
@@ -64434,6 +64864,12 @@ export type GraphQLTypes = {
 	v_player_killed_player_counts_aggregate: GraphQLTypes["v_player_killed_player_counts_aggregate"],
 	/** fetch data from the table in a streaming manner: "v_player_killed_player_counts" */
 	v_player_killed_player_counts_stream: Array<GraphQLTypes["v_player_killed_player_counts"]>,
+	/** fetch data from the table: "v_player_map_wins" */
+	v_player_map_wins: Array<GraphQLTypes["v_player_map_wins"]>,
+	/** fetch aggregated fields from the table: "v_player_map_wins" */
+	v_player_map_wins_aggregate: GraphQLTypes["v_player_map_wins_aggregate"],
+	/** fetch data from the table in a streaming manner: "v_player_map_wins" */
+	v_player_map_wins_stream: Array<GraphQLTypes["v_player_map_wins"]>,
 	/** fetch data from the table: "v_player_match_kills" */
 	v_player_match_kills: Array<GraphQLTypes["v_player_match_kills"]>,
 	/** fetch aggregated fields from the table: "v_player_match_kills" */
@@ -67909,6 +68345,128 @@ export type GraphQLTypes = {
 	player_id?: number | undefined,
 	victim_id?: number | undefined
 };
+	/** columns and relationships of "v_player_map_wins" */
+["v_player_map_wins"]: {
+	__typename: "v_player_map_wins",
+	/** An object relationship */
+	map?: GraphQLTypes["maps"] | undefined,
+	map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	started_at?: GraphQLTypes["timestamptz"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregated selection of "v_player_map_wins" */
+["v_player_map_wins_aggregate"]: {
+	__typename: "v_player_map_wins_aggregate",
+	aggregate?: GraphQLTypes["v_player_map_wins_aggregate_fields"] | undefined,
+	nodes: Array<GraphQLTypes["v_player_map_wins"]>
+};
+	/** aggregate fields of "v_player_map_wins" */
+["v_player_map_wins_aggregate_fields"]: {
+	__typename: "v_player_map_wins_aggregate_fields",
+	avg?: GraphQLTypes["v_player_map_wins_avg_fields"] | undefined,
+	count: number,
+	max?: GraphQLTypes["v_player_map_wins_max_fields"] | undefined,
+	min?: GraphQLTypes["v_player_map_wins_min_fields"] | undefined,
+	stddev?: GraphQLTypes["v_player_map_wins_stddev_fields"] | undefined,
+	stddev_pop?: GraphQLTypes["v_player_map_wins_stddev_pop_fields"] | undefined,
+	stddev_samp?: GraphQLTypes["v_player_map_wins_stddev_samp_fields"] | undefined,
+	sum?: GraphQLTypes["v_player_map_wins_sum_fields"] | undefined,
+	var_pop?: GraphQLTypes["v_player_map_wins_var_pop_fields"] | undefined,
+	var_samp?: GraphQLTypes["v_player_map_wins_var_samp_fields"] | undefined,
+	variance?: GraphQLTypes["v_player_map_wins_variance_fields"] | undefined
+};
+	/** aggregate avg on columns */
+["v_player_map_wins_avg_fields"]: {
+	__typename: "v_player_map_wins_avg_fields",
+	steam_id?: number | undefined
+};
+	/** Boolean expression to filter rows from the table "v_player_map_wins". All fields are combined with a logical 'AND'. */
+["v_player_map_wins_bool_exp"]: {
+		_and?: Array<GraphQLTypes["v_player_map_wins_bool_exp"]> | undefined,
+	_not?: GraphQLTypes["v_player_map_wins_bool_exp"] | undefined,
+	_or?: Array<GraphQLTypes["v_player_map_wins_bool_exp"]> | undefined,
+	map?: GraphQLTypes["maps_bool_exp"] | undefined,
+	map_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	started_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined
+};
+	/** aggregate max on columns */
+["v_player_map_wins_max_fields"]: {
+	__typename: "v_player_map_wins_max_fields",
+	map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	started_at?: GraphQLTypes["timestamptz"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregate min on columns */
+["v_player_map_wins_min_fields"]: {
+	__typename: "v_player_map_wins_min_fields",
+	map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	started_at?: GraphQLTypes["timestamptz"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** Ordering options when selecting data from "v_player_map_wins". */
+["v_player_map_wins_order_by"]: {
+		map?: GraphQLTypes["maps_order_by"] | undefined,
+	map_id?: GraphQLTypes["order_by"] | undefined,
+	match_id?: GraphQLTypes["order_by"] | undefined,
+	started_at?: GraphQLTypes["order_by"] | undefined,
+	steam_id?: GraphQLTypes["order_by"] | undefined
+};
+	/** select columns of table "v_player_map_wins" */
+["v_player_map_wins_select_column"]: v_player_map_wins_select_column;
+	/** aggregate stddev on columns */
+["v_player_map_wins_stddev_fields"]: {
+	__typename: "v_player_map_wins_stddev_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate stddev_pop on columns */
+["v_player_map_wins_stddev_pop_fields"]: {
+	__typename: "v_player_map_wins_stddev_pop_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate stddev_samp on columns */
+["v_player_map_wins_stddev_samp_fields"]: {
+	__typename: "v_player_map_wins_stddev_samp_fields",
+	steam_id?: number | undefined
+};
+	/** Streaming cursor of the table "v_player_map_wins" */
+["v_player_map_wins_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["v_player_map_wins_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined
+};
+	/** Initial value of the column from where the streaming should start */
+["v_player_map_wins_stream_cursor_value_input"]: {
+		map_id?: GraphQLTypes["uuid"] | undefined,
+	match_id?: GraphQLTypes["uuid"] | undefined,
+	started_at?: GraphQLTypes["timestamptz"] | undefined,
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregate sum on columns */
+["v_player_map_wins_sum_fields"]: {
+	__typename: "v_player_map_wins_sum_fields",
+	steam_id?: GraphQLTypes["bigint"] | undefined
+};
+	/** aggregate var_pop on columns */
+["v_player_map_wins_var_pop_fields"]: {
+	__typename: "v_player_map_wins_var_pop_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate var_samp on columns */
+["v_player_map_wins_var_samp_fields"]: {
+	__typename: "v_player_map_wins_var_samp_fields",
+	steam_id?: number | undefined
+};
+	/** aggregate variance on columns */
+["v_player_map_wins_variance_fields"]: {
+	__typename: "v_player_map_wins_variance_fields",
+	steam_id?: number | undefined
+};
 	/** columns and relationships of "v_player_match_kills" */
 ["v_player_match_kills"]: {
 	__typename: "v_player_match_kills",
@@ -69324,7 +69882,8 @@ export const enum match_maps_select_column {
 	match_id = "match_id",
 	order = "order",
 	started_at = "started_at",
-	status = "status"
+	status = "status",
+	winning_lineup_id = "winning_lineup_id"
 }
 /** update columns of table "match_maps" */
 export const enum match_maps_update_column {
@@ -69339,7 +69898,8 @@ export const enum match_maps_update_column {
 	match_id = "match_id",
 	order = "order",
 	started_at = "started_at",
-	status = "status"
+	status = "status",
+	winning_lineup_id = "winning_lineup_id"
 }
 /** unique or primary key constraints on table "match_options" */
 export const enum match_options_constraint {
@@ -70097,6 +70657,13 @@ export const enum v_player_killed_player_counts_select_column {
 	kill_count = "kill_count",
 	player_id = "player_id",
 	victim_id = "victim_id"
+}
+/** select columns of table "v_player_map_wins" */
+export const enum v_player_map_wins_select_column {
+	map_id = "map_id",
+	match_id = "match_id",
+	started_at = "started_at",
+	steam_id = "steam_id"
 }
 /** select columns of table "v_player_match_kills" */
 export const enum v_player_match_kills_select_column {
@@ -71323,6 +71890,11 @@ type ZEUS_VARIABLES = {
 	["v_player_killed_player_counts_select_column"]: ValueTypes["v_player_killed_player_counts_select_column"];
 	["v_player_killed_player_counts_stream_cursor_input"]: ValueTypes["v_player_killed_player_counts_stream_cursor_input"];
 	["v_player_killed_player_counts_stream_cursor_value_input"]: ValueTypes["v_player_killed_player_counts_stream_cursor_value_input"];
+	["v_player_map_wins_bool_exp"]: ValueTypes["v_player_map_wins_bool_exp"];
+	["v_player_map_wins_order_by"]: ValueTypes["v_player_map_wins_order_by"];
+	["v_player_map_wins_select_column"]: ValueTypes["v_player_map_wins_select_column"];
+	["v_player_map_wins_stream_cursor_input"]: ValueTypes["v_player_map_wins_stream_cursor_input"];
+	["v_player_map_wins_stream_cursor_value_input"]: ValueTypes["v_player_map_wins_stream_cursor_value_input"];
 	["v_player_match_kills_bool_exp"]: ValueTypes["v_player_match_kills_bool_exp"];
 	["v_player_match_kills_order_by"]: ValueTypes["v_player_match_kills_order_by"];
 	["v_player_match_kills_select_column"]: ValueTypes["v_player_match_kills_select_column"];

@@ -41,6 +41,7 @@
     "@tanstack/vue-table": "^8.19.3",
     "@vee-validate/zod": "^4.13.2",
     "@vueuse/core": "^11.0.1",
+    "chart.js": "^4.4.4",
     "class-variance-authority": "^0.7.0",
     "clipboard": "^2.0.11",
     "clsx": "^2.1.1",
@@ -60,6 +61,7 @@
     "uuid": "^10.0.0",
     "vaul-vue": "^0.2.0",
     "vee-validate": "^4.13.2",
+    "vue-chartjs": "^5.3.1",
     "zod": "^3.23.8"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"

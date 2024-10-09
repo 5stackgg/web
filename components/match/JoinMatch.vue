@@ -4,7 +4,11 @@ import { AlertTriangle } from "lucide-vue-next";
 
 <template>
   <Card
-    v-if="match.is_in_lineup && match.connection_string"
+    v-if="
+      match.is_in_lineup &&
+      match.connection_string &&
+      match.status === e_match_status_enum.Live
+    "
     class="overflow-hidden"
   >
     <CardHeader class="p-2 pt-0 md:p-4">
@@ -32,6 +36,7 @@ import { AlertTriangle } from "lucide-vue-next";
 <script lang="ts">
 import TimeAgo from "~/components/TimeAgo.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
+import { e_match_status_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {

@@ -33,7 +33,11 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
             <span v-if="mobile">Join our Discord</span>
           </a>
         </TooltipTrigger>
-        <TooltipContent side="right"> Join our Discord </TooltipContent>
+        <TooltipContent side="right" > 
+          <span v-if="!mobile">
+            Join our Discord 
+          </span>
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
 

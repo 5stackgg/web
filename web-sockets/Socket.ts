@@ -69,10 +69,6 @@ class Socket extends EventEmitter {
   private rooms: Map<string, Record<string, unknown>> = new Map();
 
   public join(room: string, data: Record<string, unknown>) {
-    if (this.rooms.has(room)) {
-      return;
-    }
-
     this.rooms.set(room, data);
 
     if (!this.connected || !this.connection) {

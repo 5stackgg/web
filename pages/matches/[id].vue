@@ -278,24 +278,26 @@ export default {
     this.$watch(
       () => [
         this.match?.is_in_lineup,
-        this.match?.is_rganizer,
+        this.match?.is_organizer,
         this.match?.is_coach,
       ],
-      {
-        immediate: true,
-        handler() {
+      (newValues, oldValues) => {
+        if (
+          this.match &&
+          newValues.some((val, index) => val !== oldValues[index])
+        ) {
           if (
-            this.match &&
-            (this.match.is_in_lineup ||
-              this.match.is_organizer ||
-              this.match.is_coach)
+            this.match.is_in_lineup ||
+            this.match.is_organizer ||
+            this.match.is_coach
           ) {
             socket.join("lobby", {
               matchId: this.matchId,
             });
           }
-        },
+        }
       },
+      { immediate: true },
     );
   },
   methods: {

@@ -33,7 +33,7 @@ export default {
     steam_id: {
       type: String,
       required: false,
-    }
+    },
   },
   apollo: {
     v_player_map_losses: {

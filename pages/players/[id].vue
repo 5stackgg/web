@@ -99,7 +99,7 @@ import formatStatValue from "~/utilities/formatStatValue";
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <LastTenWins :steam_id="$route.params.id"/>
+            <LastTenWins :steam_id="$route.params.id" />
           </CardContent>
         </div>
       </Card>
@@ -132,7 +132,6 @@ import formatStatValue from "~/utilities/formatStatValue";
       </CardContent>
     </Card>
 
-
     <Pagination
       :page="page"
       :per-page="perPage"
@@ -141,9 +140,7 @@ import formatStatValue from "~/utilities/formatStatValue";
           page = _page;
         }
       "
-      :total="
-        playerWithMatchesAggregate.total_matches
-      "
+      :total="playerWithMatchesAggregate.total_matches"
       v-if="playerWithMatchesAggregate"
     ></Pagination>
   </div>
@@ -264,7 +261,7 @@ export default {
                 steam_id: $("playerId", "bigint!"),
               },
               {
-                total_matches: true
+                total_matches: true,
               },
             ],
           },

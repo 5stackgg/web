@@ -33,7 +33,7 @@ export default {
     steam_id: {
       type: String,
       required: false,
-    }
+    },
   },
   apollo: {
     v_player_map_wins: {
@@ -135,8 +135,8 @@ export default {
       const wins: Map<string, number> = new Map();
 
       for (const win of this.v_player_map_wins) {
-        if(!win.map) {
-          console.info('missing', win);
+        if (!win.map) {
+          console.info("missing", win);
           continue;
         }
         const mapName = win.map.name.replace("de_", "");

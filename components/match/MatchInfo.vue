@@ -8,6 +8,7 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
+import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -70,12 +71,11 @@ import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
         </div>
       </div>
 
-      <div class="mt-4 flex flex-wrap justify-center md:justify-end space-x-4">
-        <Badge
-          v-if="match.cancels_at"
-          variant="destructive"
-          class="flex items-center mb-2 md:mb-0"
-        >
+      <div
+        class="mt-4 flex flex-wrap justify-center md:justify-end space-x-4"
+        v-if="match.cancels_at && match.status !== e_match_status_enum.Canceled"
+      >
+        <Badge variant="destructive" class="flex items-center mb-2 md:mb-0">
           <span class="mr-2">Auto Canceling</span>
           <TimeAgo :date="match.cancels_at" />
         </Badge>

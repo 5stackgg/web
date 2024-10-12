@@ -8285,12 +8285,14 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ValueTypes["v_pool_maps_insert_input"] | Variable<any, string>},ValueTypes["v_pool_maps"]],
 joinLineup?: [{	code?: string | undefined | null | Variable<any, string>,	lineup_id: string | Variable<any, string>,	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+leaveLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** logout */
 	logout?:ValueTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+switchLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	unlinkDiscord?:ValueTypes["SuccessOutput"],
 updateCs?: [{	gameServerNodeId?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
@@ -26691,12 +26693,14 @@ insert_v_pool_maps?: [{	/** the rows to be inserted */
 insert_v_pool_maps_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["v_pool_maps_insert_input"]},ResolverInputTypes["v_pool_maps"]],
 joinLineup?: [{	code?: string | undefined | null,	lineup_id: string,	match_id: string},ResolverInputTypes["SuccessOutput"]],
+leaveLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	/** logout */
 	logout?:ResolverInputTypes["SuccessOutput"],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+switchLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	unlinkDiscord?:ResolverInputTypes["SuccessOutput"],
 updateCs?: [{	gameServerNodeId?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
@@ -44322,6 +44326,7 @@ export type ModelTypes = {
 	/** insert a single row into the table: "v_pool_maps" */
 	insert_v_pool_maps_one?: ModelTypes["v_pool_maps"] | undefined,
 	joinLineup?: ModelTypes["SuccessOutput"] | undefined,
+	leaveLineup?: ModelTypes["SuccessOutput"] | undefined,
 	/** logout */
 	logout?: ModelTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
@@ -44331,6 +44336,7 @@ export type ModelTypes = {
 	setupGameServer?: ModelTypes["SetupGameServeOutput"] | undefined,
 	/** startMatch */
 	startMatch?: ModelTypes["SuccessOutput"] | undefined,
+	switchLineup?: ModelTypes["SuccessOutput"] | undefined,
 	unlinkDiscord?: ModelTypes["SuccessOutput"] | undefined,
 	updateCs?: ModelTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */
@@ -60391,6 +60397,7 @@ export type GraphQLTypes = {
 	/** insert a single row into the table: "v_pool_maps" */
 	insert_v_pool_maps_one?: GraphQLTypes["v_pool_maps"] | undefined,
 	joinLineup?: GraphQLTypes["SuccessOutput"] | undefined,
+	leaveLineup?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** logout */
 	logout?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
@@ -60400,6 +60407,7 @@ export type GraphQLTypes = {
 	setupGameServer?: GraphQLTypes["SetupGameServeOutput"] | undefined,
 	/** startMatch */
 	startMatch?: GraphQLTypes["SuccessOutput"] | undefined,
+	switchLineup?: GraphQLTypes["SuccessOutput"] | undefined,
 	unlinkDiscord?: GraphQLTypes["SuccessOutput"] | undefined,
 	updateCs?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */
@@ -71254,6 +71262,7 @@ export const enum tournament_team_roster_update_column {
 export const enum tournament_teams_constraint {
 	tournament_teams_creator_steam_id_tournament_id_key = "tournament_teams_creator_steam_id_tournament_id_key",
 	tournament_teams_pkey = "tournament_teams_pkey",
+	tournament_teams_tournament_id_name_key = "tournament_teams_tournament_id_name_key",
 	tournament_teams_tournament_id_team_id_key = "tournament_teams_tournament_id_team_id_key"
 }
 /** select columns of table "tournament_teams" */

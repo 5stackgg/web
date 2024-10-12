@@ -4386,6 +4386,9 @@ export const AllTypesProps: Record<string,any> = {
 		joinLineup:{
 
 		},
+		leaveLineup:{
+
+		},
 		scheduleMatch:{
 			match_id:"uuid",
 			time:"timestamptz"
@@ -4397,6 +4400,9 @@ export const AllTypesProps: Record<string,any> = {
 		startMatch:{
 			match_id:"uuid",
 			server_id:"uuid"
+		},
+		switchLineup:{
+
 		},
 		updateCs:{
 			gameServerNodeId:"uuid"
@@ -13135,11 +13141,13 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
 		joinLineup:"SuccessOutput",
+		leaveLineup:"SuccessOutput",
 		logout:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		startMatch:"SuccessOutput",
+		switchLineup:"SuccessOutput",
 		unlinkDiscord:"SuccessOutput",
 		updateCs:"SuccessOutput",
 		update__map_pool:"_map_pool_mutation_response",

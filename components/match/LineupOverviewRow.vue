@@ -81,7 +81,7 @@ import formatStatValue from "~/utilities/formatStatValue";
         </div>
       </TableCell>
     </template>
-    <TableCell v-if="lineup.can_update_lineup">
+    <TableCell v-if="canDoActions">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="secondary" size="icon">
@@ -89,18 +89,39 @@ import formatStatValue from "~/utilities/formatStatValue";
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-56">
-          <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
-            <span>Promote to Captain</span>
+          <template v-if="lineup.can_update_lineup">
+            <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
+              <span>Promote to Captain</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              @click="switchTeams"
+              v-if="lineup.can_update_lineup"
+            >
+              <span>Switch Teams</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator vp />
+
+            <DropdownMenuItem
+              class="text-destructive"
+              @click="removeFromLineup"
+              v-if="lineup.can_update_lineup"
+            >
+              <span>Remove from Lineup</span>
+            </DropdownMenuItem>
+          </template>
+
+          <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
+            <span>Switch Teams</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem @click="swapTeams">
-            <span>Swap Teams</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem class="text-destructive" @click="removeFromLineup">
-            <span>Remove from Lineup</span>
+          <DropdownMenuItem
+            class="text-destructive"
+            @click="removeFromLineup"
+            v-if="canLeaveLineup"
+          >
+            <span>Leave Lineup</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -111,7 +132,7 @@ import formatStatValue from "~/utilities/formatStatValue";
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { $ } from "~/generated/zeus";
+import { $, e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 
 export default {
   components: {
@@ -136,7 +157,25 @@ export default {
     },
   },
   methods: {
-    async swapTeams() {
+    async switchTeams() {
+      if (!this.lineup.can_update_lineup) {
+        return await this.$apollo.mutate({
+          mutation: generateMutation({
+            switchLineup: [
+              {
+                match_id: $("match_id", "String!"),
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+          variables: {
+            match_id: this.match.id,
+          },
+        });
+      }
+
       await this.removeFromLineup();
 
       await this.$apollo.mutate({
@@ -194,6 +233,24 @@ export default {
       });
     },
     async removeFromLineup() {
+      if (!this.lineup.can_update_lineup) {
+        return await this.$apollo.mutate({
+          mutation: generateMutation({
+            leaveLineup: [
+              {
+                match_id: $("match_id", "String!"),
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+          variables: {
+            match_id: this.match.id,
+          },
+        });
+      }
+
       await this.$apollo.mutate({
         mutation: generateMutation({
           delete_match_lineup_players: [
@@ -220,6 +277,29 @@ export default {
     },
   },
   computed: {
+    canDoActions() {
+      return (
+        this.lineup.can_update_lineup ||
+        this.canLeaveLineup ||
+        this.canSwitchTeams
+      );
+    },
+    canLeaveLineup() {
+      return (
+        this.match.status === e_match_status_enum.PickingPlayers &&
+        this.member.steam_id === this.me.steam_id
+      );
+    },
+    canSwitchTeams() {
+      return (
+        this.match.status === e_match_status_enum.PickingPlayers &&
+        this.member.steam_id === this.me.steam_id &&
+        this.match.options.lobby_access !== e_lobby_access_enum.Private
+      );
+    },
+    me() {
+      return useAuthStore().me;
+    },
     kd() {
       if (this.member.player?.deaths_aggregate.aggregate.count === 0) {
         return this.member.player?.kills_aggregate.aggregate.count;

@@ -54,7 +54,9 @@ import cleanMapName from "~/utilities/cleanMapName";
               variant="outline"
               v-if="
                 match.status === e_match_status_enum.PickingPlayers &&
-                match.options.lobby_access === e_lobby_access_enum.Open
+                match.options.lobby_access === e_lobby_access_enum.Open &&
+                !match.lineup_1.is_on_lineup &&
+                !match.lineup_2.is_on_lineup
               "
             >
               <UserPlusIcon class="h-4 w-4" />

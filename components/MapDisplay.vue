@@ -1,3 +1,6 @@
+<script lang="ts" setup>
+import cleanMapName from "~/utilities/cleanMapName";
+</script>
 <template>
   <div class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]">
     <NuxtImg
@@ -25,7 +28,7 @@
         <span
           class="text-white text-xl font-bold uppercase text-center font-sans"
         >
-          {{ map.name.replace("de_", "").replace("_", " ") }}
+          {{ cleanMapName(map.name) }}
         </span>
       </template>
 

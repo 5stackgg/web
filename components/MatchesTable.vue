@@ -2,6 +2,7 @@
 import { UserPlusIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
+import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
 <template>
@@ -81,7 +82,7 @@ import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
                 :key="index"
                 variant="outline"
               >
-                {{ match_map.map.name }}
+                {{ cleanMapName(match_map.map.name) }}
               </Badge>
             </div>
           </TableCell>

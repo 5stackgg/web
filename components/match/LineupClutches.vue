@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import cleanMapName from "~/utilities/cleanMapName";
 import PlayerDisplay from "../PlayerDisplay.vue";
 </script>
 
@@ -9,7 +10,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     class="bg-secondary p-6 rounded-lg mb-8"
   >
     <h3 class="text-2xl font-bold mb-6 text-primary">
-      {{ match_map.map.name }}
+      {{ cleanMapName(match_map.map.name) }}
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div

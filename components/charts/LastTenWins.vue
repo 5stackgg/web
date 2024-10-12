@@ -27,6 +27,7 @@ ChartJS.register(
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
+import cleanMapName from "~/utilities/cleanMapName";
 
 export default {
   props: {
@@ -139,7 +140,7 @@ export default {
           console.info("missing", win);
           continue;
         }
-        const mapName = win.map.name.replace("de_", "");
+        const mapName = cleanMapName(win.map.name);
         if (wins.has(mapName)) {
           wins.set(mapName, wins.get(mapName)! + 1);
           continue;
@@ -153,7 +154,7 @@ export default {
         }
 
         for (const map of this.maps) {
-          const mapName = map.name.replace("de_", "");
+          const mapName = cleanMapName(map.name);
           if (!wins.has(mapName)) {
             wins.set(mapName, 0);
           }

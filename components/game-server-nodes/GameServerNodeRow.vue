@@ -103,6 +103,16 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
             <span>Update CS</span>
           </DropdownMenuItem>
 
+          <DropdownMenuItem
+            @click="setupVolumes"
+            v-if="
+              gameServerNode.status === e_game_server_node_statuses_enum.Online
+            "
+          >
+            <RefreshCw class="mr-2 h-4 w-4" />
+            <span>Setup Volumes</span>
+          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
 
           <DropdownMenuItem @click="removeGameNodeServer" class="text-red-500">
@@ -293,6 +303,20 @@ export default {
               _set: {
                 region,
               },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    async setupVolumes() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          setupVolumes: [
+            {
+              gameServerNodeId: this.gameServerNode.id,
             },
             {
               __typename: true,

@@ -45,7 +45,7 @@ provide("commander", commander);
         Map Veto
       </TabsTrigger>
       <TabsTrigger value="settings"> Match Settings </TabsTrigger>
-      <TabsTrigger :disabled="!match.server_id" value="server">
+      <TabsTrigger :disabled="!match.server_id" value="server" v-if="canViewServerConsole">
         Server Console
       </TabsTrigger>
     </TabsList>
@@ -365,6 +365,11 @@ export default {
         e_match_status_enum.PickingPlayers,
       ].includes(this.match.status);
     },
+    canViewServerConsole() {
+      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
+        useAuthStore();
+      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
+    }
   },
 };
 </script>

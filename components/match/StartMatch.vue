@@ -14,23 +14,24 @@ import { Separator } from "~/components/ui/separator";
           <ScheduleMatch :match="match" />
         </template>
 
-        <Separator label="or" class="my-12" />
-
-        <div v-if="match.can_start">
-          <Button @click.prevent.stop="startMatch" class="w-full">
-            Start
-            <template
-              v-if="
-                (match.options.map_veto &&
-                  match.options.best_of !== match.match_maps.length) ||
-                (match.options.region_veto && !match.region)
-              "
-            >
-              Veto
-            </template>
-            <template v-else> Match </template>
-          </Button>
-        </div>
+        <template v-if="match.can_start">
+          <Separator label="or" class="my-12" />
+          <div>
+            <Button @click.prevent.stop="startMatch" class="w-full">
+              Start
+              <template
+                v-if="
+                  (match.options.map_veto &&
+                    match.options.best_of !== match.match_maps.length) ||
+                  (match.options.region_veto && !match.region)
+                "
+              >
+                Veto
+              </template>
+              <template v-else> Match </template>
+            </Button>
+          </div>
+        </template>
       </div>
     </CardContent>
   </Card>

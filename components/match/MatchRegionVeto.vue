@@ -207,7 +207,9 @@ export default {
       );
     },
     regions() {
-      return useApplicationSettingsStore().availableRegions;
+      return useApplicationSettingsStore().availableRegions.filter((region) => {
+        return region.value !== "Lan";
+      });
     },
     availableRegions() {
       return this.regions

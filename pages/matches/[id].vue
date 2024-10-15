@@ -48,7 +48,10 @@ import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
       </template>
 
       <MatchRegionVeto :match="match"></MatchRegionVeto>
-      <MatchMapVeto :match="match" v-if="match.options.map_veto"></MatchMapVeto>
+      <MatchMapVeto
+        :match="match"
+        v-if="match.region && match.options.map_veto"
+      ></MatchMapVeto>
 
       <MatchTabs :match="match"></MatchTabs>
     </div>

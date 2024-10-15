@@ -5,7 +5,7 @@ import { Info } from "lucide-vue-next";
 <template>
   <TooltipProvider>
     <Tooltip>
-      <TooltipTrigger>
+      <TooltipTrigger @click.prevent>
         <div class="flex items-center gap-2">
           <Info :size="size" v-bind="$attrs"> </Info>
           <slot name="trigger"></slot>

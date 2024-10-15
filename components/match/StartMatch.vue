@@ -21,8 +21,9 @@ import { Separator } from "~/components/ui/separator";
             Start
             <template
               v-if="
-                match.options.map_veto &&
-                match.options.best_of !== match.match_maps.length
+                (match.options.map_veto &&
+                  match.options.best_of !== match.match_maps.length) ||
+                (match.options.region_veto && !match.region)
               "
             >
               Veto

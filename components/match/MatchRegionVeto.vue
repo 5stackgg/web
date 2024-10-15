@@ -6,7 +6,7 @@ import { Separator } from "~/components/ui/separator";
 
 <template>
   <div v-if="isRegionVeto && (isBanning || canSelectRegion)">
-    <template v-if="isBanning">
+    <template v-if="match.options.region_veto">
       <div class="flex justify-between my-3">
         <h1>
           <template v-if="match.lineup_1.is_picking_region_veto">
@@ -145,26 +145,6 @@ export default {
   },
   apollo: {
     $subscribe: {
-      e_server_regions: {
-        query: typedGql("subscription")({
-          e_server_regions: [
-            {
-              where: {
-                // total_server_count: {
-                //   _gt: 0,
-                // },
-              },
-            },
-            {
-              value: true,
-              description: true,
-            },
-          ],
-        }),
-        result({ data }) {
-          this.regions = data.e_server_regions;
-        },
-      },
       match_map_veto_picks: {
         variables: function () {
           return {
@@ -204,7 +184,6 @@ export default {
   data() {
     return {
       picks: [],
-      regions: [],
       override: false,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -225,6 +204,9 @@ export default {
         this.match.lineup_1.can_pick_region_veto ||
         this.match.lineup_2.can_pick_region_veto
       );
+    },
+    regions() {
+      return useApplicationSettingsStore().availableRegions;
     },
     availableRegions() {
       return this.regions
@@ -249,6 +231,7 @@ export default {
       return this.match.status == e_match_status_enum.Veto;
     },
     canSelectRegion() {
+      console.info(this.regions);
       return (
         this.match.is_organizer &&
         !this.match.options.region_veto &&

@@ -66,7 +66,41 @@ export const useApplicationSettingsStore = defineStore(
       return matchMakingSetting ? matchMakingSetting.value === "true" : true;
     });
 
+    const availableRegions = ref([]);
+
+    const subscribeToAvailableRegions = async () => {
+      const subscription = getGraphqlClient().subscribe({
+        query: generateSubscription({
+          e_server_regions: [
+            {
+              where: {
+                total_server_count: {
+                  _gt: 0,
+                },
+                value: {
+                  _neq: "Lan",
+                },
+              },
+            },
+            {
+              value: true,
+              description: true,
+            },
+          ],
+        }),
+      });
+
+      subscription.subscribe({
+        next: ({ data }) => {
+          availableRegions.value = data.e_server_regions;
+        },
+      });
+    };
+
+    subscribeToAvailableRegions();
+
     return {
+      availableRegions,
       matchCreateRole,
       matchMakingAllowed,
       tournamentCreateRole,

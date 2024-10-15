@@ -51,29 +51,6 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 export default {
   apollo: {
     $subscribe: {
-      e_server_regions: {
-        query: typedGql("subscription")({
-          e_server_regions: [
-            {
-              where: {
-                total_server_count: {
-                  _gt: 0,
-                },
-                value: {
-                  _neq: "Lan",
-                },
-              },
-            },
-            {
-              value: true,
-              description: true,
-            },
-          ],
-        }),
-        result({ data }) {
-          this.regions = data.e_server_regions;
-        },
-      },
       matches_by_pk: {
         variables: function () {
           return {
@@ -104,10 +81,12 @@ export default {
   data() {
     return {
       match: undefined,
-      regions: undefined,
     };
   },
   computed: {
+    regions() {
+      return useApplicationSettingsStore().availableRegions;
+    },
     confirmationDetails() {
       return useMatchMakingStore().joinedMatchmakingQueues.confirmation;
     },

@@ -486,7 +486,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   <NumberField
                     class="gap-2"
                     :min="0"
-                    :max="10"
+                    :max="5"
                     :model-value="value"
                     @update:model-value="
                       (number_of_substitutes) => {
@@ -506,7 +506,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     </NumberFieldContent>
                   </NumberField>
                   <FormDescription>
-                    Enter value between 0 and 10.
+                    Enter value between 0 and 5.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

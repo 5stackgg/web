@@ -14,6 +14,7 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "~/components/ui/collapsible";
+import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -106,6 +106,7 @@ import TimeAgo from "../TimeAgo.vue";
 </template>
 
 <script lang="ts">
+import socket from "~/web-sockets/Socket";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { useMatchMakingStore } from "~/stores/MatchMakingStore";
 

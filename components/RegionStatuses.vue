@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { useApplicationSettingsStore } from "~/stores/applicationSettings";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   computed: {

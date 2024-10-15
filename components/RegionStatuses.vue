@@ -1,6 +1,4 @@
-<script lang="ts" setup>
-import PageHeading from "~/components/PageHeading.vue";
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <Table>
@@ -23,12 +21,12 @@ import PageHeading from "~/components/PageHeading.vue";
 </template>
 
 <script lang="ts">
-import { useMatchMakingStore } from "~/stores/MatchMakingStore";
+import { useApplicationSettingsStore } from "~/stores/applicationSettings";
 
 export default {
   computed: {
     regions() {
-      return useMatchMakingStore().regions;
+      return useApplicationSettingsStore().availableRegions;
     },
   },
 };

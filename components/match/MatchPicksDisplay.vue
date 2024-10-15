@@ -75,7 +75,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { useMatchMakingStore } from "~/stores/MatchMakingStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 import { $, order_by } from "~/generated/zeus/index";
 
@@ -143,7 +143,7 @@ export default {
   },
   computed: {
     regions() {
-      return useMatchMakingStore().regions;
+      return useApplicationSettingsStore().availableRegions;
     },
   },
 };

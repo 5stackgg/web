@@ -64,6 +64,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   props: {
@@ -90,32 +91,11 @@ export default {
           this.servers = data.servers;
         },
       },
-      e_server_regions: {
-        query: typedGql("subscription")({
-          e_server_regions: [
-            {
-              where: {
-                total_server_count: {
-                  _gt: 0,
-                },
-              },
-            },
-            {
-              value: true,
-              description: true,
-            },
-          ],
-        }),
-        result({ data }) {
-          this.regions = data.e_server_regions;
-        },
-      },
     },
   },
   data() {
     return {
       servers: [],
-      regions: [],
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -173,6 +153,9 @@ export default {
     },
   },
   computed: {
+    regions() {
+      return useApplicationSettingsStore().availableRegions;
+    },
     canSelectDedicatedServer() {
       const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
         useAuthStore();

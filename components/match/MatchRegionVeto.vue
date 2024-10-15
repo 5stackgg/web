@@ -135,6 +135,7 @@ import {
   e_veto_pick_types_enum,
 } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   props: {

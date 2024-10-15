@@ -120,6 +120,7 @@ import LastTenLosses from "~/components/charts/LastTenLosses.vue";
 
 <script lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   data() {

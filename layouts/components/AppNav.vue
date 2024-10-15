@@ -7,6 +7,8 @@ import { Users } from "lucide-vue-next";
 import RegionStatuses from "~/components/RegionStatuses.vue";
 import AppNavFooter from "./AppNavFooter.vue";
 import AppNotifications from "./AppNotifications.vue";
+import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
@@ -140,8 +142,8 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import { $ } from "~/generated/zeus";
-import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { useMatchMakingStore } from "~/stores/MatchMakingStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   apollo: {
@@ -222,7 +224,7 @@ export default {
       return useAuthStore().me;
     },
     regions() {
-      return useMatchMakingStore().regions;
+      return useApplicationSettingsStore().availableRegions;
     },
     overalRegionStatus() {
       const statuses = this.regions?.map((region) => region.status);

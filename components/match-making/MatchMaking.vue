@@ -47,6 +47,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   apollo: {

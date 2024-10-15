@@ -77,13 +77,11 @@ export const useApplicationSettingsStore = defineStore(
                 total_server_count: {
                   _gt: 0,
                 },
-                value: {
-                  _neq: "Lan",
-                },
               },
             },
             {
               value: true,
+              status: true,
               description: true,
             },
           ],

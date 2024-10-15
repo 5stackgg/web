@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { e_match_types_enum, e_server_regions_enum } from "~/generated/zeus";
-import socket from "~/web-sockets/Socket";
+import { e_match_types_enum } from "~/generated/zeus";
+import TimeAgo from "../TimeAgo.vue";
 </script>
 <template>
   <Card>
@@ -107,7 +107,6 @@ import socket from "~/web-sockets/Socket";
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
-import TimeAgo from "../TimeAgo.vue";
 import { useMatchMakingStore } from "~/stores/MatchMakingStore";
 
 export default {
@@ -176,7 +175,7 @@ export default {
       );
     },
     regions() {
-      return useMatchMakingStore().regions;
+      return useApplicationSettingsStore().availableRegions;
     },
   },
 };

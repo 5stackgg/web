@@ -623,8 +623,7 @@ import {
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum, e_timeout_settings_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
-import { useMatchMakingStore } from "~/stores/MatchMakingStore";
-import FiveStackToolTip from "./FiveStackToolTip.vue";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   props: {
@@ -829,12 +828,12 @@ export default {
       };
     },
     hasLanRegion() {
-      return useMatchMakingStore().regions.find((region) => {
+      return useApplicationSettingsStore().availableRegions.find((region) => {
         return region.value === "Lan";
       });
     },
     regions() {
-      return useMatchMakingStore().regions.filter((region) => {
+      return useApplicationSettingsStore().availableRegions.filter((region) => {
         return region.value !== "Lan";
       });
     },

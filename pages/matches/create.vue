@@ -147,7 +147,6 @@ export default {
         variables: {
           mr: form.mr,
           type: form.type,
-          steam_id: useAuthStore().me?.steam_id,
           best_of: form.best_of,
           knife_round: form.knife_round,
           overtime: form.overtime,
@@ -188,11 +187,6 @@ export default {
                     ...(this.form.values.team_1
                       ? { team_id: this.form.values.team_1 }
                       : {}),
-                    lineup_players: {
-                      data: {
-                        steam_id: $("steam_id", "bigint!"),
-                      },
-                    },
                   },
                 },
                 ...(this.form.values.team_2

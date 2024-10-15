@@ -48,18 +48,19 @@ import MapDisplay from "~/components/MapDisplay.vue";
     </li>
   </ul>
 
-  <Separator class="my-8" />
-
-  <div>
-    <h3 class="text-lg font-semibold mb-2">Map Pool</h3>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-      <MapDisplay
-        v-for="map in options.map_pool.maps"
-        :key="map.id"
-        :map="map"
-      />
+  <template v-if="options.map_veto">
+    <Separator class="my-8" />
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Map Pool</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <MapDisplay
+          v-for="map in options.map_pool.maps"
+          :key="map.id"
+          :map="map"
+        />
+      </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <script lang="ts">

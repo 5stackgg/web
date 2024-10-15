@@ -143,6 +143,10 @@ export default {
     teams() {
       return this.me.teams;
     },
+    requiresOwnerSteamId() {
+      const { isAdmin, isTournamentOrganizer } = useAuthStore();
+      return isAdmin || isTournamentOrganizer;
+    },
   },
   watch: {
     tournament: {
@@ -184,6 +188,9 @@ export default {
           insert_tournament_teams_one: [
             {
               object: {
+                ...(this.requiresOwnerSteamId
+                  ? { owner_steam_id: this.me.steam_id }
+                  : {}),
                 tournament_id: this.$route.params.tournamentId,
                 name: teamName,
                 team_id: this.form.values.newTeam

@@ -83,7 +83,10 @@ export default {
   },
   computed: {
     matchInviteLink() {
-      return `${window.location.href}?invite=${this.match.invite_code}`;
+      const currentRoute = new URL(window.location.href);
+      currentRoute.search = '';
+      const baseUrl = currentRoute.toString();
+      return `${baseUrl}?invite=${this.match.invite_code}`;
     },
   },
   methods: {

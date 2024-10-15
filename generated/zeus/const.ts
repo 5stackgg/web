@@ -4397,9 +4397,6 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
 		},
-		setupVolumes:{
-
-		},
 		startMatch:{
 			match_id:"uuid",
 			server_id:"uuid"
@@ -13149,7 +13146,6 @@ export const ReturnTypes: Record<string,any> = {
 		scheduleMatch:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
-		setupVolumes:"SuccessOutput",
 		startMatch:"SuccessOutput",
 		switchLineup:"SuccessOutput",
 		unlinkDiscord:"SuccessOutput",

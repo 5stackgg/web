@@ -8291,7 +8291,6 @@ leaveLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOu
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
-setupVolumes?: [{	gameServerNodeId: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 switchLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	unlinkDiscord?:ValueTypes["SuccessOutput"],
@@ -26700,7 +26699,6 @@ leaveLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
-setupVolumes?: [{	gameServerNodeId: string},ResolverInputTypes["SuccessOutput"]],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 switchLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	unlinkDiscord?:ResolverInputTypes["SuccessOutput"],
@@ -44336,7 +44334,6 @@ export type ModelTypes = {
 	/** setMatchWinner */
 	setMatchWinner?: ModelTypes["SuccessOutput"] | undefined,
 	setupGameServer?: ModelTypes["SetupGameServeOutput"] | undefined,
-	setupVolumes?: ModelTypes["SuccessOutput"] | undefined,
 	/** startMatch */
 	startMatch?: ModelTypes["SuccessOutput"] | undefined,
 	switchLineup?: ModelTypes["SuccessOutput"] | undefined,
@@ -60408,7 +60405,6 @@ export type GraphQLTypes = {
 	/** setMatchWinner */
 	setMatchWinner?: GraphQLTypes["SuccessOutput"] | undefined,
 	setupGameServer?: GraphQLTypes["SetupGameServeOutput"] | undefined,
-	setupVolumes?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** startMatch */
 	startMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	switchLineup?: GraphQLTypes["SuccessOutput"] | undefined,

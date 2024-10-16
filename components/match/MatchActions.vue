@@ -22,10 +22,32 @@ import { e_match_status_enum } from "~/generated/zeus";
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <template v-if="match.is_in_lineup">
+          <DropdownMenuItem
+            class="text-destructive"
+            @click="callForOrganizer"
+            :disabled="match.requested_organizer"
+          >
+            Call for Support
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+        </template>
+
+        <DropdownMenuItem v-if="match.can_assign_server">
+          <MatchSelectServer :match="match"></MatchSelectServer>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem v-if="match.is_organizer">
+          <MatchSelectWinner :match="match"></MatchSelectWinner>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator v-if="match.can_start || match.can_cancel" />
+
         <template v-if="match.can_start">
           <DropdownMenuItem
             @click.prevent.stop="startMatch"
-            class="-mr-2"
+            class="text-destructive"
             :disabled="!hasMinimumLineupPlayers"
           >
             <template
@@ -41,28 +63,9 @@ import { e_match_status_enum } from "~/generated/zeus";
         </template>
 
         <template v-if="match.can_cancel">
-          <DropdownMenuItem @click="cancelMatch">Cancel Match</DropdownMenuItem>
-        </template>
-
-        <DropdownMenuSeparator v-if="match.can_start || match.can_cancel" />
-
-        <DropdownMenuItem v-if="match.can_assign_server">
-          <MatchSelectServer :match="match"></MatchSelectServer>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem v-if="match.is_organizer">
-          <MatchSelectWinner :match="match"></MatchSelectWinner>
-        </DropdownMenuItem>
-
-        <template v-if="match.is_in_lineup">
-          <DropdownMenuSeparator v-if="match.is_organizer" />
-          <DropdownMenuItem
-            class="text-destructive"
-            @click="callForOrganizer"
-            :disabled="match.requested_organizer"
+          <DropdownMenuItem class="text-destructive" @click="cancelMatch"
+            >Cancel Match</DropdownMenuItem
           >
-            Call for Support
-          </DropdownMenuItem>
         </template>
       </DropdownMenuContent>
     </DropdownMenu>

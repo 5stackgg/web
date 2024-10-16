@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ArrowRight } from "lucide-vue-next";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import MatchLobby from "./MatchLobby.vue";
+import { ArrowRight, ChevronDown } from "lucide-vue-next";
 </script>
 
 <template>
@@ -9,7 +9,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       <Button
         class="flex gap-2 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
         @click="goToMatch"
-        v-if="!onMatchPage"
+        v-show="!onMatchPage"
       >
         <span class="md:inline hidden">{{
           match.e_match_status.description
@@ -17,57 +17,36 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         <ArrowRight />
       </Button>
 
-      <div class="hidden md:flex gap-4 items-center">
-        <div class="flex items-center">
-          <TooltipProvider v-for="member of myLineup">
-            <Tooltip>
-              <TooltipTrigger>
-                <PlayerDisplay
-                  :show-flag="false"
-                  :show-steam-id="false"
-                  :show-name="false"
-                  :player="
-                    member.placeholder_name
-                      ? {
-                          name: member.placeholder_name,
-                        }
-                      : member.player
-                  "
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ member.placeholder_name || member.player.name }}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+      <Popover v-model:open="choosingLobby">
+        <PopoverTrigger>
+          <div
+            class="hidden md:flex gap-4 p-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg shadow-md"
+          >
+            <MatchLobby :match="match"></MatchLobby>
 
-        <span>VS</span>
-
-        <div class="flex items-center">
-          <TooltipProvider v-for="member of otherLineUp">
-            <Tooltip>
-              <TooltipTrigger>
-                <PlayerDisplay
-                  :show-flag="false"
-                  :show-steam-id="false"
-                  :show-name="false"
-                  :player="
-                    member.placeholder_name
-                      ? {
-                          name: member.placeholder_name,
-                        }
-                      : member.player
-                  "
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ member.placeholder_name || member.player.name }}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
+            <Button variant="outline" v-if="lobbies.length > 1">
+              <ChevronDown class="h-4 w-4" />
+            </Button>
+          </div>
+        </PopoverTrigger>
+        <PopoverContent class="w-auto p-0">
+          <Command>
+            <CommandList>
+              <CommandGroup>
+                <template v-for="lobby in lobbies" :key="lobby.match.id">
+                  <CommandItem
+                    :value="lobby.match.id"
+                    @select="selectLobby(lobby.match.id)"
+                    v-if="match.id !== lobby.match.id"
+                  >
+                    <MatchLobby :match="lobby.match" :show-link="true" />
+                  </CommandItem>
+                </template>
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </template>
   </div>
 </template>
@@ -76,67 +55,34 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 export default {
   data() {
     return {
-      matchId: null as null | string,
+      choosingLobby: false,
     };
   },
   computed: {
-    minPlayers() {
-      return 4;
-    },
     lobbies() {
-      return useMatchLobbyStore().lobbies;
-    },
-    me() {
-      return useAuthStore().me;
+      return Array.from(useMatchLobbyStore().lobbies.values());
     },
     match() {
-      const keys = Array.from(this.lobbies?.keys() || []);
-
-      if (keys.length === 0) {
-        return null;
-      }
-
       if (this.matchId) {
-        return this.lobbies.get(this.matchId);
+        return useMatchLobbyStore().lobbies.get(this.matchId)?.match;
       }
 
-      return this.lobbies.get(keys[0])?.match;
-    },
-    myLineup() {
-      if (!this.match) {
-        return;
-      }
-      const { lineup_1, lineup_2 } = this.match;
-
-      return (
-        lineup_1.is_on_lineup ? lineup_1.lineup_players : lineup_2.is_on_lineup
-      ).sort((a, b) => {
-        if (a.player?.steam_id === this.me?.steam_id) {
-          return -1;
-        }
-        if (b.player?.steam_id === this.me?.steam_id) {
-          return 1;
-        }
-        return 0;
-      });
-    },
-    otherLineUp() {
-      if (!this.match) {
-        return;
-      }
-      const { lineup_1, lineup_2 } = this.match;
-
-      return lineup_1.is_on_lineup
-        ? lineup_2.lineup_players
-        : lineup_1.is_on_lineup;
+      return this.lobbies.at(0)?.match;
     },
     onMatchPage() {
       return this.$route.path === `/matches/${this.match?.id}`;
+    },
+    matchId() {
+      return useMatchLobbyStore().viewMatchLobby;
     },
   },
   methods: {
     goToMatch() {
       this.$router.push(`/matches/${this.match.id}`);
+    },
+    selectLobby(matchId: string) {
+      this.choosingLobby = false;
+      useMatchLobbyStore().viewMatchLobby = matchId;
     },
   },
 };

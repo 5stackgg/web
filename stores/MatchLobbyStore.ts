@@ -14,6 +14,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const lobbies = ref(new Map<string, { players: any[]; match: any }>());
   const lobbyChat = ref<Record<string, Map<string, unknown>>>({});
   const upcomingMatches = ref([]);
+  const viewMatchLobby = ref();
 
   const subscribeToMyMatches = async () => {
     const subscription = getGraphqlClient().subscribe({
@@ -146,6 +147,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     lobbies,
     lobbyChat,
     upcomingMatches,
+    viewMatchLobby,
     add,
     set,
     remove,

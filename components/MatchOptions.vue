@@ -118,8 +118,13 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <CardHeader>
               <CardTitle class="flex justify-between items-center">
                 <FormLabel class="text-lg font-semibold">
-                  <template v-if="form.values.map_veto"> Map Pool </template>
-                  <template v-else> Map Selection </template>
+                  <template v-if="form.values.map_veto">
+                    <template v-if="form.values.custom_map_pool">
+                      Custom Map Pool ({{ form.values.map_pool.length }})
+                    </template>
+                    <template v-else> Active Duty Map Pool </template>
+                  </template>
+                  <template v-else> Select Map </template>
                 </FormLabel>
                 <div v-show="form.values.map_veto">
                   <FormField

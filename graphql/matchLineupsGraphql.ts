@@ -1,4 +1,4 @@
-import { $, e_utility_types_enum, Selector } from "~/generated/zeus";
+import { $, e_utility_types_enum, order_by, Selector } from "~/generated/zeus";
 
 export const matchLineups = Selector("match_lineups")({
   id: true,
@@ -27,11 +27,11 @@ export const matchLineups = Selector("match_lineups")({
     {
       order_by: [
         {
+          captain: order_by.desc_nulls_last,
+        },
+        {
           player: {
-            name: $("order_by_name", "order_by"),
-            kills_aggregate: {
-              count: $("order_by_kills", "order_by"),
-            },
+            name: $("order_by_name", "order_by!"),
           },
         },
       ],

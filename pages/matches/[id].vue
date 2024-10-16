@@ -80,7 +80,6 @@ export default {
           return {
             matchId: this.$route.params.id,
             order_by_name: order_by.asc,
-            order_by_kills: order_by.desc,
             order_by_round_kills: order_by.asc,
             order_by_round: order_by.asc,
           };
@@ -306,7 +305,7 @@ export default {
   methods: {
     stopListeners() {
       for (const listener of this.listeners) {
-        listener.stop();
+        listener?.stop();
       }
     },
   },

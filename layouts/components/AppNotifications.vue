@@ -76,7 +76,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 >
                   {{ notification.title }}
                 </h3>
+
                 <p
+                  class="notification"
                   :class="[
                     'text-sm mb-2',
                     notification.is_read
@@ -85,6 +87,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                   ]"
                   v-html="notification.message"
                 ></p>
+
                 <div class="flex justify-between items-center">
                   <span
                     :class="[
@@ -340,3 +343,11 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss">
+.notification {
+  a {
+    @apply text-blue-500 underline hover:text-blue-700;
+  }
+}
+</style>

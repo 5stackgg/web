@@ -6,7 +6,6 @@ import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import JoinMatch from "~/components/match/JoinMatch.vue";
-import StartMatch from "~/components/match/StartMatch.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";

@@ -9,6 +9,7 @@ import AppNavFooter from "./AppNavFooter.vue";
 import AppNotifications from "./AppNotifications.vue";
 import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import MatchLobbies from "./MatchLobbies.vue";
 </script>
 
 <template>
@@ -92,6 +93,8 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       </div>
 
       <div class="flex gap-4">
+        <MatchLobbies></MatchLobbies>
+
         <Popover>
           <PopoverTrigger>
             <div class="flex items-center gap-2 text-sm text-muted-foreground">

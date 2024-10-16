@@ -73,7 +73,7 @@ export default {
       return e_match_status_enum;
     },
     lobby() {
-      return useMatchLobbyStore().lobbies[this.$route.params.id];
+      return useMatchLobbyStore().lobbyChat[this.$route.params.id];
     },
     isOnline() {
       return !!this.lobby?.get(this.member.player.steam_id);

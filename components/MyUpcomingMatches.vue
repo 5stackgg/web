@@ -22,77 +22,10 @@ import SimpleMatchDisplay from "./SimpleMatchDisplay.vue";
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import {
-  $,
-  e_match_status_enum,
-  e_lobby_access_enum,
-  order_by,
-} from "~/generated/zeus";
-
 export default {
-  apollo: {
-    matches: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        matches: [
-          {
-            where: {
-              _or: [
-                {
-                  organizer_steam_id: {
-                    _eq: $("steam_id", "bigint!"),
-                  },
-                  status: {
-                    _in: [e_match_status_enum.PickingPlayers],
-                  },
-                },
-                {
-                  is_in_lineup: {
-                    _eq: true,
-                  },
-                  _or: [
-                    {
-                      options: {
-                        lobby_access: {
-                          _neq: e_lobby_access_enum.Closed,
-                        },
-                      },
-                      status: {
-                        _in: e_match_status_enum.PickingPlayers,
-                      },
-                    },
-                    {
-                      status: {
-                        _in: $("statuses", "[e_match_status_enum]"),
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-            order_by: [
-              {},
-              {
-                created_at: order_by.desc,
-              },
-            ],
-          },
-          simpleMatchFields,
-        ],
-      }),
-      variables: function () {
-        return {
-          steam_id: useAuthStore().me?.steam_id,
-          statuses: [
-            e_match_status_enum.Live,
-            e_match_status_enum.Veto,
-            e_match_status_enum.Scheduled,
-            e_match_status_enum.WaitingForCheckIn,
-          ],
-        };
-      },
+  computed: {
+    matches() {
+      return useMatchLobbyStore().upcomingMatches;
     },
   },
 };

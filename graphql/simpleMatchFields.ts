@@ -1,7 +1,7 @@
 import { order_by, Selector } from "@/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 
-export const simpleMatchFields = Selector("servers")({
+export const simpleMatchFields = Selector("matches")({
   id: true,
   status: true,
   ended_at: true,
@@ -36,14 +36,36 @@ export const simpleMatchFields = Selector("servers")({
     id: true,
     name: true,
     is_on_lineup: true,
+    lineup_players: [
+      {},
+      {
+        placeholder_name: true,
+        player: {
+          name: true,
+          steam_id: true,
+          avatar_url: true,
+        },
+      },
+    ],
   },
   lineup_2: {
     id: true,
     name: true,
     is_on_lineup: true,
+    lineup_players: [
+      {},
+      {
+        placeholder_name: true,
+        player: {
+          name: true,
+          steam_id: true,
+          avatar_url: true,
+        },
+      },
+    ],
   },
   created_at: true,
   scheduled_at: true,
   min_players_per_lineup: true,
-  lineup_counts: true,
+  lineup_counts: [{}, true],
 });

@@ -12,8 +12,15 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <Bell :class="{ 'animate-bell': hasNotifications }" />
         <span
           v-if="hasNotifications"
-          class="absolute -top-1 -right-1 inline-block h-2 w-2 rounded-full bg-red-600"
-        ></span>
+          class="absolute -top-1 -right-1 inline-flex"
+        >
+          <span
+            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+          ></span>
+          <span
+            class="relative inline-flex rounded-full h-2 w-2 bg-red-500"
+          ></span>
+        </span>
       </div>
       <span class="sr-only">Notifications</span>
     </SheetTrigger>

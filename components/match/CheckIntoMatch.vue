@@ -18,7 +18,13 @@
       </CardDescription>
     </CardHeader>
     <CardContent v-if="!isCheckedIn">
-      <Button size="sm" class="w-full" @click="checkIn"> Check In </Button>
+      <Button
+        size="sm"
+        class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
+        @click="checkIn"
+      >
+        Check In
+      </Button>
     </CardContent>
   </Card>
 </template>

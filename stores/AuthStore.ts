@@ -50,6 +50,8 @@ export const useAuthStore = defineStore("auth", () => {
         subscription.subscribe({
           next: ({ data }) => {
             me.value = data.players_by_pk;
+
+            useMatchLobbyStore().subscribeToMyMatches();
             resolve(true);
           },
         });

@@ -20,14 +20,25 @@ import { UserPlusIcon } from "lucide-vue-next";
       <TableRow>
         <TableHead class="w-[300px] text-left">
           <div class="flex items-center gap-4">
-            <span
+            <div
               v-if="match.status === e_match_status_enum.WaitingForCheckIn"
-              class="flex h-2 w-2 rounded-full"
-              :class="{
-                ['bg-red-600']: !lineup.is_ready,
-                ['bg-green-600']: lineup.is_ready,
-              }"
-            ></span>
+              class="relative inline-flex"
+            >
+              <span
+                class="absolute inline-flex h-2 w-2 rounded-full animate-ping"
+                :class="{
+                  'bg-red-600': !lineup.is_ready,
+                  'bg-green-600': lineup.is_ready,
+                }"
+              ></span>
+              <span
+                class="relative inline-flex h-2 w-2 rounded-full"
+                :class="{
+                  'bg-red-600': !lineup.is_ready,
+                  'bg-green-600': lineup.is_ready,
+                }"
+              ></span>
+            </div>
             <span>{{ lineup.name }}</span>
           </div>
         </TableHead>

@@ -13,6 +13,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
               :show-flag="false"
               :show-steam-id="false"
               :show-name="false"
+              :ping-status="true"
               :player="
                 member.placeholder_name
                   ? {

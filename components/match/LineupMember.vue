@@ -6,13 +6,24 @@
           <Badge variant="outline" v-if="member.captain"> Captain </Badge>
         </template>
 
-        <template v-slot:name-prefix>
+        <template v-slot:status>
           <span
-            class="ml-1 inline-block h-2 w-2 rounded-full"
+            class="absolute -top-1 -left-1 h-2 w-2 rounded-full animate-ping"
             :class="{
-              ['bg-red-600']: !isOnline && !isReady,
-              ['bg-yellow-600']: isOnline && !isReady,
-              ['bg-green-600']: isReady,
+              ['bg-red-500']: !isOnline && !isReady,
+              ['bg-yellow-500']: isOnline && !isReady,
+              ['bg-green-500']: isReady,
+            }"
+            v-if="
+              match && match.status === e_match_status_enum.WaitingForCheckIn
+            "
+          ></span>
+          <span
+            class="absolute -top-1 -left-1 h-2 w-2 rounded-full"
+            :class="{
+              ['bg-red-500']: !isOnline && !isReady,
+              ['bg-yellow-500']: isOnline && !isReady,
+              ['bg-green-500']: isReady,
             }"
             v-if="
               match && match.status === e_match_status_enum.WaitingForCheckIn

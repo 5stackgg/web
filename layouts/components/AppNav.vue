@@ -98,15 +98,25 @@ import MatchLobbies from "./MatchLobbies.vue";
         <Popover>
           <PopoverTrigger>
             <div class="flex items-center gap-2 text-sm text-muted-foreground">
-              <span
-                class="inline-block w-2 h-2 rounded-full"
-                :class="{
-                  'bg-green-500': overalRegionStatus === 'Online',
-                  'bg-red-500': overalRegionStatus === 'Offline',
-                  'bg-yellow-500': overalRegionStatus === 'Degraded',
-                }"
-                :title="overalRegionStatus"
-              ></span>
+              <div class="relative inline-flex">
+                <span
+                  class="absolute inline-flex h-2 w-2 rounded-full animate-ping"
+                  :class="{
+                    'bg-red-500': overalRegionStatus === 'Offline',
+                    'bg-yellow-500': overalRegionStatus === 'Degraded',
+                  }"
+                  v-if="overalRegionStatus !== 'Online'"
+                ></span>
+                <span
+                  class="relative inline-flex h-2 w-2 rounded-full"
+                  :class="{
+                    'bg-green-500': overalRegionStatus === 'Online',
+                    'bg-red-500': overalRegionStatus === 'Offline',
+                    'bg-yellow-500': overalRegionStatus === 'Degraded',
+                  }"
+                  :title="overalRegionStatus"
+                ></span>
+              </div>
             </div>
           </PopoverTrigger>
           <PopoverContent>
@@ -141,51 +151,13 @@ import MatchLobbies from "./MatchLobbies.vue";
 </template>
 
 <script lang="ts">
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
-import { $ } from "~/generated/zeus";
-import { useMatchMakingStore } from "~/stores/MatchMakingStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
-  apollo: {
-    $subscribe: {
-      players: {
-        variables: function () {
-          return {
-            steam_ids: useMatchMakingStore().playersOnline,
-          };
-        },
-        result: function ({ data }) {
-          this.openMatches = data.matches;
-        },
-        query: typedGql("subscription")({
-          players: [
-            {
-              where: {
-                steam_id: {
-                  _in: $("steam_ids", "[bigint]!"),
-                },
-              },
-            },
-            {
-              name: true,
-              steam_id: true,
-              avatar_url: true,
-              country: true,
-            },
-          ],
-        }),
-        result: function ({ data }) {
-          this.playersOnline = data.players;
-        },
-      },
-    },
-  },
   data() {
     return {
-      playersOnline: [],
       links: [
         {
           to: "/matches",
@@ -243,6 +215,9 @@ export default {
       } else {
         return "Degraded";
       }
+    },
+    playersOnline() {
+      return useMatchMakingStore().playersOnline;
     },
   },
 };

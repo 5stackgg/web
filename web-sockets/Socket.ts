@@ -120,8 +120,8 @@ socket.listen("match-making:region-stats", (data) => {
   useMatchMakingStore().regionStats = data;
 });
 
-socket.listen("players-online", (playersOnline) => {
-  useMatchMakingStore().playersOnline = playersOnline;
+socket.listen("players-online", (onlinePlayerSteamIds) => {
+  useMatchMakingStore().onlinePlayerSteamIds = onlinePlayerSteamIds;
 });
 
 socket.listen(

@@ -44,7 +44,7 @@ import cleanMapName from "~/utilities/cleanMapName";
             <div class="flex items-center space-x-2">
               <time-ago
                 :date="match.created_at"
-                class="text-sm text-gray-600 dark:text-gray-400"
+                class="text-sm text-gray500 dark:text-gray-400"
               ></time-ago>
             </div>
           </TableCell>

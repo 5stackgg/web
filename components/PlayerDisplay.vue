@@ -12,14 +12,27 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
       'grid-cols-[52px_1fr]': showName || showSteamId || showFlag,
     }"
   >
-    <div class="flex flex-col items-center justify-center gap-3">
-      <Avatar>
-        <AvatarImage
-          :src="player.avatar_url"
-          :alt="player.name"
-          v-if="player.avatar_url"
-        />
-      </Avatar>
+    <div class="flex flex-col items-center justify-center gap-3 relative">
+      <div class="relative">
+        <Avatar>
+          <AvatarImage
+            :src="player.avatar_url"
+            :alt="player.name"
+            v-if="player.avatar_url"
+          />
+        </Avatar>
+        <slot name="status">
+          <template v-if="isOnline && showOnline">
+            <span
+              class="absolute -top-1 -left-1 h-2 w-2 rounded-full animate-ping bg-green-500"
+              v-if="pingStatus"
+            ></span>
+            <span
+              class="absolute -top-1 -left-1 h-2 w-2 rounded-full bg-green-500"
+            ></span>
+          </template>
+        </slot>
+      </div>
       <slot name="avatar-sub"></slot>
     </div>
     <div :class="{ 'flex items-center': !showSteamId }">
@@ -80,12 +93,27 @@ export default {
       type: Boolean,
       default: false,
     },
+    showOnline: {
+      type: Boolean,
+      default: true,
+    },
+    pingStatus: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     viewPlayer() {
       if (this.linkable) {
         this.$router.push(`/players/${this.player.steam_id}`);
       }
+    },
+  },
+  computed: {
+    isOnline() {
+      return useMatchMakingStore().onlinePlayerSteamIds.includes(
+        this.player.steam_id,
+      );
     },
   },
 };

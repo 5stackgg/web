@@ -11,7 +11,7 @@ import { AlertTriangle } from "lucide-vue-next";
     "
     class="overflow-hidden"
   >
-    <CardHeader class="p-2 pt-0 md:p-4">
+    <CardHeader class="p-4">
       <CardTitle class="flex justify-between">
         <div class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />

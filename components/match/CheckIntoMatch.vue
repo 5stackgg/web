@@ -1,8 +1,8 @@
 <template>
   <Card v-if="isInMatch && match.can_check_in">
-    <CardHeader class="p-2 pt-0 md:p-4">
+    <CardHeader class="p-4">
       <CardTitle class="flex justify-between">
-        Check In Status
+        Check In
         <template v-if="isCheckedIn">
           <Badge variant="secondary">Checked In</Badge>
         </template>

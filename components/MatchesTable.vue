@@ -65,7 +65,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           </TableCell>
           <TableCell class="text-center">
             <Badge>
-              {{ match.status }}
+              {{ match.e_match_status.description }}
               <template
                 v-if="match.status === e_match_status_enum.PickingPlayers"
               >

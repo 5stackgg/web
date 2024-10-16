@@ -3,9 +3,9 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 </script>
 
 <template>
-  <div>
+  <div class="flex gap-2 items-center">
     <span
-      class="ml-1 inline-block h-2 w-2 rounded-full"
+      class="ml-1 inline-block h-2 w-2 rounded-full relative"
       :class="{
         ['bg-red-600']:
           gameServerNode.status === e_game_server_node_statuses_enum.Offline,
@@ -17,6 +17,18 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
             e_game_server_node_statuses_enum.NotAcceptingNewMatches,
       }"
     >
+      <span
+        class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+        :class="{
+          ['bg-red-400']:
+            gameServerNode.status === e_game_server_node_statuses_enum.Offline,
+          ['bg-yellow-400']:
+            gameServerNode.status === e_game_server_node_statuses_enum.Setup ||
+            gameServerNode.status ===
+              e_game_server_node_statuses_enum.NotAcceptingNewMatches,
+        }"
+        v-if="gameServerNode.status !== e_game_server_node_statuses_enum.Online"
+      ></span>
     </span>
     {{ gameServerNode.id || gameServerNode?.e_region?.description }}
   </div>

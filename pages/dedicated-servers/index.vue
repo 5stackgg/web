@@ -54,14 +54,23 @@ import { PlusCircle } from "lucide-vue-next";
             class="cursor-pointer"
           >
             <TableCell>
-              <div>
-                <span
-                  class="ml-1 inline-block h-2 w-2 rounded-full"
-                  :class="{
-                    ['bg-red-600']: !server.connected,
-                    ['bg-green-600']: server.connected,
-                  }"
-                >
+              <div class="flex items-center gap-2">
+                <span class="relative">
+                  <span
+                    class="absolute top-0 left-0 ml-1 inline-block h-2 w-2 rounded-full animate-ping"
+                    :class="{
+                      ['bg-red-400']: !server.connected,
+                    }"
+                    v-if="!server.connected"
+                  ></span>
+                  <span
+                    class="ml-1 inline-block h-2 w-2 rounded-full"
+                    :class="{
+                      ['bg-red-600']: !server.connected,
+                      ['bg-green-600']: server.connected,
+                    }"
+                  >
+                  </span>
                 </span>
 
                 {{ server.host }}
@@ -70,7 +79,7 @@ import { PlusCircle } from "lucide-vue-next";
             <TableCell>{{ server.label }}</TableCell>
             <TableCell>{{ server.region }}</TableCell>
             <TableCell>{{ server.tv_port }}</TableCell>
-            <TableCell>{{ server.enabled }}</TableCell>
+            <TableCell>{{ server.enabled ? "Yes" : "No" }}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

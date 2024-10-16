@@ -4,6 +4,7 @@ import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { meFields } from "~/graphql/meGraphql";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { e_player_roles_enum } from "~/generated/zeus";
+import socket from "~/web-sockets/Socket";
 
 export const useAuthStore = defineStore("auth", () => {
   const me = ref<typeof meFields>();
@@ -32,6 +33,8 @@ export const useAuthStore = defineStore("auth", () => {
           resolve(false);
           return;
         }
+
+        socket.connect();
 
         hasDiscordLinked.value = !!response.data.me.discord_id;
 

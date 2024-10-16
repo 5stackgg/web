@@ -17,12 +17,4 @@ import MatchMakingConfirm from "~/components/match-making/MatchMakingConfirm.vue
   </div>
 </template>
 
-<script lang="ts">
-import socket from "~/web-sockets/Socket";
-
-export default {
-  created() {
-    socket.connect();
-  },
-};
-</script>
+<script lang="ts"></script>

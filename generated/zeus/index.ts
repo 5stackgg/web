@@ -9070,6 +9070,8 @@ count?: [{	columns?: Array<ValueTypes["notifications_select_column"]> | undefine
 	attacker_team?:boolean | `@${string}`,
 	flash?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_team_assist" */
+	is_team_assist?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -9171,6 +9173,7 @@ count?: [{	columns?: Array<ValueTypes["player_assists_select_column"]> | undefin
 	attacker_team?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	flash?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_team_assist?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
@@ -9277,6 +9280,7 @@ count?: [{	columns?: Array<ValueTypes["player_assists_select_column"]> | undefin
 	attacker_team?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	flash?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_team_assist?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_order_by"] | undefined | null | Variable<any, string>,
@@ -10340,6 +10344,8 @@ count?: [{	columns?: Array<ValueTypes["player_flashes_select_column"]> | undefin
 	hitgroup?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	in_air?:boolean | `@${string}`,
+	/** A computed field, executes function "is_suicide" */
+	is_suicide?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ValueTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -10350,6 +10356,8 @@ count?: [{	columns?: Array<ValueTypes["player_flashes_select_column"]> | undefin
 	/** An object relationship */
 	player?:ValueTypes["players"],
 	round?:boolean | `@${string}`,
+	/** A computed field, executes function "is_team_kill" */
+	team_kill?:boolean | `@${string}`,
 	thru_smoke?:boolean | `@${string}`,
 	thru_wall?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
@@ -10453,6 +10461,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	hitgroup?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	in_air?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_suicide?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_bool_exp"] | undefined | null | Variable<any, string>,
@@ -10460,6 +10469,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	no_scope?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	team_kill?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	thru_smoke?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	thru_wall?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	time?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -10607,6 +10617,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	hitgroup?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	in_air?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_suicide?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	match_map?: ValueTypes["match_maps_order_by"] | undefined | null | Variable<any, string>,
@@ -10614,6 +10625,7 @@ count?: [{	columns?: Array<ValueTypes["player_kills_select_column"]> | undefined
 	no_scope?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	round?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	team_kill?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	thru_smoke?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	thru_wall?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	time?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -27478,6 +27490,8 @@ count?: [{	columns?: Array<ResolverInputTypes["notifications_select_column"]> | 
 	attacker_team?:boolean | `@${string}`,
 	flash?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
+	/** A computed field, executes function "is_team_assist" */
+	is_team_assist?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -27579,6 +27593,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_assists_select_column"]> |
 	attacker_team?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	flash?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	is_team_assist?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
@@ -27685,6 +27700,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_assists_select_column"]> |
 	attacker_team?: ResolverInputTypes["order_by"] | undefined | null,
 	flash?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
+	is_team_assist?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_order_by"] | undefined | null,
@@ -28748,6 +28764,8 @@ count?: [{	columns?: Array<ResolverInputTypes["player_flashes_select_column"]> |
 	hitgroup?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
 	in_air?:boolean | `@${string}`,
+	/** A computed field, executes function "is_suicide" */
+	is_suicide?:boolean | `@${string}`,
 	/** An object relationship */
 	match?:ResolverInputTypes["matches"],
 	match_id?:boolean | `@${string}`,
@@ -28758,6 +28776,8 @@ count?: [{	columns?: Array<ResolverInputTypes["player_flashes_select_column"]> |
 	/** An object relationship */
 	player?:ResolverInputTypes["players"],
 	round?:boolean | `@${string}`,
+	/** A computed field, executes function "is_team_kill" */
+	team_kill?:boolean | `@${string}`,
 	thru_smoke?:boolean | `@${string}`,
 	thru_wall?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
@@ -28861,6 +28881,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	hitgroup?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	in_air?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	is_suicide?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_bool_exp"] | undefined | null,
@@ -28868,6 +28889,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	no_scope?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	round?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	team_kill?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	thru_smoke?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	thru_wall?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	time?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -29015,6 +29037,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	hitgroup?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
 	in_air?: ResolverInputTypes["order_by"] | undefined | null,
+	is_suicide?: ResolverInputTypes["order_by"] | undefined | null,
 	match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	match_map?: ResolverInputTypes["match_maps_order_by"] | undefined | null,
@@ -29022,6 +29045,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_kills_select_column"]> | u
 	no_scope?: ResolverInputTypes["order_by"] | undefined | null,
 	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	round?: ResolverInputTypes["order_by"] | undefined | null,
+	team_kill?: ResolverInputTypes["order_by"] | undefined | null,
 	thru_smoke?: ResolverInputTypes["order_by"] | undefined | null,
 	thru_wall?: ResolverInputTypes["order_by"] | undefined | null,
 	time?: ResolverInputTypes["order_by"] | undefined | null,
@@ -44973,6 +44997,8 @@ export type ModelTypes = {
 	attacker_team: string,
 	flash: boolean,
 	id: ModelTypes["uuid"],
+	/** A computed field, executes function "is_team_assist" */
+	is_team_assist?: boolean | undefined,
 	/** An object relationship */
 	match: ModelTypes["matches"],
 	match_id: ModelTypes["uuid"],
@@ -45070,6 +45096,7 @@ export type ModelTypes = {
 	attacker_team?: ModelTypes["String_comparison_exp"] | undefined,
 	flash?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
+	is_team_assist?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match_map?: ModelTypes["match_maps_bool_exp"] | undefined,
@@ -45172,6 +45199,7 @@ export type ModelTypes = {
 	attacker_team?: ModelTypes["order_by"] | undefined,
 	flash?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
+	is_team_assist?: ModelTypes["order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_map?: ModelTypes["match_maps_order_by"] | undefined,
@@ -46188,6 +46216,8 @@ export type ModelTypes = {
 	hitgroup: string,
 	id: ModelTypes["uuid"],
 	in_air: boolean,
+	/** A computed field, executes function "is_suicide" */
+	is_suicide?: boolean | undefined,
 	/** An object relationship */
 	match: ModelTypes["matches"],
 	match_id: ModelTypes["uuid"],
@@ -46198,6 +46228,8 @@ export type ModelTypes = {
 	/** An object relationship */
 	player?: ModelTypes["players"] | undefined,
 	round: number,
+	/** A computed field, executes function "is_team_kill" */
+	team_kill?: boolean | undefined,
 	thru_smoke: boolean,
 	thru_wall: boolean,
 	time: ModelTypes["timestamptz"],
@@ -46297,6 +46329,7 @@ export type ModelTypes = {
 	hitgroup?: ModelTypes["String_comparison_exp"] | undefined,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	in_air?: ModelTypes["Boolean_comparison_exp"] | undefined,
+	is_suicide?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	match?: ModelTypes["matches_bool_exp"] | undefined,
 	match_id?: ModelTypes["uuid_comparison_exp"] | undefined,
 	match_map?: ModelTypes["match_maps_bool_exp"] | undefined,
@@ -46304,6 +46337,7 @@ export type ModelTypes = {
 	no_scope?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	player?: ModelTypes["players_bool_exp"] | undefined,
 	round?: ModelTypes["Int_comparison_exp"] | undefined,
+	team_kill?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	thru_smoke?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	thru_wall?: ModelTypes["Boolean_comparison_exp"] | undefined,
 	time?: ModelTypes["timestamptz_comparison_exp"] | undefined,
@@ -46447,6 +46481,7 @@ export type ModelTypes = {
 	hitgroup?: ModelTypes["order_by"] | undefined,
 	id?: ModelTypes["order_by"] | undefined,
 	in_air?: ModelTypes["order_by"] | undefined,
+	is_suicide?: ModelTypes["order_by"] | undefined,
 	match?: ModelTypes["matches_order_by"] | undefined,
 	match_id?: ModelTypes["order_by"] | undefined,
 	match_map?: ModelTypes["match_maps_order_by"] | undefined,
@@ -46454,6 +46489,7 @@ export type ModelTypes = {
 	no_scope?: ModelTypes["order_by"] | undefined,
 	player?: ModelTypes["players_order_by"] | undefined,
 	round?: ModelTypes["order_by"] | undefined,
+	team_kill?: ModelTypes["order_by"] | undefined,
 	thru_smoke?: ModelTypes["order_by"] | undefined,
 	thru_wall?: ModelTypes["order_by"] | undefined,
 	time?: ModelTypes["order_by"] | undefined,
@@ -61065,6 +61101,8 @@ export type GraphQLTypes = {
 	attacker_team: string,
 	flash: boolean,
 	id: GraphQLTypes["uuid"],
+	/** A computed field, executes function "is_team_assist" */
+	is_team_assist?: boolean | undefined,
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
 	match_id: GraphQLTypes["uuid"],
@@ -61165,6 +61203,7 @@ export type GraphQLTypes = {
 	attacker_team?: GraphQLTypes["String_comparison_exp"] | undefined,
 	flash?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
+	is_team_assist?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match_map?: GraphQLTypes["match_maps_bool_exp"] | undefined,
@@ -61271,6 +61310,7 @@ export type GraphQLTypes = {
 	attacker_team?: GraphQLTypes["order_by"] | undefined,
 	flash?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
+	is_team_assist?: GraphQLTypes["order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_map?: GraphQLTypes["match_maps_order_by"] | undefined,
@@ -62335,6 +62375,8 @@ export type GraphQLTypes = {
 	hitgroup: string,
 	id: GraphQLTypes["uuid"],
 	in_air: boolean,
+	/** A computed field, executes function "is_suicide" */
+	is_suicide?: boolean | undefined,
 	/** An object relationship */
 	match: GraphQLTypes["matches"],
 	match_id: GraphQLTypes["uuid"],
@@ -62345,6 +62387,8 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	player?: GraphQLTypes["players"] | undefined,
 	round: number,
+	/** A computed field, executes function "is_team_kill" */
+	team_kill?: boolean | undefined,
 	thru_smoke: boolean,
 	thru_wall: boolean,
 	time: GraphQLTypes["timestamptz"],
@@ -62447,6 +62491,7 @@ export type GraphQLTypes = {
 	hitgroup?: GraphQLTypes["String_comparison_exp"] | undefined,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	in_air?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
+	is_suicide?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	match?: GraphQLTypes["matches_bool_exp"] | undefined,
 	match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined,
 	match_map?: GraphQLTypes["match_maps_bool_exp"] | undefined,
@@ -62454,6 +62499,7 @@ export type GraphQLTypes = {
 	no_scope?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	player?: GraphQLTypes["players_bool_exp"] | undefined,
 	round?: GraphQLTypes["Int_comparison_exp"] | undefined,
+	team_kill?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	thru_smoke?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	thru_wall?: GraphQLTypes["Boolean_comparison_exp"] | undefined,
 	time?: GraphQLTypes["timestamptz_comparison_exp"] | undefined,
@@ -62601,6 +62647,7 @@ export type GraphQLTypes = {
 	hitgroup?: GraphQLTypes["order_by"] | undefined,
 	id?: GraphQLTypes["order_by"] | undefined,
 	in_air?: GraphQLTypes["order_by"] | undefined,
+	is_suicide?: GraphQLTypes["order_by"] | undefined,
 	match?: GraphQLTypes["matches_order_by"] | undefined,
 	match_id?: GraphQLTypes["order_by"] | undefined,
 	match_map?: GraphQLTypes["match_maps_order_by"] | undefined,
@@ -62608,6 +62655,7 @@ export type GraphQLTypes = {
 	no_scope?: GraphQLTypes["order_by"] | undefined,
 	player?: GraphQLTypes["players_order_by"] | undefined,
 	round?: GraphQLTypes["order_by"] | undefined,
+	team_kill?: GraphQLTypes["order_by"] | undefined,
 	thru_smoke?: GraphQLTypes["order_by"] | undefined,
 	thru_wall?: GraphQLTypes["order_by"] | undefined,
 	time?: GraphQLTypes["order_by"] | undefined,

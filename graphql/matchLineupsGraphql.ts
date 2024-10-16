@@ -52,6 +52,9 @@ export const matchLineups = Selector("match_lineups")({
               match_id: {
                 _eq: $("matchId", "uuid!"),
               },
+              team_kill: {
+                _eq: false,
+              },
             },
           },
           {
@@ -68,6 +71,9 @@ export const matchLineups = Selector("match_lineups")({
             where: {
               match_id: {
                 _eq: $("matchId", "uuid!"),
+              },
+              is_team_assist: {
+                _eq: false,
               },
             },
           },
@@ -137,6 +143,9 @@ export const matchLineups = Selector("match_lineups")({
               match_id: {
                 _eq: $("matchId", "uuid!"),
               },
+              team_flash: {
+                _eq: false,
+              },
             },
           },
           {
@@ -158,6 +167,9 @@ export const matchLineups = Selector("match_lineups")({
                   },
                   headshot: {
                     _eq: true,
+                  },
+                  team_kill: {
+                    _eq: false,
                   },
                 },
               },
@@ -181,6 +193,9 @@ export const matchLineups = Selector("match_lineups")({
                   flash: {
                     _eq: true,
                   },
+                  is_team_assist: {
+                    _eq: false,
+                  },
                 },
               },
               {
@@ -203,6 +218,9 @@ export const matchLineups = Selector("match_lineups")({
                   with: {
                     _eq: "taser",
                   },
+                  team_kill: {
+                    _eq: false,
+                  },
                 },
               },
               {
@@ -224,6 +242,9 @@ export const matchLineups = Selector("match_lineups")({
                   },
                   with: {
                     _like: "knife%",
+                  },
+                  team_kill: {
+                    _eq: false,
                   },
                 },
               },

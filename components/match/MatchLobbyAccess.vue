@@ -84,7 +84,7 @@ export default {
   computed: {
     matchInviteLink() {
       const currentRoute = new URL(window.location.href);
-      currentRoute.search = '';
+      currentRoute.search = "";
       const baseUrl = currentRoute.toString();
       return `${baseUrl}?invite=${this.match.invite_code}`;
     },

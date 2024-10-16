@@ -11,10 +11,6 @@
         A minimum of {{ playersRequiredToStart }} players must check in before
         you can start the match. {{ totalCheckedIn }} /
         {{ playersRequiredToStart }} checked in.
-
-        <badge class="my-3" variant="destructive"
-          >Auto Canceling &nbsp; <time-ago :date="match.cancels_at"></time-ago
-        ></badge>
       </CardDescription>
     </CardHeader>
     <CardContent v-if="!isCheckedIn">

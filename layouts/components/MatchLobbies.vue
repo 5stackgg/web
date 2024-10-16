@@ -11,11 +11,13 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         @click="goToMatch"
         v-if="!onMatchPage"
       >
-        {{ match.e_match_status.description }}
+        <span class="md:inline hidden">{{
+          match.e_match_status.description
+        }}</span>
         <ArrowRight />
       </Button>
 
-      <div class="flex gap-4 items-center">
+      <div class="hidden md:flex gap-4 items-center">
         <div class="flex items-center">
           <TooltipProvider v-for="member of myLineup">
             <Tooltip>

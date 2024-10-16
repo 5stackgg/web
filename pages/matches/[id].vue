@@ -17,8 +17,8 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
     v-if="match"
   >
     <div class="grid grid-cols-1 gap-y-4">
-      <Card v-if="match.can_schedule || match.can_start">
-        <CardHeader class="p-2 pt-0 md:p-4">
+      <Card v-if="match.can_schedule">
+        <CardHeader class="p-4">
           <CardTitle class="flex justify-between">Schedule</CardTitle>
         </CardHeader>
         <CardContent>

@@ -9,6 +9,7 @@ import JoinMatch from "~/components/match/JoinMatch.vue";
 import StartMatch from "~/components/match/StartMatch.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
+import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 </script>
 
 <template>
@@ -17,7 +18,19 @@ import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
     v-if="match"
   >
     <div class="grid grid-cols-1 gap-y-4">
-      <StartMatch :match="match"></StartMatch>
+      <Card v-if="match.can_schedule || match.can_start">
+        <CardHeader class="p-2 pt-0 md:p-4">
+          <CardTitle class="flex justify-between">Schedule</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div class="flex flex-col space-y-4">
+            <template v-if="match.can_schedule">
+              <ScheduleMatch :match="match" />
+            </template>
+          </div>
+        </CardContent>
+      </Card>
+
       <CheckIntoMatch :match="match"></CheckIntoMatch>
       <JoinMatch :match="match"></JoinMatch>
       <MatchInfo :match="match"></MatchInfo>

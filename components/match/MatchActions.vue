@@ -28,16 +28,15 @@ import { e_match_status_enum } from "~/generated/zeus";
             class="-mr-2"
             :disabled="!hasMinimumLineupPlayers"
           >
-            Start
             <template
               v-if="
                 match.options.map_veto &&
                 match.options.best_of != match.match_maps.length
               "
             >
-              Veto
+              Start Veto
             </template>
-            <template v-else> Match </template>
+            <template v-else> Skip Check In </template>
           </DropdownMenuItem>
         </template>
 

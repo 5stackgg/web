@@ -4,7 +4,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
-  <div class="flex">
+  <div class="flex gap-4 items-center">
     <template v-if="match">
       <Button
         class="flex gap-2 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
@@ -15,27 +15,57 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         <ArrowRight />
       </Button>
 
-      <TooltipProvider v-for="member of lineupPlayers">
-        <Tooltip>
-          <TooltipTrigger>
-            <PlayerDisplay
-              :show-flag="false"
-              :show-steam-id="false"
-              :show-name="false"
-              :player="
-                member.placeholder_name
-                  ? {
-                      name: member.placeholder_name,
-                    }
-                  : member.player
-              "
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            {{ member.placeholder_name || member.player.name }}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <div class="flex gap-4 items-center">
+        <div class="flex items-center">
+          <TooltipProvider v-for="member of myLineup">
+            <Tooltip>
+              <TooltipTrigger>
+                <PlayerDisplay
+                  :show-flag="false"
+                  :show-steam-id="false"
+                  :show-name="false"
+                  :player="
+                    member.placeholder_name
+                      ? {
+                          name: member.placeholder_name,
+                        }
+                      : member.player
+                  "
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ member.placeholder_name || member.player.name }}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        <span>VS</span>
+
+        <div class="flex items-center">
+          <TooltipProvider v-for="member of otherLineUp">
+            <Tooltip>
+              <TooltipTrigger>
+                <PlayerDisplay
+                  :show-flag="false"
+                  :show-steam-id="false"
+                  :show-name="false"
+                  :player="
+                    member.placeholder_name
+                      ? {
+                          name: member.placeholder_name,
+                        }
+                      : member.player
+                  "
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ member.placeholder_name || member.player.name }}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -70,7 +100,7 @@ export default {
 
       return this.lobbies.get(keys[0])?.match;
     },
-    lineupPlayers() {
+    myLineup() {
       if (!this.match) {
         return;
       }
@@ -80,13 +110,23 @@ export default {
         lineup_1.is_on_lineup ? lineup_1.lineup_players : lineup_2.is_on_lineup
       ).sort((a, b) => {
         if (a.player?.steam_id === this.me?.steam_id) {
-          return 1;
+          return -1;
         }
         if (b.player?.steam_id === this.me?.steam_id) {
-          return -1;
+          return 1;
         }
         return 0;
       });
+    },
+    otherLineUp() {
+      if (!this.match) {
+        return;
+      }
+      const { lineup_1, lineup_2 } = this.match;
+
+      return lineup_1.is_on_lineup
+        ? lineup_2.lineup_players
+        : lineup_1.is_on_lineup;
     },
     onMatchPage() {
       return this.$route.path === `/matches/${this.match?.id}`;

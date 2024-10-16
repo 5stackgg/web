@@ -4,12 +4,12 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
 
 <template>
   <div
-    class="grid grid-cols-[64px_1fr]"
+    class="grid gap-2 grid-cols-[52px_1fr]"
     @click="viewPlayer"
     :class="{ 'cursor-pointer': linkable }"
   >
-    <div class="grid grid-cols-1 gap-3 place-items-center">
-      <Avatar class="relative">
+    <div class="flex flex-col items-center justify-center gap-3">
+      <Avatar>
         <AvatarImage
           :src="player.avatar_url"
           :alt="player.name"
@@ -28,9 +28,9 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
             'text-xl': size === 'xl',
           }"
         >
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-2">
             <slot name="name-prefix"></slot>
-            <div class="flex items-center gap-1">
+            <div class="flex items-center gap-2">
               <TimezoneFlag
                 class="mt-1"
                 v-if="showFlag"

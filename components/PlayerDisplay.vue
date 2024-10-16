@@ -4,9 +4,12 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
 
 <template>
   <div
-    class="grid gap-2 grid-cols-[52px_1fr]"
+    class="grid gap-2"
     @click="viewPlayer"
-    :class="{ 'cursor-pointer': linkable }"
+    :class="{
+      'cursor-pointer': linkable,
+      'grid-cols-[52px_1fr]': showName || showSteamId || showFlag,
+    }"
   >
     <div class="flex flex-col items-center justify-center gap-3">
       <Avatar>

@@ -8,6 +8,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
     @click="viewPlayer"
     :class="{
       'cursor-pointer': linkable,
+      'grid-cols-[52px]': !showName && !showSteamId && !showFlag,
       'grid-cols-[52px_1fr]': showName || showSteamId || showFlag,
     }"
   >

@@ -99,7 +99,10 @@ import { UserPlusIcon } from "lucide-vue-next";
         v-for="member of lineup.lineup_players"
       ></LineupOverviewRow>
       <TableRow
-        v-for="slot of Math.max(0, minPlayers - lineup.lineup_players.length)"
+        v-for="slot of Math.max(
+          0,
+          match.max_players_per_lineup - lineup.lineup_players.length,
+        )"
       >
         <TableCell colspan="100%">
           <div class="flex gap-4">
@@ -107,7 +110,7 @@ import { UserPlusIcon } from "lucide-vue-next";
               :show-flag="false"
               :show-steam-id="false"
               :player="{
-                name: `Slot ${slot + lineup.lineup_players.length}`,
+                name: `Slot ${slot + lineup.lineup_players.length} ${slot + lineup.lineup_players.length > match.min_players_per_lineup ? '(substitute)' : ''}`,
               }"
             />
             <div v-if="slot === 1">

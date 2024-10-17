@@ -52,11 +52,6 @@ export default {
             {
               limit: $("limit", "Int!"),
               offset: $("offset", "Int!"),
-              where: {
-                status: {
-                  _nin: $("statuses", "[e_match_status_enum]"),
-                },
-              },
               order_by: [
                 {},
                 {
@@ -72,7 +67,6 @@ export default {
             limit: this.perPage,
             order_by: order_by.desc,
             offset: (this.page - 1) * this.perPage,
-            statuses: [e_match_status_enum.PickingPlayers],
           };
         },
         result: function ({ data }) {

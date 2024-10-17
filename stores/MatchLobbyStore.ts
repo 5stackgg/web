@@ -80,8 +80,18 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
         if (data?.matches) {
           upcomingMatches.value = data.matches;
 
+          const _matches = data.matches.filter((match) => {
+            return [
+              e_match_status_enum.Live,
+              e_match_status_enum.Veto,
+              e_match_status_enum.WaitingForCheckIn,
+              e_match_status_enum.WaitingForServer,
+              e_match_status_enum.Scheduled,
+            ].includes(match.status);
+          });
+
           // Create a set of match IDs from the new data
-          const newMatchIds = new Set(data.matches.map((match) => match.id));
+          const newMatchIds = new Set(_matches.map((match) => match.id));
 
           // Remove matches that are no longer in data.matches
           for (const [matchId, lobby] of lobbies.value.entries()) {
@@ -91,18 +101,8 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
           }
 
           // Update or add matches
-          for (const match of data.matches) {
-            if (
-              [
-                e_match_status_enum.Live,
-                e_match_status_enum.Veto,
-                e_match_status_enum.WaitingForCheckIn,
-                e_match_status_enum.WaitingForServer,
-                e_match_status_enum.Scheduled,
-              ].includes(match.status)
-            ) {
-              lobbies.value.set(match.id, { players: [], match });
-            }
+          for (const match of _matches) {
+            lobbies.value.set(match.id, { players: [], match });
           }
         }
       },

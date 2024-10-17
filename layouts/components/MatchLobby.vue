@@ -83,7 +83,9 @@ export default {
       const { lineup_1, lineup_2 } = this.match;
 
       return (
-        lineup_1.is_on_lineup ? lineup_1.lineup_players : lineup_2.lineup_players
+        lineup_1.is_on_lineup
+          ? lineup_1.lineup_players
+          : lineup_2.lineup_players
       ).sort((a, b) => {
         if (a.player?.steam_id === this.me?.steam_id) {
           return -1;

@@ -13,29 +13,30 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
     }"
   >
     <div class="flex flex-col items-center justify-center gap-3 relative">
-      <div class="relative">
-        <Avatar>
-          <AvatarImage
-            :src="player.avatar_url"
-            :alt="player.name"
-            v-if="player.avatar_url"
-          />
-        </Avatar>
-        <slot name="status">
-          <template v-if="isOnline && showOnline">
-            <span
-              class="absolute -top-1 -left-1 h-2 w-2 rounded-full animate-ping bg-green-500"
-              v-if="pingStatus"
-            ></span>
-            <span
-              class="absolute -top-1 -left-1 h-2 w-2 rounded-full bg-green-500"
-            ></span>
-          </template>
-        </slot>
-      </div>
+      <Avatar>
+        <AvatarImage
+          :src="player.avatar_url"
+          :alt="player.name"
+          v-if="player.avatar_url"
+        />
+      </Avatar>
+      <slot name="status">
+        <template v-if="isOnline && showOnline">
+          <span
+            class="absolute -top-1 left-0 h-2 w-2 rounded-full animate-ping bg-green-500"
+            v-if="pingStatus"
+          ></span>
+          <span
+            class="absolute -top-1 left-0 h-2 w-2 rounded-full bg-green-500"
+          ></span>
+        </template>
+      </slot>
       <slot name="avatar-sub"></slot>
     </div>
-    <div :class="{ 'flex items-center': !showSteamId }">
+    <div
+      :class="{ 'flex items-center': !showSteamId }"
+      v-if="showFlag || showName || showSteamId"
+    >
       <slot>
         <div
           class="text-left"

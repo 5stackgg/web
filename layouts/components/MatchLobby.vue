@@ -5,57 +5,52 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 <template>
   <div class="flex gap-2 items-center" @click="goToMatch">
-    <div class="flex items-center">
-      <TooltipProvider v-for="member of myLineup">
-        <Tooltip>
-          <TooltipTrigger>
-            <PlayerDisplay
-              :show-flag="false"
-              :show-steam-id="false"
-              :show-name="false"
-              :ping-status="true"
-              :player="
-                member.placeholder_name
-                  ? {
-                      name: member.placeholder_name,
-                    }
-                  : member.player
-              "
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            {{ member.placeholder_name || member.player.name }}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
+    <TooltipProvider v-for="member of myLineup">
+      <Tooltip>
+        <TooltipTrigger>
+          <PlayerDisplay
+            :show-flag="false"
+            :show-steam-id="false"
+            :show-name="false"
+            :ping-status="true"
+            :player="
+              member.placeholder_name
+                ? {
+                    name: member.placeholder_name,
+                  }
+                : member.player
+            "
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          {{ member.placeholder_name || member.player.name }}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
 
     <span class="text-xl font-bold text-gray-600 dark:text-gray-400">VS</span>
 
-    <div class="flex items-center">
-      <TooltipProvider v-for="member of otherLineUp">
-        <Tooltip>
-          <TooltipTrigger>
-            <PlayerDisplay
-              :show-flag="false"
-              :show-steam-id="false"
-              :show-name="false"
-              :player="
-                member.placeholder_name
-                  ? {
-                      name: member.placeholder_name,
-                    }
-                  : member.player
-              "
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            {{ member.placeholder_name || member.player.name }}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
-
+    <TooltipProvider v-for="member of otherLineUp">
+      <Tooltip>
+        <TooltipTrigger>
+          <PlayerDisplay
+            :show-flag="false"
+            :show-steam-id="false"
+            :show-name="false"
+            :player="
+              member.placeholder_name
+                ? {
+                    name: member.placeholder_name,
+                  }
+                : member.player
+            "
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          {{ member.placeholder_name || member.player.name }}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
     <Button
       class="flex gap-2 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
       v-if="showLink"

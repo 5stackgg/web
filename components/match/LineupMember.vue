@@ -8,7 +8,7 @@
 
         <template v-slot:status>
           <span
-            class="absolute -top-1 -left-1 h-2 w-2 rounded-full animate-ping"
+            class="absolute -top-1 left-0 h-2 w-2 rounded-full animate-ping"
             :class="{
               ['bg-red-500']: !isOnline && !isReady,
               ['bg-yellow-500']: isOnline && !isReady,
@@ -19,7 +19,7 @@
             "
           ></span>
           <span
-            class="absolute -top-1 -left-1 h-2 w-2 rounded-full"
+            class="absolute -top-1 left-0 h-2 w-2 rounded-full"
             :class="{
               ['bg-red-500']: !isOnline && !isReady,
               ['bg-yellow-500']: isOnline && !isReady,

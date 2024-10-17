@@ -21,7 +21,7 @@ import { Separator } from "~/components/ui/separator";
         <div
           class="flex items-center space-x-2 cursor-pointer"
           @click="override = !override"
-          v-if="match.is_organizer"
+          v-if="match.is_organizer && isUser"
         >
           <Label>Match Organizer Override</Label>
           <Switch :checked="override" />
@@ -196,8 +196,11 @@ export default {
     };
   },
   computed: {
+    isUser() {
+      return useAuthStore().isUser;
+    },
     isPicking() {
-      if (this.override && this.match.is_organizer) {
+      if (this.override && this.match.is_organizer && !this.isUser) {
         return true;
       }
 
@@ -234,7 +237,6 @@ export default {
       return this.match.status == e_match_status_enum.Veto;
     },
     canSelectRegion() {
-      console.info(this.regions);
       return (
         this.match.is_organizer &&
         !this.match.options.region_veto &&

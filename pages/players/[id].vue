@@ -24,32 +24,39 @@ import formatStatValue from "~/utilities/formatStatValue";
         >
       </template>
 
-      <template #actions v-if="isAdmin">
-        <Popover>
-          <PopoverTrigger as-child>
-            <Button variant="outline" class="ml-auto">
-              <span class="capitalize">{{
-                player.role.replace("_", " ")
-              }}</span>
-              <ChevronDownIcon class="ml-2 h-4 w-4 text-muted-foreground" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent class="p-0" align="end">
-            <Command v-model="memberRole">
-              <CommandList>
-                <CommandGroup>
-                  <CommandItem
-                    :value="role"
-                    class="flex flex-col items-start px-4 py-2 cursor-pointer"
-                    v-for="role of e_player_roles_enum"
-                  >
-                    <span class="capitalize">{{ role.replace("_", " ") }}</span>
-                  </CommandItem>
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+      <template #actions>
+        <template v-if="isAdmin && player.steam_id !== me.steam_id">
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button variant="outline" class="ml-auto">
+                <span class="capitalize">{{
+                  player.role.replace("_", " ")
+                }}</span>
+                <ChevronDownIcon class="ml-2 h-4 w-4 text-muted-foreground" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent class="p-0" align="end">
+              <Command v-model="memberRole">
+                <CommandList>
+                  <CommandGroup>
+                    <CommandItem
+                      :value="role"
+                      class="flex flex-col items-start px-4 py-2 cursor-pointer"
+                      v-for="role of e_player_roles_enum"
+                    >
+                      <span class="capitalize">{{
+                        role.replace("_", " ")
+                      }}</span>
+                    </CommandItem>
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </template>
+        <template v-else-if="player.role !== e_player_roles_enum.user">
+          <Badge class="capitalize">{{ player.role.replace("_", " ") }}</Badge>
+        </template>
       </template>
     </PageHeading>
 
@@ -170,7 +177,13 @@ export default {
               avatar_url: true,
               profile_url: true,
               kills_aggregate: [
-                {},
+                {
+                  where: {
+                    team_kill: {
+                      _eq: false,
+                    },
+                  },
+                },
                 {
                   aggregate: [
                     {},
@@ -192,7 +205,13 @@ export default {
                 },
               ],
               assists_aggregate: [
-                {},
+                {
+                  where: {
+                    is_team_assist: {
+                      _eq: false,
+                    },
+                  },
+                },
                 {
                   aggregate: [
                     {},
@@ -293,6 +312,9 @@ export default {
     },
   },
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
     isAdmin() {
       return useAuthStore().isAdmin;
     },

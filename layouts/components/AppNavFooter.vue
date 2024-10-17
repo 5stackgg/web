@@ -51,6 +51,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         :showSteamId="mobile"
         :showFlag="mobile"
         :showName="mobile"
+        :show-online="false"
       />
     </nuxt-link>
   </div>

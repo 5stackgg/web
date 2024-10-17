@@ -206,47 +206,6 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
     <!-- Right Column -->
     <div class="space-y-6">
-      <FormField v-slot="{ value, handleChange }" name="overtime">
-        <FormItem
-          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-          @click="handleChange(!value)"
-        >
-          <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">Overtime</FormLabel>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </div>
-          <FormDescription> Each overtime is a best of 6. </FormDescription>
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ value, handleChange }" name="knife_round">
-        <FormItem
-          class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-          @click="handleChange(!value)"
-        >
-          <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">Knife Round</FormLabel>
-            <FormControl>
-              <Switch
-                class="pointer-events-none"
-                :checked="value"
-                @update:checked="handleChange"
-              />
-            </FormControl>
-          </div>
-          <FormDescription>
-            Knife rounds are only played when neither team picked the map in the
-            veto.
-          </FormDescription>
-        </FormItem>
-      </FormField>
-
       <!-- Server does not support coaches yet  -->
       <!-- <FormField v-slot="{ value, handleChange }" name="coaches">
         <FormItem
@@ -299,6 +258,51 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
         <CollapsibleContent>
           <div class="flex flex-col gap-4">
+            <FormField v-slot="{ value, handleChange }" name="overtime">
+              <FormItem
+                class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+                @click="handleChange(!value)"
+              >
+                <div class="flex justify-between items-center">
+                  <FormLabel class="text-lg font-semibold">Overtime</FormLabel>
+                  <FormControl>
+                    <Switch
+                      class="pointer-events-none"
+                      :checked="value"
+                      @update:checked="handleChange"
+                    />
+                  </FormControl>
+                </div>
+                <FormDescription>
+                  Each overtime is a best of 6.
+                </FormDescription>
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ value, handleChange }" name="knife_round">
+              <FormItem
+                class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+                @click="handleChange(!value)"
+              >
+                <div class="flex justify-between items-center">
+                  <FormLabel class="text-lg font-semibold"
+                    >Knife Round</FormLabel
+                  >
+                  <FormControl>
+                    <Switch
+                      class="pointer-events-none"
+                      :checked="value"
+                      @update:checked="handleChange"
+                    />
+                  </FormControl>
+                </div>
+                <FormDescription>
+                  Knife rounds are only played when neither team picked the map
+                  in the veto.
+                </FormDescription>
+              </FormItem>
+            </FormField>
+
             <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
               <FormField v-slot="{ componentField }" name="mr">
                 <FormItem>

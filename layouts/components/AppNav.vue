@@ -126,7 +126,7 @@ import MatchLobbies from "./MatchLobbies.vue";
           </PopoverContent>
         </Popover>
 
-        <Popover>
+        <Popover v-model:open="showPlayersOnline">
           <PopoverTrigger>
             <div class="flex items-center gap-2 text-sm text-muted-foreground">
               <Users class="h-4 w-4" />
@@ -137,6 +137,7 @@ import MatchLobbies from "./MatchLobbies.vue";
             <ScrollArea class="max-h-[20vh] overflow-auto">
               <template :key="player.steam_id" v-for="player of playersOnline">
                 <PlayerDisplay
+                  @click="showPlayersOnline = false"
                   :player="player"
                   class="my-2"
                   :linkable="true"
@@ -161,6 +162,7 @@ import SystemUpdate from "./SystemUpdate.vue";
 export default {
   data() {
     return {
+      showPlayersOnline: false,
       links: [
         {
           to: "/matches",

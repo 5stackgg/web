@@ -7,7 +7,6 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 export const useApplicationSettingsStore = defineStore(
   "applicationSettings",
   () => {
-    const hasUpdates = ref(false);
     const settings = ref(undefined);
 
     const subscribeToSettings = async () => {
@@ -98,30 +97,8 @@ export const useApplicationSettingsStore = defineStore(
 
     subscribeToAvailableRegions();
 
-    const watchSettings = watch(settings, () => {
-      const versionUpdates = settings.value?.filter(
-        (setting: { name: string }) => {
-          return ["api", "web", "game-server-node"].includes(setting.name);
-        },
-      );
-
-      hasUpdates.value = versionUpdates.find(({ value }) => {
-        const { current, latest } = JSON.parse(value);
-
-        console.info(`neds update`, current !== latest);
-        return current !== latest;
-      });
-    });
-
-    // Make sure to stop watching when the component is unmounted
-    onUnmounted(() => {
-      if (watchSettings) {
-        watchSettings();
-      }
-    });
-
     return {
-      hasUpdates,
+      settings,
       availableRegions,
       matchCreateRole,
       matchMakingAllowed,

@@ -3,7 +3,7 @@ import { AlertCircle } from "lucide-vue-next";
 </script>
 
 <template>
-  <div v-if="hasUpdatesAvailalbe">
+  <div v-if="hasUpdatesAvailable">
     <AlertDialog>
       <AlertDialogTrigger>
         <Button variant="ghost" size="icon">
@@ -25,6 +25,16 @@ import { AlertCircle } from "lucide-vue-next";
           <AlertDialogDescription>
             There are system updates available. Would you like to update now?
             This will cause some serivces to be restarted
+
+            <div v-if="servicesNeedsUpdates.length > 0">
+              <p>The following services need to be updated:</p>
+              <ul class="list-disc list-inside mt-2">
+                <li v-for="service in servicesNeedsUpdates" :key="service.name">
+                  {{ service.name }}: {{ JSON.parse(service.value).current }} →
+                  {{ JSON.parse(service.value).latest }}
+                </li>
+              </ul>
+            </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -57,8 +67,22 @@ export default {
     },
   },
   computed: {
-    hasUpdatesAvailalbe() {
-      return useApplicationSettingsStore().hasUpdates;
+    servicesNeedsUpdates() {
+      const versionUpdates = useApplicationSettingsStore().settings?.filter(
+        (setting: { name: string }) => {
+          return ["api", "web", "game-server-node"].includes(setting.name);
+        },
+      );
+
+      return (
+        versionUpdates?.filter(({ value }) => {
+          const { current, latest } = JSON.parse(value);
+          return current !== latest;
+        }) || []
+      );
+    },
+    hasUpdatesAvailable() {
+      return this.servicesNeedsUpdates.length > 0;
     },
   },
 };

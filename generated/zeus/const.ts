@@ -12890,6 +12890,7 @@ export const ReturnTypes: Record<string,any> = {
 		switchLineup:"SuccessOutput",
 		unlinkDiscord:"SuccessOutput",
 		updateCs:"SuccessOutput",
+		updateServices:"SuccessOutput",
 		update__map_pool:"_map_pool_mutation_response",
 		update__map_pool_by_pk:"_map_pool",
 		update__map_pool_many:"_map_pool_mutation_response",

@@ -8295,6 +8295,7 @@ startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?
 switchLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	unlinkDiscord?:ValueTypes["SuccessOutput"],
 updateCs?: [{	gameServerNodeId?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+	updateServices?:ValueTypes["SuccessOutput"],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["_map_pool_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["_map_pool_bool_exp"] | Variable<any, string>},ValueTypes["_map_pool_mutation_response"]],
@@ -26102,6 +26103,7 @@ startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputT
 switchLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	unlinkDiscord?:ResolverInputTypes["SuccessOutput"],
 updateCs?: [{	gameServerNodeId?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+	updateServices?:ResolverInputTypes["SuccessOutput"],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["_map_pool_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["_map_pool_bool_exp"]},ResolverInputTypes["_map_pool_mutation_response"]],
@@ -43137,6 +43139,7 @@ export type ModelTypes = {
 	switchLineup?: ModelTypes["SuccessOutput"] | undefined,
 	unlinkDiscord?: ModelTypes["SuccessOutput"] | undefined,
 	updateCs?: ModelTypes["SuccessOutput"] | undefined,
+	updateServices?: ModelTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */
 	update__map_pool?: ModelTypes["_map_pool_mutation_response"] | undefined,
 	/** update single row of the table: "_map_pool" */
@@ -58711,6 +58714,7 @@ export type GraphQLTypes = {
 	switchLineup?: GraphQLTypes["SuccessOutput"] | undefined,
 	unlinkDiscord?: GraphQLTypes["SuccessOutput"] | undefined,
 	updateCs?: GraphQLTypes["SuccessOutput"] | undefined,
+	updateServices?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** update data of the table: "_map_pool" */
 	update__map_pool?: GraphQLTypes["_map_pool_mutation_response"] | undefined,
 	/** update single row of the table: "_map_pool" */

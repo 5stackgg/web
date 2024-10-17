@@ -95,6 +95,8 @@ import MatchLobbies from "./MatchLobbies.vue";
       <div class="flex gap-4">
         <MatchLobbies></MatchLobbies>
 
+        <SystemUpdate v-if="isAdmin"></SystemUpdate>
+
         <Popover>
           <PopoverTrigger>
             <div class="flex items-center gap-2 text-sm text-muted-foreground">
@@ -154,6 +156,7 @@ import MatchLobbies from "./MatchLobbies.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import SystemUpdate from "./SystemUpdate.vue";
 
 export default {
   data() {
@@ -197,6 +200,10 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    isAdmin() {
+      const { isAdmin } = useAuthStore();
+      return isAdmin;
     },
     regions() {
       return useApplicationSettingsStore().availableRegions;

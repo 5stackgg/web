@@ -29,7 +29,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       <div
         class="flex items-center space-x-2 cursor-pointer"
         @click="override = !override"
-        v-if="match.is_organizer"
+        v-if="match.is_organizer && !isUser"
       >
         <Label>Match Organizer Override</Label>
         <Switch :checked="override" />
@@ -283,8 +283,11 @@ export default {
     bestOf() {
       return this.match.options.best_of;
     },
+    isUser() {
+      return useAuthStore().isUser;
+    },
     isPicking() {
-      if (this.override && this.match.is_organizer) {
+      if (this.override && this.match.is_organizer && this.isUser) {
         return true;
       }
 

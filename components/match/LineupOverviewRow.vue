@@ -179,15 +179,20 @@ export default {
         });
       }
 
-      await this.removeFromLineup();
-
       await this.$apollo.mutate({
         mutation: generateMutation({
-          insert_match_lineup_players_one: [
+          update_match_lineup_players: [
             {
-              object: {
-                steam_id: $("steam_id", "bigint"),
-                match_lineup_id: $("match_lineup_id", "uuid"),
+              where: {
+                steam_id: {
+                  _eq: $("steam_id", "bigint"),
+                },
+                match_lineup_id: {
+                  _eq: $("match_lineup_id", "uuid"),
+                },
+              },
+              _set: {
+                match_lineup_id: $("new_match_lineup_id", "uuid"),
               },
             },
             {
@@ -197,7 +202,8 @@ export default {
         }),
         variables: {
           steam_id: this.member.steam_id,
-          match_lineup_id:
+          match_lineup_id: this.lineup.id,
+          new_match_lineup_id:
             this.lineup.id === this.match.lineup_1_id
               ? this.match.lineup_2_id
               : this.match.lineup_1_id,

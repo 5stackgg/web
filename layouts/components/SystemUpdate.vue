@@ -3,14 +3,14 @@ import { AlertCircle } from "lucide-vue-next";
 </script>
 
 <template>
-  <div v-if="hasUpdatesAvailable" class="relative">
+  <div v-if="hasUpdatesAvailable" class="relative flex items-center">
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" class="h-6 flex items-center">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <AlertCircle class="h-5 w-5 animate-pulse text-orange-500" />
+                <AlertCircle class="h-4 w-4 animate-pulse text-orange-500" />
               </TooltipTrigger>
               <TooltipContent>
                 <span>System Update Available</span>

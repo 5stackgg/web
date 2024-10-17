@@ -112,7 +112,10 @@ import formatStatValue from "~/utilities/formatStatValue";
             </DropdownMenuItem>
           </template>
 
-          <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
+          <DropdownMenuItem
+            @click="switchTeams"
+            v-if="!lineup.can_update_lineup && canSwitchTeams"
+          >
             <span>Switch Teams</span>
           </DropdownMenuItem>
 

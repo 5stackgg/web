@@ -108,6 +108,7 @@ export const useApplicationSettingsStore = defineStore(
       hasUpdates.value = versionUpdates.find(({ value }) => {
         const { current, latest } = JSON.parse(value);
 
+        console.info(`neds update`, current !== latest);
         return current !== latest;
       });
     });

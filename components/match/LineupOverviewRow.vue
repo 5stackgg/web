@@ -94,10 +94,7 @@ import formatStatValue from "~/utilities/formatStatValue";
               <span>Promote to Captain</span>
             </DropdownMenuItem>
 
-            <DropdownMenuItem
-              @click="switchTeams"
-              v-if="lineup.can_update_lineup"
-            >
+            <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
               <span>Switch Teams</span>
             </DropdownMenuItem>
 
@@ -300,10 +297,20 @@ export default {
       );
     },
     canSwitchTeams() {
+      const currentPlayerCount =
+        this.lineup.id === this.match.lineup_1_id
+          ? this.match.lineup_2.lineup_players.length
+          : this.match.lineup_1.lineup_players.length;
+
+      if (currentPlayerCount >= this.match.max_players_per_lineup) {
+        return false;
+      }
+
       return (
-        this.match.status === e_match_status_enum.PickingPlayers &&
-        this.member.steam_id === this.me.steam_id &&
-        this.match.options.lobby_access !== e_lobby_access_enum.Private
+        this.lineup.can_update_lineup ||
+        (this.match.status === e_match_status_enum.PickingPlayers &&
+          this.member.steam_id === this.me.steam_id &&
+          this.match.options.lobby_access !== e_lobby_access_enum.Private)
       );
     },
     me() {

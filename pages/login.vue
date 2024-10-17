@@ -3,6 +3,7 @@ definePageMeta({
   layout: "public",
 });
 </script>
+
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen p-4">
     <NuxtImg
@@ -25,11 +26,24 @@ definePageMeta({
         />
       </CardContent>
     </Card>
+
+    <div class="mt-8">
+      <a
+        href="https://github.com/5stackgg"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        Powered by 5stack.gg
+        <GithubLogoIcon class="w-4 h-4" />
+      </a>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
+import { GithubLogoIcon } from "@radix-icons/vue";
 
 export default {
   methods: {

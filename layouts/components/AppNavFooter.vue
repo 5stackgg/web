@@ -14,40 +14,6 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       <Tooltip>
         <TooltipTrigger>
           <a
-            href="https://github.com/5stackgg"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex gap-4"
-            :class="{
-              ['flex h-8 w-8 md:items-center justify-center']: !mobile,
-            }"
-          >
-            <GithubLogoIcon
-              alt="Github"
-              class="w-5 h-5"
-              :class="{
-                'ml-4': mobile,
-              }"
-            >
-            </GithubLogoIcon>
-
-            <span
-              v-if="mobile"
-              class="text-muted-foreground transition-colors hover:text-foreground"
-              >View on Github</span
-            >
-          </a>
-        </TooltipTrigger>
-        <TooltipContent side="right" v-if="!mobile">
-          <span> View on GitHub </span>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger>
-          <a
             href="https://discord.gg/6xUDQRAaYY"
             target="_blank"
             rel="noopener noreferrer"
@@ -93,7 +59,6 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 <script lang="ts">
 import { getCountryForTimezone } from "countries-and-timezones";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { GithubLogoIcon } from "@radix-icons/vue";
 
 export default {
   props: {

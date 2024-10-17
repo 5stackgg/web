@@ -4,8 +4,8 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 
 <template>
   <div class="flex gap-2 items-center">
-    <span
-      class="ml-1 inline-block h-2 w-2 rounded-full relative"
+    <div
+      class="h-2 w-2 rounded-full relative"
       :class="{
         ['bg-red-600']:
           gameServerNode.status === e_game_server_node_statuses_enum.Offline,
@@ -29,8 +29,10 @@ import { e_game_server_node_statuses_enum } from "~/generated/zeus";
         }"
         v-if="gameServerNode.status !== e_game_server_node_statuses_enum.Online"
       ></span>
+    </div>
+    <span class="truncate">
+      {{ gameServerNode.id || gameServerNode?.e_region?.description }}
     </span>
-    {{ gameServerNode.id || gameServerNode?.e_region?.description }}
   </div>
 </template>
 

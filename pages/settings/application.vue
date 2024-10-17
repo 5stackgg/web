@@ -93,6 +93,14 @@ definePageMeta({
       </FormField>
     </div>
 
+    <FormField v-slot="{ componentField }" name="discord_invite_link">
+      <FormItem>
+        <FormLabel>Discord Invite Link</FormLabel>
+        <Input v-bind="componentField"></Input>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="discord_support_webhook">
       <FormItem>
         <FormLabel>Discord Webhook</FormLabel>
@@ -137,6 +145,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
+            discord_invite_link: z.string().optional(),
             discord_support_webhook: z.string().optional(),
             public: z.object({
               create_matches_role: z.string().default(e_player_roles_enum.user),
@@ -198,6 +207,10 @@ export default {
           insert_settings: [
             {
               objects: [
+                {
+                  name: "discord_invite_link",
+                  value: this.form.values.discord_invite_link,
+                },
                 {
                   name: "discord_support_webhook",
                   value: this.form.values.discord_support_webhook,

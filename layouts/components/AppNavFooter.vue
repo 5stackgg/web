@@ -14,7 +14,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       <Tooltip>
         <TooltipTrigger>
           <a
-            href="https://discord.gg/6xUDQRAaYY"
+            :href="inviteLink"
             target="_blank"
             rel="noopener noreferrer"
             class="text-muted-foreground transition-colors hover:text-foreground flex gap-4"
@@ -99,7 +99,9 @@ export default {
     me() {
       return useAuthStore().me;
     },
-
+    inviteLink() {
+      return `https://${useRuntimeConfig().public.webDomain}/discord-invite`;
+    },
     detectedCountry() {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

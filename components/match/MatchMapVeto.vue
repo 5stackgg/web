@@ -287,7 +287,7 @@ export default {
       return useAuthStore().isUser;
     },
     isPicking() {
-      if (this.override && this.match.is_organizer && this.isUser) {
+      if (this.override && this.match.is_organizer && !this.isUser) {
         return true;
       }
 

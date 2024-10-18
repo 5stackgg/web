@@ -436,6 +436,18 @@ export default {
             },
             Object.assign({}, tournamentTeamFields, {
               can_manage: true,
+              invites: [
+                {},
+                {
+                  id: true,
+                  player: {
+                    name: true,
+                    country: true,
+                    steam_id: true,
+                    avatar_url: true,
+                  },
+                },
+              ],
             }),
           ],
         }),

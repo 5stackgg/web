@@ -3,6 +3,7 @@ import { Bell, Trash2 } from "lucide-vue-next";
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
+import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
 </script>
 
 <template>
@@ -28,31 +29,38 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <SheetHeader>
         <SheetTitle>Notifications</SheetTitle>
         <SheetDescription>
-          <template v-if="invites.length > 0 || notifications.length > 0">
-            <template v-if="invites.length > 0">
-              <div
-                v-for="invite of invites"
+          <template
+            v-if="
+              team_invites.length > 0 ||
+              tournament_team_invites.length > 0 ||
+              notifications.length > 0
+            "
+          >
+            <div
+              v-if="team_invites.length > 0"
+              class="mb-4 p-4 bg-accent rounded-lg"
+            >
+              <TeamInviteNotification
+                type="team"
+                :invite="invite"
                 :key="invite.id"
-                class="mb-4 p-4 bg-accent rounded-lg"
-              >
-                <h3 class="text-lg font-semibold mb-2">
-                  Team Invite: {{ invite.team.name }}
-                </h3>
-                <p class="text-sm text-muted-foreground mb-2">
-                  Invited by {{ invite.invited_by.name }}
-                  <TimeAgo :date="invite.created_at" class="text-xs" />
-                </p>
-                <div class="flex justify-end space-x-2 mt-3">
-                  <Button variant="outline" @click="denyInvite(invite.id)"
-                    >Deny</Button
-                  >
-                  <Button variant="default" @click="acceptInvite(invite.id)"
-                    >Accept</Button
-                  >
-                </div>
-              </div>
+                v-for="invite of team_invites"
+              />
               <Separator v-if="notifications.length > 0"></Separator>
-            </template>
+            </div>
+
+            <div
+              v-if="tournament_team_invites.length > 0"
+              class="mb-4 p-4 bg-accent rounded-lg"
+            >
+              <TeamInviteNotification
+                type="tournament"
+                :invite="invite"
+                :key="invite.id"
+                v-for="invite of tournament_team_invites"
+              />
+              <Separator v-if="notifications.length > 0"></Separator>
+            </div>
 
             <template
               v-for="notification of notifications"
@@ -139,7 +147,8 @@ import { generateMutation } from "~/graphql/graphqlGen";
 export default {
   data() {
     return {
-      invites: [],
+      team_invites: [],
+      tournament_team_invites: [],
       notifications: [],
     };
   },
@@ -179,7 +188,44 @@ export default {
           };
         },
         result({ data }: { data: any }) {
-          this.invites = data.team_invites;
+          this.team_invites = data.team_invites;
+        },
+      },
+      tournament_team_invites: {
+        query: typedGql("subscription")({
+          tournament_team_invites: [
+            {
+              order_by: [
+                {},
+                {
+                  created_at: order_by.desc,
+                },
+              ],
+              where: {
+                steam_id: {
+                  _eq: $("steam_id", "bigint!"),
+                },
+              },
+            },
+            {
+              id: true,
+              team: {
+                name: true,
+              },
+              invited_by: {
+                name: true,
+              },
+              created_at: true,
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            steam_id: this.me.steam_id,
+          };
+        },
+        result({ data }: { data: any }) {
+          this.tournament_team_invites = data.tournament_team_invites;
         },
       },
       notifications: {
@@ -296,41 +342,17 @@ export default {
         }),
       });
     },
-    async acceptInvite(inviteId: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          acceptTeamInvite: [
-            {
-              invite_id: inviteId,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
-    async denyInvite(inviteId: string) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          denyTeamInvite: [
-            {
-              invite_id: inviteId,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-    },
   },
   computed: {
     me() {
       return useAuthStore().me;
     },
     hasNotifications() {
-      if (this.invites.length > 0) {
+      if (this.team_invites.length > 0) {
+        return true;
+      }
+
+      if (this.tournament_team_invites.length > 0) {
         return true;
       }
 

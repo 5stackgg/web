@@ -137,7 +137,6 @@ export default {
 
       for (const win of this.v_player_map_wins) {
         if (!win.map) {
-          console.info("missing", win);
           continue;
         }
         const mapName = cleanMapName(win.map.name);

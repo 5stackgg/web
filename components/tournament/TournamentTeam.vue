@@ -9,6 +9,7 @@ import {
 import TournamentTeamMemberRow from "~/components/tournament/TournamentTeamMemberRow.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import PlayerDisplay from "../PlayerDisplay.vue";
+import TournamentTeamInvite from "./TournamentTeamInvite.vue";
 </script>
 
 <template>
@@ -93,6 +94,19 @@ import PlayerDisplay from "../PlayerDisplay.vue";
               </div>
             </TableCell>
           </TableRow>
+
+          <TableRow v-if="team.invites && team.invites.length > 0">
+            <TableCell colspan="100%">
+              <div class="text-sm font-semibold text-gray-500 my-2">
+                Pending Invites
+              </div>
+            </TableCell>
+          </TableRow>
+          <TournamentTeamInvite
+            :invite="invite"
+            v-for="invite in team.invites"
+            :key="invite.id"
+          ></TournamentTeamInvite>
         </TableBody>
       </Table>
     </div>
@@ -141,6 +155,7 @@ export default {
     },
   },
   methods: {
+    async cancelInvite() {},
     async leaveTournament() {
       await this.$apollo.mutate({
         mutation: generateMutation({

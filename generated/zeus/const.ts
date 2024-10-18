@@ -3614,7 +3614,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"migration_hashes_hashes_bool_exp"
 	},
 	mutation_root:{
-		acceptTeamInvite:{
+		acceptInvite:{
 			invite_id:"uuid"
 		},
 		callForOrganizer:{
@@ -3923,6 +3923,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_tournament_stages_by_pk:{
 			id:"uuid"
 		},
+		delete_tournament_team_invites:{
+			where:"tournament_team_invites_bool_exp"
+		},
+		delete_tournament_team_invites_by_pk:{
+			id:"uuid"
+		},
 		delete_tournament_team_roster:{
 			where:"tournament_team_roster_bool_exp"
 		},
@@ -3948,7 +3954,7 @@ export const AllTypesProps: Record<string,any> = {
 		delete_v_pool_maps:{
 			where:"v_pool_maps_bool_exp"
 		},
-		denyTeamInvite:{
+		denyInvite:{
 			invite_id:"uuid"
 		},
 		forfeitMatch:{
@@ -4346,6 +4352,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_tournament_stages_one:{
 			object:"tournament_stages_insert_input",
 			on_conflict:"tournament_stages_on_conflict"
+		},
+		insert_tournament_team_invites:{
+			objects:"tournament_team_invites_insert_input",
+			on_conflict:"tournament_team_invites_on_conflict"
+		},
+		insert_tournament_team_invites_one:{
+			object:"tournament_team_invites_insert_input",
+			on_conflict:"tournament_team_invites_on_conflict"
 		},
 		insert_tournament_team_roster:{
 			objects:"tournament_team_roster_insert_input",
@@ -5008,6 +5022,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_tournament_stages_many:{
 			updates:"tournament_stages_updates"
+		},
+		update_tournament_team_invites:{
+			_inc:"tournament_team_invites_inc_input",
+			_set:"tournament_team_invites_set_input",
+			where:"tournament_team_invites_bool_exp"
+		},
+		update_tournament_team_invites_by_pk:{
+			_inc:"tournament_team_invites_inc_input",
+			_set:"tournament_team_invites_set_input",
+			pk_columns:"tournament_team_invites_pk_columns_input"
+		},
+		update_tournament_team_invites_many:{
+			updates:"tournament_team_invites_updates"
 		},
 		update_tournament_team_roster:{
 			_inc:"tournament_team_roster_inc_input",
@@ -7640,6 +7667,19 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_stages_by_pk:{
 			id:"uuid"
 		},
+		tournament_team_invites:{
+			distinct_on:"tournament_team_invites_select_column",
+			order_by:"tournament_team_invites_order_by",
+			where:"tournament_team_invites_bool_exp"
+		},
+		tournament_team_invites_aggregate:{
+			distinct_on:"tournament_team_invites_select_column",
+			order_by:"tournament_team_invites_order_by",
+			where:"tournament_team_invites_bool_exp"
+		},
+		tournament_team_invites_by_pk:{
+			id:"uuid"
+		},
 		tournament_team_roster:{
 			distinct_on:"tournament_team_roster_select_column",
 			order_by:"tournament_team_roster_order_by",
@@ -8840,6 +8880,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"tournament_stages_stream_cursor_input",
 			where:"tournament_stages_bool_exp"
 		},
+		tournament_team_invites:{
+			distinct_on:"tournament_team_invites_select_column",
+			order_by:"tournament_team_invites_order_by",
+			where:"tournament_team_invites_bool_exp"
+		},
+		tournament_team_invites_aggregate:{
+			distinct_on:"tournament_team_invites_select_column",
+			order_by:"tournament_team_invites_order_by",
+			where:"tournament_team_invites_bool_exp"
+		},
+		tournament_team_invites_by_pk:{
+			id:"uuid"
+		},
+		tournament_team_invites_stream:{
+			cursor:"tournament_team_invites_stream_cursor_input",
+			where:"tournament_team_invites_bool_exp"
+		},
 		tournament_team_roster:{
 			distinct_on:"tournament_team_roster_select_column",
 			order_by:"tournament_team_roster_order_by",
@@ -9358,6 +9415,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"teams_bool_exp",
 		can_change_role:"Boolean_comparison_exp",
 		can_invite:"Boolean_comparison_exp",
+		can_remove:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		invites:"team_invites_bool_exp",
 		invites_aggregate:"team_invites_aggregate_bool_exp",
@@ -9410,6 +9468,7 @@ export const AllTypesProps: Record<string,any> = {
 	teams_order_by:{
 		can_change_role:"order_by",
 		can_invite:"order_by",
+		can_remove:"order_by",
 		id:"order_by",
 		invites_aggregate:"team_invites_aggregate_order_by",
 		match_lineups_aggregate:"match_lineups_aggregate_order_by",
@@ -9956,6 +10015,153 @@ export const AllTypesProps: Record<string,any> = {
 		min_teams:"order_by",
 		order:"order_by"
 	},
+	tournament_team_invites_aggregate_bool_exp:{
+		count:"tournament_team_invites_aggregate_bool_exp_count"
+	},
+	tournament_team_invites_aggregate_bool_exp_count:{
+		arguments:"tournament_team_invites_select_column",
+		filter:"tournament_team_invites_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	tournament_team_invites_aggregate_fields:{
+		count:{
+			columns:"tournament_team_invites_select_column"
+		}
+	},
+	tournament_team_invites_aggregate_order_by:{
+		avg:"tournament_team_invites_avg_order_by",
+		count:"order_by",
+		max:"tournament_team_invites_max_order_by",
+		min:"tournament_team_invites_min_order_by",
+		stddev:"tournament_team_invites_stddev_order_by",
+		stddev_pop:"tournament_team_invites_stddev_pop_order_by",
+		stddev_samp:"tournament_team_invites_stddev_samp_order_by",
+		sum:"tournament_team_invites_sum_order_by",
+		var_pop:"tournament_team_invites_var_pop_order_by",
+		var_samp:"tournament_team_invites_var_samp_order_by",
+		variance:"tournament_team_invites_variance_order_by"
+	},
+	tournament_team_invites_arr_rel_insert_input:{
+		data:"tournament_team_invites_insert_input",
+		on_conflict:"tournament_team_invites_on_conflict"
+	},
+	tournament_team_invites_avg_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
+	tournament_team_invites_bool_exp:{
+		_and:"tournament_team_invites_bool_exp",
+		_not:"tournament_team_invites_bool_exp",
+		_or:"tournament_team_invites_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		invited_by:"players_bool_exp",
+		invited_by_player_steam_id:"bigint_comparison_exp",
+		player:"players_bool_exp",
+		steam_id:"bigint_comparison_exp",
+		team:"tournament_teams_bool_exp",
+		tournament_team_id:"uuid_comparison_exp"
+	},
+	tournament_team_invites_constraint: "enum" as const,
+	tournament_team_invites_inc_input:{
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint"
+	},
+	tournament_team_invites_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by:"players_obj_rel_insert_input",
+		invited_by_player_steam_id:"bigint",
+		player:"players_obj_rel_insert_input",
+		steam_id:"bigint",
+		team:"tournament_teams_obj_rel_insert_input",
+		tournament_team_id:"uuid"
+	},
+	tournament_team_invites_max_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_team_invites_min_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_team_invites_on_conflict:{
+		constraint:"tournament_team_invites_constraint",
+		update_columns:"tournament_team_invites_update_column",
+		where:"tournament_team_invites_bool_exp"
+	},
+	tournament_team_invites_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		invited_by:"players_order_by",
+		invited_by_player_steam_id:"order_by",
+		player:"players_order_by",
+		steam_id:"order_by",
+		team:"tournament_teams_order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_team_invites_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_team_invites_select_column: "enum" as const,
+	tournament_team_invites_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		tournament_team_id:"uuid"
+	},
+	tournament_team_invites_stddev_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
+	tournament_team_invites_stddev_pop_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
+	tournament_team_invites_stddev_samp_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
+	tournament_team_invites_stream_cursor_input:{
+		initial_value:"tournament_team_invites_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_team_invites_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		tournament_team_id:"uuid"
+	},
+	tournament_team_invites_sum_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
+	tournament_team_invites_update_column: "enum" as const,
+	tournament_team_invites_updates:{
+		_inc:"tournament_team_invites_inc_input",
+		_set:"tournament_team_invites_set_input",
+		where:"tournament_team_invites_bool_exp"
+	},
+	tournament_team_invites_var_pop_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
+	tournament_team_invites_var_samp_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
+	tournament_team_invites_variance_order_by:{
+		invited_by_player_steam_id:"order_by",
+		steam_id:"order_by"
+	},
 	tournament_team_roster_aggregate_bool_exp:{
 		count:"tournament_team_roster_aggregate_bool_exp_count"
 	},
@@ -10090,6 +10296,16 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	tournament_teams:{
+		invites:{
+			distinct_on:"tournament_team_invites_select_column",
+			order_by:"tournament_team_invites_order_by",
+			where:"tournament_team_invites_bool_exp"
+		},
+		invites_aggregate:{
+			distinct_on:"tournament_team_invites_select_column",
+			order_by:"tournament_team_invites_order_by",
+			where:"tournament_team_invites_bool_exp"
+		},
 		roster:{
 			distinct_on:"tournament_team_roster_select_column",
 			order_by:"tournament_team_roster_order_by",
@@ -10139,9 +10355,12 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"tournament_teams_bool_exp",
 		_not:"tournament_teams_bool_exp",
 		_or:"tournament_teams_bool_exp",
+		can_manage:"Boolean_comparison_exp",
 		creator:"players_bool_exp",
 		eligible_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
+		invites:"tournament_team_invites_bool_exp",
+		invites_aggregate:"tournament_team_invites_aggregate_bool_exp",
 		name:"String_comparison_exp",
 		owner_steam_id:"bigint_comparison_exp",
 		roster:"tournament_team_roster_bool_exp",
@@ -10160,6 +10379,7 @@ export const AllTypesProps: Record<string,any> = {
 		creator:"players_obj_rel_insert_input",
 		eligible_at:"timestamptz",
 		id:"uuid",
+		invites:"tournament_team_invites_arr_rel_insert_input",
 		owner_steam_id:"bigint",
 		roster:"tournament_team_roster_arr_rel_insert_input",
 		team:"teams_obj_rel_insert_input",
@@ -10195,9 +10415,11 @@ export const AllTypesProps: Record<string,any> = {
 		where:"tournament_teams_bool_exp"
 	},
 	tournament_teams_order_by:{
+		can_manage:"order_by",
 		creator:"players_order_by",
 		eligible_at:"order_by",
 		id:"order_by",
+		invites_aggregate:"tournament_team_invites_aggregate_order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
 		roster_aggregate:"tournament_team_roster_aggregate_order_by",
@@ -12663,7 +12885,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"migration_hashes_hashes"
 	},
 	mutation_root:{
-		acceptTeamInvite:"SuccessOutput",
+		acceptInvite:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
@@ -12765,6 +12987,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournament_organizers_by_pk:"tournament_organizers",
 		delete_tournament_stages:"tournament_stages_mutation_response",
 		delete_tournament_stages_by_pk:"tournament_stages",
+		delete_tournament_team_invites:"tournament_team_invites_mutation_response",
+		delete_tournament_team_invites_by_pk:"tournament_team_invites",
 		delete_tournament_team_roster:"tournament_team_roster_mutation_response",
 		delete_tournament_team_roster_by_pk:"tournament_team_roster",
 		delete_tournament_teams:"tournament_teams_mutation_response",
@@ -12773,7 +12997,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournaments_by_pk:"tournaments",
 		delete_v_match_captains:"v_match_captains_mutation_response",
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
-		denyTeamInvite:"SuccessOutput",
+		denyInvite:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
@@ -12873,6 +13097,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_tournament_organizers_one:"tournament_organizers",
 		insert_tournament_stages:"tournament_stages_mutation_response",
 		insert_tournament_stages_one:"tournament_stages",
+		insert_tournament_team_invites:"tournament_team_invites_mutation_response",
+		insert_tournament_team_invites_one:"tournament_team_invites",
 		insert_tournament_team_roster:"tournament_team_roster_mutation_response",
 		insert_tournament_team_roster_one:"tournament_team_roster",
 		insert_tournament_teams:"tournament_teams_mutation_response",
@@ -13042,6 +13268,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_stages:"tournament_stages_mutation_response",
 		update_tournament_stages_by_pk:"tournament_stages",
 		update_tournament_stages_many:"tournament_stages_mutation_response",
+		update_tournament_team_invites:"tournament_team_invites_mutation_response",
+		update_tournament_team_invites_by_pk:"tournament_team_invites",
+		update_tournament_team_invites_many:"tournament_team_invites_mutation_response",
 		update_tournament_team_roster:"tournament_team_roster_mutation_response",
 		update_tournament_team_roster_by_pk:"tournament_team_roster",
 		update_tournament_team_roster_many:"tournament_team_roster_mutation_response",
@@ -14159,6 +14388,9 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_stages:"tournament_stages",
 		tournament_stages_aggregate:"tournament_stages_aggregate",
 		tournament_stages_by_pk:"tournament_stages",
+		tournament_team_invites:"tournament_team_invites",
+		tournament_team_invites_aggregate:"tournament_team_invites_aggregate",
+		tournament_team_invites_by_pk:"tournament_team_invites",
 		tournament_team_roster:"tournament_team_roster",
 		tournament_team_roster_aggregate:"tournament_team_roster_aggregate",
 		tournament_team_roster_by_pk:"tournament_team_roster",
@@ -14501,6 +14733,10 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_stages_aggregate:"tournament_stages_aggregate",
 		tournament_stages_by_pk:"tournament_stages",
 		tournament_stages_stream:"tournament_stages",
+		tournament_team_invites:"tournament_team_invites",
+		tournament_team_invites_aggregate:"tournament_team_invites_aggregate",
+		tournament_team_invites_by_pk:"tournament_team_invites",
+		tournament_team_invites_stream:"tournament_team_invites",
 		tournament_team_roster:"tournament_team_roster",
 		tournament_team_roster_aggregate:"tournament_team_roster_aggregate",
 		tournament_team_roster_by_pk:"tournament_team_roster",
@@ -14678,6 +14914,7 @@ export const ReturnTypes: Record<string,any> = {
 	teams:{
 		can_change_role:"Boolean",
 		can_invite:"Boolean",
+		can_remove:"Boolean",
 		id:"uuid",
 		invites:"team_invites",
 		invites_aggregate:"team_invites_aggregate",
@@ -14988,6 +15225,83 @@ export const ReturnTypes: Record<string,any> = {
 		min_teams:"Float",
 		order:"Float"
 	},
+	tournament_team_invites:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by:"players",
+		invited_by_player_steam_id:"bigint",
+		player:"players",
+		steam_id:"bigint",
+		team:"tournament_teams",
+		tournament_team_id:"uuid"
+	},
+	tournament_team_invites_aggregate:{
+		aggregate:"tournament_team_invites_aggregate_fields",
+		nodes:"tournament_team_invites"
+	},
+	tournament_team_invites_aggregate_fields:{
+		avg:"tournament_team_invites_avg_fields",
+		count:"Int",
+		max:"tournament_team_invites_max_fields",
+		min:"tournament_team_invites_min_fields",
+		stddev:"tournament_team_invites_stddev_fields",
+		stddev_pop:"tournament_team_invites_stddev_pop_fields",
+		stddev_samp:"tournament_team_invites_stddev_samp_fields",
+		sum:"tournament_team_invites_sum_fields",
+		var_pop:"tournament_team_invites_var_pop_fields",
+		var_samp:"tournament_team_invites_var_samp_fields",
+		variance:"tournament_team_invites_variance_fields"
+	},
+	tournament_team_invites_avg_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_team_invites_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		tournament_team_id:"uuid"
+	},
+	tournament_team_invites_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint",
+		tournament_team_id:"uuid"
+	},
+	tournament_team_invites_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_team_invites"
+	},
+	tournament_team_invites_stddev_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_team_invites_stddev_pop_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_team_invites_stddev_samp_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_team_invites_sum_fields:{
+		invited_by_player_steam_id:"bigint",
+		steam_id:"bigint"
+	},
+	tournament_team_invites_var_pop_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_team_invites_var_samp_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
+	tournament_team_invites_variance_fields:{
+		invited_by_player_steam_id:"Float",
+		steam_id:"Float"
+	},
 	tournament_team_roster:{
 		e_team_role:"e_team_roles",
 		player:"players",
@@ -15054,9 +15368,12 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	tournament_teams:{
+		can_manage:"Boolean",
 		creator:"players",
 		eligible_at:"timestamptz",
 		id:"uuid",
+		invites:"tournament_team_invites",
+		invites_aggregate:"tournament_team_invites_aggregate",
 		name:"String",
 		owner_steam_id:"bigint",
 		roster:"tournament_team_roster",

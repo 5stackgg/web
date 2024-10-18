@@ -36,7 +36,7 @@ import Separator from "../ui/separator/Separator.vue";
     </TableCell>
 
     <TableCell>
-      <Popover>
+      <Popover v-if="canUpdateRole">
         <PopoverTrigger as-child>
           <Button variant="outline" class="ml-auto">
             {{ member.role }}
@@ -74,6 +74,9 @@ import Separator from "../ui/separator/Separator.vue";
           </Command>
         </PopoverContent>
       </Popover>
+      <template v-else>
+        {{ member.role }}
+      </template>
     </TableCell>
   </TableRow>
 
@@ -104,6 +107,10 @@ import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {
+    team: {
+      type: Object,
+      required: true,
+    },
     member: {
       type: Object,
       required: true,
@@ -133,6 +140,14 @@ export default {
           return;
         }
       },
+    },
+  },
+  computed: {
+    canUpdateRole() {
+      return (
+        this.team.can_manage &&
+        this.member.player.steam_id !== useAuthStore().me.steam_id
+      );
     },
   },
   methods: {

@@ -434,7 +434,9 @@ export default {
                 ],
               },
             },
-            tournamentTeamFields,
+            Object.assign({}, tournamentTeamFields, {
+              can_manage: true,
+            }),
           ],
         }),
         variables: function () {

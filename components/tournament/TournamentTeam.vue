@@ -11,7 +11,6 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import PlayerDisplay from "../PlayerDisplay.vue";
 </script>
 
-<!-- // TODO - tournament max players per lineup -->
 <template>
   <div v-if="team && e_team_roles" class="grid gap-4">
     <div
@@ -35,14 +34,19 @@ import PlayerDisplay from "../PlayerDisplay.vue";
           </div>
         </template>
       </div>
-      <Button
-        @click="leaveTournament"
-        variant="destructive"
-        class="mt-4 md:mt-0"
-        v-if="canLeaveTournament"
-      >
-        Leave Tournament
-      </Button>
+      <div class="flex gap-4">
+        <Button
+          @click="leaveTournament"
+          variant="destructive"
+          class="mt-4 md:mt-0"
+          v-if="canLeaveTournament"
+        >
+          Leave Tournament
+        </Button>
+        <Button @click="leaveTeam" variant="destructive" class="mt-4 md:mt-0">
+          Leave Team
+        </Button>
+      </div>
     </div>
 
     <div v-if="team.roster">
@@ -58,6 +62,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
             v-for="member in team.roster"
             :key="member.id"
             :member="member"
+            :team="team"
             :roles="e_team_roles"
           />
           <TableRow
@@ -75,7 +80,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
                     name: `Slot ${slot + team.roster.length}`,
                   }"
                 />
-                <template v-if="slot === 1">
+                <template v-if="slot === 1 && team.can_manage">
                   <player-search
                     label="Add Player to Team..."
                     :exclude="
@@ -132,8 +137,7 @@ export default {
   },
   computed: {
     canLeaveTournament() {
-      console.info(this.team);
-      return false;
+      return this.team.can_manage;
     },
   },
   methods: {
@@ -143,6 +147,24 @@ export default {
           delete_tournament_teams_by_pk: [
             {
               id: this.team.id,
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    async leaveTeam() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_tournament_team_roster: [
+            {
+              where: {
+                player_steam_id: {
+                  _eq: useAuthStore().me.steam_id,
+                },
+              },
             },
             {
               __typename: true,

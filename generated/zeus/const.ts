@@ -4389,6 +4389,9 @@ export const AllTypesProps: Record<string,any> = {
 		leaveLineup:{
 
 		},
+		randomizeTeams:{
+			match_id:"uuid"
+		},
 		scheduleMatch:{
 			match_id:"uuid",
 			time:"timestamptz"
@@ -4405,7 +4408,7 @@ export const AllTypesProps: Record<string,any> = {
 
 		},
 		updateCs:{
-			gameServerNodeId:"uuid"
+			game_server_node_id:"uuid"
 		},
 		update__map_pool:{
 			_set:"_map_pool_set_input",
@@ -12883,6 +12886,7 @@ export const ReturnTypes: Record<string,any> = {
 		joinLineup:"SuccessOutput",
 		leaveLineup:"SuccessOutput",
 		logout:"SuccessOutput",
+		randomizeTeams:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",

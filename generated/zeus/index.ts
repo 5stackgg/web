@@ -7799,7 +7799,7 @@ count?: [{	columns?: Array<ValueTypes["migration_hashes_hashes_select_column"]> 
 	/** mutation root */
 ["mutation_root"]: AliasType<{
 acceptTeamInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
-callForOrganizer?: [{	matchId: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+callForOrganizer?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 cancelMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 checkIntoMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
@@ -8288,13 +8288,14 @@ joinLineup?: [{	code?: string | undefined | null | Variable<any, string>,	lineup
 leaveLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** logout */
 	logout?:ValueTypes["SuccessOutput"],
+randomizeTeams?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 scheduleMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	time?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	winning_lineup_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	setupGameServer?:ValueTypes["SetupGameServeOutput"],
 startMatch?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	server_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 switchLineup?: [{	match_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	unlinkDiscord?:ValueTypes["SuccessOutput"],
-updateCs?: [{	gameServerNodeId?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+updateCs?: [{	game_server_node_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	updateServices?:ValueTypes["SuccessOutput"],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["_map_pool_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
@@ -25607,7 +25608,7 @@ count?: [{	columns?: Array<ResolverInputTypes["migration_hashes_hashes_select_co
 	/** mutation root */
 ["mutation_root"]: AliasType<{
 acceptTeamInvite?: [{	invite_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
-callForOrganizer?: [{	matchId: string},ResolverInputTypes["SuccessOutput"]],
+callForOrganizer?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 cancelMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 checkIntoMatch?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 delete__map_pool?: [{	/** filter the rows which have to be deleted */
@@ -26096,13 +26097,14 @@ joinLineup?: [{	code?: string | undefined | null,	lineup_id: string,	match_id: s
 leaveLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	/** logout */
 	logout?:ResolverInputTypes["SuccessOutput"],
+randomizeTeams?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 scheduleMatch?: [{	match_id: ResolverInputTypes["uuid"],	time?: ResolverInputTypes["timestamptz"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 setMatchWinner?: [{	match_id: ResolverInputTypes["uuid"],	winning_lineup_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	setupGameServer?:ResolverInputTypes["SetupGameServeOutput"],
 startMatch?: [{	match_id: ResolverInputTypes["uuid"],	server_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 switchLineup?: [{	match_id: string},ResolverInputTypes["SuccessOutput"]],
 	unlinkDiscord?:ResolverInputTypes["SuccessOutput"],
-updateCs?: [{	gameServerNodeId?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
+updateCs?: [{	game_server_node_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["SuccessOutput"]],
 	updateServices?:ResolverInputTypes["SuccessOutput"],
 update__map_pool?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["_map_pool_set_input"] | undefined | null,	/** filter the rows which have to be updated */
@@ -43129,6 +43131,7 @@ export type ModelTypes = {
 	leaveLineup?: ModelTypes["SuccessOutput"] | undefined,
 	/** logout */
 	logout?: ModelTypes["SuccessOutput"] | undefined,
+	randomizeTeams?: ModelTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: ModelTypes["SuccessOutput"] | undefined,
 	/** setMatchWinner */
@@ -58704,6 +58707,7 @@ export type GraphQLTypes = {
 	leaveLineup?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** logout */
 	logout?: GraphQLTypes["SuccessOutput"] | undefined,
+	randomizeTeams?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** scheduleMatch */
 	scheduleMatch?: GraphQLTypes["SuccessOutput"] | undefined,
 	/** setMatchWinner */

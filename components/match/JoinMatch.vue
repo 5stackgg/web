@@ -52,7 +52,7 @@ export default {
       this.$apollo.mutate({
         mutation: generateMutation({
           callForOrganizer: [
-            { matchId: this.match.id },
+            { match_id: this.match.id },
             {
               success: true,
             },

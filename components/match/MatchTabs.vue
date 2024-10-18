@@ -54,6 +54,10 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview" class="grid gap-4">
+      <Button v-if="canRandomize" variant="destructive" @click="randomizeTeams">
+        Randomize Teams
+      </Button>
+
       <Card class="w-fit">
         <CardHeader></CardHeader>
         <CardContent>
@@ -264,6 +268,7 @@ import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 enum AvailableCommands {
   Pause = "css_pause",
@@ -373,6 +378,31 @@ export default {
       const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
         useAuthStore();
       return isAdmin || isMatchOrganizer || isTournamentOrganizer;
+    },
+    canRandomize() {
+      if (
+        this.match.status !== e_match_status_enum.PickingPlayers ||
+        !this.match.is_organizer
+      ) {
+        return false;
+      }
+      return true;
+    },
+  },
+  methods: {
+    async randomizeTeams() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          randomizeTeams: [
+            {
+              match_id: this.match.id,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
     },
   },
 };

@@ -115,7 +115,7 @@ export default {
     async callForOrganizer() {
       await this.$apollo.mutate({
         mutation: generateMutation({
-          callForOrganizer: [{ matchId: this.match.id }, { success: true }],
+          callForOrganizer: [{ match_id: this.match.id }, { success: true }],
         }),
       });
 

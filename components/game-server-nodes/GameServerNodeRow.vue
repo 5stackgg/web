@@ -225,7 +225,7 @@ export default {
         mutation: generateMutation({
           updateCs: [
             {
-              gameServerNodeId: this.gameServerNode.id,
+              game_server_node_id: this.gameServerNode.id,
             },
             {
               success: true,

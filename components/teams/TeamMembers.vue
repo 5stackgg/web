@@ -79,6 +79,7 @@ export default {
             },
             {
               can_invite: true,
+              can_remove: true,
               can_change_role: true,
               roster: [
                 {

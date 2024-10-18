@@ -39,7 +39,9 @@ import Separator from "../ui/separator/Separator.vue";
   </div>
   <Popover
     v-if="
-      !isInvite && team.can_change_role && member.player.steam_id != me.steam_id
+      !isInvite &&
+      (team.can_change_role || team.can_remove) &&
+      member.player.steam_id != me.steam_id
     "
   >
     <PopoverTrigger as-child>
@@ -52,23 +54,26 @@ import Separator from "../ui/separator/Separator.vue";
       <Command v-model="memberRole">
         <CommandList>
           <CommandGroup>
-            <CommandItem
-              :value="role.value"
-              class="flex flex-col items-start px-4 py-2 cursor-pointer"
-              v-for="role of roles"
-            >
-              <p>{{ role.value }}</p>
-              <p class="text-sm text-muted-foreground">
-                {{ role.description }}
-              </p>
-            </CommandItem>
+            <template v-if="team.can_change_role">
+              <CommandItem
+                :value="role.value"
+                class="flex flex-col items-start px-4 py-2 cursor-pointer"
+                v-for="role of roles"
+              >
+                <p>{{ role.value }}</p>
+                <p class="text-sm text-muted-foreground">
+                  {{ role.description }}
+                </p>
+              </CommandItem>
 
-            <Separator></Separator>
+              <Separator></Separator>
+            </template>
 
             <CommandItem
               :value="false"
               class="flex flex-col items-start px-4 py-2 cursor-pointer"
               @click.stop="removeMemberDialog = true"
+              v-if="team.can_remove"
             >
               <div class="text-red-600">Remove From Team</div>
             </CommandItem>

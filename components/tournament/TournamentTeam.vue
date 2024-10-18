@@ -39,6 +39,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
         @click="leaveTournament"
         variant="destructive"
         class="mt-4 md:mt-0"
+        v-if="canLeaveTournament"
       >
         Leave Tournament
       </Button>
@@ -127,6 +128,12 @@ export default {
           },
         ],
       }),
+    },
+  },
+  computed: {
+    canLeaveTournament() {
+      console.info(this.team);
+      return false;
     },
   },
   methods: {

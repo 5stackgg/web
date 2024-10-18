@@ -8,6 +8,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
+  <pre>{{ match.can_start }}</pre>
   <div class="flex gap-2 items-center">
     <MatchLobbyAccess
       :match="match"

@@ -386,6 +386,16 @@ export default {
       ) {
         return false;
       }
+
+      if (
+        this.match.lineup_1.lineup_players.length <
+          this.match.min_players_per_lineup ||
+        this.match.lineup_2.lineup_players.length <
+          this.match.min_players_per_lineup
+      ) {
+        return false;
+      }
+
       return true;
     },
   },

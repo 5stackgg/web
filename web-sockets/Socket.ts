@@ -32,9 +32,24 @@ class Socket extends EventEmitter {
       this.connected = true;
 
       clearInterval(this.heartBeat);
+
+      if (!this.connection) {
+        return;
+      }
+
+      this.connection?.send(
+        JSON.stringify({
+          event: "ping",
+        }),
+      );
+
       this.heartBeat = setInterval(() => {
-        this.connection?.send("ping");
-      }, 15000);
+        this.connection?.send(
+          JSON.stringify({
+            event: "ping",
+          }),
+        );
+      }, 15 * 1000);
 
       console.info("[ws] connected");
 

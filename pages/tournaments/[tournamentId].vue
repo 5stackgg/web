@@ -144,12 +144,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
             <div class="grid gap-4">
               <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
                 <div class="flex justify-between items-center mb-4">
-                  <NuxtLink
-                    :to="`/tournaments/${tournament.id}/teams/${team.id}`"
-                    class="text-lg font-semibold hover:underline"
-                  >
-                    {{ team.name }}
-                  </NuxtLink>
+                  {{ team.name }}
                   <span class="text-sm text-gray-600">
                     {{ team.roster_aggregate.aggregate.count }} players
                     registered

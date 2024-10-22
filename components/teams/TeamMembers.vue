@@ -152,11 +152,11 @@ export default {
     async addMember(member) {
       await this.$apollo.mutate({
         mutation: generateMutation({
-          insert_team_invites_one: [
+          insert_team_roster_one: [
             {
               object: {
-                steam_id: member.steam_id,
                 team_id: this.$route.params.id,
+                player_steam_id: member.steam_id,
               },
             },
             {

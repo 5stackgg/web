@@ -115,6 +115,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       name: string;
       steam_id: string;
       avatar_url: string;
+      inGame: boolean;
     },
   ) => {
     if (!lobbyChat.value[matchId]) {

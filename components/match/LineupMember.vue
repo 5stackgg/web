@@ -6,28 +6,40 @@
           <Badge variant="outline" v-if="member.captain"> Captain </Badge>
         </template>
 
-        <template v-slot:status>
+        <template v-slot:status v-if="showStatus">
           <span
             class="absolute -top-1 left-0 h-2 w-2 rounded-full animate-ping"
             :class="{
-              ['bg-red-500']: !isOnline && !isReady,
-              ['bg-yellow-500']: isOnline && !isReady,
-              ['bg-green-500']: isReady,
+              ['bg-red-500']:
+                match && match.status === e_match_status_enum.WaitingForCheckIn
+                  ? !isOnline && !isReady
+                  : !isOnline && !inGame,
+              ['bg-yellow-500']:
+                match && match.status === e_match_status_enum.WaitingForCheckIn
+                  ? isOnline && !isReady
+                  : isOnline && !inGame,
+              ['bg-green-500']:
+                match && match.status === e_match_status_enum.WaitingForCheckIn
+                  ? isReady
+                  : inGame,
             }"
-            v-if="
-              match && match.status === e_match_status_enum.WaitingForCheckIn
-            "
           ></span>
           <span
             class="absolute -top-1 left-0 h-2 w-2 rounded-full"
             :class="{
-              ['bg-red-500']: !isOnline && !isReady,
-              ['bg-yellow-500']: isOnline && !isReady,
-              ['bg-green-500']: isReady,
+              ['bg-red-500']:
+                match && match.status === e_match_status_enum.WaitingForCheckIn
+                  ? !isOnline && !isReady
+                  : !isOnline && !inGame,
+              ['bg-yellow-500']:
+                match && match.status === e_match_status_enum.WaitingForCheckIn
+                  ? isOnline && !isReady
+                  : isOnline && !inGame,
+              ['bg-green-500']:
+                match && match.status === e_match_status_enum.WaitingForCheckIn
+                  ? isReady
+                  : inGame,
             }"
-            v-if="
-              match && match.status === e_match_status_enum.WaitingForCheckIn
-            "
           ></span>
         </template>
       </PlayerDisplay>
@@ -89,8 +101,23 @@ export default {
     isOnline() {
       return !!this.lobby?.get(this.member.player.steam_id);
     },
+    inGame() {
+      return this.lobby?.get(this.member.player.steam_id)?.inGame;
+    },
     isReady() {
       return this.member.checked_in;
+    },
+    showStatus() {
+      if (!this.match) {
+        return false;
+      }
+
+      return [
+        e_match_status_enum.Veto,
+        e_match_status_enum.Live,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.WaitingForCheckIn,
+      ].includes(this.match.status);
     },
   },
 };

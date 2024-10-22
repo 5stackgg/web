@@ -74,14 +74,16 @@ export default {
   },
   computed: {
     updates() {
-      const updates = useApplicationSettingsStore().settings?.find(({ name }) => {
-        return name === 'updates'
-      })?.value;
+      const updates = useApplicationSettingsStore().settings?.find(
+        ({ name }) => {
+          return name === "updates";
+        },
+      )?.value;
 
-      if(!updates) {
+      if (!updates) {
         return [];
       }
-      
+
       return JSON.parse(updates);
     },
   },

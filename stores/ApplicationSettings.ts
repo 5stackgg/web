@@ -7,7 +7,7 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 export const useApplicationSettingsStore = defineStore(
   "applicationSettings",
   () => {
-    const settings = ref(undefined);
+    const settings = ref<Array<{ name: string; value: string }>>([]);
 
     const subscribeToSettings = async () => {
       const subscription = getGraphqlClient().subscribe({

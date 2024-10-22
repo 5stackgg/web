@@ -4,7 +4,6 @@ import TournamentStageBuilder from "~/components/tournament/TournamentStageBuild
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
-import TournamentServers from "~/components/tournament/TournamentServers.vue";
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentAddTeam from "~/components/tournament/TournamentAddTeam.vue";
 import TournamentActions from "~/components/tournament/TournamentActions.vue";

@@ -3,7 +3,7 @@ import { AlertCircle } from "lucide-vue-next";
 </script>
 
 <template>
-  <div v-if="hasUpdatesAvailable" class="relative flex items-center">
+  <div v-if="updates.length > 0" class="relative flex items-center">
     <AlertDialog>
       <AlertDialogTrigger>
         <Button variant="ghost" size="icon" class="h-6 flex items-center">
@@ -30,11 +30,11 @@ import { AlertCircle } from "lucide-vue-next";
             </p>
             <ul class="list-disc list-inside mt-2 space-y-1">
               <li
-                v-for="service in servicesNeedsUpdates"
-                :key="service.name"
+                v-for="update in updates"
+                :key="update.pod"
                 class="flex items-center"
               >
-                <span class="mr-2">•</span>{{ service.name }}
+                <span class="mr-2">•</span>{{ update.service }}
               </li>
             </ul>
             <p class="my-4 text-sm text-gray-500 italic">
@@ -73,22 +73,16 @@ export default {
     },
   },
   computed: {
-    servicesNeedsUpdates() {
-      const versionUpdates = useApplicationSettingsStore().settings?.filter(
-        (setting: { name: string }) => {
-          return ["api", "web", "game-server-node"].includes(setting.name);
-        },
-      );
+    updates() {
+      const updates = useApplicationSettingsStore().settings?.find(({ name }) => {
+        return name === 'updates'
+      })?.value;
 
-      return (
-        versionUpdates?.filter(({ value }) => {
-          const { current, latest } = JSON.parse(value);
-          return current !== latest;
-        }) || []
-      );
-    },
-    hasUpdatesAvailable() {
-      return this.servicesNeedsUpdates.length > 0;
+      if(!updates) {
+        return [];
+      }
+      
+      return JSON.parse(updates);
     },
   },
 };

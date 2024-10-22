@@ -7,8 +7,9 @@ import { Info } from "lucide-vue-next";
     <Tooltip>
       <TooltipTrigger type="button">
         <div class="flex items-center gap-2">
-          <Info :size="size" v-bind="$attrs"> </Info>
-          <slot name="trigger"></slot>
+          <slot name="trigger">
+            <Info :size="size" v-bind="$attrs"> </Info>
+          </slot>
         </div>
       </TooltipTrigger>
       <TooltipContent>

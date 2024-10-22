@@ -1,46 +1,84 @@
+<script lang="ts" setup>
+import FiveStackToolTip from "../FiveStackToolTip.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
+</script>
+
 <template>
   <template v-if="member.player">
     <div @click="viewPlayer" class="cursor-pointer text-left">
-      <PlayerDisplay :player="member.player">
+      <PlayerDisplay :player="member.player" :show-online="showStatus">
         <template v-slot:avatar-sub>
           <Badge variant="outline" v-if="member.captain"> Captain </Badge>
         </template>
 
         <template v-slot:status v-if="showStatus">
-          <span
-            class="absolute -top-1 left-0 h-2 w-2 rounded-full animate-ping"
-            :class="{
-              ['bg-red-500']:
-                match && match.status === e_match_status_enum.WaitingForCheckIn
-                  ? !isOnline && !isReady
-                  : !isOnline && !inGame,
-              ['bg-yellow-500']:
-                match && match.status === e_match_status_enum.WaitingForCheckIn
-                  ? isOnline && !isReady
-                  : isOnline && !inGame,
-              ['bg-green-500']:
-                match && match.status === e_match_status_enum.WaitingForCheckIn
-                  ? isReady
-                  : inGame,
-            }"
-          ></span>
-          <span
-            class="absolute -top-1 left-0 h-2 w-2 rounded-full"
-            :class="{
-              ['bg-red-500']:
-                match && match.status === e_match_status_enum.WaitingForCheckIn
-                  ? !isOnline && !isReady
-                  : !isOnline && !inGame,
-              ['bg-yellow-500']:
-                match && match.status === e_match_status_enum.WaitingForCheckIn
-                  ? isOnline && !isReady
-                  : isOnline && !inGame,
-              ['bg-green-500']:
-                match && match.status === e_match_status_enum.WaitingForCheckIn
-                  ? isReady
-                  : inGame,
-            }"
-          ></span>
+          <FiveStackToolTip>
+            <template #trigger>
+              <span
+                class="absolute -top-1 left-0 h-2 w-2 rounded-full animate-ping"
+                :class="{
+                  ['bg-red-500']:
+                    match &&
+                    match.status === e_match_status_enum.WaitingForCheckIn
+                      ? !isOnline && !isReady
+                      : !isOnline && !inGame,
+                  ['bg-yellow-500']:
+                    match &&
+                    match.status === e_match_status_enum.WaitingForCheckIn
+                      ? isOnline && !isReady
+                      : isOnline && !inGame,
+                  ['bg-green-500']:
+                    match &&
+                    match.status === e_match_status_enum.WaitingForCheckIn
+                      ? isReady
+                      : inGame,
+                }"
+              ></span>
+              <span
+                class="absolute -top-1 left-0 h-2 w-2 rounded-full"
+                :class="{
+                  ['bg-red-500']:
+                    match &&
+                    match.status === e_match_status_enum.WaitingForCheckIn
+                      ? !isOnline && !isReady
+                      : !isOnline && !inGame,
+                  ['bg-yellow-500']:
+                    match &&
+                    match.status === e_match_status_enum.WaitingForCheckIn
+                      ? isOnline && !isReady
+                      : isOnline && !inGame,
+                  ['bg-green-500']:
+                    match &&
+                    match.status === e_match_status_enum.WaitingForCheckIn
+                      ? isReady
+                      : inGame,
+                }"
+              ></span>
+            </template>
+
+            <template v-if="match && match.status === e_match_status_enum.WaitingForCheckIn">
+              <template v-if="!isOnline && !isReady">
+                Offline and not ready
+              </template>
+              <template v-else-if="isOnline && !isReady">
+                Online but not ready
+              </template>
+              <template v-else>
+                Ready
+              </template>
+            </template>
+            <template v-else>
+              <template v-if="!isOnline && !inGame">
+                Offline
+              </template>
+              <template v-else-if="isOnline && !inGame">
+                Online but not in game
+              </template>
+              <template v-else>
+                In game
+              </template>
+            </template>
+          </FiveStackToolTip>
         </template>
       </PlayerDisplay>
     </div>
@@ -70,12 +108,9 @@
 </template>
 
 <script lang="ts">
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { e_match_status_enum } from "~/generated/zeus";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 export default {
-  components: { PlayerDisplay, Avatar, AvatarFallback, AvatarImage },
   props: {
     member: {
       type: Object,

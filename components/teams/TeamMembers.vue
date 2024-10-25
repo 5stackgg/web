@@ -16,6 +16,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         v-for="member of members"
       >
         <TeamMember
+          :key="member.player.steam_id"
           :team="team"
           :member="member"
           :roles="roles"
@@ -127,7 +128,13 @@ export default {
       e_team_roles: {
         query: typedGql("subscription")({
           e_team_roles: [
-            {},
+            {
+              where: {
+                value: {
+                  _neq: e_team_roles_enum.Admin,
+                },
+              },
+            },
             {
               value: true,
               description: true,

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { GithubLogoIcon, DiscordLogoIcon } from "@radix-icons/vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
@@ -10,6 +11,33 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       'items-center': !mobile,
     }"
   >
+    <TooltipProvider v-if="isAdmin">
+      <Tooltip>
+        <TooltipTrigger>
+          <a
+            href="https://github.com/5stackgg/5stack-panel/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-muted-foreground transition-colors hover:text-foreground flex gap-4"
+            :class="{
+              ['flex h-8 w-8 md:items-center justify-center']: !mobile,
+            }"
+          >
+            <GithubLogoIcon
+              class="w-5 h-5"
+              :class="{
+                'ml-4': mobile,
+              }"
+            />
+            <span v-if="mobile">Report an issue</span>
+          </a>
+        </TooltipTrigger>
+        <TooltipContent side="right" v-if="!mobile">
+          <span> Report an issue </span>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
@@ -22,9 +50,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
               ['flex h-8 w-8 md:items-center justify-center']: !mobile,
             }"
           >
-            <NuxtImg
-              src="/img/logos/discord.svg"
-              alt="Discord"
+            <DiscordLogoIcon
               class="w-5 h-5"
               :class="{
                 'ml-4': mobile,
@@ -99,6 +125,9 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    isAdmin() {
+      return useAuthStore().isAdmin;
     },
     inviteLink() {
       return `https://${useRuntimeConfig().public.webDomain}/discord-invite`;

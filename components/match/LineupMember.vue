@@ -56,27 +56,25 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
               ></span>
             </template>
 
-            <template v-if="match && match.status === e_match_status_enum.WaitingForCheckIn">
+            <template
+              v-if="
+                match && match.status === e_match_status_enum.WaitingForCheckIn
+              "
+            >
               <template v-if="!isOnline && !isReady">
                 Offline and not ready
               </template>
               <template v-else-if="isOnline && !isReady">
                 Online but not ready
               </template>
-              <template v-else>
-                Ready
-              </template>
+              <template v-else> Ready </template>
             </template>
             <template v-else>
-              <template v-if="!isOnline && !inGame">
-                Offline
-              </template>
+              <template v-if="!isOnline && !inGame"> Offline </template>
               <template v-else-if="isOnline && !inGame">
                 Online but not in game
               </template>
-              <template v-else>
-                In game
-              </template>
+              <template v-else> In game </template>
             </template>
           </FiveStackToolTip>
         </template>

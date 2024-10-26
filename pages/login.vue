@@ -29,7 +29,7 @@ definePageMeta({
 
     <div class="mt-8">
       <a
-        href="https://github.com/5stackgg"
+        href="https://github.com/5stackgg/5stack-panel"
         target="_blank"
         rel="noopener noreferrer"
         class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"

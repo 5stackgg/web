@@ -7,13 +7,12 @@ import MatchMakingConfirm from "~/components/match-making/MatchMakingConfirm.vue
 <template>
   <MatchMakingConfirm></MatchMakingConfirm>
   <alerts-container></alerts-container>
-  <div class="flex min-h-screen w-full flex-col bg-muted/40">
-    <div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-      <app-nav></app-nav>
+  <div class="flex min-h-screen w-full flex-col">
+    <app-nav>
       <main class="m-2 md:m-8">
         <slot></slot>
       </main>
-    </div>
+    </app-nav>
   </div>
 </template>
 

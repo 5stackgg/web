@@ -19,6 +19,9 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
           :alt="player.name"
           v-if="player.avatar_url"
         />
+        <AvatarFallback>
+          {{ player.name.slice(0, 2) }}
+        </AvatarFallback>
       </Avatar>
       <slot name="status">
         <template v-if="isOnline && showOnline">

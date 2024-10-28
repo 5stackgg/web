@@ -123,15 +123,6 @@ const linkDiscord = () => {
               Link Discord for Bot Support
             </Button>
           </nuxt-link>
-
-          <Button
-            variant="ghost"
-            class="w-full text-left justify-start"
-            @click="logout"
-          >
-            <LogOut class="mr-2 h-4 w-4" />
-            Logout
-          </Button>
         </nav>
       </aside>
       <div class="flex-1 lg:max-w-2xl">
@@ -163,23 +154,6 @@ export default {
       toast({
         title: `Unlinked Discord`,
       });
-    },
-    async logout() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          logout: [
-            {},
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-
-      // Redirect to home page or login page after successful logout
-      navigateTo("/");
-
-      window.location.reload();
     },
   },
 };

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: "settings",
-});
+import { e_player_roles_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -126,11 +124,7 @@ definePageMeta({
 </template>
 
 <script lang="ts">
-import {
-  e_player_roles_enum,
-  settings_constraint,
-  settings_update_column,
-} from "~/generated/zeus";
+import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";

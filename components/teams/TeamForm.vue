@@ -2,7 +2,6 @@
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
-import PlayerSearch from "~/components/PlayerSearch.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 

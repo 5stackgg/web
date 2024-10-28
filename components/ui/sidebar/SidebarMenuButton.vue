@@ -25,7 +25,15 @@ const props = withDefaults(
   },
 );
 
-const { isMobile, state } = useSidebar();
+const { isMobile, state, setOpenMobile } = useSidebar();
+
+const route = useRoute();
+watch(
+  () => route.path,
+  () => {
+    setOpenMobile(false);
+  },
+);
 
 const delegatedProps = computed(() => {
   const { tooltip, ...delegated } = props;

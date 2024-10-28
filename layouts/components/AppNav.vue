@@ -172,7 +172,8 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                 <SidebarMenuButton
                   size="lg"
                   :class="{
-                    'bg-sidebar-accent text-sidebar-accent-foreground': profileOpened,
+                    'bg-sidebar-accent text-sidebar-accent-foreground':
+                      profileOpened,
                   }"
                 >
                   <Avatar class="h-8 w-8 rounded">
@@ -191,7 +192,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="bottom"
+                side="right"
                 align="end"
                 :side-offset="4"
               >
@@ -206,7 +207,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                 <DropdownMenuGroup>
                   <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
                     <NuxtLink to="/settings">
-                      <BadgeCheck />
+                      <BadgeCheck class="size-4" />
                       Settings
                     </NuxtLink>
                   </DropdownMenuItem>
@@ -217,7 +218,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                   class="flex gap-2"
                   @click="showLogoutModal = true"
                 >
-                  <LogOut />
+                  <LogOut class="size-4" />
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>

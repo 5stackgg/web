@@ -192,7 +192,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="right"
+                :side="isMobile.value ? 'top' : 'right'"
                 align="end"
                 :side-offset="4"
               >
@@ -334,6 +334,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { getCountryForTimezone } from "countries-and-timezones";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useMediaQuery } from "@vueuse/core/index.cjs";
 export default {
   data() {
     return {
@@ -392,6 +393,9 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    isMobile() {
+      return useMediaQuery("(max-width: 768px)");
     },
     isAdmin() {
       return useAuthStore().isAdmin;

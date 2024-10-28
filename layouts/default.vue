@@ -6,13 +6,13 @@ import MatchMakingConfirm from "~/components/match-making/MatchMakingConfirm.vue
 
 <template>
   <MatchMakingConfirm></MatchMakingConfirm>
-  <alerts-container></alerts-container>
+  <AlertsContainer></AlertsContainer>
   <div class="flex min-h-screen w-full flex-col">
-    <app-nav>
+    <AppNav>
       <main class="m-2 md:m-8">
         <slot></slot>
       </main>
-    </app-nav>
+    </AppNav>
   </div>
 </template>
 

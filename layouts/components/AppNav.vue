@@ -81,14 +81,17 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
         <SidebarGroup v-if="me?.role === e_player_roles_enum.administrator">
           <SidebarGroupLabel>Settings</SidebarGroupLabel>
           <SidebarMenu>
-            <Collapsible as-child class="group/collapsible">
+            <Collapsible as-child :default-open="true" v-slot="{ open }">
               <SidebarMenuItem>
                 <CollapsibleTrigger as-child>
                   <SidebarMenuButton tooltip="Servers">
                     <ServerCog />
                     <span>Servers</span>
                     <ChevronRight
-                      class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                      class="ml-auto transition-transform duration-200"
+                      :class="{
+                        'rotate-90': open,
+                      }"
                     />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -164,11 +167,13 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
           </SidebarMenuItem>
 
           <SidebarMenuItem>
-            <DropdownMenu>
+            <DropdownMenu v-model:open="profileOpened">
               <DropdownMenuTrigger as-child>
                 <SidebarMenuButton
                   size="lg"
-                  class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground p-0"
+                  :class="{
+                    'bg-accent text-accent-foreground': profileOpened,
+                  }"
                 >
                   <Avatar class="h-8 w-8 rounded">
                     <AvatarImage :src="me.avatar_url" :alt="me.name" />
@@ -199,7 +204,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                 <DropdownMenuSeparator />
 
                 <DropdownMenuGroup>
-                  <DropdownMenuItem class="flex gap-2" as-child>
+                  <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
                     <NuxtLink to="/settings">
                       <BadgeCheck />
                       Settings
@@ -331,6 +336,7 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 export default {
   data() {
     return {
+      profileOpened: false,
       showLogoutModal: false,
       showPlayersOnline: false,
     };

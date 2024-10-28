@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { computed } from "vue";
-import { LogOut } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
   AlertDialog,
@@ -37,14 +36,6 @@ const sidebarNavItems: Item[] = [
     title: "Appearance",
     to: "/settings/appearance",
   },
-  ...(useAuthStore().isAdmin
-    ? [
-        {
-          title: "App Settings",
-          to: "/settings/application",
-        },
-      ]
-    : []),
 ];
 
 const hasDiscordLinked = computed(() => useAuthStore().hasDiscordLinked);

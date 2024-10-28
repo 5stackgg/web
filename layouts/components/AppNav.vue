@@ -172,7 +172,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                 <SidebarMenuButton
                   size="lg"
                   :class="{
-                    'bg-accent text-accent-foreground': profileOpened,
+                    'bg-sidebar-accent text-sidebar-accent-foreground': profileOpened,
                   }"
                 >
                   <Avatar class="h-8 w-8 rounded">

@@ -29,9 +29,10 @@ import {
 } from "~/components/ui/alert-dialog";
 import { ref } from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
-import PasswordInput from "~/components/PasswordInput.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
-
+import Clipboard from "~/components/Clipboard.vue";
+import { Eye, EyeOff } from "lucide-vue-next";
+import { Copy } from "lucide-vue-next";
 const serverMenu = ref(false);
 </script>
 <template>
@@ -58,12 +59,44 @@ const serverMenu = ref(false);
 
     <template #description>
       <div class="bg-muted rounded-md p-4 my-4">
-        <h3 class="text-lg font-semibold mb-2">Server API Key</h3>
-        <PasswordInput
-          v-model="server.api_password"
-          description="Used to get matches & connect to redis for match events."
-          :disabled="true"
-        />
+        <div class="flex flex-col space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Server Plugin Config</h3>
+            <div class="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                @click="showConfig = !showConfig"
+              >
+                <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
+                <EyeOff v-else class="mr-2 h-4 w-4" />
+                {{ showConfig ? "Hide" : "Show" }} Config
+              </Button>
+            </div>
+          </div>
+
+          <p class="text-sm text-muted-foreground">
+            This config should be placed in:
+            <Badge>
+              addons/counterstrikesharp/config/plugins/FiveStack/FiveStack.json
+            </Badge>
+          </p>
+
+          <div v-if="showConfig" class="relative">
+            <pre
+              class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
+              >{{ config }}</pre
+            >
+            <div class="absolute top-2 right-2">
+              <Clipboard :data="config">
+                <Button variant="ghost" size="sm">
+                  <Copy class="mr-2 h-4 w-4" />
+                  Copy
+                </Button>
+              </Clipboard>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -171,9 +204,23 @@ export default {
   data() {
     return {
       server: undefined,
+      showConfig: false,
       editServerSheet: false,
       deleteServerAlertDialog: false,
     };
+  },
+  computed: {
+    config() {
+      return `
+{
+  "WS_DOMAIN": "wss://ws.5stack.gg",
+  "API_DOMAIN": "https://api.5stack.gg", 
+  "DEMOS_DOMAIN": "https://demos.5stack.gg",
+  "SERVER_ID": "${this.server.id}",
+  "SERVER_API_PASSWORD": "${this.server.api_password}"
+}
+`;
+    },
   },
   methods: {
     async toggleServerEnabled() {

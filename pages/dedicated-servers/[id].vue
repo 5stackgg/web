@@ -214,9 +214,9 @@ export default {
     config() {
       return `
 {
-  "WS_DOMAIN": "wss://ws.5stack.gg",
-  "API_DOMAIN": "https://api.5stack.gg", 
-  "DEMOS_DOMAIN": "https://demos.5stack.gg",
+  "WS_DOMAIN": "wss://${useRuntimeConfig().public.wsDomain}",
+  "API_DOMAIN": "https://${useRuntimeConfig().public.apiDomain}", 
+  "DEMOS_DOMAIN": "https://${useRuntimeConfig().public.demosDomain}",
   "SERVER_ID": "${this.server.id}",
   "SERVER_API_PASSWORD": "${this.server.api_password}"
 }

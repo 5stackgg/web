@@ -30,9 +30,10 @@ import {
 import { ref } from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
-import Clipboard from "~/components/Clipboard.vue";
 import { Eye, EyeOff } from "lucide-vue-next";
 import { Copy } from "lucide-vue-next";
+import Clipboard from "~/components/ClipBoard.vue";
+
 const serverMenu = ref(false);
 </script>
 <template>

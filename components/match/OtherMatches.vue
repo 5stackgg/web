@@ -18,8 +18,8 @@ import MatchesTable from "~/components/MatchesTable.vue";
           page = _page;
         }
       "
-      :total="openMatchesAggregate?.aggregate?.count"
-      v-if="openMatchesAggregate"
+      :total="otherMatchesAggregate?.aggregate?.count"
+      v-if="otherMatchesAggregate"
     ></Pagination>
   </Teleport>
 </template>
@@ -28,12 +28,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import {
-  $,
-  e_lobby_access_enum,
-  e_match_status_enum,
-  order_by,
-} from "~/generated/zeus";
+import { $, e_match_status_enum, order_by } from "~/generated/zeus";
 
 export default {
   data() {
@@ -41,7 +36,7 @@ export default {
       page: 1,
       perPage: 10,
       openMatches: [],
-      openMatchesAggregate: undefined,
+      otherMatchesAggregate: undefined,
     };
   },
   apollo: {
@@ -73,22 +68,10 @@ export default {
           this.openMatches = data.matches;
         },
       },
-      openMatchesAggregate: {
-        variables: function () {
-          return {
-            order_by: order_by.asc,
-            matchId: this.$route.params.id,
-          };
-        },
+      otherMatchesAggregate: {
         query: typedGql("subscription")({
           matches_aggregate: [
-            {
-              where: {
-                status: {
-                  _nin: $("statuses", "[e_match_status_enum]"),
-                },
-              },
-            },
+            {},
             {
               aggregate: {
                 count: true,
@@ -96,13 +79,8 @@ export default {
             },
           ],
         }),
-        variables: function () {
-          return {
-            statuses: [e_match_status_enum.PickingPlayers],
-          };
-        },
         result: function ({ data }) {
-          this.openMatchesAggregate = data.matches_aggregate;
+          this.otherMatchesAggregate = data.matches_aggregate;
         },
       },
     },

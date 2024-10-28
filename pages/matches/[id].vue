@@ -176,9 +176,6 @@ export default {
                 type: true,
                 region: true,
               },
-              e_match_status: {
-                description: true,
-              },
               match_maps: [
                 {
                   order_by: {

@@ -170,7 +170,7 @@ export default {
               },
               _set: {
                 name: this.form.values.name,
-                avatar_url: this.form.values.avatar_url,
+                ...(useAuthStore().isAdmin ? { avatar_url: this.form.values.avatar_url } : {}),
                 country: this.form.values.country,
               },
             },

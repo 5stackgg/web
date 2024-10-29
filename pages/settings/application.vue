@@ -167,7 +167,7 @@ export default {
         result({ data }) {
           this.settings = data.settings;
           for (const setting of data.settings) {
-            this.form.setFieldValue(setting.name, setting.value);
+            this.form.setFieldValue(setting.name, setting.value || "");
           }
         },
       },

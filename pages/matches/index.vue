@@ -73,7 +73,7 @@ import LastTenLosses from "~/components/charts/LastTenLosses.vue";
     <div class="lg:w-1/4 flex flex-col gap-4">
       <Card
         class="bg-gradient-to-br from-blue-900 to-purple-900 hidden lg:block"
-        v-if="regions.length > 0"
+        v-if="regions.length > 0 && matchMakingAllowed"
       >
         <CardHeader>
           <CardTitle class="text-xl font-bold text-center">
@@ -135,6 +135,9 @@ export default {
     },
     regions() {
       return useApplicationSettingsStore().availableRegions;
+    },
+    matchMakingAllowed() {
+      return useApplicationSettingsStore().matchMakingAllowed;
     },
     canCreateMatch() {
       const allowedRole = useApplicationSettingsStore().matchCreateRole;

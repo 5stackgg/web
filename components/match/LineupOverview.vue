@@ -113,7 +113,7 @@ import { UserPlusIcon } from "lucide-vue-next";
                 name: `Slot ${slot + lineup.lineup_players.length} ${slot + lineup.lineup_players.length > match.min_players_per_lineup ? '(substitute)' : ''}`,
               }"
             />
-            <div v-if="slot === 1">
+            <div v-if="slot === 1" class="flex gap-4">
               <template v-if="lineup.can_update_lineup && canAddToLineup">
                 <AssignPlayerToLineup
                   :lineup="lineup"
@@ -121,7 +121,7 @@ import { UserPlusIcon } from "lucide-vue-next";
                 ></AssignPlayerToLineup>
               </template>
               <template
-                v-else-if="
+                v-if="
                   (match.options.lobby_access === e_lobby_access_enum.Open ||
                     match.options.lobby_access ===
                       e_lobby_access_enum.Invite) &&

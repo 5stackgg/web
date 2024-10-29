@@ -1,4 +1,4 @@
-FROM node:20 as builder
+FROM node:22-alpine as builder
 
 WORKDIR /opt/5stack
 
@@ -12,7 +12,7 @@ RUN yarn install \
 
 RUN yarn build
 
-FROM node:18
+FROM node:22-alpine
 
 WORKDIR /opt/5stack
 

@@ -37,11 +37,11 @@ export default {
               status: {
                 _nin: $("statuses", "[e_tournament_status_enum]"),
               },
-              rosters: {
-                player_steam_id: {
-                  _eq: $("steam_id", "bigint"),
-                },
-              },
+              // rosters: {
+              //   player_steam_id: {
+              //     _eq: $("steam_id", "bigint"),
+              //   },
+              // },
             },
             order_by: [
               {},

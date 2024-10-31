@@ -6,7 +6,7 @@ import cleanMapName from "~/utilities/cleanMapName";
     <NuxtImg
       :src="map.poster"
       class="w-full h-full object-cover min-w-[150px]"
-      sizes="sm:200px md:400px lg:600"
+      sizes="400px lg:600"
       :class="{
         'brightness-50': darken,
       }"

@@ -39,9 +39,13 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
           <SidebarMenu>
             <SidebarMenuItem tooltip="Matches">
               <SidebarMenuButton as-child tooltip="Matches">
-                <NuxtLink to="/matches">
+                <NuxtLink
+                  :to="{ name: 'matches' }"
+                  :class="{
+                    'router-link-active': isRouteActive('matches'),
+                  }"
+                >
                   <Swords />
-
                   Matches
                 </NuxtLink>
               </SidebarMenuButton>
@@ -49,7 +53,12 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 
             <SidebarMenuItem>
               <SidebarMenuButton as-child tooltip="Tournaments">
-                <NuxtLink to="/tournaments">
+                <NuxtLink
+                  :to="{ name: 'tournaments' }"
+                  :class="{
+                    'router-link-active': isRouteActive('tournaments'),
+                  }"
+                >
                   <Trophy />
 
                   Tournaments
@@ -59,7 +68,12 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 
             <SidebarMenuItem>
               <SidebarMenuButton as-child tooltip="Teams">
-                <NuxtLink to="/teams">
+                <NuxtLink
+                  :to="{ name: 'teams' }"
+                  :class="{
+                    'router-link-active': isRouteActive('teams'),
+                  }"
+                >
                   <ShieldHalf />
                   Teams
                 </NuxtLink>
@@ -68,7 +82,12 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 
             <SidebarMenuItem>
               <SidebarMenuButton as-child tooltip="Players">
-                <NuxtLink to="/players">
+                <NuxtLink
+                  :to="{ name: 'players' }"
+                  :class="{
+                    'router-link-active': isRouteActive('players'),
+                  }"
+                >
                   <Users />
 
                   Players
@@ -102,7 +121,13 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                         as-child
                         tooltip="Dedicated Servers"
                       >
-                        <NuxtLink to="/dedicated-servers">
+                        <NuxtLink
+                          :to="{ name: 'dedicated-servers' }"
+                          :class="{
+                            'router-link-active':
+                              isRouteActive('dedicated-servers'),
+                          }"
+                        >
                           Dedicated Servers
                         </NuxtLink>
                       </SidebarMenuSubButton>
@@ -113,7 +138,13 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                         as-child
                         tooltip="Game Server Nodes"
                       >
-                        <NuxtLink to="/game-server-nodes">
+                        <NuxtLink
+                          :to="{ name: 'game-server-nodes' }"
+                          :class="{
+                            'router-link-active':
+                              isRouteActive('game-server-nodes'),
+                          }"
+                        >
                           Game Server Nodes
                         </NuxtLink>
                       </SidebarMenuSubButton>
@@ -125,7 +156,12 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 
             <SidebarMenuItem tooltip="App Settings">
               <SidebarMenuButton as-child tooltip="App Settings">
-                <NuxtLink to="/settings/application">
+                <NuxtLink
+                  :to="{ name: 'settings-application' }"
+                  :class="{
+                    'router-link-active': isRouteActive('settings-application'),
+                  }"
+                >
                   <Cog />
                   App Settings
                 </NuxtLink>
@@ -206,7 +242,12 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 
                 <DropdownMenuGroup>
                   <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
-                    <NuxtLink to="/settings">
+                    <NuxtLink
+                      :to="{ name: 'settings' }"
+                      :class="{
+                        'router-link-active': isRouteActive('settings'),
+                      }"
+                    >
                       <BadgeCheck class="size-4" />
                       Settings
                     </NuxtLink>
@@ -388,6 +429,9 @@ export default {
       navigateTo("/");
 
       window.location.reload();
+    },
+    isRouteActive(route: string) {
+      return this.$route.path.startsWith(`/${route}`);
     },
   },
   computed: {

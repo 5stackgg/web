@@ -35,7 +35,10 @@ import TimeAgo from "~/components/TimeAgo.vue";
         </div>
 
         <Button>
-          <NuxtLink :to="`/matches/${match.id}`" class="text-xl font-bold">
+          <NuxtLink
+            :to="{ name: 'matches', params: { id: match.id } }"
+            class="text-xl font-bold"
+          >
             Go to Match
           </NuxtLink>
         </Button>

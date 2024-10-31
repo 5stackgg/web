@@ -15,7 +15,7 @@ import Pagination from "@/components/Pagination.vue";
       <template #title>Teams</template>
       <template #description>Manage teams and rosters.</template>
       <template #actions>
-        <NuxtLink to="/teams/create">
+        <NuxtLink :to="{ name: 'teams-create' }">
           <Button size="lg">
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">Create Team</span>

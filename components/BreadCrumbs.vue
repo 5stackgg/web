@@ -5,7 +5,9 @@
     <BreadcrumbList>
       <BreadcrumbItem>
         <BreadcrumbLink as-child>
-          <NuxtLink to="/" class="crumb"> dashboard </NuxtLink>
+          <NuxtLink :to="{ name: 'matches' }" class="crumb">
+            dashboard
+          </NuxtLink>
         </BreadcrumbLink>
       </BreadcrumbItem>
 

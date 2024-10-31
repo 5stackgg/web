@@ -7,7 +7,7 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
     {{ lineup.name }}
     <template v-if="bracket.match">
       <Badge>
-        <NuxtLink :to="`/matches/${bracket.match.id}`">{{
+        <NuxtLink :to="{ name: 'matches', params: { id: bracket.match.id } }">{{
           bracket.match.status
         }}</NuxtLink>
       </Badge>

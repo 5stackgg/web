@@ -26,7 +26,7 @@ import { PlusCircle } from "lucide-vue-next";
       </template>
 
       <template #actions>
-        <NuxtLink to="/dedicated-servers/create">
+        <NuxtLink :to="{ name: 'dedicated-servers-create' }">
           <Button size="lg">
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">Create Dedicated Server</span>

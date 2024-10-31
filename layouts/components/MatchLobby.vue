@@ -4,7 +4,7 @@ import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
 </script>
 
 <template>
-  <div class="flex gap-2 items-center" @click="goToMatch">
+  <div class="flex gap-2 items-center cursor-pointer" @click="goToMatch">
     <TooltipProvider v-for="member of myLineup">
       <Tooltip>
         <TooltipTrigger as-child>

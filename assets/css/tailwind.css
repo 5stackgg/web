@@ -179,3 +179,8 @@ div[role="menuitem"] {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
+.group\/sidebar-wrapper .router-link-active,
+.group\/sidebar-wrapper .router-link-exact-active {
+  @apply bg-accent/70;
+}

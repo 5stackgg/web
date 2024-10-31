@@ -54,26 +54,22 @@ import { PlusCircle } from "lucide-vue-next";
             class="cursor-pointer"
           >
             <TableCell>
-              <div class="flex items-center gap-2">
-                <span class="relative">
+              <div class="flex gap-2 items-center">
+                <div
+                  class="h-2 w-2 rounded-full relative"
+                  :class="{
+                    'bg-red-600': !server.connected,
+                    'bg-green-600': server.connected,
+                  }"
+                >
                   <span
-                    class="absolute top-0 left-0 ml-1 inline-block h-2 w-2 rounded-full animate-ping"
-                    :class="{
-                      ['bg-red-400']: !server.connected,
-                    }"
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-red-600"
                     v-if="!server.connected"
                   ></span>
-                  <span
-                    class="ml-1 inline-block h-2 w-2 rounded-full"
-                    :class="{
-                      ['bg-red-600']: !server.connected,
-                      ['bg-green-600']: server.connected,
-                    }"
-                  >
-                  </span>
+                </div>
+                <span class="truncate">
+                  {{ server.host }}
                 </span>
-
-                {{ server.host }}
               </div>
             </TableCell>
             <TableCell>{{ server.label }}</TableCell>

@@ -1,14 +1,21 @@
-FROM node:22-alpine as builder
+FROM node:22-alpine as deps
 
 WORKDIR /opt/5stack
 
-COPY . .
+COPY package.json yarn.lock ./
 
 RUN yarn install \
   --prefer-offline \
   --frozen-lockfile \
   --non-interactive \
   --production=false
+
+FROM node:22-alpine as builder
+
+WORKDIR /opt/5stack
+
+COPY --from=deps /opt/5stack/node_modules ./node_modules
+COPY . .
 
 RUN yarn build
 

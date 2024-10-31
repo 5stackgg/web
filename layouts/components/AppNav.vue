@@ -27,7 +27,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" as-child>
               <nuxt-link to="/">
-                <NuxtImg class="rounded" src="/favicon/64.png" />
+                <NuxtImg class="rounded max-w-8" src="/favicon/64.png" />
                 <span>5Stack</span>
               </nuxt-link>
             </SidebarMenuButton>

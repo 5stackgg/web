@@ -126,10 +126,7 @@ const serverMenu = ref(false);
     </template>
   </PageHeading>
 
-  <RconCommander
-    :server-id="$route.params.id as string"
-    :online="server?.connected || false"
-  />
+  <RconCommander :server-id="$route.params.id as string" :online="true" />
 
   <Sheet
     :open="editServerSheet"

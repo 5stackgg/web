@@ -26,6 +26,16 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         <span class="underline">{{ pickType }}</span>
       </h1>
 
+      <template v-if="isPicking">
+        <Button
+          v-if="isPicking"
+          size="sm"
+          class="bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
+        >
+          It's Your Turn to Pick
+        </Button>
+      </template>
+
       <div
         class="flex items-center space-x-2 cursor-pointer"
         @click="override = !override"

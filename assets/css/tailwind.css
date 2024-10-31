@@ -180,7 +180,10 @@ div[role="menuitem"] {
   }
 }
 
-.group\/sidebar-wrapper .router-link-active,
-.group\/sidebar-wrapper .router-link-exact-active {
-  @apply bg-accent/70;
+[data-sidebar="sidebar"] {
+  .router-link-active,
+  .router-link-exact-active {
+    @apply bg-accent/70;
+  }
 }
+

@@ -18,8 +18,7 @@ import { e_match_status_enum } from "~/generated/zeus";
         >
           <NuxtImg
             src="/img/maps/screenshots/default.webp"
-            class="w-full h-full object-cover min-w-[150px]"
-            sizes="sm:200px md:400px lg:1200"
+            class="w-full h-full object-cover"
           />
         </div>
       </template>

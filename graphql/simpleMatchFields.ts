@@ -39,6 +39,7 @@ export const simpleMatchFields = Selector("matches")({
     lineup_players: [
       {},
       {
+        checked_in: true,
         placeholder_name: true,
         player: {
           name: true,
@@ -55,6 +56,7 @@ export const simpleMatchFields = Selector("matches")({
     lineup_players: [
       {},
       {
+        checked_in: true,
         placeholder_name: true,
         player: {
           name: true,

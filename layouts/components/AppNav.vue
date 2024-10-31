@@ -234,7 +234,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
       >
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-2">
-            <SidebarTrigger/>
+            <SidebarTrigger />
             <Separator orientation="vertical" class="h-4" />
             <bread-crumbs></bread-crumbs>
           </div>

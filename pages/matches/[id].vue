@@ -76,13 +76,14 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
 import socket from "~/web-sockets/Socket";
+import type { MatchLobby } from "~/web-sockets/Socket";
 
 export default {
   data() {
     return {
       messages: [],
       match: undefined,
-      listeners: [],
+      lobby: undefined as MatchLobby | undefined,
     };
   },
   apollo: {
@@ -243,93 +244,51 @@ export default {
       },
     },
   },
-  created() {
-    this.stopListeners();
-
-    this.listeners.push(
-      socket.listen("lobby:list", (data) => {
-        if (data.matchId == this.matchId) {
-          useMatchLobbyStore().set(this.matchId, data.lobby);
+  watch: {
+    canJoinLobby: {
+      handler() {
+        if (!this.canJoinLobby) {
+          this.lobby?.leave();
+          this.lobby?.stopListeners();
+          return;
         }
-      }),
-    );
-
-    this.listeners.push(
-      socket.listen("lobby:joined", (data) => {
-        if (data.matchId == this.matchId) {
-          useMatchLobbyStore().add(this.matchId, data.user);
-        }
-      }),
-    );
-
-    this.listeners.push(
-      socket.listen("lobby:left", (data) => {
-        if (data.matchId == this.matchId) {
-          useMatchLobbyStore().remove(this.matchId, data.user);
-        }
-      }),
-    );
-
-    this.listeners.push(
-      socket.listen("lobby:messages", (data) => {
-        if (data.matchId == this.matchId) {
-          this.messages = data.messages.sort((a, b) => {
-            return a.timestamp - b.timestamp;
-          });
-        }
-      }),
-    );
+      },
+    },
+    ["match.id"]: {
+      handler() {
+        this.lobby?.leave();
+        this.lobby?.stopListeners();
+        this.lobby = socket.joinMatchLobby(`matches/id`, this.matchId);
+        this.updateLobbyMessages(this.lobby.messages);
+        this.lobby.on("lobby:messages", this.updateLobbyMessages);
+      },
+    },
   },
   computed: {
     matchId() {
       return this.$route.params.id;
     },
-  },
-  mounted() {
-    this.$watch(
-      () => [
-        this.match?.is_in_lineup,
-        this.match?.is_organizer,
-        this.match?.is_coach,
-      ],
-      (newValues, oldValues) => {
-        if (
-          this.match &&
-          newValues.some((val, index) => val !== oldValues[index])
-        ) {
-          if (
-            this.match.is_in_lineup ||
-            this.match.is_organizer ||
-            this.match.is_coach
-          ) {
-            socket.join("lobby", {
-              matchId: this.matchId,
-            });
-          }
-        }
-      },
-      { immediate: true },
-    );
+    canJoinLobby() {
+      if (!this.match) {
+        return false;
+      }
+
+      return (
+        this.match.is_in_lineup ||
+        this.match.is_organizer ||
+        this.match.is_coach
+      );
+    },
   },
   methods: {
-    stopListeners() {
-      for (const listener of this.listeners) {
-        listener?.stop();
-      }
+    updateLobbyMessages(messages: any) {
+      this.messages = messages.sort((a, b) => {
+        return a.timestamp - b.timestamp;
+      });
     },
   },
   unmounted() {
-    if (
-      this.match &&
-      (this.match.is_in_lineup ||
-        this.match.is_organizer ||
-        this.match.is_coach)
-    ) {
-      socket.leave("lobby", {
-        matchId: this.matchId,
-      });
-    }
-    this.stopListeners();
+    this.lobby?.leave();
   },
 };
 </script>

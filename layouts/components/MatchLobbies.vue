@@ -22,7 +22,10 @@ import { ArrowRight, ChevronDown } from "lucide-vue-next";
           <div
             class="hidden md:flex gap-4 p-2 border-2 border-gray-200 dark:border-gray-700 rounded-lg shadow-md"
           >
-            <MatchLobby :match="match"></MatchLobby>
+            <MatchLobby
+              :match="match"
+              :can-switch="lobbies.length > 1"
+            ></MatchLobby>
 
             <Button variant="outline" v-if="lobbies.length > 1">
               <ChevronDown class="h-4 w-4" />
@@ -39,7 +42,7 @@ import { ArrowRight, ChevronDown } from "lucide-vue-next";
                     @select="selectLobby(lobby.match.id)"
                     v-if="match.id !== lobby.match.id"
                   >
-                    <MatchLobby :match="lobby.match" :show-link="true" />
+                    <MatchLobby :match="lobby.match" :show-switch="true" />
                   </CommandItem>
                 </template>
               </CommandGroup>

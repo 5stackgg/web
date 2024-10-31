@@ -12,7 +12,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
       'grid-cols-[52px_1fr]': showName || showSteamId || showFlag,
     }"
   >
-    <div class="flex flex-col items-center justify-center gap-3 relative">
+    <div class="flex flex-col items-center justify-center relative">
       <Avatar>
         <AvatarImage
           :src="player.avatar_url"
@@ -34,7 +34,9 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
           ></span>
         </template>
       </slot>
-      <slot name="avatar-sub"></slot>
+      <div class="mt-2" v-if="$slots['avatar-sub']">
+        <slot name="avatar-sub"></slot>
+      </div>
     </div>
     <div
       :class="{ 'flex items-center': !showSteamId }"

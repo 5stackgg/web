@@ -1,25 +1,17 @@
 <script lang="ts" setup>
 import { ArrowLeftRight } from "lucide-vue-next";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
 </script>
 
 <template>
   <div class="flex gap-2 items-center" @click="goToMatch">
     <TooltipProvider v-for="member of myLineup">
       <Tooltip>
-        <TooltipTrigger>
-          <PlayerDisplay
-            :show-flag="false"
-            :show-steam-id="false"
-            :show-name="false"
-            :ping-status="true"
-            :player="
-              member.placeholder_name
-                ? {
-                    name: member.placeholder_name,
-                  }
-                : member.player
-            "
+        <TooltipTrigger as-child>
+          <PlayerStatusDisplay
+            :member="member"
+            :match="match"
+            :show-details="false"
           />
         </TooltipTrigger>
         <TooltipContent>
@@ -32,19 +24,11 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
     <TooltipProvider v-for="member of otherLineUp">
       <Tooltip>
-        <TooltipTrigger>
-          <PlayerDisplay
-            :show-flag="false"
-            :show-steam-id="false"
-            :show-name="false"
-            :ping-status="false"
-            :player="
-              member.placeholder_name
-                ? {
-                    name: member.placeholder_name,
-                  }
-                : member.player
-            "
+        <TooltipTrigger as-child>
+          <PlayerStatusDisplay
+            :member="member"
+            :match="match"
+            :show-details="false"
           />
         </TooltipTrigger>
         <TooltipContent>
@@ -54,7 +38,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     </TooltipProvider>
     <Button
       class="flex gap-2 text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
-      v-if="showLink"
+      v-if="showSwitch"
     >
       <ArrowLeftRight />
     </Button>
@@ -62,20 +46,36 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </template>
 
 <script lang="ts">
+import socket from "~/web-sockets/Socket";
 export default {
   props: {
     match: {
       required: true,
       type: Object,
     },
-    showLink: {
+    showSwitch: {
+      default: false,
+      type: Boolean,
+    },
+    canSwitch: {
       default: false,
       type: Boolean,
     },
   },
+  data() {
+    return {
+      lobby: undefined,
+    };
+  },
+  created() {
+    this.lobby = socket.joinMatchLobby(`MatchLobby`, this.match.id);
+  },
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    matchId() {
+      return this.match.id;
     },
     myLineup() {
       if (!this.match) {
@@ -110,12 +110,15 @@ export default {
   },
   methods: {
     goToMatch() {
-      if (!this.showLink) {
+      if (this.canSwitch) {
         return;
       }
 
       this.$router.push(`/matches/${this.match.id}`);
     },
+  },
+  unmounted() {
+    this.lobby?.leave();
   },
 };
 </script>

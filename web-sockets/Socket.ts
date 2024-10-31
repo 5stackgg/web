@@ -4,6 +4,16 @@ import type {
   e_match_types_enum,
 } from "~/generated/zeus";
 
+export interface MatchLobby {
+  messages: any[];
+  components: Set<string>;
+  callbacks: Record<string, (data: any) => void>;
+  listeners: ReturnType<typeof Socket.prototype.listen>[];
+  on: (event: string, callback: (data: any) => void) => void;
+  leave: () => void;
+  setMessages: (data: any[]) => void;
+}
+
 class Socket extends EventEmitter {
   private listening = new Set();
   private connection?: WebSocket;
@@ -11,9 +21,10 @@ class Socket extends EventEmitter {
   private heartBeat?: NodeJS.Timeout;
   private offlineQueue: Array<{
     event: string;
-    id: string;
     data: Record<string, unknown>;
   }> = [];
+
+  private lobbies: Map<string, MatchLobby> = new Map();
 
   public connect() {
     const wsHost = `wss://${useRuntimeConfig().public.wsDomain}/web`;
@@ -72,7 +83,7 @@ class Socket extends EventEmitter {
       this.connected = false;
       console.warn("[ws] lost connection to websocket server", closeEvent);
       setTimeout(() => {
-        this.connect(true);
+        this.connect();
       }, 1000);
     };
 
@@ -127,6 +138,86 @@ class Socket extends EventEmitter {
         this.removeListener(event, callback);
       },
     };
+  }
+
+  public joinMatchLobby(component: string, matchId: string) {
+    let lobby = this.lobbies.get(matchId);
+    if (lobby) {
+      lobby.components.add(component);
+      return this.lobbies.get(matchId);
+    }
+
+    lobby = {
+      components: new Set([component]),
+      messages: [],
+      callbacks: {},
+      listeners: [],
+      on: function (event: string, callback: (data: any) => void) {
+        this.callbacks[event] = callback;
+      },
+      leave: () => {
+        const _lobby = this.lobbies.get(matchId);
+
+        _lobby?.components.delete(component);
+
+        if (_lobby?.components.size !== 0) {
+          return;
+        }
+
+        for (const listener of _lobby.listeners) {
+          listener?.stop();
+        }
+
+        this.lobbies.delete(matchId);
+        socket.leave("lobby", {
+          matchId: matchId,
+        });
+      },
+      setMessages: function (data: any[]) {
+        this.messages = data;
+        this.callbacks?.["lobby:messages"]?.(data);
+      },
+    };
+
+    this.lobbies.set(matchId, lobby);
+
+    lobby.listeners.push(
+      socket.listen("lobby:list", (data) => {
+        if (data.matchId == matchId) {
+          useMatchLobbyStore().set(matchId, data.lobby);
+        }
+      }),
+    );
+
+    lobby.listeners.push(
+      socket.listen("lobby:joined", (data) => {
+        if (data.matchId == matchId) {
+          useMatchLobbyStore().add(matchId, data.user);
+        }
+      }),
+    );
+
+    lobby.listeners.push(
+      socket.listen("lobby:left", (data) => {
+        if (data.matchId == matchId) {
+          useMatchLobbyStore().remove(matchId, data.user);
+        }
+      }),
+    );
+
+    lobby.listeners.push(
+      socket.listen("lobby:messages", (data) => {
+        if (data.matchId == matchId) {
+          lobby.setMessages(data.messages);
+        }
+      }),
+    );
+
+    this.join("lobby", {
+      matchId: matchId,
+    });
+
+    return lobby;
   }
 }
 const socket = new Socket();

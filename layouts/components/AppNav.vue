@@ -6,7 +6,7 @@ import {
   Cog,
   LogOut,
 } from "lucide-vue-next";
-import { Swords, Server, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
+import { Swords, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import { Users } from "lucide-vue-next";
@@ -25,7 +25,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton as-child>
+            <SidebarMenuButton size="lg" as-child>
               <nuxt-link to="/">
                 <NuxtImg class="rounded" src="/favicon/64.png" />
                 <span>5Stack</span>
@@ -230,12 +230,12 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
     </Sidebar>
     <SidebarInset class="bg-muted/40">
       <header
-        class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+        class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 px-4"
       >
-        <div class="flex items-center justify-between px-4 w-full">
-          <div class="flex items-center">
-            <SidebarTrigger class="-ml-1" />
-            <Separator orientation="vertical" class="mr-2 h-4" />
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-2">
+            <SidebarTrigger/>
+            <Separator orientation="vertical" class="h-4" />
             <bread-crumbs></bread-crumbs>
           </div>
 
@@ -278,7 +278,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
             <Popover v-model:open="showPlayersOnline">
               <PopoverTrigger>
                 <div
-                  class="flex items-center gap-2 text-sm text-muted-foreground"
+                  class="flex items-center gap-4 text-sm text-muted-foreground"
                 >
                   <Users class="h-4 w-4" />
                   <span>{{ playersOnline.length }}</span>

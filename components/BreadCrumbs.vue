@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-  <Breadcrumb class="hidden md:flex">
+  <Breadcrumb class="hidden md:flex capitalize">
     <BreadcrumbList>
       <BreadcrumbItem>
         <BreadcrumbLink as-child>

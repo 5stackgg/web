@@ -5,6 +5,8 @@ import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { PlusCircle } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
+import { Info } from "lucide-vue-next";
 </script>
 
 <template>
@@ -14,13 +16,35 @@ import ClipBoard from "~/components/ClipBoard.vue";
 
       <template #description
         >Game server nodes expand your server offerings into different regions
-        or provide redundancy for on-demand servers.</template
-      >
-
+        or provide redundancy for on-demand servers.
+      </template>
       <template #actions>
         <Popover>
-          <PopoverTrigger>
-            <Button size="lg" @click="createGameServerNode">
+          <PopoverTrigger class="flex gap-4">
+            <template v-if="supportsGameServerNodes">
+              <Alert class="bg-background text-lg">
+                <Info class="h-4 w-4" />
+                <AlertTitle
+                  >Your Panel currently does not support Game Server
+                  Nodes.</AlertTitle
+                >
+                <AlertDescription>
+                  View the documentation to setup
+                  <a
+                    target="_blank"
+                    class="underline"
+                    href="https://docs.5stack.gg/servers/game-server-nodes/"
+                    >Game Server Nodes</a
+                  >.
+                </AlertDescription>
+              </Alert>
+            </template>
+
+            <Button
+              size="lg"
+              @click="createGameServerNode"
+              :disabled="!supportsGameServerNodes"
+            >
               <PlusCircle class="w-4 h-4" />
               <span class="hidden md:inline ml-2">Create Game Server Node</span>
             </Button>
@@ -134,7 +158,6 @@ export default {
       },
     },
   },
-
   methods: {
     async createGameServerNode() {
       const { data } = await this.$apollo.mutate({
@@ -146,6 +169,11 @@ export default {
       });
 
       this.script = data.setupGameServer.link;
+    },
+  },
+  computed: {
+    supportsGameServerNodes() {
+      return useApplicationSettingsStore().supportsGameServerNodes;
     },
   },
 };

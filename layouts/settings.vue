@@ -39,6 +39,9 @@ const sidebarNavItems: Item[] = [
 ];
 
 const hasDiscordLinked = computed(() => useAuthStore().hasDiscordLinked);
+const supportsDiscordBot = computed(
+  () => useApplicationSettingsStore().supportsDiscordBot,
+);
 
 const linkDiscord = () => {
   if (hasDiscordLinked.value) {
@@ -107,7 +110,7 @@ const linkDiscord = () => {
             </AlertDialog>
           </template>
 
-          <nuxt-link @click.native="linkDiscord" v-else>
+          <nuxt-link @click.native="linkDiscord" v-else-if="supportsDiscordBot">
             <Button variant="ghost" class="w-full text-left justify-start">
               <Link class="mr-2 h-4 w-4" />
 

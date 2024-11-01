@@ -66,6 +66,30 @@ export const useApplicationSettingsStore = defineStore(
       return matchMakingSetting ? matchMakingSetting.value === "true" : true;
     });
 
+    const supportsDiscordBot = computed(() => {
+      if (!settings.value) {
+        return false;
+      }
+
+      return (
+        settings.value.find(
+          (setting) => setting.name === "public.supports_discord_bot",
+        )?.value === "true"
+      );
+    });
+
+    const supportsGameServerNodes = computed(() => {
+      if (!settings.value) {
+        return false;
+      }
+
+      return (
+        settings.value.find(
+          (setting) => setting.name === "public.supports_game_server_nodes",
+        )?.value === "true"
+      );
+    });
+
     const availableRegions = ref([]);
 
     const subscribeToAvailableRegions = async () => {
@@ -103,6 +127,8 @@ export const useApplicationSettingsStore = defineStore(
       matchCreateRole,
       matchMakingAllowed,
       tournamentCreateRole,
+      supportsDiscordBot,
+      supportsGameServerNodes,
     };
   },
 );

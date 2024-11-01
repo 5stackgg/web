@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CaretSortIcon } from "@radix-icons/vue";
-import { BookOpen } from "lucide-vue-next";
+import { Switch } from "~/components/ui/switch";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
@@ -19,16 +19,34 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     </PopoverTrigger>
     <PopoverContent class="p-0">
       <Command @update:searchTerm="(term) => searchPlayers(term)">
-        <CommandInput class="h-9" />
+        <div class="flex items-center justify-between px-3 py-2">
+          <CommandInput placeholder="Search players..." class="flex-1" />
+          <div class="flex items-center gap-2 ml-4">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :checked="onlineOnly"
+              @click="onlineOnly = !onlineOnly"
+            >
+            </Switch>
+            Online
+          </div>
+        </div>
         <CommandEmpty>No Players Found.</CommandEmpty>
         <CommandList>
-          <CommandGroup>
-            <CommandItem :value="me" @select="select(me)" v-if="canSelectSelf">
+          <CommandGroup
+            :heading="`Found ${players?.length || 0} Player${players?.length === 1 ? '' : 's'}`"
+          >
+            <CommandItem
+              :value="me"
+              :key="me.steam_id"
+              @select="select(me)"
+              v-if="canSelectSelf"
+            >
               <PlayerDisplay class="mx-3" :player="me" />
             </CommandItem>
             <CommandItem
               v-for="player in players"
-              :key="player.steam_id"
+              :key="`player-${player.steam_id}-${Date.now()}`"
               :value="player"
               @select="select(player)"
             >
@@ -68,7 +86,13 @@ export default {
       open: false,
       query: undefined,
       players: undefined,
+      _onlineOnly: localStorage.getItem("playerSearchOnlineOnly") !== "false",
     };
+  },
+  watch: {
+    onlineOnly() {
+      this.searchPlayers(this.query);
+    },
   },
   methods: {
     select(player) {
@@ -81,6 +105,11 @@ export default {
     async searchPlayers(query?: string) {
       this.query = query || undefined;
 
+      if (this.onlineOnly) {
+        this.players = useSearchStore().search(query, this.exclude);
+        return;
+      }
+
       const response = await $fetch("/api/players-search", {
         method: "post",
         body: {
@@ -90,13 +119,9 @@ export default {
         },
       });
 
-      this.players = response.hits
-        .map(({ document }) => {
-          return document;
-        })
-        .filter((player) => {
-          return !this.exclude.includes(player.steam_id);
-        });
+      this.players = response.hits.map(({ document }) => {
+        return document;
+      });
     },
   },
   computed: {
@@ -105,6 +130,15 @@ export default {
     },
     canSelectSelf() {
       return this.self && !this.exclude.includes(this.me.steam_id);
+    },
+    onlineOnly: {
+      get() {
+        return this._onlineOnly;
+      },
+      set(value: boolean) {
+        localStorage.setItem("playerSearchOnlineOnly", value.toString());
+        this._onlineOnly = value;
+      },
     },
   },
 };

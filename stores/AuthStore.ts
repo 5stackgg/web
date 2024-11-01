@@ -12,6 +12,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   // TODO - move the listens to the socket store ?
   // Initialize MatchMakingStore, this is required for sockets listens to get initialized
+  useSearchStore();
   useMatchMakingStore();
   useNotificationStore();
   useApplicationSettingsStore();

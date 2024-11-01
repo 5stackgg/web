@@ -2,6 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
+import { Info } from "lucide-vue-next";
 import {
   Check,
   ChevronsUpDown,
@@ -135,7 +136,10 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                       <div class="flex items-center gap-2">
                         <span class="text-muted-foreground">
                           <FiveStackToolTip>
-                            <template #trigger> Custom Map Pool </template>
+                            <template #trigger>
+                              <Info size="14"> </Info>
+                              Custom Map Pool
+                            </template>
                             Choosing a custom map pool allows you to select maps
                             outside the current active duty pool.
                           </FiveStackToolTip>
@@ -143,7 +147,6 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                         <Switch
                           :checked="value"
                           @update:checked="handleChange"
-                          class="ml-2"
                         />
                       </div>
                     </FormControl>

@@ -33,7 +33,16 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
       {{ gameServerNode.public_ip }}
     </TableCell>
     <TableCell>
-      {{ gameServerNode.build_id }}
+      <template v-if="gameServerNode.build_id">
+        {{ gameServerNode.build_id }}
+      </template>
+      <template
+        v-else-if="
+          gameServerNode.status === e_game_server_node_statuses_enum.Online
+        "
+      >
+        <Button size="sm" @click="updateCs">Install CS</Button>
+      </template>
     </TableCell>
     <TableCell>
       <Select
@@ -93,17 +102,20 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-56">
-          <DropdownMenuItem
-            @click="updateCs"
+          <template
             v-if="
-              gameServerNode.status === e_game_server_node_statuses_enum.Online
+              gameServerNode.status ===
+                e_game_server_node_statuses_enum.Online &&
+              gameServerNode.build_id
             "
           >
-            <RefreshCw class="mr-2 h-4 w-4" />
-            <span>Update CS</span>
-          </DropdownMenuItem>
+            <DropdownMenuItem @click="updateCs">
+              <RefreshCw class="mr-2 h-4 w-4" />
+              <span>Update CS</span>
+            </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
+          </template>
 
           <DropdownMenuItem @click="removeGameNodeServer" class="text-red-500">
             <Trash2 class="mr-2 h-4 w-4" />

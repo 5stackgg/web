@@ -21,7 +21,7 @@ import { Info } from "lucide-vue-next";
       <template #actions>
         <Popover>
           <PopoverTrigger class="flex gap-4">
-            <template v-if="supportsGameServerNodes">
+            <template v-if="!supportsGameServerNodes">
               <Alert class="bg-background text-lg">
                 <Info class="h-4 w-4" />
                 <AlertTitle

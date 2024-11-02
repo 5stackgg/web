@@ -5,6 +5,7 @@ import {
   ChevronsUpDownIcon,
   Cog,
   LogOut,
+  ScrollText,
 } from "lucide-vue-next";
 import { Swords, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import SystemUpdate from "./SystemUpdate.vue";
@@ -164,6 +165,20 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                 >
                   <Cog />
                   App Settings
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem tooltip="System Logs">
+              <SidebarMenuButton as-child tooltip="System Logs">
+                <NuxtLink
+                  :to="{ name: 'system-logs' }"
+                  :class="{
+                    'router-link-active': isRouteActive('system-log'),
+                  }"
+                >
+                  <ScrollText />
+                  System Logs
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

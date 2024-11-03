@@ -36,13 +36,25 @@ import { DownloadIcon } from "lucide-vue-next";
         </div>
       </div>
 
-      <div ref="logsContainer" class="overflow-auto max-h-[50vh] whitespace-nowrap">
-        <template v-for="({ log, node, container, timestamp }, index) in logs" :key="index">
+      <div
+        ref="logsContainer"
+        class="overflow-auto max-h-[50vh] whitespace-nowrap"
+      >
+        <template
+          v-for="({ log, node, container, timestamp }, index) in logs"
+          :key="index"
+        >
           <div class="text-sm text-foreground/80 py-1 flex gap-4">
             <div class="flex flex-col justify-end">
               <div class="flex gap-2" v-if="log && log.trim() !== ''">
-                <span class="text-xs text-muted-foreground" v-if="nodes.size > 1">[{{ node }}|{{ container }}]</span>
-                <span class="text-xs text-blue-100" v-if="timestamps">{{ timestamp }}</span>
+                <span
+                  class="text-xs text-muted-foreground"
+                  v-if="nodes.size > 1"
+                  >[{{ node }}|{{ container }}]</span
+                >
+                <span class="text-xs text-blue-100" v-if="timestamps">{{
+                  timestamp
+                }}</span>
               </div>
             </div>
             <div class="self-end">

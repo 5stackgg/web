@@ -6,6 +6,7 @@ import {
   Cog,
   LogOut,
   ScrollText,
+  LineChart,
 } from "lucide-vue-next";
 import { Swords, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import SystemUpdate from "./SystemUpdate.vue";
@@ -169,19 +170,54 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem tooltip="System Logs">
-              <SidebarMenuButton as-child tooltip="System Logs">
-                <NuxtLink
-                  :to="{ name: 'system-logs' }"
-                  :class="{
-                    'router-link-active': isRouteActive('system-log'),
-                  }"
-                >
-                  <ScrollText />
-                  System Logs
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            <Collapsible as-child :default-open="true" v-slot="{ open }">
+              <SidebarMenuItem>
+                <CollapsibleTrigger as-child>
+                  <SidebarMenuButton tooltip="System">
+                    <ServerCog />
+                    <span>System</span>
+                    <ChevronRight
+                      class="ml-auto transition-transform duration-200"
+                      :class="{
+                        'rotate-90': open,
+                      }"
+                    />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    <SidebarMenuSubItem tooltip="System Metrics">
+                      <SidebarMenuButton as-child tooltip="System Metrics">
+                        <NuxtLink
+                          :to="{ name: 'system-metrics' }"
+                          :class="{
+                            'router-link-active':
+                              isRouteActive('system-metrics'),
+                          }"
+                        >
+                          <LineChart />
+                          Metrics
+                        </NuxtLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuSubItem>
+
+                    <SidebarMenuSubItem tooltip="System Logs">
+                      <SidebarMenuButton as-child tooltip="System Logs">
+                        <NuxtLink
+                          :to="{ name: 'system-logs' }"
+                          :class="{
+                            'router-link-active': isRouteActive('system-logs'),
+                          }"
+                        >
+                          <ScrollText />
+                          System Logs
+                        </NuxtLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuSubItem>
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

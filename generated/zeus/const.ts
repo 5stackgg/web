@@ -9523,6 +9523,7 @@ export const AllTypesProps: Record<string,any> = {
 	teams_variance_order_by:{
 		owner_steam_id:"order_by"
 	},
+	timestamp: `scalar.timestamp` as const,
 	timestamptz: `scalar.timestamptz` as const,
 	timestamptz_comparison_exp:{
 		_eq:"timestamptz",
@@ -11170,6 +11171,12 @@ export const ReturnTypes: Record<string,any> = {
 		ttl:"Int",
 		refresh:"Boolean"
 	},
+	CpuStat:{
+		available:"bigint",
+		time:"timestamp",
+		total:"bigint",
+		used:"bigint"
+	},
 	MeResponse:{
 		avatar_url:"String",
 		country:"String",
@@ -11179,6 +11186,17 @@ export const ReturnTypes: Record<string,any> = {
 		profile_url:"String",
 		role:"String",
 		steam_id:"String"
+	},
+	MemoryStat:{
+		available:"bigint",
+		time:"timestamp",
+		total:"bigint",
+		used:"bigint"
+	},
+	NodeStats:{
+		cpu:"CpuStat",
+		memory:"MemoryStat",
+		node:"String"
 	},
 	SetupGameServeOutput:{
 		link:"String"
@@ -14300,6 +14318,7 @@ export const ReturnTypes: Record<string,any> = {
 		game_server_nodes:"game_server_nodes",
 		game_server_nodes_aggregate:"game_server_nodes_aggregate",
 		game_server_nodes_by_pk:"game_server_nodes",
+		getNodeStats:"NodeStats",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",
@@ -14987,6 +15006,7 @@ export const ReturnTypes: Record<string,any> = {
 	teams_variance_fields:{
 		owner_steam_id:"Float"
 	},
+	timestamp: `scalar.timestamp` as const,
 	timestamptz: `scalar.timestamptz` as const,
 	tournament_brackets:{
 		created_at:"timestamptz",

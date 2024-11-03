@@ -5,19 +5,48 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 <template>
   <div class="flex flex-col space-y-4">
-    <Tabs default-value="api" class="w-full">
-      <TabsList>
-        <TabsTrigger
-          v-for="service in services"
-          :key="service"
-          :value="service"
-        >
-          {{ service }}
-        </TabsTrigger>
-      </TabsList>
+    <Tabs default-value="api">
+      <div class="flex items-center justify-between">
+        <TabsList>
+          <TabsTrigger
+            class="capitalize"
+            v-for="service in services"
+            :key="service"
+            :value="service"
+          >
+            {{ service.split("-").join(" ") }}
+          </TabsTrigger>
+        </TabsList>
+
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :checked="followLogs"
+              @click="followLogs = !followLogs"
+            >
+            </Switch>
+            Follow Logs
+          </div>
+
+          <div class="flex items-center gap-2">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :checked="timestamps"
+              @click="timestamps = !timestamps"
+            >
+            </Switch>
+            Timestamps
+          </div>
+        </div>
+      </div>
 
       <TabsContent v-for="service in services" :key="service" :value="service">
-        <SystemLogs :service="service" />
+        <SystemLogs
+          :service="service"
+          :timestamps="timestamps"
+          :follow-logs="followLogs"
+        />
       </TabsContent>
     </Tabs>
   </div>
@@ -27,6 +56,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 export default {
   data() {
     return {
+      _timestamps: true,
+      _followLogs: true,
       services: [
         `api`,
         "web",
@@ -38,6 +69,24 @@ export default {
         "minio",
       ],
     };
+  },
+  computed: {
+    timestamps: {
+      get() {
+        return this._timestamps;
+      },
+      set(value: boolean) {
+        this._timestamps = value;
+      },
+    },
+    followLogs: {
+      get() {
+        return this._followLogs;
+      },
+      set(value: boolean) {
+        this._followLogs = value;
+      },
+    },
   },
 };
 </script>

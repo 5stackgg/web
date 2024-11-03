@@ -5,37 +5,16 @@ import { DownloadIcon } from "lucide-vue-next";
 </script>
 
 <template>
-  <Card class="max-w-[100%]">
-    <CardContent class="p-4">
-      <div class="grid grid-cols-[1fr_auto] gap-4">
-        <div></div>
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2 ml-4">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :checked="followLogs"
-              @click="followLogs = !followLogs"
-            >
-            </Switch>
-            Follow Logs
-          </div>
-
-          <div class="flex items-center gap-2 ml-4">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :checked="timestamps"
-              @click="timestamps = !timestamps"
-            >
-            </Switch>
-            Timestamps
-          </div>
-          <DownloadIcon
-            @click="downloadLogs"
-            class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
-          />
-        </div>
+  <Card>
+    <CardHeader class="flex items-center justify-end w-full">
+      <div class="ml-auto">
+        <DownloadIcon
+          @click="downloadLogs"
+          class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+        />
       </div>
-
+    </CardHeader>
+    <CardContent class="p-4">
       <div
         ref="logsContainer"
         class="overflow-auto max-h-[50vh] whitespace-nowrap"
@@ -74,12 +53,18 @@ export default {
       type: String,
       required: true,
     },
+    timestamps: {
+      type: Boolean,
+      default: true,
+    },
+    followLogs: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
       logs: [],
-      _timestamps: true,
-      _followLogs: true,
       logListener: undefined,
       nodes: new Set<string>(),
     };
@@ -137,24 +122,6 @@ export default {
   unmounted() {
     this.logListener?.stop();
     // TODO - send to stop sending to my socket...
-  },
-  computed: {
-    timestamps: {
-      get() {
-        return this._timestamps;
-      },
-      set(value: boolean) {
-        this._timestamps = value;
-      },
-    },
-    followLogs: {
-      get() {
-        return this._followLogs;
-      },
-      set(value: boolean) {
-        this._followLogs = value;
-      },
-    },
   },
 };
 </script>

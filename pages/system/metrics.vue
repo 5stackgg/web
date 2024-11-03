@@ -11,7 +11,7 @@ import CpuChart from "~/components/charts/CpuChart.vue";
         <h3 class="text-lg font-semibold">Node: {{ node.node }}</h3>
         <div class="h-px flex-1 bg-gray-200"></div>
       </div>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card class="p-4 rounded-lg border border-gray-200">
           <h4 class="text-sm font-medium mb-2">CPU Usage</h4>
           <div class="h-[350px]">

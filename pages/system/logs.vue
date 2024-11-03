@@ -17,9 +17,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
       </TabsList>
 
       <TabsContent v-for="service in services" :key="service" :value="service">
-        <Suspense>
           <SystemLogs :service="service" />
-        </Suspense>
       </TabsContent>
     </Tabs>
   </div>

@@ -2,7 +2,7 @@ import { ref, watch } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { e_server_regions_enum, e_match_types_enum, $ } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
+import { generateQuery } from "~/graphql/graphqlGen";
 
 export const useMatchMakingStore = defineStore("match-making", () => {
   const playersOnline = ref([]);

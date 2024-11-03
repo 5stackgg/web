@@ -61,6 +61,9 @@ export default {
             matchId: this.confirmationDetails?.matchId,
           };
         },
+        skip() {
+          return !this.confirmationDetails?.matchId;
+        },
         query: typedGql("subscription")({
           matches_by_pk: [
             {

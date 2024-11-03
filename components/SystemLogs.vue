@@ -5,15 +5,11 @@ import { DownloadIcon } from "lucide-vue-next";
 </script>
 
 <template>
-  <Card>
+  <Card class="max-w-[100%]">
     <CardContent class="p-4">
       <div class="grid grid-cols-[1fr_auto] gap-4">
         <div></div>
-        <div class="flex items-center space-x-2">
-          <DownloadIcon
-            @click="downloadLogs"
-            class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
-          />
+        <div class="flex items-center gap-4">
           <div class="flex items-center gap-2 ml-4">
             <Switch
               class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
@@ -23,14 +19,36 @@ import { DownloadIcon } from "lucide-vue-next";
             </Switch>
             Follow Logs
           </div>
+
+          <div class="flex items-center gap-2 ml-4">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :checked="timestamps"
+              @click="timestamps = !timestamps"
+            >
+            </Switch>
+            Timestamps
+          </div>
+          <DownloadIcon
+            @click="downloadLogs"
+            class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+          />
         </div>
       </div>
 
-      <div ref="logsContainer" class="overflow-auto max-h-[50vh]">
-        <template v-for="(log, index) in logs" :key="index">
-          <p class="whitespace-pre-wrap text-sm text-foreground/80">
-            {{ log }}
-          </p>
+      <div ref="logsContainer" class="overflow-auto max-h-[50vh] whitespace-nowrap">
+        <template v-for="({ log, node, container, timestamp }, index) in logs" :key="index">
+          <div class="text-sm text-foreground/80 py-1 flex gap-4">
+            <div class="flex flex-col justify-end">
+              <div class="flex gap-2" v-if="log && log.trim() !== ''">
+                <span class="text-xs text-muted-foreground" v-if="nodes.size > 1">[{{ node }}|{{ container }}]</span>
+                <span class="text-xs text-blue-100" v-if="timestamps">{{ timestamp }}</span>
+              </div>
+            </div>
+            <div class="self-end">
+              {{ log }}
+            </div>
+          </div>
         </template>
       </div>
     </CardContent>
@@ -48,8 +66,10 @@ export default {
   data() {
     return {
       logs: [],
+      _timestamps: true,
       _followLogs: true,
       logListener: undefined,
+      nodes: new Set<string>(),
     };
   },
   methods: {
@@ -92,8 +112,8 @@ export default {
           this.logListener = undefined;
         }
         this.logListener = socket.listen(`logs:${this.service}`, (log) => {
-          this.logs.push(log);
-          this.scrollToBottom();
+          const _log = JSON.parse(log);
+          this.logs.push(_log);
         });
 
         socket.event("logs", {
@@ -107,6 +127,14 @@ export default {
     // TODO - send to stop sending to my socket...
   },
   computed: {
+    timestamps: {
+      get() {
+        return this._timestamps;
+      },
+      set(value: boolean) {
+        this._timestamps = value;
+      },
+    },
     followLogs: {
       get() {
         return this._followLogs;

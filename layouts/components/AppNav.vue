@@ -400,6 +400,13 @@ export default {
     };
   },
   watch: {
+    isMobile: {
+      immediate: true,
+      handler(value) {
+        if (value) {
+        }
+      },
+    },
     detectedCountry: {
       immediate: true,
       async handler() {

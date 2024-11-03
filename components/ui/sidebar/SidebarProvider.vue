@@ -29,6 +29,8 @@ const emits = defineEmits<{
 }>();
 
 const isMobile = useMediaQuery("(max-width: 768px)");
+const isMedium = useMediaQuery("(max-width: 1024px)");
+
 const openMobile = ref(false);
 
 const open = useVModel(props, "open", emits, {
@@ -63,6 +65,21 @@ useEventListener("keydown", (event: KeyboardEvent) => {
     toggleSidebar();
   }
 });
+
+watch(isMedium, (value) => {
+  if(!value && !isMobile.value) {
+    setOpen(true);
+    return;
+  }
+
+  if (value) {
+    setOpen(false);
+  }
+  },
+  {
+    immediate: true,
+  },
+);
 
 // We add a state so that we can do data-state="expanded" or "collapsed".
 // This makes it easier to style the sidebar with Tailwind classes.

@@ -5,9 +5,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 <template>
   <div class="flex flex-col space-y-4">
-    <Tabs default-value="api">
-      <div class="flex items-center justify-between">
-        <TabsList>
+    <Tabs default-value="api" orientation="vertical">
+      <div class="flex items-center justify-between flex-col lg:flex-row">
+        <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
           <TabsTrigger
             class="capitalize"
             v-for="service in services"

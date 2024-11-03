@@ -17,7 +17,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
   <div v-if="tournament">
     <Tabs default-value="overview">
       <div class="flex justify-between">
-        <TabsList>
+        <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="bracket">Bracket</TabsTrigger>
           <TabsTrigger value="teams">

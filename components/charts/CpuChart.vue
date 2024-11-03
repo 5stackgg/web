@@ -88,14 +88,6 @@ export default {
             },
           },
         },
-        animation: {
-          numbers: { duration: 0 },
-          colors: {
-            type: "color",
-            duration: 1000,
-            from: "transparent",
-          },
-        },
       },
       data: this.chartData,
     };

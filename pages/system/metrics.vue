@@ -59,10 +59,8 @@ export default {
           },
         ],
       }),
+      pollInterval: 10000,
     },
-  },
-  data() {
-    return {};
   },
 };
 </script>

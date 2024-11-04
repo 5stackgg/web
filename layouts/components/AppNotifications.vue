@@ -7,7 +7,7 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
 </script>
 
 <template>
-  <Sheet>
+  <Sheet :open="isOpen" @update:open="(open) => (isOpen = open)">
     <SheetTrigger>
       <div class="relative">
         <Bell :class="{ 'animate-bell': hasNotifications }" />
@@ -147,6 +147,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 export default {
   data() {
     return {
+      isOpen: false,
       team_invites: [],
       tournament_team_invites: [],
       notifications: [],
@@ -211,6 +212,10 @@ export default {
               id: true,
               team: {
                 name: true,
+                tournament: {
+                  id: true,
+                  name: true,
+                },
               },
               invited_by: {
                 name: true,
@@ -283,6 +288,11 @@ export default {
           this.notifications = data.notifications;
         },
       },
+    },
+  },
+  watch: {
+    $route() {
+      this.isOpen = false;
     },
   },
   methods: {

@@ -5,12 +5,29 @@ import TimeAgo from "./TimeAgo.vue";
 <template>
   <div>
     <h3 class="text-lg font-semibold mb-2">
+      <template v-if="type === 'tournament'">
+        Tournament
+        {{ invite.tournament_team_id }}
+      </template>
       Team Invite: {{ invite.team.name }}
     </h3>
     <p class="text-sm text-muted-foreground mb-2">
       Invited by {{ invite.invited_by.name }}
       <TimeAgo :date="invite.created_at" class="text-xs" />
     </p>
+
+    <template v-if="type === 'tournament'">
+      You have been invited to join the tournament:
+      <p class="text-sm text-muted-foreground mb-2">
+        <NuxtLink
+          :to="`/tournaments/${invite.team.tournament.id}`"
+          class="underline"
+        >
+          {{ invite.team.tournament.name }}
+        </NuxtLink>
+      </p>
+    </template>
+
     <div class="flex justify-end space-x-2 mt-3">
       <Button variant="outline" @click="denyInvite(invite.id)">Deny</Button>
       <Button variant="default" @click="acceptInvite(invite.id)">Accept</Button>

@@ -5,7 +5,7 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen p-4">
+  <div class="flex flex-col items-center justify-center min-h-screen p-4 bg-backgrond">
     <NuxtImg
       class="rounded-full w-32 h-32 mb-8 shadow-lg"
       src="/favicon/512.png"

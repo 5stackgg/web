@@ -24,7 +24,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 
 <template>
   <SidebarProvider class="bg-muted/40">
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" side="left">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

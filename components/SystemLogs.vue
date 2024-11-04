@@ -69,9 +69,9 @@ export default {
     return {
       logs: [] as Array<{
         log: string;
-          node: string;
-         container:string;
-          timestamp: string;
+        node: string;
+        container: string;
+        timestamp: string;
       }>,
       logListener: undefined as { stop: () => void } | undefined,
       nodes: new Set<string>(),
@@ -83,9 +83,9 @@ export default {
     },
     downloadLogs() {
       // Create text content from logs array
-      const logContent = this.logs.map(({log}) => 
-        log.replace(/\x1b\[[0-9;]*m/g, '')
-      ).join("\n");
+      const logContent = this.logs
+        .map(({ log }) => log.replace(/\x1b\[[0-9;]*m/g, ""))
+        .join("\n");
 
       // Create blob and download link
       const blob = new Blob([logContent], { type: "text/plain" });

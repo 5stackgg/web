@@ -64,20 +64,6 @@ export default defineNuxtConfig({
           purpose: "any",
         },
       ],
-      screenshots: [
-        {
-          src: "/img/maps/screenshots/default.webp",
-          sizes: "1920x1080",
-          type: "image/webp",
-          form_factor: "wide",
-        },
-        {
-          src: "/img/maps/screenshots/default.webp",
-          sizes: "1920x1080",
-          type: "image/webp",
-          form_factor: "narrow",
-        },
-      ],
       theme_color: "#000000",
       background_color: "#000000",
       display: "standalone",

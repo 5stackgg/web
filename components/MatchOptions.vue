@@ -723,7 +723,9 @@ export default {
         }
 
         this.form.setFieldValue("map_pool", []);
-        this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
+        if (this.form.values.map_veto) {
+          this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
+        }
       },
     },
     ["form.values.custom_map_pool"]: {

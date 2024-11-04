@@ -19,7 +19,7 @@ const emits = defineEmits<{
 }>()
 
 const isMobile = useMediaQuery("(max-width: 768px)");
-const isMedium = useMediaQuery("(max-width: 1024px)");
+const isMedium = useMediaQuery("(max-width: 1400px)");
 
 const openMobile = ref(false);
 const open = useVModel(props, 'open', emits, {
@@ -53,6 +53,7 @@ useEventListener('keydown', (event: KeyboardEvent) => {
 })
 
 watch(isMedium, (value) => {
+  console.info("isMedium", value)
   if(!value && !isMobile.value) {
     setOpen(true);
     return;

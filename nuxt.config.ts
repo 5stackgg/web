@@ -28,6 +28,9 @@ export default defineNuxtConfig({
   pwa: {
     injectRegister: "auto",
     registerType: "autoUpdate",
+    client: {
+      installPrompt: true,
+    },
     workbox: {
       globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff}"],
     },

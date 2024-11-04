@@ -22,7 +22,7 @@ const { state, isMobile } = useSidebar();
       </SidebarMenuButton>
     </SidebarMenuItem>
 
-    <Drawer :open="installPWADrawer" @update:open="installPWADrawer = $event" v-if="canInstall">
+    <Drawer :open="installPWADrawer" @update:open="installPWADrawer = $event" v-if="isIOS">
       <DrawerContent class="p-4">
         <DrawerHeader>
           <div class="flex justify-between items-center">

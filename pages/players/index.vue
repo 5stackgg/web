@@ -23,15 +23,15 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
                   class="flex-grow flex justify-end"
                   @submit.prevent="viewTopPlayer"
                 >
-                  <FormField name="teamQuery">
+                  <FormField name="playerQuery" v-slot="{ componentField }">
                     <FormItem>
                       <FormControl>
                         <div class="relative w-full max-w-sm">
                           <Input
                             type="text"
                             placeholder="Search..."
-                            v-model="playerQuery"
                             class="pl-10"
+                            v-bind="componentField"
                           />
                           <Search
                             class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
@@ -76,14 +76,23 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </template>
 
 <script lang="ts">
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import * as z from "zod";
 export default {
   data() {
     return {
       page: 1,
       per_page: 10,
-      playerQuery: null,
       players: undefined,
       pagination: undefined,
+      form: useForm({
+        validationSchema: toTypedSchema(
+          z.object({
+            playerQuery: z.string(),
+          }),
+        ),
+      }),
     };
   },
   watch: {
@@ -93,10 +102,10 @@ export default {
         this.searchPlayers();
       },
     },
-    playerQuery: {
+    "form.values.playerQuery": {
+      immediate: true,
       handler() {
         this.page = 1;
-
         this.searchPlayers();
       },
     },
@@ -118,7 +127,7 @@ export default {
         method: "post",
         body: {
           page: this.page,
-          query: this.playerQuery,
+          query: this.form.values.playerQuery,
           per_page: this.per_page,
         },
       });

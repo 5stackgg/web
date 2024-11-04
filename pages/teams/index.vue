@@ -33,15 +33,15 @@ import Pagination from "@/components/Pagination.vue";
 
         <TabsContent value="teams">
           <form class="flex justify-end" @submit.prevent="viewTopTeam">
-            <FormField name="teamQuery">
+            <FormField v-slot="{ componentField }" name="teamQuery">
               <FormItem>
                 <FormControl>
                   <div class="relative w-full max-w-sm">
                     <Input
                       type="text"
                       placeholder="Search..."
-                      v-model="teamQuery"
                       class="pl-10"
+                      v-bind="componentField"
                     />
                     <Search
                       class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
@@ -82,18 +82,28 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { $, order_by } from "~/generated/zeus";
 import { useAuthStore } from "#imports";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import * as z from "zod";
 
 export default {
   data() {
     return {
       page: 1,
       perPage: 10,
-      teamQuery: undefined,
       myTeams: undefined,
+      form: useForm({
+        validationSchema: toTypedSchema(
+          z.object({
+            teamQuery: z.string(),
+          }),
+        ),
+      }),
     };
   },
   watch: {
-    teamQuery: {
+    "form.values.teamQuery": {
+      immediate: true,
       handler() {
         this.page = 1;
       },
@@ -114,7 +124,7 @@ export default {
                   name: order_by.asc,
                 },
               ],
-              ...(this.teamQuery?.length >= 3 && {
+              ...(this.form.values.teamQuery?.length >= 3 && {
                 where: {
                   name: {
                     _ilike: $("teamQuery", "String"),
@@ -131,7 +141,7 @@ export default {
       },
       variables: function () {
         return {
-          teamQuery: `%${this.teamQuery}%`,
+          teamQuery: `%${this.form.values.teamQuery}%`,
           limit: this.perPage,
           offset: (this.page - 1) * this.perPage,
         };

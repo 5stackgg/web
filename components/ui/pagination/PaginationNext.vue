@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import { type HTMLAttributes, computed } from "vue";
-import { PaginationNext, type PaginationNextProps } from "radix-vue";
-import { ChevronRightIcon } from "@radix-icons/vue";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import {
+  Button,
+} from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { ChevronRightIcon } from '@radix-icons/vue'
+import { PaginationNext, type PaginationNextProps } from 'radix-vue'
+import { computed, type HTMLAttributes } from 'vue'
 
-const props = withDefaults(
-  defineProps<PaginationNextProps & { class?: HTMLAttributes["class"] }>(),
-  {
-    asChild: true,
-  },
-);
+const props = withDefaults(defineProps<PaginationNextProps & { class?: HTMLAttributes['class'] }>(), {
+  asChild: true,
+})
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props;
+  const { class: _, ...delegated } = props
 
-  return delegated;
-});
+  return delegated
+})
 </script>
 
 <template>

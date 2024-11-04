@@ -9,15 +9,13 @@ import TimeAgo from "./TimeAgo.vue";
         Tournament
         {{ invite.tournament_team_id }}
       </template>
-      Team Invite: {{ invite.team.name }}
+      Team Invite
     </h3>
-    <p class="text-sm text-muted-foreground mb-2">
-      Invited by {{ invite.invited_by.name }}
-      <TimeAgo :date="invite.created_at" class="text-xs" />
-    </p>
 
     <template v-if="type === 'tournament'">
-      You have been invited to join the tournament:
+      You have been invited to join the tournament with the team
+      <span class="underline">{{ invite.team.name }}</span
+      >:
       <p class="text-sm text-muted-foreground mb-2">
         <NuxtLink
           :to="`/tournaments/${invite.team.tournament.id}`"
@@ -27,10 +25,22 @@ import TimeAgo from "./TimeAgo.vue";
         </NuxtLink>
       </p>
     </template>
+    <template v-else>
+      You have been invited to join the team: {{ invite.team.name }}
+    </template>
 
-    <div class="flex justify-end space-x-2 mt-3">
-      <Button variant="outline" @click="denyInvite(invite.id)">Deny</Button>
-      <Button variant="default" @click="acceptInvite(invite.id)">Accept</Button>
+    <div class="flex justify-between space-x-2 mt-3">
+      <p class="text-sm text-muted-foreground mb-2">
+        Invited by {{ invite.invited_by.name }}
+        <TimeAgo :date="invite.created_at" class="text-xs" />
+      </p>
+
+      <div class="flex gap-2">
+        <Button variant="outline" @click="denyInvite(invite.id)">Deny</Button>
+        <Button variant="default" @click="acceptInvite(invite.id)"
+          >Accept</Button
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -64,6 +74,13 @@ export default {
           ],
         }),
       });
+
+      if (this.type === "tournament") {
+        return this.$router.push(
+          `/tournaments/${this.invite.team.tournament.id}`,
+        );
+      }
+      this.$router.push(`/teams/${this.invite.team.id}`);
     },
     async denyInvite(inviteId: string) {
       await this.$apollo.mutate({

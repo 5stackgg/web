@@ -9,23 +9,26 @@ import { e_player_roles_enum } from "~/generated/zeus";
       Settings that effect the application.
     </p>
   </div>
-  <Separator />
-
-  <div
-    class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-    @click="toggleMatchmaking"
-  >
-    <div class="space-y-0.5">
-      <h4 class="text-base font-medium">Matchmaking</h4>
-      <p class="text-sm text-muted-foreground">
-        Matchmaking allows players to join a queue and be matched with other
-        players.
-      </p>
-    </div>
-    <Switch :checked="matchMakingAllowed" @update:checked="toggleMatchmaking" />
-  </div>
+  <Separator class="my-4" />
 
   <form @submit.prevent="updateSettings" class="grid gap-4">
+    <div
+      class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+      @click="toggleMatchmaking"
+    >
+      <div class="space-y-0.5">
+        <h4 class="text-base font-medium">Matchmaking</h4>
+        <p class="text-sm text-muted-foreground">
+          Matchmaking allows players to join a queue and be matched with other
+          players.
+        </p>
+      </div>
+      <Switch
+        :checked="matchMakingAllowed"
+        @update:checked="toggleMatchmaking"
+      />
+    </div>
+
     <div class="flex flex-col space-y-3 rounded-lg border p-4">
       <FormField v-slot="{ componentField }" name="public.create_matches_role">
         <FormItem>

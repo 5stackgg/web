@@ -174,6 +174,7 @@ export default {
             {
               id: true,
               team: {
+                id: true,
                 name: true,
               },
               invited_by: {
@@ -211,9 +212,9 @@ export default {
             {
               id: true,
               team: {
+                id: true,
                 name: true,
                 tournament: {
-                  id: true,
                   name: true,
                 },
               },

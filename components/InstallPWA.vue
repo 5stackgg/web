@@ -69,7 +69,6 @@ export default {
     window.addEventListener(
       "beforeinstallprompt",
       (prompt: BeforeInstallPromptEvent) => {
-        console.info(prompt);
         if (!prompt) {
           return;
         }

@@ -8,7 +8,6 @@ import {
   Logs,
   LineChart,
   Server,
-  MonitorDown,
 } from "lucide-vue-next";
 import { Swords, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import SystemUpdate from "./SystemUpdate.vue";
@@ -21,11 +20,10 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
+import InstallPWA from "~/components/InstallPWA.vue";
 </script>
 
 <template>
-  <NuxtPwaManifest />
-
   <SidebarProvider class="bg-muted/40">
     <Sidebar collapsible="icon" side="left">
       <SidebarHeader>
@@ -258,18 +256,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <SidebarMenuItem class="p-4" v-if="pwaPrompt">
-            <SidebarMenuButton as-child tooltip="Install App">
-              <Button
-                size="sm"
-                @click="installPWA"
-                class="flex items-center gap-2"
-              >
-                <MonitorDown class="size-4" />
-                Install App
-              </Button>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <InstallPWA />
 
           <SidebarMenuItem>
             <DropdownMenu v-model:open="profileOpened">
@@ -445,7 +432,6 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { getCountryForTimezone } from "countries-and-timezones";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useMediaQuery } from "@vueuse/core/index.cjs";
-import type { BeforeInstallPromptEvent } from "@vite-pwa/nuxt/dist/runtime/plugins/types.js";
 
 export default {
   data() {
@@ -453,21 +439,7 @@ export default {
       profileOpened: false,
       showLogoutModal: false,
       showPlayersOnline: false,
-      pwaPrompt: undefined as BeforeInstallPromptEvent | undefined,
     };
-  },
-  created() {
-    window.addEventListener(
-      "beforeinstallprompt",
-      (prompt: BeforeInstallPromptEvent) => {
-        if (!prompt) {
-          return;
-        }
-
-        prompt.preventDefault();
-        this.pwaPrompt = prompt;
-      },
-    );
   },
   watch: {
     detectedCountry: {
@@ -498,19 +470,6 @@ export default {
     },
   },
   methods: {
-    installPWA() {
-      if (!this.pwaPrompt) {
-        return;
-      }
-
-      this.pwaPrompt.prompt();
-
-      this.pwaPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          this.pwaPrompt = undefined;
-        }
-      });
-    },
     async logout() {
       await this.$apollo.mutate({
         mutation: generateMutation({

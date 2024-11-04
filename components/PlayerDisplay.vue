@@ -13,7 +13,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
     }"
   >
     <div class="flex flex-col items-center justify-center relative">
-      <Avatar class="rounded">
+      <Avatar shape="square">
         <AvatarImage
           :src="player.avatar_url"
           :alt="player.name"

@@ -7,13 +7,13 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
   <div class="my-2">
     <div class="grid grid-cols-[60px_1fr] gap-x-1">
       <div class="my-1 mx-3">
-        <Avatar class="relative" v-if="!isSameSender || !isCloseTogether">
-          <AvatarImage
-            :src="message.from.avatar_url"
-            :alt="message.from.name"
-            v-if="message.from.avatar_url"
-          />
-        </Avatar>
+        <PlayerDisplay
+          :player="message.from"
+          :show-name="false"
+          :show-steam-id="false"
+          :show-flag="false"
+          v-if="!isSameSender || !isCloseTogether"
+        />
       </div>
 
       <div>

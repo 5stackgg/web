@@ -268,7 +268,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
                       profileOpened,
                   }"
                 >
-                  <Avatar class="h-8 w-8 rounded">
+                  <Avatar class="h-8 w-8" shape="square">
                     <AvatarImage :src="me.avatar_url" :alt="me.name" />
                     <AvatarFallback>
                       {{ me.name.slice(0, 2) }}

@@ -28,7 +28,7 @@ import Separator from "@/components/ui/separator/Separator.vue";
       </div>
     </div>
 
-    <Separator label="Services" />
+    <Separator label="Services" class="my-8" />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
       <template

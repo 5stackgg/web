@@ -125,7 +125,7 @@ export default {
           data: this.metrics.map((metric: any) => {
             return this.calculateCpuUsagePercentage(
               metric.used,
-              10,
+              metric.window || 10,
               metric.total,
             ).toFixed(2);
           }),

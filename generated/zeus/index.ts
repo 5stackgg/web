@@ -885,10 +885,10 @@ export type ValueTypes = {
 	_nin?: Array<boolean> | undefined | null | Variable<any, string>
 };
 	["CpuStat"]: AliasType<{
-	available?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 	total?:boolean | `@${string}`,
 	used?:boolean | `@${string}`,
+	window?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
@@ -915,7 +915,6 @@ export type ValueTypes = {
 		__typename?: boolean | `@${string}`
 }>;
 	["MemoryStat"]: AliasType<{
-	available?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 	total?:boolean | `@${string}`,
 	used?:boolean | `@${string}`,
@@ -924,6 +923,13 @@ export type ValueTypes = {
 	["NodeStats"]: AliasType<{
 	cpu?:ValueTypes["CpuStat"],
 	memory?:ValueTypes["MemoryStat"],
+	node?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PodStats"]: AliasType<{
+	cpu?:ValueTypes["CpuStat"],
+	memory?:ValueTypes["MemoryStat"],
+	name?:boolean | `@${string}`,
 	node?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -12642,6 +12648,7 @@ game_server_nodes_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["game_server_nodes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["game_server_nodes_aggregate"]],
 game_server_nodes_by_pk?: [{	id: string | Variable<any, string>},ValueTypes["game_server_nodes"]],
 	getNodeStats?:ValueTypes["NodeStats"],
+	getServiceStats?:ValueTypes["PodStats"],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["map_pools_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -19071,10 +19078,10 @@ export type ResolverInputTypes = {
 	_nin?: Array<boolean> | undefined | null
 };
 	["CpuStat"]: AliasType<{
-	available?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 	total?:boolean | `@${string}`,
 	used?:boolean | `@${string}`,
+	window?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
@@ -19101,7 +19108,6 @@ export type ResolverInputTypes = {
 		__typename?: boolean | `@${string}`
 }>;
 	["MemoryStat"]: AliasType<{
-	available?:boolean | `@${string}`,
 	time?:boolean | `@${string}`,
 	total?:boolean | `@${string}`,
 	used?:boolean | `@${string}`,
@@ -19110,6 +19116,13 @@ export type ResolverInputTypes = {
 	["NodeStats"]: AliasType<{
 	cpu?:ResolverInputTypes["CpuStat"],
 	memory?:ResolverInputTypes["MemoryStat"],
+	node?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["PodStats"]: AliasType<{
+	cpu?:ResolverInputTypes["CpuStat"],
+	memory?:ResolverInputTypes["MemoryStat"],
+	name?:boolean | `@${string}`,
 	node?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -30828,6 +30841,7 @@ game_server_nodes_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["game_server_nodes_bool_exp"] | undefined | null},ResolverInputTypes["game_server_nodes_aggregate"]],
 game_server_nodes_by_pk?: [{	id: string},ResolverInputTypes["game_server_nodes"]],
 	getNodeStats?:ResolverInputTypes["NodeStats"],
+	getServiceStats?:ResolverInputTypes["PodStats"],
 map_pools?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["map_pools_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -37256,10 +37270,10 @@ export type ModelTypes = {
 	_nin?: Array<boolean> | undefined
 };
 	["CpuStat"]: {
-		available?: ModelTypes["bigint"] | undefined,
-	time?: ModelTypes["timestamp"] | undefined,
+		time?: ModelTypes["timestamp"] | undefined,
 	total?: ModelTypes["bigint"] | undefined,
-	used?: ModelTypes["bigint"] | undefined
+	used?: ModelTypes["bigint"] | undefined,
+	window?: number | undefined
 };
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 ["Int_comparison_exp"]: {
@@ -37284,14 +37298,19 @@ export type ModelTypes = {
 	steam_id: string
 };
 	["MemoryStat"]: {
-		available?: ModelTypes["bigint"] | undefined,
-	time?: ModelTypes["timestamp"] | undefined,
+		time?: ModelTypes["timestamp"] | undefined,
 	total?: ModelTypes["bigint"] | undefined,
 	used?: ModelTypes["bigint"] | undefined
 };
 	["NodeStats"]: {
 		cpu?: ModelTypes["CpuStat"] | undefined,
 	memory?: ModelTypes["MemoryStat"] | undefined,
+	node: string
+};
+	["PodStats"]: {
+		cpu?: ModelTypes["CpuStat"] | undefined,
+	memory?: ModelTypes["MemoryStat"] | undefined,
+	name: string,
 	node: string
 };
 	["SetupGameServeOutput"]: {
@@ -47620,6 +47639,7 @@ export type ModelTypes = {
 	/** fetch data from the table: "game_server_nodes" using primary key columns */
 	game_server_nodes_by_pk?: ModelTypes["game_server_nodes"] | undefined,
 	getNodeStats: Array<ModelTypes["NodeStats"] | undefined>,
+	getServiceStats: Array<ModelTypes["PodStats"] | undefined>,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<ModelTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */
@@ -52783,10 +52803,10 @@ export type GraphQLTypes = {
 };
 	["CpuStat"]: {
 	__typename: "CpuStat",
-	available?: GraphQLTypes["bigint"] | undefined,
 	time?: GraphQLTypes["timestamp"] | undefined,
 	total?: GraphQLTypes["bigint"] | undefined,
-	used?: GraphQLTypes["bigint"] | undefined
+	used?: GraphQLTypes["bigint"] | undefined,
+	window?: number | undefined
 };
 	/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 ["Int_comparison_exp"]: {
@@ -52813,7 +52833,6 @@ export type GraphQLTypes = {
 };
 	["MemoryStat"]: {
 	__typename: "MemoryStat",
-	available?: GraphQLTypes["bigint"] | undefined,
 	time?: GraphQLTypes["timestamp"] | undefined,
 	total?: GraphQLTypes["bigint"] | undefined,
 	used?: GraphQLTypes["bigint"] | undefined
@@ -52822,6 +52841,13 @@ export type GraphQLTypes = {
 	__typename: "NodeStats",
 	cpu?: GraphQLTypes["CpuStat"] | undefined,
 	memory?: GraphQLTypes["MemoryStat"] | undefined,
+	node: string
+};
+	["PodStats"]: {
+	__typename: "PodStats",
+	cpu?: GraphQLTypes["CpuStat"] | undefined,
+	memory?: GraphQLTypes["MemoryStat"] | undefined,
+	name: string,
 	node: string
 };
 	["SetupGameServeOutput"]: {
@@ -63691,6 +63717,7 @@ export type GraphQLTypes = {
 	/** fetch data from the table: "game_server_nodes" using primary key columns */
 	game_server_nodes_by_pk?: GraphQLTypes["game_server_nodes"] | undefined,
 	getNodeStats: Array<GraphQLTypes["NodeStats"] | undefined>,
+	getServiceStats: Array<GraphQLTypes["PodStats"] | undefined>,
 	/** fetch data from the table: "map_pools" */
 	map_pools: Array<GraphQLTypes["map_pools"]>,
 	/** fetch aggregated fields from the table: "map_pools" */

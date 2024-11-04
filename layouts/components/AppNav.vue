@@ -5,8 +5,9 @@ import {
   ChevronsUpDownIcon,
   Cog,
   LogOut,
-  ScrollText,
+  Logs,
   LineChart,
+  Server,
 } from "lucide-vue-next";
 import { Swords, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
 import SystemUpdate from "./SystemUpdate.vue";
@@ -101,12 +102,27 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 
         <SidebarGroup v-if="me?.role === e_player_roles_enum.administrator">
           <SidebarGroupLabel>Settings</SidebarGroupLabel>
+
           <SidebarMenu>
+            <SidebarMenuItem tooltip="App Settings">
+              <SidebarMenuButton as-child tooltip="App Settings">
+                <NuxtLink
+                  :to="{ name: 'settings-application' }"
+                  :class="{
+                    'router-link-active': isRouteActive('settings-application'),
+                  }"
+                >
+                  <Cog />
+                  App Settings
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <Collapsible as-child :default-open="true" v-slot="{ open }">
               <SidebarMenuItem>
                 <CollapsibleTrigger as-child>
                   <SidebarMenuButton tooltip="Servers">
-                    <ServerCog />
+                    <Server />
                     <span>Servers</span>
                     <ChevronRight
                       class="ml-auto transition-transform duration-200"
@@ -156,20 +172,6 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
               </SidebarMenuItem>
             </Collapsible>
 
-            <SidebarMenuItem tooltip="App Settings">
-              <SidebarMenuButton as-child tooltip="App Settings">
-                <NuxtLink
-                  :to="{ name: 'settings-application' }"
-                  :class="{
-                    'router-link-active': isRouteActive('settings-application'),
-                  }"
-                >
-                  <Cog />
-                  App Settings
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
             <Collapsible as-child :default-open="true" v-slot="{ open }">
               <SidebarMenuItem>
                 <CollapsibleTrigger as-child>
@@ -209,8 +211,8 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
                             'router-link-active': isRouteActive('system-logs'),
                           }"
                         >
-                          <ScrollText />
-                          System Logs
+                          <Logs />
+                          Logs
                         </NuxtLink>
                       </SidebarMenuButton>
                     </SidebarMenuSubItem>

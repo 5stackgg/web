@@ -71,7 +71,11 @@ export default {
             },
             max: Math.max(
               ...this.metrics.map((metric) =>
-                Math.ceil(metric.total / (1024 * 1024 * 1024)),
+                Math.ceil(
+                  this.label === "MB"
+                    ? metric.total / (1024 * 1024)
+                    : metric.total / (1024 * 1024 * 1024),
+                ),
               ),
             ),
           },
@@ -113,21 +117,15 @@ export default {
           borderColor: this.hex2rgba(color),
           backgroundColor: this.hex2rgba(color, 0.2),
           data: this.metrics.map((metric: any) => {
-            return Number((metric.used / (1024 * 1024 * 1024)).toFixed(2));
+            return Number(
+              (
+                metric.used /
+                (this.label === "MB" ? 1024 * 1024 : 1024 * 1024 * 1024)
+              ).toFixed(2),
+            );
           }),
         },
       ];
-
-      // if (this.total) {
-      //   const totalColor = color(this.color).darken(0.2).hex();
-      //   datasets.push({
-      //     label: "Total",
-      //     fill: true,
-      //     data: cloneDeep(this.stats).fill(this.total),
-      //     borderColor: totalColor,
-      //     backgroundColor: this.hex2rgba(totalColor, 0.1),
-      //   });
-      // }
 
       return {
         labels: this.labels,

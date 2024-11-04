@@ -11172,10 +11172,10 @@ export const ReturnTypes: Record<string,any> = {
 		refresh:"Boolean"
 	},
 	CpuStat:{
-		available:"bigint",
 		time:"timestamp",
 		total:"bigint",
-		used:"bigint"
+		used:"bigint",
+		window:"Float"
 	},
 	MeResponse:{
 		avatar_url:"String",
@@ -11188,7 +11188,6 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"String"
 	},
 	MemoryStat:{
-		available:"bigint",
 		time:"timestamp",
 		total:"bigint",
 		used:"bigint"
@@ -11196,6 +11195,12 @@ export const ReturnTypes: Record<string,any> = {
 	NodeStats:{
 		cpu:"CpuStat",
 		memory:"MemoryStat",
+		node:"String"
+	},
+	PodStats:{
+		cpu:"CpuStat",
+		memory:"MemoryStat",
+		name:"String",
 		node:"String"
 	},
 	SetupGameServeOutput:{
@@ -14319,6 +14324,7 @@ export const ReturnTypes: Record<string,any> = {
 		game_server_nodes_aggregate:"game_server_nodes_aggregate",
 		game_server_nodes_by_pk:"game_server_nodes",
 		getNodeStats:"NodeStats",
+		getServiceStats:"PodStats",
 		map_pools:"map_pools",
 		map_pools_aggregate:"map_pools_aggregate",
 		map_pools_by_pk:"map_pools",

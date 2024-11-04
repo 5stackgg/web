@@ -148,6 +148,6 @@ export default {
 
 <style lang="postcss">
 .router-link-exact-active {
-  @apply bg-background rounded-md;
+  @apply bg-muted hover:bg-muted rounded-md;
 }
 </style>

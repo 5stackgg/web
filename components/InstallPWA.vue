@@ -1,64 +1,65 @@
 <script setup lang="ts">
-import { MonitorDown, PlusSquare, Share } from "lucide-vue-next";
+import { MonitorDown, PlusSquare, Share, Swords } from "lucide-vue-next";
+import { useSidebar } from "@/components/ui/sidebar";
+
+const { state } = useSidebar();
 </script>
 
 <template>
-  <SidebarMenuItem class="p-4" v-if="canInstall">
-    <SidebarMenuButton as-child tooltip="Install App">
-      <NuxtPwaManifest />
+  <div>
+    <NuxtPwaManifest />
 
-      <Button
-        size="sm"
-        @click="installPWA"
-        class="flex items-center gap-2 w-full"
-      >
-        <MonitorDown class="size-4" />
-        Install App
-      </Button>
+    <SidebarMenuItem class="mb-1" :class="{ 'mx-4': state === 'expanded' }">
+      <SidebarMenuButton as-child tooltip="Install App">
+        <Button @click="installPWA">
+          <MonitorDown />
+          <span v-if="state === 'expanded'"> Install App </span>
+        </Button>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
 
-      <Drawer :open="installPWADrawer" @close="installPWADrawer = false">
-        <DrawerContent class="p-4">
-          <DrawerHeader>
-            <div class="flex justify-between items-center">
-              <DrawerTitle>Add to Home Screen</DrawerTitle>
-              <DrawerClose>
-                <Button
-                  variant="link"
-                  @click="installPWADrawer = false"
-                  class="text-lg text-blue-500"
-                >
-                  Cancel
-                </Button>
-              </DrawerClose>
-            </div>
-            <Separator class="my-4" />
-            <DrawerDescription class="text-lg">
-              This website offers app-like features. Add it to your home screen
-              for easy access.
-            </DrawerDescription>
-            <Separator class="my-4" />
-          </DrawerHeader>
+    <Drawer :open="installPWADrawer" @close="installPWADrawer = false">
+      <DrawerContent class="p-4">
+        <DrawerHeader>
+          <div class="flex justify-between items-center">
+            <DrawerTitle>Add to Home Screen</DrawerTitle>
+            <DrawerClose>
+              <Button
+                variant="link"
+                @click="installPWADrawer = false"
+                class="text-lg text-blue-500"
+              >
+                Cancel
+              </Button>
+            </DrawerClose>
+          </div>
+          <Separator class="my-4" />
+          <DrawerDescription class="text-lg">
+            This website offers app-like features. Add it to your home screen
+            for easy access.
+          </DrawerDescription>
+          <Separator class="my-4" />
+        </DrawerHeader>
 
-          <div class="flex flex-col gap-4 m-auto">
-            <div class="flex items-center gap-4">
-              <Share class="size-8 text-blue-500" />
-              <div class="flex gap-2 text-muted-foreground">
-                <span>1)</span>
-                <span> Press the 'Share' button</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-4">
-              <PlusSquare class="size-8" />
-              <div class="flex gap-2 text-muted-foreground">
-                <span>2)</span>
-                <span>Select 'Add to Home Screen'</span>
-              </div>
+        <div class="flex flex-col gap-4 m-auto">
+          <div class="flex items-center gap-4">
+            <Share class="size-8 text-blue-500" />
+            <div class="flex gap-2 text-muted-foreground">
+              <span>1)</span>
+              <span> Press the 'Share' button</span>
             </div>
           </div>
-        </DrawerContent>
-      </Drawer>
-    </SidebarMenuButton>
-  </SidebarMenuItem>
+          <div class="flex items-center gap-4">
+            <PlusSquare class="size-8" />
+            <div class="flex gap-2 text-muted-foreground">
+              <span>2)</span>
+              <span>Select 'Add to Home Screen'</span>
+            </div>
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  </div>
 </template>
 
 <script lang="ts">

@@ -2,23 +2,26 @@
 import { MonitorDown, PlusSquare, Share, Swords } from "lucide-vue-next";
 import { useSidebar } from "@/components/ui/sidebar";
 
-const { state } = useSidebar();
+const { state, isMobile } = useSidebar();
 </script>
 
 <template>
   <div>
     <NuxtPwaManifest />
 
-    <SidebarMenuItem class="mb-1" :class="{ 'mx-4': state === 'expanded' }">
+    <SidebarMenuItem
+      class="mb-1"
+      :class="{ 'mx-4': isMobile || state === 'expanded' }"
+    >
       <SidebarMenuButton as-child tooltip="Install App">
-        <Button @click="installPWA">
+        <Button @click="installPWA" size="sm">
           <MonitorDown />
-          <span v-if="state === 'expanded'"> Install App </span>
+          <span v-if="isMobile || state === 'expanded'"> Install App </span>
         </Button>
       </SidebarMenuButton>
     </SidebarMenuItem>
 
-    <Drawer :open="installPWADrawer" @close="installPWADrawer = false">
+    <Drawer :open="installPWADrawer" @update:open="installPWADrawer = $event">
       <DrawerContent class="p-4">
         <DrawerHeader>
           <div class="flex justify-between items-center">

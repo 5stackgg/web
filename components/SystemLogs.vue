@@ -103,7 +103,9 @@ export default {
       window.URL.revokeObjectURL(url);
     },
     scrollToBottom() {
-      if (!this.followLogs) return;
+      if (!this.followLogs) {
+        return;
+      }
 
       this.$nextTick(() => {
         const container = this.$refs.logsContainer as HTMLElement;
@@ -124,6 +126,10 @@ export default {
         this.logListener = socket.listen(`logs:${this.service}`, (log) => {
           const _log = JSON.parse(log);
           this.logs.push(_log);
+
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
         });
 
         socket.event("logs", {

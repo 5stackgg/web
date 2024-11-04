@@ -24,20 +24,20 @@ import Convert from "ansi-to-html";
           v-for="({ log, node, container, timestamp }, index) in logs"
           :key="index"
         >
-          <div class="text-sm text-foreground/80 py-1 flex gap-4">
+          <div class="text-xs font-mono text-foreground/80 py-1 flex gap-4">
             <div class="flex flex-col justify-end">
               <div class="flex gap-2" v-if="log && log.trim() !== ''">
                 <span
-                  class="text-xs text-muted-foreground"
+                  class="text-muted-foreground"
                   v-if="nodes.size > 1"
                   >[{{ node }}|{{ container }}]</span
                 >
-                <span class="text-xs text-blue-100 font-mono" v-if="timestamps">{{
+                <span class="text-blue-100" v-if="timestamps">{{
                   timestamp
                 }}</span>
               </div>
             </div>
-            <div class="self-end font-mono">
+            <div class="self-end">
               <span v-html="colorize(log)"></span>
             </div>
           </div>

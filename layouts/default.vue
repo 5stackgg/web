@@ -16,4 +16,6 @@ import MatchMakingConfirm from "~/components/match-making/MatchMakingConfirm.vue
   </div>
 </template>
 
-<script lang="ts"></script>
+<script lang="ts">
+export default {};
+</script>

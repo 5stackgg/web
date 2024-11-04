@@ -32,7 +32,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
           size="sm"
           class="bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
         >
-          It's Your Turn to Pick
+          It's Your Turn to {{ pickType }}
         </Button>
       </template>
 

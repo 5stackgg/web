@@ -12,6 +12,7 @@ const { state, isMobile } = useSidebar();
     <SidebarMenuItem
       class="mb-1"
       :class="{ 'mx-4': isMobile || state === 'expanded' }"
+      v-if="canInstall"
     >
       <SidebarMenuButton as-child tooltip="Install App">
         <Button @click="installPWA" size="sm">
@@ -21,7 +22,7 @@ const { state, isMobile } = useSidebar();
       </SidebarMenuButton>
     </SidebarMenuItem>
 
-    <Drawer :open="installPWADrawer" @update:open="installPWADrawer = $event">
+    <Drawer :open="installPWADrawer" @update:open="installPWADrawer = $event" v-if="canInstall">
       <DrawerContent class="p-4">
         <DrawerHeader>
           <div class="flex justify-between items-center">

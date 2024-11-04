@@ -2,6 +2,7 @@
 import socket from "~/web-sockets/Socket";
 import { Card } from "~/components/ui/card";
 import { DownloadIcon } from "lucide-vue-next";
+import Convert from "ansi-to-html";
 </script>
 
 <template>
@@ -37,7 +38,7 @@ import { DownloadIcon } from "lucide-vue-next";
               </div>
             </div>
             <div class="self-end">
-              {{ log }}
+              <span v-html="colorize(log)"></span>
             </div>
           </div>
         </template>
@@ -47,6 +48,8 @@ import { DownloadIcon } from "lucide-vue-next";
 </template>
 
 <script lang="ts">
+const convert = new Convert();
+
 export default {
   props: {
     service: {
@@ -70,6 +73,9 @@ export default {
     };
   },
   methods: {
+    colorize(log: string) {
+      return convert.toHtml(log);
+    },
     downloadLogs() {
       // Create text content from logs array
       const logContent = this.logs.join("\n");

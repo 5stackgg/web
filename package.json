@@ -41,6 +41,7 @@
     "@tanstack/vue-table": "^8.19.3",
     "@vee-validate/zod": "^4.13.2",
     "@vueuse/core": "^11.1.0",
+    "ansi-to-html": "^0.7.2",
     "chart.js": "^4.4.4",
     "class-variance-authority": "^0.7.0",
     "clipboard": "^2.0.11",

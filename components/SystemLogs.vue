@@ -32,12 +32,12 @@ import Convert from "ansi-to-html";
                   v-if="nodes.size > 1"
                   >[{{ node }}|{{ container }}]</span
                 >
-                <span class="text-xs text-blue-100" v-if="timestamps">{{
+                <span class="text-xs text-blue-100 font-mono" v-if="timestamps">{{
                   timestamp
                 }}</span>
               </div>
             </div>
-            <div class="self-end">
+            <div class="self-end font-mono">
               <span v-html="colorize(log)"></span>
             </div>
           </div>

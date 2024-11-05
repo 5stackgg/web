@@ -24,7 +24,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
 </script>
 
 <template>
-  <SidebarProvider class="bg-muted/40" v-slot="{ open }">
+  <SidebarProvider class="bg-muted/40" v-slot="{ open, isMobile }">
     <Sidebar collapsible="icon" side="left">
       <SidebarHeader>
         <SidebarMenu>
@@ -109,7 +109,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
               as-child
               :default-open="true"
               v-slot="{ open }"
-              v-if="open"
+              v-if="open || isMobile"
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger as-child>

@@ -85,7 +85,8 @@ provideSidebarContext({
 defineSlots<{
   default: (props: {
     /** Current open state */
-    open: typeof open.value
+    open: typeof open.value,
+    isMobile: typeof isMobile.value,
   }) => any
 }>()
 </script>
@@ -99,7 +100,7 @@ defineSlots<{
       }"
       :class="cn('group/sidebar-wrapper flex min-h-svh w-full text-sidebar-foreground has-[[data-variant=inset]]:bg-sidebar', props.class)"
     >
-      <slot :open="open" />
+      <slot :open="open" :is-mobile="isMobile" />
     </div>
   </TooltipProvider>
 </template>

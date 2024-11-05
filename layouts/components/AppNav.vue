@@ -9,7 +9,7 @@ import {
   LineChart,
   Server,
 } from "lucide-vue-next";
-import { Swords, ServerCog, ShieldHalf, Trophy } from "lucide-vue-next";
+import { Swords, ShieldHalf, Trophy } from "lucide-vue-next";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import { Users } from "lucide-vue-next";
@@ -24,7 +24,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
 </script>
 
 <template>
-  <SidebarProvider class="bg-muted/40">
+  <SidebarProvider class="bg-muted/40" v-slot="{ open }">
     <Sidebar collapsible="icon" side="left">
       <SidebarHeader>
         <SidebarMenu>
@@ -32,7 +32,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
             <SidebarMenuButton size="lg" as-child>
               <nuxt-link to="/">
                 <NuxtImg class="rounded max-w-8" src="/favicon/64.png" />
-                <span>5Stack</span>
+                <span> 5Stack </span>
               </nuxt-link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -102,24 +102,15 @@ import InstallPWA from "~/components/InstallPWA.vue";
         </SidebarGroup>
 
         <SidebarGroup v-if="me?.role === e_player_roles_enum.administrator">
-          <SidebarGroupLabel>Settings</SidebarGroupLabel>
+          <SidebarGroupLabel>Administration</SidebarGroupLabel>
 
           <SidebarMenu>
-            <SidebarMenuItem tooltip="App Settings">
-              <SidebarMenuButton as-child tooltip="App Settings">
-                <NuxtLink
-                  :to="{ name: 'settings-application' }"
-                  :class="{
-                    'router-link-active': isRouteActive('settings-application'),
-                  }"
-                >
-                  <Cog />
-                  App Settings
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <Collapsible as-child :default-open="true" v-slot="{ open }">
+            <Collapsible
+              as-child
+              :default-open="true"
+              v-slot="{ open }"
+              v-if="open"
+            >
               <SidebarMenuItem>
                 <CollapsibleTrigger as-child>
                   <SidebarMenuButton tooltip="Servers">
@@ -173,54 +164,88 @@ import InstallPWA from "~/components/InstallPWA.vue";
               </SidebarMenuItem>
             </Collapsible>
 
-            <Collapsible as-child :default-open="true" v-slot="{ open }">
-              <SidebarMenuItem>
-                <CollapsibleTrigger as-child>
-                  <SidebarMenuButton tooltip="System">
-                    <ServerCog />
-                    <span>System</span>
-                    <ChevronRight
-                      class="ml-auto transition-transform duration-200"
-                      :class="{
-                        'rotate-90': open,
-                      }"
-                    />
+            <SidebarMenuItem v-else>
+              <DropdownMenu v-model:open="serversOpened">
+                <DropdownMenuTrigger as-child>
+                  <SidebarMenuButton
+                    :class="{
+                      'bg-sidebar-accent text-sidebar-accent-foreground':
+                        serversOpened,
+                    }"
+                  >
+                    <Server />
                   </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    <SidebarMenuSubItem tooltip="System Metrics">
-                      <SidebarMenuButton as-child tooltip="System Metrics">
-                        <NuxtLink
-                          :to="{ name: 'system-metrics' }"
-                          :class="{
-                            'router-link-active':
-                              isRouteActive('system-metrics'),
-                          }"
-                        >
-                          <LineChart />
-                          Metrics
-                        </NuxtLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuSubItem>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                  :side="isMobile.value ? 'top' : 'right'"
+                  align="end"
+                  :side-offset="4"
+                >
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      class="flex gap-2 cursor-pointer"
+                      as-child
+                    >
+                      <NuxtLink :to="{ name: 'dedicated-servers' }">
+                        Dedicated Servers
+                      </NuxtLink>
+                    </DropdownMenuItem>
 
-                    <SidebarMenuSubItem tooltip="System Logs">
-                      <SidebarMenuButton as-child tooltip="System Logs">
-                        <NuxtLink
-                          :to="{ name: 'system-logs' }"
-                          :class="{
-                            'router-link-active': isRouteActive('system-logs'),
-                          }"
-                        >
-                          <Logs />
-                          Logs
-                        </NuxtLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuSubItem>
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
+                    <DropdownMenuItem
+                      class="flex gap-2 cursor-pointer"
+                      as-child
+                    >
+                      <NuxtLink :to="{ name: 'game-server-nodes' }">
+                        Game Server Nodes
+                      </NuxtLink>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem tooltip="System Logs">
+              <SidebarMenuButton as-child tooltip="System Logs">
+                <NuxtLink
+                  :to="{ name: 'system-logs' }"
+                  :class="{
+                    'router-link-active': isRouteActive('system-logs'),
+                  }"
+                >
+                  <Logs />
+                  Logs
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem tooltip="System Metrics">
+              <SidebarMenuButton as-child tooltip="System Metrics">
+                <NuxtLink
+                  :to="{ name: 'system-metrics' }"
+                  :class="{
+                    'router-link-active': isRouteActive('system-metrics'),
+                  }"
+                >
+                  <LineChart />
+                  Metrics
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem tooltip="App Settings">
+              <SidebarMenuButton as-child tooltip="App Settings">
+                <NuxtLink
+                  :to="{ name: 'settings-application' }"
+                  :class="{
+                    'router-link-active': isRouteActive('settings-application'),
+                  }"
+                >
+                  <Cog />
+                  App Settings
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
@@ -305,7 +330,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
                       }"
                     >
                       <BadgeCheck class="size-4" />
-                      Settings
+                      My Account
                     </NuxtLink>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -436,6 +461,7 @@ import { useMediaQuery } from "@vueuse/core/index.cjs";
 export default {
   data() {
     return {
+      serversOpened: false,
       profileOpened: false,
       showLogoutModal: false,
       showPlayersOnline: false,

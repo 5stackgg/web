@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MonitorDown, PlusSquare, Share, Swords } from "lucide-vue-next";
+import { MonitorDown, PlusSquare, Share } from "lucide-vue-next";
 import { useSidebar } from "@/components/ui/sidebar";
 
 const { state, isMobile } = useSidebar();

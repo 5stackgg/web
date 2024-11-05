@@ -19,7 +19,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import SystemLogs from "~/components/SystemLogs.vue";
+import ServiceLogs from "~/components/ServiceLogs.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -180,7 +180,7 @@ provide("commander", commander);
       </Card>
     </TabsContent>
     <TabsContent value="server" class="flex flex-col gap-4">
-      <SystemLogs
+      <ServiceLogs
         :service="`m-${match.id}`"
         :compact="true"
         v-if="match.server_type === 'On Demand'"

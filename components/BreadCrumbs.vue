@@ -5,9 +5,7 @@
     <BreadcrumbList>
       <BreadcrumbItem>
         <BreadcrumbLink as-child>
-          <NuxtLink :to="{ name: 'matches' }" class="crumb">
-            dashboard
-          </NuxtLink>
+          <NuxtLink :to="{ name: 'matches' }"> dashboard </NuxtLink>
         </BreadcrumbLink>
       </BreadcrumbItem>
 
@@ -16,7 +14,9 @@
 
         <BreadcrumbItem>
           <BreadcrumbLink as-child>
-            <NuxtLink :to="crumb.to" class="crumb"> {{ crumb.text }} </NuxtLink>
+            <NuxtLink :to="crumb.to">
+              {{ crumb.text.replace("-", " ") }}
+            </NuxtLink>
           </BreadcrumbLink>
         </BreadcrumbItem>
       </template>
@@ -49,3 +49,10 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="postcss">
+.router-link-active,
+.router-link-exact-active {
+  background-color: transparent;
+}
+</style>

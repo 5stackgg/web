@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SystemLogs from "~/components/SystemLogs.vue";
+import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 </script>
 
@@ -42,7 +42,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
       </div>
 
       <TabsContent v-for="service in services" :key="service" :value="service">
-        <SystemLogs
+        <ServiceLogs
           :service="service"
           :timestamps="timestamps"
           :follow-logs="followLogs"

@@ -11,7 +11,7 @@ import { Separator } from "~/components/ui/separator";
 
 <template>
   <div
-    class="grid grid-rows-[auto_1fr_auto] h-full min-h-[50vh] min-h-[50vh] max-h-[50vh] rounded-xl bg-muted/50 p-4 lg:col-span-2 overflow-hidden"
+    class="grid grid-rows-[auto_1fr_auto] h-full min-h-[50vh] max-h-[50vh] rounded-xl bg-muted/50 p-4 lg:col-span-2 overflow-hidden"
   >
     <div class="grid grid-cols-[1fr_auto] gap-4">
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">

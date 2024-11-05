@@ -3,22 +3,74 @@ import socket from "~/web-sockets/Socket";
 import { Card } from "~/components/ui/card";
 import { DownloadIcon } from "lucide-vue-next";
 import Convert from "ansi-to-html";
+import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
 </script>
 
 <template>
   <Card>
-    <CardHeader class="flex items-center justify-end w-full">
-      <div class="ml-auto">
-        <DownloadIcon
-          @click="downloadLogs"
-          class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
-        />
+    <CardHeader class="flex flex-row gap-4 items-center justify-end w-full">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <ExpandIcon
+              @click="expanded = !expanded"
+              class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+              v-if="compact"
+            />
+          </TooltipTrigger>
+          <TooltipContent>Expand</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <FullscreenIcon
+              @click="toggleFullscreen"
+              class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+            />
+          </TooltipTrigger>
+          <TooltipContent>Toggle Fullscreen</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <div class="flex items-center gap-2" v-if="followLogs === undefined">
+        <Switch
+          class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+          :checked="_followLogs"
+          @click="_followLogs = !_followLogs"
+        >
+        </Switch>
+        Follow Logs
       </div>
+
+      <div class="flex items-center gap-2" v-if="timestamps === undefined">
+        <Switch
+          class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+          :checked="_timestamps"
+          @click="_timestamps = !_timestamps"
+        >
+        </Switch>
+        Timestamps
+      </div>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <DownloadIcon
+              @click="downloadLogs"
+              class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+            />
+          </TooltipTrigger>
+          <TooltipContent>Download Logs</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </CardHeader>
     <CardContent class="p-4">
       <div
         ref="logsContainer"
         class="overflow-auto max-h-[50vh] whitespace-nowrap"
+        :class="{ 'max-h-[320px]': compact && !expanded }"
       >
         <template
           v-for="({ log, node, container, timestamp }, index) in logs"
@@ -27,14 +79,14 @@ import Convert from "ansi-to-html";
           <div class="text-xs font-mono text-foreground/80 py-1 flex gap-4">
             <div class="flex flex-col justify-end">
               <div class="flex gap-2" v-if="log && log.trim() !== ''">
-                <span
-                  class="text-muted-foreground"
-                  v-if="nodes.size > 1"
+                <span class="text-muted-foreground" v-if="nodes.size > 1"
                   >[{{ node }}|{{ container }}]</span
                 >
-                <span class="text-blue-100" v-if="timestamps">{{
-                  timestamp
-                }}</span>
+                <span
+                  class="text-blue-100"
+                  v-if="(timestamps === undefined && _timestamps) || timestamps"
+                  >{{ timestamp }}</span
+                >
               </div>
             </div>
             <div class="self-end">
@@ -58,15 +110,22 @@ export default {
     },
     timestamps: {
       type: Boolean,
-      default: true,
+      default: undefined,
     },
     followLogs: {
       type: Boolean,
-      default: true,
+      default: undefined,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
     return {
+      _timestamps: true,
+      _followLogs: true,
+      expanded: false,
       logs: [] as Array<{
         log: string;
         node: string;
@@ -80,6 +139,12 @@ export default {
   methods: {
     colorize(log: string) {
       return convert.toHtml(log);
+    },
+    toggleFullscreen() {
+      const container = this.$refs.logsContainer as HTMLElement;
+      if (container) {
+        container.requestFullscreen();
+      }
     },
     downloadLogs() {
       // Create text content from logs array
@@ -103,7 +168,10 @@ export default {
       window.URL.revokeObjectURL(url);
     },
     scrollToBottom() {
-      if (!this.followLogs) {
+      if (
+        (this.followLogs === undefined && !this._followLogs) ||
+        !this._followLogs
+      ) {
         return;
       }
 

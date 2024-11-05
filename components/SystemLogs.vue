@@ -69,8 +69,11 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
     <CardContent class="p-4">
       <div
         ref="logsContainer"
-        class="overflow-auto max-h-[50vh] whitespace-nowrap"
-        :class="{ 'max-h-[320px]': compact && !expanded }"
+        class="overflow-auto whitespace-nowrap"
+        :class="{
+          'max-h-[50vh]': !compact,
+          'max-h-[320px]': compact && !expanded,
+        }"
       >
         <template
           v-for="({ log, node, container, timestamp }, index) in logs"

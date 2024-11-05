@@ -114,6 +114,19 @@ import { e_player_roles_enum } from "~/generated/zeus";
       </FormItem>
     </FormField>
 
+    <FormField v-slot="{ componentField }" name="discord_support_role_id">
+      <FormItem>
+        <FormLabel>Discord Support Role ID</FormLabel>
+        <FormDescription
+          >Thie role will be pinged when used for support actions. You can get
+          the Role ID from the Discord application by turning on devleoper mode
+          and right clicking and copy id.</FormDescription
+        >
+        <Input v-bind="componentField"></Input>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <div class="flex justify-start">
       <Button
         type="submit"
@@ -144,6 +157,7 @@ export default {
           z.object({
             discord_invite_link: z.string().optional(),
             discord_support_webhook: z.string().optional(),
+            discord_support_role_id: z.string().optional(),
             public: z.object({
               create_matches_role: z.string().default(e_player_roles_enum.user),
               create_tournaments_role: z
@@ -211,6 +225,10 @@ export default {
                 {
                   name: "discord_support_webhook",
                   value: this.form.values.discord_support_webhook,
+                },
+                {
+                  name: "discord_support_role_id",
+                  value: this.form.values.discord_support_role_id,
                 },
                 {
                   name: "public.create_matches_role",

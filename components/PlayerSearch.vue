@@ -86,7 +86,6 @@ export default {
       open: false,
       query: undefined,
       players: undefined,
-      _onlineOnly: localStorage.getItem("playerSearchOnlineOnly") !== "false",
     };
   },
   watch: {
@@ -133,11 +132,11 @@ export default {
     },
     onlineOnly: {
       get() {
-        return this._onlineOnly;
+        return useSearchStore().onlineOnly;
       },
       set(value: boolean) {
         localStorage.setItem("playerSearchOnlineOnly", value.toString());
-        this._onlineOnly = value;
+        useSearchStore().onlineOnly = value;
       },
     },
   },

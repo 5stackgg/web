@@ -7,6 +7,10 @@ export const useSearchStore = defineStore("searchStore", () => {
 
   let miniSearch: MiniSearch;
 
+  const onlineOnly = ref<boolean>(
+    localStorage.getItem("playerSearchOnlineOnly") !== "false",
+  );
+
   watch(
     () => matchMakingStore.playersOnline,
     (
@@ -42,6 +46,7 @@ export const useSearchStore = defineStore("searchStore", () => {
   );
 
   return {
+    onlineOnly,
     search: (query: string, exclude: [string]) => {
       if (!query) {
         return matchMakingStore.playersOnline

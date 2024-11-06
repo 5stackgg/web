@@ -178,7 +178,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                  :side="isMobile.value ? 'top' : 'right'"
+                  :side="isMobile ? 'top' : 'right'"
                   align="end"
                   :side-offset="4"
                 >
@@ -309,7 +309,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                :side="isMobile.value ? 'top' : 'right'"
+                :side="isMobile ? 'top' : 'right'"
                 align="end"
                 :side-offset="4"
               >
@@ -520,9 +520,6 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    isMobile() {
-      return useMediaQuery("(max-width: 768px)");
     },
     isAdmin() {
       return useAuthStore().isAdmin;

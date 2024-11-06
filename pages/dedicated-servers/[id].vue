@@ -45,10 +45,25 @@ const serverMenu = ref(false);
             <Badge>{{ server.region }}</Badge>
           </div>
           <div class="flex gap-4">
-            <div>
-              {{ server.label }}
-              ({{ server.host }}:{{ server.port }})
+            <div class="flex gap-2 items-center">
+              <div
+                class="h-2 w-2 rounded-full relative"
+                :class="{
+                  'bg-red-600': !server.connected,
+                  'bg-green-600': server.connected,
+                }"
+              >
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-red-600"
+                  v-if="!server.connected"
+                ></span>
+              </div>
+              <span class="truncate">
+                {{ server.label }}
+                ({{ server.host }}:{{ server.port }})
+              </span>
             </div>
+
             <div class="flex items-center space-x-2">
               <Switch @click="toggleServerEnabled" :checked="server.enabled" />
               <Label>Enabled</Label>

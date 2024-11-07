@@ -14,8 +14,8 @@ jobs:
         include:
           - platform: linux/amd64
             runs-on: ubuntu-latest
-          - platform: linux/arm64
-            runs-on: macos-latest
+          # - platform: linux/arm64
+          #   runs-on: macos-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3

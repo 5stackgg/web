@@ -3,7 +3,7 @@ import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill";
 
 const title = "5Stack | Counter-Strike Management System";
 const description = "A Comprehensive Panel for Managing Servers, Matches, and Tournaments";
-const url = `https://${useRuntimeConfig().public.demosDomain}`
+const url = `https://${useRuntimeConfig().public.webDomain}`
 
 useSeoMeta({
   title: title,

@@ -10,7 +10,7 @@ useSeoMeta({
   description: description,
   ogDescription: description,
   ogImage: 'https://5stack.gg/_ipx/_/favicon/512.png',
-  twitterCard: description,
+  twitterCard: 'summary_large_image',
 })
 
 useServerSeoMeta({
@@ -20,7 +20,7 @@ useServerSeoMeta({
   description: description,
   ogDescription: description,
   ogImage: 'https://5stack.gg/_ipx/_/favicon/512.png',
-  twitterCard: description,
+  twitterCard: 'summary_large_image',
 })
 </script>
 

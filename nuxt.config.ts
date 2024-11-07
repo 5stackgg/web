@@ -6,6 +6,21 @@ export default defineNuxtConfig({
   ssr: false,
   plugins: [],
 
+  app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      // meta: [
+      //   { property: 'og:type', content: 'website' },
+      //   { property: 'og:locale', content: 'en' },
+      //   { property: 'og:title', content: '5Stack | Counter-Strike Management System' },
+      //   { property: 'og:site_name', content: '5Stack' },
+      //   { property: 'og:image', content: 'https://5stack.gg/images/logo/5stack.png' },
+      //   { property: 'og:url', content: 'https://5stack.gg/' },
+      // ],
+    }
+  },
+
   runtimeConfig: {
     public: {
       apiDomain: "",

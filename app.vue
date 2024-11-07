@@ -37,11 +37,6 @@ useServerSeoMeta({
 
 export default {
   beforeCreate() {
-    useHead({
-      title: "5stack",
-      meta: [{ name: "description", content: "5stack.gg" }],
-    });
-
     polyfillCountryFlagEmojis();
   },
 };

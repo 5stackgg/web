@@ -12,7 +12,15 @@ import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
             :member="member"
             :match="match"
             :show-details="false"
+            v-if="member.player"
           />
+          <template v-else>
+            <Avatar shape="square">
+              <AvatarFallback>
+              {{ member.placeholder_name.slice(0, 2) }}
+              </AvatarFallback>
+            </Avatar>
+          </template>
         </TooltipTrigger>
         <TooltipContent>
           {{ member.placeholder_name || member.player.name }}
@@ -29,7 +37,15 @@ import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
             :member="member"
             :match="match"
             :show-details="false"
+            v-if="member.player"
           />
+          <template v-else>
+            <Avatar shape="square">
+              <AvatarFallback>
+              {{ member.placeholder_name.slice(0, 2) }}
+              </AvatarFallback>
+            </Avatar>
+          </template>
         </TooltipTrigger>
         <TooltipContent>
           {{ member.placeholder_name || member.player.name }}

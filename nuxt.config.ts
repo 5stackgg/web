@@ -63,6 +63,7 @@ export default defineNuxtConfig({
       globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff}"],
     },
     includeAssets: [
+      "img/**/*.png",
       "img/**/*.svg",
       "img/**/*.webp",
       "fonts/*.woff",

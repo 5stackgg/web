@@ -44,22 +44,27 @@ import LastTenLosses from "~/components/charts/LastTenLosses.vue";
 
       <MyUpcomingMatches></MyUpcomingMatches>
 
+
+      <Separator />
+      <PageHeading>
+        <template #title>Recent Matches</template>
+        <template #description>
+          Your most recent completed matches
+        </template>
+      </PageHeading>
+      <MyRecentMatches></MyRecentMatches>
+
       <Separator />
 
       <Card class="p-4">
         <Tabs default-value="open">
           <TabsList>
             <TabsTrigger value="open"> Open Lobbies </TabsTrigger>
-            <TabsTrigger value="my"> My Recent Matches </TabsTrigger>
             <TabsTrigger value="other"> Other Matches </TabsTrigger>
           </TabsList>
 
           <TabsContent value="open">
             <OpenMatches> </OpenMatches>
-          </TabsContent>
-
-          <TabsContent value="my">
-            <MyRecentMatches></MyRecentMatches>
           </TabsContent>
           <TabsContent value="other">
             <OtherMatches></OtherMatches>

@@ -14,7 +14,7 @@ definePageMeta({
       <CardHeader>
         <CardTitle class="text-3xl font-bold text-center">5Stack</CardTitle>
         <CardDescription class="text-center">
-          Sign in with your Steam account to get started
+          {{ $t('login.sign_in', 'Sign in with your Steam account to get started') }}
         </CardDescription>
       </CardHeader>
       <CardContent class="flex flex-col items-center">
@@ -34,7 +34,7 @@ definePageMeta({
         rel="noopener noreferrer"
         class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        Powered by 5stack.gg
+        {{ $t('login.powered_by', 'Powered by') }} 5stack.gg
         <GithubLogoIcon class="w-4 h-4" />
       </a>
     </div>

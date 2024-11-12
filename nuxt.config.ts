@@ -34,24 +34,24 @@ export default defineNuxtConfig({
     }
   },
 
-  i18n: {
-    locales: [
-      {
-        code: 'en',
-        file: './i18n.ts'
-      },
-      {
-        code: 'es',
-        file: './i18n.ts'
-      },
-      {
-        code: 'fr',
-        file: './i18n.ts'
-      }
-    ],
-    lazy: true,
-    defaultLocale: 'en'
-  },
+  // i18n: {
+  //   locales: [
+  //     {
+  //       code: 'en',
+  //       file: './i18n.ts'
+  //     },
+  //     {
+  //       code: 'es',
+  //       file: './i18n.ts'
+  //     },
+  //     {
+  //       code: 'fr',
+  //       file: './i18n.ts'
+  //     }
+  //   ],
+  //   lazy: true,
+  //   defaultLocale: 'en'
+  // },
 
   runtimeConfig: {
     public: {

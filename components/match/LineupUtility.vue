@@ -15,7 +15,7 @@ import LineupMember from "~/components/match/LineupMember.vue";
         <TableHead> Team Flashed </TableHead>
         <TableHead> Avg bling time </TableHead>
         <TableHead> HE Damage </TableHead>
-        <TableHead> Molotov Damage </TableHead>
+        <TableHead> Incendiary / Molotov Damage </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

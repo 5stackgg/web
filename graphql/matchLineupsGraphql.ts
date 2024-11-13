@@ -380,7 +380,7 @@ export const matchLineups = Selector("match_lineups")({
               {
                 where: {
                   with: {
-                    _eq: "molotov",
+                    _in: ["molotov", "inferno"],
                   },
                   match_id: {
                     _eq: $("matchId", "uuid!"),

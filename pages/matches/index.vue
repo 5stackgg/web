@@ -44,13 +44,10 @@ import LastTenLosses from "~/components/charts/LastTenLosses.vue";
 
       <MyUpcomingMatches></MyUpcomingMatches>
 
-
       <Separator />
       <PageHeading>
         <template #title>Recent Matches</template>
-        <template #description>
-          Your most recent completed matches
-        </template>
+        <template #description> Your most recent completed matches </template>
       </PageHeading>
       <MyRecentMatches></MyRecentMatches>
 

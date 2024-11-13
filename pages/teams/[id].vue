@@ -159,6 +159,7 @@ import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { playerFields } from "~/graphql/playerFields";
 
 export default {
   data() {
@@ -182,33 +183,18 @@ export default {
               name: true,
               short_name: true,
               owner_steam_id: true,
-              owner: {
-                name: true,
-                country: true,
-                steam_id: true,
-                avatar_url: true,
-              },
+              owner: playerFields,
               roster: [
                 {},
                 {
-                  player: {
-                    name: true,
-                    country: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
+                  player: playerFields,
                 },
               ],
               invites: [
                 {},
                 {
                   id: true,
-                  player: {
-                    name: true,
-                    country: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
+                  player: playerFields,
                 },
               ],
               matches: [{}, simpleMatchFields],

@@ -77,7 +77,7 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
 import socket from "~/web-sockets/Socket";
 import type { MatchLobby } from "~/web-sockets/Socket";
-
+import { playerFields } from "~/graphql/playerFields";
 export default {
   data() {
     return {
@@ -144,12 +144,7 @@ export default {
               cancels_at: true,
               scheduled_at: true,
               ended_at: true,
-              organizer: {
-                name: true,
-                country: true,
-                steam_id: true,
-                avatar_url: true,
-              },
+              organizer: playerFields,
               options: {
                 id: true,
                 type: true,

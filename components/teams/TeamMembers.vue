@@ -56,7 +56,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_team_roles_enum, order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
-
+import { playerFields } from "~/graphql/playerFields";
 export default {
   props: {
     teamId: {
@@ -93,24 +93,14 @@ export default {
                 {
                   role: true,
                   team_id: true,
-                  player: {
-                    name: true,
-                    country: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
+                  player: playerFields,
                 },
               ],
               invites: [
                 {},
                 {
                   id: true,
-                  player: {
-                    name: true,
-                    country: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
+                  player: playerFields,
                 },
               ],
             },

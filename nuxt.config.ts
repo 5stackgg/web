@@ -3,10 +3,11 @@
 const sw = process.env.SW === "true";
 
 const title = "5Stack | Counter-Strike Management System";
-const description = "A Comprehensive Panel for Managing Servers, Matches, and Tournaments";
+const description =
+  "A Comprehensive Panel for Managing Servers, Matches, and Tournaments";
 
 // TODO - i tired to get SSO to work but it wont
-const url = `https://5stack.gg`
+const url = `https://5stack.gg`;
 
 export default defineNuxtConfig({
   ssr: false,
@@ -14,44 +15,45 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+      charset: "utf-8",
+      viewport:
+        "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
       meta: [
-        { name: 'robots', content: 'index, follow' },
-        { name: 'title', content: title },
-        { name: 'description', content: description },
-        { name: 'site_name', content: '5Stack' },
-      
-        { property: 'og:locale', content: 'en' },
-        { property: 'og:type', content: 'website' },
-        
-        { property: 'og:title', content: title },
-        { property: 'og:site_name', content: '5Stack' },
-      
-        { property: 'og:url', content: url },
-        { property: 'og:image', content: `${url}/_ipx/_/favicon/512.png` },
+        { name: "robots", content: "index, follow" },
+        { name: "title", content: title },
+        { name: "description", content: description },
+        { name: "site_name", content: "5Stack" },
+
+        { property: "og:locale", content: "en" },
+        { property: "og:type", content: "website" },
+
+        { property: "og:title", content: title },
+        { property: "og:site_name", content: "5Stack" },
+
+        { property: "og:url", content: url },
+        { property: "og:image", content: `${url}/_ipx/_/favicon/512.png` },
       ],
-    }
+    },
   },
 
   i18n: {
-    strategy: 'no_prefix',
+    strategy: "no_prefix",
     locales: [
       {
-        code: 'en',
-        file: './i18n.ts'
+        code: "en",
+        file: "./i18n.ts",
       },
       {
-        code: 'es',
-        file: './i18n.ts'
+        code: "es",
+        file: "./i18n.ts",
       },
       {
-        code: 'fr',
-        file: './i18n.ts'
-      }
+        code: "fr",
+        file: "./i18n.ts",
+      },
     ],
     lazy: true,
-    defaultLocale: 'en'
+    defaultLocale: "en",
   },
 
   runtimeConfig: {

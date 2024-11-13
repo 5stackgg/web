@@ -8,9 +8,13 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import LastTenWins from "~/components/charts/LastTenWins.vue";
 import LastTenLosses from "~/components/charts/LastTenLosses.vue";
 import formatStatValue from "~/utilities/formatStatValue";
+import SanctionPlayer from "~/components/SanctionPlayer.vue";
+import PlayerSanctions from "~/components/PlayerSanctions.vue";
 </script>
 
 <template>
+  <PlayerSanctions class="my-4" :playerId="$route.params.id" />
+
   <div class="flex-grow flex flex-col gap-4" v-if="player">
     <PageHeading>
       <template #title>
@@ -25,38 +29,46 @@ import formatStatValue from "~/utilities/formatStatValue";
       </template>
 
       <template #actions>
-        <template v-if="isAdmin && player.steam_id !== me.steam_id">
-          <Popover>
-            <PopoverTrigger as-child>
-              <Button variant="outline" class="ml-auto">
-                <span class="capitalize">{{
-                  player.role.replace("_", " ")
-                }}</span>
-                <ChevronDownIcon class="ml-2 h-4 w-4 text-muted-foreground" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent class="p-0" align="end">
-              <Command v-model="memberRole">
-                <CommandList>
-                  <CommandGroup>
-                    <CommandItem
-                      :value="role"
-                      class="flex flex-col items-start px-4 py-2 cursor-pointer"
-                      v-for="role of e_player_roles_enum"
-                    >
-                      <span class="capitalize">{{
-                        role.replace("_", " ")
-                      }}</span>
-                    </CommandItem>
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </template>
-        <template v-else-if="player.role !== e_player_roles_enum.user">
-          <Badge class="capitalize">{{ player.role.replace("_", " ") }}</Badge>
-        </template>
+        <div class="flex gap-2">
+          <template v-if="player.steam_id !== me.steam_id">
+            <SanctionPlayer :player="player" />
+          </template>
+
+          <template v-if="isAdmin && player.steam_id !== me.steam_id">
+            <Popover>
+              <PopoverTrigger as-child>
+                <Button variant="outline" class="ml-auto">
+                  <span class="capitalize">{{
+                    player.role.replace("_", " ")
+                  }}</span>
+                  <ChevronDownIcon class="ml-2 h-4 w-4 text-muted-foreground" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent class="p-0" align="end">
+                <Command v-model="memberRole">
+                  <CommandList>
+                    <CommandGroup>
+                      <CommandItem
+                        :value="role"
+                        class="flex flex-col items-start px-4 py-2 cursor-pointer"
+                        v-for="role of e_player_roles_enum"
+                      >
+                        <span class="capitalize">{{
+                          role.replace("_", " ")
+                        }}</span>
+                      </CommandItem>
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </template>
+          <template v-else-if="player.role !== e_player_roles_enum.user">
+            <Badge class="capitalize">{{
+              player.role.replace("_", " ")
+            }}</Badge>
+          </template>
+        </div>
       </template>
     </PageHeading>
 
@@ -159,6 +171,7 @@ import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { playerFields } from "~/graphql/playerFields";
 
 export default {
   apollo: {
@@ -170,11 +183,8 @@ export default {
               steam_id: $("playerId", "bigint!"),
             },
             {
+              ...playerFields,
               role: true,
-              name: true,
-              steam_id: true,
-              country: true,
-              avatar_url: true,
               profile_url: true,
               kills_aggregate: [
                 {

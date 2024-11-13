@@ -212,6 +212,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { playerFields } from "~/graphql/playerFields";
 
 /**
  * https://codepen.io/eth0lo/pen/dyyrGww
@@ -249,12 +250,7 @@ export default {
               can_close_registration: true,
               min_players_per_lineup: true,
               max_players_per_lineup: true,
-              admin: {
-                name: true,
-                country: true,
-                steam_id: true,
-                avatar_url: true,
-              },
+              admin: playerFields,
               options: {
                 id: true,
                 type: true,
@@ -284,12 +280,7 @@ export default {
               organizers: [
                 {},
                 {
-                  organizer: {
-                    name: true,
-                    country: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
+                  organizer: playerFields,
                 },
               ],
               teams: [
@@ -434,12 +425,7 @@ export default {
                 {},
                 {
                   id: true,
-                  player: {
-                    name: true,
-                    country: true,
-                    steam_id: true,
-                    avatar_url: true,
-                  },
+                  player: playerFields,
                 },
               ],
             }),

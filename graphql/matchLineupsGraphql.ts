@@ -1,4 +1,5 @@
 import { $, e_utility_types_enum, order_by, Selector } from "~/generated/zeus";
+import { playerFields } from "~/graphql/playerFields";
 
 export const matchLineups = Selector("match_lineups")({
   id: true,
@@ -11,11 +12,7 @@ export const matchLineups = Selector("match_lineups")({
   can_update_lineup: true,
   is_picking_map_veto: true,
   is_picking_region_veto: true,
-  coach: {
-    name: true,
-    steam_id: true,
-    avatar_url: true,
-  },
+  coach: playerFields,
   captain: {
     placeholder_name: true,
     player: {
@@ -42,10 +39,7 @@ export const matchLineups = Selector("match_lineups")({
       checked_in: true,
       placeholder_name: true,
       player: {
-        name: true,
-        steam_id: true,
-        avatar_url: true,
-        country: true,
+        ...playerFields,
         kills_aggregate: [
           {
             where: {

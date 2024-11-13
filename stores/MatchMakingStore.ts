@@ -3,6 +3,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { e_server_regions_enum, e_match_types_enum, $ } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
+import { playerFields } from "~/graphql/playerFields";
 
 export const useMatchMakingStore = defineStore("match-making", () => {
   const playersOnline = ref([]);
@@ -49,12 +50,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
               },
             },
           },
-          {
-            name: true,
-            steam_id: true,
-            avatar_url: true,
-            country: true,
-          },
+          playerFields,
         ],
       }),
       variables: {

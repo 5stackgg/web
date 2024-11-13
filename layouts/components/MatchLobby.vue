@@ -17,7 +17,7 @@ import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
           <template v-else>
             <Avatar shape="square">
               <AvatarFallback>
-              {{ member.placeholder_name.slice(0, 2) }}
+                {{ member.placeholder_name.slice(0, 2) }}
               </AvatarFallback>
             </Avatar>
           </template>
@@ -42,7 +42,7 @@ import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
           <template v-else>
             <Avatar shape="square">
               <AvatarFallback>
-              {{ member.placeholder_name.slice(0, 2) }}
+                {{ member.placeholder_name.slice(0, 2) }}
               </AvatarFallback>
             </Avatar>
           </template>

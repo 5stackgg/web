@@ -1,13 +1,11 @@
 import { Selector } from "@/generated/zeus";
+import { playerFields } from "./playerFields";
 
 export const meFields = Selector("Players")({
-  steam_id: true,
+  ...playerFields,
   role: true,
-  name: true,
-  country: true,
   profile_url: true,
   matchmaking_cooldown: true,
-  avatar_url: true,
   teams: [
     {},
     {

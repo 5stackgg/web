@@ -1,3 +1,5 @@
+import { playerFields } from "~/graphql/playerFields";
+
 export default {
   id: true,
   name: true,
@@ -11,12 +13,7 @@ export default {
     {},
     {
       role: true,
-      player: {
-        name: true,
-        steam_id: true,
-        avatar_url: true,
-        country: true,
-      },
+      player: playerFields,
     },
   ],
   roster_aggregate: [

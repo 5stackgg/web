@@ -1,5 +1,6 @@
 import { order_by, Selector } from "@/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
+import { playerFields } from "~/graphql/playerFields";
 
 export const simpleMatchFields = Selector("matches")({
   id: true,
@@ -41,11 +42,7 @@ export const simpleMatchFields = Selector("matches")({
       {
         checked_in: true,
         placeholder_name: true,
-        player: {
-          name: true,
-          steam_id: true,
-          avatar_url: true,
-        },
+        player: playerFields,
       },
     ],
   },
@@ -58,11 +55,7 @@ export const simpleMatchFields = Selector("matches")({
       {
         checked_in: true,
         placeholder_name: true,
-        player: {
-          name: true,
-          steam_id: true,
-          avatar_url: true,
-        },
+        player: playerFields,
       },
     ],
   },

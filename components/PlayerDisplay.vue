@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
+import { Ban, MicOff, MessageSquareOff } from "lucide-vue-next";
 </script>
-
 <template>
   <div
     class="grid gap-2"
@@ -60,6 +60,43 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
                 :country="player.country"
               />
               <div v-if="showName">{{ player.name }}</div>
+              <div class="flex gap-2">
+                <TooltipProvider v-if="player.is_banned">
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Ban
+                        class="w-4 h-4 text-red-500"
+                        v-if="player.is_banned"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>Player is banned</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <template v-else>
+                  <TooltipProvider v-if="player.is_muted">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <MicOff
+                          class="w-4 h-4 text-red-500"
+                          v-if="player.is_muted"
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Player is muted</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider v-if="player.is_gagged">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <MessageSquareOff
+                          class="w-4 h-4 text-red-500"
+                          v-if="player.is_gagged"
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Player is gagged</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </template>
+              </div>
             </div>
             <slot name="name-postfix"></slot>
           </div>

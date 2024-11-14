@@ -19,11 +19,14 @@ export const useSearchStore = defineStore("searchStore", () => {
         name: string;
         avatar_url: string;
         country: string;
+        is_banned: boolean;
+        is_muted: boolean;
+        is_gagged: boolean;
       }>,
     ) => {
       miniSearch = new MiniSearch({
         fields: ["name", "steam_id"],
-        storeFields: ["steam_id", "name", "avatar_url", "country"],
+        storeFields: ["steam_id", "name", "avatar_url", "country", "is_banned", "is_muted", "is_gagged"],
         searchOptions: {
           fuzzy: 0.2,
           prefix: true,
@@ -71,6 +74,9 @@ export const useSearchStore = defineStore("searchStore", () => {
           name: result.name,
           avatar_url: result.avatar_url,
           country: result.country,
+          is_banned: result.is_banned,
+          is_muted: result.is_muted,
+          is_gagged: result.is_gagged,
         };
       });
     },

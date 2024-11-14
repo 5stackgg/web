@@ -53,7 +53,7 @@
     "graphql-ws": "^5.16.0",
     "graphql-zeus": "^7.0.1",
     "javascript-time-ago": "^2.5.10",
-    "lucide-vue-next": "^0.454.0",
+    "lucide-vue-next": "^0.456.0",
     "minisearch": "^7.1.0",
     "node-fetch": "^3.3.2",
     "pinia": "^2.2.0",

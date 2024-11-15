@@ -98,18 +98,15 @@ export default {
       return `rgba(${r},${g},${b},${alpha})`;
     },
     calculateCpuUsagePercentage(
-      cpuTimeNano: number,
-      elapsedTimeSeconds: number,
+      nanocores: number,
       numCPUs: number,
     ) {
-      // Convert nanoseconds to seconds
-      const cpuTimeSeconds = cpuTimeNano / 1_000_000_000;
-
-      // Calculate CPU usage percentage
-      const cpuUsagePercentage =
-        (cpuTimeSeconds / (elapsedTimeSeconds * numCPUs)) * 100;
-
-      return cpuUsagePercentage;
+      // Convert nanocores to percentage
+      // nanocores represents billionths of a CPU core
+      // First convert to core usage (divide by billion)
+      // Then multiply by 100 to get percentage
+      // Then divide by number of CPUs to get percentage of total CPU capacity
+      return (nanocores / 1_000_000_000) * 100 / numCPUs;
     },
   },
   computed: {
@@ -125,7 +122,6 @@ export default {
           data: this.metrics.map((metric: any) => {
             return this.calculateCpuUsagePercentage(
               metric.used,
-              metric.window || 10,
               metric.total,
             ).toFixed(2);
           }),

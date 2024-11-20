@@ -26,7 +26,15 @@ export const useSearchStore = defineStore("searchStore", () => {
     ) => {
       miniSearch = new MiniSearch({
         fields: ["name", "steam_id"],
-        storeFields: ["steam_id", "name", "avatar_url", "country", "is_banned", "is_muted", "is_gagged"],
+        storeFields: [
+          "steam_id",
+          "name",
+          "avatar_url",
+          "country",
+          "is_banned",
+          "is_muted",
+          "is_gagged",
+        ],
         searchOptions: {
           fuzzy: 0.2,
           prefix: true,

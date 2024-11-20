@@ -7,7 +7,15 @@ import TimeAgo from "~/components/TimeAgo.vue";
 
 <template>
   <div v-if="matchMakingAllowed">
-    <template v-if="me.matchmaking_cooldown">
+    <template v-if="me.is_banned">
+      <Alert class="my-3">
+        <AlertDescription class="flex items-center gap-2">
+          <AlertTriangle class="h-4 w-4" />
+          You are banned from matchmaking
+        </AlertDescription>
+      </Alert>
+    </template>
+    <template v-else-if="me.matchmaking_cooldown">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
@@ -86,6 +94,7 @@ export default {
   data() {
     return {
       match: undefined,
+      playerSanctions: [],
     };
   },
   computed: {

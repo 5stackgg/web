@@ -97,16 +97,13 @@ export default {
       const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
       return `rgba(${r},${g},${b},${alpha})`;
     },
-    calculateCpuUsagePercentage(
-      nanocores: number,
-      numCPUs: number,
-    ) {
+    calculateCpuUsagePercentage(nanocores: number, numCPUs: number) {
       // Convert nanocores to percentage
       // nanocores represents billionths of a CPU core
       // First convert to core usage (divide by billion)
       // Then multiply by 100 to get percentage
       // Then divide by number of CPUs to get percentage of total CPU capacity
-      return (nanocores / 1_000_000_000) * 100 / numCPUs;
+      return ((nanocores / 1_000_000_000) * 100) / numCPUs;
     },
   },
   computed: {

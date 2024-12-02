@@ -3,11 +3,15 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { meFields } from "~/graphql/meGraphql";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { e_player_roles_enum } from "~/generated/zeus";
+import {
+  e_player_roles_enum,
+  type GraphQLTypes,
+  type InputType,
+} from "~/generated/zeus";
 import socket from "~/web-sockets/Socket";
 
 export const useAuthStore = defineStore("auth", () => {
-  const me = ref<typeof meFields>();
+  const me = ref<InputType<GraphQLTypes["players"], typeof meFields>>();
   const hasDiscordLinked = ref<boolean>(false);
 
   // TODO - move the listens to the socket store ?
@@ -53,8 +57,7 @@ export const useAuthStore = defineStore("auth", () => {
 
         subscription.subscribe({
           next: ({ data }) => {
-            me.value = data.players_by_pk;
-
+            me.value = data?.players_by_pk;
             useMatchLobbyStore().subscribeToMyMatches();
             resolve(true);
           },

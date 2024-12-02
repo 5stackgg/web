@@ -1,6 +1,6 @@
 import { Selector } from "@/generated/zeus";
 
-export const playerFields = Selector("Players")({
+export const playerFields = Selector("players")({
   name: true,
   country: true,
   steam_id: true,

@@ -90,6 +90,14 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    const playerNameRegistration = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.player_name_registration",
+        )?.value === "true"
+      );
+    });
+
     const availableRegions = ref([]);
 
     const subscribeToAvailableRegions = async () => {
@@ -129,6 +137,7 @@ export const useApplicationSettingsStore = defineStore(
       tournamentCreateRole,
       supportsDiscordBot,
       supportsGameServerNodes,
+      playerNameRegistration,
     };
   },
 );

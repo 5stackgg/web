@@ -10,6 +10,7 @@ import LastTenLosses from "~/components/charts/LastTenLosses.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
+import PlayerChangeName from "~/components/PlayerChangeName.vue";
 </script>
 
 <template>
@@ -18,6 +19,7 @@ import PlayerSanctions from "~/components/PlayerSanctions.vue";
   <div class="flex-grow flex flex-col gap-4" v-if="player">
     <PageHeading>
       <template #title>
+        <PlayerChangeName :player="player" />
         <PlayerDisplay :player="player" size="xl" v-if="player"></PlayerDisplay>
         <a
           :href="player.profile_url"

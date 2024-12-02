@@ -85,16 +85,31 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
                   {{ notification.title }}
                 </h3>
 
-                <p
-                  class="notification"
-                  :class="[
-                    'text-sm mb-2',
-                    notification.is_read
-                      ? 'text-muted-foreground/70'
-                      : 'text-muted-foreground',
-                  ]"
-                  v-html="notification.message"
-                ></p>
+                <template v-if="notification.type !== 'NameChangeRequest'">
+                  <p
+                    class="notification"
+                    :class="[
+                      'text-sm mb-2',
+                      notification.is_read
+                        ? 'text-muted-foreground/70'
+                        : 'text-muted-foreground',
+                    ]"
+                    v-html="notification.message"
+                  ></p>
+                </template>
+                <template v-else>
+                  <p
+                    class="notification"
+                    :class="[
+                      'text-sm mb-2',
+                      notification.is_read
+                        ? 'text-muted-foreground/70'
+                        : 'text-muted-foreground',
+                    ]"
+                  >
+                    {{ notification.message }}
+                  </p>
+                </template>
 
                 <div class="flex justify-between items-center">
                   <span
@@ -107,14 +122,29 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
                   >
                     <TimeAgo :date="notification.created_at" />
                   </span>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    @click="dismissNotification(notification.id)"
-                    v-if="!notification.is_read"
-                  >
-                    Dismiss
-                  </Button>
+                  <template v-if="notification.actions">
+                    <div class="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        @click="handleAction(notification, action)"
+                        :key="index"
+                        v-for="(action, index) of notification.actions"
+                      >
+                        {{ action.label }}
+                      </Button>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      @click="dismissNotification(notification.id)"
+                      v-if="!notification.is_read"
+                    >
+                      Dismiss
+                    </Button>
+                  </template>
                 </div>
               </div>
             </template>
@@ -150,7 +180,24 @@ export default {
       isOpen: false,
       team_invites: [],
       tournament_team_invites: [],
-      notifications: [],
+      notifications: [] as Array<{
+        id: string;
+        title: string;
+        message: string;
+        steam_id: string;
+        type: string;
+        entity_id: string;
+        is_read: boolean;
+        created_at: string;
+        actions?: Array<{
+          graphql: {
+            type: string;
+            action: string;
+            selection: Record<string, any>;
+            variables?: Record<string, any>;
+          };
+        }>;
+      }>,
     };
   },
   apollo: {
@@ -282,6 +329,7 @@ export default {
               entity_id: true,
               is_read: true,
               created_at: true,
+              actions: true,
             },
           ],
         }),
@@ -297,6 +345,27 @@ export default {
     },
   },
   methods: {
+    async handleAction(notification, action) {
+      if (action.graphql.action) {
+        const {
+          type,
+          action: actionName,
+          selection,
+          variables,
+        } = action.graphql;
+        switch (type) {
+          case "mutation":
+            await this.$apollo.mutate({
+              mutation: generateMutation({
+                [actionName]: [variables, selection],
+              }),
+            });
+            break;
+        }
+      }
+
+      await this.deleteNotification(notification.id);
+    },
     async dismissNotification(id: string) {
       await this.$apollo.mutate({
         mutation: generateMutation({

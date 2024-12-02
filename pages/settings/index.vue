@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Check, ChevronsUpDown } from "lucide-vue-next";
-
+import PlayerChangeName from "~/components/PlayerChangeName.vue";
 definePageMeta({
-  layout: "settings",
+  layout: "profile-settings",
 });
 </script>
 
@@ -25,9 +25,12 @@ definePageMeta({
 
     <FormField v-slot="{ componentField }" name="name">
       <FormItem>
-        <FormLabel>Name</FormLabel>
+        <FormLabel class="flex items-center gap-2">
+          Name
+          <PlayerChangeName :player="me" />
+        </FormLabel>
         <FormControl>
-          <Input v-bind="componentField" />
+          <Input v-bind="componentField" readonly disabled />
           <FormMessage />
         </FormControl>
       </FormItem>

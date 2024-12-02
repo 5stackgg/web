@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "settings",
+  layout: "profile-settings",
 });
 
 import { useForm } from "vee-validate";

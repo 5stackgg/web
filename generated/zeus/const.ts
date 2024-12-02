@@ -3681,6 +3681,9 @@ export const AllTypesProps: Record<string,any> = {
 		acceptInvite:{
 			invite_id:"uuid"
 		},
+		approveNameChange:{
+			steam_id:"bigint"
+		},
 		callForOrganizer:{
 
 		},
@@ -4498,6 +4501,12 @@ export const AllTypesProps: Record<string,any> = {
 		randomizeTeams:{
 			match_id:"uuid"
 		},
+		registerName:{
+
+		},
+		requestNameChange:{
+			steam_id:"bigint"
+		},
 		scheduleMatch:{
 			match_id:"uuid",
 			time:"timestamptz"
@@ -4898,12 +4907,22 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"migration_hashes_hashes_updates"
 		},
 		update_notifications:{
+			_append:"notifications_append_input",
+			_delete_at_path:"notifications_delete_at_path_input",
+			_delete_elem:"notifications_delete_elem_input",
+			_delete_key:"notifications_delete_key_input",
 			_inc:"notifications_inc_input",
+			_prepend:"notifications_prepend_input",
 			_set:"notifications_set_input",
 			where:"notifications_bool_exp"
 		},
 		update_notifications_by_pk:{
+			_append:"notifications_append_input",
+			_delete_at_path:"notifications_delete_at_path_input",
+			_delete_elem:"notifications_delete_elem_input",
+			_delete_key:"notifications_delete_key_input",
 			_inc:"notifications_inc_input",
+			_prepend:"notifications_prepend_input",
 			_set:"notifications_set_input",
 			pk_columns:"notifications_pk_columns_input"
 		},
@@ -5200,6 +5219,11 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"v_match_captains_updates"
 		}
 	},
+	notifications:{
+		actions:{
+
+		}
+	},
 	notifications_aggregate_bool_exp:{
 		bool_and:"notifications_aggregate_bool_exp_bool_and",
 		bool_or:"notifications_aggregate_bool_exp_bool_or",
@@ -5238,6 +5262,9 @@ export const AllTypesProps: Record<string,any> = {
 		var_samp:"notifications_var_samp_order_by",
 		variance:"notifications_variance_order_by"
 	},
+	notifications_append_input:{
+		actions:"jsonb"
+	},
 	notifications_arr_rel_insert_input:{
 		data:"notifications_insert_input",
 		on_conflict:"notifications_on_conflict"
@@ -5249,6 +5276,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"notifications_bool_exp",
 		_not:"notifications_bool_exp",
 		_or:"notifications_bool_exp",
+		actions:"jsonb_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		deleted_at:"timestamptz_comparison_exp",
 		entity_id:"String_comparison_exp",
@@ -5262,10 +5290,20 @@ export const AllTypesProps: Record<string,any> = {
 		type:"e_notification_types_enum_comparison_exp"
 	},
 	notifications_constraint: "enum" as const,
+	notifications_delete_at_path_input:{
+
+	},
+	notifications_delete_elem_input:{
+
+	},
+	notifications_delete_key_input:{
+
+	},
 	notifications_inc_input:{
 		steam_id:"bigint"
 	},
 	notifications_insert_input:{
+		actions:"jsonb",
 		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		id:"uuid",
@@ -5298,6 +5336,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"notifications_bool_exp"
 	},
 	notifications_order_by:{
+		actions:"order_by",
 		created_at:"order_by",
 		deleted_at:"order_by",
 		entity_id:"order_by",
@@ -5313,10 +5352,14 @@ export const AllTypesProps: Record<string,any> = {
 	notifications_pk_columns_input:{
 		id:"uuid"
 	},
+	notifications_prepend_input:{
+		actions:"jsonb"
+	},
 	notifications_select_column: "enum" as const,
 	notifications_select_column_notifications_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	notifications_select_column_notifications_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	notifications_set_input:{
+		actions:"jsonb",
 		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		id:"uuid",
@@ -5338,6 +5381,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	notifications_stream_cursor_value_input:{
+		actions:"jsonb",
 		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		id:"uuid",
@@ -5350,7 +5394,12 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	notifications_update_column: "enum" as const,
 	notifications_updates:{
+		_append:"notifications_append_input",
+		_delete_at_path:"notifications_delete_at_path_input",
+		_delete_elem:"notifications_delete_elem_input",
+		_delete_key:"notifications_delete_key_input",
 		_inc:"notifications_inc_input",
+		_prepend:"notifications_prepend_input",
 		_set:"notifications_set_input",
 		where:"notifications_bool_exp"
 	},
@@ -7097,6 +7146,7 @@ export const AllTypesProps: Record<string,any> = {
 		multi_kills:"v_player_multi_kills_bool_exp",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_bool_exp",
 		name:"String_comparison_exp",
+		name_registered:"Boolean_comparison_exp",
 		notifications:"notifications_bool_exp",
 		notifications_aggregate:"notifications_aggregate_bool_exp",
 		objectives:"player_objectives_bool_exp",
@@ -7190,6 +7240,7 @@ export const AllTypesProps: Record<string,any> = {
 		matchmaking_cooldown:"order_by",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_order_by",
 		name:"order_by",
+		name_registered:"order_by",
 		notifications_aggregate:"notifications_aggregate_order_by",
 		objectives_aggregate:"player_objectives_aggregate_order_by",
 		owned_teams_aggregate:"teams_aggregate_order_by",
@@ -13203,6 +13254,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	mutation_root:{
 		acceptInvite:"SuccessOutput",
+		approveNameChange:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
@@ -13438,6 +13490,8 @@ export const ReturnTypes: Record<string,any> = {
 		leaveLineup:"SuccessOutput",
 		logout:"SuccessOutput",
 		randomizeTeams:"SuccessOutput",
+		registerName:"SuccessOutput",
+		requestNameChange:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
@@ -13615,6 +13669,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_match_captains_many:"v_match_captains_mutation_response"
 	},
 	notifications:{
+		actions:"jsonb",
 		created_at:"timestamptz",
 		deleted_at:"timestamptz",
 		entity_id:"String",
@@ -14551,6 +14606,7 @@ export const ReturnTypes: Record<string,any> = {
 		multi_kills:"v_player_multi_kills",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate",
 		name:"String",
+		name_registered:"Boolean",
 		notifications:"notifications",
 		notifications_aggregate:"notifications_aggregate",
 		objectives:"player_objectives",

@@ -2,9 +2,11 @@
 import AppNav from "~/layouts/components/AppNav.vue";
 import AlertsContainer from "~/layouts/components/AlertsContainer.vue";
 import MatchMakingConfirm from "~/components/match-making/MatchMakingConfirm.vue";
+import PlayerNameRegistration from "~/components/PlayerNameRegistration.vue";
 </script>
 
 <template>
+  <PlayerNameRegistration></PlayerNameRegistration>
   <MatchMakingConfirm></MatchMakingConfirm>
   <AlertsContainer></AlertsContainer>
   <div class="flex min-h-screen w-full flex-col">

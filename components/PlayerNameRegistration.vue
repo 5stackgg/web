@@ -16,7 +16,7 @@ import { AlertCircle } from "lucide-vue-next";
         <AlertDialogTitle>Register your name</AlertDialogTitle>
         <AlertDialogDescription class="space-y-4">
           <p>
-            This name will be sued for all matches / tournaments you participate
+            This name will be used for all matches / tournaments you participate
             in.
           </p>
 

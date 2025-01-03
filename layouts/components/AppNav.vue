@@ -9,7 +9,7 @@ import {
   LineChart,
   Server,
 } from "lucide-vue-next";
-import { Swords, ShieldHalf, Trophy } from "lucide-vue-next";
+import { Swords, ShieldHalf, Trophy, Globe } from "lucide-vue-next";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import { Users } from "lucide-vue-next";
@@ -105,6 +105,20 @@ import InstallPWA from "~/components/InstallPWA.vue";
           <SidebarGroupLabel>Administration</SidebarGroupLabel>
 
           <SidebarMenu>
+            <SidebarMenuItem tooltip="Regions">
+              <SidebarMenuButton as-child tooltip="Regions">
+                <NuxtLink
+                  :to="{ name: 'regions' }"
+                  :class="{
+                    'router-link-active': isRouteActive('regions'),
+                  }"
+                >
+                  <Globe />
+                  Regions
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <Collapsible
               as-child
               :default-open="true"

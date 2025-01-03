@@ -164,6 +164,12 @@ export default {
   },
   methods: {
     async updateCreateServer() {
+      const { valid } = await this.form.validate();
+
+      if (!valid) {
+        return;
+      }
+
       if (this.server) {
         await this.$apollo.mutate({
           mutation: generateMutation({

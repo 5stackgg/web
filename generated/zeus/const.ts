@@ -793,82 +793,6 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_sanction_types_set_input",
 		where:"e_sanction_types_bool_exp"
 	},
-	e_server_regions:{
-		game_server_nodes:{
-			distinct_on:"game_server_nodes_select_column",
-			order_by:"game_server_nodes_order_by",
-			where:"game_server_nodes_bool_exp"
-		},
-		game_server_nodes_aggregate:{
-			distinct_on:"game_server_nodes_select_column",
-			order_by:"game_server_nodes_order_by",
-			where:"game_server_nodes_bool_exp"
-		}
-	},
-	e_server_regions_aggregate_fields:{
-		count:{
-			columns:"e_server_regions_select_column"
-		}
-	},
-	e_server_regions_bool_exp:{
-		_and:"e_server_regions_bool_exp",
-		_not:"e_server_regions_bool_exp",
-		_or:"e_server_regions_bool_exp",
-		available_server_count:"Int_comparison_exp",
-		description:"String_comparison_exp",
-		game_server_nodes:"game_server_nodes_bool_exp",
-		game_server_nodes_aggregate:"game_server_nodes_aggregate_bool_exp",
-		status:"String_comparison_exp",
-		total_server_count:"Int_comparison_exp",
-		value:"String_comparison_exp"
-	},
-	e_server_regions_constraint: "enum" as const,
-	e_server_regions_enum: "enum" as const,
-	e_server_regions_enum_comparison_exp:{
-		_eq:"e_server_regions_enum",
-		_in:"e_server_regions_enum",
-		_neq:"e_server_regions_enum",
-		_nin:"e_server_regions_enum"
-	},
-	e_server_regions_insert_input:{
-		game_server_nodes:"game_server_nodes_arr_rel_insert_input"
-	},
-	e_server_regions_obj_rel_insert_input:{
-		data:"e_server_regions_insert_input",
-		on_conflict:"e_server_regions_on_conflict"
-	},
-	e_server_regions_on_conflict:{
-		constraint:"e_server_regions_constraint",
-		update_columns:"e_server_regions_update_column",
-		where:"e_server_regions_bool_exp"
-	},
-	e_server_regions_order_by:{
-		available_server_count:"order_by",
-		description:"order_by",
-		game_server_nodes_aggregate:"game_server_nodes_aggregate_order_by",
-		status:"order_by",
-		total_server_count:"order_by",
-		value:"order_by"
-	},
-	e_server_regions_pk_columns_input:{
-
-	},
-	e_server_regions_select_column: "enum" as const,
-	e_server_regions_set_input:{
-
-	},
-	e_server_regions_stream_cursor_input:{
-		initial_value:"e_server_regions_stream_cursor_value_input",
-		ordering:"cursor_ordering"
-	},
-	e_server_regions_stream_cursor_value_input:{
-
-	},
-	e_server_regions_update_column: "enum" as const,
-	e_server_regions_updates:{
-		_set:"e_server_regions_set_input",
-		where:"e_server_regions_bool_exp"
-	},
 	e_sides:{
 		match_map_lineup_1:{
 			distinct_on:"match_maps_select_column",
@@ -1421,33 +1345,34 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"game_server_nodes_bool_exp",
 		available_server_count:"Int_comparison_exp",
 		build_id:"Int_comparison_exp",
-		e_region:"e_server_regions_bool_exp",
+		e_region:"server_regions_bool_exp",
 		e_status:"e_game_server_node_statuses_bool_exp",
 		enabled:"Boolean_comparison_exp",
 		end_port_range:"Int_comparison_exp",
 		id:"String_comparison_exp",
+		is_lan:"Boolean_comparison_exp",
 		lan_ip:"inet_comparison_exp",
 		node_ip:"inet_comparison_exp",
 		public_ip:"inet_comparison_exp",
-		region:"e_server_regions_enum_comparison_exp",
+		region:"String_comparison_exp",
 		servers:"servers_bool_exp",
 		servers_aggregate:"servers_aggregate_bool_exp",
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp",
 		token:"String_comparison_exp",
-		total_server_count:"Int_comparison_exp"
+		total_server_count:"Int_comparison_exp",
+		use_lan_ip:"Boolean_comparison_exp"
 	},
 	game_server_nodes_constraint: "enum" as const,
 	game_server_nodes_inc_input:{
 
 	},
 	game_server_nodes_insert_input:{
-		e_region:"e_server_regions_obj_rel_insert_input",
+		e_region:"server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
 		lan_ip:"inet",
 		node_ip:"inet",
 		public_ip:"inet",
-		region:"e_server_regions_enum",
 		servers:"servers_arr_rel_insert_input",
 		status:"e_game_server_node_statuses_enum"
 	},
@@ -1455,6 +1380,7 @@ export const AllTypesProps: Record<string,any> = {
 		build_id:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
+		region:"order_by",
 		start_port_range:"order_by",
 		token:"order_by"
 	},
@@ -1462,6 +1388,7 @@ export const AllTypesProps: Record<string,any> = {
 		build_id:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
+		region:"order_by",
 		start_port_range:"order_by",
 		token:"order_by"
 	},
@@ -1477,11 +1404,12 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_order_by:{
 		available_server_count:"order_by",
 		build_id:"order_by",
-		e_region:"e_server_regions_order_by",
+		e_region:"server_regions_order_by",
 		e_status:"e_game_server_node_statuses_order_by",
 		enabled:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
+		is_lan:"order_by",
 		lan_ip:"order_by",
 		node_ip:"order_by",
 		public_ip:"order_by",
@@ -1490,7 +1418,8 @@ export const AllTypesProps: Record<string,any> = {
 		start_port_range:"order_by",
 		status:"order_by",
 		token:"order_by",
-		total_server_count:"order_by"
+		total_server_count:"order_by",
+		use_lan_ip:"order_by"
 	},
 	game_server_nodes_pk_columns_input:{
 
@@ -1502,7 +1431,6 @@ export const AllTypesProps: Record<string,any> = {
 		lan_ip:"inet",
 		node_ip:"inet",
 		public_ip:"inet",
-		region:"e_server_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_stddev_order_by:{
@@ -1528,7 +1456,6 @@ export const AllTypesProps: Record<string,any> = {
 		lan_ip:"inet",
 		node_ip:"inet",
 		public_ip:"inet",
-		region:"e_server_regions_enum",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_sum_order_by:{
@@ -3105,7 +3032,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid_comparison_exp",
 		match_lineup:"match_lineups_bool_exp",
 		match_lineup_id:"uuid_comparison_exp",
-		region:"e_server_regions_enum_comparison_exp",
+		region:"String_comparison_exp",
 		type:"e_veto_pick_types_enum_comparison_exp"
 	},
 	match_region_veto_picks_constraint: "enum" as const,
@@ -3116,20 +3043,21 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_lineup:"match_lineups_obj_rel_insert_input",
 		match_lineup_id:"uuid",
-		region:"e_server_regions_enum",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_max_order_by:{
 		created_at:"order_by",
 		id:"order_by",
 		match_id:"order_by",
-		match_lineup_id:"order_by"
+		match_lineup_id:"order_by",
+		region:"order_by"
 	},
 	match_region_veto_picks_min_order_by:{
 		created_at:"order_by",
 		id:"order_by",
 		match_id:"order_by",
-		match_lineup_id:"order_by"
+		match_lineup_id:"order_by",
+		region:"order_by"
 	},
 	match_region_veto_picks_on_conflict:{
 		constraint:"match_region_veto_picks_constraint",
@@ -3155,7 +3083,6 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_lineup_id:"uuid",
-		region:"e_server_regions_enum",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_stream_cursor_input:{
@@ -3167,7 +3094,6 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		match_id:"uuid",
 		match_lineup_id:"uuid",
-		region:"e_server_regions_enum",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_update_column: "enum" as const,
@@ -3355,7 +3281,7 @@ export const AllTypesProps: Record<string,any> = {
 		demos:"match_map_demos_bool_exp",
 		demos_aggregate:"match_map_demos_aggregate_bool_exp",
 		e_match_status:"e_match_status_bool_exp",
-		e_region:"e_server_regions_bool_exp",
+		e_region:"server_regions_bool_exp",
 		ended_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
@@ -3399,7 +3325,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
 		player_utility:"player_utility_bool_exp",
 		player_utility_aggregate:"player_utility_aggregate_bool_exp",
-		region:"e_server_regions_enum_comparison_exp",
+		region:"String_comparison_exp",
 		region_veto_picking_lineup_id:"uuid_comparison_exp",
 		region_veto_picks:"match_region_veto_picks_bool_exp",
 		region_veto_picks_aggregate:"match_region_veto_picks_aggregate_bool_exp",
@@ -3428,7 +3354,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_status:"e_match_status_obj_rel_insert_input",
-		e_region:"e_server_regions_obj_rel_insert_input",
+		e_region:"server_regions_obj_rel_insert_input",
 		ended_at:"timestamptz",
 		id:"uuid",
 		lineup_1:"match_lineups_obj_rel_insert_input",
@@ -3448,7 +3374,6 @@ export const AllTypesProps: Record<string,any> = {
 		player_objectives:"player_objectives_arr_rel_insert_input",
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		player_utility:"player_utility_arr_rel_insert_input",
-		region:"e_server_regions_enum",
 		region_veto_picks:"match_region_veto_picks_arr_rel_insert_input",
 		scheduled_at:"timestamptz",
 		server:"servers_obj_rel_insert_input",
@@ -3470,6 +3395,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"order_by",
 		organizer_steam_id:"order_by",
 		password:"order_by",
+		region:"order_by",
 		scheduled_at:"order_by",
 		server_id:"order_by",
 		started_at:"order_by",
@@ -3486,6 +3412,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"order_by",
 		organizer_steam_id:"order_by",
 		password:"order_by",
+		region:"order_by",
 		scheduled_at:"order_by",
 		server_id:"order_by",
 		started_at:"order_by",
@@ -3513,7 +3440,7 @@ export const AllTypesProps: Record<string,any> = {
 		current_match_map_id:"order_by",
 		demos_aggregate:"match_map_demos_aggregate_order_by",
 		e_match_status:"e_match_status_order_by",
-		e_region:"e_server_regions_order_by",
+		e_region:"server_regions_order_by",
 		ended_at:"order_by",
 		id:"order_by",
 		invite_code:"order_by",
@@ -3579,7 +3506,6 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
-		region:"e_server_regions_enum",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		started_at:"timestamptz",
@@ -3608,7 +3534,6 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
-		region:"e_server_regions_enum",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
 		started_at:"timestamptz",
@@ -3764,12 +3689,6 @@ export const AllTypesProps: Record<string,any> = {
 			where:"e_sanction_types_bool_exp"
 		},
 		delete_e_sanction_types_by_pk:{
-
-		},
-		delete_e_server_regions:{
-			where:"e_server_regions_bool_exp"
-		},
-		delete_e_server_regions_by_pk:{
 
 		},
 		delete_e_sides:{
@@ -3951,6 +3870,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_players_by_pk:{
 			steam_id:"bigint"
+		},
+		delete_server_regions:{
+			where:"server_regions_bool_exp"
+		},
+		delete_server_regions_by_pk:{
+
 		},
 		delete_servers:{
 			where:"servers_bool_exp"
@@ -4135,14 +4060,6 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_sanction_types_one:{
 			object:"e_sanction_types_insert_input",
 			on_conflict:"e_sanction_types_on_conflict"
-		},
-		insert_e_server_regions:{
-			objects:"e_server_regions_insert_input",
-			on_conflict:"e_server_regions_on_conflict"
-		},
-		insert_e_server_regions_one:{
-			object:"e_server_regions_insert_input",
-			on_conflict:"e_server_regions_on_conflict"
 		},
 		insert_e_sides:{
 			objects:"e_sides_insert_input",
@@ -4383,6 +4300,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_players_one:{
 			object:"players_insert_input",
 			on_conflict:"players_on_conflict"
+		},
+		insert_server_regions:{
+			objects:"server_regions_insert_input",
+			on_conflict:"server_regions_on_conflict"
+		},
+		insert_server_regions_one:{
+			object:"server_regions_insert_input",
+			on_conflict:"server_regions_on_conflict"
 		},
 		insert_servers:{
 			objects:"servers_insert_input",
@@ -4658,17 +4583,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_sanction_types_many:{
 			updates:"e_sanction_types_updates"
-		},
-		update_e_server_regions:{
-			_set:"e_server_regions_set_input",
-			where:"e_server_regions_bool_exp"
-		},
-		update_e_server_regions_by_pk:{
-			_set:"e_server_regions_set_input",
-			pk_columns:"e_server_regions_pk_columns_input"
-		},
-		update_e_server_regions_many:{
-			updates:"e_server_regions_updates"
 		},
 		update_e_sides:{
 			_set:"e_sides_set_input",
@@ -5045,6 +4959,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_players_many:{
 			updates:"players_updates"
+		},
+		update_server_regions:{
+			_set:"server_regions_set_input",
+			where:"server_regions_bool_exp"
+		},
+		update_server_regions_by_pk:{
+			_set:"server_regions_set_input",
+			pk_columns:"server_regions_pk_columns_input"
+		},
+		update_server_regions_many:{
+			updates:"server_regions_updates"
 		},
 		update_servers:{
 			_inc:"servers_inc_input",
@@ -7440,19 +7365,6 @@ export const AllTypesProps: Record<string,any> = {
 		e_sanction_types_by_pk:{
 
 		},
-		e_server_regions:{
-			distinct_on:"e_server_regions_select_column",
-			order_by:"e_server_regions_order_by",
-			where:"e_server_regions_bool_exp"
-		},
-		e_server_regions_aggregate:{
-			distinct_on:"e_server_regions_select_column",
-			order_by:"e_server_regions_order_by",
-			where:"e_server_regions_bool_exp"
-		},
-		e_server_regions_by_pk:{
-
-		},
 		e_sides:{
 			distinct_on:"e_sides_select_column",
 			order_by:"e_sides_order_by",
@@ -7843,6 +7755,19 @@ export const AllTypesProps: Record<string,any> = {
 		players_by_pk:{
 			steam_id:"bigint"
 		},
+		server_regions:{
+			distinct_on:"server_regions_select_column",
+			order_by:"server_regions_order_by",
+			where:"server_regions_bool_exp"
+		},
+		server_regions_aggregate:{
+			distinct_on:"server_regions_select_column",
+			order_by:"server_regions_order_by",
+			where:"server_regions_bool_exp"
+		},
+		server_regions_by_pk:{
+
+		},
 		servers:{
 			distinct_on:"servers_select_column",
 			order_by:"servers_order_by",
@@ -8083,6 +8008,77 @@ export const AllTypesProps: Record<string,any> = {
 			where:"v_pool_maps_bool_exp"
 		}
 	},
+	server_regions:{
+		game_server_nodes:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		},
+		game_server_nodes_aggregate:{
+			distinct_on:"game_server_nodes_select_column",
+			order_by:"game_server_nodes_order_by",
+			where:"game_server_nodes_bool_exp"
+		}
+	},
+	server_regions_aggregate_fields:{
+		count:{
+			columns:"server_regions_select_column"
+		}
+	},
+	server_regions_bool_exp:{
+		_and:"server_regions_bool_exp",
+		_not:"server_regions_bool_exp",
+		_or:"server_regions_bool_exp",
+		available_server_count:"Int_comparison_exp",
+		description:"String_comparison_exp",
+		game_server_nodes:"game_server_nodes_bool_exp",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate_bool_exp",
+		is_lan:"Boolean_comparison_exp",
+		status:"String_comparison_exp",
+		total_server_count:"Int_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	server_regions_constraint: "enum" as const,
+	server_regions_insert_input:{
+		game_server_nodes:"game_server_nodes_arr_rel_insert_input"
+	},
+	server_regions_obj_rel_insert_input:{
+		data:"server_regions_insert_input",
+		on_conflict:"server_regions_on_conflict"
+	},
+	server_regions_on_conflict:{
+		constraint:"server_regions_constraint",
+		update_columns:"server_regions_update_column",
+		where:"server_regions_bool_exp"
+	},
+	server_regions_order_by:{
+		available_server_count:"order_by",
+		description:"order_by",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate_order_by",
+		is_lan:"order_by",
+		status:"order_by",
+		total_server_count:"order_by",
+		value:"order_by"
+	},
+	server_regions_pk_columns_input:{
+
+	},
+	server_regions_select_column: "enum" as const,
+	server_regions_set_input:{
+
+	},
+	server_regions_stream_cursor_input:{
+		initial_value:"server_regions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	server_regions_stream_cursor_value_input:{
+
+	},
+	server_regions_update_column: "enum" as const,
+	server_regions_updates:{
+		_set:"server_regions_set_input",
+		where:"server_regions_bool_exp"
+	},
 	servers:{
 		matches:{
 			distinct_on:"matches_select_column",
@@ -8154,6 +8150,7 @@ export const AllTypesProps: Record<string,any> = {
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		is_dedicated:"Boolean_comparison_exp",
+		is_lan:"Boolean_comparison_exp",
 		label:"String_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
@@ -8217,6 +8214,7 @@ export const AllTypesProps: Record<string,any> = {
 		host:"order_by",
 		id:"order_by",
 		is_dedicated:"order_by",
+		is_lan:"order_by",
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		port:"order_by",
@@ -8530,23 +8528,6 @@ export const AllTypesProps: Record<string,any> = {
 		e_sanction_types_stream:{
 			cursor:"e_sanction_types_stream_cursor_input",
 			where:"e_sanction_types_bool_exp"
-		},
-		e_server_regions:{
-			distinct_on:"e_server_regions_select_column",
-			order_by:"e_server_regions_order_by",
-			where:"e_server_regions_bool_exp"
-		},
-		e_server_regions_aggregate:{
-			distinct_on:"e_server_regions_select_column",
-			order_by:"e_server_regions_order_by",
-			where:"e_server_regions_bool_exp"
-		},
-		e_server_regions_by_pk:{
-
-		},
-		e_server_regions_stream:{
-			cursor:"e_server_regions_stream_cursor_input",
-			where:"e_server_regions_bool_exp"
 		},
 		e_sides:{
 			distinct_on:"e_sides_select_column",
@@ -9057,6 +9038,23 @@ export const AllTypesProps: Record<string,any> = {
 		players_stream:{
 			cursor:"players_stream_cursor_input",
 			where:"players_bool_exp"
+		},
+		server_regions:{
+			distinct_on:"server_regions_select_column",
+			order_by:"server_regions_order_by",
+			where:"server_regions_bool_exp"
+		},
+		server_regions_aggregate:{
+			distinct_on:"server_regions_select_column",
+			order_by:"server_regions_order_by",
+			where:"server_regions_bool_exp"
+		},
+		server_regions_by_pk:{
+
+		},
+		server_regions_stream:{
+			cursor:"server_regions_stream_cursor_input",
+			where:"server_regions_bool_exp"
 		},
 		servers:{
 			distinct_on:"servers_select_column",
@@ -11870,82 +11868,6 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_sanction_types"
 	},
-	e_server_regions:{
-		available_server_count:"Int",
-		description:"String",
-		game_server_nodes:"game_server_nodes",
-		game_server_nodes_aggregate:"game_server_nodes_aggregate",
-		status:"String",
-		total_server_count:"Int",
-		value:"String"
-	},
-	e_server_regions_aggregate:{
-		aggregate:"e_server_regions_aggregate_fields",
-		nodes:"e_server_regions"
-	},
-	e_server_regions_aggregate_fields:{
-		avg:"e_server_regions_avg_fields",
-		count:"Int",
-		max:"e_server_regions_max_fields",
-		min:"e_server_regions_min_fields",
-		stddev:"e_server_regions_stddev_fields",
-		stddev_pop:"e_server_regions_stddev_pop_fields",
-		stddev_samp:"e_server_regions_stddev_samp_fields",
-		sum:"e_server_regions_sum_fields",
-		var_pop:"e_server_regions_var_pop_fields",
-		var_samp:"e_server_regions_var_samp_fields",
-		variance:"e_server_regions_variance_fields"
-	},
-	e_server_regions_avg_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_server_regions_max_fields:{
-		available_server_count:"Int",
-		description:"String",
-		status:"String",
-		total_server_count:"Int",
-		value:"String"
-	},
-	e_server_regions_min_fields:{
-		available_server_count:"Int",
-		description:"String",
-		status:"String",
-		total_server_count:"Int",
-		value:"String"
-	},
-	e_server_regions_mutation_response:{
-		affected_rows:"Int",
-		returning:"e_server_regions"
-	},
-	e_server_regions_stddev_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_server_regions_stddev_pop_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_server_regions_stddev_samp_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_server_regions_sum_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_server_regions_var_pop_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_server_regions_var_samp_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
-	e_server_regions_variance_fields:{
-		available_server_count:"Int",
-		total_server_count:"Int"
-	},
 	e_sides:{
 		description:"String",
 		match_map_lineup_1:"match_maps",
@@ -12140,21 +12062,23 @@ export const ReturnTypes: Record<string,any> = {
 	game_server_nodes:{
 		available_server_count:"Int",
 		build_id:"Int",
-		e_region:"e_server_regions",
+		e_region:"server_regions",
 		e_status:"e_game_server_node_statuses",
 		enabled:"Boolean",
 		end_port_range:"Int",
 		id:"String",
+		is_lan:"Boolean",
 		lan_ip:"inet",
 		node_ip:"inet",
 		public_ip:"inet",
-		region:"e_server_regions_enum",
+		region:"String",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum",
 		token:"String",
-		total_server_count:"Int"
+		total_server_count:"Int",
+		use_lan_ip:"Boolean"
 	},
 	game_server_nodes_aggregate:{
 		aggregate:"game_server_nodes_aggregate_fields",
@@ -12185,6 +12109,7 @@ export const ReturnTypes: Record<string,any> = {
 		build_id:"Int",
 		end_port_range:"Int",
 		id:"String",
+		region:"String",
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int"
@@ -12194,6 +12119,7 @@ export const ReturnTypes: Record<string,any> = {
 		build_id:"Int",
 		end_port_range:"Int",
 		id:"String",
+		region:"String",
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int"
@@ -13002,7 +12928,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_lineup:"match_lineups",
 		match_lineup_id:"uuid",
-		region:"e_server_regions_enum",
+		region:"String",
 		type:"e_veto_pick_types_enum"
 	},
 	match_region_veto_picks_aggregate:{
@@ -13018,13 +12944,15 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		match_lineup_id:"uuid"
+		match_lineup_id:"uuid",
+		region:"String"
 	},
 	match_region_veto_picks_min_fields:{
 		created_at:"timestamptz",
 		id:"uuid",
 		match_id:"uuid",
-		match_lineup_id:"uuid"
+		match_lineup_id:"uuid",
+		region:"String"
 	},
 	match_region_veto_picks_mutation_response:{
 		affected_rows:"Int",
@@ -13044,7 +12972,7 @@ export const ReturnTypes: Record<string,any> = {
 		demos:"match_map_demos",
 		demos_aggregate:"match_map_demos_aggregate",
 		e_match_status:"e_match_status",
-		e_region:"e_server_regions",
+		e_region:"server_regions",
 		ended_at:"timestamptz",
 		id:"uuid",
 		invite_code:"String",
@@ -13088,7 +13016,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
 		player_utility:"player_utility",
 		player_utility_aggregate:"player_utility_aggregate",
-		region:"e_server_regions_enum",
+		region:"String",
 		region_veto_picking_lineup_id:"uuid",
 		region_veto_picks:"match_region_veto_picks",
 		region_veto_picks_aggregate:"match_region_veto_picks_aggregate",
@@ -13149,6 +13077,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
+		region:"String",
 		region_veto_picking_lineup_id:"uuid",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
@@ -13178,6 +13107,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		organizer_steam_id:"bigint",
 		password:"String",
+		region:"String",
 		region_veto_picking_lineup_id:"uuid",
 		scheduled_at:"timestamptz",
 		server_id:"uuid",
@@ -13282,8 +13212,6 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_player_roles_by_pk:"e_player_roles",
 		delete_e_sanction_types:"e_sanction_types_mutation_response",
 		delete_e_sanction_types_by_pk:"e_sanction_types",
-		delete_e_server_regions:"e_server_regions_mutation_response",
-		delete_e_server_regions_by_pk:"e_server_regions",
 		delete_e_sides:"e_sides_mutation_response",
 		delete_e_sides_by_pk:"e_sides",
 		delete_e_team_roles:"e_team_roles_mutation_response",
@@ -13344,6 +13272,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_utility_by_pk:"player_utility",
 		delete_players:"players_mutation_response",
 		delete_players_by_pk:"players",
+		delete_server_regions:"server_regions_mutation_response",
+		delete_server_regions_by_pk:"server_regions",
 		delete_servers:"servers_mutation_response",
 		delete_servers_by_pk:"servers",
 		delete_settings:"settings_mutation_response",
@@ -13396,8 +13326,6 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_player_roles_one:"e_player_roles",
 		insert_e_sanction_types:"e_sanction_types_mutation_response",
 		insert_e_sanction_types_one:"e_sanction_types",
-		insert_e_server_regions:"e_server_regions_mutation_response",
-		insert_e_server_regions_one:"e_server_regions",
 		insert_e_sides:"e_sides_mutation_response",
 		insert_e_sides_one:"e_sides",
 		insert_e_team_roles:"e_team_roles_mutation_response",
@@ -13458,6 +13386,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_utility_one:"player_utility",
 		insert_players:"players_mutation_response",
 		insert_players_one:"players",
+		insert_server_regions:"server_regions_mutation_response",
+		insert_server_regions_one:"server_regions",
 		insert_servers:"servers_mutation_response",
 		insert_servers_one:"servers",
 		insert_settings:"settings_mutation_response",
@@ -13536,9 +13466,6 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_sanction_types:"e_sanction_types_mutation_response",
 		update_e_sanction_types_by_pk:"e_sanction_types",
 		update_e_sanction_types_many:"e_sanction_types_mutation_response",
-		update_e_server_regions:"e_server_regions_mutation_response",
-		update_e_server_regions_by_pk:"e_server_regions",
-		update_e_server_regions_many:"e_server_regions_mutation_response",
 		update_e_sides:"e_sides_mutation_response",
 		update_e_sides_by_pk:"e_sides",
 		update_e_sides_many:"e_sides_mutation_response",
@@ -13629,6 +13556,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_players:"players_mutation_response",
 		update_players_by_pk:"players",
 		update_players_many:"players_mutation_response",
+		update_server_regions:"server_regions_mutation_response",
+		update_server_regions_by_pk:"server_regions",
+		update_server_regions_many:"server_regions_mutation_response",
 		update_servers:"servers_mutation_response",
 		update_servers_by_pk:"servers",
 		update_servers_many:"servers_mutation_response",
@@ -14747,9 +14677,6 @@ export const ReturnTypes: Record<string,any> = {
 		e_sanction_types:"e_sanction_types",
 		e_sanction_types_aggregate:"e_sanction_types_aggregate",
 		e_sanction_types_by_pk:"e_sanction_types",
-		e_server_regions:"e_server_regions",
-		e_server_regions_aggregate:"e_server_regions_aggregate",
-		e_server_regions_by_pk:"e_server_regions",
 		e_sides:"e_sides",
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",
@@ -14843,6 +14770,9 @@ export const ReturnTypes: Record<string,any> = {
 		players:"players",
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
+		server_regions:"server_regions",
+		server_regions_aggregate:"server_regions_aggregate",
+		server_regions_by_pk:"server_regions",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",
@@ -14896,6 +14826,83 @@ export const ReturnTypes: Record<string,any> = {
 		v_pool_maps:"v_pool_maps",
 		v_pool_maps_aggregate:"v_pool_maps_aggregate"
 	},
+	server_regions:{
+		available_server_count:"Int",
+		description:"String",
+		game_server_nodes:"game_server_nodes",
+		game_server_nodes_aggregate:"game_server_nodes_aggregate",
+		is_lan:"Boolean",
+		status:"String",
+		total_server_count:"Int",
+		value:"String"
+	},
+	server_regions_aggregate:{
+		aggregate:"server_regions_aggregate_fields",
+		nodes:"server_regions"
+	},
+	server_regions_aggregate_fields:{
+		avg:"server_regions_avg_fields",
+		count:"Int",
+		max:"server_regions_max_fields",
+		min:"server_regions_min_fields",
+		stddev:"server_regions_stddev_fields",
+		stddev_pop:"server_regions_stddev_pop_fields",
+		stddev_samp:"server_regions_stddev_samp_fields",
+		sum:"server_regions_sum_fields",
+		var_pop:"server_regions_var_pop_fields",
+		var_samp:"server_regions_var_samp_fields",
+		variance:"server_regions_variance_fields"
+	},
+	server_regions_avg_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	server_regions_max_fields:{
+		available_server_count:"Int",
+		description:"String",
+		status:"String",
+		total_server_count:"Int",
+		value:"String"
+	},
+	server_regions_min_fields:{
+		available_server_count:"Int",
+		description:"String",
+		status:"String",
+		total_server_count:"Int",
+		value:"String"
+	},
+	server_regions_mutation_response:{
+		affected_rows:"Int",
+		returning:"server_regions"
+	},
+	server_regions_stddev_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	server_regions_stddev_pop_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	server_regions_stddev_samp_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	server_regions_sum_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	server_regions_var_pop_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	server_regions_var_samp_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
+	server_regions_variance_fields:{
+		available_server_count:"Int",
+		total_server_count:"Int"
+	},
 	servers:{
 		api_password:"uuid",
 		connected:"Boolean",
@@ -14906,6 +14913,7 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		is_dedicated:"Boolean",
+		is_lan:"Boolean",
 		label:"String",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
@@ -15064,10 +15072,6 @@ export const ReturnTypes: Record<string,any> = {
 		e_sanction_types_aggregate:"e_sanction_types_aggregate",
 		e_sanction_types_by_pk:"e_sanction_types",
 		e_sanction_types_stream:"e_sanction_types",
-		e_server_regions:"e_server_regions",
-		e_server_regions_aggregate:"e_server_regions_aggregate",
-		e_server_regions_by_pk:"e_server_regions",
-		e_server_regions_stream:"e_server_regions",
 		e_sides:"e_sides",
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",
@@ -15188,6 +15192,10 @@ export const ReturnTypes: Record<string,any> = {
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
 		players_stream:"players",
+		server_regions:"server_regions",
+		server_regions_aggregate:"server_regions_aggregate",
+		server_regions_by_pk:"server_regions",
+		server_regions_stream:"server_regions",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
 		servers_by_pk:"servers",

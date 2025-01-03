@@ -115,6 +115,7 @@ export const useApplicationSettingsStore = defineStore(
               value: true,
               status: true,
               description: true,
+              is_lan: true,
             },
           ],
         }),

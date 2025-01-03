@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Pagination from "@/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
-import { Pencil, Trash } from "lucide-vue-next";
+import { Pencil, Trash, PlusCircle } from "lucide-vue-next";
 import RegionForm from "~/components/regions/RegionForm.vue";
 </script>
 
@@ -17,7 +17,10 @@ import RegionForm from "~/components/regions/RegionForm.vue";
       </template>
 
       <template #actions>
-        <Button @click="regionDialogOpen = true">Create Region</Button>
+        <Button @click="regionDialogOpen = true">
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden md:inline ml-2">Create Region</span>
+        </Button>
       </template>
     </PageHeading>
 
@@ -26,6 +29,8 @@ import RegionForm from "~/components/regions/RegionForm.vue";
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Available Servers / Total Servers</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Use LAN IP</TableHead>
             <TableHead class="w-[100px]">Actions</TableHead>
@@ -35,6 +40,15 @@ import RegionForm from "~/components/regions/RegionForm.vue";
           <TableRow v-for="region of regions" :key="region.value">
             <TableCell>
               <span>{{ region.value }}</span>
+            </TableCell>
+            <TableCell>
+              <span>{{ region.status }}</span>
+            </TableCell>
+            <TableCell>
+              <span
+                >{{ region.available_server_count }} /
+                {{ region.total_server_count }}</span
+              >
             </TableCell>
             <TableCell>
               <span>{{ region.description }}</span>
@@ -157,6 +171,9 @@ export default {
               value: true,
               description: true,
               is_lan: true,
+              status: true,
+              total_server_count: true,
+              available_server_count: true,
             },
           ],
         }),

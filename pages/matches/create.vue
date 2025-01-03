@@ -6,7 +6,6 @@ import { Info } from "lucide-vue-next";
 </script>
 
 <template>
-  // TODO - LAN
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
       <template #title> Create Match </template>
@@ -153,7 +152,7 @@ export default {
           overtime: form.overtime,
           map_veto: form.map_veto,
           region_veto: form.region_veto,
-          regions: form.lan ? ["Lan"] : form.regions,
+          regions: form.regions,
           coaches: form.coaches,
           timeout_setting: form.timeout_setting,
           tech_timeout_setting: form.tech_timeout_setting,

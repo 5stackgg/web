@@ -18,7 +18,6 @@ import {
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 <template>
-  // TODO - LAN BS
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Left Column -->
     <div class="space-y-6">
@@ -339,14 +338,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </FormField>
             </div>
 
-            <Card v-if="canSelectRegions || canSetLan">
+            <Card v-if="canSetLan">
               <CardHeader>
                 <CardTitle class="flex justify-between items-center">
                   <div class="text-lg font-semibold">Region Settings</div>
-                  <div
-                    class="flex items-center gap-4"
-                    v-if="hasLanRegion && canSetLan"
-                  >
+                  <div class="flex items-center gap-4" v-if="canSetLan">
                     <span>LAN Match</span>
                     <Switch
                       :checked="form.values.lan"
@@ -363,13 +359,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
                   <FormItem
                     class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-                    @click="canSelectRegions && handleChange(!value)"
+                    @click="handleChange(!value)"
                   >
                     <div class="flex justify-between items-center">
                       <FormLabel class="text-lg font-semibold">Veto</FormLabel>
                       <FormControl>
                         <Switch
-                          :disabled="!canSelectRegions"
                           class="pointer-events-none"
                           :checked="value"
                           @update:checked="
@@ -394,7 +389,6 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                       <Popover>
                         <PopoverTrigger as-child>
                           <Button
-                            :disabled="!canSelectRegions"
                             variant="outline"
                             role="combobox"
                             class="justify-between w-full"
@@ -432,9 +426,6 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                                   v-for="region in regions"
                                   :key="region.value"
                                   :value="region.value"
-                                  :class="{
-                                    'cursor-pointer': canSelectRegions,
-                                  }"
                                   @select="
                                     () => {
                                       const currentRegions =
@@ -452,6 +443,14 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                                           ...currentRegions,
                                         ];
                                         updatedRegions.splice(index, 1);
+
+                                        if (
+                                          form.values.lan &&
+                                          updatedRegions.length === 0
+                                        ) {
+                                          return;
+                                        }
+
                                         form.setFieldValue(
                                           'regions',
                                           updatedRegions,
@@ -712,7 +711,12 @@ export default {
     },
     ["form.values.lan"]: {
       handler(lan) {
-        this.form.setFieldValue("region_veto", !lan && this.regions.length > 0);
+        let regions: string[] = [];
+        if (lan && this.regions?.length > 0) {
+          regions = [this.regions.at(0)?.value];
+        }
+
+        this.form.setFieldValue("regions", regions);
       },
     },
     ["form.values.type"]: {
@@ -843,18 +847,20 @@ export default {
         workshop: maps.filter((map) => map.workshop_map_id),
       };
     },
-    hasLanRegion() {
-      return useApplicationSettingsStore().availableRegions.find((region) => {
+    lanRegions() {
+      return useApplicationSettingsStore().availableRegions.filter((region) => {
         return region.is_lan === true;
       });
     },
     regions() {
       return useApplicationSettingsStore().availableRegions.filter((region) => {
-        return region.is_lan === false;
+        return this.form.values.lan
+          ? region.is_lan === true
+          : region.is_lan === false;
       });
     },
     canSetLan() {
-      if (!this.hasLanRegion) {
+      if (this.lanRegions.length === 0) {
         return false;
       }
 
@@ -862,16 +868,12 @@ export default {
         useAuthStore();
       return isAdmin || isMatchOrganizer || isTournamentOrganizer;
     },
-    canSelectRegions() {
-      return this.regions.length > 1 && !this.form.values.lan;
-    },
   },
   methods: {
     updateMapPool(mapId: string) {
       if (!this.form.values.custom_map_pool) {
         return;
       }
-      this.touched++;
       const pool = Object.assign([], this.form.values.map_pool);
       if (pool.includes(mapId)) {
         pool.splice(pool.indexOf(mapId), 1);

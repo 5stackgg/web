@@ -13,7 +13,6 @@ import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
-  // TODO - LAN CRAP
   <form @submit.prevent="updateCreateTournament" class="grid gap-4">
     <match-options :form="form" :force-veto="true">
       <FormField v-slot="{ componentField }" name="name">
@@ -312,7 +311,7 @@ export default {
             overtime: form.overtime,
             coaches: form.coaches,
             region_veto: form.region_veto,
-            regions: form.lan ? ["Lan"] : form.regions,
+            regions: form.regions,
             number_of_substitutes: form.number_of_substitutes,
             timeout_setting: form.timeout_setting,
             tech_timeout_setting: form.tech_timeout_setting,

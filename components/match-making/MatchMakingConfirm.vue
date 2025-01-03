@@ -15,7 +15,7 @@ import {
       <AlertDialogHeader>
         <AlertDialogTitle>Confirm Matchmaking</AlertDialogTitle>
         <AlertDialogDescription>
-          <pre>{{ confirmation?.type }} {{ confirmation?.region }}</pre>
+          <div>{{ confirmation?.type }} @ {{ confirmation?.region }}</div>
         </AlertDialogDescription>
       </AlertDialogHeader>
 

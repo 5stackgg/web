@@ -4,6 +4,7 @@
   <div
     class="text-blue-500 text-sm hover:underline cursor-pointer"
     @click.prevent="showRequestNameChangeDialog = true"
+    v-if="canChangeName"
   >
     Change Name
   </div>
@@ -132,8 +133,20 @@ export default {
     },
   },
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
+    isAdmin() {
+      return useAuthStore().isAdmin;
+    },
     canUpdate() {
       return !useAuthStore().isUser;
+    },
+    canChangeName() {
+      if (!this.me) {
+        return false;
+      }
+      return this.player.steam_id === this.me.steam_id || this.isAdmin;
     },
   },
 };

@@ -30,9 +30,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
   });
 
   const regionStats = ref<
-    Partial<
-      Record<string, Partial<Record<e_match_types_enum, number>>>
-    >
+    Partial<Record<string, Partial<Record<e_match_types_enum, number>>>>
   >({});
 
   const queryPlayers = async () => {

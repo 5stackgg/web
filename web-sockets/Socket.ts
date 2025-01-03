@@ -1,7 +1,5 @@
 import EventEmitter from "eventemitter3";
-import type {
-  e_match_types_enum,
-} from "~/generated/zeus";
+import type { e_match_types_enum } from "~/generated/zeus";
 
 export interface MatchLobby {
   messages: any[];

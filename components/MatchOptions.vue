@@ -18,6 +18,7 @@ import {
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 <template>
+  // TODO - LAN BS
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Left Column -->
     <div class="space-y-6">
@@ -844,12 +845,12 @@ export default {
     },
     hasLanRegion() {
       return useApplicationSettingsStore().availableRegions.find((region) => {
-        return region.value === "Lan";
+        return region.is_lan === true;
       });
     },
     regions() {
       return useApplicationSettingsStore().availableRegions.filter((region) => {
-        return region.value !== "Lan";
+        return region.is_lan === false;
       });
     },
     canSetLan() {

@@ -13,6 +13,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
 <template>
+  // TODO - LAN CRAP
   <form @submit.prevent="updateCreateTournament" class="grid gap-4">
     <match-options :form="form" :force-veto="true">
       <FormField v-slot="{ componentField }" name="name">

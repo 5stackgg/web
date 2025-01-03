@@ -211,7 +211,7 @@ export default {
     },
     regions() {
       return useApplicationSettingsStore().availableRegions.filter((region) => {
-        return region.value !== "Lan";
+        return region.is_lan === false;
       });
     },
     availableRegions() {

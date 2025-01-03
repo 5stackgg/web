@@ -103,7 +103,7 @@ export const useApplicationSettingsStore = defineStore(
     const subscribeToAvailableRegions = async () => {
       const subscription = getGraphqlClient().subscribe({
         query: generateSubscription({
-          e_server_regions: [
+          server_regions: [
             {
               where: {
                 total_server_count: {
@@ -122,7 +122,7 @@ export const useApplicationSettingsStore = defineStore(
 
       subscription.subscribe({
         next: ({ data }) => {
-          availableRegions.value = data.e_server_regions;
+          availableRegions.value = data.server_regions;
         },
       });
     };

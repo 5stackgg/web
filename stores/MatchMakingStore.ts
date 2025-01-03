@@ -1,6 +1,6 @@
 import { ref, watch } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { e_server_regions_enum, e_match_types_enum, $ } from "~/generated/zeus";
+import { e_match_types_enum, $ } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
@@ -13,7 +13,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
     details?: {
       totalInQueue: number;
       type: e_match_types_enum;
-      regions: Array<e_server_regions_enum>;
+      regions: Array<string>;
     };
     confirmation?: {
       matchId: string;
@@ -22,7 +22,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
       confirmed: number;
       confirmationId: string;
       type: e_match_types_enum;
-      region: e_server_regions_enum;
+      region: string;
     };
   }>({
     details: undefined,
@@ -31,7 +31,7 @@ export const useMatchMakingStore = defineStore("match-making", () => {
 
   const regionStats = ref<
     Partial<
-      Record<e_server_regions_enum, Partial<Record<e_match_types_enum, number>>>
+      Record<string, Partial<Record<e_match_types_enum, number>>>
     >
   >({});
 

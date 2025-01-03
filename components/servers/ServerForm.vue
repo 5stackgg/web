@@ -39,7 +39,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
             <SelectGroup>
               <SelectItem
                 :value="region.value"
-                v-for="region in e_server_regions"
+                v-for="region in server_regions"
                 :key="region.value"
               >
                 {{ region.description }}
@@ -107,9 +107,9 @@ export default {
     },
   },
   apollo: {
-    e_server_regions: {
+    server_regions: {
       query: generateQuery({
-        e_server_regions: [
+        server_regions: [
           {},
           {
             value: true,

@@ -1,6 +1,5 @@
 import EventEmitter from "eventemitter3";
 import type {
-  e_server_regions_enum,
   e_match_types_enum,
 } from "~/generated/zeus";
 
@@ -236,7 +235,7 @@ socket.listen(
     data: Array<{
       totalInQueue: number;
       type: e_match_types_enum;
-      region: e_server_regions_enum;
+      region: string;
     }>,
   ) => {
     useMatchMakingStore().joinedMatchmakingQueues = data;

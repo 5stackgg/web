@@ -259,7 +259,7 @@ export default {
                 id: this.$route.params.id,
               },
               _set: {
-                region: $("region", "e_server_regions_enum!"),
+                region: $("region", "String!"),
               },
             },
             {
@@ -285,7 +285,7 @@ export default {
           insert_match_region_veto_picks_one: [
             {
               object: {
-                region: $("region", "e_server_regions_enum!"),
+                region: $("region", "String!"),
                 type: $("type", "e_veto_pick_types_enum!"),
                 match_id: $("match_id", "uuid!"),
                 match_lineup_id: $("match_lineup_id", "uuid!"),

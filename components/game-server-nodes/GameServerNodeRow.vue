@@ -54,10 +54,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem
-              :value="region.value"
-              v-for="region of e_server_regions"
-            >
+            <SelectItem :value="region.value" v-for="region of server_regions">
               {{ region.description }}
             </SelectItem>
           </SelectGroup>
@@ -142,12 +139,13 @@ export default {
     },
   },
   apollo: {
-    e_server_regions: {
+    server_regions: {
       query: generateQuery({
-        e_server_regions: [
+        server_regions: [
           {},
           {
             value: true,
+            is_lan: true,
             description: true,
           },
         ],

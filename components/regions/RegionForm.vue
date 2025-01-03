@@ -28,7 +28,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="is_lan">
       <FormItem>
-        <FormLabel>Is LAN</FormLabel>
+        <FormLabel>Use LAN IP</FormLabel>
         <FormControl>
           <Switch v-bind="componentField" />
         </FormControl>

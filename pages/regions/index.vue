@@ -27,7 +27,7 @@ import RegionForm from "~/components/regions/RegionForm.vue";
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Description</TableHead>
-            <TableHead>Is Lan</TableHead>
+            <TableHead>Use LAN IP</TableHead>
             <TableHead class="w-[100px]">Actions</TableHead>
           </TableRow>
         </TableHeader>

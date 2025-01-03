@@ -1350,7 +1350,6 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"Boolean_comparison_exp",
 		end_port_range:"Int_comparison_exp",
 		id:"String_comparison_exp",
-		is_lan:"Boolean_comparison_exp",
 		lan_ip:"inet_comparison_exp",
 		node_ip:"inet_comparison_exp",
 		public_ip:"inet_comparison_exp",
@@ -1360,8 +1359,7 @@ export const AllTypesProps: Record<string,any> = {
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp",
 		token:"String_comparison_exp",
-		total_server_count:"Int_comparison_exp",
-		use_lan_ip:"Boolean_comparison_exp"
+		total_server_count:"Int_comparison_exp"
 	},
 	game_server_nodes_constraint: "enum" as const,
 	game_server_nodes_inc_input:{
@@ -1409,7 +1407,6 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"order_by",
 		end_port_range:"order_by",
 		id:"order_by",
-		is_lan:"order_by",
 		lan_ip:"order_by",
 		node_ip:"order_by",
 		public_ip:"order_by",
@@ -1418,8 +1415,7 @@ export const AllTypesProps: Record<string,any> = {
 		start_port_range:"order_by",
 		status:"order_by",
 		token:"order_by",
-		total_server_count:"order_by",
-		use_lan_ip:"order_by"
+		total_server_count:"order_by"
 	},
 	game_server_nodes_pk_columns_input:{
 
@@ -8150,7 +8146,6 @@ export const AllTypesProps: Record<string,any> = {
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		is_dedicated:"Boolean_comparison_exp",
-		is_lan:"Boolean_comparison_exp",
 		label:"String_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
@@ -8214,7 +8209,6 @@ export const AllTypesProps: Record<string,any> = {
 		host:"order_by",
 		id:"order_by",
 		is_dedicated:"order_by",
-		is_lan:"order_by",
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		port:"order_by",
@@ -12067,7 +12061,6 @@ export const ReturnTypes: Record<string,any> = {
 		enabled:"Boolean",
 		end_port_range:"Int",
 		id:"String",
-		is_lan:"Boolean",
 		lan_ip:"inet",
 		node_ip:"inet",
 		public_ip:"inet",
@@ -12077,8 +12070,7 @@ export const ReturnTypes: Record<string,any> = {
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum",
 		token:"String",
-		total_server_count:"Int",
-		use_lan_ip:"Boolean"
+		total_server_count:"Int"
 	},
 	game_server_nodes_aggregate:{
 		aggregate:"game_server_nodes_aggregate_fields",
@@ -14913,7 +14905,6 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		is_dedicated:"Boolean",
-		is_lan:"Boolean",
 		label:"String",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",

@@ -18,7 +18,6 @@ import {
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 <template>
-  <pre>{{ form.values.regions }}</pre>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Left Column -->
     <div class="space-y-6">
@@ -360,7 +359,10 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
                   <FormItem
                     class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-                    @click="handleChange(!value)"
+                    :class="{
+                      'cursor-not-allowed': form.values.lan,
+                    }"
+                    @click="!form.values.lan && handleChange(!value)"
                   >
                     <div class="flex justify-between items-center">
                       <FormLabel class="text-lg font-semibold">Veto</FormLabel>
@@ -371,6 +373,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                           @update:checked="
                             form.values.lan === false && handleChange
                           "
+                          :disabled="form.values.lan"
                         />
                       </FormControl>
                     </div>
@@ -757,7 +760,8 @@ export default {
       },
     },
     ["form.values.lan"]: {
-      handler() {
+      handler(lan) {
+        this.form.setFieldValue("region_veto", !lan);
         this.setDefaultRegion();
       },
     },

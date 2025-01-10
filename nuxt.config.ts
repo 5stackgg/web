@@ -33,7 +33,7 @@ export default defineNuxtConfig({
         { property: "og:image", content: `${url}/_ipx/_/favicon/512.png` },
       ],
       bodyAttrs: {
-        class: 'pre-loader',
+        class: "pre-loader",
       },
       style: [
         {
@@ -67,7 +67,7 @@ export default defineNuxtConfig({
               0% { transform: rotate(0deg); }
               100% { transform: rotate(360deg); }
             }
-          `
+          `,
         },
       ],
     },

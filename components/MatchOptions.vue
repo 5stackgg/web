@@ -18,6 +18,7 @@ import {
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 <template>
+  <pre>{{ form.values.regions }}</pre>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Left Column -->
     <div class="space-y-6">
@@ -338,7 +339,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </FormField>
             </div>
 
-            <Card v-if="canSetLan">
+            <Card v-if="availableRegions.length > 1">
               <CardHeader>
                 <CardTitle class="flex justify-between items-center">
                   <div class="text-lg font-semibold">Region Settings</div>
@@ -382,13 +383,20 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <FormField name="regions">
                   <FormItem>
                     <FormLabel>
-                      <div class="text-lg font-semibold">Preferred Regions</div>
+                      <div class="text-lg font-semibold">
+                        <template v-if="form.values.region_veto">
+                          Preferred Regions
+                        </template>
+                        <template v-else> Region </template>
+                      </div>
                     </FormLabel>
 
                     <FormControl>
-                      <template v-if="form.values.lan">
+                      <template
+                        v-if="form.values.lan || !form.values.region_veto"
+                      >
                         <Select
-                          v-model="lan_region"
+                          v-model="select_single_region"
                           :options="regions"
                           option-label="description"
                           option-value="value"
@@ -396,7 +404,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select LAN Region" />
+                              <SelectValue placeholder="Select Region" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -717,7 +725,7 @@ export default {
   },
   data() {
     return {
-      lan_region: null,
+      select_single_region: null,
       showAdvancedSettings: false,
     };
   },
@@ -736,25 +744,21 @@ export default {
         this.form.setFieldValue("map_pool_id", this.defaultMapPool.id);
       },
     },
-    lan_region: {
-      handler(lan_region) {
-        if (this.form.values.lan) {
-          this.form.setFieldValue("regions", [lan_region]);
+    select_single_region: {
+      handler(select_single_region) {
+        if (this.form.values.lan || !this.form.values.region_veto) {
+          this.form.setFieldValue("regions", [select_single_region]);
         }
       },
     },
+    ["form.values.region_veto"]: {
+      handler() {
+        this.setDefaultRegion();
+      },
+    },
     ["form.values.lan"]: {
-      handler(lan) {
-        let regions: string[] = [];
-        if (lan && this.regions?.length > 0) {
-          const lanRegion = this.regions.find(
-            (region) => region.is_lan === true,
-          );
-          regions = [lanRegion?.value];
-          this.lan_region = lanRegion?.value;
-        }
-
-        this.form.setFieldValue("regions", regions);
+      handler() {
+        this.setDefaultRegion();
       },
     },
     ["form.values.type"]: {
@@ -885,13 +889,16 @@ export default {
         workshop: maps.filter((map) => map.workshop_map_id),
       };
     },
+    availableRegions() {
+      return useApplicationSettingsStore().availableRegions;
+    },
     lanRegions() {
-      return useApplicationSettingsStore().availableRegions.filter((region) => {
+      return this.availableRegions.filter((region) => {
         return region.is_lan === true;
       });
     },
     regions() {
-      return useApplicationSettingsStore().availableRegions.filter((region) => {
+      return this.availableRegions.filter((region) => {
         return this.form.values.lan
           ? region.is_lan === true
           : region.is_lan === false;
@@ -920,6 +927,22 @@ export default {
       }
 
       this.form.setFieldValue("map_pool", pool);
+    },
+    setDefaultRegion() {
+      const { lan, region_veto } = this.form.values;
+
+      let regions: string[] = [];
+
+      if ((lan || !region_veto) && this.regions.length > 0) {
+        this.select_single_region = this.regions.find(
+          (region) => region.is_lan === !!lan,
+        )?.value;
+
+        return;
+      }
+
+      this.select_single_region = null;
+      this.form.setFieldValue("regions", regions);
     },
   },
 };

@@ -10,7 +10,5 @@ export const useTeamLobbyStore = defineStore("notifaicationStore", () => {
 });
 
 if (import.meta.hot) {
-  import.meta.hot.accept(
-    acceptHMRUpdate(useTeamLobbyStore, import.meta.hot),
-  );
+  import.meta.hot.accept(acceptHMRUpdate(useTeamLobbyStore, import.meta.hot));
 }

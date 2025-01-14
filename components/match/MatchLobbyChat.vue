@@ -85,14 +85,16 @@ export default {
     matchId: {
       immediate: true,
       handler() {
-        this.lobbyListener = socket.listen("lobby:chat", (message) => {
-          if (this.matchId === message.matchId) {
+        this.lobbyListener = socket.listenChat(
+          "match",
+          this.matchId,
+          (message) => {
             this.messages.push(message);
             this.$nextTick(() => {
               this.scrollToBottom();
             });
-          }
-        });
+          },
+        );
       },
     },
     messages: {
@@ -117,14 +119,11 @@ export default {
     },
     sendMessage() {
       const { message } = this.form.values;
-      if (message?.length === 0) {
+      if (!message || message?.length === 0) {
         return;
       }
 
-      socket.event("lobby:chat", {
-        matchId: this.matchId,
-        message: message,
-      });
+      socket.chat("match", this.matchId, message);
 
       this.form.resetForm();
       this.$nextTick(() => {

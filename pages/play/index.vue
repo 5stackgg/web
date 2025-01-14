@@ -73,16 +73,6 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
           </div>
         </CardContent>
       </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Lobby</CardTitle>
-        </CardHeader>
-        <CardContent> 
-
-
-        </CardContent>
-      </Card>
     </div>
   </div>
 </template>

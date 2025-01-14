@@ -121,6 +121,25 @@ class Socket extends EventEmitter {
     }
   }
 
+  public chat(type: "match" | "team", id: string, message: string) {
+    this.event(`lobby:chat`, {
+      id,
+      type,
+      message,
+    });
+  }
+
+  public listenChat(type: string, id: string, callback: (data: any) => void) {
+    return this.listen(
+      `lobby:${type}:chat`,
+      (data: { id: string; message: string }) => {
+        if (data.id === id) {
+          callback(data);
+        }
+      },
+    );
+  }
+
   public listen(event: string, callback: (data: any) => void) {
     if (this.listening.has(event)) {
       return;
@@ -138,7 +157,11 @@ class Socket extends EventEmitter {
     };
   }
 
-  public joinLobby(component: string, type: "match" | "team" | "matchmaking", id: string) {
+  public joinLobby(
+    component: string,
+    type: "match" | "team" | "matchmaking",
+    id: string,
+  ) {
     let lobby = this.matchLobbies.get(id);
     if (lobby) {
       lobby.components.add(component);
@@ -167,8 +190,9 @@ class Socket extends EventEmitter {
         }
 
         this.matchLobbies.delete(id);
-        socket.leave(`lobby:${type}`, {
-          id
+        socket.leave(`lobby`, {
+          id,
+          type,
         });
       },
       setMessages: function (data: any[]) {
@@ -211,8 +235,9 @@ class Socket extends EventEmitter {
       }),
     );
 
-    this.join(`lobby:${type}`, {
-      id
+    this.join(`lobby`, {
+      id,
+      type,
     });
 
     return lobby;
@@ -241,17 +266,10 @@ socket.listen(
   },
 );
 
+socket.listen("team-lobby:join", (data) => {});
 
-socket.listen("team-lobby:join", (data) => {
-  
-});
+socket.listen("team-lobby:leave", (data) => {});
 
-socket.listen("team-lobby:leave", (data) => {
-  
-});
-
-socket.listen("team-lobby:chat", (data) => {
-  
-});
+socket.listen("team-lobby:chat", (data) => {});
 
 export default socket;

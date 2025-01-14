@@ -8,8 +8,10 @@ import {
   Logs,
   LineChart,
   Server,
+  Calendar,
 } from "lucide-vue-next";
-import { Swords, ShieldHalf, Trophy, Globe } from "lucide-vue-next";
+import { Play, ShieldHalf, Globe } from "lucide-vue-next";
+import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import { Users } from "lucide-vue-next";
@@ -41,6 +43,21 @@ import InstallPWA from "~/components/InstallPWA.vue";
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
+            <SidebarMenuItem tooltip="Play">
+              <SidebarMenuButton as-child tooltip="Play">
+                <NuxtLink
+                  :to="{ name: 'play' }"
+                  :class="{
+                    'router-link-active':
+                      isRouteActive('matches') || isRouteActive('play'),
+                  }"
+                >
+                  <Play />
+                  Play
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <SidebarMenuItem tooltip="Matches">
               <SidebarMenuButton as-child tooltip="Matches">
                 <NuxtLink
@@ -49,7 +66,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
                     'router-link-active': isRouteActive('matches'),
                   }"
                 >
-                  <Swords />
+                  <Calendar />
                   Matches
                 </NuxtLink>
               </SidebarMenuButton>
@@ -63,23 +80,8 @@ import InstallPWA from "~/components/InstallPWA.vue";
                     'router-link-active': isRouteActive('tournaments'),
                   }"
                 >
-                  <Trophy />
-
+                  <TournamentBracket />
                   Tournaments
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton as-child tooltip="Teams">
-                <NuxtLink
-                  :to="{ name: 'teams' }"
-                  :class="{
-                    'router-link-active': isRouteActive('teams'),
-                  }"
-                >
-                  <ShieldHalf />
-                  Teams
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -95,6 +97,20 @@ import InstallPWA from "~/components/InstallPWA.vue";
                   <Users />
 
                   Players
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton as-child tooltip="Teams">
+                <NuxtLink
+                  :to="{ name: 'teams' }"
+                  :class="{
+                    'router-link-active': isRouteActive('teams'),
+                  }"
+                >
+                  <ShieldHalf />
+                  Teams
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -471,6 +487,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { getCountryForTimezone } from "countries-and-timezones";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useMediaQuery } from "@vueuse/core/index.cjs";
+import TournamentBracketViewer from "~/components/tournament/TournamentBracketViewer.vue";
 
 export default {
   data() {

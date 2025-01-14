@@ -37,17 +37,17 @@ import TimeAgo from "../TimeAgo.vue";
       <div
         v-if="
           joinedCompetitiveQueue ||
-          (joinedWingmanQueue && matchamkingQueueDetails)
+          (joinedWingmanQueue && matchMakingQueueDetails)
         "
         class="mb-4 flex flex-col items-center"
       >
         <div class="text-4xl font-bold">
-          {{ matchamkingQueueDetails.regionPositions[region.value] }}
+          {{ matchMakingQueueDetails.regionPositions[region.value] }}
         </div>
         <div class="text-sm text-muted-foreground">Current Position</div>
 
         <small>
-          <TimeAgo :date="matchamkingQueueDetails.joinedAt"></TimeAgo>
+          <TimeAgo :date="matchMakingQueueDetails.joinedAt"></TimeAgo>
         </small>
 
         <div class="mt-2">
@@ -155,24 +155,24 @@ export default {
   },
   computed: {
     isInQueue() {
-      return this.matchamkingQueueDetails;
+      return this.matchMakingQueueDetails;
     },
     regionStats() {
       return useMatchMakingStore().regionStats;
     },
-    matchamkingQueueDetails() {
+    matchMakingQueueDetails() {
       return useMatchMakingStore().joinedMatchmakingQueues.details;
     },
     joinedWingmanQueue() {
       return (
-        this.matchamkingQueueDetails?.type === e_match_types_enum.Wingman &&
-        this.matchamkingQueueDetails?.regions.includes(this.region.value)
+        this.matchMakingQueueDetails?.type === e_match_types_enum.Wingman &&
+        this.matchMakingQueueDetails?.regions.includes(this.region.value)
       );
     },
     joinedCompetitiveQueue() {
       return (
-        this.matchamkingQueueDetails?.type === e_match_types_enum.Competitive &&
-        this.matchamkingQueueDetails?.regions.includes(this.region.value)
+        this.matchMakingQueueDetails?.type === e_match_types_enum.Competitive &&
+        this.matchMakingQueueDetails?.regions.includes(this.region.value)
       );
     },
     regions() {

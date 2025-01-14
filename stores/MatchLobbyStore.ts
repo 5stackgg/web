@@ -94,7 +94,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
           const newMatchIds = new Set(_matches.map((match) => match.id));
 
           // Remove matches that are no longer in data.matches
-          for (const [matchId, lobby] of lobbies.value.entries()) {
+          for (const [matchId] of lobbies.value.entries()) {
             if (!newMatchIds.has(matchId)) {
               lobbies.value.delete(matchId);
             }

@@ -5,7 +5,7 @@
     <BreadcrumbList>
       <BreadcrumbItem>
         <BreadcrumbLink as-child>
-          <NuxtLink :to="{ name: 'matches' }"> dashboard </NuxtLink>
+          <NuxtLink :to="{ name: 'play' }"> dashboard </NuxtLink>
         </BreadcrumbLink>
       </BreadcrumbItem>
 

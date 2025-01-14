@@ -2,14 +2,8 @@
 definePageMeta({
   middleware: [
     function (to, from) {
-      return navigateTo("/matches");
+      return navigateTo("/play");
     },
   ],
 });
-</script>
-
-<template></template>
-
-<script lang="ts">
-export default {};
 </script>

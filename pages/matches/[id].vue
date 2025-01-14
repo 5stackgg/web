@@ -253,7 +253,7 @@ export default {
       handler() {
         this.lobby?.leave();
         this.lobby?.stopListeners();
-        this.lobby = socket.joinMatchLobby(`matches/id`, this.matchId);
+        this.lobby = socket.joinLobby(`matches/id`, "match", this.matchId);
         this.updateLobbyMessages(this.lobby.messages);
         this.lobby.on("lobby:messages", this.updateLobbyMessages);
       },

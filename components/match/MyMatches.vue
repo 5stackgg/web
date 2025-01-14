@@ -5,8 +5,8 @@ import MatchesTable from "~/components/MatchesTable.vue";
 <template>
   <matches-table
     class="p-3"
-    :matches="otherMatches"
-    v-if="otherMatches"
+    :matches="myMatches"
+    v-if="myMatches"
   ></matches-table>
 
   <Teleport defer to="#pagination">
@@ -18,25 +18,31 @@ import MatchesTable from "~/components/MatchesTable.vue";
           page = _page;
         }
       "
-      :total="otherMatchesAggregate?.aggregate?.count"
-      v-if="otherMatchesAggregate"
+      :total="myMatchesAggregate?.aggregate?.count"
+      v-if="myMatchesAggregate"
     ></Pagination>
   </Teleport>
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import { $, e_match_status_enum, order_by } from "~/generated/zeus";
+import { $, e_match_status_enum } from "~/generated/zeus";
 
 export default {
   data() {
     return {
       page: 1,
       perPage: 10,
-      otherMatches: [],
-      otherMatchesAggregate: undefined,
+      myMatches: [],
+      myMatchesAggregate: undefined,
+      statuses: [
+        e_match_status_enum.Forfeit,
+        e_match_status_enum.Canceled,
+        e_match_status_enum.Surrendered,
+        e_match_status_enum.Tie,
+        e_match_status_enum.Finished,
+      ],
     };
   },
   apollo: {
@@ -47,17 +53,17 @@ export default {
             {
               limit: $("limit", "Int!"),
               offset: $("offset", "Int!"),
+              where: {
+                status: {
+                  _in: $("statuses", "[e_match_status_enum]"),
+                },
+              },
               order_by: [
                 {},
                 {
                   created_at: $("order_by", "order_by"),
                 },
               ],
-              where: {
-                is_in_lineup: {
-                  _eq: false,
-                },
-              },
             },
             simpleMatchFields,
           ],
@@ -65,21 +71,21 @@ export default {
         variables: function () {
           return {
             limit: this.perPage,
-            order_by: order_by.desc,
             offset: (this.page - 1) * this.perPage,
+            statuses: this.statuses,
           };
         },
         result: function ({ data }) {
-          this.otherMatches = data.matches;
+          this.myMatches = data.matches;
         },
       },
-      otherMatchesAggregate: {
+      myMatchesAggregate: {
         query: typedGql("subscription")({
           matches_aggregate: [
             {
               where: {
-                is_in_lineup: {
-                  _eq: false,
+                status: {
+                  _in: $("statuses", "[e_match_status_enum]"),
                 },
               },
             },
@@ -90,8 +96,13 @@ export default {
             },
           ],
         }),
+        variables: function () {
+          return {
+            statuses: this.statuses,
+          };
+        },
         result: function ({ data }) {
-          this.otherMatchesAggregate = data.matches_aggregate;
+          this.myMatchesAggregate = data.matches_aggregate;
         },
       },
     },

@@ -142,6 +142,35 @@ export const useApplicationSettingsStore = defineStore(
       return JSON.parse(version);
     });
 
+    const canCreateMatch = computed(() => {
+      const me = useAuthStore().me;
+
+      if (matchCreateRole.value === e_player_roles_enum.user) {
+        return true;
+      }
+
+      if (matchCreateRole.value === e_player_roles_enum.match_organizer) {
+        return [
+          e_player_roles_enum.match_organizer,
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
+        ].includes(me.role);
+      }
+
+      if (matchCreateRole.value === e_player_roles_enum.tournament_organizer) {
+        return [
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
+        ].includes(me.role);
+      }
+
+      if (matchCreateRole.value === e_player_roles_enum.administrator) {
+        return me.role === e_player_roles_enum.administrator;
+      }
+
+      return false;
+    });
+
     return {
       settings,
       availableRegions,
@@ -152,6 +181,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerNodes,
       playerNameRegistration,
       csBuildInfo,
+      canCreateMatch,
     };
   },
 );

@@ -84,7 +84,7 @@ export default {
     };
   },
   created() {
-    this.lobby = socket.joinMatchLobby(`MatchLobby`, this.match.id);
+    this.lobby = socket.joinLobby(`MatchLobby`, "match", this.match.id);
   },
   computed: {
     me() {

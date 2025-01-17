@@ -3,7 +3,7 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
-import MatchLobbyChat from "~/components/match/MatchLobbyChat.vue";
+import ChatLobby from "~/components/chat/ChatLobby.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import JoinMatch from "~/components/match/JoinMatch.vue";
 import { e_match_status_enum } from "~/generated/zeus";
@@ -33,11 +33,12 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
       <CheckIntoMatch :match="match"></CheckIntoMatch>
       <JoinMatch :match="match"></JoinMatch>
       <MatchInfo :match="match"></MatchInfo>
-      <MatchLobbyChat
-        v-if="match.is_in_lineup || match.is_organizer || match.is_coach"
-        :match-id="match.id"
-        :messages="messages"
-      ></MatchLobbyChat>
+      <ChatLobby
+        instance="matches/id"
+        type="match"
+        :lobby-id="match.id"
+        v-if="canJoinLobby"
+      />
     </div>
 
     <div class="grid grid-cols-1 gap-y-4">
@@ -75,15 +76,12 @@ import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
-import socket from "~/web-sockets/Socket";
-import type { MatchLobby } from "~/web-sockets/Socket";
 import { playerFields } from "~/graphql/playerFields";
+
 export default {
   data() {
     return {
-      messages: [],
       match: undefined,
-      lobby: undefined as MatchLobby | undefined,
     };
   },
   apollo: {
@@ -239,26 +237,6 @@ export default {
       },
     },
   },
-  watch: {
-    canJoinLobby: {
-      handler() {
-        if (!this.canJoinLobby) {
-          this.lobby?.leave();
-          this.lobby?.stopListeners();
-          return;
-        }
-      },
-    },
-    ["match.id"]: {
-      handler() {
-        this.lobby?.leave();
-        this.lobby?.stopListeners();
-        this.lobby = socket.joinLobby(`matches/id`, "match", this.matchId);
-        this.updateLobbyMessages(this.lobby.messages);
-        this.lobby.on("lobby:messages", this.updateLobbyMessages);
-      },
-    },
-  },
   computed: {
     matchId() {
       return this.$route.params.id;
@@ -274,16 +252,6 @@ export default {
         this.match.is_coach
       );
     },
-  },
-  methods: {
-    updateLobbyMessages(messages: any) {
-      this.messages = messages.sort((a, b) => {
-        return a.timestamp - b.timestamp;
-      });
-    },
-  },
-  unmounted() {
-    this.lobby?.leave();
   },
 };
 </script>

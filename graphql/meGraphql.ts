@@ -7,6 +7,7 @@ export const meFields = Selector("players")({
   role: true,
   profile_url: true,
   matchmaking_cooldown: true,
+  current_lobby_id: true,
   teams: [
     {},
     {

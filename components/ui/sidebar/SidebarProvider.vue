@@ -8,7 +8,8 @@ import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SID
 const props = withDefaults(defineProps<{
   defaultOpen?: boolean
   open?: boolean
-  class?: HTMLAttributes['class']
+  class?: HTMLAttributes['class'],
+  style?: HTMLAttributes['style'],
 }>(), {
   defaultOpen: true,
   open: undefined,
@@ -94,7 +95,7 @@ defineSlots<{
 <template>
   <TooltipProvider :delay-duration="0">
     <div
-      :style="{
+      :style="props.style || {
         '--sidebar-width': SIDEBAR_WIDTH,
         '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
       }"

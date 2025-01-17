@@ -103,7 +103,7 @@ export default {
       return useMatchLobbyStore().lobbyChat[this.match.id];
     },
     isOnline() {
-      return useMatchMakingStore().onlinePlayerSteamIds.includes(
+      return useMatchmakingStore().onlinePlayerSteamIds.includes(
         this.member.player.steam_id,
       );
     },

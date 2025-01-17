@@ -3,13 +3,15 @@ import type { e_match_types_enum } from "~/generated/zeus";
 
 export interface Lobby {
   messages: any[];
-  components: Set<string>;
+  instances: Set<string>;
   callbacks: Record<string, (data: any) => void>;
   listeners: ReturnType<typeof Socket.prototype.listen>[];
   on: (event: string, callback: (data: any) => void) => void;
   leave: () => void;
   setMessages: (data: any[]) => void;
 }
+
+export type ChatType = "match" | "team" | "matchmaking";
 
 class Socket extends EventEmitter {
   private listening = new Set();
@@ -21,8 +23,7 @@ class Socket extends EventEmitter {
     data: Record<string, unknown>;
   }> = [];
 
-  private teamLobbies: Map<string, Lobby> = new Map();
-  private matchLobbies: Map<string, Lobby> = new Map();
+  private lobbies: Map<string, Lobby> = new Map();
 
   public connect() {
     const wsHost = `wss://${useRuntimeConfig().public.wsDomain}/web`;
@@ -99,7 +100,7 @@ class Socket extends EventEmitter {
       return;
     }
     this.event(`${room}:join`, data);
-    console.info(`[ws] joining room ${room}`);
+    console.info(`[ws] joining room ${room}:${data.type}`);
   }
 
   public leave(room: string, data: Record<string, unknown>) {
@@ -121,7 +122,7 @@ class Socket extends EventEmitter {
     }
   }
 
-  public chat(type: "match" | "team", id: string, message: string) {
+  public chat(type: ChatType, id: string, message: string) {
     this.event(`lobby:chat`, {
       id,
       type,
@@ -131,11 +132,9 @@ class Socket extends EventEmitter {
 
   public listenChat(type: string, id: string, callback: (data: any) => void) {
     return this.listen(
-      `lobby:${type}:chat`,
-      (data: { id: string; message: string }) => {
-        if (data.id === id) {
-          callback(data);
-        }
+      `lobby:${type}:${id}:chat`,
+      (data: { message: string }) => {
+        callback(data);
       },
     );
   }
@@ -157,19 +156,17 @@ class Socket extends EventEmitter {
     };
   }
 
-  public joinLobby(
-    component: string,
-    type: "match" | "team" | "matchmaking",
-    id: string,
-  ) {
-    let lobby = this.matchLobbies.get(id);
+  public joinLobby(instance: string, type: ChatType, _id: string) {
+    const lobbyId = `${type}:${_id}`;
+    let lobby = this.lobbies.get(lobbyId);
+
     if (lobby) {
-      lobby.components.add(component);
-      return this.matchLobbies.get(id);
+      lobby.instances.add(instance);
+      return lobby;
     }
 
     lobby = {
-      components: new Set([component]),
+      instances: new Set([instance]),
       messages: [],
       callbacks: {},
       listeners: [],
@@ -177,11 +174,11 @@ class Socket extends EventEmitter {
         this.callbacks[event] = callback;
       },
       leave: () => {
-        const _lobby = this.matchLobbies.get(id);
+        const _lobby = this.lobbies.get(lobbyId);
 
-        _lobby?.components.delete(component);
+        _lobby?.instances.delete(instance);
 
-        if (_lobby?.components.size !== 0) {
+        if (_lobby?.instances.size !== 0) {
           return;
         }
 
@@ -189,9 +186,9 @@ class Socket extends EventEmitter {
           listener?.stop();
         }
 
-        this.matchLobbies.delete(id);
+        this.lobbies.delete(lobbyId);
         socket.leave(`lobby`, {
-          id,
+          id: _id,
           type,
         });
       },
@@ -201,42 +198,34 @@ class Socket extends EventEmitter {
       },
     };
 
-    this.matchLobbies.set(id, lobby);
+    this.lobbies.set(lobbyId, lobby);
 
     lobby.listeners.push(
-      socket.listen(`lobby:${type}:list`, (data) => {
-        if (data.id == id) {
-          useMatchLobbyStore().set(id, data.lobby);
-        }
+      socket.listen(`lobby:${lobbyId}:list`, (data) => {
+        useMatchLobbyStore().set(lobbyId, data.lobby);
       }),
     );
 
     lobby.listeners.push(
-      socket.listen(`lobby:${type}:joined`, (data) => {
-        if (data.id == id) {
-          useMatchLobbyStore().add(id, data.user);
-        }
+      socket.listen(`lobby:${lobbyId}:joined`, (data) => {
+        useMatchLobbyStore().add(lobbyId, data.user);
       }),
     );
 
     lobby.listeners.push(
-      socket.listen(`lobby:${type}:left`, (data) => {
-        if (data.id == id) {
-          useMatchLobbyStore().remove(id, data.user);
-        }
+      socket.listen(`lobby:${lobbyId}:left`, (data) => {
+        useMatchLobbyStore().remove(lobbyId, data.user);
       }),
     );
 
     lobby.listeners.push(
-      socket.listen(`lobby:${type}:messages`, (data) => {
-        if (data.id == id) {
-          lobby.setMessages(data.messages);
-        }
+      socket.listen(`lobby:${lobbyId}:messages`, (data) => {
+        lobby.setMessages(data.messages);
       }),
     );
 
     this.join(`lobby`, {
-      id,
+      id: _id,
       type,
     });
 
@@ -245,16 +234,16 @@ class Socket extends EventEmitter {
 }
 const socket = new Socket();
 
-socket.listen("match-making:region-stats", (data) => {
-  useMatchMakingStore().regionStats = data;
+socket.listen("matchmaking:region-stats", (data) => {
+  useMatchmakingStore().regionStats = data;
 });
 
 socket.listen("players-online", (onlinePlayerSteamIds) => {
-  useMatchMakingStore().onlinePlayerSteamIds = onlinePlayerSteamIds;
+  useMatchmakingStore().onlinePlayerSteamIds = onlinePlayerSteamIds;
 });
 
 socket.listen(
-  "match-making:details",
+  "matchmaking:details",
   (
     data: Array<{
       totalInQueue: number;
@@ -262,7 +251,7 @@ socket.listen(
       region: string;
     }>,
   ) => {
-    useMatchMakingStore().joinedMatchmakingQueues = data;
+    useMatchmakingStore().joinedMatchmakingQueues = data;
   },
 );
 

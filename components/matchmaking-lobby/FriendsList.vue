@@ -118,7 +118,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
           <template v-for="player in offlineFriends">
             <FriendOptions :player="player">
               <PlayerDisplay
-                class="opacity-50"
+                class="opacity-50 cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
                 :player="player"
                 :showOnline="false"
                 :showAddFriend="false"

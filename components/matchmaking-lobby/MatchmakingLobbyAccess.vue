@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Lock, Unlock } from "lucide-vue-next";
+import { Handshake, Unlock, Send } from "lucide-vue-next";
 import { e_lobby_access_enum } from "~/generated/zeus";
 import {
   Popover,
@@ -10,11 +10,7 @@ import { Button } from "~/components/ui/button";
 </script>
 
 <template>
-  <component
-    :is="getIcon(lobby.access)"
-    class="h-4 w-4"
-    v-if="!lobby.is_captain"
-  />
+  <component :is="getIcon(lobby.access)" class="h-4 w-4" v-if="!isCaptain" />
 
   <Popover v-model:open="popoverOpen" v-else>
     <div class="flex gap-2">
@@ -30,8 +26,8 @@ import { Button } from "~/components/ui/button";
         <Button
           v-for="access in [
             e_lobby_access_enum.Open,
+            e_lobby_access_enum.Friends,
             e_lobby_access_enum.Invite,
-            e_lobby_access_enum.Private,
           ]"
           :key="access"
           @click="updateLobbyAccess(access)"
@@ -39,8 +35,8 @@ import { Button } from "~/components/ui/button";
           size="sm"
           :class="{
             'rounded-r-none': access === e_lobby_access_enum.Open,
-            'rounded-none border-x-0': access === e_lobby_access_enum.Invite,
-            'rounded-l-none': access === e_lobby_access_enum.Private,
+            'rounded-none border-x-0': access === e_lobby_access_enum.Friends,
+            'rounded-l-none': access === e_lobby_access_enum.Invite,
           }"
         >
           <component :is="getIcon(access)" class="h-4 w-4 mr-2" />
@@ -66,6 +62,18 @@ export default {
     return {
       popoverOpen: false,
     };
+  },
+  computed: {
+    me() {
+      return useAuthStore().me;
+    },
+    isCaptain() {
+      return (
+        this.lobby?.players.find(
+          ({ player }) => player.steam_id === this.me.steam_id,
+        )?.captain ?? false
+      );
+    },
   },
   methods: {
     updateLobbyAccess(access: e_lobby_access_enum) {
@@ -95,13 +103,12 @@ export default {
     },
     getIcon(access: e_lobby_access_enum) {
       switch (access) {
-        case e_lobby_access_enum.Private:
+        case e_lobby_access_enum.Friends:
+          return Handshake;
         case e_lobby_access_enum.Invite:
-          return Lock;
+          return Send;
         case e_lobby_access_enum.Open:
           return Unlock;
-        default:
-          return Lock;
       }
     },
   },

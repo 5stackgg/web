@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Lock, Unlock } from "lucide-vue-next";
+import { Lock, Unlock, Send, Handshake } from "lucide-vue-next";
 import { e_lobby_access_enum } from "~/generated/zeus";
 import {
   Popover,
@@ -42,6 +42,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
         <Button
           v-for="access in [
             e_lobby_access_enum.Open,
+            e_lobby_access_enum.Friends,
             e_lobby_access_enum.Invite,
             e_lobby_access_enum.Private,
           ]"
@@ -53,7 +54,9 @@ import ClipBoard from "~/components/ClipBoard.vue";
           size="sm"
           :class="{
             'rounded-r-none': access === e_lobby_access_enum.Open,
-            'rounded-none border-x-0': access === e_lobby_access_enum.Invite,
+            'rounded-none border-x-0':
+              access === e_lobby_access_enum.Invite ||
+              access === e_lobby_access_enum.Friends,
             'rounded-l-none': access === e_lobby_access_enum.Private,
           }"
         >
@@ -118,12 +121,13 @@ export default {
     getIcon(access: e_lobby_access_enum) {
       switch (access) {
         case e_lobby_access_enum.Private:
-        case e_lobby_access_enum.Invite:
           return Lock;
+        case e_lobby_access_enum.Invite:
+          return Send;
         case e_lobby_access_enum.Open:
           return Unlock;
-        default:
-          return Lock;
+        case e_lobby_access_enum.Friends:
+          return Handshake;
       }
     },
   },

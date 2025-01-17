@@ -4,14 +4,16 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import { CheckIcon, XIcon } from "lucide-vue-next";
 import FriendsList from "./FriendsList.vue";
 import { Mail } from "lucide-vue-next";
+import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <template v-if="currentLobby">
       <div class="flex flex-row justify-between items-center" v-if="!mini">
-        <div>
+        <div class="flex flex-row items-center gap-2">
           <h3 class="text-lg font-medium">Lobby</h3>
+          <MatchmakingLobbyAccess :lobby="currentLobby" />
         </div>
         <Button
           variant="outline"
@@ -46,7 +48,7 @@ import { Mail } from "lucide-vue-next";
           <Button
             variant="destructive"
             size="icon"
-            @click="removeFromLobby(currentLobby.id, player.player.steam_idd)"
+            @click="removeFromLobby(currentLobby.id, player.player.steam_id)"
             v-if="!mini && player.status === 'Invited'"
           >
             <XIcon class="h-4 w-4" />
@@ -113,6 +115,7 @@ import { Mail } from "lucide-vue-next";
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { playerFields } from "~/graphql/playerFields";
+import { $ } from "~/generated/zeus";
 
 export default {
   props: {
@@ -133,23 +136,32 @@ export default {
           lobbies: [
             {
               where: {
-                access: {
-                  _neq: "Open",
+                players: {
+                  steam_id: {
+                    _eq: $("steam_id", "bigint!"),
+                  },
                 },
               },
             },
             {
               id: true,
+              access: true,
               players: [
                 {},
                 {
                   status: true,
+                  captain: true,
                   player: playerFields,
                 },
               ],
             },
           ],
         }),
+        variables() {
+          return {
+            steam_id: this.me?.steam_id,
+          };
+        },
         result({ data }: { data: any }) {
           this.lobbies = data.lobbies;
         },

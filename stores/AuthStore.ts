@@ -14,8 +14,6 @@ export const useAuthStore = defineStore("auth", () => {
   const me = ref<InputType<GraphQLTypes["players"], typeof meFields>>();
   const hasDiscordLinked = ref<boolean>(false);
 
-  // TODO - move the listens to the socket store ?
-  // Initialize MatchmakingStore, this is required for sockets listens to get initialized
   useSearchStore();
   useMatchmakingStore();
   useNotificationStore();

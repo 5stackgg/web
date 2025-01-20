@@ -30,7 +30,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
   </template>
 
   <template v-else>
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between my-4">
       <h3 class="text-lg font-medium">Friends</h3>
       <Button variant="ghost" size="sm" class="h-8" @click="syncSteamFriends">
         <RefreshCw class="mr-2 h-4 w-4" />
@@ -44,7 +44,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
       @selected="(player) => addAsFriend(player.steam_id)"
     ></player-search>
 
-    <ScrollArea class="mt-4 h-[400px]">
+    <div class="overflow-auto mt-4">
       <div class="flex flex-col gap-4">
         <div v-if="pendingFriends?.length > 0">
           <div class="mb-2 font-medium text-sm text-muted-foreground">
@@ -154,7 +154,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
           </template>
         </div>
       </div>
-    </ScrollArea>
+    </div>
   </template>
 </template>
 

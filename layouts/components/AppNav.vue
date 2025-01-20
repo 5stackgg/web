@@ -524,13 +524,13 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
-            <SidebarMenu>
+          <SidebarGroup :class="{ 'overflow-hidden': !me.current_lobby_id }">
+            <SidebarMenu :class="{ 'overflow-hidden': !me.current_lobby_id }">
               <MatchmakingLobby :mini="!rightSidebarOpen" />
             </SidebarMenu>
           </SidebarGroup>
 
-          <SidebarGroup v-if="me.current_lobby_id" class="overflow-hidden">
+          <SidebarGroup v-if="me.current_lobby_id">
             <ChatLobby
               instance="matchmaking"
               :lobby-id="me.current_lobby_id"
@@ -538,17 +538,13 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
               v-show="rightSidebarOpen"
             />
           </SidebarGroup>
-        </SidebarContent>
-        <SidebarFooter
-          :class="{
-            'flex items-center justify-center': !rightSidebarOpen,
-          }"
-          v-if="inlobby"
-        >
-          <SidebarSeparator class="my-4" />
 
-          <FriendsList :mini="!rightSidebarOpen" />
-        </SidebarFooter>
+          <SidebarGroup v-if="me.current_lobby_id" class="overflow-hidden">
+            <SidebarSeparator class="my-4" />
+
+            <FriendsList :mini="!rightSidebarOpen" />
+          </SidebarGroup>
+        </SidebarContent>
       </Sidebar>
     </SidebarProvider>
   </Teleport>

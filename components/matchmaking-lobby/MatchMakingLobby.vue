@@ -8,7 +8,7 @@ import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLo
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 overflow-auto">
     <template v-if="currentLobby">
       <div class="flex flex-row justify-between items-center" v-if="!mini">
         <div class="flex flex-row items-center gap-2">

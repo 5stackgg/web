@@ -1,6 +1,6 @@
 import { ref, watch } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { e_match_types_enum, $ } from "~/generated/zeus";
+import { e_match_types_enum, $, e_lobby_access_enum } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
@@ -61,35 +61,78 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   };
 
   const friends = ref([]);
-  const subscribeToFriends = async () => {
+  const subscribeToFriends = async (mySteamId: bigint) => {
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
         my_friends: [
           {},
           {
             name: true,
-            country: true,
             steam_id: true,
             avatar_url: true,
             status: true,
             invited_by_steam_id: true,
-            // TODO - this is problematic, cant limit current_lobby_id since its in a view....
-            // this exposes the lobby id....
-            // current_lobby_id: true,
+            player: {
+              lobby_players: [
+                {
+                  limit: 1,
+                  where: {
+                    lobby: {
+                      _not: {
+                        players: {
+                          steam_id: {
+                            _eq: $("mySteamId", "bigint!"),
+                          },
+                        },
+                      },
+                      access: {
+                        _eq: e_lobby_access_enum.Friends,
+                      },
+                    },
+                  },
+                },
+                {
+                  lobby_id: true,
+                  lobby: {
+                    id: true,
+                    players: [
+                      {},
+                      {
+                        player: {
+                          name: true,
+                          steam_id: true,
+                          avatar_url: true,
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
           },
         ],
       }),
+      variables: {
+        mySteamId,
+      },
     });
 
     subscription.subscribe({
       next: ({ data }) => {
         friends.value = data.my_friends;
-        // TODO - refresh the lobby list
       },
     });
   };
 
-  subscribeToFriends();
+  watch(
+    () => useAuthStore().me,
+    (me) => {
+      if (me) {
+        subscribeToFriends(me.steam_id);
+      }
+    },
+    { immediate: true },
+  );
 
   watch(onlinePlayerSteamIds, (newSteamIds, oldSteamIds) => {
     if (

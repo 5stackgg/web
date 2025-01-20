@@ -87,16 +87,12 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             </div>
           </template>
         </div>
-
         <div>
           <template v-if="onlineFriends?.length > 0">
             <div class="mb-2 font-medium text-sm">
               Online Friends ({{ onlineFriends.length }})
             </div>
-            <div
-              v-for="player in onlineFriends"
-              class="flex items-center justify-between"
-            >
+            <div v-for="player in onlineFriends">
               <FriendOptions :player="player">
                 <PlayerDisplay
                   class="w-full cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
@@ -105,6 +101,37 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
                   :showAddFriend="false"
                 />
               </FriendOptions>
+              <div
+                class="flex items-center bg-white/5 rounded-md p-2 mt-2"
+                v-if="player.player.lobby_players?.at(0)?.lobby"
+              >
+                <Button
+                  variant="outline"
+                  size="sm"
+                  class="mr-2"
+                  @click="
+                    joinLobby(player.player.lobby_players?.at(0)?.lobby.id)
+                  "
+                >
+                  Join Lobby
+                </Button>
+                <div class="flex">
+                  <template
+                    v-for="{ player } in player.player.lobby_players?.at(0)
+                      ?.lobby.players"
+                  >
+                    <PlayerDisplay
+                      class="p-2"
+                      :player="player"
+                      :showOnline="false"
+                      :showAddFriend="false"
+                      :showName="false"
+                      :showFlag="false"
+                      :showSteamId="false"
+                    />
+                  </template>
+                </div>
+              </div>
             </div>
           </template>
         </div>
@@ -207,6 +234,42 @@ export default {
           syncSteamFriends: {
             success: true,
           },
+        }),
+      });
+    },
+    async joinLobby(lobby_id: string) {
+      await this.$apollo.mutate({
+        mutation: typedGql("mutation")({
+          insert_lobby_players_one: [
+            {
+              object: {
+                lobby_id,
+                steam_id: this.me?.steam_id,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      await this.$apollo.mutate({
+        mutation: typedGql("mutation")({
+          update_lobby_players_by_pk: [
+            {
+              pk_columns: {
+                lobby_id,
+                steam_id: this.me?.steam_id,
+              },
+              _set: {
+                status: "Accepted",
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
         }),
       });
     },

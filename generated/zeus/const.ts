@@ -4191,44 +4191,26 @@ export const AllTypesProps: Record<string,any> = {
 		delete_player_assists:{
 			where:"player_assists_bool_exp"
 		},
-		delete_player_assists_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		delete_player_damages:{
 			where:"player_damages_bool_exp"
 		},
-		delete_player_damages_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		delete_player_flashes:{
 			where:"player_flashes_bool_exp"
-		},
-		delete_player_flashes_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
 		},
 		delete_player_kills:{
 			where:"player_kills_bool_exp"
 		},
 		delete_player_kills_by_pk:{
 			id:"uuid",
+			match_id:"uuid",
+			match_map_id:"uuid",
 			time:"timestamptz"
 		},
 		delete_player_objectives:{
 			where:"player_objectives_bool_exp"
 		},
-		delete_player_objectives_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		delete_player_sanctions:{
 			where:"player_sanctions_bool_exp"
-		},
-		delete_player_sanctions_by_pk:{
-			created_at:"timestamptz",
-			id:"uuid"
 		},
 		delete_player_unused_utility:{
 			where:"player_unused_utility_bool_exp"
@@ -4238,10 +4220,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_player_utility:{
 			where:"player_utility_bool_exp"
-		},
-		delete_player_utility_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
 		},
 		delete_players:{
 			where:"players_bool_exp"
@@ -4646,28 +4624,22 @@ export const AllTypesProps: Record<string,any> = {
 			on_conflict:"notifications_on_conflict"
 		},
 		insert_player_assists:{
-			objects:"player_assists_insert_input",
-			on_conflict:"player_assists_on_conflict"
+			objects:"player_assists_insert_input"
 		},
 		insert_player_assists_one:{
-			object:"player_assists_insert_input",
-			on_conflict:"player_assists_on_conflict"
+			object:"player_assists_insert_input"
 		},
 		insert_player_damages:{
-			objects:"player_damages_insert_input",
-			on_conflict:"player_damages_on_conflict"
+			objects:"player_damages_insert_input"
 		},
 		insert_player_damages_one:{
-			object:"player_damages_insert_input",
-			on_conflict:"player_damages_on_conflict"
+			object:"player_damages_insert_input"
 		},
 		insert_player_flashes:{
-			objects:"player_flashes_insert_input",
-			on_conflict:"player_flashes_on_conflict"
+			objects:"player_flashes_insert_input"
 		},
 		insert_player_flashes_one:{
-			object:"player_flashes_insert_input",
-			on_conflict:"player_flashes_on_conflict"
+			object:"player_flashes_insert_input"
 		},
 		insert_player_kills:{
 			objects:"player_kills_insert_input",
@@ -4678,20 +4650,16 @@ export const AllTypesProps: Record<string,any> = {
 			on_conflict:"player_kills_on_conflict"
 		},
 		insert_player_objectives:{
-			objects:"player_objectives_insert_input",
-			on_conflict:"player_objectives_on_conflict"
+			objects:"player_objectives_insert_input"
 		},
 		insert_player_objectives_one:{
-			object:"player_objectives_insert_input",
-			on_conflict:"player_objectives_on_conflict"
+			object:"player_objectives_insert_input"
 		},
 		insert_player_sanctions:{
-			objects:"player_sanctions_insert_input",
-			on_conflict:"player_sanctions_on_conflict"
+			objects:"player_sanctions_insert_input"
 		},
 		insert_player_sanctions_one:{
-			object:"player_sanctions_insert_input",
-			on_conflict:"player_sanctions_on_conflict"
+			object:"player_sanctions_insert_input"
 		},
 		insert_player_unused_utility:{
 			objects:"player_unused_utility_insert_input",
@@ -4702,12 +4670,10 @@ export const AllTypesProps: Record<string,any> = {
 			on_conflict:"player_unused_utility_on_conflict"
 		},
 		insert_player_utility:{
-			objects:"player_utility_insert_input",
-			on_conflict:"player_utility_on_conflict"
+			objects:"player_utility_insert_input"
 		},
 		insert_player_utility_one:{
-			object:"player_utility_insert_input",
-			on_conflict:"player_utility_on_conflict"
+			object:"player_utility_insert_input"
 		},
 		insert_players:{
 			objects:"players_insert_input",
@@ -5320,11 +5286,6 @@ export const AllTypesProps: Record<string,any> = {
 			_set:"player_assists_set_input",
 			where:"player_assists_bool_exp"
 		},
-		update_player_assists_by_pk:{
-			_inc:"player_assists_inc_input",
-			_set:"player_assists_set_input",
-			pk_columns:"player_assists_pk_columns_input"
-		},
 		update_player_assists_many:{
 			updates:"player_assists_updates"
 		},
@@ -5333,11 +5294,6 @@ export const AllTypesProps: Record<string,any> = {
 			_set:"player_damages_set_input",
 			where:"player_damages_bool_exp"
 		},
-		update_player_damages_by_pk:{
-			_inc:"player_damages_inc_input",
-			_set:"player_damages_set_input",
-			pk_columns:"player_damages_pk_columns_input"
-		},
 		update_player_damages_many:{
 			updates:"player_damages_updates"
 		},
@@ -5345,11 +5301,6 @@ export const AllTypesProps: Record<string,any> = {
 			_inc:"player_flashes_inc_input",
 			_set:"player_flashes_set_input",
 			where:"player_flashes_bool_exp"
-		},
-		update_player_flashes_by_pk:{
-			_inc:"player_flashes_inc_input",
-			_set:"player_flashes_set_input",
-			pk_columns:"player_flashes_pk_columns_input"
 		},
 		update_player_flashes_many:{
 			updates:"player_flashes_updates"
@@ -5372,11 +5323,6 @@ export const AllTypesProps: Record<string,any> = {
 			_set:"player_objectives_set_input",
 			where:"player_objectives_bool_exp"
 		},
-		update_player_objectives_by_pk:{
-			_inc:"player_objectives_inc_input",
-			_set:"player_objectives_set_input",
-			pk_columns:"player_objectives_pk_columns_input"
-		},
 		update_player_objectives_many:{
 			updates:"player_objectives_updates"
 		},
@@ -5384,11 +5330,6 @@ export const AllTypesProps: Record<string,any> = {
 			_inc:"player_sanctions_inc_input",
 			_set:"player_sanctions_set_input",
 			where:"player_sanctions_bool_exp"
-		},
-		update_player_sanctions_by_pk:{
-			_inc:"player_sanctions_inc_input",
-			_set:"player_sanctions_set_input",
-			pk_columns:"player_sanctions_pk_columns_input"
 		},
 		update_player_sanctions_many:{
 			updates:"player_sanctions_updates"
@@ -5410,11 +5351,6 @@ export const AllTypesProps: Record<string,any> = {
 			_inc:"player_utility_inc_input",
 			_set:"player_utility_set_input",
 			where:"player_utility_bool_exp"
-		},
-		update_player_utility_by_pk:{
-			_inc:"player_utility_inc_input",
-			_set:"player_utility_set_input",
-			pk_columns:"player_utility_pk_columns_input"
 		},
 		update_player_utility_many:{
 			updates:"player_utility_updates"
@@ -5674,6 +5610,7 @@ export const AllTypesProps: Record<string,any> = {
 		invited_by_steam_id:"bigint_comparison_exp",
 		name:"String_comparison_exp",
 		name_registered:"Boolean_comparison_exp",
+		player:"players_bool_exp",
 		profile_url:"String_comparison_exp",
 		role:"String_comparison_exp",
 		status:"String_comparison_exp",
@@ -5688,6 +5625,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
+		player:"players_obj_rel_insert_input",
 		steam_id:"bigint"
 	},
 	my_friends_max_order_by:{
@@ -5725,6 +5663,7 @@ export const AllTypesProps: Record<string,any> = {
 		invited_by_steam_id:"order_by",
 		name:"order_by",
 		name_registered:"order_by",
+		player:"players_order_by",
 		profile_url:"order_by",
 		role:"order_by",
 		status:"order_by",
@@ -6033,8 +5972,7 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"player_assists_variance_order_by"
 	},
 	player_assists_arr_rel_insert_input:{
-		data:"player_assists_insert_input",
-		on_conflict:"player_assists_on_conflict"
+		data:"player_assists_insert_input"
 	},
 	player_assists_avg_order_by:{
 		attacked_steam_id:"order_by",
@@ -6061,7 +5999,6 @@ export const AllTypesProps: Record<string,any> = {
 		round:"Int_comparison_exp",
 		time:"timestamptz_comparison_exp"
 	},
-	player_assists_constraint: "enum" as const,
 	player_assists_inc_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint"
@@ -6100,11 +6037,6 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		time:"order_by"
 	},
-	player_assists_on_conflict:{
-		constraint:"player_assists_constraint",
-		update_columns:"player_assists_update_column",
-		where:"player_assists_bool_exp"
-	},
 	player_assists_order_by:{
 		attacked_player:"players_order_by",
 		attacked_steam_id:"order_by",
@@ -6121,10 +6053,6 @@ export const AllTypesProps: Record<string,any> = {
 		player:"players_order_by",
 		round:"order_by",
 		time:"order_by"
-	},
-	player_assists_pk_columns_input:{
-		id:"uuid",
-		time:"timestamptz"
 	},
 	player_assists_select_column: "enum" as const,
 	player_assists_select_column_player_assists_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -6169,7 +6097,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		round:"order_by"
 	},
-	player_assists_update_column: "enum" as const,
 	player_assists_updates:{
 		_inc:"player_assists_inc_input",
 		_set:"player_assists_set_input",
@@ -6217,8 +6144,7 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"player_damages_variance_order_by"
 	},
 	player_damages_arr_rel_insert_input:{
-		data:"player_damages_insert_input",
-		on_conflict:"player_damages_on_conflict"
+		data:"player_damages_insert_input"
 	},
 	player_damages_avg_order_by:{
 		armor:"order_by",
@@ -6258,7 +6184,6 @@ export const AllTypesProps: Record<string,any> = {
 		time:"timestamptz_comparison_exp",
 		with:"String_comparison_exp"
 	},
-	player_damages_constraint: "enum" as const,
 	player_damages_inc_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
@@ -6319,11 +6244,6 @@ export const AllTypesProps: Record<string,any> = {
 		time:"order_by",
 		with:"order_by"
 	},
-	player_damages_on_conflict:{
-		constraint:"player_damages_constraint",
-		update_columns:"player_damages_update_column",
-		where:"player_damages_bool_exp"
-	},
 	player_damages_order_by:{
 		armor:"order_by",
 		attacked_location:"order_by",
@@ -6349,10 +6269,6 @@ export const AllTypesProps: Record<string,any> = {
 		team_damage:"order_by",
 		time:"order_by",
 		with:"order_by"
-	},
-	player_damages_pk_columns_input:{
-		id:"uuid",
-		time:"timestamptz"
 	},
 	player_damages_select_column: "enum" as const,
 	player_damages_set_input:{
@@ -6413,7 +6329,6 @@ export const AllTypesProps: Record<string,any> = {
 		health:"order_by",
 		round:"order_by"
 	},
-	player_damages_update_column: "enum" as const,
 	player_damages_updates:{
 		_inc:"player_damages_inc_input",
 		_set:"player_damages_set_input",
@@ -6485,8 +6400,7 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"player_flashes_variance_order_by"
 	},
 	player_flashes_arr_rel_insert_input:{
-		data:"player_flashes_insert_input",
-		on_conflict:"player_flashes_on_conflict"
+		data:"player_flashes_insert_input"
 	},
 	player_flashes_avg_order_by:{
 		attacked_steam_id:"order_by",
@@ -6512,7 +6426,6 @@ export const AllTypesProps: Record<string,any> = {
 		thrown_by:"players_bool_exp",
 		time:"timestamptz_comparison_exp"
 	},
-	player_flashes_constraint: "enum" as const,
 	player_flashes_inc_input:{
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
@@ -6551,11 +6464,6 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		time:"order_by"
 	},
-	player_flashes_on_conflict:{
-		constraint:"player_flashes_constraint",
-		update_columns:"player_flashes_update_column",
-		where:"player_flashes_bool_exp"
-	},
 	player_flashes_order_by:{
 		attacked_steam_id:"order_by",
 		attacker_steam_id:"order_by",
@@ -6570,10 +6478,6 @@ export const AllTypesProps: Record<string,any> = {
 		team_flash:"order_by",
 		thrown_by:"players_order_by",
 		time:"order_by"
-	},
-	player_flashes_pk_columns_input:{
-		id:"uuid",
-		time:"timestamptz"
 	},
 	player_flashes_select_column: "enum" as const,
 	player_flashes_select_column_player_flashes_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -6624,7 +6528,6 @@ export const AllTypesProps: Record<string,any> = {
 		duration:"order_by",
 		round:"order_by"
 	},
-	player_flashes_update_column: "enum" as const,
 	player_flashes_updates:{
 		_inc:"player_flashes_inc_input",
 		_set:"player_flashes_set_input",
@@ -6816,6 +6719,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_kills_pk_columns_input:{
 		id:"uuid",
+		match_id:"uuid",
+		match_map_id:"uuid",
 		time:"timestamptz"
 	},
 	player_kills_select_column: "enum" as const,
@@ -6909,8 +6814,7 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"player_objectives_variance_order_by"
 	},
 	player_objectives_arr_rel_insert_input:{
-		data:"player_objectives_insert_input",
-		on_conflict:"player_objectives_on_conflict"
+		data:"player_objectives_insert_input"
 	},
 	player_objectives_avg_order_by:{
 		player_steam_id:"order_by",
@@ -6931,7 +6835,6 @@ export const AllTypesProps: Record<string,any> = {
 		time:"timestamptz_comparison_exp",
 		type:"e_objective_types_enum_comparison_exp"
 	},
-	player_objectives_constraint: "enum" as const,
 	player_objectives_inc_input:{
 		player_steam_id:"bigint"
 	},
@@ -6962,11 +6865,6 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		time:"order_by"
 	},
-	player_objectives_on_conflict:{
-		constraint:"player_objectives_constraint",
-		update_columns:"player_objectives_update_column",
-		where:"player_objectives_bool_exp"
-	},
 	player_objectives_order_by:{
 		id:"order_by",
 		match:"matches_order_by",
@@ -6978,10 +6876,6 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		time:"order_by",
 		type:"order_by"
-	},
-	player_objectives_pk_columns_input:{
-		id:"uuid",
-		time:"timestamptz"
 	},
 	player_objectives_select_column: "enum" as const,
 	player_objectives_set_input:{
@@ -7020,7 +6914,6 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		round:"order_by"
 	},
-	player_objectives_update_column: "enum" as const,
 	player_objectives_updates:{
 		_inc:"player_objectives_inc_input",
 		_set:"player_objectives_set_input",
@@ -7058,7 +6951,6 @@ export const AllTypesProps: Record<string,any> = {
 		sanctioned_by_steam_id:"bigint_comparison_exp",
 		type:"e_sanction_types_enum_comparison_exp"
 	},
-	player_sanctions_constraint: "enum" as const,
 	player_sanctions_inc_input:{
 		player_steam_id:"bigint",
 		sanctioned_by_steam_id:"bigint"
@@ -7074,11 +6966,6 @@ export const AllTypesProps: Record<string,any> = {
 		sanctioned_by_steam_id:"bigint",
 		type:"e_sanction_types_enum"
 	},
-	player_sanctions_on_conflict:{
-		constraint:"player_sanctions_constraint",
-		update_columns:"player_sanctions_update_column",
-		where:"player_sanctions_bool_exp"
-	},
 	player_sanctions_order_by:{
 		created_at:"order_by",
 		e_sanction_type:"e_sanction_types_order_by",
@@ -7090,10 +6977,6 @@ export const AllTypesProps: Record<string,any> = {
 		sanctioned_by:"players_order_by",
 		sanctioned_by_steam_id:"order_by",
 		type:"order_by"
-	},
-	player_sanctions_pk_columns_input:{
-		created_at:"timestamptz",
-		id:"uuid"
 	},
 	player_sanctions_select_column: "enum" as const,
 	player_sanctions_set_input:{
@@ -7116,7 +6999,6 @@ export const AllTypesProps: Record<string,any> = {
 		sanctioned_by_steam_id:"bigint",
 		type:"e_sanction_types_enum"
 	},
-	player_sanctions_update_column: "enum" as const,
 	player_sanctions_updates:{
 		_inc:"player_sanctions_inc_input",
 		_set:"player_sanctions_set_input",
@@ -7304,8 +7186,7 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"player_utility_variance_order_by"
 	},
 	player_utility_arr_rel_insert_input:{
-		data:"player_utility_insert_input",
-		on_conflict:"player_utility_on_conflict"
+		data:"player_utility_insert_input"
 	},
 	player_utility_avg_order_by:{
 		attacker_steam_id:"order_by",
@@ -7327,7 +7208,6 @@ export const AllTypesProps: Record<string,any> = {
 		time:"timestamptz_comparison_exp",
 		type:"e_utility_types_enum_comparison_exp"
 	},
-	player_utility_constraint: "enum" as const,
 	player_utility_inc_input:{
 		attacker_steam_id:"bigint"
 	},
@@ -7360,11 +7240,6 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		time:"order_by"
 	},
-	player_utility_on_conflict:{
-		constraint:"player_utility_constraint",
-		update_columns:"player_utility_update_column",
-		where:"player_utility_bool_exp"
-	},
 	player_utility_order_by:{
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
@@ -7377,10 +7252,6 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		time:"order_by",
 		type:"order_by"
-	},
-	player_utility_pk_columns_input:{
-		id:"uuid",
-		time:"timestamptz"
 	},
 	player_utility_select_column: "enum" as const,
 	player_utility_set_input:{
@@ -7419,7 +7290,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		round:"order_by"
 	},
-	player_utility_update_column: "enum" as const,
 	player_utility_updates:{
 		_inc:"player_utility_inc_input",
 		_set:"player_utility_set_input",
@@ -7557,6 +7427,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_kills_select_column",
 			order_by:"player_kills_order_by",
 			where:"player_kills_bool_exp"
+		},
+		lobby_players:{
+			distinct_on:"lobby_players_select_column",
+			order_by:"lobby_players_order_by",
+			where:"lobby_players_bool_exp"
+		},
+		lobby_players_aggregate:{
+			distinct_on:"lobby_players_select_column",
+			order_by:"lobby_players_order_by",
+			where:"lobby_players_bool_exp"
 		},
 		matches:{
 			distinct_on:"matches_select_column",
@@ -7731,6 +7611,8 @@ export const AllTypesProps: Record<string,any> = {
 		is_muted:"Boolean_comparison_exp",
 		kills:"player_kills_bool_exp",
 		kills_aggregate:"player_kills_aggregate_bool_exp",
+		lobby_players:"lobby_players_bool_exp",
+		lobby_players_aggregate:"lobby_players_aggregate_bool_exp",
 		matches:"matches_bool_exp",
 		matchmaking_cooldown:"timestamptz_comparison_exp",
 		multi_kills:"v_player_multi_kills_bool_exp",
@@ -7783,6 +7665,7 @@ export const AllTypesProps: Record<string,any> = {
 		friends:"my_friends_arr_rel_insert_input",
 		invited_players:"team_invites_arr_rel_insert_input",
 		kills:"player_kills_arr_rel_insert_input",
+		lobby_players:"lobby_players_arr_rel_insert_input",
 		multi_kills:"v_player_multi_kills_arr_rel_insert_input",
 		notifications:"notifications_arr_rel_insert_input",
 		objectives:"player_objectives_arr_rel_insert_input",
@@ -7829,6 +7712,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_in_another_match:"order_by",
 		is_muted:"order_by",
 		kills_aggregate:"player_kills_aggregate_order_by",
+		lobby_players_aggregate:"lobby_players_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		matchmaking_cooldown:"order_by",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_order_by",
@@ -8380,10 +8264,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_assists_order_by",
 			where:"player_assists_bool_exp"
 		},
-		player_assists_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		player_damages:{
 			distinct_on:"player_damages_select_column",
 			order_by:"player_damages_order_by",
@@ -8394,10 +8274,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_damages_order_by",
 			where:"player_damages_bool_exp"
 		},
-		player_damages_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		player_flashes:{
 			distinct_on:"player_flashes_select_column",
 			order_by:"player_flashes_order_by",
@@ -8407,10 +8283,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_flashes_select_column",
 			order_by:"player_flashes_order_by",
 			where:"player_flashes_bool_exp"
-		},
-		player_flashes_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
 		},
 		player_kills:{
 			distinct_on:"player_kills_select_column",
@@ -8424,6 +8296,8 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		player_kills_by_pk:{
 			id:"uuid",
+			match_id:"uuid",
+			match_map_id:"uuid",
 			time:"timestamptz"
 		},
 		player_objectives:{
@@ -8436,10 +8310,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_objectives_order_by",
 			where:"player_objectives_bool_exp"
 		},
-		player_objectives_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		player_sanctions:{
 			distinct_on:"player_sanctions_select_column",
 			order_by:"player_sanctions_order_by",
@@ -8449,10 +8319,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_sanctions_select_column",
 			order_by:"player_sanctions_order_by",
 			where:"player_sanctions_bool_exp"
-		},
-		player_sanctions_by_pk:{
-			created_at:"timestamptz",
-			id:"uuid"
 		},
 		player_unused_utility:{
 			distinct_on:"player_unused_utility_select_column",
@@ -8476,10 +8342,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_utility_select_column",
 			order_by:"player_utility_order_by",
 			where:"player_utility_bool_exp"
-		},
-		player_utility_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
 		},
 		players:{
 			distinct_on:"players_select_column",
@@ -9717,10 +9579,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_assists_order_by",
 			where:"player_assists_bool_exp"
 		},
-		player_assists_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		player_assists_stream:{
 			cursor:"player_assists_stream_cursor_input",
 			where:"player_assists_bool_exp"
@@ -9735,10 +9593,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_damages_order_by",
 			where:"player_damages_bool_exp"
 		},
-		player_damages_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		player_damages_stream:{
 			cursor:"player_damages_stream_cursor_input",
 			where:"player_damages_bool_exp"
@@ -9752,10 +9606,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_flashes_select_column",
 			order_by:"player_flashes_order_by",
 			where:"player_flashes_bool_exp"
-		},
-		player_flashes_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
 		},
 		player_flashes_stream:{
 			cursor:"player_flashes_stream_cursor_input",
@@ -9773,6 +9623,8 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		player_kills_by_pk:{
 			id:"uuid",
+			match_id:"uuid",
+			match_map_id:"uuid",
 			time:"timestamptz"
 		},
 		player_kills_stream:{
@@ -9789,10 +9641,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_objectives_order_by",
 			where:"player_objectives_bool_exp"
 		},
-		player_objectives_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
-		},
 		player_objectives_stream:{
 			cursor:"player_objectives_stream_cursor_input",
 			where:"player_objectives_bool_exp"
@@ -9806,10 +9654,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_sanctions_select_column",
 			order_by:"player_sanctions_order_by",
 			where:"player_sanctions_bool_exp"
-		},
-		player_sanctions_by_pk:{
-			created_at:"timestamptz",
-			id:"uuid"
 		},
 		player_sanctions_stream:{
 			cursor:"player_sanctions_stream_cursor_input",
@@ -9841,10 +9685,6 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"player_utility_select_column",
 			order_by:"player_utility_order_by",
 			where:"player_utility_bool_exp"
-		},
-		player_utility_by_pk:{
-			id:"uuid",
-			time:"timestamptz"
 		},
 		player_utility_stream:{
 			cursor:"player_utility_stream_cursor_input",
@@ -14285,21 +14125,15 @@ export const ReturnTypes: Record<string,any> = {
 		delete_notifications:"notifications_mutation_response",
 		delete_notifications_by_pk:"notifications",
 		delete_player_assists:"player_assists_mutation_response",
-		delete_player_assists_by_pk:"player_assists",
 		delete_player_damages:"player_damages_mutation_response",
-		delete_player_damages_by_pk:"player_damages",
 		delete_player_flashes:"player_flashes_mutation_response",
-		delete_player_flashes_by_pk:"player_flashes",
 		delete_player_kills:"player_kills_mutation_response",
 		delete_player_kills_by_pk:"player_kills",
 		delete_player_objectives:"player_objectives_mutation_response",
-		delete_player_objectives_by_pk:"player_objectives",
 		delete_player_sanctions:"player_sanctions_mutation_response",
-		delete_player_sanctions_by_pk:"player_sanctions",
 		delete_player_unused_utility:"player_unused_utility_mutation_response",
 		delete_player_unused_utility_by_pk:"player_unused_utility",
 		delete_player_utility:"player_utility_mutation_response",
-		delete_player_utility_by_pk:"player_utility",
 		delete_players:"players_mutation_response",
 		delete_players_by_pk:"players",
 		delete_server_regions:"server_regions_mutation_response",
@@ -14585,28 +14419,22 @@ export const ReturnTypes: Record<string,any> = {
 		update_notifications_by_pk:"notifications",
 		update_notifications_many:"notifications_mutation_response",
 		update_player_assists:"player_assists_mutation_response",
-		update_player_assists_by_pk:"player_assists",
 		update_player_assists_many:"player_assists_mutation_response",
 		update_player_damages:"player_damages_mutation_response",
-		update_player_damages_by_pk:"player_damages",
 		update_player_damages_many:"player_damages_mutation_response",
 		update_player_flashes:"player_flashes_mutation_response",
-		update_player_flashes_by_pk:"player_flashes",
 		update_player_flashes_many:"player_flashes_mutation_response",
 		update_player_kills:"player_kills_mutation_response",
 		update_player_kills_by_pk:"player_kills",
 		update_player_kills_many:"player_kills_mutation_response",
 		update_player_objectives:"player_objectives_mutation_response",
-		update_player_objectives_by_pk:"player_objectives",
 		update_player_objectives_many:"player_objectives_mutation_response",
 		update_player_sanctions:"player_sanctions_mutation_response",
-		update_player_sanctions_by_pk:"player_sanctions",
 		update_player_sanctions_many:"player_sanctions_mutation_response",
 		update_player_unused_utility:"player_unused_utility_mutation_response",
 		update_player_unused_utility_by_pk:"player_unused_utility",
 		update_player_unused_utility_many:"player_unused_utility_mutation_response",
 		update_player_utility:"player_utility_mutation_response",
-		update_player_utility_by_pk:"player_utility",
 		update_player_utility_many:"player_utility_mutation_response",
 		update_players:"players_mutation_response",
 		update_players_by_pk:"players",
@@ -14662,6 +14490,7 @@ export const ReturnTypes: Record<string,any> = {
 		invited_by_steam_id:"bigint",
 		name:"String",
 		name_registered:"Boolean",
+		player:"players",
 		profile_url:"String",
 		role:"String",
 		status:"String",
@@ -15690,6 +15519,8 @@ export const ReturnTypes: Record<string,any> = {
 		is_muted:"Boolean",
 		kills:"player_kills",
 		kills_aggregate:"player_kills_aggregate",
+		lobby_players:"lobby_players",
+		lobby_players_aggregate:"lobby_players_aggregate",
 		matches:"matches",
 		matchmaking_cooldown:"timestamptz",
 		multi_kills:"v_player_multi_kills",
@@ -15920,28 +15751,22 @@ export const ReturnTypes: Record<string,any> = {
 		notifications_by_pk:"notifications",
 		player_assists:"player_assists",
 		player_assists_aggregate:"player_assists_aggregate",
-		player_assists_by_pk:"player_assists",
 		player_damages:"player_damages",
 		player_damages_aggregate:"player_damages_aggregate",
-		player_damages_by_pk:"player_damages",
 		player_flashes:"player_flashes",
 		player_flashes_aggregate:"player_flashes_aggregate",
-		player_flashes_by_pk:"player_flashes",
 		player_kills:"player_kills",
 		player_kills_aggregate:"player_kills_aggregate",
 		player_kills_by_pk:"player_kills",
 		player_objectives:"player_objectives",
 		player_objectives_aggregate:"player_objectives_aggregate",
-		player_objectives_by_pk:"player_objectives",
 		player_sanctions:"player_sanctions",
 		player_sanctions_aggregate:"player_sanctions_aggregate",
-		player_sanctions_by_pk:"player_sanctions",
 		player_unused_utility:"player_unused_utility",
 		player_unused_utility_aggregate:"player_unused_utility_aggregate",
 		player_unused_utility_by_pk:"player_unused_utility",
 		player_utility:"player_utility",
 		player_utility_aggregate:"player_utility_aggregate",
-		player_utility_by_pk:"player_utility",
 		players:"players",
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
@@ -16351,15 +16176,12 @@ export const ReturnTypes: Record<string,any> = {
 		notifications_stream:"notifications",
 		player_assists:"player_assists",
 		player_assists_aggregate:"player_assists_aggregate",
-		player_assists_by_pk:"player_assists",
 		player_assists_stream:"player_assists",
 		player_damages:"player_damages",
 		player_damages_aggregate:"player_damages_aggregate",
-		player_damages_by_pk:"player_damages",
 		player_damages_stream:"player_damages",
 		player_flashes:"player_flashes",
 		player_flashes_aggregate:"player_flashes_aggregate",
-		player_flashes_by_pk:"player_flashes",
 		player_flashes_stream:"player_flashes",
 		player_kills:"player_kills",
 		player_kills_aggregate:"player_kills_aggregate",
@@ -16367,11 +16189,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_kills_stream:"player_kills",
 		player_objectives:"player_objectives",
 		player_objectives_aggregate:"player_objectives_aggregate",
-		player_objectives_by_pk:"player_objectives",
 		player_objectives_stream:"player_objectives",
 		player_sanctions:"player_sanctions",
 		player_sanctions_aggregate:"player_sanctions_aggregate",
-		player_sanctions_by_pk:"player_sanctions",
 		player_sanctions_stream:"player_sanctions",
 		player_unused_utility:"player_unused_utility",
 		player_unused_utility_aggregate:"player_unused_utility_aggregate",
@@ -16379,7 +16199,6 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utility_stream:"player_unused_utility",
 		player_utility:"player_utility",
 		player_utility_aggregate:"player_utility_aggregate",
-		player_utility_by_pk:"player_utility",
 		player_utility_stream:"player_utility",
 		players:"players",
 		players_aggregate:"players_aggregate",

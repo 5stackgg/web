@@ -86,7 +86,10 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
                         },
                       },
                       access: {
-                        _eq: e_lobby_access_enum.Friends,
+                        _in: [
+                          e_lobby_access_enum.Friends,
+                          e_lobby_access_enum.Open,
+                        ],
                       },
                     },
                   },

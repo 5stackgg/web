@@ -1,11 +1,12 @@
 import { ref, watch } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { e_match_types_enum, $ } from "~/generated/zeus";
+import { e_match_types_enum, $, e_lobby_access_enum } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { generateQuery } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
-export const useMatchMakingStore = defineStore("match-making", () => {
+export const useMatchmakingStore = defineStore("matchmaking", () => {
   const playersOnline = ref([]);
   const onlinePlayerSteamIds = ref<string[]>([]);
 
@@ -59,6 +60,83 @@ export const useMatchMakingStore = defineStore("match-making", () => {
     playersOnline.value = data.players;
   };
 
+  const friends = ref([]);
+  const subscribeToFriends = async (mySteamId: bigint) => {
+    const subscription = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        my_friends: [
+          {},
+          {
+            name: true,
+            steam_id: true,
+            avatar_url: true,
+            status: true,
+            invited_by_steam_id: true,
+            player: {
+              lobby_players: [
+                {
+                  limit: 1,
+                  where: {
+                    lobby: {
+                      _not: {
+                        players: {
+                          steam_id: {
+                            _eq: $("mySteamId", "bigint!"),
+                          },
+                        },
+                      },
+                      access: {
+                        _in: [
+                          e_lobby_access_enum.Friends,
+                          e_lobby_access_enum.Open,
+                        ],
+                      },
+                    },
+                  },
+                },
+                {
+                  lobby_id: true,
+                  lobby: {
+                    id: true,
+                    players: [
+                      {},
+                      {
+                        player: {
+                          name: true,
+                          steam_id: true,
+                          avatar_url: true,
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      }),
+      variables: {
+        mySteamId,
+      },
+    });
+
+    subscription.subscribe({
+      next: ({ data }) => {
+        friends.value = data.my_friends;
+      },
+    });
+  };
+
+  watch(
+    () => useAuthStore().me,
+    (me) => {
+      if (me) {
+        subscribeToFriends(me.steam_id);
+      }
+    },
+    { immediate: true },
+  );
+
   watch(onlinePlayerSteamIds, (newSteamIds, oldSteamIds) => {
     if (
       newSteamIds.length !== oldSteamIds.length ||
@@ -68,14 +146,124 @@ export const useMatchMakingStore = defineStore("match-making", () => {
     }
   });
 
+  const inviteToLobby = async (steam_id: string) => {
+    const me = useAuthStore().me;
+
+    let lobby_id = me?.current_lobby_id;
+
+    if (!lobby_id) {
+      const { data } = await getGraphqlClient().mutate({
+        mutation: typedGql("mutation")({
+          insert_lobbies_one: [
+            {
+              object: {},
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
+      });
+      lobby_id = data.insert_lobbies_one.id;
+    }
+
+    await getGraphqlClient().mutate({
+      mutation: typedGql("mutation")({
+        insert_lobby_players_one: [
+          {
+            object: {
+              steam_id,
+              lobby_id,
+            },
+          },
+          {
+            __typename: true,
+          },
+        ],
+      }),
+    });
+  };
+
   return {
+    friends,
     regionStats,
     playersOnline,
     onlinePlayerSteamIds,
     joinedMatchmakingQueues,
+    inviteToLobby,
   };
 });
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useMatchMakingStore, import.meta.hot));
+  import.meta.hot.accept(acceptHMRUpdate(useMatchmakingStore, import.meta.hot));
 }
+
+const temp = {
+  _or: [
+    {
+      _and: [
+        {
+          lobby: {
+            _or: [
+              {
+                players: {
+                  steam_id: {
+                    _eq: "X-Hasura-User-Id",
+                  },
+                },
+              },
+              {
+                access: {
+                  _eq: "Open",
+                },
+              },
+            ],
+          },
+        },
+        {
+          _and: [
+            {
+              status: {
+                _neq: "Invited",
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      _and: [
+        {
+          lobby: {
+            _or: [
+              {
+                players: {
+                  steam_id: {
+                    _eq: "X-Hasura-User-Id",
+                  },
+                },
+              },
+              {
+                access: {
+                  _eq: "Open",
+                },
+              },
+            ],
+          },
+        },
+        {
+          _and: [
+            {
+              status: {
+                _eq: "Invited",
+              },
+              steam_id: {
+                _eq: "X-Hasura-User-Id",
+              },
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};

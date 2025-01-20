@@ -40,6 +40,14 @@ import { AlertCircle } from "lucide-vue-next";
             <p class="my-4 text-sm text-gray-500 italic">
               Please note: It will take a few minutes to process and verify the
               new updates.
+
+              <a
+                href="https://docs.5stack.gg/common-issues/system-not-updating"
+                target="_blank"
+                class="text-blue-500"
+                >If a system upgrade persists, you may need to fix your
+                versions</a
+              >
             </p>
           </AlertDialogDescription>
         </AlertDialogHeader>

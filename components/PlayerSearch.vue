@@ -104,8 +104,12 @@ export default {
     async searchPlayers(query?: string) {
       this.query = query || undefined;
 
+      const exclude = !this.canSelectSelf
+        ? this.exclude.concat(this.me.steam_id)
+        : this.exclude;
+
       if (this.onlineOnly) {
-        this.players = useSearchStore().search(query, this.exclude);
+        this.players = useSearchStore().search(query, exclude);
         return;
       }
 
@@ -114,7 +118,7 @@ export default {
         body: {
           query,
           teamId: this.teamId,
-          exclude: this.exclude,
+          exclude: exclude,
         },
       });
 

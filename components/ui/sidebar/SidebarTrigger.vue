@@ -20,7 +20,9 @@ const { toggleSidebar } = useSidebar()
     :class="cn('h-7 w-7', props.class)"
     @click="toggleSidebar"
   >
-    <PanelLeft />
+    <slot>
+      <PanelLeft />
+    </slot>
     <span class="sr-only">Toggle Sidebar</span>
   </Button>
 </template>

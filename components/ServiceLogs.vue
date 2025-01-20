@@ -211,7 +211,6 @@ export default {
   },
   unmounted() {
     this.logListener?.stop();
-    // TODO - send to stop sending to my socket...
   },
 };
 </script>

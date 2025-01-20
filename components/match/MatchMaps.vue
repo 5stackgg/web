@@ -28,7 +28,6 @@ import formatBits from "~/utilities/formatBits";
         >
       </div>
 
-      <!-- TODO - env variable url -->
       <div class="absolute top-3 right-3">
         <a
           target="_blank"

@@ -14,14 +14,32 @@ export const useAuthStore = defineStore("auth", () => {
   const me = ref<InputType<GraphQLTypes["players"], typeof meFields>>();
   const hasDiscordLinked = ref<boolean>(false);
 
-  // TODO - move the listens to the socket store ?
-  // Initialize MatchMakingStore, this is required for sockets listens to get initialized
   useSearchStore();
-  useMatchMakingStore();
+  useMatchmakingStore();
   useNotificationStore();
   useApplicationSettingsStore();
 
   async function getMe(): Promise<boolean> {
+    function subscribeToMe(steam_id: string, callback: () => void) {
+      const subscription = getGraphqlClient().subscribe({
+        query: generateSubscription({
+          players_by_pk: [
+            {
+              steam_id,
+            },
+            meFields,
+          ],
+        }),
+      });
+
+      subscription.subscribe({
+        next: ({ data }) => {
+          me.value = data?.players_by_pk;
+          callback();
+        },
+      });
+    }
+
     return await new Promise(async (resolve) => {
       try {
         const response = await getGraphqlClient().query({
@@ -43,24 +61,9 @@ export const useAuthStore = defineStore("auth", () => {
 
         hasDiscordLinked.value = !!response.data.me.discord_id;
 
-        const subscription = getGraphqlClient().subscribe({
-          query: generateSubscription({
-            players_by_pk: [
-              {
-                steam_id: response.data.me.steam_id,
-              },
-              meFields,
-            ],
-          }),
-          fetchPolicy: "network-only", // Disable cache
-        });
-
-        subscription.subscribe({
-          next: ({ data }) => {
-            me.value = data?.players_by_pk;
-            useMatchLobbyStore().subscribeToMyMatches();
-            resolve(true);
-          },
+        subscribeToMe(response.data.me.steam_id, () => {
+          useMatchLobbyStore().subscribeToMyMatches();
+          resolve(true);
         });
       } catch (error) {
         console.warn("auth failure", error);

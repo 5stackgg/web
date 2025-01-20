@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   BadgeCheck,
+  ChevronsRight,
   ChevronRight,
   ChevronsUpDownIcon,
   Cog,
@@ -9,6 +10,7 @@ import {
   LineChart,
   Server,
   Calendar,
+  BookUser,
 } from "lucide-vue-next";
 import { Play, ShieldHalf, Globe } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
@@ -23,11 +25,14 @@ import MatchLobbies from "./MatchLobbies.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import InstallPWA from "~/components/InstallPWA.vue";
+import MatchmakingLobby from "~/components/matchmaking-lobby/MatchmakingLobby.vue";
+import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
+import ChatLobby from "~/components/chat/ChatLobby.vue";
 </script>
 
 <template>
   <SidebarProvider class="bg-muted/40" v-slot="{ open, isMobile }">
-    <Sidebar collapsible="icon" side="left">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -82,6 +87,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
                 >
                   <TournamentBracket />
                   Tournaments
+                  <Badge variant="destructive" class="ml-2">alpha</Badge>
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -380,6 +386,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
+
     <SidebarInset class="bg-muted/40 overflow-hidden">
       <header
         class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 px-4"
@@ -454,12 +461,93 @@ import InstallPWA from "~/components/InstallPWA.vue";
             </Popover>
 
             <AppNotifications></AppNotifications>
+
+            <div
+              id="right-sidebar-trigger"
+              class="flex items-center justify-center"
+              v-show="isMobile"
+            ></div>
           </div>
         </div>
       </header>
       <slot></slot>
     </SidebarInset>
+
+    <div id="right-sidebar"></div>
   </SidebarProvider>
+
+  <Teleport defer to="#right-sidebar">
+    <SidebarProvider
+      class="bg-muted/40"
+      :open="rightSidebarOpen"
+      :style="{
+        '--sidebar-width': '24rem',
+        '--sidebar-width-icon': '4.25rem',
+      }"
+      v-slot="{ isMobile }"
+    >
+      <Teleport defer to="#right-sidebar-trigger">
+        <SidebarTrigger @click="rightSidebarOpen = true" v-show="isMobile">
+          <BookUser
+            style="width: 1.5rem; height: 1.5rem"
+            :class="{ 'rotate-180': !rightSidebarOpen }"
+          />
+        </SidebarTrigger>
+      </Teleport>
+
+      <Sidebar
+        variant="inset"
+        collapsible="icon"
+        side="right"
+        @click="rightSidebarOpen = true"
+        :class="{ 'cursor-pointer': !rightSidebarOpen }"
+      >
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem
+              class="flex items-center justify-center"
+              v-if="!isMobile"
+            >
+              <SidebarMenuButton as-child>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  @click.stop="rightSidebarOpen = !rightSidebarOpen"
+                >
+                  <ChevronsRight
+                    style="width: 1.5rem; height: 1.5rem"
+                    :class="{ 'rotate-180': !rightSidebarOpen }"
+                  />
+                </Button>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup :class="{ 'overflow-hidden': !me.current_lobby_id }">
+            <SidebarMenu :class="{ 'overflow-hidden': !me.current_lobby_id }">
+              <MatchmakingLobby :mini="!rightSidebarOpen" />
+            </SidebarMenu>
+          </SidebarGroup>
+
+          <SidebarGroup v-if="me.current_lobby_id">
+            <ChatLobby
+              instance="matchmaking"
+              :lobby-id="me.current_lobby_id"
+              type="matchmaking"
+              v-show="rightSidebarOpen"
+            />
+          </SidebarGroup>
+
+          <SidebarGroup v-if="me.current_lobby_id" class="overflow-hidden">
+            <SidebarSeparator class="my-4" />
+
+            <FriendsList :mini="!rightSidebarOpen" />
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>
+  </Teleport>
 
   <AlertDialog
     v-if="showLogoutModal"
@@ -486,8 +574,7 @@ import InstallPWA from "~/components/InstallPWA.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { getCountryForTimezone } from "countries-and-timezones";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { useMediaQuery } from "@vueuse/core/index.cjs";
-import TournamentBracketViewer from "~/components/tournament/TournamentBracketViewer.vue";
+import { useMediaQuery } from "@vueuse/core";
 
 export default {
   data() {
@@ -496,9 +583,16 @@ export default {
       profileOpened: false,
       showLogoutModal: false,
       showPlayersOnline: false,
+      rightSidebarOpen: false,
     };
   },
   watch: {
+    isMedium: {
+      immediate: true,
+      handler() {
+        this.rightSidebarOpen = !this.isMedium;
+      },
+    },
     detectedCountry: {
       immediate: true,
       async handler() {
@@ -549,6 +643,12 @@ export default {
     },
   },
   computed: {
+    inlobby() {
+      return useAuthStore().me.current_lobby_id !== null;
+    },
+    isMedium() {
+      return useMediaQuery("(max-width: 1400px)").value;
+    },
     me() {
       return useAuthStore().me;
     },
@@ -586,7 +686,7 @@ export default {
       }
     },
     playersOnline() {
-      return useMatchMakingStore().playersOnline;
+      return useMatchmakingStore().playersOnline;
     },
   },
 };

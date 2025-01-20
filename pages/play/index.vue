@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import MyUpcomingMatches from "~/components/MyUpcomingMatches.vue";
-import MatchMaking from "~/components/match-making/MatchMaking.vue";
+import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
 import { PlusCircle } from "lucide-vue-next";
 import PageHeading from "~/components/PageHeading.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
@@ -69,7 +69,7 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
             <div
               class="absolute -inset-1 bg-gradient-to-r from-pink-400 to-purple-400 rounded-lg blur opacity-15 pointer-events-none"
             ></div>
-            <MatchMaking class="w-full"></MatchMaking>
+            <Matchmaking class="w-full"></Matchmaking>
           </div>
         </CardContent>
       </Card>

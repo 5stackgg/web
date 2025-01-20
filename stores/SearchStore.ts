@@ -1,9 +1,9 @@
 import MiniSearch from "minisearch";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { useMatchMakingStore } from "./MatchMakingStore";
+import { useMatchmakingStore } from "./MatchmakingStore";
 
 export const useSearchStore = defineStore("searchStore", () => {
-  const matchMakingStore = useMatchMakingStore();
+  const matchMakingStore = useMatchmakingStore();
 
   let miniSearch: MiniSearch;
 

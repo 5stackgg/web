@@ -364,6 +364,57 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_lobby_access_set_input",
 		where:"e_lobby_access_bool_exp"
 	},
+	e_lobby_player_status_aggregate_fields:{
+		count:{
+			columns:"e_lobby_player_status_select_column"
+		}
+	},
+	e_lobby_player_status_bool_exp:{
+		_and:"e_lobby_player_status_bool_exp",
+		_not:"e_lobby_player_status_bool_exp",
+		_or:"e_lobby_player_status_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_lobby_player_status_constraint: "enum" as const,
+	e_lobby_player_status_enum: "enum" as const,
+	e_lobby_player_status_enum_comparison_exp:{
+		_eq:"e_lobby_player_status_enum",
+		_in:"e_lobby_player_status_enum",
+		_neq:"e_lobby_player_status_enum",
+		_nin:"e_lobby_player_status_enum"
+	},
+	e_lobby_player_status_insert_input:{
+
+	},
+	e_lobby_player_status_on_conflict:{
+		constraint:"e_lobby_player_status_constraint",
+		update_columns:"e_lobby_player_status_update_column",
+		where:"e_lobby_player_status_bool_exp"
+	},
+	e_lobby_player_status_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_lobby_player_status_pk_columns_input:{
+
+	},
+	e_lobby_player_status_select_column: "enum" as const,
+	e_lobby_player_status_set_input:{
+
+	},
+	e_lobby_player_status_stream_cursor_input:{
+		initial_value:"e_lobby_player_status_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_lobby_player_status_stream_cursor_value_input:{
+
+	},
+	e_lobby_player_status_update_column: "enum" as const,
+	e_lobby_player_status_updates:{
+		_set:"e_lobby_player_status_set_input",
+		where:"e_lobby_player_status_bool_exp"
+	},
 	e_map_pool_types_aggregate_fields:{
 		count:{
 			columns:"e_map_pool_types_select_column"
@@ -1769,7 +1820,7 @@ export const AllTypesProps: Record<string,any> = {
 		lobby:"lobbies_bool_exp",
 		lobby_id:"uuid_comparison_exp",
 		player:"players_bool_exp",
-		status:"String_comparison_exp",
+		status:"e_lobby_player_status_enum_comparison_exp",
 		steam_id:"bigint_comparison_exp"
 	},
 	lobby_players_constraint: "enum" as const,
@@ -1782,18 +1833,17 @@ export const AllTypesProps: Record<string,any> = {
 		lobby:"lobbies_obj_rel_insert_input",
 		lobby_id:"uuid",
 		player:"players_obj_rel_insert_input",
+		status:"e_lobby_player_status_enum",
 		steam_id:"bigint"
 	},
 	lobby_players_max_order_by:{
 		invited_by_steam_id:"order_by",
 		lobby_id:"order_by",
-		status:"order_by",
 		steam_id:"order_by"
 	},
 	lobby_players_min_order_by:{
 		invited_by_steam_id:"order_by",
 		lobby_id:"order_by",
-		status:"order_by",
 		steam_id:"order_by"
 	},
 	lobby_players_on_conflict:{
@@ -1820,6 +1870,7 @@ export const AllTypesProps: Record<string,any> = {
 	lobby_players_set_input:{
 		invited_by_steam_id:"bigint",
 		lobby_id:"uuid",
+		status:"e_lobby_player_status_enum",
 		steam_id:"bigint"
 	},
 	lobby_players_stddev_order_by:{
@@ -1841,6 +1892,7 @@ export const AllTypesProps: Record<string,any> = {
 	lobby_players_stream_cursor_value_input:{
 		invited_by_steam_id:"bigint",
 		lobby_id:"uuid",
+		status:"e_lobby_player_status_enum",
 		steam_id:"bigint"
 	},
 	lobby_players_sum_order_by:{
@@ -3991,6 +4043,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_lobby_access_by_pk:{
 
 		},
+		delete_e_lobby_player_status:{
+			where:"e_lobby_player_status_bool_exp"
+		},
+		delete_e_lobby_player_status_by_pk:{
+
+		},
 		delete_e_map_pool_types:{
 			where:"e_map_pool_types_bool_exp"
 		},
@@ -4360,6 +4418,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_lobby_access_one:{
 			object:"e_lobby_access_insert_input",
 			on_conflict:"e_lobby_access_on_conflict"
+		},
+		insert_e_lobby_player_status:{
+			objects:"e_lobby_player_status_insert_input",
+			on_conflict:"e_lobby_player_status_on_conflict"
+		},
+		insert_e_lobby_player_status_one:{
+			object:"e_lobby_player_status_insert_input",
+			on_conflict:"e_lobby_player_status_on_conflict"
 		},
 		insert_e_map_pool_types:{
 			objects:"e_map_pool_types_insert_input",
@@ -4888,6 +4954,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_lobby_access_many:{
 			updates:"e_lobby_access_updates"
+		},
+		update_e_lobby_player_status:{
+			_set:"e_lobby_player_status_set_input",
+			where:"e_lobby_player_status_bool_exp"
+		},
+		update_e_lobby_player_status_by_pk:{
+			_set:"e_lobby_player_status_set_input",
+			pk_columns:"e_lobby_player_status_pk_columns_input"
+		},
+		update_e_lobby_player_status_many:{
+			updates:"e_lobby_player_status_updates"
 		},
 		update_e_map_pool_types:{
 			_set:"e_map_pool_types_set_input",
@@ -7826,6 +7903,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_lobby_access_by_pk:{
 
 		},
+		e_lobby_player_status:{
+			distinct_on:"e_lobby_player_status_select_column",
+			order_by:"e_lobby_player_status_order_by",
+			where:"e_lobby_player_status_bool_exp"
+		},
+		e_lobby_player_status_aggregate:{
+			distinct_on:"e_lobby_player_status_select_column",
+			order_by:"e_lobby_player_status_order_by",
+			where:"e_lobby_player_status_bool_exp"
+		},
+		e_lobby_player_status_by_pk:{
+
+		},
 		e_map_pool_types:{
 			distinct_on:"e_map_pool_types_select_column",
 			order_by:"e_map_pool_types_order_by",
@@ -9008,6 +9098,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_lobby_access_stream:{
 			cursor:"e_lobby_access_stream_cursor_input",
 			where:"e_lobby_access_bool_exp"
+		},
+		e_lobby_player_status:{
+			distinct_on:"e_lobby_player_status_select_column",
+			order_by:"e_lobby_player_status_order_by",
+			where:"e_lobby_player_status_bool_exp"
+		},
+		e_lobby_player_status_aggregate:{
+			distinct_on:"e_lobby_player_status_select_column",
+			order_by:"e_lobby_player_status_order_by",
+			where:"e_lobby_player_status_bool_exp"
+		},
+		e_lobby_player_status_by_pk:{
+
+		},
+		e_lobby_player_status_stream:{
+			cursor:"e_lobby_player_status_stream_cursor_input",
+			where:"e_lobby_player_status_bool_exp"
 		},
 		e_map_pool_types:{
 			distinct_on:"e_map_pool_types_select_column",
@@ -12353,6 +12460,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_lobby_access"
 	},
+	e_lobby_player_status:{
+		description:"String",
+		value:"String"
+	},
+	e_lobby_player_status_aggregate:{
+		aggregate:"e_lobby_player_status_aggregate_fields",
+		nodes:"e_lobby_player_status"
+	},
+	e_lobby_player_status_aggregate_fields:{
+		count:"Int",
+		max:"e_lobby_player_status_max_fields",
+		min:"e_lobby_player_status_min_fields"
+	},
+	e_lobby_player_status_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_lobby_player_status_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_lobby_player_status_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_lobby_player_status"
+	},
 	e_map_pool_types:{
 		description:"String",
 		value:"String"
@@ -12973,7 +13105,7 @@ export const ReturnTypes: Record<string,any> = {
 		lobby:"lobbies",
 		lobby_id:"uuid",
 		player:"players",
-		status:"String",
+		status:"e_lobby_player_status_enum",
 		steam_id:"bigint"
 	},
 	lobby_players_aggregate:{
@@ -13000,13 +13132,11 @@ export const ReturnTypes: Record<string,any> = {
 	lobby_players_max_fields:{
 		invited_by_steam_id:"bigint",
 		lobby_id:"uuid",
-		status:"String",
 		steam_id:"bigint"
 	},
 	lobby_players_min_fields:{
 		invited_by_steam_id:"bigint",
 		lobby_id:"uuid",
-		status:"String",
 		steam_id:"bigint"
 	},
 	lobby_players_mutation_response:{
@@ -14059,6 +14189,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_game_server_node_statuses_by_pk:"e_game_server_node_statuses",
 		delete_e_lobby_access:"e_lobby_access_mutation_response",
 		delete_e_lobby_access_by_pk:"e_lobby_access",
+		delete_e_lobby_player_status:"e_lobby_player_status_mutation_response",
+		delete_e_lobby_player_status_by_pk:"e_lobby_player_status",
 		delete_e_map_pool_types:"e_map_pool_types_mutation_response",
 		delete_e_map_pool_types_by_pk:"e_map_pool_types",
 		delete_e_match_map_status:"e_match_map_status_mutation_response",
@@ -14176,6 +14308,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_game_server_node_statuses_one:"e_game_server_node_statuses",
 		insert_e_lobby_access:"e_lobby_access_mutation_response",
 		insert_e_lobby_access_one:"e_lobby_access",
+		insert_e_lobby_player_status:"e_lobby_player_status_mutation_response",
+		insert_e_lobby_player_status_one:"e_lobby_player_status",
 		insert_e_map_pool_types:"e_map_pool_types_mutation_response",
 		insert_e_map_pool_types_one:"e_map_pool_types",
 		insert_e_match_map_status:"e_match_map_status_mutation_response",
@@ -14320,6 +14454,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_lobby_access:"e_lobby_access_mutation_response",
 		update_e_lobby_access_by_pk:"e_lobby_access",
 		update_e_lobby_access_many:"e_lobby_access_mutation_response",
+		update_e_lobby_player_status:"e_lobby_player_status_mutation_response",
+		update_e_lobby_player_status_by_pk:"e_lobby_player_status",
+		update_e_lobby_player_status_many:"e_lobby_player_status_mutation_response",
 		update_e_map_pool_types:"e_map_pool_types_mutation_response",
 		update_e_map_pool_types_by_pk:"e_map_pool_types",
 		update_e_map_pool_types_many:"e_map_pool_types_mutation_response",
@@ -15648,6 +15785,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_lobby_access:"e_lobby_access",
 		e_lobby_access_aggregate:"e_lobby_access_aggregate",
 		e_lobby_access_by_pk:"e_lobby_access",
+		e_lobby_player_status:"e_lobby_player_status",
+		e_lobby_player_status_aggregate:"e_lobby_player_status_aggregate",
+		e_lobby_player_status_by_pk:"e_lobby_player_status",
 		e_map_pool_types:"e_map_pool_types",
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",
@@ -16043,6 +16183,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_lobby_access_aggregate:"e_lobby_access_aggregate",
 		e_lobby_access_by_pk:"e_lobby_access",
 		e_lobby_access_stream:"e_lobby_access",
+		e_lobby_player_status:"e_lobby_player_status",
+		e_lobby_player_status_aggregate:"e_lobby_player_status_aggregate",
+		e_lobby_player_status_by_pk:"e_lobby_player_status",
+		e_lobby_player_status_stream:"e_lobby_player_status",
 		e_map_pool_types:"e_map_pool_types",
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",

@@ -105,9 +105,9 @@ class Socket extends EventEmitter {
     console.info(`[ws] joining room ${room}:${data.type}`);
   }
 
-  public leave(room: string, data: Record<string, unknown>) {
+  public leave(room: string) {
     this.rooms.delete(room);
-    this.event(`${room}:leave`, data);
+    this.event(`${room}:leave`, {});
     console.info(`[ws] leaving room ${room}`);
   }
 

@@ -15,14 +15,7 @@ import TimeAgo from "../TimeAgo.vue";
         <Button
           size="sm"
           variant="outline"
-          @click="
-            leaveMatchmaking(
-              joinedCompetitiveQueue
-                ? e_match_types_enum.Competitive
-                : e_match_types_enum.Wingman,
-              region.value,
-            )
-          "
+          @click="leaveMatchmaking()"
         >
           Leave
         </Button>
@@ -146,11 +139,8 @@ export default {
         regions: [region],
       });
     },
-    leaveMatchmaking(type: e_match_types_enum, region: string) {
-      socket.leave("matchmaking", {
-        type,
-        region,
-      });
+    leaveMatchmaking() {
+      socket.leave("matchmaking");
     },
   },
   computed: {

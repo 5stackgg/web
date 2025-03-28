@@ -1,4 +1,6 @@
+import alertStore from "~/stores/AlertStore";
 import EventEmitter from "eventemitter3";
+import { AlertStatuses } from "~/constants/AlertStatuses";
 import type { e_match_types_enum } from "~/generated/zeus";
 
 export interface Lobby {
@@ -241,6 +243,22 @@ socket.listen("matchmaking:region-stats", (data) => {
 socket.listen("players-online", (onlinePlayerSteamIds) => {
   useMatchmakingStore().onlinePlayerSteamIds = onlinePlayerSteamIds;
 });
+
+socket.listen(
+  "matchmaking:error",
+  (
+    data: {
+      message: string;
+    }
+  ) => {
+    alertStore().add({
+      duration: 5000,
+      severity: AlertStatuses.Error,
+      title: "Error",
+      message: data.message,
+    });
+  },
+);
 
 socket.listen(
   "matchmaking:details",

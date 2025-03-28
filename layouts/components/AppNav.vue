@@ -25,7 +25,7 @@ import MatchLobbies from "./MatchLobbies.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import InstallPWA from "~/components/InstallPWA.vue";
-import MatchmakingLobby from "~/components/matchmaking-lobby/MatchmakingLobby.vue";
+import MatchmakingLobby from "~/components/matchmaking-lobby/MatchMakingLobby.vue";
 import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 </script>

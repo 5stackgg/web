@@ -541,7 +541,6 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
 
           <SidebarGroup v-if="me.current_lobby_id" class="overflow-hidden">
             <SidebarSeparator class="my-4" />
-
             <FriendsList :mini="!rightSidebarOpen" />
           </SidebarGroup>
         </SidebarContent>

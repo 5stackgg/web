@@ -47,6 +47,12 @@ function extractTranslationKeys(content) {
     keys.add(match[1]);
   }
 
+  // Match parameterized translations
+  const paramPattern = /\$t\(['"]([^'"]+)['"]\s*,\s*{[^}]+}\)/g;
+  while ((match = paramPattern.exec(content)) !== null) {
+    keys.add(match[1]);
+  }
+
   return Array.from(keys);
 }
 

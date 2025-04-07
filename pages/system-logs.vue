@@ -14,7 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
             :key="service"
             :value="service"
           >
-            {{ $t(`pages.system_logs.services.${service}`) }}
+            {{ service }}
           </TabsTrigger>
         </TabsList>
 

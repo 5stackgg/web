@@ -155,7 +155,9 @@
         "ports_tooltip": "Forwarded Ports to Node",
         "enabled": "Enabled",
         "no_nodes": "No Game Server Nodes"
-      }
+      },
+      "build_id": "Build ID: {id}",
+      "last_updated": "Last Updated: {date}"
     },
     "dedicated_servers": {
       "title": "Dedicated Servers",
@@ -312,7 +314,8 @@
     "organizers": "Organizers",
     "join": {
       "title": "Join Tournament",
-      "requirements": "Tournament Requirements"
+      "requirements": "Tournament Requirements",
+      "joined_with": "Joined with {team}"
     },
     "tournament_team": {
       "remove": "Remove Team",
@@ -339,16 +342,20 @@
       "delete": "Delete Stage",
       "edit_title": "Edit Stage",
       "confirm_delete": "Confirm Delete Stage",
-      "delete_description": "Are you sure you want to delete this stage? This action cannot be undone."
+      "delete_description": "Are you sure you want to delete this stage? This action cannot be undone.",
+      "title": "Stage {number}",
+      "teams": "Teams"
     },
     "server": {
       "remove": "Remove Server",
+      "remove_description": "This will remove the server from the tournament",
       "confirm_remove": "Are you sure you want to remove this server?"
     },
     "organizer": {
       "title": "Tournament Organizers",
       "add": "Add Organizer",
       "remove": "Remove Organizer",
+      "remove_description": "This will remove the organizer from the tournament",
       "description": "Manage tournament organizers who can help run the tournament",
       "name": "Organizer Name",
       "actions": "Actions",
@@ -358,7 +365,8 @@
     },
     "match": {
       "team_1": "Team 1",
-      "team_2": "Team 2"
+      "team_2": "Team 2",
+      "round_match": "Round {number} Match"
     },
     "upcoming": {
       "empty": "You don't have any upcoming tournaments."
@@ -394,7 +402,10 @@
       "pending_invites": "Pending Invites",
       "new": "New Team",
       "select": "Select Team",
-      "name": "Team Name"
+      "name": "Team Name",
+      "remove_member_description": "This will remove the member from the tournament team",
+      "cancel_invite_description": "This will cancel the invite for this member",
+      "slot": "Slot {number}"
     }
   },
   "team": {
@@ -407,6 +418,10 @@
     },
     "invite": {
       "team_title": "Team Invite",
+      "tournament_title": "Tournament Invite",
+      "tournament_message": "You have been invited to join a tournament",
+      "team_message": "You have been invited to join a team",
+      "invited_by": "Invited by",
       "deny": "Deny",
       "accept": "Accept"
     },
@@ -446,7 +461,9 @@
       "remove": "Remove Member",
       "cancel_invite": "Cancel Invite",
       "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
-      "confirm_remove": "Are you sure you want to remove this member?"
+      "confirm_remove": "Are you sure you want to remove this member?",
+      "cancel_invite_description": "This will cancel the invite for this member",
+      "remove_description": "This will remove the member from the team"
     }
   },
   "match": {
@@ -592,7 +609,8 @@
       "select_round_to_restore": "Select the round to restore",
       "server_information": "Server Information",
       "type": "Type",
-      "region": "Region"
+      "region": "Region",
+      "round": "Round {number}"
     },
     "status": {
       "cancelled": "Cancelled",
@@ -618,7 +636,10 @@
     "map_veto": {
       "is_picking": "is Picking a",
       "organizer_override": "Match Organizer Override",
-      "select_side": "Select the Side your team wants to start on"
+      "select_side": "Select the Side your team wants to start on",
+      "your_turn": "Your Turn",
+      "pick": "Pick",
+      "confirm": "Confirm"
     },
     "map_lineup": {
       "picked": "Picked"
@@ -669,7 +690,8 @@
       "zeus": "Zeus",
       "total_damage": "Total Damage",
       "substitute": "(substitute)",
-      "join": "Join"
+      "join": "Join",
+      "slot": "Slot {number}"
     },
     "opening_duels": {
       "attempts": "Attempts",
@@ -680,7 +702,8 @@
       "lost": "Lost",
       "against": "Against",
       "no_clutches": "No clutches this round",
-      "vs": "vs"
+      "vs": "vs",
+      "round": "Round {number}"
     },
     "join": {
       "live": "Match is Live",
@@ -689,7 +712,8 @@
     "check_in": {
       "title": "Check In",
       "checked_in": "Checked In",
-      "check_in": "Check In"
+      "check_in": "Check In",
+      "description": "Please check in to confirm your participation in this match"
     },
     "coach": {
       "assign": "Assign Coach"
@@ -706,7 +730,8 @@
     },
     "logs": {
       "follow": "Follow Logs",
-      "timestamps": "Show Timestamps"
+      "timestamps": "Show Timestamps",
+      "container": "Container Logs"
     }
   },
   "player": {
@@ -792,10 +817,12 @@
     "join": "Join",
     "confirm": {
       "title": "Confirm Matchmaking",
-      "ready": "Ready"
+      "ready": "Ready",
+      "players": "Players in Queue"
     },
     "banned": "You are banned from matchmaking",
-    "go_to_match": "Go to Match"
+    "go_to_match": "Go to Match",
+    "temp_banned": "You are temporarily banned from matchmaking"
   },
   "game_server": {
     "update_cs": "Update CS",

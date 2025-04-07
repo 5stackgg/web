@@ -28,7 +28,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 
         <div class="flex justify-between items-center">
           <div class="flex gap-1">
-            {{ $t(`match.types.${match.options.type.toLowerCase()}`) }}
+            {{ match.options.type }}
             <Badge class="text-xs"> {{ $t('match.best_of', { count: match.options.best_of }) }} </Badge>
           </div>
 

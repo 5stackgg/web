@@ -56,7 +56,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
               >
                 <template v-if="pick.type === 'Decider'"> {{ $t('match.picks.decider') }} </template>
                 <template v-else>
-                  {{ $t(`match.picks.${pick.type.toLowerCase()}`) }}
+                  {{ pick.type }}
                 </template>
               </badge>
             </div>

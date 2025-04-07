@@ -20,7 +20,7 @@ import Default from "~/layouts/default.vue";
             :key="item.title"
           >
             <Button variant="ghost" class="w-full text-left justify-start">
-              {{ $t(`layouts.application_settings.navigation.${item.key}`) }}
+              {{ item.key }}
             </Button>
           </nuxt-link>
         </nav>

@@ -255,11 +255,11 @@
       },
       "profile": {
         "my_account": "My Account",
-        "logout": "Log out"
+        "logout": "Logout"
       },
       "logout_dialog": {
         "title": "Logout",
-        "description": "Are you sure you want to log out?",
+        "description": "Are you sure you want to logout?",
         "cancel": "Cancel",
         "confirm": "Logout"
       }

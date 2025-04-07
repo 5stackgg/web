@@ -43,7 +43,7 @@ const currentLocale = computed(() => {
 })
 
 const handleLocaleChange = (newLocale: string) => {
-  setLocale(newLocale)
+  setLocale(newLocale as "en" | "sv")
 }
 
 </script>
@@ -367,6 +367,31 @@ const handleLocaleChange = (newLocale: string) => {
                 align="end"
                 :side-offset="4"
               >
+              <DropdownMenuGroup>
+                  <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
+                    <Select v-model="locale" @update:modelValue="handleLocaleChange">
+                      <SelectTrigger>
+                        <Languages class="size-4" />
+                        <SelectValue>{{ currentLocale?.name }}</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            v-for="loc in availableLocales"
+                            :key="loc.code"
+                            :value="loc.code"
+                          >
+                            {{ loc.name }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+                
+
                 <DropdownMenuGroup>
                   <DropdownMenuLabel class="font-normal">
                     <PlayerDisplay :player="me" :show-online="false" />
@@ -386,30 +411,6 @@ const handleLocaleChange = (newLocale: string) => {
                       <BadgeCheck class="size-4" />
                       {{ $t('layouts.app_nav.profile.my_account') }}
                     </NuxtLink>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuGroup>
-                  <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
-                    <Select :value="locale" @update:modelValue="handleLocaleChange">
-                      <SelectTrigger>
-                        <Languages class="size-4" />
-                        <SelectValue :placeholder="currentLocale?.name" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem
-                            v-for="loc in availableLocales"
-                            :key="loc.code"
-                            :value="loc.code"
-                          >
-                            {{ loc.name }}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
 

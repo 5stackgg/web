@@ -22,11 +22,13 @@ import {
   <form @submit.prevent="updateCreateStage" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="type">
       <FormItem>
-        <FormLabel>{{ $t('tournament.stage.type') }}</FormLabel>
+        <FormLabel>{{ $t("tournament.stage.type") }}</FormLabel>
         <Select v-bind="componentField">
           <FormControl>
             <SelectTrigger>
-              <SelectValue :placeholder="$t('tournament.stage.type_placeholder')" />
+              <SelectValue
+                :placeholder="$t('tournament.stage.type_placeholder')"
+              />
             </SelectTrigger>
           </FormControl>
           <SelectContent>
@@ -47,12 +49,14 @@ import {
 
     <FormField v-slot="{ componentField }" name="min_teams">
       <FormItem>
-        <FormLabel>{{ $t('tournament.stage.min_teams') }}</FormLabel>
+        <FormLabel>{{ $t("tournament.stage.min_teams") }}</FormLabel>
         <FormControl>
           <Select v-bind="componentField">
             <FormControl>
               <SelectTrigger>
-                <SelectValue :placeholder="$t('tournament.stage.min_teams_placeholder')" />
+                <SelectValue
+                  :placeholder="$t('tournament.stage.min_teams_placeholder')"
+                />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
@@ -74,12 +78,14 @@ import {
 
     <FormField v-slot="{ componentField }" name="max_teams">
       <FormItem>
-        <FormLabel>{{ $t('tournament.stage.max_teams') }}</FormLabel>
+        <FormLabel>{{ $t("tournament.stage.max_teams") }}</FormLabel>
         <FormControl>
           <Select v-bind="componentField">
             <FormControl :disabled="!form.values.min_teams">
               <SelectTrigger>
-                <SelectValue :placeholder="$t('tournament.stage.max_teams_placeholder')" />
+                <SelectValue
+                  :placeholder="$t('tournament.stage.max_teams_placeholder')"
+                />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
@@ -100,8 +106,8 @@ import {
     </FormField>
 
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      <template v-if="stage">{{ $t('tournament.stage.update') }}</template>
-      <template v-else>{{ $t('tournament.stage.create') }}</template>
+      <template v-if="stage">{{ $t("tournament.stage.update") }}</template>
+      <template v-else>{{ $t("tournament.stage.create") }}</template>
     </Button>
   </form>
 </template>

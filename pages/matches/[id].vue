@@ -19,7 +19,9 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
     <div class="grid grid-cols-1 gap-y-4">
       <Card v-if="match.can_schedule">
         <CardHeader class="p-4">
-          <CardTitle class="flex justify-between">{{ $t('pages.matches.detail.schedule') }}</CardTitle>
+          <CardTitle class="flex justify-between">{{
+            $t("pages.matches.detail.schedule")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="flex flex-col space-y-4">

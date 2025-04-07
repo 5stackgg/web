@@ -17,7 +17,9 @@ const { state, isMobile } = useSidebar();
       <SidebarMenuButton as-child :tooltip="$t('pwa.install.tooltip')">
         <Button @click="installPWA" size="sm">
           <MonitorDown />
-          <span v-if="isMobile || state === 'expanded'">{{ $t('pwa.install.button') }}</span>
+          <span v-if="isMobile || state === 'expanded'">{{
+            $t("pwa.install.button")
+          }}</span>
         </Button>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -30,20 +32,20 @@ const { state, isMobile } = useSidebar();
       <DrawerContent class="p-4">
         <DrawerHeader>
           <div class="flex justify-between items-center">
-            <DrawerTitle>{{ $t('pwa.install.title') }}</DrawerTitle>
+            <DrawerTitle>{{ $t("pwa.install.title") }}</DrawerTitle>
             <DrawerClose>
               <Button
                 variant="link"
                 @click="installPWADrawer = false"
                 class="text-lg text-blue-500"
               >
-                {{ $t('common.cancel') }}
+                {{ $t("common.cancel") }}
               </Button>
             </DrawerClose>
           </div>
           <Separator class="my-4" />
           <DrawerDescription class="text-lg">
-            {{ $t('pwa.install.description') }}
+            {{ $t("pwa.install.description") }}
           </DrawerDescription>
           <Separator class="my-4" />
         </DrawerHeader>
@@ -53,14 +55,14 @@ const { state, isMobile } = useSidebar();
             <Share class="size-8 text-blue-500" />
             <div class="flex gap-2 text-muted-foreground">
               <span>1)</span>
-              <span>{{ $t('pwa.install.step1') }}</span>
+              <span>{{ $t("pwa.install.step1") }}</span>
             </div>
           </div>
           <div class="flex items-center gap-4">
             <PlusSquare class="size-8" />
             <div class="flex gap-2 text-muted-foreground">
               <span>2)</span>
-              <span>{{ $t('pwa.install.step2') }}</span>
+              <span>{{ $t("pwa.install.step2") }}</span>
             </div>
           </div>
         </div>

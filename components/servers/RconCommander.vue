@@ -19,7 +19,7 @@ import { Separator } from "~/components/ui/separator";
           <DropdownMenuTrigger as-child>
             <Button variant="outline">
               <ServerIcon class="mr-2 h-4 w-4" />
-              {{ $t('server.rcon.quick_commands') }}
+              {{ $t("server.rcon.quick_commands") }}
               <ChevronDown class="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -34,7 +34,7 @@ import { Separator } from "~/components/ui/separator";
                 @click="commander('get_match', '')"
                 :disabled="!online"
               >
-                {{ $t('server.rcon.refresh_match') }}
+                {{ $t("server.rcon.refresh_match") }}
               </DropdownMenuItem>
 
               <DropdownMenuSeparator> </DropdownMenuSeparator>
@@ -43,13 +43,13 @@ import { Separator } from "~/components/ui/separator";
                 @click="commander('meta version', '')"
                 :disabled="!online"
               >
-                {{ $t('server.rcon.metamod_info') }}
+                {{ $t("server.rcon.metamod_info") }}
               </DropdownMenuItem>
               <DropdownMenuItem
                 @click="commander(['css_plugins list', 'css'], '')"
                 :disabled="!online"
               >
-                {{ $t('server.rcon.css_info') }}
+                {{ $t("server.rcon.css_info") }}
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -60,7 +60,7 @@ import { Separator } from "~/components/ui/separator";
           @click="logs = []"
           class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
         />
-        <Badge variant="outline">{{ $t('server.rcon.output') }}</Badge>
+        <Badge variant="outline">{{ $t("server.rcon.output") }}</Badge>
       </div>
     </div>
 
@@ -95,7 +95,7 @@ import { Separator } from "~/components/ui/separator";
           size="sm"
           class="ml-auto gap-1.5"
         >
-          {{ $t('server.rcon.send_command') }}
+          {{ $t("server.rcon.send_command") }}
           <CornerDownLeft class="h-3.5 w-3.5" />
         </Button>
       </div>

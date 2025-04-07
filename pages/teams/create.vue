@@ -7,7 +7,7 @@ PageHeading;
 <template>
   <div class="w-1/2">
     <PageHeading>
-      <template #title>{{ $t('pages.teams.create') }}</template>
+      <template #title>{{ $t("pages.teams.create") }}</template>
     </PageHeading>
     <team-form></team-form>
   </div>

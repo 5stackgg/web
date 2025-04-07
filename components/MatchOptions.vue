@@ -31,7 +31,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
           <FormField v-slot="{ componentField }" name="type">
             <FormItem>
-              <FormLabel class="text-lg font-semibold">{{ $t("match.options.type.label") }}</FormLabel>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("match.options.type.label")
+              }}</FormLabel>
               <RadioGroup
                 v-bind="componentField"
                 class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
@@ -57,14 +59,18 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
           <FormField v-slot="{ componentField }" name="best_of">
             <FormItem>
-              <FormLabel class="text-lg font-semibold">{{ $t("match.options.best_of.label") }}</FormLabel>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("match.options.best_of.label")
+              }}</FormLabel>
               <FormDescription>
                 {{ $t("match.options.best_of.description") }}
               </FormDescription>
               <Select v-bind="componentField">
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue :placeholder="$t('match.options.best_of.placeholder')" />
+                    <SelectValue
+                      :placeholder="$t('match.options.best_of.placeholder')"
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -94,7 +100,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             @click="handleChange(!value)"
           >
             <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">{{ $t("match.options.map_veto_settings.label") }}</FormLabel>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("match.options.map_veto_settings.label")
+              }}</FormLabel>
               <FormControl>
                 <Switch
                   class="pointer-events-none"
@@ -119,9 +127,14 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <FormLabel class="text-lg font-semibold">
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
-                      {{ $t("match.options.map_veto_settings.custom_pool") }} ({{ form.values.map_pool.length }})
+                      {{
+                        $t("match.options.map_veto_settings.custom_pool")
+                      }}
+                      ({{ form.values.map_pool.length }})
                     </template>
-                    <template v-else>{{ $t("match.options.map_veto_settings.active_duty") }}</template>
+                    <template v-else>{{
+                      $t("match.options.map_veto_settings.active_duty")
+                    }}</template>
                   </template>
                   <template v-else>{{ $t("maps.veto.pick") }}</template>
                 </FormLabel>
@@ -136,9 +149,17 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                           <FiveStackToolTip>
                             <template #trigger>
                               <Info :size="14"> </Info>
-                              {{ $t("match.options.map_veto_settings.custom_pool") }}
+                              {{
+                                $t(
+                                  "match.options.map_veto_settings.custom_pool",
+                                )
+                              }}
                             </template>
-                            {{ $t("match.options.map_veto_settings.custom_pool_tooltip") }}
+                            {{
+                              $t(
+                                "match.options.map_veto_settings.custom_pool_tooltip",
+                              )
+                            }}
                           </FiveStackToolTip>
                         </span>
                         <Switch
@@ -182,7 +203,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                           <MapDisplay class="h-[150px]" :map="map">
                             <template v-slot:default v-if="map.active_pool">
                               <div class="absolute bottom-1">
-                                <Badge variant="secondary" class="text-xs">{{ $t("maps.active_duty") }}</Badge>
+                                <Badge variant="secondary" class="text-xs">{{
+                                  $t("maps.active_duty")
+                                }}</Badge>
                               </div>
                             </template>
                           </MapDisplay>
@@ -233,11 +256,17 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
           >
             <div class="flex items-center space-x-3">
               <SettingsIcon name="settings" class="h-5 w-5 text-primary" />
-              <span class="text-lg font-semibold">{{ $t("match.options.advanced.title") }}</span>
+              <span class="text-lg font-semibold">{{
+                $t("match.options.advanced.title")
+              }}</span>
             </div>
             <div class="flex items-center space-x-2">
               <span class="text-sm text-muted-foreground">
-                {{ showAdvancedSettings ? $t("match.options.advanced.hide") : $t("match.options.advanced.show") }}
+                {{
+                  showAdvancedSettings
+                    ? $t("match.options.advanced.hide")
+                    : $t("match.options.advanced.show")
+                }}
               </span>
               <Button type="button" variant="ghost" size="icon" class="h-8 w-8">
                 <ChevronDown
@@ -248,7 +277,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   v-else
                   class="h-4 w-4 transition-transform duration-200"
                 />
-                <span class="sr-only">{{ $t("match.options.advanced.toggle") }}</span>
+                <span class="sr-only">{{
+                  $t("match.options.advanced.toggle")
+                }}</span>
               </Button>
             </div>
           </div>
@@ -262,7 +293,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 @click="handleChange(!value)"
               >
                 <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.overtime.label") }}</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.overtime.label")
+                  }}</FormLabel>
                   <FormControl>
                     <Switch
                       class="pointer-events-none"
@@ -283,7 +316,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 @click="handleChange(!value)"
               >
                 <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.knife_round.label") }}</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.knife_round.label")
+                  }}</FormLabel>
                   <FormControl>
                     <Switch
                       class="pointer-events-none"
@@ -301,14 +336,20 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
               <FormField v-slot="{ componentField }" name="mr">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.max_rounds.label") }}</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.max_rounds.label")
+                  }}</FormLabel>
                   <FormDescription>
                     {{ $t("match.options.advanced.max_rounds.description") }}
                   </FormDescription>
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue :placeholder="$t('match.options.advanced.max_rounds.placeholder')" />
+                        <SelectValue
+                          :placeholder="
+                            $t('match.options.advanced.max_rounds.placeholder')
+                          "
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -331,9 +372,13 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <Card v-if="availableRegions.length > 1">
               <CardHeader>
                 <CardTitle class="flex justify-between items-center">
-                  <div class="text-lg font-semibold">{{ $t("match.options.advanced.region.title") }}</div>
+                  <div class="text-lg font-semibold">
+                    {{ $t("match.options.advanced.region.title") }}
+                  </div>
                   <div class="flex items-center gap-4" v-if="canSetLan">
-                    <span>{{ $t("match.options.advanced.region.lan_match") }}</span>
+                    <span>{{
+                      $t("match.options.advanced.region.lan_match")
+                    }}</span>
                     <Switch
                       :checked="form.values.lan"
                       @update:checked="
@@ -355,7 +400,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     @click="!form.values.lan && handleChange(!value)"
                   >
                     <div class="flex justify-between items-center">
-                      <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.region.veto.label") }}</FormLabel>
+                      <FormLabel class="text-lg font-semibold">{{
+                        $t("match.options.advanced.region.veto.label")
+                      }}</FormLabel>
                       <FormControl>
                         <Switch
                           class="pointer-events-none"
@@ -380,7 +427,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                         <template v-if="form.values.region_veto">
                           {{ $t("match.options.advanced.region.preferred") }}
                         </template>
-                        <template v-else>{{ $t("match.options.advanced.region.single") }}</template>
+                        <template v-else>{{
+                          $t("match.options.advanced.region.single")
+                        }}</template>
                       </div>
                     </FormLabel>
 
@@ -397,7 +446,13 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue :placeholder="$t('match.options.advanced.region.placeholder')" />
+                              <SelectValue
+                                :placeholder="
+                                  $t(
+                                    'match.options.advanced.region.placeholder',
+                                  )
+                                "
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -516,7 +571,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <div class="flex flex-col space-y-3 rounded-lg border p-4">
               <FormField v-slot="{ value }" name="number_of_substitutes">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.substitutes.label") }}</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.substitutes.label")
+                  }}</FormLabel>
                   <FormDescription>
                     {{ $t("match.options.advanced.substitutes.description") }}
                   </FormDescription>
@@ -551,7 +608,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
               <FormField v-slot="{ value }" name="tv_delay">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.tv_delay.label") }}</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.tv_delay.label")
+                  }}</FormLabel>
                   <NumberField
                     class="gap-2"
                     :min="0"
@@ -582,8 +641,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <div class="flex flex-col space-y-3 rounded-lg border p-4">
               <FormField v-slot="{ componentField }" name="timeout_setting">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.timeouts.tactical.label") }}</FormLabel>
-                  <FormDescription>{{ $t("match.options.advanced.timeouts.tactical.description") }}</FormDescription>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.timeouts.tactical.label")
+                  }}</FormLabel>
+                  <FormDescription>{{
+                    $t("match.options.advanced.timeouts.tactical.description")
+                  }}</FormDescription>
                   <FormControl>
                     <Select v-bind="componentField">
                       <FormControl>
@@ -613,8 +676,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 name="tech_timeout_setting"
               >
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.timeouts.technical.label") }}</FormLabel>
-                  <FormDescription>{{ $t("match.options.advanced.timeouts.technical.description") }}</FormDescription>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.timeouts.technical.label")
+                  }}</FormLabel>
+                  <FormDescription>{{
+                    $t("match.options.advanced.timeouts.technical.description")
+                  }}</FormDescription>
                   <FormControl>
                     <Select v-bind="componentField">
                       <FormControl>
@@ -947,9 +1014,9 @@ export default {
       let regions: string[] = [];
 
       if ((lan || !region_veto) && this.regions.length > 0) {
-        this.select_single_region = this.regions.find(
-          (region: Region) => region.is_lan === !!lan,
-        )?.value || null;
+        this.select_single_region =
+          this.regions.find((region: Region) => region.is_lan === !!lan)
+            ?.value || null;
 
         return;
       }

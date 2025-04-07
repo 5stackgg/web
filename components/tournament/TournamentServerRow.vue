@@ -24,17 +24,28 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     <TableCell>
       <Button>
         <AlertDialog>
-          <AlertDialogTrigger @click.stop>{{ $t('tournament.server.remove') }}</AlertDialogTrigger>
+          <AlertDialogTrigger @click.stop>{{
+            $t("tournament.server.remove")
+          }}</AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>{{ $t('tournament.server.confirm_remove') }}</AlertDialogTitle>
+              <AlertDialogTitle>{{
+                $t("tournament.server.confirm_remove")
+              }}</AlertDialogTitle>
               <AlertDialogDescription>
-                {{ $t('tournament.server.remove_description', { name: organizer.name, steam_id: organizer.steam_id }) }}
+                {{
+                  $t("tournament.server.remove_description", {
+                    name: organizer.name,
+                    steam_id: organizer.steam_id,
+                  })
+                }}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
-              <AlertDialogAction @click.stop="removeOrganizer">{{ $t('common.confirm') }}</AlertDialogAction>
+              <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+              <AlertDialogAction @click.stop="removeOrganizer">{{
+                $t("common.confirm")
+              }}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

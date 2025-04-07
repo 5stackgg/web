@@ -8,7 +8,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 <template>
   <Card v-if="team">
     <CardHeader>
-      <CardTitle>{{ $t('team.members.title') }}</CardTitle>
+      <CardTitle>{{ $t("team.members.title") }}</CardTitle>
     </CardHeader>
     <CardContent class="grid gap-6">
       <div
@@ -34,7 +34,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         ></PlayerSearch>
 
         <template v-if="team?.invites.length > 0">
-          <h1>{{ $t('team.members.pending_invites') }}</h1>
+          <h1>{{ $t("team.members.pending_invites") }}</h1>
 
           <div
             class="flex items-center justify-between space-x-4"

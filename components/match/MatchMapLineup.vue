@@ -6,7 +6,7 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
 <template>
   <template v-for="veto of matchMap.vetos">
     <template v-if="veto.type === 'Pick' && veto.match_lineup_id === lineup.id">
-      <badge class="mb-2">{{ $t('match.map_lineup.picked') }}</badge>
+      <badge class="mb-2">{{ $t("match.map_lineup.picked") }}</badge>
     </template>
   </template>
 

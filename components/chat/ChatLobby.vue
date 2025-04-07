@@ -14,7 +14,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
     <div class="absolute right-3 top-3">
       <div class="flex">
         <Badge variant="secondary">
-          <slot name="chat-label">{{ $t('chat.lobby_chat') }}</slot>
+          <slot name="chat-label">{{ $t("chat.lobby_chat") }}</slot>
         </Badge>
       </div>
     </div>

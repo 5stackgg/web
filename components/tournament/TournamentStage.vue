@@ -27,14 +27,19 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
 <template>
   <h1 class="flex justify-between items-center mb-8">
     <div class="flex flex-col space-y-2">
-      <h2 class="text-xl">{{ $t('tournament.stage.title', { number: stage.order }) }}</h2>
+      <h2 class="text-xl">
+        {{ $t("tournament.stage.title", { number: stage.order }) }}
+      </h2>
       <div class="flex items-center space-x-2">
         <Badge class="text-sm">{{
           stage.e_tournament_stage_type.description
         }}</Badge>
-        <Badge variant="secondary" class="text-sm"
-          >{{ $t('tournament.stage.teams', { min: stage.min_teams, max: stage.max_teams }) }}</Badge
-        >
+        <Badge variant="secondary" class="text-sm">{{
+          $t("tournament.stage.teams", {
+            min: stage.min_teams,
+            max: stage.max_teams,
+          })
+        }}</Badge>
       </div>
     </div>
     <DropdownMenu v-model:open="stageMenu">
@@ -45,7 +50,9 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" class="w-[200px]">
         <DropdownMenuGroup>
-          <DropdownMenuItem @click="editStage = true">{{ $t('tournament.stage.edit') }}</DropdownMenuItem>
+          <DropdownMenuItem @click="editStage = true">{{
+            $t("tournament.stage.edit")
+          }}</DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
@@ -53,7 +60,8 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
             class="text-red-600"
             @click="deleteAlertDialog = true"
           >
-            <Trash class="mr-2 h-4 w-4 inline" /> {{ $t('tournament.stage.delete') }}
+            <Trash class="mr-2 h-4 w-4 inline" />
+            {{ $t("tournament.stage.delete") }}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -66,7 +74,7 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
     <SheetTrigger></SheetTrigger>
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>{{ $t('tournament.stage.edit_title') }}</SheetTitle>
+        <SheetTitle>{{ $t("tournament.stage.edit_title") }}</SheetTitle>
         <SheetDescription>
           <TournamentStageForm
             :stage="stage"
@@ -85,14 +93,18 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
     <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ $t('tournament.stage.confirm_delete') }}</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("tournament.stage.confirm_delete")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
-          {{ $t('tournament.stage.delete_description') }}
+          {{ $t("tournament.stage.delete_description") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
-        <AlertDialogAction @click="deleteStage">{{ $t('common.confirm') }}</AlertDialogAction>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <AlertDialogAction @click="deleteStage">{{
+          $t("common.confirm")
+        }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

@@ -8,8 +8,8 @@ import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
         <TableHead class="w-[200px] text-left">
           {{ lineup.name }}
         </TableHead>
-        <TableHead> {{ $t('match.opening_duels.attempts') }} </TableHead>
-        <TableHead> {{ $t('match.opening_duels.success') }} </TableHead>
+        <TableHead> {{ $t("match.opening_duels.attempts") }} </TableHead>
+        <TableHead> {{ $t("match.opening_duels.success") }} </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

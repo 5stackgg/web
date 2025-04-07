@@ -14,8 +14,12 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
         @click="handleChange(!value)"
       >
         <div class="space-y-0.5">
-          <FormLabel class="text-base">{{ $t('tournament.team.my_teams') }}</FormLabel>
-          <FormDescription>{{ $t('tournament.team.my_teams_description') }}</FormDescription>
+          <FormLabel class="text-base">{{
+            $t("tournament.team.my_teams")
+          }}</FormLabel>
+          <FormDescription>{{
+            $t("tournament.team.my_teams_description")
+          }}</FormDescription>
         </div>
         <FormControl>
           <Switch
@@ -28,18 +32,16 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
     </FormField>
 
     <template v-if="form.values.my_teams && teams?.length === 0">
-      {{ $t('tournament.team.no_eligible_teams') }}
+      {{ $t("tournament.team.no_eligible_teams") }}
     </template>
     <FormField v-slot="{ handleChange, componentField }" name="team_id" v-else>
       <FormItem>
-        <FormLabel>{{ $t('tournament.team.team') }}</FormLabel>
+        <FormLabel>{{ $t("tournament.team.team") }}</FormLabel>
         <template v-if="form.values.my_teams">
           <Select v-bind="componentField">
             <FormControl>
               <SelectTrigger>
-                <SelectValue
-                  :placeholder="$t('tournament.team.select_team')"
-                />
+                <SelectValue :placeholder="$t('tournament.team.select_team')" />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
@@ -53,7 +55,9 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
         </template>
         <template v-else>
           <TeamSearch
-            :label="tempTeam ? tempTeam.name : $t('tournament.team.search_team')"
+            :label="
+              tempTeam ? tempTeam.name : $t('tournament.team.search_team')
+            "
             @selected="
               (team) => {
                 this.tempTeam = team;
@@ -72,7 +76,7 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
       type="submit"
       :disabled="form.values.my_teams && teams?.length === 0"
     >
-      {{ $t('tournament.team.add_to_tournament') }}
+      {{ $t("tournament.team.add_to_tournament") }}
     </Button>
   </form>
 </template>

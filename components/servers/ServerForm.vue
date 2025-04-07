@@ -8,7 +8,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
   <form @submit.prevent="updateCreateServer" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="label">
       <FormItem>
-        <FormLabel>{{ $t('server.form.label') }}</FormLabel>
+        <FormLabel>{{ $t("server.form.label") }}</FormLabel>
         <FormControl>
           <Input v-bind="componentField" />
         </FormControl>
@@ -18,7 +18,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="host">
       <FormItem>
-        <FormLabel>{{ $t('server.form.host') }}</FormLabel>
+        <FormLabel>{{ $t("server.form.host") }}</FormLabel>
         <FormControl>
           <Input v-bind="componentField" />
           <FormMessage />
@@ -28,7 +28,9 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="region">
       <FormItem>
-        <FormLabel class="text-lg font-semibold">{{ $t('server.form.region') }}</FormLabel>
+        <FormLabel class="text-lg font-semibold">{{
+          $t("server.form.region")
+        }}</FormLabel>
         <Select v-bind="componentField">
           <FormControl>
             <SelectTrigger>
@@ -53,12 +55,12 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="rcon_password">
       <FormItem>
-        <FormLabel>{{ $t('server.form.rcon_password') }}</FormLabel>
+        <FormLabel>{{ $t("server.form.rcon_password") }}</FormLabel>
         <FormControl>
           <Input type="password" v-bind="componentField" />
           <FormMessage />
           <FormDescription v-if="server">
-            {{ $t('server.form.rcon_password_description') }}
+            {{ $t("server.form.rcon_password_description") }}
           </FormDescription>
         </FormControl>
       </FormItem>
@@ -66,7 +68,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="port">
       <FormItem>
-        <FormLabel>{{ $t('server.form.port') }}</FormLabel>
+        <FormLabel>{{ $t("server.form.port") }}</FormLabel>
         <FormControl>
           <Input type="number" v-bind="componentField" />
           <FormMessage />
@@ -76,7 +78,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="tv_port">
       <FormItem>
-        <FormLabel>{{ $t('server.form.tv_port') }}</FormLabel>
+        <FormLabel>{{ $t("server.form.tv_port") }}</FormLabel>
         <FormControl>
           <Input type="number" v-bind="componentField" />
           <FormMessage />
@@ -85,8 +87,8 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
     </FormField>
 
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      <template v-if="server">{{ $t('server.form.update') }}</template>
-      <template v-else>{{ $t('server.form.create') }}</template>
+      <template v-if="server">{{ $t("server.form.update") }}</template>
+      <template v-else>{{ $t("server.form.create") }}</template>
     </Button>
   </form>
 </template>

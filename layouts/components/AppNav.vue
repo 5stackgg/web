@@ -32,20 +32,19 @@ import MatchmakingLobby from "~/components/matchmaking-lobby/MatchmakingLobby.vu
 import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 
-const { locale, locales, setLocale } = useI18n()
+const { locale, locales, setLocale } = useI18n();
 
 const availableLocales = computed(() => {
-  return locales.value.filter(i => i.code !== locale.value)
-})
+  return locales.value.filter((i) => i.code !== locale.value);
+});
 
 const currentLocale = computed(() => {
-  return locales.value.find(i => i.code === locale.value)
-})
+  return locales.value.find((i) => i.code === locale.value);
+});
 
 const handleLocaleChange = (newLocale: string) => {
-  setLocale(newLocale as "en" | "sv")
-}
-
+  setLocale(newLocale as "en" | "sv");
+};
 </script>
 
 <template>
@@ -57,7 +56,7 @@ const handleLocaleChange = (newLocale: string) => {
             <SidebarMenuButton size="lg" as-child>
               <nuxt-link to="/">
                 <NuxtImg class="rounded max-w-8" src="/favicon/64.png" />
-                <span> {{ $t('layouts.app_nav.brand') }} </span>
+                <span> {{ $t("layouts.app_nav.brand") }} </span>
               </nuxt-link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -76,7 +75,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <Play />
-                  {{ $t('layouts.app_nav.navigation.play') }}
+                  {{ $t("layouts.app_nav.navigation.play") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -90,7 +89,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <Calendar />
-                  {{ $t('layouts.app_nav.navigation.matches') }}
+                  {{ $t("layouts.app_nav.navigation.matches") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -104,7 +103,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <TournamentBracket />
-                  {{ $t('layouts.app_nav.navigation.tournaments') }}
+                  {{ $t("layouts.app_nav.navigation.tournaments") }}
                   <Badge variant="destructive" class="ml-2">alpha</Badge>
                 </NuxtLink>
               </SidebarMenuButton>
@@ -120,7 +119,7 @@ const handleLocaleChange = (newLocale: string) => {
                 >
                   <Users />
 
-                  {{ $t('layouts.app_nav.navigation.players') }}
+                  {{ $t("layouts.app_nav.navigation.players") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -134,7 +133,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <ShieldHalf />
-                  {{ $t('layouts.app_nav.navigation.teams') }}
+                  {{ $t("layouts.app_nav.navigation.teams") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -142,7 +141,9 @@ const handleLocaleChange = (newLocale: string) => {
         </SidebarGroup>
 
         <SidebarGroup v-if="me?.role === e_player_roles_enum.administrator">
-          <SidebarGroupLabel>{{ $t('layouts.app_nav.administration.title') }}</SidebarGroupLabel>
+          <SidebarGroupLabel>{{
+            $t("layouts.app_nav.administration.title")
+          }}</SidebarGroupLabel>
 
           <SidebarMenu>
             <SidebarMenuItem tooltip="Regions">
@@ -154,7 +155,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <Globe />
-                  {{ $t('layouts.app_nav.administration.regions') }}
+                  {{ $t("layouts.app_nav.administration.regions") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -169,7 +170,9 @@ const handleLocaleChange = (newLocale: string) => {
                 <CollapsibleTrigger as-child>
                   <SidebarMenuButton tooltip="Servers">
                     <Server />
-                    <span>{{ $t('layouts.app_nav.administration.servers') }}</span>
+                    <span>{{
+                      $t("layouts.app_nav.administration.servers")
+                    }}</span>
                     <ChevronRight
                       class="ml-auto transition-transform duration-200"
                       :class="{
@@ -192,7 +195,11 @@ const handleLocaleChange = (newLocale: string) => {
                               isRouteActive('dedicated-servers'),
                           }"
                         >
-                          {{ $t('layouts.app_nav.administration.dedicated_servers') }}
+                          {{
+                            $t(
+                              "layouts.app_nav.administration.dedicated_servers",
+                            )
+                          }}
                         </NuxtLink>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
@@ -209,7 +216,11 @@ const handleLocaleChange = (newLocale: string) => {
                               isRouteActive('game-server-nodes'),
                           }"
                         >
-                          {{ $t('layouts.app_nav.administration.game_server_nodes') }}
+                          {{
+                            $t(
+                              "layouts.app_nav.administration.game_server_nodes",
+                            )
+                          }}
                         </NuxtLink>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
@@ -242,7 +253,9 @@ const handleLocaleChange = (newLocale: string) => {
                       as-child
                     >
                       <NuxtLink :to="{ name: 'dedicated-servers' }">
-                        {{ $t('layouts.app_nav.administration.dedicated_servers') }}
+                        {{
+                          $t("layouts.app_nav.administration.dedicated_servers")
+                        }}
                       </NuxtLink>
                     </DropdownMenuItem>
 
@@ -251,7 +264,9 @@ const handleLocaleChange = (newLocale: string) => {
                       as-child
                     >
                       <NuxtLink :to="{ name: 'game-server-nodes' }">
-                        {{ $t('layouts.app_nav.administration.game_server_nodes') }}
+                        {{
+                          $t("layouts.app_nav.administration.game_server_nodes")
+                        }}
                       </NuxtLink>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
@@ -268,7 +283,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <Logs />
-                  {{ $t('layouts.app_nav.administration.logs') }}
+                  {{ $t("layouts.app_nav.administration.logs") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -282,7 +297,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <LineChart />
-                  {{ $t('layouts.app_nav.administration.metrics') }}
+                  {{ $t("layouts.app_nav.administration.metrics") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -296,7 +311,7 @@ const handleLocaleChange = (newLocale: string) => {
                   }"
                 >
                   <Cog />
-                  {{ $t('layouts.app_nav.administration.app_settings') }}
+                  {{ $t("layouts.app_nav.administration.app_settings") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -316,7 +331,7 @@ const handleLocaleChange = (newLocale: string) => {
                 class="text-muted-foreground transition-colors hover:text-foreground"
               >
                 <GithubLogoIcon class="w-5 h-5" />
-                {{ $t('layouts.app_nav.footer.report_issue') }}
+                {{ $t("layouts.app_nav.footer.report_issue") }}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -330,7 +345,7 @@ const handleLocaleChange = (newLocale: string) => {
                 class="text-muted-foreground transition-colors hover:text-foreground"
               >
                 <DiscordLogoIcon class="w-5 h-5" />
-                {{ $t('layouts.app_nav.footer.join_discord') }}
+                {{ $t("layouts.app_nav.footer.join_discord") }}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -367,12 +382,20 @@ const handleLocaleChange = (newLocale: string) => {
                 align="end"
                 :side-offset="4"
               >
-              <DropdownMenuGroup>
+                <DropdownMenuGroup>
                   <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
-                    <Select v-model="locale" @update:modelValue="handleLocaleChange">
+                    <Select
+                      v-model="locale"
+                      @update:modelValue="handleLocaleChange"
+                    >
                       <SelectTrigger>
                         <Languages class="size-4" />
-                        <SelectValue>{{ currentLocale?.name }}</SelectValue>
+                        <SelectValue
+                          >{{ currentLocale?.flag }}
+                          {{ currentLocale?.name }} ({{
+                            currentLocale?.code
+                          }})</SelectValue
+                        >
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
@@ -381,7 +404,7 @@ const handleLocaleChange = (newLocale: string) => {
                             :key="loc.code"
                             :value="loc.code"
                           >
-                            {{ loc.name }}
+                            {{ loc.flag }} {{ loc.name }} ({{ loc.code }})
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
@@ -390,7 +413,6 @@ const handleLocaleChange = (newLocale: string) => {
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator />
-                
 
                 <DropdownMenuGroup>
                   <DropdownMenuLabel class="font-normal">
@@ -409,7 +431,7 @@ const handleLocaleChange = (newLocale: string) => {
                       }"
                     >
                       <BadgeCheck class="size-4" />
-                      {{ $t('layouts.app_nav.profile.my_account') }}
+                      {{ $t("layouts.app_nav.profile.my_account") }}
                     </NuxtLink>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -421,7 +443,7 @@ const handleLocaleChange = (newLocale: string) => {
                   @click="showLogoutModal = true"
                 >
                   <LogOut class="size-4" />
-                  {{ $t('layouts.app_nav.profile.logout') }}
+                  {{ $t("layouts.app_nav.profile.logout") }}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -599,14 +621,20 @@ const handleLocaleChange = (newLocale: string) => {
   >
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ $t('layouts.app_nav.logout_dialog.title') }}</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("layouts.app_nav.logout_dialog.title")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
-          {{ $t('layouts.app_nav.logout_dialog.description') }}
+          {{ $t("layouts.app_nav.logout_dialog.description") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>{{ $t('layouts.app_nav.logout_dialog.cancel') }}</AlertDialogCancel>
-        <AlertDialogAction @click="logout">{{ $t('layouts.app_nav.logout_dialog.confirm') }}</AlertDialogAction>
+        <AlertDialogCancel>{{
+          $t("layouts.app_nav.logout_dialog.cancel")
+        }}</AlertDialogCancel>
+        <AlertDialogAction @click="logout">{{
+          $t("layouts.app_nav.logout_dialog.confirm")
+        }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

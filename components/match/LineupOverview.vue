@@ -44,48 +44,59 @@ import { UserPlusIcon } from "lucide-vue-next";
         </TableHead>
         <template v-if="showStats">
           <TableHead class="w-[4ch] text-center">
-            {{ $t('match.overview.kills') }}<span class="hidden xl:inline">{{ $t('match.overview.kills_full') }}</span>
+            {{ $t("match.overview.kills")
+            }}<span class="hidden xl:inline">{{
+              $t("match.overview.kills_full")
+            }}</span>
           </TableHead>
           <TableHead class="hidden md:table-cell w-[4ch] text-center">
-            {{ $t('match.overview.assists') }}<span class="hidden xl:inline">{{ $t('match.overview.assists_full') }}</span>
+            {{ $t("match.overview.assists")
+            }}<span class="hidden xl:inline">{{
+              $t("match.overview.assists_full")
+            }}</span>
           </TableHead>
           <TableHead class="w-[4ch] text-center">
-            {{ $t('match.overview.deaths') }}<span class="hidden xl:inline">{{ $t('match.overview.deaths_full') }}</span>
+            {{ $t("match.overview.deaths")
+            }}<span class="hidden xl:inline">{{
+              $t("match.overview.deaths_full")
+            }}</span>
           </TableHead>
-          <TableHead class="hidden md:table-cell w-[16ch] text-center"
-            >{{ $t('match.overview.kd') }}</TableHead
-          >
-          <TableHead class="hidden lg:table-cell w-[4ch] text-center"
-            >{{ $t('match.overview.hs') }}</TableHead
-          >
-          <TableHead class="hidden 2xl:table-cell w-[16ch] text-center"
-            >{{ $t('match.overview.team_damage') }}</TableHead
-          >
+          <TableHead class="hidden md:table-cell w-[16ch] text-center">{{
+            $t("match.overview.kd")
+          }}</TableHead>
+          <TableHead class="hidden lg:table-cell w-[4ch] text-center">{{
+            $t("match.overview.hs")
+          }}</TableHead>
+          <TableHead class="hidden 2xl:table-cell w-[16ch] text-center">{{
+            $t("match.overview.team_damage")
+          }}</TableHead>
           <TableHead class="hidden xl:table-cell w-[30ch] text-center">
-            <span class="hidden 2xl:inline"> {{ $t('match.overview.multi_kill_rounds') }} </span>
-            <span class="2xl:hidden"> {{ $t('match.overview.mkr') }} </span>
+            <span class="hidden 2xl:inline">
+              {{ $t("match.overview.multi_kill_rounds") }}
+            </span>
+            <span class="2xl:hidden"> {{ $t("match.overview.mkr") }} </span>
           </TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >{{ $t('match.overview.k2') }}</TableHead
-          >
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >{{ $t('match.overview.k3') }}</TableHead
-          >
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >{{ $t('match.overview.k4') }}</TableHead
-          >
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >{{ $t('match.overview.k5') }}</TableHead
-          >
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >{{ $t('match.overview.knifes') }}</TableHead
-          >
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >{{ $t('match.overview.zeus') }}</TableHead
-          >
-          <TableHead class="text-center w-[24ch] text-center"
-            >{{ $t('match.overview.total_damage') }}</TableHead
-          >
+          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
+            $t("match.overview.k2")
+          }}</TableHead>
+          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
+            $t("match.overview.k3")
+          }}</TableHead>
+          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
+            $t("match.overview.k4")
+          }}</TableHead>
+          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
+            $t("match.overview.k5")
+          }}</TableHead>
+          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
+            $t("match.overview.knifes")
+          }}</TableHead>
+          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
+            $t("match.overview.zeus")
+          }}</TableHead>
+          <TableHead class="text-center w-[24ch] text-center">{{
+            $t("match.overview.total_damage")
+          }}</TableHead>
           <TableHead v-if="lineup.can_update_lineup"> </TableHead>
         </template>
       </TableRow>
@@ -146,7 +157,7 @@ import { UserPlusIcon } from "lucide-vue-next";
                   </FormField>
                   <Button variant="outline" class="flex gap-4">
                     <UserPlusIcon class="h-4 w-4" />
-                    {{ $t('match.overview.join') }}
+                    {{ $t("match.overview.join") }}
                   </Button>
                 </form>
               </template>

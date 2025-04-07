@@ -73,7 +73,7 @@ import Separator from "../ui/separator/Separator.vue";
               @click.stop="removeMemberDialog = true"
               v-if="team.can_remove"
             >
-              <div class="text-red-600">{{ $t('team.member.remove') }}</div>
+              <div class="text-red-600">{{ $t("team.member.remove") }}</div>
             </CommandItem>
           </CommandGroup>
         </CommandList>
@@ -83,18 +83,27 @@ import Separator from "../ui/separator/Separator.vue";
   <template v-else-if="isInvite">
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button>{{ $t('team.member.cancel_invite') }}</Button>
+        <Button>{{ $t("team.member.cancel_invite") }}</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{{ $t('team.member.confirm_cancel_invite') }}</AlertDialogTitle>
+          <AlertDialogTitle>{{
+            $t("team.member.confirm_cancel_invite")
+          }}</AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t('team.member.cancel_invite_description', { name: member.player.name, steam_id: member.player.steam_id }) }}
+            {{
+              $t("team.member.cancel_invite_description", {
+                name: member.player.name,
+                steam_id: member.player.steam_id,
+              })
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
-          <AlertDialogAction @click="removeInvite">{{ $t('common.confirm') }}</AlertDialogAction>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="removeInvite">{{
+            $t("common.confirm")
+          }}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -103,14 +112,25 @@ import Separator from "../ui/separator/Separator.vue";
   <AlertDialog v-else :open="removeMemberDialog">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ $t('team.member.confirm_remove') }}</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("team.member.confirm_remove")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
-          {{ $t('team.member.remove_description', { name: member.player.name, steam_id: member.player.steam_id }) }}
+          {{
+            $t("team.member.remove_description", {
+              name: member.player.name,
+              steam_id: member.player.steam_id,
+            })
+          }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel @click="removeMemberDialog = false">{{ $t('common.cancel') }}</AlertDialogCancel>
-        <AlertDialogAction @click="removeMember">{{ $t('common.confirm') }}</AlertDialogAction>
+        <AlertDialogCancel @click="removeMemberDialog = false">{{
+          $t("common.cancel")
+        }}</AlertDialogCancel>
+        <AlertDialogAction @click="removeMember">{{
+          $t("common.confirm")
+        }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

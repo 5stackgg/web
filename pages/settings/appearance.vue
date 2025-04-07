@@ -43,17 +43,21 @@ const onSubmit = handleSubmit((values) => {
 
 <template>
   <div>
-    <h3 class="text-lg font-medium">{{ $t('pages.settings.appearance.title') }}</h3>
+    <h3 class="text-lg font-medium">
+      {{ $t("pages.settings.appearance.title") }}
+    </h3>
     <p class="text-sm text-muted-foreground">
-      {{ $t('pages.settings.appearance.description') }}
+      {{ $t("pages.settings.appearance.description") }}
     </p>
   </div>
   <Separator />
   <form class="grid gap-4" @submit="onSubmit">
     <FormField v-slot="{ componentField }" type="radio" name="theme">
       <FormItem class="space-y-1">
-        <FormLabel>{{ $t('pages.settings.appearance.theme') }}</FormLabel>
-        <FormDescription>{{ $t('pages.settings.appearance.theme_description') }}</FormDescription>
+        <FormLabel>{{ $t("pages.settings.appearance.theme") }}</FormLabel>
+        <FormDescription>{{
+          $t("pages.settings.appearance.theme_description")
+        }}</FormDescription>
         <FormMessage />
 
         <RadioGroup
@@ -88,7 +92,7 @@ const onSubmit = handleSubmit((values) => {
                 </div>
               </div>
               <span class="block w-full p-2 text-center font-normal">
-                {{ $t('pages.settings.appearance.light') }}
+                {{ $t("pages.settings.appearance.light") }}
               </span>
             </FormLabel>
           </FormItem>
@@ -120,7 +124,7 @@ const onSubmit = handleSubmit((values) => {
                 </div>
               </div>
               <span class="block w-full p-2 text-center font-normal">
-                {{ $t('pages.settings.appearance.dark') }}
+                {{ $t("pages.settings.appearance.dark") }}
               </span>
             </FormLabel>
           </FormItem>

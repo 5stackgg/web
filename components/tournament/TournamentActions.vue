@@ -21,7 +21,7 @@ import { Lock, Unlock, Ban } from "lucide-vue-next";
         class="cursor-pointer"
       >
         <Unlock class="mr-2 h-4 w-4" />
-        <span>{{ $t('tournament.actions.open_registration') }}</span>
+        <span>{{ $t("tournament.actions.open_registration") }}</span>
       </DropdownMenuItem>
       <DropdownMenuItem
         v-if="tournament.can_close_registration"
@@ -29,7 +29,7 @@ import { Lock, Unlock, Ban } from "lucide-vue-next";
         class="cursor-pointer"
       >
         <Lock class="mr-2 h-4 w-4" />
-        <span>{{ $t('tournament.actions.close_registration') }}</span>
+        <span>{{ $t("tournament.actions.close_registration") }}</span>
       </DropdownMenuItem>
 
       <DropdownMenuSeparator
@@ -44,7 +44,7 @@ import { Lock, Unlock, Ban } from "lucide-vue-next";
         class="text-destructive cursor-pointer"
       >
         <Ban class="mr-2 h-4 w-4" />
-        <span>{{ $t('tournament.actions.cancel') }}</span>
+        <span>{{ $t("tournament.actions.cancel") }}</span>
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

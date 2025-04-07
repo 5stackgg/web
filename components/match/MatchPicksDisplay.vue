@@ -54,7 +54,9 @@ import MapDisplay from "~/components/MapDisplay.vue";
               <badge
                 :variant="pick.type === 'Pick' ? 'default' : 'destructive'"
               >
-                <template v-if="pick.type === 'Decider'"> {{ $t('match.picks.decider') }} </template>
+                <template v-if="pick.type === 'Decider'">
+                  {{ $t("match.picks.decider") }}
+                </template>
                 <template v-else>
                   {{ pick.type }}
                 </template>

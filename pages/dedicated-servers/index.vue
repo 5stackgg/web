@@ -15,10 +15,10 @@ import { PlusCircle } from "lucide-vue-next";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title> {{ $t('pages.dedicated_servers.title') }} </template>
+      <template #title> {{ $t("pages.dedicated_servers.title") }} </template>
 
       <template #description>
-        {{ $t('pages.dedicated_servers.description') }}
+        {{ $t("pages.dedicated_servers.description") }}
         <a href="https://github.com/5stackgg/game-server"
           >https://github.com/5stackgg/game-server</a
         >.
@@ -28,7 +28,9 @@ import { PlusCircle } from "lucide-vue-next";
         <NuxtLink :to="{ name: 'dedicated-servers-create' }">
           <Button size="lg">
             <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{ $t('pages.dedicated_servers.create.title') }}</span>
+            <span class="hidden md:inline ml-2">{{
+              $t("pages.dedicated_servers.create.title")
+            }}</span>
           </Button>
         </NuxtLink>
       </template>
@@ -38,11 +40,21 @@ import { PlusCircle } from "lucide-vue-next";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{{ $t('pages.dedicated_servers.table.connection_details') }}</TableHead>
-            <TableHead>{{ $t('pages.dedicated_servers.table.label') }}</TableHead>
-            <TableHead>{{ $t('pages.dedicated_servers.table.region') }}</TableHead>
-            <TableHead>{{ $t('pages.dedicated_servers.table.tv_port') }}</TableHead>
-            <TableHead>{{ $t('pages.dedicated_servers.table.enabled') }}</TableHead>
+            <TableHead>{{
+              $t("pages.dedicated_servers.table.connection_details")
+            }}</TableHead>
+            <TableHead>{{
+              $t("pages.dedicated_servers.table.label")
+            }}</TableHead>
+            <TableHead>{{
+              $t("pages.dedicated_servers.table.region")
+            }}</TableHead>
+            <TableHead>{{
+              $t("pages.dedicated_servers.table.tv_port")
+            }}</TableHead>
+            <TableHead>{{
+              $t("pages.dedicated_servers.table.enabled")
+            }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -74,7 +86,11 @@ import { PlusCircle } from "lucide-vue-next";
             <TableCell>{{ server.label }}</TableCell>
             <TableCell>{{ server.region }}</TableCell>
             <TableCell>{{ server.tv_port }}</TableCell>
-            <TableCell>{{ server.enabled ? $t('pages.dedicated_servers.table.yes') : $t('pages.dedicated_servers.table.no') }}</TableCell>
+            <TableCell>{{
+              server.enabled
+                ? $t("pages.dedicated_servers.table.yes")
+                : $t("pages.dedicated_servers.table.no")
+            }}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

@@ -12,14 +12,14 @@ import { PlusCircle } from "lucide-vue-next";
 
 <template>
   <PageHeading>
-    <template #title>{{ $t('pages.matches.title') }}</template>
-    <template #description>{{ $t('pages.matches.description') }}</template>
+    <template #title>{{ $t("pages.matches.title") }}</template>
+    <template #description>{{ $t("pages.matches.description") }}</template>
     <template #actions>
       <div class="flex gap-4 items-center">
         <template v-if="!canCreateMatch">
-          <FiveStackToolTip :size="16" class="text-red-600"
-            >{{ $t('pages.matches.admin_disabled') }}</FiveStackToolTip
-          >
+          <FiveStackToolTip :size="16" class="text-red-600">{{
+            $t("pages.matches.admin_disabled")
+          }}</FiveStackToolTip>
         </template>
         <Button
           size="lg"
@@ -27,7 +27,9 @@ import { PlusCircle } from "lucide-vue-next";
           @click="canCreateMatch && navigateTo('/matches/create')"
         >
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline ml-2">{{ $t('pages.matches.create') }}</span>
+          <span class="hidden md:inline ml-2">{{
+            $t("pages.matches.create")
+          }}</span>
         </Button>
       </div>
     </template>
@@ -38,7 +40,7 @@ import { PlusCircle } from "lucide-vue-next";
       <div class="text-center">
         <CardHeader class="p-4">
           <CardTitle class="text-xl font-bold text-center">
-            {{ $t('pages.matches.last_ten_wins') }}
+            {{ $t("pages.matches.last_ten_wins") }}
           </CardTitle>
         </CardHeader>
         <CardContent class="p-4">
@@ -50,7 +52,7 @@ import { PlusCircle } from "lucide-vue-next";
       <div class="text-center">
         <CardHeader class="p-4">
           <CardTitle class="text-xl font-bold text-center">
-            {{ $t('pages.matches.last_ten_losses') }}
+            {{ $t("pages.matches.last_ten_losses") }}
           </CardTitle>
         </CardHeader>
         <CardContent class="p-4">
@@ -69,8 +71,12 @@ import { PlusCircle } from "lucide-vue-next";
   <Card class="p-4">
     <Tabs default-value="open">
       <TabsList>
-        <TabsTrigger value="open">{{ $t('pages.matches.my_match_history') }}</TabsTrigger>
-        <TabsTrigger value="other">{{ $t('pages.matches.other_matches') }}</TabsTrigger>
+        <TabsTrigger value="open">{{
+          $t("pages.matches.my_match_history")
+        }}</TabsTrigger>
+        <TabsTrigger value="other">{{
+          $t("pages.matches.other_matches")
+        }}</TabsTrigger>
       </TabsList>
 
       <TabsContent value="open">

@@ -9,13 +9,13 @@ import LineupMember from "~/components/match/LineupMember.vue";
         <TableHead class="w-[200px] text-left">
           {{ lineup.name }}
         </TableHead>
-        <TableHead> {{ $t('match.lineup.stats.flashes_thrown') }} </TableHead>
-        <TableHead> {{ $t('match.lineup.stats.flash_assists') }} </TableHead>
-        <TableHead> {{ $t('match.lineup.stats.enemies_flashed') }} </TableHead>
-        <TableHead> {{ $t('match.lineup.stats.team_flashed') }} </TableHead>
-        <TableHead> {{ $t('match.lineup.stats.avg_blind_time') }} </TableHead>
-        <TableHead> {{ $t('match.lineup.stats.he_damage') }} </TableHead>
-        <TableHead> {{ $t('match.lineup.stats.molotov_damage') }} </TableHead>
+        <TableHead> {{ $t("match.lineup.stats.flashes_thrown") }} </TableHead>
+        <TableHead> {{ $t("match.lineup.stats.flash_assists") }} </TableHead>
+        <TableHead> {{ $t("match.lineup.stats.enemies_flashed") }} </TableHead>
+        <TableHead> {{ $t("match.lineup.stats.team_flashed") }} </TableHead>
+        <TableHead> {{ $t("match.lineup.stats.avg_blind_time") }} </TableHead>
+        <TableHead> {{ $t("match.lineup.stats.he_damage") }} </TableHead>
+        <TableHead> {{ $t("match.lineup.stats.molotov_damage") }} </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -44,7 +44,7 @@ import LineupMember from "~/components/match/LineupMember.vue";
               member.player.avg_flash_duration_aggregate.aggregate.avg.duration,
             )
           }}
-          {{ $t('match.lineup.stats.seconds') }}
+          {{ $t("match.lineup.stats.seconds") }}
         </TableCell>
         <TableCell>
           {{ member.player.he_damage_aggregate.aggregate.sum.damage || 0 }}

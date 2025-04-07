@@ -13,10 +13,10 @@ import {
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead>{{ $t('team.table.team') }}</TableHead>
-        <TableHead>{{ $t('team.table.wins') }}</TableHead>
-        <TableHead>{{ $t('team.table.losses') }}</TableHead>
-        <TableHead>{{ $t('team.table.overtime_losses') }}</TableHead>
+        <TableHead>{{ $t("team.table.team") }}</TableHead>
+        <TableHead>{{ $t("team.table.wins") }}</TableHead>
+        <TableHead>{{ $t("team.table.losses") }}</TableHead>
+        <TableHead>{{ $t("team.table.overtime_losses") }}</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -25,7 +25,9 @@ import {
           <TableCell colspan="4" class="text-center py-8">
             <div class="text-gray-500 dark:text-gray-400">
               <p>
-                <slot name="none-found">{{ $t('team.table.no_teams_found') }}</slot>
+                <slot name="none-found">{{
+                  $t("team.table.no_teams_found")
+                }}</slot>
               </p>
             </div>
           </TableCell>

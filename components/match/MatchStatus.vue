@@ -6,20 +6,21 @@ import TimeAgo from "~/components/TimeAgo.vue";
 <template>
   <Badge variant="secondary">
     <template v-if="match.status == e_match_status_enum.Canceled">
-      {{ $t('match.status.cancelled') }}
+      {{ $t("match.status.cancelled") }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Finished">
-      {{ $t('match.status.finished') }} &nbsp; <time-ago :date="match.ended_at"></time-ago>
+      {{ $t("match.status.finished") }} &nbsp;
+      <time-ago :date="match.ended_at"></time-ago>
     </template>
     <template v-else-if="match.status == e_match_status_enum.Scheduled">
       <div v-if="match.server && !match.is_match_server_available">
-        {{ $t('match.status.waiting_server') }}
+        {{ $t("match.status.waiting_server") }}
       </div>
       <div class="flex items-center space-x-2" v-else>
         <template v-if="match.scheduled_at">
           <TimeAgo :date="match.scheduled_at"></TimeAgo>
         </template>
-        <template v-else>{{ $t('match.status.scheduled_asap') }}</template>
+        <template v-else>{{ $t("match.status.scheduled_asap") }}</template>
       </div>
     </template>
     <template v-else>

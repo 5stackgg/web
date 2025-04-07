@@ -8,7 +8,7 @@ import { Info } from "lucide-vue-next";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title>{{ $t('pages.matches.create_page.title') }}</template>
+      <template #title>{{ $t("pages.matches.create_page.title") }}</template>
     </PageHeading>
 
     <form @submit.prevent="setupMatch">
@@ -20,9 +20,9 @@ import { Info } from "lucide-vue-next";
               @click="handleChange(!value)"
             >
               <div class="flex justify-between items-center">
-                <FormLabel class="text-lg font-semibold"
-                  >{{ $t('pages.matches.create_page.pick_up_game') }}</FormLabel
-                >
+                <FormLabel class="text-lg font-semibold">{{
+                  $t("pages.matches.create_page.pick_up_game")
+                }}</FormLabel>
                 <FormControl>
                   <Switch
                     class="pointer-events-none"
@@ -32,7 +32,7 @@ import { Info } from "lucide-vue-next";
                 </FormControl>
               </div>
               <FormDescription>
-                {{ $t('pages.matches.create_page.pick_up_game_description') }}
+                {{ $t("pages.matches.create_page.pick_up_game_description") }}
               </FormDescription>
             </FormItem>
           </FormField>
@@ -47,7 +47,9 @@ import { Info } from "lucide-vue-next";
                 name="team_1"
               >
                 <FormItem>
-                  <FormLabel>{{ $t('pages.matches.create_page.team_1') }}</FormLabel>
+                  <FormLabel>{{
+                    $t("pages.matches.create_page.team_1")
+                  }}</FormLabel>
                   <TeamSearch
                     :label="$t('pages.matches.create_page.search_team')"
                     @selected="
@@ -71,7 +73,9 @@ import { Info } from "lucide-vue-next";
                 name="team_2"
               >
                 <FormItem>
-                  <FormLabel>{{ $t('pages.matches.create_page.team_2') }}</FormLabel>
+                  <FormLabel>{{
+                    $t("pages.matches.create_page.team_2")
+                  }}</FormLabel>
                   <TeamSearch
                     :label="$t('pages.matches.create_page.search_team')"
                     @selected="
@@ -96,7 +100,7 @@ import { Info } from "lucide-vue-next";
             >
               <Info class="inline-block w-4 h-4" />
               <span>
-                {{ $t('pages.matches.create_page.intra_team_scrimmage') }}
+                {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
               </span>
             </div>
           </div>
@@ -105,7 +109,7 @@ import { Info } from "lucide-vue-next";
 
       <div class="grid grid-cols-1 md:grid-cols-2">
         <Button type="submit" size="lg" class="mt-6 w-full">
-          {{ $t('pages.matches.create_page.create_button') }}
+          {{ $t("pages.matches.create_page.create_button") }}
         </Button>
       </div>
     </form>

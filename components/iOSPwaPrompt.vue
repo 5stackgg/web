@@ -9,16 +9,18 @@ const isOpen = ref(false);
 
 <template>
   <Dialog v-model:open="isOpen" class="p-4">
-    <DialogTitle>{{ $t('pwa.install.title') }}</DialogTitle>
+    <DialogTitle>{{ $t("pwa.install.title") }}</DialogTitle>
     <DialogDescription>
-      {{ $t('pwa.install.description') }}
+      {{ $t("pwa.install.description") }}
     </DialogDescription>
     <div class="flex flex-col space-y-2">
-      <p>1) {{ $t('pwa.install.step1') }}</p>
-      <p>2) {{ $t('pwa.install.step2') }}</p>
+      <p>1) {{ $t("pwa.install.step1") }}</p>
+      <p>2) {{ $t("pwa.install.step2") }}</p>
     </div>
     <DialogFooter>
-      <Button variant="outline" @click="isOpen = false">{{ $t('common.cancel') }}</Button>
+      <Button variant="outline" @click="isOpen = false">{{
+        $t("common.cancel")
+      }}</Button>
     </DialogFooter>
   </Dialog>
 </template>

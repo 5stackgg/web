@@ -21,8 +21,12 @@ import Default from "~/layouts/default.vue";
 <template>
   <default>
     <div class="space-y-0.5">
-      <h2 class="text-2xl font-bold tracking-tight">{{ $t('layouts.profile_settings.title') }}</h2>
-      <p class="text-muted-foreground">{{ $t('layouts.profile_settings.description') }}</p>
+      <h2 class="text-2xl font-bold tracking-tight">
+        {{ $t("layouts.profile_settings.title") }}
+      </h2>
+      <p class="text-muted-foreground">
+        {{ $t("layouts.profile_settings.description") }}
+      </p>
     </div>
     <Separator class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
@@ -45,14 +49,14 @@ import Default from "~/layouts/default.vue";
               @click.stop.prevent="showUnlinkDiscordDialog = true"
             >
               <Unlink class="mr-2 h-4 w-4" />
-              {{ $t('layouts.profile_settings.discord.unlink') }}
+              {{ $t("layouts.profile_settings.discord.unlink") }}
             </Button>
           </template>
 
           <nuxt-link @click.native="linkDiscord" v-else-if="supportsDiscordBot">
             <Button variant="ghost" class="w-full text-left justify-start">
               <Link class="mr-2 h-4 w-4" />
-              {{ $t('layouts.profile_settings.discord.link') }}
+              {{ $t("layouts.profile_settings.discord.link") }}
             </Button>
           </nuxt-link>
         </nav>
@@ -68,17 +72,21 @@ import Default from "~/layouts/default.vue";
       <AlertDialogTrigger asChild> </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{{ $t('layouts.profile_settings.discord.unlink_dialog.title') }}</AlertDialogTitle>
+          <AlertDialogTitle>{{
+            $t("layouts.profile_settings.discord.unlink_dialog.title")
+          }}</AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t('layouts.profile_settings.discord.unlink_dialog.description') }}
+            {{
+              $t("layouts.profile_settings.discord.unlink_dialog.description")
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel @click="showUnlinkDiscordDialog = false">
-            {{ $t('layouts.profile_settings.discord.unlink_dialog.cancel') }}
+            {{ $t("layouts.profile_settings.discord.unlink_dialog.cancel") }}
           </AlertDialogCancel>
           <AlertDialogAction @click="unlinkDiscord" variant="destructive">
-            {{ $t('layouts.profile_settings.discord.unlink_dialog.confirm') }}
+            {{ $t("layouts.profile_settings.discord.unlink_dialog.confirm") }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -134,7 +142,7 @@ export default {
       useAuthStore().getMe();
 
       toast({
-        title: this.$t('layouts.profile_settings.discord.unlinked'),
+        title: this.$t("layouts.profile_settings.discord.unlinked"),
       });
     },
   },

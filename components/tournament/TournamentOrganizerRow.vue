@@ -24,19 +24,27 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     <TableCell>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm">{{ $t('tournament.organizer.remove') }}</Button>
+          <Button variant="destructive" size="sm">{{
+            $t("tournament.organizer.remove")
+          }}</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{{ $t('tournament.organizer.confirm_remove') }}</AlertDialogTitle>
+            <AlertDialogTitle>{{
+              $t("tournament.organizer.confirm_remove")
+            }}</AlertDialogTitle>
             <AlertDialogDescription>
-              {{ $t('tournament.organizer.remove_description', { name: organizer.name }) }}
+              {{
+                $t("tournament.organizer.remove_description", {
+                  name: organizer.name,
+                })
+              }}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
             <AlertDialogAction @click="removeOrganizer" variant="destructive">
-              {{ $t('tournament.organizer.remove') }}
+              {{ $t("tournament.organizer.remove") }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

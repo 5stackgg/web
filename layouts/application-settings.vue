@@ -7,8 +7,12 @@ import Default from "~/layouts/default.vue";
 <template>
   <default>
     <div class="space-y-0.5">
-      <h2 class="text-2xl font-bold tracking-tight">{{ $t('layouts.application_settings.title') }}</h2>
-      <p class="text-muted-foreground">{{ $t('layouts.application_settings.description') }}</p>
+      <h2 class="text-2xl font-bold tracking-tight">
+        {{ $t("layouts.application_settings.title") }}
+      </h2>
+      <p class="text-muted-foreground">
+        {{ $t("layouts.application_settings.description") }}
+      </p>
     </div>
     <Separator class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
@@ -39,9 +43,21 @@ export default {
   data() {
     return {
       sidebarNavItems: [
-        { title: "Matchmaking", key: "matchmaking", to: "/settings/application" },
-        { title: "Players", key: "players", to: "/settings/application/players" },
-        { title: "Discord", key: "discord", to: "/settings/application/discord" },
+        {
+          title: "Matchmaking",
+          key: "matchmaking",
+          to: "/settings/application",
+        },
+        {
+          title: "Players",
+          key: "players",
+          to: "/settings/application/players",
+        },
+        {
+          title: "Discord",
+          key: "discord",
+          to: "/settings/application/discord",
+        },
       ],
     };
   },

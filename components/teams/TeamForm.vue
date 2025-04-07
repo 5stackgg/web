@@ -9,9 +9,12 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
   <form @submit.prevent="updateCreateTeam" class="grid gap-6">
     <FormField v-slot="{ componentField }" name="team_name">
       <FormItem>
-        <FormLabel>{{ $t('team.form.name') }}</FormLabel>
+        <FormLabel>{{ $t("team.form.name") }}</FormLabel>
         <FormControl>
-          <Input v-bind="componentField" :placeholder="$t('team.form.name_placeholder')" />
+          <Input
+            v-bind="componentField"
+            :placeholder="$t('team.form.name_placeholder')"
+          />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -19,7 +22,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
     <FormField v-slot="{ componentField }" name="short_name">
       <FormItem>
-        <FormLabel>{{ $t('team.form.short_name') }}</FormLabel>
+        <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
@@ -37,7 +40,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       name="owner_steam_id"
     >
       <FormItem>
-        <FormLabel>{{ $t('team.form.owner') }}</FormLabel>
+        <FormLabel>{{ $t("team.form.owner") }}</FormLabel>
         <Select v-bind="componentField">
           <FormControl>
             <SelectTrigger>
@@ -65,7 +68,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       :disabled="Object.keys(form.errors).length > 0"
       class="w-full"
     >
-      {{ team ? $t('team.form.update') : $t('team.form.create') }}
+      {{ team ? $t("team.form.update") : $t("team.form.create") }}
     </Button>
   </form>
 </template>

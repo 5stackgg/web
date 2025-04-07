@@ -36,9 +36,9 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
       <template v-if="gameServerNode.build_id">
         {{ gameServerNode.build_id }}
         <template v-if="gameServerNode.build_id != csVersion">
-          <Button variant="destructive" size="sm" @click="updateCs"
-            >{{ $t('game_server.update_cs') }}</Button
-          >
+          <Button variant="destructive" size="sm" @click="updateCs">{{
+            $t("game_server.update_cs")
+          }}</Button>
         </template>
       </template>
       <template
@@ -46,7 +46,9 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
           gameServerNode.status === e_game_server_node_statuses_enum.Online
         "
       >
-        <Button size="sm" @click="updateCs">{{ $t('game_server.install_cs') }}</Button>
+        <Button size="sm" @click="updateCs">{{
+          $t("game_server.install_cs")
+        }}</Button>
       </template>
     </TableCell>
     <TableCell>
@@ -113,7 +115,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
           >
             <DropdownMenuItem @click="updateCs">
               <RefreshCw class="mr-2 h-4 w-4" />
-              <span>{{ $t('game_server.update_cs') }}</span>
+              <span>{{ $t("game_server.update_cs") }}</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
@@ -121,7 +123,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
 
           <DropdownMenuItem @click="removeGameNodeServer" class="text-red-500">
             <Trash2 class="mr-2 h-4 w-4" />
-            <span>{{ $t('game_server.remove_node') }}</span>
+            <span>{{ $t("game_server.remove_node") }}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -177,7 +179,9 @@ export default {
                   );
                 },
                 {
-                  message: this.$t('game_server.validation.start_port_less_than_end'),
+                  message: this.$t(
+                    "game_server.validation.start_port_less_than_end",
+                  ),
                 },
               ),
             end_port_range: z
@@ -192,7 +196,9 @@ export default {
                   );
                 },
                 {
-                  message: this.$t('game_server.validation.end_port_greater_than_start'),
+                  message: this.$t(
+                    "game_server.validation.end_port_greater_than_start",
+                  ),
                 },
               ),
           }),
@@ -254,7 +260,7 @@ export default {
       });
 
       toast({
-        title: this.$t('game_server.toast.cs_updating'),
+        title: this.$t("game_server.toast.cs_updating"),
       });
     },
     async removeGameNodeServer() {
@@ -298,7 +304,7 @@ export default {
       });
 
       toast({
-        title: this.$t('game_server.toast.ports_updated'),
+        title: this.$t("game_server.toast.ports_updated"),
       });
     },
     async updateRegion(region: string) {

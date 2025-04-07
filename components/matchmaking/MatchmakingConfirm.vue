@@ -13,7 +13,9 @@ import {
   <AlertDialog :open="shouldShow && confirmation">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ $t('matchmaking.confirm.title') }}</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("matchmaking.confirm.title")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
           <div>{{ confirmation?.type }} @ {{ confirmation?.region }}</div>
         </AlertDialogDescription>
@@ -26,7 +28,12 @@ import {
       <template v-if="confirmation?.isReady">
         <div class="flex justify-center items-center">
           <span class="text-4xl font-bold">
-            {{ $t('matchmaking.confirm.players', { confirmed: confirmation?.confirmed, total: confirmation?.players }) }}
+            {{
+              $t("matchmaking.confirm.players", {
+                confirmed: confirmation?.confirmed,
+                total: confirmation?.players,
+              })
+            }}
           </span>
         </div>
       </template>
@@ -35,7 +42,7 @@ import {
           @click="ready"
           class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 text-xl rounded-sm shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-full p-8"
         >
-          {{ $t('matchmaking.confirm.ready') }}
+          {{ $t("matchmaking.confirm.ready") }}
         </Button>
       </AlertDialogFooter>
     </AlertDialogContent>

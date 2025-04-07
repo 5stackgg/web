@@ -8,16 +8,18 @@ import RegionForm from "~/components/regions/RegionForm.vue";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title>{{ $t('pages.regions.title') }}</template>
+      <template #title>{{ $t("pages.regions.title") }}</template>
 
       <template #description>
-        {{ $t('pages.regions.description') }}
+        {{ $t("pages.regions.description") }}
       </template>
 
       <template #actions>
         <Button @click="regionDialogOpen = true">
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline ml-2">{{ $t('pages.regions.create') }}</span>
+          <span class="hidden md:inline ml-2">{{
+            $t("pages.regions.create")
+          }}</span>
         </Button>
       </template>
     </PageHeading>
@@ -26,12 +28,16 @@ import RegionForm from "~/components/regions/RegionForm.vue";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{{ $t('pages.regions.table.name') }}</TableHead>
-            <TableHead>{{ $t('pages.regions.table.status') }}</TableHead>
-            <TableHead>{{ $t('pages.regions.table.available_servers') }}</TableHead>
-            <TableHead>{{ $t('pages.regions.table.description') }}</TableHead>
-            <TableHead>{{ $t('pages.regions.table.use_lan_ip') }}</TableHead>
-            <TableHead class="w-[100px]">{{ $t('pages.regions.table.actions') }}</TableHead>
+            <TableHead>{{ $t("pages.regions.table.name") }}</TableHead>
+            <TableHead>{{ $t("pages.regions.table.status") }}</TableHead>
+            <TableHead>{{
+              $t("pages.regions.table.available_servers")
+            }}</TableHead>
+            <TableHead>{{ $t("pages.regions.table.description") }}</TableHead>
+            <TableHead>{{ $t("pages.regions.table.use_lan_ip") }}</TableHead>
+            <TableHead class="w-[100px]">{{
+              $t("pages.regions.table.actions")
+            }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -82,8 +88,10 @@ import RegionForm from "~/components/regions/RegionForm.vue";
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            <template v-if="regionToEdit">{{ $t('pages.regions.edit') }}</template>
-            <template v-else>{{ $t('pages.regions.create') }}</template>
+            <template v-if="regionToEdit">{{
+              $t("pages.regions.edit")
+            }}</template>
+            <template v-else>{{ $t("pages.regions.create") }}</template>
           </DialogTitle>
         </DialogHeader>
         <RegionForm
@@ -96,17 +104,17 @@ import RegionForm from "~/components/regions/RegionForm.vue";
     <Dialog v-model:open="deleteDialogOpen">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{{ $t('pages.regions.delete.title') }}</DialogTitle>
+          <DialogTitle>{{ $t("pages.regions.delete.title") }}</DialogTitle>
           <DialogDescription>
-            {{ $t('pages.regions.delete.description') }}
+            {{ $t("pages.regions.delete.description") }}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" @click="deleteDialogOpen = false">
-            {{ $t('pages.regions.delete.cancel') }}
+            {{ $t("pages.regions.delete.cancel") }}
           </Button>
           <Button variant="destructive" @click="deleteRegion">
-            {{ $t('pages.regions.delete.confirm') }}
+            {{ $t("pages.regions.delete.confirm") }}
           </Button>
         </DialogFooter>
       </DialogContent>

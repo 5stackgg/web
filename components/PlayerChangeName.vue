@@ -6,25 +6,29 @@
     @click.prevent="showRequestNameChangeDialog = true"
     v-if="canChangeName"
   >
-    {{ $t('player.change_name.button') }}
+    {{ $t("player.change_name.button") }}
   </div>
   <AlertDialog :open="showRequestNameChangeDialog">
     <AlertDialogTrigger asChild> </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>
-          {{ canUpdate ? $t('player.change_name.title') : $t('player.change_name.request_title') }}
+          {{
+            canUpdate
+              ? $t("player.change_name.title")
+              : $t("player.change_name.request_title")
+          }}
         </AlertDialogTitle>
         <AlertDialogDescription>
           {{
             canUpdate
-              ? $t('player.change_name.description')
-              : $t('player.change_name.request_description')
+              ? $t("player.change_name.description")
+              : $t("player.change_name.request_description")
           }}
 
           <FormField v-slot="{ componentField }" name="player_name">
             <FormItem>
-              <FormLabel>{{ $t('player.change_name.name_label') }}</FormLabel>
+              <FormLabel>{{ $t("player.change_name.name_label") }}</FormLabel>
               <FormControl>
                 <Input v-bind="componentField" />
               </FormControl>
@@ -35,12 +39,12 @@
 
       <AlertDialogFooter>
         <AlertDialogCancel @click="showRequestNameChangeDialog = false">
-          {{ $t('common.cancel') }}
+          {{ $t("common.cancel") }}
         </AlertDialogCancel>
         <AlertDialogAction
           @click="canUpdate ? changeName() : requestNameChange()"
         >
-          {{ $t('common.confirm') }}
+          {{ $t("common.confirm") }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
@@ -96,7 +100,7 @@ export default {
       });
 
       toast({
-        title: this.$t('player.change_name.success'),
+        title: this.$t("player.change_name.success"),
       });
 
       this.showRequestNameChangeDialog = false;
@@ -126,7 +130,7 @@ export default {
       });
 
       toast({
-        title: this.$t('player.change_name.request_success'),
+        title: this.$t("player.change_name.request_success"),
       });
 
       this.showRequestNameChangeDialog = false;

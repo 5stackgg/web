@@ -20,7 +20,7 @@ import {
   <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="server_id">
       <FormItem>
-        <FormLabel>{{ $t('match.server.assign') }}</FormLabel>
+        <FormLabel>{{ $t("match.server.assign") }}</FormLabel>
         <Select v-bind="componentField" @update:modelValue="updateMatchServer">
           <FormControl>
             <SelectTrigger>
@@ -29,7 +29,7 @@ import {
           </FormControl>
           <SelectContent>
             <SelectGroup v-if="canSelectDedicatedServer">
-              <SelectLabel>{{ $t('match.server.dedicated') }}</SelectLabel>
+              <SelectLabel>{{ $t("match.server.dedicated") }}</SelectLabel>
               <SelectItem
                 v-for="server in availableServers"
                 :key="server.value"
@@ -40,7 +40,7 @@ import {
             </SelectGroup>
 
             <SelectGroup>
-              <SelectLabel>{{ $t('match.server.on_demand') }}</SelectLabel>
+              <SelectLabel>{{ $t("match.server.on_demand") }}</SelectLabel>
               <SelectItem
                 v-for="region in regions"
                 :key="region.value"
@@ -148,7 +148,7 @@ export default {
       });
 
       toast({
-        title: this.$t('match.server.assigned'),
+        title: this.$t("match.server.assigned"),
       });
     },
   },

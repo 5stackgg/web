@@ -15,7 +15,7 @@ import { AlertTriangle } from "lucide-vue-next";
       <CardTitle class="flex justify-between">
         <div class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
-          {{ $t('match.join.live') }}
+          {{ $t("match.join.live") }}
         </div>
         <Button
           size="sm"
@@ -23,7 +23,7 @@ import { AlertTriangle } from "lucide-vue-next";
           @click="callForOrganizer"
           :disabled="match.requested_organizer"
         >
-          {{ $t('match.join.call_organizer') }}
+          {{ $t("match.join.call_organizer") }}
         </Button>
       </CardTitle>
     </CardHeader>

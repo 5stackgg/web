@@ -14,7 +14,7 @@ import SimpleMatchDisplay from "./SimpleMatchDisplay.vue";
     <template v-else>
       <div class="text-center w-full p-4">
         <p class="text-muted-foreground">
-          {{ $t('match.my_upcoming.no_matches') }}
+          {{ $t("match.my_upcoming.no_matches") }}
         </p>
       </div>
     </template>

@@ -14,7 +14,7 @@ import SimpleTournamentDisplay from "./SimpleTournamentDisplay.vue";
     <template v-else>
       <div class="text-center w-full p-4">
         <p class="text-muted-foreground">
-          {{ $t('tournament.upcoming.empty') }}
+          {{ $t("tournament.upcoming.empty") }}
         </p>
       </div>
     </template>

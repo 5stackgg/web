@@ -17,7 +17,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
     <match-options :form="form" :force-veto="true">
       <FormField v-slot="{ componentField }" name="name">
         <FormItem>
-          <FormLabel>{{ $t('tournament.form.name') }}</FormLabel>
+          <FormLabel>{{ $t("tournament.form.name") }}</FormLabel>
           <FormControl>
             <Input v-bind="componentField" />
           </FormControl>
@@ -27,7 +27,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
 
       <FormField v-slot="{ componentField }" name="description">
         <FormItem>
-          <FormLabel>{{ $t('tournament.form.description') }}</FormLabel>
+          <FormLabel>{{ $t("tournament.form.description") }}</FormLabel>
           <FormControl>
             <Input v-bind="componentField" />
             <FormMessage />
@@ -37,7 +37,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
 
       <FormField v-slot="{ componentField }" name="start">
         <FormItem>
-          <FormLabel>{{ $t('tournament.form.start') }}</FormLabel>
+          <FormLabel>{{ $t("tournament.form.start") }}</FormLabel>
           <FormControl>
             <div class="flex">
               <Popover>
@@ -50,7 +50,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
                     }"
                   >
                     <CalendarIcon class="mr-2 h-4 w-4" />
-                    {{ startDate || $t('tournament.form.pick_date') }}
+                    {{ startDate || $t("tournament.form.pick_date") }}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent class="w-auto p-0">
@@ -78,8 +78,10 @@ import MatchOptions from "~/components/MatchOptions.vue";
     <div class="grid grid-cols-1 md:grid-cols-2">
       <div class="grid gap-4">
         <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-          <template v-if="tournament">{{ $t('tournament.form.update') }}</template>
-          <template v-else>{{ $t('tournament.form.create') }}</template>
+          <template v-if="tournament">{{
+            $t("tournament.form.update")
+          }}</template>
+          <template v-else>{{ $t("tournament.form.create") }}</template>
         </Button>
       </div>
     </div>

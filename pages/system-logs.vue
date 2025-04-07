@@ -26,7 +26,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
               @click="followLogs = !followLogs"
             >
             </Switch>
-            {{ $t('pages.system_logs.follow_logs') }}
+            {{ $t("pages.system_logs.follow_logs") }}
           </div>
 
           <div class="flex items-center gap-2">
@@ -36,7 +36,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
               @click="timestamps = !timestamps"
             >
             </Switch>
-            {{ $t('pages.system_logs.timestamps') }}
+            {{ $t("pages.system_logs.timestamps") }}
           </div>
         </div>
       </div>

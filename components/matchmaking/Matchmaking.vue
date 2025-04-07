@@ -11,7 +11,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
-          {{ $t('matchmaking.banned') }}
+          {{ $t("matchmaking.banned") }}
         </AlertDescription>
       </Alert>
     </template>
@@ -19,7 +19,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
-          {{ $t('matchmaking.temp_banned', { time: $t('time.ago', { time: me.matchmaking_cooldown }) }) }}
+          {{
+            $t("matchmaking.temp_banned", {
+              time: me.matchmaking_cooldown,
+            })
+          }}
         </AlertDescription>
       </Alert>
     </template>
@@ -44,7 +48,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
             :to="{ name: 'matches', params: { id: match.id } }"
             class="text-xl font-bold bg-foreground"
           >
-            {{ $t('matchmaking.go_to_match') }}
+            {{ $t("matchmaking.go_to_match") }}
           </NuxtLink>
         </Button>
       </div>

@@ -12,18 +12,18 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
   <div class="flex flex-col lg:flex-row gap-4">
     <div class="lg:w-3/4 flex flex-col gap-4 overflow-hidden">
       <PageHeading>
-        <template #title>{{ $t('pages.play.title') }}</template>
+        <template #title>{{ $t("pages.play.title") }}</template>
 
         <template #description>
-          {{ $t('pages.play.description') }}
+          {{ $t("pages.play.description") }}
         </template>
 
         <template #actions>
           <div class="flex gap-4 items-center">
             <template v-if="!canCreateMatch">
-              <FiveStackToolTip :size="16" class="text-red-600"
-                >{{ $t('pages.play.admin_disabled') }}</FiveStackToolTip
-              >
+              <FiveStackToolTip :size="16" class="text-red-600">{{
+                $t("pages.play.admin_disabled")
+              }}</FiveStackToolTip>
             </template>
             <Button
               size="lg"
@@ -31,7 +31,9 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
               @click="canCreateMatch && navigateTo('/matches/create')"
             >
               <PlusCircle class="w-4 h-4" />
-              <span class="hidden md:inline ml-2">{{ $t('pages.play.create_match') }}</span>
+              <span class="hidden md:inline ml-2">{{
+                $t("pages.play.create_match")
+              }}</span>
             </Button>
           </div>
         </template>
@@ -43,9 +45,9 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
 
       <Card class="p-4">
         <CardHeader>
-          <CardTitle>{{ $t('pages.play.open_matches.title') }}</CardTitle>
+          <CardTitle>{{ $t("pages.play.open_matches.title") }}</CardTitle>
           <CardDescription>
-            {{ $t('pages.play.open_matches.description') }}
+            {{ $t("pages.play.open_matches.description") }}
           </CardDescription>
         </CardHeader>
         <OpenMatches> </OpenMatches>
@@ -61,7 +63,7 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
       >
         <CardHeader>
           <CardTitle class="text-xl font-bold text-center">
-            {{ $t('pages.play.matchmaking.title') }}
+            {{ $t("pages.play.matchmaking.title") }}
           </CardTitle>
         </CardHeader>
         <CardContent>

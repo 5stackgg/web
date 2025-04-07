@@ -20,17 +20,21 @@ import Badge from "../ui/badge/Badge.vue";
     >
       <div>
         <h2 class="text-2xl font-bold mb-2">
-          {{ $t('tournament.team.manage_roster') }}
+          {{ $t("tournament.team.manage_roster") }}
           <small>
             ({{ team.roster.length }} / {{ tournament.max_players_per_lineup }})
           </small>
         </h2>
         <template v-if="team.eligible_at">
-          <Badge>{{ $t('tournament.team.eligible') }}</Badge>
+          <Badge>{{ $t("tournament.team.eligible") }}</Badge>
         </template>
         <template v-else>
           <div class="text-sm text-red-600">
-            {{ $t('tournament.team.not_eligible', { count: tournament.min_players_per_lineup - team.roster.length }) }}
+            {{
+              $t("tournament.team.not_eligible", {
+                count: tournament.min_players_per_lineup - team.roster.length,
+              })
+            }}
           </div>
         </template>
       </div>
@@ -41,10 +45,10 @@ import Badge from "../ui/badge/Badge.vue";
           class="mt-4 md:mt-0"
           v-if="canLeaveTournament"
         >
-          {{ $t('tournament.team.leave_tournament') }}
+          {{ $t("tournament.team.leave_tournament") }}
         </Button>
         <Button @click="leaveTeam" variant="destructive" class="mt-4 md:mt-0">
-          {{ $t('tournament.team.leave_team') }}
+          {{ $t("tournament.team.leave_team") }}
         </Button>
       </div>
     </div>
@@ -53,8 +57,8 @@ import Badge from "../ui/badge/Badge.vue";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{{ $t('tournament.team.player') }}</TableHead>
-            <TableHead>{{ $t('tournament.team.role') }}</TableHead>
+            <TableHead>{{ $t("tournament.team.player") }}</TableHead>
+            <TableHead>{{ $t("tournament.team.role") }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -77,7 +81,9 @@ import Badge from "../ui/badge/Badge.vue";
                   :show-flag="false"
                   :show-steam-id="false"
                   :player="{
-                    name: $t('tournament.team.slot', { number: slot + team.roster.length }),
+                    name: $t('tournament.team.slot', {
+                      number: slot + team.roster.length,
+                    }),
                   }"
                 />
                 <template v-if="slot === 1 && team.can_manage">
@@ -97,7 +103,7 @@ import Badge from "../ui/badge/Badge.vue";
           <TableRow v-if="team.invites && team.invites.length > 0">
             <TableCell colspan="100%">
               <div class="text-sm font-semibold text-gray-500 my-2">
-                {{ $t('tournament.team.pending_invites') }}
+                {{ $t("tournament.team.pending_invites") }}
               </div>
             </TableCell>
           </TableRow>

@@ -9,14 +9,14 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title>{{ $t('pages.players.title') }}</template>
+      <template #title>{{ $t("pages.players.title") }}</template>
     </PageHeading>
     <Card class="p-4">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead class="flex items-center justify-between m-4">
-              <span>{{ $t('pages.players.search') }}</span>
+              <span>{{ $t("pages.players.search") }}</span>
 
               <div>
                 <form

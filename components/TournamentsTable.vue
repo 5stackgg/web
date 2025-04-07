@@ -14,11 +14,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead>{{ $t('tournament.table.tournament') }}</TableHead>
-        <TableHead>{{ $t('tournament.table.status') }}</TableHead>
-        <TableHead>{{ $t('tournament.table.type') }}</TableHead>
-        <TableHead>{{ $t('tournament.table.teams_joined') }}</TableHead>
-        <TableHead>{{ $t('tournament.table.starts') }}</TableHead>
+        <TableHead>{{ $t("tournament.table.tournament") }}</TableHead>
+        <TableHead>{{ $t("tournament.table.status") }}</TableHead>
+        <TableHead>{{ $t("tournament.table.type") }}</TableHead>
+        <TableHead>{{ $t("tournament.table.teams_joined") }}</TableHead>
+        <TableHead>{{ $t("tournament.table.starts") }}</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -27,7 +27,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <TableCell colspan="4" class="text-center py-8">
             <div class="text-gray-500 dark:text-gray-400">
               <p>
-                <slot name="none-found">{{ $t('tournament.table.no_tournaments_found') }}</slot>
+                <slot name="none-found">{{
+                  $t("tournament.table.no_tournaments_found")
+                }}</slot>
               </p>
             </div>
           </TableCell>

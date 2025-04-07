@@ -13,7 +13,7 @@ import TimeAgo from "../TimeAgo.vue";
       </CardTitle>
       <div v-if="joinedQueue">
         <Button size="sm" variant="outline" @click="leaveMatchmaking()">
-          {{ $t('matchmaking.leave') }}
+          {{ $t("matchmaking.leave") }}
         </Button>
       </div>
     </CardHeader>
@@ -26,7 +26,9 @@ import TimeAgo from "../TimeAgo.vue";
         <div class="text-4xl font-bold">
           {{ matchMakingQueueDetails.regionPositions[region.value] }}
         </div>
-        <div class="text-sm text-muted-foreground">{{ $t('matchmaking.position') }}</div>
+        <div class="text-sm text-muted-foreground">
+          {{ $t("matchmaking.position") }}
+        </div>
 
         <small>
           <TimeAgo :date="matchMakingQueueDetails.joinedAt"></TimeAgo>
@@ -53,7 +55,7 @@ import TimeAgo from "../TimeAgo.vue";
               size="sm"
               @click="joinMatchmaking(matchType.value, region.value)"
             >
-              {{ $t('matchmaking.join') }}
+              {{ $t("matchmaking.join") }}
             </Button>
           </div>
         </div>

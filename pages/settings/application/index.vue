@@ -13,9 +13,11 @@ definePageMeta({
       @click="toggleMatchmaking"
     >
       <div class="space-y-0.5">
-        <h4 class="text-base font-medium">{{ $t('pages.settings.application.matchmaking.title') }}</h4>
+        <h4 class="text-base font-medium">
+          {{ $t("pages.settings.application.matchmaking.title") }}
+        </h4>
         <p class="text-sm text-muted-foreground">
-          {{ $t('pages.settings.application.matchmaking.description') }}
+          {{ $t("pages.settings.application.matchmaking.description") }}
         </p>
       </div>
       <Switch
@@ -26,9 +28,9 @@ definePageMeta({
 
     <FormField v-slot="{ componentField }" name="public.create_matches_role">
       <FormItem>
-        <FormLabel class="text-lg font-semibold"
-          >{{ $t('pages.settings.application.create_matches_role') }}</FormLabel
-        >
+        <FormLabel class="text-lg font-semibold">{{
+          $t("pages.settings.application.create_matches_role")
+        }}</FormLabel>
         <FormControl>
           <Select v-bind="componentField">
             <FormControl>
@@ -58,9 +60,9 @@ definePageMeta({
       name="public.create_tournaments_role"
     >
       <FormItem>
-        <FormLabel class="text-lg font-semibold"
-          >{{ $t('pages.settings.application.create_tournaments_role') }}</FormLabel
-        >
+        <FormLabel class="text-lg font-semibold">{{
+          $t("pages.settings.application.create_tournaments_role")
+        }}</FormLabel>
         <FormControl>
           <Select v-bind="componentField">
             <FormControl>
@@ -91,7 +93,7 @@ definePageMeta({
         :disabled="Object.keys(form.errors).length > 0"
         class="my-3"
       >
-        {{ $t('pages.settings.application.update') }}
+        {{ $t("pages.settings.application.update") }}
       </Button>
     </div>
   </form>

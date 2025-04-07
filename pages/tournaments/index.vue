@@ -12,24 +12,28 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title>{{ $t('pages.tournaments.title') }}</template>
+      <template #title>{{ $t("pages.tournaments.title") }}</template>
 
       <template #actions>
         <div class="flex gap-4 items-center">
           <template v-if="!canCreateTournament">
-            <FiveStackToolTip :size="16" class="text-red-600"
-              >{{ $t('pages.tournaments.admin_disabled') }}</FiveStackToolTip
-            >
+            <FiveStackToolTip :size="16" class="text-red-600">{{
+              $t("pages.tournaments.admin_disabled")
+            }}</FiveStackToolTip>
           </template>
           <NuxtLink v-if="canCreateTournament" to="/tournaments/create">
             <Button size="lg">
               <PlusCircle class="w-4 h-4" />
-              <span class="hidden md:inline ml-2">{{ $t('pages.tournaments.create') }}</span>
+              <span class="hidden md:inline ml-2">{{
+                $t("pages.tournaments.create")
+              }}</span>
             </Button>
           </NuxtLink>
           <Button v-else size="lg" disabled>
             <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{ $t('pages.tournaments.create') }}</span>
+            <span class="hidden md:inline ml-2">{{
+              $t("pages.tournaments.create")
+            }}</span>
           </Button>
         </div>
       </template>
@@ -42,8 +46,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
     <Card class="p-4">
       <Tabs default-value="other">
         <TabsList>
-          <TabsTrigger value="other">{{ $t('pages.tournaments.tabs.tournaments') }}</TabsTrigger>
-          <TabsTrigger value="my">{{ $t('pages.tournaments.tabs.my_recent') }}</TabsTrigger>
+          <TabsTrigger value="other">{{
+            $t("pages.tournaments.tabs.tournaments")
+          }}</TabsTrigger>
+          <TabsTrigger value="my">{{
+            $t("pages.tournaments.tabs.my_recent")
+          }}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="other">
@@ -76,7 +84,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             <template v-else>
               <div class="text-center w-full p-4">
                 <p class="text-muted-foreground">
-                  {{ $t('pages.tournaments.no_recent') }}
+                  {{ $t("pages.tournaments.no_recent") }}
                 </p>
               </div>
             </template>

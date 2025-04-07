@@ -13,17 +13,19 @@ import { AlertCircle } from "lucide-vue-next";
   <AlertDialog :open="requiredPlayerNameRegistration">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ $t('player.registration.title') }}</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("player.registration.title")
+        }}</AlertDialogTitle>
         <AlertDialogDescription class="space-y-4">
           <p>
-            {{ $t('player.registration.description') }}
+            {{ $t("player.registration.description") }}
           </p>
 
           <p
             class="text-red-500 font-medium italic border border-red-300 rounded-md p-3 bg-red-50 flex items-center gap-2"
           >
             <AlertCircle class="w-5 h-5" />
-            {{ $t('player.registration.warning') }}
+            {{ $t("player.registration.warning") }}
           </p>
         </AlertDialogDescription>
       </AlertDialogHeader>
@@ -31,14 +33,16 @@ import { AlertCircle } from "lucide-vue-next";
       <form @submit.prevent="confirmName" class="flex flex-col gap-4">
         <FormField v-slot="{ componentField }" name="player_name">
           <FormItem>
-            <FormLabel>{{ $t('player.registration.name_label') }}</FormLabel>
+            <FormLabel>{{ $t("player.registration.name_label") }}</FormLabel>
             <FormControl>
               <Input v-bind="componentField" />
             </FormControl>
           </FormItem>
         </FormField>
 
-        <Button type="submit">{{ $t('player.registration.confirm_button') }}</Button>
+        <Button type="submit">{{
+          $t("player.registration.confirm_button")
+        }}</Button>
       </form>
     </AlertDialogContent>
   </AlertDialog>
@@ -117,7 +121,7 @@ export default {
       });
 
       toast({
-        title: this.$t('player.registration.success'),
+        title: this.$t("player.registration.success"),
       });
     },
   },

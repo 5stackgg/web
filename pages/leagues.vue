@@ -4,7 +4,7 @@
       <h1
         class="block text-7xl font-bold text-gray-800 sm:text-9xl dark:text-white"
       >
-        {{ $t('pages.coming_soon') }}
+        {{ $t("pages.coming_soon") }}
       </h1>
       <h1 class="block text-2xl font-bold text-white"></h1>
     </div>

@@ -68,7 +68,7 @@ import { e_match_status_enum } from "~/generated/zeus";
               ? match.lineup_1.name
               : match.lineup_2.name
           }}</span>
-          <span class="text-gray-500">{{ $t('match.simple.vs') }}</span>
+          <span class="text-gray-500">{{ $t("match.simple.vs") }}</span>
           <span class="font-bold">{{
             match.lineup_1.is_on_lineup
               ? match.lineup_2.name

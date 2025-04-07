@@ -82,9 +82,9 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
           <div class="text-xs font-mono text-foreground/80 py-1 flex gap-4">
             <div class="flex flex-col justify-end">
               <div class="flex gap-2" v-if="log && log.trim() !== ''">
-                <span class="text-muted-foreground" v-if="nodes.size > 1"
-                  >{{ $t("ui.logs.container", { node, container }) }}</span
-                >
+                <span class="text-muted-foreground" v-if="nodes.size > 1">{{
+                  $t("ui.logs.container", { node, container })
+                }}</span>
                 <span
                   class="text-blue-100"
                   v-if="(timestamps === undefined && _timestamps) || timestamps"

@@ -20,7 +20,9 @@ import PlayerStatusDisplay from "./PlayerStatusDisplay.vue";
             />
           </TooltipTrigger>
           <TooltipContent>
-            {{ $t('match.lineup.discord_user') }} <Badge variant="secondary">/link</Badge> {{ $t('match.lineup.discord_link') }}
+            {{ $t("match.lineup.discord_user") }}
+            <Badge variant="secondary">/link</Badge>
+            {{ $t("match.lineup.discord_link") }}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

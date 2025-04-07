@@ -28,7 +28,7 @@ import { e_match_status_enum } from "~/generated/zeus";
             @click="callForOrganizer"
             :disabled="match.requested_organizer"
           >
-            {{ $t('match.actions.call_support') }}
+            {{ $t("match.actions.call_support") }}
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
@@ -56,16 +56,16 @@ import { e_match_status_enum } from "~/generated/zeus";
                 match.options.best_of != match.match_maps.length
               "
             >
-              {{ $t('match.actions.start_veto') }}
+              {{ $t("match.actions.start_veto") }}
             </template>
-            <template v-else> {{ $t('match.actions.skip_checkin') }} </template>
+            <template v-else> {{ $t("match.actions.skip_checkin") }} </template>
           </DropdownMenuItem>
         </template>
 
         <template v-if="match.can_cancel">
-          <DropdownMenuItem class="text-destructive" @click="cancelMatch"
-            >{{ $t('match.actions.cancel') }}</DropdownMenuItem
-          >
+          <DropdownMenuItem class="text-destructive" @click="cancelMatch">{{
+            $t("match.actions.cancel")
+          }}</DropdownMenuItem>
         </template>
       </DropdownMenuContent>
     </DropdownMenu>

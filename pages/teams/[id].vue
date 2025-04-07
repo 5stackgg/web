@@ -51,7 +51,7 @@ const teamMenu = ref(false);
       <template #description>
         <PlayerDisplay :player="team.owner" :showSteamId="false">
           <template #name-postfix>
-            <Badge variant="secondary">{{ $t('team.roles.captain') }}</Badge>
+            <Badge variant="secondary">{{ $t("team.roles.captain") }}</Badge>
           </template>
         </PlayerDisplay>
       </template>
@@ -67,14 +67,15 @@ const teamMenu = ref(false);
             <DropdownMenuGroup>
               <template v-if="team.owner.steam_id === me.steam_id && isOnTeam">
                 <DropdownMenuItem @click="editTeamSheet = true">
-                  {{ $t('common.actions.edit') }}
+                  {{ $t("common.actions.edit") }}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   class="text-red-600"
                   @click="deleteTeamAlertDialog = true"
                 >
-                  <Trash class="mr-2 h-4 w-4 inline" /> {{ $t('common.actions.delete') }}
+                  <Trash class="mr-2 h-4 w-4 inline" />
+                  {{ $t("common.actions.delete") }}
                 </DropdownMenuItem>
               </template>
               <template v-else>
@@ -82,7 +83,7 @@ const teamMenu = ref(false);
                   class="text-red-600"
                   @click="leaveTeamAlertDialog = true"
                 >
-                  <Trash class="mr-2 h-4 w-4 inline" /> {{ $t('team.leave') }}
+                  <Trash class="mr-2 h-4 w-4 inline" /> {{ $t("team.leave") }}
                 </DropdownMenuItem>
               </template>
             </DropdownMenuGroup>
@@ -96,7 +97,7 @@ const teamMenu = ref(false);
         <TeamMembers :team-id="$route.params.id" />
       </div>
       <div>
-        <PageHeading>{{ $t('match.recent.title') }}</PageHeading>
+        <PageHeading>{{ $t("match.recent.title") }}</PageHeading>
         <MatchesTable :matches="team.matches" />
       </div>
     </div>
@@ -107,7 +108,7 @@ const teamMenu = ref(false);
     >
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>{{ $t('team.management.edit') }}</SheetTitle>
+          <SheetTitle>{{ $t("team.management.edit") }}</SheetTitle>
           <SheetDescription>
             <TeamForm :team="team" @updated="editTeamSheet = false" />
           </SheetDescription>
@@ -121,14 +122,18 @@ const teamMenu = ref(false);
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{{ $t('team.confirm.delete.title') }}</AlertDialogTitle>
+          <AlertDialogTitle>{{
+            $t("team.confirm.delete.title")
+          }}</AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t('team.confirm.delete.description') }}
+            {{ $t("team.confirm.delete.description") }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
-          <AlertDialogAction @click="deleteTeam">{{ $t('common.confirm') }}</AlertDialogAction>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="deleteTeam">{{
+            $t("common.confirm")
+          }}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -139,11 +144,13 @@ const teamMenu = ref(false);
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{{ $t('team.confirm.leave') }}</AlertDialogTitle>
+          <AlertDialogTitle>{{ $t("team.confirm.leave") }}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
-          <AlertDialogAction @click="leaveTeam">{{ $t('common.confirm') }}</AlertDialogAction>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="leaveTeam">{{
+            $t("common.confirm")
+          }}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

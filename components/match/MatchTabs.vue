@@ -375,7 +375,7 @@ export default {
       return [
         e_match_status_enum.Live,
         e_match_status_enum.Veto,
-        e_match_enum.Scheduled,
+        e_match_status_enum.Scheduled,
         e_match_status_enum.WaitingForServer,
         e_match_status_enum.WaitingForCheckIn,
         e_match_status_enum.PickingPlayers,

@@ -96,7 +96,7 @@ const teamMenu = ref(false);
         <TeamMembers :team-id="$route.params.id" />
       </div>
       <div>
-        <PageHeading>{{ $t('match.recent') }}</PageHeading>
+        <PageHeading>{{ $t('match.recent.title') }}</PageHeading>
         <MatchesTable :matches="team.matches" />
       </div>
     </div>

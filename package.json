@@ -9,7 +9,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "codegen": ". ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET"
+    "codegen": ". ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET",
+    "check-translations": "node scripts/check-translations.js"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.3.2",
@@ -19,6 +20,7 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@vite-pwa/nuxt": "^1.0.0",
     "autoprefixer": "^10.4.19",
+    "glob": "^11.0.1",
     "nuxt": "^3.14.0",
     "postcss": "^8.4.40",
     "postcss-nesting": "^13.0.0",

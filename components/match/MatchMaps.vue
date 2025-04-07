@@ -18,7 +18,7 @@ import formatBits from "~/utilities/formatBits";
         <badge
           class="mb-2"
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
-          >{{ $t(`match.status.${matchMap.status.toLowerCase()}`) }}</badge
+          >{{  matchMap.status }}</badge
         >
 
         <badge

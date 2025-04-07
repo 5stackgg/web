@@ -44,47 +44,47 @@ import { UserPlusIcon } from "lucide-vue-next";
         </TableHead>
         <template v-if="showStats">
           <TableHead class="w-[4ch] text-center">
-            K<span class="hidden xl:inline">ills</span>
+            {{ $t('match.overview.kills') }}<span class="hidden xl:inline">{{ $t('match.overview.kills_full') }}</span>
           </TableHead>
           <TableHead class="hidden md:table-cell w-[4ch] text-center">
-            A<span class="hidden xl:inline">ssists</span>
+            {{ $t('match.overview.assists') }}<span class="hidden xl:inline">{{ $t('match.overview.assists_full') }}</span>
           </TableHead>
           <TableHead class="w-[4ch] text-center">
-            D<span class="hidden xl:inline">eaths</span>
+            {{ $t('match.overview.deaths') }}<span class="hidden xl:inline">{{ $t('match.overview.deaths_full') }}</span>
           </TableHead>
           <TableHead class="hidden md:table-cell w-[16ch] text-center"
-            >K/D</TableHead
+            >{{ $t('match.overview.kd') }}</TableHead
           >
           <TableHead class="hidden lg:table-cell w-[4ch] text-center"
-            >HS%</TableHead
+            >{{ $t('match.overview.hs') }}</TableHead
           >
           <TableHead class="hidden 2xl:table-cell w-[16ch] text-center"
-            >Team Damage</TableHead
+            >{{ $t('match.overview.team_damage') }}</TableHead
           >
           <TableHead class="hidden xl:table-cell w-[30ch] text-center">
-            <span class="hidden 2xl:inline"> Multi Kill Rounds </span>
-            <span class="2xl:hidden"> MKR </span>
+            <span class="hidden 2xl:inline"> {{ $t('match.overview.multi_kill_rounds') }} </span>
+            <span class="2xl:hidden"> {{ $t('match.overview.mkr') }} </span>
           </TableHead>
           <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >2K</TableHead
+            >{{ $t('match.overview.k2') }}</TableHead
           >
           <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >3K</TableHead
+            >{{ $t('match.overview.k3') }}</TableHead
           >
           <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >4K</TableHead
+            >{{ $t('match.overview.k4') }}</TableHead
           >
           <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >5K</TableHead
+            >{{ $t('match.overview.k5') }}</TableHead
           >
           <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >Knifes</TableHead
+            >{{ $t('match.overview.knifes') }}</TableHead
           >
           <TableHead class="hidden 2xl:table-cell w-[4ch] text-center"
-            >Zeus</TableHead
+            >{{ $t('match.overview.zeus') }}</TableHead
           >
           <TableHead class="text-center w-[24ch] text-center"
-            >Total Damage</TableHead
+            >{{ $t('match.overview.total_damage') }}</TableHead
           >
           <TableHead v-if="lineup.can_update_lineup"> </TableHead>
         </template>
@@ -110,7 +110,7 @@ import { UserPlusIcon } from "lucide-vue-next";
               :show-flag="false"
               :show-steam-id="false"
               :player="{
-                name: `Slot ${slot + lineup.lineup_players.length} ${slot + lineup.lineup_players.length > match.min_players_per_lineup ? '(substitute)' : ''}`,
+                name: `${$t('match.overview.slot', { number: slot + lineup.lineup_players.length })} ${slot + lineup.lineup_players.length > match.min_players_per_lineup ? $t('match.overview.substitute') : ''}`,
               }"
             />
             <div v-if="slot === 1" class="flex gap-4">
@@ -146,7 +146,7 @@ import { UserPlusIcon } from "lucide-vue-next";
                   </FormField>
                   <Button variant="outline" class="flex gap-4">
                     <UserPlusIcon class="h-4 w-4" />
-                    Join
+                    {{ $t('match.overview.join') }}
                   </Button>
                 </form>
               </template>

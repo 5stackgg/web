@@ -15,7 +15,7 @@ import { Separator } from "~/components/ui/separator";
           <template v-else-if="match.lineup_2.is_picking_region_veto">
             {{ match.lineup_2.name }}
           </template>
-          is Banning a Region
+          {{ $t('match.region_veto.banning') }}
         </h1>
 
         <div
@@ -23,7 +23,7 @@ import { Separator } from "~/components/ui/separator";
           @click="override = !override"
           v-if="match.is_organizer && isUser"
         >
-          <Label>Match Organizer Override</Label>
+          <Label>{{ $t('match.region_veto.organizer_override') }}</Label>
           <Switch :checked="override" />
         </div>
       </div>
@@ -72,7 +72,7 @@ import { Separator } from "~/components/ui/separator";
               class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
             >
               <Button variant="destructive" @click="vetoPick">
-                Confirm Ban
+                {{ $t('match.region_veto.confirm_ban') }}
               </Button>
             </div>
           </div>
@@ -87,11 +87,11 @@ import { Separator } from "~/components/ui/separator";
             <form @submit.prevent="setRegion">
               <FormField v-slot="{ componentField }" name="region">
                 <FormItem>
-                  <FormLabel>Server Region </FormLabel>
+                  <FormLabel>{{ $t('match.region_veto.server_region') }}</FormLabel>
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select A Region" />
+                        <SelectValue :placeholder="$t('match.region_veto.select_region')" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

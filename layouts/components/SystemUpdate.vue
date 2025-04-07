@@ -13,7 +13,7 @@ import { AlertCircle } from "lucide-vue-next";
                 <AlertCircle class="h-4 w-4 animate-pulse text-orange-500" />
               </TooltipTrigger>
               <TooltipContent>
-                <span>System Update Available</span>
+                <span>{{ $t('layouts.system_update.title') }}</span>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -21,12 +21,12 @@ import { AlertCircle } from "lucide-vue-next";
       </AlertDialogTrigger>
       <AlertDialogContent class="max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle class="text-2xl font-bold"
-            >System Update Available</AlertDialogTitle
-          >
+          <AlertDialogTitle class="text-2xl font-bold">
+            {{ $t('layouts.system_update.title') }}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             <p class="text-gray-600 mb-2">
-              The following services have updates:
+              {{ $t('layouts.system_update.description') }}
             </p>
             <ul class="list-disc list-inside mt-2 space-y-1">
               <li
@@ -38,22 +38,21 @@ import { AlertCircle } from "lucide-vue-next";
               </li>
             </ul>
             <p class="my-4 text-sm text-gray-500 italic">
-              Please note: It will take a few minutes to process and verify the
-              new updates.
+              {{ $t('layouts.system_update.note') }}
 
               <a
                 href="https://docs.5stack.gg/common-issues/system-not-updating"
                 target="_blank"
                 class="text-blue-500"
-                >If a system upgrade persists, you may need to fix your
-                versions</a
               >
+                {{ $t('layouts.system_update.fix_link') }}
+              </a>
             </p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter class="space-x-2">
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction @click="updateServices">Update</AlertDialogAction>
+          <AlertDialogCancel>{{ $t('layouts.system_update.cancel') }}</AlertDialogCancel>
+          <AlertDialogAction @click="updateServices">{{ $t('layouts.system_update.update') }}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

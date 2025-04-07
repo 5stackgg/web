@@ -24,20 +24,17 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     <TableCell>
       <Button>
         <AlertDialog>
-          <AlertDialogTrigger @click.stop>Remove Organizer</AlertDialogTrigger>
+          <AlertDialogTrigger @click.stop>{{ $t('tournament.server.remove') }}</AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>{{ $t('tournament.server.confirm_remove') }}</AlertDialogTitle>
               <AlertDialogDescription>
-                This will remove {{ organizer.name }} ({{ organizer.steam_id }})
-                from being an organizer.
+                {{ $t('tournament.server.remove_description', { name: organizer.name, steam_id: organizer.steam_id }) }}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction @click.stop="removeOrganizer"
-                >Continue</AlertDialogAction
-              >
+              <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
+              <AlertDialogAction @click.stop="removeOrganizer">{{ $t('common.confirm') }}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

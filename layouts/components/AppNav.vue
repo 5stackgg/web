@@ -39,7 +39,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
             <SidebarMenuButton size="lg" as-child>
               <nuxt-link to="/">
                 <NuxtImg class="rounded max-w-8" src="/favicon/64.png" />
-                <span> 5Stack </span>
+                <span> {{ $t('layouts.app_nav.brand') }} </span>
               </nuxt-link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -58,7 +58,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <Play />
-                  Play
+                  {{ $t('layouts.app_nav.navigation.play') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -72,7 +72,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <Calendar />
-                  Matches
+                  {{ $t('layouts.app_nav.navigation.matches') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -86,7 +86,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <TournamentBracket />
-                  Tournaments
+                  {{ $t('layouts.app_nav.navigation.tournaments') }}
                   <Badge variant="destructive" class="ml-2">alpha</Badge>
                 </NuxtLink>
               </SidebarMenuButton>
@@ -102,7 +102,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                 >
                   <Users />
 
-                  Players
+                  {{ $t('layouts.app_nav.navigation.players') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -116,7 +116,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <ShieldHalf />
-                  Teams
+                  {{ $t('layouts.app_nav.navigation.teams') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -124,7 +124,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
         </SidebarGroup>
 
         <SidebarGroup v-if="me?.role === e_player_roles_enum.administrator">
-          <SidebarGroupLabel>Administration</SidebarGroupLabel>
+          <SidebarGroupLabel>{{ $t('layouts.app_nav.administration.title') }}</SidebarGroupLabel>
 
           <SidebarMenu>
             <SidebarMenuItem tooltip="Regions">
@@ -136,7 +136,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <Globe />
-                  Regions
+                  {{ $t('layouts.app_nav.administration.regions') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -151,7 +151,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                 <CollapsibleTrigger as-child>
                   <SidebarMenuButton tooltip="Servers">
                     <Server />
-                    <span>Servers</span>
+                    <span>{{ $t('layouts.app_nav.administration.servers') }}</span>
                     <ChevronRight
                       class="ml-auto transition-transform duration-200"
                       :class="{
@@ -174,7 +174,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                               isRouteActive('dedicated-servers'),
                           }"
                         >
-                          Dedicated Servers
+                          {{ $t('layouts.app_nav.administration.dedicated_servers') }}
                         </NuxtLink>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
@@ -191,7 +191,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                               isRouteActive('game-server-nodes'),
                           }"
                         >
-                          Game Server Nodes
+                          {{ $t('layouts.app_nav.administration.game_server_nodes') }}
                         </NuxtLink>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
@@ -224,7 +224,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                       as-child
                     >
                       <NuxtLink :to="{ name: 'dedicated-servers' }">
-                        Dedicated Servers
+                        {{ $t('layouts.app_nav.administration.dedicated_servers') }}
                       </NuxtLink>
                     </DropdownMenuItem>
 
@@ -233,7 +233,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                       as-child
                     >
                       <NuxtLink :to="{ name: 'game-server-nodes' }">
-                        Game Server Nodes
+                        {{ $t('layouts.app_nav.administration.game_server_nodes') }}
                       </NuxtLink>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
@@ -250,7 +250,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <Logs />
-                  Logs
+                  {{ $t('layouts.app_nav.administration.logs') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -264,7 +264,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <LineChart />
-                  Metrics
+                  {{ $t('layouts.app_nav.administration.metrics') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -278,7 +278,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   }"
                 >
                   <Cog />
-                  App Settings
+                  {{ $t('layouts.app_nav.administration.app_settings') }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -298,7 +298,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                 class="text-muted-foreground transition-colors hover:text-foreground"
               >
                 <GithubLogoIcon class="w-5 h-5" />
-                Report an Issue
+                {{ $t('layouts.app_nav.footer.report_issue') }}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -312,7 +312,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                 class="text-muted-foreground transition-colors hover:text-foreground"
               >
                 <DiscordLogoIcon class="w-5 h-5" />
-                Join our Discord
+                {{ $t('layouts.app_nav.footer.join_discord') }}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -366,7 +366,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                       }"
                     >
                       <BadgeCheck class="size-4" />
-                      My Account
+                      {{ $t('layouts.app_nav.profile.my_account') }}
                     </NuxtLink>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -377,7 +377,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                   @click="showLogoutModal = true"
                 >
                   <LogOut class="size-4" />
-                  Log out
+                  {{ $t('layouts.app_nav.profile.logout') }}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -555,15 +555,14 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
   >
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogTitle>{{ $t('layouts.app_nav.logout_dialog.title') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          This will log you out of your account. You will need to log back in to
-          access your account again.
+          {{ $t('layouts.app_nav.logout_dialog.description') }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction @click="logout">Log out</AlertDialogAction>
+        <AlertDialogCancel>{{ $t('layouts.app_nav.logout_dialog.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction @click="logout">{{ $t('layouts.app_nav.logout_dialog.confirm') }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

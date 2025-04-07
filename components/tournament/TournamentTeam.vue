@@ -10,6 +10,7 @@ import TournamentTeamMemberRow from "~/components/tournament/TournamentTeamMembe
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import PlayerDisplay from "../PlayerDisplay.vue";
 import TournamentTeamInvite from "./TournamentTeamInvite.vue";
+import Badge from "../ui/badge/Badge.vue";
 </script>
 
 <template>
@@ -19,19 +20,17 @@ import TournamentTeamInvite from "./TournamentTeamInvite.vue";
     >
       <div>
         <h2 class="text-2xl font-bold mb-2">
-          Manage Team Roster
+          {{ $t('tournament.team.manage_roster') }}
           <small>
             ({{ team.roster.length }} / {{ tournament.max_players_per_lineup }})
           </small>
         </h2>
         <template v-if="team.eligible_at">
-          <Badge> Eligible </Badge>
+          <Badge>{{ $t('tournament.team.eligible') }}</Badge>
         </template>
         <template v-else>
           <div class="text-sm text-red-600">
-            Not eligible, requires
-            {{ tournament.min_players_per_lineup - team.roster.length }} more
-            member(s).
+            {{ $t('tournament.team.not_eligible', { count: tournament.min_players_per_lineup - team.roster.length }) }}
           </div>
         </template>
       </div>
@@ -42,10 +41,10 @@ import TournamentTeamInvite from "./TournamentTeamInvite.vue";
           class="mt-4 md:mt-0"
           v-if="canLeaveTournament"
         >
-          Leave Tournament
+          {{ $t('tournament.team.leave_tournament') }}
         </Button>
         <Button @click="leaveTeam" variant="destructive" class="mt-4 md:mt-0">
-          Leave Team
+          {{ $t('tournament.team.leave_team') }}
         </Button>
       </div>
     </div>
@@ -54,8 +53,8 @@ import TournamentTeamInvite from "./TournamentTeamInvite.vue";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Player</TableHead>
-            <TableHead>Role</TableHead>
+            <TableHead>{{ $t('tournament.team.player') }}</TableHead>
+            <TableHead>{{ $t('tournament.team.role') }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -78,12 +77,12 @@ import TournamentTeamInvite from "./TournamentTeamInvite.vue";
                   :show-flag="false"
                   :show-steam-id="false"
                   :player="{
-                    name: `Slot ${slot + team.roster.length}`,
+                    name: $t('tournament.team.slot', { number: slot + team.roster.length }),
                   }"
                 />
                 <template v-if="slot === 1 && team.can_manage">
                   <player-search
-                    label="Add Player to Team..."
+                    :label="$t('tournament.team.add_player')"
                     :exclude="
                       team.roster?.map((member) => member.player.steam_id) || []
                     "
@@ -98,7 +97,7 @@ import TournamentTeamInvite from "./TournamentTeamInvite.vue";
           <TableRow v-if="team.invites && team.invites.length > 0">
             <TableCell colspan="100%">
               <div class="text-sm font-semibold text-gray-500 my-2">
-                Pending Invites
+                {{ $t('tournament.team.pending_invites') }}
               </div>
             </TableCell>
           </TableRow>
@@ -117,7 +116,6 @@ import TournamentTeamInvite from "./TournamentTeamInvite.vue";
 import { e_team_roles_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
-import Badge from "../ui/badge/Badge.vue";
 
 export default {
   props: {

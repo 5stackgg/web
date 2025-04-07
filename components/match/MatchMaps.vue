@@ -18,13 +18,13 @@ import formatBits from "~/utilities/formatBits";
         <badge
           class="mb-2"
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
-          >{{ matchMap.status }}</badge
+          >{{ $t(`match.status.${matchMap.status.toLowerCase()}`) }}</badge
         >
 
         <badge
           variant="destructive"
           v-else-if="isDecider && match.options.best_of > 1"
-          >Decider</badge
+          >{{ $t('match.decider') }}</badge
         >
       </div>
 
@@ -34,7 +34,7 @@ import formatBits from "~/utilities/formatBits";
           :href="`https://${useRuntimeConfig().public.demosDomain}/${matchMap.demos_download_url}`"
         >
           <Button size="sm" variant="outline" v-if="matchMap.demos_total_size">
-            Download Demos (<small>{{
+            {{ $t('match.download_demos') }} (<small>{{
               formatBits(matchMap.demos_total_size)
             }}</small
             >)

@@ -91,11 +91,11 @@ import formatStatValue from "~/utilities/formatStatValue";
         <DropdownMenuContent class="w-56">
           <template v-if="lineup.can_update_lineup">
             <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
-              <span>Promote to Captain</span>
+              <span>{{ $t('match.overview.promote_captain') }}</span>
             </DropdownMenuItem>
 
             <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
-              <span>Switch Teams</span>
+              <span>{{ $t('match.overview.switch_teams') }}</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator vp />
@@ -105,7 +105,7 @@ import formatStatValue from "~/utilities/formatStatValue";
               @click="removeFromLineup"
               v-if="lineup.can_update_lineup"
             >
-              <span>Remove from Lineup</span>
+              <span>{{ $t('match.overview.remove_from_lineup') }}</span>
             </DropdownMenuItem>
           </template>
 
@@ -113,7 +113,7 @@ import formatStatValue from "~/utilities/formatStatValue";
             @click="switchTeams"
             v-if="!lineup.can_update_lineup && canSwitchTeams"
           >
-            <span>Switch Teams</span>
+            <span>{{ $t('match.overview.switch_teams') }}</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -121,7 +121,7 @@ import formatStatValue from "~/utilities/formatStatValue";
             @click="removeFromLineup"
             v-if="canLeaveLineup"
           >
-            <span>Leave Lineup</span>
+            <span>{{ $t('match.overview.leave_lineup') }}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

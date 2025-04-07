@@ -14,7 +14,7 @@ import SimpleTournamentDisplay from "./SimpleTournamentDisplay.vue";
     <template v-else>
       <div class="text-center w-full p-4">
         <p class="text-muted-foreground">
-          You don't have any upcoming tournaments.
+          {{ $t('tournament.upcoming.empty') }}
         </p>
       </div>
     </template>

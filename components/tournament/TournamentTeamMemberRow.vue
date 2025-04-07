@@ -45,9 +45,9 @@ import Separator from "../ui/separator/Separator.vue";
         </PopoverTrigger>
         <PopoverContent class="p-0" align="end">
           <Command v-model="memberRole">
-            <CommandInput placeholder="Select new role..." />
+            <CommandInput :placeholder="$t('tournament.team.select_role')" />
             <CommandList>
-              <CommandEmpty>No roles found.</CommandEmpty>
+              <CommandEmpty>{{ $t('tournament.team.no_roles') }}</CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   :value="role.value"
@@ -67,7 +67,7 @@ import Separator from "../ui/separator/Separator.vue";
                   class="flex px-4 py-2 cursor-pointer"
                   @click.stop="removeMemberDialog = true"
                 >
-                  <div class="text-red-600">Remove From Team</div>
+                  <div class="text-red-600">{{ $t('tournament.team.remove_member') }}</div>
                 </CommandItem>
               </CommandGroup>
             </CommandList>
@@ -83,20 +83,14 @@ import Separator from "../ui/separator/Separator.vue";
   <AlertDialog :open="removeMemberDialog">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle> Are you absolutely sure </AlertDialogTitle>
+        <AlertDialogTitle>{{ $t('tournament.team.confirm_remove_member') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          This will remove {{ member.player.name }} ({{
-            member.player.steam_id
-          }}) from the team.
+          {{ $t('tournament.team.remove_member_description', { name: member.player.name, steam_id: member.player.steam_id }) }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel @click="removeMemberDialog = false"
-          >Cancel</AlertDialogCancel
-        >
-        <AlertDialogAction @click.stop="removeMember"
-          >Continue</AlertDialogAction
-        >
+        <AlertDialogCancel @click="removeMemberDialog = false">{{ $t('common.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction @click.stop="removeMember">{{ $t('common.confirm') }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

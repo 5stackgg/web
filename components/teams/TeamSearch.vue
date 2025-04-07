@@ -34,7 +34,7 @@ import {
       <PopoverContent>
         <Command @update:searchTerm="searchTeams">
           <CommandInput class="h-9" @keydown.enter="select(teams?.[0])" />
-          <CommandEmpty>No Teams Found.</CommandEmpty>
+          <CommandEmpty>{{ $t('team.search.no_teams') }}</CommandEmpty>
           <CommandList>
             <CommandGroup>
               <CommandItem

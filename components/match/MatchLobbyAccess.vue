@@ -61,7 +61,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
           }"
         >
           <component :is="getIcon(access)" class="h-4 w-4 mr-2" />
-          {{ access }}
+          {{ $t(`match.lobby.access.${access.toLowerCase()}`) }}
         </Button>
       </div>
     </PopoverContent>
@@ -113,7 +113,7 @@ export default {
       });
 
       toast({
-        title: `Lobby access set to ${access}`,
+        title: this.$t('match.lobby.access_updated', { access: this.$t(`match.lobby.access.${access.toLowerCase()}`) }),
       });
 
       this.popoverOpen = false;

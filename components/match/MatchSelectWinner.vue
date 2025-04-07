@@ -20,11 +20,11 @@ import {
   <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="lineup_id">
       <FormItem>
-        <FormLabel>Set Match Winner</FormLabel>
+        <FormLabel>{{ $t('match.winner.set') }}</FormLabel>
         <Select v-bind="componentField" @update:modelValue="updateMatchWinner">
           <FormControl>
             <SelectTrigger>
-              <SelectValue placeholder="Select Lineup" />
+              <SelectValue :placeholder="$t('match.winner.select_lineup')" />
             </SelectTrigger>
           </FormControl>
           <SelectContent>
@@ -100,7 +100,7 @@ export default {
       });
 
       toast({
-        title: "Set Match Winner",
+        title: this.$t('match.winner.set'),
       });
     },
   },

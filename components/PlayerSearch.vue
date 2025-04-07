@@ -28,13 +28,13 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
               @click="onlineOnly = !onlineOnly"
             >
             </Switch>
-            Online
+            {{ $t('player.search.online_only') }}
           </div>
         </div>
-        <CommandEmpty>No Players Found.</CommandEmpty>
+        <CommandEmpty>{{ $t('player.search.no_players_found') }}</CommandEmpty>
         <CommandList>
           <CommandGroup
-            :heading="`Found ${players?.length || 0} Player${players?.length === 1 ? '' : 's'}`"
+            :heading="$t('player.search.found_players', { count: players?.length || 0 })"
           >
             <CommandItem
               :value="me"

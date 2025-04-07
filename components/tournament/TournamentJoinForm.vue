@@ -22,8 +22,7 @@ import { MessageCircleWarning } from "lucide-vue-next";
   <form @submit.prevent="joinTournament" class="grid gap-4">
     <h1 class="flex gap-2">
       <MessageCircleWarning />
-      This tournament requires at least
-      {{ tournament.min_players_per_lineup }} players
+      {{ $t('tournament.join.requirements', { count: tournament.min_players_per_lineup }) }}
     </h1>
 
     <FormField v-slot="{ value, handleChange }" name="newTeam">
@@ -32,7 +31,7 @@ import { MessageCircleWarning } from "lucide-vue-next";
         @click="handleChange(!value)"
       >
         <div class="space-y-0.5">
-          <FormLabel class="text-base"> New Team </FormLabel>
+          <FormLabel class="text-base">{{ $t('tournament.team.new') }}</FormLabel>
         </div>
         <FormControl>
           <Switch
@@ -47,7 +46,7 @@ import { MessageCircleWarning } from "lucide-vue-next";
     <template v-if="!form.values.newTeam">
       <FormField v-slot="{ componentField }" name="team_id">
         <FormItem>
-          <FormLabel>Team</FormLabel>
+          <FormLabel>{{ $t('tournament.team.select') }}</FormLabel>
           <Select v-bind="componentField">
             <FormControl>
               <SelectTrigger>
@@ -73,7 +72,7 @@ import { MessageCircleWarning } from "lucide-vue-next";
     <template v-else>
       <FormField v-slot="{ componentField }" name="team_name">
         <FormItem>
-          <FormLabel>Team Name</FormLabel>
+          <FormLabel>{{ $t('tournament.team.name') }}</FormLabel>
           <Input v-bind="componentField"></Input>
           <FormMessage />
         </FormItem>
@@ -81,7 +80,7 @@ import { MessageCircleWarning } from "lucide-vue-next";
     </template>
 
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      Join Tournament
+      {{ $t('tournament.join') }}
     </Button>
   </form>
 </template>

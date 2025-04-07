@@ -8,7 +8,7 @@ import { Info } from "lucide-vue-next";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title> Create Match </template>
+      <template #title>{{ $t('pages.matches.create_page.title') }}</template>
     </PageHeading>
 
     <form @submit.prevent="setupMatch">
@@ -21,7 +21,7 @@ import { Info } from "lucide-vue-next";
             >
               <div class="flex justify-between items-center">
                 <FormLabel class="text-lg font-semibold"
-                  >Pick Up Game</FormLabel
+                  >{{ $t('pages.matches.create_page.pick_up_game') }}</FormLabel
                 >
                 <FormControl>
                   <Switch
@@ -32,7 +32,7 @@ import { Info } from "lucide-vue-next";
                 </FormControl>
               </div>
               <FormDescription>
-                A Pick up game does not require selection of teams.
+                {{ $t('pages.matches.create_page.pick_up_game_description') }}
               </FormDescription>
             </FormItem>
           </FormField>
@@ -47,9 +47,9 @@ import { Info } from "lucide-vue-next";
                 name="team_1"
               >
                 <FormItem>
-                  <FormLabel>Team 1</FormLabel>
+                  <FormLabel>{{ $t('pages.matches.create_page.team_1') }}</FormLabel>
                   <TeamSearch
-                    label="Search for a Team ..."
+                    :label="$t('pages.matches.create_page.search_team')"
                     @selected="
                       (team) => {
                         if (team.id == form.values.team_1) {
@@ -71,9 +71,9 @@ import { Info } from "lucide-vue-next";
                 name="team_2"
               >
                 <FormItem>
-                  <FormLabel>Team 2</FormLabel>
+                  <FormLabel>{{ $t('pages.matches.create_page.team_2') }}</FormLabel>
                   <TeamSearch
-                    label="Search for a Team ..."
+                    :label="$t('pages.matches.create_page.search_team')"
                     @selected="
                       (team) => {
                         if (team.id == form.values.team_2) {
@@ -96,8 +96,7 @@ import { Info } from "lucide-vue-next";
             >
               <Info class="inline-block w-4 h-4" />
               <span>
-                You can select the same team for both slots to create an
-                intra-team scrimmage.
+                {{ $t('pages.matches.create_page.intra_team_scrimmage') }}
               </span>
             </div>
           </div>
@@ -106,7 +105,7 @@ import { Info } from "lucide-vue-next";
 
       <div class="grid grid-cols-1 md:grid-cols-2">
         <Button type="submit" size="lg" class="mt-6 w-full">
-          Create Match
+          {{ $t('pages.matches.create_page.create_button') }}
         </Button>
       </div>
     </form>

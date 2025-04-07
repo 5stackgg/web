@@ -4,7 +4,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 
 <template>
   <player-search
-    label="Assign Coach"
+    :label="$t('match.coach.assign')"
     :exclude="exclude.map((player) => player.steam_id)"
     :team-id="lineup.team_id"
     @selected="(player) => updateCoach(player.steam_id, lineup.id)"

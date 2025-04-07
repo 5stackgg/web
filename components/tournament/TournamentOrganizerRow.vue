@@ -24,20 +24,19 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
     <TableCell>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm">Remove Organizer</Button>
+          <Button variant="destructive" size="sm">{{ $t('tournament.organizer.remove') }}</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove Organizer</AlertDialogTitle>
+            <AlertDialogTitle>{{ $t('tournament.organizer.confirm_remove') }}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove {{ organizer.name }} as an
-              organizer? This action cannot be undone.
+              {{ $t('tournament.organizer.remove_description', { name: organizer.name }) }}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
             <AlertDialogAction @click="removeOrganizer" variant="destructive">
-              Remove
+              {{ $t('tournament.organizer.remove') }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

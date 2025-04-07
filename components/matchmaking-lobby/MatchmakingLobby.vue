@@ -12,19 +12,19 @@ import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLo
     <template v-if="currentLobby">
       <div class="flex flex-row justify-between items-center" v-if="!mini">
         <div class="flex flex-row items-center gap-2">
-          <h3 class="text-lg font-medium">Lobby</h3>
+          <h3 class="text-lg font-medium">{{ $t('matchmaking.lobby.title') }}</h3>
           <MatchmakingLobbyAccess :lobby="currentLobby" />
         </div>
         <Button
           variant="outline"
           @click="removeFromLobby(currentLobby.id, me?.steam_id)"
         >
-          Leave
+          {{ $t('matchmaking.lobby.leave') }}
         </Button>
       </div>
 
       <player-search
-        label="Invite Player to Lobby"
+        :label="$t('matchmaking.lobby.invite_player')"
         :self="false"
         @selected="(player) => inviteToLobby(player.steam_id)"
         v-if="!mini"
@@ -74,7 +74,7 @@ import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLo
       </template>
 
       <div class="flex flex-col gap-4" v-else>
-        <h3 class="text-lg font-medium">Lobby invites</h3>
+        <h3 class="text-lg font-medium">{{ $t('matchmaking.lobby.invites') }}</h3>
         <div class="flex flex-col gap-2" v-for="lobby of invitedLobbies">
           <div class="flex items-center justify-between">
             <PlayerDisplay

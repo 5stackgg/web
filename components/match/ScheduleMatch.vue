@@ -27,7 +27,7 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
                   }"
                 >
                   <CalendarIcon class="mr-2 h-4 w-4" />
-                  {{ startDate || "Pick a date" }}
+                  {{ startDate || $t('match.schedule.pick_date') }}
                 </Button>
               </PopoverTrigger>
               <PopoverContent class="w-auto p-0">
@@ -46,7 +46,7 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
               class="ml-2 w-[120px]"
             ></Input>
 
-            <Button type="submit" class="ml-4"> Schedule </Button>
+            <Button type="submit" class="ml-4">{{ $t('match.schedule.schedule') }}</Button>
           </div>
           <FormMessage />
         </FormControl>

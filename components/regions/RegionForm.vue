@@ -8,7 +8,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
   <form @submit.prevent="updateCreateRegion" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="value">
       <FormItem>
-        <FormLabel>Name</FormLabel>
+        <FormLabel>{{ $t('region.form.name') }}</FormLabel>
         <FormControl>
           <Input v-bind="componentField" />
         </FormControl>
@@ -18,7 +18,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="description">
       <FormItem>
-        <FormLabel>Description</FormLabel>
+        <FormLabel>{{ $t('region.form.description') }}</FormLabel>
         <FormControl>
           <Input v-bind="componentField" />
           <FormMessage />
@@ -28,7 +28,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="is_lan">
       <FormItem>
-        <FormLabel>Use LAN IP</FormLabel>
+        <FormLabel>{{ $t('region.form.use_lan') }}</FormLabel>
         <FormControl>
           <Switch v-bind="componentField" />
         </FormControl>
@@ -37,8 +37,8 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
     </FormField>
 
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      <template v-if="region"> Update </template
-      ><template v-else> Create </template> Region
+      <template v-if="region">{{ $t('region.form.update') }}</template>
+      <template v-else>{{ $t('region.form.create') }}</template>
     </Button>
   </form>
 </template>

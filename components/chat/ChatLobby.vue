@@ -14,7 +14,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
     <div class="absolute right-3 top-3">
       <div class="flex">
         <Badge variant="secondary">
-          <slot name="chat-label">Lobby Chat</slot>
+          <slot name="chat-label">{{ $t('chat.lobby_chat') }}</slot>
         </Badge>
       </div>
     </div>
@@ -37,7 +37,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
           <FormControl>
             <div class="p-3 flex justify-between">
               <Input
-                placeholder="..."
+                :placeholder="$t('chat.message_placeholder')"
                 v-bind="componentField"
                 class="resize-none border-0 p-3 shadow-none focus-visible:ring-0"
               />

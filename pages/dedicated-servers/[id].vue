@@ -66,7 +66,7 @@ const serverMenu = ref(false);
 
             <div class="flex items-center space-x-2">
               <Switch @click="toggleServerEnabled" :checked="server.enabled" />
-              <Label>Enabled</Label>
+              <Label>{{ $t('pages.dedicated_servers.detail.enabled') }}</Label>
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@ const serverMenu = ref(false);
       <div class="bg-muted rounded-md p-4 my-4">
         <div class="flex flex-col space-y-2">
           <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">Server Plugin Config</h3>
+            <h3 class="text-lg font-semibold">{{ $t('pages.dedicated_servers.detail.server_plugin_config') }}</h3>
             <div class="flex items-center gap-2">
               <Button
                 variant="ghost"
@@ -86,13 +86,13 @@ const serverMenu = ref(false);
               >
                 <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
                 <EyeOff v-else class="mr-2 h-4 w-4" />
-                {{ showConfig ? "Hide" : "Show" }} Config
+                {{ showConfig ? $t('pages.dedicated_servers.detail.hide_config') : $t('pages.dedicated_servers.detail.show_config') }}
               </Button>
             </div>
           </div>
 
           <p class="text-sm text-muted-foreground">
-            This config should be placed in:
+            {{ $t('pages.dedicated_servers.detail.config_location') }}
             <Badge>
               addons/counterstrikesharp/config/plugins/FiveStack/FiveStack.json
             </Badge>
@@ -107,7 +107,7 @@ const serverMenu = ref(false);
               <Clipboard :data="config">
                 <Button variant="ghost" size="sm">
                   <Copy class="mr-2 h-4 w-4" />
-                  Copy
+                  {{ $t('pages.dedicated_servers.detail.copy') }}
                 </Button>
               </Clipboard>
             </div>
@@ -126,14 +126,14 @@ const serverMenu = ref(false);
         <DropdownMenuContent align="end" class="w-[200px]">
           <DropdownMenuGroup>
             <DropdownMenuItem @click="editServerSheet = true">
-              Edit
+              {{ $t('pages.dedicated_servers.detail.edit') }}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               class="text-red-600"
               @click="deleteServerAlertDialog = true"
             >
-              <Trash class="mr-2 h-4 w-4 inline" /> Delete
+              <Trash class="mr-2 h-4 w-4 inline" /> {{ $t('pages.dedicated_servers.detail.delete') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
@@ -149,7 +149,7 @@ const serverMenu = ref(false);
   >
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>Edit Server</SheetTitle>
+        <SheetTitle>{{ $t('pages.dedicated_servers.detail.edit') }}</SheetTitle>
         <SheetDescription>
           <ServerForm :server="server" @updated="editServerSheet = false" />
         </SheetDescription>
@@ -163,15 +163,14 @@ const serverMenu = ref(false);
   >
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+        <AlertDialogTitle>{{ $t('pages.dedicated_servers.detail.delete_confirm.title') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          This action cannot be undone. This will permanently delete your server
-          and remove associated data from our servers.
+          {{ $t('pages.dedicated_servers.detail.delete_confirm.description') }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction @click="deleteServer">Continue</AlertDialogAction>
+        <AlertDialogCancel>{{ $t('pages.dedicated_servers.detail.delete_confirm.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction @click="deleteServer">{{ $t('pages.dedicated_servers.detail.delete_confirm.continue') }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

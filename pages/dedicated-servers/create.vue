@@ -6,7 +6,7 @@ import ServerForm from "~/components/servers/ServerForm.vue";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title> Create Dedicated Server </template>
+      <template #title>{{ $t('pages.dedicated_servers.create.title') }}</template>
     </PageHeading>
     <div class="w-1/2">
       <server-form></server-form>

@@ -16,7 +16,7 @@ import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup
           :lineup="bracket.match.lineup_1"
           v-if="bracket.match"
         ></TournamentRoundLineup>
-        <template v-else> Team 1 </template>
+        <template v-else>{{ $t('tournament.match.team_1') }}</template>
       </div>
     </div>
 
@@ -28,12 +28,12 @@ import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup
           :lineup="bracket.match.lineup_2"
           v-if="bracket.match"
         ></TournamentRoundLineup>
-        <template v-else> Team 2 </template>
+        <template v-else>{{ $t('tournament.match.team_2') }}</template>
       </div>
     </div>
 
     <div class="text-center">
-      <Badge>Round {{ round }} - Match {{ bracket.match_number }}</Badge>
+      <Badge>{{ $t('tournament.match.round_match', { round, match: bracket.match_number }) }}</Badge>
     </div>
   </div>
 </template>

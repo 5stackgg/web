@@ -12252,7 +12252,8 @@ export const AllTypesProps: Record<string,any> = {
 	v_pool_maps_stream_cursor_value_input:{
 		id:"uuid",
 		map_pool_id:"uuid"
-	}
+	},
+	ID: `scalar.ID` as const
 }
 
 export const ReturnTypes: Record<string,any> = {
@@ -17743,7 +17744,8 @@ export const ReturnTypes: Record<string,any> = {
 	v_pool_maps_mutation_response:{
 		affected_rows:"Int",
 		returning:"v_pool_maps"
-	}
+	},
+	ID: `scalar.ID` as const
 }
 
 export const Ops = {

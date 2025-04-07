@@ -81,25 +81,25 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
       <Card class="flex flex-col h-full">
         <CardHeader>
           <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Player Stats</CardTitle
+            >{{ $t('pages.players.detail.player_stats') }}</CardTitle
           >
         </CardHeader>
         <CardContent class="flex flex-col flex-grow">
           <div class="flex justify-between items-center">
             <div class="text-center">
-              <p class="text-sm text-muted-foreground">Kills</p>
+              <p class="text-sm text-muted-foreground">{{ $t('pages.players.detail.kills') }}</p>
               <p class="text-2xl font-bold">
                 {{ player.kills_aggregate.aggregate.count }}
               </p>
             </div>
             <div class="text-center">
-              <p class="text-sm text-muted-foreground">Assists</p>
+              <p class="text-sm text-muted-foreground">{{ $t('pages.players.detail.assists') }}</p>
               <p class="text-2xl font-bold">
                 {{ player.assists_aggregate.aggregate.count }}
               </p>
             </div>
             <div class="text-center">
-              <p class="text-sm text-muted-foreground">Deaths</p>
+              <p class="text-sm text-muted-foreground">{{ $t('pages.players.detail.deaths') }}</p>
               <p class="text-2xl font-bold">
                 {{ player.deaths_aggregate.aggregate.count }}
               </p>
@@ -107,7 +107,7 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
           </div>
 
           <div class="flex justify-center items-center mt-4 h-full">
-            <Badge class="text-3xl p-2"> KD: {{ kd }} </Badge>
+            <Badge class="text-3xl p-2"> {{ $t('pages.players.detail.kd') }}: {{ kd }} </Badge>
           </div>
         </CardContent>
       </Card>
@@ -116,7 +116,7 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
         <div class="text-center">
           <CardHeader>
             <CardTitle class="text-xl font-bold text-center">
-              Last 10 Wins
+              {{ $t('pages.players.detail.last_ten_wins') }}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -129,7 +129,7 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
         <div class="text-center">
           <CardHeader>
             <CardTitle class="text-xl font-bold text-center">
-              Last 10 Losses
+              {{ $t('pages.players.detail.last_ten_losses') }}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -143,7 +143,7 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
 
     <Card class="p-4">
       <CardHeader>
-        <CardTitle class="text-xl font-bold"> Matches </CardTitle>
+        <CardTitle class="text-xl font-bold"> {{ $t('pages.players.detail.matches') }} </CardTitle>
       </CardHeader>
       <CardContent>
         <matches-table

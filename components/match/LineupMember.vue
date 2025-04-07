@@ -20,9 +20,7 @@ import PlayerStatusDisplay from "./PlayerStatusDisplay.vue";
             />
           </TooltipTrigger>
           <TooltipContent>
-            This is a Discord user, register your discord id to enable stat
-            tracking by typing <Badge variant="secondary">/link</Badge> in the
-            officla discord channel.
+            {{ $t('match.lineup.discord_user') }} <Badge variant="secondary">/link</Badge> {{ $t('match.lineup.discord_link') }}
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

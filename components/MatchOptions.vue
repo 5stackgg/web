@@ -17,6 +17,7 @@ import {
 } from "~/components/ui/collapsible";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
+
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Left Column -->
@@ -30,7 +31,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
           <FormField v-slot="{ componentField }" name="type">
             <FormItem>
-              <FormLabel class="text-lg font-semibold">Match Type</FormLabel>
+              <FormLabel class="text-lg font-semibold">{{ $t("match.options.type.label") }}</FormLabel>
               <RadioGroup
                 v-bind="componentField"
                 class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
@@ -56,15 +57,14 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
           <FormField v-slot="{ componentField }" name="best_of">
             <FormItem>
-              <FormLabel class="text-lg font-semibold">Best Of</FormLabel>
+              <FormLabel class="text-lg font-semibold">{{ $t("match.options.best_of.label") }}</FormLabel>
               <FormDescription>
-                The winner is determined by who wins the majority of a specified
-                number of games.
+                {{ $t("match.options.best_of.description") }}
               </FormDescription>
               <Select v-bind="componentField">
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a best of value" />
+                    <SelectValue :placeholder="$t('match.options.best_of.placeholder')" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -94,7 +94,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             @click="handleChange(!value)"
           >
             <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">Map Veto</FormLabel>
+              <FormLabel class="text-lg font-semibold">{{ $t("match.options.map_veto_settings.label") }}</FormLabel>
               <FormControl>
                 <Switch
                   class="pointer-events-none"
@@ -104,9 +104,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </FormControl>
             </div>
             <FormDescription>
-              Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick
-              side, team 2 pick, team 1 pick side, team 2 ban. Process repeats
-              until final map is selected.
+              {{ $t("match.options.map_veto_settings.description") }}
             </FormDescription>
           </FormItem>
         </FormField>
@@ -121,11 +119,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <FormLabel class="text-lg font-semibold">
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
-                      Custom Map Pool ({{ form.values.map_pool.length }})
+                      {{ $t("match.options.map_veto_settings.custom_pool") }} ({{ form.values.map_pool.length }})
                     </template>
-                    <template v-else> Active Duty Map Pool </template>
+                    <template v-else>{{ $t("match.options.map_veto_settings.active_duty") }}</template>
                   </template>
-                  <template v-else> Select Map </template>
+                  <template v-else>{{ $t("maps.veto.pick") }}</template>
                 </FormLabel>
                 <div v-show="form.values.map_veto">
                   <FormField
@@ -137,11 +135,10 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                         <span class="text-muted-foreground">
                           <FiveStackToolTip>
                             <template #trigger>
-                              <Info size="14"> </Info>
-                              Custom Map Pool
+                              <Info :size="14"> </Info>
+                              {{ $t("match.options.map_veto_settings.custom_pool") }}
                             </template>
-                            Choosing a custom map pool allows you to select maps
-                            outside the current active duty pool.
+                            {{ $t("match.options.map_veto_settings.custom_pool_tooltip") }}
                           </FiveStackToolTip>
                         </span>
                         <Switch
@@ -158,14 +155,14 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               <div class="space-y-6">
                 <template
                   v-for="(maps, type) in {
-                    'Official Maps': availableMaps.official,
-                    'Workshop Maps': availableMaps.workshop,
+                    [$t('maps.official')]: availableMaps.official,
+                    [$t('maps.workshop')]: availableMaps.workshop,
                   }"
                   :key="type"
                 >
                   <div v-if="maps && maps.length > 0">
                     <Separator
-                      v-if="type === 'Workshop Maps'"
+                      v-if="type === $t('maps.workshop')"
                       class="text-2xl font-bold mb-4 text-center my-8"
                       :label="type"
                     ></Separator>
@@ -185,9 +182,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                           <MapDisplay class="h-[150px]" :map="map">
                             <template v-slot:default v-if="map.active_pool">
                               <div class="absolute bottom-1">
-                                <Badge variant="secondary" class="text-xs"
-                                  >Active Duty</Badge
-                                >
+                                <Badge variant="secondary" class="text-xs">{{ $t("maps.active_duty") }}</Badge>
                               </div>
                             </template>
                           </MapDisplay>
@@ -238,11 +233,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
           >
             <div class="flex items-center space-x-3">
               <SettingsIcon name="settings" class="h-5 w-5 text-primary" />
-              <span class="text-lg font-semibold">Advanced Settings</span>
+              <span class="text-lg font-semibold">{{ $t("match.options.advanced.title") }}</span>
             </div>
             <div class="flex items-center space-x-2">
               <span class="text-sm text-muted-foreground">
-                {{ showAdvancedSettings ? "Hide" : "Show" }}
+                {{ showAdvancedSettings ? $t("match.options.advanced.hide") : $t("match.options.advanced.show") }}
               </span>
               <Button type="button" variant="ghost" size="icon" class="h-8 w-8">
                 <ChevronDown
@@ -253,7 +248,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   v-else
                   class="h-4 w-4 transition-transform duration-200"
                 />
-                <span class="sr-only">Toggle Advanced Settings</span>
+                <span class="sr-only">{{ $t("match.options.advanced.toggle") }}</span>
               </Button>
             </div>
           </div>
@@ -267,7 +262,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 @click="handleChange(!value)"
               >
                 <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">Overtime</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.overtime.label") }}</FormLabel>
                   <FormControl>
                     <Switch
                       class="pointer-events-none"
@@ -277,7 +272,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   </FormControl>
                 </div>
                 <FormDescription>
-                  Each overtime is a best of 6.
+                  {{ $t("match.options.advanced.overtime.description") }}
                 </FormDescription>
               </FormItem>
             </FormField>
@@ -288,9 +283,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 @click="handleChange(!value)"
               >
                 <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold"
-                    >Knife Round</FormLabel
-                  >
+                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.knife_round.label") }}</FormLabel>
                   <FormControl>
                     <Switch
                       class="pointer-events-none"
@@ -300,8 +293,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   </FormControl>
                 </div>
                 <FormDescription>
-                  Knife rounds are only played when neither team picked the map
-                  in the veto.
+                  {{ $t("match.options.advanced.knife_round.description") }}
                 </FormDescription>
               </FormItem>
             </FormField>
@@ -309,16 +301,14 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
               <FormField v-slot="{ componentField }" name="mr">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold"
-                    >Max Rounds</FormLabel
-                  >
+                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.max_rounds.label") }}</FormLabel>
                   <FormDescription>
-                    The number of rounds played before teams switch sides.
+                    {{ $t("match.options.advanced.max_rounds.description") }}
                   </FormDescription>
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select max rounds" />
+                        <SelectValue :placeholder="$t('match.options.advanced.max_rounds.placeholder')" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -341,9 +331,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <Card v-if="availableRegions.length > 1">
               <CardHeader>
                 <CardTitle class="flex justify-between items-center">
-                  <div class="text-lg font-semibold">Region Settings</div>
+                  <div class="text-lg font-semibold">{{ $t("match.options.advanced.region.title") }}</div>
                   <div class="flex items-center gap-4" v-if="canSetLan">
-                    <span>LAN Match</span>
+                    <span>{{ $t("match.options.advanced.region.lan_match") }}</span>
                     <Switch
                       :checked="form.values.lan"
                       @update:checked="
@@ -365,7 +355,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     @click="!form.values.lan && handleChange(!value)"
                   >
                     <div class="flex justify-between items-center">
-                      <FormLabel class="text-lg font-semibold">Veto</FormLabel>
+                      <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.region.veto.label") }}</FormLabel>
                       <FormControl>
                         <Switch
                           class="pointer-events-none"
@@ -378,7 +368,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                       </FormControl>
                     </div>
                     <FormDescription>
-                      Allows teams to veto and select the server region.
+                      {{ $t("match.options.advanced.region.veto.description") }}
                     </FormDescription>
                   </FormItem>
                 </FormField>
@@ -388,9 +378,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     <FormLabel>
                       <div class="text-lg font-semibold">
                         <template v-if="form.values.region_veto">
-                          Preferred Regions
+                          {{ $t("match.options.advanced.region.preferred") }}
                         </template>
-                        <template v-else> Region </template>
+                        <template v-else>{{ $t("match.options.advanced.region.single") }}</template>
                       </div>
                     </FormLabel>
 
@@ -407,7 +397,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Select Region" />
+                              <SelectValue :placeholder="$t('match.options.advanced.region.placeholder')" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -448,7 +438,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                               }}
                             </span>
                             <span v-else class="text-muted-foreground">
-                              Any
+                              {{ $t("match.options.advanced.region.any") }}
                             </span>
                             <ChevronsUpDown
                               class="ml-2 h-4 w-4 shrink-0 opacity-50"
@@ -515,7 +505,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                       </Popover>
                     </FormControl>
                     <FormDescription>
-                      Select preferred regions for the match.
+                      {{ $t("match.options.advanced.region.description") }}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -526,11 +516,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <div class="flex flex-col space-y-3 rounded-lg border p-4">
               <FormField v-slot="{ value }" name="number_of_substitutes">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold"
-                    >Number of Substitutes</FormLabel
-                  >
+                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.substitutes.label") }}</FormLabel>
                   <FormDescription>
-                    Adds additional slots to be added to each lineup.
+                    {{ $t("match.options.advanced.substitutes.description") }}
                   </FormDescription>
                   <NumberField
                     class="gap-2"
@@ -555,7 +543,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     </NumberFieldContent>
                   </NumberField>
                   <FormDescription>
-                    Enter value between 0 and 5.
+                    {{ $t("match.options.advanced.substitutes.range") }}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -563,7 +551,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
               <FormField v-slot="{ value }" name="tv_delay">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">TV Delay</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.tv_delay.label") }}</FormLabel>
                   <NumberField
                     class="gap-2"
                     :min="0"
@@ -584,7 +572,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     </NumberFieldContent>
                   </NumberField>
                   <FormDescription>
-                    Enter value between 0 and 120.
+                    {{ $t("match.options.advanced.tv_delay.range") }}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -594,13 +582,8 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             <div class="flex flex-col space-y-3 rounded-lg border p-4">
               <FormField v-slot="{ componentField }" name="timeout_setting">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold"
-                    >Tactical Timeout Settings</FormLabel
-                  >
-                  <FormDescription
-                    >Tactical Timeouts are called by typing <Badge>.tac</Badge>,
-                    and are 30 seconds long.</FormDescription
-                  >
+                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.timeouts.tactical.label") }}</FormLabel>
+                  <FormDescription>{{ $t("match.options.advanced.timeouts.tactical.description") }}</FormDescription>
                   <FormControl>
                     <Select v-bind="componentField">
                       <FormControl>
@@ -630,14 +613,8 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 name="tech_timeout_setting"
               >
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold"
-                    >Technical Timeout Settings</FormLabel
-                  >
-                  <FormDescription
-                    >Technical timeouts are called by typing
-                    <Badge>.pause</Badge>, and do not have a time
-                    limit.</FormDescription
-                  >
+                  <FormLabel class="text-lg font-semibold">{{ $t("match.options.advanced.timeouts.technical.label") }}</FormLabel>
+                  <FormDescription>{{ $t("match.options.advanced.timeouts.technical.description") }}</FormDescription>
                   <FormControl>
                     <Select v-bind="componentField">
                       <FormControl>
@@ -674,6 +651,37 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum, e_timeout_settings_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useAuthStore } from "~/stores/AuthStore";
+
+interface Map {
+  id: string;
+  name: string;
+  type: string;
+  active_pool: boolean;
+  workshop_map_id?: string;
+}
+
+interface MapPool {
+  id: string;
+  type: string;
+  maps: Map[];
+}
+
+interface Region {
+  value: string;
+  description: string;
+  is_lan: boolean;
+}
+
+interface BestOfOption {
+  value: string;
+  display: string;
+}
+
+interface TimeoutSetting {
+  display: string;
+  value: string;
+}
 
 export default {
   props: {
@@ -728,7 +736,7 @@ export default {
   },
   data() {
     return {
-      select_single_region: null,
+      select_single_region: null as string | null,
       showAdvancedSettings: false,
     };
   },
@@ -828,7 +836,7 @@ export default {
     },
   },
   computed: {
-    bestOfOptions() {
+    bestOfOptions(): BestOfOption[] {
       return [1, 3, 5].map((rounds) => {
         return {
           value: rounds.toString(),
@@ -836,34 +844,34 @@ export default {
         };
       });
     },
-    timeoutSettings() {
+    timeoutSettings(): TimeoutSetting[] {
       return [
         {
-          display: "Admins",
+          display: this.$t("match.options.advanced.timeouts.options.admins"),
           value: e_timeout_settings_enum.Admin,
         },
         {
-          display: "Coches",
+          display: this.$t("match.options.advanced.timeouts.options.coaches"),
           value: e_timeout_settings_enum.Coach,
         },
         {
-          display: "Everyone",
+          display: this.$t("match.options.advanced.timeouts.options.everyone"),
           value: e_timeout_settings_enum.CoachAndPlayers,
         },
       ];
     },
-    defaultMapPool() {
-      return this.map_pools?.find((pool) => {
+    defaultMapPool(): MapPool | undefined {
+      return this.map_pools?.find((pool: MapPool) => {
         return pool.type === this.form.values.type;
       });
     },
-    availableMaps() {
+    availableMaps(): { official: Map[]; workshop: Map[] } {
       if (!this.maps) {
-        return [];
+        return { official: [], workshop: [] };
       }
 
       const maps = this.maps
-        .filter((map) => {
+        .filter((map: Map) => {
           if (
             this.form.values.custom_map_pool === false &&
             map.active_pool === false
@@ -880,7 +888,7 @@ export default {
               return map.type === e_match_types_enum.Duel;
           }
         })
-        .sort((a, b) => {
+        .sort((a: Map, b: Map) => {
           // First, sort active pool maps to the top
           if (a.active_pool && !b.active_pool) return -1;
           if (!a.active_pool && b.active_pool) return 1;
@@ -890,26 +898,26 @@ export default {
         });
 
       return {
-        official: maps.filter((map) => !map.workshop_map_id),
-        workshop: maps.filter((map) => map.workshop_map_id),
+        official: maps.filter((map: Map) => !map.workshop_map_id),
+        workshop: maps.filter((map: Map) => map.workshop_map_id),
       };
     },
-    availableRegions() {
+    availableRegions(): Region[] {
       return useApplicationSettingsStore().availableRegions;
     },
-    lanRegions() {
-      return this.availableRegions.filter((region) => {
+    lanRegions(): Region[] {
+      return this.availableRegions.filter((region: Region) => {
         return region.is_lan === true;
       });
     },
-    regions() {
-      return this.availableRegions.filter((region) => {
+    regions(): Region[] {
+      return this.availableRegions.filter((region: Region) => {
         return this.form.values.lan
           ? region.is_lan === true
           : region.is_lan === false;
       });
     },
-    canSetLan() {
+    canSetLan(): boolean {
       if (this.lanRegions.length === 0) {
         return false;
       }
@@ -940,8 +948,8 @@ export default {
 
       if ((lan || !region_veto) && this.regions.length > 0) {
         this.select_single_region = this.regions.find(
-          (region) => region.is_lan === !!lan,
-        )?.value;
+          (region: Region) => region.is_lan === !!lan,
+        )?.value || null;
 
         return;
       }

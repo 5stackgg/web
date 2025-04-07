@@ -22,7 +22,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         <template v-else-if="match.lineup_2.is_picking_map_veto">
           {{ match.lineup_2.name }}
         </template>
-        is Picking a
+        {{ $t('match.map_veto.is_picking') }}
         <span class="underline">{{ pickType }}</span>
       </h1>
 
@@ -32,7 +32,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
           size="sm"
           class="bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
         >
-          It's Your Turn to {{ pickType }}
+          {{ $t('match.map_veto.your_turn', { action: pickType }) }}
         </Button>
       </template>
 
@@ -41,7 +41,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         @click="override = !override"
         v-if="match.is_organizer && !isUser"
       >
-        <Label>Match Organizer Override</Label>
+        <Label>{{ $t('match.map_veto.organizer_override') }}</Label>
         <Switch :checked="override" />
       </div>
     </div>
@@ -54,7 +54,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
             class="absolute inset-0 flex flex-col items-center justify-center space-y-4 z-50"
           >
             <p class="text-lg font-bold text-center shadow-lg">
-              Select the Side your team wants to start on
+              {{ $t('match.map_veto.select_side') }}
             </p>
             <div class="grid grid-cols-2 gap-8 w-full">
               <template
@@ -88,7 +88,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
               variant="destructive"
               :disabled="Object.keys(form.errors).length > 0"
             >
-              Pick {{ pickType }}
+              {{ $t('match.map_veto.pick', { type: pickType }) }}
             </Button>
           </div>
         </div>
@@ -106,7 +106,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
             }
           }
         "
-        >Confirm {{ pickType }}</MapSelector
+        >{{ $t('match.map_veto.confirm', { type: pickType }) }}</MapSelector
       >
     </form>
     <template v-else>

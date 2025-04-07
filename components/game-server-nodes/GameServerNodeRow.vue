@@ -37,7 +37,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
         {{ gameServerNode.build_id }}
         <template v-if="gameServerNode.build_id != csVersion">
           <Button variant="destructive" size="sm" @click="updateCs"
-            >Update CS</Button
+            >{{ $t('game_server.update_cs') }}</Button
           >
         </template>
       </template>
@@ -46,7 +46,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
           gameServerNode.status === e_game_server_node_statuses_enum.Online
         "
       >
-        <Button size="sm" @click="updateCs">Install CS</Button>
+        <Button size="sm" @click="updateCs">{{ $t('game_server.install_cs') }}</Button>
       </template>
     </TableCell>
     <TableCell>
@@ -55,7 +55,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
         @update:model-value="(value) => updateRegion(value)"
       >
         <SelectTrigger>
-          <SelectValue placeholder="Select the round to restore" />
+          <SelectValue :placeholder="$t('game_server.select_region')" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
@@ -113,7 +113,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
           >
             <DropdownMenuItem @click="updateCs">
               <RefreshCw class="mr-2 h-4 w-4" />
-              <span>Update CS</span>
+              <span>{{ $t('game_server.update_cs') }}</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
@@ -121,7 +121,7 @@ import { Trash2, RefreshCw } from "lucide-vue-next";
 
           <DropdownMenuItem @click="removeGameNodeServer" class="text-red-500">
             <Trash2 class="mr-2 h-4 w-4" />
-            <span>Remove Node</span>
+            <span>{{ $t('game_server.remove_node') }}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -177,7 +177,7 @@ export default {
                   );
                 },
                 {
-                  message: "Start port range must be less than end port range",
+                  message: this.$t('game_server.validation.start_port_less_than_end'),
                 },
               ),
             end_port_range: z
@@ -192,8 +192,7 @@ export default {
                   );
                 },
                 {
-                  message:
-                    "End port range must be greater than start port range by at least 2",
+                  message: this.$t('game_server.validation.end_port_greater_than_start'),
                 },
               ),
           }),
@@ -255,7 +254,7 @@ export default {
       });
 
       toast({
-        title: "CS2 is being updated on the node",
+        title: this.$t('game_server.toast.cs_updating'),
       });
     },
     async removeGameNodeServer() {
@@ -299,7 +298,7 @@ export default {
       });
 
       toast({
-        title: "Node Ports Updated",
+        title: this.$t('game_server.toast.ports_updated'),
       });
     },
     async updateRegion(region: string) {

@@ -18,13 +18,13 @@ import TimeAgo from "~/components/TimeAgo.vue";
     <Tabs default-value="overview">
       <div class="flex justify-between">
         <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="bracket">Bracket</TabsTrigger>
+          <TabsTrigger value="overview">{{ $t('tournament.overview') }}</TabsTrigger>
+          <TabsTrigger value="bracket">{{ $t('tournament.bracket') }}</TabsTrigger>
           <TabsTrigger value="teams">
-            Teams ({{ tournament?.teams_aggregate?.aggregate?.count || 0 }})
+            {{ $t('tournament.teams', { count: tournament?.teams_aggregate?.aggregate?.count || 0 }) }}
           </TabsTrigger>
           <TabsTrigger value="manage" v-if="tournament.is_organizer"
-            >Settings</TabsTrigger
+            >{{ $t('tournament.settings') }}</TabsTrigger
           >
         </TabsList>
       </div>
@@ -69,13 +69,13 @@ import TimeAgo from "~/components/TimeAgo.vue";
               </Card>
 
               <div class="mt-4 space-y-4">
-                <h3 class="text-lg font-semibold mb-2">Admin</h3>
+                <h3 class="text-lg font-semibold mb-2">{{ $t('tournament.admin') }}</h3>
                 <PlayerDisplay :player="tournament.admin" />
 
                 <template v-if="tournament.organizers.length > 0">
                   <Separator class="my-8" />
 
-                  <h3 class="text-lg font-semibold mb-2">Organizers</h3>
+                  <h3 class="text-lg font-semibold mb-2">{{ $t('tournament.organizers') }}</h3>
                   <div class="grid grid-cols-4 gap-4">
                     <div
                       v-for="{ organizer } of tournament.organizers"
@@ -104,7 +104,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
           >
             <Card class="p-4">
               <CardHeader>
-                <CardTitle class="text-xl">Join Tournament</CardTitle>
+                <CardTitle class="text-xl">{{ $t('tournament.join.title') }}</CardTitle>
               </CardHeader>
               <CardContent>
                 <template v-if="tournament.can_join">
@@ -114,8 +114,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                   />
                 </template>
                 <template v-else-if="myTeam">
-                  Joined with <span class="underline">{{ myTeam.name }}</span
-                  >.
+                  {{ $t('tournament.join.joined_with', { name: myTeam.name }) }}
                 </template>
               </CardContent>
             </Card>
@@ -145,8 +144,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 <div class="flex justify-between items-center mb-4">
                   {{ team.name }}
                   <span class="text-sm text-gray-600">
-                    {{ team.roster_aggregate.aggregate.count }} players
-                    registered
+                    {{ $t('tournament.team.players_registered', { count: team.roster_aggregate.aggregate.count }) }}
                   </span>
                 </div>
 
@@ -168,7 +166,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                   size="sm"
                   class="w-full sm:w-auto"
                 >
-                  Remove Team
+                  {{ $t('tournament.team.remove') }}
                 </Button>
               </Card>
             </div>
@@ -177,7 +175,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
           <div class="w-full md:w-1/3 space-y-4" v-if="tournament.is_organizer">
             <Card class="p-4">
               <CardHeader>
-                <CardTitle class="text-xl"> Add Team to Tournament </CardTitle>
+                <CardTitle class="text-xl">{{ $t('tournament.add_team.title') }}</CardTitle>
               </CardHeader>
               <CardContent>
                 <TournamentAddTeam :tournament="tournament"></TournamentAddTeam>

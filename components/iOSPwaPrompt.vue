@@ -9,17 +9,16 @@ const isOpen = ref(false);
 
 <template>
   <Dialog v-model:open="isOpen" class="p-4">
-    <DialogTitle>Add to Home Screen</DialogTitle>
+    <DialogTitle>{{ $t('pwa.install.title') }}</DialogTitle>
     <DialogDescription>
-      This website has app functionality. Add it to your home screen to use it
-      in fullscreen and while offline.
+      {{ $t('pwa.install.description') }}
     </DialogDescription>
     <div class="flex flex-col space-y-2">
-      <p>1) Press the 'Share' button</p>
-      <p>2) Press 'Add to Home Screen'</p>
+      <p>1) {{ $t('pwa.install.step1') }}</p>
+      <p>2) {{ $t('pwa.install.step2') }}</p>
     </div>
     <DialogFooter>
-      <Button variant="outline" @click="isOpen = false">Cancel</Button>
+      <Button variant="outline" @click="isOpen = false">{{ $t('common.cancel') }}</Button>
     </DialogFooter>
   </Dialog>
 </template>

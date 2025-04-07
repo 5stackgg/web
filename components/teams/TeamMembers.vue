@@ -8,7 +8,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 <template>
   <Card v-if="team">
     <CardHeader>
-      <CardTitle>Team Members</CardTitle>
+      <CardTitle>{{ $t('team.members.title') }}</CardTitle>
     </CardHeader>
     <CardContent class="grid gap-6">
       <div
@@ -28,13 +28,13 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         <Separator class="my-3" />
 
         <PlayerSearch
-          label="Invite Player to Team ..."
+          :label="$t('team.members.invite_player')"
           :exclude="team?.roster.map((member) => member.player.steam_id) || []"
           @selected="addMember"
         ></PlayerSearch>
 
         <template v-if="team?.invites.length > 0">
-          <h1>Pending Invites</h1>
+          <h1>{{ $t('team.members.pending_invites') }}</h1>
 
           <div
             class="flex items-center justify-between space-x-4"

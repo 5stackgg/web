@@ -12,13 +12,13 @@ import Pagination from "@/components/Pagination.vue";
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
-      <template #title>Teams</template>
-      <template #description>Manage teams and rosters.</template>
+      <template #title>{{ $t('pages.teams.title') }}</template>
+      <template #description>{{ $t('pages.teams.description') }}</template>
       <template #actions>
         <NuxtLink :to="{ name: 'teams-create' }">
           <Button size="lg">
             <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">Create Team</span>
+            <span class="hidden md:inline ml-2">{{ $t('pages.teams.create') }}</span>
           </Button>
         </NuxtLink>
       </template>
@@ -27,8 +27,8 @@ import Pagination from "@/components/Pagination.vue";
     <Card class="p-4">
       <Tabs default-value="my-teams">
         <TabsList>
-          <TabsTrigger value="my-teams">My Teams</TabsTrigger>
-          <TabsTrigger value="teams">Other Teams</TabsTrigger>
+          <TabsTrigger value="my-teams">{{ $t('pages.teams.tabs.my_teams') }}</TabsTrigger>
+          <TabsTrigger value="teams">{{ $t('pages.teams.tabs.other_teams') }}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="teams">
@@ -39,7 +39,7 @@ import Pagination from "@/components/Pagination.vue";
                   <div class="relative w-full max-w-sm">
                     <Input
                       type="text"
-                      placeholder="Search..."
+                      :placeholder="$t('pages.teams.search')"
                       class="pl-10"
                       v-bind="componentField"
                     />

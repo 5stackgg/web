@@ -10,22 +10,18 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     <TableCell>
       <AlertDialog>
         <AlertDialogTrigger>
-          <Button>Cancel Invite</Button>
+          <Button>{{ $t('tournament.team.cancel_invite') }}</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>{{ $t('tournament.team.confirm_cancel_invite') }}</AlertDialogTitle>
             <AlertDialogDescription>
-              This cancel the invite to {{ invite.player.name }} ({{
-                invite.player.steam_id
-              }}).
+              {{ $t('tournament.team.cancel_invite_description', { name: invite.player.name, steam_id: invite.player.steam_id }) }}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction @click="removeInvite"
-              >Continue</AlertDialogAction
-            >
+            <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
+            <AlertDialogAction @click="removeInvite">{{ $t('common.confirm') }}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

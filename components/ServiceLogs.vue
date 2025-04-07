@@ -18,7 +18,7 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
               v-if="compact"
             />
           </TooltipTrigger>
-          <TooltipContent>Expand</TooltipContent>
+          <TooltipContent>{{ $t("ui.tooltips.expand") }}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
@@ -30,7 +30,7 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
               class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
             />
           </TooltipTrigger>
-          <TooltipContent>Toggle Fullscreen</TooltipContent>
+          <TooltipContent>{{ $t("ui.tooltips.fullscreen") }}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
@@ -41,7 +41,7 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
           @click="_followLogs = !_followLogs"
         >
         </Switch>
-        Follow Logs
+        {{ $t("ui.logs.follow") }}
       </div>
 
       <div class="flex items-center gap-2" v-if="timestamps === undefined">
@@ -51,7 +51,7 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
           @click="_timestamps = !_timestamps"
         >
         </Switch>
-        Timestamps
+        {{ $t("ui.logs.timestamps") }}
       </div>
 
       <TooltipProvider>
@@ -62,7 +62,7 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
               class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
             />
           </TooltipTrigger>
-          <TooltipContent>Download Logs</TooltipContent>
+          <TooltipContent>{{ $t("ui.tooltips.download") }}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     </CardHeader>
@@ -83,7 +83,7 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
             <div class="flex flex-col justify-end">
               <div class="flex gap-2" v-if="log && log.trim() !== ''">
                 <span class="text-muted-foreground" v-if="nodes.size > 1"
-                  >[{{ node }}|{{ container }}]</span
+                  >{{ $t("ui.logs.container", { node, container }) }}</span
                 >
                 <span
                   class="text-blue-100"
@@ -104,6 +104,13 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
 
 <script lang="ts">
 const convert = new Convert();
+
+interface LogEntry {
+  log: string;
+  node: string;
+  container: string;
+  timestamp: string;
+}
 
 export default {
   props: {
@@ -129,12 +136,7 @@ export default {
       _timestamps: true,
       _followLogs: true,
       expanded: false,
-      logs: [] as Array<{
-        log: string;
-        node: string;
-        container: string;
-        timestamp: string;
-      }>,
+      logs: [] as LogEntry[],
       logListener: undefined as { stop: () => void } | undefined,
       nodes: new Set<string>(),
     };
@@ -160,7 +162,7 @@ export default {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${this.service}-logs.txt`;
+      link.download = `${this.service}-${this.$t('ui.logs.filename')}.txt`;
 
       // Trigger download
       document.body.appendChild(link);
@@ -197,20 +199,16 @@ export default {
         this.logListener = socket.listen(`logs:${this.service}`, (log) => {
           const _log = JSON.parse(log);
           this.logs.push(_log);
-
-          this.$nextTick(() => {
-            this.scrollToBottom();
-          });
-        });
-
-        socket.event("logs", {
-          service: this.service,
+          this.nodes.add(_log.node);
+          this.scrollToBottom();
         });
       },
     },
   },
-  unmounted() {
-    this.logListener?.stop();
+  beforeUnmount() {
+    if (this.logListener) {
+      this.logListener.stop();
+    }
   },
 };
 </script>

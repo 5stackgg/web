@@ -28,35 +28,35 @@ provide("commander", commander);
 <template>
   <Tabs default-value="overview">
     <TabsList class="lg:inline-flex grid grid-cols-1 mb-4">
-      <TabsTrigger value="overview"> Overview </TabsTrigger>
+      <TabsTrigger value="overview"> {{ $t('match.tabs.overview') }} </TabsTrigger>
       <TabsTrigger :disabled="disableStats" value="utility">
-        Utility
+        {{ $t('match.tabs.utility') }}
       </TabsTrigger>
       <TabsTrigger :disabled="disableStats" value="opening-duels">
-        Opening Duels
+        {{ $t('match.tabs.opening_duels') }}
       </TabsTrigger>
       <TabsTrigger :disabled="disableStats" value="clutches">
-        Clutches
+        {{ $t('match.tabs.clutches') }}
       </TabsTrigger>
       <TabsTrigger
         value="veto"
         :disabled="match.match_maps.length === 0"
         v-if="match.options.map_veto"
       >
-        Map Veto
+        {{ $t('match.tabs.map_veto_tab') }}
       </TabsTrigger>
-      <TabsTrigger value="settings"> Match Settings </TabsTrigger>
+      <TabsTrigger value="settings"> {{ $t('match.tabs.settings') }} </TabsTrigger>
       <TabsTrigger
         :disabled="!match.server_id"
         value="server"
         v-if="canViewServerConsole"
       >
-        Server Console
+        {{ $t('match.tabs.server_console') }}
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview" class="grid gap-4">
       <Button v-if="canRandomize" variant="destructive" @click="randomizeTeams">
-        Randomize Teams
+        {{ $t('match.tabs.randomize_teams') }}
       </Button>
 
       <Card class="w-fit">
@@ -83,14 +83,14 @@ provide("commander", commander);
         <DrawerContent class="p-4">
           <div class="flex justify-between items-center">
             <DrawerHeader>
-              <DrawerTitle>Invited to Match</DrawerTitle>
-              <DrawerDescription> Join a roster. </DrawerDescription>
+              <DrawerTitle>{{ $t('match.tabs.invited_to_match') }}</DrawerTitle>
+              <DrawerDescription> {{ $t('match.tabs.join_roster') }} </DrawerDescription>
             </DrawerHeader>
 
             <DrawerClose>
               <Button variant="outline" @click="inviteDialog = false">
                 <Cross2Icon class="w-4 h-4" />
-                <span class="sr-only">Close</span>
+                <span class="sr-only">{{ $t('common.close') }}</span>
               </Button>
             </DrawerClose>
           </div>
@@ -206,7 +206,7 @@ provide("commander", commander);
         >
           <FormField v-slot="{ componentField }" name="round">
             <FormItem>
-              <FormLabel>Restore Round</FormLabel>
+              <FormLabel>{{ $t('match.tabs.restore_round') }}</FormLabel>
               <Select
                 v-bind="componentField"
                 @update:model-value="
@@ -215,7 +215,7 @@ provide("commander", commander);
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select the round to restore" />
+                    <SelectValue :placeholder="$t('match.tabs.select_round_to_restore')" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -224,7 +224,7 @@ provide("commander", commander);
                       :value="round.round.toString()"
                       v-for="round of currentMap.rounds"
                     >
-                      Round {{ round.round.toString() }}
+                      {{ $t('match.tabs.round', { number: round.round.toString() }) }}
                     </SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -233,7 +233,7 @@ provide("commander", commander);
             </FormItem>
           </FormField>
 
-          <Button type="submit"> Restore Round </Button>
+          <Button type="submit">{{ $t('match.tabs.restore_round') }}</Button>
         </form>
       </RconCommander>
     </TabsContent>
@@ -246,14 +246,14 @@ provide("commander", commander);
             <Separator class="my-8" />
 
             <div class="space-y-4">
-              <h3 class="font-semibold">Server Information</h3>
+              <h3 class="font-semibold">{{ $t('match.tabs.server_information') }}</h3>
               <ul class="space-y-3">
                 <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground">Type</span>
+                  <span class="text-muted-foreground">{{ $t('match.tabs.type') }}</span>
                   <span>{{ match.server_type || "TBD" }}</span>
                 </li>
                 <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground">Region</span>
+                  <span class="text-muted-foreground">{{ $t('match.tabs.region') }}</span>
                   <span v-if="match.server_region">
                     {{ match.server_region }}
                   </span>
@@ -375,7 +375,7 @@ export default {
       return [
         e_match_status_enum.Live,
         e_match_status_enum.Veto,
-        e_match_status_enum.Scheduled,
+        e_match_enum.Scheduled,
         e_match_status_enum.WaitingForServer,
         e_match_status_enum.WaitingForCheckIn,
         e_match_status_enum.PickingPlayers,

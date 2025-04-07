@@ -31,15 +31,15 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 
   <template v-else>
     <div class="flex items-center justify-between my-4">
-      <h3 class="text-lg font-medium">Friends</h3>
+      <h3 class="text-lg font-medium">{{ $t('matchmaking.friends.title') }}</h3>
       <Button variant="ghost" size="sm" class="h-8" @click="syncSteamFriends">
         <RefreshCw class="mr-2 h-4 w-4" />
-        Sync Friends
+        {{ $t('matchmaking.friends.sync') }}
       </Button>
     </div>
 
     <player-search
-      label="Search For Friends"
+      :label="$t('matchmaking.friends.search')"
       :self="false"
       @selected="(player) => addAsFriend(player.steam_id)"
     ></player-search>
@@ -48,7 +48,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
       <div class="flex flex-col gap-4">
         <div v-if="pendingFriends?.length > 0">
           <div class="mb-2 font-medium text-sm text-muted-foreground">
-            Pending Friend Requests
+            {{ $t('matchmaking.friends.pending_requests') }}
           </div>
           <template v-for="player in pendingFriends">
             <template v-if="player.invited_by_steam_id === me.steam_id">
@@ -90,7 +90,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         <div>
           <template v-if="onlineFriends?.length > 0">
             <div class="mb-2 font-medium text-sm">
-              Online Friends ({{ onlineFriends.length }})
+              {{ $t('matchmaking.friends.online', { count: onlineFriends.length }) }}
             </div>
             <div v-for="player in onlineFriends">
               <FriendOptions :player="player">

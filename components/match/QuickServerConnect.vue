@@ -7,11 +7,11 @@ import ClipBoard from "~/components/ClipBoard.vue";
   <div v-if="match.connection_string">
     <template v-if="!match.is_server_online">
       <template v-if="match.server_type === 'Dedicated'">
-        Server is offline!
+        {{ $t('match.server.offline') }}
       </template>
       <template v-else>
         <div class="flex">
-          Server Booting <Loader class="animate-spin ml-3"></Loader>
+          {{ $t('match.server.booting') }} <Loader class="animate-spin ml-3"></Loader>
         </div>
       </template>
     </template>

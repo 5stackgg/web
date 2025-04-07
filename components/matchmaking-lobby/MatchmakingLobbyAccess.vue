@@ -40,7 +40,7 @@ import { Button } from "~/components/ui/button";
           }"
         >
           <component :is="getIcon(access)" class="h-4 w-4 mr-2" />
-          {{ access }}
+          {{ $t(`matchmaking.lobby.access.${access.toLowerCase()}`) }}
         </Button>
       </div>
     </PopoverContent>
@@ -96,7 +96,7 @@ export default {
       });
 
       toast({
-        title: `Lobby access set to ${access}`,
+        title: $t('matchmaking.lobby.access_updated', { access: $t(`matchmaking.lobby.access.${access.toLowerCase()}`) }),
       });
 
       this.popoverOpen = false;

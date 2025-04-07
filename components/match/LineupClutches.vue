@@ -19,7 +19,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
         class="bg-background p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
       >
         <div class="flex justify-between items-center mb-4">
-          <h4 class="text-xl font-semibold">Round {{ round.round }}</h4>
+          <h4 class="text-xl font-semibold">{{ $t('match.clutches.round', { number: round.round }) }}</h4>
           <span
             v-if="clutches[match_map.id] && clutches[match_map.id][round.round]"
             :class="[
@@ -29,9 +29,9 @@ import PlayerDisplay from "../PlayerDisplay.vue";
                 : 'bg-red-100 text-red-800',
             ]"
           >
-            {{ clutches[match_map.id][round.round].success ? "Won" : "Lost" }}
+            {{ clutches[match_map.id][round.round].success ? $t('match.clutches.won') : $t('match.clutches.lost') }}
 
-            1 v {{ clutches[match_map.id][round.round].against.length }}
+            {{ $t('match.clutches.vs', { count: clutches[match_map.id][round.round].against.length }) }}
           </span>
         </div>
         <div
@@ -47,7 +47,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
             </div>
           </div>
           <div class="mt-4">
-            <p class="text-sm mb-2 font-medium">Against:</p>
+            <p class="text-sm mb-2 font-medium">{{ $t('match.clutches.against') }}:</p>
             <div class="flex flex-wrap gap-4">
               <template
                 v-for="{ player } of clutches[match_map.id][round.round]
@@ -62,7 +62,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
           </div>
         </div>
         <p v-else class="text-sm text-gray-500 italic mt-4">
-          No clutches this round
+          {{ $t('match.clutches.no_clutches') }}
         </p>
       </div>
     </div>

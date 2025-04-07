@@ -28,7 +28,7 @@ import PlayerStatusDisplay from "~/components/match/PlayerStatusDisplay.vue";
       </Tooltip>
     </TooltipProvider>
 
-    <span class="text-xl font-bold text-gray-600 dark:text-gray-400">VS</span>
+    <span class="text-xl font-bold text-gray-600 dark:text-gray-400">{{ $t('layouts.match_lobby.versus') }}</span>
 
     <TooltipProvider v-for="member of otherLineUp">
       <Tooltip>

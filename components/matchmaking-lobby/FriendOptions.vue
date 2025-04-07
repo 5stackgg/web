@@ -10,14 +10,14 @@ import { Plus, Trash2 } from "lucide-vue-next";
     <DropdownMenuContent class="w-56">
       <DropdownMenuItem @click="inviteToLobby">
         <Plus class="mr-2 h-4 w-4" />
-        <span>Invite to Lobby</span>
+        <span>{{ $t('matchmaking.friends.invite_to_lobby') }}</span>
       </DropdownMenuItem>
 
       <DropdownMenuSeparator />
 
       <DropdownMenuItem @click="removeFriend" class="text-red-500">
         <Trash2 class="mr-2 h-4 w-4" />
-        <span>Remove Friend</span>
+        <span>{{ $t('matchmaking.friends.remove') }}</span>
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

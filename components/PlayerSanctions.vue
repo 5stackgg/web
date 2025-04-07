@@ -10,10 +10,10 @@ import { ChevronDownIcon } from "lucide-vue-next";
         <Badge variant="destructive"
           >{{
             activeSanctions
-              ? `${activeSanctions} Active`
-              : `Past ${sanctions.length}`
+              ? $t('player.sanctions.active_count', { count: activeSanctions })
+              : $t('player.sanctions.past_count', { count: sanctions.length })
           }}
-          Sanctions</Badge
+          {{ $t('player.sanctions.title') }}</Badge
         >
         <ChevronDownIcon class="h-4 w-4" />
       </CollapsibleTrigger>
@@ -42,7 +42,7 @@ import { ChevronDownIcon } from "lucide-vue-next";
                   v-if="sanction.remove_sanction_date"
                   class="text-sm flex gap-2 items-center"
                 >
-                  Expires
+                  {{ $t('player.sanctions.expires') }}
                   <TimeAgo :date="sanction.remove_sanction_date" />
                 </div>
                 <Separator

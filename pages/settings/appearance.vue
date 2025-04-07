@@ -43,18 +43,17 @@ const onSubmit = handleSubmit((values) => {
 
 <template>
   <div>
-    <h3 class="text-lg font-medium">Appearance</h3>
+    <h3 class="text-lg font-medium">{{ $t('pages.settings.appearance.title') }}</h3>
     <p class="text-sm text-muted-foreground">
-      Customize the appearance of the app. Automatically switch between day and
-      night themes.
+      {{ $t('pages.settings.appearance.description') }}
     </p>
   </div>
   <Separator />
   <form class="grid gap-4" @submit="onSubmit">
     <FormField v-slot="{ componentField }" type="radio" name="theme">
       <FormItem class="space-y-1">
-        <FormLabel>Theme</FormLabel>
-        <FormDescription> Select the theme for the dashboard. </FormDescription>
+        <FormLabel>{{ $t('pages.settings.appearance.theme') }}</FormLabel>
+        <FormDescription>{{ $t('pages.settings.appearance.theme_description') }}</FormDescription>
         <FormMessage />
 
         <RadioGroup
@@ -89,7 +88,7 @@ const onSubmit = handleSubmit((values) => {
                 </div>
               </div>
               <span class="block w-full p-2 text-center font-normal">
-                Light
+                {{ $t('pages.settings.appearance.light') }}
               </span>
             </FormLabel>
           </FormItem>
@@ -99,29 +98,29 @@ const onSubmit = handleSubmit((values) => {
                 <RadioGroupItem value="dark" class="sr-only" />
               </FormControl>
               <div
-                class="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground"
+                class="items-center rounded-md border-2 border-muted p-1 hover:border-accent"
               >
                 <div class="space-y-2 rounded-sm bg-slate-950 p-2">
-                  <div class="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
-                    <div class="h-2 w-20 rounded-lg bg-slate-400" />
-                    <div class="h-2 w-[100px] rounded-lg bg-slate-400" />
+                  <div class="space-y-2 rounded-md bg-slate-900 p-2 shadow-sm">
+                    <div class="h-2 w-20 rounded-lg bg-slate-800" />
+                    <div class="h-2 w-[100px] rounded-lg bg-slate-800" />
                   </div>
                   <div
-                    class="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm"
+                    class="flex items-center space-x-2 rounded-md bg-slate-900 p-2 shadow-sm"
                   >
-                    <div class="h-4 w-4 rounded-full bg-slate-400" />
-                    <div class="h-2 w-[100px] rounded-lg bg-slate-400" />
+                    <div class="h-4 w-4 rounded-full bg-slate-800" />
+                    <div class="h-2 w-[100px] rounded-lg bg-slate-800" />
                   </div>
                   <div
-                    class="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm"
+                    class="flex items-center space-x-2 rounded-md bg-slate-900 p-2 shadow-sm"
                   >
-                    <div class="h-4 w-4 rounded-full bg-slate-400" />
-                    <div class="h-2 w-[100px] rounded-lg bg-slate-400" />
+                    <div class="h-4 w-4 rounded-full bg-slate-800" />
+                    <div class="h-2 w-[100px] rounded-lg bg-slate-800" />
                   </div>
                 </div>
               </div>
               <span class="block w-full p-2 text-center font-normal">
-                Dark
+                {{ $t('pages.settings.appearance.dark') }}
               </span>
             </FormLabel>
           </FormItem>

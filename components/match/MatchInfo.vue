@@ -28,8 +28,8 @@ import { e_match_status_enum } from "~/generated/zeus";
 
         <div class="flex justify-between items-center">
           <div class="flex gap-1">
-            {{ match.options.type }}
-            <Badge class="text-xs"> bo{{ match.options.best_of }} </Badge>
+            {{ $t(`match.types.${match.options.type.toLowerCase()}`) }}
+            <Badge class="text-xs"> {{ $t('match.best_of', { count: match.options.best_of }) }} </Badge>
           </div>
 
           <MatchActions :match="match" />
@@ -55,7 +55,7 @@ import { e_match_status_enum } from "~/generated/zeus";
           </span>
         </div>
 
-        <span class="text-muted-foreground">vs</span>
+        <span class="text-muted-foreground">{{ $t('match.vs') }}</span>
 
         <div class="flex flex-col items-center md:items-end space-y-2 md:w-2/5">
           <span
@@ -76,14 +76,14 @@ import { e_match_status_enum } from "~/generated/zeus";
         v-if="match.cancels_at && match.status !== e_match_status_enum.Canceled"
       >
         <Badge variant="destructive" class="flex items-center mb-2 md:mb-0">
-          <span class="mr-2">Auto Canceling</span>
+          <span class="mr-2">{{ $t('match.auto_canceling') }}</span>
           <TimeAgo :date="match.cancels_at" />
         </Badge>
       </div>
     </CardContent>
 
     <CardContent v-if="match.options.coaches">
-      <h3 class="font-semibold text-lg mb-4">Coaches</h3>
+      <h3 class="font-semibold text-lg mb-4">{{ $t('match.coaches') }}</h3>
       <ul class="space-y-6">
         <li
           v-for="lineup in [match.lineup_1, match.lineup_2]"

@@ -13,9 +13,9 @@ import Separator from "../ui/separator/Separator.vue";
 
     <template v-if="tournament.is_organizer">
       <div v-if="tournament.stages.length === 0" class="text-center p-8">
-        <h2 class="text-2xl font-bold mb-4">No Stages Yet</h2>
+        <h2 class="text-2xl font-bold mb-4">{{ $t('tournament.stage.no_stages') }}</h2>
         <p class="text-gray-600 mb-6">
-          Start building your tournament by adding the first stage.
+          {{ $t('tournament.stage.start_building') }}
         </p>
       </div>
 
@@ -23,8 +23,8 @@ import Separator from "../ui/separator/Separator.vue";
         <h2 class="text-xl font-semibold mb-4">
           {{
             tournament.stages.length === 0
-              ? "Add First Stage"
-              : "Add Another Stage"
+              ? $t('tournament.stage.add_first')
+              : $t('tournament.stage.add_another')
           }}
         </h2>
         <TournamentStageForm
@@ -35,7 +35,7 @@ import Separator from "../ui/separator/Separator.vue";
     <template v-else>
       <div v-if="tournament.stages.length === 0" class="text-center p-8">
         <h2 class="text-2xl font-bold mb-4">
-          Tournament stages have not been set up yet
+          {{ $t('tournament.stage.not_setup') }}
         </h2>
       </div>
     </template>

@@ -14,7 +14,7 @@ import { e_match_status_enum } from "~/generated/zeus";
     :ping-status="showDetails"
   >
     <template v-slot:avatar-sub v-if="showDetails">
-      <Badge variant="outline" v-if="member.captain"> Captain </Badge>
+      <Badge variant="outline" v-if="member.captain"> {{ $t('match.player.captain') }} </Badge>
     </template>
 
     <template v-slot:status v-if="showStatus">
@@ -60,19 +60,19 @@ import { e_match_status_enum } from "~/generated/zeus";
           v-if="match && match.status === e_match_status_enum.WaitingForCheckIn"
         >
           <template v-if="!isOnline && !isReady">
-            Offline and not ready
+            {{ $t('match.player.status.offline_not_ready') }}
           </template>
           <template v-else-if="isOnline && !isReady">
-            Online but not ready
+            {{ $t('match.player.status.online_not_ready') }}
           </template>
-          <template v-else> Ready </template>
+          <template v-else> {{ $t('match.player.status.ready') }} </template>
         </template>
         <template v-else>
-          <template v-if="!isOnline && !inGame"> Offline </template>
+          <template v-if="!isOnline && !inGame"> {{ $t('match.player.status.offline') }} </template>
           <template v-else-if="isOnline && !inGame">
-            Online but not in game
+            {{ $t('match.player.status.online_not_in_game') }}
           </template>
-          <template v-else> In game </template>
+          <template v-else> {{ $t('match.player.status.in_game') }} </template>
         </template>
       </FiveStackToolTip>
     </template>

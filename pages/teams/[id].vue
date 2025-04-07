@@ -51,7 +51,7 @@ const teamMenu = ref(false);
       <template #description>
         <PlayerDisplay :player="team.owner" :showSteamId="false">
           <template #name-postfix>
-            <Badge variant="secondary">Team Owner</Badge>
+            <Badge variant="secondary">{{ $t('team.roles.captain') }}</Badge>
           </template>
         </PlayerDisplay>
       </template>
@@ -67,14 +67,14 @@ const teamMenu = ref(false);
             <DropdownMenuGroup>
               <template v-if="team.owner.steam_id === me.steam_id && isOnTeam">
                 <DropdownMenuItem @click="editTeamSheet = true">
-                  Edit
+                  {{ $t('common.actions.edit') }}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   class="text-red-600"
                   @click="deleteTeamAlertDialog = true"
                 >
-                  <Trash class="mr-2 h-4 w-4 inline" /> Delete
+                  <Trash class="mr-2 h-4 w-4 inline" /> {{ $t('common.actions.delete') }}
                 </DropdownMenuItem>
               </template>
               <template v-else>
@@ -82,7 +82,7 @@ const teamMenu = ref(false);
                   class="text-red-600"
                   @click="leaveTeamAlertDialog = true"
                 >
-                  <Trash class="mr-2 h-4 w-4 inline" /> Leave Team
+                  <Trash class="mr-2 h-4 w-4 inline" /> {{ $t('team.leave') }}
                 </DropdownMenuItem>
               </template>
             </DropdownMenuGroup>
@@ -96,7 +96,7 @@ const teamMenu = ref(false);
         <TeamMembers :team-id="$route.params.id" />
       </div>
       <div>
-        <PageHeading>Recent Matches / Scheduled</PageHeading>
+        <PageHeading>{{ $t('match.recent') }}</PageHeading>
         <MatchesTable :matches="team.matches" />
       </div>
     </div>
@@ -107,7 +107,7 @@ const teamMenu = ref(false);
     >
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Editing Team</SheetTitle>
+          <SheetTitle>{{ $t('team.management.edit') }}</SheetTitle>
           <SheetDescription>
             <TeamForm :team="team" @updated="editTeamSheet = false" />
           </SheetDescription>
@@ -121,15 +121,14 @@ const teamMenu = ref(false);
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{{ $t('team.confirm.delete.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your team
-            and remove associated data from our servers.
+            {{ $t('team.confirm.delete.description') }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction @click="deleteTeam">Continue</AlertDialogAction>
+          <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
+          <AlertDialogAction @click="deleteTeam">{{ $t('common.confirm') }}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -140,14 +139,11 @@ const teamMenu = ref(false);
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle
-            >Are you absolutely sure you want to leave the
-            team?</AlertDialogTitle
-          >
+          <AlertDialogTitle>{{ $t('team.confirm.leave') }}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction @click="leaveTeam">Continue</AlertDialogAction>
+          <AlertDialogCancel>{{ $t('common.cancel') }}</AlertDialogCancel>
+          <AlertDialogAction @click="leaveTeam">{{ $t('common.confirm') }}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -253,6 +249,8 @@ export default {
           ],
         }),
       });
+
+      this.$router.push("/teams");
     },
   },
 };

@@ -6,25 +6,25 @@
     @click.prevent="showRequestNameChangeDialog = true"
     v-if="canChangeName"
   >
-    Change Name
+    {{ $t('player.change_name.button') }}
   </div>
   <AlertDialog :open="showRequestNameChangeDialog">
     <AlertDialogTrigger asChild> </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>
-          {{ canUpdate ? "Change Name" : "Request Name Change" }}
+          {{ canUpdate ? $t('player.change_name.title') : $t('player.change_name.request_title') }}
         </AlertDialogTitle>
         <AlertDialogDescription>
           {{
             canUpdate
-              ? "Please enter the name you would like to change to."
-              : "Please enter the name you would like to change your account to."
+              ? $t('player.change_name.description')
+              : $t('player.change_name.request_description')
           }}
 
           <FormField v-slot="{ componentField }" name="player_name">
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{{ $t('player.change_name.name_label') }}</FormLabel>
               <FormControl>
                 <Input v-bind="componentField" />
               </FormControl>
@@ -35,12 +35,12 @@
 
       <AlertDialogFooter>
         <AlertDialogCancel @click="showRequestNameChangeDialog = false">
-          Cancel
+          {{ $t('common.cancel') }}
         </AlertDialogCancel>
         <AlertDialogAction
           @click="canUpdate ? changeName() : requestNameChange()"
         >
-          Confirm
+          {{ $t('common.confirm') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
@@ -96,7 +96,7 @@ export default {
       });
 
       toast({
-        title: "Changed Players Name",
+        title: this.$t('player.change_name.success'),
       });
 
       this.showRequestNameChangeDialog = false;
@@ -126,7 +126,7 @@ export default {
       });
 
       toast({
-        title: "Requested Name Change",
+        title: this.$t('player.change_name.request_success'),
       });
 
       this.showRequestNameChangeDialog = false;

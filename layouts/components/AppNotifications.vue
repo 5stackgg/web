@@ -23,11 +23,11 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
           ></span>
         </span>
       </div>
-      <span class="sr-only">Notifications</span>
+      <span class="sr-only">{{ $t('layouts.notifications.title') }}</span>
     </SheetTrigger>
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>Notifications</SheetTitle>
+        <SheetTitle>{{ $t('layouts.notifications.title') }}</SheetTitle>
         <SheetDescription>
           <template
             v-if="
@@ -74,7 +74,7 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
                   class="absolute top-2 right-2"
                 >
                   <Trash2 class="h-4 w-4" />
-                  <span class="sr-only">Delete</span>
+                  <span class="sr-only">{{ $t('layouts.notifications.delete') }}</span>
                 </Button>
                 <h3
                   :class="[
@@ -142,7 +142,7 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
                       @click="dismissNotification(notification.id)"
                       v-if="!notification.is_read"
                     >
-                      Dismiss
+                      {{ $t('layouts.notifications.dismiss') }}
                     </Button>
                   </template>
                 </div>
@@ -155,12 +155,12 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
               class="mt-4 w-full"
               v-if="notifications.length > 0"
             >
-              Delete All Read Notifications
+              {{ $t('layouts.notifications.delete_all_read') }}
             </Button>
           </template>
           <template v-else>
             <p class="mt-8 text-center text-muted-foreground">
-              No notifications at the moment.
+              {{ $t('layouts.notifications.no_notifications') }}
             </p>
           </template>
         </SheetDescription>

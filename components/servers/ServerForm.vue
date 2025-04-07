@@ -8,7 +8,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
   <form @submit.prevent="updateCreateServer" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="label">
       <FormItem>
-        <FormLabel>Label</FormLabel>
+        <FormLabel>{{ $t('server.form.label') }}</FormLabel>
         <FormControl>
           <Input v-bind="componentField" />
         </FormControl>
@@ -18,7 +18,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="host">
       <FormItem>
-        <FormLabel>Host</FormLabel>
+        <FormLabel>{{ $t('server.form.host') }}</FormLabel>
         <FormControl>
           <Input v-bind="componentField" />
           <FormMessage />
@@ -28,11 +28,11 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="region">
       <FormItem>
-        <FormLabel class="text-lg font-semibold">Region</FormLabel>
+        <FormLabel class="text-lg font-semibold">{{ $t('server.form.region') }}</FormLabel>
         <Select v-bind="componentField">
           <FormControl>
             <SelectTrigger>
-              <SelectValue placeholder="Select a region" />
+              <SelectValue :placeholder="$t('server.form.select_region')" />
             </SelectTrigger>
           </FormControl>
           <SelectContent>
@@ -53,13 +53,12 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="rcon_password">
       <FormItem>
-        <FormLabel>RCON Password</FormLabel>
+        <FormLabel>{{ $t('server.form.rcon_password') }}</FormLabel>
         <FormControl>
           <Input type="password" v-bind="componentField" />
           <FormMessage />
           <FormDescription v-if="server">
-            We dont display the rcon password for security. You may update the
-            RCON password and it will replace the current one.
+            {{ $t('server.form.rcon_password_description') }}
           </FormDescription>
         </FormControl>
       </FormItem>
@@ -67,7 +66,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="port">
       <FormItem>
-        <FormLabel>Game / RCON Port</FormLabel>
+        <FormLabel>{{ $t('server.form.port') }}</FormLabel>
         <FormControl>
           <Input type="number" v-bind="componentField" />
           <FormMessage />
@@ -77,7 +76,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 
     <FormField v-slot="{ componentField }" name="tv_port">
       <FormItem>
-        <FormLabel>TV Port</FormLabel>
+        <FormLabel>{{ $t('server.form.tv_port') }}</FormLabel>
         <FormControl>
           <Input type="number" v-bind="componentField" />
           <FormMessage />
@@ -86,8 +85,8 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
     </FormField>
 
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      <template v-if="server"> Update </template
-      ><template v-else> Create </template> Server
+      <template v-if="server">{{ $t('server.form.update') }}</template>
+      <template v-else>{{ $t('server.form.create') }}</template>
     </Button>
   </form>
 </template>

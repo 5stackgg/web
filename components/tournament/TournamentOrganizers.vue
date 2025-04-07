@@ -14,14 +14,12 @@ import TournamentOrganizerRow from "~/components/tournament/TournamentOrganizerR
   <div v-if="tournament" class="space-y-6">
     <Card>
       <CardHeader>
-        <CardTitle>Tournament Organizers</CardTitle>
-        <CardDescription
-          >Manage the organizers for this tournament</CardDescription
-        >
+        <CardTitle>{{ $t('tournament.organizer.title') }}</CardTitle>
+        <CardDescription>{{ $t('tournament.organizer.description') }}</CardDescription>
       </CardHeader>
       <CardContent class="grid gap-4">
         <PlayerSearch
-          label="Add Player as Organizer..."
+          :label="$t('tournament.organizer.add')"
           :exclude="excludeOrganizers"
           @selected="addOrganizer"
         ></PlayerSearch>
@@ -29,8 +27,8 @@ import TournamentOrganizerRow from "~/components/tournament/TournamentOrganizerR
         <Table v-if="tournament.organizers && tournament.organizers.length > 0">
           <TableHeader>
             <TableRow>
-              <TableHead>Organizer</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{{ $t('tournament.organizer.name') }}</TableHead>
+              <TableHead>{{ $t('tournament.organizer.actions') }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -43,10 +41,9 @@ import TournamentOrganizerRow from "~/components/tournament/TournamentOrganizerR
         </Table>
 
         <Alert v-else>
-          <AlertTitle>No Organizers</AlertTitle>
+          <AlertTitle>{{ $t('tournament.organizer.no_organizers') }}</AlertTitle>
           <AlertDescription>
-            There are currently no organizers for this tournament. Use the
-            search above to add organizers.
+            {{ $t('tournament.organizer.no_organizers_description') }}
           </AlertDescription>
         </Alert>
       </CardContent>

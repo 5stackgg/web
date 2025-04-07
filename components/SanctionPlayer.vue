@@ -25,7 +25,7 @@ import { useForm } from "vee-validate";
   <Popover>
     <PopoverTrigger as-child>
       <Button variant="outline">
-        Sanction Player
+        {{ $t('player.sanction.button') }}
         <ChevronDownIcon class="ml-2 h-4 w-4 text-muted-foreground" />
       </Button>
     </PopoverTrigger>
@@ -41,10 +41,10 @@ import { useForm } from "vee-validate";
               >
                 <div class="flex items-center gap-2">
                   <component :is="sanction.icon" class="h-4 w-4" />
-                  <span class="font-medium capitalize">{{ type }}</span>
+                  <span class="font-medium capitalize">{{ $t(`player.sanction.types.${type}`) }}</span>
                 </div>
                 <p class="text-sm text-muted-foreground mt-1">
-                  {{ sanction.description }}
+                  {{ $t(`player.sanction.descriptions.${type}`) }}
                 </p>
               </CommandItem>
             </template>
@@ -59,12 +59,12 @@ import { useForm } from "vee-validate";
       <DrawerHeader>
         <div class="flex justify-between items-center">
           <DrawerTitle class="capitalize flex flex-col gap-4">
-            {{ sanctionType }}ing Player
+            {{ $t('player.sanction.title', { type: $t(`player.sanction.types.${sanctionType}`) }) }}
             <PlayerDisplay :player="player" />
           </DrawerTitle>
           <DrawerClose>
             <Button variant="link" class="text-lg text-blue-500">
-              Cancel
+              {{ $t('common.cancel') }}
             </Button>
           </DrawerClose>
         </div>
@@ -76,7 +76,7 @@ import { useForm } from "vee-validate";
           v-if="sanctionType"
         >
           <component :is="sanctions[sanctionType].icon" class="h-4 w-4" />
-          {{ sanctions[sanctionType].description }}
+          {{ $t(`player.sanction.descriptions.${sanctionType}`) }}
         </DrawerDescription>
         <Separator class="my-2" />
       </DrawerHeader>
@@ -84,15 +84,15 @@ import { useForm } from "vee-validate";
       <form @submit.prevent="sanctionPlayer" class="grid grid-cols-2 gap-4 p-4">
         <FormField v-slot="{ componentField }" name="reason">
           <FormItem>
-            <FormLabel>Reason</FormLabel>
+            <FormLabel>{{ $t('player.sanction.reason_label') }}</FormLabel>
             <FormControl>
               <Input
                 v-bind="componentField"
-                placeholder="Enter reason for sanction..."
+                :placeholder="$t('player.sanction.reason_placeholder')"
               ></Input>
             </FormControl>
             <FormDescription>
-              Please provide a clear reason for this sanction
+              {{ $t('player.sanction.reason_description') }}
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -100,17 +100,17 @@ import { useForm } from "vee-validate";
 
         <FormField v-slot="{ componentField }" name="duration">
           <FormItem>
-            <FormLabel>Duration</FormLabel>
+            <FormLabel>{{ $t('player.sanction.duration_label') }}</FormLabel>
             <FormControl>
               <Select v-bind="componentField">
                 <SelectTrigger>
-                  <SelectValue placeholder="Select duration" />
+                  <SelectValue :placeholder="$t('player.sanction.duration_placeholder')" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem
                     :value="duration.duration.toString()"
                     v-for="duration in durations"
-                    >{{ duration.label }}</SelectItem
+                    >{{ $t(`player.sanction.durations.${duration.key}`) }}</SelectItem
                   >
                 </SelectContent>
               </Select>
@@ -120,7 +120,7 @@ import { useForm } from "vee-validate";
         </FormField>
 
         <Button class="capitalize" type="submit">
-          {{ sanctionType }} Player
+          {{ $t('player.sanction.submit', { type: $t(`player.sanction.types.${sanctionType}`) }) }}
         </Button>
       </form>
     </DrawerContent>
@@ -169,13 +169,13 @@ export default {
         },
       },
       durations: [
-        { label: "15 minutes", duration: 1000 * 60 * 15 },
-        { label: "30 minutes", duration: 1000 * 60 * 30 },
-        { label: "1 hour", duration: 1000 * 60 * 60 },
-        { label: "1 day", duration: 1000 * 60 * 60 * 24 },
-        { label: "1 week", duration: 1000 * 60 * 60 * 24 * 7 },
-        { label: "1 month", duration: 1000 * 60 * 60 * 24 * 30 },
-        { label: "Permanent", duration: 0 },
+        { label: "15 minutes", duration: 1000 * 60 * 15, key: "15min" },
+        { label: "30 minutes", duration: 1000 * 60 * 30, key: "30min" },
+        { label: "1 hour", duration: 1000 * 60 * 60, key: "1hour" },
+        { label: "1 day", duration: 1000 * 60 * 60 * 24, key: "1day" },
+        { label: "1 week", duration: 1000 * 60 * 60 * 24 * 7, key: "1week" },
+        { label: "1 month", duration: 1000 * 60 * 60 * 24 * 30, key: "1month" },
+        { label: "Permanent", duration: 0, key: "permanent" },
       ],
     };
   },
@@ -213,7 +213,10 @@ export default {
       });
 
       toast({
-        title: `${this.sanctionType}ed ${this.player.name}`,
+        title: this.$t('player.sanction.success', { 
+          type: this.$t(`player.sanction.types.${this.sanctionType}`),
+          name: this.player.name 
+        }),
       });
 
       this.sanctioningPlayer = false;

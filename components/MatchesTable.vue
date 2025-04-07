@@ -9,11 +9,11 @@ import cleanMapName from "~/utilities/cleanMapName";
   <Table hover>
     <TableHeader>
       <TableRow>
-        <TableHead class="w-1/6">Match</TableHead>
+        <TableHead class="w-1/6">{{ $t('match.options.table.match') }}</TableHead>
         <TableHead class="w-1/6"></TableHead>
         <TableHead class="w-1/6"></TableHead>
-        <TableHead class="w-1/6 hidden sm:table-cell">Type</TableHead>
-        <TableHead class="w-1/6 hidden md:table-cell">Maps</TableHead>
+        <TableHead class="w-1/6 hidden sm:table-cell">{{ $t('match.options.table.type') }}</TableHead>
+        <TableHead class="w-1/6 hidden md:table-cell">{{ $t('match.options.table.maps') }}</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
@@ -22,7 +22,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           <TableCell colspan="5" class="text-center py-8">
             <div class="text-gray-500 dark:text-gray-400">
               <p>
-                <slot name="none-found">No Matches Found</slot>
+                <slot name="none-found">{{ $t('match.options.table.no_matches_found') }}</slot>
               </p>
             </div>
           </TableCell>
@@ -38,7 +38,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           <TableCell>
             <div class="flex items-center space-x-2">
               <span class="font-bold">{{ match.lineup_1.name }}</span>
-              <span class="text-gray-500">vs</span>
+              <span class="text-gray-500">{{ $t('match.simple.vs') }}</span>
               <span class="font-bold">{{ match.lineup_2.name }}</span>
             </div>
             <div class="flex items-center space-x-2">
@@ -60,7 +60,7 @@ import cleanMapName from "~/utilities/cleanMapName";
               "
             >
               <UserPlusIcon class="h-4 w-4" />
-              Join
+              {{ $t('match.options.table.join') }}
             </Button>
           </TableCell>
           <TableCell class="text-center">

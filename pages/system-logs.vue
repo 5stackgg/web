@@ -14,7 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
             :key="service"
             :value="service"
           >
-            {{ service.split("-").join(" ") }}
+            {{ $t(`pages.system_logs.services.${service}`) }}
           </TabsTrigger>
         </TabsList>
 
@@ -26,7 +26,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
               @click="followLogs = !followLogs"
             >
             </Switch>
-            Follow Logs
+            {{ $t('pages.system_logs.follow_logs') }}
           </div>
 
           <div class="flex items-center gap-2">
@@ -36,7 +36,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
               @click="timestamps = !timestamps"
             >
             </Switch>
-            Timestamps
+            {{ $t('pages.system_logs.timestamps') }}
           </div>
         </div>
       </div>

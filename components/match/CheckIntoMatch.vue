@@ -2,15 +2,13 @@
   <Card v-if="isInMatch && match.can_check_in">
     <CardHeader class="p-4">
       <CardTitle class="flex justify-between">
-        Check In
+        {{ $t('match.check_in.title') }}
         <template v-if="isCheckedIn">
-          <Badge variant="secondary">Checked In</Badge>
+          <Badge variant="secondary">{{ $t('match.check_in.checked_in') }}</Badge>
         </template>
       </CardTitle>
       <CardDescription>
-        A minimum of {{ playersRequiredToStart }} players must check in before
-        you can start the match. {{ totalCheckedIn }} /
-        {{ playersRequiredToStart }} checked in.
+        {{ $t('match.check_in.description', { required: playersRequiredToStart, checked: totalCheckedIn }) }}
       </CardDescription>
     </CardHeader>
     <CardContent v-if="!isCheckedIn">
@@ -19,7 +17,7 @@
         class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
         @click="checkIn"
       >
-        Check In
+        {{ $t('match.check_in.check_in') }}
       </Button>
     </CardContent>
   </Card>

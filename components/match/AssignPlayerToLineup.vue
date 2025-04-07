@@ -4,7 +4,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 
 <template>
   <player-search
-    label="Assign Slot"
+    :label="$t('match.player.assign_slot')"
     :exclude="exclude.map((player) => player.steam_id)"
     :team-id="lineup.team_id"
     :self="true"

@@ -72,7 +72,7 @@ import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
                         v-if="player.is_banned"
                       />
                     </TooltipTrigger>
-                    <TooltipContent>Player is banned</TooltipContent>
+                    <TooltipContent>{{ $t("player.status.banned") }}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 <template v-else>
@@ -84,7 +84,7 @@ import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
                           v-if="player.is_muted"
                         />
                       </TooltipTrigger>
-                      <TooltipContent>Player is muted</TooltipContent>
+                      <TooltipContent>{{ $t("player.status.muted") }}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                   <TooltipProvider v-if="player.is_gagged">
@@ -95,7 +95,7 @@ import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
                           v-if="player.is_gagged"
                         />
                       </TooltipTrigger>
-                      <TooltipContent>Player is gagged</TooltipContent>
+                      <TooltipContent>{{ $t("player.status.gagged") }}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </template>
@@ -112,7 +112,7 @@ import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
                     @click.stop="addAsFriend"
                   />
                 </TooltipTrigger>
-                <TooltipContent>Add as friend</TooltipContent>
+                <TooltipContent>{{ $t("player.status.add_friend") }}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>

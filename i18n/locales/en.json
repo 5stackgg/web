@@ -296,6 +296,7 @@
       "starts": "Starts",
       "no_tournaments_found": "No Tournaments Found"
     },
+    "teams": "Teams",
     "form": {
       "create": "Create Tournament",
       "description_help": "Create a new tournament with custom match settings and rules.",
@@ -310,10 +311,12 @@
     "admin": "Admin",
     "organizers": "Organizers",
     "join": {
-      "title": "Join Tournament"
+      "title": "Join Tournament",
+      "requirements": "Tournament Requirements"
     },
     "tournament_team": {
-      "remove": "Remove Team"
+      "remove": "Remove Team",
+      "players_registered": "Players Registered"
     },
     "add_team": {
       "title": "Add Team to Tournament"
@@ -382,6 +385,7 @@
       "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
       "manage_roster": "Manage Roster",
       "eligible": "Eligible",
+      "not_eligible": "Team not eligible",
       "leave_tournament": "Leave Tournament",
       "leave_team": "Leave Team",
       "player": "Player",
@@ -675,7 +679,8 @@
       "won": "Won",
       "lost": "Lost",
       "against": "Against",
-      "no_clutches": "No clutches this round"
+      "no_clutches": "No clutches this round",
+      "vs": "vs"
     },
     "join": {
       "live": "Match is Live",
@@ -690,7 +695,8 @@
       "assign": "Assign Coach"
     },
     "download_demos": "Download Demos",
-    "coaches": "Coaches"
+    "coaches": "Coaches",
+    "best_of": "Best of {count}"
   },
   "ui": {
     "tooltips": {
@@ -714,11 +720,14 @@
     },
     "search": {
       "online_only": "Online",
-      "no_players_found": "No Players Found."
+      "no_players_found": "No Players Found.",
+      "found_players": "Players Found"
     },
     "sanctions": {
       "title": "Sanctions",
-      "expires": "Expires"
+      "expires": "Expires",
+      "active_count": "Active Sanctions",
+      "past_count": "Past Sanctions"
     },
     "registration": {
       "title": "Register your name",
@@ -775,7 +784,8 @@
       "search": "Search For Friends",
       "pending_requests": "Pending Friend Requests",
       "invite_to_lobby": "Invite to Lobby",
-      "remove": "Remove Friend"
+      "remove": "Remove Friend",
+      "online": "Online Friends"
     },
     "leave": "Leave",
     "position": "Current Position",

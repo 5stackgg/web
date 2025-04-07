@@ -41,6 +41,12 @@ function extractTranslationKeys(content) {
     keys.add(match[1]);
   }
 
+  // Match count-based translations
+  const countPattern = /\$t\(['"]([^'"]+)['"]\s*,\s*{\s*count:/g;
+  while ((match = countPattern.exec(content)) !== null) {
+    keys.add(match[1]);
+  }
+
   return Array.from(keys);
 }
 

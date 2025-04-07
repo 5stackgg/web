@@ -720,6 +720,15 @@
       "dedicated": "Dedikerade servrar",
       "on_demand": "On Demand",
       "assigned": "Tilldelad matchserver"
+    },
+    "lobby": {
+      "access_updated": "Matchlobbyåtkomst uppdaterad till {access}",
+      "access": {
+        "open": "Öppen",
+        "friends": "Vänner",
+        "invite": "Inbjudan",
+        "private": "Privat"
+      }
     }
   },
   "ui": {
@@ -801,7 +810,8 @@
       "title": "Matchmaking lobby",
       "leave": "Lämna lobby",
       "invite_player": "Bjud in spelare till lobby",
-      "invites": "Lobby-inbjudningar"
+      "invites": "Lobby-inbjudningar",
+      "access_updated": "Lobbyåtkomst uppdaterad till {access}"
     },
     "friends": {
       "title": "Vänner",
@@ -867,11 +877,5 @@
       "command_placeholder": "Ange kommando...",
       "send_command": "Skicka kommando"
     }
-  },
-  "online": "Online",
-  "offline": "Offline",
-  "a": "en",
-  "updated": "Uppdaterad",
-  "joined": "Ansluten",
-  "false": "Nej"
+  }
 }

@@ -720,6 +720,15 @@
       "dedicated": "Dedicated Servers",
       "on_demand": "On Demand",
       "assigned": "Assigned Match Server"
+    },
+    "lobby": {
+      "access_updated": "Match lobby access updated to {access}",
+      "access": {
+        "open": "Open",
+        "friends": "Friends",
+        "invite": "Invite",
+        "private": "Private"
+      }
     }
   },
   "ui": {
@@ -801,7 +810,8 @@
       "title": "Matchmaking Lobby",
       "leave": "Leave Lobby",
       "invite_player": "Invite Player to Lobby",
-      "invites": "Lobby invites"
+      "invites": "Lobby invites",
+      "access_updated": "Lobby access updated to {access}"
     },
     "friends": {
       "title": "Friends",
@@ -867,11 +877,5 @@
       "command_placeholder": "Enter command...",
       "send_command": "Send Command"
     }
-  },
-  "online": "Online",
-  "offline": "Offline",
-  "a": "a",
-  "updated": "Updated",
-  "joined": "Joined",
-  "false": "No"
+  }
 }

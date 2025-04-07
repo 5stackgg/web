@@ -739,7 +739,8 @@
   },
   "player": {
     "sanction": {
-      "button": "Sanction Player"
+      "button": "Sanction Player",
+      "reason_description": "Please provide a clear reason for this sanction"
     },
     "search": {
       "online_only": "Online",

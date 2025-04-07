@@ -102,7 +102,9 @@ import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
               </div>
             </div>
             <slot name="name-postfix"></slot>
-            <TooltipProvider v-if="!isMe && showAddFriend && !isFriend && player?.steam_id">
+            <TooltipProvider
+              v-if="!isMe && showAddFriend && !isFriend && player?.steam_id"
+            >
               <Tooltip>
                 <TooltipTrigger>
                   <UserPlus

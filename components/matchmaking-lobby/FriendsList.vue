@@ -304,7 +304,10 @@ export default {
     },
     pendingFriends() {
       return this.friends?.filter((friend) => {
-        return friend.status === "Pending" && friend.invited_by_steam_id !== this.me?.steam_id;
+        return (
+          friend.status === "Pending" &&
+          friend.invited_by_steam_id !== this.me?.steam_id
+        );
       });
     },
   },

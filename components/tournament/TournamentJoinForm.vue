@@ -154,7 +154,10 @@ export default {
       immediate: true,
       handler() {
         const type = this.tournament.options.type;
-        this.form.setFieldValue("newTeam", type !== e_match_types_enum.Competitive);
+        this.form.setFieldValue(
+          "newTeam",
+          type !== e_match_types_enum.Competitive,
+        );
       },
     },
   },

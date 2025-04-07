@@ -244,21 +244,14 @@ socket.listen("players-online", (onlinePlayerSteamIds) => {
   useMatchmakingStore().onlinePlayerSteamIds = onlinePlayerSteamIds;
 });
 
-socket.listen(
-  "matchmaking:error",
-  (
-    data: {
-      message: string;
-    }
-  ) => {
-    alertStore().add({
-      duration: 5000,
-      severity: AlertStatuses.Error,
-      title: "Error",
-      message: data.message,
-    });
-  },
-);
+socket.listen("matchmaking:error", (data: { message: string }) => {
+  alertStore().add({
+    duration: 5000,
+    severity: AlertStatuses.Error,
+    title: "Error",
+    message: data.message,
+  });
+});
 
 socket.listen(
   "matchmaking:details",

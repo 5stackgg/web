@@ -12,25 +12,17 @@ import TimeAgo from "../TimeAgo.vue";
         <Badge varient="outline">{{ region.description }}</Badge>
       </CardTitle>
       <div v-if="joinedQueue">
-        <Button
-          size="sm"
-          variant="outline"
-          @click="leaveMatchmaking()"
-        >
+        <Button size="sm" variant="outline" @click="leaveMatchmaking()">
           Leave
         </Button>
       </div>
     </CardHeader>
     <CardContent
       :class="{
-        'mt-6':
-          regions.length <= 1 && !joinedQueue,
+        'mt-6': regions.length <= 1 && !joinedQueue,
       }"
     >
-      <div
-        v-if="joinedQueue"
-        class="mb-4 flex flex-col items-center"
-      >
+      <div v-if="joinedQueue" class="mb-4 flex flex-col items-center">
         <div class="text-4xl font-bold">
           {{ matchMakingQueueDetails.regionPositions[region.value] }}
         </div>
@@ -46,10 +38,7 @@ import TimeAgo from "../TimeAgo.vue";
           </Badge>
         </div>
       </div>
-      <div
-        class="space-y-2"
-        v-if="!joinedQueue"
-      >
+      <div class="space-y-2" v-if="!joinedQueue">
         <div
           v-for="matchType in e_match_types"
           :key="matchType.value"

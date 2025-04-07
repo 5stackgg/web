@@ -49,7 +49,11 @@ import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLo
             variant="destructive"
             size="icon"
             @click="removeFromLobby(currentLobby.id, player.player.steam_id)"
-            v-if="!mini && (player.status === 'Invited' || player.status === 'Accepted') && player.player.steam_id !== me?.steam_id"
+            v-if="
+              !mini &&
+              (player.status === 'Invited' || player.status === 'Accepted') &&
+              player.player.steam_id !== me?.steam_id
+            "
           >
             <XIcon class="h-4 w-4" />
           </Button>

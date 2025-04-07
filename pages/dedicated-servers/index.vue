@@ -18,7 +18,8 @@ import { PlusCircle } from "lucide-vue-next";
       <template #title> Dedicated Servers </template>
 
       <template #description>
-        You can set up a dedicated server that will always run the game server mod
+        You can set up a dedicated server that will always run the game server
+        mod
         <a href="https://github.com/5stackgg/game-server"
           >https://github.com/5stackgg/game-server</a
         >.

@@ -105,13 +105,6 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
 <script lang="ts">
 const convert = new Convert();
 
-interface LogEntry {
-  log: string;
-  node: string;
-  container: string;
-  timestamp: string;
-}
-
 export default {
   props: {
     service: {
@@ -136,7 +129,12 @@ export default {
       _timestamps: true,
       _followLogs: true,
       expanded: false,
-      logs: [] as LogEntry[],
+      logs: [] as Array<{
+        log: string;
+        node: string;
+        container: string;
+        timestamp: string;
+      }>,
       logListener: undefined as { stop: () => void } | undefined,
       nodes: new Set<string>(),
     };
@@ -162,7 +160,7 @@ export default {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${this.service}-${this.$t('ui.logs.filename')}.txt`;
+      link.download = `${this.service}-logs.txt`;
 
       // Trigger download
       document.body.appendChild(link);
@@ -199,16 +197,20 @@ export default {
         this.logListener = socket.listen(`logs:${this.service}`, (log) => {
           const _log = JSON.parse(log);
           this.logs.push(_log);
-          this.nodes.add(_log.node);
-          this.scrollToBottom();
+
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
+        });
+
+        socket.event("logs", {
+          service: this.service,
         });
       },
     },
   },
-  beforeUnmount() {
-    if (this.logListener) {
-      this.logListener.stop();
-    }
+  unmounted() {
+    this.logListener?.stop();
   },
 };
 </script>

@@ -112,7 +112,7 @@ export default {
 
       const datasets = [
         {
-          label: $t('charts.usage'),
+          label: this.$t('charts.usage'),
           fill: true,
           borderColor: this.hex2rgba(color),
           backgroundColor: this.hex2rgba(color, 0.2),

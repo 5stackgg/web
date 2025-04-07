@@ -23,7 +23,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
       </div>
     </template>
     <template v-else>
-      {{ match.status }}
+      {{ match.e_match_status.description }}
     </template>
   </Badge>
 </template>

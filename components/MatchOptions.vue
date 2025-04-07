@@ -767,11 +767,7 @@ export default {
     },
     ["form.values.type"]: {
       handler(type) {
-        if (type === e_match_types_enum.Wingman) {
-          this.form.setFieldValue("mr", "8");
-        } else {
-          this.form.setFieldValue("mr", "12");
-        }
+        this.form.setFieldValue("mr", type === e_match_types_enum.Competitive ? "12": "8");
 
         this.form.setFieldValue("map_pool", []);
         if (this.form.values.map_veto) {

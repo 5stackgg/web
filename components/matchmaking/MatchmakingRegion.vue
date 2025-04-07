@@ -6,12 +6,12 @@ import TimeAgo from "../TimeAgo.vue";
   <Card>
     <CardHeader
       class="flex justify-between items-center"
-      v-if="regions.length > 1 || joinedCompetitiveQueue || joinedWingmanQueue"
+      v-if="regions.length > 1 || joinedQueue"
     >
       <CardTitle v-if="regions.length > 1">
         <Badge varient="outline">{{ region.description }}</Badge>
       </CardTitle>
-      <div v-if="joinedCompetitiveQueue || joinedWingmanQueue">
+      <div v-if="joinedQueue">
         <Button
           size="sm"
           variant="outline"
@@ -24,14 +24,11 @@ import TimeAgo from "../TimeAgo.vue";
     <CardContent
       :class="{
         'mt-6':
-          regions.length <= 1 && !joinedCompetitiveQueue && !joinedWingmanQueue,
+          regions.length <= 1 && !joinedQueue,
       }"
     >
       <div
-        v-if="
-          joinedCompetitiveQueue ||
-          (joinedWingmanQueue && matchMakingQueueDetails)
-        "
+        v-if="joinedQueue"
         class="mb-4 flex flex-col items-center"
       >
         <div class="text-4xl font-bold">
@@ -45,49 +42,27 @@ import TimeAgo from "../TimeAgo.vue";
 
         <div class="mt-2">
           <Badge>
-            {{ joinedCompetitiveQueue ? "Competitive" : "Wingman" }}
+            {{ matchMakingQueueDetails.type }}
           </Badge>
         </div>
       </div>
       <div
         class="space-y-2"
-        v-if="!joinedCompetitiveQueue && !joinedWingmanQueue"
+        v-if="!joinedQueue"
       >
         <div
+          v-for="matchType in e_match_types"
+          :key="matchType.value"
           class="bg-secondary p-2 rounded-lg flex items-center justify-between"
         >
-          <span class="text-sm font-medium">{{
-            e_match_types_enum.Competitive
-          }}</span>
+          <span class="text-sm font-medium">{{ matchType.value }}</span>
           <div class="flex items-center">
             <Badge variant="secondary" class="mr-2">
-              {{
-                regionStats[region.value]?.[e_match_types_enum.Competitive] || 0
-              }}
+              {{ regionStats[region.value]?.[matchType.value] || 0 }}
             </Badge>
             <Button
               size="sm"
-              @click="
-                joinMatchmaking(e_match_types_enum.Competitive, region.value)
-              "
-            >
-              Join
-            </Button>
-          </div>
-        </div>
-        <div
-          class="bg-secondary p-2 rounded-lg flex items-center justify-between"
-        >
-          <span class="text-sm font-medium">{{
-            e_match_types_enum.Wingman
-          }}</span>
-          <div class="flex items-center">
-            <Badge variant="secondary" class="mr-2">
-              {{ regionStats[region.value]?.[e_match_types_enum.Wingman] || 0 }}
-            </Badge>
-            <Button
-              size="sm"
-              @click="joinMatchmaking(e_match_types_enum.Wingman, region.value)"
+              @click="joinMatchmaking(matchType.value, region.value)"
             >
               Join
             </Button>
@@ -103,12 +78,22 @@ import socket from "~/web-sockets/Socket";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 
+interface MatchType {
+  value: e_match_types_enum;
+  description: string;
+}
+
 export default {
   props: {
     region: {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      e_match_types: [] as MatchType[],
+    };
   },
   apollo: {
     e_match_types: {
@@ -120,6 +105,7 @@ export default {
                 _in: [
                   e_match_types_enum.Competitive,
                   e_match_types_enum.Wingman,
+                  e_match_types_enum.Duel,
                 ],
               },
             },
@@ -153,17 +139,8 @@ export default {
     matchMakingQueueDetails() {
       return useMatchmakingStore().joinedMatchmakingQueues.details;
     },
-    joinedWingmanQueue() {
-      return (
-        this.matchMakingQueueDetails?.type === e_match_types_enum.Wingman &&
-        this.matchMakingQueueDetails?.regions.includes(this.region.value)
-      );
-    },
-    joinedCompetitiveQueue() {
-      return (
-        this.matchMakingQueueDetails?.type === e_match_types_enum.Competitive &&
-        this.matchMakingQueueDetails?.regions.includes(this.region.value)
-      );
+    joinedQueue() {
+      return this.matchMakingQueueDetails;
     },
     regions() {
       return useApplicationSettingsStore().availableRegions;

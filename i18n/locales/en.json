@@ -325,15 +325,6 @@
           "in_game": "In game"
         }
       },
-      "lobby": {
-        "access": {
-          "open": "Open",
-          "friends": "Friends",
-          "invite": "Invite",
-          "private": "Private"
-        },
-        "access_updated": "Lobby access set to {access}"
-      },
       "region_veto": {
         "banning": "is Banning a Region",
         "organizer_override": "Match Organizer Override",
@@ -455,8 +446,11 @@
     },
     "tournament": {
       "create": "Create Tournament",
-      "join": "Join Tournament",
       "leave": "Leave Tournament",
+      "join": {
+        "title": "Join Tournament",
+        "joined_with": "Joined with {name}."
+      },
       "upcoming": {
         "empty": "You don't have any upcoming tournaments."
       },
@@ -475,6 +469,7 @@
         "cancelled": "Cancelled"
       },
       "bracket": {
+        "title": "Bracket",
         "round": "Round {number}",
         "finals": "Finals",
         "semifinals": "Semi-finals",
@@ -577,15 +572,10 @@
         "start": "Are you sure you want to start this tournament?"
       },
       "overview": "Overview",
-      "bracket": "Bracket",
       "teams": "Teams ({count})",
       "settings": "Settings",
       "admin": "Admin",
       "organizers": "Organizers",
-      "join": {
-        "title": "Join Tournament",
-        "joined_with": "Joined with {name}."
-      },
       "tournament_team": {
         "players_registered": "{count} players registered",
         "remove": "Remove Team"

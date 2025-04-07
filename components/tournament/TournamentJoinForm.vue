@@ -80,7 +80,7 @@ import { MessageCircleWarning } from "lucide-vue-next";
     </template>
 
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-      {{ $t('tournament.join') }}
+      {{ $t('tournament.join.title') }}
     </Button>
   </form>
 </template>

@@ -96,7 +96,7 @@ export default {
       });
 
       toast({
-        title: $t('matchmaking.lobby.access_updated', { access: $t(`matchmaking.lobby.access.${access.toLowerCase()}`) }),
+        title: this.$t('matchmaking.lobby.access_updated', { access: this.$t(`matchmaking.lobby.access.${access.toLowerCase()}`) }),
       });
 
       this.popoverOpen = false;

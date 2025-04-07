@@ -28,7 +28,7 @@ import { PlusCircle } from "lucide-vue-next";
         <NuxtLink :to="{ name: 'dedicated-servers-create' }">
           <Button size="lg">
             <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{ $t('pages.dedicated_servers.create') }}</span>
+            <span class="hidden md:inline ml-2">{{ $t('pages.dedicated_servers.create.title') }}</span>
           </Button>
         </NuxtLink>
       </template>

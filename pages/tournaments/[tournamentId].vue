@@ -144,7 +144,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 <div class="flex justify-between items-center mb-4">
                   {{ team.name }}
                   <span class="text-sm text-gray-600">
-                    {{ $t('tournament.team.players_registered', { count: team.roster_aggregate.aggregate.count }) }}
+                    {{ $t('tournament.tournament_team.players_registered', { count: team.roster_aggregate.aggregate.count }) }}
                   </span>
                 </div>
 
@@ -166,7 +166,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                   size="sm"
                   class="w-full sm:w-auto"
                 >
-                  {{ $t('tournament.team.remove') }}
+                  {{ $t('tournament.tournament_team.remove') }}
                 </Button>
               </Card>
             </div>

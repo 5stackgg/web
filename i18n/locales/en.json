@@ -480,6 +480,20 @@
         "semifinals": "Semi-finals",
         "quarterfinals": "Quarter-finals"
       },
+      "match": {
+        "round_match": "Round {round} Match {match}",
+        "team_1": "Team 1",
+        "team_2": "Team 2"
+      },
+      "team": {
+        "my_teams": "My Teams",
+        "my_teams_description": "Add one of your teams to the tournament",
+        "no_eligible_teams": "You don't have any eligible teams to add to this tournament",
+        "team": "Team",
+        "select_team": "Select a team...",
+        "search_team": "Search for a team...",
+        "add_to_tournament": "Add to Tournament"
+      },
       "form": {
         "name": "Tournament Name",
         "description": "Description",
@@ -503,22 +517,6 @@
           "create_failed": "Failed to create tournament",
           "update_failed": "Failed to update tournament"
         }
-      },
-      "team": {
-        "add": "Add Team",
-        "remove": "Remove Team",
-        "invite": "Invite Team",
-        "accept": "Accept Invite",
-        "decline": "Decline Invite",
-        "leave": "Leave Team",
-        "members": "Team Members",
-        "captain": "Team Captain"
-      },
-      "match": {
-        "vs": "vs",
-        "tbd": "TBD",
-        "winner": "Winner",
-        "loser": "Loser"
       },
       "organizer": {
         "title": "Tournament Organizers",
@@ -588,7 +586,7 @@
         "title": "Join Tournament",
         "joined_with": "Joined with {name}."
       },
-      "team": {
+      "tournament_team": {
         "players_registered": "{count} players registered",
         "remove": "Remove Team"
       },
@@ -610,6 +608,21 @@
         "losses": "Losses",
         "overtime_losses": "Overtime Losses",
         "no_teams_found": "No Teams Found"
+      },
+      "members": {
+        "title": "Team Members",
+        "invite_player": "Invite Player",
+        "pending_invites": "Pending Invites"
+      },
+      "form": {
+        "name": "Team Name",
+        "name_placeholder": "Enter team name...",
+        "short_name": "Short Name",
+        "short_name_placeholder": "Enter short name (max 3 characters)...",
+        "owner": "Team Owner",
+        "select_owner": "Select team owner...",
+        "create": "Create Team",
+        "update": "Update Team"
       },
       "invite": {
         "tournament_title": "Tournament {id}",
@@ -762,11 +775,8 @@
     "common": {
       "loading": "Loading...",
       "error": "An error occurred",
-      "success": "Success",
-      "confirm": "Confirm",
       "cancel": "Cancel",
       "delete": "Delete",
-      "edit": "Edit",
       "save": "Save",
       "close": "Close",
       "tbd": "TBD",
@@ -774,7 +784,9 @@
         "view": "View",
         "create": "Create",
         "update": "Update",
-        "remove": "Remove"
+        "remove": "Remove",
+        "edit": "Edit",
+        "confirm": "Confirm"
       },
       "status": {
         "online": "Online",
@@ -924,19 +936,28 @@
         "label": "Server Label",
         "host": "Host",
         "region": "Region",
+        "select_region": "Select Region",
         "rcon_password": "RCON Password",
-        "game_port": "Game Port",
+        "rcon_password_description": "Leave blank to keep the current password",
+        "port": "Game Port",
         "tv_port": "TV Port",
         "update": "Update Server",
         "create": "Create Server"
       },
+      "offline": "Server is offline!",
+      "booting": "Server Booting",
+      "assign": "Assign Match Server",
+      "select": "Select a server",
+      "dedicated": "Dedicated Servers",
+      "on_demand": "On Demand",
+      "assigned": "Assigned Match Server",
       "rcon": {
         "quick_commands": "Quick Commands",
-        "refresh_match": "Refresh Match Information",
+        "refresh_match": "Refresh Match",
         "metamod_info": "Metamod Info",
-        "css_info": "Counter Strike Sharp Info",
+        "css_info": "CSS Info",
         "output": "Output",
-        "command_placeholder": "Enter RCON command...",
+        "command_placeholder": "Enter command...",
         "send_command": "Send Command"
       }
     },
@@ -1073,7 +1094,9 @@
       "dedicated_servers": {
         "title": "Dedicated Servers",
         "description": "You can set up a dedicated server that will always run the game server mod",
-        "create": "Create Dedicated Server",
+        "create": {
+          "title": "Create Dedicated Server"
+        },
         "table": {
           "connection_details": "Connection Details",
           "label": "Label",
@@ -1099,9 +1122,6 @@
             "cancel": "Cancel",
             "continue": "Continue"
           }
-        },
-        "create": {
-          "title": "Create Dedicated Server"
         }
       },
       "game_server_nodes": {
@@ -1255,5 +1275,26 @@
         },
         "no_recent": "You don't have any recent tournaments."
       }
+    },
+    "match_lobby": {
+      "waiting": "Waiting for players",
+      "ready": "Ready",
+      "not_ready": "Not Ready",
+      "leave": "Leave Lobby",
+      "team_1": "Team 1",
+      "team_2": "Team 2",
+      "access": {
+        "open": "Open",
+        "friends": "Friends",
+        "invite": "Invite",
+        "private": "Private"
+      },
+      "access_updated": "Lobby access set to {access}"
+    },
+    "match_lobby_access": {
+      "open": "Open",
+      "friends": "Friends",
+      "invite": "Invite",
+      "private": "Private"
     }
 }

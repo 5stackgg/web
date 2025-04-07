@@ -44,7 +44,7 @@ import TimeAgo from "../TimeAgo.vue";
           :key="matchType.value"
           class="bg-secondary p-2 rounded-lg flex items-center justify-between"
         >
-          <span class="text-sm font-medium">{{ $t(`matchmaking.types.${matchType.value.toLowerCase()}`) }}</span>
+          <span class="text-sm font-medium">{{ matchType.value }}</span>
           <div class="flex items-center">
             <Badge variant="secondary" class="mr-2">
               {{ regionStats[region.value]?.[matchType.value] || 0 }}

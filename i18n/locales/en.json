@@ -868,8 +868,7 @@
         "ban": "Are you sure you want to ban this map?",
         "pick": "Are you sure you want to pick this map?",
         "side": "Are you sure you want to pick {side} side?"
-      },
-      "name": "{name}"
+      }
     },
     "matchmaking": {
       "banned": "You are banned from matchmaking",

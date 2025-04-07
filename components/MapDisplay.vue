@@ -28,7 +28,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         <span
           class="text-white text-xl font-bold uppercase text-center font-sans"
         >
-          {{ $t('maps.name', { name: cleanMapName(map.name) }) }}
+          {{ cleanMapName(map.name) }}
         </span>
       </template>
 

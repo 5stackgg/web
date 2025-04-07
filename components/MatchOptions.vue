@@ -33,7 +33,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               <FormLabel class="text-lg font-semibold">Match Type</FormLabel>
               <RadioGroup
                 v-bind="componentField"
-                class="grid grid-cols-2 gap-4 w-full"
+                class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
               >
                 <div
                   v-for="type in e_match_types"

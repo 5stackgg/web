@@ -722,13 +722,7 @@
       "assigned": "Tilldelad matchserver"
     },
     "lobby": {
-      "access_updated": "Matchlobbyåtkomst uppdaterad till {access}",
-      "access": {
-        "open": "Öppen",
-        "friends": "Vänner",
-        "invite": "Inbjudan",
-        "private": "Privat"
-      }
+      "access_updated": "Matchlobbyåtkomst uppdaterad till {access}"
     }
   },
   "ui": {
@@ -745,12 +739,7 @@
   },
   "player": {
     "sanction": {
-      "button": "Sanktionera spelare",
-      "reason_label": "Anledning",
-      "reason_placeholder": "Ange anledning för sanktion...",
-      "reason_description": "Vänligen ange en tydlig anledning för denna sanktion",
-      "duration_label": "Varaktighet",
-      "duration_placeholder": "Välj varaktighet"
+      "button": "Sanktionera spelare"
     },
     "search": {
       "online_only": "Online",

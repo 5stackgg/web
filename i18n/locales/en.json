@@ -722,13 +722,7 @@
       "assigned": "Assigned Match Server"
     },
     "lobby": {
-      "access_updated": "Match lobby access updated to {access}",
-      "access": {
-        "open": "Open",
-        "friends": "Friends",
-        "invite": "Invite",
-        "private": "Private"
-      }
+      "access_updated": "Match lobby access updated to {access}"
     }
   },
   "ui": {
@@ -745,12 +739,7 @@
   },
   "player": {
     "sanction": {
-      "button": "Sanction Player",
-      "reason_label": "Reason",
-      "reason_placeholder": "Enter reason for sanction...",
-      "reason_description": "Please provide a clear reason for this sanction",
-      "duration_label": "Duration",
-      "duration_placeholder": "Select duration"
+      "button": "Sanction Player"
     },
     "search": {
       "online_only": "Online",

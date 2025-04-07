@@ -59,6 +59,7 @@ function extractTranslationKeys(content) {
 // Function to find all translation keys in the project
 async function findAllTranslationKeys() {
   const keys = new Set();
+  const keyLocations = new Map();
   
   // Find all Vue, JS, and TS files
   const files = await glob('**/*.{vue,js,ts}', {
@@ -68,10 +69,16 @@ async function findAllTranslationKeys() {
   files.forEach(file => {
     const content = fs.readFileSync(file, 'utf8');
     const fileKeys = extractTranslationKeys(content);
-    fileKeys.forEach(key => keys.add(key));
+    fileKeys.forEach(key => {
+      keys.add(key);
+      if (!keyLocations.has(key)) {
+        keyLocations.set(key, []);
+      }
+      keyLocations.get(key).push(file);
+    });
   });
 
-  return Array.from(keys);
+  return { keys: Array.from(keys), keyLocations };
 }
 
 // Function to check for missing translations
@@ -96,50 +103,96 @@ function findUnusedTranslations(usedKeys, availableKeys) {
   return availableKeys.filter(key => !usedKeys.includes(key));
 }
 
+// Function to find all translation files
+async function findAllTranslationFiles() {
+  const files = await glob('i18n/locales/*.json');
+  return files.map(file => ({
+    path: file,
+    locale: path.basename(file, '.json')
+  }));
+}
+
 // Main function
 async function main() {
-  // Read translation file
-  const translationFile = path.join(__dirname, '../i18n/locales/en.json');
-  const translations = JSON.parse(fs.readFileSync(translationFile, 'utf8'));
-  
-  // Flatten translations
-  const flattenedTranslations = flattenTranslations(translations);
-  const availableKeys = Object.keys(flattenedTranslations);
+  // Find all translation files
+  const translationFiles = await findAllTranslationFiles();
   
   // Find all translation keys used in the project
-  const usedKeys = await findAllTranslationKeys();
-  
-  // Find missing and unused translations
-  const missingTranslations = findMissingTranslations(usedKeys, availableKeys);
-  const unusedTranslations = findUnusedTranslations(usedKeys, availableKeys);
+  const { keys: usedKeys, keyLocations } = await findAllTranslationKeys();
   
   console.log('\n=== Translation Check Results ===\n');
   
-  if (missingTranslations.length > 0) {
-    console.log('Missing Translations:');
-    missingTranslations.forEach(key => {
-      console.log(`  - ${key}`);
-    });
-    console.log('');
-  } else {
-    console.log('No missing translations found.\n');
+  // Check each translation file
+  for (const { path: filePath, locale } of translationFiles) {
+    console.log(`\nChecking ${locale} translations:`);
+    
+    // Read and flatten translations
+    const translations = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const flattenedTranslations = flattenTranslations(translations);
+    const availableKeys = Object.keys(flattenedTranslations);
+    
+    // Find missing and unused translations
+    const missingTranslations = findMissingTranslations(usedKeys, availableKeys);
+    const unusedTranslations = findUnusedTranslations(usedKeys, availableKeys);
+    
+    if (missingTranslations.length > 0) {
+      console.log('\nMissing Translations:');
+      missingTranslations.forEach(key => {
+        console.log(`  - ${key}`);
+        console.log(`    Used in:`);
+        keyLocations.get(key).forEach(location => {
+          console.log(`      ${location}`);
+        });
+      });
+    } else {
+      console.log('\nNo missing translations found.');
+    }
+    
+    if (unusedTranslations.length > 0) {
+      console.log('\nUnused Translations:');
+      unusedTranslations.forEach(key => {
+        console.log(`  - ${key}`);
+      });
+    } else {
+      console.log('\nNo unused translations found.');
+    }
+    
+    console.log('\nSummary:');
+    console.log(`Total available translations: ${availableKeys.length}`);
+    console.log(`Total used translations: ${usedKeys.length}`);
+    console.log(`Missing translations: ${missingTranslations.length}`);
+    console.log(`Unused translations: ${unusedTranslations.length}`);
   }
   
-  if (unusedTranslations.length > 0) {
-    console.log('Unused Translations:');
-    unusedTranslations.forEach(key => {
-      console.log(`  - ${key}`);
-    });
-    console.log('');
-  } else {
-    console.log('No unused translations found.\n');
+  // Check for inconsistencies between translation files
+  if (translationFiles.length > 1) {
+    console.log('\n=== Translation Consistency Check ===\n');
+    
+    // Get all unique keys across all files
+    const allKeys = new Set();
+    const translationsByLocale = new Map();
+    
+    for (const { path: filePath, locale } of translationFiles) {
+      const translations = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      const flattenedTranslations = flattenTranslations(translations);
+      translationsByLocale.set(locale, flattenedTranslations);
+      
+      Object.keys(flattenedTranslations).forEach(key => allKeys.add(key));
+    }
+    
+    // Check for missing keys in each locale
+    for (const locale of translationsByLocale.keys()) {
+      const localeTranslations = translationsByLocale.get(locale);
+      const missingKeys = Array.from(allKeys).filter(key => !localeTranslations[key]);
+      
+      if (missingKeys.length > 0) {
+        console.log(`\nMissing keys in ${locale}:`);
+        missingKeys.forEach(key => {
+          console.log(`  - ${key}`);
+        });
+      }
+    }
   }
-  
-  console.log('Summary:');
-  console.log(`Total available translations: ${availableKeys.length}`);
-  console.log(`Total used translations: ${usedKeys.length}`);
-  console.log(`Missing translations: ${missingTranslations.length}`);
-  console.log(`Unused translations: ${unusedTranslations.length}`);
 }
 
 // Run the script

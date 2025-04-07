@@ -258,10 +258,10 @@
         "logout": "Log out"
       },
       "logout_dialog": {
-        "title": "Are you absolutely sure?",
-        "description": "This will log you out of your account. You will need to log back in to access your account again.",
+        "title": "Logout",
+        "description": "Are you sure you want to log out?",
         "cancel": "Cancel",
-        "confirm": "Log out"
+        "confirm": "Logout"
       }
     }
   },
@@ -290,122 +290,122 @@
     "confirm": "Confirm"
   },
   "tournament": {
-    "table": {
-      "tournament": "Tournament",
-      "status": "Status",
-      "type": "Type",
-      "teams_joined": "Teams Joined",
-      "starts": "Starts",
-      "no_tournaments_found": "No Tournaments Found"
+    "overview": "Overview",
+    "bracket": "Bracket",
+    "teams": "{count} Teams",
+    "settings": "Settings",
+    "admin": "Admin",
+    "organizers": "Organizers",
+    "join": {
+      "title": "Join Tournament",
+      "joined_with": "Joined with {name}",
+      "requirements": "You need at least {count} players to join this tournament"
     },
-    "teams": "Teams",
+    "tournament_team": {
+      "players_registered": "{count} Players Registered",
+      "remove": "Remove Team"
+    },
+    "add_team": {
+      "title": "Add Team"
+    },
     "form": {
       "create": "Create Tournament",
-      "description_help": "Create a new tournament with custom match settings and rules.",
+      "description_help": "Create a new tournament for your community",
       "name": "Tournament Name",
       "description": "Description",
       "start": "Start Date",
       "pick_date": "Pick a date",
       "update": "Update Tournament"
     },
-    "overview": "Overview",
-    "settings": "Settings",
-    "admin": "Admin",
-    "organizers": "Organizers",
-    "join": {
-      "title": "Join Tournament",
-      "requirements": "Tournament Requirements",
-      "joined_with": "Joined with {team}"
-    },
-    "tournament_team": {
-      "remove": "Remove Team",
-      "players_registered": "Players Registered"
-    },
-    "add_team": {
-      "title": "Add Team to Tournament"
+    "table": {
+      "tournament": "Tournament",
+      "status": "Status",
+      "type": "Type",
+      "teams_joined": "Teams Joined",
+      "starts": "Starts",
+      "no_tournaments_found": "No tournaments found"
     },
     "stage": {
-      "type": "Stage Type",
+      "title": "Stage {number}",
+      "teams": "{min}-{max} Teams",
       "edit": "Edit Stage",
-      "type_placeholder": "Select stage type",
+      "delete": "Delete Stage",
+      "edit_title": "Edit Stage",
+      "confirm_delete": "Delete Stage",
+      "delete_description": "Are you sure you want to delete this stage?",
+      "type": "Stage Type",
+      "type_placeholder": "Select stage type...",
       "min_teams": "Minimum Teams",
-      "min_teams_placeholder": "Select minimum number of teams",
+      "min_teams_placeholder": "Select minimum teams...",
       "max_teams": "Maximum Teams",
-      "max_teams_placeholder": "Select maximum number of teams",
+      "max_teams_placeholder": "Select maximum teams...",
       "update": "Update Stage",
       "create": "Create Stage",
       "no_stages": "No Stages",
       "start_building": "Start Building Your Tournament",
       "add_first": "Add First Stage",
       "add_another": "Add Another Stage",
-      "not_setup": "Tournament stages not set up",
-      "delete": "Delete Stage",
-      "edit_title": "Edit Stage",
-      "confirm_delete": "Confirm Delete Stage",
-      "delete_description": "Are you sure you want to delete this stage? This action cannot be undone.",
-      "title": "Stage {number}",
-      "teams": "Teams"
-    },
-    "server": {
-      "remove": "Remove Server",
-      "remove_description": "This will remove the server from the tournament",
-      "confirm_remove": "Are you sure you want to remove this server?"
-    },
-    "organizer": {
-      "title": "Tournament Organizers",
-      "add": "Add Organizer",
-      "remove": "Remove Organizer",
-      "remove_description": "This will remove the organizer from the tournament",
-      "description": "Manage tournament organizers who can help run the tournament",
-      "name": "Organizer Name",
-      "actions": "Actions",
-      "no_organizers": "No Organizers",
-      "no_organizers_description": "There are no organizers assigned to this tournament",
-      "confirm_remove": "Are you sure you want to remove this organizer?"
+      "not_setup": "Tournament stages not set up"
     },
     "match": {
       "team_1": "Team 1",
       "team_2": "Team 2",
-      "round_match": "Round {number} Match"
+      "round_match": "Round {round} Match {match}"
     },
-    "upcoming": {
-      "empty": "You don't have any upcoming tournaments."
-    },
-    "bracket": "Tournament Bracket",
-    "actions": {
-      "open_registration": "Open Registration",
-      "close_registration": "Close Registration",
-      "cancel": "Cancel Tournament"
+    "organizer": {
+      "title": "Tournament Organizers",
+      "description": "Manage tournament organizers",
+      "add": "Add Organizer",
+      "name": "Name",
+      "actions": "Actions",
+      "no_organizers": "No Organizers",
+      "no_organizers_description": "No organizers have been added to this tournament yet",
+      "remove": "Remove Organizer",
+      "confirm_remove": "Are you sure you want to remove this organizer?",
+      "remove_description": "This will remove the organizer from the tournament"
     },
     "team": {
+      "manage_roster": "Manage Roster",
+      "eligible": "Eligible",
+      "not_eligible": "Need {count} more players",
+      "leave_tournament": "Leave Tournament",
+      "leave_team": "Leave Team",
+      "player": "Player",
+      "role": "Role",
+      "slot": "Slot {number}",
+      "add_player": "Add Player",
+      "pending_invites": "Pending Invites",
+      "new": "Create New Team",
+      "select": "Select Existing Team",
+      "name": "Team Name",
+      "select_role": "Select Role",
+      "no_roles": "No Roles Available",
+      "remove_member": "Remove Member",
+      "confirm_remove_member": "Are you sure you want to remove this member?",
+      "remove_member_description": "This will remove the member from the tournament team",
+      "cancel_invite": "Cancel Invite",
+      "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
+      "cancel_invite_description": "This will cancel the invite for this member",
       "my_teams": "My Teams",
       "my_teams_description": "Add one of your teams to the tournament",
       "no_eligible_teams": "You don't have any eligible teams to add to this tournament",
       "team": "Team",
       "select_team": "Select a team...",
       "search_team": "Search for a team...",
-      "add_to_tournament": "Add to Tournament",
-      "select_role": "Select Role",
-      "no_roles": "No Roles Available",
-      "remove_member": "Remove Member",
-      "confirm_remove_member": "Are you sure you want to remove this member?",
-      "cancel_invite": "Cancel Invite",
-      "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
-      "manage_roster": "Manage Roster",
-      "eligible": "Eligible",
-      "not_eligible": "Team not eligible",
-      "leave_tournament": "Leave Tournament",
-      "leave_team": "Leave Team",
-      "player": "Player",
-      "role": "Role",
-      "add_player": "Add Player",
-      "pending_invites": "Pending Invites",
-      "new": "New Team",
-      "select": "Select Team",
-      "name": "Team Name",
-      "remove_member_description": "This will remove the member from the tournament team",
-      "cancel_invite_description": "This will cancel the invite for this member",
-      "slot": "Slot {number}"
+      "add_to_tournament": "Add to Tournament"
+    },
+    "actions": {
+      "open_registration": "Open Registration",
+      "close_registration": "Close Registration",
+      "cancel": "Cancel Tournament"
+    },
+    "upcoming": {
+      "empty": "You don't have any upcoming tournaments."
+    },
+    "server": {
+      "remove": "Remove Server",
+      "confirm_remove": "Are you sure you want to remove this server?",
+      "remove_description": "This will remove the server from the tournament"
     }
   },
   "team": {
@@ -573,15 +573,6 @@
       "pick_date": "Pick a date",
       "schedule": "Schedule"
     },
-    "server": {
-      "offline": "Server is offline!",
-      "booting": "Server Booting",
-      "assign": "Assign Match Server",
-      "select": "Select a server",
-      "dedicated": "Dedicated Servers",
-      "on_demand": "On Demand",
-      "assigned": "Assigned Match Server"
-    },
     "player": {
       "captain": "Captain",
       "status": {
@@ -672,11 +663,11 @@
       "remove_from_lineup": "Remove from Lineup",
       "leave_lineup": "Leave Lineup",
       "kills": "K",
-      "kills_full": "ills",
+      "kills_full": "Kills",
       "assists": "A",
-      "assists_full": "ssists",
+      "assists_full": "Assists",
       "deaths": "D",
-      "deaths_full": "eaths",
+      "deaths_full": "Deaths",
       "kd": "K/D",
       "hs": "HS%",
       "team_damage": "Team Damage",
@@ -686,7 +677,7 @@
       "k3": "3K",
       "k4": "4K",
       "k5": "5K",
-      "knifes": "Knifes",
+      "knifes": "Knives",
       "zeus": "Zeus",
       "total_damage": "Total Damage",
       "substitute": "(substitute)",
@@ -720,7 +711,16 @@
     },
     "download_demos": "Download Demos",
     "coaches": "Coaches",
-    "best_of": "Best of {count}"
+    "best_of": "Best of {count}",
+    "server": {
+      "offline": "Server is offline!",
+      "booting": "Server Booting",
+      "assign": "Assign Match Server",
+      "select": "Select a server",
+      "dedicated": "Dedicated Servers",
+      "on_demand": "On Demand",
+      "assigned": "Assigned Match Server"
+    }
   },
   "ui": {
     "tooltips": {

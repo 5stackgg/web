@@ -11,8 +11,11 @@ import {
   Server,
   Calendar,
   BookUser,
+  Languages,
+  Play,
+  ShieldHalf,
+  Globe,
 } from "lucide-vue-next";
-import { Play, ShieldHalf, Globe } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
@@ -28,6 +31,21 @@ import InstallPWA from "~/components/InstallPWA.vue";
 import MatchmakingLobby from "~/components/matchmaking-lobby/MatchmakingLobby.vue";
 import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+
+const { locale, locales, setLocale } = useI18n()
+
+const availableLocales = computed(() => {
+  return locales.value.filter(i => i.code !== locale.value)
+})
+
+const currentLocale = computed(() => {
+  return locales.value.find(i => i.code === locale.value)
+})
+
+const handleLocaleChange = (newLocale: string) => {
+  setLocale(newLocale)
+}
+
 </script>
 
 <template>
@@ -372,6 +390,31 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator />
+
+                <DropdownMenuGroup>
+                  <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
+                    <Select :value="locale" @update:modelValue="handleLocaleChange">
+                      <SelectTrigger>
+                        <Languages class="size-4" />
+                        <SelectValue :placeholder="currentLocale?.name" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            v-for="loc in availableLocales"
+                            :key="loc.code"
+                            :value="loc.code"
+                          >
+                            {{ loc.name }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+
                 <DropdownMenuItem
                   class="flex gap-2"
                   @click="showLogoutModal = true"

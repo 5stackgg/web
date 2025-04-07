@@ -34,7 +34,7 @@ import Default from "~/layouts/default.vue";
             :key="item.title"
           >
             <Button variant="ghost" class="w-full text-left justify-start">
-              {{ $t(`layouts.profile_settings.navigation.${item.key}`) }}
+              {{ item.title }}
             </Button>
           </nuxt-link>
 

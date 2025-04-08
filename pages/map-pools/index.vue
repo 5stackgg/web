@@ -1,7 +1,16 @@
 <script setup lang="ts">
-import MapDisplay from "~/components/MapDisplay.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import { Separator } from "~/components/ui/separator";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "~/components/ui/sheet";
+import { Button } from "~/components/ui/button";
+import MapForm from "~/components/map-pools/MapForm.vue";
+import MapPoolRow from "~/components/map-pools/MapPoolRow.vue";
 </script>
 
 <template>
@@ -13,6 +22,10 @@ import { Separator } from "~/components/ui/separator";
         {{ $t("pages.map_pools.description") }}
       </template>
     </PageHeading>
+
+    <div class="flex justify-end mb-4">
+      <Button @click="mapFormSheet = true">Add New Map</Button>
+    </div>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <div
@@ -43,51 +56,36 @@ import { Separator } from "~/components/ui/separator";
             Available Modes
           </th>
           <th class="px-4 py-2 text-left text-sm font-medium">Workshop ID</th>
+          <th class="px-4 py-2 text-left text-sm font-medium"></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="map in availableMaps" :key="map.id" class="border-t">
-          <td class="px-4 py-2 text-sm">
-            <MapDisplay :map="map" style="max-width: 350px" />
-          </td>
-          <td class="px-4 py-2 text-sm">
-            <div class="flex items-center gap-2">
-              <Switch
-                :checked="map.active_pool"
-                @update:checked="toggleActivePool(map)"
-              />
-              <span>Active Duty</span>
-            </div>
-          </td>
-          <td class="px-4 py-2 text-sm">
-            <div class="flex flex-col gap-2">
-              <div
-                v-for="type in matchTypes"
-                :key="type"
-                class="flex items-center gap-2"
-              >
-                <Switch
-                  :checked="map.poolTypes.includes(type)"
-                  @update:checked="togglePoolType(map, type)"
-                />
-                <span>{{ type }}</span>
-              </div>
-            </div>
-          </td>
-          <td class="px-4 py-2 text-sm">{{ map.workshop_map_id || "N/A" }}</td>
-        </tr>
+        <MapPoolRow
+          v-for="map in availableMaps"
+          :key="map.id"
+          :map="map"
+          :match-types="matchTypes"
+        />
       </tbody>
     </table>
   </div>
+
+  <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
+    <SheetContent>
+      <SheetHeader>
+        <SheetTitle>{{ $t("pages.dedicated_servers.detail.edit") }}</SheetTitle>
+        <SheetDescription>
+          <MapForm @created="mapFormSheet = false" />
+        </SheetDescription>
+      </SheetHeader>
+    </SheetContent>
+  </Sheet>
 </template>
 
 <script lang="ts">
-import { Switch } from "@/components/ui/switch";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { toast } from "@/components/ui/toast";
 
 interface Map {
   id: string;
@@ -116,11 +114,9 @@ interface MapPool {
 }
 
 export default {
-  components: {
-    Switch,
-  },
   data() {
     return {
+      mapFormSheet: false,
       map_pools: [] as MapPool[],
       maps: [] as Map[],
       matchTypes: [
@@ -185,104 +181,6 @@ export default {
 
       return Array.from(uniqueMapsMap.values()).sort((a, b) => {
         return a.name.localeCompare(b.name);
-      });
-    },
-  },
-  methods: {
-    async togglePoolType(map: Map, type: e_match_types_enum) {
-      if (map.poolTypes.includes(type)) {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_maps: [
-              {
-                _set: {
-                  enabled: false,
-                },
-                where: {
-                  type: {
-                    _eq: type,
-                  },
-                  name: {
-                    _eq: map.name,
-                  },
-                },
-              },
-              {
-                affected_rows: true,
-              },
-            ],
-          }),
-        });
-        toast({
-          title: this.$t("map_pool.toggle_pool_type", {
-            map: map.name,
-            type: type,
-          }),
-        });
-        return;
-      }
-
-      console.info({
-        ...map,
-        enabled: true,
-      });
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_maps: [
-            {
-              objects: [
-                {
-                  type,
-                  enabled: true,
-                  name: map.name,
-                  active_pool: map.active_pool,
-                  workshop_map_id: map.workshop_map_id,
-                  poster: map.poster,
-                  patch: map.patch,
-                  label: map.label,
-                },
-              ],
-              on_conflict: {
-                constraint: "maps_name_type_key",
-                update_columns: ["enabled"],
-              },
-            },
-            {
-              affected_rows: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: this.$t("map_pool.toggle_pool_type"),
-      });
-    },
-    async toggleActivePool(map: Map) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_maps: [
-            {
-              _set: {
-                active_pool: !map.active_pool,
-              },
-              where: {
-                name: {
-                  _eq: map.name,
-                },
-              },
-            },
-            {
-              affected_rows: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: this.$t("map_pool.toggle_active_pool", {
-          map: map.name,
-        }),
       });
     },
   },

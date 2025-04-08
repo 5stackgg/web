@@ -5,13 +5,19 @@ import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 
 <template>
   <PageHeading v-if="map_pools_by_pk">
-    <template #title> {{ map_pools_by_pk.type }} Map Pool </template>
-    <template #description> modify the maps in the pool</template>
+    <template #title>{{
+      $t("pages.map_pools.pool.title", { type: map_pools_by_pk.type })
+    }}</template>
+    <template #description>{{
+      $t("pages.map_pools.pool.description")
+    }}</template>
   </PageHeading>
 
   <Card v-if="map_pools_by_pk" class="my-4">
     <CardHeader>
-      <CardTitle class="flex justify-between items-center"> </CardTitle>
+      <CardTitle class="flex justify-between items-center">{{
+        $t("pages.map_pools.pool.modify_maps")
+      }}</CardTitle>
     </CardHeader>
     <CardContent>
       <MapPoolForm

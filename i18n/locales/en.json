@@ -206,9 +206,50 @@
       }
     },
     "map_pools": {
+      "title": "Map Pools",
+      "description": "Manage map pools and available maps for matchmaking.",
       "table": {
         "pool_name": "Pool Name",
-        "maps": "Maps"
+        "maps": "Maps",
+        "active_duty": "Active Duty",
+        "available_modes": "Available Modes",
+        "workshop_id": "Workshop ID"
+      },
+      "form": {
+        "name": "Name",
+        "poster": "Poster (optional)",
+        "poster_placeholder": "http://example.com/poster.png",
+        "patch": "Patch (optional)",
+        "patch_placeholder": "http://example.com/patch.png",
+        "workshop_map_id": "Workshop Map ID (optional)",
+        "view_on_steam": "View on Steam",
+        "create_map": "Create Map",
+        "update_map": "Update Map",
+        "delete_map": "Delete Map",
+        "delete_confirm": {
+          "title": "Delete Map",
+          "description": "Are you sure you want to delete this map? This action cannot be undone.",
+          "cancel": "Cancel",
+          "confirm": "Delete"
+        },
+        "success": {
+          "create": "Map created successfully",
+          "update": "Map updated successfully",
+          "delete": "Map deleted successfully"
+        },
+        "error": {
+          "create": "Error creating map",
+          "update": "Error updating map"
+        }
+      },
+      "edit_map": "Edit Map",
+      "toggle_pool_type": "Map {map} has been {type} for {type}",
+      "toggle_active_pool": "Map {map} has been {type} for active duty",
+      "add_new_map": "Add New Map",
+      "pool": {
+        "title": "{type} Map Pool",
+        "description": "Modify the maps in the pool",
+        "modify_maps": "Modify Maps"
       }
     }
   },

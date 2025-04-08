@@ -231,7 +231,7 @@
       "no_notifications": "No notifications at the moment."
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Play",
         "matches": "Matches",
@@ -245,17 +245,33 @@
         "servers": "Servers",
         "dedicated_servers": "Dedicated Servers",
         "game_server_nodes": "Game Server Nodes",
-        "logs": "Logs",
-        "metrics": "Metrics",
+        "logs": "System Logs",
+        "metrics": "System Metrics",
         "app_settings": "App Settings"
+      },
+      "profile": {
+        "my_account": "My Account",
+        "logout": "Logout"
       },
       "footer": {
         "report_issue": "Report an Issue",
         "join_discord": "Join our Discord"
       },
-      "profile": {
-        "my_account": "My Account",
-        "logout": "Logout"
+      "tooltips": {
+        "play": "Play",
+        "matches": "Matches",
+        "tournaments": "Tournaments",
+        "players": "Players",
+        "teams": "Teams",
+        "regions": "Regions",
+        "servers": "Servers",
+        "dedicated_servers": "Dedicated Servers",
+        "game_server_nodes": "Game Server Nodes",
+        "system_logs": "System Logs",
+        "system_metrics": "System Metrics",
+        "app_settings": "App Settings",
+        "report_issue": "Report an Issue",
+        "join_discord": "Join our Discord"
       },
       "logout_dialog": {
         "title": "Logout",

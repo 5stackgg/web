@@ -633,7 +633,7 @@
       "no_notifications": "알림이 없습니다"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "플레이",
         "matches": "매치",
@@ -643,27 +643,37 @@
       },
       "administration": {
         "title": "관리",
-        "regions": "리전",
+        "regions": "지역",
         "servers": "서버",
         "dedicated_servers": "전용 서버",
         "game_server_nodes": "게임 서버 노드",
-        "logs": "로그",
-        "metrics": "메트릭스",
+        "logs": "시스템 로그",
+        "metrics": "시스템 메트릭",
         "app_settings": "앱 설정"
-      },
-      "footer": {
-        "report_issue": "문제 보고",
-        "join_discord": "Discord 참여"
       },
       "profile": {
         "my_account": "내 계정",
         "logout": "로그아웃"
       },
-      "logout_dialog": {
-        "title": "로그아웃",
-        "description": "로그아웃하시겠습니까?",
-        "cancel": "취소",
-        "confirm": "로그아웃"
+      "footer": {
+        "report_issue": "문제 보고",
+        "join_discord": "Discord 참여"
+      },
+      "tooltips": {
+        "play": "플레이",
+        "matches": "매치",
+        "tournaments": "토너먼트",
+        "players": "플레이어",
+        "teams": "팀",
+        "regions": "지역",
+        "servers": "서버",
+        "dedicated_servers": "전용 서버",
+        "game_server_nodes": "게임 서버 노드",
+        "system_logs": "시스템 로그",
+        "system_metrics": "시스템 메트릭",
+        "app_settings": "앱 설정",
+        "report_issue": "문제 보고",
+        "join_discord": "Discord 참여"
       }
     }
   },

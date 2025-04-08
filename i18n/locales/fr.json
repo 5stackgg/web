@@ -633,7 +633,7 @@
       "no_notifications": "Aucune notification"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Jouer",
         "matches": "Matchs",
@@ -645,23 +645,39 @@
         "title": "Administration",
         "regions": "Régions",
         "servers": "Serveurs",
-        "dedicated_servers": "Serveurs dédiés",
-        "game_server_nodes": "Nœuds serveur de jeu",
-        "logs": "Logs",
-        "metrics": "Métriques",
-        "app_settings": "Paramètres de l'application"
-      },
-      "footer": {
-        "report_issue": "Signaler un problème",
-        "join_discord": "Rejoindre Discord"
+        "dedicated_servers": "Serveurs Dédiés",
+        "game_server_nodes": "Nœuds de Serveur de Jeu",
+        "logs": "Journaux Système",
+        "metrics": "Métriques Système",
+        "app_settings": "Paramètres de l'Application"
       },
       "profile": {
-        "my_account": "Mon compte",
+        "my_account": "Mon Compte",
         "logout": "Déconnexion"
+      },
+      "footer": {
+        "report_issue": "Signaler un Problème",
+        "join_discord": "Rejoindre Discord"
+      },
+      "tooltips": {
+        "play": "Jouer",
+        "matches": "Matchs",
+        "tournaments": "Tournois",
+        "players": "Joueurs",
+        "teams": "Équipes",
+        "regions": "Régions",
+        "servers": "Serveurs",
+        "dedicated_servers": "Serveurs Dédiés",
+        "game_server_nodes": "Nœuds de Serveur de Jeu",
+        "system_logs": "Journaux Système",
+        "system_metrics": "Métriques Système",
+        "app_settings": "Paramètres de l'Application",
+        "report_issue": "Signaler un Problème",
+        "join_discord": "Rejoindre Discord"
       },
       "logout_dialog": {
         "title": "Déconnexion",
-        "description": "Voulez-vous vraiment vous déconnecter ?",
+        "description": "Êtes-vous sûr de vouloir vous déconnecter ?",
         "cancel": "Annuler",
         "confirm": "Déconnexion"
       }

@@ -633,7 +633,7 @@
       "no_notifications": "Nessuna notifica"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Gioca",
         "matches": "Partite",
@@ -645,25 +645,35 @@
         "title": "Amministrazione",
         "regions": "Regioni",
         "servers": "Server",
-        "dedicated_servers": "Server dedicati",
-        "game_server_nodes": "Nodi server di gioco",
-        "logs": "Log",
-        "metrics": "Metriche",
-        "app_settings": "Impostazioni applicazione"
-      },
-      "footer": {
-        "report_issue": "Segnala problema",
-        "join_discord": "Unisciti a Discord"
+        "dedicated_servers": "Server Dedicati",
+        "game_server_nodes": "Nodi Server di Gioco",
+        "logs": "Log di Sistema",
+        "metrics": "Metriche di Sistema",
+        "app_settings": "Impostazioni App"
       },
       "profile": {
-        "my_account": "Il mio account",
+        "my_account": "Il Mio Account",
         "logout": "Esci"
       },
-      "logout_dialog": {
-        "title": "Esci",
-        "description": "Vuoi davvero uscire?",
-        "cancel": "Annulla",
-        "confirm": "Esci"
+      "footer": {
+        "report_issue": "Segnala un Problema",
+        "join_discord": "Unisciti al Discord"
+      },
+      "tooltips": {
+        "play": "Gioca",
+        "matches": "Partite",
+        "tournaments": "Tornei",
+        "players": "Giocatori",
+        "teams": "Squadre",
+        "regions": "Regioni",
+        "servers": "Server",
+        "dedicated_servers": "Server Dedicati",
+        "game_server_nodes": "Nodi Server di Gioco",
+        "system_logs": "Log di Sistema",
+        "system_metrics": "Metriche di Sistema",
+        "app_settings": "Impostazioni App",
+        "report_issue": "Segnala un Problema",
+        "join_discord": "Unisciti al Discord"
       }
     }
   },

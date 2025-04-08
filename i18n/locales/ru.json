@@ -633,7 +633,7 @@
       "no_notifications": "Нет уведомлений"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Играть",
         "matches": "Матчи",
@@ -645,19 +645,35 @@
         "title": "Администрирование",
         "regions": "Регионы",
         "servers": "Серверы",
-        "dedicated_servers": "Выделенные серверы",
-        "game_server_nodes": "Узлы игровых серверов",
-        "logs": "Логи",
-        "metrics": "Метрики",
-        "app_settings": "Настройки приложения"
+        "dedicated_servers": "Выделенные Серверы",
+        "game_server_nodes": "Узлы Игрового Сервера",
+        "logs": "Системные Логи",
+        "metrics": "Системные Метрики",
+        "app_settings": "Настройки Приложения"
       },
       "footer": {
-        "report_issue": "Сообщить о проблеме",
+        "report_issue": "Сообщить о Проблеме",
         "join_discord": "Присоединиться к Discord"
       },
       "profile": {
-        "my_account": "Мой аккаунт",
+        "my_account": "Мой Аккаунт",
         "logout": "Выйти"
+      },
+      "tooltips": {
+        "play": "Играть",
+        "matches": "Матчи",
+        "tournaments": "Турниры",
+        "players": "Игроки",
+        "teams": "Команды",
+        "regions": "Регионы",
+        "servers": "Серверы",
+        "dedicated_servers": "Выделенные Серверы",
+        "game_server_nodes": "Узлы Игрового Сервера",
+        "system_logs": "Системные Логи",
+        "system_metrics": "Системные Метрики",
+        "app_settings": "Настройки Приложения",
+        "report_issue": "Сообщить о Проблеме",
+        "join_discord": "Присоединиться к Discord"
       },
       "logout_dialog": {
         "title": "Выйти",

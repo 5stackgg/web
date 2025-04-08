@@ -633,7 +633,7 @@
       "no_notifications": "Sin notificaciones"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Jugar",
         "matches": "Partidas",
@@ -645,25 +645,41 @@
         "title": "Administración",
         "regions": "Regiones",
         "servers": "Servidores",
-        "dedicated_servers": "Servidores dedicados",
-        "game_server_nodes": "Nodos de servidor de juego",
-        "logs": "Registros",
-        "metrics": "Métricas",
-        "app_settings": "Configuración de aplicación"
-      },
-      "footer": {
-        "report_issue": "Reportar problema",
-        "join_discord": "Unirse a Discord"
+        "dedicated_servers": "Servidores Dedicados",
+        "game_server_nodes": "Nodos de Servidor de Juego",
+        "logs": "Registros del Sistema",
+        "metrics": "Métricas del Sistema",
+        "app_settings": "Configuración de la Aplicación"
       },
       "profile": {
-        "my_account": "Mi cuenta",
-        "logout": "Cerrar sesión"
+        "my_account": "Mi Cuenta",
+        "logout": "Cerrar Sesión"
+      },
+      "footer": {
+        "report_issue": "Reportar un Problema",
+        "join_discord": "Únete a nuestro Discord"
+      },
+      "tooltips": {
+        "play": "Jugar",
+        "matches": "Partidas",
+        "tournaments": "Torneos",
+        "players": "Jugadores",
+        "teams": "Equipos",
+        "regions": "Regiones",
+        "servers": "Servidores",
+        "dedicated_servers": "Servidores Dedicados",
+        "game_server_nodes": "Nodos de Servidor de Juego",
+        "system_logs": "Registros del Sistema",
+        "system_metrics": "Métricas del Sistema",
+        "app_settings": "Configuración de la Aplicación",
+        "report_issue": "Reportar un Problema",
+        "join_discord": "Únete a nuestro Discord"
       },
       "logout_dialog": {
-        "title": "Cerrar sesión",
+        "title": "Cerrar Sesión",
         "description": "¿Estás seguro de que quieres cerrar sesión?",
         "cancel": "Cancelar",
-        "confirm": "Cerrar sesión"
+        "confirm": "Cerrar Sesión"
       }
     }
   },

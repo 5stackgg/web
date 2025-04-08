@@ -633,31 +633,47 @@
       "no_notifications": "Nenhuma notificação"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Jogar",
         "matches": "Partidas",
         "tournaments": "Torneios",
         "players": "Jogadores",
-        "teams": "Equipes"
+        "teams": "Times"
       },
       "administration": {
         "title": "Administração",
         "regions": "Regiões",
         "servers": "Servidores",
-        "dedicated_servers": "Servidores dedicados",
-        "game_server_nodes": "Nós de servidor de jogo",
-        "logs": "Logs",
-        "metrics": "Métricas",
-        "app_settings": "Configurações do aplicativo"
-      },
-      "footer": {
-        "report_issue": "Reportar problema",
-        "join_discord": "Entrar no Discord"
+        "dedicated_servers": "Servidores Dedicados",
+        "game_server_nodes": "Nós de Servidor de Jogo",
+        "logs": "Logs do Sistema",
+        "metrics": "Métricas do Sistema",
+        "app_settings": "Configurações do Aplicativo"
       },
       "profile": {
-        "my_account": "Minha conta",
+        "my_account": "Minha Conta",
         "logout": "Sair"
+      },
+      "footer": {
+        "report_issue": "Reportar Problema",
+        "join_discord": "Entre no Discord"
+      },
+      "tooltips": {
+        "play": "Jogar",
+        "matches": "Partidas",
+        "tournaments": "Torneios",
+        "players": "Jogadores",
+        "teams": "Times",
+        "regions": "Regiões",
+        "servers": "Servidores",
+        "dedicated_servers": "Servidores Dedicados",
+        "game_server_nodes": "Nós de Servidor de Jogo",
+        "system_logs": "Logs do Sistema",
+        "system_metrics": "Métricas do Sistema",
+        "app_settings": "Configurações do Aplicativo",
+        "report_issue": "Reportar Problema",
+        "join_discord": "Entre no Discord"
       },
       "logout_dialog": {
         "title": "Sair",

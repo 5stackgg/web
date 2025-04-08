@@ -633,7 +633,7 @@
       "no_notifications": "Ingen notifikationer"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Spil",
         "matches": "Kampe",
@@ -645,19 +645,35 @@
         "title": "Administration",
         "regions": "Regioner",
         "servers": "Servere",
-        "dedicated_servers": "Dedikerede servere",
-        "game_server_nodes": "Spilserver-noder",
-        "logs": "Logs",
-        "metrics": "Målinger",
-        "app_settings": "Applikationsindstillinger"
-      },
-      "footer": {
-        "report_issue": "Rapporter problem",
-        "join_discord": "Deltag i Discord"
+        "dedicated_servers": "Dedikerede Servere",
+        "game_server_nodes": "Spilserverknuder",
+        "logs": "Systemlogs",
+        "metrics": "Systemmetrikker",
+        "app_settings": "Appindstillinger"
       },
       "profile": {
-        "my_account": "Min konto",
+        "my_account": "Min Konto",
         "logout": "Log ud"
+      },
+      "footer": {
+        "report_issue": "Rapportér Problem",
+        "join_discord": "Tilmeld Discord"
+      },
+      "tooltips": {
+        "play": "Spil",
+        "matches": "Kampe",
+        "tournaments": "Turneringer",
+        "players": "Spillere",
+        "teams": "Hold",
+        "regions": "Regioner",
+        "servers": "Servere",
+        "dedicated_servers": "Dedikerede Servere",
+        "game_server_nodes": "Spilserverknuder",
+        "system_logs": "Systemlogs",
+        "system_metrics": "Systemmetrikker",
+        "app_settings": "Appindstillinger",
+        "report_issue": "Rapportér Problem",
+        "join_discord": "Tilmeld Discord"
       },
       "logout_dialog": {
         "title": "Log ud",

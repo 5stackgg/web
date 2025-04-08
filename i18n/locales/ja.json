@@ -231,7 +231,7 @@
       "no_notifications": "通知はありません"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "プレイ",
         "matches": "マッチ",
@@ -245,8 +245,8 @@
         "servers": "サーバー",
         "dedicated_servers": "専用サーバー",
         "game_server_nodes": "ゲームサーバーノード",
-        "logs": "ログ",
-        "metrics": "メトリクス",
+        "logs": "システムログ",
+        "metrics": "システムメトリクス",
         "app_settings": "アプリ設定"
       },
       "footer": {
@@ -262,6 +262,22 @@
         "description": "ログアウトしてもよろしいですか？",
         "cancel": "キャンセル",
         "confirm": "ログアウト"
+      },
+      "tooltips": {
+        "play": "プレイ",
+        "matches": "マッチ",
+        "tournaments": "トーナメント",
+        "players": "プレイヤー",
+        "teams": "チーム",
+        "regions": "リージョン",
+        "servers": "サーバー",
+        "dedicated_servers": "専用サーバー",
+        "game_server_nodes": "ゲームサーバーノード",
+        "system_logs": "システムログ",
+        "system_metrics": "システムメトリクス",
+        "app_settings": "アプリ設定",
+        "report_issue": "問題を報告",
+        "join_discord": "Discordに参加"
       }
     }
   },

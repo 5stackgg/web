@@ -633,7 +633,7 @@
       "no_notifications": "Keine Benachrichtigungen"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Spielen",
         "matches": "Spiele",
@@ -642,26 +642,42 @@
         "teams": "Teams"
       },
       "administration": {
-        "title": "Verwaltung",
+        "title": "Administration",
         "regions": "Regionen",
         "servers": "Server",
         "dedicated_servers": "Dedizierte Server",
-        "game_server_nodes": "Spielserver-Knoten",
-        "logs": "Protokolle",
-        "metrics": "Metriken",
+        "game_server_nodes": "Game-Server-Knoten",
+        "logs": "Systemprotokolle",
+        "metrics": "Systemmetriken",
         "app_settings": "Anwendungseinstellungen"
-      },
-      "footer": {
-        "report_issue": "Problem melden",
-        "join_discord": "Discord beitreten"
       },
       "profile": {
         "my_account": "Mein Konto",
         "logout": "Abmelden"
       },
+      "footer": {
+        "report_issue": "Problem melden",
+        "join_discord": "Discord beitreten"
+      },
+      "tooltips": {
+        "play": "Spielen",
+        "matches": "Spiele",
+        "tournaments": "Turniere",
+        "players": "Spieler",
+        "teams": "Teams",
+        "regions": "Regionen",
+        "servers": "Server",
+        "dedicated_servers": "Dedizierte Server",
+        "game_server_nodes": "Game-Server-Knoten",
+        "system_logs": "Systemprotokolle",
+        "system_metrics": "Systemmetriken",
+        "app_settings": "Anwendungseinstellungen",
+        "report_issue": "Problem melden",
+        "join_discord": "Discord beitreten"
+      },
       "logout_dialog": {
         "title": "Abmelden",
-        "description": "Möchten Sie sich wirklich abmelden?",
+        "description": "Sind Sie sicher, dass Sie sich abmelden möchten?",
         "cancel": "Abbrechen",
         "confirm": "Abmelden"
       }

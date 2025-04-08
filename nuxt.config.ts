@@ -83,18 +83,18 @@ export default defineNuxtConfig({
     },
     locales: [
       { code: "en", name: "English", file: "en.json", flag: "🇬🇧" },
-      { code: "sv", name: "Svenska", file: "sv.json", flag: "🇸🇪" },
-      { code: "ua", name: "Українська", file: "ua.json", flag: "🇺🇦" },
-      { code: "ko", name: "한국어", file: "ko.json", flag: "🇰🇷" },
-      { code: "ja", name: "日本語", file: "ja.json", flag: "🇯🇵" },
-      { code: "de", name: "Deutsch", file: "de.json", flag: "🇩🇪" },
-      { code: "fr", name: "Français", file: "fr.json", flag: "🇫🇷" },
-      { code: "it", name: "Italiano", file: "it.json", flag: "🇮🇹" },
-      { code: "es", name: "Español", file: "es.json", flag: "🇪🇸" },
-      { code: "da", name: "Dansk", file: "da.json", flag: "🇩🇰" },
-      { code: "pl", name: "Polski", file: "pl.json", flag: "🇵🇱" },
-      { code: "ru", name: "Русский", file: "ru.json", flag: "🇷🇺" },
-      { code: "lv", name: "Latviešu", file: "lv.json", flag: "🇱🇻" },
+      { code: "sv", name: "Svenska", file: "sv.json", flag: "🇸🇪" }, // Swedish
+      { code: "ua", name: "Українська", file: "ua.json", flag: "🇺🇦" }, // Ukrainian
+      { code: "ko", name: "한국어", file: "ko.json", flag: "🇰🇷" }, // Korean
+      { code: "ja", name: "日本語", file: "ja.json", flag: "🇯🇵" }, // Japanese
+      { code: "de", name: "Deutsch", file: "de.json", flag: "🇩🇪" }, // German
+      { code: "fr", name: "Français", file: "fr.json", flag: "🇫🇷" }, // French
+      { code: "it", name: "Italiano", file: "it.json", flag: "🇮🇹" }, // Italian
+      { code: "es", name: "Español", file: "es.json", flag: "🇪🇸" }, // Spanish
+      { code: "da", name: "Dansk", file: "da.json", flag: "🇩🇰" }, // Danish
+      { code: "pl", name: "Polski", file: "pl.json", flag: "🇵🇱" }, // Polish
+      { code: "ru", name: "Русский", file: "ru.json", flag: "🇷🇺" }, // Russian
+      { code: "lv", name: "Latviešu", file: "lv.json", flag: "🇱🇻" }, // Latvian
       {
         code: "pt-BR",
         name: "Português Brasileiro",

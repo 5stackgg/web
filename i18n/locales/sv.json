@@ -231,7 +231,7 @@
       "no_notifications": "Inga aviseringar just nu."
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Spela",
         "matches": "Matcher",
@@ -243,17 +243,18 @@
         "title": "Administration",
         "regions": "Regioner",
         "servers": "Servrar",
-        "dedicated_servers": "Dedikerade servrar",
-        "game_server_nodes": "Spelservrar",
-        "logs": "Loggar",
-        "metrics": "Mätvärden",
+        "dedicated_servers": "Dedikerade Servrar",
+        "game_server_nodes": "Spelserver Noder",
+        "logs": "Systemloggar",
+        "metrics": "Systemmetrik",
         "app_settings": "Appinställningar"
       },
       "footer": {
-        "report_issue": "Rapportera ett problem",
-        "join_discord": "Gå med i vår Discord"
+        "report_issue": "Rapportera Problem",
+        "join_discord": "Gå med i Discord"
       },
       "profile": {
+        "my_account": "Mitt Konto",
         "my_account": "Mitt konto",
         "logout": "Logga ut"
       },

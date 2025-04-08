@@ -633,7 +633,7 @@
       "no_notifications": "Brak powiadomień"
     },
     "app_nav": {
-      "brand": "5Stack",
+      "brand": "5stack",
       "navigation": {
         "play": "Graj",
         "matches": "Mecze",
@@ -645,25 +645,41 @@
         "title": "Administracja",
         "regions": "Regiony",
         "servers": "Serwery",
-        "dedicated_servers": "Serwery dedykowane",
-        "game_server_nodes": "Węzły serwerów gry",
-        "logs": "Logi",
-        "metrics": "Metryki",
-        "app_settings": "Ustawienia aplikacji"
-      },
-      "footer": {
-        "report_issue": "Zgłoś problem",
-        "join_discord": "Dołącz do Discorda"
+        "dedicated_servers": "Serwery Dedykowane",
+        "game_server_nodes": "Węzły Serwera Gry",
+        "logs": "Logi Systemowe",
+        "metrics": "Metryki Systemowe",
+        "app_settings": "Ustawienia Aplikacji"
       },
       "profile": {
-        "my_account": "Moje konto",
-        "logout": "Wyloguj się"
+        "my_account": "Moje Konto",
+        "logout": "Wyloguj"
+      },
+      "footer": {
+        "report_issue": "Zgłoś Problem",
+        "join_discord": "Dołącz do Discorda"
+      },
+      "tooltips": {
+        "play": "Graj",
+        "matches": "Mecze",
+        "tournaments": "Turnieje",
+        "players": "Gracze",
+        "teams": "Drużyny",
+        "regions": "Regiony",
+        "servers": "Serwery",
+        "dedicated_servers": "Serwery Dedykowane",
+        "game_server_nodes": "Węzły Serwera Gry",
+        "system_logs": "Logi Systemowe",
+        "system_metrics": "Metryki Systemowe",
+        "app_settings": "Ustawienia Aplikacji",
+        "report_issue": "Zgłoś Problem",
+        "join_discord": "Dołącz do Discorda"
       },
       "logout_dialog": {
-        "title": "Wyloguj się",
+        "title": "Wyloguj",
         "description": "Czy na pewno chcesz się wylogować?",
         "cancel": "Anuluj",
-        "confirm": "Wyloguj się"
+        "confirm": "Wyloguj"
       }
     }
   },

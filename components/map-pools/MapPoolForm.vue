@@ -166,7 +166,7 @@ export default {
       });
 
       toast({
-        title: this.$t("map_pool.save_success"),
+        title: this.$t("pages.map_pool.save_success"),
       });
     },
   },

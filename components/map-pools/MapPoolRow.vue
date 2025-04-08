@@ -130,7 +130,7 @@ export default {
           }),
         });
         toast({
-          title: this.$t("map_pool.toggle_pool_type", {
+          title: this.$t("pages.map_pool.toggle_pool_type", {
             map: map.name,
             type: type,
           }),
@@ -166,7 +166,7 @@ export default {
       });
 
       toast({
-        title: this.$t("map_pool.toggle_pool_type"),
+        title: this.$t("pages.map_pool.toggle_pool_type"),
       });
     },
     async toggleActivePool(map: Map) {
@@ -191,7 +191,7 @@ export default {
       });
 
       toast({
-        title: this.$t("map_pool.toggle_active_pool", {
+        title: this.$t("pages.map_pool.toggle_active_pool", {
           map: map.name,
         }),
       });

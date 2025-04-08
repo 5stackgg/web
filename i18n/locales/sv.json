@@ -1,907 +1,970 @@
 {
-  "pages": {
-    "system_metrics": {
-      "node": "Nod",
-      "cpu_usage": "CPU-användning",
-      "memory_usage": "Minnesanvändning",
-      "services": "Tjänster"
-    },
-    "system_logs": {
-      "follow_logs": "Följ loggar",
-      "timestamps": "Tidsstämplar"
-    },
-    "login": {
-      "sign_in": "Logga in med Steam",
-      "powered_by": "Drivs av"
-    },
-    "coming_soon": "Kommer snart!",
-    "tournaments": {
-      "title": "Kommande turneringar",
-      "admin_disabled": "Administratören har inaktiverat skapande av turneringar",
-      "create": "Skapa turnering",
-      "tabs": {
-        "tournaments": "Turneringar",
-        "my_recent": "Mina senaste turneringar"
-      },
-      "no_recent": "Du har inga senaste turneringar."
-    },
-    "teams": {
-      "title": "Lag",
-      "description": "Hantera lag och trupper.",
-      "create": "Skapa lag",
-      "tabs": {
-        "my_teams": "Mina lag",
-        "other_teams": "Andra lag"
-      },
-      "search": "Sök..."
-    },
-    "settings": {
-      "profile": {
-        "title": "Profil",
-        "description": "Dina profildetaljer",
-        "steam_id": "Steam ID",
-        "name": "Namn",
-        "avatar_url": "Profilbilds-URL",
-        "country": "Land",
-        "select_country": "Välj land...",
-        "search_country": "Sök land...",
-        "no_country_found": "Inget land hittades.",
-        "update": "Uppdatera profil"
-      },
-      "appearance": {
-        "title": "Utseende",
-        "description": "Anpassa appens utseende. Växla automatiskt mellan ljust och mörkt tema.",
-        "theme": "Tema",
-        "theme_description": "Välj tema för instrumentpanelen.",
-        "light": "Ljust",
-        "dark": "Mörkt"
-      },
-      "application": {
-        "matchmaking": {
-          "title": "Matchmaking",
-          "description": "Hantera matchmaking-inställningar"
+    "pages": {
+        "system_metrics": {
+            "node": "Nod",
+            "cpu_usage": "CPU-användning",
+            "memory_usage": "Minnesanvändning",
+            "services": "Tjänster"
         },
-        "discord": {
-          "title": "Discord",
-          "invite_link": "Discord-inbjudningslänk",
-          "webhook": "Discord Webhook",
-          "webhook_description": "Vi använder denna Discord Webhook för att skicka meddelanden som kräver åtgärd från en spelare. T.ex. matchproblem, buggar, etc.",
-          "support_role": "Discord Support-roll ID",
-          "support_role_description": "Denna roll kommer att nämnas när den används för supportåtgärder. Du kan få roll-ID från Discord-applikationen genom att aktivera utvecklarläge och högerklicka för att kopiera ID.",
-          "update": "Uppdatera"
+        "system_logs": {
+            "follow_logs": "Följ loggar",
+            "timestamps": "Tidsstämplar"
         },
-        "create_matches_role": "Minsta roll för att skapa matcher",
-        "create_tournaments_role": "Minsta roll som får skapa turneringar",
-        "update": "Uppdatera",
+        "login": {
+            "sign_in": "Logga in med Steam",
+            "powered_by": "Drivs av"
+        },
+        "coming_soon": "Kommer snart!",
+        "tournaments": {
+            "title": "Kommande turneringar",
+            "admin_disabled": "Administratören har inaktiverat skapande av turneringar",
+            "create": "Skapa turnering",
+            "tabs": {
+                "tournaments": "Turneringar",
+                "my_recent": "Mina senaste turneringar"
+            },
+            "no_recent": "Du har inga senaste turneringar."
+        },
+        "teams": {
+            "title": "Lag",
+            "description": "Hantera lag och trupper.",
+            "create": "Skapa lag",
+            "tabs": {
+                "my_teams": "Mina lag",
+                "other_teams": "Andra lag"
+            },
+            "search": "Sök..."
+        },
+        "settings": {
+            "profile": {
+                "title": "Profil",
+                "description": "Dina profildetaljer",
+                "steam_id": "Steam ID",
+                "name": "Namn",
+                "avatar_url": "Profilbilds-URL",
+                "country": "Land",
+                "select_country": "Välj land...",
+                "search_country": "Sök land...",
+                "no_country_found": "Inget land hittades.",
+                "update": "Uppdatera profil"
+            },
+            "appearance": {
+                "title": "Utseende",
+                "description": "Anpassa appens utseende. Växla automatiskt mellan ljust och mörkt tema.",
+                "theme": "Tema",
+                "theme_description": "Välj tema för instrumentpanelen.",
+                "light": "Ljust",
+                "dark": "Mörkt"
+            },
+            "application": {
+                "matchmaking": {
+                    "title": "Matchmaking",
+                    "description": "Hantera matchmaking-inställningar"
+                },
+                "discord": {
+                    "title": "Discord",
+                    "invite_link": "Discord-inbjudningslänk",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "Vi använder denna Discord Webhook för att skicka meddelanden som kräver åtgärd från en spelare. T.ex. matchproblem, buggar, etc.",
+                    "support_role": "Discord Support-roll ID",
+                    "support_role_description": "Denna roll kommer att nämnas när den används för supportåtgärder. Du kan få roll-ID från Discord-applikationen genom att aktivera utvecklarläge och högerklicka för att kopiera ID.",
+                    "update": "Uppdatera"
+                },
+                "create_matches_role": "Minsta roll för att skapa matcher",
+                "create_tournaments_role": "Minsta roll som får skapa turneringar",
+                "update": "Uppdatera",
+                "players": {
+                    "force_name_registration": "Tvinga spelarnamnregistrering",
+                    "force_name_registration_description": "Om tvingad att ha spelarregistrering måste spelaren ange ett namn som kommer att användas på plattformen."
+                }
+            }
+        },
+        "regions": {
+            "title": "Regioner",
+            "description": "Regioner låter dig gruppera spelservrar efter geografisk plats. Spelare kan välja föredragna regioner under matchmaking och veto oönskade regioner under matchinställningar.",
+            "create": "Skapa region",
+            "table": {
+                "name": "Namn",
+                "status": "Status",
+                "available_servers": "Tillgängliga servrar / Totalt antal servrar",
+                "description": "Beskrivning",
+                "use_lan_ip": "Använd LAN-IP",
+                "actions": "Åtgärder"
+            },
+            "edit": "Redigera region",
+            "delete": {
+                "title": "Ta bort region",
+                "description": "Är du säker på att du vill ta bort denna region? Denna åtgärd kan inte ångras.",
+                "cancel": "Avbryt",
+                "confirm": "Ta bort"
+            }
+        },
         "players": {
-          "force_name_registration": "Tvinga spelarnamnregistrering",
-          "force_name_registration_description": "Om tvingad att ha spelarregistrering måste spelaren ange ett namn som kommer att användas på plattformen."
-        }
-      }
-    },
-    "regions": {
-      "title": "Regioner",
-      "description": "Regioner låter dig gruppera spelservrar efter geografisk plats. Spelare kan välja föredragna regioner under matchmaking och veto oönskade regioner under matchinställningar.",
-      "create": "Skapa region",
-      "table": {
-        "name": "Namn",
-        "status": "Status",
-        "available_servers": "Tillgängliga servrar / Totalt antal servrar",
-        "description": "Beskrivning",
-        "use_lan_ip": "Använd LAN-IP",
-        "actions": "Åtgärder"
-      },
-      "edit": "Redigera region",
-      "delete": {
-        "title": "Ta bort region",
-        "description": "Är du säker på att du vill ta bort denna region? Denna åtgärd kan inte ångras.",
-        "cancel": "Avbryt",
-        "confirm": "Ta bort"
-      }
-    },
-    "players": {
-      "title": "Spelare",
-      "search": "Sök efter spelare",
-      "detail": {
-        "player_stats": "Spelarstatistik",
-        "kills": "Dödade",
-        "assists": "Assists",
-        "deaths": "Dödsfall",
-        "kd": "K/D",
-        "last_ten_wins": "Sista 10 vinster",
-        "last_ten_losses": "Sista 10 förluster",
-        "matches": "Matcher"
-      }
-    },
-    "play": {
-      "title": "Kommande matcher",
-      "description": "Dina kommande matcher som du antingen hanterar eller är med i uppställningen.",
-      "admin_disabled": "Administratören har inaktiverat skapande av matcher",
-      "create_match": "Skapa match",
-      "open_matches": {
-        "title": "Öppna matcher",
-        "description": "Matcher som är öppna lobbies för alla att gå med i."
-      },
-      "matchmaking": {
-        "title": "Matchmaking"
-      }
-    },
-    "matches": {
-      "title": "Mina senaste matcher",
-      "description": "Dina senaste avslutade matcher",
-      "admin_disabled": "Administratören har inaktiverat skapande av matcher",
-      "create": "Skapa match",
-      "last_ten_wins": "Sista 10 vinster",
-      "last_ten_losses": "Sista 10 förluster",
-      "my_match_history": "Min matchhistorik",
-      "other_matches": "Andra matcher",
-      "create_page": {
-        "title": "Skapa match",
-        "pick_up_game": "Pick-up-spel",
-        "pick_up_game_description": "Ett pick-up-spel kräver inte val av lag.",
-        "team_1": "Lag 1",
-        "search_team": "Sök efter ett lag...",
-        "team_2": "Lag 2",
-        "intra_team_scrimmage": "Du kan välja samma lag för båda platserna för att skapa en intra-lag träning.",
-        "create_button": "Skapa match"
-      },
-      "detail": {
-        "schedule": "Schema"
-      }
-    },
-    "game_server_nodes": {
-      "title": "Spelservrar",
-      "description": "Spelservrar utökar dina servererbjudanden till olika regioner eller ger redundans för on-demand-servrar.",
-      "not_supported": {
-        "title": "Din panel stöder för närvarande inte spelservrar.",
-        "description": "Se dokumentationen för att konfigurera spelservrar."
-      },
-      "create": "Skapa spelserver",
-      "installation_script": "Installationsskript",
-      "cs_version_info": "CS2 versionsinformation:",
-      "table": {
-        "node": "Nod",
-        "lan_public_ip": "LAN/Publik IP",
-        "cs_build_id": "CS Build ID",
-        "region": "Region",
-        "capacity": "Kapacitet",
-        "ports": "Portar",
-        "ports_tooltip": "Vidarebefordrade portar till nod",
-        "enabled": "Aktiverad",
-        "no_nodes": "Inga spelservrar"
-      },
-      "build_id": "Build ID: {id}",
-      "last_updated": "Senast uppdaterad: {date}"
-    },
-    "dedicated_servers": {
-      "title": "Dedikerade servrar",
-      "description": "Du kan konfigurera en dedikerad server som alltid kör spelservermoden",
-      "create": {
-        "title": "Skapa dedikerad server"
-      },
-      "table": {
-        "connection_details": "Anslutningsdetaljer",
-        "label": "Etikett",
-        "region": "Region",
-        "tv_port": "TV-port",
-        "enabled": "Aktiverad",
-        "yes": "Ja",
-        "no": "Nej"
-      },
-      "detail": {
-        "enabled": "Aktiverad",
-        "server_plugin_config": "Serverplugin-konfiguration",
-        "hide_config": "Dölj konfiguration",
-        "show_config": "Visa konfiguration",
-        "config_location": "Denna konfiguration ska placeras i:",
-        "copy": "Kopiera",
-        "edit": "Redigera",
-        "delete": "Ta bort",
-        "delete_confirm": {
-          "title": "Är du helt säker?",
-          "description": "Denna åtgärd kan inte ångras. Detta kommer permanent ta bort din server och ta bort associerade data från våra servrar.",
-          "cancel": "Avbryt",
-          "continue": "Fortsätt"
-        }
-      }
-    }
-  },
-  "layouts": {
-    "profile_settings": {
-      "title": "Profilinställningar",
-      "description": "Hantera dina kontoinställningar och preferenser",
-      "discord": {
-        "unlink": "Koppla bort Discord",
-        "link": "Koppla Discord",
-        "unlink_dialog": {
-          "title": "Koppla bort Discord-konto",
-          "description": "Är du säker på att du vill koppla bort ditt Discord-konto? Detta kommer ta bort anslutningen mellan dina 5Stack- och Discord-konton.",
-          "cancel": "Avbryt",
-          "confirm": "Koppla bort"
+            "title": "Spelare",
+            "search": "Sök efter spelare",
+            "detail": {
+                "player_stats": "Spelarstatistik",
+                "kills": "Dödade",
+                "assists": "Assists",
+                "deaths": "Dödsfall",
+                "kd": "K/D",
+                "last_ten_wins": "Sista 10 vinster",
+                "last_ten_losses": "Sista 10 förluster",
+                "matches": "Matcher"
+            }
         },
-        "unlinked": "Discord-konto kopplat bort framgångsrikt"
-      }
+        "play": {
+            "title": "Kommande matcher",
+            "description": "Dina kommande matcher som du antingen hanterar eller är med i uppställningen.",
+            "admin_disabled": "Administratören har inaktiverat skapande av matcher",
+            "create_match": "Skapa match",
+            "open_matches": {
+                "title": "Öppna matcher",
+                "description": "Matcher som är öppna lobbies för alla att gå med i."
+            },
+            "matchmaking": {
+                "title": "Matchmaking"
+            }
+        },
+        "matches": {
+            "title": "Mina senaste matcher",
+            "description": "Dina senaste avslutade matcher",
+            "admin_disabled": "Administratören har inaktiverat skapande av matcher",
+            "create": "Skapa match",
+            "last_ten_wins": "Sista 10 vinster",
+            "last_ten_losses": "Sista 10 förluster",
+            "my_match_history": "Min matchhistorik",
+            "other_matches": "Andra matcher",
+            "create_page": {
+                "title": "Skapa match",
+                "pick_up_game": "Pick-up-spel",
+                "pick_up_game_description": "Ett pick-up-spel kräver inte val av lag.",
+                "team_1": "Lag 1",
+                "search_team": "Sök efter ett lag...",
+                "team_2": "Lag 2",
+                "intra_team_scrimmage": "Du kan välja samma lag för båda platserna för att skapa en intra-lag träning.",
+                "create_button": "Skapa match"
+            },
+            "detail": {
+                "schedule": "Schema"
+            }
+        },
+        "game_server_nodes": {
+            "title": "Spelservrar",
+            "description": "Spelservrar utökar dina servererbjudanden till olika regioner eller ger redundans för on-demand-servrar.",
+            "not_supported": {
+                "title": "Din panel stöder för närvarande inte spelservrar.",
+                "description": "Se dokumentationen för att konfigurera spelservrar."
+            },
+            "create": "Skapa spelserver",
+            "installation_script": "Installationsskript",
+            "cs_version_info": "CS2 versionsinformation:",
+            "table": {
+                "node": "Nod",
+                "lan_public_ip": "LAN/Publik IP",
+                "cs_build_id": "CS Build ID",
+                "region": "Region",
+                "capacity": "Kapacitet",
+                "ports": "Portar",
+                "ports_tooltip": "Vidarebefordrade portar till nod",
+                "enabled": "Aktiverad",
+                "no_nodes": "Inga spelservrar"
+            },
+            "build_id": "Build ID: {id}",
+            "last_updated": "Senast uppdaterad: {date}"
+        },
+        "dedicated_servers": {
+            "title": "Dedikerade servrar",
+            "description": "Du kan konfigurera en dedikerad server som alltid kör spelservermoden",
+            "create": {
+                "title": "Skapa dedikerad server"
+            },
+            "table": {
+                "connection_details": "Anslutningsdetaljer",
+                "label": "Etikett",
+                "region": "Region",
+                "tv_port": "TV-port",
+                "enabled": "Aktiverad",
+                "yes": "Ja",
+                "no": "Nej"
+            },
+            "detail": {
+                "enabled": "Aktiverad",
+                "server_plugin_config": "Serverplugin-konfiguration",
+                "hide_config": "Dölj konfiguration",
+                "show_config": "Visa konfiguration",
+                "config_location": "Denna konfiguration ska placeras i:",
+                "copy": "Kopiera",
+                "edit": "Redigera",
+                "delete": "Ta bort",
+                "delete_confirm": {
+                    "title": "Är du helt säker?",
+                    "description": "Denna åtgärd kan inte ångras. Detta kommer permanent ta bort din server och ta bort associerade data från våra servrar.",
+                    "cancel": "Avbryt",
+                    "continue": "Fortsätt"
+                }
+            }
+        },
+        "map_pools": {
+            "description": "Hantera kartpooler och tillgängliga kartor för matchmaking.",
+            "table": {
+                "pool_name": "Poolnamn",
+                "available_modes": "Tillgängliga lägen",
+                "workshop_id": "Workshop ID",
+                "maps": "Kartor",
+                "active_duty": "Aktiv tjänst"
+            },
+            "form": {
+                "poster": "Poster (valfritt)",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "Patch (valfritt)",
+                "patch_placeholder": "http://example.com/patch.png",
+                "workshop_map_id": "Workshop Map ID (tillval)",
+                "view_on_steam": "Utsikt över Steam",
+                "create_map": "Skapa karta",
+                "update_map": "Uppdatera karta",
+                "delete_map": "Delete Map",
+                "delete_confirm": {
+                    "title": "Delete Map",
+                    "description": "Är du säker på att du vill ta bort den här kartan? Denna åtgärd kan inte ångras.",
+                    "cancel": "Avbryt",
+                    "confirm": "Ta bort"
+                },
+                "success": {
+                    "create": "Karta som skapats framgångsrikt",
+                    "update": "Karta uppdaterad framgångsrikt",
+                    "delete": "Karta raderad framgångsrikt"
+                },
+                "error": {
+                    "create": "Fel skapa karta",
+                    "update": "Fel uppdatera karta"
+                },
+                "name": "Namn"
+            },
+            "edit_map": "Edit Map",
+            "toggle_pool_type": "Karta {map} har varit {typ} för {typ}",
+            "toggle_active_pool": "Karta {map} har varit {typ} för aktiv plikt",
+            "add_new_map": "Lägg till ny karta",
+            "pool": {
+                "title": "Map Pool",
+                "description": "Hantera kartor i poolen",
+                "modify_maps": "Ändra kartor i poolen"
+            },
+            "save_success": "Karta pool sparad framgångsrikt",
+            "title": "Kartpooler"
+        },
+        "map_pool": {
+            "toggle_pool_type": "Karta {map} har varit {typ} för {typ}",
+            "toggle_active_pool": "Karta {map} har varit {typ} för aktiv plikt",
+            "save_success": "Karta pool sparad framgångsrikt"
+        },
+        "components": {
+            "map_pools": {
+                "view_on_steam": "Utsikt över Steam"
+            }
+        }
     },
-    "application_settings": {
-      "title": "Applikationsinställningar",
-      "description": "Inställningar som påverkar applikationen."
+    "layouts": {
+        "profile_settings": {
+            "title": "Profilinställningar",
+            "description": "Hantera dina kontoinställningar och preferenser",
+            "discord": {
+                "unlink": "Koppla bort Discord",
+                "link": "Koppla Discord",
+                "unlink_dialog": {
+                    "title": "Koppla bort Discord-konto",
+                    "description": "Är du säker på att du vill koppla bort ditt Discord-konto? Detta kommer ta bort anslutningen mellan dina 5Stack- och Discord-konton.",
+                    "cancel": "Avbryt",
+                    "confirm": "Koppla bort"
+                },
+                "unlinked": "Discord-konto kopplat bort framgångsrikt"
+            }
+        },
+        "application_settings": {
+            "title": "Applikationsinställningar",
+            "description": "Inställningar som påverkar applikationen."
+        },
+        "system_update": {
+            "title": "Systemuppdatering tillgänglig",
+            "description": "Följande tjänster har uppdateringar:",
+            "note": "Observera: Det kommer ta några minuter att bearbeta och verifiera de nya uppdateringarna.",
+            "fix_link": "Om en systemuppgradering kvarstår, kan du behöva fixa dina versioner",
+            "cancel": "Avbryt",
+            "update": "Uppdatera"
+        },
+        "match_lobby": {
+            "versus": "MOT"
+        },
+        "notifications": {
+            "title": "Aviseringar",
+            "delete": "Ta bort",
+            "dismiss": "Avvisa",
+            "delete_all_read": "Ta bort alla lästa aviseringar",
+            "no_notifications": "Inga aviseringar just nu."
+        },
+        "app_nav": {
+            "brand": "5stack",
+            "navigation": {
+                "play": "Spela",
+                "matches": "Matcher",
+                "tournaments": "Turneringar",
+                "players": "Spelare",
+                "teams": "Lag"
+            },
+            "administration": {
+                "title": "Administration",
+                "regions": "Regioner",
+                "servers": "Servrar",
+                "dedicated_servers": "Dedikerade Servrar",
+                "game_server_nodes": "Spelserver Noder",
+                "logs": "Systemloggar",
+                "metrics": "Systemmetrik",
+                "app_settings": "Appinställningar",
+                "map_pools": "Kartpooler"
+            },
+            "footer": {
+                "report_issue": "Rapportera Problem",
+                "join_discord": "Gå med i Discord"
+            },
+            "profile": {
+                "my_account": "Mitt Konto",
+                "logout": "Logga ut"
+            },
+            "logout_dialog": {
+                "title": "Logga ut",
+                "description": "Är du säker på att du vill logga ut?",
+                "cancel": "Avbryt",
+                "confirm": "Logga ut"
+            },
+            "tooltips": {
+                "play": "Spela",
+                "matches": "Matcher",
+                "tournaments": "Turneringar",
+                "players": "Spelare",
+                "teams": "Lag",
+                "regions": "Regioner",
+                "servers": "Servrar",
+                "dedicated_servers": "Dedikerade Servrar",
+                "game_server_nodes": "Spelserver Noder",
+                "system_logs": "Systemloggar",
+                "system_metrics": "Systemmetrik",
+                "app_settings": "Appinställningar",
+                "report_issue": "Rapportera Problem",
+                "join_discord": "Gå med i Discord",
+                "map_pools": "Kartpooler"
+            }
+        }
     },
-    "system_update": {
-      "title": "Systemuppdatering tillgänglig",
-      "description": "Följande tjänster har uppdateringar:",
-      "note": "Observera: Det kommer ta några minuter att bearbeta och verifiera de nya uppdateringarna.",
-      "fix_link": "Om en systemuppgradering kvarstår, kan du behöva fixa dina versioner",
-      "cancel": "Avbryt",
-      "update": "Uppdatera"
+    "pwa": {
+        "install": {
+            "title": "Lägg till på startsidan",
+            "description": "Denna webbplats erbjuder app-liknande funktioner. Lägg till den på din startsida för enkel åtkomst.",
+            "step1": "Tryck på 'Dela'-knappen",
+            "step2": "Välj 'Lägg till på startsidan'",
+            "tooltip": "Installera app",
+            "button": "Installera app"
+        }
     },
-    "match_lobby": {
-      "versus": "MOT"
-    },
-    "notifications": {
-      "title": "Aviseringar",
-      "delete": "Ta bort",
-      "dismiss": "Avvisa",
-      "delete_all_read": "Ta bort alla lästa aviseringar",
-      "no_notifications": "Inga aviseringar just nu."
-    },
-    "app_nav": {
-      "brand": "5stack",
-      "navigation": {
-        "play": "Spela",
-        "matches": "Matcher",
-        "tournaments": "Turneringar",
-        "players": "Spelare",
-        "teams": "Lag"
-      },
-      "administration": {
-        "title": "Administration",
-        "regions": "Regioner",
-        "servers": "Servrar",
-        "dedicated_servers": "Dedikerade Servrar",
-        "game_server_nodes": "Spelserver Noder",
-        "logs": "Systemloggar",
-        "metrics": "Systemmetrik",
-        "app_settings": "Appinställningar",
-        "map_pools": "Kartpooler"
-      },
-      "footer": {
-        "report_issue": "Rapportera Problem",
-        "join_discord": "Gå med i Discord"
-      },
-      "profile": {
-        "my_account": "Mitt Konto",
-        "logout": "Logga ut"
-      },
-      "logout_dialog": {
-        "title": "Logga ut",
-        "description": "Är du säker på att du vill logga ut?",
+    "common": {
         "cancel": "Avbryt",
-        "confirm": "Logga ut"
-      },
-      "tooltips": {
-        "play": "Spela",
-        "matches": "Matcher",
-        "tournaments": "Turneringar",
-        "players": "Spelare",
-        "teams": "Lag",
-        "regions": "Regioner",
-        "servers": "Servrar",
-        "dedicated_servers": "Dedikerade Servrar",
-        "game_server_nodes": "Spelserver Noder",
-        "system_logs": "Systemloggar",
-        "system_metrics": "Systemmetrik",
-        "app_settings": "Appinställningar",
-        "report_issue": "Rapportera Problem",
-        "join_discord": "Gå med i Discord",
-        "map_pools": "Kartpooler"
-      }
-    }
-  },
-  "pwa": {
-    "install": {
-      "title": "Lägg till på startsidan",
-      "description": "Denna webbplats erbjuder app-liknande funktioner. Lägg till den på din startsida för enkel åtkomst.",
-      "step1": "Tryck på 'Dela'-knappen",
-      "step2": "Välj 'Lägg till på startsidan'",
-      "tooltip": "Installera app",
-      "button": "Installera app"
-    }
-  },
-  "common": {
-    "cancel": "Avbryt",
-    "tbd": "TBD",
-    "boolean": {
-      "yes": "Ja",
-      "no": "Nej"
+        "tbd": "TBD",
+        "boolean": {
+            "yes": "Ja",
+            "no": "Nej"
+        },
+        "actions": {
+            "edit": "Redigera",
+            "delete": "Ta bort"
+        },
+        "close": "Stäng",
+        "confirm": "Bekräfta"
     },
-    "actions": {
-      "edit": "Redigera",
-      "delete": "Ta bort"
-    },
-    "close": "Stäng",
-    "confirm": "Bekräfta"
-  },
-  "tournament": {
-    "overview": "Översikt",
-    "bracket": "Turneringstabell",
-    "teams": "{count} lag",
-    "settings": "Inställningar",
-    "admin": "Administratör",
-    "organizers": "Organisatörer",
-    "join": {
-      "title": "Gå med i turnering",
-      "joined_with": "Gick med med {name}",
-      "requirements": "Du behöver minst {count} spelare för att gå med i denna turnering"
-    },
-    "tournament_team": {
-      "players_registered": "{count} registrerade spelare",
-      "remove": "Ta bort lag"
-    },
-    "add_team": {
-      "title": "Lägg till lag"
-    },
-    "form": {
-      "create": "Skapa turnering",
-      "description_help": "Skapa en ny turnering för ditt community",
-      "name": "Turneringsnamn",
-      "description": "Beskrivning",
-      "start": "Startdatum",
-      "pick_date": "Välj ett datum",
-      "update": "Uppdatera turnering",
-      "match_options": "Matchalternativ"
-    },
-    "table": {
-      "tournament": "Turnering",
-      "status": "Status",
-      "type": "Typ",
-      "teams_joined": "Anslutna lag",
-      "starts": "Startar",
-      "no_tournaments_found": "Inga turneringar hittades"
-    },
-    "stage": {
-      "title": "Fas {number}",
-      "teams": "{min}-{max} lag",
-      "edit": "Redigera fas",
-      "delete": "Ta bort fas",
-      "edit_title": "Redigera fas",
-      "confirm_delete": "Ta bort fas",
-      "delete_description": "Är du säker på att du vill ta bort denna fas?",
-      "type": "Fastyp",
-      "type_placeholder": "Välj fastyp...",
-      "min_teams": "Minsta antal lag",
-      "min_teams_placeholder": "Välj minsta antal lag...",
-      "max_teams": "Största antal lag",
-      "max_teams_placeholder": "Välj största antal lag...",
-      "update": "Uppdatera fas",
-      "create": "Skapa fas",
-      "no_stages": "Inga faser",
-      "start_building": "Börja bygga din turnering",
-      "add_first": "Lägg till första fasen",
-      "add_another": "Lägg till en till fas",
-      "not_setup": "Turneringsfaser inte konfigurerade"
-    },
-    "match": {
-      "team_1": "Lag 1",
-      "team_2": "Lag 2",
-      "round_match": "Omgång {round} Match {match}"
-    },
-    "organizer": {
-      "title": "Turneringsorganisatörer",
-      "description": "Hantera turneringsorganisatörer",
-      "add": "Lägg till organisatör",
-      "name": "Namn",
-      "actions": "Åtgärder",
-      "no_organizers": "Inga organisatörer",
-      "no_organizers_description": "Inga organisatörer har lagts till i denna turnering än",
-      "remove": "Ta bort organisatör",
-      "confirm_remove": "Är du säker på att du vill ta bort denna organisatör?",
-      "remove_description": "Detta kommer ta bort organisatören från turneringen"
+    "tournament": {
+        "overview": "Översikt",
+        "bracket": "Turneringstabell",
+        "teams": "{count} lag",
+        "settings": "Inställningar",
+        "admin": "Administratör",
+        "organizers": "Organisatörer",
+        "join": {
+            "title": "Gå med i turnering",
+            "joined_with": "Gick med med {name}",
+            "requirements": "Du behöver minst {count} spelare för att gå med i denna turnering"
+        },
+        "tournament_team": {
+            "players_registered": "{count} registrerade spelare",
+            "remove": "Ta bort lag"
+        },
+        "add_team": {
+            "title": "Lägg till lag"
+        },
+        "form": {
+            "create": "Skapa turnering",
+            "description_help": "Skapa en ny turnering för ditt community",
+            "name": "Turneringsnamn",
+            "description": "Beskrivning",
+            "start": "Startdatum",
+            "pick_date": "Välj ett datum",
+            "update": "Uppdatera turnering",
+            "match_options": "Matchalternativ"
+        },
+        "table": {
+            "tournament": "Turnering",
+            "status": "Status",
+            "type": "Typ",
+            "teams_joined": "Anslutna lag",
+            "starts": "Startar",
+            "no_tournaments_found": "Inga turneringar hittades"
+        },
+        "stage": {
+            "title": "Fas {number}",
+            "teams": "{min}-{max} lag",
+            "edit": "Redigera fas",
+            "delete": "Ta bort fas",
+            "edit_title": "Redigera fas",
+            "confirm_delete": "Ta bort fas",
+            "delete_description": "Är du säker på att du vill ta bort denna fas?",
+            "type": "Fastyp",
+            "type_placeholder": "Välj fastyp...",
+            "min_teams": "Minsta antal lag",
+            "min_teams_placeholder": "Välj minsta antal lag...",
+            "max_teams": "Största antal lag",
+            "max_teams_placeholder": "Välj största antal lag...",
+            "update": "Uppdatera fas",
+            "create": "Skapa fas",
+            "no_stages": "Inga faser",
+            "start_building": "Börja bygga din turnering",
+            "add_first": "Lägg till första fasen",
+            "add_another": "Lägg till en till fas",
+            "not_setup": "Turneringsfaser inte konfigurerade"
+        },
+        "match": {
+            "team_1": "Lag 1",
+            "team_2": "Lag 2",
+            "round_match": "Omgång {round} Match {match}"
+        },
+        "organizer": {
+            "title": "Turneringsorganisatörer",
+            "description": "Hantera turneringsorganisatörer",
+            "add": "Lägg till organisatör",
+            "name": "Namn",
+            "actions": "Åtgärder",
+            "no_organizers": "Inga organisatörer",
+            "no_organizers_description": "Inga organisatörer har lagts till i denna turnering än",
+            "remove": "Ta bort organisatör",
+            "confirm_remove": "Är du säker på att du vill ta bort denna organisatör?",
+            "remove_description": "Detta kommer ta bort organisatören från turneringen"
+        },
+        "team": {
+            "manage_roster": "Hantera trupp",
+            "eligible": "Behörig",
+            "not_eligible": "Behöver {count} fler spelare",
+            "leave_tournament": "Lämna turnering",
+            "leave_team": "Lämna lag",
+            "player": "Spelare",
+            "role": "Roll",
+            "slot": "Plats {number}",
+            "add_player": "Lägg till spelare",
+            "pending_invites": "Väntande inbjudningar",
+            "new": "Skapa nytt lag",
+            "select": "Välj befintligt lag",
+            "name": "Lagnamn",
+            "select_role": "Välj roll",
+            "no_roles": "Inga roller tillgängliga",
+            "remove_member": "Ta bort medlem",
+            "confirm_remove_member": "Är du säker på att du vill ta bort denna medlem?",
+            "remove_member_description": "Detta kommer ta bort medlemmen från turneringslaget",
+            "cancel_invite": "Avbryt inbjudan",
+            "confirm_cancel_invite": "Är du säker på att du vill avbryta denna inbjudan?",
+            "cancel_invite_description": "Detta kommer avbryta inbjudan för denna medlem",
+            "my_teams": "Mina lag",
+            "my_teams_description": "Lägg till ett av dina lag i turneringen",
+            "no_eligible_teams": "Du har inga behöriga lag att lägga till i denna turnering",
+            "team": "Lag",
+            "select_team": "Välj ett lag...",
+            "search_team": "Sök efter ett lag...",
+            "add_to_tournament": "Lägg till i turnering"
+        },
+        "actions": {
+            "open_registration": "Öppna registrering",
+            "close_registration": "Stäng registrering",
+            "cancel": "Avbryt turnering"
+        },
+        "upcoming": {
+            "empty": "Du har inga kommande turneringar."
+        },
+        "server": {
+            "remove": "Ta bort server",
+            "confirm_remove": "Är du säker på att du vill ta bort denna server?",
+            "remove_description": "Detta kommer ta bort servern från turneringen"
+        }
     },
     "team": {
-      "manage_roster": "Hantera trupp",
-      "eligible": "Behörig",
-      "not_eligible": "Behöver {count} fler spelare",
-      "leave_tournament": "Lämna turnering",
-      "leave_team": "Lämna lag",
-      "player": "Spelare",
-      "role": "Roll",
-      "slot": "Plats {number}",
-      "add_player": "Lägg till spelare",
-      "pending_invites": "Väntande inbjudningar",
-      "new": "Skapa nytt lag",
-      "select": "Välj befintligt lag",
-      "name": "Lagnamn",
-      "select_role": "Välj roll",
-      "no_roles": "Inga roller tillgängliga",
-      "remove_member": "Ta bort medlem",
-      "confirm_remove_member": "Är du säker på att du vill ta bort denna medlem?",
-      "remove_member_description": "Detta kommer ta bort medlemmen från turneringslaget",
-      "cancel_invite": "Avbryt inbjudan",
-      "confirm_cancel_invite": "Är du säker på att du vill avbryta denna inbjudan?",
-      "cancel_invite_description": "Detta kommer avbryta inbjudan för denna medlem",
-      "my_teams": "Mina lag",
-      "my_teams_description": "Lägg till ett av dina lag i turneringen",
-      "no_eligible_teams": "Du har inga behöriga lag att lägga till i denna turnering",
-      "team": "Lag",
-      "select_team": "Välj ett lag...",
-      "search_team": "Sök efter ett lag...",
-      "add_to_tournament": "Lägg till i turnering"
-    },
-    "actions": {
-      "open_registration": "Öppna registrering",
-      "close_registration": "Stäng registrering",
-      "cancel": "Avbryt turnering"
-    },
-    "upcoming": {
-      "empty": "Du har inga kommande turneringar."
-    },
-    "server": {
-      "remove": "Ta bort server",
-      "confirm_remove": "Är du säker på att du vill ta bort denna server?",
-      "remove_description": "Detta kommer ta bort servern från turneringen"
-    }
-  },
-  "team": {
-    "table": {
-      "team": "Lag",
-      "wins": "Vinster",
-      "losses": "Förluster",
-      "overtime_losses": "Övertidsförluster",
-      "no_teams_found": "Inga lag hittades"
-    },
-    "invite": {
-      "team_title": "Laginvitation",
-      "tournament_title": "Turneringsinbjudan",
-      "tournament_message": "Du har blivit inbjuden att gå med i en turnering",
-      "team_message": "Du har blivit inbjuden att gå med i ett lag",
-      "invited_by": "Inbjuden av",
-      "deny": "Neka",
-      "accept": "Acceptera"
-    },
-    "roles": {
-      "captain": "Kapten"
-    },
-    "leave": "Lämna lag",
-    "management": {
-      "edit": "Redigera lag"
-    },
-    "confirm": {
-      "leave": "Är du säker på att du vill lämna detta lag?",
-      "delete": {
-        "title": "Ta bort lag",
-        "description": "Är du säker på att du vill ta bort detta lag? Denna åtgärd kan inte ångras."
-      }
-    },
-    "members": {
-      "title": "Lagmedlemmar",
-      "invite_player": "Bjud in spelare",
-      "pending_invites": "Väntande inbjudningar"
-    },
-    "form": {
-      "name": "Lagnamn",
-      "name_placeholder": "Ange lagnamn...",
-      "short_name": "Kort namn",
-      "short_name_placeholder": "Ange kort namn (max 3 tecken)...",
-      "owner": "Lägare",
-      "select_owner": "Välj lägare...",
-      "update": "Uppdatera lag",
-      "create": "Skapa lag"
-    },
-    "search": {
-      "no_teams": "Inga lag hittades"
-    },
-    "member": {
-      "remove": "Ta bort medlem",
-      "cancel_invite": "Avbryt inbjudan",
-      "confirm_cancel_invite": "Är du säker på att du vill avbryta denna inbjudan?",
-      "confirm_remove": "Är du säker på att du vill ta bort denna medlem?",
-      "cancel_invite_description": "Detta kommer avbryta inbjudan för denna medlem",
-      "remove_description": "Detta kommer ta bort medlemmen från laget"
-    }
-  },
-  "match": {
-    "simple": {
-      "vs": "mot"
-    },
-    "my_upcoming": {
-      "no_matches": "Du har inga kommande matcher."
-    },
-    "recent": {
-      "title": "Senaste matcher",
-      "no_matches": "Du har inga senaste matcher."
-    },
-    "options": {
-      "table": {
-        "match": "Match",
-        "type": "Typ",
-        "maps": "Kartor",
-        "no_matches_found": "Inga matcher hittades",
-        "join": "Gå med"
-      },
-      "type": {
-        "label": "Matchtyp"
-      },
-      "best_of": {
-        "label": "Bäst av",
-        "description": "Vinnaren bestäms av vem som vinner majoriteten av ett specificerat antal spel",
-        "placeholder": "Välj ett bäst av värde"
-      },
-      "map_veto_settings": {
-        "label": "Kartveto",
-        "description": "Kartvetoprocess: lag 1 ban, lag 2 ban, lag 1 val, lag 2 val sida, lag 2 val, lag 1 val sida, lag 2 ban. Processen upprepas tills slutlig karta är vald",
-        "custom_pool": "Anpassad kartpool",
-        "active_duty": "Aktiv tjänst kartpool",
-        "custom_pool_tooltip": "Att välja en anpassad kartpool låter dig välja kartor utanför den nuvarande aktiva tjänstpoolen"
-      },
-      "advanced": {
-        "title": "Avancerade inställningar",
-        "hide": "Dölj",
-        "show": "Visa",
-        "toggle": "Växla avancerade inställningar",
-        "overtime": {
-          "label": "Övertid",
-          "description": "Varje övertid är ett bäst av 6."
+        "table": {
+            "team": "Lag",
+            "wins": "Vinster",
+            "losses": "Förluster",
+            "overtime_losses": "Övertidsförluster",
+            "no_teams_found": "Inga lag hittades"
         },
-        "knife_round": {
-          "label": "Knivrunda",
-          "description": "Knivrundor spelas endast när inget lag valde kartan i vetot."
+        "invite": {
+            "team_title": "Laginvitation",
+            "tournament_title": "Turneringsinbjudan",
+            "tournament_message": "Du har blivit inbjuden att gå med i en turnering",
+            "team_message": "Du har blivit inbjuden att gå med i ett lag",
+            "invited_by": "Inbjuden av",
+            "deny": "Neka",
+            "accept": "Acceptera"
         },
-        "max_rounds": {
-          "label": "Max rundor",
-          "description": "Antalet rundor som spelas innan lagen byter sida.",
-          "placeholder": "Välj max rundor"
+        "roles": {
+            "captain": "Kapten"
         },
-        "region": {
-          "title": "Regioninställningar",
-          "lan_match": "LAN-match",
-          "veto": {
-            "label": "Veto",
-            "description": "Låter lag veto och välja serverregion."
-          },
-          "preferred": "Föredragna regioner",
-          "single": "Region",
-          "placeholder": "Välj region",
-          "any": "Vilken som helst",
-          "description": "Välj föredragna regioner för matchen."
+        "leave": "Lämna lag",
+        "management": {
+            "edit": "Redigera lag"
         },
-        "substitutes": {
-          "label": "Antal ersättare",
-          "description": "Lägger till ytterligare platser som ska läggas till i varje uppställning.",
-          "range": "Ange värde mellan 0 och 5."
+        "confirm": {
+            "leave": "Är du säker på att du vill lämna detta lag?",
+            "delete": {
+                "title": "Ta bort lag",
+                "description": "Är du säker på att du vill ta bort detta lag? Denna åtgärd kan inte ångras."
+            }
         },
-        "tv_delay": {
-          "label": "TV-fördröjning",
-          "range": "Ange värde mellan 0 och 120."
+        "members": {
+            "title": "Lagmedlemmar",
+            "invite_player": "Bjud in spelare",
+            "pending_invites": "Väntande inbjudningar"
         },
-        "timeouts": {
-          "tactical": {
-            "label": "Taktisk timeout-inställningar",
-            "description": "Taktiska timeouts kallas genom att skriva .tac, och är 30 sekunder långa."
-          },
-          "technical": {
-            "label": "Tekniska timeout-inställningar",
-            "description": "Tekniska timeouts kallas genom att skriva .pause, och har ingen tidsgräns."
-          },
-          "options": {
-            "admins": "Administratörer",
-            "coaches": "Tränare",
-            "everyone": "Alla"
-          }
+        "form": {
+            "name": "Lagnamn",
+            "name_placeholder": "Ange lagnamn...",
+            "short_name": "Kort namn",
+            "short_name_placeholder": "Ange kort namn (max 3 tecken)...",
+            "owner": "Lägare",
+            "select_owner": "Välj lägare...",
+            "update": "Uppdatera lag",
+            "create": "Skapa lag"
+        },
+        "search": {
+            "no_teams": "Inga lag hittades"
+        },
+        "member": {
+            "remove": "Ta bort medlem",
+            "cancel_invite": "Avbryt inbjudan",
+            "confirm_cancel_invite": "Är du säker på att du vill avbryta denna inbjudan?",
+            "confirm_remove": "Är du säker på att du vill ta bort denna medlem?",
+            "cancel_invite_description": "Detta kommer avbryta inbjudan för denna medlem",
+            "remove_description": "Detta kommer ta bort medlemmen från laget"
         }
-      },
-      "max_rounds": "Max rundor",
-      "tv_delay": "TV-fördröjning",
-      "seconds": "sekunder",
-      "coaches": "Tränare",
-      "overtime": "Övertid",
-      "knife_round": "Knivrunda",
-      "map_veto_enabled": "Kartveto",
-      "region_veto": "Regionveto",
-      "substitutes": "Ersättare",
-      "timeout_setting": "Timeout-inställning",
-      "tech_timeout_setting": "Teknisk timeout-inställning",
-      "map_pool": "Kartpool"
     },
-    "schedule": {
-      "pick_date": "Välj ett datum",
-      "schedule": "Schema"
+    "match": {
+        "simple": {
+            "vs": "mot"
+        },
+        "my_upcoming": {
+            "no_matches": "Du har inga kommande matcher."
+        },
+        "recent": {
+            "title": "Senaste matcher",
+            "no_matches": "Du har inga senaste matcher."
+        },
+        "options": {
+            "table": {
+                "match": "Match",
+                "type": "Typ",
+                "maps": "Kartor",
+                "no_matches_found": "Inga matcher hittades",
+                "join": "Gå med"
+            },
+            "type": {
+                "label": "Matchtyp"
+            },
+            "best_of": {
+                "label": "Bäst av",
+                "description": "Vinnaren bestäms av vem som vinner majoriteten av ett specificerat antal spel",
+                "placeholder": "Välj ett bäst av värde"
+            },
+            "map_veto_settings": {
+                "label": "Kartveto",
+                "description": "Kartvetoprocess: lag 1 ban, lag 2 ban, lag 1 val, lag 2 val sida, lag 2 val, lag 1 val sida, lag 2 ban. Processen upprepas tills slutlig karta är vald",
+                "custom_pool": "Anpassad kartpool",
+                "active_duty": "Aktiv tjänst kartpool",
+                "custom_pool_tooltip": "Att välja en anpassad kartpool låter dig välja kartor utanför den nuvarande aktiva tjänstpoolen"
+            },
+            "advanced": {
+                "title": "Avancerade inställningar",
+                "hide": "Dölj",
+                "show": "Visa",
+                "toggle": "Växla avancerade inställningar",
+                "overtime": {
+                    "label": "Övertid",
+                    "description": "Varje övertid är ett bäst av 6."
+                },
+                "knife_round": {
+                    "label": "Knivrunda",
+                    "description": "Knivrundor spelas endast när inget lag valde kartan i vetot."
+                },
+                "max_rounds": {
+                    "label": "Max rundor",
+                    "description": "Antalet rundor som spelas innan lagen byter sida.",
+                    "placeholder": "Välj max rundor"
+                },
+                "region": {
+                    "title": "Regioninställningar",
+                    "lan_match": "LAN-match",
+                    "veto": {
+                        "label": "Veto",
+                        "description": "Låter lag veto och välja serverregion."
+                    },
+                    "preferred": "Föredragna regioner",
+                    "single": "Region",
+                    "placeholder": "Välj region",
+                    "any": "Vilken som helst",
+                    "description": "Välj föredragna regioner för matchen."
+                },
+                "substitutes": {
+                    "label": "Antal ersättare",
+                    "description": "Lägger till ytterligare platser som ska läggas till i varje uppställning.",
+                    "range": "Ange värde mellan 0 och 5."
+                },
+                "tv_delay": {
+                    "label": "TV-fördröjning",
+                    "range": "Ange värde mellan 0 och 120."
+                },
+                "timeouts": {
+                    "tactical": {
+                        "label": "Taktisk timeout-inställningar",
+                        "description": "Taktiska timeouts kallas genom att skriva .tac, och är 30 sekunder långa."
+                    },
+                    "technical": {
+                        "label": "Tekniska timeout-inställningar",
+                        "description": "Tekniska timeouts kallas genom att skriva .pause, och har ingen tidsgräns."
+                    },
+                    "options": {
+                        "admins": "Administratörer",
+                        "coaches": "Tränare",
+                        "everyone": "Alla"
+                    }
+                }
+            },
+            "max_rounds": "Max rundor",
+            "tv_delay": "TV-fördröjning",
+            "seconds": "sekunder",
+            "coaches": "Tränare",
+            "overtime": "Övertid",
+            "knife_round": "Knivrunda",
+            "map_veto_enabled": "Kartveto",
+            "region_veto": "Regionveto",
+            "substitutes": "Ersättare",
+            "timeout_setting": "Timeout-inställning",
+            "tech_timeout_setting": "Teknisk timeout-inställning",
+            "map_pool": "Kartpool"
+        },
+        "schedule": {
+            "pick_date": "Välj ett datum",
+            "schedule": "Schema"
+        },
+        "player": {
+            "captain": "Kapten",
+            "status": {
+                "offline_not_ready": "Offline och inte redo",
+                "online_not_ready": "Online men inte redo",
+                "ready": "Redo",
+                "offline": "Offline",
+                "online_not_in_game": "Online men inte i spelet",
+                "in_game": "I spelet"
+            },
+            "assign_slot": "Tilldela plats"
+        },
+        "tabs": {
+            "overview": "Översikt",
+            "utility": "Verktyg",
+            "opening_duels": "Öppningsdueller",
+            "clutches": "Clutches",
+            "map_veto_tab": "Kartveto",
+            "settings": "Matchinställningar",
+            "server_console": "Serverkonsol",
+            "randomize_teams": "Slumpmässiga lag",
+            "invited_to_match": "Inbjuden till match",
+            "join_roster": "Gå med i en trupp",
+            "restore_round": "Återställ runda",
+            "select_round_to_restore": "Välj runda att återställa",
+            "server_information": "Serverinformation",
+            "type": "Typ",
+            "region": "Region",
+            "round": "Runda {number}"
+        },
+        "status": {
+            "cancelled": "Avbruten",
+            "finished": "Avslutad",
+            "waiting_server": "Väntar på server...",
+            "scheduled_asap": "Schemalagd ASAP"
+        },
+        "winner": {
+            "set": "Sätt matchvinnare",
+            "select_lineup": "Välj uppställning"
+        },
+        "region_veto": {
+            "banning": "bannar en region",
+            "organizer_override": "Matchorganisatörs överskrivning",
+            "confirm_ban": "Bekräfta ban",
+            "server_region": "Serverregion",
+            "select_region": "Välj en region"
+        },
+        "picks": {
+            "decider": "Avgörande"
+        },
+        "decider": "Avgörande",
+        "map_veto": {
+            "is_picking": "väljer en",
+            "organizer_override": "Matchorganisatörs överskrivning",
+            "select_side": "Välj sida som ditt lag vill starta på",
+            "your_turn": "Din tur",
+            "pick": "Välj",
+            "confirm": "Bekräfta"
+        },
+        "map_lineup": {
+            "picked": "Vald"
+        },
+        "vs": "mot",
+        "auto_canceling": "Auto avbryter",
+        "actions": {
+            "call_support": "Ring efter support",
+            "start_veto": "Starta veto",
+            "skip_checkin": "Hoppa över incheckning",
+            "cancel": "Avbryt match"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "Kastade flashar",
+                "flash_assists": "Flash assists",
+                "enemies_flashed": "Fiender bländade",
+                "team_flashed": "Lag bländat",
+                "avg_blind_time": "Genomsnittlig bländningstid",
+                "he_damage": "HE-skada",
+                "molotov_damage": "Brännbomb / Molotov-skada",
+                "seconds": "sekunder"
+            },
+            "discord_user": "Detta är en Discord-användare, registrera ditt discord-id för att aktivera statistikspårning genom att skriva",
+            "discord_link": "i den officiella discord-kanalen."
+        },
+        "opening_duels": {
+            "attempts": "Försök",
+            "success": "Framgång"
+        },
+        "clutches": {
+            "won": "Vann",
+            "lost": "Förlorade",
+            "against": "Mot",
+            "no_clutches": "Inga clutches denna runda",
+            "vs": "mot",
+            "round": "Runda {number}"
+        },
+        "join": {
+            "live": "Match är live",
+            "call_organizer": "Ring efter organisatör"
+        },
+        "check_in": {
+            "title": "Checka in",
+            "checked_in": "Incheckad",
+            "check_in": "Checka in",
+            "description": "Vänligen checka in för att bekräfta din deltagande i denna match"
+        },
+        "coach": {
+            "assign": "Tilldela tränare"
+        },
+        "download_demos": "Ladda ner demos",
+        "coaches": "Tränare",
+        "best_of": "Bäst av {count}",
+        "overview": {
+            "promote_captain": "Befordra till kapten",
+            "switch_teams": "Byt lag",
+            "remove_from_lineup": "Ta bort från uppställning",
+            "leave_lineup": "Lämna uppställning",
+            "kills": "D",
+            "kills_full": "Dödade",
+            "assists": "A",
+            "assists_full": "Assists",
+            "deaths": "D",
+            "deaths_full": "Dödsfall",
+            "kd": "K/D",
+            "hs": "HS%",
+            "team_damage": "Lagskada",
+            "multi_kill_rounds": "Multi-dödsfallsrundor",
+            "mkr": "MKR",
+            "k2": "2K",
+            "k3": "3K",
+            "k4": "4K",
+            "k5": "5K",
+            "knifes": "Knivar",
+            "zeus": "Zeus",
+            "total_damage": "Total skada",
+            "substitute": "(ersättare)",
+            "join": "Gå med",
+            "slot": "Plats {number}"
+        },
+        "server": {
+            "offline": "Servern är offline!",
+            "booting": "Server startar",
+            "assign": "Tilldela matchserver",
+            "select": "Välj en server",
+            "dedicated": "Dedikerade servrar",
+            "on_demand": "On Demand",
+            "assigned": "Tilldelad matchserver"
+        },
+        "lobby": {
+            "access_updated": "Matchlobbyåtkomst uppdaterad till {access}"
+        }
+    },
+    "ui": {
+        "tooltips": {
+            "expand": "Expandera",
+            "fullscreen": "Fullskärm",
+            "download": "Ladda ner loggar"
+        },
+        "logs": {
+            "follow": "Följ loggar",
+            "timestamps": "Visa tidsstämplar",
+            "container": "Containerloggar"
+        }
     },
     "player": {
-      "captain": "Kapten",
-      "status": {
-        "offline_not_ready": "Offline och inte redo",
-        "online_not_ready": "Online men inte redo",
-        "ready": "Redo",
-        "offline": "Offline",
-        "online_not_in_game": "Online men inte i spelet",
-        "in_game": "I spelet"
-      },
-      "assign_slot": "Tilldela plats"
+        "sanction": {
+            "button": "Sanktionera spelare",
+            "reason_description": "Vänligen ange en tydlig anledning för denna sanktion"
+        },
+        "search": {
+            "online_only": "Online",
+            "no_players_found": "Inga spelare hittades.",
+            "found_players": "Spelare hittade",
+            "placeholder": "Sök efter spelare..."
+        },
+        "sanctions": {
+            "title": "Sanktioner",
+            "expires": "Upphör",
+            "active_count": "Aktiva sanktioner",
+            "past_count": "Tidigare sanktioner"
+        },
+        "registration": {
+            "title": "Registrera ditt namn",
+            "description": "Detta namn kommer att användas för alla matcher / turneringar du deltar i.",
+            "warning": "Detta namn kan inte ändras efter att det har skickats in",
+            "name_label": "Namn",
+            "confirm_button": "Bekräfta namn",
+            "success": "Namn bekräftat"
+        },
+        "status": {
+            "banned": "Spelaren är bannad",
+            "muted": "Spelaren är tystad",
+            "gagged": "Spelaren är gagged",
+            "add_friend": "Lägg till som vän"
+        },
+        "change_name": {
+            "button": "Ändra namn",
+            "title": "Ändra namn",
+            "request_title": "Begär namnändring",
+            "description": "Vänligen ange namnet du vill ändra till.",
+            "request_description": "Vänligen ange namnet du vill ändra ditt konto till.",
+            "name_label": "Namn",
+            "success": "Ändrade spelarens namn",
+            "request_success": "Begärde namnändring"
+        }
     },
-    "tabs": {
-      "overview": "Översikt",
-      "utility": "Verktyg",
-      "opening_duels": "Öppningsdueller",
-      "clutches": "Clutches",
-      "map_veto_tab": "Kartveto",
-      "settings": "Matchinställningar",
-      "server_console": "Serverkonsol",
-      "randomize_teams": "Slumpmässiga lag",
-      "invited_to_match": "Inbjuden till match",
-      "join_roster": "Gå med i en trupp",
-      "restore_round": "Återställ runda",
-      "select_round_to_restore": "Välj runda att återställa",
-      "server_information": "Serverinformation",
-      "type": "Typ",
-      "region": "Region",
-      "round": "Runda {number}"
+    "maps": {
+        "veto": {
+            "pick": "Välj karta"
+        },
+        "official": "Officiella kartor",
+        "workshop": "Workshop-kartor",
+        "active_duty": "Aktiv tjänst"
     },
-    "status": {
-      "cancelled": "Avbruten",
-      "finished": "Avslutad",
-      "waiting_server": "Väntar på server...",
-      "scheduled_asap": "Schemalagd ASAP"
+    "region": {
+        "form": {
+            "name": "Namn",
+            "description": "Beskrivning",
+            "use_lan": "Använd LAN",
+            "update": "Uppdatera region",
+            "create": "Skapa region"
+        }
     },
-    "winner": {
-      "set": "Sätt matchvinnare",
-      "select_lineup": "Välj uppställning"
+    "matchmaking": {
+        "lobby": {
+            "title": "Matchmaking lobby",
+            "leave": "Lämna lobby",
+            "invite_player": "Bjud in spelare till lobby",
+            "invites": "Lobby-inbjudningar",
+            "access_updated": "Lobbyåtkomst uppdaterad till {access}"
+        },
+        "friends": {
+            "title": "Vänner",
+            "sync": "Synkronisera",
+            "search": "Sök",
+            "pending_requests": "Väntande förfrågningar",
+            "invite_to_lobby": "Bjud in till lobby",
+            "remove": "Ta bort",
+            "online": "Online",
+            "offline": "Offline",
+            "join_lobby": "Gå med i Lobby"
+        },
+        "leave": "Lämna",
+        "position": "Nuvarande position",
+        "join": "Gå med",
+        "confirm": {
+            "title": "Bekräfta matchmaking",
+            "ready": "Redo",
+            "players": "Spelare i kö"
+        },
+        "banned": "Du är bannad från matchmaking",
+        "go_to_match": "Gå till match",
+        "temp_banned": "Du är tillfälligt bannad från matchmaking"
     },
-    "region_veto": {
-      "banning": "bannar en region",
-      "organizer_override": "Matchorganisatörs överskrivning",
-      "confirm_ban": "Bekräfta ban",
-      "server_region": "Serverregion",
-      "select_region": "Välj en region"
+    "game_server": {
+        "update_cs": "Uppdatera CS",
+        "install_cs": "Installera CS",
+        "select_region": "Välj region",
+        "remove_node": "Ta bort nod",
+        "validation": {
+            "start_port_less_than_end": "Startportintervall måste vara mindre än slutportintervall",
+            "end_port_greater_than_start": "Slutportintervall måste vara större än startportintervall med minst 2"
+        },
+        "toast": {
+            "cs_updating": "CS2 uppdateras på noden",
+            "ports_updated": "Nodportar uppdaterade"
+        }
     },
-    "picks": {
-      "decider": "Avgörande"
+    "chat": {
+        "lobby_chat": "Lobby-chatt",
+        "message_placeholder": "Skriv ett meddelande..."
     },
-    "decider": "Avgörande",
-    "map_veto": {
-      "is_picking": "väljer en",
-      "organizer_override": "Matchorganisatörs överskrivning",
-      "select_side": "Välj sida som ditt lag vill starta på",
-      "your_turn": "Din tur",
-      "pick": "Välj",
-      "confirm": "Bekräfta"
-    },
-    "map_lineup": {
-      "picked": "Vald"
-    },
-    "vs": "mot",
-    "auto_canceling": "Auto avbryter",
-    "actions": {
-      "call_support": "Ring efter support",
-      "start_veto": "Starta veto",
-      "skip_checkin": "Hoppa över incheckning",
-      "cancel": "Avbryt match"
-    },
-    "lineup": {
-      "stats": {
-        "flashes_thrown": "Kastade flashar",
-        "flash_assists": "Flash assists",
-        "enemies_flashed": "Fiender bländade",
-        "team_flashed": "Lag bländat",
-        "avg_blind_time": "Genomsnittlig bländningstid",
-        "he_damage": "HE-skada",
-        "molotov_damage": "Brännbomb / Molotov-skada",
-        "seconds": "sekunder"
-      },
-      "discord_user": "Detta är en Discord-användare, registrera ditt discord-id för att aktivera statistikspårning genom att skriva",
-      "discord_link": "i den officiella discord-kanalen."
-    },
-    "opening_duels": {
-      "attempts": "Försök",
-      "success": "Framgång"
-    },
-    "clutches": {
-      "won": "Vann",
-      "lost": "Förlorade",
-      "against": "Mot",
-      "no_clutches": "Inga clutches denna runda",
-      "vs": "mot",
-      "round": "Runda {number}"
-    },
-    "join": {
-      "live": "Match är live",
-      "call_organizer": "Ring efter organisatör"
-    },
-    "check_in": {
-      "title": "Checka in",
-      "checked_in": "Incheckad",
-      "check_in": "Checka in",
-      "description": "Vänligen checka in för att bekräfta din deltagande i denna match"
-    },
-    "coach": {
-      "assign": "Tilldela tränare"
-    },
-    "download_demos": "Ladda ner demos",
-    "coaches": "Tränare",
-    "best_of": "Bäst av {count}",
-    "overview": {
-      "promote_captain": "Befordra till kapten",
-      "switch_teams": "Byt lag",
-      "remove_from_lineup": "Ta bort från uppställning",
-      "leave_lineup": "Lämna uppställning",
-      "kills": "D",
-      "kills_full": "Dödade",
-      "assists": "A",
-      "assists_full": "Assists",
-      "deaths": "D",
-      "deaths_full": "Dödsfall",
-      "kd": "K/D",
-      "hs": "HS%",
-      "team_damage": "Lagskada",
-      "multi_kill_rounds": "Multi-dödsfallsrundor",
-      "mkr": "MKR",
-      "k2": "2K",
-      "k3": "3K",
-      "k4": "4K",
-      "k5": "5K",
-      "knifes": "Knivar",
-      "zeus": "Zeus",
-      "total_damage": "Total skada",
-      "substitute": "(ersättare)",
-      "join": "Gå med",
-      "slot": "Plats {number}"
+    "charts": {
+        "usage": "Användning"
     },
     "server": {
-      "offline": "Servern är offline!",
-      "booting": "Server startar",
-      "assign": "Tilldela matchserver",
-      "select": "Välj en server",
-      "dedicated": "Dedikerade servrar",
-      "on_demand": "On Demand",
-      "assigned": "Tilldelad matchserver"
+        "form": {
+            "label": "Serveretikett",
+            "host": "Värd",
+            "region": "Region",
+            "select_region": "Välj region",
+            "rcon_password": "RCON-lösenord",
+            "rcon_password_description": "Lämna tomt för att behålla det nuvarande lösenordet",
+            "port": "Spelport",
+            "tv_port": "TV-port",
+            "update": "Uppdatera server",
+            "create": "Skapa server"
+        },
+        "rcon": {
+            "quick_commands": "Snabbkommandon",
+            "refresh_match": "Uppdatera match",
+            "metamod_info": "Metamod-info",
+            "css_info": "CSS-info",
+            "output": "Utdata",
+            "command_placeholder": "Ange kommando...",
+            "send_command": "Skicka kommando"
+        }
     },
-    "lobby": {
-      "access_updated": "Matchlobbyåtkomst uppdaterad till {access}"
+    "components": {
+        "map_pools": {
+            "view_on_steam": "Utsikt över Steam"
+        }
     }
-  },
-  "ui": {
-    "tooltips": {
-      "expand": "Expandera",
-      "fullscreen": "Fullskärm",
-      "download": "Ladda ner loggar"
-    },
-    "logs": {
-      "follow": "Följ loggar",
-      "timestamps": "Visa tidsstämplar",
-      "container": "Containerloggar"
-    }
-  },
-  "player": {
-    "sanction": {
-      "button": "Sanktionera spelare",
-      "reason_description": "Vänligen ange en tydlig anledning för denna sanktion"
-    },
-    "search": {
-      "online_only": "Online",
-      "no_players_found": "Inga spelare hittades.",
-      "found_players": "Spelare hittade",
-      "placeholder": "Sök efter spelare..."
-    },
-    "sanctions": {
-      "title": "Sanktioner",
-      "expires": "Upphör",
-      "active_count": "Aktiva sanktioner",
-      "past_count": "Tidigare sanktioner"
-    },
-    "registration": {
-      "title": "Registrera ditt namn",
-      "description": "Detta namn kommer att användas för alla matcher / turneringar du deltar i.",
-      "warning": "Detta namn kan inte ändras efter att det har skickats in",
-      "name_label": "Namn",
-      "confirm_button": "Bekräfta namn",
-      "success": "Namn bekräftat"
-    },
-    "status": {
-      "banned": "Spelaren är bannad",
-      "muted": "Spelaren är tystad",
-      "gagged": "Spelaren är gagged",
-      "add_friend": "Lägg till som vän"
-    },
-    "change_name": {
-      "button": "Ändra namn",
-      "title": "Ändra namn",
-      "request_title": "Begär namnändring",
-      "description": "Vänligen ange namnet du vill ändra till.",
-      "request_description": "Vänligen ange namnet du vill ändra ditt konto till.",
-      "name_label": "Namn",
-      "success": "Ändrade spelarens namn",
-      "request_success": "Begärde namnändring"
-    }
-  },
-  "maps": {
-    "veto": {
-      "pick": "Välj karta"
-    },
-    "official": "Officiella kartor",
-    "workshop": "Workshop-kartor",
-    "active_duty": "Aktiv tjänst"
-  },
-  "region": {
-    "form": {
-      "name": "Namn",
-      "description": "Beskrivning",
-      "use_lan": "Använd LAN",
-      "update": "Uppdatera region",
-      "create": "Skapa region"
-    }
-  },
-  "matchmaking": {
-    "lobby": {
-      "title": "Matchmaking lobby",
-      "leave": "Lämna lobby",
-      "invite_player": "Bjud in spelare till lobby",
-      "invites": "Lobby-inbjudningar",
-      "access_updated": "Lobbyåtkomst uppdaterad till {access}"
-    },
-    "friends": {
-      "title": "Vänner",
-      "sync": "Synkronisera",
-      "search": "Sök",
-      "pending_requests": "Väntande förfrågningar",
-      "invite_to_lobby": "Bjud in till lobby",
-      "remove": "Ta bort",
-      "online": "Online",
-      "offline": "Offline",
-      "join_lobby": "Gå med i Lobby"
-    },
-    "leave": "Lämna",
-    "position": "Nuvarande position",
-    "join": "Gå med",
-    "confirm": {
-      "title": "Bekräfta matchmaking",
-      "ready": "Redo",
-      "players": "Spelare i kö"
-    },
-    "banned": "Du är bannad från matchmaking",
-    "go_to_match": "Gå till match",
-    "temp_banned": "Du är tillfälligt bannad från matchmaking"
-  },
-  "game_server": {
-    "update_cs": "Uppdatera CS",
-    "install_cs": "Installera CS",
-    "select_region": "Välj region",
-    "remove_node": "Ta bort nod",
-    "validation": {
-      "start_port_less_than_end": "Startportintervall måste vara mindre än slutportintervall",
-      "end_port_greater_than_start": "Slutportintervall måste vara större än startportintervall med minst 2"
-    },
-    "toast": {
-      "cs_updating": "CS2 uppdateras på noden",
-      "ports_updated": "Nodportar uppdaterade"
-    }
-  },
-  "chat": {
-    "lobby_chat": "Lobby-chatt",
-    "message_placeholder": "Skriv ett meddelande..."
-  },
-  "charts": {
-    "usage": "Användning"
-  },
-  "server": {
-    "form": {
-      "label": "Serveretikett",
-      "host": "Värd",
-      "region": "Region",
-      "select_region": "Välj region",
-      "rcon_password": "RCON-lösenord",
-      "rcon_password_description": "Lämna tomt för att behålla det nuvarande lösenordet",
-      "port": "Spelport",
-      "tv_port": "TV-port",
-      "update": "Uppdatera server",
-      "create": "Skapa server"
-    },
-    "rcon": {
-      "quick_commands": "Snabbkommandon",
-      "refresh_match": "Uppdatera match",
-      "metamod_info": "Metamod-info",
-      "css_info": "CSS-info",
-      "output": "Utdata",
-      "command_placeholder": "Ange kommando...",
-      "send_command": "Skicka kommando"
-    }
-  }
 }

@@ -1,965 +1,970 @@
 {
-  "pages": {
-    "system_metrics": {
-      "node": "Mezgls",
-      "cpu_usage": "CPU izmantošana",
-      "memory_usage": "Atmiņas izmantošana",
-      "services": "Pakalpojumi"
-    },
-    "system_logs": {
-      "follow_logs": "Sekot žurnāliem",
-      "timestamps": "Laika zīmogi"
-    },
-    "login": {
-      "sign_in": "Ielogoties ar Steam",
-      "powered_by": "Darbina"
-    },
-    "coming_soon": "Drīz!",
-    "tournaments": {
-      "title": "Gaidāmie turnīri",
-      "admin_disabled": "Turnīru izveide atspējota administratora",
-      "create": "Izveidot turnīru",
-      "tabs": {
-        "tournaments": "Turnīri",
-        "my_recent": "Mani pēdējie turnīri"
-      },
-      "no_recent": "Nav pēdējo turnīru."
-    },
-    "teams": {
-      "title": "Komandas",
-      "description": "Komandu pārvaldība",
-      "create": "Izveidot komandu",
-      "tabs": {
-        "my_teams": "Manas komandas",
-        "other_teams": "Citas komandas"
-      },
-      "search": "Meklēt"
-    },
-    "settings": {
-      "profile": {
-        "title": "Profila iestatījumi",
-        "description": "Konta iestatījumu pārvaldība",
-        "steam_id": "Steam ID",
-        "name": "Vārds",
-        "avatar_url": "Avatara URL",
-        "country": "Valsts",
-        "select_country": "Izvēlieties valsti",
-        "search_country": "Meklēt valsti...",
-        "no_country_found": "Nav atrastas valstis",
-        "update": "Atjaunināt profilu"
-      },
-      "appearance": {
-        "title": "Izskats",
-        "description": "Lietotnes izskata iestatīšana",
-        "theme": "Tēma",
-        "theme_description": "Izvēlieties krāsu shēmu lietotnei",
-        "light": "Gaiša",
-        "dark": "Tumša"
-      },
-      "application": {
-        "matchmaking": {
-          "title": "Matchmaking",
-          "description": "Pārvaldiet matchmaking iestatījumus"
+    "pages": {
+        "system_metrics": {
+            "node": "Mezgls",
+            "cpu_usage": "CPU izmantošana",
+            "memory_usage": "Atmiņas izmantošana",
+            "services": "Pakalpojumi"
         },
-        "discord": {
-          "title": "Discord",
-          "invite_link": "Discord uzaicinājuma saite",
-          "webhook": "Discord Webhook",
-          "webhook_description": "Mēs izmantojam šo Discord Webhook, lai nosūtītu paziņojumus, kuriem nepieciešama spēlētāja darbība. Piem. mača problēmas, kļūdas utt.",
-          "support_role": "Discord atbalsta lomas ID",
-          "support_role_description": "Šī loma tiks pieminēta, kad tā tiek izmantota atbalsta darbībām. Jūs varat iegūt lomas ID no Discord lietotnes, ieslēdzot izstrādātāja režīmu un ar labo peles pogu noklikšķinot, lai kopētu ID.",
-          "update": "Atjaunināt"
+        "system_logs": {
+            "follow_logs": "Sekot žurnāliem",
+            "timestamps": "Laika zīmogi"
         },
-        "create_matches_role": "Minimālā loma maču izveidošanai",
-        "create_tournaments_role": "Loma turnīru izveidei",
-        "update": "Atjaunināt",
+        "login": {
+            "sign_in": "Ielogoties ar Steam",
+            "powered_by": "Darbina"
+        },
+        "coming_soon": "Drīz!",
+        "tournaments": {
+            "title": "Gaidāmie turnīri",
+            "admin_disabled": "Turnīru izveide atspējota administratora",
+            "create": "Izveidot turnīru",
+            "tabs": {
+                "tournaments": "Turnīri",
+                "my_recent": "Mani pēdējie turnīri"
+            },
+            "no_recent": "Nav pēdējo turnīru."
+        },
+        "teams": {
+            "title": "Komandas",
+            "description": "Komandu pārvaldība",
+            "create": "Izveidot komandu",
+            "tabs": {
+                "my_teams": "Manas komandas",
+                "other_teams": "Citas komandas"
+            },
+            "search": "Meklēt"
+        },
+        "settings": {
+            "profile": {
+                "title": "Profila iestatījumi",
+                "description": "Konta iestatījumu pārvaldība",
+                "steam_id": "Steam ID",
+                "name": "Vārds",
+                "avatar_url": "Avatara URL",
+                "country": "Valsts",
+                "select_country": "Izvēlieties valsti",
+                "search_country": "Meklēt valsti...",
+                "no_country_found": "Nav atrastas valstis",
+                "update": "Atjaunināt profilu"
+            },
+            "appearance": {
+                "title": "Izskats",
+                "description": "Lietotnes izskata iestatīšana",
+                "theme": "Tēma",
+                "theme_description": "Izvēlieties krāsu shēmu lietotnei",
+                "light": "Gaiša",
+                "dark": "Tumša"
+            },
+            "application": {
+                "matchmaking": {
+                    "title": "Matchmaking",
+                    "description": "Pārvaldiet matchmaking iestatījumus"
+                },
+                "discord": {
+                    "title": "Discord",
+                    "invite_link": "Discord uzaicinājuma saite",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "Mēs izmantojam šo Discord Webhook, lai nosūtītu paziņojumus, kuriem nepieciešama spēlētāja darbība. Piem. mača problēmas, kļūdas utt.",
+                    "support_role": "Discord atbalsta lomas ID",
+                    "support_role_description": "Šī loma tiks pieminēta, kad tā tiek izmantota atbalsta darbībām. Jūs varat iegūt lomas ID no Discord lietotnes, ieslēdzot izstrādātāja režīmu un ar labo peles pogu noklikšķinot, lai kopētu ID.",
+                    "update": "Atjaunināt"
+                },
+                "create_matches_role": "Minimālā loma maču izveidošanai",
+                "create_tournaments_role": "Loma turnīru izveidei",
+                "update": "Atjaunināt",
+                "players": {
+                    "force_name_registration": "Piespiest spēlētāja vārda reģistrāciju",
+                    "force_name_registration_description": "Ja spēlētāja reģistrācija ir piespiesta, spēlētājam būs jāiesniedz vārds, kas tiks izmantots platformā."
+                }
+            }
+        },
+        "regions": {
+            "title": "Reģioni",
+            "description": "Reģionu pārvaldība",
+            "create": "Izveidot reģionu",
+            "table": {
+                "name": "Nosaukums",
+                "status": "Statuss",
+                "available_servers": "Pieejamie serveri",
+                "description": "Apraksts",
+                "use_lan_ip": "Izmantot LAN IP",
+                "actions": "Darbības"
+            },
+            "edit": "Rediģēt",
+            "delete": {
+                "title": "Dzēst reģionu",
+                "description": "Vai tiešām vēlaties dzēst šo reģionu?",
+                "cancel": "Atcelt",
+                "confirm": "Dzēst"
+            }
+        },
         "players": {
-          "force_name_registration": "Piespiest spēlētāja vārda reģistrāciju",
-          "force_name_registration_description": "Ja spēlētāja reģistrācija ir piespiesta, spēlētājam būs jāiesniedz vārds, kas tiks izmantots platformā."
-        }
-      }
-    },
-    "regions": {
-      "title": "Reģioni",
-      "description": "Reģionu pārvaldība",
-      "create": "Izveidot reģionu",
-      "table": {
-        "name": "Nosaukums",
-        "status": "Statuss",
-        "available_servers": "Pieejamie serveri",
-        "description": "Apraksts",
-        "use_lan_ip": "Izmantot LAN IP",
-        "actions": "Darbības"
-      },
-      "edit": "Rediģēt",
-      "delete": {
-        "title": "Dzēst reģionu",
-        "description": "Vai tiešām vēlaties dzēst šo reģionu?",
-        "cancel": "Atcelt",
-        "confirm": "Dzēst"
-      }
-    },
-    "players": {
-      "title": "Spēlētāji",
-      "search": "Meklēt spēlētājus",
-      "detail": {
-        "player_stats": "Spēlētāja statistika",
-        "kills": "Nogalinājumi",
-        "assists": "Palīdzība",
-        "deaths": "Nāves",
-        "kd": "K/D",
-        "last_ten_wins": "Pēdējās 10 uzvaras",
-        "last_ten_losses": "Pēdējās 10 zaļšanas",
-        "matches": "Spēles"
-      }
-    },
-    "play": {
-      "title": "Spēlēt",
-      "description": "Sākt spēli",
-      "admin_disabled": "Spēļu izveide atspējota administratora",
-      "create_match": "Izveidot spēli",
-      "open_matches": {
-        "title": "Atvērtās spēles",
-        "description": "Pieejamās spēles"
-      },
-      "matchmaking": {
-        "title": "Spēļu meklēšana"
-      }
-    },
-    "matches": {
-      "title": "Spēles",
-      "description": "Spēļu pārvaldība",
-      "admin_disabled": "Spēļu izveide atspējota administratora",
-      "create": "Izveidot spēli",
-      "last_ten_wins": "Pēdējās 10 uzvaras",
-      "last_ten_losses": "Pēdējās 10 zaļšanas",
-      "my_match_history": "Mana spēļu vēsture",
-      "other_matches": "Citas spēles",
-      "create_page": {
-        "title": "Izveidot spēli",
-        "pick_up_game": "Spēle visiem",
-        "pick_up_game_description": "Izveidot spēli visiem",
-        "team_1": "Komanda 1",
-        "search_team": "Meklēt komandu",
-        "team_2": "Komanda 2",
-        "intra_team_scrimmage": "Treniņu spēle komandas iekšienē",
-        "create_button": "Izveidot"
-      },
-      "detail": {
-        "schedule": "Plānot"
-      }
-    },
-    "game_server_nodes": {
-      "title": "Spēļu serveru mezgli",
-      "description": "Spēļu serveru mezglu pārvaldība",
-      "not_supported": {
-        "title": "Nav atbalstīts",
-        "description": "Šī platforma nav atbalstīta"
-      },
-      "create": "Izveidot mezglu",
-      "installation_script": "Instalācijas skripts",
-      "cs_version_info": "CS versijas informācija",
-      "table": {
-        "node": "Mezgls",
-        "lan_public_ip": "LAN/Publiskais IP",
-        "cs_build_id": "CS būvējuma ID",
-        "region": "Reģions",
-        "capacity": "Ietilpība",
-        "ports": "Porti",
-        "ports_tooltip": "Pieejamais portu diapazons",
-        "enabled": "Iespējots",
-        "no_nodes": "Nav mezglu"
-      },
-      "build_id": "Būvējuma ID",
-      "last_updated": "Pēdējais atjauninājums"
-    },
-    "dedicated_servers": {
-      "title": "Dedzēti serveri",
-      "description": "Dedzēto serveru pārvaldība",
-      "create": {
-        "title": "Izveidot serveri"
-      },
-      "table": {
-        "connection_details": "Savienojuma detaļas",
-        "label": "Etiķete",
-        "region": "Reģions",
-        "tv_port": "TV ports",
-        "enabled": "Iespējots",
-        "yes": "Jā",
-        "no": "Nē"
-      },
-      "detail": {
-        "enabled": "Iespējots",
-        "server_plugin_config": "Servera spraudņa konfigurācija",
-        "hide_config": "Slēpt konfigurāciju",
-        "show_config": "Rādīt konfigurāciju",
-        "config_location": "Konfigurācijas faila atrašanās vieta",
-        "copy": "Kopēt",
-        "edit": "Rediģēt",
-        "delete": "Dzēst",
-        "delete_confirm": {
-          "title": "Dzēst serveri",
-          "description": "Vai tiešām vēlaties dzēst šo serveri?",
-          "cancel": "Atcelt",
-          "continue": "Turpināt"
-        }
-      }
-    },
-    "map_pools": {
-      "title": "Kartu kopas",
-      "description": "Pārvaldiet kartu kopas un pieejamās kartes matchmakingam.",
-      "table": {
-        "pool_name": "Kopas nosaukums",
-        "maps": "Kartes",
-        "active_duty": "Aktīvā dienesta",
-        "available_modes": "Pieejamie režīmi",
-        "workshop_id": "Workshop ID"
-      },
-      "form": {
-        "name": "Nosaukums",
-        "poster": "Plakāts (neobligāti)",
-        "poster_placeholder": "http://example.com/poster.png",
-        "patch": "Patches (neobligāti)",
-        "patch_placeholder": "http://example.com/patch.png",
-        "workshop_map_id": "Workshop kartes ID (neobligāti)",
-        "view_on_steam": "Skatīt Steam",
-        "create_map": "Izveidot karti",
-        "update_map": "Atjaunināt karti",
-        "delete_map": "Dzēst karti",
-        "delete_confirm": {
-          "title": "Dzēst karti",
-          "description": "Vai tiešām vēlaties dzēst šo karti? Šo darbību nevar atsaukt.",
-          "cancel": "Atcelt",
-          "confirm": "Dzēst"
+            "title": "Spēlētāji",
+            "search": "Meklēt spēlētājus",
+            "detail": {
+                "player_stats": "Spēlētāja statistika",
+                "kills": "Nogalinājumi",
+                "assists": "Palīdzība",
+                "deaths": "Nāves",
+                "kd": "K/D",
+                "last_ten_wins": "Pēdējās 10 uzvaras",
+                "last_ten_losses": "Pēdējās 10 zaļšanas",
+                "matches": "Spēles"
+            }
         },
-        "success": {
-          "create": "Karte veiksmīgi izveidota",
-          "update": "Karte veiksmīgi atjaunināta",
-          "delete": "Karte veiksmīgi dzēsta"
+        "play": {
+            "title": "Spēlēt",
+            "description": "Sākt spēli",
+            "admin_disabled": "Spēļu izveide atspējota administratora",
+            "create_match": "Izveidot spēli",
+            "open_matches": {
+                "title": "Atvērtās spēles",
+                "description": "Pieejamās spēles"
+            },
+            "matchmaking": {
+                "title": "Spēļu meklēšana"
+            }
         },
-        "error": {
-          "create": "Kļūda izveidojot karti",
-          "update": "Kļūda atjauninot karti"
-        }
-      },
-      "pool": {
-        "title": "{type} kartu kopa",
-        "description": "Pārvaldiet kartes {type} kopā",
-        "modify_maps": "Modificēt kartes kopā"
-      },
-      "edit_map": "Rediģēt karti",
-      "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
-      "toggle_active_pool": "Karte {map} ir {type} aktīvajai dienestam",
-      "add_new_map": "Pievienot jaunu karti",
-      "components": {
+        "matches": {
+            "title": "Spēles",
+            "description": "Spēļu pārvaldība",
+            "admin_disabled": "Spēļu izveide atspējota administratora",
+            "create": "Izveidot spēli",
+            "last_ten_wins": "Pēdējās 10 uzvaras",
+            "last_ten_losses": "Pēdējās 10 zaļšanas",
+            "my_match_history": "Mana spēļu vēsture",
+            "other_matches": "Citas spēles",
+            "create_page": {
+                "title": "Izveidot spēli",
+                "pick_up_game": "Spēle visiem",
+                "pick_up_game_description": "Izveidot spēli visiem",
+                "team_1": "Komanda 1",
+                "search_team": "Meklēt komandu",
+                "team_2": "Komanda 2",
+                "intra_team_scrimmage": "Treniņu spēle komandas iekšienē",
+                "create_button": "Izveidot"
+            },
+            "detail": {
+                "schedule": "Plānot"
+            }
+        },
+        "game_server_nodes": {
+            "title": "Spēļu serveru mezgli",
+            "description": "Spēļu serveru mezglu pārvaldība",
+            "not_supported": {
+                "title": "Nav atbalstīts",
+                "description": "Šī platforma nav atbalstīta"
+            },
+            "create": "Izveidot mezglu",
+            "installation_script": "Instalācijas skripts",
+            "cs_version_info": "CS versijas informācija",
+            "table": {
+                "node": "Mezgls",
+                "lan_public_ip": "LAN/Publiskais IP",
+                "cs_build_id": "CS būvējuma ID",
+                "region": "Reģions",
+                "capacity": "Ietilpība",
+                "ports": "Porti",
+                "ports_tooltip": "Pieejamais portu diapazons",
+                "enabled": "Iespējots",
+                "no_nodes": "Nav mezglu"
+            },
+            "build_id": "Būvējuma ID",
+            "last_updated": "Pēdējais atjauninājums"
+        },
+        "dedicated_servers": {
+            "title": "Dedzēti serveri",
+            "description": "Dedzēto serveru pārvaldība",
+            "create": {
+                "title": "Izveidot serveri"
+            },
+            "table": {
+                "connection_details": "Savienojuma detaļas",
+                "label": "Etiķete",
+                "region": "Reģions",
+                "tv_port": "TV ports",
+                "enabled": "Iespējots",
+                "yes": "Jā",
+                "no": "Nē"
+            },
+            "detail": {
+                "enabled": "Iespējots",
+                "server_plugin_config": "Servera spraudņa konfigurācija",
+                "hide_config": "Slēpt konfigurāciju",
+                "show_config": "Rādīt konfigurāciju",
+                "config_location": "Konfigurācijas faila atrašanās vieta",
+                "copy": "Kopēt",
+                "edit": "Rediģēt",
+                "delete": "Dzēst",
+                "delete_confirm": {
+                    "title": "Dzēst serveri",
+                    "description": "Vai tiešām vēlaties dzēst šo serveri?",
+                    "cancel": "Atcelt",
+                    "continue": "Turpināt"
+                }
+            }
+        },
         "map_pools": {
-          "view_on_steam": "Skatīt Steam"
+            "title": "Kartu kopas",
+            "description": "Pārvaldiet kartu kopas un pieejamās kartes matchmakingam.",
+            "table": {
+                "pool_name": "Kopas nosaukums",
+                "maps": "Kartes",
+                "active_duty": "Aktīvā dienesta",
+                "available_modes": "Pieejamie režīmi",
+                "workshop_id": "Workshop ID"
+            },
+            "form": {
+                "name": "Nosaukums",
+                "poster": "Plakāts (neobligāti)",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "Patches (neobligāti)",
+                "patch_placeholder": "http://example.com/patch.png",
+                "workshop_map_id": "Workshop kartes ID (neobligāti)",
+                "view_on_steam": "Skatīt Steam",
+                "create_map": "Izveidot karti",
+                "update_map": "Atjaunināt karti",
+                "delete_map": "Dzēst karti",
+                "delete_confirm": {
+                    "title": "Dzēst karti",
+                    "description": "Vai tiešām vēlaties dzēst šo karti? Šo darbību nevar atsaukt.",
+                    "cancel": "Atcelt",
+                    "confirm": "Dzēst"
+                },
+                "success": {
+                    "create": "Karte veiksmīgi izveidota",
+                    "update": "Karte veiksmīgi atjaunināta",
+                    "delete": "Karte veiksmīgi dzēsta"
+                },
+                "error": {
+                    "create": "Kļūda izveidojot karti",
+                    "update": "Kļūda atjauninot karti"
+                }
+            },
+            "pool": {
+                "title": "{type} kartu kopa",
+                "description": "Pārvaldiet kartes {type} kopā",
+                "modify_maps": "Modificēt kartes kopā"
+            },
+            "edit_map": "Rediģēt karti",
+            "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
+            "toggle_active_pool": "Karte {map} ir {type} aktīvajai dienestam",
+            "add_new_map": "Pievienot jaunu karti",
+            "save_success": "Karšu kopa veiksmīgi saglabāta"
+        },
+        "map_pool": {
+            "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
+            "toggle_active_pool": "Karte {map} ir {type} aktīvajai dienestam",
+            "save_success": "Karšu kopa veiksmīgi saglabāta"
+        },
+        "components": {
+            "map_pools": {
+                "view_on_steam": "Skatīt Steam"
+            }
         }
-      },
-      "save_success": "Karšu kopa veiksmīgi saglabāta"
     },
-    "map_pool": {
-      "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
-      "toggle_active_pool": "Karte {map} ir {type} aktīvajai dienestam",
-      "save_success": "Karšu kopa veiksmīgi saglabāta"
-    }
-  },
-  "matchmaking": {
-    "lobby": {
-      "title": "Spēļu meklēšanas lobi",
-      "leave": "Iziet",
-      "invite_player": "Uzaicināt spēlētāju",
-      "invites": "Uzaicinājumi",
-      "access_updated": "Piekļuves tiesības atjauninātas"
-    },
-    "friends": {
-      "title": "Draugi",
-      "sync": "Sinhronizēt",
-      "search": "Meklēt",
-      "pending_requests": "Gaida pieprasījumi",
-      "online": "Tiešsaistē",
-      "invite_to_lobby": "Uzaicināt uz lobi",
-      "remove": "Noņemt",
-      "join_lobby": "Pievienoties lobij",
-      "offline": "Bezsaistē"
-    },
-    "leave": "Iziet",
-    "position": "Pozīcija",
-    "join": "Pievienoties",
-    "confirm": {
-      "title": "Apstiprināt",
-      "ready": "Gatavs",
-      "players": "Spēlētāji"
-    },
-    "banned": "Aizliegts",
-    "go_to_match": "Doties uz spēli",
-    "temp_banned": "Pagaidām aizliegts"
-  },
-  "match": {
-    "lobby": {
-      "access_updated": "Piekļuves tiesības atjauninātas"
-    },
-    "simple": {
-      "vs": "pret"
-    },
-    "my_upcoming": {
-      "no_matches": "Nav gaidāmo spēļu"
-    },
-    "recent": {
-      "title": "Pēdējās spēles",
-      "no_matches": "Nav pēdējo spēļu"
-    },
-    "options": {
-      "table": {
-        "match": "Spēle",
-        "type": "Tips",
-        "maps": "Kartes",
-        "no_matches_found": "Nav atrastas spēles",
-        "join": "Pievienoties"
-      },
-      "type": {
-        "label": "Tips"
-      },
-      "best_of": {
-        "label": "Līdz",
-        "description": "Kartu skaits, nepieciešams spēles uzvarai",
-        "placeholder": "Izvēlieties līdz"
-      },
-      "map_veto_settings": {
-        "label": "Kartu veto iestatījumi",
-        "description": "Kartu veto iestatījumu apraksts",
-        "custom_pool": "Pielāgota karšu kopa",
-        "active_duty": "Active Duty",
-        "custom_pool_tooltip": "Pielāgotās karšu kopas padoms"
-      },
-      "advanced": {
-        "title": "Paplašinātie iestatījumi",
-        "hide": "Slēpt",
-        "show": "Rādīt",
-        "toggle": "Pārslēgt",
-        "overtime": {
-          "label": "Papildlaiks",
-          "description": "Papildlaika apraksts"
+    "matchmaking": {
+        "lobby": {
+            "title": "Spēļu meklēšanas lobi",
+            "leave": "Iziet",
+            "invite_player": "Uzaicināt spēlētāju",
+            "invites": "Uzaicinājumi",
+            "access_updated": "Piekļuves tiesības atjauninātas"
         },
-        "knife_round": {
-          "label": "Nāžu raunds",
-          "description": "Nāžu raunda apraksts"
+        "friends": {
+            "title": "Draugi",
+            "sync": "Sinhronizēt",
+            "search": "Meklēt",
+            "pending_requests": "Gaida pieprasījumi",
+            "online": "Tiešsaistē",
+            "invite_to_lobby": "Uzaicināt uz lobi",
+            "remove": "Noņemt",
+            "join_lobby": "Pievienoties lobij",
+            "offline": "Bezsaistē"
         },
-        "max_rounds": {
-          "label": "Maksimālais raundu skaits",
-          "description": "Maksimālā raundu skaita apraksts",
-          "placeholder": "Ievadiet maksimālo raundu skaitu"
+        "leave": "Iziet",
+        "position": "Pozīcija",
+        "join": "Pievienoties",
+        "confirm": {
+            "title": "Apstiprināt",
+            "ready": "Gatavs",
+            "players": "Spēlētāji"
         },
-        "region": {
-          "title": "Reģions",
-          "lan_match": "LAN spēle",
-          "veto": {
-            "label": "Reģiona veto",
-            "description": "Reģiona veto apraksts"
-          },
-          "preferred": "Vēlamais reģions",
-          "single": "Viens reģions",
-          "placeholder": "Izvēlieties reģionu",
-          "any": "Jebkurš reģions",
-          "description": "Reģiona apraksts"
-        },
-        "substitutes": {
-          "label": "Aizvietotāji",
-          "description": "Aizvietotāju apraksts",
-          "range": "Aizvietotāju diapazons"
-        },
-        "tv_delay": {
-          "label": "TV aizkave",
-          "range": "Aizkaves diapazons"
-        },
-        "timeouts": {
-          "tactical": {
-            "label": "Taktiskais pārtraukums",
-            "description": "Taktiskā pārtraukuma apraksts"
-          },
-          "technical": {
-            "label": "Tehniskais pārtraukums",
-            "description": "Tehniskā pārtraukuma apraksts"
-          },
-          "options": {
-            "admins": "Administratori",
-            "coaches": "Treneri",
-            "everyone": "Visi"
-          }
-        }
-      },
-      "max_rounds": "Maksimālais raundu skaits",
-      "tv_delay": "TV aizkave",
-      "seconds": "Sekundes",
-      "coaches": "Treneri",
-      "overtime": "Papildlaiks",
-      "knife_round": "Nāžu raunds",
-      "map_veto_enabled": "Kartu veto iespējots",
-      "region_veto": "Reģiona veto",
-      "substitutes": "Aizvietotāji",
-      "timeout_setting": "Pārtraukuma iestatījums",
-      "tech_timeout_setting": "Tehniskā pārtraukuma iestatījums",
-      "map_pool": "Karšu kopa"
-    },
-    "schedule": {
-      "pick_date": "Izvēlieties datumu",
-      "schedule": "Plānot"
-    },
-    "player": {
-      "captain": "Kapteinis",
-      "status": {
-        "offline_not_ready": "Bezsaistē, nav gatavs",
-        "online_not_ready": "Tiešsaistē, nav gatavs",
-        "ready": "Gatavs",
-        "offline": "Bezsaistē",
-        "online_not_in_game": "Tiešsaistē, nav spēlē",
-        "in_game": "Spēlē"
-      },
-      "assign_slot": "Piešķirt slotu"
-    },
-    "tabs": {
-      "overview": "Pārskats",
-      "utility": "Uzrīki",
-      "opening_duels": "Sākuma duelli",
-      "clutches": "Klātči",
-      "map_veto_tab": "Kartu veto",
-      "settings": "Iestatījumi",
-      "server_console": "Servera konsole",
-      "randomize_teams": "Nejaušas komandas",
-      "invited_to_match": "Uzaicināts uz spēli",
-      "join_roster": "Pievienoties sastāvam",
-      "restore_round": "Atjaunot raundu",
-      "select_round_to_restore": "Izvēlieties raundu atjaunošanai",
-      "server_information": "Servera informācija",
-      "type": "Tips",
-      "region": "Reģions",
-      "round": "Raunds"
-    },
-    "status": {
-      "cancelled": "Atcelts",
-      "finished": "Pabeigts",
-      "waiting_server": "Gaida serveri",
-      "scheduled_asap": "Plānots pēc iespējas ātrāk"
-    },
-    "winner": {
-      "set": "Iestatīt uzvarētāju",
-      "select_lineup": "Izvēlēties sastāvu"
-    },
-    "region_veto": {
-      "banning": "Aizliedz",
-      "organizer_override": "Organizatora pārraksts",
-      "confirm_ban": "Apstiprināt aizliegumu",
-      "server_region": "Servera reģions",
-      "select_region": "Izvēlēties reģionu"
-    },
-    "picks": {
-      "decider": "Izšķirošā karte"
-    },
-    "decider": "Izšķirošā karte",
-    "map_veto": {
-      "is_picking": "Izvēlas",
-      "organizer_override": "Organizatora pārraksts",
-      "select_side": "Izvēlēties pusi",
-      "your_turn": "Jūsu gājiens",
-      "pick": "Izvēlēties",
-      "confirm": "Apstiprināt"
-    },
-    "map_lineup": {
-      "picked": "Izvēlēta"
-    },
-    "vs": "pret",
-    "auto_canceling": "Automātiska atcelšana",
-    "actions": {
-      "call_support": "Zvanīt atbalstam",
-      "start_veto": "Sākt veto",
-      "skip_checkin": "Izlaist reģistrāciju",
-      "cancel": "Atcelt"
-    },
-    "lineup": {
-      "stats": {
-        "flashes_thrown": "Izmestās zibspuldzes",
-        "flash_assists": "Palīdzība no zibspuldzēm",
-        "enemies_flashed": "Apsleptie ienaidnieki",
-        "team_flashed": "Apsleptie komandas biedri",
-        "avg_blind_time": "Vidējais apslepošanas laiks",
-        "he_damage": "Šāviņu bojājumi",
-        "molotov_damage": "Molotova kokteiļu bojājumi",
-        "seconds": "Sekundes"
-      },
-      "discord_user": "Discord lietotājs",
-      "discord_link": "Discord saite"
-    },
-    "opening_duels": {
-      "attempts": "Mēģinājumi",
-      "success": "Veiksmīgi"
-    },
-    "clutches": {
-      "won": "Iegūti",
-      "lost": "Zaudēti",
-      "against": "pret",
-      "no_clutches": "Nav klātču",
-      "vs": "pret",
-      "round": "Raunds"
-    },
-    "join": {
-      "live": "Tiešraidē",
-      "call_organizer": "Zvanīt organizatoram"
-    },
-    "check_in": {
-      "title": "Reģistrācija",
-      "checked_in": "Reģistrēts",
-      "check_in": "Reģistrēties",
-      "description": "Reģistrācijas apraksts"
-    },
-    "coach": {
-      "assign": "Piešķirt treneri"
-    },
-    "download_demos": "Lejupielādēt demo",
-    "coaches": "Treneri",
-    "best_of": "Līdz",
-    "overview": {
-      "promote_captain": "Paaugstināt par kapteini",
-      "switch_teams": "Mainīt komandas",
-      "remove_from_lineup": "Noņemt no sastāva",
-      "leave_lineup": "Pamest sastāvu",
-      "kills": "Nogalinājumi",
-      "kills_full": "Nogalinājumi",
-      "assists": "Palīdzība",
-      "assists_full": "Palīdzība",
-      "deaths": "Nāves",
-      "deaths_full": "Nāves",
-      "kd": "K/D",
-      "hs": "Galvas šāviens",
-      "team_damage": "Komandas bojājumi",
-      "multi_kill_rounds": "Raundi ar vairākiem nogalinājumiem",
-      "mkr": "MKR",
-      "k2": "2K",
-      "k3": "3K",
-      "k4": "4K",
-      "k5": "5K",
-      "knifes": "Nāža",
-      "zeus": "Zeus",
-      "total_damage": "Kopējie bojājumi",
-      "substitute": "Aizvietotājs",
-      "join": "Pievienoties",
-      "slot": "Slots"
-    },
-    "server": {
-      "offline": "Bezsaistē",
-      "booting": "Ielādējas",
-      "assign": "Piešķirt",
-      "select": "Izvēlēties",
-      "dedicated": "Dedzēts",
-      "on_demand": "Pēc pieprasījuma",
-      "assigned": "Piešķirts"
-    }
-  },
-  "ui": {
-    "tooltips": {
-      "expand": "Paplašināt",
-      "fullscreen": "Pilnekrāns",
-      "download": "Lejupielādēt"
-    },
-    "logs": {
-      "follow": "Sekot",
-      "timestamps": "Laika zīmogi",
-      "container": "Konteineris"
-    }
-  },
-  "player": {
-    "sanction": {
-      "button": "Sankcionēt spēlētāju",
-      "reason_description": "Norādiet skaidru iemeslu šai sankcijai"
-    },
-    "search": {
-      "online_only": "Tikai tiešsaistē",
-      "no_players_found": "Nav atrasti spēlētāji",
-      "found_players": "Atrasti spēlētāji",
-      "placeholder": "Meklēt spēlētājus..."
-    },
-    "sanctions": {
-      "title": "Sankcijas",
-      "expires": "Beidzas",
-      "active_count": "Aktīvās sankcijas",
-      "past_count": "Pagātnes sankcijas"
-    },
-    "registration": {
-      "title": "Reģistrācija",
-      "description": "Apraksts",
-      "warning": "Brīdinājums",
-      "name_label": "Vārda etiķete",
-      "confirm_button": "Apstiprināšanas poga",
-      "success": "Veiksmīgi"
-    },
-    "status": {
-      "banned": "Aizliegts",
-      "muted": "Apklusināts",
-      "gagged": "Apklusināts",
-      "add_friend": "Pievienot draugu"
-    },
-    "change_name": {
-      "button": "Mainīt vārdu",
-      "title": "Mainīt vārdu",
-      "request_title": "Vārda maiņas pieprasījums",
-      "description": "Apraksts",
-      "request_description": "Pieprasījuma apraksts",
-      "name_label": "Vārda etiķete",
-      "success": "Veiksmīgi",
-      "request_success": "Pieprasījums veiksmīgs"
-    }
-  },
-  "maps": {
-    "veto": {
-      "pick": "Izvēlēties"
-    },
-    "official": "Oficiālā",
-    "workshop": "Workshop",
-    "active_duty": "Active Duty"
-  },
-  "region": {
-    "form": {
-      "name": "Nosaukums",
-      "description": "Apraksts",
-      "use_lan": "Izmantot LAN",
-      "update": "Atjaunināt",
-      "create": "Izveidot"
-    }
-  },
-  "game_server": {
-    "update_cs": "Atjaunināt CS",
-    "install_cs": "Instalēt CS",
-    "select_region": "Izvēlēties reģionu",
-    "remove_node": "Noņemt mezglu",
-    "validation": {
-      "start_port_less_than_end": "Sākuma portam jābūt mazākam par beigu portu",
-      "end_port_greater_than_start": "Beigu portam jābūt lielākam par sākuma portu"
-    },
-    "toast": {
-      "cs_updating": "CS atjaunināšana",
-      "ports_updated": "Porti atjaunināti"
-    }
-  },
-  "chat": {
-    "lobby_chat": "Loba čats",
-    "message_placeholder": "Ierakstiet ziņojumu..."
-  },
-  "charts": {
-    "usage": "Izmantošana"
-  },
-  "server": {
-    "form": {
-      "label": "Etiķete",
-      "host": "Resursdators",
-      "region": "Reģions",
-      "select_region": "Izvēlēties reģionu",
-      "rcon_password": "RCON parole",
-      "rcon_password_description": "RCON paroles apraksts",
-      "port": "Ports",
-      "tv_port": "TV ports",
-      "update": "Atjaunināt",
-      "create": "Izveidot"
-    },
-    "rcon": {
-      "quick_commands": "Ātrās komandas",
-      "refresh_match": "Atjaunināt spēli",
-      "metamod_info": "Metamod informācija",
-      "css_info": "CSS informācija",
-      "output": "Izvade",
-      "command_placeholder": "Ievadiet komandu",
-      "send_command": "Sūtīt komandu"
-    }
-  },
-  "layouts": {
-    "profile_settings": {
-      "title": "Profila iestatījumi",
-      "description": "Profila informācijas pārvaldība",
-      "discord": {
-        "unlink": "Atvienot Discord",
-        "link": "Pievienot Discord",
-        "unlink_dialog": {
-          "title": "Atvienot Discord",
-          "description": "Vai tiešām vēlaties atvienot Discord?",
-          "cancel": "Atcelt",
-          "confirm": "Atvienot"
-        },
-        "unlinked": "Discord atvienots"
-      }
-    },
-    "application_settings": {
-      "title": "Lietotnes iestatījumi",
-      "description": "Lietotnes iestatījumu pārvaldība"
-    },
-    "system_update": {
-      "title": "Sistēmas atjaunināšana",
-      "description": "Nepieciešama sistēmas atjaunināšana",
-      "note": "Piezīme: Lietotne nav pieejama atjaunināšanas laikā",
-      "fix_link": "Rādīt risinājumu",
-      "cancel": "Atcelt",
-      "update": "Atjaunināt"
-    },
-    "match_lobby": {
-      "versus": "pret"
-    },
-    "notifications": {
-      "title": "Paziņojumi",
-      "delete": "Dzēst",
-      "dismiss": "Noraidīt",
-      "delete_all_read": "Dzēst visus izlasītos paziņojumus",
-      "no_notifications": "Nav paziņojumu"
-    },
-    "app_nav": {
-      "brand": "5stack",
-      "navigation": {
-        "play": "Spēlēt",
-        "matches": "Spēles",
-        "tournaments": "Turnīri",
-        "players": "Spēlētāji",
-        "teams": "Komandas"
-      },
-      "administration": {
-        "title": "Administrācija",
-        "regions": "Reģioni",
-        "servers": "Serveri",
-        "dedicated_servers": "Dedikētie Serveri",
-        "game_server_nodes": "Spēļu Serveru Mezgli",
-        "logs": "Sistēmas Žurnāli",
-        "metrics": "Sistēmas Metrikas",
-        "app_settings": "Lietotnes Iestatījumi",
-        "map_pools": "Kartu Kopas"
-      },
-      "footer": {
-        "report_issue": "Ziņot par Problēmu",
-        "join_discord": "Pievienojies Discord"
-      },
-      "profile": {
-        "my_account": "Mans Konts",
-        "logout": "Izrakstīties"
-      },
-      "logout_dialog": {
-        "title": "Izrakstīties",
-        "description": "Vai tiešām vēlaties izrakstīties?",
-        "cancel": "Atcelt",
-        "confirm": "Izrakstīties"
-      },
-      "tooltips": {
-        "play": "Spēlēt",
-        "matches": "Mači",
-        "tournaments": "Turnīri",
-        "players": "Spēlētāji",
-        "teams": "Komandas",
-        "regions": "Reģioni",
-        "servers": "Serveri",
-        "dedicated_servers": "Dedikētie Serveri",
-        "game_server_nodes": "Spēļu Serveru Mezgli",
-        "system_logs": "Sistēmas Žurnāli",
-        "system_metrics": "Sistēmas Metrikas",
-        "app_settings": "Lietotnes Iestatījumi",
-        "report_issue": "Ziņot par Problēmu",
-        "join_discord": "Pievienoties Discord",
-        "map_pools": "Kartu Kopas"
-      }
-    }
-  },
-  "pwa": {
-    "install": {
-      "title": "Instalēt lietotni",
-      "description": "Instalējiet 5Stack labākai pieredzei",
-      "step1": "1. solis",
-      "step2": "2. solis",
-      "tooltip": "Instalācijas padoms",
-      "button": "Instalēt"
-    }
-  },
-  "common": {
-    "cancel": "Atcelt",
-    "tbd": "Jāizlemj",
-    "boolean": {
-      "yes": "Jā",
-      "no": "Nē"
-    },
-    "actions": {
-      "edit": "Rediģēt",
-      "delete": "Dzēst"
-    },
-    "close": "Aizvērt",
-    "confirm": "Apstiprināt"
-  },
-  "tournament": {
-    "overview": "Pārskats",
-    "bracket": "Režģis",
-    "teams": "Komandas",
-    "settings": "Iestatījumi",
-    "admin": "Administrācija",
-    "organizers": "Organizatori",
-    "join": {
-      "title": "Pievienoties turnīram",
-      "joined_with": "Komanda pievienojās",
-      "requirements": "Prasības"
-    },
-    "tournament_team": {
-      "players_registered": "Reģistrētie spēlētāji",
-      "remove": "Noņemt"
-    },
-    "add_team": {
-      "title": "Pievienot komandu"
-    },
-    "form": {
-      "create": "Izveidot turnīru",
-      "description_help": "Ievadiet turnīra aprakstu",
-      "name": "Nosaukums",
-      "description": "Apraksts",
-      "start": "Sākums",
-      "pick_date": "Izvēlieties datumu",
-      "update": "Atjaunināt",
-      "match_options": "Spēles opcijas"
-    },
-    "table": {
-      "tournament": "Turnīrs",
-      "status": "Statuss",
-      "type": "Tips",
-      "teams_joined": "Pievienojušās komandas",
-      "starts": "Sākas",
-      "no_tournaments_found": "Nav atrasti turnīri"
-    },
-    "stage": {
-      "title": "Posms",
-      "teams": "Komandas",
-      "edit": "Rediģēt",
-      "delete": "Dzēst",
-      "edit_title": "Rediģēt posmu",
-      "confirm_delete": "Dzēst posmu",
-      "delete_description": "Vai tiešām vēlaties dzēst šo posmu?",
-      "type": "Tips",
-      "type_placeholder": "Izvēlieties posma tipu",
-      "min_teams": "Minimālais komandu skaits",
-      "min_teams_placeholder": "Ievadiet minimālo komandu skaitu",
-      "max_teams": "Maksimālais komandu skaits",
-      "max_teams_placeholder": "Ievadiet maksimālo komandu skaitu",
-      "update": "Atjaunināt",
-      "create": "Izveidot",
-      "no_stages": "Nav posmu",
-      "start_building": "Sākt režģa veidošanu",
-      "add_first": "Pievienot pirmo posmu",
-      "add_another": "Pievienot citu posmu",
-      "not_setup": "Posms nav iestatīts"
+        "banned": "Aizliegts",
+        "go_to_match": "Doties uz spēli",
+        "temp_banned": "Pagaidām aizliegts"
     },
     "match": {
-      "team_1": "Komanda 1",
-      "team_2": "Komanda 2",
-      "round_match": "Raunda spēle"
+        "lobby": {
+            "access_updated": "Piekļuves tiesības atjauninātas"
+        },
+        "simple": {
+            "vs": "pret"
+        },
+        "my_upcoming": {
+            "no_matches": "Nav gaidāmo spēļu"
+        },
+        "recent": {
+            "title": "Pēdējās spēles",
+            "no_matches": "Nav pēdējo spēļu"
+        },
+        "options": {
+            "table": {
+                "match": "Spēle",
+                "type": "Tips",
+                "maps": "Kartes",
+                "no_matches_found": "Nav atrastas spēles",
+                "join": "Pievienoties"
+            },
+            "type": {
+                "label": "Tips"
+            },
+            "best_of": {
+                "label": "Līdz",
+                "description": "Kartu skaits, nepieciešams spēles uzvarai",
+                "placeholder": "Izvēlieties līdz"
+            },
+            "map_veto_settings": {
+                "label": "Kartu veto iestatījumi",
+                "description": "Kartu veto iestatījumu apraksts",
+                "custom_pool": "Pielāgota karšu kopa",
+                "active_duty": "Active Duty",
+                "custom_pool_tooltip": "Pielāgotās karšu kopas padoms"
+            },
+            "advanced": {
+                "title": "Paplašinātie iestatījumi",
+                "hide": "Slēpt",
+                "show": "Rādīt",
+                "toggle": "Pārslēgt",
+                "overtime": {
+                    "label": "Papildlaiks",
+                    "description": "Papildlaika apraksts"
+                },
+                "knife_round": {
+                    "label": "Nāžu raunds",
+                    "description": "Nāžu raunda apraksts"
+                },
+                "max_rounds": {
+                    "label": "Maksimālais raundu skaits",
+                    "description": "Maksimālā raundu skaita apraksts",
+                    "placeholder": "Ievadiet maksimālo raundu skaitu"
+                },
+                "region": {
+                    "title": "Reģions",
+                    "lan_match": "LAN spēle",
+                    "veto": {
+                        "label": "Reģiona veto",
+                        "description": "Reģiona veto apraksts"
+                    },
+                    "preferred": "Vēlamais reģions",
+                    "single": "Viens reģions",
+                    "placeholder": "Izvēlieties reģionu",
+                    "any": "Jebkurš reģions",
+                    "description": "Reģiona apraksts"
+                },
+                "substitutes": {
+                    "label": "Aizvietotāji",
+                    "description": "Aizvietotāju apraksts",
+                    "range": "Aizvietotāju diapazons"
+                },
+                "tv_delay": {
+                    "label": "TV aizkave",
+                    "range": "Aizkaves diapazons"
+                },
+                "timeouts": {
+                    "tactical": {
+                        "label": "Taktiskais pārtraukums",
+                        "description": "Taktiskā pārtraukuma apraksts"
+                    },
+                    "technical": {
+                        "label": "Tehniskais pārtraukums",
+                        "description": "Tehniskā pārtraukuma apraksts"
+                    },
+                    "options": {
+                        "admins": "Administratori",
+                        "coaches": "Treneri",
+                        "everyone": "Visi"
+                    }
+                }
+            },
+            "max_rounds": "Maksimālais raundu skaits",
+            "tv_delay": "TV aizkave",
+            "seconds": "Sekundes",
+            "coaches": "Treneri",
+            "overtime": "Papildlaiks",
+            "knife_round": "Nāžu raunds",
+            "map_veto_enabled": "Kartu veto iespējots",
+            "region_veto": "Reģiona veto",
+            "substitutes": "Aizvietotāji",
+            "timeout_setting": "Pārtraukuma iestatījums",
+            "tech_timeout_setting": "Tehniskā pārtraukuma iestatījums",
+            "map_pool": "Karšu kopa"
+        },
+        "schedule": {
+            "pick_date": "Izvēlieties datumu",
+            "schedule": "Plānot"
+        },
+        "player": {
+            "captain": "Kapteinis",
+            "status": {
+                "offline_not_ready": "Bezsaistē, nav gatavs",
+                "online_not_ready": "Tiešsaistē, nav gatavs",
+                "ready": "Gatavs",
+                "offline": "Bezsaistē",
+                "online_not_in_game": "Tiešsaistē, nav spēlē",
+                "in_game": "Spēlē"
+            },
+            "assign_slot": "Piešķirt slotu"
+        },
+        "tabs": {
+            "overview": "Pārskats",
+            "utility": "Uzrīki",
+            "opening_duels": "Sākuma duelli",
+            "clutches": "Klātči",
+            "map_veto_tab": "Kartu veto",
+            "settings": "Iestatījumi",
+            "server_console": "Servera konsole",
+            "randomize_teams": "Nejaušas komandas",
+            "invited_to_match": "Uzaicināts uz spēli",
+            "join_roster": "Pievienoties sastāvam",
+            "restore_round": "Atjaunot raundu",
+            "select_round_to_restore": "Izvēlieties raundu atjaunošanai",
+            "server_information": "Servera informācija",
+            "type": "Tips",
+            "region": "Reģions",
+            "round": "Raunds"
+        },
+        "status": {
+            "cancelled": "Atcelts",
+            "finished": "Pabeigts",
+            "waiting_server": "Gaida serveri",
+            "scheduled_asap": "Plānots pēc iespējas ātrāk"
+        },
+        "winner": {
+            "set": "Iestatīt uzvarētāju",
+            "select_lineup": "Izvēlēties sastāvu"
+        },
+        "region_veto": {
+            "banning": "Aizliedz",
+            "organizer_override": "Organizatora pārraksts",
+            "confirm_ban": "Apstiprināt aizliegumu",
+            "server_region": "Servera reģions",
+            "select_region": "Izvēlēties reģionu"
+        },
+        "picks": {
+            "decider": "Izšķirošā karte"
+        },
+        "decider": "Izšķirošā karte",
+        "map_veto": {
+            "is_picking": "Izvēlas",
+            "organizer_override": "Organizatora pārraksts",
+            "select_side": "Izvēlēties pusi",
+            "your_turn": "Jūsu gājiens",
+            "pick": "Izvēlēties",
+            "confirm": "Apstiprināt"
+        },
+        "map_lineup": {
+            "picked": "Izvēlēta"
+        },
+        "vs": "pret",
+        "auto_canceling": "Automātiska atcelšana",
+        "actions": {
+            "call_support": "Zvanīt atbalstam",
+            "start_veto": "Sākt veto",
+            "skip_checkin": "Izlaist reģistrāciju",
+            "cancel": "Atcelt"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "Izmestās zibspuldzes",
+                "flash_assists": "Palīdzība no zibspuldzēm",
+                "enemies_flashed": "Apsleptie ienaidnieki",
+                "team_flashed": "Apsleptie komandas biedri",
+                "avg_blind_time": "Vidējais apslepošanas laiks",
+                "he_damage": "Šāviņu bojājumi",
+                "molotov_damage": "Molotova kokteiļu bojājumi",
+                "seconds": "Sekundes"
+            },
+            "discord_user": "Discord lietotājs",
+            "discord_link": "Discord saite"
+        },
+        "opening_duels": {
+            "attempts": "Mēģinājumi",
+            "success": "Veiksmīgi"
+        },
+        "clutches": {
+            "won": "Iegūti",
+            "lost": "Zaudēti",
+            "against": "pret",
+            "no_clutches": "Nav klātču",
+            "vs": "pret",
+            "round": "Raunds"
+        },
+        "join": {
+            "live": "Tiešraidē",
+            "call_organizer": "Zvanīt organizatoram"
+        },
+        "check_in": {
+            "title": "Reģistrācija",
+            "checked_in": "Reģistrēts",
+            "check_in": "Reģistrēties",
+            "description": "Reģistrācijas apraksts"
+        },
+        "coach": {
+            "assign": "Piešķirt treneri"
+        },
+        "download_demos": "Lejupielādēt demo",
+        "coaches": "Treneri",
+        "best_of": "Līdz",
+        "overview": {
+            "promote_captain": "Paaugstināt par kapteini",
+            "switch_teams": "Mainīt komandas",
+            "remove_from_lineup": "Noņemt no sastāva",
+            "leave_lineup": "Pamest sastāvu",
+            "kills": "Nogalinājumi",
+            "kills_full": "Nogalinājumi",
+            "assists": "Palīdzība",
+            "assists_full": "Palīdzība",
+            "deaths": "Nāves",
+            "deaths_full": "Nāves",
+            "kd": "K/D",
+            "hs": "Galvas šāviens",
+            "team_damage": "Komandas bojājumi",
+            "multi_kill_rounds": "Raundi ar vairākiem nogalinājumiem",
+            "mkr": "MKR",
+            "k2": "2K",
+            "k3": "3K",
+            "k4": "4K",
+            "k5": "5K",
+            "knifes": "Nāža",
+            "zeus": "Zeus",
+            "total_damage": "Kopējie bojājumi",
+            "substitute": "Aizvietotājs",
+            "join": "Pievienoties",
+            "slot": "Slots"
+        },
+        "server": {
+            "offline": "Bezsaistē",
+            "booting": "Ielādējas",
+            "assign": "Piešķirt",
+            "select": "Izvēlēties",
+            "dedicated": "Dedzēts",
+            "on_demand": "Pēc pieprasījuma",
+            "assigned": "Piešķirts"
+        }
     },
-    "organizer": {
-      "title": "Organizators",
-      "description": "Turnīra organizatoru pārvaldība",
-      "add": "Pievienot organizatoru",
-      "name": "Nosaukums",
-      "actions": "Darbības",
-      "no_organizers": "Nav organizatoru",
-      "no_organizers_description": "Šim turnīram nav organizatoru",
-      "remove": "Noņemt",
-      "confirm_remove": "Noņemt organizatoru",
-      "remove_description": "Vai tiešām vēlaties noņemt šo organizatoru?"
+    "ui": {
+        "tooltips": {
+            "expand": "Paplašināt",
+            "fullscreen": "Pilnekrāns",
+            "download": "Lejupielādēt"
+        },
+        "logs": {
+            "follow": "Sekot",
+            "timestamps": "Laika zīmogi",
+            "container": "Konteineris"
+        }
     },
-    "team": {
-      "manage_roster": "Sastāva pārvaldība",
-      "eligible": "Piemērots",
-      "not_eligible": "Nepiemērots",
-      "leave_tournament": "Pamest turnīru",
-      "leave_team": "Pamest komandu",
-      "player": "Spēlētājs",
-      "role": "Loma",
-      "slot": "Slots",
-      "add_player": "Pievienot spēlētāju",
-      "pending_invites": "Gaida uzaicinājumi",
-      "new": "Jauns",
-      "select": "Izvēlēties",
-      "name": "Nosaukums",
-      "select_role": "Izvēlēties lomu",
-      "no_roles": "Nav lomu",
-      "remove_member": "Noņemt dalībnieku",
-      "confirm_remove_member": "Noņemt dalībnieku",
-      "remove_member_description": "Vai tiešām vēlaties noņemt šo dalībnieku?",
-      "cancel_invite": "Atcelt uzaicinājumu",
-      "confirm_cancel_invite": "Atcelt uzaicinājumu",
-      "cancel_invite_description": "Vai tiešām vēlaties atcelt šo uzaicinājumu?",
-      "my_teams": "Manas komandas",
-      "my_teams_description": "Komandas, kurās esat",
-      "no_eligible_teams": "Nav piemērotu komandu",
-      "team": "Komanda",
-      "select_team": "Izvēlēties komandu",
-      "search_team": "Meklēt komandu...",
-      "add_to_tournament": "Pievienot turnīram"
+    "player": {
+        "sanction": {
+            "button": "Sankcionēt spēlētāju",
+            "reason_description": "Norādiet skaidru iemeslu šai sankcijai"
+        },
+        "search": {
+            "online_only": "Tikai tiešsaistē",
+            "no_players_found": "Nav atrasti spēlētāji",
+            "found_players": "Atrasti spēlētāji",
+            "placeholder": "Meklēt spēlētājus..."
+        },
+        "sanctions": {
+            "title": "Sankcijas",
+            "expires": "Beidzas",
+            "active_count": "Aktīvās sankcijas",
+            "past_count": "Pagātnes sankcijas"
+        },
+        "registration": {
+            "title": "Reģistrācija",
+            "description": "Apraksts",
+            "warning": "Brīdinājums",
+            "name_label": "Vārda etiķete",
+            "confirm_button": "Apstiprināšanas poga",
+            "success": "Veiksmīgi"
+        },
+        "status": {
+            "banned": "Aizliegts",
+            "muted": "Apklusināts",
+            "gagged": "Apklusināts",
+            "add_friend": "Pievienot draugu"
+        },
+        "change_name": {
+            "button": "Mainīt vārdu",
+            "title": "Mainīt vārdu",
+            "request_title": "Vārda maiņas pieprasījums",
+            "description": "Apraksts",
+            "request_description": "Pieprasījuma apraksts",
+            "name_label": "Vārda etiķete",
+            "success": "Veiksmīgi",
+            "request_success": "Pieprasījums veiksmīgs"
+        }
     },
-    "actions": {
-      "open_registration": "Atvērt reģistrāciju",
-      "close_registration": "Aizvērt reģistrāciju",
-      "cancel": "Atcelt"
+    "maps": {
+        "veto": {
+            "pick": "Izvēlēties"
+        },
+        "official": "Oficiālā",
+        "workshop": "Workshop",
+        "active_duty": "Active Duty"
     },
-    "upcoming": {
-      "empty": "Nav gaidāmo turnīru"
+    "region": {
+        "form": {
+            "name": "Nosaukums",
+            "description": "Apraksts",
+            "use_lan": "Izmantot LAN",
+            "update": "Atjaunināt",
+            "create": "Izveidot"
+        }
+    },
+    "game_server": {
+        "update_cs": "Atjaunināt CS",
+        "install_cs": "Instalēt CS",
+        "select_region": "Izvēlēties reģionu",
+        "remove_node": "Noņemt mezglu",
+        "validation": {
+            "start_port_less_than_end": "Sākuma portam jābūt mazākam par beigu portu",
+            "end_port_greater_than_start": "Beigu portam jābūt lielākam par sākuma portu"
+        },
+        "toast": {
+            "cs_updating": "CS atjaunināšana",
+            "ports_updated": "Porti atjaunināti"
+        }
+    },
+    "chat": {
+        "lobby_chat": "Loba čats",
+        "message_placeholder": "Ierakstiet ziņojumu..."
+    },
+    "charts": {
+        "usage": "Izmantošana"
     },
     "server": {
-      "remove": "Noņemt",
-      "confirm_remove": "Noņemt serveri",
-      "remove_description": "Vai tiešām vēlaties noņemt šo serveri?"
+        "form": {
+            "label": "Etiķete",
+            "host": "Resursdators",
+            "region": "Reģions",
+            "select_region": "Izvēlēties reģionu",
+            "rcon_password": "RCON parole",
+            "rcon_password_description": "RCON paroles apraksts",
+            "port": "Ports",
+            "tv_port": "TV ports",
+            "update": "Atjaunināt",
+            "create": "Izveidot"
+        },
+        "rcon": {
+            "quick_commands": "Ātrās komandas",
+            "refresh_match": "Atjaunināt spēli",
+            "metamod_info": "Metamod informācija",
+            "css_info": "CSS informācija",
+            "output": "Izvade",
+            "command_placeholder": "Ievadiet komandu",
+            "send_command": "Sūtīt komandu"
+        }
+    },
+    "layouts": {
+        "profile_settings": {
+            "title": "Profila iestatījumi",
+            "description": "Profila informācijas pārvaldība",
+            "discord": {
+                "unlink": "Atvienot Discord",
+                "link": "Pievienot Discord",
+                "unlink_dialog": {
+                    "title": "Atvienot Discord",
+                    "description": "Vai tiešām vēlaties atvienot Discord?",
+                    "cancel": "Atcelt",
+                    "confirm": "Atvienot"
+                },
+                "unlinked": "Discord atvienots"
+            }
+        },
+        "application_settings": {
+            "title": "Lietotnes iestatījumi",
+            "description": "Lietotnes iestatījumu pārvaldība"
+        },
+        "system_update": {
+            "title": "Sistēmas atjaunināšana",
+            "description": "Nepieciešama sistēmas atjaunināšana",
+            "note": "Piezīme: Lietotne nav pieejama atjaunināšanas laikā",
+            "fix_link": "Rādīt risinājumu",
+            "cancel": "Atcelt",
+            "update": "Atjaunināt"
+        },
+        "match_lobby": {
+            "versus": "pret"
+        },
+        "notifications": {
+            "title": "Paziņojumi",
+            "delete": "Dzēst",
+            "dismiss": "Noraidīt",
+            "delete_all_read": "Dzēst visus izlasītos paziņojumus",
+            "no_notifications": "Nav paziņojumu"
+        },
+        "app_nav": {
+            "brand": "5stack",
+            "navigation": {
+                "play": "Spēlēt",
+                "matches": "Spēles",
+                "tournaments": "Turnīri",
+                "players": "Spēlētāji",
+                "teams": "Komandas"
+            },
+            "administration": {
+                "title": "Administrācija",
+                "regions": "Reģioni",
+                "servers": "Serveri",
+                "dedicated_servers": "Dedikētie Serveri",
+                "game_server_nodes": "Spēļu Serveru Mezgli",
+                "logs": "Sistēmas Žurnāli",
+                "metrics": "Sistēmas Metrikas",
+                "app_settings": "Lietotnes Iestatījumi",
+                "map_pools": "Kartu Kopas"
+            },
+            "footer": {
+                "report_issue": "Ziņot par Problēmu",
+                "join_discord": "Pievienojies Discord"
+            },
+            "profile": {
+                "my_account": "Mans Konts",
+                "logout": "Izrakstīties"
+            },
+            "logout_dialog": {
+                "title": "Izrakstīties",
+                "description": "Vai tiešām vēlaties izrakstīties?",
+                "cancel": "Atcelt",
+                "confirm": "Izrakstīties"
+            },
+            "tooltips": {
+                "play": "Spēlēt",
+                "matches": "Mači",
+                "tournaments": "Turnīri",
+                "players": "Spēlētāji",
+                "teams": "Komandas",
+                "regions": "Reģioni",
+                "servers": "Serveri",
+                "dedicated_servers": "Dedikētie Serveri",
+                "game_server_nodes": "Spēļu Serveru Mezgli",
+                "system_logs": "Sistēmas Žurnāli",
+                "system_metrics": "Sistēmas Metrikas",
+                "app_settings": "Lietotnes Iestatījumi",
+                "report_issue": "Ziņot par Problēmu",
+                "join_discord": "Pievienoties Discord",
+                "map_pools": "Kartu Kopas"
+            }
+        }
+    },
+    "pwa": {
+        "install": {
+            "title": "Instalēt lietotni",
+            "description": "Instalējiet 5Stack labākai pieredzei",
+            "step1": "1. solis",
+            "step2": "2. solis",
+            "tooltip": "Instalācijas padoms",
+            "button": "Instalēt"
+        }
+    },
+    "common": {
+        "cancel": "Atcelt",
+        "tbd": "Jāizlemj",
+        "boolean": {
+            "yes": "Jā",
+            "no": "Nē"
+        },
+        "actions": {
+            "edit": "Rediģēt",
+            "delete": "Dzēst"
+        },
+        "close": "Aizvērt",
+        "confirm": "Apstiprināt"
+    },
+    "tournament": {
+        "overview": "Pārskats",
+        "bracket": "Režģis",
+        "teams": "Komandas",
+        "settings": "Iestatījumi",
+        "admin": "Administrācija",
+        "organizers": "Organizatori",
+        "join": {
+            "title": "Pievienoties turnīram",
+            "joined_with": "Komanda pievienojās",
+            "requirements": "Prasības"
+        },
+        "tournament_team": {
+            "players_registered": "Reģistrētie spēlētāji",
+            "remove": "Noņemt"
+        },
+        "add_team": {
+            "title": "Pievienot komandu"
+        },
+        "form": {
+            "create": "Izveidot turnīru",
+            "description_help": "Ievadiet turnīra aprakstu",
+            "name": "Nosaukums",
+            "description": "Apraksts",
+            "start": "Sākums",
+            "pick_date": "Izvēlieties datumu",
+            "update": "Atjaunināt",
+            "match_options": "Spēles opcijas"
+        },
+        "table": {
+            "tournament": "Turnīrs",
+            "status": "Statuss",
+            "type": "Tips",
+            "teams_joined": "Pievienojušās komandas",
+            "starts": "Sākas",
+            "no_tournaments_found": "Nav atrasti turnīri"
+        },
+        "stage": {
+            "title": "Posms",
+            "teams": "Komandas",
+            "edit": "Rediģēt",
+            "delete": "Dzēst",
+            "edit_title": "Rediģēt posmu",
+            "confirm_delete": "Dzēst posmu",
+            "delete_description": "Vai tiešām vēlaties dzēst šo posmu?",
+            "type": "Tips",
+            "type_placeholder": "Izvēlieties posma tipu",
+            "min_teams": "Minimālais komandu skaits",
+            "min_teams_placeholder": "Ievadiet minimālo komandu skaitu",
+            "max_teams": "Maksimālais komandu skaits",
+            "max_teams_placeholder": "Ievadiet maksimālo komandu skaitu",
+            "update": "Atjaunināt",
+            "create": "Izveidot",
+            "no_stages": "Nav posmu",
+            "start_building": "Sākt režģa veidošanu",
+            "add_first": "Pievienot pirmo posmu",
+            "add_another": "Pievienot citu posmu",
+            "not_setup": "Posms nav iestatīts"
+        },
+        "match": {
+            "team_1": "Komanda 1",
+            "team_2": "Komanda 2",
+            "round_match": "Raunda spēle"
+        },
+        "organizer": {
+            "title": "Organizators",
+            "description": "Turnīra organizatoru pārvaldība",
+            "add": "Pievienot organizatoru",
+            "name": "Nosaukums",
+            "actions": "Darbības",
+            "no_organizers": "Nav organizatoru",
+            "no_organizers_description": "Šim turnīram nav organizatoru",
+            "remove": "Noņemt",
+            "confirm_remove": "Noņemt organizatoru",
+            "remove_description": "Vai tiešām vēlaties noņemt šo organizatoru?"
+        },
+        "team": {
+            "manage_roster": "Sastāva pārvaldība",
+            "eligible": "Piemērots",
+            "not_eligible": "Nepiemērots",
+            "leave_tournament": "Pamest turnīru",
+            "leave_team": "Pamest komandu",
+            "player": "Spēlētājs",
+            "role": "Loma",
+            "slot": "Slots",
+            "add_player": "Pievienot spēlētāju",
+            "pending_invites": "Gaida uzaicinājumi",
+            "new": "Jauns",
+            "select": "Izvēlēties",
+            "name": "Nosaukums",
+            "select_role": "Izvēlēties lomu",
+            "no_roles": "Nav lomu",
+            "remove_member": "Noņemt dalībnieku",
+            "confirm_remove_member": "Noņemt dalībnieku",
+            "remove_member_description": "Vai tiešām vēlaties noņemt šo dalībnieku?",
+            "cancel_invite": "Atcelt uzaicinājumu",
+            "confirm_cancel_invite": "Atcelt uzaicinājumu",
+            "cancel_invite_description": "Vai tiešām vēlaties atcelt šo uzaicinājumu?",
+            "my_teams": "Manas komandas",
+            "my_teams_description": "Komandas, kurās esat",
+            "no_eligible_teams": "Nav piemērotu komandu",
+            "team": "Komanda",
+            "select_team": "Izvēlēties komandu",
+            "search_team": "Meklēt komandu...",
+            "add_to_tournament": "Pievienot turnīram"
+        },
+        "actions": {
+            "open_registration": "Atvērt reģistrāciju",
+            "close_registration": "Aizvērt reģistrāciju",
+            "cancel": "Atcelt"
+        },
+        "upcoming": {
+            "empty": "Nav gaidāmo turnīru"
+        },
+        "server": {
+            "remove": "Noņemt",
+            "confirm_remove": "Noņemt serveri",
+            "remove_description": "Vai tiešām vēlaties noņemt šo serveri?"
+        }
+    },
+    "team": {
+        "table": {
+            "team": "Komanda",
+            "wins": "Uzvaras",
+            "losses": "Zaudējumi",
+            "overtime_losses": "Zaudējumi papildlaikā",
+            "no_teams_found": "Nav atrastas komandas"
+        },
+        "invite": {
+            "team_title": "Uzaicinājums uz komandu",
+            "tournament_title": "Uzaicinājums uz turnīru",
+            "tournament_message": "Turnīra uzaicinājuma ziņojums",
+            "team_message": "Komandas uzaicinājuma ziņojums",
+            "invited_by": "Uzaicināja",
+            "deny": "Noraidīt",
+            "accept": "Pieņemt"
+        },
+        "roles": {
+            "captain": "Kapteinis"
+        },
+        "leave": "Pamest",
+        "management": {
+            "edit": "Rediģēt"
+        },
+        "confirm": {
+            "leave": "Pamest",
+            "delete": {
+                "title": "Dzēst",
+                "description": "Apraksts"
+            }
+        },
+        "members": {
+            "title": "Dalībnieki",
+            "invite_player": "Uzaicināt spēlētāju",
+            "pending_invites": "Gaida uzaicinājumi"
+        },
+        "form": {
+            "name": "Nosaukums",
+            "name_placeholder": "Ievadiet komandas nosaukumu",
+            "short_name": "Īsais nosaukums",
+            "short_name_placeholder": "Ievadiet komandas īso nosaukumu",
+            "owner": "Īpašnieks",
+            "select_owner": "Izvēlēties īpašnieku",
+            "update": "Atjaunināt",
+            "create": "Izveidot"
+        },
+        "search": {
+            "no_teams": "Nav komandu"
+        },
+        "member": {
+            "remove": "Noņemt",
+            "cancel_invite": "Atcelt uzaicinājumu",
+            "confirm_cancel_invite": "Atcelt uzaicinājumu",
+            "confirm_remove": "Apstiprināt noņemšanu",
+            "cancel_invite_description": "Vai tiešām vēlaties atcelt šo uzaicinājumu?",
+            "remove_description": "Vai tiešām vēlaties noņemt šo dalībnieku?"
+        }
+    },
+    "components": {
+        "map_pools": {
+            "view_on_steam": "Skatīt Steam"
+        }
     }
-  },
-  "team": {
-    "table": {
-      "team": "Komanda",
-      "wins": "Uzvaras",
-      "losses": "Zaudējumi",
-      "overtime_losses": "Zaudējumi papildlaikā",
-      "no_teams_found": "Nav atrastas komandas"
-    },
-    "invite": {
-      "team_title": "Uzaicinājums uz komandu",
-      "tournament_title": "Uzaicinājums uz turnīru",
-      "tournament_message": "Turnīra uzaicinājuma ziņojums",
-      "team_message": "Komandas uzaicinājuma ziņojums",
-      "invited_by": "Uzaicināja",
-      "deny": "Noraidīt",
-      "accept": "Pieņemt"
-    },
-    "roles": {
-      "captain": "Kapteinis"
-    },
-    "leave": "Pamest",
-    "management": {
-      "edit": "Rediģēt"
-    },
-    "confirm": {
-      "leave": "Pamest",
-      "delete": {
-        "title": "Dzēst",
-        "description": "Apraksts"
-      }
-    },
-    "members": {
-      "title": "Dalībnieki",
-      "invite_player": "Uzaicināt spēlētāju",
-      "pending_invites": "Gaida uzaicinājumi"
-    },
-    "form": {
-      "name": "Nosaukums",
-      "name_placeholder": "Ievadiet komandas nosaukumu",
-      "short_name": "Īsais nosaukums",
-      "short_name_placeholder": "Ievadiet komandas īso nosaukumu",
-      "owner": "Īpašnieks",
-      "select_owner": "Izvēlēties īpašnieku",
-      "update": "Atjaunināt",
-      "create": "Izveidot"
-    },
-    "search": {
-      "no_teams": "Nav komandu"
-    },
-    "member": {
-      "remove": "Noņemt",
-      "cancel_invite": "Atcelt uzaicinājumu",
-      "confirm_cancel_invite": "Atcelt uzaicinājumu",
-      "confirm_remove": "Apstiprināt noņemšanu",
-      "cancel_invite_description": "Vai tiešām vēlaties atcelt šo uzaicinājumu?",
-      "remove_description": "Vai tiešām vēlaties noņemt šo dalībnieku?"
-    }
-  }
 }

@@ -1,907 +1,970 @@
 {
-  "pages": {
-    "system_metrics": {
-      "node": "Вузол",
-      "cpu_usage": "Використання ЦП",
-      "memory_usage": "Використання пам'яті",
-      "services": "Сервіси"
-    },
-    "system_logs": {
-      "follow_logs": "Слідкувати за логами",
-      "timestamps": "Часові мітки"
-    },
-    "login": {
-      "sign_in": "Увійти через Steam",
-      "powered_by": "Працює на"
-    },
-    "coming_soon": "Скоро!",
-    "tournaments": {
-      "title": "Майбутні турніри",
-      "admin_disabled": "Адміністратор відключив створення турнірів",
-      "create": "Створити турнір",
-      "tabs": {
-        "tournaments": "Турніри",
-        "my_recent": "Мої останні турніри"
-      },
-      "no_recent": "У вас немає останніх турнірів."
-    },
-    "teams": {
-      "title": "Команди",
-      "description": "Керування командами та складами.",
-      "create": "Створити команду",
-      "tabs": {
-        "my_teams": "Мої команди",
-        "other_teams": "Інші команди"
-      },
-      "search": "Пошук..."
-    },
-    "settings": {
-      "profile": {
-        "title": "Налаштування профілю",
-        "description": "Керування налаштуваннями облікового запису",
-        "steam_id": "Steam ID",
-        "name": "Ім'я",
-        "avatar_url": "URL аватара",
-        "country": "Країна",
-        "select_country": "Вибрати країну",
-        "search_country": "Пошук країни...",
-        "no_country_found": "Країну не знайдено",
-        "update": "Оновити профіль"
-      },
-      "appearance": {
-        "title": "Зовнішній вигляд",
-        "description": "Налаштування зовнішнього вигляду додатку",
-        "theme": "Тема",
-        "theme_description": "Виберіть кольорову схему додатку",
-        "light": "Світла",
-        "dark": "Темна"
-      },
-      "application": {
-        "matchmaking": {
-          "title": "Matchmaking",
-          "description": "Керування налаштуваннями matchmaking"
+    "pages": {
+        "system_metrics": {
+            "node": "Вузол",
+            "cpu_usage": "Використання ЦП",
+            "memory_usage": "Використання пам'яті",
+            "services": "Сервіси"
         },
-        "discord": {
-          "title": "Discord",
-          "invite_link": "Посилання-запрошення Discord",
-          "webhook": "Discord Webhook",
-          "webhook_description": "Ми використовуємо цей Discord Webhook для надсилання сповіщень, які вимагають дій від гравця. Наприклад: проблеми з матчем, баги тощо.",
-          "support_role": "ID ролі підтримки Discord",
-          "support_role_description": "Ця роль буде згадана при використанні для дій підтримки. Ви можете отримати ID ролі з додатку Discord, увімкнувши режим розробника та натиснувши правою кнопкою миші для копіювання ID.",
-          "update": "Оновити"
+        "system_logs": {
+            "follow_logs": "Слідкувати за логами",
+            "timestamps": "Часові мітки"
         },
-        "create_matches_role": "Мінімальна роль для створення матчів",
-        "create_tournaments_role": "Дозвіл на створення турнірів",
-        "update": "Оновити",
+        "login": {
+            "sign_in": "Увійти через Steam",
+            "powered_by": "Працює на"
+        },
+        "coming_soon": "Скоро!",
+        "tournaments": {
+            "title": "Майбутні турніри",
+            "admin_disabled": "Адміністратор відключив створення турнірів",
+            "create": "Створити турнір",
+            "tabs": {
+                "tournaments": "Турніри",
+                "my_recent": "Мої останні турніри"
+            },
+            "no_recent": "У вас немає останніх турнірів."
+        },
+        "teams": {
+            "title": "Команди",
+            "description": "Керування командами та складами.",
+            "create": "Створити команду",
+            "tabs": {
+                "my_teams": "Мої команди",
+                "other_teams": "Інші команди"
+            },
+            "search": "Пошук..."
+        },
+        "settings": {
+            "profile": {
+                "title": "Налаштування профілю",
+                "description": "Керування налаштуваннями облікового запису",
+                "steam_id": "Steam ID",
+                "name": "Ім'я",
+                "avatar_url": "URL аватара",
+                "country": "Країна",
+                "select_country": "Вибрати країну",
+                "search_country": "Пошук країни...",
+                "no_country_found": "Країну не знайдено",
+                "update": "Оновити профіль"
+            },
+            "appearance": {
+                "title": "Зовнішній вигляд",
+                "description": "Налаштування зовнішнього вигляду додатку",
+                "theme": "Тема",
+                "theme_description": "Виберіть кольорову схему додатку",
+                "light": "Світла",
+                "dark": "Темна"
+            },
+            "application": {
+                "matchmaking": {
+                    "title": "Matchmaking",
+                    "description": "Керування налаштуваннями matchmaking"
+                },
+                "discord": {
+                    "title": "Discord",
+                    "invite_link": "Посилання-запрошення Discord",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "Ми використовуємо цей Discord Webhook для надсилання сповіщень, які вимагають дій від гравця. Наприклад: проблеми з матчем, баги тощо.",
+                    "support_role": "ID ролі підтримки Discord",
+                    "support_role_description": "Ця роль буде згадана при використанні для дій підтримки. Ви можете отримати ID ролі з додатку Discord, увімкнувши режим розробника та натиснувши правою кнопкою миші для копіювання ID.",
+                    "update": "Оновити"
+                },
+                "create_matches_role": "Мінімальна роль для створення матчів",
+                "create_tournaments_role": "Дозвіл на створення турнірів",
+                "update": "Оновити",
+                "players": {
+                    "force_name_registration": "Примусова реєстрація імені гравця",
+                    "force_name_registration_description": "Якщо увімкнено примусову реєстрацію гравця, гравець повинен буде надіслати ім'я, яке буде використовуватися на платформі."
+                }
+            }
+        },
+        "regions": {
+            "title": "Регіони",
+            "description": "Керування регіонами",
+            "create": "Створити регіон",
+            "table": {
+                "name": "Назва",
+                "status": "Статус",
+                "available_servers": "Доступні сервери",
+                "description": "Опис",
+                "use_lan_ip": "Використовувати локальну IP",
+                "actions": "Дії"
+            },
+            "edit": "Редагувати",
+            "delete": {
+                "title": "Видалити регіон",
+                "description": "Ви впевнені, що хочете видалити цей регіон?",
+                "cancel": "Скасувати",
+                "confirm": "Видалити"
+            }
+        },
         "players": {
-          "force_name_registration": "Примусова реєстрація імені гравця",
-          "force_name_registration_description": "Якщо увімкнено примусову реєстрацію гравця, гравець повинен буде надіслати ім'я, яке буде використовуватися на платформі."
+            "title": "Гравці",
+            "search": "Пошук гравців",
+            "detail": {
+                "player_stats": "Статистика гравця",
+                "kills": "Вбивства",
+                "assists": "Помічники",
+                "deaths": "Смерті",
+                "kd": "K/D",
+                "last_ten_wins": "Останні 10 перемог",
+                "last_ten_losses": "Останні 10 поразок",
+                "matches": "Матчі"
+            }
+        },
+        "play": {
+            "title": "Гра",
+            "description": "Почати матч",
+            "admin_disabled": "Адміністратор відключив створення матчів",
+            "create_match": "Створити матч",
+            "open_matches": {
+                "title": "Відкриті матчі",
+                "description": "Доступні матчі"
+            },
+            "matchmaking": {
+                "title": "Матчмейкінг"
+            }
+        },
+        "matches": {
+            "title": "Матчі",
+            "description": "Керування матчами",
+            "admin_disabled": "Адміністратор відключив створення матчів",
+            "create": "Створити матч",
+            "last_ten_wins": "Останні 10 перемог",
+            "last_ten_losses": "Останні 10 поразок",
+            "my_match_history": "Історія моїх матчів",
+            "other_matches": "Інші матчі",
+            "create_page": {
+                "title": "Створити матч",
+                "pick_up_game": "Публічний матч",
+                "pick_up_game_description": "Створити матч для всіх",
+                "team_1": "Команда 1",
+                "search_team": "Пошук команди",
+                "team_2": "Команда 2",
+                "intra_team_scrimmage": "Тренувальний матч команди",
+                "create_button": "Створити"
+            },
+            "detail": {
+                "schedule": "Запланувати"
+            }
+        },
+        "game_server_nodes": {
+            "title": "Вузли ігрового сервера",
+            "description": "Керування вузлами ігрового сервера",
+            "not_supported": {
+                "title": "Не підтримується",
+                "description": "Ця платформа не підтримується"
+            },
+            "create": "Створити вузол",
+            "installation_script": "Скрипт встановлення",
+            "cs_version_info": "Інформація про версію CS",
+            "table": {
+                "node": "Вузол",
+                "lan_public_ip": "Локальна/Публічна IP",
+                "cs_build_id": "ID збірки CS",
+                "region": "Регіон",
+                "capacity": "Місткість",
+                "ports": "Порти",
+                "ports_tooltip": "Діапазон доступних портів",
+                "enabled": "Увімкнено",
+                "no_nodes": "Немає вузлів"
+            },
+            "build_id": "ID збірки",
+            "last_updated": "Останнє оновлення"
+        },
+        "dedicated_servers": {
+            "title": "Виділені сервери",
+            "description": "Керування виділеними серверами",
+            "create": {
+                "title": "Створити сервер"
+            },
+            "table": {
+                "connection_details": "Деталі підключення",
+                "label": "Мітка",
+                "region": "Регіон",
+                "tv_port": "TV порт",
+                "enabled": "Увімкнено",
+                "yes": "Так",
+                "no": "Ні"
+            },
+            "detail": {
+                "enabled": "Увімкнено",
+                "server_plugin_config": "Конфігурація плагіна сервера",
+                "hide_config": "Приховати конфігурацію",
+                "show_config": "Показати конфігурацію",
+                "config_location": "Розташування конфігураційного файлу",
+                "copy": "Копіювати",
+                "edit": "Редагувати",
+                "delete": "Видалити",
+                "delete_confirm": {
+                    "title": "Видалити сервер",
+                    "description": "Ви впевнені, що хочете видалити цей сервер?",
+                    "cancel": "Скасувати",
+                    "continue": "Продовжити"
+                }
+            }
+        },
+        "map_pools": {
+            "description": "Керування картами басейнів і наявних карт для відповідного виготовлення.",
+            "table": {
+                "pool_name": "Назва банку",
+                "available_modes": "Доступні режими",
+                "workshop_id": "Ідентифікатор семінару",
+                "maps": "Карти",
+                "active_duty": "Активні карти"
+            },
+            "form": {
+                "poster": "Постер (за бажанням)",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "Патч (за бажанням)",
+                "patch_placeholder": "http://example.com/patch.png",
+                "workshop_map_id": "Ідентифікатор карти (за бажанням)",
+                "view_on_steam": "Переглянути на Steam",
+                "create_map": "Карта сайту",
+                "update_map": "Оновлення карти",
+                "delete_map": "Видалити карту",
+                "delete_confirm": {
+                    "title": "Видалити карту",
+                    "description": "Ви впевнені, що ви хочете видалити цю карту? Ця дія не може бути неоновою.",
+                    "cancel": "Скасувати",
+                    "confirm": "Видалити"
+                },
+                "success": {
+                    "create": "Карта сайту",
+                    "update": "Карта успішно",
+                    "delete": "Карта видалено успішно"
+                },
+                "error": {
+                    "create": "Помилка створення карти",
+                    "update": "Оновлення помилок"
+                },
+                "name": "Назва"
+            },
+            "edit_map": "Редагування карти",
+            "toggle_pool_type": "Карта {map} {type} для {type}",
+            "toggle_active_pool": "Карта {map} {type} для активних обов'язків",
+            "add_new_map": "Додати нову карту",
+            "pool": {
+                "title": "{type} Карта Басейн",
+                "description": "Керування картами в басейні {type}",
+                "modify_maps": "Модифікувати карти в басейні"
+            },
+            "save_success": "Карта басейну успішно збережено",
+            "title": "Пул Карт"
+        },
+        "map_pool": {
+            "toggle_pool_type": "Карта {map} {type} для {type}",
+            "toggle_active_pool": "Карта {map} {type} для активних обов'язків",
+            "save_success": "Карта басейну успішно збережено"
+        },
+        "components": {
+            "map_pools": {
+                "view_on_steam": "Переглянути на Steam"
+            }
         }
-      }
     },
-    "regions": {
-      "title": "Регіони",
-      "description": "Керування регіонами",
-      "create": "Створити регіон",
-      "table": {
-        "name": "Назва",
-        "status": "Статус",
-        "available_servers": "Доступні сервери",
-        "description": "Опис",
-        "use_lan_ip": "Використовувати локальну IP",
-        "actions": "Дії"
-      },
-      "edit": "Редагувати",
-      "delete": {
-        "title": "Видалити регіон",
-        "description": "Ви впевнені, що хочете видалити цей регіон?",
-        "cancel": "Скасувати",
-        "confirm": "Видалити"
-      }
-    },
-    "players": {
-      "title": "Гравці",
-      "search": "Пошук гравців",
-      "detail": {
-        "player_stats": "Статистика гравця",
-        "kills": "Вбивства",
-        "assists": "Помічники",
-        "deaths": "Смерті",
-        "kd": "K/D",
-        "last_ten_wins": "Останні 10 перемог",
-        "last_ten_losses": "Останні 10 поразок",
-        "matches": "Матчі"
-      }
-    },
-    "play": {
-      "title": "Гра",
-      "description": "Почати матч",
-      "admin_disabled": "Адміністратор відключив створення матчів",
-      "create_match": "Створити матч",
-      "open_matches": {
-        "title": "Відкриті матчі",
-        "description": "Доступні матчі"
-      },
-      "matchmaking": {
-        "title": "Матчмейкінг"
-      }
-    },
-    "matches": {
-      "title": "Матчі",
-      "description": "Керування матчами",
-      "admin_disabled": "Адміністратор відключив створення матчів",
-      "create": "Створити матч",
-      "last_ten_wins": "Останні 10 перемог",
-      "last_ten_losses": "Останні 10 поразок",
-      "my_match_history": "Історія моїх матчів",
-      "other_matches": "Інші матчі",
-      "create_page": {
-        "title": "Створити матч",
-        "pick_up_game": "Публічний матч",
-        "pick_up_game_description": "Створити матч для всіх",
-        "team_1": "Команда 1",
-        "search_team": "Пошук команди",
-        "team_2": "Команда 2",
-        "intra_team_scrimmage": "Тренувальний матч команди",
-        "create_button": "Створити"
-      },
-      "detail": {
-        "schedule": "Запланувати"
-      }
-    },
-    "game_server_nodes": {
-      "title": "Вузли ігрового сервера",
-      "description": "Керування вузлами ігрового сервера",
-      "not_supported": {
-        "title": "Не підтримується",
-        "description": "Ця платформа не підтримується"
-      },
-      "create": "Створити вузол",
-      "installation_script": "Скрипт встановлення",
-      "cs_version_info": "Інформація про версію CS",
-      "table": {
-        "node": "Вузол",
-        "lan_public_ip": "Локальна/Публічна IP",
-        "cs_build_id": "ID збірки CS",
-        "region": "Регіон",
-        "capacity": "Місткість",
-        "ports": "Порти",
-        "ports_tooltip": "Діапазон доступних портів",
-        "enabled": "Увімкнено",
-        "no_nodes": "Немає вузлів"
-      },
-      "build_id": "ID збірки",
-      "last_updated": "Останнє оновлення"
-    },
-    "dedicated_servers": {
-      "title": "Виділені сервери",
-      "description": "Керування виділеними серверами",
-      "create": {
-        "title": "Створити сервер"
-      },
-      "table": {
-        "connection_details": "Деталі підключення",
-        "label": "Мітка",
-        "region": "Регіон",
-        "tv_port": "TV порт",
-        "enabled": "Увімкнено",
-        "yes": "Так",
-        "no": "Ні"
-      },
-      "detail": {
-        "enabled": "Увімкнено",
-        "server_plugin_config": "Конфігурація плагіна сервера",
-        "hide_config": "Приховати конфігурацію",
-        "show_config": "Показати конфігурацію",
-        "config_location": "Розташування конфігураційного файлу",
-        "copy": "Копіювати",
-        "edit": "Редагувати",
-        "delete": "Видалити",
-        "delete_confirm": {
-          "title": "Видалити сервер",
-          "description": "Ви впевнені, що хочете видалити цей сервер?",
-          "cancel": "Скасувати",
-          "continue": "Продовжити"
-        }
-      }
-    }
-  },
-  "matchmaking": {
-    "lobby": {
-      "title": "Лобі матчмейкінгу",
-      "leave": "Покинути лобі",
-      "invite_player": "Запросити гравця в лобі",
-      "invites": "Запрошення в лобі",
-      "access_updated": "Доступ до лобі оновлено до {access}"
-    },
-    "friends": {
-      "title": "Друзі",
-      "sync": "Синхронізувати",
-      "search": "Пошук",
-      "pending_requests": "Очікуючі запити",
-      "invite_to_lobby": "Запросити в лобі",
-      "remove": "Видалити",
-      "online": "В мережі",
-      "offline": "Не в мережі",
-      "join_lobby": "Приєднатися до Лобі"
-    },
-    "leave": "Покинути",
-    "position": "Позиція",
-    "join": "Приєднатися",
-    "confirm": {
-      "title": "Підтвердити",
-      "ready": "Готово",
-      "players": "Гравці"
-    },
-    "banned": "Заблоковано",
-    "go_to_match": "Перейти до матчу",
-    "temp_banned": "Тимчасово заблоковано"
-  },
-  "match": {
-    "lobby": {
-      "access_updated": "Доступ до лобі матчу оновлено до {access}"
-    },
-    "simple": {
-      "vs": "проти"
-    },
-    "my_upcoming": {
-      "no_matches": "Немає майбутніх матчів"
-    },
-    "recent": {
-      "title": "Останні матчі",
-      "no_matches": "Немає останніх матчів"
-    },
-    "options": {
-      "table": {
-        "match": "Матч",
-        "type": "Тип",
-        "maps": "Карти",
-        "no_matches_found": "Матчів не знайдено",
-        "join": "Приєднатися"
-      },
-      "type": {
-        "label": "Тип"
-      },
-      "best_of": {
-        "label": "Найкращий з",
-        "description": "Кількість карт, необхідна для перемоги",
-        "placeholder": "Виберіть найкращий з"
-      },
-      "map_veto_settings": {
-        "label": "Налаштування вето карт",
-        "description": "Опис налаштувань вето карт",
-        "custom_pool": "Власний пул карт",
-        "active_duty": "Активні карти",
-        "custom_pool_tooltip": "Підказка власного пулу карт"
-      },
-      "advanced": {
-        "title": "Розширені налаштування",
-        "hide": "Приховати",
-        "show": "Показати",
-        "toggle": "Перемикач",
-        "overtime": {
-          "label": "Додатковий час",
-          "description": "Опис додаткового часу"
+    "matchmaking": {
+        "lobby": {
+            "title": "Лобі матчмейкінгу",
+            "leave": "Покинути лобі",
+            "invite_player": "Запросити гравця в лобі",
+            "invites": "Запрошення в лобі",
+            "access_updated": "Доступ до лобі оновлено до {access}"
         },
-        "knife_round": {
-          "label": "Раунд ножів",
-          "description": "Опис раунду ножів"
+        "friends": {
+            "title": "Друзі",
+            "sync": "Синхронізувати",
+            "search": "Пошук",
+            "pending_requests": "Очікуючі запити",
+            "invite_to_lobby": "Запросити в лобі",
+            "remove": "Видалити",
+            "online": "В мережі",
+            "offline": "Не в мережі",
+            "join_lobby": "Приєднатися до Лобі"
         },
-        "max_rounds": {
-          "label": "Максимальна кількість раундів",
-          "description": "Опис максимальної кількості раундів",
-          "placeholder": "Введіть максимальну кількість раундів"
+        "leave": "Покинути",
+        "position": "Позиція",
+        "join": "Приєднатися",
+        "confirm": {
+            "title": "Підтвердити",
+            "ready": "Готово",
+            "players": "Гравці"
         },
-        "region": {
-          "title": "Регіон",
-          "lan_match": "Локальний матч",
-          "veto": {
-            "label": "Вето регіону",
-            "description": "Опис вето регіону"
-          },
-          "preferred": "Бажаний регіон",
-          "single": "Один регіон",
-          "placeholder": "Виберіть регіон",
-          "any": "Будь-який регіон",
-          "description": "Опис регіону"
-        },
-        "substitutes": {
-          "label": "Заміни",
-          "description": "Опис замін",
-          "range": "Діапазон замін"
-        },
-        "tv_delay": {
-          "label": "Затримка TV",
-          "range": "Діапазон затримки"
-        },
-        "timeouts": {
-          "tactical": {
-            "label": "Тактична пауза",
-            "description": "Опис тактичної паузи"
-          },
-          "technical": {
-            "label": "Технічна пауза",
-            "description": "Опис технічної паузи"
-          },
-          "options": {
-            "admins": "Адміністратори",
-            "coaches": "Тренери",
-            "everyone": "Всі"
-          }
-        }
-      },
-      "max_rounds": "Максимальна кількість раундів",
-      "tv_delay": "Затримка TV",
-      "seconds": "секунд",
-      "coaches": "Тренери",
-      "overtime": "Додатковий час",
-      "knife_round": "Раунд ножів",
-      "map_veto_enabled": "Вето карт увімкнено",
-      "region_veto": "Вето регіону",
-      "substitutes": "Заміни",
-      "timeout_setting": "Налаштування паузи",
-      "tech_timeout_setting": "Налаштування технічної паузи",
-      "map_pool": "Пул карт"
-    },
-    "schedule": {
-      "pick_date": "Вибрати дату",
-      "schedule": "Запланувати"
-    },
-    "player": {
-      "captain": "Капітан",
-      "status": {
-        "offline_not_ready": "Офлайн, не готовий",
-        "online_not_ready": "Онлайн, не готовий",
-        "ready": "Готовий",
-        "offline": "Офлайн",
-        "online_not_in_game": "Онлайн, не в грі",
-        "in_game": "В грі"
-      },
-      "assign_slot": "Призначити слот"
-    },
-    "tabs": {
-      "overview": "Огляд",
-      "utility": "Утиліти",
-      "opening_duels": "Початкові дуелі",
-      "clutches": "Клеші",
-      "map_veto_tab": "Вето карт",
-      "settings": "Налаштування",
-      "server_console": "Консоль сервера",
-      "randomize_teams": "Випадковий розподіл команд",
-      "invited_to_match": "Запрошено на матч",
-      "join_roster": "Приєднатися до складу",
-      "restore_round": "Відновити раунд",
-      "select_round_to_restore": "Виберіть раунд для відновлення",
-      "server_information": "Інформація про сервер",
-      "type": "Тип",
-      "region": "Регіон",
-      "round": "Раунд"
-    },
-    "status": {
-      "cancelled": "Скасовано",
-      "finished": "Завершено",
-      "waiting_server": "Очікування сервера",
-      "scheduled_asap": "Заплановано якнайшвидше"
-    },
-    "winner": {
-      "set": "Встановити переможця",
-      "select_lineup": "Вибрати склад"
-    },
-    "region_veto": {
-      "banning": "Бан",
-      "organizer_override": "Перевизначення організатором",
-      "confirm_ban": "Підтвердити бан",
-      "server_region": "Регіон сервера",
-      "select_region": "Вибрати регіон"
-    },
-    "picks": {
-      "decider": "Вирішальна карта"
-    },
-    "decider": "Вирішальна карта",
-    "map_veto": {
-      "is_picking": "Вибір",
-      "organizer_override": "Перевизначення організатором",
-      "select_side": "Вибрати сторону",
-      "your_turn": "Ваша черга",
-      "pick": "Вибрати",
-      "confirm": "Підтвердити"
-    },
-    "map_lineup": {
-      "picked": "Обрано"
-    },
-    "vs": "проти",
-    "auto_canceling": "Автоматичне скасування",
-    "actions": {
-      "call_support": "Викликати підтримку",
-      "start_veto": "Почати вето",
-      "skip_checkin": "Пропустити реєстрацію",
-      "cancel": "Скасувати"
-    },
-    "lineup": {
-      "stats": {
-        "flashes_thrown": "Кинуті флешки",
-        "flash_assists": "Помічники від флешок",
-        "enemies_flashed": "Вороги осліплені",
-        "team_flashed": "Команда осліплена",
-        "avg_blind_time": "Середній час осліплення",
-        "he_damage": "Шкода від HE",
-        "molotov_damage": "Шкода від молотова",
-        "seconds": "секунд"
-      },
-      "discord_user": "Користувач Discord",
-      "discord_link": "Посилання на Discord"
-    },
-    "opening_duels": {
-      "attempts": "Спроби",
-      "success": "Успіх"
-    },
-    "clutches": {
-      "won": "Виграно",
-      "lost": "Програно",
-      "against": "проти",
-      "no_clutches": "Немає клешів",
-      "vs": "проти",
-      "round": "Раунд"
-    },
-    "join": {
-      "live": "Пряма трансляція",
-      "call_organizer": "Викликати організатора"
-    },
-    "check_in": {
-      "title": "Реєстрація",
-      "checked_in": "Зареєстровано",
-      "check_in": "Зареєструватися",
-      "description": "Опис реєстрації"
-    },
-    "coach": {
-      "assign": "Призначити тренера"
-    },
-    "download_demos": "Завантажити демо",
-    "coaches": "Тренери",
-    "best_of": "Найкращий з",
-    "overview": {
-      "promote_captain": "Підвищити до капітана",
-      "switch_teams": "Поміняти команди",
-      "remove_from_lineup": "Видалити зі складу",
-      "leave_lineup": "Покинути склад",
-      "kills": "Вбивства",
-      "kills_full": "Вбивства",
-      "assists": "Помічники",
-      "assists_full": "Помічники",
-      "deaths": "Смерті",
-      "deaths_full": "Смерті",
-      "kd": "K/D",
-      "hs": "В голову",
-      "team_damage": "Шкода по команді",
-      "multi_kill_rounds": "Раунди з кількома вбивствами",
-      "mkr": "MKR",
-      "k2": "2K",
-      "k3": "3K",
-      "k4": "4K",
-      "k5": "5K",
-      "knifes": "Ніж",
-      "zeus": "Zeus",
-      "total_damage": "Загальна шкода",
-      "substitute": "Заміна",
-      "join": "Приєднатися",
-      "slot": "Слот"
-    },
-    "server": {
-      "offline": "Офлайн",
-      "booting": "Завантаження",
-      "assign": "Призначити",
-      "select": "Вибрати",
-      "dedicated": "Виділений",
-      "on_demand": "За запитом",
-      "assigned": "Призначено"
-    }
-  },
-  "ui": {
-    "tooltips": {
-      "expand": "Розгорнути",
-      "fullscreen": "Повний екран",
-      "download": "Завантажити"
-    },
-    "logs": {
-      "follow": "Слідкувати",
-      "timestamps": "Часові мітки",
-      "container": "Контейнер"
-    }
-  },
-  "player": {
-    "sanction": {
-      "button": "Санкціонувати гравця",
-      "reason_description": "Будь ласка, вкажіть чітку причину для цієї санкції"
-    },
-    "search": {
-      "online_only": "Тільки онлайн",
-      "no_players_found": "Гравців не знайдено",
-      "found_players": "Знайдені гравці",
-      "placeholder": "Пошук гравців..."
-    },
-    "sanctions": {
-      "title": "Санкції",
-      "expires": "Закінчується",
-      "active_count": "Активні санкції",
-      "past_count": "Минулі санкції"
-    },
-    "registration": {
-      "title": "Реєстрація",
-      "description": "Опис",
-      "warning": "Попередження",
-      "name_label": "Мітка імені",
-      "confirm_button": "Кнопка підтвердження",
-      "success": "Успіх"
-    },
-    "status": {
-      "banned": "Заблоковано",
-      "muted": "Заглушено",
-      "gagged": "Заглушено",
-      "add_friend": "Додати друга"
-    },
-    "change_name": {
-      "button": "Змінити ім'я",
-      "title": "Змінити ім'я",
-      "request_title": "Запит на зміну імені",
-      "description": "Опис",
-      "request_description": "Опис запиту",
-      "name_label": "Мітка імені",
-      "success": "Успіх",
-      "request_success": "Запит успішний"
-    }
-  },
-  "maps": {
-    "veto": {
-      "pick": "Вибрати"
-    },
-    "official": "Офіційні",
-    "workshop": "Майстерня",
-    "active_duty": "Активні карти"
-  },
-  "region": {
-    "form": {
-      "name": "Назва",
-      "description": "Опис",
-      "use_lan": "Використовувати локальну мережу",
-      "update": "Оновити",
-      "create": "Створити"
-    }
-  },
-  "game_server": {
-    "update_cs": "Оновити CS",
-    "install_cs": "Встановити CS",
-    "select_region": "Вибрати регіон",
-    "remove_node": "Видалити вузол",
-    "validation": {
-      "start_port_less_than_end": "Початковий порт має бути менше кінцевого",
-      "end_port_greater_than_start": "Кінцевий порт має бути більше початкового"
-    },
-    "toast": {
-      "cs_updating": "Оновлення CS",
-      "ports_updated": "Порти оновлено"
-    }
-  },
-  "chat": {
-    "lobby_chat": "Чат лобі",
-    "message_placeholder": "Введіть повідомлення..."
-  },
-  "charts": {
-    "usage": "Використання"
-  },
-  "server": {
-    "form": {
-      "label": "Мітка",
-      "host": "Хост",
-      "region": "Регіон",
-      "select_region": "Вибрати регіон",
-      "rcon_password": "Пароль RCON",
-      "rcon_password_description": "Опис пароля RCON",
-      "port": "Порт",
-      "tv_port": "TV порт",
-      "update": "Оновити",
-      "create": "Створити"
-    },
-    "rcon": {
-      "quick_commands": "Швидкі команди",
-      "refresh_match": "Оновити матч",
-      "metamod_info": "Інформація про Metamod",
-      "css_info": "Інформація про CSS",
-      "output": "Вивід",
-      "command_placeholder": "Введіть команду",
-      "send_command": "Надіслати команду"
-    }
-  },
-  "layouts": {
-    "profile_settings": {
-      "title": "Налаштування профілю",
-      "description": "Керування інформацією профілю",
-      "discord": {
-        "unlink": "Відв'язати Discord",
-        "link": "Прив'язати Discord",
-        "unlink_dialog": {
-          "title": "Відв'язати Discord",
-          "description": "Ви впевнені, що хочете відв'язати Discord?",
-          "cancel": "Скасувати",
-          "confirm": "Відв'язати"
-        },
-        "unlinked": "Discord відв'язано"
-      }
-    },
-    "application_settings": {
-      "title": "Налаштування додатку",
-      "description": "Керування налаштуваннями додатку"
-    },
-    "system_update": {
-      "title": "Оновлення системи",
-      "description": "Потрібне оновлення системи",
-      "note": "Примітка: під час оновлення додаток буде недоступний",
-      "fix_link": "Показати рішення",
-      "cancel": "Скасувати",
-      "update": "Оновити"
-    },
-    "match_lobby": {
-      "versus": "проти"
-    },
-    "notifications": {
-      "title": "Сповіщення",
-      "delete": "Видалити",
-      "dismiss": "Закрити",
-      "delete_all_read": "Видалити всі прочитані сповіщення",
-      "no_notifications": "Немає сповіщень"
-    },
-    "app_nav": {
-      "brand": "5stack",
-      "navigation": {
-        "play": "Грати",
-        "matches": "Матчі",
-        "tournaments": "Турніри",
-        "players": "Гравці",
-        "teams": "Команди"
-      },
-      "administration": {
-        "title": "Адміністрування",
-        "regions": "Регіони",
-        "servers": "Сервери",
-        "dedicated_servers": "Виділені Сервери",
-        "game_server_nodes": "Вузли Ігрового Сервера",
-        "logs": "Системні Логи",
-        "metrics": "Системні Метрики",
-        "app_settings": "Налаштування Додатку",
-        "map_pools": "Пул Карт"
-      },
-      "footer": {
-        "report_issue": "Повідомити про Проблему",
-        "join_discord": "Приєднатися до Discord"
-      },
-      "profile": {
-        "my_account": "Мій Обліковий Запис",
-        "logout": "Вийти"
-      },
-      "logout_dialog": {
-        "title": "Вийти",
-        "description": "Ви впевнені, що хочете вийти?",
-        "cancel": "Скасувати",
-        "confirm": "Вийти"
-      },
-      "tooltips": {
-        "play": "Грати",
-        "matches": "Матчі",
-        "tournaments": "Турніри",
-        "players": "Гравці",
-        "teams": "Команди",
-        "regions": "Регіони",
-        "servers": "Сервери",
-        "dedicated_servers": "Виділені Сервери",
-        "game_server_nodes": "Вузли Ігрового Сервера",
-        "system_logs": "Системні Логи",
-        "system_metrics": "Системні Метрики",
-        "app_settings": "Налаштування Додатку",
-        "report_issue": "Повідомити про Проблему",
-        "join_discord": "Приєднатися до Discord",
-        "map_pools": "Пул Карт"
-      }
-    }
-  },
-  "pwa": {
-    "install": {
-      "title": "Встановити додаток",
-      "description": "Встановіть 5Stack для кращого досвіду",
-      "step1": "Крок 1",
-      "step2": "Крок 2",
-      "tooltip": "Підказка встановлення",
-      "button": "Встановити"
-    }
-  },
-  "common": {
-    "cancel": "Скасувати",
-    "tbd": "Буде визначено",
-    "boolean": {
-      "yes": "Так",
-      "no": "Ні"
-    },
-    "actions": {
-      "edit": "Редагувати",
-      "delete": "Видалити"
-    },
-    "close": "Закрити",
-    "confirm": "Підтвердити"
-  },
-  "tournament": {
-    "overview": "Огляд",
-    "bracket": "Сітка",
-    "teams": "Команди",
-    "settings": "Налаштування",
-    "admin": "Адміністрування",
-    "organizers": "Організатори",
-    "join": {
-      "title": "Приєднатися до турніру",
-      "joined_with": "Команда приєдналася",
-      "requirements": "Вимоги"
-    },
-    "tournament_team": {
-      "players_registered": "Зареєстровані гравці",
-      "remove": "Видалити"
-    },
-    "add_team": {
-      "title": "Додати команду"
-    },
-    "form": {
-      "create": "Створити турнір",
-      "description_help": "Введіть опис турніру",
-      "name": "Назва",
-      "description": "Опис",
-      "start": "Початок",
-      "pick_date": "Вибрати дату",
-      "update": "Оновити",
-      "match_options": "Налаштування матчу"
-    },
-    "table": {
-      "tournament": "Турнір",
-      "status": "Статус",
-      "type": "Тип",
-      "teams_joined": "Приєднані команди",
-      "starts": "Початок",
-      "no_tournaments_found": "Турнірів не знайдено"
-    },
-    "stage": {
-      "title": "Етап",
-      "teams": "Команди",
-      "edit": "Редагувати",
-      "delete": "Видалити",
-      "edit_title": "Редагувати етап",
-      "confirm_delete": "Видалити етап",
-      "delete_description": "Ви впевнені, що хочете видалити цей етап?",
-      "type": "Тип",
-      "type_placeholder": "Виберіть тип етапу",
-      "min_teams": "Мінімальна кількість команд",
-      "min_teams_placeholder": "Введіть мінімальну кількість команд",
-      "max_teams": "Максимальна кількість команд",
-      "max_teams_placeholder": "Введіть максимальну кількість команд",
-      "update": "Оновити",
-      "create": "Створити",
-      "no_stages": "Немає етапів",
-      "start_building": "Почати створення сітки",
-      "add_first": "Додати перший етап",
-      "add_another": "Додати інший етап",
-      "not_setup": "Етап не налаштовано"
+        "banned": "Заблоковано",
+        "go_to_match": "Перейти до матчу",
+        "temp_banned": "Тимчасово заблоковано"
     },
     "match": {
-      "team_1": "Команда 1",
-      "team_2": "Команда 2",
-      "round_match": "Раунд матчу"
+        "lobby": {
+            "access_updated": "Доступ до лобі матчу оновлено до {access}"
+        },
+        "simple": {
+            "vs": "проти"
+        },
+        "my_upcoming": {
+            "no_matches": "Немає майбутніх матчів"
+        },
+        "recent": {
+            "title": "Останні матчі",
+            "no_matches": "Немає останніх матчів"
+        },
+        "options": {
+            "table": {
+                "match": "Матч",
+                "type": "Тип",
+                "maps": "Карти",
+                "no_matches_found": "Матчів не знайдено",
+                "join": "Приєднатися"
+            },
+            "type": {
+                "label": "Тип"
+            },
+            "best_of": {
+                "label": "Найкращий з",
+                "description": "Кількість карт, необхідна для перемоги",
+                "placeholder": "Виберіть найкращий з"
+            },
+            "map_veto_settings": {
+                "label": "Налаштування вето карт",
+                "description": "Опис налаштувань вето карт",
+                "custom_pool": "Власний пул карт",
+                "active_duty": "Активні карти",
+                "custom_pool_tooltip": "Підказка власного пулу карт"
+            },
+            "advanced": {
+                "title": "Розширені налаштування",
+                "hide": "Приховати",
+                "show": "Показати",
+                "toggle": "Перемикач",
+                "overtime": {
+                    "label": "Додатковий час",
+                    "description": "Опис додаткового часу"
+                },
+                "knife_round": {
+                    "label": "Раунд ножів",
+                    "description": "Опис раунду ножів"
+                },
+                "max_rounds": {
+                    "label": "Максимальна кількість раундів",
+                    "description": "Опис максимальної кількості раундів",
+                    "placeholder": "Введіть максимальну кількість раундів"
+                },
+                "region": {
+                    "title": "Регіон",
+                    "lan_match": "Локальний матч",
+                    "veto": {
+                        "label": "Вето регіону",
+                        "description": "Опис вето регіону"
+                    },
+                    "preferred": "Бажаний регіон",
+                    "single": "Один регіон",
+                    "placeholder": "Виберіть регіон",
+                    "any": "Будь-який регіон",
+                    "description": "Опис регіону"
+                },
+                "substitutes": {
+                    "label": "Заміни",
+                    "description": "Опис замін",
+                    "range": "Діапазон замін"
+                },
+                "tv_delay": {
+                    "label": "Затримка TV",
+                    "range": "Діапазон затримки"
+                },
+                "timeouts": {
+                    "tactical": {
+                        "label": "Тактична пауза",
+                        "description": "Опис тактичної паузи"
+                    },
+                    "technical": {
+                        "label": "Технічна пауза",
+                        "description": "Опис технічної паузи"
+                    },
+                    "options": {
+                        "admins": "Адміністратори",
+                        "coaches": "Тренери",
+                        "everyone": "Всі"
+                    }
+                }
+            },
+            "max_rounds": "Максимальна кількість раундів",
+            "tv_delay": "Затримка TV",
+            "seconds": "секунд",
+            "coaches": "Тренери",
+            "overtime": "Додатковий час",
+            "knife_round": "Раунд ножів",
+            "map_veto_enabled": "Вето карт увімкнено",
+            "region_veto": "Вето регіону",
+            "substitutes": "Заміни",
+            "timeout_setting": "Налаштування паузи",
+            "tech_timeout_setting": "Налаштування технічної паузи",
+            "map_pool": "Пул карт"
+        },
+        "schedule": {
+            "pick_date": "Вибрати дату",
+            "schedule": "Запланувати"
+        },
+        "player": {
+            "captain": "Капітан",
+            "status": {
+                "offline_not_ready": "Офлайн, не готовий",
+                "online_not_ready": "Онлайн, не готовий",
+                "ready": "Готовий",
+                "offline": "Офлайн",
+                "online_not_in_game": "Онлайн, не в грі",
+                "in_game": "В грі"
+            },
+            "assign_slot": "Призначити слот"
+        },
+        "tabs": {
+            "overview": "Огляд",
+            "utility": "Утиліти",
+            "opening_duels": "Початкові дуелі",
+            "clutches": "Клеші",
+            "map_veto_tab": "Вето карт",
+            "settings": "Налаштування",
+            "server_console": "Консоль сервера",
+            "randomize_teams": "Випадковий розподіл команд",
+            "invited_to_match": "Запрошено на матч",
+            "join_roster": "Приєднатися до складу",
+            "restore_round": "Відновити раунд",
+            "select_round_to_restore": "Виберіть раунд для відновлення",
+            "server_information": "Інформація про сервер",
+            "type": "Тип",
+            "region": "Регіон",
+            "round": "Раунд"
+        },
+        "status": {
+            "cancelled": "Скасовано",
+            "finished": "Завершено",
+            "waiting_server": "Очікування сервера",
+            "scheduled_asap": "Заплановано якнайшвидше"
+        },
+        "winner": {
+            "set": "Встановити переможця",
+            "select_lineup": "Вибрати склад"
+        },
+        "region_veto": {
+            "banning": "Бан",
+            "organizer_override": "Перевизначення організатором",
+            "confirm_ban": "Підтвердити бан",
+            "server_region": "Регіон сервера",
+            "select_region": "Вибрати регіон"
+        },
+        "picks": {
+            "decider": "Вирішальна карта"
+        },
+        "decider": "Вирішальна карта",
+        "map_veto": {
+            "is_picking": "Вибір",
+            "organizer_override": "Перевизначення організатором",
+            "select_side": "Вибрати сторону",
+            "your_turn": "Ваша черга",
+            "pick": "Вибрати",
+            "confirm": "Підтвердити"
+        },
+        "map_lineup": {
+            "picked": "Обрано"
+        },
+        "vs": "проти",
+        "auto_canceling": "Автоматичне скасування",
+        "actions": {
+            "call_support": "Викликати підтримку",
+            "start_veto": "Почати вето",
+            "skip_checkin": "Пропустити реєстрацію",
+            "cancel": "Скасувати"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "Кинуті флешки",
+                "flash_assists": "Помічники від флешок",
+                "enemies_flashed": "Вороги осліплені",
+                "team_flashed": "Команда осліплена",
+                "avg_blind_time": "Середній час осліплення",
+                "he_damage": "Шкода від HE",
+                "molotov_damage": "Шкода від молотова",
+                "seconds": "секунд"
+            },
+            "discord_user": "Користувач Discord",
+            "discord_link": "Посилання на Discord"
+        },
+        "opening_duels": {
+            "attempts": "Спроби",
+            "success": "Успіх"
+        },
+        "clutches": {
+            "won": "Виграно",
+            "lost": "Програно",
+            "against": "проти",
+            "no_clutches": "Немає клешів",
+            "vs": "проти",
+            "round": "Раунд"
+        },
+        "join": {
+            "live": "Пряма трансляція",
+            "call_organizer": "Викликати організатора"
+        },
+        "check_in": {
+            "title": "Реєстрація",
+            "checked_in": "Зареєстровано",
+            "check_in": "Зареєструватися",
+            "description": "Опис реєстрації"
+        },
+        "coach": {
+            "assign": "Призначити тренера"
+        },
+        "download_demos": "Завантажити демо",
+        "coaches": "Тренери",
+        "best_of": "Найкращий з",
+        "overview": {
+            "promote_captain": "Підвищити до капітана",
+            "switch_teams": "Поміняти команди",
+            "remove_from_lineup": "Видалити зі складу",
+            "leave_lineup": "Покинути склад",
+            "kills": "Вбивства",
+            "kills_full": "Вбивства",
+            "assists": "Помічники",
+            "assists_full": "Помічники",
+            "deaths": "Смерті",
+            "deaths_full": "Смерті",
+            "kd": "K/D",
+            "hs": "В голову",
+            "team_damage": "Шкода по команді",
+            "multi_kill_rounds": "Раунди з кількома вбивствами",
+            "mkr": "MKR",
+            "k2": "2K",
+            "k3": "3K",
+            "k4": "4K",
+            "k5": "5K",
+            "knifes": "Ніж",
+            "zeus": "Zeus",
+            "total_damage": "Загальна шкода",
+            "substitute": "Заміна",
+            "join": "Приєднатися",
+            "slot": "Слот"
+        },
+        "server": {
+            "offline": "Офлайн",
+            "booting": "Завантаження",
+            "assign": "Призначити",
+            "select": "Вибрати",
+            "dedicated": "Виділений",
+            "on_demand": "За запитом",
+            "assigned": "Призначено"
+        }
     },
-    "organizer": {
-      "title": "Організатор",
-      "description": "Керування організаторами турніру",
-      "add": "Додати організатора",
-      "name": "Назва",
-      "actions": "Дії",
-      "no_organizers": "Немає організаторів",
-      "no_organizers_description": "У цьому турнірі немає організаторів",
-      "remove": "Видалити",
-      "confirm_remove": "Видалити організатора",
-      "remove_description": "Ви впевнені, що хочете видалити цього організатора?"
+    "ui": {
+        "tooltips": {
+            "expand": "Розгорнути",
+            "fullscreen": "Повний екран",
+            "download": "Завантажити"
+        },
+        "logs": {
+            "follow": "Слідкувати",
+            "timestamps": "Часові мітки",
+            "container": "Контейнер"
+        }
     },
-    "team": {
-      "manage_roster": "Керувати складом",
-      "eligible": "Відповідає вимогам",
-      "not_eligible": "Не відповідає вимогам",
-      "leave_tournament": "Покинути турнір",
-      "leave_team": "Покинути команду",
-      "player": "Гравець",
-      "role": "Роль",
-      "slot": "Слот",
-      "add_player": "Додати гравця",
-      "pending_invites": "Очікуючі запрошення",
-      "new": "Новий",
-      "select": "Вибрати",
-      "name": "Назва",
-      "select_role": "Вибрати роль",
-      "no_roles": "Немає ролей",
-      "remove_member": "Видалити учасника",
-      "confirm_remove_member": "Видалити учасника",
-      "remove_member_description": "Ви впевнені, що хочете видалити цього учасника?",
-      "cancel_invite": "Скасувати запрошення",
-      "confirm_cancel_invite": "Скасувати запрошення",
-      "cancel_invite_description": "Ви впевнені, що хочете скасувати це запрошення?",
-      "my_teams": "Мої команди",
-      "my_teams_description": "Команди, до яких ви належите",
-      "no_eligible_teams": "Немає команд, що відповідають вимогам",
-      "team": "Команда",
-      "select_team": "Вибрати команду",
-      "search_team": "Пошук команди...",
-      "add_to_tournament": "Додати до турніру"
+    "player": {
+        "sanction": {
+            "button": "Санкціонувати гравця",
+            "reason_description": "Будь ласка, вкажіть чітку причину для цієї санкції"
+        },
+        "search": {
+            "online_only": "Тільки онлайн",
+            "no_players_found": "Гравців не знайдено",
+            "found_players": "Знайдені гравці",
+            "placeholder": "Пошук гравців..."
+        },
+        "sanctions": {
+            "title": "Санкції",
+            "expires": "Закінчується",
+            "active_count": "Активні санкції",
+            "past_count": "Минулі санкції"
+        },
+        "registration": {
+            "title": "Реєстрація",
+            "description": "Опис",
+            "warning": "Попередження",
+            "name_label": "Мітка імені",
+            "confirm_button": "Кнопка підтвердження",
+            "success": "Успіх"
+        },
+        "status": {
+            "banned": "Заблоковано",
+            "muted": "Заглушено",
+            "gagged": "Заглушено",
+            "add_friend": "Додати друга"
+        },
+        "change_name": {
+            "button": "Змінити ім'я",
+            "title": "Змінити ім'я",
+            "request_title": "Запит на зміну імені",
+            "description": "Опис",
+            "request_description": "Опис запиту",
+            "name_label": "Мітка імені",
+            "success": "Успіх",
+            "request_success": "Запит успішний"
+        }
     },
-    "actions": {
-      "open_registration": "Відкрити реєстрацію",
-      "close_registration": "Закрити реєстрацію",
-      "cancel": "Скасувати"
+    "maps": {
+        "veto": {
+            "pick": "Вибрати"
+        },
+        "official": "Офіційні",
+        "workshop": "Майстерня",
+        "active_duty": "Активні карти"
     },
-    "upcoming": {
-      "empty": "Немає майбутніх турнірів"
+    "region": {
+        "form": {
+            "name": "Назва",
+            "description": "Опис",
+            "use_lan": "Використовувати локальну мережу",
+            "update": "Оновити",
+            "create": "Створити"
+        }
+    },
+    "game_server": {
+        "update_cs": "Оновити CS",
+        "install_cs": "Встановити CS",
+        "select_region": "Вибрати регіон",
+        "remove_node": "Видалити вузол",
+        "validation": {
+            "start_port_less_than_end": "Початковий порт має бути менше кінцевого",
+            "end_port_greater_than_start": "Кінцевий порт має бути більше початкового"
+        },
+        "toast": {
+            "cs_updating": "Оновлення CS",
+            "ports_updated": "Порти оновлено"
+        }
+    },
+    "chat": {
+        "lobby_chat": "Чат лобі",
+        "message_placeholder": "Введіть повідомлення..."
+    },
+    "charts": {
+        "usage": "Використання"
     },
     "server": {
-      "remove": "Видалити",
-      "confirm_remove": "Видалити сервер",
-      "remove_description": "Ви впевнені, що хочете видалити цей сервер?"
+        "form": {
+            "label": "Мітка",
+            "host": "Хост",
+            "region": "Регіон",
+            "select_region": "Вибрати регіон",
+            "rcon_password": "Пароль RCON",
+            "rcon_password_description": "Опис пароля RCON",
+            "port": "Порт",
+            "tv_port": "TV порт",
+            "update": "Оновити",
+            "create": "Створити"
+        },
+        "rcon": {
+            "quick_commands": "Швидкі команди",
+            "refresh_match": "Оновити матч",
+            "metamod_info": "Інформація про Metamod",
+            "css_info": "Інформація про CSS",
+            "output": "Вивід",
+            "command_placeholder": "Введіть команду",
+            "send_command": "Надіслати команду"
+        }
+    },
+    "layouts": {
+        "profile_settings": {
+            "title": "Налаштування профілю",
+            "description": "Керування інформацією профілю",
+            "discord": {
+                "unlink": "Відв'язати Discord",
+                "link": "Прив'язати Discord",
+                "unlink_dialog": {
+                    "title": "Відв'язати Discord",
+                    "description": "Ви впевнені, що хочете відв'язати Discord?",
+                    "cancel": "Скасувати",
+                    "confirm": "Відв'язати"
+                },
+                "unlinked": "Discord відв'язано"
+            }
+        },
+        "application_settings": {
+            "title": "Налаштування додатку",
+            "description": "Керування налаштуваннями додатку"
+        },
+        "system_update": {
+            "title": "Оновлення системи",
+            "description": "Потрібне оновлення системи",
+            "note": "Примітка: під час оновлення додаток буде недоступний",
+            "fix_link": "Показати рішення",
+            "cancel": "Скасувати",
+            "update": "Оновити"
+        },
+        "match_lobby": {
+            "versus": "проти"
+        },
+        "notifications": {
+            "title": "Сповіщення",
+            "delete": "Видалити",
+            "dismiss": "Закрити",
+            "delete_all_read": "Видалити всі прочитані сповіщення",
+            "no_notifications": "Немає сповіщень"
+        },
+        "app_nav": {
+            "brand": "5stack",
+            "navigation": {
+                "play": "Грати",
+                "matches": "Матчі",
+                "tournaments": "Турніри",
+                "players": "Гравці",
+                "teams": "Команди"
+            },
+            "administration": {
+                "title": "Адміністрування",
+                "regions": "Регіони",
+                "servers": "Сервери",
+                "dedicated_servers": "Виділені Сервери",
+                "game_server_nodes": "Вузли Ігрового Сервера",
+                "logs": "Системні Логи",
+                "metrics": "Системні Метрики",
+                "app_settings": "Налаштування Додатку",
+                "map_pools": "Пул Карт"
+            },
+            "footer": {
+                "report_issue": "Повідомити про Проблему",
+                "join_discord": "Приєднатися до Discord"
+            },
+            "profile": {
+                "my_account": "Мій Обліковий Запис",
+                "logout": "Вийти"
+            },
+            "logout_dialog": {
+                "title": "Вийти",
+                "description": "Ви впевнені, що хочете вийти?",
+                "cancel": "Скасувати",
+                "confirm": "Вийти"
+            },
+            "tooltips": {
+                "play": "Грати",
+                "matches": "Матчі",
+                "tournaments": "Турніри",
+                "players": "Гравці",
+                "teams": "Команди",
+                "regions": "Регіони",
+                "servers": "Сервери",
+                "dedicated_servers": "Виділені Сервери",
+                "game_server_nodes": "Вузли Ігрового Сервера",
+                "system_logs": "Системні Логи",
+                "system_metrics": "Системні Метрики",
+                "app_settings": "Налаштування Додатку",
+                "report_issue": "Повідомити про Проблему",
+                "join_discord": "Приєднатися до Discord",
+                "map_pools": "Пул Карт"
+            }
+        }
+    },
+    "pwa": {
+        "install": {
+            "title": "Встановити додаток",
+            "description": "Встановіть 5Stack для кращого досвіду",
+            "step1": "Крок 1",
+            "step2": "Крок 2",
+            "tooltip": "Підказка встановлення",
+            "button": "Встановити"
+        }
+    },
+    "common": {
+        "cancel": "Скасувати",
+        "tbd": "Буде визначено",
+        "boolean": {
+            "yes": "Так",
+            "no": "Ні"
+        },
+        "actions": {
+            "edit": "Редагувати",
+            "delete": "Видалити"
+        },
+        "close": "Закрити",
+        "confirm": "Підтвердити"
+    },
+    "tournament": {
+        "overview": "Огляд",
+        "bracket": "Сітка",
+        "teams": "Команди",
+        "settings": "Налаштування",
+        "admin": "Адміністрування",
+        "organizers": "Організатори",
+        "join": {
+            "title": "Приєднатися до турніру",
+            "joined_with": "Команда приєдналася",
+            "requirements": "Вимоги"
+        },
+        "tournament_team": {
+            "players_registered": "Зареєстровані гравці",
+            "remove": "Видалити"
+        },
+        "add_team": {
+            "title": "Додати команду"
+        },
+        "form": {
+            "create": "Створити турнір",
+            "description_help": "Введіть опис турніру",
+            "name": "Назва",
+            "description": "Опис",
+            "start": "Початок",
+            "pick_date": "Вибрати дату",
+            "update": "Оновити",
+            "match_options": "Налаштування матчу"
+        },
+        "table": {
+            "tournament": "Турнір",
+            "status": "Статус",
+            "type": "Тип",
+            "teams_joined": "Приєднані команди",
+            "starts": "Початок",
+            "no_tournaments_found": "Турнірів не знайдено"
+        },
+        "stage": {
+            "title": "Етап",
+            "teams": "Команди",
+            "edit": "Редагувати",
+            "delete": "Видалити",
+            "edit_title": "Редагувати етап",
+            "confirm_delete": "Видалити етап",
+            "delete_description": "Ви впевнені, що хочете видалити цей етап?",
+            "type": "Тип",
+            "type_placeholder": "Виберіть тип етапу",
+            "min_teams": "Мінімальна кількість команд",
+            "min_teams_placeholder": "Введіть мінімальну кількість команд",
+            "max_teams": "Максимальна кількість команд",
+            "max_teams_placeholder": "Введіть максимальну кількість команд",
+            "update": "Оновити",
+            "create": "Створити",
+            "no_stages": "Немає етапів",
+            "start_building": "Почати створення сітки",
+            "add_first": "Додати перший етап",
+            "add_another": "Додати інший етап",
+            "not_setup": "Етап не налаштовано"
+        },
+        "match": {
+            "team_1": "Команда 1",
+            "team_2": "Команда 2",
+            "round_match": "Раунд матчу"
+        },
+        "organizer": {
+            "title": "Організатор",
+            "description": "Керування організаторами турніру",
+            "add": "Додати організатора",
+            "name": "Назва",
+            "actions": "Дії",
+            "no_organizers": "Немає організаторів",
+            "no_organizers_description": "У цьому турнірі немає організаторів",
+            "remove": "Видалити",
+            "confirm_remove": "Видалити організатора",
+            "remove_description": "Ви впевнені, що хочете видалити цього організатора?"
+        },
+        "team": {
+            "manage_roster": "Керувати складом",
+            "eligible": "Відповідає вимогам",
+            "not_eligible": "Не відповідає вимогам",
+            "leave_tournament": "Покинути турнір",
+            "leave_team": "Покинути команду",
+            "player": "Гравець",
+            "role": "Роль",
+            "slot": "Слот",
+            "add_player": "Додати гравця",
+            "pending_invites": "Очікуючі запрошення",
+            "new": "Новий",
+            "select": "Вибрати",
+            "name": "Назва",
+            "select_role": "Вибрати роль",
+            "no_roles": "Немає ролей",
+            "remove_member": "Видалити учасника",
+            "confirm_remove_member": "Видалити учасника",
+            "remove_member_description": "Ви впевнені, що хочете видалити цього учасника?",
+            "cancel_invite": "Скасувати запрошення",
+            "confirm_cancel_invite": "Скасувати запрошення",
+            "cancel_invite_description": "Ви впевнені, що хочете скасувати це запрошення?",
+            "my_teams": "Мої команди",
+            "my_teams_description": "Команди, до яких ви належите",
+            "no_eligible_teams": "Немає команд, що відповідають вимогам",
+            "team": "Команда",
+            "select_team": "Вибрати команду",
+            "search_team": "Пошук команди...",
+            "add_to_tournament": "Додати до турніру"
+        },
+        "actions": {
+            "open_registration": "Відкрити реєстрацію",
+            "close_registration": "Закрити реєстрацію",
+            "cancel": "Скасувати"
+        },
+        "upcoming": {
+            "empty": "Немає майбутніх турнірів"
+        },
+        "server": {
+            "remove": "Видалити",
+            "confirm_remove": "Видалити сервер",
+            "remove_description": "Ви впевнені, що хочете видалити цей сервер?"
+        }
+    },
+    "team": {
+        "table": {
+            "team": "Команда",
+            "wins": "Перемоги",
+            "losses": "Поразки",
+            "overtime_losses": "Поразки в додатковий час",
+            "no_teams_found": "Команд не знайдено"
+        },
+        "invite": {
+            "team_title": "Запрошення в команду",
+            "tournament_title": "Запрошення на турнір",
+            "tournament_message": "Повідомлення про запрошення на турнір",
+            "team_message": "Повідомлення про запрошення в команду",
+            "invited_by": "Запрошено",
+            "deny": "Відхилити",
+            "accept": "Прийняти"
+        },
+        "roles": {
+            "captain": "Капітан"
+        },
+        "leave": "Покинути",
+        "management": {
+            "edit": "Редагувати"
+        },
+        "confirm": {
+            "leave": "Покинути",
+            "delete": {
+                "title": "Видалити",
+                "description": "Опис"
+            }
+        },
+        "members": {
+            "title": "Учасники",
+            "invite_player": "Запросити гравця",
+            "pending_invites": "Очікуючі запрошення"
+        },
+        "form": {
+            "name": "Назва",
+            "name_placeholder": "Введіть назву команди",
+            "short_name": "Коротка назва",
+            "short_name_placeholder": "Введіть коротку назву команди",
+            "owner": "Власник",
+            "select_owner": "Вибрати власника",
+            "update": "Оновити",
+            "create": "Створити"
+        },
+        "search": {
+            "no_teams": "Немає команд"
+        },
+        "member": {
+            "remove": "Видалити",
+            "cancel_invite": "Скасувати запрошення",
+            "confirm_cancel_invite": "Скасувати запрошення",
+            "confirm_remove": "Підтвердити видалення",
+            "cancel_invite_description": "Ви впевнені, що хочете скасувати це запрошення?",
+            "remove_description": "Ви впевнені, що хочете видалити цього учасника?"
+        }
+    },
+    "components": {
+        "map_pools": {
+            "view_on_steam": "Переглянути на Steam"
+        }
     }
-  },
-  "team": {
-    "table": {
-      "team": "Команда",
-      "wins": "Перемоги",
-      "losses": "Поразки",
-      "overtime_losses": "Поразки в додатковий час",
-      "no_teams_found": "Команд не знайдено"
-    },
-    "invite": {
-      "team_title": "Запрошення в команду",
-      "tournament_title": "Запрошення на турнір",
-      "tournament_message": "Повідомлення про запрошення на турнір",
-      "team_message": "Повідомлення про запрошення в команду",
-      "invited_by": "Запрошено",
-      "deny": "Відхилити",
-      "accept": "Прийняти"
-    },
-    "roles": {
-      "captain": "Капітан"
-    },
-    "leave": "Покинути",
-    "management": {
-      "edit": "Редагувати"
-    },
-    "confirm": {
-      "leave": "Покинути",
-      "delete": {
-        "title": "Видалити",
-        "description": "Опис"
-      }
-    },
-    "members": {
-      "title": "Учасники",
-      "invite_player": "Запросити гравця",
-      "pending_invites": "Очікуючі запрошення"
-    },
-    "form": {
-      "name": "Назва",
-      "name_placeholder": "Введіть назву команди",
-      "short_name": "Коротка назва",
-      "short_name_placeholder": "Введіть коротку назву команди",
-      "owner": "Власник",
-      "select_owner": "Вибрати власника",
-      "update": "Оновити",
-      "create": "Створити"
-    },
-    "search": {
-      "no_teams": "Немає команд"
-    },
-    "member": {
-      "remove": "Видалити",
-      "cancel_invite": "Скасувати запрошення",
-      "confirm_cancel_invite": "Скасувати запрошення",
-      "confirm_remove": "Підтвердити видалення",
-      "cancel_invite_description": "Ви впевнені, що хочете скасувати це запрошення?",
-      "remove_description": "Ви впевнені, що хочете видалити цього учасника?"
-    }
-  }
 }

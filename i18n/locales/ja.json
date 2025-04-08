@@ -1,959 +1,970 @@
 {
-  "pages": {
-    "system_metrics": {
-      "node": "ノード",
-      "cpu_usage": "CPU使用率",
-      "memory_usage": "メモリ使用率",
-      "services": "サービス"
-    },
-    "system_logs": {
-      "follow_logs": "ログを追跡",
-      "timestamps": "タイムスタンプ"
-    },
-    "login": {
-      "sign_in": "Steamでログイン",
-      "powered_by": "提供"
-    },
-    "coming_soon": "近日公開！",
-    "tournaments": {
-      "title": "予定されているトーナメント",
-      "admin_disabled": "管理者がトーナメントの作成を無効にしました",
-      "create": "トーナメントを作成",
-      "tabs": {
-        "tournaments": "トーナメント",
-        "my_recent": "最近のトーナメント"
-      },
-      "no_recent": "最近のトーナメントはありません。"
-    },
-    "teams": {
-      "title": "チーム",
-      "description": "チームとロスターの管理。",
-      "create": "チームを作成",
-      "tabs": {
-        "my_teams": "マイチーム",
-        "other_teams": "その他のチーム"
-      },
-      "search": "検索..."
-    },
-    "settings": {
-      "profile": {
-        "title": "プロフィール設定",
-        "description": "アカウント設定を管理",
-        "steam_id": "Steam ID",
-        "name": "名前",
-        "avatar_url": "アバターURL",
-        "country": "国",
-        "select_country": "国を選択",
-        "search_country": "国を検索...",
-        "no_country_found": "国が見つかりません",
-        "update": "プロフィールを更新"
-      },
-      "appearance": {
-        "title": "外観設定",
-        "description": "アプリケーションの外観をカスタマイズ",
-        "theme": "テーマ",
-        "theme_description": "アプリケーションのカラーテーマを選択",
-        "light": "ライト",
-        "dark": "ダーク"
-      },
-      "application": {
-        "matchmaking": {
-          "title": "マッチメイキング",
-          "description": "マッチメイキングの設定を管理"
+    "pages": {
+        "system_metrics": {
+            "node": "ノード",
+            "cpu_usage": "CPU使用率",
+            "memory_usage": "メモリ使用率",
+            "services": "サービス"
         },
-        "discord": {
-          "title": "Discord",
-          "invite_link": "Discord招待リンク",
-          "webhook": "Discord Webhook",
-          "webhook_description": "このDiscord Webhookは、プレイヤーのアクションが必要な通知を送信するために使用されます。例：マッチの問題、バグなど。",
-          "support_role": "DiscordサポートロールID",
-          "support_role_description": "このロールは、サポートアクションで使用される際にメンションされます。Discordアプリケーションで開発者モードを有効にし、右クリックしてIDをコピーすることでロールIDを取得できます。",
-          "update": "更新"
+        "system_logs": {
+            "follow_logs": "ログを追跡",
+            "timestamps": "タイムスタンプ"
         },
-        "create_matches_role": "マッチ作成に必要な最小ロール",
-        "create_tournaments_role": "トーナメント作成ロール",
-        "update": "更新",
+        "login": {
+            "sign_in": "Steamでログイン",
+            "powered_by": "提供"
+        },
+        "coming_soon": "近日公開！",
+        "tournaments": {
+            "title": "予定されているトーナメント",
+            "admin_disabled": "管理者がトーナメントの作成を無効にしました",
+            "create": "トーナメントを作成",
+            "tabs": {
+                "tournaments": "トーナメント",
+                "my_recent": "最近のトーナメント"
+            },
+            "no_recent": "最近のトーナメントはありません。"
+        },
+        "teams": {
+            "title": "チーム",
+            "description": "チームとロスターの管理。",
+            "create": "チームを作成",
+            "tabs": {
+                "my_teams": "マイチーム",
+                "other_teams": "その他のチーム"
+            },
+            "search": "検索..."
+        },
+        "settings": {
+            "profile": {
+                "title": "プロフィール設定",
+                "description": "アカウント設定を管理",
+                "steam_id": "Steam ID",
+                "name": "名前",
+                "avatar_url": "アバターURL",
+                "country": "国",
+                "select_country": "国を選択",
+                "search_country": "国を検索...",
+                "no_country_found": "国が見つかりません",
+                "update": "プロフィールを更新"
+            },
+            "appearance": {
+                "title": "外観設定",
+                "description": "アプリケーションの外観をカスタマイズ",
+                "theme": "テーマ",
+                "theme_description": "アプリケーションのカラーテーマを選択",
+                "light": "ライト",
+                "dark": "ダーク"
+            },
+            "application": {
+                "matchmaking": {
+                    "title": "マッチメイキング",
+                    "description": "マッチメイキングの設定を管理"
+                },
+                "discord": {
+                    "title": "Discord",
+                    "invite_link": "Discord招待リンク",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "このDiscord Webhookは、プレイヤーのアクションが必要な通知を送信するために使用されます。例：マッチの問題、バグなど。",
+                    "support_role": "DiscordサポートロールID",
+                    "support_role_description": "このロールは、サポートアクションで使用される際にメンションされます。Discordアプリケーションで開発者モードを有効にし、右クリックしてIDをコピーすることでロールIDを取得できます。",
+                    "update": "更新"
+                },
+                "create_matches_role": "マッチ作成に必要な最小ロール",
+                "create_tournaments_role": "トーナメント作成ロール",
+                "update": "更新",
+                "players": {
+                    "force_name_registration": "プレイヤー名登録を強制",
+                    "force_name_registration_description": "プレイヤー登録を強制する場合、プレイヤーはプラットフォームで使用される名前を提出する必要があります。"
+                }
+            }
+        },
+        "regions": {
+            "title": "リージョン",
+            "description": "リージョンの管理",
+            "create": "リージョンを作成",
+            "table": {
+                "name": "名前",
+                "status": "ステータス",
+                "available_servers": "利用可能なサーバー",
+                "description": "説明",
+                "use_lan_ip": "LAN IPを使用",
+                "actions": "アクション"
+            },
+            "edit": "編集",
+            "delete": {
+                "title": "リージョンを削除",
+                "description": "このリージョンを削除してもよろしいですか？",
+                "cancel": "キャンセル",
+                "confirm": "削除"
+            }
+        },
         "players": {
-          "force_name_registration": "プレイヤー名登録を強制",
-          "force_name_registration_description": "プレイヤー登録を強制する場合、プレイヤーはプラットフォームで使用される名前を提出する必要があります。"
+            "title": "プレイヤー",
+            "search": "プレイヤーを検索",
+            "detail": {
+                "player_stats": "プレイヤー統計",
+                "kills": "キル",
+                "assists": "アシスト",
+                "deaths": "デス",
+                "kd": "K/D",
+                "last_ten_wins": "直近10試合の勝利",
+                "last_ten_losses": "直近10試合の敗北",
+                "matches": "マッチ"
+            }
+        },
+        "play": {
+            "title": "プレイ",
+            "description": "マッチを開始",
+            "admin_disabled": "管理者がマッチ作成を無効にしました",
+            "create_match": "マッチを作成",
+            "open_matches": {
+                "title": "オープンマッチ",
+                "description": "参加可能なマッチ"
+            },
+            "matchmaking": {
+                "title": "マッチメイキング"
+            }
+        },
+        "matches": {
+            "title": "マッチ",
+            "description": "マッチの管理",
+            "admin_disabled": "管理者がマッチ作成を無効にしました",
+            "create": "マッチを作成",
+            "last_ten_wins": "直近10試合の勝利",
+            "last_ten_losses": "直近10試合の敗北",
+            "my_match_history": "マイマッチ履歴",
+            "other_matches": "その他のマッチ",
+            "create_page": {
+                "title": "マッチを作成",
+                "pick_up_game": "ピックアップゲーム",
+                "pick_up_game_description": "ピックアップゲームを作成",
+                "team_1": "チーム1",
+                "search_team": "チームを検索",
+                "team_2": "チーム2",
+                "intra_team_scrimmage": "チーム内スクリム",
+                "create_button": "作成"
+            },
+            "detail": {
+                "schedule": "スケジュール"
+            }
+        },
+        "game_server_nodes": {
+            "title": "ゲームサーバーノード",
+            "description": "ゲームサーバーノードの管理",
+            "not_supported": {
+                "title": "サポートされていません",
+                "description": "このプラットフォームはサポートされていません"
+            },
+            "create": "ノードを作成",
+            "installation_script": "インストールスクリプト",
+            "cs_version_info": "CSバージョン情報",
+            "table": {
+                "node": "ノード",
+                "lan_public_ip": "LAN/パブリックIP",
+                "cs_build_id": "CSビルドID",
+                "region": "リージョン",
+                "capacity": "容量",
+                "ports": "ポート",
+                "ports_tooltip": "使用可能なポート範囲",
+                "enabled": "有効",
+                "no_nodes": "ノードがありません"
+            },
+            "build_id": "ビルドID",
+            "last_updated": "最終更新"
+        },
+        "dedicated_servers": {
+            "title": "専用サーバー",
+            "description": "専用サーバーの管理",
+            "create": {
+                "title": "サーバーを作成"
+            },
+            "table": {
+                "connection_details": "接続詳細",
+                "label": "ラベル",
+                "region": "リージョン",
+                "tv_port": "TVポート",
+                "enabled": "有効",
+                "yes": "はい",
+                "no": "いいえ"
+            },
+            "detail": {
+                "enabled": "有効",
+                "server_plugin_config": "サーバープラグイン設定",
+                "hide_config": "設定を非表示",
+                "show_config": "設定を表示",
+                "config_location": "設定ファイルの場所",
+                "copy": "コピー",
+                "edit": "編集",
+                "delete": "削除",
+                "delete_confirm": {
+                    "title": "サーバーを削除",
+                    "description": "このサーバーを削除してもよろしいですか？",
+                    "cancel": "キャンセル",
+                    "continue": "続行"
+                }
+            }
+        },
+        "map_pools": {
+            "form": {
+                "success": {
+                    "update": "正常に更新された地図",
+                    "create": "正常に作成されたマップ",
+                    "delete": "正常に削除された地図"
+                },
+                "poster": "ポスター(オプション)",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "パッチ(任意)",
+                "patch_placeholder": "http://example.com/patch.png からのツイート",
+                "workshop_map_id": "ワークショップマップID(オプション)",
+                "view_on_steam": "Steamで見る",
+                "create_map": "地図の作成",
+                "update_map": "サイトマップ",
+                "delete_map": "削除マップ",
+                "delete_confirm": {
+                    "title": "削除マップ",
+                    "description": "このマップを削除したいですか? このアクションは元に戻すことができません.",
+                    "cancel": "キャンセル",
+                    "confirm": "削除"
+                },
+                "error": {
+                    "create": "地図の作成エラー",
+                    "update": "エラー更新マップ"
+                },
+                "name": "名前"
+            },
+            "description": "地図のプールを管理し、マッチメイキングのための利用可能なマップ.",
+            "table": {
+                "pool_name": "プールの名前",
+                "available_modes": "利用可能なモード",
+                "workshop_id": "ワークショップID",
+                "maps": "マップ",
+                "active_duty": "アクティブデューティ"
+            },
+            "edit_map": "編集マップ",
+            "toggle_pool_type": "{type} の {type} は {type} の {type} です",
+            "toggle_active_pool": "アクティブデューティの {map} が {type} になりました",
+            "add_new_map": "新規マップの追加",
+            "pool": {
+                "title": "{type} マッププール",
+                "description": "{type}プールでマップを管理する",
+                "modify_maps": "プールのマップを修正"
+            },
+            "save_success": "正常に保存されたマッププール",
+            "title": "マッププール"
+        },
+        "map_pool": {
+            "toggle_pool_type": "{type} の {type} は {type} の {type} です",
+            "toggle_active_pool": "アクティブデューティの {map} が {type} になりました",
+            "save_success": "正常に保存されたマッププール"
+        },
+        "components": {
+            "map_pools": {
+                "view_on_steam": "Steamで見る"
+            }
         }
-      }
     },
-    "regions": {
-      "title": "リージョン",
-      "description": "リージョンの管理",
-      "create": "リージョンを作成",
-      "table": {
-        "name": "名前",
-        "status": "ステータス",
-        "available_servers": "利用可能なサーバー",
-        "description": "説明",
-        "use_lan_ip": "LAN IPを使用",
-        "actions": "アクション"
-      },
-      "edit": "編集",
-      "delete": {
-        "title": "リージョンを削除",
-        "description": "このリージョンを削除してもよろしいですか？",
+    "layouts": {
+        "profile_settings": {
+            "title": "プロフィール設定",
+            "description": "アカウント設定を管理",
+            "discord": {
+                "unlink": "Discordの連携を解除",
+                "link": "Discordと連携",
+                "unlink_dialog": {
+                    "title": "Discordの連携を解除",
+                    "description": "Discordの連携を解除してもよろしいですか？",
+                    "cancel": "キャンセル",
+                    "confirm": "連携を解除"
+                },
+                "unlinked": "Discordの連携が解除されました"
+            }
+        },
+        "application_settings": {
+            "title": "アプリケーション設定",
+            "description": "アプリケーションの設定を管理"
+        },
+        "system_update": {
+            "title": "システム更新",
+            "description": "システムの更新が必要です",
+            "note": "注：更新中はアプリケーションが使用できません",
+            "fix_link": "修正方法を確認",
+            "cancel": "キャンセル",
+            "update": "更新"
+        },
+        "match_lobby": {
+            "versus": "対"
+        },
+        "notifications": {
+            "title": "通知",
+            "delete": "削除",
+            "dismiss": "閉じる",
+            "delete_all_read": "既読をすべて削除",
+            "no_notifications": "通知はありません"
+        },
+        "app_nav": {
+            "brand": "5stack",
+            "navigation": {
+                "play": "プレイ",
+                "matches": "マッチ",
+                "tournaments": "トーナメント",
+                "players": "プレイヤー",
+                "teams": "チーム"
+            },
+            "administration": {
+                "title": "管理",
+                "regions": "リージョン",
+                "servers": "サーバー",
+                "dedicated_servers": "専用サーバー",
+                "game_server_nodes": "ゲームサーバーノード",
+                "logs": "システムログ",
+                "metrics": "システムメトリクス",
+                "app_settings": "アプリ設定",
+                "map_pools": "マッププール"
+            },
+            "footer": {
+                "report_issue": "問題を報告",
+                "join_discord": "Discordに参加"
+            },
+            "profile": {
+                "my_account": "マイアカウント",
+                "logout": "ログアウト"
+            },
+            "logout_dialog": {
+                "title": "ログアウト",
+                "description": "ログアウトしてもよろしいですか？",
+                "cancel": "キャンセル",
+                "confirm": "ログアウト"
+            },
+            "tooltips": {
+                "play": "プレイ",
+                "matches": "マッチ",
+                "tournaments": "トーナメント",
+                "players": "プレイヤー",
+                "teams": "チーム",
+                "regions": "リージョン",
+                "servers": "サーバー",
+                "dedicated_servers": "専用サーバー",
+                "game_server_nodes": "ゲームサーバーノード",
+                "system_logs": "システムログ",
+                "system_metrics": "システムメトリクス",
+                "app_settings": "アプリ設定",
+                "report_issue": "問題を報告",
+                "join_discord": "Discordに参加",
+                "map_pools": "マッププール"
+            }
+        }
+    },
+    "common": {
         "cancel": "キャンセル",
-        "confirm": "削除"
-      }
-    },
-    "players": {
-      "title": "プレイヤー",
-      "search": "プレイヤーを検索",
-      "detail": {
-        "player_stats": "プレイヤー統計",
-        "kills": "キル",
-        "assists": "アシスト",
-        "deaths": "デス",
-        "kd": "K/D",
-        "last_ten_wins": "直近10試合の勝利",
-        "last_ten_losses": "直近10試合の敗北",
-        "matches": "マッチ"
-      }
-    },
-    "play": {
-      "title": "プレイ",
-      "description": "マッチを開始",
-      "admin_disabled": "管理者がマッチ作成を無効にしました",
-      "create_match": "マッチを作成",
-      "open_matches": {
-        "title": "オープンマッチ",
-        "description": "参加可能なマッチ"
-      },
-      "matchmaking": {
-        "title": "マッチメイキング"
-      }
-    },
-    "matches": {
-      "title": "マッチ",
-      "description": "マッチの管理",
-      "admin_disabled": "管理者がマッチ作成を無効にしました",
-      "create": "マッチを作成",
-      "last_ten_wins": "直近10試合の勝利",
-      "last_ten_losses": "直近10試合の敗北",
-      "my_match_history": "マイマッチ履歴",
-      "other_matches": "その他のマッチ",
-      "create_page": {
-        "title": "マッチを作成",
-        "pick_up_game": "ピックアップゲーム",
-        "pick_up_game_description": "ピックアップゲームを作成",
-        "team_1": "チーム1",
-        "search_team": "チームを検索",
-        "team_2": "チーム2",
-        "intra_team_scrimmage": "チーム内スクリム",
-        "create_button": "作成"
-      },
-      "detail": {
-        "schedule": "スケジュール"
-      }
-    },
-    "game_server_nodes": {
-      "title": "ゲームサーバーノード",
-      "description": "ゲームサーバーノードの管理",
-      "not_supported": {
-        "title": "サポートされていません",
-        "description": "このプラットフォームはサポートされていません"
-      },
-      "create": "ノードを作成",
-      "installation_script": "インストールスクリプト",
-      "cs_version_info": "CSバージョン情報",
-      "table": {
-        "node": "ノード",
-        "lan_public_ip": "LAN/パブリックIP",
-        "cs_build_id": "CSビルドID",
-        "region": "リージョン",
-        "capacity": "容量",
-        "ports": "ポート",
-        "ports_tooltip": "使用可能なポート範囲",
-        "enabled": "有効",
-        "no_nodes": "ノードがありません"
-      },
-      "build_id": "ビルドID",
-      "last_updated": "最終更新"
-    },
-    "dedicated_servers": {
-      "title": "専用サーバー",
-      "description": "専用サーバーの管理",
-      "create": {
-        "title": "サーバーを作成"
-      },
-      "table": {
-        "connection_details": "接続詳細",
-        "label": "ラベル",
-        "region": "リージョン",
-        "tv_port": "TVポート",
-        "enabled": "有効",
-        "yes": "はい",
-        "no": "いいえ"
-      },
-      "detail": {
-        "enabled": "有効",
-        "server_plugin_config": "サーバープラグイン設定",
-        "hide_config": "設定を非表示",
-        "show_config": "設定を表示",
-        "config_location": "設定ファイルの場所",
-        "copy": "コピー",
-        "edit": "編集",
-        "delete": "削除",
-        "delete_confirm": {
-          "title": "サーバーを削除",
-          "description": "このサーバーを削除してもよろしいですか？",
-          "cancel": "キャンセル",
-          "continue": "続行"
-        }
-      }
-    }
-  },
-  "layouts": {
-    "profile_settings": {
-      "title": "プロフィール設定",
-      "description": "アカウント設定を管理",
-      "discord": {
-        "unlink": "Discordの連携を解除",
-        "link": "Discordと連携",
-        "unlink_dialog": {
-          "title": "Discordの連携を解除",
-          "description": "Discordの連携を解除してもよろしいですか？",
-          "cancel": "キャンセル",
-          "confirm": "連携を解除"
+        "tbd": "未定",
+        "boolean": {
+            "yes": "はい",
+            "no": "いいえ"
         },
-        "unlinked": "Discordの連携が解除されました"
-      }
-    },
-    "application_settings": {
-      "title": "アプリケーション設定",
-      "description": "アプリケーションの設定を管理"
-    },
-    "system_update": {
-      "title": "システム更新",
-      "description": "システムの更新が必要です",
-      "note": "注：更新中はアプリケーションが使用できません",
-      "fix_link": "修正方法を確認",
-      "cancel": "キャンセル",
-      "update": "更新"
-    },
-    "match_lobby": {
-      "versus": "対"
-    },
-    "notifications": {
-      "title": "通知",
-      "delete": "削除",
-      "dismiss": "閉じる",
-      "delete_all_read": "既読をすべて削除",
-      "no_notifications": "通知はありません"
-    },
-    "app_nav": {
-      "brand": "5stack",
-      "navigation": {
-        "play": "プレイ",
-        "matches": "マッチ",
-        "tournaments": "トーナメント",
-        "players": "プレイヤー",
-        "teams": "チーム"
-      },
-      "administration": {
-        "title": "管理",
-        "regions": "リージョン",
-        "servers": "サーバー",
-        "dedicated_servers": "専用サーバー",
-        "game_server_nodes": "ゲームサーバーノード",
-        "logs": "システムログ",
-        "metrics": "システムメトリクス",
-        "app_settings": "アプリ設定",
-        "map_pools": "マッププール"
-      },
-      "footer": {
-        "report_issue": "問題を報告",
-        "join_discord": "Discordに参加"
-      },
-      "profile": {
-        "my_account": "マイアカウント",
-        "logout": "ログアウト"
-      },
-      "logout_dialog": {
-        "title": "ログアウト",
-        "description": "ログアウトしてもよろしいですか？",
-        "cancel": "キャンセル",
-        "confirm": "ログアウト"
-      },
-      "tooltips": {
-        "play": "プレイ",
-        "matches": "マッチ",
-        "tournaments": "トーナメント",
-        "players": "プレイヤー",
-        "teams": "チーム",
-        "regions": "リージョン",
-        "servers": "サーバー",
-        "dedicated_servers": "専用サーバー",
-        "game_server_nodes": "ゲームサーバーノード",
-        "system_logs": "システムログ",
-        "system_metrics": "システムメトリクス",
-        "app_settings": "アプリ設定",
-        "report_issue": "問題を報告",
-        "join_discord": "Discordに参加",
-        "map_pools": "マッププール"
-      }
-    }
-  },
-  "common": {
-    "cancel": "キャンセル",
-    "tbd": "未定",
-    "boolean": {
-      "yes": "はい",
-      "no": "いいえ"
-    },
-    "actions": {
-      "edit": "編集",
-      "delete": "削除"
-    },
-    "close": "閉じる",
-    "confirm": "確認"
-  },
-  "matchmaking": {
-    "lobby": {
-      "title": "マッチメイキングロビー",
-      "leave": "ロビーを退出",
-      "invite_player": "プレイヤーをロビーに招待",
-      "invites": "ロビーへの招待",
-      "access_updated": "ロビーへのアクセスが{access}に更新されました"
-    },
-    "friends": {
-      "title": "フレンド",
-      "sync": "同期",
-      "search": "検索",
-      "pending_requests": "保留中のリクエスト",
-      "online": "オンライン",
-      "invite_to_lobby": "ロビーに招待",
-      "remove": "削除",
-      "join_lobby": "ロビーに参加",
-      "offline": "オフライン"
-    },
-    "leave": "退出",
-    "position": "位置",
-    "join": "参加",
-    "confirm": {
-      "title": "確認",
-      "ready": "準備完了",
-      "players": "プレイヤー"
-    },
-    "banned": "BAN",
-    "go_to_match": "マッチへ移動",
-    "temp_banned": "一時BAN"
-  },
-  "match": {
-    "lobby": {
-      "access_updated": "マッチロビーへのアクセスが{access}に更新されました"
-    },
-    "simple": {
-      "vs": "対"
-    },
-    "my_upcoming": {
-      "no_matches": "予定されているマッチはありません"
-    },
-    "recent": {
-      "title": "最近のマッチ",
-      "no_matches": "最近のマッチはありません"
-    },
-    "options": {
-      "table": {
-        "match": "マッチ",
-        "type": "タイプ",
-        "maps": "マップ",
-        "no_matches_found": "マッチが見つかりません",
-        "join": "参加"
-      },
-      "type": {
-        "label": "マッチタイプ"
-      },
-      "best_of": {
-        "label": "ベストオブ",
-        "description": "マッチの形式を選択",
-        "placeholder": "ベストオブを選択"
-      },
-      "map_veto_settings": {
-        "label": "マップベート設定",
-        "description": "マップベートの設定を管理",
-        "custom_pool": "カスタムプール",
-        "active_duty": "アクティブデューティ",
-        "custom_pool_tooltip": "カスタムマッププールを使用"
-      },
-      "advanced": {
-        "title": "詳細設定",
-        "hide": "非表示",
-        "show": "表示",
-        "toggle": "詳細設定を切り替え",
-        "overtime": {
-          "label": "延長戦",
-          "description": "延長戦の設定を管理"
+        "actions": {
+            "edit": "編集",
+            "delete": "削除"
         },
-        "knife_round": {
-          "label": "ナイフラウンド",
-          "description": "ナイフラウンドの設定を管理"
+        "close": "閉じる",
+        "confirm": "確認"
+    },
+    "matchmaking": {
+        "lobby": {
+            "title": "マッチメイキングロビー",
+            "leave": "ロビーを退出",
+            "invite_player": "プレイヤーをロビーに招待",
+            "invites": "ロビーへの招待",
+            "access_updated": "ロビーへのアクセスが{access}に更新されました"
         },
-        "max_rounds": {
-          "label": "最大ラウンド数",
-          "description": "マッチの最大ラウンド数を設定",
-          "placeholder": "最大ラウンド数を入力"
+        "friends": {
+            "title": "フレンド",
+            "sync": "同期",
+            "search": "検索",
+            "pending_requests": "保留中のリクエスト",
+            "online": "オンライン",
+            "invite_to_lobby": "ロビーに招待",
+            "remove": "削除",
+            "join_lobby": "ロビーに参加",
+            "offline": "オフライン"
         },
-        "region": {
-          "title": "リージョン",
-          "lan_match": "LANマッチ",
-          "veto": {
-            "label": "ベート",
-            "description": "リージョンベートの設定を管理"
-          },
-          "preferred": "優先",
-          "single": "単一",
-          "placeholder": "リージョンを選択",
-          "any": "任意",
-          "description": "マッチのリージョンを設定"
+        "leave": "退出",
+        "position": "位置",
+        "join": "参加",
+        "confirm": {
+            "title": "確認",
+            "ready": "準備完了",
+            "players": "プレイヤー"
         },
-        "substitutes": {
-          "label": "サブスティテュート",
-          "description": "サブスティテュートの設定を管理",
-          "range": "サブスティテュートの範囲"
-        },
-        "tv_delay": {
-          "label": "TV遅延",
-          "range": "TV遅延の範囲"
-        },
-        "timeouts": {
-          "tactical": {
-            "label": "タクティカルタイムアウト",
-            "description": "タクティカルタイムアウトの設定を管理"
-          },
-          "technical": {
-            "label": "テクニカルタイムアウト",
-            "description": "テクニカルタイムアウトの設定を管理"
-          },
-          "options": {
-            "admins": "管理者のみ",
-            "coaches": "コーチのみ",
-            "everyone": "全員"
-          }
-        }
-      },
-      "max_rounds": "最大ラウンド数",
-      "tv_delay": "TV遅延",
-      "seconds": "秒",
-      "coaches": "コーチ",
-      "overtime": "延長戦",
-      "knife_round": "ナイフラウンド",
-      "map_veto_enabled": "マップベート有効",
-      "region_veto": "リージョンベート",
-      "substitutes": "サブスティテュート",
-      "timeout_setting": "タイムアウト設定",
-      "tech_timeout_setting": "テクニカルタイムアウト設定",
-      "map_pool": "マッププール"
-    },
-    "schedule": {
-      "pick_date": "日付を選択",
-      "schedule": "スケジュール"
-    },
-    "player": {
-      "captain": "キャプテン",
-      "status": {
-        "offline_not_ready": "オフライン - 準備未完了",
-        "online_not_ready": "オンライン - 準備未完了",
-        "ready": "準備完了",
-        "offline": "オフライン",
-        "online_not_in_game": "オンライン - ゲーム外",
-        "in_game": "ゲーム中"
-      },
-      "assign_slot": "スロットを割り当て"
-    },
-    "tabs": {
-      "overview": "概要",
-      "utility": "ユーティリティ",
-      "opening_duels": "オープニングデュエル",
-      "clutches": "クラッチ",
-      "map_veto_tab": "マップベート",
-      "settings": "設定",
-      "server_console": "サーバーコンソール",
-      "randomize_teams": "チームをランダム化",
-      "invited_to_match": "マッチに招待されました",
-      "join_roster": "ロスターに参加",
-      "restore_round": "ラウンドを復元",
-      "select_round_to_restore": "復元するラウンドを選択",
-      "server_information": "サーバー情報",
-      "type": "タイプ",
-      "region": "リージョン",
-      "round": "ラウンド"
-    },
-    "status": {
-      "cancelled": "キャンセル",
-      "finished": "終了",
-      "waiting_server": "サーバー待機中",
-      "scheduled_asap": "できるだけ早くスケジュール"
-    },
-    "winner": {
-      "set": "勝者を設定",
-      "select_lineup": "ラインナップを選択"
-    },
-    "region_veto": {
-      "banning": "ベーニング中",
-      "organizer_override": "主催者オーバーライド",
-      "confirm_ban": "ベーンを確認",
-      "server_region": "サーバーリージョン",
-      "select_region": "リージョンを選択"
-    },
-    "picks": {
-      "decider": "デサイダー"
-    },
-    "decider": "デサイダー",
-    "map_veto": {
-      "is_picking": "ピッキング中",
-      "organizer_override": "主催者オーバーライド",
-      "select_side": "サイドを選択",
-      "your_turn": "あなたの番です",
-      "pick": "ピック",
-      "confirm": "確認"
-    },
-    "map_lineup": {
-      "picked": "ピック済み"
-    },
-    "vs": "対",
-    "auto_canceling": "自動キャンセル中",
-    "actions": {
-      "call_support": "サポートを呼び出す",
-      "start_veto": "ベートを開始",
-      "skip_checkin": "チェックインをスキップ",
-      "cancel": "キャンセル"
-    },
-    "lineup": {
-      "stats": {
-        "flashes_thrown": "投げたフラッシュ",
-        "flash_assists": "フラッシュアシスト",
-        "enemies_flashed": "フラッシュされた敵",
-        "team_flashed": "フラッシュされた味方",
-        "avg_blind_time": "平均ブラインド時間",
-        "he_damage": "HEダメージ",
-        "molotov_damage": "モロトフダメージ",
-        "seconds": "秒"
-      },
-      "discord_user": "Discordユーザー",
-      "discord_link": "Discordリンク"
-    },
-    "opening_duels": {
-      "attempts": "試行",
-      "success": "成功"
-    },
-    "clutches": {
-      "won": "勝利",
-      "lost": "敗北",
-      "against": "対",
-      "no_clutches": "クラッチなし",
-      "vs": "対",
-      "round": "ラウンド"
-    },
-    "join": {
-      "live": "ライブ",
-      "call_organizer": "主催者を呼び出す"
-    },
-    "check_in": {
-      "title": "チェックイン",
-      "checked_in": "チェックイン済み",
-      "check_in": "チェックイン",
-      "description": "マッチに参加する準備ができたらチェックインしてください"
-    },
-    "coach": {
-      "assign": "コーチを割り当て"
-    },
-    "download_demos": "デモをダウンロード",
-    "coaches": "コーチ",
-    "best_of": "ベストオブ",
-    "overview": {
-      "promote_captain": "キャプテンに昇格",
-      "switch_teams": "チームを切り替え",
-      "remove_from_lineup": "ラインナップから削除",
-      "leave_lineup": "ラインナップを退出",
-      "kills": "キル",
-      "kills_full": "キル数",
-      "assists": "アシスト",
-      "assists_full": "アシスト数",
-      "deaths": "デス",
-      "deaths_full": "デス数",
-      "kd": "K/D",
-      "hs": "ヘッドショット",
-      "team_damage": "チームダメージ",
-      "multi_kill_rounds": "マルチキルラウンド",
-      "mkr": "MKR",
-      "k2": "2キル",
-      "k3": "3キル",
-      "k4": "4キル",
-      "k5": "5キル",
-      "knifes": "ナイフキル",
-      "zeus": "Zeusキル",
-      "total_damage": "総ダメージ",
-      "substitute": "サブスティテュート",
-      "join": "参加",
-      "slot": "スロット"
-    },
-    "server": {
-      "offline": "オフライン",
-      "booting": "起動中",
-      "assign": "割り当て",
-      "select": "選択",
-      "dedicated": "専用",
-      "on_demand": "オンデマンド",
-      "assigned": "割り当て済み"
-    }
-  },
-  "team": {
-    "table": {
-      "team": "チーム",
-      "wins": "勝利",
-      "losses": "敗北",
-      "overtime_losses": "延長戦での敗北",
-      "no_teams_found": "チームが見つかりません"
-    },
-    "invite": {
-      "team_title": "チームへの招待",
-      "tournament_title": "トーナメントへの招待",
-      "tournament_message": "トーナメントに招待されました",
-      "team_message": "チームに招待されました",
-      "invited_by": "招待者",
-      "deny": "拒否",
-      "accept": "承認"
-    },
-    "roles": {
-      "captain": "キャプテン"
-    },
-    "leave": "退出",
-    "management": {
-      "edit": "編集"
-    },
-    "confirm": {
-      "leave": "チームを退出してもよろしいですか？",
-      "delete": {
-        "title": "チームを削除",
-        "description": "このチームを削除してもよろしいですか？"
-      }
-    },
-    "members": {
-      "title": "メンバー",
-      "invite_player": "プレイヤーを招待",
-      "pending_invites": "保留中の招待"
-    },
-    "form": {
-      "name": "名前",
-      "name_placeholder": "チーム名を入力",
-      "short_name": "略称",
-      "short_name_placeholder": "チームの略称を入力",
-      "owner": "オーナー",
-      "select_owner": "オーナーを選択",
-      "update": "更新",
-      "create": "作成"
-    },
-    "search": {
-      "no_teams": "チームが見つかりません"
-    },
-    "member": {
-      "remove": "削除",
-      "cancel_invite": "招待をキャンセル",
-      "confirm_cancel_invite": "招待をキャンセル",
-      "confirm_remove": "メンバーを削除",
-      "cancel_invite_description": "この招待をキャンセルしてもよろしいですか？",
-      "remove_description": "このメンバーを削除してもよろしいですか？"
-    }
-  },
-  "player": {
-    "sanction": {
-      "button": "プレイヤーに制裁を加える",
-      "reason_description": "この制裁の明確な理由を提供してください"
-    },
-    "search": {
-      "online_only": "オンラインのみ",
-      "no_players_found": "プレイヤーが見つかりません",
-      "found_players": "見つかったプレイヤー",
-      "placeholder": "プレイヤーを検索..."
-    },
-    "sanctions": {
-      "title": "制裁",
-      "expires": "期限切れ",
-      "active_count": "アクティブな制裁",
-      "past_count": "過去の制裁"
-    },
-    "registration": {
-      "title": "登録",
-      "description": "プレイヤーとして登録",
-      "warning": "警告",
-      "name_label": "名前",
-      "confirm_button": "確認",
-      "success": "登録成功"
-    },
-    "status": {
-      "banned": "BAN",
-      "muted": "ミュート",
-      "gagged": "ギャグ",
-      "add_friend": "フレンド追加"
-    },
-    "change_name": {
-      "button": "名前を変更",
-      "title": "名前を変更",
-      "request_title": "名前変更リクエスト",
-      "description": "新しい名前を入力",
-      "request_description": "名前変更リクエストを送信",
-      "name_label": "新しい名前",
-      "success": "名前を変更しました",
-      "request_success": "名前変更リクエストを送信しました"
-    }
-  },
-  "maps": {
-    "veto": {
-      "pick": "ピック"
-    },
-    "official": "公式",
-    "workshop": "ワークショップ",
-    "active_duty": "アクティブデューティ"
-  },
-  "region": {
-    "form": {
-      "name": "名前",
-      "description": "説明",
-      "use_lan": "LANを使用",
-      "update": "更新",
-      "create": "作成"
-    }
-  },
-  "game_server": {
-    "update_cs": "CSを更新",
-    "install_cs": "CSをインストール",
-    "select_region": "リージョンを選択",
-    "remove_node": "ノードを削除",
-    "validation": {
-      "start_port_less_than_end": "開始ポートは終了ポートより小さくなければなりません",
-      "end_port_greater_than_start": "終了ポートは開始ポートより大きくなければなりません"
-    },
-    "toast": {
-      "cs_updating": "CSを更新中",
-      "ports_updated": "ポートを更新しました"
-    }
-  },
-  "chat": {
-    "lobby_chat": "ロビーチャット",
-    "message_placeholder": "メッセージを入力..."
-  },
-  "charts": {
-    "usage": "使用量"
-  },
-  "server": {
-    "form": {
-      "label": "ラベル",
-      "host": "ホスト",
-      "region": "リージョン",
-      "select_region": "リージョンを選択",
-      "rcon_password": "RCONパスワード",
-      "rcon_password_description": "サーバーのRCONパスワード",
-      "port": "ポート",
-      "tv_port": "TVポート",
-      "update": "更新",
-      "create": "作成"
-    },
-    "rcon": {
-      "quick_commands": "クイックコマンド",
-      "refresh_match": "マッチを更新",
-      "metamod_info": "MetaMod情報",
-      "css_info": "CSS情報",
-      "output": "出力",
-      "command_placeholder": "コマンドを入力...",
-      "send_command": "コマンドを送信"
-    }
-  },
-  "pwa": {
-    "install": {
-      "title": "アプリをインストール",
-      "description": "5Stackをインストールして、より良い体験を",
-      "step1": "ステップ1",
-      "step2": "ステップ2",
-      "tooltip": "インストールのヒント",
-      "button": "インストール"
-    }
-  },
-  "tournament": {
-    "overview": "概要",
-    "bracket": "ブラケット",
-    "teams": "チーム",
-    "settings": "設定",
-    "admin": "管理",
-    "organizers": "主催者",
-    "join": {
-      "title": "トーナメントに参加",
-      "joined_with": "参加チーム",
-      "requirements": "参加要件"
-    },
-    "tournament_team": {
-      "players_registered": "登録プレイヤー",
-      "remove": "削除"
-    },
-    "add_team": {
-      "title": "チームを追加"
-    },
-    "form": {
-      "create": "トーナメントを作成",
-      "description_help": "トーナメントの説明を入力",
-      "name": "名前",
-      "description": "説明",
-      "start": "開始",
-      "pick_date": "日付を選択",
-      "update": "更新",
-      "match_options": "マッチオプション"
-    },
-    "table": {
-      "tournament": "トーナメント",
-      "status": "ステータス",
-      "type": "タイプ",
-      "teams_joined": "参加チーム",
-      "starts": "開始日",
-      "no_tournaments_found": "トーナメントが見つかりません"
-    },
-    "stage": {
-      "title": "ステージ",
-      "teams": "チーム",
-      "edit": "編集",
-      "delete": "削除",
-      "edit_title": "ステージを編集",
-      "confirm_delete": "ステージを削除",
-      "delete_description": "このステージを削除してもよろしいですか？",
-      "type": "タイプ",
-      "type_placeholder": "ステージタイプを選択",
-      "min_teams": "最小チーム数",
-      "min_teams_placeholder": "最小チーム数を入力",
-      "max_teams": "最大チーム数",
-      "max_teams_placeholder": "最大チーム数を入力",
-      "update": "更新",
-      "create": "作成",
-      "no_stages": "ステージがありません",
-      "start_building": "ブラケットの構築を開始",
-      "add_first": "最初のステージを追加",
-      "add_another": "別のステージを追加",
-      "not_setup": "ステージが設定されていません"
+        "banned": "BAN",
+        "go_to_match": "マッチへ移動",
+        "temp_banned": "一時BAN"
     },
     "match": {
-      "team_1": "チーム1",
-      "team_2": "チーム2",
-      "round_match": "ラウンドマッチ"
-    },
-    "organizer": {
-      "title": "主催者",
-      "description": "トーナメントの主催者を管理",
-      "add": "主催者を追加",
-      "name": "名前",
-      "actions": "アクション",
-      "no_organizers": "主催者がいません",
-      "no_organizers_description": "このトーナメントには主催者がいません",
-      "remove": "削除",
-      "confirm_remove": "主催者を削除",
-      "remove_description": "この主催者を削除してもよろしいですか？"
+        "lobby": {
+            "access_updated": "マッチロビーへのアクセスが{access}に更新されました"
+        },
+        "simple": {
+            "vs": "対"
+        },
+        "my_upcoming": {
+            "no_matches": "予定されているマッチはありません"
+        },
+        "recent": {
+            "title": "最近のマッチ",
+            "no_matches": "最近のマッチはありません"
+        },
+        "options": {
+            "table": {
+                "match": "マッチ",
+                "type": "タイプ",
+                "maps": "マップ",
+                "no_matches_found": "マッチが見つかりません",
+                "join": "参加"
+            },
+            "type": {
+                "label": "マッチタイプ"
+            },
+            "best_of": {
+                "label": "ベストオブ",
+                "description": "マッチの形式を選択",
+                "placeholder": "ベストオブを選択"
+            },
+            "map_veto_settings": {
+                "label": "マップベート設定",
+                "description": "マップベートの設定を管理",
+                "custom_pool": "カスタムプール",
+                "active_duty": "アクティブデューティ",
+                "custom_pool_tooltip": "カスタムマッププールを使用"
+            },
+            "advanced": {
+                "title": "詳細設定",
+                "hide": "非表示",
+                "show": "表示",
+                "toggle": "詳細設定を切り替え",
+                "overtime": {
+                    "label": "延長戦",
+                    "description": "延長戦の設定を管理"
+                },
+                "knife_round": {
+                    "label": "ナイフラウンド",
+                    "description": "ナイフラウンドの設定を管理"
+                },
+                "max_rounds": {
+                    "label": "最大ラウンド数",
+                    "description": "マッチの最大ラウンド数を設定",
+                    "placeholder": "最大ラウンド数を入力"
+                },
+                "region": {
+                    "title": "リージョン",
+                    "lan_match": "LANマッチ",
+                    "veto": {
+                        "label": "ベート",
+                        "description": "リージョンベートの設定を管理"
+                    },
+                    "preferred": "優先",
+                    "single": "単一",
+                    "placeholder": "リージョンを選択",
+                    "any": "任意",
+                    "description": "マッチのリージョンを設定"
+                },
+                "substitutes": {
+                    "label": "サブスティテュート",
+                    "description": "サブスティテュートの設定を管理",
+                    "range": "サブスティテュートの範囲"
+                },
+                "tv_delay": {
+                    "label": "TV遅延",
+                    "range": "TV遅延の範囲"
+                },
+                "timeouts": {
+                    "tactical": {
+                        "label": "タクティカルタイムアウト",
+                        "description": "タクティカルタイムアウトの設定を管理"
+                    },
+                    "technical": {
+                        "label": "テクニカルタイムアウト",
+                        "description": "テクニカルタイムアウトの設定を管理"
+                    },
+                    "options": {
+                        "admins": "管理者のみ",
+                        "coaches": "コーチのみ",
+                        "everyone": "全員"
+                    }
+                }
+            },
+            "max_rounds": "最大ラウンド数",
+            "tv_delay": "TV遅延",
+            "seconds": "秒",
+            "coaches": "コーチ",
+            "overtime": "延長戦",
+            "knife_round": "ナイフラウンド",
+            "map_veto_enabled": "マップベート有効",
+            "region_veto": "リージョンベート",
+            "substitutes": "サブスティテュート",
+            "timeout_setting": "タイムアウト設定",
+            "tech_timeout_setting": "テクニカルタイムアウト設定",
+            "map_pool": "マッププール"
+        },
+        "schedule": {
+            "pick_date": "日付を選択",
+            "schedule": "スケジュール"
+        },
+        "player": {
+            "captain": "キャプテン",
+            "status": {
+                "offline_not_ready": "オフライン - 準備未完了",
+                "online_not_ready": "オンライン - 準備未完了",
+                "ready": "準備完了",
+                "offline": "オフライン",
+                "online_not_in_game": "オンライン - ゲーム外",
+                "in_game": "ゲーム中"
+            },
+            "assign_slot": "スロットを割り当て"
+        },
+        "tabs": {
+            "overview": "概要",
+            "utility": "ユーティリティ",
+            "opening_duels": "オープニングデュエル",
+            "clutches": "クラッチ",
+            "map_veto_tab": "マップベート",
+            "settings": "設定",
+            "server_console": "サーバーコンソール",
+            "randomize_teams": "チームをランダム化",
+            "invited_to_match": "マッチに招待されました",
+            "join_roster": "ロスターに参加",
+            "restore_round": "ラウンドを復元",
+            "select_round_to_restore": "復元するラウンドを選択",
+            "server_information": "サーバー情報",
+            "type": "タイプ",
+            "region": "リージョン",
+            "round": "ラウンド"
+        },
+        "status": {
+            "cancelled": "キャンセル",
+            "finished": "終了",
+            "waiting_server": "サーバー待機中",
+            "scheduled_asap": "できるだけ早くスケジュール"
+        },
+        "winner": {
+            "set": "勝者を設定",
+            "select_lineup": "ラインナップを選択"
+        },
+        "region_veto": {
+            "banning": "ベーニング中",
+            "organizer_override": "主催者オーバーライド",
+            "confirm_ban": "ベーンを確認",
+            "server_region": "サーバーリージョン",
+            "select_region": "リージョンを選択"
+        },
+        "picks": {
+            "decider": "デサイダー"
+        },
+        "decider": "デサイダー",
+        "map_veto": {
+            "is_picking": "ピッキング中",
+            "organizer_override": "主催者オーバーライド",
+            "select_side": "サイドを選択",
+            "your_turn": "あなたの番です",
+            "pick": "ピック",
+            "confirm": "確認"
+        },
+        "map_lineup": {
+            "picked": "ピック済み"
+        },
+        "vs": "対",
+        "auto_canceling": "自動キャンセル中",
+        "actions": {
+            "call_support": "サポートを呼び出す",
+            "start_veto": "ベートを開始",
+            "skip_checkin": "チェックインをスキップ",
+            "cancel": "キャンセル"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "投げたフラッシュ",
+                "flash_assists": "フラッシュアシスト",
+                "enemies_flashed": "フラッシュされた敵",
+                "team_flashed": "フラッシュされた味方",
+                "avg_blind_time": "平均ブラインド時間",
+                "he_damage": "HEダメージ",
+                "molotov_damage": "モロトフダメージ",
+                "seconds": "秒"
+            },
+            "discord_user": "Discordユーザー",
+            "discord_link": "Discordリンク"
+        },
+        "opening_duels": {
+            "attempts": "試行",
+            "success": "成功"
+        },
+        "clutches": {
+            "won": "勝利",
+            "lost": "敗北",
+            "against": "対",
+            "no_clutches": "クラッチなし",
+            "vs": "対",
+            "round": "ラウンド"
+        },
+        "join": {
+            "live": "ライブ",
+            "call_organizer": "主催者を呼び出す"
+        },
+        "check_in": {
+            "title": "チェックイン",
+            "checked_in": "チェックイン済み",
+            "check_in": "チェックイン",
+            "description": "マッチに参加する準備ができたらチェックインしてください"
+        },
+        "coach": {
+            "assign": "コーチを割り当て"
+        },
+        "download_demos": "デモをダウンロード",
+        "coaches": "コーチ",
+        "best_of": "ベストオブ",
+        "overview": {
+            "promote_captain": "キャプテンに昇格",
+            "switch_teams": "チームを切り替え",
+            "remove_from_lineup": "ラインナップから削除",
+            "leave_lineup": "ラインナップを退出",
+            "kills": "キル",
+            "kills_full": "キル数",
+            "assists": "アシスト",
+            "assists_full": "アシスト数",
+            "deaths": "デス",
+            "deaths_full": "デス数",
+            "kd": "K/D",
+            "hs": "ヘッドショット",
+            "team_damage": "チームダメージ",
+            "multi_kill_rounds": "マルチキルラウンド",
+            "mkr": "MKR",
+            "k2": "2キル",
+            "k3": "3キル",
+            "k4": "4キル",
+            "k5": "5キル",
+            "knifes": "ナイフキル",
+            "zeus": "Zeusキル",
+            "total_damage": "総ダメージ",
+            "substitute": "サブスティテュート",
+            "join": "参加",
+            "slot": "スロット"
+        },
+        "server": {
+            "offline": "オフライン",
+            "booting": "起動中",
+            "assign": "割り当て",
+            "select": "選択",
+            "dedicated": "専用",
+            "on_demand": "オンデマンド",
+            "assigned": "割り当て済み"
+        }
     },
     "team": {
-      "manage_roster": "ロスターを管理",
-      "eligible": "参加可能",
-      "not_eligible": "参加不可",
-      "leave_tournament": "トーナメントを退出",
-      "leave_team": "チームを退出",
-      "player": "プレイヤー",
-      "role": "役割",
-      "slot": "スロット",
-      "add_player": "プレイヤーを追加",
-      "pending_invites": "保留中の招待",
-      "new": "新規",
-      "select": "選択",
-      "name": "名前",
-      "select_role": "役割を選択",
-      "no_roles": "役割がありません",
-      "remove_member": "メンバーを削除",
-      "confirm_remove_member": "メンバーを削除",
-      "remove_member_description": "このメンバーを削除してもよろしいですか？",
-      "cancel_invite": "招待をキャンセル",
-      "confirm_cancel_invite": "招待をキャンセル",
-      "cancel_invite_description": "この招待をキャンセルしてもよろしいですか？",
-      "my_teams": "マイチーム",
-      "my_teams_description": "あなたが所属しているチーム",
-      "no_eligible_teams": "参加可能なチームがありません",
-      "team": "チーム",
-      "select_team": "チームを選択",
-      "search_team": "チームを検索...",
-      "add_to_tournament": "トーナメントに追加"
+        "table": {
+            "team": "チーム",
+            "wins": "勝利",
+            "losses": "敗北",
+            "overtime_losses": "延長戦での敗北",
+            "no_teams_found": "チームが見つかりません"
+        },
+        "invite": {
+            "team_title": "チームへの招待",
+            "tournament_title": "トーナメントへの招待",
+            "tournament_message": "トーナメントに招待されました",
+            "team_message": "チームに招待されました",
+            "invited_by": "招待者",
+            "deny": "拒否",
+            "accept": "承認"
+        },
+        "roles": {
+            "captain": "キャプテン"
+        },
+        "leave": "退出",
+        "management": {
+            "edit": "編集"
+        },
+        "confirm": {
+            "leave": "チームを退出してもよろしいですか？",
+            "delete": {
+                "title": "チームを削除",
+                "description": "このチームを削除してもよろしいですか？"
+            }
+        },
+        "members": {
+            "title": "メンバー",
+            "invite_player": "プレイヤーを招待",
+            "pending_invites": "保留中の招待"
+        },
+        "form": {
+            "name": "名前",
+            "name_placeholder": "チーム名を入力",
+            "short_name": "略称",
+            "short_name_placeholder": "チームの略称を入力",
+            "owner": "オーナー",
+            "select_owner": "オーナーを選択",
+            "update": "更新",
+            "create": "作成"
+        },
+        "search": {
+            "no_teams": "チームが見つかりません"
+        },
+        "member": {
+            "remove": "削除",
+            "cancel_invite": "招待をキャンセル",
+            "confirm_cancel_invite": "招待をキャンセル",
+            "confirm_remove": "メンバーを削除",
+            "cancel_invite_description": "この招待をキャンセルしてもよろしいですか？",
+            "remove_description": "このメンバーを削除してもよろしいですか？"
+        }
     },
-    "actions": {
-      "open_registration": "登録を開始",
-      "close_registration": "登録を終了",
-      "cancel": "キャンセル"
+    "player": {
+        "sanction": {
+            "button": "プレイヤーに制裁を加える",
+            "reason_description": "この制裁の明確な理由を提供してください"
+        },
+        "search": {
+            "online_only": "オンラインのみ",
+            "no_players_found": "プレイヤーが見つかりません",
+            "found_players": "見つかったプレイヤー",
+            "placeholder": "プレイヤーを検索..."
+        },
+        "sanctions": {
+            "title": "制裁",
+            "expires": "期限切れ",
+            "active_count": "アクティブな制裁",
+            "past_count": "過去の制裁"
+        },
+        "registration": {
+            "title": "登録",
+            "description": "プレイヤーとして登録",
+            "warning": "警告",
+            "name_label": "名前",
+            "confirm_button": "確認",
+            "success": "登録成功"
+        },
+        "status": {
+            "banned": "BAN",
+            "muted": "ミュート",
+            "gagged": "ギャグ",
+            "add_friend": "フレンド追加"
+        },
+        "change_name": {
+            "button": "名前を変更",
+            "title": "名前を変更",
+            "request_title": "名前変更リクエスト",
+            "description": "新しい名前を入力",
+            "request_description": "名前変更リクエストを送信",
+            "name_label": "新しい名前",
+            "success": "名前を変更しました",
+            "request_success": "名前変更リクエストを送信しました"
+        }
     },
-    "upcoming": {
-      "empty": "予定されているトーナメントはありません"
+    "maps": {
+        "veto": {
+            "pick": "ピック"
+        },
+        "official": "公式",
+        "workshop": "ワークショップ",
+        "active_duty": "アクティブデューティ"
+    },
+    "region": {
+        "form": {
+            "name": "名前",
+            "description": "説明",
+            "use_lan": "LANを使用",
+            "update": "更新",
+            "create": "作成"
+        }
+    },
+    "game_server": {
+        "update_cs": "CSを更新",
+        "install_cs": "CSをインストール",
+        "select_region": "リージョンを選択",
+        "remove_node": "ノードを削除",
+        "validation": {
+            "start_port_less_than_end": "開始ポートは終了ポートより小さくなければなりません",
+            "end_port_greater_than_start": "終了ポートは開始ポートより大きくなければなりません"
+        },
+        "toast": {
+            "cs_updating": "CSを更新中",
+            "ports_updated": "ポートを更新しました"
+        }
+    },
+    "chat": {
+        "lobby_chat": "ロビーチャット",
+        "message_placeholder": "メッセージを入力..."
+    },
+    "charts": {
+        "usage": "使用量"
     },
     "server": {
-      "remove": "削除",
-      "confirm_remove": "サーバーを削除",
-      "remove_description": "このサーバーを削除してもよろしいですか？"
-    }
-  },
-  "ui": {
-    "tooltips": {
-      "expand": "展開",
-      "fullscreen": "全画面",
-      "download": "ダウンロード"
+        "form": {
+            "label": "ラベル",
+            "host": "ホスト",
+            "region": "リージョン",
+            "select_region": "リージョンを選択",
+            "rcon_password": "RCONパスワード",
+            "rcon_password_description": "サーバーのRCONパスワード",
+            "port": "ポート",
+            "tv_port": "TVポート",
+            "update": "更新",
+            "create": "作成"
+        },
+        "rcon": {
+            "quick_commands": "クイックコマンド",
+            "refresh_match": "マッチを更新",
+            "metamod_info": "MetaMod情報",
+            "css_info": "CSS情報",
+            "output": "出力",
+            "command_placeholder": "コマンドを入力...",
+            "send_command": "コマンドを送信"
+        }
     },
-    "logs": {
-      "follow": "追跡",
-      "timestamps": "タイムスタンプ",
-      "container": "コンテナ"
-    }
-  },
-  "map_pools": {
-    "title": "マッププール",
-    "description": "マッチメイキング用のマッププールと利用可能なマップを管理します。",
-    "table": {
-      "pool_name": "プール名",
-      "maps": "マップ",
-      "active_duty": "アクティブデューティ",
-      "available_modes": "利用可能なモード",
-      "workshop_id": "ワークショップID"
+    "pwa": {
+        "install": {
+            "title": "アプリをインストール",
+            "description": "5Stackをインストールして、より良い体験を",
+            "step1": "ステップ1",
+            "step2": "ステップ2",
+            "tooltip": "インストールのヒント",
+            "button": "インストール"
+        }
     },
-    "form": {
-      "name": "名前",
-      "poster": "ポスター（オプション）",
-      "poster_placeholder": "http://example.com/poster.png",
-      "patch": "パッチ（オプション）",
-      "patch_placeholder": "http://example.com/patch.png",
-      "workshop_map_id": "ワークショップマップID（オプション）",
-      "view_on_steam": "Steamで表示",
-      "create_map": "マップを作成",
-      "update_map": "マップを更新",
-      "delete_map": "マップを削除",
-      "delete_confirm": {
-        "title": "マップを削除",
-        "description": "このマップを削除してもよろしいですか？この操作は取り消せません。",
-        "cancel": "キャンセル",
-        "confirm": "削除"
-      },
-      "success": {
-        "create": "マップが正常に作成されました",
-        "update": "マップが正常に更新されました",
-        "delete": "マップが正常に削除されました"
-      },
-      "error": {
-        "create": "マップの作成中にエラーが発生しました",
-        "update": "マップの更新中にエラーが発生しました"
-      }
+    "tournament": {
+        "overview": "概要",
+        "bracket": "ブラケット",
+        "teams": "チーム",
+        "settings": "設定",
+        "admin": "管理",
+        "organizers": "主催者",
+        "join": {
+            "title": "トーナメントに参加",
+            "joined_with": "参加チーム",
+            "requirements": "参加要件"
+        },
+        "tournament_team": {
+            "players_registered": "登録プレイヤー",
+            "remove": "削除"
+        },
+        "add_team": {
+            "title": "チームを追加"
+        },
+        "form": {
+            "create": "トーナメントを作成",
+            "description_help": "トーナメントの説明を入力",
+            "name": "名前",
+            "description": "説明",
+            "start": "開始",
+            "pick_date": "日付を選択",
+            "update": "更新",
+            "match_options": "マッチオプション"
+        },
+        "table": {
+            "tournament": "トーナメント",
+            "status": "ステータス",
+            "type": "タイプ",
+            "teams_joined": "参加チーム",
+            "starts": "開始日",
+            "no_tournaments_found": "トーナメントが見つかりません"
+        },
+        "stage": {
+            "title": "ステージ",
+            "teams": "チーム",
+            "edit": "編集",
+            "delete": "削除",
+            "edit_title": "ステージを編集",
+            "confirm_delete": "ステージを削除",
+            "delete_description": "このステージを削除してもよろしいですか？",
+            "type": "タイプ",
+            "type_placeholder": "ステージタイプを選択",
+            "min_teams": "最小チーム数",
+            "min_teams_placeholder": "最小チーム数を入力",
+            "max_teams": "最大チーム数",
+            "max_teams_placeholder": "最大チーム数を入力",
+            "update": "更新",
+            "create": "作成",
+            "no_stages": "ステージがありません",
+            "start_building": "ブラケットの構築を開始",
+            "add_first": "最初のステージを追加",
+            "add_another": "別のステージを追加",
+            "not_setup": "ステージが設定されていません"
+        },
+        "match": {
+            "team_1": "チーム1",
+            "team_2": "チーム2",
+            "round_match": "ラウンドマッチ"
+        },
+        "organizer": {
+            "title": "主催者",
+            "description": "トーナメントの主催者を管理",
+            "add": "主催者を追加",
+            "name": "名前",
+            "actions": "アクション",
+            "no_organizers": "主催者がいません",
+            "no_organizers_description": "このトーナメントには主催者がいません",
+            "remove": "削除",
+            "confirm_remove": "主催者を削除",
+            "remove_description": "この主催者を削除してもよろしいですか？"
+        },
+        "team": {
+            "manage_roster": "ロスターを管理",
+            "eligible": "参加可能",
+            "not_eligible": "参加不可",
+            "leave_tournament": "トーナメントを退出",
+            "leave_team": "チームを退出",
+            "player": "プレイヤー",
+            "role": "役割",
+            "slot": "スロット",
+            "add_player": "プレイヤーを追加",
+            "pending_invites": "保留中の招待",
+            "new": "新規",
+            "select": "選択",
+            "name": "名前",
+            "select_role": "役割を選択",
+            "no_roles": "役割がありません",
+            "remove_member": "メンバーを削除",
+            "confirm_remove_member": "メンバーを削除",
+            "remove_member_description": "このメンバーを削除してもよろしいですか？",
+            "cancel_invite": "招待をキャンセル",
+            "confirm_cancel_invite": "招待をキャンセル",
+            "cancel_invite_description": "この招待をキャンセルしてもよろしいですか？",
+            "my_teams": "マイチーム",
+            "my_teams_description": "あなたが所属しているチーム",
+            "no_eligible_teams": "参加可能なチームがありません",
+            "team": "チーム",
+            "select_team": "チームを選択",
+            "search_team": "チームを検索...",
+            "add_to_tournament": "トーナメントに追加"
+        },
+        "actions": {
+            "open_registration": "登録を開始",
+            "close_registration": "登録を終了",
+            "cancel": "キャンセル"
+        },
+        "upcoming": {
+            "empty": "予定されているトーナメントはありません"
+        },
+        "server": {
+            "remove": "削除",
+            "confirm_remove": "サーバーを削除",
+            "remove_description": "このサーバーを削除してもよろしいですか？"
+        }
     },
-    "pool": {
-      "title": "{type}マッププール",
-      "description": "{type}プールのマップを管理します",
-      "modify_maps": "プール内のマップを修正"
+    "ui": {
+        "tooltips": {
+            "expand": "展開",
+            "fullscreen": "全画面",
+            "download": "ダウンロード"
+        },
+        "logs": {
+            "follow": "追跡",
+            "timestamps": "タイムスタンプ",
+            "container": "コンテナ"
+        }
     },
-    "edit_map": "マップを編集",
-    "toggle_pool_type": "マップ{map}が{type}用に{type}されました",
-    "toggle_active_pool": "マップ{map}がアクティブデューティ用に{type}されました",
-    "add_new_map": "新しいマップを追加",
     "components": {
-      "map_pools": {
-        "view_on_steam": "Steamで表示"
-      }
+        "map_pools": {
+            "view_on_steam": "Steamで見る"
+        }
     }
-  }
 }

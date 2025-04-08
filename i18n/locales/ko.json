@@ -1,959 +1,970 @@
 {
-  "pages": {
-    "system_metrics": {
-      "node": "노드",
-      "cpu_usage": "CPU 사용량",
-      "memory_usage": "메모리 사용량",
-      "services": "서비스"
-    },
-    "system_logs": {
-      "follow_logs": "로그 추적",
-      "timestamps": "타임스탬프"
-    },
-    "login": {
-      "sign_in": "Steam으로 로그인",
-      "powered_by": "제공"
-    },
-    "coming_soon": "곧 출시 예정!",
-    "tournaments": {
-      "title": "예정된 토너먼트",
-      "admin_disabled": "관리자가 토너먼트 생성을 비활성화했습니다",
-      "create": "토너먼트 생성",
-      "tabs": {
-        "tournaments": "토너먼트",
-        "my_recent": "최근 토너먼트"
-      },
-      "no_recent": "최근 토너먼트가 없습니다."
-    },
-    "teams": {
-      "title": "팀",
-      "description": "팀 관리",
-      "create": "팀 생성",
-      "tabs": {
-        "my_teams": "내 팀",
-        "other_teams": "다른 팀"
-      },
-      "search": "검색"
-    },
-    "settings": {
-      "profile": {
-        "title": "프로필 설정",
-        "description": "계정 설정 관리",
-        "steam_id": "Steam ID",
-        "name": "이름",
-        "avatar_url": "아바타 URL",
-        "country": "국가",
-        "select_country": "국가 선택",
-        "search_country": "국가 검색...",
-        "no_country_found": "국가를 찾을 수 없습니다",
-        "update": "프로필 업데이트"
-      },
-      "appearance": {
-        "title": "외관 설정",
-        "description": "애플리케이션 외관 커스터마이징",
-        "theme": "테마",
-        "theme_description": "애플리케이션 색상 테마 선택",
-        "light": "라이트",
-        "dark": "다크"
-      },
-      "application": {
-        "matchmaking": {
-          "title": "매치메이킹",
-          "description": "매치메이킹 설정 관리"
+    "pages": {
+        "system_metrics": {
+            "node": "노드",
+            "cpu_usage": "CPU 사용량",
+            "memory_usage": "메모리 사용량",
+            "services": "서비스"
         },
-        "discord": {
-          "title": "Discord",
-          "invite_link": "Discord 초대 링크",
-          "webhook": "Discord Webhook",
-          "webhook_description": "이 Discord Webhook은 플레이어의 조치가 필요한 알림을 보내는 데 사용됩니다. 예: 매치 문제, 버그 등.",
-          "support_role": "Discord 지원 역할 ID",
-          "support_role_description": "이 역할은 지원 작업에 사용될 때 멘션됩니다. Discord 애플리케이션에서 개발자 모드를 활성화하고 우클릭하여 ID를 복사하여 역할 ID를 얻을 수 있습니다.",
-          "update": "업데이트"
+        "system_logs": {
+            "follow_logs": "로그 추적",
+            "timestamps": "타임스탬프"
         },
-        "create_matches_role": "매치 생성에 필요한 최소 역할",
-        "create_tournaments_role": "토너먼트 생성 역할",
-        "update": "업데이트",
+        "login": {
+            "sign_in": "Steam으로 로그인",
+            "powered_by": "제공"
+        },
+        "coming_soon": "곧 출시 예정!",
+        "tournaments": {
+            "title": "예정된 토너먼트",
+            "admin_disabled": "관리자가 토너먼트 생성을 비활성화했습니다",
+            "create": "토너먼트 생성",
+            "tabs": {
+                "tournaments": "토너먼트",
+                "my_recent": "최근 토너먼트"
+            },
+            "no_recent": "최근 토너먼트가 없습니다."
+        },
+        "teams": {
+            "title": "팀",
+            "description": "팀 관리",
+            "create": "팀 생성",
+            "tabs": {
+                "my_teams": "내 팀",
+                "other_teams": "다른 팀"
+            },
+            "search": "검색"
+        },
+        "settings": {
+            "profile": {
+                "title": "프로필 설정",
+                "description": "계정 설정 관리",
+                "steam_id": "Steam ID",
+                "name": "이름",
+                "avatar_url": "아바타 URL",
+                "country": "국가",
+                "select_country": "국가 선택",
+                "search_country": "국가 검색...",
+                "no_country_found": "국가를 찾을 수 없습니다",
+                "update": "프로필 업데이트"
+            },
+            "appearance": {
+                "title": "외관 설정",
+                "description": "애플리케이션 외관 커스터마이징",
+                "theme": "테마",
+                "theme_description": "애플리케이션 색상 테마 선택",
+                "light": "라이트",
+                "dark": "다크"
+            },
+            "application": {
+                "matchmaking": {
+                    "title": "매치메이킹",
+                    "description": "매치메이킹 설정 관리"
+                },
+                "discord": {
+                    "title": "Discord",
+                    "invite_link": "Discord 초대 링크",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "이 Discord Webhook은 플레이어의 조치가 필요한 알림을 보내는 데 사용됩니다. 예: 매치 문제, 버그 등.",
+                    "support_role": "Discord 지원 역할 ID",
+                    "support_role_description": "이 역할은 지원 작업에 사용될 때 멘션됩니다. Discord 애플리케이션에서 개발자 모드를 활성화하고 우클릭하여 ID를 복사하여 역할 ID를 얻을 수 있습니다.",
+                    "update": "업데이트"
+                },
+                "create_matches_role": "매치 생성에 필요한 최소 역할",
+                "create_tournaments_role": "토너먼트 생성 역할",
+                "update": "업데이트",
+                "players": {
+                    "force_name_registration": "플레이어 이름 등록 강제",
+                    "force_name_registration_description": "플레이어 등록이 강제되는 경우, 플레이어는 플랫폼에서 사용될 이름을 제출해야 합니다."
+                }
+            }
+        },
+        "regions": {
+            "title": "리전",
+            "description": "리전 관리",
+            "create": "리전 생성",
+            "table": {
+                "name": "이름",
+                "status": "상태",
+                "available_servers": "사용 가능한 서버",
+                "description": "설명",
+                "use_lan_ip": "LAN IP 사용",
+                "actions": "작업"
+            },
+            "edit": "편집",
+            "delete": {
+                "title": "리전 삭제",
+                "description": "이 리전을 삭제하시겠습니까?",
+                "cancel": "취소",
+                "confirm": "삭제"
+            }
+        },
         "players": {
-          "force_name_registration": "플레이어 이름 등록 강제",
-          "force_name_registration_description": "플레이어 등록이 강제되는 경우, 플레이어는 플랫폼에서 사용될 이름을 제출해야 합니다."
+            "title": "플레이어",
+            "search": "플레이어 검색",
+            "detail": {
+                "player_stats": "플레이어 통계",
+                "kills": "킬",
+                "assists": "어시스트",
+                "deaths": "데스",
+                "kd": "K/D",
+                "last_ten_wins": "최근 10경기 승리",
+                "last_ten_losses": "최근 10경기 패배",
+                "matches": "매치"
+            }
+        },
+        "play": {
+            "title": "플레이",
+            "description": "매치 시작",
+            "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
+            "create_match": "매치 생성",
+            "open_matches": {
+                "title": "오픈 매치",
+                "description": "참가 가능한 매치"
+            },
+            "matchmaking": {
+                "title": "매치메이킹"
+            }
+        },
+        "matches": {
+            "title": "매치",
+            "description": "매치 관리",
+            "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
+            "create": "매치 생성",
+            "last_ten_wins": "최근 10경기 승리",
+            "last_ten_losses": "최근 10경기 패배",
+            "my_match_history": "내 매치 기록",
+            "other_matches": "다른 매치",
+            "create_page": {
+                "title": "매치 생성",
+                "pick_up_game": "픽업 게임",
+                "pick_up_game_description": "픽업 게임 생성",
+                "team_1": "팀 1",
+                "search_team": "팀 검색",
+                "team_2": "팀 2",
+                "intra_team_scrimmage": "팀 내 스크림",
+                "create_button": "생성"
+            },
+            "detail": {
+                "schedule": "일정"
+            }
+        },
+        "game_server_nodes": {
+            "title": "게임 서버 노드",
+            "description": "게임 서버 노드 관리",
+            "not_supported": {
+                "title": "지원되지 않음",
+                "description": "이 플랫폼은 지원되지 않습니다"
+            },
+            "create": "노드 생성",
+            "installation_script": "설치 스크립트",
+            "cs_version_info": "CS 버전 정보",
+            "table": {
+                "node": "노드",
+                "lan_public_ip": "LAN/공개 IP",
+                "cs_build_id": "CS 빌드 ID",
+                "region": "리전",
+                "capacity": "용량",
+                "ports": "포트",
+                "ports_tooltip": "사용 가능한 포트 범위",
+                "enabled": "활성화",
+                "no_nodes": "노드가 없습니다"
+            },
+            "build_id": "빌드 ID",
+            "last_updated": "마지막 업데이트"
+        },
+        "dedicated_servers": {
+            "title": "전용 서버",
+            "description": "전용 서버 관리",
+            "create": {
+                "title": "서버 생성"
+            },
+            "table": {
+                "connection_details": "연결 세부 정보",
+                "label": "라벨",
+                "region": "리전",
+                "tv_port": "TV 포트",
+                "enabled": "활성화",
+                "yes": "예",
+                "no": "아니오"
+            },
+            "detail": {
+                "enabled": "활성화",
+                "server_plugin_config": "서버 플러그인 설정",
+                "hide_config": "설정 숨기기",
+                "show_config": "설정 표시",
+                "config_location": "설정 파일 위치",
+                "copy": "복사",
+                "edit": "편집",
+                "delete": "삭제",
+                "delete_confirm": {
+                    "title": "서버 삭제",
+                    "description": "이 서버를 삭제하시겠습니까?",
+                    "cancel": "취소",
+                    "continue": "계속"
+                }
+            }
+        },
+        "map_pools": {
+            "title": "맵 풀",
+            "description": "매치메이킹 맵 풀과 매치메이킹 맵 관리.",
+            "table": {
+                "pool_name": "풀 이름",
+                "available_modes": "유효한 형태",
+                "workshop_id": "워크샵 ID",
+                "maps": "맵",
+                "active_duty": "액티브 듀티"
+            },
+            "form": {
+                "poster": "포스터 (옵션)",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "패치 (옵션)",
+                "patch_placeholder": "http://example.com/patch.png",
+                "workshop_map_id": "작업장 지도 ID (선택)",
+                "view_on_steam": "Steam에서 보기",
+                "create_map": "본문 바로가기",
+                "update_map": "공지사항",
+                "delete_map": "파일 삭제",
+                "delete_confirm": {
+                    "title": "파일 삭제",
+                    "description": "이 맵을 삭제하시겠습니까? 이 동작은 undone일 수 없습니다.",
+                    "cancel": "취소",
+                    "confirm": "삭제"
+                },
+                "success": {
+                    "create": "성공적으로 만든 지도",
+                    "update": "업데이트 된지도",
+                    "delete": "성공적으로 삭제 된지도"
+                },
+                "error": {
+                    "create": "오류 생성 맵",
+                    "update": "오류 업데이트 맵"
+                },
+                "name": "이름"
+            },
+            "edit_map": "편집 맵",
+            "toggle_pool_type": "지도 {map}는 {type}입니다. {type}",
+            "toggle_active_pool": "Map {map}는 {type}가 활성 의무에 대한",
+            "add_new_map": "새 맵 추가",
+            "pool": {
+                "title": "{type} 지도 풀",
+                "description": "{type} Pool의 지도 관리",
+                "modify_maps": "풀에 지도를 수정"
+            },
+            "save_success": "MAP 풀은 성공적으로 저장"
+        },
+        "map_pool": {
+            "toggle_pool_type": "지도 {map}는 {type}입니다. {type}",
+            "toggle_active_pool": "Map {map}는 {type}가 활성 의무에 대한",
+            "save_success": "MAP 풀은 성공적으로 저장"
+        },
+        "components": {
+            "map_pools": {
+                "view_on_steam": "Steam에서 보기"
+            }
         }
-      }
     },
-    "regions": {
-      "title": "리전",
-      "description": "리전 관리",
-      "create": "리전 생성",
-      "table": {
-        "name": "이름",
-        "status": "상태",
-        "available_servers": "사용 가능한 서버",
-        "description": "설명",
-        "use_lan_ip": "LAN IP 사용",
-        "actions": "작업"
-      },
-      "edit": "편집",
-      "delete": {
-        "title": "리전 삭제",
-        "description": "이 리전을 삭제하시겠습니까?",
-        "cancel": "취소",
-        "confirm": "삭제"
-      }
-    },
-    "players": {
-      "title": "플레이어",
-      "search": "플레이어 검색",
-      "detail": {
-        "player_stats": "플레이어 통계",
-        "kills": "킬",
-        "assists": "어시스트",
-        "deaths": "데스",
-        "kd": "K/D",
-        "last_ten_wins": "최근 10경기 승리",
-        "last_ten_losses": "최근 10경기 패배",
-        "matches": "매치"
-      }
-    },
-    "play": {
-      "title": "플레이",
-      "description": "매치 시작",
-      "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
-      "create_match": "매치 생성",
-      "open_matches": {
-        "title": "오픈 매치",
-        "description": "참가 가능한 매치"
-      },
-      "matchmaking": {
-        "title": "매치메이킹"
-      }
-    },
-    "matches": {
-      "title": "매치",
-      "description": "매치 관리",
-      "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
-      "create": "매치 생성",
-      "last_ten_wins": "최근 10경기 승리",
-      "last_ten_losses": "최근 10경기 패배",
-      "my_match_history": "내 매치 기록",
-      "other_matches": "다른 매치",
-      "create_page": {
-        "title": "매치 생성",
-        "pick_up_game": "픽업 게임",
-        "pick_up_game_description": "픽업 게임 생성",
-        "team_1": "팀 1",
-        "search_team": "팀 검색",
-        "team_2": "팀 2",
-        "intra_team_scrimmage": "팀 내 스크림",
-        "create_button": "생성"
-      },
-      "detail": {
-        "schedule": "일정"
-      }
-    },
-    "game_server_nodes": {
-      "title": "게임 서버 노드",
-      "description": "게임 서버 노드 관리",
-      "not_supported": {
-        "title": "지원되지 않음",
-        "description": "이 플랫폼은 지원되지 않습니다"
-      },
-      "create": "노드 생성",
-      "installation_script": "설치 스크립트",
-      "cs_version_info": "CS 버전 정보",
-      "table": {
-        "node": "노드",
-        "lan_public_ip": "LAN/공개 IP",
-        "cs_build_id": "CS 빌드 ID",
-        "region": "리전",
-        "capacity": "용량",
-        "ports": "포트",
-        "ports_tooltip": "사용 가능한 포트 범위",
-        "enabled": "활성화",
-        "no_nodes": "노드가 없습니다"
-      },
-      "build_id": "빌드 ID",
-      "last_updated": "마지막 업데이트"
-    },
-    "dedicated_servers": {
-      "title": "전용 서버",
-      "description": "전용 서버 관리",
-      "create": {
-        "title": "서버 생성"
-      },
-      "table": {
-        "connection_details": "연결 세부 정보",
-        "label": "라벨",
-        "region": "리전",
-        "tv_port": "TV 포트",
-        "enabled": "활성화",
-        "yes": "예",
-        "no": "아니오"
-      },
-      "detail": {
-        "enabled": "활성화",
-        "server_plugin_config": "서버 플러그인 설정",
-        "hide_config": "설정 숨기기",
-        "show_config": "설정 표시",
-        "config_location": "설정 파일 위치",
-        "copy": "복사",
-        "edit": "편집",
-        "delete": "삭제",
-        "delete_confirm": {
-          "title": "서버 삭제",
-          "description": "이 서버를 삭제하시겠습니까?",
-          "cancel": "취소",
-          "continue": "계속"
-        }
-      }
-    }
-  },
-  "matchmaking": {
-    "lobby": {
-      "title": "매치메이킹 로비",
-      "leave": "나가기",
-      "invite_player": "플레이어 초대",
-      "invites": "초대",
-      "access_updated": "접근 권한이 업데이트되었습니다"
-    },
-    "friends": {
-      "title": "친구",
-      "sync": "동기화",
-      "search": "검색",
-      "pending_requests": "대기 중인 요청",
-      "online": "온라인",
-      "invite_to_lobby": "로비에 초대",
-      "remove": "제거",
-      "join_lobby": "로비 참가",
-      "offline": "오프라인"
-    },
-    "leave": "나가기",
-    "position": "위치",
-    "join": "참가",
-    "confirm": {
-      "title": "확인",
-      "ready": "준비",
-      "players": "플레이어"
-    },
-    "banned": "차단됨",
-    "go_to_match": "매치로 이동",
-    "temp_banned": "임시 차단"
-  },
-  "match": {
-    "lobby": {
-      "access_updated": "접근 권한이 업데이트되었습니다"
-    },
-    "simple": {
-      "vs": "대"
-    },
-    "my_upcoming": {
-      "no_matches": "예정된 매치가 없습니다"
-    },
-    "recent": {
-      "title": "최근 매치",
-      "no_matches": "최근 매치가 없습니다"
-    },
-    "options": {
-      "table": {
-        "match": "매치",
-        "type": "유형",
-        "maps": "맵",
-        "no_matches_found": "매치를 찾을 수 없습니다",
-        "join": "참가"
-      },
-      "type": {
-        "label": "유형"
-      },
-      "best_of": {
-        "label": "최선승제",
-        "description": "매치 승리에 필요한 맵 승리 수",
-        "placeholder": "최선승제 선택"
-      },
-      "map_veto_settings": {
-        "label": "맵 밴 설정",
-        "description": "맵 밴 설정 설명",
-        "custom_pool": "커스텀 맵 풀",
-        "active_duty": "액티브 듀티",
-        "custom_pool_tooltip": "커스텀 맵 풀 도움말"
-      },
-      "advanced": {
-        "title": "고급 설정",
-        "hide": "숨기기",
-        "show": "표시",
-        "toggle": "토글",
-        "overtime": {
-          "label": "연장전",
-          "description": "연장전 설명"
+    "matchmaking": {
+        "lobby": {
+            "title": "매치메이킹 로비",
+            "leave": "나가기",
+            "invite_player": "플레이어 초대",
+            "invites": "초대",
+            "access_updated": "접근 권한이 업데이트되었습니다"
         },
-        "knife_round": {
-          "label": "나이프 라운드",
-          "description": "나이프 라운드 설명"
+        "friends": {
+            "title": "친구",
+            "sync": "동기화",
+            "search": "검색",
+            "pending_requests": "대기 중인 요청",
+            "online": "온라인",
+            "invite_to_lobby": "로비에 초대",
+            "remove": "제거",
+            "join_lobby": "로비 참가",
+            "offline": "오프라인"
         },
-        "max_rounds": {
-          "label": "최대 라운드",
-          "description": "최대 라운드 설명",
-          "placeholder": "최대 라운드 입력"
+        "leave": "나가기",
+        "position": "위치",
+        "join": "참가",
+        "confirm": {
+            "title": "확인",
+            "ready": "준비",
+            "players": "플레이어"
         },
-        "region": {
-          "title": "리전",
-          "lan_match": "LAN 매치",
-          "veto": {
-            "label": "리전 밴",
-            "description": "리전 밴 설명"
-          },
-          "preferred": "선호 리전",
-          "single": "단일 리전",
-          "placeholder": "리전 선택",
-          "any": "모든 리전",
-          "description": "리전 설명"
-        },
-        "substitutes": {
-          "label": "교체 선수",
-          "description": "교체 선수 설명",
-          "range": "교체 선수 범위"
-        },
-        "tv_delay": {
-          "label": "TV 딜레이",
-          "range": "딜레이 범위"
-        },
-        "timeouts": {
-          "tactical": {
-            "label": "전술 타임아웃",
-            "description": "전술 타임아웃 설명"
-          },
-          "technical": {
-            "label": "기술 타임아웃",
-            "description": "기술 타임아웃 설명"
-          },
-          "options": {
-            "admins": "관리자",
-            "coaches": "코치",
-            "everyone": "모두"
-          }
-        }
-      },
-      "max_rounds": "최대 라운드",
-      "tv_delay": "TV 딜레이",
-      "seconds": "초",
-      "coaches": "코치",
-      "overtime": "연장전",
-      "knife_round": "나이프 라운드",
-      "map_veto_enabled": "맵 밴 활성화",
-      "region_veto": "리전 밴",
-      "substitutes": "교체 선수",
-      "timeout_setting": "타임아웃 설정",
-      "tech_timeout_setting": "기술 타임아웃 설정",
-      "map_pool": "맵 풀"
-    },
-    "schedule": {
-      "pick_date": "날짜 선택",
-      "schedule": "일정"
-    },
-    "player": {
-      "captain": "주장",
-      "status": {
-        "offline_not_ready": "오프라인 준비 안 됨",
-        "online_not_ready": "온라인 준비 안 됨",
-        "ready": "준비 완료",
-        "offline": "오프라인",
-        "online_not_in_game": "온라인 게임 미참가",
-        "in_game": "게임 중"
-      },
-      "assign_slot": "슬롯 할당"
-    },
-    "tabs": {
-      "overview": "개요",
-      "utility": "유틸리티",
-      "opening_duels": "오프닝 듀얼",
-      "clutches": "클러치",
-      "map_veto_tab": "맵 밴",
-      "settings": "설정",
-      "server_console": "서버 콘솔",
-      "randomize_teams": "팀 무작위 배정",
-      "invited_to_match": "매치 초대됨",
-      "join_roster": "로스터 참가",
-      "restore_round": "라운드 복구",
-      "select_round_to_restore": "복구할 라운드 선택",
-      "server_information": "서버 정보",
-      "type": "유형",
-      "region": "리전",
-      "round": "라운드"
-    },
-    "status": {
-      "cancelled": "취소됨",
-      "finished": "종료됨",
-      "waiting_server": "서버 대기 중",
-      "scheduled_asap": "가능한 빨리 시작"
-    },
-    "winner": {
-      "set": "승자 설정",
-      "select_lineup": "라인업 선택"
-    },
-    "region_veto": {
-      "banning": "밴 중",
-      "organizer_override": "주최자 우선",
-      "confirm_ban": "밴 확인",
-      "server_region": "서버 리전",
-      "select_region": "리전 선택"
-    },
-    "picks": {
-      "decider": "결정전"
-    },
-    "decider": "결정전",
-    "map_veto": {
-      "is_picking": "선택 중",
-      "organizer_override": "주최자 우선",
-      "select_side": "진영 선택",
-      "your_turn": "당신의 차례",
-      "pick": "선택",
-      "confirm": "확인"
-    },
-    "map_lineup": {
-      "picked": "선택됨"
-    },
-    "vs": "대",
-    "auto_canceling": "자동 취소 중",
-    "actions": {
-      "call_support": "지원 요청",
-      "start_veto": "밴 시작",
-      "skip_checkin": "체크인 건너뛰기",
-      "cancel": "취소"
-    },
-    "lineup": {
-      "stats": {
-        "flashes_thrown": "투척한 섬광탄",
-        "flash_assists": "섬광탄 어시스트",
-        "enemies_flashed": "적 섬광",
-        "team_flashed": "팀 섬광",
-        "avg_blind_time": "평균 실명 시간",
-        "he_damage": "수류탄 데미지",
-        "molotov_damage": "화염병 데미지",
-        "seconds": "초"
-      },
-      "discord_user": "Discord 사용자",
-      "discord_link": "Discord 연결"
-    },
-    "opening_duels": {
-      "attempts": "시도",
-      "success": "성공"
-    },
-    "clutches": {
-      "won": "승리",
-      "lost": "패배",
-      "against": "대",
-      "no_clutches": "클러치 없음",
-      "vs": "대",
-      "round": "라운드"
-    },
-    "join": {
-      "live": "라이브",
-      "call_organizer": "주최자 호출"
-    },
-    "check_in": {
-      "title": "체크인",
-      "checked_in": "체크인 완료",
-      "check_in": "체크인",
-      "description": "체크인 설명"
-    },
-    "coach": {
-      "assign": "코치 할당"
-    },
-    "download_demos": "데모 다운로드",
-    "coaches": "코치",
-    "best_of": "최선승제",
-    "overview": {
-      "promote_captain": "주장으로 승급",
-      "switch_teams": "팀 교체",
-      "remove_from_lineup": "라인업에서 제거",
-      "leave_lineup": "라인업 나가기",
-      "kills": "킬",
-      "kills_full": "킬",
-      "assists": "어시스트",
-      "assists_full": "어시스트",
-      "deaths": "데스",
-      "deaths_full": "데스",
-      "kd": "K/D",
-      "hs": "헤드샷",
-      "team_damage": "팀 데미지",
-      "multi_kill_rounds": "멀티킬 라운드",
-      "mkr": "MKR",
-      "k2": "2K",
-      "k3": "3K",
-      "k4": "4K",
-      "k5": "5K",
-      "knifes": "나이프",
-      "zeus": "제우스",
-      "total_damage": "총 데미지",
-      "substitute": "교체",
-      "join": "참가",
-      "slot": "슬롯"
-    },
-    "server": {
-      "offline": "오프라인",
-      "booting": "부팅 중",
-      "assign": "할당",
-      "select": "선택",
-      "dedicated": "전용",
-      "on_demand": "온디맨드",
-      "assigned": "할당됨"
-    }
-  },
-  "ui": {
-    "tooltips": {
-      "expand": "확장",
-      "fullscreen": "전체화면",
-      "download": "다운로드"
-    },
-    "logs": {
-      "follow": "팔로우",
-      "timestamps": "타임스탬프",
-      "container": "컨테이너"
-    }
-  },
-  "player": {
-    "sanction": {
-      "button": "플레이어 제재",
-      "reason_description": "이 제재에 대한 명확한 이유를 제공해주세요"
-    },
-    "search": {
-      "online_only": "온라인만",
-      "no_players_found": "플레이어를 찾을 수 없습니다",
-      "found_players": "찾은 플레이어",
-      "placeholder": "플레이어 검색..."
-    },
-    "sanctions": {
-      "title": "제재",
-      "expires": "만료",
-      "active_count": "활성 제재 수",
-      "past_count": "과거 제재 수"
-    },
-    "registration": {
-      "title": "등록",
-      "description": "설명",
-      "warning": "경고",
-      "name_label": "이름 라벨",
-      "confirm_button": "확인 버튼",
-      "success": "성공"
-    },
-    "status": {
-      "banned": "차단됨",
-      "muted": "음소거됨",
-      "gagged": "채팅 금지됨",
-      "add_friend": "친구 추가"
-    },
-    "change_name": {
-      "button": "이름 변경",
-      "title": "이름 변경",
-      "request_title": "이름 변경 요청",
-      "description": "설명",
-      "request_description": "요청 설명",
-      "name_label": "이름 라벨",
-      "success": "성공",
-      "request_success": "요청 성공"
-    }
-  },
-  "maps": {
-    "veto": {
-      "pick": "선택"
-    },
-    "official": "공식",
-    "workshop": "워크샵",
-    "active_duty": "액티브 듀티"
-  },
-  "region": {
-    "form": {
-      "name": "이름",
-      "description": "설명",
-      "use_lan": "LAN 사용",
-      "update": "업데이트",
-      "create": "생성"
-    }
-  },
-  "game_server": {
-    "update_cs": "CS 업데이트",
-    "install_cs": "CS 설치",
-    "select_region": "리전 선택",
-    "remove_node": "노드 제거",
-    "validation": {
-      "start_port_less_than_end": "시작 포트가 종료 포트보다 작아야 합니다",
-      "end_port_greater_than_start": "종료 포트가 시작 포트보다 커야 합니다"
-    },
-    "toast": {
-      "cs_updating": "CS 업데이트 중",
-      "ports_updated": "포트 업데이트됨"
-    }
-  },
-  "chat": {
-    "lobby_chat": "로비 채팅",
-    "message_placeholder": "메시지 입력..."
-  },
-  "charts": {
-    "usage": "사용량"
-  },
-  "server": {
-    "form": {
-      "label": "라벨",
-      "host": "호스트",
-      "region": "리전",
-      "select_region": "리전 선택",
-      "rcon_password": "RCON 비밀번호",
-      "rcon_password_description": "RCON 비밀번호 설명",
-      "port": "포트",
-      "tv_port": "TV 포트",
-      "update": "업데이트",
-      "create": "생성"
-    },
-    "rcon": {
-      "quick_commands": "빠른 명령어",
-      "refresh_match": "매치 새로고침",
-      "metamod_info": "메타모드 정보",
-      "css_info": "CSS 정보",
-      "output": "출력",
-      "command_placeholder": "명령어 입력",
-      "send_command": "명령어 전송"
-    }
-  },
-  "layouts": {
-    "profile_settings": {
-      "title": "프로필 설정",
-      "description": "프로필 정보 관리",
-      "discord": {
-        "unlink": "Discord 연결 해제",
-        "link": "Discord 연결",
-        "unlink_dialog": {
-          "title": "Discord 연결 해제",
-          "description": "Discord 연결을 해제하시겠습니까?",
-          "cancel": "취소",
-          "confirm": "연결 해제"
-        },
-        "unlinked": "Discord 연결이 해제되었습니다"
-      }
-    },
-    "application_settings": {
-      "title": "애플리케이션 설정",
-      "description": "애플리케이션 설정 관리"
-    },
-    "system_update": {
-      "title": "시스템 업데이트",
-      "description": "시스템 업데이트가 필요합니다",
-      "note": "참고: 업데이트 중에는 애플리케이션을 사용할 수 없습니다",
-      "fix_link": "해결 방법 확인",
-      "cancel": "취소",
-      "update": "업데이트"
-    },
-    "match_lobby": {
-      "versus": "대"
-    },
-    "notifications": {
-      "title": "알림",
-      "delete": "삭제",
-      "dismiss": "닫기",
-      "delete_all_read": "읽은 알림 모두 삭제",
-      "no_notifications": "알림이 없습니다"
-    },
-    "app_nav": {
-      "brand": "5stack",
-      "navigation": {
-        "play": "플레이",
-        "matches": "매치",
-        "tournaments": "토너먼트",
-        "players": "플레이어",
-        "teams": "팀"
-      },
-      "administration": {
-        "title": "관리",
-        "regions": "지역",
-        "servers": "서버",
-        "dedicated_servers": "전용 서버",
-        "game_server_nodes": "게임 서버 노드",
-        "logs": "시스템 로그",
-        "metrics": "시스템 메트릭",
-        "app_settings": "앱 설정",
-        "map_pools": "맵 풀"
-      },
-      "profile": {
-        "my_account": "내 계정",
-        "logout": "로그아웃"
-      },
-      "footer": {
-        "report_issue": "문제 보고",
-        "join_discord": "Discord 참여"
-      },
-      "tooltips": {
-        "play": "플레이",
-        "matches": "매치",
-        "tournaments": "토너먼트",
-        "players": "플레이어",
-        "teams": "팀",
-        "regions": "지역",
-        "servers": "서버",
-        "dedicated_servers": "전용 서버",
-        "game_server_nodes": "게임 서버 노드",
-        "system_logs": "시스템 로그",
-        "system_metrics": "시스템 메트릭",
-        "app_settings": "앱 설정",
-        "report_issue": "문제 보고",
-        "join_discord": "Discord 참여",
-        "map_pools": "맵 풀"
-      },
-      "logout_dialog": {
-        "title": "로그아웃",
-        "description": "로그아웃하시겠습니까?",
-        "cancel": "취소",
-        "confirm": "로그아웃"
-      }
-    }
-  },
-  "pwa": {
-    "install": {
-      "title": "앱 설치",
-      "description": "5Stack을 설치하여 더 나은 경험을",
-      "step1": "1단계",
-      "step2": "2단계",
-      "tooltip": "설치 팁",
-      "button": "설치"
-    }
-  },
-  "common": {
-    "cancel": "취소",
-    "tbd": "미정",
-    "boolean": {
-      "yes": "예",
-      "no": "아니오"
-    },
-    "actions": {
-      "edit": "편집",
-      "delete": "삭제"
-    },
-    "close": "닫기",
-    "confirm": "확인"
-  },
-  "tournament": {
-    "overview": "개요",
-    "bracket": "브라켓",
-    "teams": "팀",
-    "settings": "설정",
-    "admin": "관리",
-    "organizers": "주최자",
-    "join": {
-      "title": "토너먼트 참가",
-      "joined_with": "참가 팀",
-      "requirements": "참가 요건"
-    },
-    "tournament_team": {
-      "players_registered": "등록된 플레이어",
-      "remove": "제거"
-    },
-    "add_team": {
-      "title": "팀 추가"
-    },
-    "form": {
-      "create": "토너먼트 생성",
-      "description_help": "토너먼트 설명 입력",
-      "name": "이름",
-      "description": "설명",
-      "start": "시작",
-      "pick_date": "날짜 선택",
-      "update": "업데이트",
-      "match_options": "매치 옵션"
-    },
-    "table": {
-      "tournament": "토너먼트",
-      "status": "상태",
-      "type": "유형",
-      "teams_joined": "참가 팀",
-      "starts": "시작일",
-      "no_tournaments_found": "토너먼트를 찾을 수 없습니다"
-    },
-    "stage": {
-      "title": "스테이지",
-      "teams": "팀",
-      "edit": "편집",
-      "delete": "삭제",
-      "edit_title": "스테이지 편집",
-      "confirm_delete": "스테이지 삭제",
-      "delete_description": "이 스테이지를 삭제하시겠습니까?",
-      "type": "유형",
-      "type_placeholder": "스테이지 유형 선택",
-      "min_teams": "최소 팀 수",
-      "min_teams_placeholder": "최소 팀 수 입력",
-      "max_teams": "최대 팀 수",
-      "max_teams_placeholder": "최대 팀 수 입력",
-      "update": "업데이트",
-      "create": "생성",
-      "no_stages": "스테이지가 없습니다",
-      "start_building": "브라켓 구성 시작",
-      "add_first": "첫 스테이지 추가",
-      "add_another": "다른 스테이지 추가",
-      "not_setup": "스테이지가 설정되지 않았습니다"
+        "banned": "차단됨",
+        "go_to_match": "매치로 이동",
+        "temp_banned": "임시 차단"
     },
     "match": {
-      "team_1": "팀 1",
-      "team_2": "팀 2",
-      "round_match": "라운드 매치"
+        "lobby": {
+            "access_updated": "접근 권한이 업데이트되었습니다"
+        },
+        "simple": {
+            "vs": "대"
+        },
+        "my_upcoming": {
+            "no_matches": "예정된 매치가 없습니다"
+        },
+        "recent": {
+            "title": "최근 매치",
+            "no_matches": "최근 매치가 없습니다"
+        },
+        "options": {
+            "table": {
+                "match": "매치",
+                "type": "유형",
+                "maps": "맵",
+                "no_matches_found": "매치를 찾을 수 없습니다",
+                "join": "참가"
+            },
+            "type": {
+                "label": "유형"
+            },
+            "best_of": {
+                "label": "최선승제",
+                "description": "매치 승리에 필요한 맵 승리 수",
+                "placeholder": "최선승제 선택"
+            },
+            "map_veto_settings": {
+                "label": "맵 밴 설정",
+                "description": "맵 밴 설정 설명",
+                "custom_pool": "커스텀 맵 풀",
+                "active_duty": "액티브 듀티",
+                "custom_pool_tooltip": "커스텀 맵 풀 도움말"
+            },
+            "advanced": {
+                "title": "고급 설정",
+                "hide": "숨기기",
+                "show": "표시",
+                "toggle": "토글",
+                "overtime": {
+                    "label": "연장전",
+                    "description": "연장전 설명"
+                },
+                "knife_round": {
+                    "label": "나이프 라운드",
+                    "description": "나이프 라운드 설명"
+                },
+                "max_rounds": {
+                    "label": "최대 라운드",
+                    "description": "최대 라운드 설명",
+                    "placeholder": "최대 라운드 입력"
+                },
+                "region": {
+                    "title": "리전",
+                    "lan_match": "LAN 매치",
+                    "veto": {
+                        "label": "리전 밴",
+                        "description": "리전 밴 설명"
+                    },
+                    "preferred": "선호 리전",
+                    "single": "단일 리전",
+                    "placeholder": "리전 선택",
+                    "any": "모든 리전",
+                    "description": "리전 설명"
+                },
+                "substitutes": {
+                    "label": "교체 선수",
+                    "description": "교체 선수 설명",
+                    "range": "교체 선수 범위"
+                },
+                "tv_delay": {
+                    "label": "TV 딜레이",
+                    "range": "딜레이 범위"
+                },
+                "timeouts": {
+                    "tactical": {
+                        "label": "전술 타임아웃",
+                        "description": "전술 타임아웃 설명"
+                    },
+                    "technical": {
+                        "label": "기술 타임아웃",
+                        "description": "기술 타임아웃 설명"
+                    },
+                    "options": {
+                        "admins": "관리자",
+                        "coaches": "코치",
+                        "everyone": "모두"
+                    }
+                }
+            },
+            "max_rounds": "최대 라운드",
+            "tv_delay": "TV 딜레이",
+            "seconds": "초",
+            "coaches": "코치",
+            "overtime": "연장전",
+            "knife_round": "나이프 라운드",
+            "map_veto_enabled": "맵 밴 활성화",
+            "region_veto": "리전 밴",
+            "substitutes": "교체 선수",
+            "timeout_setting": "타임아웃 설정",
+            "tech_timeout_setting": "기술 타임아웃 설정",
+            "map_pool": "맵 풀"
+        },
+        "schedule": {
+            "pick_date": "날짜 선택",
+            "schedule": "일정"
+        },
+        "player": {
+            "captain": "주장",
+            "status": {
+                "offline_not_ready": "오프라인 준비 안 됨",
+                "online_not_ready": "온라인 준비 안 됨",
+                "ready": "준비 완료",
+                "offline": "오프라인",
+                "online_not_in_game": "온라인 게임 미참가",
+                "in_game": "게임 중"
+            },
+            "assign_slot": "슬롯 할당"
+        },
+        "tabs": {
+            "overview": "개요",
+            "utility": "유틸리티",
+            "opening_duels": "오프닝 듀얼",
+            "clutches": "클러치",
+            "map_veto_tab": "맵 밴",
+            "settings": "설정",
+            "server_console": "서버 콘솔",
+            "randomize_teams": "팀 무작위 배정",
+            "invited_to_match": "매치 초대됨",
+            "join_roster": "로스터 참가",
+            "restore_round": "라운드 복구",
+            "select_round_to_restore": "복구할 라운드 선택",
+            "server_information": "서버 정보",
+            "type": "유형",
+            "region": "리전",
+            "round": "라운드"
+        },
+        "status": {
+            "cancelled": "취소됨",
+            "finished": "종료됨",
+            "waiting_server": "서버 대기 중",
+            "scheduled_asap": "가능한 빨리 시작"
+        },
+        "winner": {
+            "set": "승자 설정",
+            "select_lineup": "라인업 선택"
+        },
+        "region_veto": {
+            "banning": "밴 중",
+            "organizer_override": "주최자 우선",
+            "confirm_ban": "밴 확인",
+            "server_region": "서버 리전",
+            "select_region": "리전 선택"
+        },
+        "picks": {
+            "decider": "결정전"
+        },
+        "decider": "결정전",
+        "map_veto": {
+            "is_picking": "선택 중",
+            "organizer_override": "주최자 우선",
+            "select_side": "진영 선택",
+            "your_turn": "당신의 차례",
+            "pick": "선택",
+            "confirm": "확인"
+        },
+        "map_lineup": {
+            "picked": "선택됨"
+        },
+        "vs": "대",
+        "auto_canceling": "자동 취소 중",
+        "actions": {
+            "call_support": "지원 요청",
+            "start_veto": "밴 시작",
+            "skip_checkin": "체크인 건너뛰기",
+            "cancel": "취소"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "투척한 섬광탄",
+                "flash_assists": "섬광탄 어시스트",
+                "enemies_flashed": "적 섬광",
+                "team_flashed": "팀 섬광",
+                "avg_blind_time": "평균 실명 시간",
+                "he_damage": "수류탄 데미지",
+                "molotov_damage": "화염병 데미지",
+                "seconds": "초"
+            },
+            "discord_user": "Discord 사용자",
+            "discord_link": "Discord 연결"
+        },
+        "opening_duels": {
+            "attempts": "시도",
+            "success": "성공"
+        },
+        "clutches": {
+            "won": "승리",
+            "lost": "패배",
+            "against": "대",
+            "no_clutches": "클러치 없음",
+            "vs": "대",
+            "round": "라운드"
+        },
+        "join": {
+            "live": "라이브",
+            "call_organizer": "주최자 호출"
+        },
+        "check_in": {
+            "title": "체크인",
+            "checked_in": "체크인 완료",
+            "check_in": "체크인",
+            "description": "체크인 설명"
+        },
+        "coach": {
+            "assign": "코치 할당"
+        },
+        "download_demos": "데모 다운로드",
+        "coaches": "코치",
+        "best_of": "최선승제",
+        "overview": {
+            "promote_captain": "주장으로 승급",
+            "switch_teams": "팀 교체",
+            "remove_from_lineup": "라인업에서 제거",
+            "leave_lineup": "라인업 나가기",
+            "kills": "킬",
+            "kills_full": "킬",
+            "assists": "어시스트",
+            "assists_full": "어시스트",
+            "deaths": "데스",
+            "deaths_full": "데스",
+            "kd": "K/D",
+            "hs": "헤드샷",
+            "team_damage": "팀 데미지",
+            "multi_kill_rounds": "멀티킬 라운드",
+            "mkr": "MKR",
+            "k2": "2K",
+            "k3": "3K",
+            "k4": "4K",
+            "k5": "5K",
+            "knifes": "나이프",
+            "zeus": "제우스",
+            "total_damage": "총 데미지",
+            "substitute": "교체",
+            "join": "참가",
+            "slot": "슬롯"
+        },
+        "server": {
+            "offline": "오프라인",
+            "booting": "부팅 중",
+            "assign": "할당",
+            "select": "선택",
+            "dedicated": "전용",
+            "on_demand": "온디맨드",
+            "assigned": "할당됨"
+        }
     },
-    "organizer": {
-      "title": "주최자",
-      "description": "토너먼트 주최자 관리",
-      "add": "주최자 추가",
-      "name": "이름",
-      "actions": "작업",
-      "no_organizers": "주최자가 없습니다",
-      "no_organizers_description": "이 토너먼트에는 주최자가 없습니다",
-      "remove": "제거",
-      "confirm_remove": "주최자 제거",
-      "remove_description": "이 주최자를 제거하시겠습니까?"
+    "ui": {
+        "tooltips": {
+            "expand": "확장",
+            "fullscreen": "전체화면",
+            "download": "다운로드"
+        },
+        "logs": {
+            "follow": "팔로우",
+            "timestamps": "타임스탬프",
+            "container": "컨테이너"
+        }
     },
-    "team": {
-      "manage_roster": "로스터 관리",
-      "eligible": "참가 가능",
-      "not_eligible": "참가 불가",
-      "leave_tournament": "토너먼트 나가기",
-      "leave_team": "팀 나가기",
-      "player": "플레이어",
-      "role": "역할",
-      "slot": "슬롯",
-      "add_player": "플레이어 추가",
-      "pending_invites": "대기 중인 초대",
-      "new": "신규",
-      "select": "선택",
-      "name": "이름",
-      "select_role": "역할 선택",
-      "no_roles": "역할이 없습니다",
-      "remove_member": "멤버 제거",
-      "confirm_remove_member": "멤버 제거",
-      "remove_member_description": "이 멤버를 제거하시겠습니까?",
-      "cancel_invite": "초대 취소",
-      "confirm_cancel_invite": "초대 취소",
-      "cancel_invite_description": "이 초대를 취소하시겠습니까?",
-      "my_teams": "내 팀",
-      "my_teams_description": "소속된 팀",
-      "no_eligible_teams": "참가 가능한 팀이 없습니다",
-      "team": "팀",
-      "select_team": "팀 선택",
-      "search_team": "팀 검색...",
-      "add_to_tournament": "토너먼트에 추가"
+    "player": {
+        "sanction": {
+            "button": "플레이어 제재",
+            "reason_description": "이 제재에 대한 명확한 이유를 제공해주세요"
+        },
+        "search": {
+            "online_only": "온라인만",
+            "no_players_found": "플레이어를 찾을 수 없습니다",
+            "found_players": "찾은 플레이어",
+            "placeholder": "플레이어 검색..."
+        },
+        "sanctions": {
+            "title": "제재",
+            "expires": "만료",
+            "active_count": "활성 제재 수",
+            "past_count": "과거 제재 수"
+        },
+        "registration": {
+            "title": "등록",
+            "description": "설명",
+            "warning": "경고",
+            "name_label": "이름 라벨",
+            "confirm_button": "확인 버튼",
+            "success": "성공"
+        },
+        "status": {
+            "banned": "차단됨",
+            "muted": "음소거됨",
+            "gagged": "채팅 금지됨",
+            "add_friend": "친구 추가"
+        },
+        "change_name": {
+            "button": "이름 변경",
+            "title": "이름 변경",
+            "request_title": "이름 변경 요청",
+            "description": "설명",
+            "request_description": "요청 설명",
+            "name_label": "이름 라벨",
+            "success": "성공",
+            "request_success": "요청 성공"
+        }
     },
-    "actions": {
-      "open_registration": "등록 시작",
-      "close_registration": "등록 종료",
-      "cancel": "취소"
+    "maps": {
+        "veto": {
+            "pick": "선택"
+        },
+        "official": "공식",
+        "workshop": "워크샵",
+        "active_duty": "액티브 듀티"
     },
-    "upcoming": {
-      "empty": "예정된 토너먼트가 없습니다"
+    "region": {
+        "form": {
+            "name": "이름",
+            "description": "설명",
+            "use_lan": "LAN 사용",
+            "update": "업데이트",
+            "create": "생성"
+        }
+    },
+    "game_server": {
+        "update_cs": "CS 업데이트",
+        "install_cs": "CS 설치",
+        "select_region": "리전 선택",
+        "remove_node": "노드 제거",
+        "validation": {
+            "start_port_less_than_end": "시작 포트가 종료 포트보다 작아야 합니다",
+            "end_port_greater_than_start": "종료 포트가 시작 포트보다 커야 합니다"
+        },
+        "toast": {
+            "cs_updating": "CS 업데이트 중",
+            "ports_updated": "포트 업데이트됨"
+        }
+    },
+    "chat": {
+        "lobby_chat": "로비 채팅",
+        "message_placeholder": "메시지 입력..."
+    },
+    "charts": {
+        "usage": "사용량"
     },
     "server": {
-      "remove": "제거",
-      "confirm_remove": "서버 제거",
-      "remove_description": "이 서버를 제거하시겠습니까?"
-    }
-  },
-  "team": {
-    "table": {
-      "team": "팀",
-      "wins": "승리",
-      "losses": "패배",
-      "overtime_losses": "연장 패배",
-      "no_teams_found": "팀을 찾을 수 없습니다"
+        "form": {
+            "label": "라벨",
+            "host": "호스트",
+            "region": "리전",
+            "select_region": "리전 선택",
+            "rcon_password": "RCON 비밀번호",
+            "rcon_password_description": "RCON 비밀번호 설명",
+            "port": "포트",
+            "tv_port": "TV 포트",
+            "update": "업데이트",
+            "create": "생성"
+        },
+        "rcon": {
+            "quick_commands": "빠른 명령어",
+            "refresh_match": "매치 새로고침",
+            "metamod_info": "메타모드 정보",
+            "css_info": "CSS 정보",
+            "output": "출력",
+            "command_placeholder": "명령어 입력",
+            "send_command": "명령어 전송"
+        }
     },
-    "invite": {
-      "team_title": "팀 초대",
-      "tournament_title": "토너먼트 초대",
-      "tournament_message": "토너먼트 초대 메시지",
-      "team_message": "팀 초대 메시지",
-      "invited_by": "초대자",
-      "deny": "거절",
-      "accept": "수락"
+    "layouts": {
+        "profile_settings": {
+            "title": "프로필 설정",
+            "description": "프로필 정보 관리",
+            "discord": {
+                "unlink": "Discord 연결 해제",
+                "link": "Discord 연결",
+                "unlink_dialog": {
+                    "title": "Discord 연결 해제",
+                    "description": "Discord 연결을 해제하시겠습니까?",
+                    "cancel": "취소",
+                    "confirm": "연결 해제"
+                },
+                "unlinked": "Discord 연결이 해제되었습니다"
+            }
+        },
+        "application_settings": {
+            "title": "애플리케이션 설정",
+            "description": "애플리케이션 설정 관리"
+        },
+        "system_update": {
+            "title": "시스템 업데이트",
+            "description": "시스템 업데이트가 필요합니다",
+            "note": "참고: 업데이트 중에는 애플리케이션을 사용할 수 없습니다",
+            "fix_link": "해결 방법 확인",
+            "cancel": "취소",
+            "update": "업데이트"
+        },
+        "match_lobby": {
+            "versus": "대"
+        },
+        "notifications": {
+            "title": "알림",
+            "delete": "삭제",
+            "dismiss": "닫기",
+            "delete_all_read": "읽은 알림 모두 삭제",
+            "no_notifications": "알림이 없습니다"
+        },
+        "app_nav": {
+            "brand": "5stack",
+            "navigation": {
+                "play": "플레이",
+                "matches": "매치",
+                "tournaments": "토너먼트",
+                "players": "플레이어",
+                "teams": "팀"
+            },
+            "administration": {
+                "title": "관리",
+                "regions": "지역",
+                "servers": "서버",
+                "dedicated_servers": "전용 서버",
+                "game_server_nodes": "게임 서버 노드",
+                "logs": "시스템 로그",
+                "metrics": "시스템 메트릭",
+                "app_settings": "앱 설정",
+                "map_pools": "맵 풀"
+            },
+            "profile": {
+                "my_account": "내 계정",
+                "logout": "로그아웃"
+            },
+            "footer": {
+                "report_issue": "문제 보고",
+                "join_discord": "Discord 참여"
+            },
+            "tooltips": {
+                "play": "플레이",
+                "matches": "매치",
+                "tournaments": "토너먼트",
+                "players": "플레이어",
+                "teams": "팀",
+                "regions": "지역",
+                "servers": "서버",
+                "dedicated_servers": "전용 서버",
+                "game_server_nodes": "게임 서버 노드",
+                "system_logs": "시스템 로그",
+                "system_metrics": "시스템 메트릭",
+                "app_settings": "앱 설정",
+                "report_issue": "문제 보고",
+                "join_discord": "Discord 참여",
+                "map_pools": "맵 풀"
+            },
+            "logout_dialog": {
+                "title": "로그아웃",
+                "description": "로그아웃하시겠습니까?",
+                "cancel": "취소",
+                "confirm": "로그아웃"
+            }
+        }
     },
-    "roles": {
-      "captain": "주장"
+    "pwa": {
+        "install": {
+            "title": "앱 설치",
+            "description": "5Stack을 설치하여 더 나은 경험을",
+            "step1": "1단계",
+            "step2": "2단계",
+            "tooltip": "설치 팁",
+            "button": "설치"
+        }
     },
-    "leave": "나가기",
-    "management": {
-      "edit": "편집"
-    },
-    "confirm": {
-      "leave": "나가기",
-      "delete": {
-        "title": "삭제",
-        "description": "설명"
-      }
-    },
-    "members": {
-      "title": "멤버",
-      "invite_player": "플레이어 초대",
-      "pending_invites": "대기 중인 초대"
-    },
-    "form": {
-      "name": "이름",
-      "name_placeholder": "팀 이름 입력",
-      "short_name": "짧은 이름",
-      "short_name_placeholder": "짧은 팀 이름 입력",
-      "owner": "소유자",
-      "select_owner": "소유자 선택",
-      "update": "업데이트",
-      "create": "생성"
-    },
-    "search": {
-      "no_teams": "팀이 없습니다"
-    },
-    "member": {
-      "remove": "제거",
-      "cancel_invite": "초대 취소",
-      "confirm_cancel_invite": "초대 취소",
-      "confirm_remove": "제거 확인",
-      "cancel_invite_description": "이 초대를 취소하시겠습니까?",
-      "remove_description": "이 멤버를 제거하시겠습니까?"
-    }
-  },
-  "map_pools": {
-    "title": "맵 풀",
-    "description": "매치메이킹을 위한 맵 풀과 사용 가능한 맵을 관리합니다.",
-    "table": {
-      "pool_name": "풀 이름",
-      "maps": "맵",
-      "active_duty": "액티브 듀티",
-      "available_modes": "사용 가능한 모드",
-      "workshop_id": "워크샵 ID"
-    },
-    "form": {
-      "name": "이름",
-      "poster": "포스터 (선택사항)",
-      "poster_placeholder": "http://example.com/poster.png",
-      "patch": "패치 (선택사항)",
-      "patch_placeholder": "http://example.com/patch.png",
-      "workshop_map_id": "워크샵 맵 ID (선택사항)",
-      "view_on_steam": "Steam에서 보기",
-      "create_map": "맵 생성",
-      "update_map": "맵 업데이트",
-      "delete_map": "맵 삭제",
-      "delete_confirm": {
-        "title": "맵 삭제",
-        "description": "이 맵을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+    "common": {
         "cancel": "취소",
-        "confirm": "삭제"
-      },
-      "success": {
-        "create": "맵이 성공적으로 생성되었습니다",
-        "update": "맵이 성공적으로 업데이트되었습니다",
-        "delete": "맵이 성공적으로 삭제되었습니다"
-      },
-      "error": {
-        "create": "맵 생성 중 오류가 발생했습니다",
-        "update": "맵 업데이트 중 오류가 발생했습니다"
-      }
+        "tbd": "미정",
+        "boolean": {
+            "yes": "예",
+            "no": "아니오"
+        },
+        "actions": {
+            "edit": "편집",
+            "delete": "삭제"
+        },
+        "close": "닫기",
+        "confirm": "확인"
     },
-    "pool": {
-      "title": "{type} 맵 풀",
-      "description": "{type} 풀의 맵을 관리합니다",
-      "modify_maps": "풀 내 맵 수정"
+    "tournament": {
+        "overview": "개요",
+        "bracket": "브라켓",
+        "teams": "팀",
+        "settings": "설정",
+        "admin": "관리",
+        "organizers": "주최자",
+        "join": {
+            "title": "토너먼트 참가",
+            "joined_with": "참가 팀",
+            "requirements": "참가 요건"
+        },
+        "tournament_team": {
+            "players_registered": "등록된 플레이어",
+            "remove": "제거"
+        },
+        "add_team": {
+            "title": "팀 추가"
+        },
+        "form": {
+            "create": "토너먼트 생성",
+            "description_help": "토너먼트 설명 입력",
+            "name": "이름",
+            "description": "설명",
+            "start": "시작",
+            "pick_date": "날짜 선택",
+            "update": "업데이트",
+            "match_options": "매치 옵션"
+        },
+        "table": {
+            "tournament": "토너먼트",
+            "status": "상태",
+            "type": "유형",
+            "teams_joined": "참가 팀",
+            "starts": "시작일",
+            "no_tournaments_found": "토너먼트를 찾을 수 없습니다"
+        },
+        "stage": {
+            "title": "스테이지",
+            "teams": "팀",
+            "edit": "편집",
+            "delete": "삭제",
+            "edit_title": "스테이지 편집",
+            "confirm_delete": "스테이지 삭제",
+            "delete_description": "이 스테이지를 삭제하시겠습니까?",
+            "type": "유형",
+            "type_placeholder": "스테이지 유형 선택",
+            "min_teams": "최소 팀 수",
+            "min_teams_placeholder": "최소 팀 수 입력",
+            "max_teams": "최대 팀 수",
+            "max_teams_placeholder": "최대 팀 수 입력",
+            "update": "업데이트",
+            "create": "생성",
+            "no_stages": "스테이지가 없습니다",
+            "start_building": "브라켓 구성 시작",
+            "add_first": "첫 스테이지 추가",
+            "add_another": "다른 스테이지 추가",
+            "not_setup": "스테이지가 설정되지 않았습니다"
+        },
+        "match": {
+            "team_1": "팀 1",
+            "team_2": "팀 2",
+            "round_match": "라운드 매치"
+        },
+        "organizer": {
+            "title": "주최자",
+            "description": "토너먼트 주최자 관리",
+            "add": "주최자 추가",
+            "name": "이름",
+            "actions": "작업",
+            "no_organizers": "주최자가 없습니다",
+            "no_organizers_description": "이 토너먼트에는 주최자가 없습니다",
+            "remove": "제거",
+            "confirm_remove": "주최자 제거",
+            "remove_description": "이 주최자를 제거하시겠습니까?"
+        },
+        "team": {
+            "manage_roster": "로스터 관리",
+            "eligible": "참가 가능",
+            "not_eligible": "참가 불가",
+            "leave_tournament": "토너먼트 나가기",
+            "leave_team": "팀 나가기",
+            "player": "플레이어",
+            "role": "역할",
+            "slot": "슬롯",
+            "add_player": "플레이어 추가",
+            "pending_invites": "대기 중인 초대",
+            "new": "신규",
+            "select": "선택",
+            "name": "이름",
+            "select_role": "역할 선택",
+            "no_roles": "역할이 없습니다",
+            "remove_member": "멤버 제거",
+            "confirm_remove_member": "멤버 제거",
+            "remove_member_description": "이 멤버를 제거하시겠습니까?",
+            "cancel_invite": "초대 취소",
+            "confirm_cancel_invite": "초대 취소",
+            "cancel_invite_description": "이 초대를 취소하시겠습니까?",
+            "my_teams": "내 팀",
+            "my_teams_description": "소속된 팀",
+            "no_eligible_teams": "참가 가능한 팀이 없습니다",
+            "team": "팀",
+            "select_team": "팀 선택",
+            "search_team": "팀 검색...",
+            "add_to_tournament": "토너먼트에 추가"
+        },
+        "actions": {
+            "open_registration": "등록 시작",
+            "close_registration": "등록 종료",
+            "cancel": "취소"
+        },
+        "upcoming": {
+            "empty": "예정된 토너먼트가 없습니다"
+        },
+        "server": {
+            "remove": "제거",
+            "confirm_remove": "서버 제거",
+            "remove_description": "이 서버를 제거하시겠습니까?"
+        }
     },
-    "edit_map": "맵 편집",
-    "toggle_pool_type": "맵 {map}이(가) {type}용으로 {type}되었습니다",
-    "toggle_active_pool": "맵 {map}이(가) 액티브 듀티용으로 {type}되었습니다",
-    "add_new_map": "새 맵 추가",
+    "team": {
+        "table": {
+            "team": "팀",
+            "wins": "승리",
+            "losses": "패배",
+            "overtime_losses": "연장 패배",
+            "no_teams_found": "팀을 찾을 수 없습니다"
+        },
+        "invite": {
+            "team_title": "팀 초대",
+            "tournament_title": "토너먼트 초대",
+            "tournament_message": "토너먼트 초대 메시지",
+            "team_message": "팀 초대 메시지",
+            "invited_by": "초대자",
+            "deny": "거절",
+            "accept": "수락"
+        },
+        "roles": {
+            "captain": "주장"
+        },
+        "leave": "나가기",
+        "management": {
+            "edit": "편집"
+        },
+        "confirm": {
+            "leave": "나가기",
+            "delete": {
+                "title": "삭제",
+                "description": "설명"
+            }
+        },
+        "members": {
+            "title": "멤버",
+            "invite_player": "플레이어 초대",
+            "pending_invites": "대기 중인 초대"
+        },
+        "form": {
+            "name": "이름",
+            "name_placeholder": "팀 이름 입력",
+            "short_name": "짧은 이름",
+            "short_name_placeholder": "짧은 팀 이름 입력",
+            "owner": "소유자",
+            "select_owner": "소유자 선택",
+            "update": "업데이트",
+            "create": "생성"
+        },
+        "search": {
+            "no_teams": "팀이 없습니다"
+        },
+        "member": {
+            "remove": "제거",
+            "cancel_invite": "초대 취소",
+            "confirm_cancel_invite": "초대 취소",
+            "confirm_remove": "제거 확인",
+            "cancel_invite_description": "이 초대를 취소하시겠습니까?",
+            "remove_description": "이 멤버를 제거하시겠습니까?"
+        }
+    },
     "components": {
-      "map_pools": {
-        "view_on_steam": "Steam에서 보기"
-      }
+        "map_pools": {
+            "view_on_steam": "Steam에서 보기"
+        }
     }
-  }
 }

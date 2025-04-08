@@ -1,965 +1,970 @@
 {
-  "pages": {
-    "system_metrics": {
-      "node": "节点",
-      "cpu_usage": "CPU使用率",
-      "memory_usage": "内存使用率",
-      "services": "服务"
-    },
-    "system_logs": {
-      "follow_logs": "跟踪日志",
-      "timestamps": "时间戳"
-    },
-    "login": {
-      "sign_in": "使用Steam登录",
-      "powered_by": "技术支持"
-    },
-    "coming_soon": "即将推出！",
-    "tournaments": {
-      "title": "即将举行的比赛",
-      "admin_disabled": "管理员已禁用比赛创建",
-      "create": "创建比赛",
-      "tabs": {
-        "tournaments": "比赛",
-        "my_recent": "我最近的比赛"
-      },
-      "no_recent": "没有最近的比赛。"
-    },
-    "teams": {
-      "title": "队伍",
-      "description": "队伍管理",
-      "create": "创建队伍",
-      "tabs": {
-        "my_teams": "我的队伍",
-        "other_teams": "其他队伍"
-      },
-      "search": "搜索"
-    },
-    "settings": {
-      "profile": {
-        "title": "个人资料设置",
-        "description": "账户设置管理",
-        "steam_id": "Steam ID",
-        "name": "名称",
-        "avatar_url": "头像URL",
-        "country": "国家",
-        "select_country": "选择国家",
-        "search_country": "搜索国家...",
-        "no_country_found": "未找到国家",
-        "update": "更新个人资料"
-      },
-      "appearance": {
-        "title": "外观",
-        "description": "应用程序外观设置",
-        "theme": "主题",
-        "theme_description": "选择应用程序的颜色方案",
-        "light": "浅色",
-        "dark": "深色"
-      },
-      "application": {
-        "matchmaking": {
-          "title": "匹配系统",
-          "description": "管理匹配系统设置"
+    "pages": {
+        "system_metrics": {
+            "node": "节点",
+            "cpu_usage": "CPU使用率",
+            "memory_usage": "内存使用率",
+            "services": "服务"
         },
-        "discord": {
-          "title": "Discord",
-          "invite_link": "Discord邀请链接",
-          "webhook": "Discord Webhook",
-          "webhook_description": "我们使用此Discord Webhook发送需要玩家操作的通知。例如：比赛问题、错误等。",
-          "support_role": "Discord支持角色ID",
-          "support_role_description": "此角色在用于支持操作时将被提及。您可以通过在Discord应用程序中启用开发者模式并右键单击来复制ID，从而获取角色ID。",
-          "update": "更新"
+        "system_logs": {
+            "follow_logs": "跟踪日志",
+            "timestamps": "时间戳"
         },
-        "create_matches_role": "创建比赛所需的最低角色",
-        "create_tournaments_role": "创建比赛的权限",
-        "update": "更新",
+        "login": {
+            "sign_in": "使用Steam登录",
+            "powered_by": "技术支持"
+        },
+        "coming_soon": "即将推出！",
+        "tournaments": {
+            "title": "即将举行的比赛",
+            "admin_disabled": "管理员已禁用比赛创建",
+            "create": "创建比赛",
+            "tabs": {
+                "tournaments": "比赛",
+                "my_recent": "我最近的比赛"
+            },
+            "no_recent": "没有最近的比赛。"
+        },
+        "teams": {
+            "title": "队伍",
+            "description": "队伍管理",
+            "create": "创建队伍",
+            "tabs": {
+                "my_teams": "我的队伍",
+                "other_teams": "其他队伍"
+            },
+            "search": "搜索"
+        },
+        "settings": {
+            "profile": {
+                "title": "个人资料设置",
+                "description": "账户设置管理",
+                "steam_id": "Steam ID",
+                "name": "名称",
+                "avatar_url": "头像URL",
+                "country": "国家",
+                "select_country": "选择国家",
+                "search_country": "搜索国家...",
+                "no_country_found": "未找到国家",
+                "update": "更新个人资料"
+            },
+            "appearance": {
+                "title": "外观",
+                "description": "应用程序外观设置",
+                "theme": "主题",
+                "theme_description": "选择应用程序的颜色方案",
+                "light": "浅色",
+                "dark": "深色"
+            },
+            "application": {
+                "matchmaking": {
+                    "title": "匹配系统",
+                    "description": "管理匹配系统设置"
+                },
+                "discord": {
+                    "title": "Discord",
+                    "invite_link": "Discord邀请链接",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "我们使用此Discord Webhook发送需要玩家操作的通知。例如：比赛问题、错误等。",
+                    "support_role": "Discord支持角色ID",
+                    "support_role_description": "此角色在用于支持操作时将被提及。您可以通过在Discord应用程序中启用开发者模式并右键单击来复制ID，从而获取角色ID。",
+                    "update": "更新"
+                },
+                "create_matches_role": "创建比赛所需的最低角色",
+                "create_tournaments_role": "创建比赛的权限",
+                "update": "更新",
+                "players": {
+                    "force_name_registration": "强制玩家名称注册",
+                    "force_name_registration_description": "如果强制玩家注册，玩家需要提交一个将在平台上使用的名称。"
+                }
+            }
+        },
+        "regions": {
+            "title": "地区",
+            "description": "地区管理",
+            "create": "创建地区",
+            "table": {
+                "name": "名称",
+                "status": "状态",
+                "available_servers": "可用服务器",
+                "description": "描述",
+                "use_lan_ip": "使用局域网IP",
+                "actions": "操作"
+            },
+            "edit": "编辑",
+            "delete": {
+                "title": "删除地区",
+                "description": "确定要删除此地区吗？",
+                "cancel": "取消",
+                "confirm": "删除"
+            }
+        },
         "players": {
-          "force_name_registration": "强制玩家名称注册",
-          "force_name_registration_description": "如果强制玩家注册，玩家需要提交一个将在平台上使用的名称。"
-        }
-      }
-    },
-    "regions": {
-      "title": "地区",
-      "description": "地区管理",
-      "create": "创建地区",
-      "table": {
-        "name": "名称",
-        "status": "状态",
-        "available_servers": "可用服务器",
-        "description": "描述",
-        "use_lan_ip": "使用局域网IP",
-        "actions": "操作"
-      },
-      "edit": "编辑",
-      "delete": {
-        "title": "删除地区",
-        "description": "确定要删除此地区吗？",
-        "cancel": "取消",
-        "confirm": "删除"
-      }
-    },
-    "players": {
-      "title": "玩家",
-      "search": "搜索玩家",
-      "detail": {
-        "player_stats": "玩家统计",
-        "kills": "击杀",
-        "assists": "助攻",
-        "deaths": "死亡",
-        "kd": "K/D",
-        "last_ten_wins": "最近10场胜利",
-        "last_ten_losses": "最近10场失败",
-        "matches": "比赛"
-      }
-    },
-    "play": {
-      "title": "游戏",
-      "description": "开始一场比赛",
-      "admin_disabled": "管理员已禁用比赛创建",
-      "create_match": "创建比赛",
-      "open_matches": {
-        "title": "开放比赛",
-        "description": "可用比赛"
-      },
-      "matchmaking": {
-        "title": "匹配"
-      }
-    },
-    "matches": {
-      "title": "比赛",
-      "description": "比赛管理",
-      "admin_disabled": "管理员已禁用比赛创建",
-      "create": "创建比赛",
-      "last_ten_wins": "最近10场胜利",
-      "last_ten_losses": "最近10场失败",
-      "my_match_history": "我的比赛历史",
-      "other_matches": "其他比赛",
-      "create_page": {
-        "title": "创建比赛",
-        "pick_up_game": "公开比赛",
-        "pick_up_game_description": "为所有人创建比赛",
-        "team_1": "队伍1",
-        "search_team": "搜索队伍",
-        "team_2": "队伍2",
-        "intra_team_scrimmage": "队内训练赛",
-        "create_button": "创建"
-      },
-      "detail": {
-        "schedule": "安排"
-      }
-    },
-    "game_server_nodes": {
-      "title": "游戏服务器节点",
-      "description": "游戏服务器节点管理",
-      "not_supported": {
-        "title": "不支持",
-        "description": "此平台不受支持"
-      },
-      "create": "创建节点",
-      "installation_script": "安装脚本",
-      "cs_version_info": "CS版本信息",
-      "table": {
-        "node": "节点",
-        "lan_public_ip": "局域网/公网IP",
-        "cs_build_id": "CS构建ID",
-        "region": "地区",
-        "capacity": "容量",
-        "ports": "端口",
-        "ports_tooltip": "可用端口范围",
-        "enabled": "启用",
-        "no_nodes": "没有节点"
-      },
-      "build_id": "构建ID",
-      "last_updated": "最后更新"
-    },
-    "dedicated_servers": {
-      "title": "专用服务器",
-      "description": "专用服务器管理",
-      "create": {
-        "title": "创建服务器"
-      },
-      "table": {
-        "connection_details": "连接详情",
-        "label": "标签",
-        "region": "地区",
-        "tv_port": "TV端口",
-        "enabled": "启用",
-        "yes": "是",
-        "no": "否"
-      },
-      "detail": {
-        "enabled": "启用",
-        "server_plugin_config": "服务器插件配置",
-        "hide_config": "隐藏配置",
-        "show_config": "显示配置",
-        "config_location": "配置文件位置",
-        "copy": "复制",
-        "edit": "编辑",
-        "delete": "删除",
-        "delete_confirm": {
-          "title": "删除服务器",
-          "description": "确定要删除此服务器吗？",
-          "cancel": "取消",
-          "continue": "继续"
-        }
-      }
-    },
-    "map_pools": {
-      "title": "地图池",
-      "description": "管理匹配系统的地图池和可用地图。",
-      "table": {
-        "pool_name": "池名称",
-        "maps": "地图",
-        "active_duty": "服役地图",
-        "available_modes": "可用模式",
-        "workshop_id": "创意工坊ID"
-      },
-      "form": {
-        "name": "名称",
-        "poster": "海报（可选）",
-        "poster_placeholder": "http://example.com/poster.png",
-        "patch": "补丁（可选）",
-        "patch_placeholder": "http://example.com/patch.png",
-        "workshop_map_id": "创意工坊地图ID（可选）",
-        "view_on_steam": "在Steam上查看",
-        "create_map": "创建地图",
-        "update_map": "更新地图",
-        "delete_map": "删除地图",
-        "delete_confirm": {
-          "title": "删除地图",
-          "description": "确定要删除此地图吗？此操作无法撤销。",
-          "cancel": "取消",
-          "confirm": "删除"
+            "title": "玩家",
+            "search": "搜索玩家",
+            "detail": {
+                "player_stats": "玩家统计",
+                "kills": "击杀",
+                "assists": "助攻",
+                "deaths": "死亡",
+                "kd": "K/D",
+                "last_ten_wins": "最近10场胜利",
+                "last_ten_losses": "最近10场失败",
+                "matches": "比赛"
+            }
         },
-        "success": {
-          "create": "地图创建成功",
-          "update": "地图更新成功",
-          "delete": "地图删除成功"
+        "play": {
+            "title": "游戏",
+            "description": "开始一场比赛",
+            "admin_disabled": "管理员已禁用比赛创建",
+            "create_match": "创建比赛",
+            "open_matches": {
+                "title": "开放比赛",
+                "description": "可用比赛"
+            },
+            "matchmaking": {
+                "title": "匹配"
+            }
         },
-        "error": {
-          "create": "创建地图时出错",
-          "update": "更新地图时出错"
-        }
-      },
-      "pool": {
-        "title": "{type}地图池",
-        "description": "管理{type}池中的地图",
-        "modify_maps": "修改池中的地图"
-      },
-      "edit_map": "编辑地图",
-      "toggle_pool_type": "地图{map}已{type}为{type}",
-      "toggle_active_pool": "地图{map}已{type}为服役地图",
-      "add_new_map": "添加新地图",
-      "save_success": "地图池保存成功",
-      "components": {
+        "matches": {
+            "title": "比赛",
+            "description": "比赛管理",
+            "admin_disabled": "管理员已禁用比赛创建",
+            "create": "创建比赛",
+            "last_ten_wins": "最近10场胜利",
+            "last_ten_losses": "最近10场失败",
+            "my_match_history": "我的比赛历史",
+            "other_matches": "其他比赛",
+            "create_page": {
+                "title": "创建比赛",
+                "pick_up_game": "公开比赛",
+                "pick_up_game_description": "为所有人创建比赛",
+                "team_1": "队伍1",
+                "search_team": "搜索队伍",
+                "team_2": "队伍2",
+                "intra_team_scrimmage": "队内训练赛",
+                "create_button": "创建"
+            },
+            "detail": {
+                "schedule": "安排"
+            }
+        },
+        "game_server_nodes": {
+            "title": "游戏服务器节点",
+            "description": "游戏服务器节点管理",
+            "not_supported": {
+                "title": "不支持",
+                "description": "此平台不受支持"
+            },
+            "create": "创建节点",
+            "installation_script": "安装脚本",
+            "cs_version_info": "CS版本信息",
+            "table": {
+                "node": "节点",
+                "lan_public_ip": "局域网/公网IP",
+                "cs_build_id": "CS构建ID",
+                "region": "地区",
+                "capacity": "容量",
+                "ports": "端口",
+                "ports_tooltip": "可用端口范围",
+                "enabled": "启用",
+                "no_nodes": "没有节点"
+            },
+            "build_id": "构建ID",
+            "last_updated": "最后更新"
+        },
+        "dedicated_servers": {
+            "title": "专用服务器",
+            "description": "专用服务器管理",
+            "create": {
+                "title": "创建服务器"
+            },
+            "table": {
+                "connection_details": "连接详情",
+                "label": "标签",
+                "region": "地区",
+                "tv_port": "TV端口",
+                "enabled": "启用",
+                "yes": "是",
+                "no": "否"
+            },
+            "detail": {
+                "enabled": "启用",
+                "server_plugin_config": "服务器插件配置",
+                "hide_config": "隐藏配置",
+                "show_config": "显示配置",
+                "config_location": "配置文件位置",
+                "copy": "复制",
+                "edit": "编辑",
+                "delete": "删除",
+                "delete_confirm": {
+                    "title": "删除服务器",
+                    "description": "确定要删除此服务器吗？",
+                    "cancel": "取消",
+                    "continue": "继续"
+                }
+            }
+        },
         "map_pools": {
-          "view_on_steam": "在Steam上查看"
+            "title": "地图池",
+            "description": "管理匹配系统的地图池和可用地图。",
+            "table": {
+                "pool_name": "池名称",
+                "maps": "地图",
+                "active_duty": "服役地图",
+                "available_modes": "可用模式",
+                "workshop_id": "创意工坊ID"
+            },
+            "form": {
+                "name": "名称",
+                "poster": "海报（可选）",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "补丁（可选）",
+                "patch_placeholder": "http://example.com/patch.png",
+                "workshop_map_id": "创意工坊地图ID（可选）",
+                "view_on_steam": "在Steam上查看",
+                "create_map": "创建地图",
+                "update_map": "更新地图",
+                "delete_map": "删除地图",
+                "delete_confirm": {
+                    "title": "删除地图",
+                    "description": "确定要删除此地图吗？此操作无法撤销。",
+                    "cancel": "取消",
+                    "confirm": "删除"
+                },
+                "success": {
+                    "create": "地图创建成功",
+                    "update": "地图更新成功",
+                    "delete": "地图删除成功"
+                },
+                "error": {
+                    "create": "创建地图时出错",
+                    "update": "更新地图时出错"
+                }
+            },
+            "pool": {
+                "title": "{type}地图池",
+                "description": "管理{type}池中的地图",
+                "modify_maps": "修改池中的地图"
+            },
+            "edit_map": "编辑地图",
+            "toggle_pool_type": "地图{map}已{type}为{type}",
+            "toggle_active_pool": "地图{map}已{type}为服役地图",
+            "add_new_map": "添加新地图",
+            "save_success": "地图池保存成功"
+        },
+        "map_pool": {
+            "toggle_pool_type": "地图{map}已{type}为{type}",
+            "toggle_active_pool": "地图{map}已{type}为服役地图",
+            "save_success": "地图池保存成功"
+        },
+        "components": {
+            "map_pools": {
+                "view_on_steam": "在Steam上查看"
+            }
         }
-      }
-    }
-  },
-  "matchmaking": {
-    "lobby": {
-      "title": "匹配大厅",
-      "leave": "离开",
-      "invite_player": "邀请玩家",
-      "invites": "邀请",
-      "access_updated": "访问权限已更新"
     },
-    "friends": {
-      "title": "好友",
-      "sync": "同步",
-      "search": "搜索",
-      "pending_requests": "待处理请求",
-      "invite_to_lobby": "邀请到大厅",
-      "remove": "移除",
-      "online": "在线",
-      "join_lobby": "加入大厅",
-      "offline": "离线"
-    },
-    "leave": "离开",
-    "position": "位置",
-    "join": "加入",
-    "confirm": {
-      "title": "确认",
-      "ready": "准备就绪",
-      "players": "玩家"
-    },
-    "banned": "已封禁",
-    "go_to_match": "前往比赛",
-    "temp_banned": "临时封禁"
-  },
-  "match": {
-    "lobby": {
-      "access_updated": "访问权限已更新"
-    },
-    "simple": {
-      "vs": "vs"
-    },
-    "my_upcoming": {
-      "no_matches": "没有即将举行的比赛"
-    },
-    "recent": {
-      "title": "最近的比赛",
-      "no_matches": "没有最近的比赛"
-    },
-    "options": {
-      "table": {
-        "match": "比赛",
-        "type": "类型",
-        "maps": "地图",
-        "no_matches_found": "未找到比赛",
-        "join": "加入"
-      },
-      "type": {
-        "label": "类型"
-      },
-      "best_of": {
-        "label": "最佳",
-        "description": "赢得比赛所需的地图数量",
-        "placeholder": "选择最佳"
-      },
-      "map_veto_settings": {
-        "label": "地图禁用设置",
-        "description": "地图禁用设置描述",
-        "custom_pool": "自定义地图池",
-        "active_duty": "现役地图",
-        "custom_pool_tooltip": "自定义地图池提示"
-      },
-      "advanced": {
-        "title": "高级设置",
-        "hide": "隐藏",
-        "show": "显示",
-        "toggle": "切换",
-        "overtime": {
-          "label": "加时赛",
-          "description": "加时赛描述"
+    "matchmaking": {
+        "lobby": {
+            "title": "匹配大厅",
+            "leave": "离开",
+            "invite_player": "邀请玩家",
+            "invites": "邀请",
+            "access_updated": "访问权限已更新"
         },
-        "knife_round": {
-          "label": "刀战回合",
-          "description": "刀战回合描述"
+        "friends": {
+            "title": "好友",
+            "sync": "同步",
+            "search": "搜索",
+            "pending_requests": "待处理请求",
+            "invite_to_lobby": "邀请到大厅",
+            "remove": "移除",
+            "online": "在线",
+            "join_lobby": "加入大厅",
+            "offline": "离线"
         },
-        "max_rounds": {
-          "label": "最大回合数",
-          "description": "最大回合数描述",
-          "placeholder": "输入最大回合数"
+        "leave": "离开",
+        "position": "位置",
+        "join": "加入",
+        "confirm": {
+            "title": "确认",
+            "ready": "准备就绪",
+            "players": "玩家"
         },
-        "region": {
-          "title": "地区",
-          "lan_match": "局域网比赛",
-          "veto": {
-            "label": "地区禁用",
-            "description": "地区禁用描述"
-          },
-          "preferred": "首选地区",
-          "single": "单一地区",
-          "placeholder": "选择地区",
-          "any": "任何地区",
-          "description": "地区描述"
-        },
-        "substitutes": {
-          "label": "替补",
-          "description": "替补描述",
-          "range": "替补范围"
-        },
-        "tv_delay": {
-          "label": "TV延迟",
-          "range": "延迟范围"
-        },
-        "timeouts": {
-          "tactical": {
-            "label": "战术暂停",
-            "description": "战术暂停描述"
-          },
-          "technical": {
-            "label": "技术暂停",
-            "description": "技术暂停描述"
-          },
-          "options": {
-            "admins": "管理员",
-            "coaches": "教练",
-            "everyone": "所有人"
-          }
-        }
-      },
-      "max_rounds": "最大回合数",
-      "tv_delay": "TV延迟",
-      "seconds": "秒",
-      "coaches": "教练",
-      "overtime": "加时赛",
-      "knife_round": "刀战回合",
-      "map_veto_enabled": "已启用地图禁用",
-      "region_veto": "地区禁用",
-      "substitutes": "替补",
-      "timeout_setting": "暂停设置",
-      "tech_timeout_setting": "技术暂停设置",
-      "map_pool": "地图池"
-    },
-    "schedule": {
-      "pick_date": "选择日期",
-      "schedule": "安排"
-    },
-    "player": {
-      "captain": "队长",
-      "status": {
-        "offline_not_ready": "离线，未就绪",
-        "online_not_ready": "在线，未就绪",
-        "ready": "就绪",
-        "offline": "离线",
-        "online_not_in_game": "在线，未在游戏中",
-        "in_game": "游戏中"
-      },
-      "assign_slot": "分配位置"
-    },
-    "tabs": {
-      "overview": "概览",
-      "utility": "实用工具",
-      "opening_duels": "开场对决",
-      "clutches": "残局",
-      "map_veto_tab": "地图禁用",
-      "settings": "设置",
-      "server_console": "服务器控制台",
-      "randomize_teams": "随机队伍",
-      "invited_to_match": "已邀请参加比赛",
-      "join_roster": "加入阵容",
-      "restore_round": "恢复回合",
-      "select_round_to_restore": "选择要恢复的回合",
-      "server_information": "服务器信息",
-      "type": "类型",
-      "region": "地区",
-      "round": "回合"
-    },
-    "status": {
-      "cancelled": "已取消",
-      "finished": "已结束",
-      "waiting_server": "等待服务器",
-      "scheduled_asap": "尽快安排"
-    },
-    "winner": {
-      "set": "设置获胜者",
-      "select_lineup": "选择阵容"
-    },
-    "region_veto": {
-      "banning": "禁用中",
-      "organizer_override": "组织者覆盖",
-      "confirm_ban": "确认禁用",
-      "server_region": "服务器地区",
-      "select_region": "选择地区"
-    },
-    "picks": {
-      "decider": "决胜地图"
-    },
-    "decider": "决胜地图",
-    "map_veto": {
-      "is_picking": "正在选择",
-      "organizer_override": "组织者覆盖",
-      "select_side": "选择阵营",
-      "your_turn": "轮到你了",
-      "pick": "选择",
-      "confirm": "确认"
-    },
-    "map_lineup": {
-      "picked": "已选择"
-    },
-    "vs": "vs",
-    "auto_canceling": "自动取消",
-    "actions": {
-      "call_support": "呼叫支持",
-      "start_veto": "开始禁用",
-      "skip_checkin": "跳过签到",
-      "cancel": "取消"
-    },
-    "lineup": {
-      "stats": {
-        "flashes_thrown": "投掷闪光弹",
-        "flash_assists": "闪光助攻",
-        "enemies_flashed": "敌人被闪",
-        "team_flashed": "队友被闪",
-        "avg_blind_time": "平均致盲时间",
-        "he_damage": "高爆伤害",
-        "molotov_damage": "燃烧瓶伤害",
-        "seconds": "秒"
-      },
-      "discord_user": "Discord用户",
-      "discord_link": "Discord链接"
-    },
-    "opening_duels": {
-      "attempts": "尝试",
-      "success": "成功"
-    },
-    "clutches": {
-      "won": "获胜",
-      "lost": "失败",
-      "against": "对抗",
-      "no_clutches": "没有残局",
-      "vs": "vs",
-      "round": "回合"
-    },
-    "join": {
-      "live": "直播",
-      "call_organizer": "呼叫组织者"
-    },
-    "check_in": {
-      "title": "签到",
-      "checked_in": "已签到",
-      "check_in": "签到",
-      "description": "签到描述"
-    },
-    "coach": {
-      "assign": "分配教练"
-    },
-    "download_demos": "下载录像",
-    "coaches": "教练",
-    "best_of": "最佳",
-    "overview": {
-      "promote_captain": "提升为队长",
-      "switch_teams": "交换队伍",
-      "remove_from_lineup": "从阵容中移除",
-      "leave_lineup": "离开阵容",
-      "kills": "击杀",
-      "kills_full": "击杀",
-      "assists": "助攻",
-      "assists_full": "助攻",
-      "deaths": "死亡",
-      "deaths_full": "死亡",
-      "kd": "K/D",
-      "hs": "爆头",
-      "team_damage": "队伍伤害",
-      "multi_kill_rounds": "多杀回合",
-      "mkr": "MKR",
-      "k2": "2K",
-      "k3": "3K",
-      "k4": "4K",
-      "k5": "5K",
-      "knifes": "刀",
-      "zeus": "宙斯",
-      "total_damage": "总伤害",
-      "substitute": "替补",
-      "join": "加入",
-      "slot": "位置"
-    },
-    "server": {
-      "offline": "离线",
-      "booting": "启动中",
-      "assign": "分配",
-      "select": "选择",
-      "dedicated": "专用",
-      "on_demand": "按需",
-      "assigned": "已分配"
-    }
-  },
-  "ui": {
-    "tooltips": {
-      "expand": "展开",
-      "fullscreen": "全屏",
-      "download": "下载"
-    },
-    "logs": {
-      "follow": "跟踪",
-      "timestamps": "时间戳",
-      "container": "容器"
-    }
-  },
-  "player": {
-    "sanction": {
-      "button": "制裁玩家",
-      "reason_description": "为此制裁提供明确的理由"
-    },
-    "search": {
-      "online_only": "仅在线",
-      "no_players_found": "未找到玩家",
-      "found_players": "找到的玩家",
-      "placeholder": "搜索玩家..."
-    },
-    "sanctions": {
-      "title": "制裁",
-      "expires": "过期",
-      "active_count": "活跃制裁",
-      "past_count": "过去制裁"
-    },
-    "registration": {
-      "title": "注册",
-      "description": "描述",
-      "warning": "警告",
-      "name_label": "名称标签",
-      "confirm_button": "确认按钮",
-      "success": "成功"
-    },
-    "status": {
-      "banned": "已封禁",
-      "muted": "已禁言",
-      "gagged": "已禁言",
-      "add_friend": "添加好友"
-    },
-    "change_name": {
-      "button": "更改名称",
-      "title": "更改名称",
-      "request_title": "名称更改请求",
-      "description": "描述",
-      "request_description": "请求描述",
-      "name_label": "名称标签",
-      "success": "成功",
-      "request_success": "请求成功"
-    }
-  },
-  "maps": {
-    "veto": {
-      "pick": "选择"
-    },
-    "official": "官方",
-    "workshop": "创意工坊",
-    "active_duty": "现役地图"
-  },
-  "region": {
-    "form": {
-      "name": "名称",
-      "description": "描述",
-      "use_lan": "使用局域网",
-      "update": "更新",
-      "create": "创建"
-    }
-  },
-  "game_server": {
-    "update_cs": "更新CS",
-    "install_cs": "安装CS",
-    "select_region": "选择地区",
-    "remove_node": "移除节点",
-    "validation": {
-      "start_port_less_than_end": "起始端口必须小于结束端口",
-      "end_port_greater_than_start": "结束端口必须大于起始端口"
-    },
-    "toast": {
-      "cs_updating": "正在更新CS",
-      "ports_updated": "端口已更新"
-    }
-  },
-  "chat": {
-    "lobby_chat": "大厅聊天",
-    "message_placeholder": "输入消息..."
-  },
-  "charts": {
-    "usage": "使用率"
-  },
-  "server": {
-    "form": {
-      "label": "标签",
-      "host": "主机",
-      "region": "地区",
-      "select_region": "选择地区",
-      "rcon_password": "RCON密码",
-      "rcon_password_description": "RCON密码描述",
-      "port": "端口",
-      "tv_port": "TV端口",
-      "update": "更新",
-      "create": "创建"
-    },
-    "rcon": {
-      "quick_commands": "快速命令",
-      "refresh_match": "刷新比赛",
-      "metamod_info": "Metamod信息",
-      "css_info": "CSS信息",
-      "output": "输出",
-      "command_placeholder": "输入命令",
-      "send_command": "发送命令"
-    }
-  },
-  "layouts": {
-    "profile_settings": {
-      "title": "个人资料设置",
-      "description": "个人资料信息管理",
-      "discord": {
-        "unlink": "解除Discord链接",
-        "link": "链接Discord",
-        "unlink_dialog": {
-          "title": "解除Discord链接",
-          "description": "确定要解除Discord链接吗？",
-          "cancel": "取消",
-          "confirm": "解除"
-        },
-        "unlinked": "Discord已解除链接"
-      }
-    },
-    "application_settings": {
-      "title": "应用程序设置",
-      "description": "应用程序设置管理"
-    },
-    "system_update": {
-      "title": "系统更新",
-      "description": "需要系统更新",
-      "note": "注意：更新期间应用程序将不可用",
-      "fix_link": "显示解决方案",
-      "cancel": "取消",
-      "update": "更新"
-    },
-    "match_lobby": {
-      "versus": "vs"
-    },
-    "notifications": {
-      "title": "通知",
-      "delete": "删除",
-      "dismiss": "忽略",
-      "delete_all_read": "删除所有已读通知",
-      "no_notifications": "没有通知"
-    },
-    "app_nav": {
-      "brand": "5stack",
-      "navigation": {
-        "play": "开始游戏",
-        "matches": "比赛",
-        "tournaments": "锦标赛",
-        "players": "玩家",
-        "teams": "战队"
-      },
-      "administration": {
-        "title": "管理",
-        "regions": "地区",
-        "servers": "服务器",
-        "dedicated_servers": "专用服务器",
-        "game_server_nodes": "游戏服务器节点",
-        "logs": "系统日志",
-        "metrics": "系统指标",
-        "app_settings": "应用设置",
-        "map_pools": "地图池"
-      },
-      "footer": {
-        "report_issue": "报告问题",
-        "join_discord": "加入Discord"
-      },
-      "profile": {
-        "my_account": "我的账户",
-        "logout": "退出"
-      },
-      "logout_dialog": {
-        "title": "退出",
-        "description": "确定要退出吗？",
-        "cancel": "取消",
-        "confirm": "退出"
-      },
-      "tooltips": {
-        "play": "游戏",
-        "matches": "比赛",
-        "tournaments": "锦标赛",
-        "players": "玩家",
-        "teams": "队伍",
-        "regions": "地区",
-        "servers": "服务器",
-        "dedicated_servers": "专用服务器",
-        "game_server_nodes": "游戏服务器节点",
-        "system_logs": "系统日志",
-        "system_metrics": "系统指标",
-        "app_settings": "应用设置",
-        "report_issue": "报告问题",
-        "join_discord": "加入 Discord",
-        "map_pools": "地图池"
-      }
-    }
-  },
-  "pwa": {
-    "install": {
-      "title": "安装应用程序",
-      "description": "安装5Stack以获得更好的体验",
-      "step1": "步骤1",
-      "step2": "步骤2",
-      "tooltip": "安装提示",
-      "button": "安装"
-    }
-  },
-  "common": {
-    "cancel": "取消",
-    "tbd": "待定",
-    "boolean": {
-      "yes": "是",
-      "no": "否"
-    },
-    "actions": {
-      "edit": "编辑",
-      "delete": "删除"
-    },
-    "close": "关闭",
-    "confirm": "确认"
-  },
-  "tournament": {
-    "overview": "概览",
-    "bracket": "对阵图",
-    "teams": "队伍",
-    "settings": "设置",
-    "admin": "管理",
-    "organizers": "组织者",
-    "join": {
-      "title": "参加比赛",
-      "joined_with": "队伍已加入",
-      "requirements": "要求"
-    },
-    "tournament_team": {
-      "players_registered": "已注册玩家",
-      "remove": "移除"
-    },
-    "add_team": {
-      "title": "添加队伍"
-    },
-    "form": {
-      "create": "创建比赛",
-      "description_help": "输入比赛描述",
-      "name": "名称",
-      "description": "描述",
-      "start": "开始",
-      "pick_date": "选择日期",
-      "update": "更新",
-      "match_options": "比赛选项"
-    },
-    "table": {
-      "tournament": "比赛",
-      "status": "状态",
-      "type": "类型",
-      "teams_joined": "已加入队伍",
-      "starts": "开始",
-      "no_tournaments_found": "未找到比赛"
-    },
-    "stage": {
-      "title": "阶段",
-      "teams": "队伍",
-      "edit": "编辑",
-      "delete": "删除",
-      "edit_title": "编辑阶段",
-      "confirm_delete": "删除阶段",
-      "delete_description": "确定要删除此阶段吗？",
-      "type": "类型",
-      "type_placeholder": "选择阶段类型",
-      "min_teams": "最少队伍",
-      "min_teams_placeholder": "输入最少队伍",
-      "max_teams": "最多队伍",
-      "max_teams_placeholder": "输入最多队伍",
-      "update": "更新",
-      "create": "创建",
-      "no_stages": "没有阶段",
-      "start_building": "开始构建对阵图",
-      "add_first": "添加第一阶段",
-      "add_another": "添加另一个阶段",
-      "not_setup": "阶段未设置"
+        "banned": "已封禁",
+        "go_to_match": "前往比赛",
+        "temp_banned": "临时封禁"
     },
     "match": {
-      "team_1": "队伍1",
-      "team_2": "队伍2",
-      "round_match": "回合比赛"
+        "lobby": {
+            "access_updated": "访问权限已更新"
+        },
+        "simple": {
+            "vs": "vs"
+        },
+        "my_upcoming": {
+            "no_matches": "没有即将举行的比赛"
+        },
+        "recent": {
+            "title": "最近的比赛",
+            "no_matches": "没有最近的比赛"
+        },
+        "options": {
+            "table": {
+                "match": "比赛",
+                "type": "类型",
+                "maps": "地图",
+                "no_matches_found": "未找到比赛",
+                "join": "加入"
+            },
+            "type": {
+                "label": "类型"
+            },
+            "best_of": {
+                "label": "最佳",
+                "description": "赢得比赛所需的地图数量",
+                "placeholder": "选择最佳"
+            },
+            "map_veto_settings": {
+                "label": "地图禁用设置",
+                "description": "地图禁用设置描述",
+                "custom_pool": "自定义地图池",
+                "active_duty": "现役地图",
+                "custom_pool_tooltip": "自定义地图池提示"
+            },
+            "advanced": {
+                "title": "高级设置",
+                "hide": "隐藏",
+                "show": "显示",
+                "toggle": "切换",
+                "overtime": {
+                    "label": "加时赛",
+                    "description": "加时赛描述"
+                },
+                "knife_round": {
+                    "label": "刀战回合",
+                    "description": "刀战回合描述"
+                },
+                "max_rounds": {
+                    "label": "最大回合数",
+                    "description": "最大回合数描述",
+                    "placeholder": "输入最大回合数"
+                },
+                "region": {
+                    "title": "地区",
+                    "lan_match": "局域网比赛",
+                    "veto": {
+                        "label": "地区禁用",
+                        "description": "地区禁用描述"
+                    },
+                    "preferred": "首选地区",
+                    "single": "单一地区",
+                    "placeholder": "选择地区",
+                    "any": "任何地区",
+                    "description": "地区描述"
+                },
+                "substitutes": {
+                    "label": "替补",
+                    "description": "替补描述",
+                    "range": "替补范围"
+                },
+                "tv_delay": {
+                    "label": "TV延迟",
+                    "range": "延迟范围"
+                },
+                "timeouts": {
+                    "tactical": {
+                        "label": "战术暂停",
+                        "description": "战术暂停描述"
+                    },
+                    "technical": {
+                        "label": "技术暂停",
+                        "description": "技术暂停描述"
+                    },
+                    "options": {
+                        "admins": "管理员",
+                        "coaches": "教练",
+                        "everyone": "所有人"
+                    }
+                }
+            },
+            "max_rounds": "最大回合数",
+            "tv_delay": "TV延迟",
+            "seconds": "秒",
+            "coaches": "教练",
+            "overtime": "加时赛",
+            "knife_round": "刀战回合",
+            "map_veto_enabled": "已启用地图禁用",
+            "region_veto": "地区禁用",
+            "substitutes": "替补",
+            "timeout_setting": "暂停设置",
+            "tech_timeout_setting": "技术暂停设置",
+            "map_pool": "地图池"
+        },
+        "schedule": {
+            "pick_date": "选择日期",
+            "schedule": "安排"
+        },
+        "player": {
+            "captain": "队长",
+            "status": {
+                "offline_not_ready": "离线，未就绪",
+                "online_not_ready": "在线，未就绪",
+                "ready": "就绪",
+                "offline": "离线",
+                "online_not_in_game": "在线，未在游戏中",
+                "in_game": "游戏中"
+            },
+            "assign_slot": "分配位置"
+        },
+        "tabs": {
+            "overview": "概览",
+            "utility": "实用工具",
+            "opening_duels": "开场对决",
+            "clutches": "残局",
+            "map_veto_tab": "地图禁用",
+            "settings": "设置",
+            "server_console": "服务器控制台",
+            "randomize_teams": "随机队伍",
+            "invited_to_match": "已邀请参加比赛",
+            "join_roster": "加入阵容",
+            "restore_round": "恢复回合",
+            "select_round_to_restore": "选择要恢复的回合",
+            "server_information": "服务器信息",
+            "type": "类型",
+            "region": "地区",
+            "round": "回合"
+        },
+        "status": {
+            "cancelled": "已取消",
+            "finished": "已结束",
+            "waiting_server": "等待服务器",
+            "scheduled_asap": "尽快安排"
+        },
+        "winner": {
+            "set": "设置获胜者",
+            "select_lineup": "选择阵容"
+        },
+        "region_veto": {
+            "banning": "禁用中",
+            "organizer_override": "组织者覆盖",
+            "confirm_ban": "确认禁用",
+            "server_region": "服务器地区",
+            "select_region": "选择地区"
+        },
+        "picks": {
+            "decider": "决胜地图"
+        },
+        "decider": "决胜地图",
+        "map_veto": {
+            "is_picking": "正在选择",
+            "organizer_override": "组织者覆盖",
+            "select_side": "选择阵营",
+            "your_turn": "轮到你了",
+            "pick": "选择",
+            "confirm": "确认"
+        },
+        "map_lineup": {
+            "picked": "已选择"
+        },
+        "vs": "vs",
+        "auto_canceling": "自动取消",
+        "actions": {
+            "call_support": "呼叫支持",
+            "start_veto": "开始禁用",
+            "skip_checkin": "跳过签到",
+            "cancel": "取消"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "投掷闪光弹",
+                "flash_assists": "闪光助攻",
+                "enemies_flashed": "敌人被闪",
+                "team_flashed": "队友被闪",
+                "avg_blind_time": "平均致盲时间",
+                "he_damage": "高爆伤害",
+                "molotov_damage": "燃烧瓶伤害",
+                "seconds": "秒"
+            },
+            "discord_user": "Discord用户",
+            "discord_link": "Discord链接"
+        },
+        "opening_duels": {
+            "attempts": "尝试",
+            "success": "成功"
+        },
+        "clutches": {
+            "won": "获胜",
+            "lost": "失败",
+            "against": "对抗",
+            "no_clutches": "没有残局",
+            "vs": "vs",
+            "round": "回合"
+        },
+        "join": {
+            "live": "直播",
+            "call_organizer": "呼叫组织者"
+        },
+        "check_in": {
+            "title": "签到",
+            "checked_in": "已签到",
+            "check_in": "签到",
+            "description": "签到描述"
+        },
+        "coach": {
+            "assign": "分配教练"
+        },
+        "download_demos": "下载录像",
+        "coaches": "教练",
+        "best_of": "最佳",
+        "overview": {
+            "promote_captain": "提升为队长",
+            "switch_teams": "交换队伍",
+            "remove_from_lineup": "从阵容中移除",
+            "leave_lineup": "离开阵容",
+            "kills": "击杀",
+            "kills_full": "击杀",
+            "assists": "助攻",
+            "assists_full": "助攻",
+            "deaths": "死亡",
+            "deaths_full": "死亡",
+            "kd": "K/D",
+            "hs": "爆头",
+            "team_damage": "队伍伤害",
+            "multi_kill_rounds": "多杀回合",
+            "mkr": "MKR",
+            "k2": "2K",
+            "k3": "3K",
+            "k4": "4K",
+            "k5": "5K",
+            "knifes": "刀",
+            "zeus": "宙斯",
+            "total_damage": "总伤害",
+            "substitute": "替补",
+            "join": "加入",
+            "slot": "位置"
+        },
+        "server": {
+            "offline": "离线",
+            "booting": "启动中",
+            "assign": "分配",
+            "select": "选择",
+            "dedicated": "专用",
+            "on_demand": "按需",
+            "assigned": "已分配"
+        }
     },
-    "organizer": {
-      "title": "组织者",
-      "description": "比赛组织者管理",
-      "add": "添加组织者",
-      "name": "名称",
-      "actions": "操作",
-      "no_organizers": "没有组织者",
-      "no_organizers_description": "此比赛没有组织者",
-      "remove": "移除",
-      "confirm_remove": "移除组织者",
-      "remove_description": "确定要移除此组织者吗？"
+    "ui": {
+        "tooltips": {
+            "expand": "展开",
+            "fullscreen": "全屏",
+            "download": "下载"
+        },
+        "logs": {
+            "follow": "跟踪",
+            "timestamps": "时间戳",
+            "container": "容器"
+        }
     },
-    "team": {
-      "manage_roster": "管理阵容",
-      "eligible": "符合条件",
-      "not_eligible": "不符合条件",
-      "leave_tournament": "离开比赛",
-      "leave_team": "离开队伍",
-      "player": "玩家",
-      "role": "角色",
-      "slot": "位置",
-      "add_player": "添加玩家",
-      "pending_invites": "待处理邀请",
-      "new": "新建",
-      "select": "选择",
-      "name": "名称",
-      "select_role": "选择角色",
-      "no_roles": "没有角色",
-      "remove_member": "移除成员",
-      "confirm_remove_member": "移除成员",
-      "remove_member_description": "确定要移除此成员吗？",
-      "cancel_invite": "取消邀请",
-      "confirm_cancel_invite": "取消邀请",
-      "cancel_invite_description": "确定要取消此邀请吗？",
-      "my_teams": "我的队伍",
-      "my_teams_description": "您所属的队伍",
-      "no_eligible_teams": "没有符合条件的队伍",
-      "team": "队伍",
-      "select_team": "选择队伍",
-      "search_team": "搜索队伍...",
-      "add_to_tournament": "添加到比赛"
+    "player": {
+        "sanction": {
+            "button": "制裁玩家",
+            "reason_description": "为此制裁提供明确的理由"
+        },
+        "search": {
+            "online_only": "仅在线",
+            "no_players_found": "未找到玩家",
+            "found_players": "找到的玩家",
+            "placeholder": "搜索玩家..."
+        },
+        "sanctions": {
+            "title": "制裁",
+            "expires": "过期",
+            "active_count": "活跃制裁",
+            "past_count": "过去制裁"
+        },
+        "registration": {
+            "title": "注册",
+            "description": "描述",
+            "warning": "警告",
+            "name_label": "名称标签",
+            "confirm_button": "确认按钮",
+            "success": "成功"
+        },
+        "status": {
+            "banned": "已封禁",
+            "muted": "已禁言",
+            "gagged": "已禁言",
+            "add_friend": "添加好友"
+        },
+        "change_name": {
+            "button": "更改名称",
+            "title": "更改名称",
+            "request_title": "名称更改请求",
+            "description": "描述",
+            "request_description": "请求描述",
+            "name_label": "名称标签",
+            "success": "成功",
+            "request_success": "请求成功"
+        }
     },
-    "actions": {
-      "open_registration": "开放注册",
-      "close_registration": "关闭注册",
-      "cancel": "取消"
+    "maps": {
+        "veto": {
+            "pick": "选择"
+        },
+        "official": "官方",
+        "workshop": "创意工坊",
+        "active_duty": "现役地图"
     },
-    "upcoming": {
-      "empty": "没有即将举行的比赛"
+    "region": {
+        "form": {
+            "name": "名称",
+            "description": "描述",
+            "use_lan": "使用局域网",
+            "update": "更新",
+            "create": "创建"
+        }
+    },
+    "game_server": {
+        "update_cs": "更新CS",
+        "install_cs": "安装CS",
+        "select_region": "选择地区",
+        "remove_node": "移除节点",
+        "validation": {
+            "start_port_less_than_end": "起始端口必须小于结束端口",
+            "end_port_greater_than_start": "结束端口必须大于起始端口"
+        },
+        "toast": {
+            "cs_updating": "正在更新CS",
+            "ports_updated": "端口已更新"
+        }
+    },
+    "chat": {
+        "lobby_chat": "大厅聊天",
+        "message_placeholder": "输入消息..."
+    },
+    "charts": {
+        "usage": "使用率"
     },
     "server": {
-      "remove": "移除",
-      "confirm_remove": "移除服务器",
-      "remove_description": "确定要移除此服务器吗？"
+        "form": {
+            "label": "标签",
+            "host": "主机",
+            "region": "地区",
+            "select_region": "选择地区",
+            "rcon_password": "RCON密码",
+            "rcon_password_description": "RCON密码描述",
+            "port": "端口",
+            "tv_port": "TV端口",
+            "update": "更新",
+            "create": "创建"
+        },
+        "rcon": {
+            "quick_commands": "快速命令",
+            "refresh_match": "刷新比赛",
+            "metamod_info": "Metamod信息",
+            "css_info": "CSS信息",
+            "output": "输出",
+            "command_placeholder": "输入命令",
+            "send_command": "发送命令"
+        }
+    },
+    "layouts": {
+        "profile_settings": {
+            "title": "个人资料设置",
+            "description": "个人资料信息管理",
+            "discord": {
+                "unlink": "解除Discord链接",
+                "link": "链接Discord",
+                "unlink_dialog": {
+                    "title": "解除Discord链接",
+                    "description": "确定要解除Discord链接吗？",
+                    "cancel": "取消",
+                    "confirm": "解除"
+                },
+                "unlinked": "Discord已解除链接"
+            }
+        },
+        "application_settings": {
+            "title": "应用程序设置",
+            "description": "应用程序设置管理"
+        },
+        "system_update": {
+            "title": "系统更新",
+            "description": "需要系统更新",
+            "note": "注意：更新期间应用程序将不可用",
+            "fix_link": "显示解决方案",
+            "cancel": "取消",
+            "update": "更新"
+        },
+        "match_lobby": {
+            "versus": "vs"
+        },
+        "notifications": {
+            "title": "通知",
+            "delete": "删除",
+            "dismiss": "忽略",
+            "delete_all_read": "删除所有已读通知",
+            "no_notifications": "没有通知"
+        },
+        "app_nav": {
+            "brand": "5stack",
+            "navigation": {
+                "play": "开始游戏",
+                "matches": "比赛",
+                "tournaments": "锦标赛",
+                "players": "玩家",
+                "teams": "战队"
+            },
+            "administration": {
+                "title": "管理",
+                "regions": "地区",
+                "servers": "服务器",
+                "dedicated_servers": "专用服务器",
+                "game_server_nodes": "游戏服务器节点",
+                "logs": "系统日志",
+                "metrics": "系统指标",
+                "app_settings": "应用设置",
+                "map_pools": "地图池"
+            },
+            "footer": {
+                "report_issue": "报告问题",
+                "join_discord": "加入Discord"
+            },
+            "profile": {
+                "my_account": "我的账户",
+                "logout": "退出"
+            },
+            "logout_dialog": {
+                "title": "退出",
+                "description": "确定要退出吗？",
+                "cancel": "取消",
+                "confirm": "退出"
+            },
+            "tooltips": {
+                "play": "游戏",
+                "matches": "比赛",
+                "tournaments": "锦标赛",
+                "players": "玩家",
+                "teams": "队伍",
+                "regions": "地区",
+                "servers": "服务器",
+                "dedicated_servers": "专用服务器",
+                "game_server_nodes": "游戏服务器节点",
+                "system_logs": "系统日志",
+                "system_metrics": "系统指标",
+                "app_settings": "应用设置",
+                "report_issue": "报告问题",
+                "join_discord": "加入 Discord",
+                "map_pools": "地图池"
+            }
+        }
+    },
+    "pwa": {
+        "install": {
+            "title": "安装应用程序",
+            "description": "安装5Stack以获得更好的体验",
+            "step1": "步骤1",
+            "step2": "步骤2",
+            "tooltip": "安装提示",
+            "button": "安装"
+        }
+    },
+    "common": {
+        "cancel": "取消",
+        "tbd": "待定",
+        "boolean": {
+            "yes": "是",
+            "no": "否"
+        },
+        "actions": {
+            "edit": "编辑",
+            "delete": "删除"
+        },
+        "close": "关闭",
+        "confirm": "确认"
+    },
+    "tournament": {
+        "overview": "概览",
+        "bracket": "对阵图",
+        "teams": "队伍",
+        "settings": "设置",
+        "admin": "管理",
+        "organizers": "组织者",
+        "join": {
+            "title": "参加比赛",
+            "joined_with": "队伍已加入",
+            "requirements": "要求"
+        },
+        "tournament_team": {
+            "players_registered": "已注册玩家",
+            "remove": "移除"
+        },
+        "add_team": {
+            "title": "添加队伍"
+        },
+        "form": {
+            "create": "创建比赛",
+            "description_help": "输入比赛描述",
+            "name": "名称",
+            "description": "描述",
+            "start": "开始",
+            "pick_date": "选择日期",
+            "update": "更新",
+            "match_options": "比赛选项"
+        },
+        "table": {
+            "tournament": "比赛",
+            "status": "状态",
+            "type": "类型",
+            "teams_joined": "已加入队伍",
+            "starts": "开始",
+            "no_tournaments_found": "未找到比赛"
+        },
+        "stage": {
+            "title": "阶段",
+            "teams": "队伍",
+            "edit": "编辑",
+            "delete": "删除",
+            "edit_title": "编辑阶段",
+            "confirm_delete": "删除阶段",
+            "delete_description": "确定要删除此阶段吗？",
+            "type": "类型",
+            "type_placeholder": "选择阶段类型",
+            "min_teams": "最少队伍",
+            "min_teams_placeholder": "输入最少队伍",
+            "max_teams": "最多队伍",
+            "max_teams_placeholder": "输入最多队伍",
+            "update": "更新",
+            "create": "创建",
+            "no_stages": "没有阶段",
+            "start_building": "开始构建对阵图",
+            "add_first": "添加第一阶段",
+            "add_another": "添加另一个阶段",
+            "not_setup": "阶段未设置"
+        },
+        "match": {
+            "team_1": "队伍1",
+            "team_2": "队伍2",
+            "round_match": "回合比赛"
+        },
+        "organizer": {
+            "title": "组织者",
+            "description": "比赛组织者管理",
+            "add": "添加组织者",
+            "name": "名称",
+            "actions": "操作",
+            "no_organizers": "没有组织者",
+            "no_organizers_description": "此比赛没有组织者",
+            "remove": "移除",
+            "confirm_remove": "移除组织者",
+            "remove_description": "确定要移除此组织者吗？"
+        },
+        "team": {
+            "manage_roster": "管理阵容",
+            "eligible": "符合条件",
+            "not_eligible": "不符合条件",
+            "leave_tournament": "离开比赛",
+            "leave_team": "离开队伍",
+            "player": "玩家",
+            "role": "角色",
+            "slot": "位置",
+            "add_player": "添加玩家",
+            "pending_invites": "待处理邀请",
+            "new": "新建",
+            "select": "选择",
+            "name": "名称",
+            "select_role": "选择角色",
+            "no_roles": "没有角色",
+            "remove_member": "移除成员",
+            "confirm_remove_member": "移除成员",
+            "remove_member_description": "确定要移除此成员吗？",
+            "cancel_invite": "取消邀请",
+            "confirm_cancel_invite": "取消邀请",
+            "cancel_invite_description": "确定要取消此邀请吗？",
+            "my_teams": "我的队伍",
+            "my_teams_description": "您所属的队伍",
+            "no_eligible_teams": "没有符合条件的队伍",
+            "team": "队伍",
+            "select_team": "选择队伍",
+            "search_team": "搜索队伍...",
+            "add_to_tournament": "添加到比赛"
+        },
+        "actions": {
+            "open_registration": "开放注册",
+            "close_registration": "关闭注册",
+            "cancel": "取消"
+        },
+        "upcoming": {
+            "empty": "没有即将举行的比赛"
+        },
+        "server": {
+            "remove": "移除",
+            "confirm_remove": "移除服务器",
+            "remove_description": "确定要移除此服务器吗？"
+        }
+    },
+    "team": {
+        "table": {
+            "team": "队伍",
+            "wins": "胜利",
+            "losses": "失败",
+            "overtime_losses": "加时赛失败",
+            "no_teams_found": "未找到队伍"
+        },
+        "invite": {
+            "team_title": "队伍邀请",
+            "tournament_title": "比赛邀请",
+            "tournament_message": "比赛邀请消息",
+            "team_message": "队伍邀请消息",
+            "invited_by": "邀请人",
+            "deny": "拒绝",
+            "accept": "接受"
+        },
+        "roles": {
+            "captain": "队长"
+        },
+        "leave": "离开",
+        "management": {
+            "edit": "编辑"
+        },
+        "confirm": {
+            "leave": "离开",
+            "delete": {
+                "title": "删除",
+                "description": "描述"
+            }
+        },
+        "members": {
+            "title": "成员",
+            "invite_player": "邀请玩家",
+            "pending_invites": "待处理邀请"
+        },
+        "form": {
+            "name": "名称",
+            "name_placeholder": "输入队伍名称",
+            "short_name": "简称",
+            "short_name_placeholder": "输入队伍简称",
+            "owner": "所有者",
+            "select_owner": "选择所有者",
+            "update": "更新",
+            "create": "创建"
+        },
+        "search": {
+            "no_teams": "没有队伍"
+        },
+        "member": {
+            "remove": "移除",
+            "cancel_invite": "取消邀请",
+            "confirm_cancel_invite": "取消邀请",
+            "confirm_remove": "确认移除",
+            "cancel_invite_description": "确定要取消此邀请吗？",
+            "remove_description": "确定要移除此成员吗？"
+        }
+    },
+    "components": {
+        "map_pools": {
+            "view_on_steam": "在Steam上查看"
+        }
     }
-  },
-  "team": {
-    "table": {
-      "team": "队伍",
-      "wins": "胜利",
-      "losses": "失败",
-      "overtime_losses": "加时赛失败",
-      "no_teams_found": "未找到队伍"
-    },
-    "invite": {
-      "team_title": "队伍邀请",
-      "tournament_title": "比赛邀请",
-      "tournament_message": "比赛邀请消息",
-      "team_message": "队伍邀请消息",
-      "invited_by": "邀请人",
-      "deny": "拒绝",
-      "accept": "接受"
-    },
-    "roles": {
-      "captain": "队长"
-    },
-    "leave": "离开",
-    "management": {
-      "edit": "编辑"
-    },
-    "confirm": {
-      "leave": "离开",
-      "delete": {
-        "title": "删除",
-        "description": "描述"
-      }
-    },
-    "members": {
-      "title": "成员",
-      "invite_player": "邀请玩家",
-      "pending_invites": "待处理邀请"
-    },
-    "form": {
-      "name": "名称",
-      "name_placeholder": "输入队伍名称",
-      "short_name": "简称",
-      "short_name_placeholder": "输入队伍简称",
-      "owner": "所有者",
-      "select_owner": "选择所有者",
-      "update": "更新",
-      "create": "创建"
-    },
-    "search": {
-      "no_teams": "没有队伍"
-    },
-    "member": {
-      "remove": "移除",
-      "cancel_invite": "取消邀请",
-      "confirm_cancel_invite": "取消邀请",
-      "confirm_remove": "确认移除",
-      "cancel_invite_description": "确定要取消此邀请吗？",
-      "remove_description": "确定要移除此成员吗？"
-    }
-  },
-  "components": {
-    "map_pools": {
-      "view_on_steam": "在Steam上查看"
-    }
-  }
 }

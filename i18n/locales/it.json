@@ -207,20 +207,12 @@
         },
         "map_pools": {
             "description": "Gestisci pool di mappe e mappe disponibili per il matchmaking.",
-            "table": {
-                "pool_name": "Nome della piscina",
-                "available_modes": "Modalità disponibili",
-                "workshop_id": "ID laboratorio",
-                "maps": "Mappe",
-                "active_duty": "Active Duty"
-            },
             "form": {
                 "poster": "Poster (opzionale)",
                 "poster_placeholder": "http://example.com/poster.png",
                 "patch": "Patch (opzionale)",
                 "patch_placeholder": "http://example.com/patch.png",
                 "workshop_map_id": "Workshop Map ID (opzionale)",
-                "view_on_steam": "Visualizza su Steam",
                 "create_map": "Crea mappa",
                 "update_map": "Mappa degli aggiornamenti",
                 "delete_map": "Cancella mappa",
@@ -241,27 +233,17 @@
                 },
                 "name": "Label nome"
             },
-            "edit_map": "Modifica mappa",
-            "toggle_pool_type": "La mappa {map} è stata {type} per {type}",
-            "toggle_active_pool": "La mappa {mappa} è stata {tipo} per il servizio attivo",
-            "add_new_map": "Aggiungi nuova mappa",
             "pool": {
                 "title": "{type} Mappa Pool",
                 "description": "Gestire le mappe nella piscina {type}",
                 "modify_maps": "Modificare le mappe in piscina"
             },
-            "save_success": "Mappa pool salvato con successo",
             "title": "Pool di Mappe"
         },
         "map_pool": {
             "toggle_pool_type": "La mappa {map} è stata {type} per {type}",
             "toggle_active_pool": "La mappa {mappa} è stata {tipo} per il servizio attivo",
             "save_success": "Mappa pool salvato con successo"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Visualizza su Steam"
-            }
         }
     },
     "matchmaking": {

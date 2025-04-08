@@ -208,13 +208,6 @@
         "map_pools": {
             "title": "Kartu kopas",
             "description": "Pārvaldiet kartu kopas un pieejamās kartes matchmakingam.",
-            "table": {
-                "pool_name": "Kopas nosaukums",
-                "maps": "Kartes",
-                "active_duty": "Aktīvā dienesta",
-                "available_modes": "Pieejamie režīmi",
-                "workshop_id": "Workshop ID"
-            },
             "form": {
                 "name": "Nosaukums",
                 "poster": "Plakāts (neobligāti)",
@@ -222,7 +215,6 @@
                 "patch": "Patches (neobligāti)",
                 "patch_placeholder": "http://example.com/patch.png",
                 "workshop_map_id": "Workshop kartes ID (neobligāti)",
-                "view_on_steam": "Skatīt Steam",
                 "create_map": "Izveidot karti",
                 "update_map": "Atjaunināt karti",
                 "delete_map": "Dzēst karti",
@@ -246,22 +238,12 @@
                 "title": "{type} kartu kopa",
                 "description": "Pārvaldiet kartes {type} kopā",
                 "modify_maps": "Modificēt kartes kopā"
-            },
-            "edit_map": "Rediģēt karti",
-            "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
-            "toggle_active_pool": "Karte {map} ir {type} aktīvajai dienestam",
-            "add_new_map": "Pievienot jaunu karti",
-            "save_success": "Karšu kopa veiksmīgi saglabāta"
+            }
         },
         "map_pool": {
             "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
             "toggle_active_pool": "Karte {map} ir {type} aktīvajai dienestam",
             "save_success": "Karšu kopa veiksmīgi saglabāta"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Skatīt Steam"
-            }
         }
     },
     "matchmaking": {

@@ -208,13 +208,6 @@
         "map_pools": {
             "title": "Kartenpools",
             "description": "Verwalte Kartenpools und verfügbare Karten für Matchmaking.",
-            "table": {
-                "pool_name": "Pool-Name",
-                "maps": "Karten",
-                "active_duty": "Aktiver Dienst",
-                "available_modes": "Verfügbare Modi",
-                "workshop_id": "Workshop-ID"
-            },
             "form": {
                 "name": "Name",
                 "poster": "Poster (optional)",
@@ -222,7 +215,6 @@
                 "patch": "Patch (optional)",
                 "patch_placeholder": "http://beispiel.com/patch.png",
                 "workshop_map_id": "Workshop-Karten-ID (optional)",
-                "view_on_steam": "Auf Steam ansehen",
                 "create_map": "Karte erstellen",
                 "update_map": "Karte aktualisieren",
                 "delete_map": "Karte löschen",
@@ -242,26 +234,16 @@
                     "update": "Fehler beim Aktualisieren der Karte"
                 }
             },
-            "edit_map": "Karte bearbeiten",
-            "toggle_pool_type": "Karte {map} wurde für {type} {type}",
-            "toggle_active_pool": "Karte {map} wurde für aktiven Dienst {type}",
-            "add_new_map": "Neue Karte hinzufügen",
             "pool": {
                 "title": "{type} Kartenpool",
                 "description": "Verwalte Karten im {type} Pool",
                 "modify_maps": "Karten im Pool ändern"
-            },
-            "save_success": "Kartenpool erfolgreich gespeichert"
+            }
         },
         "map_pool": {
             "toggle_pool_type": "Karte {map} wurde für {type} {type}",
             "toggle_active_pool": "Karte {map} wurde für Active Duty {type}",
             "save_success": "Kartenpool erfolgreich gespeichert"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Auf Steam anzeigen"
-            }
         }
     },
     "matchmaking": {

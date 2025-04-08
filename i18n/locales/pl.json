@@ -208,20 +208,12 @@
         "map_pools": {
             "title": "Pule Map",
             "description": "Zarządzaj basenami map i mapami do swatania.",
-            "table": {
-                "pool_name": "Nazwa grupy",
-                "available_modes": "Dostępne metody",
-                "workshop_id": "ID warsztatu",
-                "maps": "Mapy",
-                "active_duty": "Active Duty"
-            },
             "form": {
                 "poster": "Plakat (opcjonalny)",
                 "poster_placeholder": "http: / / example.com / poster.png",
                 "patch": "Łata (opcjonalnie)",
                 "patch_placeholder": "http: / / example.com / patch.png",
                 "workshop_map_id": "Identyfikator mapy warsztatowej (opcjonalnie)",
-                "view_on_steam": "Widok na Steam",
                 "create_map": "Utwórz mapę",
                 "update_map": "Aktualizuj mapę",
                 "delete_map": "Usuń mapę",
@@ -242,26 +234,16 @@
                 },
                 "name": "Nazwa"
             },
-            "edit_map": "Edytuj mapę",
-            "toggle_pool_type": "Mapa {mapa} została {typ} dla {typ}",
-            "toggle_active_pool": "Mapa {mapa} została {typ} do czynnej służby",
-            "add_new_map": "Dodaj nową mapę",
             "pool": {
                 "title": "{typ} Pula map",
                 "description": "Zarządzanie mapami w puli {type}",
                 "modify_maps": "Modyfikuj mapy w puli"
-            },
-            "save_success": "Mapa pula zapisana pomyślnie"
+            }
         },
         "map_pool": {
             "toggle_pool_type": "Mapa {mapa} została {typ} dla {typ}",
             "toggle_active_pool": "Mapa {mapa} została {typ} do czynnej służby",
             "save_success": "Mapa pula zapisana pomyślnie"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Widok na Steam"
-            }
         }
     },
     "matchmaking": {

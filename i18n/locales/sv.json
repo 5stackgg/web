@@ -207,20 +207,12 @@
         },
         "map_pools": {
             "description": "Hantera kartpooler och tillgängliga kartor för matchmaking.",
-            "table": {
-                "pool_name": "Poolnamn",
-                "available_modes": "Tillgängliga lägen",
-                "workshop_id": "Workshop ID",
-                "maps": "Kartor",
-                "active_duty": "Aktiv tjänst"
-            },
             "form": {
                 "poster": "Poster (valfritt)",
                 "poster_placeholder": "http://example.com/poster.png",
                 "patch": "Patch (valfritt)",
                 "patch_placeholder": "http://example.com/patch.png",
                 "workshop_map_id": "Workshop Map ID (tillval)",
-                "view_on_steam": "Utsikt över Steam",
                 "create_map": "Skapa karta",
                 "update_map": "Uppdatera karta",
                 "delete_map": "Delete Map",
@@ -241,27 +233,17 @@
                 },
                 "name": "Namn"
             },
-            "edit_map": "Redigera karta",
-            "toggle_pool_type": "Karta {map} har varit {typ} för {typ}",
-            "toggle_active_pool": "Karta {map} har varit {typ} för aktiv plikt",
-            "add_new_map": "Lägg till ny karta",
             "pool": {
                 "title": "Map Pool",
                 "description": "Hantera kartor i poolen",
                 "modify_maps": "Ändra kartor i poolen"
             },
-            "save_success": "Karta pool sparad framgångsrikt",
             "title": "Kartpooler"
         },
         "map_pool": {
             "toggle_pool_type": "Karta {map} har varit {typ} för {typ}",
             "toggle_active_pool": "Karta {map} har varit {typ} för aktiv plikt",
             "save_success": "Karta pool sparad framgångsrikt"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Visa på Steam"
-            }
         }
     },
     "layouts": {

@@ -208,20 +208,12 @@
         "map_pools": {
             "title": "맵 풀",
             "description": "매치메이킹 맵 풀과 매치메이킹 맵 관리.",
-            "table": {
-                "pool_name": "풀 이름",
-                "available_modes": "유효한 형태",
-                "workshop_id": "워크샵 ID",
-                "maps": "맵",
-                "active_duty": "액티브 듀티"
-            },
             "form": {
                 "poster": "포스터 (옵션)",
                 "poster_placeholder": "http://example.com/poster.png",
                 "patch": "패치 (옵션)",
                 "patch_placeholder": "http://example.com/patch.png",
                 "workshop_map_id": "작업장 지도 ID (선택)",
-                "view_on_steam": "Steam에서 보기",
                 "create_map": "본문 바로가기",
                 "update_map": "공지사항",
                 "delete_map": "파일 삭제",
@@ -242,26 +234,16 @@
                 },
                 "name": "이름"
             },
-            "edit_map": "편집 맵",
-            "toggle_pool_type": "지도 {map}는 {type}입니다. {type}",
-            "toggle_active_pool": "Map {map}는 {type}가 활성 의무에 대한",
-            "add_new_map": "새 맵 추가",
             "pool": {
                 "title": "{type} 지도 풀",
                 "description": "{type} Pool의 지도 관리",
                 "modify_maps": "풀에 지도를 수정"
-            },
-            "save_success": "MAP 풀은 성공적으로 저장"
+            }
         },
         "map_pool": {
             "toggle_pool_type": "지도 {map}는 {type}입니다. {type}",
             "toggle_active_pool": "Map {map}는 {type}가 활성 의무에 대한",
             "save_success": "MAP 풀은 성공적으로 저장"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Steam에서 보기"
-            }
         }
     },
     "matchmaking": {

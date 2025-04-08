@@ -208,20 +208,12 @@
         "map_pools": {
             "title": "Conjuntos de Mapas",
             "description": "Gerencie pools de mapas e mapas disponíveis para matchmaking.",
-            "table": {
-                "pool_name": "Nome do grupo",
-                "available_modes": "Modos Disponíveis",
-                "workshop_id": "ID do Workshop",
-                "maps": "Mapas",
-                "active_duty": "Active Duty"
-            },
             "form": {
                 "poster": "Poster (opcional)",
                 "poster_placeholder": "http://exemplo.com/poster.png",
                 "patch": "Correcção (opcional)",
                 "patch_placeholder": "http://exemplo.com/patch.png",
                 "workshop_map_id": "ID do mapa da oficina (opcional)",
-                "view_on_steam": "Ver no Steam",
                 "create_map": "Criar mapa",
                 "update_map": "Atualizar mapa",
                 "delete_map": "Excluir mapa",
@@ -242,26 +234,16 @@
                 },
                 "name": "Nome"
             },
-            "edit_map": "Editar mapa",
-            "toggle_pool_type": "Mapa {mapa} foi {tipo} para {tipo}",
-            "toggle_active_pool": "Mapa {mapa} foi {tipo} para o direito activo",
-            "add_new_map": "Adicionar um Novo Mapa",
             "pool": {
                 "title": "{tipo} Grupo de mapas",
                 "description": "Gerenciar mapas no pool {type}",
                 "modify_maps": "Modificar mapas na piscina"
-            },
-            "save_success": "Pool do mapa salvo com sucesso"
+            }
         },
         "map_pool": {
             "toggle_pool_type": "Mapa {mapa} foi {tipo} para {tipo}",
             "toggle_active_pool": "Mapa {mapa} foi {tipo} para o direito activo",
             "save_success": "Pool do mapa salvo com sucesso"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Ver no Steam"
-            }
         }
     },
     "matchmaking": {

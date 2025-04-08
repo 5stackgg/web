@@ -208,13 +208,6 @@
         "map_pools": {
             "title": "Kort-pools",
             "description": "Administrer kort-pools og tilgængelige kort til matchmaking.",
-            "table": {
-                "pool_name": "Pool navn",
-                "maps": "Kort",
-                "active_duty": "Aktiv tjeneste",
-                "available_modes": "Tilgængelige tilstande",
-                "workshop_id": "Workshop ID"
-            },
             "form": {
                 "name": "Navn",
                 "poster": "Plakat (valgfrit)",
@@ -222,7 +215,6 @@
                 "patch": "Patch (valgfrit)",
                 "patch_placeholder": "http://eksempel.com/patch.png",
                 "workshop_map_id": "Workshop kort ID (valgfrit)",
-                "view_on_steam": "Se på Steam",
                 "create_map": "Opret kort",
                 "update_map": "Opdater kort",
                 "delete_map": "Slet kort",
@@ -242,26 +234,16 @@
                     "update": "Fejl ved opdatering af kort"
                 }
             },
-            "edit_map": "Rediger kort",
-            "toggle_pool_type": "Kort {map} blev {type} for {type}",
-            "toggle_active_pool": "Kort {map} blev {type} for aktiv tjeneste",
-            "add_new_map": "Tilføj nyt kort",
             "pool": {
                 "title": "{type} kort-pool",
                 "description": "Administrer kort i {type} pool",
                 "modify_maps": "Rediger kort i poolen"
-            },
-            "save_success": "Kort-pool gemt med succes"
+            }
         },
         "map_pool": {
             "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
             "toggle_active_pool": "Kortet {map} er blevet {type} for aktiv tjeneste",
             "save_success": "Kort-pool gemt med succes"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Se på Steam"
-            }
         }
     },
     "matchmaking": {

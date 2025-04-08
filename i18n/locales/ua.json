@@ -207,20 +207,12 @@
         },
         "map_pools": {
             "description": "Керування картами басейнів і наявних карт для відповідного виготовлення.",
-            "table": {
-                "pool_name": "Назва банку",
-                "available_modes": "Доступні режими",
-                "workshop_id": "Ідентифікатор семінару",
-                "maps": "Карти",
-                "active_duty": "Активні карти"
-            },
             "form": {
                 "poster": "Постер (за бажанням)",
                 "poster_placeholder": "http://example.com/poster.png",
                 "patch": "Патч (за бажанням)",
                 "patch_placeholder": "http://example.com/patch.png",
                 "workshop_map_id": "Ідентифікатор карти (за бажанням)",
-                "view_on_steam": "Переглянути на Steam",
                 "create_map": "Карта сайту",
                 "update_map": "Оновлення карти",
                 "delete_map": "Видалити карту",
@@ -241,27 +233,17 @@
                 },
                 "name": "Назва"
             },
-            "edit_map": "Редагувати карту",
-            "toggle_pool_type": "Карта {map} {type} для {type}",
-            "toggle_active_pool": "Карта {map} {type} для активних обов'язків",
-            "add_new_map": "Додати нову карту",
             "pool": {
                 "title": "{type} Карта Басейн",
                 "description": "Керування картами в басейні {type}",
                 "modify_maps": "Модифікувати картини в басейні"
             },
-            "save_success": "Карта басейну успішно збережено",
             "title": "Пул Карт"
         },
         "map_pool": {
             "toggle_pool_type": "Карта {map} {type} для {type}",
             "toggle_active_pool": "Карта {map} {type} для активних обов'язків",
             "save_success": "Карта басейну успішно збережено"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Переглянути в Steam"
-            }
         }
     },
     "matchmaking": {

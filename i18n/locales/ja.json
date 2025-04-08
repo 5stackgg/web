@@ -217,7 +217,6 @@
                 "patch": "パッチ(任意)",
                 "patch_placeholder": "http://example.com/patch.png からのツイート",
                 "workshop_map_id": "ワークショップマップID(オプション)",
-                "view_on_steam": "Steamで見る",
                 "create_map": "地図の作成",
                 "update_map": "サイトマップ",
                 "delete_map": "削除マップ",
@@ -234,34 +233,17 @@
                 "name": "名前"
             },
             "description": "地図のプールを管理し、マッチメイキングのための利用可能なマップ.",
-            "table": {
-                "pool_name": "プールの名前",
-                "available_modes": "利用可能なモード",
-                "workshop_id": "ワークショップID",
-                "maps": "マップ",
-                "active_duty": "アクティブデューティ"
-            },
-            "edit_map": "マップを編集",
-            "toggle_pool_type": "{type} の {type} は {type} の {type} です",
-            "toggle_active_pool": "アクティブデューティの {map} が {type} になりました",
-            "add_new_map": "新規マップの追加",
             "pool": {
                 "title": "{type} マッププール",
                 "description": "{type}プールでマップを管理する",
                 "modify_maps": "プールのマップを修正"
             },
-            "save_success": "正常に保存されたマッププール",
             "title": "マッププール"
         },
         "map_pool": {
             "toggle_pool_type": "{type} の {type} は {type} の {type} です",
             "toggle_active_pool": "アクティブデューティの {map} が {type} になりました",
             "save_success": "正常に保存されたマッププール"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Steamで表示"
-            }
         }
     },
     "layouts": {

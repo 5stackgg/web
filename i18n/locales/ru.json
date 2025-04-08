@@ -208,20 +208,12 @@
         "map_pools": {
             "title": "Пул Карт",
             "description": "Управляйте пулами карт и доступными картами для сватовства.",
-            "table": {
-                "pool_name": "Название бассейна",
-                "available_modes": "Доступные режимы",
-                "workshop_id": "Семинар ID",
-                "maps": "Карты",
-                "active_duty": "Active Duty"
-            },
             "form": {
                 "poster": "Плакат (необязательно)",
                 "poster_placeholder": "http://exmple.com/poster.png",
                 "patch": "Патч (необязательно)",
                 "patch_placeholder": "http://exmple.com/patch.png",
                 "workshop_map_id": "Workshop Map ID (необязательно)",
-                "view_on_steam": "Смотреть в Steam",
                 "create_map": "Создать карту",
                 "update_map": "Обновление карты",
                 "delete_map": "Удалить карту",
@@ -242,26 +234,16 @@
                 },
                 "name": "Название"
             },
-            "edit_map": "Редактировать карту",
-            "toggle_pool_type": "Карта {map} была для {type}",
-            "toggle_active_pool": "Карта {map} была {type} для активной службы",
-            "add_new_map": "Добавить новую карту",
             "pool": {
                 "title": "Тип: Map Pool",
                 "description": "Управление картами в пуле {тип}",
                 "modify_maps": "Изменить карты в бассейне"
-            },
-            "save_success": "Картографический пул успешно сохранен"
+            }
         },
         "map_pool": {
             "toggle_pool_type": "Карта {map} была для {type}",
             "toggle_active_pool": "Карта {map} была {type} для активной службы",
             "save_success": "Картографический пул успешно сохранен"
-        },
-        "components": {
-            "map_pools": {
-                "view_on_steam": "Просмотреть в Steam"
-            }
         }
     },
     "matchmaking": {

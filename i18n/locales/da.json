@@ -206,15 +206,22 @@
       }
     },
     "map_pools": {
-      "title": "Kortpools",
-      "description": "Administrer kortpools og tilgængelige kort til matchmaking.",
+      "title": "Kort-pools",
+      "description": "Administrer kort-pools og tilgængelige kort til matchmaking.",
+      "table": {
+        "pool_name": "Pool navn",
+        "maps": "Kort",
+        "active_duty": "Aktiv tjeneste",
+        "available_modes": "Tilgængelige tilstande",
+        "workshop_id": "Workshop ID"
+      },
       "form": {
         "name": "Navn",
         "poster": "Plakat (valgfrit)",
-        "poster_placeholder": "http://example.com/poster.png",
+        "poster_placeholder": "http://eksempel.com/plakat.png",
         "patch": "Patch (valgfrit)",
-        "patch_placeholder": "http://example.com/patch.png",
-        "workshop_map_id": "Workshop kort-ID (valgfrit)",
+        "patch_placeholder": "http://eksempel.com/patch.png",
+        "workshop_map_id": "Workshop kort ID (valgfrit)",
         "view_on_steam": "Se på Steam",
         "create_map": "Opret kort",
         "update_map": "Opdater kort",
@@ -236,9 +243,24 @@
         }
       },
       "pool": {
-        "title": "{type} kortpool",
-        "description": "Administrer kort i denne pool",
-        "modify_maps": "Rediger kort"
+        "title": "{type} kort-pool",
+        "description": "Administrer kort i {type} pool",
+        "modify_maps": "Rediger kort i poolen"
+      },
+      "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
+      "toggle_active_pool": "Kortet {map} er blevet {type} for aktiv tjeneste",
+      "add_new_map": "Tilføj nyt kort",
+      "edit_map": "Rediger kort",
+      "save_success": "Kort-pool gemt med succes"
+    },
+    "map_pool": {
+      "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
+      "toggle_active_pool": "Kortet {map} er blevet {type} for aktiv tjeneste",
+      "save_success": "Kort-pool gemt med succes"
+    },
+    "components": {
+      "map_pools": {
+        "view_on_steam": "Se på Steam"
       }
     }
   },
@@ -939,11 +961,5 @@
       "cancel_invite_description": "Er du sikker på, at du vil annullere denne invitation?",
       "remove_description": "Er du sikker på, at du vil fjerne dette medlem?"
     }
-  },
-  "map_pools": {
-    "edit_map": "Rediger kort",
-    "toggle_pool_type": "Kort {map} er blevet {type} for {type}",
-    "toggle_active_pool": "Kort {map} er blevet {type} for aktiv tjeneste",
-    "save_success": "Kortpool gemt med succes"
   }
 }

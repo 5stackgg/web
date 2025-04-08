@@ -213,15 +213,22 @@
       }
     },
     "map_pools": {
-      "title": "Pools de mapas",
-      "description": "Gestionar pools de mapas y mapas disponibles para matchmaking.",
+      "title": "Grupos de mapas",
+      "description": "Gestionar grupos de mapas y mapas disponibles para matchmaking.",
+      "table": {
+        "pool_name": "Nombre del grupo",
+        "maps": "Mapas",
+        "active_duty": "Servicio activo",
+        "available_modes": "Modos disponibles",
+        "workshop_id": "ID de Workshop"
+      },
       "form": {
         "name": "Nombre",
         "poster": "Póster (opcional)",
-        "poster_placeholder": "http://example.com/poster.png",
+        "poster_placeholder": "http://ejemplo.com/poster.png",
         "patch": "Parche (opcional)",
-        "patch_placeholder": "http://example.com/patch.png",
-        "workshop_map_id": "ID del mapa en Workshop (opcional)",
+        "patch_placeholder": "http://ejemplo.com/patch.png",
+        "workshop_map_id": "ID de mapa de Workshop (opcional)",
         "view_on_steam": "Ver en Steam",
         "create_map": "Crear mapa",
         "update_map": "Actualizar mapa",
@@ -243,14 +250,23 @@
         }
       },
       "pool": {
-        "title": "Pool de mapas {type}",
-        "description": "Gestionar mapas en este pool",
-        "modify_maps": "Modificar mapas"
+        "title": "Grupo de mapas {type}",
+        "description": "Gestionar mapas en el grupo {type}",
+        "modify_maps": "Modificar mapas en el grupo"
       },
-      "map_pool": {
-        "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
-        "toggle_active_pool": "El mapa {map} ha sido {type} para el servicio activo",
-        "save_success": "Pool de mapas guardado con éxito"
+      "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
+      "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
+      "edit_map": "Editar mapa",
+      "add_new_map": "Añadir nuevo mapa"
+    },
+    "map_pool": {
+      "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
+      "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
+      "save_success": "Grupo de mapas guardado con éxito"
+    },
+    "components": {
+      "map_pools": {
+        "view_on_steam": "Ver en Steam"
       }
     }
   },
@@ -951,11 +967,5 @@
       "cancel_invite_description": "¿Estás seguro de que quieres cancelar esta invitación?",
       "remove_description": "¿Estás seguro de que quieres eliminar este miembro?"
     }
-  },
-  "map_pools": {
-    "edit_map": "Editar mapa",
-    "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
-    "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
-    "save_success": "Pool de mapas guardado con éxito"
   }
 }

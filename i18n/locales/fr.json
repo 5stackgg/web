@@ -208,12 +208,19 @@
     "map_pools": {
       "title": "Pools de cartes",
       "description": "Gérer les pools de cartes et les cartes disponibles pour le matchmaking.",
+      "table": {
+        "pool_name": "Nom de la pool",
+        "maps": "Cartes",
+        "active_duty": "Service actif",
+        "available_modes": "Modes disponibles",
+        "workshop_id": "ID Workshop"
+      },
       "form": {
         "name": "Nom",
         "poster": "Affiche (optionnel)",
-        "poster_placeholder": "http://example.com/poster.png",
+        "poster_placeholder": "http://exemple.com/affiche.png",
         "patch": "Patch (optionnel)",
-        "patch_placeholder": "http://example.com/patch.png",
+        "patch_placeholder": "http://exemple.com/patch.png",
         "workshop_map_id": "ID de la carte Workshop (optionnel)",
         "view_on_steam": "Voir sur Steam",
         "create_map": "Créer une carte",
@@ -237,13 +244,20 @@
       },
       "pool": {
         "title": "Pool de cartes {type}",
-        "description": "Gérer les cartes dans ce pool",
-        "modify_maps": "Modifier les cartes"
+        "description": "Gérer les cartes dans la pool {type}",
+        "modify_maps": "Modifier les cartes dans la pool"
       },
-      "map_pool": {
-        "toggle_pool_type": "La carte {map} a été {type} pour {type}",
-        "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
-        "save_success": "Pool de cartes enregistré avec succès"
+      "add_new_map": "Ajouter une nouvelle carte",
+      "edit_map": "Modifier la carte"
+    },
+    "map_pool": {
+      "toggle_pool_type": "La carte {map} a été {type} pour {type}",
+      "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
+      "save_success": "Pool de cartes enregistrée avec succès"
+    },
+    "components": {
+      "map_pools": {
+        "view_on_steam": "Voir sur Steam"
       }
     }
   },
@@ -944,11 +958,5 @@
       "cancel_invite_description": "Voulez-vous vraiment annuler cette invitation ?",
       "remove_description": "Voulez-vous vraiment retirer ce membre ?"
     }
-  },
-  "map_pools": {
-    "edit_map": "Modifier la carte",
-    "toggle_pool_type": "La carte {map} a été {type} pour {type}",
-    "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
-    "save_success": "Pool de cartes enregistré avec succès"
   }
 }

@@ -39,7 +39,7 @@ import { Pencil } from "lucide-vue-next";
       </div>
     </td>
     <td class="px-4 py-2 text-sm">
-      <ViewOnSteam :workshop_map_id="map.workshop_map_id" />
+      <ViewOnSteam :workshop_map_id="map.workshop_map_id" v-if="map.workshop_map_id" />
     </td>
     <td>
       <DropdownMenu>

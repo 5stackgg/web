@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { ExternalLink } from "lucide-vue-next";
+</script>
+
 <template>
   <a
     :href="`https://steamcommunity.com/sharedfiles/filedetails/?id=${workshop_map_id}`"

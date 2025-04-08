@@ -5,6 +5,7 @@ import { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapForm from "~/components/map-pools/MapForm.vue";
+import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
 import { Pencil } from "lucide-vue-next";
 </script>
 
@@ -37,7 +38,9 @@ import { Pencil } from "lucide-vue-next";
         </div>
       </div>
     </td>
-    <td class="px-4 py-2 text-sm">{{ map.workshop_map_id || "N/A" }}</td>
+    <td class="px-4 py-2 text-sm">
+      <ViewOnSteam :workshop_map_id="map.workshop_map_id" />
+    </td>
     <td>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>

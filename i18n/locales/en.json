@@ -208,13 +208,6 @@
     "map_pools": {
       "title": "Map Pools",
       "description": "Manage map pools and available maps for matchmaking.",
-      "table": {
-        "pool_name": "Pool Name",
-        "maps": "Maps",
-        "active_duty": "Active Duty",
-        "available_modes": "Available Modes",
-        "workshop_id": "Workshop ID"
-      },
       "form": {
         "name": "Name",
         "poster": "Poster (optional)",
@@ -242,13 +235,9 @@
           "update": "Error updating map"
         }
       },
-      "edit_map": "Edit Map",
-      "toggle_pool_type": "Map {map} has been {type} for {type}",
-      "toggle_active_pool": "Map {map} has been {type} for active duty",
-      "add_new_map": "Add New Map",
       "pool": {
         "title": "{type} Map Pool",
-        "description": "Modify the maps in the pool",
+        "description": "Manage maps in this pool",
         "modify_maps": "Modify Maps"
       }
     }
@@ -950,5 +939,10 @@
       "command_placeholder": "Enter command...",
       "send_command": "Send Command"
     }
+  },
+  "map_pool": {
+    "toggle_pool_type": "Map {map} has been {type} for {type}",
+    "toggle_active_pool": "Map {map} has been {type} for active service",
+    "save_success": "Map pool saved successfully"
   }
 }

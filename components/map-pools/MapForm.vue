@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-vue-next";
+import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
 </script>
 
 <template>
@@ -80,11 +81,7 @@ import { Trash } from "lucide-vue-next";
             name="workshop_map_id"
           />
           <template v-if="form.values.workshop_map_id">
-            <a
-              :href="`https://steamcommunity.com/sharedfiles/filedetails/?id=${form.values.workshop_map_id}`"
-              target="_blank"
-              >{{ $t("pages.map_pools.form.view_on_steam") }}</a
-            >
+            <ViewOnSteam :workshop_map_id="form.values.workshop_map_id" />
           </template>
         </FormControl>
       </FormItem>
@@ -221,7 +218,6 @@ export default {
           this.$emit("created");
         }
       } catch (error) {
-        console.error("Error saving map:", error);
         toast({
           title: this.map
             ? this.$t("pages.map_pools.form.error.update")

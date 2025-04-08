@@ -204,6 +204,47 @@
           "continue": "Continuer"
         }
       }
+    },
+    "map_pools": {
+      "title": "Pools de cartes",
+      "description": "Gérer les pools de cartes et les cartes disponibles pour le matchmaking.",
+      "form": {
+        "name": "Nom",
+        "poster": "Affiche (optionnel)",
+        "poster_placeholder": "http://example.com/poster.png",
+        "patch": "Patch (optionnel)",
+        "patch_placeholder": "http://example.com/patch.png",
+        "workshop_map_id": "ID de la carte Workshop (optionnel)",
+        "view_on_steam": "Voir sur Steam",
+        "create_map": "Créer une carte",
+        "update_map": "Mettre à jour la carte",
+        "delete_map": "Supprimer la carte",
+        "delete_confirm": {
+          "title": "Supprimer la carte",
+          "description": "Êtes-vous sûr de vouloir supprimer cette carte ? Cette action ne peut pas être annulée.",
+          "cancel": "Annuler",
+          "confirm": "Supprimer"
+        },
+        "success": {
+          "create": "Carte créée avec succès",
+          "update": "Carte mise à jour avec succès",
+          "delete": "Carte supprimée avec succès"
+        },
+        "error": {
+          "create": "Erreur lors de la création de la carte",
+          "update": "Erreur lors de la mise à jour de la carte"
+        }
+      },
+      "pool": {
+        "title": "Pool de cartes {type}",
+        "description": "Gérer les cartes dans ce pool",
+        "modify_maps": "Modifier les cartes"
+      },
+      "map_pool": {
+        "toggle_pool_type": "La carte {map} a été {type} pour {type}",
+        "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
+        "save_success": "Pool de cartes enregistré avec succès"
+      }
     }
   },
   "matchmaking": {
@@ -903,5 +944,11 @@
       "cancel_invite_description": "Voulez-vous vraiment annuler cette invitation ?",
       "remove_description": "Voulez-vous vraiment retirer ce membre ?"
     }
+  },
+  "map_pools": {
+    "edit_map": "Modifier la carte",
+    "toggle_pool_type": "La carte {map} a été {type} pour {type}",
+    "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
+    "save_success": "Pool de cartes enregistré avec succès"
   }
 }

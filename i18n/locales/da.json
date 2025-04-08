@@ -204,6 +204,42 @@
           "continue": "Fortsæt"
         }
       }
+    },
+    "map_pools": {
+      "title": "Kortpools",
+      "description": "Administrer kortpools og tilgængelige kort til matchmaking.",
+      "form": {
+        "name": "Navn",
+        "poster": "Plakat (valgfrit)",
+        "poster_placeholder": "http://example.com/poster.png",
+        "patch": "Patch (valgfrit)",
+        "patch_placeholder": "http://example.com/patch.png",
+        "workshop_map_id": "Workshop kort-ID (valgfrit)",
+        "view_on_steam": "Se på Steam",
+        "create_map": "Opret kort",
+        "update_map": "Opdater kort",
+        "delete_map": "Slet kort",
+        "delete_confirm": {
+          "title": "Slet kort",
+          "description": "Er du sikker på, at du vil slette dette kort? Denne handling kan ikke fortrydes.",
+          "cancel": "Annuller",
+          "confirm": "Slet"
+        },
+        "success": {
+          "create": "Kort oprettet med succes",
+          "update": "Kort opdateret med succes",
+          "delete": "Kort slettet med succes"
+        },
+        "error": {
+          "create": "Fejl ved oprettelse af kort",
+          "update": "Fejl ved opdatering af kort"
+        }
+      },
+      "pool": {
+        "title": "{type} kortpool",
+        "description": "Administrer kort i denne pool",
+        "modify_maps": "Rediger kort"
+      }
     }
   },
   "matchmaking": {
@@ -903,5 +939,11 @@
       "cancel_invite_description": "Er du sikker på, at du vil annullere denne invitation?",
       "remove_description": "Er du sikker på, at du vil fjerne dette medlem?"
     }
+  },
+  "map_pools": {
+    "edit_map": "Rediger kort",
+    "toggle_pool_type": "Kort {map} er blevet {type} for {type}",
+    "toggle_active_pool": "Kort {map} er blevet {type} for aktiv tjeneste",
+    "save_success": "Kortpool gemt med succes"
   }
 }

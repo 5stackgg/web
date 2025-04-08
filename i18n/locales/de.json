@@ -204,6 +204,47 @@
           "continue": "Fortfahren"
         }
       }
+    },
+    "map_pools": {
+      "title": "Kartenpools",
+      "description": "Verwalten Sie Kartenpools und verfügbare Karten für das Matchmaking.",
+      "form": {
+        "name": "Name",
+        "poster": "Poster (optional)",
+        "poster_placeholder": "http://example.com/poster.png",
+        "patch": "Patch (optional)",
+        "patch_placeholder": "http://example.com/patch.png",
+        "workshop_map_id": "Workshop-Karten-ID (optional)",
+        "view_on_steam": "Auf Steam anzeigen",
+        "create_map": "Karte erstellen",
+        "update_map": "Karte aktualisieren",
+        "delete_map": "Karte löschen",
+        "delete_confirm": {
+          "title": "Karte löschen",
+          "description": "Sind Sie sicher, dass Sie diese Karte löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+          "cancel": "Abbrechen",
+          "confirm": "Löschen"
+        },
+        "success": {
+          "create": "Karte erfolgreich erstellt",
+          "update": "Karte erfolgreich aktualisiert",
+          "delete": "Karte erfolgreich gelöscht"
+        },
+        "error": {
+          "create": "Fehler beim Erstellen der Karte",
+          "update": "Fehler beim Aktualisieren der Karte"
+        }
+      },
+      "pool": {
+        "title": "{type} Kartenpool",
+        "description": "Karten in diesem Pool verwalten",
+        "modify_maps": "Karten bearbeiten"
+      },
+      "map_pool": {
+        "toggle_pool_type": "Die Karte {map} wurde für {type} {type}",
+        "toggle_active_pool": "Die Karte {map} wurde für den aktiven Dienst {type}",
+        "save_success": "Kartenpool erfolgreich gespeichert"
+      }
     }
   },
   "matchmaking": {
@@ -903,5 +944,11 @@
       "cancel_invite_description": "Möchten Sie diese Einladung wirklich stornieren?",
       "remove_description": "Möchten Sie dieses Mitglied wirklich entfernen?"
     }
+  },
+  "map_pools": {
+    "edit_map": "Karte bearbeiten",
+    "toggle_pool_type": "Karte {map} wurde für {type} auf {type} gesetzt",
+    "toggle_active_pool": "Karte {map} wurde für aktiven Dienst auf {type} gesetzt",
+    "save_success": "Kartenpool erfolgreich gespeichert"
   }
 }

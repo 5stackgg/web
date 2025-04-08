@@ -204,6 +204,42 @@
           "continue": "Continua"
         }
       }
+    },
+    "map_pools": {
+      "title": "Pool di mappe",
+      "description": "Gestisci pool di mappe e mappe disponibili per il matchmaking.",
+      "form": {
+        "name": "Nome",
+        "poster": "Poster (opzionale)",
+        "poster_placeholder": "http://example.com/poster.png",
+        "patch": "Patch (opzionale)",
+        "patch_placeholder": "http://example.com/patch.png",
+        "workshop_map_id": "ID mappa Workshop (opzionale)",
+        "view_on_steam": "Visualizza su Steam",
+        "create_map": "Crea mappa",
+        "update_map": "Aggiorna mappa",
+        "delete_map": "Elimina mappa",
+        "delete_confirm": {
+          "title": "Elimina mappa",
+          "description": "Sei sicuro di voler eliminare questa mappa? Questa azione non può essere annullata.",
+          "cancel": "Annulla",
+          "confirm": "Elimina"
+        },
+        "success": {
+          "create": "Mappa creata con successo",
+          "update": "Mappa aggiornata con successo",
+          "delete": "Mappa eliminata con successo"
+        },
+        "error": {
+          "create": "Errore durante la creazione della mappa",
+          "update": "Errore durante l'aggiornamento della mappa"
+        }
+      },
+      "pool": {
+        "title": "Pool di mappe {type}",
+        "description": "Gestisci le mappe in questo pool",
+        "modify_maps": "Modifica mappe"
+      }
     }
   },
   "matchmaking": {
@@ -903,5 +939,11 @@
       "cancel_invite_description": "Vuoi davvero annullare questo invito?",
       "remove_description": "Vuoi davvero rimuovere questo membro?"
     }
+  },
+  "map_pools": {
+    "edit_map": "Modifica mappa",
+    "toggle_pool_type": "La mappa {map} è stata {type} per {type}",
+    "toggle_active_pool": "La mappa {map} è stata {type} per il servizio attivo",
+    "save_success": "Pool di mappe salvato con successo"
   }
 }

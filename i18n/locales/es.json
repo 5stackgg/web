@@ -211,6 +211,47 @@
           "continue": "Continuar"
         }
       }
+    },
+    "map_pools": {
+      "title": "Pools de mapas",
+      "description": "Gestionar pools de mapas y mapas disponibles para matchmaking.",
+      "form": {
+        "name": "Nombre",
+        "poster": "Póster (opcional)",
+        "poster_placeholder": "http://example.com/poster.png",
+        "patch": "Parche (opcional)",
+        "patch_placeholder": "http://example.com/patch.png",
+        "workshop_map_id": "ID del mapa en Workshop (opcional)",
+        "view_on_steam": "Ver en Steam",
+        "create_map": "Crear mapa",
+        "update_map": "Actualizar mapa",
+        "delete_map": "Eliminar mapa",
+        "delete_confirm": {
+          "title": "Eliminar mapa",
+          "description": "¿Estás seguro de que quieres eliminar este mapa? Esta acción no se puede deshacer.",
+          "cancel": "Cancelar",
+          "confirm": "Eliminar"
+        },
+        "success": {
+          "create": "Mapa creado con éxito",
+          "update": "Mapa actualizado con éxito",
+          "delete": "Mapa eliminado con éxito"
+        },
+        "error": {
+          "create": "Error al crear el mapa",
+          "update": "Error al actualizar el mapa"
+        }
+      },
+      "pool": {
+        "title": "Pool de mapas {type}",
+        "description": "Gestionar mapas en este pool",
+        "modify_maps": "Modificar mapas"
+      },
+      "map_pool": {
+        "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
+        "toggle_active_pool": "El mapa {map} ha sido {type} para el servicio activo",
+        "save_success": "Pool de mapas guardado con éxito"
+      }
     }
   },
   "matchmaking": {
@@ -910,5 +951,11 @@
       "cancel_invite_description": "¿Estás seguro de que quieres cancelar esta invitación?",
       "remove_description": "¿Estás seguro de que quieres eliminar este miembro?"
     }
+  },
+  "map_pools": {
+    "edit_map": "Editar mapa",
+    "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
+    "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
+    "save_success": "Pool de mapas guardado con éxito"
   }
 }

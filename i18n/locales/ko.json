@@ -204,10 +204,12 @@
       "title": "친구",
       "sync": "동기화",
       "search": "검색",
-      "pending_requests": "기 중인 요청",
+      "pending_requests": "대기 중인 요청",
       "invite_to_lobby": "로비에 초대",
-      "remove": "제거",
-      "online": "온라인"
+      "remove": "삭제",
+      "online": "온라인",
+      "offline": "오프라인",
+      "join_lobby": "로비 참가"
     },
     "leave": "나가기",
     "position": "위치",
@@ -674,6 +676,12 @@
         "app_settings": "앱 설정",
         "report_issue": "문제 보고",
         "join_discord": "Discord 참여"
+      },
+      "logout_dialog": {
+        "title": "로그아웃",
+        "description": "로그아웃하시겠습니까?",
+        "cancel": "취소",
+        "confirm": "로그아웃"
       }
     }
   },

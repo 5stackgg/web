@@ -44,17 +44,17 @@ export default {
     return {
       sidebarNavItems: [
         {
-          title: "Matchmaking",
+          title: this.$t("pages.settings.application.matchmaking.title"),
           key: "matchmaking",
           to: "/settings/application",
         },
         {
-          title: "Players",
+          title: this.$t("pages.players.title"),
           key: "players",
           to: "/settings/application/players",
         },
         {
-          title: "Discord",
+          title: this.$t("pages.settings.application.discord.title"),
           key: "discord",
           to: "/settings/application/discord",
         },

@@ -205,9 +205,11 @@
       "sync": "Synchroniser",
       "search": "Rechercher",
       "pending_requests": "Demandes en attente",
-      "invite_to_lobby": "Inviter dans le lobby",
-      "remove": "Retirer",
-      "online": "En ligne"
+      "invite_to_lobby": "Inviter au lobby",
+      "remove": "Supprimer",
+      "online": "En ligne",
+      "offline": "Hors ligne",
+      "join_lobby": "Rejoindre le lobby"
     },
     "leave": "Quitter",
     "position": "Position",

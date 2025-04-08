@@ -255,7 +255,6 @@
       },
       "profile": {
         "my_account": "Mitt Konto",
-        "my_account": "Mitt konto",
         "logout": "Logga ut"
       },
       "logout_dialog": {
@@ -263,6 +262,22 @@
         "description": "Är du säker på att du vill logga ut?",
         "cancel": "Avbryt",
         "confirm": "Logga ut"
+      },
+      "tooltips": {
+        "play": "Spela",
+        "matches": "Matcher",
+        "tournaments": "Turneringar",
+        "players": "Spelare",
+        "teams": "Lag",
+        "regions": "Regioner",
+        "servers": "Servrar",
+        "dedicated_servers": "Dedikerade Servrar",
+        "game_server_nodes": "Spelserver Noder",
+        "system_logs": "Systemloggar",
+        "system_metrics": "Systemmetrik",
+        "app_settings": "Appinställningar",
+        "report_issue": "Rapportera Problem",
+        "join_discord": "Gå med i Discord"
       }
     }
   },
@@ -806,12 +821,13 @@
     },
     "friends": {
       "title": "Vänner",
-      "sync": "Synkronisera vänner",
-      "search": "Sök efter vänner",
-      "pending_requests": "Väntande vänförfrågningar",
+      "sync": "Synkronisera",
+      "search": "Sök",
+      "pending_requests": "Väntande förfrågningar",
       "invite_to_lobby": "Bjud in till lobby",
-      "remove": "Ta bort vän",
-      "online": "Online-vänner"
+      "remove": "Ta bort",
+      "online": "Online",
+      "offline": "Offline"
     },
     "leave": "Lämna",
     "position": "Nuvarande position",

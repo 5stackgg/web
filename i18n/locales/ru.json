@@ -207,7 +207,8 @@
       "pending_requests": "Ожидающие запросы",
       "invite_to_lobby": "Пригласить в лобби",
       "remove": "Удалить",
-      "online": "Онлайн"
+      "online": "В сети",
+      "offline": "Не в сети"
     },
     "leave": "Выйти",
     "position": "Позиция",

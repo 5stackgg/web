@@ -310,7 +310,9 @@
       "pending_requests": "保留中のリクエスト",
       "invite_to_lobby": "ロビーに招待",
       "remove": "削除",
-      "online": "オンライン"
+      "online": "オンライン",
+      "offline": "オフライン",
+      "join_lobby": "ロビーに参加"
     },
     "leave": "退出",
     "position": "位置",

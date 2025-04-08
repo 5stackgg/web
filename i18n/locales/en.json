@@ -60,9 +60,22 @@
           "title": "Matchmaking",
           "description": "Matchmaking allows players to join a queue and be matched with other players."
         },
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Discord Invite Link",
+          "webhook": "Discord Webhook",
+          "webhook_description": "We use this discord webhook to send notifications that require action from a player. Ex. match issues, bugs, etc.",
+          "support_role": "Discord Support Role ID",
+          "support_role_description": "This role will be pinged when used for support actions. You can get the Role ID from the Discord application by turning on developer mode and right clicking and copy id.",
+          "update": "Update"
+        },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
         "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
-        "update": "Update"
+        "update": "Update",
+        "players": {
+          "force_name_registration": "Force Player Name Registration",
+          "force_name_registration_description": "If forced to have player registration, the player will be required to submit a name that will be used on the platform."
+        }
       }
     },
     "regions": {
@@ -87,7 +100,12 @@
     },
     "players": {
       "title": "Players",
-      "search": "Search...",
+      "search": {
+        "placeholder": "Search players...",
+        "online_only": "Online Only",
+        "no_players_found": "No players found.",
+        "found_players": "{count} players found"
+      },
       "detail": {
         "player_stats": "Player Stats",
         "kills": "Kills",
@@ -331,7 +349,8 @@
       "description": "Description",
       "start": "Start Date",
       "pick_date": "Pick a date",
-      "update": "Update Tournament"
+      "update": "Update Tournament",
+      "match_options": "Match Options"
     },
     "table": {
       "tournament": "Tournament",
@@ -821,12 +840,14 @@
     },
     "friends": {
       "title": "Friends",
-      "sync": "Sync Friends",
-      "search": "Search For Friends",
-      "pending_requests": "Pending Friend Requests",
+      "sync": "Sync",
+      "search": "Search",
+      "pending_requests": "Pending Requests",
       "invite_to_lobby": "Invite to Lobby",
-      "remove": "Remove Friend",
-      "online": "Online Friends"
+      "remove": "Remove",
+      "online": "Online",
+      "offline": "Offline",
+      "join_lobby": "Join Lobby"
     },
     "leave": "Leave",
     "position": "Current Position",

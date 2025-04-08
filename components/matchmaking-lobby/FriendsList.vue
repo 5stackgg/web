@@ -117,7 +117,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
                     joinLobby(player.player.lobby_players?.at(0)?.lobby.id)
                   "
                 >
-                  Join Lobby
+                  {{ $t("matchmaking.friends.join_lobby") }}
                 </Button>
                 <div class="flex">
                   <template
@@ -144,7 +144,11 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 
         <div class="flex flex-col gap-4">
           <div class="mb-2 font-medium text-sm text-muted-foreground">
-            Offline Friends ({{ offlineFriends.length }})
+            {{
+              $t("matchmaking.friends.offline", {
+                count: offlineFriends.length,
+              })
+            }}
           </div>
           <template v-for="player in offlineFriends">
             <FriendOptions :player="player">

@@ -207,7 +207,9 @@
       "pending_requests": "Solicitações pendentes",
       "invite_to_lobby": "Convidar para o lobby",
       "remove": "Remover",
-      "online": "Online"
+      "online": "Online",
+      "offline": "Offline",
+      "join_lobby": "Entrar no Lobby"
     },
     "leave": "Sair",
     "position": "Posição",

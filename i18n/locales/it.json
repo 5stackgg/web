@@ -207,7 +207,9 @@
       "pending_requests": "Richieste in sospeso",
       "invite_to_lobby": "Invita in lobby",
       "remove": "Rimuovi",
-      "online": "Online"
+      "online": "Online",
+      "offline": "Offline",
+      "join_lobby": "Entra in lobby"
     },
     "leave": "Esci",
     "position": "Posizione",
@@ -674,6 +676,12 @@
         "app_settings": "Impostazioni App",
         "report_issue": "Segnala un Problema",
         "join_discord": "Unisciti al Discord"
+      },
+      "logout_dialog": {
+        "title": "Disconnessione",
+        "description": "Sei sicuro di voler uscire?",
+        "cancel": "Annulla",
+        "confirm": "Esci"
       }
     }
   },

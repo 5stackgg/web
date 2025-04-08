@@ -10,7 +10,7 @@ definePageMeta({
   <form @submit.prevent="updateSettings" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="discord_invite_link">
       <FormItem>
-        <FormLabel>Discord Invite Link</FormLabel>
+        <FormLabel>{{ $t('pages.settings.application.discord.invite_link') }}</FormLabel>
         <Input v-bind="componentField"></Input>
         <FormMessage />
       </FormItem>
@@ -18,11 +18,8 @@ definePageMeta({
 
     <FormField v-slot="{ componentField }" name="discord_support_webhook">
       <FormItem>
-        <FormLabel>Discord Webhook</FormLabel>
-        <FormDescription
-          >We use this discord webhook to send notifications that require action
-          from a player. Ex. match issues, bugs, etc.</FormDescription
-        >
+        <FormLabel>{{ $t('pages.settings.application.discord.webhook') }}</FormLabel>
+        <FormDescription>{{ $t('pages.settings.application.discord.webhook_description') }}</FormDescription>
         <Input v-bind="componentField"></Input>
         <FormMessage />
       </FormItem>
@@ -30,12 +27,8 @@ definePageMeta({
 
     <FormField v-slot="{ componentField }" name="discord_support_role_id">
       <FormItem>
-        <FormLabel>Discord Support Role ID</FormLabel>
-        <FormDescription
-          >Thie role will be pinged when used for support actions. You can get
-          the Role ID from the Discord application by turning on devleoper mode
-          and right clicking and copy id.</FormDescription
-        >
+        <FormLabel>{{ $t('pages.settings.application.discord.support_role') }}</FormLabel>
+        <FormDescription>{{ $t('pages.settings.application.discord.support_role_description') }}</FormDescription>
         <Input v-bind="componentField"></Input>
         <FormMessage />
       </FormItem>
@@ -47,7 +40,7 @@ definePageMeta({
         :disabled="Object.keys(form.errors).length > 0"
         class="my-3"
       >
-        Update
+        {{ $t('pages.settings.application.discord.update') }}
       </Button>
     </div>
   </form>

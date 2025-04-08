@@ -204,10 +204,11 @@
       "title": "Znajomi",
       "sync": "Synchronizuj",
       "search": "Szukaj",
-      "pending_requests": "Oczekujące prośby",
+      "pending_requests": "Oczekujące zaproszenia",
       "invite_to_lobby": "Zaproś do lobby",
       "remove": "Usuń",
-      "online": "Online"
+      "online": "Online",
+      "offline": "Offline"
     },
     "leave": "Wyjdź",
     "position": "Pozycja",

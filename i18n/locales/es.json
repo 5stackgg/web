@@ -204,10 +204,12 @@
       "title": "Amigos",
       "sync": "Sincronizar",
       "search": "Buscar",
-      "pending_requests": "Solicitudes pendientes",
-      "invite_to_lobby": "Invitar al lobby",
+      "pending_requests": "Solicitudes Pendientes",
+      "invite_to_lobby": "Invitar al Lobby",
       "remove": "Eliminar",
-      "online": "En línea"
+      "online": "En línea",
+      "offline": "Desconectado",
+      "join_lobby": "Unirse al Lobby"
     },
     "leave": "Salir",
     "position": "Posición",

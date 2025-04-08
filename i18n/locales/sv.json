@@ -739,7 +739,8 @@
   },
   "player": {
     "sanction": {
-      "button": "Sanktionera spelare"
+      "button": "Sanktionera spelare",
+      "reason_description": "Vänligen ange en tydlig anledning för denna sanktion"
     },
     "search": {
       "online_only": "Online",

@@ -666,7 +666,8 @@
         "game_server_nodes": "Nœuds de Serveur de Jeu",
         "logs": "Journaux Système",
         "metrics": "Métriques Système",
-        "app_settings": "Paramètres de l'Application"
+        "app_settings": "Paramètres de l'Application",
+        "map_pools": "Groupes de Cartes"
       },
       "profile": {
         "my_account": "Mon Compte",
@@ -690,7 +691,8 @@
         "system_metrics": "Métriques Système",
         "app_settings": "Paramètres de l'Application",
         "report_issue": "Signaler un Problème",
-        "join_discord": "Rejoindre Discord"
+        "join_discord": "Rejoindre Discord",
+        "map_pools": "Groupes de Cartes"
       },
       "logout_dialog": {
         "title": "Déconnexion",
@@ -902,4 +904,4 @@
       "remove_description": "Voulez-vous vraiment retirer ce membre ?"
     }
   }
-} 
+}

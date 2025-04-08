@@ -204,6 +204,12 @@
           "continue": "Continue"
         }
       }
+    },
+    "map_pools": {
+      "table": {
+        "pool_name": "Pool Name",
+        "maps": "Maps"
+      }
     }
   },
   "layouts": {
@@ -261,7 +267,8 @@
         "game_server_nodes": "Game Server Nodes",
         "logs": "System Logs",
         "metrics": "System Metrics",
-        "app_settings": "App Settings"
+        "app_settings": "App Settings",
+        "map_pools": "Map Pools"
       },
       "profile": {
         "my_account": "My Account",
@@ -285,7 +292,8 @@
         "system_metrics": "System Metrics",
         "app_settings": "App Settings",
         "report_issue": "Report an Issue",
-        "join_discord": "Join our Discord"
+        "join_discord": "Join our Discord",
+        "map_pools": "Map Pools"
       },
       "logout_dialog": {
         "title": "Logout",

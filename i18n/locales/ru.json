@@ -666,7 +666,8 @@
         "game_server_nodes": "Узлы Игрового Сервера",
         "logs": "Системные Логи",
         "metrics": "Системные Метрики",
-        "app_settings": "Настройки Приложения"
+        "app_settings": "Настройки Приложения",
+        "map_pools": "Пул Карт"
       },
       "footer": {
         "report_issue": "Сообщить о Проблеме",
@@ -690,7 +691,8 @@
         "system_metrics": "Системные Метрики",
         "app_settings": "Настройки Приложения",
         "report_issue": "Сообщить о Проблеме",
-        "join_discord": "Присоединиться к Discord"
+        "join_discord": "Присоединиться к Discord",
+        "map_pools": "Пул Карт"
       },
       "logout_dialog": {
         "title": "Выйти",
@@ -902,4 +904,4 @@
       "remove_description": "Вы уверены, что хотите удалить этого участника?"
     }
   }
-} 
+}

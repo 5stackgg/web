@@ -666,7 +666,8 @@
         "game_server_nodes": "游戏服务器节点",
         "logs": "系统日志",
         "metrics": "系统指标",
-        "app_settings": "应用设置"
+        "app_settings": "应用设置",
+        "map_pools": "地图池"
       },
       "footer": {
         "report_issue": "报告问题",
@@ -683,11 +684,11 @@
         "confirm": "退出"
       },
       "tooltips": {
-        "play": "开始游戏",
+        "play": "游戏",
         "matches": "比赛",
         "tournaments": "锦标赛",
         "players": "玩家",
-        "teams": "战队",
+        "teams": "队伍",
         "regions": "地区",
         "servers": "服务器",
         "dedicated_servers": "专用服务器",
@@ -696,7 +697,8 @@
         "system_metrics": "系统指标",
         "app_settings": "应用设置",
         "report_issue": "报告问题",
-        "join_discord": "加入Discord"
+        "join_discord": "加入 Discord",
+        "map_pools": "地图池"
       }
     }
   },
@@ -902,4 +904,4 @@
       "remove_description": "确定要移除此成员吗？"
     }
   }
-} 
+}

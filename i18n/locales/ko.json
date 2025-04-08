@@ -666,7 +666,8 @@
         "game_server_nodes": "게임 서버 노드",
         "logs": "시스템 로그",
         "metrics": "시스템 메트릭",
-        "app_settings": "앱 설정"
+        "app_settings": "앱 설정",
+        "map_pools": "맵 풀"
       },
       "profile": {
         "my_account": "내 계정",
@@ -690,7 +691,8 @@
         "system_metrics": "시스템 메트릭",
         "app_settings": "앱 설정",
         "report_issue": "문제 보고",
-        "join_discord": "Discord 참여"
+        "join_discord": "Discord 참여",
+        "map_pools": "맵 풀"
       },
       "logout_dialog": {
         "title": "로그아웃",

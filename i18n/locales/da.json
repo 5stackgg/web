@@ -663,10 +663,11 @@
         "regions": "Regioner",
         "servers": "Servere",
         "dedicated_servers": "Dedikerede Servere",
-        "game_server_nodes": "Spilserverknuder",
+        "game_server_nodes": "Spilserver Nodes",
         "logs": "Systemlogs",
-        "metrics": "Systemmetrikker",
-        "app_settings": "Appindstillinger"
+        "metrics": "Systemmetrik",
+        "app_settings": "Appindstillinger",
+        "map_pools": "Kortpuljer"
       },
       "profile": {
         "my_account": "Min Konto",
@@ -685,12 +686,13 @@
         "regions": "Regioner",
         "servers": "Servere",
         "dedicated_servers": "Dedikerede Servere",
-        "game_server_nodes": "Spilserverknuder",
+        "game_server_nodes": "Spilserver Nodes",
         "system_logs": "Systemlogs",
-        "system_metrics": "Systemmetrikker",
+        "system_metrics": "Systemmetrik",
         "app_settings": "Appindstillinger",
         "report_issue": "Rapportér Problem",
-        "join_discord": "Tilmeld Discord"
+        "join_discord": "Tilmeld Discord",
+        "map_pools": "Kortpuljer"
       },
       "logout_dialog": {
         "title": "Log ud",
@@ -902,4 +904,4 @@
       "remove_description": "Er du sikker på, at du vil fjerne dette medlem?"
     }
   }
-} 
+}

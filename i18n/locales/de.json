@@ -663,10 +663,11 @@
         "regions": "Regionen",
         "servers": "Server",
         "dedicated_servers": "Dedizierte Server",
-        "game_server_nodes": "Game-Server-Knoten",
-        "logs": "Systemprotokolle",
-        "metrics": "Systemmetriken",
-        "app_settings": "Anwendungseinstellungen"
+        "game_server_nodes": "Game Server Nodes",
+        "logs": "System Logs",
+        "metrics": "System Metriken",
+        "app_settings": "App Einstellungen",
+        "map_pools": "Map Pools"
       },
       "profile": {
         "my_account": "Mein Konto",
@@ -685,12 +686,13 @@
         "regions": "Regionen",
         "servers": "Server",
         "dedicated_servers": "Dedizierte Server",
-        "game_server_nodes": "Game-Server-Knoten",
-        "system_logs": "Systemprotokolle",
-        "system_metrics": "Systemmetriken",
-        "app_settings": "Anwendungseinstellungen",
+        "game_server_nodes": "Game Server Nodes",
+        "system_logs": "System Logs",
+        "system_metrics": "System Metriken",
+        "app_settings": "App Einstellungen",
         "report_issue": "Problem melden",
-        "join_discord": "Discord beitreten"
+        "join_discord": "Discord beitreten",
+        "map_pools": "Map Pools"
       },
       "logout_dialog": {
         "title": "Abmelden",
@@ -902,4 +904,4 @@
       "remove_description": "Möchten Sie dieses Mitglied wirklich entfernen?"
     }
   }
-} 
+}

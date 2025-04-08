@@ -13,9 +13,15 @@ definePageMeta({
       @click="togglePlayerNameRegistration"
     >
       <div class="space-y-0.5">
-        <h4 class="text-base font-medium">{{ $t('pages.settings.application.players.force_name_registration') }}</h4>
+        <h4 class="text-base font-medium">
+          {{ $t("pages.settings.application.players.force_name_registration") }}
+        </h4>
         <p class="text-sm text-muted-foreground">
-          {{ $t('pages.settings.application.players.force_name_registration_description') }}
+          {{
+            $t(
+              "pages.settings.application.players.force_name_registration_description",
+            )
+          }}
         </p>
       </div>
       <Switch

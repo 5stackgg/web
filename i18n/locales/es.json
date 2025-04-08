@@ -673,7 +673,8 @@
         "game_server_nodes": "Nodos de Servidor de Juego",
         "logs": "Registros del Sistema",
         "metrics": "Métricas del Sistema",
-        "app_settings": "Configuración de la Aplicación"
+        "app_settings": "Configuración de la App",
+        "map_pools": "Grupos de Mapas"
       },
       "profile": {
         "my_account": "Mi Cuenta",
@@ -695,9 +696,10 @@
         "game_server_nodes": "Nodos de Servidor de Juego",
         "system_logs": "Registros del Sistema",
         "system_metrics": "Métricas del Sistema",
-        "app_settings": "Configuración de la Aplicación",
+        "app_settings": "Configuración de la App",
         "report_issue": "Reportar un Problema",
-        "join_discord": "Únete a nuestro Discord"
+        "join_discord": "Unirse a Discord",
+        "map_pools": "Grupos de Mapas"
       },
       "logout_dialog": {
         "title": "Cerrar Sesión",
@@ -909,4 +911,4 @@
       "remove_description": "¿Estás seguro de que quieres eliminar este miembro?"
     }
   }
-} 
+}

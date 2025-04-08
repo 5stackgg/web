@@ -666,7 +666,8 @@
         "game_server_nodes": "Nodi Server di Gioco",
         "logs": "Log di Sistema",
         "metrics": "Metriche di Sistema",
-        "app_settings": "Impostazioni App"
+        "app_settings": "Impostazioni App",
+        "map_pools": "Pool di Mappe"
       },
       "profile": {
         "my_account": "Il Mio Account",
@@ -690,7 +691,8 @@
         "system_metrics": "Metriche di Sistema",
         "app_settings": "Impostazioni App",
         "report_issue": "Segnala un Problema",
-        "join_discord": "Unisciti al Discord"
+        "join_discord": "Unisciti a Discord",
+        "map_pools": "Pool di Mappe"
       },
       "logout_dialog": {
         "title": "Disconnessione",
@@ -902,4 +904,4 @@
       "remove_description": "Vuoi davvero rimuovere questo membro?"
     }
   }
-} 
+}

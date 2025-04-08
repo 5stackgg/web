@@ -15,6 +15,7 @@ import {
   Play,
   ShieldHalf,
   Globe,
+  Map,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import SystemUpdate from "./SystemUpdate.vue";
@@ -66,7 +67,10 @@ const handleLocaleChange = (newLocale: string) => {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.play')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.play')"
+              >
                 <NuxtLink
                   :to="{ name: 'play' }"
                   :class="{
@@ -81,7 +85,10 @@ const handleLocaleChange = (newLocale: string) => {
             </SidebarMenuItem>
 
             <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.matches')">
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.matches')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.matches')"
+              >
                 <NuxtLink
                   :to="{ name: 'matches' }"
                   :class="{
@@ -95,7 +102,10 @@ const handleLocaleChange = (newLocale: string) => {
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.tournaments')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.tournaments')"
+              >
                 <NuxtLink
                   :to="{ name: 'tournaments' }"
                   :class="{
@@ -110,7 +120,10 @@ const handleLocaleChange = (newLocale: string) => {
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.players')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.players')"
+              >
                 <NuxtLink
                   :to="{ name: 'players' }"
                   :class="{
@@ -124,7 +137,10 @@ const handleLocaleChange = (newLocale: string) => {
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.teams')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.teams')"
+              >
                 <NuxtLink
                   :to="{ name: 'teams' }"
                   :class="{
@@ -145,8 +161,30 @@ const handleLocaleChange = (newLocale: string) => {
           }}</SidebarGroupLabel>
 
           <SidebarMenu>
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
+              >
+                <NuxtLink
+                  :to="{ name: 'map-pools' }"
+                  :class="{
+                    'router-link-active': isRouteActive('map-pools'),
+                  }"
+                >
+                  <Map />
+                  {{ $t("layouts.app_nav.administration.map_pools") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.regions')">
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.regions')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.regions')"
+              >
                 <NuxtLink
                   :to="{ name: 'regions' }"
                   :class="{
@@ -167,7 +205,9 @@ const handleLocaleChange = (newLocale: string) => {
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger as-child>
-                  <SidebarMenuButton :tooltip="$t('layouts.app_nav.tooltips.servers')">
+                  <SidebarMenuButton
+                    :tooltip="$t('layouts.app_nav.tooltips.servers')"
+                  >
                     <Server />
                     <span>{{
                       $t("layouts.app_nav.administration.servers")
@@ -185,7 +225,9 @@ const handleLocaleChange = (newLocale: string) => {
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton
                         as-child
-                        :tooltip="$t('layouts.app_nav.tooltips.dedicated_servers')"
+                        :tooltip="
+                          $t('layouts.app_nav.tooltips.dedicated_servers')
+                        "
                       >
                         <NuxtLink
                           :to="{ name: 'dedicated-servers' }"
@@ -206,7 +248,9 @@ const handleLocaleChange = (newLocale: string) => {
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton
                         as-child
-                        :tooltip="$t('layouts.app_nav.tooltips.game_server_nodes')"
+                        :tooltip="
+                          $t('layouts.app_nav.tooltips.game_server_nodes')
+                        "
                       >
                         <NuxtLink
                           :to="{ name: 'game-server-nodes' }"
@@ -273,8 +317,13 @@ const handleLocaleChange = (newLocale: string) => {
               </DropdownMenu>
             </SidebarMenuItem>
 
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.system_logs')">
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.system_logs')">
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
+              >
                 <NuxtLink
                   :to="{ name: 'system-logs' }"
                   :class="{
@@ -287,8 +336,13 @@ const handleLocaleChange = (newLocale: string) => {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.system_metrics')">
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.system_metrics')">
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
+              >
                 <NuxtLink
                   :to="{ name: 'system-metrics' }"
                   :class="{
@@ -301,8 +355,13 @@ const handleLocaleChange = (newLocale: string) => {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.app_settings')">
-              <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.app_settings')">
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.tooltips.app_settings')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.app_settings')"
+              >
                 <NuxtLink
                   :to="{ name: 'settings-application' }"
                   :class="{
@@ -322,7 +381,10 @@ const handleLocaleChange = (newLocale: string) => {
           <SidebarMenuItem
             v-if="me?.role === e_player_roles_enum.administrator"
           >
-            <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.report_issue')">
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.report_issue')"
+            >
               <a
                 href="https://github.com/5stackgg/5stack-panel/issues"
                 target="_blank"
@@ -336,7 +398,10 @@ const handleLocaleChange = (newLocale: string) => {
           </SidebarMenuItem>
 
           <SidebarMenuItem>
-            <SidebarMenuButton as-child :tooltip="$t('layouts.app_nav.tooltips.join_discord')">
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.join_discord')"
+            >
               <a
                 :href="inviteLink"
                 target="_blank"

@@ -666,7 +666,8 @@
         "game_server_nodes": "Nós de Servidor de Jogo",
         "logs": "Logs do Sistema",
         "metrics": "Métricas do Sistema",
-        "app_settings": "Configurações do Aplicativo"
+        "app_settings": "Configurações do App",
+        "map_pools": "Conjuntos de Mapas"
       },
       "profile": {
         "my_account": "Minha Conta",
@@ -688,9 +689,10 @@
         "game_server_nodes": "Nós de Servidor de Jogo",
         "system_logs": "Logs do Sistema",
         "system_metrics": "Métricas do Sistema",
-        "app_settings": "Configurações do Aplicativo",
+        "app_settings": "Configurações do App",
         "report_issue": "Reportar Problema",
-        "join_discord": "Entre no Discord"
+        "join_discord": "Entrar no Discord",
+        "map_pools": "Conjuntos de Mapas"
       },
       "logout_dialog": {
         "title": "Sair",
@@ -902,4 +904,4 @@
       "remove_description": "Tem certeza que deseja remover este membro?"
     }
   }
-} 
+}

@@ -261,7 +261,8 @@
         "game_server_nodes": "ゲームサーバーノード",
         "logs": "システムログ",
         "metrics": "システムメトリクス",
-        "app_settings": "アプリ設定"
+        "app_settings": "アプリ設定",
+        "map_pools": "マッププール"
       },
       "footer": {
         "report_issue": "問題を報告",
@@ -291,7 +292,8 @@
         "system_metrics": "システムメトリクス",
         "app_settings": "アプリ設定",
         "report_issue": "問題を報告",
-        "join_discord": "Discordに参加"
+        "join_discord": "Discordに参加",
+        "map_pools": "マッププール"
       }
     }
   },
@@ -902,4 +904,4 @@
       "container": "コンテナ"
     }
   }
-} 
+}

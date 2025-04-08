@@ -666,7 +666,8 @@
         "game_server_nodes": "Węzły Serwera Gry",
         "logs": "Logi Systemowe",
         "metrics": "Metryki Systemowe",
-        "app_settings": "Ustawienia Aplikacji"
+        "app_settings": "Ustawienia Aplikacji",
+        "map_pools": "Pule Map"
       },
       "profile": {
         "my_account": "Moje Konto",
@@ -690,7 +691,8 @@
         "system_metrics": "Metryki Systemowe",
         "app_settings": "Ustawienia Aplikacji",
         "report_issue": "Zgłoś Problem",
-        "join_discord": "Dołącz do Discorda"
+        "join_discord": "Dołącz do Discorda",
+        "map_pools": "Pule Map"
       },
       "logout_dialog": {
         "title": "Wyloguj",
@@ -902,4 +904,4 @@
       "remove_description": "Czy na pewno chcesz usunąć tego członka?"
     }
   }
-} 
+}

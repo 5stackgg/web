@@ -10,7 +10,9 @@ definePageMeta({
   <form @submit.prevent="updateSettings" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="discord_invite_link">
       <FormItem>
-        <FormLabel>{{ $t('pages.settings.application.discord.invite_link') }}</FormLabel>
+        <FormLabel>{{
+          $t("pages.settings.application.discord.invite_link")
+        }}</FormLabel>
         <Input v-bind="componentField"></Input>
         <FormMessage />
       </FormItem>
@@ -18,8 +20,12 @@ definePageMeta({
 
     <FormField v-slot="{ componentField }" name="discord_support_webhook">
       <FormItem>
-        <FormLabel>{{ $t('pages.settings.application.discord.webhook') }}</FormLabel>
-        <FormDescription>{{ $t('pages.settings.application.discord.webhook_description') }}</FormDescription>
+        <FormLabel>{{
+          $t("pages.settings.application.discord.webhook")
+        }}</FormLabel>
+        <FormDescription>{{
+          $t("pages.settings.application.discord.webhook_description")
+        }}</FormDescription>
         <Input v-bind="componentField"></Input>
         <FormMessage />
       </FormItem>
@@ -27,8 +33,12 @@ definePageMeta({
 
     <FormField v-slot="{ componentField }" name="discord_support_role_id">
       <FormItem>
-        <FormLabel>{{ $t('pages.settings.application.discord.support_role') }}</FormLabel>
-        <FormDescription>{{ $t('pages.settings.application.discord.support_role_description') }}</FormDescription>
+        <FormLabel>{{
+          $t("pages.settings.application.discord.support_role")
+        }}</FormLabel>
+        <FormDescription>{{
+          $t("pages.settings.application.discord.support_role_description")
+        }}</FormDescription>
         <Input v-bind="componentField"></Input>
         <FormMessage />
       </FormItem>
@@ -40,7 +50,7 @@ definePageMeta({
         :disabled="Object.keys(form.errors).length > 0"
         class="my-3"
       >
-        {{ $t('pages.settings.application.discord.update') }}
+        {{ $t("pages.settings.application.discord.update") }}
       </Button>
     </div>
   </form>

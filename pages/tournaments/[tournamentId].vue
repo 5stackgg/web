@@ -207,8 +207,12 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <TabsContent value="manage">
         <Tabs default-value="match-options">
           <TabsList>
-            <TabsTrigger value="match-options">{{ $t("tournament.form.match_options") }}</TabsTrigger>
-            <TabsTrigger value="organizers">{{ $t("tournament.organizer.title") }}</TabsTrigger>
+            <TabsTrigger value="match-options">{{
+              $t("tournament.form.match_options")
+            }}</TabsTrigger>
+            <TabsTrigger value="organizers">{{
+              $t("tournament.organizer.title")
+            }}</TabsTrigger>
           </TabsList>
           <TabsContent value="match-options">
             <TournamentForm :tournament="tournament"></TournamentForm>

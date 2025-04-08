@@ -261,7 +261,8 @@
         "game_server_nodes": "Spelserver Noder",
         "logs": "Systemloggar",
         "metrics": "Systemmetrik",
-        "app_settings": "Appinställningar"
+        "app_settings": "Appinställningar",
+        "map_pools": "Kartpooler"
       },
       "footer": {
         "report_issue": "Rapportera Problem",
@@ -291,7 +292,8 @@
         "system_metrics": "Systemmetrik",
         "app_settings": "Appinställningar",
         "report_issue": "Rapportera Problem",
-        "join_discord": "Gå med i Discord"
+        "join_discord": "Gå med i Discord",
+        "map_pools": "Kartpooler"
       }
     }
   },

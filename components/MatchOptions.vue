@@ -127,9 +127,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <FormLabel class="text-lg font-semibold">
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
-                      {{
-                        $t("match.options.map_veto_settings.custom_pool")
-                      }}
+                      {{ $t("match.options.map_veto_settings.custom_pool") }}
                       ({{ form.values.map_pool.length }})
                     </template>
                     <template v-else>{{

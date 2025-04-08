@@ -663,10 +663,11 @@
         "regions": "Reģioni",
         "servers": "Serveri",
         "dedicated_servers": "Dedikētie Serveri",
-        "game_server_nodes": "Spēles Servera Mezgli",
+        "game_server_nodes": "Spēļu Serveru Mezgli",
         "logs": "Sistēmas Žurnāli",
         "metrics": "Sistēmas Metrikas",
-        "app_settings": "Lietotnes Iestatījumi"
+        "app_settings": "Lietotnes Iestatījumi",
+        "map_pools": "Kartu Kopas"
       },
       "footer": {
         "report_issue": "Ziņot par Problēmu",
@@ -684,19 +685,20 @@
       },
       "tooltips": {
         "play": "Spēlēt",
-        "matches": "Spēles",
+        "matches": "Mači",
         "tournaments": "Turnīri",
         "players": "Spēlētāji",
         "teams": "Komandas",
         "regions": "Reģioni",
         "servers": "Serveri",
         "dedicated_servers": "Dedikētie Serveri",
-        "game_server_nodes": "Spēles Servera Mezgli",
+        "game_server_nodes": "Spēļu Serveru Mezgli",
         "system_logs": "Sistēmas Žurnāli",
         "system_metrics": "Sistēmas Metrikas",
         "app_settings": "Lietotnes Iestatījumi",
         "report_issue": "Ziņot par Problēmu",
-        "join_discord": "Pievienojies Discord"
+        "join_discord": "Pievienoties Discord",
+        "map_pools": "Kartu Kopas"
       }
     }
   },
@@ -902,4 +904,4 @@
       "remove_description": "Vai tiešām vēlaties noņemt šo dalībnieku?"
     }
   }
-} 
+}

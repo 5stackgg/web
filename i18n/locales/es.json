@@ -249,21 +249,16 @@
           "update": "Error al actualizar el mapa"
         }
       },
+      "edit_map": "Editar mapa",
+      "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
+      "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
+      "add_new_map": "Añadir nuevo mapa",
       "pool": {
         "title": "Grupo de mapas {type}",
         "description": "Gestionar mapas en el grupo {type}",
         "modify_maps": "Modificar mapas en el grupo"
       },
-      "edit_map": "Editar mapa",
-      "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
-      "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
-      "add_new_map": "Añadir nuevo mapa",
-      "save_success": "Grupo de mapas guardado con éxito",
-      "components": {
-        "map_pools": {
-          "view_on_steam": "Ver en Steam"
-        }
-      }
+      "save_success": "Grupo de mapas guardado con éxito"
     },
     "map_pool": {
       "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
@@ -967,6 +962,11 @@
       "confirm_remove": "Confirmar eliminación",
       "cancel_invite_description": "¿Estás seguro de que quieres cancelar esta invitación?",
       "remove_description": "¿Estás seguro de que quieres eliminar este miembro?"
+    }
+  },
+  "components": {
+    "map_pools": {
+      "view_on_steam": "Ver en Steam"
     }
   }
 }

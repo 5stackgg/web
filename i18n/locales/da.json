@@ -242,21 +242,16 @@
           "update": "Fejl ved opdatering af kort"
         }
       },
+      "edit_map": "Rediger kort",
+      "toggle_pool_type": "Kort {map} blev {type} for {type}",
+      "toggle_active_pool": "Kort {map} blev {type} for aktiv tjeneste",
+      "add_new_map": "Tilføj nyt kort",
       "pool": {
         "title": "{type} kort-pool",
         "description": "Administrer kort i {type} pool",
         "modify_maps": "Rediger kort i poolen"
       },
-      "edit_map": "Rediger kort",
-      "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
-      "toggle_active_pool": "Kortet {map} er blevet {type} for aktiv tjeneste",
-      "add_new_map": "Tilføj nyt kort",
-      "save_success": "Kort-pool gemt med succes",
-      "components": {
-        "map_pools": {
-          "view_on_steam": "Se på Steam"
-        }
-      }
+      "save_success": "Kort-pool gemt med succes"
     },
     "map_pool": {
       "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",

@@ -204,6 +204,59 @@
           "continue": "继续"
         }
       }
+    },
+    "map_pools": {
+      "title": "地图池",
+      "description": "管理匹配系统的地图池和可用地图。",
+      "table": {
+        "pool_name": "池名称",
+        "maps": "地图",
+        "active_duty": "服役地图",
+        "available_modes": "可用模式",
+        "workshop_id": "创意工坊ID"
+      },
+      "form": {
+        "name": "名称",
+        "poster": "海报（可选）",
+        "poster_placeholder": "http://example.com/poster.png",
+        "patch": "补丁（可选）",
+        "patch_placeholder": "http://example.com/patch.png",
+        "workshop_map_id": "创意工坊地图ID（可选）",
+        "view_on_steam": "在Steam上查看",
+        "create_map": "创建地图",
+        "update_map": "更新地图",
+        "delete_map": "删除地图",
+        "delete_confirm": {
+          "title": "删除地图",
+          "description": "确定要删除此地图吗？此操作无法撤销。",
+          "cancel": "取消",
+          "confirm": "删除"
+        },
+        "success": {
+          "create": "地图创建成功",
+          "update": "地图更新成功",
+          "delete": "地图删除成功"
+        },
+        "error": {
+          "create": "创建地图时出错",
+          "update": "更新地图时出错"
+        }
+      },
+      "pool": {
+        "title": "{type}地图池",
+        "description": "管理{type}池中的地图",
+        "modify_maps": "修改池中的地图"
+      },
+      "edit_map": "编辑地图",
+      "toggle_pool_type": "地图{map}已{type}为{type}",
+      "toggle_active_pool": "地图{map}已{type}为服役地图",
+      "add_new_map": "添加新地图",
+      "save_success": "地图池保存成功",
+      "components": {
+        "map_pools": {
+          "view_on_steam": "在Steam上查看"
+        }
+      }
     }
   },
   "matchmaking": {
@@ -904,57 +957,9 @@
       "remove_description": "确定要移除此成员吗？"
     }
   },
-  "map_pools": {
-    "title": "地图池",
-    "description": "管理匹配系统的地图池和可用地图",
-    "table": {
-      "pool_name": "池名称",
-      "maps": "地图",
-      "active_duty": "服役地图",
-      "available_modes": "可用模式",
-      "workshop_id": "创意工坊ID"
-    },
-    "form": {
-      "name": "名称",
-      "poster": "海报（可选）",
-      "poster_placeholder": "http://example.com/poster.png",
-      "patch": "补丁（可选）",
-      "patch_placeholder": "http://example.com/patch.png",
-      "workshop_map_id": "创意工坊地图ID（可选）",
-      "view_on_steam": "在Steam上查看",
-      "create_map": "创建地图",
-      "update_map": "更新地图",
-      "delete_map": "删除地图",
-      "delete_confirm": {
-        "title": "删除地图",
-        "description": "确定要删除此地图吗？此操作无法撤销。",
-        "cancel": "取消",
-        "confirm": "删除"
-      },
-      "success": {
-        "create": "地图创建成功",
-        "update": "地图更新成功",
-        "delete": "地图删除成功"
-      },
-      "error": {
-        "create": "创建地图时出错",
-        "update": "更新地图时出错"
-      }
-    },
-    "pool": {
-      "title": "{type}地图池",
-      "description": "管理{type}池中的地图",
-      "modify_maps": "修改池中的地图"
-    },
-    "edit_map": "编辑地图",
-    "toggle_pool_type": "地图{map}已{type}为{type}",
-    "toggle_active_pool": "地图{map}已{type}为服役地图",
-    "add_new_map": "添加新地图",
-    "save_success": "地图池保存成功",
-    "components": {
-      "map_pools": {
-        "view_on_steam": "在Steam上查看"
-      }
+  "components": {
+    "map_pools": {
+      "view_on_steam": "在Steam上查看"
     }
   }
 }

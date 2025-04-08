@@ -242,21 +242,16 @@
           "update": "Fehler beim Aktualisieren der Karte"
         }
       },
+      "edit_map": "Karte bearbeiten",
+      "toggle_pool_type": "Karte {map} wurde für {type} {type}",
+      "toggle_active_pool": "Karte {map} wurde für aktiven Dienst {type}",
+      "add_new_map": "Neue Karte hinzufügen",
       "pool": {
         "title": "{type} Kartenpool",
         "description": "Verwalte Karten im {type} Pool",
         "modify_maps": "Karten im Pool ändern"
       },
-      "edit_map": "Karte bearbeiten",
-      "toggle_pool_type": "Die Karte {map} wurde für {type} {type}",
-      "toggle_active_pool": "Die Karte {map} wurde für den aktiven Dienst {type}",
-      "add_new_map": "Neue Karte hinzufügen",
-      "save_success": "Kartenpool erfolgreich gespeichert",
-      "components": {
-        "map_pools": {
-          "view_on_steam": "Auf Steam ansehen"
-        }
-      }
+      "save_success": "Kartenpool erfolgreich gespeichert"
     },
     "map_pool": {
       "toggle_pool_type": "Karte {map} wurde für {type} {type}",

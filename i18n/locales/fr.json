@@ -247,13 +247,26 @@
         "description": "Gérer les cartes dans la pool {type}",
         "modify_maps": "Modifier les cartes dans la pool"
       },
+      "edit_map": "Modifier la carte",
+      "toggle_pool_type": "La carte {map} a été {type} pour {type}",
+      "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
       "add_new_map": "Ajouter une nouvelle carte",
-      "edit_map": "Modifier la carte"
+      "save_success": "Pool de cartes enregistrée avec succès",
+      "components": {
+        "map_pools": {
+          "view_on_steam": "Voir sur Steam"
+        }
+      }
     },
     "map_pool": {
       "toggle_pool_type": "La carte {map} a été {type} pour {type}",
       "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
-      "save_success": "Pool de cartes enregistrée avec succès"
+      "save_success": "Modifications enregistrées avec succès",
+      "components": {
+        "map_pools": {
+          "view_on_steam": "Voir sur Steam"
+        }
+      }
     },
     "components": {
       "map_pools": {

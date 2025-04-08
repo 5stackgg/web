@@ -254,21 +254,21 @@
         "description": "Gestionar mapas en el grupo {type}",
         "modify_maps": "Modificar mapas en el grupo"
       },
+      "edit_map": "Editar mapa",
       "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
       "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
-      "edit_map": "Editar mapa",
       "add_new_map": "Añadir nuevo mapa",
-      "save_success": "Grupo de mapas guardado con éxito"
+      "save_success": "Grupo de mapas guardado con éxito",
+      "components": {
+        "map_pools": {
+          "view_on_steam": "Ver en Steam"
+        }
+      }
     },
     "map_pool": {
       "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
       "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
       "save_success": "Grupo de mapas guardado con éxito"
-    },
-    "components": {
-      "map_pools": {
-        "view_on_steam": "Ver en Steam"
-      }
     }
   },
   "matchmaking": {

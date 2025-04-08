@@ -903,5 +903,57 @@
       "timestamps": "タイムスタンプ",
       "container": "コンテナ"
     }
+  },
+  "map_pools": {
+    "title": "マッププール",
+    "description": "マッチメイキング用のマッププールと利用可能なマップを管理します。",
+    "table": {
+      "pool_name": "プール名",
+      "maps": "マップ",
+      "active_duty": "アクティブデューティ",
+      "available_modes": "利用可能なモード",
+      "workshop_id": "ワークショップID"
+    },
+    "form": {
+      "name": "名前",
+      "poster": "ポスター（オプション）",
+      "poster_placeholder": "http://example.com/poster.png",
+      "patch": "パッチ（オプション）",
+      "patch_placeholder": "http://example.com/patch.png",
+      "workshop_map_id": "ワークショップマップID（オプション）",
+      "view_on_steam": "Steamで表示",
+      "create_map": "マップを作成",
+      "update_map": "マップを更新",
+      "delete_map": "マップを削除",
+      "delete_confirm": {
+        "title": "マップを削除",
+        "description": "このマップを削除してもよろしいですか？この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "success": {
+        "create": "マップが正常に作成されました",
+        "update": "マップが正常に更新されました",
+        "delete": "マップが正常に削除されました"
+      },
+      "error": {
+        "create": "マップの作成中にエラーが発生しました",
+        "update": "マップの更新中にエラーが発生しました"
+      }
+    },
+    "pool": {
+      "title": "{type}マッププール",
+      "description": "{type}プールのマップを管理します",
+      "modify_maps": "プール内のマップを修正"
+    },
+    "edit_map": "マップを編集",
+    "toggle_pool_type": "マップ{map}が{type}用に{type}されました",
+    "toggle_active_pool": "マップ{map}がアクティブデューティ用に{type}されました",
+    "add_new_map": "新しいマップを追加",
+    "components": {
+      "map_pools": {
+        "view_on_steam": "Steamで表示"
+      }
+    }
   }
 }

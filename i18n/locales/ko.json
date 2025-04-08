@@ -903,5 +903,57 @@
       "cancel_invite_description": "이 초대를 취소하시겠습니까?",
       "remove_description": "이 멤버를 제거하시겠습니까?"
     }
+  },
+  "map_pools": {
+    "title": "맵 풀",
+    "description": "매치메이킹을 위한 맵 풀과 사용 가능한 맵을 관리합니다.",
+    "table": {
+      "pool_name": "풀 이름",
+      "maps": "맵",
+      "active_duty": "액티브 듀티",
+      "available_modes": "사용 가능한 모드",
+      "workshop_id": "워크샵 ID"
+    },
+    "form": {
+      "name": "이름",
+      "poster": "포스터 (선택사항)",
+      "poster_placeholder": "http://example.com/poster.png",
+      "patch": "패치 (선택사항)",
+      "patch_placeholder": "http://example.com/patch.png",
+      "workshop_map_id": "워크샵 맵 ID (선택사항)",
+      "view_on_steam": "Steam에서 보기",
+      "create_map": "맵 생성",
+      "update_map": "맵 업데이트",
+      "delete_map": "맵 삭제",
+      "delete_confirm": {
+        "title": "맵 삭제",
+        "description": "이 맵을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+        "cancel": "취소",
+        "confirm": "삭제"
+      },
+      "success": {
+        "create": "맵이 성공적으로 생성되었습니다",
+        "update": "맵이 성공적으로 업데이트되었습니다",
+        "delete": "맵이 성공적으로 삭제되었습니다"
+      },
+      "error": {
+        "create": "맵 생성 중 오류가 발생했습니다",
+        "update": "맵 업데이트 중 오류가 발생했습니다"
+      }
+    },
+    "pool": {
+      "title": "{type} 맵 풀",
+      "description": "{type} 풀의 맵을 관리합니다",
+      "modify_maps": "풀 내 맵 수정"
+    },
+    "edit_map": "맵 편집",
+    "toggle_pool_type": "맵 {map}이(가) {type}용으로 {type}되었습니다",
+    "toggle_active_pool": "맵 {map}이(가) 액티브 듀티용으로 {type}되었습니다",
+    "add_new_map": "새 맵 추가",
+    "components": {
+      "map_pools": {
+        "view_on_steam": "Steam에서 보기"
+      }
+    }
   }
 }

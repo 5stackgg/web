@@ -247,11 +247,16 @@
         "description": "Administrer kort i {type} pool",
         "modify_maps": "Rediger kort i poolen"
       },
+      "edit_map": "Rediger kort",
       "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
       "toggle_active_pool": "Kortet {map} er blevet {type} for aktiv tjeneste",
       "add_new_map": "Tilføj nyt kort",
-      "edit_map": "Rediger kort",
-      "save_success": "Kort-pool gemt med succes"
+      "save_success": "Kort-pool gemt med succes",
+      "components": {
+        "map_pools": {
+          "view_on_steam": "Se på Steam"
+        }
+      }
     },
     "map_pool": {
       "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",

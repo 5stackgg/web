@@ -948,5 +948,8 @@
         "map_pools": {
             "view_on_steam": "Просмотреть в Steam"
         }
+    },
+    "map_pools": {
+        "edit_map": "Редактировать карту"
     }
 }

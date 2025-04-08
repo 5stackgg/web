@@ -948,5 +948,8 @@
         "map_pools": {
             "view_on_steam": "Steamで表示"
         }
+    },
+    "map_pools": {
+        "edit_map": "編集マップ"
     }
 }

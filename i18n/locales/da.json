@@ -787,18 +787,18 @@
   "tournament": {
     "overview": "Oversigt",
     "bracket": "Bracket",
-    "teams": "Hold",
+    "teams": "{count} Hold",
     "settings": "Indstillinger",
     "admin": "Administration",
     "organizers": "Organisatorer",
     "join": {
       "title": "Deltag i turnering",
-      "joined_with": "Hold deltaget",
-      "requirements": "Krav"
+      "joined_with": "Hold deltaget med {name}",
+      "requirements": "Du skal have mindst {count} spillere for at deltage i denne turnering"
     },
     "tournament_team": {
-      "players_registered": "Registrerede spillere",
-      "remove": "Fjern"
+      "players_registered": "{count} Registrerede spillere",
+      "remove": "Fjern hold"
     },
     "add_team": {
       "title": "Tilføj hold"
@@ -822,21 +822,21 @@
       "no_tournaments_found": "Ingen turneringer fundet"
     },
     "stage": {
-      "title": "Fase",
-      "teams": "Hold",
-      "edit": "Rediger",
-      "delete": "Slet",
+      "title": "Fase {number}",
+      "teams": "{min}-{max} Hold",
+      "edit": "Rediger fase",
+      "delete": "Slet fase",
       "edit_title": "Rediger fase",
       "confirm_delete": "Slet fase",
       "delete_description": "Er du sikker på, at du vil slette denne fase?",
-      "type": "Type",
-      "type_placeholder": "Vælg fasetype",
+      "type": "Fasetype",
+      "type_placeholder": "Vælg fasetype...",
       "min_teams": "Minimum hold",
-      "min_teams_placeholder": "Indtast antal minimum hold",
+      "min_teams_placeholder": "Vælg minimum hold...",
       "max_teams": "Maksimum hold",
-      "max_teams_placeholder": "Indtast antal maksimum hold",
-      "update": "Opdater",
-      "create": "Opret",
+      "max_teams_placeholder": "Vælg maksimum hold...",
+      "update": "Opdater fase",
+      "create": "Opret fase",
       "no_stages": "Ingen faser",
       "start_building": "Start bracket opbygning",
       "add_first": "Tilføj første fase",
@@ -846,48 +846,48 @@
     "match": {
       "team_1": "Hold 1",
       "team_2": "Hold 2",
-      "round_match": "Rundekamp"
+      "round_match": "Rundekamp {round} Kamp {match}"
     },
     "organizer": {
-      "title": "Organisator",
+      "title": "Turneringsorganisatorer",
       "description": "Administrer turneringsorganisatorer",
       "add": "Tilføj organisator",
       "name": "Navn",
       "actions": "Handlinger",
       "no_organizers": "Ingen organisatorer",
-      "no_organizers_description": "Denne turnering har ingen organisatorer",
-      "remove": "Fjern",
-      "confirm_remove": "Fjern organisator",
-      "remove_description": "Er du sikker på, at du vil fjerne denne organisator?"
+      "no_organizers_description": "Ingen organisatorer er blevet tilføjet til denne turnering endnu",
+      "remove": "Fjern organisator",
+      "confirm_remove": "Er du sikker på, at du vil fjerne denne organisator?",
+      "remove_description": "Dette vil fjerne organisatoren fra turneringen"
     },
     "team": {
       "manage_roster": "Administrer trup",
       "eligible": "Berettiget",
-      "not_eligible": "Ikke berettiget",
+      "not_eligible": "Mangler {count} flere spillere",
       "leave_tournament": "Forlad turnering",
       "leave_team": "Forlad hold",
       "player": "Spiller",
       "role": "Rolle",
-      "slot": "Slot",
+      "slot": "Slot {number}",
       "add_player": "Tilføj spiller",
       "pending_invites": "Afventende invitationer",
-      "new": "Ny",
-      "select": "Vælg",
-      "name": "Navn",
+      "new": "Opret nyt hold",
+      "select": "Vælg eksisterende hold",
+      "name": "Holdnavn",
       "select_role": "Vælg rolle",
-      "no_roles": "Ingen roller",
+      "no_roles": "Ingen roller tilgængelige",
       "remove_member": "Fjern medlem",
-      "confirm_remove_member": "Fjern medlem",
-      "remove_member_description": "Er du sikker på, at du vil fjerne dette medlem?",
+      "confirm_remove_member": "Er du sikker på, at du vil fjerne dette medlem?",
+      "remove_member_description": "Dette vil fjerne medlemmet fra turneringsholdet",
       "cancel_invite": "Annuller invitation",
-      "confirm_cancel_invite": "Annuller invitation",
-      "cancel_invite_description": "Er du sikker på, at du vil annullere denne invitation?",
+      "confirm_cancel_invite": "Er du sikker på, at du vil annullere denne invitation?",
+      "cancel_invite_description": "Dette vil annullere invitationen til dette medlem",
       "my_teams": "Mine hold",
-      "my_teams_description": "Hold du er medlem af",
-      "no_eligible_teams": "Ingen berettigede hold",
+      "my_teams_description": "Tilføj et af dine hold til turneringen",
+      "no_eligible_teams": "Du har ingen berettigede hold at tilføje til denne turnering",
       "team": "Hold",
-      "select_team": "Vælg hold",
-      "search_team": "Søg efter hold...",
+      "select_team": "Vælg et hold...",
+      "search_team": "Søg efter et hold...",
       "add_to_tournament": "Tilføj til turnering"
     },
     "actions": {
@@ -899,9 +899,9 @@
       "empty": "Ingen kommende turneringer"
     },
     "server": {
-      "remove": "Fjern",
-      "confirm_remove": "Fjern server",
-      "remove_description": "Er du sikker på, at du vil slette denne server?"
+      "remove": "Fjern server",
+      "confirm_remove": "Er du sikker på, at du vil fjerne denne server?",
+      "remove_description": "Dette vil fjerne serveren fra turneringen"
     }
   },
   "team": {
@@ -915,8 +915,8 @@
     "invite": {
       "team_title": "Holdinvitation",
       "tournament_title": "Turneringsinvitation",
-      "tournament_message": "Turneringsinvitationsbesked",
-      "team_message": "Holdinvitationsbesked",
+      "tournament_message": "Du er blevet inviteret til at deltage i en turnering",
+      "team_message": "Du er blevet inviteret til at deltage i et hold",
       "invited_by": "Inviteret af",
       "deny": "Afvis",
       "accept": "Acceptér"
@@ -924,42 +924,42 @@
     "roles": {
       "captain": "Kaptajn"
     },
-    "leave": "Forlad",
+    "leave": "Forlad hold",
     "management": {
-      "edit": "Rediger"
+      "edit": "Rediger hold"
     },
     "confirm": {
-      "leave": "Forlad",
+      "leave": "Er du sikker på, at du vil forlade dette hold?",
       "delete": {
-        "title": "Slet",
-        "description": "Beskrivelse"
+        "title": "Slet hold",
+        "description": "Er du sikker på, at du vil slette dette hold? Denne handling kan ikke fortrydes."
       }
     },
     "members": {
-      "title": "Medlemmer",
+      "title": "Holdmedlemmer",
       "invite_player": "Inviter spiller",
       "pending_invites": "Afventende invitationer"
     },
     "form": {
-      "name": "Navn",
-      "name_placeholder": "Indtast holdnavn",
+      "name": "Holdnavn",
+      "name_placeholder": "Indtast holdnavn...",
       "short_name": "Kort navn",
-      "short_name_placeholder": "Indtast kort holdnavn",
-      "owner": "Ejer",
-      "select_owner": "Vælg ejer",
-      "update": "Opdater",
-      "create": "Opret"
+      "short_name_placeholder": "Indtast kort navn (maks 3 tegn)...",
+      "owner": "Holdejer",
+      "select_owner": "Vælg holdejer...",
+      "update": "Opdater hold",
+      "create": "Opret hold"
     },
     "search": {
-      "no_teams": "Ingen hold"
+      "no_teams": "Ingen hold fundet"
     },
     "member": {
-      "remove": "Fjern",
+      "remove": "Fjern medlem",
       "cancel_invite": "Annuller invitation",
-      "confirm_cancel_invite": "Annuller invitation",
-      "confirm_remove": "Bekræft fjernelse",
-      "cancel_invite_description": "Er du sikker på, at du vil annullere denne invitation?",
-      "remove_description": "Er du sikker på, at du vil fjerne dette medlem?"
+      "confirm_cancel_invite": "Er du sikker på, at du vil annullere denne invitation?",
+      "confirm_remove": "Er du sikker på, at du vil fjerne dette medlem?",
+      "cancel_invite_description": "Dette vil annullere invitationen til dette medlem",
+      "remove_description": "Dette vil fjerne medlemmet fra holdet"
     }
   }
 }

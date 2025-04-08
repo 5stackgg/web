@@ -45,7 +45,8 @@
         "country": "국가",
         "select_country": "국가 선택",
         "search_country": "국가 검색...",
-        "no_country_found": "국가를 찾을 수 없습니다"
+        "no_country_found": "국가를 찾을 수 없습니다",
+        "update": "프로필 업데이트"
       },
       "appearance": {
         "title": "외관 설정",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "매치 생성에 필요한 최소 역할",
         "create_tournaments_role": "토너먼트 생성 역할",
-        "update": "업데이트"
+        "update": "업데이트",
+        "players": {
+          "force_name_registration": "플레이어 이름 등록 강제",
+          "force_name_registration_description": "플레이어 등록이 강제되는 경우, 플레이어는 플랫폼에서 사용될 이름을 제출해야 합니다."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "플레이어",
-      "search": "검색",
+      "search": "플레이어 검색",
       "detail": {
         "player_stats": "플레이어 통계",
         "kills": "킬",
@@ -214,11 +219,11 @@
       "sync": "동기화",
       "search": "검색",
       "pending_requests": "대기 중인 요청",
-      "invite_to_lobby": "로비에 초대",
-      "remove": "삭제",
       "online": "온라인",
-      "offline": "오프라인",
-      "join_lobby": "로비 참가"
+      "invite_to_lobby": "로비에 초대",
+      "remove": "제거",
+      "join_lobby": "로비 참가",
+      "offline": "오프라인"
     },
     "leave": "나가기",
     "position": "위치",
@@ -511,7 +516,8 @@
     "search": {
       "online_only": "온라인만",
       "no_players_found": "플레이어를 찾을 수 없습니다",
-      "found_players": "찾은 플레이어"
+      "found_players": "찾은 플레이어",
+      "placeholder": "플레이어 검색..."
     },
     "sanctions": {
       "title": "제재",
@@ -744,7 +750,8 @@
       "description": "설명",
       "start": "시작",
       "pick_date": "날짜 선택",
-      "update": "업데이트"
+      "update": "업데이트",
+      "match_options": "매치 옵션"
     },
     "table": {
       "tournament": "토너먼트",

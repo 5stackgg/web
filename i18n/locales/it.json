@@ -45,7 +45,8 @@
         "country": "Paese",
         "select_country": "Seleziona paese",
         "search_country": "Cerca paese...",
-        "no_country_found": "Nessun paese trovato"
+        "no_country_found": "Nessun paese trovato",
+        "update": "Aggiorna profilo"
       },
       "appearance": {
         "title": "Aspetto",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Ruolo minimo per creare partite",
         "create_tournaments_role": "Ruolo creazione tornei",
-        "update": "Aggiorna"
+        "update": "Aggiorna",
+        "players": {
+          "force_name_registration": "Forza registrazione nome giocatore",
+          "force_name_registration_description": "Se forzata la registrazione del giocatore, il giocatore dovrà inviare un nome che verrà utilizzato sulla piattaforma."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Giocatori",
-      "search": "Cerca",
+      "search": "Cerca giocatori",
       "detail": {
         "player_stats": "Statistiche giocatore",
         "kills": "Kill",
@@ -214,11 +219,11 @@
       "sync": "Sincronizza",
       "search": "Cerca",
       "pending_requests": "Richieste in sospeso",
-      "invite_to_lobby": "Invita in lobby",
-      "remove": "Rimuovi",
       "online": "Online",
-      "offline": "Offline",
-      "join_lobby": "Entra in lobby"
+      "invite_to_lobby": "Invita al Lobby",
+      "remove": "Rimuovi",
+      "join_lobby": "Unisciti al Lobby",
+      "offline": "Offline"
     },
     "leave": "Esci",
     "position": "Posizione",
@@ -511,7 +516,8 @@
     "search": {
       "online_only": "Solo online",
       "no_players_found": "Nessun giocatore trovato",
-      "found_players": "Giocatori trovati"
+      "found_players": "Giocatori trovati",
+      "placeholder": "Cerca giocatori..."
     },
     "sanctions": {
       "title": "Sanzioni",
@@ -744,7 +750,8 @@
       "description": "Descrizione",
       "start": "Inizio",
       "pick_date": "Seleziona data",
-      "update": "Aggiorna"
+      "update": "Aggiorna",
+      "match_options": "Opzioni partita"
     },
     "table": {
       "tournament": "Torneo",

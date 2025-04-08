@@ -45,7 +45,8 @@
         "country": "Land",
         "select_country": "Vælg land",
         "search_country": "Søg efter land...",
-        "no_country_found": "Ingen lande fundet"
+        "no_country_found": "Ingen lande fundet",
+        "update": "Opdater profil"
       },
       "appearance": {
         "title": "Udseende",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Mindste rolle til at oprette kampe",
         "create_tournaments_role": "Rolle til oprettelse af turneringer",
-        "update": "Opdater"
+        "update": "Opdater",
+        "players": {
+          "force_name_registration": "Tving spiller navn registrering",
+          "force_name_registration_description": "Hvis spiller registrering er tvunget, skal spilleren indsende et navn, der vil blive brugt på platformen."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Spillere",
-      "search": "Søg",
+      "search": "Søg efter spillere",
       "detail": {
         "player_stats": "Spillerstatistik",
         "kills": "Kills",
@@ -216,7 +221,9 @@
       "pending_requests": "Afventende anmodninger",
       "invite_to_lobby": "Inviter til lobby",
       "remove": "Fjern",
-      "online": "Online"
+      "online": "Online",
+      "join_lobby": "Tilmeld Lobby",
+      "offline": "Offline"
     },
     "leave": "Forlad",
     "position": "Position",
@@ -509,7 +516,8 @@
     "search": {
       "online_only": "Kun online",
       "no_players_found": "Ingen spillere fundet",
-      "found_players": "Spillere fundet"
+      "found_players": "Spillere fundet",
+      "placeholder": "Søg efter spillere..."
     },
     "sanctions": {
       "title": "Sanktioner",
@@ -742,7 +750,8 @@
       "description": "Beskrivelse",
       "start": "Start",
       "pick_date": "Vælg dato",
-      "update": "Opdater"
+      "update": "Opdater",
+      "match_options": "Kampindstillinger"
     },
     "table": {
       "tournament": "Turnering",

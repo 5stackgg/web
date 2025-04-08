@@ -45,7 +45,8 @@
         "country": "País",
         "select_country": "Selecione um país",
         "search_country": "Pesquisar país...",
-        "no_country_found": "Nenhum país encontrado"
+        "no_country_found": "Nenhum país encontrado",
+        "update": "Atualizar perfil"
       },
       "appearance": {
         "title": "Aparência",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Cargo mínimo para criar partidas",
         "create_tournaments_role": "Função para criar torneios",
-        "update": "Atualizar"
+        "update": "Atualizar",
+        "players": {
+          "force_name_registration": "Forçar registro de nome do jogador",
+          "force_name_registration_description": "Se forçado a ter registro de jogador, o jogador será obrigado a enviar um nome que será usado na plataforma."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Jogadores",
-      "search": "Pesquisar",
+      "search": "Buscar jogadores",
       "detail": {
         "player_stats": "Estatísticas do jogador",
         "kills": "Abates",
@@ -511,7 +516,8 @@
     "search": {
       "online_only": "Apenas online",
       "no_players_found": "Nenhum jogador encontrado",
-      "found_players": "Jogadores encontrados"
+      "found_players": "Jogadores encontrados",
+      "placeholder": "Buscar jogadores..."
     },
     "sanctions": {
       "title": "Sanções",
@@ -744,7 +750,8 @@
       "description": "Descrição",
       "start": "Início",
       "pick_date": "Selecione uma data",
-      "update": "Atualizar"
+      "update": "Atualizar",
+      "match_options": "Opções de partida"
     },
     "table": {
       "tournament": "Torneio",

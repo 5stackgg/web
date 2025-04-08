@@ -45,7 +45,8 @@
         "country": "Country",
         "select_country": "Select country...",
         "search_country": "Search country...",
-        "no_country_found": "No country found."
+        "no_country_found": "No country found.",
+        "update": "Update Profile"
       },
       "appearance": {
         "title": "Appearance",
@@ -100,12 +101,7 @@
     },
     "players": {
       "title": "Players",
-      "search": {
-        "placeholder": "Search players...",
-        "online_only": "Online Only",
-        "no_players_found": "No players found.",
-        "found_players": "{count} players found"
-      },
+      "search": "Search Players",
       "detail": {
         "player_stats": "Player Stats",
         "kills": "Kills",
@@ -780,7 +776,8 @@
     "search": {
       "online_only": "Online",
       "no_players_found": "No Players Found.",
-      "found_players": "Players Found"
+      "found_players": "Players Found",
+      "placeholder": "Search players..."
     },
     "sanctions": {
       "title": "Sanctions",
@@ -840,14 +837,14 @@
     },
     "friends": {
       "title": "Friends",
-      "sync": "Sync",
-      "search": "Search",
+      "sync": "Sync Friends",
+      "search": "Search Friends",
       "pending_requests": "Pending Requests",
+      "online": "Online Friends",
       "invite_to_lobby": "Invite to Lobby",
-      "remove": "Remove",
-      "online": "Online",
-      "offline": "Offline",
-      "join_lobby": "Join Lobby"
+      "remove": "Remove Friend",
+      "join_lobby": "Join Lobby",
+      "offline": "Offline"
     },
     "leave": "Leave",
     "position": "Current Position",

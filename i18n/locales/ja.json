@@ -45,7 +45,8 @@
         "country": "国",
         "select_country": "国を選択",
         "search_country": "国を検索...",
-        "no_country_found": "国が見つかりません"
+        "no_country_found": "国が見つかりません",
+        "update": "プロフィールを更新"
       },
       "appearance": {
         "title": "外観設定",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "マッチ作成に必要な最小ロール",
         "create_tournaments_role": "トーナメント作成ロール",
-        "update": "更新"
+        "update": "更新",
+        "players": {
+          "force_name_registration": "プレイヤー名登録を強制",
+          "force_name_registration_description": "プレイヤー登録を強制する場合、プレイヤーはプラットフォームで使用される名前を提出する必要があります。"
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "プレイヤー",
-      "search": "検索",
+      "search": "プレイヤーを検索",
       "detail": {
         "player_stats": "プレイヤー統計",
         "kills": "キル",
@@ -317,11 +322,11 @@
       "sync": "同期",
       "search": "検索",
       "pending_requests": "保留中のリクエスト",
+      "online": "オンライン",
       "invite_to_lobby": "ロビーに招待",
       "remove": "削除",
-      "online": "オンライン",
-      "offline": "オフライン",
-      "join_lobby": "ロビーに参加"
+      "join_lobby": "ロビーに参加",
+      "offline": "オフライン"
     },
     "leave": "退出",
     "position": "位置",
@@ -660,7 +665,8 @@
     "search": {
       "online_only": "オンラインのみ",
       "no_players_found": "プレイヤーが見つかりません",
-      "found_players": "見つかったプレイヤー"
+      "found_players": "見つかったプレイヤー",
+      "placeholder": "プレイヤーを検索..."
     },
     "sanctions": {
       "title": "制裁",
@@ -790,7 +796,8 @@
       "description": "説明",
       "start": "開始",
       "pick_date": "日付を選択",
-      "update": "更新"
+      "update": "更新",
+      "match_options": "マッチオプション"
     },
     "table": {
       "tournament": "トーナメント",

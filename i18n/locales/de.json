@@ -45,7 +45,8 @@
         "country": "Land",
         "select_country": "Land auswählen",
         "search_country": "Land suchen...",
-        "no_country_found": "Kein Land gefunden"
+        "no_country_found": "Kein Land gefunden",
+        "update": "Profil aktualisieren"
       },
       "appearance": {
         "title": "Erscheinungsbild",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Mindestrolle für Match-Erstellung",
         "create_tournaments_role": "Turniere erstellen Rolle",
-        "update": "Aktualisieren"
+        "update": "Aktualisieren",
+        "players": {
+          "force_name_registration": "Spielernamen-Registrierung erzwingen",
+          "force_name_registration_description": "Wenn die Spielerregistrierung erzwungen wird, muss der Spieler einen Namen einreichen, der auf der Plattform verwendet wird."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Spieler",
-      "search": "Suchen",
+      "search": "Spieler suchen",
       "detail": {
         "player_stats": "Spielerstatistiken",
         "kills": "Kills",
@@ -214,9 +219,11 @@
       "sync": "Synchronisieren",
       "search": "Suchen",
       "pending_requests": "Ausstehende Anfragen",
+      "online": "Online",
       "invite_to_lobby": "In Lobby einladen",
       "remove": "Entfernen",
-      "online": "Online"
+      "join_lobby": "Lobby beitreten",
+      "offline": "Offline"
     },
     "leave": "Verlassen",
     "position": "Position",
@@ -509,7 +516,8 @@
     "search": {
       "online_only": "Nur Online",
       "no_players_found": "Keine Spieler gefunden",
-      "found_players": "Gefundene Spieler"
+      "found_players": "Gefundene Spieler",
+      "placeholder": "Spieler suchen..."
     },
     "sanctions": {
       "title": "Sanktionen",
@@ -742,7 +750,8 @@
       "description": "Beschreibung",
       "start": "Start",
       "pick_date": "Datum auswählen",
-      "update": "Aktualisieren"
+      "update": "Aktualisieren",
+      "match_options": "Spieloptionen"
     },
     "table": {
       "tournament": "Turnier",

@@ -45,7 +45,8 @@
         "country": "Країна",
         "select_country": "Вибрати країну",
         "search_country": "Пошук країни...",
-        "no_country_found": "Країну не знайдено"
+        "no_country_found": "Країну не знайдено",
+        "update": "Оновити профіль"
       },
       "appearance": {
         "title": "Зовнішній вигляд",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Мінімальна роль для створення матчів",
         "create_tournaments_role": "Дозвіл на створення турнірів",
-        "update": "Оновити"
+        "update": "Оновити",
+        "players": {
+          "force_name_registration": "Примусова реєстрація імені гравця",
+          "force_name_registration_description": "Якщо увімкнено примусову реєстрацію гравця, гравець повинен буде надіслати ім'я, яке буде використовуватися на платформі."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Гравці",
-      "search": "Пошук",
+      "search": "Пошук гравців",
       "detail": {
         "player_stats": "Статистика гравця",
         "kills": "Вбивства",
@@ -217,7 +222,8 @@
       "invite_to_lobby": "Запросити в лобі",
       "remove": "Видалити",
       "online": "В мережі",
-      "offline": "Не в мережі"
+      "offline": "Не в мережі",
+      "join_lobby": "Приєднатися до Лобі"
     },
     "leave": "Покинути",
     "position": "Позиція",
@@ -510,7 +516,8 @@
     "search": {
       "online_only": "Тільки онлайн",
       "no_players_found": "Гравців не знайдено",
-      "found_players": "Знайдені гравці"
+      "found_players": "Знайдені гравці",
+      "placeholder": "Пошук гравців..."
     },
     "sanctions": {
       "title": "Санкції",
@@ -743,7 +750,8 @@
       "description": "Опис",
       "start": "Початок",
       "pick_date": "Вибрати дату",
-      "update": "Оновити"
+      "update": "Оновити",
+      "match_options": "Налаштування матчу"
     },
     "table": {
       "tournament": "Турнір",

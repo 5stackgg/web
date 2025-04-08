@@ -45,7 +45,8 @@
         "country": "Страна",
         "select_country": "Выберите страну",
         "search_country": "Поиск страны...",
-        "no_country_found": "Страны не найдены"
+        "no_country_found": "Страны не найдены",
+        "update": "Обновить профиль"
       },
       "appearance": {
         "title": "Внешний вид",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Минимальная роль для создания матчей",
         "create_tournaments_role": "Роль для создания турниров",
-        "update": "Обновить"
+        "update": "Обновить",
+        "players": {
+          "force_name_registration": "Принудительная регистрация имени игрока",
+          "force_name_registration_description": "Если включена принудительная регистрация игрока, игрок должен будет отправить имя, которое будет использоваться на платформе."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Игроки",
-      "search": "Поиск",
+      "search": "Поиск игроков",
       "detail": {
         "player_stats": "Статистика игрока",
         "kills": "Убийства",
@@ -217,7 +222,8 @@
       "invite_to_lobby": "Пригласить в лобби",
       "remove": "Удалить",
       "online": "В сети",
-      "offline": "Не в сети"
+      "offline": "Не в сети",
+      "join_lobby": "Присоединиться к Лобби"
     },
     "leave": "Выйти",
     "position": "Позиция",
@@ -510,7 +516,8 @@
     "search": {
       "online_only": "Только онлайн",
       "no_players_found": "Игроки не найдены",
-      "found_players": "Найдено игроков"
+      "found_players": "Найдено игроков",
+      "placeholder": "Поиск игроков..."
     },
     "sanctions": {
       "title": "Санкции",
@@ -743,7 +750,8 @@
       "description": "Описание",
       "start": "Начало",
       "pick_date": "Выберите дату",
-      "update": "Обновить"
+      "update": "Обновить",
+      "match_options": "Настройки матча"
     },
     "table": {
       "tournament": "Турнир",

@@ -45,7 +45,8 @@
         "country": "País",
         "select_country": "Seleccionar país",
         "search_country": "Buscar país...",
-        "no_country_found": "No se encontraron países"
+        "no_country_found": "No se encontraron países",
+        "update": "Actualizar Perfil"
       },
       "appearance": {
         "title": "Apariencia",
@@ -57,8 +58,8 @@
       },
       "application": {
         "matchmaking": {
-          "title": "Configuración de matchmaking",
-          "description": "Gestiona la configuración del matchmaking"
+          "title": "Matchmaking",
+          "description": "Gérez les paramètres de matchmaking"
         },
         "discord": {
           "title": "Discord",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Rol de creación de partidas",
         "create_tournaments_role": "Rol de creación de torneos",
-        "update": "Actualizar"
+        "update": "Actualizar",
+        "players": {
+          "force_name_registration": "Forzar registro de nombre de jugador",
+          "force_name_registration_description": "Si se fuerza el registro de jugador, el jugador deberá enviar un nombre que se usará en la plataforma."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,13 @@
     },
     "players": {
       "title": "Jugadores",
-      "search": "Buscar",
+      "search": {
+        "placeholder": "Buscar jugadores...",
+        "online_only": "Solo en línea",
+        "no_players_found": "No se encontraron jugadores",
+        "found_players": "Jugadores encontrados",
+        "search_players": "Buscar jugadores"
+      },
       "detail": {
         "player_stats": "Estadísticas del jugador",
         "kills": "Kills",
@@ -106,7 +117,8 @@
         "last_ten_wins": "Últimas 10 victorias",
         "last_ten_losses": "Últimas 10 derrotas",
         "matches": "Partidas"
-      }
+      },
+      "search": "Buscar Jugadores"
     },
     "play": {
       "title": "Jugar",
@@ -214,11 +226,11 @@
       "sync": "Sincronizar",
       "search": "Buscar",
       "pending_requests": "Solicitudes Pendientes",
+      "online": "En línea",
       "invite_to_lobby": "Invitar al Lobby",
       "remove": "Eliminar",
-      "online": "En línea",
-      "offline": "Desconectado",
-      "join_lobby": "Unirse al Lobby"
+      "join_lobby": "Unirse al Lobby",
+      "offline": "Desconectado"
     },
     "leave": "Salir",
     "position": "Posición",
@@ -511,7 +523,8 @@
     "search": {
       "online_only": "Solo en línea",
       "no_players_found": "No se encontraron jugadores",
-      "found_players": "Jugadores encontrados"
+      "found_players": "Jugadores encontrados",
+      "placeholder": "Buscar jugadores..."
     },
     "sanctions": {
       "title": "Sanciones",
@@ -744,7 +757,8 @@
       "description": "Descripción",
       "start": "Inicio",
       "pick_date": "Seleccionar fecha",
-      "update": "Actualizar"
+      "update": "Actualizar",
+      "match_options": "Opciones de partida"
     },
     "table": {
       "tournament": "Torneo",

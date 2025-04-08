@@ -45,7 +45,8 @@
         "country": "Pays",
         "select_country": "Sélectionner un pays",
         "search_country": "Rechercher un pays...",
-        "no_country_found": "Aucun pays trouvé"
+        "no_country_found": "Aucun pays trouvé",
+        "update": "Mettre à jour le profil"
       },
       "appearance": {
         "title": "Apparence",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Rôle minimum autorisé à créer des matchs",
         "create_tournaments_role": "Rôle de création de tournois",
-        "update": "Mettre à jour"
+        "update": "Mettre à jour",
+        "players": {
+          "force_name_registration": "Forcer l'enregistrement du nom",
+          "force_name_registration_description": "Si l'enregistrement du nom est forcé, le joueur doit soumettre un nom à utiliser sur la plateforme."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Joueurs",
-      "search": "Rechercher",
+      "search": "Rechercher des joueurs",
       "detail": {
         "player_stats": "Statistiques du joueur",
         "kills": "Kills",
@@ -214,11 +219,11 @@
       "sync": "Synchroniser",
       "search": "Rechercher",
       "pending_requests": "Demandes en attente",
-      "invite_to_lobby": "Inviter au lobby",
-      "remove": "Supprimer",
       "online": "En ligne",
-      "offline": "Hors ligne",
-      "join_lobby": "Rejoindre le lobby"
+      "invite_to_lobby": "Inviter au Lobby",
+      "remove": "Supprimer",
+      "join_lobby": "Rejoindre le Lobby",
+      "offline": "Hors ligne"
     },
     "leave": "Quitter",
     "position": "Position",
@@ -511,7 +516,8 @@
     "search": {
       "online_only": "En ligne uniquement",
       "no_players_found": "Aucun joueur trouvé",
-      "found_players": "Joueurs trouvés"
+      "found_players": "Joueurs trouvés",
+      "placeholder": "Rechercher des joueurs..."
     },
     "sanctions": {
       "title": "Sanctions",
@@ -744,7 +750,8 @@
       "description": "Description",
       "start": "Début",
       "pick_date": "Sélectionner une date",
-      "update": "Mettre à jour"
+      "update": "Mettre à jour",
+      "match_options": "Options de match"
     },
     "table": {
       "tournament": "Tournoi",

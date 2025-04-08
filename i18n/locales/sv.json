@@ -45,7 +45,8 @@
         "country": "Land",
         "select_country": "Välj land...",
         "search_country": "Sök land...",
-        "no_country_found": "Inget land hittades."
+        "no_country_found": "Inget land hittades.",
+        "update": "Uppdatera profil"
       },
       "appearance": {
         "title": "Utseende",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Minsta roll för att skapa matcher",
         "create_tournaments_role": "Minsta roll som får skapa turneringar",
-        "update": "Uppdatera"
+        "update": "Uppdatera",
+        "players": {
+          "force_name_registration": "Tvinga spelarnamnregistrering",
+          "force_name_registration_description": "Om tvingad att ha spelarregistrering måste spelaren ange ett namn som kommer att användas på plattformen."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Spelare",
-      "search": "Sök...",
+      "search": "Sök efter spelare",
       "detail": {
         "player_stats": "Spelarstatistik",
         "kills": "Dödade",
@@ -340,7 +345,8 @@
       "description": "Beskrivning",
       "start": "Startdatum",
       "pick_date": "Välj ett datum",
-      "update": "Uppdatera turnering"
+      "update": "Uppdatera turnering",
+      "match_options": "Matchalternativ"
     },
     "table": {
       "tournament": "Turnering",
@@ -770,7 +776,8 @@
     "search": {
       "online_only": "Online",
       "no_players_found": "Inga spelare hittades.",
-      "found_players": "Spelare hittade"
+      "found_players": "Spelare hittade",
+      "placeholder": "Sök efter spelare..."
     },
     "sanctions": {
       "title": "Sanktioner",
@@ -836,7 +843,8 @@
       "invite_to_lobby": "Bjud in till lobby",
       "remove": "Ta bort",
       "online": "Online",
-      "offline": "Offline"
+      "offline": "Offline",
+      "join_lobby": "Gå med i Lobby"
     },
     "leave": "Lämna",
     "position": "Nuvarande position",

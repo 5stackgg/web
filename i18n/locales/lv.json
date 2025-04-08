@@ -45,7 +45,8 @@
         "country": "Valsts",
         "select_country": "Izvēlieties valsti",
         "search_country": "Meklēt valsti...",
-        "no_country_found": "Nav atrastas valstis"
+        "no_country_found": "Nav atrastas valstis",
+        "update": "Atjaunināt profilu"
       },
       "appearance": {
         "title": "Izskats",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Minimālā loma maču izveidošanai",
         "create_tournaments_role": "Loma turnīru izveidei",
-        "update": "Atjaunināt"
+        "update": "Atjaunināt",
+        "players": {
+          "force_name_registration": "Piespiest spēlētāja vārda reģistrāciju",
+          "force_name_registration_description": "Ja spēlētāja reģistrācija ir piespiesta, spēlētājam būs jāiesniedz vārds, kas tiks izmantots platformā."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Spēlētāji",
-      "search": "Meklēt",
+      "search": "Meklēt spēlētājus",
       "detail": {
         "player_stats": "Spēlētāja statistika",
         "kills": "Nogalinājumi",
@@ -214,9 +219,11 @@
       "sync": "Sinhronizēt",
       "search": "Meklēt",
       "pending_requests": "Gaida pieprasījumi",
+      "online": "Tiešsaistē",
       "invite_to_lobby": "Uzaicināt uz lobi",
       "remove": "Noņemt",
-      "online": "Tiešsaistē"
+      "join_lobby": "Pievienoties lobij",
+      "offline": "Bezsaistē"
     },
     "leave": "Iziet",
     "position": "Pozīcija",
@@ -509,7 +516,8 @@
     "search": {
       "online_only": "Tikai tiešsaistē",
       "no_players_found": "Nav atrasti spēlētāji",
-      "found_players": "Atrasti spēlētāji"
+      "found_players": "Atrasti spēlētāji",
+      "placeholder": "Meklēt spēlētājus..."
     },
     "sanctions": {
       "title": "Sankcijas",
@@ -742,7 +750,8 @@
       "description": "Apraksts",
       "start": "Sākums",
       "pick_date": "Izvēlieties datumu",
-      "update": "Atjaunināt"
+      "update": "Atjaunināt",
+      "match_options": "Spēles opcijas"
     },
     "table": {
       "tournament": "Turnīrs",

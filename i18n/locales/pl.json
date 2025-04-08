@@ -45,7 +45,8 @@
         "country": "Kraj",
         "select_country": "Wybierz kraj",
         "search_country": "Szukaj kraju...",
-        "no_country_found": "Nie znaleziono krajów"
+        "no_country_found": "Nie znaleziono krajów",
+        "update": "Aktualizuj profil"
       },
       "appearance": {
         "title": "Wygląd",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "Minimalna rola do tworzenia meczów",
         "create_tournaments_role": "Rola do tworzenia turniejów",
-        "update": "Aktualizuj"
+        "update": "Aktualizuj",
+        "players": {
+          "force_name_registration": "Wymuś rejestrację nazwy gracza",
+          "force_name_registration_description": "Jeśli rejestracja gracza jest wymuszona, gracz będzie musiał przesłać nazwę, która będzie używana na platformie."
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "Gracze",
-      "search": "Szukaj",
+      "search": "Szukaj graczy",
       "detail": {
         "player_stats": "Statystyki gracza",
         "kills": "Zabójstwa",
@@ -217,7 +222,8 @@
       "invite_to_lobby": "Zaproś do lobby",
       "remove": "Usuń",
       "online": "Online",
-      "offline": "Offline"
+      "offline": "Offline",
+      "join_lobby": "Dołącz do Lobby"
     },
     "leave": "Wyjdź",
     "position": "Pozycja",
@@ -510,7 +516,8 @@
     "search": {
       "online_only": "Tylko online",
       "no_players_found": "Nie znaleziono graczy",
-      "found_players": "Znaleziono graczy"
+      "found_players": "Znaleziono graczy",
+      "placeholder": "Szukaj graczy..."
     },
     "sanctions": {
       "title": "Sankcje",
@@ -743,7 +750,8 @@
       "description": "Opis",
       "start": "Start",
       "pick_date": "Wybierz datę",
-      "update": "Aktualizuj"
+      "update": "Aktualizuj",
+      "match_options": "Opcje meczu"
     },
     "table": {
       "tournament": "Turniej",

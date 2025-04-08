@@ -45,7 +45,8 @@
         "country": "国家",
         "select_country": "选择国家",
         "search_country": "搜索国家...",
-        "no_country_found": "未找到国家"
+        "no_country_found": "未找到国家",
+        "update": "更新个人资料"
       },
       "appearance": {
         "title": "外观",
@@ -71,7 +72,11 @@
         },
         "create_matches_role": "创建比赛所需的最低角色",
         "create_tournaments_role": "创建比赛的权限",
-        "update": "更新"
+        "update": "更新",
+        "players": {
+          "force_name_registration": "强制玩家名称注册",
+          "force_name_registration_description": "如果强制玩家注册，玩家需要提交一个将在平台上使用的名称。"
+        }
       }
     },
     "regions": {
@@ -96,7 +101,7 @@
     },
     "players": {
       "title": "玩家",
-      "search": "搜索",
+      "search": "搜索玩家",
       "detail": {
         "player_stats": "玩家统计",
         "kills": "击杀",
@@ -216,7 +221,9 @@
       "pending_requests": "待处理请求",
       "invite_to_lobby": "邀请到大厅",
       "remove": "移除",
-      "online": "在线"
+      "online": "在线",
+      "join_lobby": "加入大厅",
+      "offline": "离线"
     },
     "leave": "离开",
     "position": "位置",
@@ -509,7 +516,8 @@
     "search": {
       "online_only": "仅在线",
       "no_players_found": "未找到玩家",
-      "found_players": "找到的玩家"
+      "found_players": "找到的玩家",
+      "placeholder": "搜索玩家..."
     },
     "sanctions": {
       "title": "制裁",
@@ -742,7 +750,8 @@
       "description": "描述",
       "start": "开始",
       "pick_date": "选择日期",
-      "update": "更新"
+      "update": "更新",
+      "match_options": "比赛选项"
     },
     "table": {
       "tournament": "比赛",

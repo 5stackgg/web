@@ -57,10 +57,19 @@
       },
       "application": {
         "matchmaking": {
-          "title": "Matchmaking-Einstellungen",
-          "description": "Matchmaking-Einstellungen verwalten"
+          "title": "Matchmaking",
+          "description": "Verwalten Sie die Matchmaking-Einstellungen"
         },
-        "create_matches_role": "Spiele erstellen Rolle",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Discord-Einladungslink",
+          "webhook": "Discord-Webhook",
+          "webhook_description": "Wir verwenden diesen Discord-Webhook, um Benachrichtigungen zu senden, die eine Aktion eines Spielers erfordern. Z.B. Match-Probleme, Bugs, etc.",
+          "support_role": "Discord-Support-Rollen-ID",
+          "support_role_description": "Diese Rolle wird bei Support-Aktionen erwähnt. Sie können die Rollen-ID aus der Discord-Anwendung erhalten, indem Sie den Entwicklermodus aktivieren und mit der rechten Maustaste klicken, um die ID zu kopieren.",
+          "update": "Aktualisieren"
+        },
+        "create_matches_role": "Mindestrolle für Match-Erstellung",
         "create_tournaments_role": "Turniere erstellen Rolle",
         "update": "Aktualisieren"
       }

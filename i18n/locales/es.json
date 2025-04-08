@@ -60,6 +60,15 @@
           "title": "Configuración de matchmaking",
           "description": "Gestiona la configuración del matchmaking"
         },
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Enlace de invitación de Discord",
+          "webhook": "Webhook de Discord",
+          "webhook_description": "Usamos este webhook de Discord para enviar notificaciones que requieren acción de un jugador. Ej. problemas de partida, errores, etc.",
+          "support_role": "ID del rol de soporte de Discord",
+          "support_role_description": "Este rol será mencionado cuando se use para acciones de soporte. Puedes obtener el ID del rol desde la aplicación de Discord activando el modo desarrollador y haciendo clic derecho para copiar el ID.",
+          "update": "Actualizar"
+        },
         "create_matches_role": "Rol de creación de partidas",
         "create_tournaments_role": "Rol de creación de torneos",
         "update": "Actualizar"

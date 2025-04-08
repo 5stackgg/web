@@ -57,10 +57,19 @@
       },
       "application": {
         "matchmaking": {
-          "title": "Paramètres de matchmaking",
-          "description": "Gérer les paramètres de matchmaking"
+          "title": "Matchmaking",
+          "description": "Gérez les paramètres de matchmaking"
         },
-        "create_matches_role": "Rôle de création de matchs",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Lien d'invitation Discord",
+          "webhook": "Webhook Discord",
+          "webhook_description": "Nous utilisons ce webhook Discord pour envoyer des notifications qui nécessitent une action d'un joueur. Ex. problèmes de match, bugs, etc.",
+          "support_role": "ID du rôle de support Discord",
+          "support_role_description": "Ce rôle sera mentionné lorsqu'il est utilisé pour les actions de support. Vous pouvez obtenir l'ID du rôle depuis l'application Discord en activant le mode développeur et en faisant un clic droit pour copier l'ID.",
+          "update": "Mettre à jour"
+        },
+        "create_matches_role": "Rôle minimum autorisé à créer des matchs",
         "create_tournaments_role": "Rôle de création de tournois",
         "update": "Mettre à jour"
       }

@@ -120,7 +120,7 @@ definePageMeta({
 
     <div class="flex justify-start">
       <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-        Update
+        {{ $t("pages.settings.profile.update") }}
       </Button>
     </div>
   </form>

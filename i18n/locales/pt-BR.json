@@ -57,10 +57,19 @@
       },
       "application": {
         "matchmaking": {
-          "title": "Configurações de matchmaking",
-          "description": "Gerenciamento de configurações de matchmaking"
+          "title": "Matchmaking",
+          "description": "Gerencie as configurações de matchmaking"
         },
-        "create_matches_role": "Função para criar partidas",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Link de convite do Discord",
+          "webhook": "Webhook do Discord",
+          "webhook_description": "Usamos este webhook do Discord para enviar notificações que requerem ação de um jogador. Ex: problemas de partida, bugs, etc.",
+          "support_role": "ID do cargo de suporte do Discord",
+          "support_role_description": "Este cargo será mencionado quando usado para ações de suporte. Você pode obter o ID do cargo do aplicativo Discord ativando o modo desenvolvedor e clicando com o botão direito para copiar o ID.",
+          "update": "Atualizar"
+        },
+        "create_matches_role": "Cargo mínimo para criar partidas",
         "create_tournaments_role": "Função para criar torneios",
         "update": "Atualizar"
       }

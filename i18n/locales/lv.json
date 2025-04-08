@@ -57,10 +57,19 @@
       },
       "application": {
         "matchmaking": {
-          "title": "Spēļu meklēšanas iestatījumi",
-          "description": "Spēļu meklēšanas iestatījumu pārvaldība"
+          "title": "Matchmaking",
+          "description": "Pārvaldiet matchmaking iestatījumus"
         },
-        "create_matches_role": "Loma spēļu izveidei",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Discord uzaicinājuma saite",
+          "webhook": "Discord Webhook",
+          "webhook_description": "Mēs izmantojam šo Discord Webhook, lai nosūtītu paziņojumus, kuriem nepieciešama spēlētāja darbība. Piem. mača problēmas, kļūdas utt.",
+          "support_role": "Discord atbalsta lomas ID",
+          "support_role_description": "Šī loma tiks pieminēta, kad tā tiek izmantota atbalsta darbībām. Jūs varat iegūt lomas ID no Discord lietotnes, ieslēdzot izstrādātāja režīmu un ar labo peles pogu noklikšķinot, lai kopētu ID.",
+          "update": "Atjaunināt"
+        },
+        "create_matches_role": "Minimālā loma maču izveidošanai",
         "create_tournaments_role": "Loma turnīru izveidei",
         "update": "Atjaunināt"
       }

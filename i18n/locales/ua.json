@@ -57,10 +57,19 @@
       },
       "application": {
         "matchmaking": {
-          "title": "Налаштування матчмейкінгу",
-          "description": "Керування налаштуваннями матчмейкінгу"
+          "title": "Matchmaking",
+          "description": "Керування налаштуваннями matchmaking"
         },
-        "create_matches_role": "Дозвіл на створення матчів",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Посилання-запрошення Discord",
+          "webhook": "Discord Webhook",
+          "webhook_description": "Ми використовуємо цей Discord Webhook для надсилання сповіщень, які вимагають дій від гравця. Наприклад: проблеми з матчем, баги тощо.",
+          "support_role": "ID ролі підтримки Discord",
+          "support_role_description": "Ця роль буде згадана при використанні для дій підтримки. Ви можете отримати ID ролі з додатку Discord, увімкнувши режим розробника та натиснувши правою кнопкою миші для копіювання ID.",
+          "update": "Оновити"
+        },
+        "create_matches_role": "Мінімальна роль для створення матчів",
         "create_tournaments_role": "Дозвіл на створення турнірів",
         "update": "Оновити"
       }

@@ -57,10 +57,19 @@
       },
       "application": {
         "matchmaking": {
-          "title": "Matchmaking-indstillinger",
+          "title": "Matchmaking",
           "description": "Administrer matchmaking-indstillinger"
         },
-        "create_matches_role": "Rolle til oprettelse af kampe",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Discord invitation-link",
+          "webhook": "Discord Webhook",
+          "webhook_description": "Vi bruger denne Discord Webhook til at sende meddelelser, der kræver handling fra en spiller. F.eks. matchproblemer, fejl osv.",
+          "support_role": "Discord support-rolle ID",
+          "support_role_description": "Denne rolle vil blive nævnt, når den bruges til support-handlinger. Du kan få rolle-ID fra Discord-applikationen ved at aktivere udviklertilstand og højreklikke for at kopiere ID.",
+          "update": "Opdater"
+        },
+        "create_matches_role": "Mindste rolle til at oprette kampe",
         "create_tournaments_role": "Rolle til oprettelse af turneringer",
         "update": "Opdater"
       }

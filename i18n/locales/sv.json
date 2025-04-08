@@ -58,9 +58,18 @@
       "application": {
         "matchmaking": {
           "title": "Matchmaking",
-          "description": "Matchmaking låter spelare gå med i en kö och matchas med andra spelare."
+          "description": "Hantera matchmaking-inställningar"
         },
-        "create_matches_role": "Minsta roll som får skapa matcher",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Discord-inbjudningslänk",
+          "webhook": "Discord Webhook",
+          "webhook_description": "Vi använder denna Discord Webhook för att skicka meddelanden som kräver åtgärd från en spelare. T.ex. matchproblem, buggar, etc.",
+          "support_role": "Discord Support-roll ID",
+          "support_role_description": "Denna roll kommer att nämnas när den används för supportåtgärder. Du kan få roll-ID från Discord-applikationen genom att aktivera utvecklarläge och högerklicka för att kopiera ID.",
+          "update": "Uppdatera"
+        },
+        "create_matches_role": "Minsta roll för att skapa matcher",
         "create_tournaments_role": "Minsta roll som får skapa turneringar",
         "update": "Uppdatera"
       }

@@ -56,13 +56,22 @@
         "dark": "ダーク"
       },
       "application": {
-        "create_matches_role": "マッチ作成ロール",
-        "create_tournaments_role": "トーナメント作成ロール",
-        "update": "更新",
         "matchmaking": {
-          "title": "マッチメイキング設定",
+          "title": "マッチメイキング",
           "description": "マッチメイキングの設定を管理"
-        }
+        },
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Discord招待リンク",
+          "webhook": "Discord Webhook",
+          "webhook_description": "このDiscord Webhookは、プレイヤーのアクションが必要な通知を送信するために使用されます。例：マッチの問題、バグなど。",
+          "support_role": "DiscordサポートロールID",
+          "support_role_description": "このロールは、サポートアクションで使用される際にメンションされます。Discordアプリケーションで開発者モードを有効にし、右クリックしてIDをコピーすることでロールIDを取得できます。",
+          "update": "更新"
+        },
+        "create_matches_role": "マッチ作成に必要な最小ロール",
+        "create_tournaments_role": "トーナメント作成ロール",
+        "update": "更新"
       }
     },
     "regions": {

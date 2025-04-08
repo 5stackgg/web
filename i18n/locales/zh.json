@@ -57,10 +57,19 @@
       },
       "application": {
         "matchmaking": {
-          "title": "匹配设置",
-          "description": "匹配设置管理"
+          "title": "匹配系统",
+          "description": "管理匹配系统设置"
         },
-        "create_matches_role": "创建比赛的权限",
+        "discord": {
+          "title": "Discord",
+          "invite_link": "Discord邀请链接",
+          "webhook": "Discord Webhook",
+          "webhook_description": "我们使用此Discord Webhook发送需要玩家操作的通知。例如：比赛问题、错误等。",
+          "support_role": "Discord支持角色ID",
+          "support_role_description": "此角色在用于支持操作时将被提及。您可以通过在Discord应用程序中启用开发者模式并右键单击来复制ID，从而获取角色ID。",
+          "update": "更新"
+        },
+        "create_matches_role": "创建比赛所需的最低角色",
         "create_tournaments_role": "创建比赛的权限",
         "update": "更新"
       }

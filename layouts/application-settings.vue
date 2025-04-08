@@ -21,10 +21,10 @@ import Default from "~/layouts/default.vue";
           <nuxt-link
             :to="item.to"
             v-for="item in sidebarNavItems"
-            :key="item.title"
+            :key="item.key"
           >
             <Button variant="ghost" class="w-full text-left justify-start">
-              {{ item.key }}
+              {{ item.title }}
             </Button>
           </nuxt-link>
         </nav>

@@ -238,7 +238,13 @@
                 "description": "Gestire le mappe nella piscina {type}",
                 "modify_maps": "Modificare le mappe in piscina"
             },
-            "title": "Pool di Mappe"
+            "title": "Pool di Mappe",
+            "add_new_map": "Aggiungi nuova mappa",
+            "available_modes": "Modalità disponibili",
+            "workshop_id": "ID laboratorio",
+            "edit": "Modifica",
+            "maps": "Mappe",
+            "active_duty": "Active Duty"
         },
         "map_pool": {
             "toggle_pool_type": "La mappa {map} è stata {type} per {type}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Modifica mappa"
+    },
+    "validation": {
+        "map_pool_required": "La piscina della mappa è richiesta"
     }
 }

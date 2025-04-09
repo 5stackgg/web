@@ -238,7 +238,13 @@
                 "title": "Тип: Map Pool",
                 "description": "Управление картами в пуле",
                 "modify_maps": "Изменить карты в бассейне"
-            }
+            },
+            "available_modes": "Доступные режимы",
+            "workshop_id": "Семинар ID",
+            "add_new_map": "Добавить новую карту",
+            "edit": "Редактировать",
+            "maps": "Карты",
+            "active_duty": "Active Duty"
         },
         "map_pool": {
             "toggle_pool_type": "Карта {map} была для {type}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Редактировать карту"
+    },
+    "validation": {
+        "map_pool_required": "Требуется картографический бассейн"
     }
 }

@@ -238,7 +238,13 @@
                 "title": "{type} 지도 풀",
                 "description": "{type} Pool의 지도 관리",
                 "modify_maps": "풀에 지도를 수정"
-            }
+            },
+            "add_new_map": "새 맵 추가",
+            "available_modes": "유효한 형태",
+            "workshop_id": "워크샵 ID",
+            "edit": "편집",
+            "maps": "맵",
+            "active_duty": "액티브 듀티"
         },
         "map_pool": {
             "toggle_pool_type": "지도 {map}는 {type}입니다. {type}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "편집 맵"
+    },
+    "validation": {
+        "map_pool_required": "지도 풀이 필요합니다"
     }
 }

@@ -238,7 +238,13 @@
                 "title": "{typ} Pula map",
                 "description": "Zarządzanie mapami w puli {type}",
                 "modify_maps": "Modyfikuj mapy w puli"
-            }
+            },
+            "edit": "Edytuj",
+            "maps": "Mapy",
+            "active_duty": "Active Duty",
+            "available_modes": "Dostępne metody",
+            "workshop_id": "ID warsztatu",
+            "add_new_map": "Dodaj nową mapę"
         },
         "map_pool": {
             "toggle_pool_type": "Mapa {mapa} została {typ} dla {typ}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Edytuj mapę"
+    },
+    "validation": {
+        "map_pool_required": "Basen mapy jest wymagany"
     }
 }

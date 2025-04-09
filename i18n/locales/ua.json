@@ -238,7 +238,13 @@
                 "description": "Керування картами в басейні {type}",
                 "modify_maps": "Модифікувати картини в басейні"
             },
-            "title": "Пул Карт"
+            "title": "Пул Карт",
+            "add_new_map": "Додати нову карту",
+            "available_modes": "Доступні режими",
+            "workshop_id": "Ідентифікатор семінару",
+            "edit": "Редагувати",
+            "maps": "Карти",
+            "active_duty": "Активні карти"
         },
         "map_pool": {
             "toggle_pool_type": "Карта {map} {type} для {type}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Редагування карти"
+    },
+    "validation": {
+        "map_pool_required": "Карта басейну обов'язково"
     }
 }

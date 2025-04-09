@@ -238,7 +238,13 @@
                 "title": "Pool de cartes {type}",
                 "description": "Gérer les cartes dans la pool {type}",
                 "modify_maps": "Modifier les cartes dans la pool"
-            }
+            },
+            "edit": "Modifier",
+            "maps": "Cartes",
+            "active_duty": "Service actif",
+            "available_modes": "Modes disponibles",
+            "workshop_id": "ID Workshop",
+            "add_new_map": "Ajouter une nouvelle carte"
         },
         "map_pool": {
             "toggle_pool_type": "La carte {map} a été {type} pour {type}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Modifier la carte"
+    },
+    "validation": {
+        "map_pool_required": "Une piscine cartographique est nécessaire"
     }
 }

@@ -238,7 +238,13 @@
                 "description": "Hantera kartor i poolen",
                 "modify_maps": "Ändra kartor i poolen"
             },
-            "title": "Kartpooler"
+            "title": "Kartpooler",
+            "edit": "Redigera",
+            "maps": "Kartor",
+            "active_duty": "Aktiv tjänst",
+            "available_modes": "Tillgängliga lägen",
+            "workshop_id": "Workshop ID",
+            "add_new_map": "Lägg till ny karta"
         },
         "map_pool": {
             "toggle_pool_type": "Karta {map} har varit {typ} för {typ}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Redigera karta"
+    },
+    "validation": {
+        "map_pool_required": "Karta pool krävs"
     }
 }

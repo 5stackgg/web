@@ -238,7 +238,13 @@
                 "title": "{type}地图池",
                 "description": "管理{type}池中的地图",
                 "modify_maps": "修改池中的地图"
-            }
+            },
+            "add_new_map": "添加新地图",
+            "maps": "地图",
+            "active_duty": "服役地图",
+            "available_modes": "可用模式",
+            "workshop_id": "创意工坊ID",
+            "edit": "编辑"
         },
         "map_pool": {
             "toggle_pool_type": "地图{map}已{type}为{type}",

@@ -238,7 +238,13 @@
                 "title": "{type} kartu kopa",
                 "description": "Pārvaldiet kartes {type} kopā",
                 "modify_maps": "Modificēt kartes kopā"
-            }
+            },
+            "add_new_map": "Pievienot jaunu karti",
+            "maps": "Kartes",
+            "active_duty": "Aktīvā dienesta",
+            "available_modes": "Pieejamie režīmi",
+            "workshop_id": "Workshop ID",
+            "edit": "Rediģēt"
         },
         "map_pool": {
             "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Rediģēt karti"
+    },
+    "validation": {
+        "map_pool_required": "Karte baseins ir nepieciešams"
     }
 }

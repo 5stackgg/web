@@ -238,7 +238,13 @@
                 "title": "{type} kort-pool",
                 "description": "Administrer kort i {type} pool",
                 "modify_maps": "Rediger kort i poolen"
-            }
+            },
+            "add_new_map": "Tilføj nyt kort",
+            "maps": "Kort",
+            "active_duty": "Aktiv tjeneste",
+            "available_modes": "Tilgængelige tilstande",
+            "workshop_id": "Workshop ID",
+            "edit": "Rediger"
         },
         "map_pool": {
             "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Rediger kort"
+    },
+    "validation": {
+        "map_pool_required": "Kortpulje er påkrævet"
     }
 }

@@ -238,7 +238,13 @@
                 "description": "{type}プールでマップを管理する",
                 "modify_maps": "プールのマップを修正"
             },
-            "title": "マッププール"
+            "title": "マッププール",
+            "available_modes": "利用可能なモード",
+            "workshop_id": "ワークショップID",
+            "add_new_map": "新規マップの追加",
+            "edit": "編集",
+            "maps": "マップ",
+            "active_duty": "アクティブデューティ"
         },
         "map_pool": {
             "toggle_pool_type": "{type} の {type} は {type} の {type} です",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "編集マップ"
+    },
+    "validation": {
+        "map_pool_required": "地図プールが必要です"
     }
 }

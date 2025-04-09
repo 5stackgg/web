@@ -238,7 +238,13 @@
                 "title": "Grupo de mapas {type}",
                 "description": "Gestionar mapas en el grupo {type}",
                 "modify_maps": "Modificar mapas en el grupo"
-            }
+            },
+            "edit": "Editar",
+            "maps": "Mapas",
+            "active_duty": "Servicio activo",
+            "available_modes": "Modos disponibles",
+            "workshop_id": "ID de Workshop",
+            "add_new_map": "Añadir nuevo mapa"
         },
         "map_pool": {
             "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
@@ -951,5 +957,8 @@
     },
     "map_pools": {
         "edit_map": "Editar mapa"
+    },
+    "validation": {
+        "map_pool_required": "La piscina de mapa es necesaria"
     }
 }

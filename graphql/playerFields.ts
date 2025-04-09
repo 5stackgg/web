@@ -8,4 +8,5 @@ export const playerFields = Selector("players")({
   is_banned: true,
   is_gagged: true,
   is_muted: true,
+  elo: true,
 });

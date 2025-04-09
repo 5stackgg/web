@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
+import PlayerElo from "~/components/PlayerElo.vue";
+
 </script>
 <template>
   <div

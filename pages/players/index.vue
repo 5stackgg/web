@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import Pagination from "@/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerElo from "~/components/PlayerElo.vue";
+
 </script>
 
 <template>
@@ -52,8 +54,9 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
             class="cursor-pointer"
           >
             <TableCell class="font-medium">
-              <div class="flex">
+              <div class="flex justify-between items-center align-middle pr-4">
                 <PlayerDisplay :player="player"></PlayerDisplay>
+                <PlayerElo :elo="player.elo" />
               </div>
             </TableCell>
           </TableRow>

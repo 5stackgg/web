@@ -28,7 +28,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         <span
           class="text-white text-xl font-bold uppercase text-center font-sans"
         >
-          {{ cleanMapName(map.name) }}
+          {{ map.label || cleanMapName(map.name) }}
         </span>
       </template>
 

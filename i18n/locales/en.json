@@ -211,6 +211,8 @@
       "table": {},
       "form": {
         "name": "Name",
+        "name_description": "This must match the name of the map in the game that the server recognizes.",
+        "label": "Label",
         "poster": "Poster (optional)",
         "poster_placeholder": "http://example.com/poster.png",
         "patch": "Patch (optional)",
@@ -225,15 +227,19 @@
           "cancel": "Cancel",
           "confirm": "Delete"
         },
+        "error": {
+          "create": "Error creating map",
+          "update": "Error updating map",
+          "invalid_workshop": "Invalid workshop map ID. Please verify the ID exists on Steam Workshop.",
+          "workshop_refresh": "Error refreshing workshop map details"
+        },
         "success": {
           "create": "Map created successfully",
           "update": "Map updated successfully",
-          "delete": "Map deleted successfully"
+          "delete": "Map deleted successfully",
+          "workshop_refresh": "Workshop map details refreshed successfully"
         },
-        "error": {
-          "create": "Error creating map",
-          "update": "Error updating map"
-        }
+        "refresh_workshop": "Refresh Details"
       },
       "pool": {
         "title": "{type} Map Pool",

@@ -4,6 +4,7 @@ export const mapFields = Selector("maps")({
   id: true,
   name: true,
   type: true,
+  label: true,
   patch: true,
   poster: true,
   active_pool: true,

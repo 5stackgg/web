@@ -5,7 +5,6 @@ import Pagination from "@/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
-
 </script>
 
 <template>

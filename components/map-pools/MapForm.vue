@@ -16,26 +16,80 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-vue-next";
+import { Trash, AlertTriangle, RefreshCw } from "lucide-vue-next";
 import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
 </script>
 
 <template>
   <form @submit.prevent="submitForm" class="space-y-4">
-    <FormField name="name" v-slot="{ componentField }">
+    <FormField name="workshop_map_id" v-slot="{ componentField }">
       <FormItem>
-        <FormLabel for="name">{{ $t("pages.map_pools.form.name") }}</FormLabel>
+        <FormLabel for="workshop_map_id">{{
+          $t("pages.map_pools.form.workshop_map_id")
+        }}</FormLabel>
         <FormControl>
-          <Input
-            v-bind="componentField"
-            type="text"
-            id="name"
-            name="name"
-            required
-          />
+          <div class="flex gap-2">
+            <Input
+              v-bind="componentField"
+              type="text"
+              id="workshop_map_id"
+              name="workshop_map_id"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              @click="refreshWorkshopMapDetails"
+              :disabled="!form.values.workshop_map_id || isLoading"
+            >
+              <RefreshCw
+                class="h-4 w-4 mr-2"
+                :class="{ 'animate-spin': isLoading }"
+              />
+              {{ $t("pages.map_pools.form.refresh_workshop") }}
+            </Button>
+          </div>
+          <template v-if="form.values.workshop_map_id">
+            <ViewOnSteam :workshop_map_id="form.values.workshop_map_id" />
+          </template>
         </FormControl>
       </FormItem>
     </FormField>
+
+    <template v-show="!form.values.workshop_map_id">
+      <FormField name="name" v-slot="{ componentField }">
+        <FormItem>
+          <FormLabel for="name">{{
+            $t("pages.map_pools.form.name")
+          }}</FormLabel>
+          <FormControl>
+            <Input
+              v-bind="componentField"
+              type="text"
+              id="name"
+              name="name"
+              required
+              :disabled="!!form.values.workshop_map_id"
+            />
+          </FormControl>
+          <FormDescription class="flex items-center">
+            <AlertTriangle class="w-4 h-4 mr-2 text-red-500" />
+            {{ $t("pages.map_pools.form.name_description") }}
+          </FormDescription>
+        </FormItem>
+      </FormField>
+    </template>
+
+    <FormField name="label" v-slot="{ componentField }">
+      <FormItem>
+        <FormLabel for="label">{{
+          $t("pages.map_pools.form.label")
+        }}</FormLabel>
+        <FormControl>
+          <Input v-bind="componentField" type="text" id="label" name="label" />
+        </FormControl>
+      </FormItem>
+    </FormField>
+
     <FormField name="poster" v-slot="{ componentField }">
       <FormItem>
         <FormLabel for="poster">{{
@@ -65,24 +119,6 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
             name="patch"
             :placeholder="$t('pages.map_pools.form.patch_placeholder')"
           />
-        </FormControl>
-      </FormItem>
-    </FormField>
-    <FormField name="workshop_map_id" v-slot="{ componentField }">
-      <FormItem>
-        <FormLabel for="workshop_map_id">{{
-          $t("pages.map_pools.form.workshop_map_id")
-        }}</FormLabel>
-        <FormControl>
-          <Input
-            v-bind="componentField"
-            type="text"
-            id="workshop_map_id"
-            name="workshop_map_id"
-          />
-          <template v-if="form.values.workshop_map_id">
-            <ViewOnSteam :workshop_map_id="form.values.workshop_map_id" />
-          </template>
         </FormControl>
       </FormItem>
     </FormField>
@@ -133,9 +169,12 @@ export default {
   emits: ["updated", "created", "deleted"],
   data() {
     return {
+      verifiredMapName: false,
+      isLoading: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
+            label: z.string().optional(),
             name: z.string().min(1),
             workshop_map_id: z.string().optional(),
             poster: z.string().optional(),
@@ -145,6 +184,7 @@ export default {
         initialValues: this.map
           ? {
               name: this.map.name,
+              label: this.map.label,
               workshop_map_id: this.map.workshop_map_id,
               poster: this.map.poster,
               patch: this.map.patch,
@@ -154,8 +194,62 @@ export default {
     };
   },
   methods: {
+    async refreshWorkshopMapDetails() {
+      if (!this.form.values.workshop_map_id) return;
+
+      this.isLoading = true;
+      try {
+        const map = await this.getWorkshopMap(this.form.values.workshop_map_id);
+
+        console.info({ map });
+        this.form.setFieldValue("name", this.form.values.workshop_map_id);
+        this.form.setFieldValue("label", map.title);
+        this.form.setFieldValue("poster", map.preview_url);
+
+        toast({
+          title: this.$t("pages.map_pools.form.success.workshop_refresh"),
+        });
+      } catch (error) {
+        console.error("Error refreshing workshop map details:", error);
+        toast({
+          title: this.$t("pages.map_pools.form.error.workshop_refresh"),
+          variant: "destructive",
+        });
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async getWorkshopMap(workshopMapId: string): Promise<{
+      name: string;
+      title: string;
+      preview_url: string;
+    }> {
+      return await $fetch<{ name: string; title: string; preview_url: string }>(
+        "/api/get-workshop-map",
+        {
+          method: "post",
+          body: {
+            workshop_map_id: workshopMapId,
+          },
+        },
+      );
+    },
     async submitForm() {
       const values = this.form.values;
+
+      // Verify workshop map if provided
+      if (values.workshop_map_id) {
+        const isValid = await this.getWorkshopMap(values.workshop_map_id);
+        console.info({ isValid });
+        if (!isValid) {
+          toast({
+            title: this.$t("pages.map_pools.form.error.invalid_workshop"),
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
       try {
         if (this.map) {
           // Update existing map
@@ -165,6 +259,7 @@ export default {
                 {
                   _set: {
                     name: values.name,
+                    label: values.label,
                     workshop_map_id: values.workshop_map_id,
                     poster: values.poster,
                     patch: values.patch,
@@ -197,6 +292,7 @@ export default {
                 objects: [
                   {
                     name: values.name,
+                    label: values.label,
                     workshop_map_id: values.workshop_map_id,
                     poster: values.poster,
                     patch: values.patch,

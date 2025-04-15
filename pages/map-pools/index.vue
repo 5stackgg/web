@@ -187,9 +187,15 @@ export default {
         }
       }
 
-      return Array.from(uniqueMapsMap.values()).sort((a, b) => {
-        return a.name.localeCompare(b.name);
-      });
+      return Array.from(uniqueMapsMap.values())
+        .sort((a, b) => {
+          return a.name.localeCompare(b.name);
+        })
+        .sort((a, b) => {
+          return a.name
+            .replace("de_", "")
+            .localeCompare(b.name.replace("de_", ""));
+        });
     },
   },
 };

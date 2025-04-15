@@ -103,9 +103,17 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
             name="poster"
             :placeholder="$t('pages.map_pools.form.poster_placeholder')"
           />
+          <div v-if="form.values.poster" class="mt-2">
+            <img
+              :src="form.values.poster"
+              alt="Map poster"
+              class="max-w-xs rounded-md"
+            />
+          </div>
         </FormControl>
       </FormItem>
     </FormField>
+
     <FormField name="patch" v-slot="{ componentField }">
       <FormItem>
         <FormLabel for="patch">{{
@@ -119,6 +127,13 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
             name="patch"
             :placeholder="$t('pages.map_pools.form.patch_placeholder')"
           />
+          <div v-if="form.values.patch" class="mt-2">
+            <img
+              :src="form.values.patch"
+              alt="Map patch"
+              class="max-w-xs rounded-md"
+            />
+          </div>
         </FormControl>
       </FormItem>
     </FormField>
@@ -200,8 +215,14 @@ export default {
       this.isLoading = true;
       try {
         const map = await this.getWorkshopMap(this.form.values.workshop_map_id);
+        if (!map) {
+          toast({
+            title: this.$t("pages.map_pools.form.error.workshop_refresh"),
+            variant: "destructive",
+          });
+          return;
+        }
 
-        console.info({ map });
         this.form.setFieldValue("name", this.form.values.workshop_map_id);
         this.form.setFieldValue("label", map.title);
         this.form.setFieldValue("poster", map.preview_url);
@@ -239,9 +260,9 @@ export default {
 
       // Verify workshop map if provided
       if (values.workshop_map_id) {
-        const isValid = await this.getWorkshopMap(values.workshop_map_id);
-        console.info({ isValid });
-        if (!isValid) {
+        const map = await this.getWorkshopMap(values.workshop_map_id);
+
+        if (!map) {
           toast({
             title: this.$t("pages.map_pools.form.error.invalid_workshop"),
             variant: "destructive",
@@ -252,7 +273,6 @@ export default {
 
       try {
         if (this.map) {
-          // Update existing map
           await this.$apollo.mutate({
             mutation: generateMutation({
               update_maps: [

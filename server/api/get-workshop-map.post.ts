@@ -17,7 +17,12 @@ export default defineEventHandler(async (event) => {
     );
     const data = await res.json();
 
-    return data.response.publishedfiledetails.at(0);
+    const map = data.response.publishedfiledetails.at(0);
+    if (!map.title) {
+      return null;
+    }
+
+    return map;
   } catch (error) {
     console.error("Error verifying workshop map:", error);
   }

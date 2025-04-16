@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "Forzar registro de nombre de jugador",
                     "force_name_registration_description": "Si se fuerza el registro de jugador, el jugador deberá enviar un nombre que se usará en la plataforma."
+                },
+                "game_type_configs": {
+                    "title": "Tipo de juego Configs",
+                    "description": "Gestione los configs tipo juego.",
+                    "type": "Tipo de juego",
+                    "base_config": "Base Config (5stack.base.cfg)"
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "La piscina de mapa es necesaria"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "Config",
+            "create": "Crear Config",
+            "update": "Actualizar Config",
+            "revert_to_defaults": "Revertir a los defectos",
+            "revert_confirm": {
+                "title": "Revertir a los defectos",
+                "description": "¿Estás seguro de que quieres revertir este config a sus valores predeterminados? Esta acción no se puede deshacer.",
+                "confirm": "Revertir",
+                "cancel": "Cancelar"
+            },
+            "success": {
+                "create": "Config creado con éxito",
+                "update": "Config actualizado con éxito",
+                "revert": "Config revertido a defectos con éxito"
+            },
+            "error": {
+                "create": "Error creando config",
+                "update": "Actualización de errores",
+                "revert": "Configuración de revertir errores a defectos"
+            }
+        }
     }
 }

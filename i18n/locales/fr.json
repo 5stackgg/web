@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "Forcer l'enregistrement du nom",
                     "force_name_registration_description": "Si l'enregistrement du nom est forcé, le joueur doit soumettre un nom à utiliser sur la plateforme."
+                },
+                "game_type_configs": {
+                    "title": "Type de jeu Configs",
+                    "description": "Gérer les configurations de type de jeu.",
+                    "type": "Type de jeu",
+                    "base_config": "Base Config (5stack.base.cfg)"
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "Une piscine cartographique est nécessaire"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "Config",
+            "create": "Créer une configuration",
+            "update": "Mettre à jour la configuration",
+            "revert_to_defaults": "Retourner aux valeurs par défaut",
+            "revert_confirm": {
+                "title": "Retourner aux valeurs par défaut",
+                "description": "Voulez-vous vraiment retourner cette config à ses valeurs par défaut ? Cette action ne peut être annulée.",
+                "confirm": "Répandre",
+                "cancel": "Annuler"
+            },
+            "success": {
+                "create": "Config créé avec succès",
+                "update": "Config mis à jour avec succès",
+                "revert": "Config est retourné aux valeurs par défaut avec succès"
+            },
+            "error": {
+                "create": "Erreur lors de la création de configuration",
+                "update": "Erreur de mise à jour de la configuration",
+                "revert": "Erreur lors du retour de la configuration aux valeurs par défaut"
+            }
+        }
     }
 }

@@ -958,5 +958,12 @@
     },
     "map_pools": {
         "edit_map": "编辑地图"
+    },
+    "game_type_configs": {
+        "form": {
+            "revert_confirm": {
+                "cancel": "取消"
+            }
+        }
     }
 }

@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "Wymuś rejestrację nazwy gracza",
                     "force_name_registration_description": "Jeśli rejestracja gracza jest wymuszona, gracz będzie musiał przesłać nazwę, która będzie używana na platformie."
+                },
+                "game_type_configs": {
+                    "title": "Typ gry Konfigi",
+                    "description": "Zarządzaj konfigami typu gry.",
+                    "type": "Typ gry",
+                    "base_config": "Konfiguracja bazowa (5stack.base.cfg)"
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "Basen mapy jest wymagany"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "Konfiguracja",
+            "create": "Utwórz konfigurację",
+            "update": "Aktualizuj konfigurację",
+            "revert_to_defaults": "Cofnij do domyślnych",
+            "revert_confirm": {
+                "title": "Cofnij do domyślnych",
+                "description": "Czy na pewno chcesz przywrócić ten konfigurator do wartości domyślnych? Działania tego nie można cofnąć.",
+                "confirm": "Cofnij",
+                "cancel": "Anuluj"
+            },
+            "success": {
+                "create": "Konfiguracja utworzona pomyślnie",
+                "update": "Konfiguracja zaktualizowana pomyślnie",
+                "revert": "Konfiguracja powrotna do domyślnych"
+            },
+            "error": {
+                "create": "Błąd podczas tworzenia pliku konfiguracyjnego",
+                "update": "Błąd podczas aktualizacji konfiguracji",
+                "revert": "Błąd odwracania konfiguratora do domyślnego"
+            }
+        }
     }
 }

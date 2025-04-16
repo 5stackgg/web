@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "Spielernamen-Registrierung erzwingen",
                     "force_name_registration_description": "Wenn die Spielerregistrierung erzwungen wird, muss der Spieler einen Namen einreichen, der auf der Plattform verwendet wird."
+                },
+                "game_type_configs": {
+                    "type": "Spieltyp",
+                    "base_config": "Base Config (5stack.base.cfg)",
+                    "title": "Game Type Configs",
+                    "description": "Manage Spieltyp configs."
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "Kartenpool ist erforderlich"
+    },
+    "game_type_configs": {
+        "form": {
+            "error": {
+                "create": "Fehler beim Erstellen von config",
+                "update": "Fehler beim Update config",
+                "revert": "Fehler reverting config auf Standardeinstellungen"
+            },
+            "cfg": "Konkret",
+            "create": "Erstellen von Config",
+            "update": "Update Config",
+            "revert_to_defaults": "Zurück zu Standard",
+            "revert_confirm": {
+                "title": "Zurück zu Standard",
+                "description": "Sind Sie sicher, dass Sie diese config auf ihre Standardwerte umwandeln wollen? Diese Aktion kann nicht rückgängig gemacht werden.",
+                "confirm": "Zurück",
+                "cancel": "Abbrechen"
+            },
+            "success": {
+                "create": "Config erstellt erfolgreich",
+                "update": "Vertrauen erfolgreich aktualisiert",
+                "revert": "Config revertiert zu Standardeinstellungen erfolgreich"
+            }
+        }
     }
 }

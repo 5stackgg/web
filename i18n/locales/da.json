@@ -7,7 +7,7 @@
             "services": "Tjenester"
         },
         "system_logs": {
-            "follow_logs": "Følg logs",
+            "follow_logs": "Følg",
             "timestamps": "Tidsstempler"
         },
         "login": {
@@ -76,19 +76,25 @@
                 "players": {
                     "force_name_registration": "Tving spiller navn registrering",
                     "force_name_registration_description": "Hvis spiller registrering er tvunget, skal spilleren indsende et navn, der vil blive brugt på platformen."
+                },
+                "game_type_configs": {
+                    "title": "Spil type configs",
+                    "description": "Administrer spiltype config.",
+                    "type": "Spiltype",
+                    "base_config": "Base Config (5stack.base.cfg)"
                 }
             }
         },
         "regions": {
             "title": "Regioner",
             "description": "Regionsadministration",
-            "create": "Opret region",
+            "create": "Opret",
             "table": {
                 "name": "Navn",
                 "status": "Status",
                 "available_servers": "Tilgængelige servere",
                 "description": "Beskrivelse",
-                "use_lan_ip": "Brug LAN IP",
+                "use_lan_ip": "Brug LAN",
                 "actions": "Handlinger"
             },
             "edit": "Rediger",
@@ -117,7 +123,7 @@
             "title": "Spil",
             "description": "Start en kamp",
             "admin_disabled": "Oprettelse af kampe er blevet deaktiveret af administratoren",
-            "create_match": "Opret kamp",
+            "create_match": "Opret",
             "open_matches": {
                 "title": "Åbne kampe",
                 "description": "Tilgængelige kampe"
@@ -130,13 +136,13 @@
             "title": "Kampe",
             "description": "Kampadministration",
             "admin_disabled": "Oprettelse af kampe er blevet deaktiveret af administratoren",
-            "create": "Opret kamp",
+            "create": "Opret",
             "last_ten_wins": "Sidste 10 sejre",
             "last_ten_losses": "Sidste 10 nederlag",
             "my_match_history": "Min kamp historik",
             "other_matches": "Andre kampe",
             "create_page": {
-                "title": "Opret kamp",
+                "title": "Opret",
                 "pick_up_game": "Pickup kamp",
                 "pick_up_game_description": "Opret en pickup kamp",
                 "team_1": "Hold 1",
@@ -150,7 +156,7 @@
             }
         },
         "game_server_nodes": {
-            "title": "Spilserver-noder",
+            "title": "Spilserver Nodes",
             "description": "Administrer spilserver-noder",
             "not_supported": {
                 "title": "Ikke understøttet",
@@ -174,7 +180,7 @@
             "last_updated": "Sidst opdateret"
         },
         "dedicated_servers": {
-            "title": "Dedikerede servere",
+            "title": "Dedikeret",
             "description": "Administrer dedikerede servere",
             "create": {
                 "title": "Opret server"
@@ -206,7 +212,7 @@
             }
         },
         "map_pools": {
-            "title": "Kort-pools",
+            "title": "Standard kort pooler",
             "description": "Administrer kort-pools og tilgængelige kort til matchmaking.",
             "form": {
                 "name": "Navn",
@@ -241,15 +247,15 @@
                 "refresh_workshop": "Genopfrisk detaljer"
             },
             "pool": {
-                "title": "{type} kort-pool",
+                "title": "Standard {type} Kortpulje",
                 "description": "Administrer kort i {type} pool",
                 "modify_maps": "Rediger kort i poolen"
             },
             "add_new_map": "Tilføj nyt kort",
-            "maps": "Kort",
+            "maps": "Tilgængelige kort",
             "active_duty": "Aktiv tjeneste",
-            "available_modes": "Tilgængelige tilstande",
-            "workshop_id": "Workshop ID",
+            "available_modes": "Tilgængelig i Modes",
+            "workshop_id": "Workshop link",
             "edit": "Rediger"
         },
         "map_pool": {
@@ -320,7 +326,7 @@
                 "placeholder": "Vælg bedst af"
             },
             "map_veto_settings": {
-                "label": "Kort veto indstillinger",
+                "label": "Kort veto",
                 "description": "Beskrivelse af kort veto indstillinger",
                 "custom_pool": "Tilpasset kortpool",
                 "active_duty": "Active Duty",
@@ -352,7 +358,7 @@
                         "description": "Beskrivelse af region veto"
                     },
                     "preferred": "Foretrukket region",
-                    "single": "Enkelt region",
+                    "single": "Region",
                     "placeholder": "Vælg region",
                     "any": "Enhver region",
                     "description": "Beskrivelse af region"
@@ -388,7 +394,7 @@
             "coaches": "Trænere",
             "overtime": "Overtid",
             "knife_round": "Knivrunde",
-            "map_veto_enabled": "Kort veto aktiveret",
+            "map_veto_enabled": "Kort veto",
             "region_veto": "Region veto",
             "substitutes": "Erstatninger",
             "timeout_setting": "Timeout indstilling",
@@ -500,7 +506,7 @@
             "call_organizer": "Ring til organisator"
         },
         "check_in": {
-            "title": "Check-in",
+            "title": "Check ind",
             "checked_in": "Checket ind",
             "check_in": "Check ind",
             "description": "Check-in beskrivelse"
@@ -536,7 +542,7 @@
             "total_damage": "Total skade",
             "substitute": "Erstatning",
             "join": "Deltag",
-            "slot": "Slot"
+            "slot": "Slot {number}"
         },
         "server": {
             "offline": "Offline",
@@ -581,7 +587,7 @@
             "title": "Registrering",
             "description": "Beskrivelse",
             "warning": "Advarsel",
-            "name_label": "Navn etiket",
+            "name_label": "Navn",
             "confirm_button": "Bekræft knap",
             "success": "Succes"
         },
@@ -597,7 +603,7 @@
             "request_title": "Navneændringsanmodning",
             "description": "Beskrivelse",
             "request_description": "Anmodningsbeskrivelse",
-            "name_label": "Navn etiket",
+            "name_label": "Navn",
             "success": "Succes",
             "request_success": "Anmodningssucces"
         }
@@ -608,7 +614,7 @@
         },
         "official": "Officiel",
         "workshop": "Workshop",
-        "active_duty": "Active Duty"
+        "active_duty": "Aktiv tjeneste"
     },
     "region": {
         "form": {
@@ -714,7 +720,7 @@
                 "title": "Administration",
                 "regions": "Regioner",
                 "servers": "Servere",
-                "dedicated_servers": "Dedikerede Servere",
+                "dedicated_servers": "Dedikeret",
                 "game_server_nodes": "Spilserver Nodes",
                 "logs": "Systemlogs",
                 "metrics": "Systemmetrik",
@@ -737,7 +743,7 @@
                 "teams": "Hold",
                 "regions": "Regioner",
                 "servers": "Servere",
-                "dedicated_servers": "Dedikerede Servere",
+                "dedicated_servers": "Dedikeret",
                 "game_server_nodes": "Spilserver Nodes",
                 "system_logs": "Systemlogs",
                 "system_metrics": "Systemmetrik",
@@ -760,7 +766,7 @@
             "description": "Installer 5Stack for en bedre oplevelse",
             "step1": "Trin 1",
             "step2": "Trin 2",
-            "tooltip": "Installationstip",
+            "tooltip": "Installer",
             "button": "Installer"
         }
     },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "Kortpulje er påkrævet"
+    },
+    "game_type_configs": {
+        "form": {
+            "error": {
+                "update": "Fejl under opdatering af config",
+                "revert": "Fejl ved returnering af config til standard",
+                "create": "Fejl ved oprettelse af config"
+            },
+            "cfg": "Konfig",
+            "create": "Opret config",
+            "update": "Opdatér konfiguration",
+            "revert_to_defaults": "Vend tilbage til indstillinger",
+            "revert_confirm": {
+                "title": "Vend tilbage til indstillinger",
+                "description": "Er du sikker på at du vil vende denne config tilbage til dens standardværdier? Denne handling kan ikke bringes til ophør.",
+                "confirm": "Vend om",
+                "cancel": "Annuller"
+            },
+            "success": {
+                "create": "Konfiguration oprettet med succes",
+                "update": "Konfiguration opdateret med succes",
+                "revert": "Konfiguration vendt tilbage til fejl med succes"
+            }
+        }
     }
 }

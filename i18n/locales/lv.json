@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "Piespiest spēlētāja vārda reģistrāciju",
                     "force_name_registration_description": "Ja spēlētāja reģistrācija ir piespiesta, spēlētājam būs jāiesniedz vārds, kas tiks izmantots platformā."
+                },
+                "game_type_configs": {
+                    "title": "Spēles tipa konfigurācijas",
+                    "description": "Pārvaldīt spēles tipa konfigurācijas.",
+                    "type": "Spēles veids",
+                    "base_config": "Bāzes konfigurācija (5stack.base.cfg)"
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "Karte baseins ir nepieciešams"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "Konfigurācija",
+            "create": "Izveidot konfigurāciju",
+            "update": "Atjaunināt",
+            "revert_to_defaults": "Atjaunot noklusētos",
+            "revert_confirm": {
+                "title": "Atjaunot noklusētos",
+                "description": "Vai tiešām vēlaties atgriezt šo konfigurāciju tās noklusētajās vērtībās? Šo rīcību nevar atcelt.",
+                "confirm": "Atgriezt",
+                "cancel": "Atcelt"
+            },
+            "success": {
+                "create": "Konfigurācija veiksmīgi izveidota",
+                "update": "Konfigurācija veiksmīgi atjaunināta",
+                "revert": "Konfigurācija veiksmīgi atgriezta noklusētajā"
+            },
+            "error": {
+                "create": "Kļūda izveidojot konfigurāciju",
+                "update": "Kļūda atjaunojot konfigurāciju",
+                "revert": "Kļūda atgriežot konfigurāciju uz noklusēto"
+            }
+        }
     }
 }

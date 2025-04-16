@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "플레이어 이름 등록 강제",
                     "force_name_registration_description": "플레이어 등록이 강제되는 경우, 플레이어는 플랫폼에서 사용될 이름을 제출해야 합니다."
+                },
+                "game_type_configs": {
+                    "title": "게임 유형 Configs",
+                    "description": "게임 유형 설정 관리.",
+                    "type": "게임 유형",
+                    "base_config": "기본 구성 (5stack.base.cfg)"
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "지도 풀이 필요합니다"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "사이트맵",
+            "create": "Config 만들기",
+            "update": "Config 업데이트",
+            "revert_to_defaults": "기본값으로 변환",
+            "revert_confirm": {
+                "title": "기본값으로 변환",
+                "description": "이 config를 기본 값으로 바꾸고 싶으신가요? 이 동작은 undone일 수 없습니다.",
+                "confirm": "지원하다",
+                "cancel": "취소"
+            },
+            "success": {
+                "create": "Config는 성공적으로 만들었습니다",
+                "update": "Config 업데이트",
+                "revert": "Config는 기본적으로 성공적으로 되돌아갔습니다"
+            },
+            "error": {
+                "create": "오류 생성",
+                "update": "오류 업데이트 config",
+                "revert": "Config를 기본값으로 반전하는 오류"
+            }
+        }
     }
 }

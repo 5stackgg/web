@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "プレイヤー名登録を強制",
                     "force_name_registration_description": "プレイヤー登録を強制する場合、プレイヤーはプラットフォームで使用される名前を提出する必要があります。"
+                },
+                "game_type_configs": {
+                    "base_config": "ベースコンフィグ(5stack.base.cfg)",
+                    "title": "ゲームの種類 設定",
+                    "description": "ゲーム型コンフィグの管理.",
+                    "type": "ゲームの種類"
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "地図プールが必要です"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "設定",
+            "create": "設定を作成する",
+            "update": "設定を更新する",
+            "revert_to_defaults": "デフォルトに戻す",
+            "revert_confirm": {
+                "title": "デフォルトに戻す",
+                "description": "この設定をデフォルト値に戻したいですか? このアクションは元に戻すことができません.",
+                "confirm": "リバート",
+                "cancel": "キャンセル"
+            },
+            "success": {
+                "create": "Config が正常に作成されました",
+                "update": "正常に更新された設定",
+                "revert": "デフォルトに戻された設定を正常に設定"
+            },
+            "error": {
+                "create": "設定を作成するエラー",
+                "update": "エラー更新の設定",
+                "revert": "デフォルトで設定を反転するエラー"
+            }
+        }
     }
 }

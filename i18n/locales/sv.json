@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "Tvinga spelarnamnregistrering",
                     "force_name_registration_description": "Om tvingad att ha spelarregistrering måste spelaren ange ett namn som kommer att användas på plattformen."
+                },
+                "game_type_configs": {
+                    "title": "Game Type Configs",
+                    "description": "Hantera spel typ configs.",
+                    "type": "Speltyp",
+                    "base_config": "Base Config (5stack.base.cfg)"
                 }
             }
         },
@@ -966,5 +972,29 @@
     },
     "validation": {
         "map_pool_required": "Karta pool krävs"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "Konfig",
+            "create": "Skapa konfig",
+            "update": "Uppdatera Config",
+            "revert_to_defaults": "Återgå till standarder",
+            "revert_confirm": {
+                "title": "Återgå till standarder",
+                "description": "Är du säker på att du vill återställa denna konfig till dess standardvärden? Denna åtgärd kan inte ångras.",
+                "confirm": "Revertera",
+                "cancel": "Avbryt"
+            },
+            "success": {
+                "create": "Config skapade framgångsrikt",
+                "update": "Config uppdaterad framgångsrikt",
+                "revert": "Config återgick till standarder framgångsrikt"
+            },
+            "error": {
+                "create": "Fel skapa konfig",
+                "update": "Fel uppdatera konfig",
+                "revert": "Fel reverting konfig till standarder"
+            }
+        }
     }
 }

@@ -73,7 +73,8 @@
         "game_type_configs": {
           "title": "Game Type Configs",
           "description": "Manage game type configs.",
-          "type": "Game Type"
+          "type": "Game Type",
+          "base_config": "Base Config (5stack.base.cfg)"
         },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
         "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",

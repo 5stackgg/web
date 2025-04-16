@@ -8,7 +8,7 @@ import GameTypeConfigForm from "~/components/game-type-configs/GameTypeConfigFor
   <TableRow :key="gameConfig.type" class="cursor-pointer">
     <TableCell class="font-medium">
       <div class="flex justify-between items-center align-middle pr-4">
-        <span>5stack.{{ gameConfig.type.toLowerCase() }}.cfg</span>
+        <span>{{ gameConfig.type }}</span>
       </div>
     </TableCell>
     <TableCell>

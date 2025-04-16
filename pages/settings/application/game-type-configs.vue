@@ -29,16 +29,6 @@ definePageMeta({
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell class="font-medium">
-            <div class="flex justify-between items-center align-middle pr-4">
-              <span>5stack.base.cfg</span>
-            </div>
-          </TableCell>
-          <TableCell>
-            <pre>{{ baseConfig }}{{ liveConfig }}</pre>
-          </TableCell>
-        </TableRow>
         <GameTypeConfigRow
           v-for="gameTypeConfig in gameTypeConfigs"
           :key="gameTypeConfig.type"
@@ -46,6 +36,17 @@ definePageMeta({
         />
       </TableBody>
     </Table>
+  </Card>
+
+  <Card>
+    <CardHeader>
+      <CardTitle>
+        {{ $t("pages.settings.application.game_type_configs.base_config") }}
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      <pre>{{ baseConfig }}{{ liveConfig }}</pre>
+    </CardContent>
   </Card>
 </template>
 

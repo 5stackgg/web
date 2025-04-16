@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { e_player_roles_enum } from "~/generated/zeus";
-
 definePageMeta({
   layout: "application-settings",
 });

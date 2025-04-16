@@ -58,6 +58,11 @@ export default {
           key: "discord",
           to: "/settings/application/discord",
         },
+        {
+          title: this.$t("pages.settings.application.game_type_configs.title"),
+          key: "game_type_configs",
+          to: "/settings/application/game-type-configs",
+        },
       ],
     };
   },

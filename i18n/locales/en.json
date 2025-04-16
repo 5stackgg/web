@@ -70,6 +70,11 @@
           "support_role_description": "This role will be pinged when used for support actions. You can get the Role ID from the Discord application by turning on developer mode and right clicking and copy id.",
           "update": "Update"
         },
+        "game_type_configs": {
+          "title": "Game Type Configs",
+          "description": "Manage game type configs.",
+          "type": "Game Type"
+        },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
         "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
         "update": "Update",
@@ -227,17 +232,17 @@
           "cancel": "Cancel",
           "confirm": "Delete"
         },
-        "error": {
-          "create": "Error creating map",
-          "update": "Error updating map",
-          "invalid_workshop": "Invalid workshop map ID. Please verify the ID exists on Steam Workshop.",
-          "workshop_refresh": "Error refreshing workshop map details"
-        },
         "success": {
           "create": "Map created successfully",
           "update": "Map updated successfully",
           "delete": "Map deleted successfully",
           "workshop_refresh": "Workshop map details refreshed successfully"
+        },
+        "error": {
+          "create": "Error creating map",
+          "update": "Error updating map",
+          "invalid_workshop": "Invalid workshop map ID. Please verify the ID exists on Steam Workshop.",
+          "workshop_refresh": "Error refreshing workshop map details"
         },
         "refresh_workshop": "Refresh Details"
       },
@@ -970,5 +975,29 @@
   },
   "validation": {
     "map_pool_required": "Map pool is required"
+  },
+  "game_type_configs": {
+    "form": {
+      "cfg": "Config",
+      "create": "Create Config",
+      "update": "Update Config",
+      "revert_to_defaults": "Revert to Defaults",
+      "revert_confirm": {
+        "title": "Revert to Defaults",
+        "description": "Are you sure you want to revert this config to its default values? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Revert"
+      },
+      "success": {
+        "create": "Config created successfully",
+        "update": "Config updated successfully",
+        "revert": "Config reverted to defaults successfully"
+      },
+      "error": {
+        "create": "Error creating config",
+        "update": "Error updating config",
+        "revert": "Error reverting config to defaults"
+      }
+    }
   }
 }

@@ -1,10 +1,10 @@
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-
-  let workshopMapId = body.workshop_map_id?.trim();
-
   try {
-    const res = await fetch(
+    const body = await readBody(event);
+
+    let workshopMapId = body.workshop_map_id?.trim();
+
+    const response = await fetch(
       "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/",
       {
         method: "POST",
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
         }),
       },
     );
-    const data = await res.json();
+    const data = await response.json();
 
     const map = data.response.publishedfiledetails.at(0);
     if (!map.title) {
@@ -24,6 +24,6 @@ export default defineEventHandler(async (event) => {
 
     return map;
   } catch (error) {
-    console.error("Error verifying workshop map:", error);
+    console.error("error verifying workshop map:", error);
   }
 });

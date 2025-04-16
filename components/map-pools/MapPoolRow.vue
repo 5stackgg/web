@@ -10,11 +10,11 @@ import { Pencil } from "lucide-vue-next";
 </script>
 
 <template>
-  <tr class="border-t">
-    <td class="px-4 py-2 text-sm">
+  <TableRow class="border-t">
+    <TableCell class="px-4 py-2 text-sm">
       <MapDisplay :map="map" style="max-width: 350px" />
-    </td>
-    <td class="px-4 py-2 text-sm">
+    </TableCell>
+    <TableCell class="px-4 py-2 text-sm">
       <div class="flex items-center gap-2">
         <Switch
           :checked="map.active_pool"
@@ -22,8 +22,8 @@ import { Pencil } from "lucide-vue-next";
         />
         <span>{{ $t("pages.map_pools.active_duty") }}</span>
       </div>
-    </td>
-    <td class="px-4 py-2 text-sm">
+    </TableCell>
+    <TableCell class="px-4 py-2 text-sm">
       <div class="flex flex-col gap-2">
         <div
           v-for="type in matchTypes"
@@ -37,14 +37,14 @@ import { Pencil } from "lucide-vue-next";
           <span>{{ type }}</span>
         </div>
       </div>
-    </td>
-    <td class="px-4 py-2 text-sm">
+    </TableCell>
+    <TableCell class="px-4 py-2 text-sm">
       <ViewOnSteam
         :workshop_map_id="map.workshop_map_id"
         v-if="map.workshop_map_id"
       />
-    </td>
-    <td>
+    </TableCell>
+    <TableCell>
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="secondary" size="icon">
@@ -58,8 +58,8 @@ import { Pencil } from "lucide-vue-next";
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </td>
-  </tr>
+    </TableCell>
+  </TableRow>
 
   <Sheet :open="editMapSheet" @update:open="(open) => (editMapSheet = open)">
     <SheetContent>

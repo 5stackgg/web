@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "强制玩家名称注册",
                     "force_name_registration_description": "如果强制玩家注册，玩家需要提交一个将在平台上使用的名称。"
+                },
+                "game_type_configs": {
+                    "title": "",
+                    "description": "",
+                    "type": "",
+                    "base_config": ""
                 }
             }
         },
@@ -227,13 +233,18 @@
                 "success": {
                     "create": "地图创建成功",
                     "update": "地图更新成功",
-                    "delete": "地图删除成功"
+                    "delete": "地图删除成功",
+                    "workshop_refresh": ""
                 },
                 "error": {
                     "create": "创建地图时出错",
-                    "update": "更新地图时出错"
+                    "update": "更新地图时出错",
+                    "workshop_refresh": "",
+                    "invalid_workshop": ""
                 },
-                "label": "标签"
+                "label": "标签",
+                "refresh_workshop": "",
+                "name_description": ""
             },
             "pool": {
                 "title": "{type}地图池",
@@ -962,8 +973,28 @@
     "game_type_configs": {
         "form": {
             "revert_confirm": {
-                "cancel": "取消"
+                "cancel": "取消",
+                "title": "",
+                "description": "",
+                "confirm": ""
+            },
+            "cfg": "",
+            "create": "",
+            "update": "",
+            "revert_to_defaults": "",
+            "success": {
+                "create": "",
+                "update": "",
+                "revert": ""
+            },
+            "error": {
+                "create": "",
+                "update": "",
+                "revert": ""
             }
         }
+    },
+    "validation": {
+        "map_pool_required": ""
     }
 }

@@ -232,7 +232,8 @@
                 "error": {
                     "create": "Fejl ved oprettelse af kort",
                     "update": "Fejl ved opdatering af kort"
-                }
+                },
+                "label": "Etiket"
             },
             "pool": {
                 "title": "{type} kort-pool",

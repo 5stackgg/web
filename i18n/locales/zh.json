@@ -232,7 +232,8 @@
                 "error": {
                     "create": "创建地图时出错",
                     "update": "更新地图时出错"
-                }
+                },
+                "label": "标签"
             },
             "pool": {
                 "title": "{type}地图池",

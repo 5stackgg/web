@@ -232,7 +232,8 @@
                 "error": {
                     "create": "Error al crear el mapa",
                     "update": "Error al actualizar el mapa"
-                }
+                },
+                "label": "Etiqueta"
             },
             "pool": {
                 "title": "Grupo de mapas {type}",

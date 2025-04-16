@@ -232,7 +232,8 @@
                 "error": {
                     "create": "Fehler beim Erstellen der Karte",
                     "update": "Fehler beim Aktualisieren der Karte"
-                }
+                },
+                "label": "Bezeichnung"
             },
             "pool": {
                 "title": "{type} Kartenpool",

@@ -232,7 +232,8 @@
                 "error": {
                     "create": "Erreur lors de la création de la carte",
                     "update": "Erreur lors de la mise à jour de la carte"
-                }
+                },
+                "label": "Étiquette"
             },
             "pool": {
                 "title": "Pool de cartes {type}",

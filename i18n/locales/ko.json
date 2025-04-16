@@ -232,7 +232,8 @@
                     "create": "오류 생성 맵",
                     "update": "오류 업데이트 맵"
                 },
-                "name": "이름"
+                "name": "이름",
+                "label": "라벨"
             },
             "pool": {
                 "title": "{type} 지도 풀",

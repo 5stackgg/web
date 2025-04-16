@@ -232,7 +232,8 @@
                     "create": "Błąd przy tworzeniu mapy",
                     "update": "Błąd podczas aktualizacji mapy"
                 },
-                "name": "Nazwa"
+                "name": "Nazwa",
+                "label": "Etykieta"
             },
             "pool": {
                 "title": "{typ} Pula map",

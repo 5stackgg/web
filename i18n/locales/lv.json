@@ -232,7 +232,8 @@
                 "error": {
                     "create": "Kļūda izveidojot karti",
                     "update": "Kļūda atjauninot karti"
-                }
+                },
+                "label": "Etiķete"
             },
             "pool": {
                 "title": "{type} kartu kopa",

@@ -231,7 +231,8 @@
                     "create": "Creazione di errori",
                     "update": "Aggiornamento degli errori"
                 },
-                "name": "Label nome"
+                "name": "Label nome",
+                "label": "Etichetta"
             },
             "pool": {
                 "title": "{type} Mappa Pool",

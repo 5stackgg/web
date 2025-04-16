@@ -232,7 +232,8 @@
                     "create": "Erro ao criar o mapa",
                     "update": "Erro ao atualizar o mapa"
                 },
-                "name": "Nome"
+                "name": "Nome",
+                "label": "Rótulo"
             },
             "pool": {
                 "title": "{tipo} Grupo de mapas",

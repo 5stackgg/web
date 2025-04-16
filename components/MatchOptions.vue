@@ -956,11 +956,6 @@ export default {
           }
         })
         .sort((a: Map, b: Map) => {
-          // First, sort active pool maps to the top
-          if (a.active_pool && !b.active_pool) return -1;
-          if (!a.active_pool && b.active_pool) return 1;
-
-          // Finally, sort by name
           return a.name.localeCompare(b.name);
         });
 

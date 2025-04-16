@@ -227,13 +227,18 @@
                 "success": {
                     "create": "Kort oprettet med succes",
                     "update": "Kort opdateret med succes",
-                    "delete": "Kort slettet med succes"
+                    "delete": "Kort slettet med succes",
+                    "workshop_refresh": "Workshop kort detaljer genopfrisket med succes"
                 },
                 "error": {
                     "create": "Fejl ved oprettelse af kort",
-                    "update": "Fejl ved opdatering af kort"
+                    "update": "Fejl ved opdatering af kort",
+                    "invalid_workshop": "Ugyldigt værkstedskort-id. Bekræft venligst ID findes på Steam Workshop.",
+                    "workshop_refresh": "Fejlforfriskende oplysninger om værkstedskort"
                 },
-                "label": "Etiket"
+                "label": "Etiket",
+                "name_description": "Dette skal matche navnet på kortet i spillet som serveren genkender.",
+                "refresh_workshop": "Genopfrisk detaljer"
             },
             "pool": {
                 "title": "{type} kort-pool",

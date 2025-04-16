@@ -227,13 +227,18 @@
                 "success": {
                     "create": "Karte veiksmīgi izveidota",
                     "update": "Karte veiksmīgi atjaunināta",
-                    "delete": "Karte veiksmīgi dzēsta"
+                    "delete": "Karte veiksmīgi dzēsta",
+                    "workshop_refresh": "Darbnīcas kartes informācija veiksmīgi atjaunota"
                 },
                 "error": {
                     "create": "Kļūda izveidojot karti",
-                    "update": "Kļūda atjauninot karti"
+                    "update": "Kļūda atjauninot karti",
+                    "invalid_workshop": "Nederīgs darbnīcas kartes ID. Lūdzu, pārbaudiet, vai Tvaika darbnīcā eksistē ID.",
+                    "workshop_refresh": "Kļūda atsvaidzinošas darbnīcas kartes detaļas"
                 },
-                "label": "Etiķete"
+                "label": "Etiķete",
+                "name_description": "Tam jāsakrīt ar servera atpazīstamās kartes nosaukumu.",
+                "refresh_workshop": "Atsvaidzināt detaļas"
             },
             "pool": {
                 "title": "{type} kartu kopa",

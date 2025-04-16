@@ -225,14 +225,19 @@
                 "success": {
                     "create": "Karta som skapats framgångsrikt",
                     "update": "Karta uppdaterad framgångsrikt",
-                    "delete": "Karta raderad framgångsrikt"
+                    "delete": "Karta raderad framgångsrikt",
+                    "workshop_refresh": "Workshop karta detaljer uppdateras framgångsrikt"
                 },
                 "error": {
                     "create": "Fel skapa karta",
-                    "update": "Fel uppdatera karta"
+                    "update": "Fel uppdatera karta",
+                    "invalid_workshop": "Invalid workshop map ID. Kontrollera att ID finns på Steam Workshop.",
+                    "workshop_refresh": "Fel uppfriskande workshop kart detaljer"
                 },
                 "name": "Namn",
-                "label": "Etikett"
+                "label": "Etikett",
+                "name_description": "Detta måste matcha namnet på kartan i spelet som servern känner igen.",
+                "refresh_workshop": "Refresh detaljer"
             },
             "pool": {
                 "title": "Map Pool",

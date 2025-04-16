@@ -227,13 +227,18 @@
                 "success": {
                     "create": "Mapa creado con éxito",
                     "update": "Mapa actualizado con éxito",
-                    "delete": "Mapa eliminado con éxito"
+                    "delete": "Mapa eliminado con éxito",
+                    "workshop_refresh": "Detalles del mapa del taller refrescados con éxito"
                 },
                 "error": {
                     "create": "Error al crear el mapa",
-                    "update": "Error al actualizar el mapa"
+                    "update": "Error al actualizar el mapa",
+                    "invalid_workshop": "ID de mapa de taller inválido. Por favor, compruebe la identificación existe en Steam Workshop.",
+                    "workshop_refresh": "Detalles del mapa del taller de actualización de errores"
                 },
-                "label": "Etiqueta"
+                "label": "Etiqueta",
+                "refresh_workshop": "Detalles de referencia",
+                "name_description": "Esto debe coincidir con el nombre del mapa en el juego que el servidor reconoce."
             },
             "pool": {
                 "title": "Grupo de mapas {type}",

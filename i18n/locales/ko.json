@@ -226,14 +226,19 @@
                 "success": {
                     "create": "성공적으로 만든 지도",
                     "update": "업데이트 된지도",
-                    "delete": "성공적으로 삭제 된지도"
+                    "delete": "성공적으로 삭제 된지도",
+                    "workshop_refresh": "Workshop map 세부사항은 성공적으로 새롭게 했습니다"
                 },
                 "error": {
                     "create": "오류 생성 맵",
-                    "update": "오류 업데이트 맵"
+                    "update": "오류 업데이트 맵",
+                    "workshop_refresh": "Error 상쾌한 작업장 지도 세부사항",
+                    "invalid_workshop": "잘못된 워크샵 맵 ID. Steam Workshop에 ID가 존재합니다."
                 },
                 "name": "이름",
-                "label": "라벨"
+                "label": "라벨",
+                "refresh_workshop": "연락처",
+                "name_description": "서버가 인식하는 게임의지도의 이름을 일치해야합니다."
             },
             "pool": {
                 "title": "{type} 지도 풀",

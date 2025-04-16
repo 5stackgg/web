@@ -226,14 +226,19 @@
                 "success": {
                     "create": "Mapa utworzona pomyślnie",
                     "update": "Mapa zaktualizowana pomyślnie",
-                    "delete": "Mapa usunięta pomyślnie"
+                    "delete": "Mapa usunięta pomyślnie",
+                    "workshop_refresh": "Mapa warsztatu szczegóły odświeżone pomyślnie"
                 },
                 "error": {
                     "create": "Błąd przy tworzeniu mapy",
-                    "update": "Błąd podczas aktualizacji mapy"
+                    "update": "Błąd podczas aktualizacji mapy",
+                    "invalid_workshop": "Nieprawidłowy identyfikator mapy warsztatowej. Proszę sprawdzić, czy ID istnieje w Warsztacie Steam.",
+                    "workshop_refresh": "Błąd odświeżające szczegóły mapy warsztatu"
                 },
                 "name": "Nazwa",
-                "label": "Etykieta"
+                "label": "Etykieta",
+                "name_description": "To musi odpowiadać nazwie mapy w grze, którą serwer rozpoznaje.",
+                "refresh_workshop": "Odśwież szczegóły"
             },
             "pool": {
                 "title": "{typ} Pula map",

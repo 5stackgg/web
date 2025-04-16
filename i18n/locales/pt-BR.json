@@ -226,14 +226,19 @@
                 "success": {
                     "create": "Mapa criado com sucesso",
                     "update": "Mapa actualizado com sucesso",
-                    "delete": "Mapa excluído com sucesso"
+                    "delete": "Mapa excluído com sucesso",
+                    "workshop_refresh": "Detalhes do mapa da oficina atualizados com sucesso"
                 },
                 "error": {
                     "create": "Erro ao criar o mapa",
-                    "update": "Erro ao atualizar o mapa"
+                    "update": "Erro ao atualizar o mapa",
+                    "workshop_refresh": "Erro ao atualizar os detalhes do mapa da oficina",
+                    "invalid_workshop": "ID do mapa da oficina inválido. Verifique se o ID existe no Steam Workshop."
                 },
                 "name": "Nome",
-                "label": "Rótulo"
+                "label": "Rótulo",
+                "refresh_workshop": "Atualizar detalhes",
+                "name_description": "Isto deve corresponder ao nome do mapa no jogo que o servidor reconhece."
             },
             "pool": {
                 "title": "{tipo} Grupo de mapas",

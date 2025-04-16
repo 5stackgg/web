@@ -227,13 +227,18 @@
                 "success": {
                     "create": "Karte erfolgreich erstellt",
                     "update": "Karte erfolgreich aktualisiert",
-                    "delete": "Karte erfolgreich gelöscht"
+                    "delete": "Karte erfolgreich gelöscht",
+                    "workshop_refresh": "Details der Werkstattkarte erfolgreich erfrischt"
                 },
                 "error": {
                     "create": "Fehler beim Erstellen der Karte",
-                    "update": "Fehler beim Aktualisieren der Karte"
+                    "update": "Fehler beim Aktualisieren der Karte",
+                    "invalid_workshop": "Invalide Werkstattkarte ID. Bitte überprüfen Sie die ID auf Steam Workshop.",
+                    "workshop_refresh": "Fehlererfrischende Werkstattkarte Details"
                 },
-                "label": "Bezeichnung"
+                "label": "Bezeichnung",
+                "refresh_workshop": "Details zum Produkt",
+                "name_description": "Dies muss dem Namen der Karte im Spiel entsprechen, das der Server erkennt."
             },
             "pool": {
                 "title": "{type} Kartenpool",

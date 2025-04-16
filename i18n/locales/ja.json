@@ -210,7 +210,8 @@
                 "success": {
                     "update": "正常に更新された地図",
                     "create": "正常に作成されたマップ",
-                    "delete": "正常に削除された地図"
+                    "delete": "正常に削除された地図",
+                    "workshop_refresh": "研修会の地図の細部は首尾よく更新しました"
                 },
                 "poster": "ポスター(オプション)",
                 "poster_placeholder": "http://example.com/poster.png",
@@ -228,10 +229,14 @@
                 },
                 "error": {
                     "create": "地図の作成エラー",
-                    "update": "エラー更新マップ"
+                    "update": "エラー更新マップ",
+                    "invalid_workshop": "無効なワークショップマップID。 Steam WorkshopにIDが存在しているかご確認ください.",
+                    "workshop_refresh": "エラーリフレッシュワークショップのマップ"
                 },
                 "name": "名前",
-                "label": "ラベル"
+                "label": "ラベル",
+                "refresh_workshop": "更新情報",
+                "name_description": "これは、サーバーが認識するゲーム内のマップの名前に一致する必要があります."
             },
             "description": "地図のプールを管理し、マッチメイキングのための利用可能なマップ.",
             "pool": {

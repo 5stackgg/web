@@ -225,14 +225,19 @@
                 "success": {
                     "create": "Mappa creata con successo",
                     "update": "Mappa aggiornata con successo",
-                    "delete": "Mappa cancellata con successo"
+                    "delete": "Mappa cancellata con successo",
+                    "workshop_refresh": "Dettagli della mappa dell'officina rinfrescati con successo"
                 },
                 "error": {
                     "create": "Creazione di errori",
-                    "update": "Aggiornamento degli errori"
+                    "update": "Aggiornamento degli errori",
+                    "invalid_workshop": "Carta officina non valida ID. Si prega di verificare l'ID esiste su Steam Workshop.",
+                    "workshop_refresh": "Dettagli della mappa dell'officina di aggiornamento degli errori"
                 },
                 "name": "Label nome",
-                "label": "Etichetta"
+                "label": "Etichetta",
+                "name_description": "Questo deve corrispondere al nome della mappa nel gioco che il server riconosce.",
+                "refresh_workshop": "Dettagli di aggiornamento"
             },
             "pool": {
                 "title": "{type} Mappa Pool",

@@ -227,13 +227,18 @@
                 "success": {
                     "create": "Carte créée avec succès",
                     "update": "Carte mise à jour avec succès",
-                    "delete": "Carte supprimée avec succès"
+                    "delete": "Carte supprimée avec succès",
+                    "workshop_refresh": "Détails de la carte de l'atelier rafraîchis avec succès"
                 },
                 "error": {
                     "create": "Erreur lors de la création de la carte",
-                    "update": "Erreur lors de la mise à jour de la carte"
+                    "update": "Erreur lors de la mise à jour de la carte",
+                    "invalid_workshop": "Carte d'atelier non valide. Veuillez vérifier l'identité sur Steam Workshop.",
+                    "workshop_refresh": "Erreur de rafraîchissement des détails de la carte de l'atelier"
                 },
-                "label": "Étiquette"
+                "label": "Étiquette",
+                "name_description": "Cela doit correspondre au nom de la carte dans le jeu que le serveur reconnaît.",
+                "refresh_workshop": "Rafraîchir les détails"
             },
             "pool": {
                 "title": "Pool de cartes {type}",

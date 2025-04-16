@@ -35,7 +35,7 @@ import MapPoolRow from "~/components/map-pools/MapPoolRow.vue";
         :key="pool.id"
         class="relative p-4 bg-background rounded-lg shadow-md"
       >
-        <h2 class="text-lg font-semibold">{{ pool.type }}</h2>
+        <h2 class="text-lg font-semibold">{{ pool.type }} Pool</h2>
         {{ pool.maps.map((map) => map.name).join(", ") }}
         <NuxtLink
           :to="{ name: 'map-pools-id', params: { id: pool.id } }"

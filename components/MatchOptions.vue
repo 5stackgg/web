@@ -935,15 +935,17 @@ export default {
         return { official: [], workshop: [] };
       }
 
-      const maps = this.maps
-        .filter((map: Map) => {
-          if (
-            this.form.values.custom_map_pool === false &&
-            map.active_pool === false
-          ) {
-            return false;
-          }
+      const mapPoolId = this.form.values.map_pool_id;
+      const mapPool = this.map_pools?.find((pool: MapPool) => {
+        return pool.id === mapPoolId;
+      });
 
+      const availableMaps = this.form.values.custom_map_pool
+        ? this.maps
+        : mapPool.maps;
+
+      const maps = availableMaps
+        .filter((map: Map) => {
           switch (this.form.values.type) {
             case e_match_types_enum.Competitive:
               return map.type === e_match_types_enum.Competitive;

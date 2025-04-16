@@ -206,7 +206,7 @@
       }
     },
     "map_pools": {
-      "title": "Map Pools",
+      "title": "Default Map Pools",
       "description": "Manage map pools and available maps for matchmaking.",
       "table": {},
       "form": {
@@ -242,16 +242,16 @@
         "refresh_workshop": "Refresh Details"
       },
       "pool": {
-        "title": "{type} Map Pool",
+        "title": "Default {type} Map Pool",
         "description": "Manage maps in the {type} pool",
         "modify_maps": "Modify maps in the pool"
       },
       "add_new_map": "Add New Map",
       "edit": "Edit",
-      "maps": "Maps",
+      "maps": "Available Maps",
       "active_duty": "Active Duty",
-      "available_modes": "Available Modes",
-      "workshop_id": "Workshop ID"
+      "available_modes": "Available In Modes",
+      "workshop_id": "Workshop Link"
     },
     "map_pool": {
       "toggle_pool_type": "Map {map} has been {type} for {type}",

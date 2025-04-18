@@ -7,7 +7,7 @@
             "services": "服务"
         },
         "system_logs": {
-            "follow_logs": "跟踪日志",
+            "follow_logs": "跟踪",
             "timestamps": "时间戳"
         },
         "login": {
@@ -20,7 +20,7 @@
             "admin_disabled": "管理员已禁用比赛创建",
             "create": "创建比赛",
             "tabs": {
-                "tournaments": "比赛",
+                "tournaments": "锦标赛",
                 "my_recent": "我最近的比赛"
             },
             "no_recent": "没有最近的比赛。"
@@ -28,7 +28,7 @@
         "teams": {
             "title": "队伍",
             "description": "队伍管理",
-            "create": "创建队伍",
+            "create": "创建",
             "tabs": {
                 "my_teams": "我的队伍",
                 "other_teams": "其他队伍"
@@ -58,7 +58,7 @@
             },
             "application": {
                 "matchmaking": {
-                    "title": "匹配系统",
+                    "title": "匹配",
                     "description": "管理匹配系统设置"
                 },
                 "discord": {
@@ -82,13 +82,13 @@
         "regions": {
             "title": "地区",
             "description": "地区管理",
-            "create": "创建地区",
+            "create": "创建",
             "table": {
                 "name": "名称",
                 "status": "状态",
                 "available_servers": "可用服务器",
                 "description": "描述",
-                "use_lan_ip": "使用局域网IP",
+                "use_lan_ip": "使用局域网",
                 "actions": "操作"
             },
             "edit": "编辑",
@@ -117,7 +117,7 @@
             "title": "游戏",
             "description": "开始一场比赛",
             "admin_disabled": "管理员已禁用比赛创建",
-            "create_match": "创建比赛",
+            "create_match": "创建",
             "open_matches": {
                 "title": "开放比赛",
                 "description": "可用比赛"
@@ -130,13 +130,13 @@
             "title": "比赛",
             "description": "比赛管理",
             "admin_disabled": "管理员已禁用比赛创建",
-            "create": "创建比赛",
+            "create": "创建",
             "last_ten_wins": "最近10场胜利",
             "last_ten_losses": "最近10场失败",
             "my_match_history": "我的比赛历史",
             "other_matches": "其他比赛",
             "create_page": {
-                "title": "创建比赛",
+                "title": "创建",
                 "pick_up_game": "公开比赛",
                 "pick_up_game_description": "为所有人创建比赛",
                 "team_1": "队伍1",
@@ -174,7 +174,7 @@
             "last_updated": "最后更新"
         },
         "dedicated_servers": {
-            "title": "专用服务器",
+            "title": "专用",
             "description": "专用服务器管理",
             "create": {
                 "title": "创建服务器"
@@ -315,7 +315,7 @@
                 "placeholder": "选择最佳"
             },
             "map_veto_settings": {
-                "label": "地图禁用设置",
+                "label": "地图禁用",
                 "description": "地图禁用设置描述",
                 "custom_pool": "自定义地图池",
                 "active_duty": "现役地图",
@@ -347,7 +347,7 @@
                         "description": "地区禁用描述"
                     },
                     "preferred": "首选地区",
-                    "single": "单一地区",
+                    "single": "地区",
                     "placeholder": "选择地区",
                     "any": "任何地区",
                     "description": "地区描述"
@@ -383,7 +383,7 @@
             "coaches": "教练",
             "overtime": "加时赛",
             "knife_round": "刀战回合",
-            "map_veto_enabled": "已启用地图禁用",
+            "map_veto_enabled": "地图禁用",
             "region_veto": "地区禁用",
             "substitutes": "替补",
             "timeout_setting": "暂停设置",
@@ -399,7 +399,7 @@
             "status": {
                 "offline_not_ready": "离线，未就绪",
                 "online_not_ready": "在线，未就绪",
-                "ready": "就绪",
+                "ready": "准备就绪",
                 "offline": "离线",
                 "online_not_in_game": "在线，未在游戏中",
                 "in_game": "游戏中"
@@ -576,7 +576,7 @@
             "title": "注册",
             "description": "描述",
             "warning": "警告",
-            "name_label": "名称标签",
+            "name_label": "名称",
             "confirm_button": "确认按钮",
             "success": "成功"
         },
@@ -592,7 +592,7 @@
             "request_title": "名称更改请求",
             "description": "描述",
             "request_description": "请求描述",
-            "name_label": "名称标签",
+            "name_label": "名称",
             "success": "成功",
             "request_success": "请求成功"
         }
@@ -603,7 +603,7 @@
         },
         "official": "官方",
         "workshop": "创意工坊",
-        "active_duty": "现役地图"
+        "active_duty": "服役地图"
     },
     "region": {
         "form": {
@@ -699,17 +699,17 @@
         "app_nav": {
             "brand": "5stack",
             "navigation": {
-                "play": "开始游戏",
+                "play": "游戏",
                 "matches": "比赛",
                 "tournaments": "锦标赛",
                 "players": "玩家",
-                "teams": "战队"
+                "teams": "队伍"
             },
             "administration": {
                 "title": "管理",
                 "regions": "地区",
                 "servers": "服务器",
-                "dedicated_servers": "专用服务器",
+                "dedicated_servers": "专用",
                 "game_server_nodes": "游戏服务器节点",
                 "logs": "系统日志",
                 "metrics": "系统指标",
@@ -718,7 +718,7 @@
             },
             "footer": {
                 "report_issue": "报告问题",
-                "join_discord": "加入Discord"
+                "join_discord": "加入 Discord"
             },
             "profile": {
                 "my_account": "我的账户",
@@ -738,7 +738,7 @@
                 "teams": "队伍",
                 "regions": "地区",
                 "servers": "服务器",
-                "dedicated_servers": "专用服务器",
+                "dedicated_servers": "专用",
                 "game_server_nodes": "游戏服务器节点",
                 "system_logs": "系统日志",
                 "system_metrics": "系统指标",
@@ -755,7 +755,7 @@
             "description": "安装5Stack以获得更好的体验",
             "step1": "步骤1",
             "step2": "步骤2",
-            "tooltip": "安装提示",
+            "tooltip": "安装",
             "button": "安装"
         }
     },
@@ -813,8 +813,8 @@
         "stage": {
             "title": "阶段",
             "teams": "队伍",
-            "edit": "编辑",
-            "delete": "删除",
+            "edit": "编辑阶段",
+            "delete": "删除阶段",
             "edit_title": "编辑阶段",
             "confirm_delete": "删除阶段",
             "delete_description": "确定要删除此阶段吗？",
@@ -854,7 +854,7 @@
             "eligible": "符合条件",
             "not_eligible": "不符合条件",
             "leave_tournament": "离开比赛",
-            "leave_team": "离开队伍",
+            "leave_team": "离开",
             "player": "玩家",
             "role": "角色",
             "slot": "位置",
@@ -865,8 +865,8 @@
             "name": "名称",
             "select_role": "选择角色",
             "no_roles": "没有角色",
-            "remove_member": "移除成员",
-            "confirm_remove_member": "移除成员",
+            "remove_member": "移除",
+            "confirm_remove_member": "确认移除",
             "remove_member_description": "确定要移除此成员吗？",
             "cancel_invite": "取消邀请",
             "confirm_cancel_invite": "取消邀请",

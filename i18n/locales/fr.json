@@ -7,7 +7,7 @@
             "services": "Services"
         },
         "system_logs": {
-            "follow_logs": "Suivre les logs",
+            "follow_logs": "Suivre",
             "timestamps": "Horodatages"
         },
         "login": {
@@ -28,7 +28,7 @@
         "teams": {
             "title": "Équipes",
             "description": "Gestion des équipes",
-            "create": "Créer une équipe",
+            "create": "Créer",
             "tabs": {
                 "my_teams": "Mes équipes",
                 "other_teams": "Autres équipes"
@@ -88,13 +88,13 @@
         "regions": {
             "title": "Régions",
             "description": "Gestion des régions",
-            "create": "Créer une région",
+            "create": "Créer",
             "table": {
                 "name": "Nom",
                 "status": "Statut",
                 "available_servers": "Serveurs disponibles",
                 "description": "Description",
-                "use_lan_ip": "Utiliser l'IP LAN",
+                "use_lan_ip": "Utiliser LAN",
                 "actions": "Actions"
             },
             "edit": "Modifier",
@@ -123,7 +123,7 @@
             "title": "Jouer",
             "description": "Démarrer un match",
             "admin_disabled": "La création de matchs a été désactivée par l'administrateur",
-            "create_match": "Créer un match",
+            "create_match": "Créer",
             "open_matches": {
                 "title": "Matchs ouverts",
                 "description": "Matchs disponibles"
@@ -136,13 +136,13 @@
             "title": "Matchs",
             "description": "Gestion des matchs",
             "admin_disabled": "La création de matchs a été désactivée par l'administrateur",
-            "create": "Créer un match",
+            "create": "Créer",
             "last_ten_wins": "Derniers 10 matchs gagnés",
             "last_ten_losses": "Derniers 10 matchs perdus",
             "my_match_history": "Mon historique de matchs",
             "other_matches": "Autres matchs",
             "create_page": {
-                "title": "Créer un match",
+                "title": "Créer",
                 "pick_up_game": "Match pickup",
                 "pick_up_game_description": "Créer un match pickup",
                 "team_1": "Équipe 1",
@@ -152,11 +152,11 @@
                 "create_button": "Créer"
             },
             "detail": {
-                "schedule": "Planning"
+                "schedule": "Planifier"
             }
         },
         "game_server_nodes": {
-            "title": "Nœuds serveur de jeu",
+            "title": "Nœuds de Serveur de Jeu",
             "description": "Gérer les nœuds serveur de jeu",
             "not_supported": {
                 "title": "Non supporté",
@@ -180,7 +180,7 @@
             "last_updated": "Dernière mise à jour"
         },
         "dedicated_servers": {
-            "title": "Serveurs dédiés",
+            "title": "Dédié",
             "description": "Gérer les serveurs dédiés",
             "create": {
                 "title": "Créer un serveur"
@@ -212,7 +212,7 @@
             }
         },
         "map_pools": {
-            "title": "Pools de cartes",
+            "title": "Pools de cartes par défaut",
             "description": "Gérer les pools de cartes et les cartes disponibles pour le matchmaking.",
             "form": {
                 "name": "Nom",
@@ -247,15 +247,15 @@
                 "refresh_workshop": "Rafraîchir les détails"
             },
             "pool": {
-                "title": "Pool de cartes {type}",
+                "title": "Par défaut {type} Pool de cartes",
                 "description": "Gérer les cartes dans la pool {type}",
                 "modify_maps": "Modifier les cartes dans la pool"
             },
             "edit": "Modifier",
-            "maps": "Cartes",
+            "maps": "Cartes disponibles",
             "active_duty": "Service actif",
-            "available_modes": "Modes disponibles",
-            "workshop_id": "ID Workshop",
+            "available_modes": "Disponible en mode",
+            "workshop_id": "Lien de l'atelier",
             "add_new_map": "Ajouter une nouvelle carte"
         },
         "map_pool": {
@@ -313,7 +313,7 @@
             "table": {
                 "match": "Match",
                 "type": "Type",
-                "maps": "Maps",
+                "maps": "Cartes",
                 "no_matches_found": "Aucun match trouvé",
                 "join": "Rejoindre"
             },
@@ -326,7 +326,7 @@
                 "placeholder": "Sélectionner le best of"
             },
             "map_veto_settings": {
-                "label": "Paramètres de veto de map",
+                "label": "Veto de map",
                 "description": "Description des paramètres de veto de map",
                 "custom_pool": "Pool de maps personnalisé",
                 "active_duty": "Active Duty",
@@ -358,7 +358,7 @@
                         "description": "Description du veto de région"
                     },
                     "preferred": "Région préférée",
-                    "single": "Région unique",
+                    "single": "Région",
                     "placeholder": "Sélectionner une région",
                     "any": "N'importe quelle région",
                     "description": "Description de la région"
@@ -394,7 +394,7 @@
             "coaches": "Coachs",
             "overtime": "Prolongation",
             "knife_round": "Round couteau",
-            "map_veto_enabled": "Veto de map activé",
+            "map_veto_enabled": "Veto de map",
             "region_veto": "Veto de région",
             "substitutes": "Remplaçants",
             "timeout_setting": "Paramètre de temps mort",
@@ -587,7 +587,7 @@
             "title": "Inscription",
             "description": "Description",
             "warning": "Avertissement",
-            "name_label": "Label du nom",
+            "name_label": "Nom",
             "confirm_button": "Bouton de confirmation",
             "success": "Succès"
         },
@@ -603,7 +603,7 @@
             "request_title": "Demande de changement de nom",
             "description": "Description",
             "request_description": "Description de la demande",
-            "name_label": "Label du nom",
+            "name_label": "Nom",
             "success": "Succès",
             "request_success": "Succès de la demande"
         }
@@ -614,7 +614,7 @@
         },
         "official": "Officiel",
         "workshop": "Workshop",
-        "active_duty": "Active Duty"
+        "active_duty": "Service actif"
     },
     "region": {
         "form": {
@@ -720,7 +720,7 @@
                 "title": "Administration",
                 "regions": "Régions",
                 "servers": "Serveurs",
-                "dedicated_servers": "Serveurs Dédiés",
+                "dedicated_servers": "Dédié",
                 "game_server_nodes": "Nœuds de Serveur de Jeu",
                 "logs": "Journaux Système",
                 "metrics": "Métriques Système",
@@ -743,7 +743,7 @@
                 "teams": "Équipes",
                 "regions": "Régions",
                 "servers": "Serveurs",
-                "dedicated_servers": "Serveurs Dédiés",
+                "dedicated_servers": "Dédié",
                 "game_server_nodes": "Nœuds de Serveur de Jeu",
                 "system_logs": "Journaux Système",
                 "system_metrics": "Métriques Système",
@@ -766,7 +766,7 @@
             "description": "Installez 5Stack pour une meilleure expérience",
             "step1": "Étape 1",
             "step2": "Étape 2",
-            "tooltip": "Conseil d'installation",
+            "tooltip": "Installer",
             "button": "Installer"
         }
     },
@@ -824,8 +824,8 @@
         "stage": {
             "title": "Phase",
             "teams": "Équipes",
-            "edit": "Modifier",
-            "delete": "Supprimer",
+            "edit": "Modifier la phase",
+            "delete": "Supprimer la phase",
             "edit_title": "Modifier la phase",
             "confirm_delete": "Supprimer la phase",
             "delete_description": "Voulez-vous vraiment supprimer cette phase ?",
@@ -865,7 +865,7 @@
             "eligible": "Éligible",
             "not_eligible": "Non éligible",
             "leave_tournament": "Quitter le tournoi",
-            "leave_team": "Quitter l'équipe",
+            "leave_team": "Quitter",
             "player": "Joueur",
             "role": "Rôle",
             "slot": "Slot",
@@ -876,8 +876,8 @@
             "name": "Nom",
             "select_role": "Sélectionner le rôle",
             "no_roles": "Aucun rôle",
-            "remove_member": "Retirer le membre",
-            "confirm_remove_member": "Retirer le membre",
+            "remove_member": "Retirer",
+            "confirm_remove_member": "Confirmer le retrait",
             "remove_member_description": "Voulez-vous vraiment retirer ce membre ?",
             "cancel_invite": "Annuler l'invitation",
             "confirm_cancel_invite": "Annuler l'invitation",
@@ -994,7 +994,8 @@
                 "create": "Erreur lors de la création de configuration",
                 "update": "Erreur de mise à jour de la configuration",
                 "revert": "Erreur lors du retour de la configuration aux valeurs par défaut"
-            }
+            },
+            "edit": "Modifier la configuration"
         }
     }
 }

@@ -7,7 +7,7 @@
             "services": "Usługi"
         },
         "system_logs": {
-            "follow_logs": "Śledź logi",
+            "follow_logs": "Śledź",
             "timestamps": "Znaczniki czasu"
         },
         "login": {
@@ -28,7 +28,7 @@
         "teams": {
             "title": "Drużyny",
             "description": "Zarządzanie drużynami",
-            "create": "Utwórz drużynę",
+            "create": "Utwórz",
             "tabs": {
                 "my_teams": "Moje drużyny",
                 "other_teams": "Inne drużyny"
@@ -88,13 +88,13 @@
         "regions": {
             "title": "Regiony",
             "description": "Zarządzanie regionami",
-            "create": "Utwórz region",
+            "create": "Utwórz",
             "table": {
                 "name": "Nazwa",
                 "status": "Status",
                 "available_servers": "Dostępne serwery",
                 "description": "Opis",
-                "use_lan_ip": "Użyj IP LAN",
+                "use_lan_ip": "Użyj LAN",
                 "actions": "Akcje"
             },
             "edit": "Edytuj",
@@ -123,7 +123,7 @@
             "title": "Graj",
             "description": "Rozpocznij mecz",
             "admin_disabled": "Tworzenie meczów zostało wyłączone przez administratora",
-            "create_match": "Utwórz mecz",
+            "create_match": "Utwórz",
             "open_matches": {
                 "title": "Otwarte mecze",
                 "description": "Dostępne mecze"
@@ -136,13 +136,13 @@
             "title": "Mecze",
             "description": "Zarządzanie meczami",
             "admin_disabled": "Tworzenie meczów zostało wyłączone przez administratora",
-            "create": "Utwórz mecz",
+            "create": "Utwórz",
             "last_ten_wins": "Ostatnie 10 zwycięstw",
             "last_ten_losses": "Ostatnie 10 porażek",
             "my_match_history": "Moja historia meczów",
             "other_matches": "Inne mecze",
             "create_page": {
-                "title": "Utwórz mecz",
+                "title": "Utwórz",
                 "pick_up_game": "Mecz pickup",
                 "pick_up_game_description": "Utwórz mecz pickup",
                 "team_1": "Drużyna 1",
@@ -156,7 +156,7 @@
             }
         },
         "game_server_nodes": {
-            "title": "Węzły serwerów gry",
+            "title": "Węzły Serwera Gry",
             "description": "Zarządzaj węzłami serwerów gry",
             "not_supported": {
                 "title": "Nieobsługiwane",
@@ -180,7 +180,7 @@
             "last_updated": "Ostatnio zaktualizowano"
         },
         "dedicated_servers": {
-            "title": "Serwery dedykowane",
+            "title": "Dedykowany",
             "description": "Zarządzaj serwerami dedykowanymi",
             "create": {
                 "title": "Utwórz serwer"
@@ -212,7 +212,7 @@
             }
         },
         "map_pools": {
-            "title": "Pule Map",
+            "title": "Domyślne pule mapy",
             "description": "Zarządzaj basenami map i mapami do swatania.",
             "form": {
                 "poster": "Plakat (opcjonalny)",
@@ -247,15 +247,15 @@
                 "refresh_workshop": "Odśwież szczegóły"
             },
             "pool": {
-                "title": "{typ} Pula map",
+                "title": "Domyślnie {typ} Pula map",
                 "description": "Zarządzanie mapami w puli {type}",
                 "modify_maps": "Modyfikuj mapy w puli"
             },
             "edit": "Edytuj",
-            "maps": "Mapy",
+            "maps": "Dostępne mapy",
             "active_duty": "Active Duty",
-            "available_modes": "Dostępne metody",
-            "workshop_id": "ID warsztatu",
+            "available_modes": "Dostępne w trybach",
+            "workshop_id": "Warsztaty Link",
             "add_new_map": "Dodaj nową mapę"
         },
         "map_pool": {
@@ -326,7 +326,7 @@
                 "placeholder": "Wybierz do"
             },
             "map_veto_settings": {
-                "label": "Ustawienia veto map",
+                "label": "Veto map",
                 "description": "Opis ustawień veto map",
                 "custom_pool": "Niestandardowa pula map",
                 "active_duty": "Active Duty",
@@ -358,7 +358,7 @@
                         "description": "Opis veto regionu"
                     },
                     "preferred": "Preferowany region",
-                    "single": "Pojedynczy region",
+                    "single": "Region",
                     "placeholder": "Wybierz region",
                     "any": "Dowolny region",
                     "description": "Opis regionu"
@@ -394,7 +394,7 @@
             "coaches": "Trenerzy",
             "overtime": "Dogrywka",
             "knife_round": "Runda nożowa",
-            "map_veto_enabled": "Veto map włączone",
+            "map_veto_enabled": "Veto map",
             "region_veto": "Veto regionu",
             "substitutes": "Rezerwowi",
             "timeout_setting": "Ustawienie timeoutu",
@@ -506,7 +506,7 @@
             "call_organizer": "Zadzwoń do organizatora"
         },
         "check_in": {
-            "title": "Check-in",
+            "title": "Zarejestruj się",
             "checked_in": "Zarejestrowany",
             "check_in": "Zarejestruj się",
             "description": "Opis check-in"
@@ -587,7 +587,7 @@
             "title": "Rejestracja",
             "description": "Opis",
             "warning": "Ostrzeżenie",
-            "name_label": "Etykieta nazwy",
+            "name_label": "Nazwa",
             "confirm_button": "Przycisk potwierdzenia",
             "success": "Sukces"
         },
@@ -603,7 +603,7 @@
             "request_title": "Wniosek o zmianę nazwy",
             "description": "Opis",
             "request_description": "Opis wniosku",
-            "name_label": "Etykieta nazwy",
+            "name_label": "Nazwa",
             "success": "Sukces",
             "request_success": "Sukces wniosku"
         }
@@ -720,7 +720,7 @@
                 "title": "Administracja",
                 "regions": "Regiony",
                 "servers": "Serwery",
-                "dedicated_servers": "Serwery Dedykowane",
+                "dedicated_servers": "Dedykowany",
                 "game_server_nodes": "Węzły Serwera Gry",
                 "logs": "Logi Systemowe",
                 "metrics": "Metryki Systemowe",
@@ -743,7 +743,7 @@
                 "teams": "Drużyny",
                 "regions": "Regiony",
                 "servers": "Serwery",
-                "dedicated_servers": "Serwery Dedykowane",
+                "dedicated_servers": "Dedykowany",
                 "game_server_nodes": "Węzły Serwera Gry",
                 "system_logs": "Logi Systemowe",
                 "system_metrics": "Metryki Systemowe",
@@ -766,7 +766,7 @@
             "description": "Zainstaluj 5Stack dla lepszego doświadczenia",
             "step1": "Krok 1",
             "step2": "Krok 2",
-            "tooltip": "Wskazówka instalacji",
+            "tooltip": "Zainstaluj",
             "button": "Zainstaluj"
         }
     },
@@ -824,8 +824,8 @@
         "stage": {
             "title": "Etap",
             "teams": "Drużyny",
-            "edit": "Edytuj",
-            "delete": "Usuń",
+            "edit": "Edytuj etap",
+            "delete": "Usuń etap",
             "edit_title": "Edytuj etap",
             "confirm_delete": "Usuń etap",
             "delete_description": "Czy na pewno chcesz usunąć ten etap?",
@@ -865,7 +865,7 @@
             "eligible": "Uprawniony",
             "not_eligible": "Nieuprawniony",
             "leave_tournament": "Opuść turniej",
-            "leave_team": "Opuść drużynę",
+            "leave_team": "Opuść",
             "player": "Gracz",
             "role": "Rola",
             "slot": "Slot",
@@ -876,8 +876,8 @@
             "name": "Nazwa",
             "select_role": "Wybierz rolę",
             "no_roles": "Brak ról",
-            "remove_member": "Usuń członka",
-            "confirm_remove_member": "Usuń członka",
+            "remove_member": "Usuń",
+            "confirm_remove_member": "Potwierdź usunięcie",
             "remove_member_description": "Czy na pewno chcesz usunąć tego członka?",
             "cancel_invite": "Anuluj zaproszenie",
             "confirm_cancel_invite": "Anuluj zaproszenie",
@@ -994,7 +994,8 @@
                 "create": "Błąd podczas tworzenia pliku konfiguracyjnego",
                 "update": "Błąd podczas aktualizacji konfiguracji",
                 "revert": "Błąd odwracania konfiguratora do domyślnego"
-            }
+            },
+            "edit": "Edytuj konfigurację"
         }
     }
 }

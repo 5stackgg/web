@@ -94,7 +94,7 @@
                 "status": "Status",
                 "available_servers": "Tillgängliga servrar / Totalt antal servrar",
                 "description": "Beskrivning",
-                "use_lan_ip": "Använd LAN-IP",
+                "use_lan_ip": "Använd LAN",
                 "actions": "Åtgärder"
             },
             "edit": "Redigera region",
@@ -156,7 +156,7 @@
             }
         },
         "game_server_nodes": {
-            "title": "Spelservrar",
+            "title": "Spelserver Noder",
             "description": "Spelservrar utökar dina servererbjudanden till olika regioner eller ger redundans för on-demand-servrar.",
             "not_supported": {
                 "title": "Din panel stöder för närvarande inte spelservrar.",
@@ -246,16 +246,16 @@
                 "refresh_workshop": "Refresh detaljer"
             },
             "pool": {
-                "title": "Map Pool",
+                "title": "Standard {typ} Karta Pool",
                 "description": "Hantera kartor i poolen",
                 "modify_maps": "Ändra kartor i poolen"
             },
-            "title": "Kartpooler",
+            "title": "Standard Map Pools",
             "edit": "Redigera",
-            "maps": "Kartor",
+            "maps": "Tillgängliga Maps",
             "active_duty": "Aktiv tjänst",
-            "available_modes": "Tillgängliga lägen",
-            "workshop_id": "Workshop ID",
+            "available_modes": "Tillgänglig i lägen",
+            "workshop_id": "Workshop Link",
             "add_new_map": "Lägg till ny karta"
         },
         "map_pool": {
@@ -315,7 +315,7 @@
                 "title": "Administration",
                 "regions": "Regioner",
                 "servers": "Servrar",
-                "dedicated_servers": "Dedikerade Servrar",
+                "dedicated_servers": "Dedikerade servrar",
                 "game_server_nodes": "Spelserver Noder",
                 "logs": "Systemloggar",
                 "metrics": "Systemmetrik",
@@ -344,7 +344,7 @@
                 "teams": "Lag",
                 "regions": "Regioner",
                 "servers": "Servrar",
-                "dedicated_servers": "Dedikerade Servrar",
+                "dedicated_servers": "Dedikerade servrar",
                 "game_server_nodes": "Spelserver Noder",
                 "system_logs": "Systemloggar",
                 "system_metrics": "Systemmetrik",
@@ -994,7 +994,8 @@
                 "create": "Fel skapa konfig",
                 "update": "Fel uppdatera konfig",
                 "revert": "Fel reverting konfig till standarder"
-            }
+            },
+            "edit": "Edit Config"
         }
     }
 }

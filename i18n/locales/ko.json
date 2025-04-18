@@ -7,7 +7,7 @@
             "services": "서비스"
         },
         "system_logs": {
-            "follow_logs": "로그 추적",
+            "follow_logs": "팔로우",
             "timestamps": "타임스탬프"
         },
         "login": {
@@ -28,7 +28,7 @@
         "teams": {
             "title": "팀",
             "description": "팀 관리",
-            "create": "팀 생성",
+            "create": "생성",
             "tabs": {
                 "my_teams": "내 팀",
                 "other_teams": "다른 팀"
@@ -86,15 +86,15 @@
             }
         },
         "regions": {
-            "title": "리전",
+            "title": "지역",
             "description": "리전 관리",
-            "create": "리전 생성",
+            "create": "생성",
             "table": {
                 "name": "이름",
                 "status": "상태",
                 "available_servers": "사용 가능한 서버",
                 "description": "설명",
-                "use_lan_ip": "LAN IP 사용",
+                "use_lan_ip": "LAN 사용",
                 "actions": "작업"
             },
             "edit": "편집",
@@ -123,7 +123,7 @@
             "title": "플레이",
             "description": "매치 시작",
             "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
-            "create_match": "매치 생성",
+            "create_match": "생성",
             "open_matches": {
                 "title": "오픈 매치",
                 "description": "참가 가능한 매치"
@@ -136,13 +136,13 @@
             "title": "매치",
             "description": "매치 관리",
             "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
-            "create": "매치 생성",
+            "create": "생성",
             "last_ten_wins": "최근 10경기 승리",
             "last_ten_losses": "최근 10경기 패배",
             "my_match_history": "내 매치 기록",
             "other_matches": "다른 매치",
             "create_page": {
-                "title": "매치 생성",
+                "title": "생성",
                 "pick_up_game": "픽업 게임",
                 "pick_up_game_description": "픽업 게임 생성",
                 "team_1": "팀 1",
@@ -212,7 +212,7 @@
             }
         },
         "map_pools": {
-            "title": "맵 풀",
+            "title": "기본 맵 풀",
             "description": "매치메이킹 맵 풀과 매치메이킹 맵 관리.",
             "form": {
                 "poster": "포스터 (옵션)",
@@ -247,15 +247,15 @@
                 "name_description": "서버가 인식하는 게임의지도의 이름을 일치해야합니다."
             },
             "pool": {
-                "title": "{type} 지도 풀",
+                "title": "기본 {type} 지도 풀",
                 "description": "{type} Pool의 지도 관리",
                 "modify_maps": "풀에 지도를 수정"
             },
             "add_new_map": "새 맵 추가",
-            "available_modes": "유효한 형태",
-            "workshop_id": "워크샵 ID",
+            "available_modes": "형태에서 유효한",
+            "workshop_id": "워크샵 링크",
             "edit": "편집",
-            "maps": "맵",
+            "maps": "지도보기",
             "active_duty": "액티브 듀티"
         },
         "map_pool": {
@@ -326,7 +326,7 @@
                 "placeholder": "최선승제 선택"
             },
             "map_veto_settings": {
-                "label": "맵 밴 설정",
+                "label": "맵 밴",
                 "description": "맵 밴 설정 설명",
                 "custom_pool": "커스텀 맵 풀",
                 "active_duty": "액티브 듀티",
@@ -358,7 +358,7 @@
                         "description": "리전 밴 설명"
                     },
                     "preferred": "선호 리전",
-                    "single": "단일 리전",
+                    "single": "리전",
                     "placeholder": "리전 선택",
                     "any": "모든 리전",
                     "description": "리전 설명"
@@ -394,7 +394,7 @@
             "coaches": "코치",
             "overtime": "연장전",
             "knife_round": "나이프 라운드",
-            "map_veto_enabled": "맵 밴 활성화",
+            "map_veto_enabled": "맵 밴",
             "region_veto": "리전 밴",
             "substitutes": "교체 선수",
             "timeout_setting": "타임아웃 설정",
@@ -410,7 +410,7 @@
             "status": {
                 "offline_not_ready": "오프라인 준비 안 됨",
                 "online_not_ready": "온라인 준비 안 됨",
-                "ready": "준비 완료",
+                "ready": "준비",
                 "offline": "오프라인",
                 "online_not_in_game": "온라인 게임 미참가",
                 "in_game": "게임 중"
@@ -549,7 +549,7 @@
             "booting": "부팅 중",
             "assign": "할당",
             "select": "선택",
-            "dedicated": "전용",
+            "dedicated": "전용 서버",
             "on_demand": "온디맨드",
             "assigned": "할당됨"
         }
@@ -587,7 +587,7 @@
             "title": "등록",
             "description": "설명",
             "warning": "경고",
-            "name_label": "이름 라벨",
+            "name_label": "이름",
             "confirm_button": "확인 버튼",
             "success": "성공"
         },
@@ -603,7 +603,7 @@
             "request_title": "이름 변경 요청",
             "description": "설명",
             "request_description": "요청 설명",
-            "name_label": "이름 라벨",
+            "name_label": "이름",
             "success": "성공",
             "request_success": "요청 성공"
         }
@@ -766,7 +766,7 @@
             "description": "5Stack을 설치하여 더 나은 경험을",
             "step1": "1단계",
             "step2": "2단계",
-            "tooltip": "설치 팁",
+            "tooltip": "설치",
             "button": "설치"
         }
     },
@@ -824,8 +824,8 @@
         "stage": {
             "title": "스테이지",
             "teams": "팀",
-            "edit": "편집",
-            "delete": "삭제",
+            "edit": "스테이지 편집",
+            "delete": "스테이지 삭제",
             "edit_title": "스테이지 편집",
             "confirm_delete": "스테이지 삭제",
             "delete_description": "이 스테이지를 삭제하시겠습니까?",
@@ -865,7 +865,7 @@
             "eligible": "참가 가능",
             "not_eligible": "참가 불가",
             "leave_tournament": "토너먼트 나가기",
-            "leave_team": "팀 나가기",
+            "leave_team": "나가기",
             "player": "플레이어",
             "role": "역할",
             "slot": "슬롯",
@@ -876,8 +876,8 @@
             "name": "이름",
             "select_role": "역할 선택",
             "no_roles": "역할이 없습니다",
-            "remove_member": "멤버 제거",
-            "confirm_remove_member": "멤버 제거",
+            "remove_member": "제거",
+            "confirm_remove_member": "제거 확인",
             "remove_member_description": "이 멤버를 제거하시겠습니까?",
             "cancel_invite": "초대 취소",
             "confirm_cancel_invite": "초대 취소",
@@ -994,7 +994,8 @@
                 "create": "오류 생성",
                 "update": "오류 업데이트 config",
                 "revert": "Config를 기본값으로 반전하는 오류"
-            }
+            },
+            "edit": "Config 편집"
         }
     }
 }

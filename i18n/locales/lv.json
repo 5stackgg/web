@@ -7,7 +7,7 @@
             "services": "Pakalpojumi"
         },
         "system_logs": {
-            "follow_logs": "Sekot žurnāliem",
+            "follow_logs": "Sekot",
             "timestamps": "Laika zīmogi"
         },
         "login": {
@@ -28,7 +28,7 @@
         "teams": {
             "title": "Komandas",
             "description": "Komandu pārvaldība",
-            "create": "Izveidot komandu",
+            "create": "Izveidot",
             "tabs": {
                 "my_teams": "Manas komandas",
                 "other_teams": "Citas komandas"
@@ -40,7 +40,7 @@
                 "title": "Profila iestatījumi",
                 "description": "Konta iestatījumu pārvaldība",
                 "steam_id": "Steam ID",
-                "name": "Vārds",
+                "name": "Nosaukums",
                 "avatar_url": "Avatara URL",
                 "country": "Valsts",
                 "select_country": "Izvēlieties valsti",
@@ -58,7 +58,7 @@
             },
             "application": {
                 "matchmaking": {
-                    "title": "Matchmaking",
+                    "title": "Spēļu meklēšana",
                     "description": "Pārvaldiet matchmaking iestatījumus"
                 },
                 "discord": {
@@ -88,13 +88,13 @@
         "regions": {
             "title": "Reģioni",
             "description": "Reģionu pārvaldība",
-            "create": "Izveidot reģionu",
+            "create": "Izveidot",
             "table": {
                 "name": "Nosaukums",
                 "status": "Statuss",
                 "available_servers": "Pieejamie serveri",
                 "description": "Apraksts",
-                "use_lan_ip": "Izmantot LAN IP",
+                "use_lan_ip": "Izmantot LAN",
                 "actions": "Darbības"
             },
             "edit": "Rediģēt",
@@ -116,14 +116,14 @@
                 "kd": "K/D",
                 "last_ten_wins": "Pēdējās 10 uzvaras",
                 "last_ten_losses": "Pēdējās 10 zaļšanas",
-                "matches": "Spēles"
+                "matches": "Mači"
             }
         },
         "play": {
             "title": "Spēlēt",
             "description": "Sākt spēli",
             "admin_disabled": "Spēļu izveide atspējota administratora",
-            "create_match": "Izveidot spēli",
+            "create_match": "Izveidot",
             "open_matches": {
                 "title": "Atvērtās spēles",
                 "description": "Pieejamās spēles"
@@ -136,13 +136,13 @@
             "title": "Spēles",
             "description": "Spēļu pārvaldība",
             "admin_disabled": "Spēļu izveide atspējota administratora",
-            "create": "Izveidot spēli",
+            "create": "Izveidot",
             "last_ten_wins": "Pēdējās 10 uzvaras",
             "last_ten_losses": "Pēdējās 10 zaļšanas",
             "my_match_history": "Mana spēļu vēsture",
             "other_matches": "Citas spēles",
             "create_page": {
-                "title": "Izveidot spēli",
+                "title": "Izveidot",
                 "pick_up_game": "Spēle visiem",
                 "pick_up_game_description": "Izveidot spēli visiem",
                 "team_1": "Komanda 1",
@@ -156,7 +156,7 @@
             }
         },
         "game_server_nodes": {
-            "title": "Spēļu serveru mezgli",
+            "title": "Spēļu Serveru Mezgli",
             "description": "Spēļu serveru mezglu pārvaldība",
             "not_supported": {
                 "title": "Nav atbalstīts",
@@ -180,7 +180,7 @@
             "last_updated": "Pēdējais atjauninājums"
         },
         "dedicated_servers": {
-            "title": "Dedzēti serveri",
+            "title": "Dedzēts",
             "description": "Dedzēto serveru pārvaldība",
             "create": {
                 "title": "Izveidot serveri"
@@ -212,7 +212,7 @@
             }
         },
         "map_pools": {
-            "title": "Kartu kopas",
+            "title": "Noklusētie karšu baseini",
             "description": "Pārvaldiet kartu kopas un pieejamās kartes matchmakingam.",
             "form": {
                 "name": "Nosaukums",
@@ -247,15 +247,15 @@
                 "refresh_workshop": "Atsvaidzināt detaļas"
             },
             "pool": {
-                "title": "{type} kartu kopa",
+                "title": "Noklusētais {tips} Kartes baseins",
                 "description": "Pārvaldiet kartes {type} kopā",
                 "modify_maps": "Modificēt kartes kopā"
             },
             "add_new_map": "Pievienot jaunu karti",
-            "maps": "Kartes",
+            "maps": "Pieejamās kartes",
             "active_duty": "Aktīvā dienesta",
-            "available_modes": "Pieejamie režīmi",
-            "workshop_id": "Workshop ID",
+            "available_modes": "Pieejami režīmā",
+            "workshop_id": "Darbnīcas saite",
             "edit": "Rediģēt"
         },
         "map_pool": {
@@ -326,7 +326,7 @@
                 "placeholder": "Izvēlieties līdz"
             },
             "map_veto_settings": {
-                "label": "Kartu veto iestatījumi",
+                "label": "Kartu veto",
                 "description": "Kartu veto iestatījumu apraksts",
                 "custom_pool": "Pielāgota karšu kopa",
                 "active_duty": "Active Duty",
@@ -358,8 +358,8 @@
                         "description": "Reģiona veto apraksts"
                     },
                     "preferred": "Vēlamais reģions",
-                    "single": "Viens reģions",
-                    "placeholder": "Izvēlieties reģionu",
+                    "single": "Reģions",
+                    "placeholder": "Izvēlēties reģionu",
                     "any": "Jebkurš reģions",
                     "description": "Reģiona apraksts"
                 },
@@ -394,7 +394,7 @@
             "coaches": "Treneri",
             "overtime": "Papildlaiks",
             "knife_round": "Nāžu raunds",
-            "map_veto_enabled": "Kartu veto iespējots",
+            "map_veto_enabled": "Kartu veto",
             "region_veto": "Reģiona veto",
             "substitutes": "Aizvietotāji",
             "timeout_setting": "Pārtraukuma iestatījums",
@@ -506,7 +506,7 @@
             "call_organizer": "Zvanīt organizatoram"
         },
         "check_in": {
-            "title": "Reģistrācija",
+            "title": "Reģistrēties",
             "checked_in": "Reģistrēts",
             "check_in": "Reģistrēties",
             "description": "Reģistrācijas apraksts"
@@ -587,7 +587,7 @@
             "title": "Reģistrācija",
             "description": "Apraksts",
             "warning": "Brīdinājums",
-            "name_label": "Vārda etiķete",
+            "name_label": "Nosaukums",
             "confirm_button": "Apstiprināšanas poga",
             "success": "Veiksmīgi"
         },
@@ -603,7 +603,7 @@
             "request_title": "Vārda maiņas pieprasījums",
             "description": "Apraksts",
             "request_description": "Pieprasījuma apraksts",
-            "name_label": "Vārda etiķete",
+            "name_label": "Nosaukums",
             "success": "Veiksmīgi",
             "request_success": "Pieprasījums veiksmīgs"
         }
@@ -614,7 +614,7 @@
         },
         "official": "Oficiālā",
         "workshop": "Workshop",
-        "active_duty": "Active Duty"
+        "active_duty": "Aktīvā dienesta"
     },
     "region": {
         "form": {
@@ -711,7 +711,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Spēlēt",
-                "matches": "Spēles",
+                "matches": "Mači",
                 "tournaments": "Turnīri",
                 "players": "Spēlētāji",
                 "teams": "Komandas"
@@ -720,7 +720,7 @@
                 "title": "Administrācija",
                 "regions": "Reģioni",
                 "servers": "Serveri",
-                "dedicated_servers": "Dedikētie Serveri",
+                "dedicated_servers": "Dedzēts",
                 "game_server_nodes": "Spēļu Serveru Mezgli",
                 "logs": "Sistēmas Žurnāli",
                 "metrics": "Sistēmas Metrikas",
@@ -729,7 +729,7 @@
             },
             "footer": {
                 "report_issue": "Ziņot par Problēmu",
-                "join_discord": "Pievienojies Discord"
+                "join_discord": "Pievienoties Discord"
             },
             "profile": {
                 "my_account": "Mans Konts",
@@ -749,7 +749,7 @@
                 "teams": "Komandas",
                 "regions": "Reģioni",
                 "servers": "Serveri",
-                "dedicated_servers": "Dedikētie Serveri",
+                "dedicated_servers": "Dedzēts",
                 "game_server_nodes": "Spēļu Serveru Mezgli",
                 "system_logs": "Sistēmas Žurnāli",
                 "system_metrics": "Sistēmas Metrikas",
@@ -766,7 +766,7 @@
             "description": "Instalējiet 5Stack labākai pieredzei",
             "step1": "1. solis",
             "step2": "2. solis",
-            "tooltip": "Instalācijas padoms",
+            "tooltip": "Instalēt",
             "button": "Instalēt"
         }
     },
@@ -824,8 +824,8 @@
         "stage": {
             "title": "Posms",
             "teams": "Komandas",
-            "edit": "Rediģēt",
-            "delete": "Dzēst",
+            "edit": "Rediģēt posmu",
+            "delete": "Dzēst posmu",
             "edit_title": "Rediģēt posmu",
             "confirm_delete": "Dzēst posmu",
             "delete_description": "Vai tiešām vēlaties dzēst šo posmu?",
@@ -876,8 +876,8 @@
             "name": "Nosaukums",
             "select_role": "Izvēlēties lomu",
             "no_roles": "Nav lomu",
-            "remove_member": "Noņemt dalībnieku",
-            "confirm_remove_member": "Noņemt dalībnieku",
+            "remove_member": "Noņemt",
+            "confirm_remove_member": "Apstiprināt noņemšanu",
             "remove_member_description": "Vai tiešām vēlaties noņemt šo dalībnieku?",
             "cancel_invite": "Atcelt uzaicinājumu",
             "confirm_cancel_invite": "Atcelt uzaicinājumu",
@@ -924,7 +924,7 @@
         "roles": {
             "captain": "Kapteinis"
         },
-        "leave": "Pamest",
+        "leave": "Pamest komandu",
         "management": {
             "edit": "Rediģēt"
         },
@@ -994,7 +994,8 @@
                 "create": "Kļūda izveidojot konfigurāciju",
                 "update": "Kļūda atjaunojot konfigurāciju",
                 "revert": "Kļūda atgriežot konfigurāciju uz noklusēto"
-            }
+            },
+            "edit": "Rediģēt konfigurāciju"
         }
     }
 }

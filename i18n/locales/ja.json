@@ -7,7 +7,7 @@
             "services": "サービス"
         },
         "system_logs": {
-            "follow_logs": "ログを追跡",
+            "follow_logs": "追跡",
             "timestamps": "タイムスタンプ"
         },
         "login": {
@@ -28,7 +28,7 @@
         "teams": {
             "title": "チーム",
             "description": "チームとロスターの管理。",
-            "create": "チームを作成",
+            "create": "作成",
             "tabs": {
                 "my_teams": "マイチーム",
                 "other_teams": "その他のチーム"
@@ -88,13 +88,13 @@
         "regions": {
             "title": "リージョン",
             "description": "リージョンの管理",
-            "create": "リージョンを作成",
+            "create": "作成",
             "table": {
                 "name": "名前",
                 "status": "ステータス",
                 "available_servers": "利用可能なサーバー",
                 "description": "説明",
-                "use_lan_ip": "LAN IPを使用",
+                "use_lan_ip": "LANを使用",
                 "actions": "アクション"
             },
             "edit": "編集",
@@ -110,9 +110,9 @@
             "search": "プレイヤーを検索",
             "detail": {
                 "player_stats": "プレイヤー統計",
-                "kills": "キル",
-                "assists": "アシスト",
-                "deaths": "デス",
+                "kills": "キル数",
+                "assists": "アシスト数",
+                "deaths": "デス数",
                 "kd": "K/D",
                 "last_ten_wins": "直近10試合の勝利",
                 "last_ten_losses": "直近10試合の敗北",
@@ -123,7 +123,7 @@
             "title": "プレイ",
             "description": "マッチを開始",
             "admin_disabled": "管理者がマッチ作成を無効にしました",
-            "create_match": "マッチを作成",
+            "create_match": "作成",
             "open_matches": {
                 "title": "オープンマッチ",
                 "description": "参加可能なマッチ"
@@ -136,13 +136,13 @@
             "title": "マッチ",
             "description": "マッチの管理",
             "admin_disabled": "管理者がマッチ作成を無効にしました",
-            "create": "マッチを作成",
+            "create": "作成",
             "last_ten_wins": "直近10試合の勝利",
             "last_ten_losses": "直近10試合の敗北",
             "my_match_history": "マイマッチ履歴",
             "other_matches": "その他のマッチ",
             "create_page": {
-                "title": "マッチを作成",
+                "title": "作成",
                 "pick_up_game": "ピックアップゲーム",
                 "pick_up_game_description": "ピックアップゲームを作成",
                 "team_1": "チーム1",
@@ -180,7 +180,7 @@
             "last_updated": "最終更新"
         },
         "dedicated_servers": {
-            "title": "専用サーバー",
+            "title": "専用",
             "description": "専用サーバーの管理",
             "create": {
                 "title": "サーバーを作成"
@@ -246,16 +246,16 @@
             },
             "description": "地図のプールを管理し、マッチメイキングのための利用可能なマップ.",
             "pool": {
-                "title": "{type} マッププール",
+                "title": "デフォルト {type} 地図プール",
                 "description": "{type}プールでマップを管理する",
                 "modify_maps": "プールのマップを修正"
             },
-            "title": "マッププール",
-            "available_modes": "利用可能なモード",
-            "workshop_id": "ワークショップID",
+            "title": "デフォルト地図プール",
+            "available_modes": "モードで利用できる",
+            "workshop_id": "ワークショップリンク",
             "add_new_map": "新規マップの追加",
             "edit": "編集",
-            "maps": "マップ",
+            "maps": "サイトマップ",
             "active_duty": "アクティブデューティ"
         },
         "map_pool": {
@@ -315,7 +315,7 @@
                 "title": "管理",
                 "regions": "リージョン",
                 "servers": "サーバー",
-                "dedicated_servers": "専用サーバー",
+                "dedicated_servers": "専用",
                 "game_server_nodes": "ゲームサーバーノード",
                 "logs": "システムログ",
                 "metrics": "システムメトリクス",
@@ -344,7 +344,7 @@
                 "teams": "チーム",
                 "regions": "リージョン",
                 "servers": "サーバー",
-                "dedicated_servers": "専用サーバー",
+                "dedicated_servers": "専用",
                 "game_server_nodes": "ゲームサーバーノード",
                 "system_logs": "システムログ",
                 "system_metrics": "システムメトリクス",
@@ -431,7 +431,7 @@
                 "placeholder": "ベストオブを選択"
             },
             "map_veto_settings": {
-                "label": "マップベート設定",
+                "label": "マップベート",
                 "description": "マップベートの設定を管理",
                 "custom_pool": "カスタムプール",
                 "active_duty": "アクティブデューティ",
@@ -463,7 +463,7 @@
                         "description": "リージョンベートの設定を管理"
                     },
                     "preferred": "優先",
-                    "single": "単一",
+                    "single": "リージョン",
                     "placeholder": "リージョンを選択",
                     "any": "任意",
                     "description": "マッチのリージョンを設定"
@@ -488,7 +488,7 @@
                     },
                     "options": {
                         "admins": "管理者のみ",
-                        "coaches": "コーチのみ",
+                        "coaches": "コーチ",
                         "everyone": "全員"
                     }
                 }
@@ -499,7 +499,7 @@
             "coaches": "コーチ",
             "overtime": "延長戦",
             "knife_round": "ナイフラウンド",
-            "map_veto_enabled": "マップベート有効",
+            "map_veto_enabled": "マップベート",
             "region_veto": "リージョンベート",
             "substitutes": "サブスティテュート",
             "timeout_setting": "タイムアウト設定",
@@ -754,7 +754,7 @@
             "request_title": "名前変更リクエスト",
             "description": "新しい名前を入力",
             "request_description": "名前変更リクエストを送信",
-            "name_label": "新しい名前",
+            "name_label": "名前",
             "success": "名前を変更しました",
             "request_success": "名前変更リクエストを送信しました"
         }
@@ -826,7 +826,7 @@
             "description": "5Stackをインストールして、より良い体験を",
             "step1": "ステップ1",
             "step2": "ステップ2",
-            "tooltip": "インストールのヒント",
+            "tooltip": "インストール",
             "button": "インストール"
         }
     },
@@ -870,8 +870,8 @@
         "stage": {
             "title": "ステージ",
             "teams": "チーム",
-            "edit": "編集",
-            "delete": "削除",
+            "edit": "ステージを編集",
+            "delete": "ステージを削除",
             "edit_title": "ステージを編集",
             "confirm_delete": "ステージを削除",
             "delete_description": "このステージを削除してもよろしいですか？",
@@ -911,7 +911,7 @@
             "eligible": "参加可能",
             "not_eligible": "参加不可",
             "leave_tournament": "トーナメントを退出",
-            "leave_team": "チームを退出",
+            "leave_team": "退出",
             "player": "プレイヤー",
             "role": "役割",
             "slot": "スロット",
@@ -922,7 +922,7 @@
             "name": "名前",
             "select_role": "役割を選択",
             "no_roles": "役割がありません",
-            "remove_member": "メンバーを削除",
+            "remove_member": "削除",
             "confirm_remove_member": "メンバーを削除",
             "remove_member_description": "このメンバーを削除してもよろしいですか？",
             "cancel_invite": "招待をキャンセル",
@@ -994,7 +994,8 @@
                 "create": "設定を作成するエラー",
                 "update": "エラー更新の設定",
                 "revert": "デフォルトで設定を反転するエラー"
-            }
+            },
+            "edit": "編集 Config"
         }
     }
 }

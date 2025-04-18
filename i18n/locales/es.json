@@ -7,7 +7,7 @@
             "services": "Servicios"
         },
         "system_logs": {
-            "follow_logs": "Seguir registros",
+            "follow_logs": "Seguir",
             "timestamps": "Marcas de tiempo"
         },
         "login": {
@@ -28,7 +28,7 @@
         "teams": {
             "title": "Equipos",
             "description": "Gestión de equipos",
-            "create": "Crear equipo",
+            "create": "Crear",
             "tabs": {
                 "my_teams": "Mis equipos",
                 "other_teams": "Otros equipos"
@@ -88,13 +88,13 @@
         "regions": {
             "title": "Regiones",
             "description": "Gestión de regiones",
-            "create": "Crear región",
+            "create": "Crear",
             "table": {
                 "name": "Nombre",
                 "status": "Estado",
                 "available_servers": "Servidores disponibles",
                 "description": "Descripción",
-                "use_lan_ip": "Usar IP LAN",
+                "use_lan_ip": "Usar LAN",
                 "actions": "Acciones"
             },
             "edit": "Editar",
@@ -123,7 +123,7 @@
             "title": "Jugar",
             "description": "Inicia una partida",
             "admin_disabled": "La creación de partidas ha sido deshabilitada por el administrador",
-            "create_match": "Crear partida",
+            "create_match": "Crear",
             "open_matches": {
                 "title": "Partidas abiertas",
                 "description": "Partidas disponibles"
@@ -136,13 +136,13 @@
             "title": "Partidas",
             "description": "Gestión de partidas",
             "admin_disabled": "La creación de partidas ha sido deshabilitada por el administrador",
-            "create": "Crear partida",
+            "create": "Crear",
             "last_ten_wins": "Últimas 10 victorias",
             "last_ten_losses": "Últimas 10 derrotas",
             "my_match_history": "Mi historial de partidas",
             "other_matches": "Otras partidas",
             "create_page": {
-                "title": "Crear partida",
+                "title": "Crear",
                 "pick_up_game": "Partida pickup",
                 "pick_up_game_description": "Crear una partida pickup",
                 "team_1": "Equipo 1",
@@ -156,7 +156,7 @@
             }
         },
         "game_server_nodes": {
-            "title": "Nodos de servidor de juego",
+            "title": "Nodos de Servidor de Juego",
             "description": "Gestiona los nodos de servidor de juego",
             "not_supported": {
                 "title": "No soportado",
@@ -180,7 +180,7 @@
             "last_updated": "Última actualización"
         },
         "dedicated_servers": {
-            "title": "Servidores dedicados",
+            "title": "Dedicado",
             "description": "Gestiona los servidores dedicados",
             "create": {
                 "title": "Crear servidor"
@@ -212,7 +212,7 @@
             }
         },
         "map_pools": {
-            "title": "Grupos de mapas",
+            "title": "Mapa predeterminado Piscinas",
             "description": "Gestionar grupos de mapas y mapas disponibles para matchmaking.",
             "form": {
                 "name": "Nombre",
@@ -247,15 +247,15 @@
                 "name_description": "Esto debe coincidir con el nombre del mapa en el juego que el servidor reconoce."
             },
             "pool": {
-                "title": "Grupo de mapas {type}",
+                "title": "Default {type} Mapa Piscina",
                 "description": "Gestionar mapas en el grupo {type}",
                 "modify_maps": "Modificar mapas en el grupo"
             },
             "edit": "Editar",
-            "maps": "Mapas",
+            "maps": "Mapas disponibles",
             "active_duty": "Servicio activo",
-            "available_modes": "Modos disponibles",
-            "workshop_id": "ID de Workshop",
+            "available_modes": "Disponible en Modos",
+            "workshop_id": "Enlace del taller",
             "add_new_map": "Añadir nuevo mapa"
         },
         "map_pool": {
@@ -326,7 +326,7 @@
                 "placeholder": "Seleccionar mejor de"
             },
             "map_veto_settings": {
-                "label": "Configuración de veto de mapas",
+                "label": "Veto de mapas",
                 "description": "Descripción de configuración de veto de mapas",
                 "custom_pool": "Pool de mapas personalizado",
                 "active_duty": "Active Duty",
@@ -358,7 +358,7 @@
                         "description": "Descripción de veto de región"
                     },
                     "preferred": "Región preferida",
-                    "single": "Región única",
+                    "single": "Región",
                     "placeholder": "Seleccionar región",
                     "any": "Cualquier región",
                     "description": "Descripción de región"
@@ -394,7 +394,7 @@
             "coaches": "Entrenadores",
             "overtime": "Tiempo extra",
             "knife_round": "Ronda de cuchillo",
-            "map_veto_enabled": "Veto de mapas habilitado",
+            "map_veto_enabled": "Veto de mapas",
             "region_veto": "Veto de región",
             "substitutes": "Suplentes",
             "timeout_setting": "Configuración de tiempo muerto",
@@ -587,7 +587,7 @@
             "title": "Registro",
             "description": "Descripción",
             "warning": "Advertencia",
-            "name_label": "Etiqueta de nombre",
+            "name_label": "Nombre",
             "confirm_button": "Botón de confirmar",
             "success": "Éxito"
         },
@@ -603,7 +603,7 @@
             "request_title": "Solicitud de cambio de nombre",
             "description": "Descripción",
             "request_description": "Descripción de solicitud",
-            "name_label": "Etiqueta de nombre",
+            "name_label": "Nombre",
             "success": "Éxito",
             "request_success": "Éxito de solicitud"
         }
@@ -614,7 +614,7 @@
         },
         "official": "Oficial",
         "workshop": "Workshop",
-        "active_duty": "Active Duty"
+        "active_duty": "Servicio activo"
     },
     "region": {
         "form": {
@@ -720,7 +720,7 @@
                 "title": "Administración",
                 "regions": "Regiones",
                 "servers": "Servidores",
-                "dedicated_servers": "Servidores Dedicados",
+                "dedicated_servers": "Dedicado",
                 "game_server_nodes": "Nodos de Servidor de Juego",
                 "logs": "Registros del Sistema",
                 "metrics": "Métricas del Sistema",
@@ -733,7 +733,7 @@
             },
             "footer": {
                 "report_issue": "Reportar un Problema",
-                "join_discord": "Únete a nuestro Discord"
+                "join_discord": "Unirse a Discord"
             },
             "tooltips": {
                 "play": "Jugar",
@@ -743,7 +743,7 @@
                 "teams": "Equipos",
                 "regions": "Regiones",
                 "servers": "Servidores",
-                "dedicated_servers": "Servidores Dedicados",
+                "dedicated_servers": "Dedicado",
                 "game_server_nodes": "Nodos de Servidor de Juego",
                 "system_logs": "Registros del Sistema",
                 "system_metrics": "Métricas del Sistema",
@@ -766,7 +766,7 @@
             "description": "Instala 5Stack para una mejor experiencia",
             "step1": "Paso 1",
             "step2": "Paso 2",
-            "tooltip": "Sugerencia de instalación",
+            "tooltip": "Instalar",
             "button": "Instalar"
         }
     },
@@ -824,8 +824,8 @@
         "stage": {
             "title": "Fase",
             "teams": "Equipos",
-            "edit": "Editar",
-            "delete": "Eliminar",
+            "edit": "Editar fase",
+            "delete": "Eliminar fase",
             "edit_title": "Editar fase",
             "confirm_delete": "Eliminar fase",
             "delete_description": "¿Estás seguro de que quieres eliminar esta fase?",
@@ -865,7 +865,7 @@
             "eligible": "Elegible",
             "not_eligible": "No elegible",
             "leave_tournament": "Salir del torneo",
-            "leave_team": "Salir del equipo",
+            "leave_team": "Salir",
             "player": "Jugador",
             "role": "Rol",
             "slot": "Slot",
@@ -876,8 +876,8 @@
             "name": "Nombre",
             "select_role": "Seleccionar rol",
             "no_roles": "Sin roles",
-            "remove_member": "Eliminar miembro",
-            "confirm_remove_member": "Eliminar miembro",
+            "remove_member": "Eliminar",
+            "confirm_remove_member": "Confirmar eliminación",
             "remove_member_description": "¿Estás seguro de que quieres eliminar este miembro?",
             "cancel_invite": "Cancelar invitación",
             "confirm_cancel_invite": "Cancelar invitación",
@@ -994,7 +994,8 @@
                 "create": "Error creando config",
                 "update": "Actualización de errores",
                 "revert": "Configuración de revertir errores a defectos"
-            }
+            },
+            "edit": "Editar Config"
         }
     }
 }

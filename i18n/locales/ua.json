@@ -7,7 +7,7 @@
             "services": "Сервіси"
         },
         "system_logs": {
-            "follow_logs": "Слідкувати за логами",
+            "follow_logs": "Слідкувати",
             "timestamps": "Часові мітки"
         },
         "login": {
@@ -28,7 +28,7 @@
         "teams": {
             "title": "Команди",
             "description": "Керування командами та складами.",
-            "create": "Створити команду",
+            "create": "Створити",
             "tabs": {
                 "my_teams": "Мої команди",
                 "other_teams": "Інші команди"
@@ -40,7 +40,7 @@
                 "title": "Налаштування профілю",
                 "description": "Керування налаштуваннями облікового запису",
                 "steam_id": "Steam ID",
-                "name": "Ім'я",
+                "name": "Назва",
                 "avatar_url": "URL аватара",
                 "country": "Країна",
                 "select_country": "Вибрати країну",
@@ -58,7 +58,7 @@
             },
             "application": {
                 "matchmaking": {
-                    "title": "Matchmaking",
+                    "title": "Матчмейкінг",
                     "description": "Керування налаштуваннями matchmaking"
                 },
                 "discord": {
@@ -88,13 +88,13 @@
         "regions": {
             "title": "Регіони",
             "description": "Керування регіонами",
-            "create": "Створити регіон",
+            "create": "Створити",
             "table": {
                 "name": "Назва",
                 "status": "Статус",
                 "available_servers": "Доступні сервери",
                 "description": "Опис",
-                "use_lan_ip": "Використовувати локальну IP",
+                "use_lan_ip": "Використовувати локальну мережу",
                 "actions": "Дії"
             },
             "edit": "Редагувати",
@@ -123,7 +123,7 @@
             "title": "Гра",
             "description": "Почати матч",
             "admin_disabled": "Адміністратор відключив створення матчів",
-            "create_match": "Створити матч",
+            "create_match": "Створити",
             "open_matches": {
                 "title": "Відкриті матчі",
                 "description": "Доступні матчі"
@@ -136,13 +136,13 @@
             "title": "Матчі",
             "description": "Керування матчами",
             "admin_disabled": "Адміністратор відключив створення матчів",
-            "create": "Створити матч",
+            "create": "Створити",
             "last_ten_wins": "Останні 10 перемог",
             "last_ten_losses": "Останні 10 поразок",
             "my_match_history": "Історія моїх матчів",
             "other_matches": "Інші матчі",
             "create_page": {
-                "title": "Створити матч",
+                "title": "Створити",
                 "pick_up_game": "Публічний матч",
                 "pick_up_game_description": "Створити матч для всіх",
                 "team_1": "Команда 1",
@@ -156,7 +156,7 @@
             }
         },
         "game_server_nodes": {
-            "title": "Вузли ігрового сервера",
+            "title": "Вузли Ігрового Сервера",
             "description": "Керування вузлами ігрового сервера",
             "not_supported": {
                 "title": "Не підтримується",
@@ -180,7 +180,7 @@
             "last_updated": "Останнє оновлення"
         },
         "dedicated_servers": {
-            "title": "Виділені сервери",
+            "title": "Виділений",
             "description": "Керування виділеними серверами",
             "create": {
                 "title": "Створити сервер"
@@ -246,16 +246,16 @@
                 "name_description": "Це повинно відповідати назві карти в грі, що сервер визнає."
             },
             "pool": {
-                "title": "{type} Карта Басейн",
+                "title": "За замовчуванням {type} Карта Басейн",
                 "description": "Керування картами в басейні {type}",
                 "modify_maps": "Модифікувати картини в басейні"
             },
-            "title": "Пул Карт",
+            "title": "Карта сайту",
             "add_new_map": "Додати нову карту",
-            "available_modes": "Доступні режими",
-            "workshop_id": "Ідентифікатор семінару",
+            "available_modes": "Доступні в режимах",
+            "workshop_id": "Веб-сайт",
             "edit": "Редагувати",
-            "maps": "Карти",
+            "maps": "Доступні карти",
             "active_duty": "Активні карти"
         },
         "map_pool": {
@@ -326,7 +326,7 @@
                 "placeholder": "Виберіть найкращий з"
             },
             "map_veto_settings": {
-                "label": "Налаштування вето карт",
+                "label": "Вето карт",
                 "description": "Опис налаштувань вето карт",
                 "custom_pool": "Власний пул карт",
                 "active_duty": "Активні карти",
@@ -358,8 +358,8 @@
                         "description": "Опис вето регіону"
                     },
                     "preferred": "Бажаний регіон",
-                    "single": "Один регіон",
-                    "placeholder": "Виберіть регіон",
+                    "single": "Регіон",
+                    "placeholder": "Вибрати регіон",
                     "any": "Будь-який регіон",
                     "description": "Опис регіону"
                 },
@@ -394,7 +394,7 @@
             "coaches": "Тренери",
             "overtime": "Додатковий час",
             "knife_round": "Раунд ножів",
-            "map_veto_enabled": "Вето карт увімкнено",
+            "map_veto_enabled": "Вето карт",
             "region_veto": "Вето регіону",
             "substitutes": "Заміни",
             "timeout_setting": "Налаштування паузи",
@@ -410,8 +410,8 @@
             "status": {
                 "offline_not_ready": "Офлайн, не готовий",
                 "online_not_ready": "Онлайн, не готовий",
-                "ready": "Готовий",
-                "offline": "Офлайн",
+                "ready": "Готово",
+                "offline": "Не в мережі",
                 "online_not_in_game": "Онлайн, не в грі",
                 "in_game": "В грі"
             },
@@ -506,7 +506,7 @@
             "call_organizer": "Викликати організатора"
         },
         "check_in": {
-            "title": "Реєстрація",
+            "title": "Зареєструватися",
             "checked_in": "Зареєстровано",
             "check_in": "Зареєструватися",
             "description": "Опис реєстрації"
@@ -587,7 +587,7 @@
             "title": "Реєстрація",
             "description": "Опис",
             "warning": "Попередження",
-            "name_label": "Мітка імені",
+            "name_label": "Назва",
             "confirm_button": "Кнопка підтвердження",
             "success": "Успіх"
         },
@@ -603,7 +603,7 @@
             "request_title": "Запит на зміну імені",
             "description": "Опис",
             "request_description": "Опис запиту",
-            "name_label": "Мітка імені",
+            "name_label": "Назва",
             "success": "Успіх",
             "request_success": "Запит успішний"
         }
@@ -720,7 +720,7 @@
                 "title": "Адміністрування",
                 "regions": "Регіони",
                 "servers": "Сервери",
-                "dedicated_servers": "Виділені Сервери",
+                "dedicated_servers": "Виділений",
                 "game_server_nodes": "Вузли Ігрового Сервера",
                 "logs": "Системні Логи",
                 "metrics": "Системні Метрики",
@@ -749,7 +749,7 @@
                 "teams": "Команди",
                 "regions": "Регіони",
                 "servers": "Сервери",
-                "dedicated_servers": "Виділені Сервери",
+                "dedicated_servers": "Виділений",
                 "game_server_nodes": "Вузли Ігрового Сервера",
                 "system_logs": "Системні Логи",
                 "system_metrics": "Системні Метрики",
@@ -766,7 +766,7 @@
             "description": "Встановіть 5Stack для кращого досвіду",
             "step1": "Крок 1",
             "step2": "Крок 2",
-            "tooltip": "Підказка встановлення",
+            "tooltip": "Встановити",
             "button": "Встановити"
         }
     },
@@ -824,8 +824,8 @@
         "stage": {
             "title": "Етап",
             "teams": "Команди",
-            "edit": "Редагувати",
-            "delete": "Видалити",
+            "edit": "Редагувати етап",
+            "delete": "Видалити етап",
             "edit_title": "Редагувати етап",
             "confirm_delete": "Видалити етап",
             "delete_description": "Ви впевнені, що хочете видалити цей етап?",
@@ -865,7 +865,7 @@
             "eligible": "Відповідає вимогам",
             "not_eligible": "Не відповідає вимогам",
             "leave_tournament": "Покинути турнір",
-            "leave_team": "Покинути команду",
+            "leave_team": "Покинути",
             "player": "Гравець",
             "role": "Роль",
             "slot": "Слот",
@@ -876,8 +876,8 @@
             "name": "Назва",
             "select_role": "Вибрати роль",
             "no_roles": "Немає ролей",
-            "remove_member": "Видалити учасника",
-            "confirm_remove_member": "Видалити учасника",
+            "remove_member": "Видалити",
+            "confirm_remove_member": "Підтвердити видалення",
             "remove_member_description": "Ви впевнені, що хочете видалити цього учасника?",
             "cancel_invite": "Скасувати запрошення",
             "confirm_cancel_invite": "Скасувати запрошення",
@@ -994,7 +994,8 @@
                 "create": "Помилка створення конфігурації",
                 "update": "Статус на сервери",
                 "revert": "Перетворення помилок на за замовчуванням"
-            }
+            },
+            "edit": "Налаштування редагування"
         }
     }
 }

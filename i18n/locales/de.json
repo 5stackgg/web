@@ -7,7 +7,7 @@
             "services": "Dienste"
         },
         "system_logs": {
-            "follow_logs": "Protokolle verfolgen",
+            "follow_logs": "Logs folgen",
             "timestamps": "Zeitstempel"
         },
         "login": {
@@ -88,13 +88,13 @@
         "regions": {
             "title": "Regionen",
             "description": "Regionsverwaltung",
-            "create": "Region erstellen",
+            "create": "Erstellen",
             "table": {
                 "name": "Name",
                 "status": "Status",
                 "available_servers": "Verfügbare Server",
                 "description": "Beschreibung",
-                "use_lan_ip": "LAN-IP verwenden",
+                "use_lan_ip": "LAN verwenden",
                 "actions": "Aktionen"
             },
             "edit": "Bearbeiten",
@@ -123,7 +123,7 @@
             "title": "Spielen",
             "description": "Spiel starten",
             "admin_disabled": "Spielerstellung wurde vom Administrator deaktiviert",
-            "create_match": "Spiel erstellen",
+            "create_match": "Erstellen",
             "open_matches": {
                 "title": "Offene Spiele",
                 "description": "Verfügbare Spiele"
@@ -136,13 +136,13 @@
             "title": "Spiele",
             "description": "Spielverwaltung",
             "admin_disabled": "Spielerstellung wurde vom Administrator deaktiviert",
-            "create": "Spiel erstellen",
+            "create": "Erstellen",
             "last_ten_wins": "Letzte 10 Spiele gewonnen",
             "last_ten_losses": "Letzte 10 Spiele verloren",
             "my_match_history": "Meine Spielhistorie",
             "other_matches": "Andere Spiele",
             "create_page": {
-                "title": "Spiel erstellen",
+                "title": "Erstellen",
                 "pick_up_game": "Pickup-Spiel",
                 "pick_up_game_description": "Pickup-Spiel erstellen",
                 "team_1": "Team 1",
@@ -156,7 +156,7 @@
             }
         },
         "game_server_nodes": {
-            "title": "Spielserver-Knoten",
+            "title": "Game Server Nodes",
             "description": "Spielserver-Knoten verwalten",
             "not_supported": {
                 "title": "Nicht unterstützt",
@@ -212,7 +212,7 @@
             }
         },
         "map_pools": {
-            "title": "Kartenpools",
+            "title": "Standardkarte Pools",
             "description": "Verwalte Kartenpools und verfügbare Karten für Matchmaking.",
             "form": {
                 "name": "Name",
@@ -247,20 +247,20 @@
                 "name_description": "Dies muss dem Namen der Karte im Spiel entsprechen, das der Server erkennt."
             },
             "pool": {
-                "title": "{type} Kartenpool",
+                "title": "Default {type} Landkarte Pool",
                 "description": "Verwalte Karten im {type} Pool",
                 "modify_maps": "Karten im Pool ändern"
             },
             "add_new_map": "Neue Karte hinzufügen",
-            "maps": "Karten",
+            "maps": "Verfügbare Karten",
             "active_duty": "Aktiver Dienst",
-            "available_modes": "Verfügbare Modi",
-            "workshop_id": "Workshop-ID",
+            "available_modes": "Verfügbar im Modus",
+            "workshop_id": "Link zum Thema",
             "edit": "Bearbeiten"
         },
         "map_pool": {
             "toggle_pool_type": "Karte {map} wurde für {type} {type}",
-            "toggle_active_pool": "Karte {map} wurde für Active Duty {type}",
+            "toggle_active_pool": "Karte {map} wurde für aktiven Dienst {type}",
             "save_success": "Kartenpool erfolgreich gespeichert"
         }
     },
@@ -506,7 +506,7 @@
             "call_organizer": "Organisator anrufen"
         },
         "check_in": {
-            "title": "Check-in",
+            "title": "Einchecken",
             "checked_in": "Eingecheckt",
             "check_in": "Einchecken",
             "description": "Bitte checken Sie ein, um Ihre Teilnahme an diesem Spiel zu bestätigen"
@@ -542,7 +542,7 @@
             "total_damage": "Gesamtschaden",
             "substitute": "Ersatzspieler",
             "join": "Beitreten",
-            "slot": "Slot"
+            "slot": "Slot {number}"
         },
         "server": {
             "offline": "Server ist offline!",
@@ -614,7 +614,7 @@
         },
         "official": "Offiziell",
         "workshop": "Workshop",
-        "active_duty": "Active Duty"
+        "active_duty": "Aktiver Dienst"
     },
     "region": {
         "form": {
@@ -766,7 +766,7 @@
             "description": "Installieren Sie 5Stack für eine bessere Erfahrung",
             "step1": "Schritt 1",
             "step2": "Schritt 2",
-            "tooltip": "Installationstipp",
+            "tooltip": "Installieren",
             "button": "Installieren"
         }
     },
@@ -877,10 +877,10 @@
             "select_role": "Rolle auswählen",
             "no_roles": "Keine Rollen verfügbar",
             "remove_member": "Mitglied entfernen",
-            "confirm_remove_member": "Möchten Sie dieses Mitglied wirklich entfernen?",
+            "confirm_remove_member": "Sind Sie sicher, dass Sie dieses Mitglied entfernen möchten?",
             "remove_member_description": "Dies wird das Mitglied aus dem Turnierteam entfernen",
             "cancel_invite": "Einladung stornieren",
-            "confirm_cancel_invite": "Möchten Sie diese Einladung wirklich stornieren?",
+            "confirm_cancel_invite": "Sind Sie sicher, dass Sie diese Einladung stornieren möchten?",
             "cancel_invite_description": "Dies wird die Einladung für dieses Mitglied stornieren",
             "my_teams": "Meine Teams",
             "my_teams_description": "Fügen Sie eines Ihrer Teams zum Turnier hinzu",
@@ -994,7 +994,8 @@
                 "create": "Config erstellt erfolgreich",
                 "update": "Vertrauen erfolgreich aktualisiert",
                 "revert": "Config revertiert zu Standardeinstellungen erfolgreich"
-            }
+            },
+            "edit": "Bearbeiten von Config"
         }
     }
 }

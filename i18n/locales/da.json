@@ -994,7 +994,8 @@
                 "create": "Konfiguration oprettet med succes",
                 "update": "Konfiguration opdateret med succes",
                 "revert": "Konfiguration vendt tilbage til fejl med succes"
-            }
+            },
+            "edit": "Redigér config"
         }
     }
 }

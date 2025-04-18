@@ -994,7 +994,8 @@
                 "create": "Erro ao criar a configuração",
                 "update": "Erro ao atualizar a configuração",
                 "revert": "Erro ao reverter a configuração para os padrões"
-            }
+            },
+            "edit": "Editar a Configuração"
         }
     }
 }

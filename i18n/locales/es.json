@@ -994,7 +994,8 @@
                 "create": "Error creando config",
                 "update": "Actualización de errores",
                 "revert": "Configuración de revertir errores a defectos"
-            }
+            },
+            "edit": "Editar Config"
         }
     }
 }

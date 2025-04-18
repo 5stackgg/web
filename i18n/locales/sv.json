@@ -994,7 +994,8 @@
                 "create": "Fel skapa konfig",
                 "update": "Fel uppdatera konfig",
                 "revert": "Fel reverting konfig till standarder"
-            }
+            },
+            "edit": "Edit Config"
         }
     }
 }

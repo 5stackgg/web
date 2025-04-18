@@ -994,7 +994,8 @@
                 "create": "Erreur lors de la création de configuration",
                 "update": "Erreur de mise à jour de la configuration",
                 "revert": "Erreur lors du retour de la configuration aux valeurs par défaut"
-            }
+            },
+            "edit": "Modifier la configuration"
         }
     }
 }

@@ -994,7 +994,8 @@
                 "create": "오류 생성",
                 "update": "오류 업데이트 config",
                 "revert": "Config를 기본값으로 반전하는 오류"
-            }
+            },
+            "edit": "Config 편집"
         }
     }
 }

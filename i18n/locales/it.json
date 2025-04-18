@@ -994,7 +994,8 @@
                 "create": "Creazione di errori",
                 "update": "Aggiornamento degli errori",
                 "revert": "Ripristino degli errori config a default"
-            }
+            },
+            "edit": "Modifica conflitto"
         }
     }
 }

@@ -994,7 +994,8 @@
                 "create": "Błąd podczas tworzenia pliku konfiguracyjnego",
                 "update": "Błąd podczas aktualizacji konfiguracji",
                 "revert": "Błąd odwracania konfiguratora do domyślnego"
-            }
+            },
+            "edit": "Edytuj konfigurację"
         }
     }
 }

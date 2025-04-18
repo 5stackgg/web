@@ -994,7 +994,8 @@
                 "create": "Kļūda izveidojot konfigurāciju",
                 "update": "Kļūda atjaunojot konfigurāciju",
                 "revert": "Kļūda atgriežot konfigurāciju uz noklusēto"
-            }
+            },
+            "edit": "Rediģēt konfigurāciju"
         }
     }
 }

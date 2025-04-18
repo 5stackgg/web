@@ -994,7 +994,8 @@
                 "create": "Config erstellt erfolgreich",
                 "update": "Vertrauen erfolgreich aktualisiert",
                 "revert": "Config revertiert zu Standardeinstellungen erfolgreich"
-            }
+            },
+            "edit": "Bearbeiten von Config"
         }
     }
 }

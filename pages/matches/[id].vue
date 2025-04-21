@@ -159,6 +159,7 @@ export default {
                 number_of_substitutes: true,
                 timeout_setting: true,
                 tech_timeout_setting: true,
+                ready_setting: true,
                 lobby_access: true,
                 map_pool: {
                   type: true,

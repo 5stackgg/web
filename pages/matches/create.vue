@@ -6,6 +6,8 @@ import { Info } from "lucide-vue-next";
 </script>
 
 <template>
+  --{{ form.values.ready_setting }}--
+
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
       <template #title>{{ $t("pages.matches.create_page.title") }}</template>
@@ -146,6 +148,7 @@ export default {
 
       const form = this.form.values;
 
+      console.info("wtf", form.ready_setting);
       const { data } = await this.$apollo.mutate({
         variables: {
           mr: form.mr,
@@ -158,6 +161,7 @@ export default {
           regions: form.regions,
           coaches: form.coaches,
           timeout_setting: form.timeout_setting,
+          ready_setting: form.ready_setting,
           tech_timeout_setting: form.tech_timeout_setting,
           tv_delay: form.tv_delay,
           number_of_substitutes: form.number_of_substitutes,
@@ -213,6 +217,7 @@ export default {
                     map_veto: $("map_veto", "Boolean!"),
                     region_veto: $("region_veto", "Boolean!"),
                     regions: $("regions", "[String!]!"),
+                    ready_setting: $("ready_setting", "e_ready_settings_enum!"),
                     timeout_setting: $(
                       "timeout_setting",
                       "e_timeout_settings_enum!",

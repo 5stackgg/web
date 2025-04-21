@@ -673,6 +673,7 @@
       "substitutes": "Substitutes",
       "timeout_setting": "Timeout Setting",
       "tech_timeout_setting": "Tech Timeout Setting",
+      "ready_setting": "Ready Setting",
       "map_pool": "Map Pool"
     },
     "schedule": {

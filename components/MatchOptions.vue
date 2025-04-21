@@ -965,19 +965,27 @@ export default {
     readySettings(): EnumSetting[] {
       return [
         {
-          display: this.$t("match.options.advanced.ready_settings.options.admins"),
+          display: this.$t(
+            "match.options.advanced.ready_settings.options.admins",
+          ),
           value: e_ready_settings_enum.Admins,
         },
         {
-          display: this.$t("match.options.advanced.ready_settings.options.captain"),
+          display: this.$t(
+            "match.options.advanced.ready_settings.options.captains",
+          ),
           value: e_ready_settings_enum.Captains,
         },
         {
-          display: this.$t("match.options.advanced.ready_settings.options.coaches"),
+          display: this.$t(
+            "match.options.advanced.ready_settings.options.coaches",
+          ),
           value: e_ready_settings_enum.Coach,
         },
         {
-          display: this.$t("match.options.advanced.ready_settings.options.everyone"),
+          display: this.$t(
+            "match.options.advanced.ready_settings.options.everyone",
+          ),
           value: e_ready_settings_enum.Players,
         },
       ];

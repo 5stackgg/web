@@ -316,6 +316,7 @@ export default {
             regions: form.regions,
             number_of_substitutes: form.number_of_substitutes,
             timeout_setting: form.timeout_setting,
+            ready_setting: form.ready_setting,
             tech_timeout_setting: form.tech_timeout_setting,
             map_pool_id: mapPoolId,
           },
@@ -336,6 +337,7 @@ export default {
                   regions: $("regions", "[String!]!"),
                   coaches: $("coaches", "Boolean!"),
                   number_of_substitutes: $("number_of_substitutes", "Int!"),
+                  ready_setting: $("ready_setting", "e_ready_settings_enum!"),
                   timeout_setting: $(
                     "timeout_setting",
                     "e_timeout_settings_enum!",
@@ -372,6 +374,7 @@ export default {
           regions: form.regions,
           number_of_substitutes: form.number_of_substitutes,
           timeout_setting: form.timeout_setting,
+          ready_setting: form.ready_setting,
           tech_timeout_setting: form.tech_timeout_setting,
           ...(form.map_pool_id
             ? {
@@ -412,6 +415,7 @@ export default {
                     regions: $("regions", "[String!]!"),
                     coaches: $("coaches", "Boolean!"),
                     number_of_substitutes: $("number_of_substitutes", "Int!"),
+                    ready_setting: $("ready_setting", "e_ready_settings_enum!"),
                     timeout_setting: $(
                       "timeout_setting",
                       "e_timeout_settings_enum!",

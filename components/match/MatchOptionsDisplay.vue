@@ -66,6 +66,12 @@ import MapDisplay from "~/components/MapDisplay.vue";
       }}</span>
       <span>{{ options.tech_timeout_setting }}</span>
     </li>
+    <li class="flex items-center justify-between">
+      <span class="text-muted-foreground">{{
+        $t("match.options.ready_setting")
+      }}</span>
+      <span>{{ options.ready_setting }}</span>
+    </li>
   </ul>
 
   <template v-if="options.map_veto">

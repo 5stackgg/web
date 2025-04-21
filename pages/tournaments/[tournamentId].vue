@@ -287,6 +287,7 @@ export default {
                 number_of_substitutes: true,
                 timeout_setting: true,
                 tech_timeout_setting: true,
+                ready_setting: true,
                 map_pool: [
                   {},
                   {

@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Amministratori",
                         "coaches": "Allenatori",
-                        "everyone": "Tutti"
+                        "everyone": "Tutti",
+                        "captains": "Autobus / Capitani"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Impostazioni pronte",
+                    "description": "Controlla come il match determina di essere pronto per iniziare.",
+                    "options": {
+                        "captains": "Capitani",
+                        "everyone": "Tutti i giocatori devono essere pronti",
+                        "admins": "Amministratori",
+                        "coaches": "Allenatori"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Riserve",
             "timeout_setting": "Impostazione timeout",
             "tech_timeout_setting": "Impostazione timeout tecnico",
-            "map_pool": "Pool mappe"
+            "map_pool": "Pool mappe",
+            "ready_setting": "Impostazioni pronte"
         },
         "schedule": {
             "pick_date": "Seleziona data",

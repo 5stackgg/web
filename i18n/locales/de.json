@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Administratoren",
                         "coaches": "Trainer",
-                        "everyone": "Alle"
+                        "everyone": "Alle",
+                        "captains": "Coaches / Captains"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Fertige Einstellungen",
+                    "description": "Kontrolliert, wie das Spiel entscheidet, bereit zu sein.",
+                    "options": {
+                        "captains": "Kapitäne",
+                        "everyone": "Alle Spieler müssen bereit sein",
+                        "admins": "Administratoren",
+                        "coaches": "Trainer"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Ersatzspieler",
             "timeout_setting": "Auszeiteinstellung",
             "tech_timeout_setting": "Technische Auszeiteinstellung",
-            "map_pool": "Kartenpool"
+            "map_pool": "Kartenpool",
+            "ready_setting": "Fertigstellung"
         },
         "schedule": {
             "pick_date": "Datum auswählen",

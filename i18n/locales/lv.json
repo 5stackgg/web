@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Administratori",
                         "coaches": "Treneri",
-                        "everyone": "Visi"
+                        "everyone": "Visi",
+                        "captains": "Karači / Kapteiņi"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Gatavi iestatījumi",
+                    "description": "Kontrolē, kā sakritība nosaka, ka ir gatava startēt.",
+                    "options": {
+                        "captains": "Kapteiņi",
+                        "everyone": "Visiem spēlētājiem jābūt gataviem",
+                        "admins": "Administratori",
+                        "coaches": "Treneri"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Aizvietotāji",
             "timeout_setting": "Pārtraukuma iestatījums",
             "tech_timeout_setting": "Tehniskā pārtraukuma iestatījums",
-            "map_pool": "Karšu kopa"
+            "map_pool": "Karšu kopa",
+            "ready_setting": "Gatavs iestatījums"
         },
         "schedule": {
             "pick_date": "Izvēlieties datumu",

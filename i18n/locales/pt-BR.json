@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Administradores",
                         "coaches": "Treinadores",
-                        "everyone": "Todos"
+                        "everyone": "Todos",
+                        "captains": "Treinadores / Capitães"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Configuração Preparada",
+                    "description": "Controla como o jogo determina estar pronto para começar.",
+                    "options": {
+                        "captains": "Capitães",
+                        "everyone": "Todos os jogadores precisam estar prontos",
+                        "admins": "Administradores",
+                        "coaches": "Treinadores"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Substitutos",
             "timeout_setting": "Configuração de timeout",
             "tech_timeout_setting": "Configuração de timeout técnico",
-            "map_pool": "Pool de mapas"
+            "map_pool": "Pool de mapas",
+            "ready_setting": "Configuração Pronto"
         },
         "schedule": {
             "pick_date": "Selecione uma data",

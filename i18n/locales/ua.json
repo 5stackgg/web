@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Адміністратори",
                         "coaches": "Тренери",
-                        "everyone": "Всі"
+                        "everyone": "Всі",
+                        "captains": "Тренери / Капітани"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Готові налаштування",
+                    "description": "Контролює, як матч визначає бути готовим до запуску.",
+                    "options": {
+                        "captains": "Капітани",
+                        "everyone": "Всі гравці повинні бути готовими",
+                        "admins": "Адміністратори",
+                        "coaches": "Тренери"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Заміни",
             "timeout_setting": "Налаштування паузи",
             "tech_timeout_setting": "Налаштування технічної паузи",
-            "map_pool": "Пул карт"
+            "map_pool": "Пул карт",
+            "ready_setting": "Налаштування готовності"
         },
         "schedule": {
             "pick_date": "Вибрати дату",

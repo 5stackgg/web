@@ -375,6 +375,12 @@
                         "coaches": "教练",
                         "everyone": "所有人"
                     }
+                },
+                "ready_settings": {
+                    "options": {
+                        "admins": "管理员",
+                        "coaches": "教练"
+                    }
                 }
             },
             "max_rounds": "最大回合数",

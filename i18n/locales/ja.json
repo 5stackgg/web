@@ -489,7 +489,18 @@
                     "options": {
                         "admins": "管理者のみ",
                         "coaches": "コーチ",
-                        "everyone": "全員"
+                        "everyone": "全員",
+                        "captains": "コーチ/キャプテン"
+                    }
+                },
+                "ready_settings": {
+                    "label": "準備設定",
+                    "description": "マッチが開始する準備を決定する方法を制御します.",
+                    "options": {
+                        "captains": "キャプテン",
+                        "everyone": "すべてのプレーヤーは準備ができている必要があります",
+                        "admins": "管理者のみ",
+                        "coaches": "コーチ"
                     }
                 }
             },
@@ -504,7 +515,8 @@
             "substitutes": "サブスティテュート",
             "timeout_setting": "タイムアウト設定",
             "tech_timeout_setting": "テクニカルタイムアウト設定",
-            "map_pool": "マッププール"
+            "map_pool": "マッププール",
+            "ready_setting": "Ready の設定"
         },
         "schedule": {
             "pick_date": "日付を選択",

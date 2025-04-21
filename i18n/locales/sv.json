@@ -643,7 +643,18 @@
                     "options": {
                         "admins": "Administratörer",
                         "coaches": "Tränare",
-                        "everyone": "Alla"
+                        "everyone": "Alla",
+                        "captains": "Coaches / kaptener"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Redo Inställningar",
+                    "description": "Kontrollerar hur matchen bestämmer sig för att vara redo att börja.",
+                    "options": {
+                        "captains": "Kaptener",
+                        "everyone": "Alla spelare måste vara redo",
+                        "admins": "Administratörer",
+                        "coaches": "Tränare"
                     }
                 }
             },
@@ -658,7 +669,8 @@
             "substitutes": "Ersättare",
             "timeout_setting": "Timeout-inställning",
             "tech_timeout_setting": "Teknisk timeout-inställning",
-            "map_pool": "Kartpool"
+            "map_pool": "Kartpool",
+            "ready_setting": "Ready Setting"
         },
         "schedule": {
             "pick_date": "Välj ett datum",

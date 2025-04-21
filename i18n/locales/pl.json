@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Administratorzy",
                         "coaches": "Trenerzy",
-                        "everyone": "Wszyscy"
+                        "everyone": "Wszyscy",
+                        "captains": "Żurawiny"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Ustawienia gotowe",
+                    "description": "Kontroluje, w jaki sposób dopasowanie określa, że jest gotowe do rozpoczęcia.",
+                    "options": {
+                        "captains": "Kapitany",
+                        "everyone": "Wszyscy gracze wymagający być gotowi",
+                        "admins": "Administratorzy",
+                        "coaches": "Trenerzy"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Rezerwowi",
             "timeout_setting": "Ustawienie timeoutu",
             "tech_timeout_setting": "Ustawienie timeoutu technicznego",
-            "map_pool": "Pula map"
+            "map_pool": "Pula map",
+            "ready_setting": "Ustawienia gotowe"
         },
         "schedule": {
             "pick_date": "Wybierz datę",

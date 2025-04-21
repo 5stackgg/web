@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Администраторы",
                         "coaches": "Тренеры",
-                        "everyone": "Все"
+                        "everyone": "Все",
+                        "captains": "Тренеры / Капитаны"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Готовые настройки",
+                    "description": "Контролирует, как матч будет готов к началу.",
+                    "options": {
+                        "captains": "Капитаны",
+                        "everyone": "Все игроки должны быть готовы",
+                        "admins": "Администраторы",
+                        "coaches": "Тренеры"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Запасные",
             "timeout_setting": "Настройка таймаута",
             "tech_timeout_setting": "Настройка технического таймаута",
-            "map_pool": "Пул карт"
+            "map_pool": "Пул карт",
+            "ready_setting": "Готовая настройка"
         },
         "schedule": {
             "pick_date": "Выберите дату",

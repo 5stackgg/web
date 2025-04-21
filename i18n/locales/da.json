@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "Administratorer",
                         "coaches": "Trænere",
-                        "everyone": "Alle"
+                        "everyone": "Alle",
+                        "captains": "Kapers"
+                    }
+                },
+                "ready_settings": {
+                    "label": "Klar indstilling",
+                    "description": "Styrer hvordan kampen bestemmer at være klar til at starte.",
+                    "options": {
+                        "captains": "Kaptajner",
+                        "everyone": "Alle spillere skal være klar",
+                        "admins": "Administratorer",
+                        "coaches": "Trænere"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "Erstatninger",
             "timeout_setting": "Timeout indstilling",
             "tech_timeout_setting": "Teknisk timeout indstilling",
-            "map_pool": "Kortpool"
+            "map_pool": "Kortpool",
+            "ready_setting": "Klar indstilling"
         },
         "schedule": {
             "pick_date": "Vælg dato",

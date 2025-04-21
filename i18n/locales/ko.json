@@ -384,7 +384,18 @@
                     "options": {
                         "admins": "관리자",
                         "coaches": "코치",
-                        "everyone": "모두"
+                        "everyone": "모두",
+                        "captains": "코치 / 캡틴"
+                    }
+                },
+                "ready_settings": {
+                    "label": "준비 설정",
+                    "description": "경기가 시작될 준비가 결정하는 방법을 제어합니다.",
+                    "options": {
+                        "captains": "팟캐스트",
+                        "everyone": "모든 플레이어는 준비해야합니다",
+                        "admins": "관리자",
+                        "coaches": "코치"
                     }
                 }
             },
@@ -399,7 +410,8 @@
             "substitutes": "교체 선수",
             "timeout_setting": "타임아웃 설정",
             "tech_timeout_setting": "기술 타임아웃 설정",
-            "map_pool": "맵 풀"
+            "map_pool": "맵 풀",
+            "ready_setting": "준비 설정"
         },
         "schedule": {
             "pick_date": "날짜 선택",

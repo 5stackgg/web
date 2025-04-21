@@ -620,7 +620,6 @@
         "form": {
             "name": "이름",
             "description": "설명",
-            "use_lan": "LAN 사용",
             "update": "업데이트",
             "create": "생성"
         }

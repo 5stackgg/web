@@ -620,7 +620,6 @@
         "form": {
             "name": "Nosaukums",
             "description": "Apraksts",
-            "use_lan": "Izmantot LAN",
             "update": "Atjaunināt",
             "create": "Izveidot"
         }

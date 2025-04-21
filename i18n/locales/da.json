@@ -620,7 +620,6 @@
         "form": {
             "name": "Navn",
             "description": "Beskrivelse",
-            "use_lan": "Brug LAN",
             "update": "Opdater",
             "create": "Opret"
         }

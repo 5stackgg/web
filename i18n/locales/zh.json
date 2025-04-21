@@ -609,7 +609,6 @@
         "form": {
             "name": "名称",
             "description": "描述",
-            "use_lan": "使用局域网",
             "update": "更新",
             "create": "创建"
         }

@@ -771,7 +771,6 @@
         "form": {
             "name": "名前",
             "description": "説明",
-            "use_lan": "LANを使用",
             "update": "更新",
             "create": "作成"
         }

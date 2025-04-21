@@ -620,7 +620,6 @@
         "form": {
             "name": "Nome",
             "description": "Descrição",
-            "use_lan": "Usar LAN",
             "update": "Atualizar",
             "create": "Criar"
         }

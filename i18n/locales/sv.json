@@ -882,7 +882,6 @@
         "form": {
             "name": "Namn",
             "description": "Beskrivning",
-            "use_lan": "Använd LAN",
             "update": "Uppdatera region",
             "create": "Skapa region"
         }

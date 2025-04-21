@@ -620,7 +620,6 @@
         "form": {
             "name": "Label nome",
             "description": "Descrizione",
-            "use_lan": "Usa IP LAN",
             "update": "Aggiorna",
             "create": "Crea regione"
         }

@@ -611,6 +611,16 @@ export const AllTypesProps: Record<string,any> = {
 		where:"e_match_status_bool_exp"
 	},
 	e_match_types:{
+		config:{
+			distinct_on:"match_type_cfgs_select_column",
+			order_by:"match_type_cfgs_order_by",
+			where:"match_type_cfgs_bool_exp"
+		},
+		config_aggregate:{
+			distinct_on:"match_type_cfgs_select_column",
+			order_by:"match_type_cfgs_order_by",
+			where:"match_type_cfgs_bool_exp"
+		},
 		maps:{
 			distinct_on:"maps_select_column",
 			order_by:"maps_order_by",
@@ -631,6 +641,8 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"e_match_types_bool_exp",
 		_not:"e_match_types_bool_exp",
 		_or:"e_match_types_bool_exp",
+		config:"match_type_cfgs_bool_exp",
+		config_aggregate:"match_type_cfgs_aggregate_bool_exp",
 		description:"String_comparison_exp",
 		maps:"maps_bool_exp",
 		maps_aggregate:"maps_aggregate_bool_exp",
@@ -645,6 +657,7 @@ export const AllTypesProps: Record<string,any> = {
 		_nin:"e_match_types_enum"
 	},
 	e_match_types_insert_input:{
+		config:"match_type_cfgs_arr_rel_insert_input",
 		maps:"maps_arr_rel_insert_input"
 	},
 	e_match_types_obj_rel_insert_input:{
@@ -657,6 +670,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"e_match_types_bool_exp"
 	},
 	e_match_types_order_by:{
+		config_aggregate:"match_type_cfgs_aggregate_order_by",
 		description:"order_by",
 		maps_aggregate:"maps_aggregate_order_by",
 		value:"order_by"
@@ -847,6 +861,57 @@ export const AllTypesProps: Record<string,any> = {
 	e_player_roles_updates:{
 		_set:"e_player_roles_set_input",
 		where:"e_player_roles_bool_exp"
+	},
+	e_ready_settings_aggregate_fields:{
+		count:{
+			columns:"e_ready_settings_select_column"
+		}
+	},
+	e_ready_settings_bool_exp:{
+		_and:"e_ready_settings_bool_exp",
+		_not:"e_ready_settings_bool_exp",
+		_or:"e_ready_settings_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_ready_settings_constraint: "enum" as const,
+	e_ready_settings_enum: "enum" as const,
+	e_ready_settings_enum_comparison_exp:{
+		_eq:"e_ready_settings_enum",
+		_in:"e_ready_settings_enum",
+		_neq:"e_ready_settings_enum",
+		_nin:"e_ready_settings_enum"
+	},
+	e_ready_settings_insert_input:{
+
+	},
+	e_ready_settings_on_conflict:{
+		constraint:"e_ready_settings_constraint",
+		update_columns:"e_ready_settings_update_column",
+		where:"e_ready_settings_bool_exp"
+	},
+	e_ready_settings_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_ready_settings_pk_columns_input:{
+
+	},
+	e_ready_settings_select_column: "enum" as const,
+	e_ready_settings_set_input:{
+
+	},
+	e_ready_settings_stream_cursor_input:{
+		initial_value:"e_ready_settings_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_ready_settings_stream_cursor_value_input:{
+
+	},
+	e_ready_settings_update_column: "enum" as const,
+	e_ready_settings_updates:{
+		_set:"e_ready_settings_set_input",
+		where:"e_ready_settings_bool_exp"
 	},
 	e_sanction_types_aggregate_fields:{
 		count:{
@@ -3321,6 +3386,7 @@ export const AllTypesProps: Record<string,any> = {
 		number_of_substitutes:"Int_comparison_exp",
 		overtime:"Boolean_comparison_exp",
 		prefer_dedicated_server:"Boolean_comparison_exp",
+		ready_setting:"e_ready_settings_enum_comparison_exp",
 		region_veto:"Boolean_comparison_exp",
 		regions:"String_array_comparison_exp",
 		tech_timeout_setting:"e_timeout_settings_enum_comparison_exp",
@@ -3339,6 +3405,7 @@ export const AllTypesProps: Record<string,any> = {
 		map_pool:"map_pools_obj_rel_insert_input",
 		map_pool_id:"uuid",
 		matches:"matches_arr_rel_insert_input",
+		ready_setting:"e_ready_settings_enum",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		tournament:"tournaments_obj_rel_insert_input",
@@ -3369,6 +3436,7 @@ export const AllTypesProps: Record<string,any> = {
 		number_of_substitutes:"order_by",
 		overtime:"order_by",
 		prefer_dedicated_server:"order_by",
+		ready_setting:"order_by",
 		region_veto:"order_by",
 		regions:"order_by",
 		tech_timeout_setting:"order_by",
@@ -3385,6 +3453,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
+		ready_setting:"e_ready_settings_enum",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		type:"e_match_types_enum"
@@ -3397,6 +3466,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
+		ready_setting:"e_ready_settings_enum",
 		tech_timeout_setting:"e_timeout_settings_enum",
 		timeout_setting:"e_timeout_settings_enum",
 		type:"e_match_types_enum"
@@ -3508,21 +3578,46 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"match_region_veto_picks_set_input",
 		where:"match_region_veto_picks_bool_exp"
 	},
+	match_type_cfgs_aggregate_bool_exp:{
+		count:"match_type_cfgs_aggregate_bool_exp_count"
+	},
+	match_type_cfgs_aggregate_bool_exp_count:{
+		arguments:"match_type_cfgs_select_column",
+		filter:"match_type_cfgs_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	match_type_cfgs_aggregate_fields:{
 		count:{
 			columns:"match_type_cfgs_select_column"
 		}
+	},
+	match_type_cfgs_aggregate_order_by:{
+		count:"order_by",
+		max:"match_type_cfgs_max_order_by",
+		min:"match_type_cfgs_min_order_by"
+	},
+	match_type_cfgs_arr_rel_insert_input:{
+		data:"match_type_cfgs_insert_input",
+		on_conflict:"match_type_cfgs_on_conflict"
 	},
 	match_type_cfgs_bool_exp:{
 		_and:"match_type_cfgs_bool_exp",
 		_not:"match_type_cfgs_bool_exp",
 		_or:"match_type_cfgs_bool_exp",
 		cfg:"String_comparison_exp",
+		e_match_type:"e_match_types_bool_exp",
 		type:"e_match_types_enum_comparison_exp"
 	},
 	match_type_cfgs_constraint: "enum" as const,
 	match_type_cfgs_insert_input:{
+		e_match_type:"e_match_types_obj_rel_insert_input",
 		type:"e_match_types_enum"
+	},
+	match_type_cfgs_max_order_by:{
+		cfg:"order_by"
+	},
+	match_type_cfgs_min_order_by:{
+		cfg:"order_by"
 	},
 	match_type_cfgs_on_conflict:{
 		constraint:"match_type_cfgs_constraint",
@@ -3531,6 +3626,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_type_cfgs_order_by:{
 		cfg:"order_by",
+		e_match_type:"e_match_types_order_by",
 		type:"order_by"
 	},
 	match_type_cfgs_pk_columns_input:{
@@ -4148,6 +4244,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_player_roles_by_pk:{
 
 		},
+		delete_e_ready_settings:{
+			where:"e_ready_settings_bool_exp"
+		},
+		delete_e_ready_settings_by_pk:{
+
+		},
 		delete_e_sanction_types:{
 			where:"e_sanction_types_bool_exp"
 		},
@@ -4552,6 +4654,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_player_roles_one:{
 			object:"e_player_roles_insert_input",
 			on_conflict:"e_player_roles_on_conflict"
+		},
+		insert_e_ready_settings:{
+			objects:"e_ready_settings_insert_input",
+			on_conflict:"e_ready_settings_on_conflict"
+		},
+		insert_e_ready_settings_one:{
+			object:"e_ready_settings_insert_input",
+			on_conflict:"e_ready_settings_on_conflict"
 		},
 		insert_e_sanction_types:{
 			objects:"e_sanction_types_insert_input",
@@ -5128,6 +5238,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_player_roles_many:{
 			updates:"e_player_roles_updates"
+		},
+		update_e_ready_settings:{
+			_set:"e_ready_settings_set_input",
+			where:"e_ready_settings_bool_exp"
+		},
+		update_e_ready_settings_by_pk:{
+			_set:"e_ready_settings_set_input",
+			pk_columns:"e_ready_settings_pk_columns_input"
+		},
+		update_e_ready_settings_many:{
+			updates:"e_ready_settings_updates"
 		},
 		update_e_sanction_types:{
 			_set:"e_sanction_types_set_input",
@@ -8294,6 +8415,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_player_roles_by_pk:{
 
 		},
+		e_ready_settings:{
+			distinct_on:"e_ready_settings_select_column",
+			order_by:"e_ready_settings_order_by",
+			where:"e_ready_settings_bool_exp"
+		},
+		e_ready_settings_aggregate:{
+			distinct_on:"e_ready_settings_select_column",
+			order_by:"e_ready_settings_order_by",
+			where:"e_ready_settings_bool_exp"
+		},
+		e_ready_settings_by_pk:{
+
+		},
 		e_sanction_types:{
 			distinct_on:"e_sanction_types_select_column",
 			order_by:"e_sanction_types_order_by",
@@ -9558,6 +9692,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_player_roles_stream:{
 			cursor:"e_player_roles_stream_cursor_input",
 			where:"e_player_roles_bool_exp"
+		},
+		e_ready_settings:{
+			distinct_on:"e_ready_settings_select_column",
+			order_by:"e_ready_settings_order_by",
+			where:"e_ready_settings_bool_exp"
+		},
+		e_ready_settings_aggregate:{
+			distinct_on:"e_ready_settings_select_column",
+			order_by:"e_ready_settings_order_by",
+			where:"e_ready_settings_bool_exp"
+		},
+		e_ready_settings_by_pk:{
+
+		},
+		e_ready_settings_stream:{
+			cursor:"e_ready_settings_stream_cursor_input",
+			where:"e_ready_settings_bool_exp"
 		},
 		e_sanction_types:{
 			distinct_on:"e_sanction_types_select_column",
@@ -13023,6 +13174,8 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"e_match_status"
 	},
 	e_match_types:{
+		config:"match_type_cfgs",
+		config_aggregate:"match_type_cfgs_aggregate",
 		description:"String",
 		maps:"maps",
 		maps_aggregate:"maps_aggregate",
@@ -13125,6 +13278,31 @@ export const ReturnTypes: Record<string,any> = {
 	e_player_roles_mutation_response:{
 		affected_rows:"Int",
 		returning:"e_player_roles"
+	},
+	e_ready_settings:{
+		description:"String",
+		value:"String"
+	},
+	e_ready_settings_aggregate:{
+		aggregate:"e_ready_settings_aggregate_fields",
+		nodes:"e_ready_settings"
+	},
+	e_ready_settings_aggregate_fields:{
+		count:"Int",
+		max:"e_ready_settings_max_fields",
+		min:"e_ready_settings_min_fields"
+	},
+	e_ready_settings_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_ready_settings_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_ready_settings_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_ready_settings"
 	},
 	e_sanction_types:{
 		description:"String",
@@ -14275,6 +14453,7 @@ export const ReturnTypes: Record<string,any> = {
 		number_of_substitutes:"Int",
 		overtime:"Boolean",
 		prefer_dedicated_server:"Boolean",
+		ready_setting:"e_ready_settings_enum",
 		region_veto:"Boolean",
 		regions:"String",
 		tech_timeout_setting:"e_timeout_settings_enum",
@@ -14411,6 +14590,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_type_cfgs:{
 		cfg:"String",
+		e_match_type:"e_match_types",
 		type:"e_match_types_enum"
 	},
 	match_type_cfgs_aggregate:{
@@ -14688,6 +14868,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_objective_types_by_pk:"e_objective_types",
 		delete_e_player_roles:"e_player_roles_mutation_response",
 		delete_e_player_roles_by_pk:"e_player_roles",
+		delete_e_ready_settings:"e_ready_settings_mutation_response",
+		delete_e_ready_settings_by_pk:"e_ready_settings",
 		delete_e_sanction_types:"e_sanction_types_mutation_response",
 		delete_e_sanction_types_by_pk:"e_sanction_types",
 		delete_e_sides:"e_sides_mutation_response",
@@ -14811,6 +14993,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_objective_types_one:"e_objective_types",
 		insert_e_player_roles:"e_player_roles_mutation_response",
 		insert_e_player_roles_one:"e_player_roles",
+		insert_e_ready_settings:"e_ready_settings_mutation_response",
+		insert_e_ready_settings_one:"e_ready_settings",
 		insert_e_sanction_types:"e_sanction_types_mutation_response",
 		insert_e_sanction_types_one:"e_sanction_types",
 		insert_e_sides:"e_sides_mutation_response",
@@ -14969,6 +15153,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_player_roles:"e_player_roles_mutation_response",
 		update_e_player_roles_by_pk:"e_player_roles",
 		update_e_player_roles_many:"e_player_roles_mutation_response",
+		update_e_ready_settings:"e_ready_settings_mutation_response",
+		update_e_ready_settings_by_pk:"e_ready_settings",
+		update_e_ready_settings_many:"e_ready_settings_mutation_response",
 		update_e_sanction_types:"e_sanction_types_mutation_response",
 		update_e_sanction_types_by_pk:"e_sanction_types",
 		update_e_sanction_types_many:"e_sanction_types_mutation_response",
@@ -16405,6 +16592,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_player_roles:"e_player_roles",
 		e_player_roles_aggregate:"e_player_roles_aggregate",
 		e_player_roles_by_pk:"e_player_roles",
+		e_ready_settings:"e_ready_settings",
+		e_ready_settings_aggregate:"e_ready_settings_aggregate",
+		e_ready_settings_by_pk:"e_ready_settings",
 		e_sanction_types:"e_sanction_types",
 		e_sanction_types_aggregate:"e_sanction_types_aggregate",
 		e_sanction_types_by_pk:"e_sanction_types",
@@ -16819,6 +17009,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_player_roles_aggregate:"e_player_roles_aggregate",
 		e_player_roles_by_pk:"e_player_roles",
 		e_player_roles_stream:"e_player_roles",
+		e_ready_settings:"e_ready_settings",
+		e_ready_settings_aggregate:"e_ready_settings_aggregate",
+		e_ready_settings_by_pk:"e_ready_settings",
+		e_ready_settings_stream:"e_ready_settings",
 		e_sanction_types:"e_sanction_types",
 		e_sanction_types_aggregate:"e_sanction_types_aggregate",
 		e_sanction_types_by_pk:"e_sanction_types",

@@ -647,7 +647,18 @@
           "options": {
             "admins": "Admins",
             "coaches": "Coaches",
-            "everyone": "Everyone"
+            "captains": "Coaches / Captains",
+            "everyone": "Anyone"
+          }
+        },
+        "ready_settings": {
+          "label": "Ready Settings",
+          "description": "Controls how the match determines to be ready to start.",
+          "options": {
+            "admins": "Admins",
+            "coaches": "Coaches",
+            "captains": "Captains",
+            "everyone": "All Players Required to be Ready"
           }
         }
       },

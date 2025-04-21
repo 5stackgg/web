@@ -637,6 +637,40 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             </div>
 
             <div class="flex flex-col space-y-3 rounded-lg border p-4">
+              <FormField v-slot="{ componentField }" name="ready_setting">
+                <FormItem>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.ready_settings.label")
+                  }}</FormLabel>
+                  <FormDescription>{{
+                    $t("match.options.advanced.ready_settings.description")
+                  }}</FormDescription>
+                  <FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="readySetting.value"
+                            v-for="readySetting in readySettings"
+                            :key="readySetting.value"
+                          >
+                            {{ readySetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+
+            <div class="flex flex-col space-y-3 rounded-lg border p-4">
               <FormField v-slot="{ componentField }" name="timeout_setting">
                 <FormItem>
                   <FormLabel class="text-lg font-semibold">{{
@@ -713,7 +747,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
-import { e_match_types_enum, e_timeout_settings_enum } from "~/generated/zeus";
+import {
+  e_match_types_enum,
+  e_ready_settings_enum,
+  e_timeout_settings_enum,
+} from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -738,14 +776,9 @@ interface Region {
   is_lan: boolean;
 }
 
-interface BestOfOption {
+interface EnumSetting {
   value: string;
   display: string;
-}
-
-interface TimeoutSetting {
-  display: string;
-  value: string;
 }
 
 export default {
@@ -901,7 +934,7 @@ export default {
     },
   },
   computed: {
-    bestOfOptions(): BestOfOption[] {
+    bestOfOptions(): EnumSetting[] {
       return [1, 3, 5].map((rounds) => {
         return {
           value: rounds.toString(),
@@ -909,7 +942,7 @@ export default {
         };
       });
     },
-    timeoutSettings(): TimeoutSetting[] {
+    timeoutSettings(): EnumSetting[] {
       return [
         {
           display: this.$t("match.options.advanced.timeouts.options.admins"),
@@ -920,8 +953,32 @@ export default {
           value: e_timeout_settings_enum.Coach,
         },
         {
+          display: this.$t("match.options.advanced.timeouts.options.captains"),
+          value: e_timeout_settings_enum.CoachAndCaptains,
+        },
+        {
           display: this.$t("match.options.advanced.timeouts.options.everyone"),
           value: e_timeout_settings_enum.CoachAndPlayers,
+        },
+      ];
+    },
+    readySettings(): EnumSetting[] {
+      return [
+        {
+          display: this.$t("match.options.advanced.ready_settings.options.admins"),
+          value: e_ready_settings_enum.Admins,
+        },
+        {
+          display: this.$t("match.options.advanced.ready_settings.options.captain"),
+          value: e_ready_settings_enum.Captains,
+        },
+        {
+          display: this.$t("match.options.advanced.ready_settings.options.coaches"),
+          value: e_ready_settings_enum.Coach,
+        },
+        {
+          display: this.$t("match.options.advanced.ready_settings.options.everyone"),
+          value: e_ready_settings_enum.Players,
         },
       ];
     },

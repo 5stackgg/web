@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "CS2 wird auf dem Knoten aktualisiert",
-            "ports_updated": "Knotenports aktualisiert"
-        }
+            "ports_updated": "Knotenports aktualisiert",
+            "label_updated": "Node Label aktualisiert"
+        },
+        "edit_label": "Edit Label",
+        "label_placeholder": "Geben Sie das Nodelabel ein",
+        "update_label": "Update Label"
     },
     "chat": {
         "lobby_chat": "Lobby-Chat",

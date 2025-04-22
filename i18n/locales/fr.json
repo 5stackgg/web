@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "CS en cours de mise à jour",
-            "ports_updated": "Ports mis à jour"
-        }
+            "ports_updated": "Ports mis à jour",
+            "label_updated": "Mise à jour de l'étiquette du nœud"
+        },
+        "edit_label": "Modifier l'étiquette",
+        "label_placeholder": "Entrez l'étiquette du nœud",
+        "update_label": "Mettre à jour l'étiquette"
     },
     "chat": {
         "lobby_chat": "Chat du lobby",

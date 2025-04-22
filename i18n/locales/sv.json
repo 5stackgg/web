@@ -940,8 +940,12 @@
         },
         "toast": {
             "cs_updating": "CS2 uppdateras på noden",
-            "ports_updated": "Nodportar uppdaterade"
-        }
+            "ports_updated": "Nodportar uppdaterade",
+            "label_updated": "Node Label uppdaterad"
+        },
+        "edit_label": "Edit Label",
+        "label_placeholder": "Ange nod etikett",
+        "update_label": "Update Label"
     },
     "chat": {
         "lobby_chat": "Lobby-chatt",

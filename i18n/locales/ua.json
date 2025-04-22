@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "Оновлення CS",
-            "ports_updated": "Порти оновлено"
-        }
+            "ports_updated": "Порти оновлено",
+            "label_updated": "Node Label Оновлено"
+        },
+        "edit_label": "Редагування етикетки",
+        "label_placeholder": "Введіть позначку вершини",
+        "update_label": "Оновлення етикетки"
     },
     "chat": {
         "lobby_chat": "Чат лобі",

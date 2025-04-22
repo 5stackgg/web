@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "Обновление CS",
-            "ports_updated": "Порты обновлены"
-        }
+            "ports_updated": "Порты обновлены",
+            "label_updated": "Обновление Node Label"
+        },
+        "edit_label": "Редактировать этикетку",
+        "label_placeholder": "Введите этикетку узла",
+        "update_label": "Обновление Label"
     },
     "chat": {
         "lobby_chat": "Чат лобби",

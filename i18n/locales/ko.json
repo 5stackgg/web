@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "CS 업데이트 중",
-            "ports_updated": "포트 업데이트됨"
-        }
+            "ports_updated": "포트 업데이트됨",
+            "label_updated": "Node Label 업데이트"
+        },
+        "edit_label": "비밀번호",
+        "label_placeholder": "노드 라벨을 입력",
+        "update_label": "업데이트 라벨"
     },
     "chat": {
         "lobby_chat": "로비 채팅",

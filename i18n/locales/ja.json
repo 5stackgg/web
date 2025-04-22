@@ -798,8 +798,12 @@
         },
         "toast": {
             "cs_updating": "CSを更新中",
-            "ports_updated": "ポートを更新しました"
-        }
+            "ports_updated": "ポートを更新しました",
+            "label_updated": "ノードラベルの更新"
+        },
+        "edit_label": "ラベルの編集",
+        "label_placeholder": "ノードラベルを入力",
+        "update_label": "ラベルの更新"
     },
     "chat": {
         "lobby_chat": "ロビーチャット",

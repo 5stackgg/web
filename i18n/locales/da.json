@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "CS opdaterer",
-            "ports_updated": "Porte opdateret"
-        }
+            "ports_updated": "Porte opdateret",
+            "label_updated": "Node Label opdateret"
+        },
+        "edit_label": "Redigér etiket",
+        "label_placeholder": "Indtast nodeetiket",
+        "update_label": "Opdatér etiket"
     },
     "chat": {
         "lobby_chat": "Lobby chat",

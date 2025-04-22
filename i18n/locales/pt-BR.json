@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "Atualizando CS",
-            "ports_updated": "Portas atualizadas"
-        }
+            "ports_updated": "Portas atualizadas",
+            "label_updated": "Rótulo do Nó Atualizado"
+        },
+        "edit_label": "Editar rótulo",
+        "label_placeholder": "Digite o rótulo do nó",
+        "update_label": "Actualizar a Legenda"
     },
     "chat": {
         "lobby_chat": "Chat do lobby",

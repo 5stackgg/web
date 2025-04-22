@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "CS atjaunināšana",
-            "ports_updated": "Porti atjaunināti"
-        }
+            "ports_updated": "Porti atjaunināti",
+            "label_updated": "Mezgla etiķetes atjaunināšana"
+        },
+        "edit_label": "Rediģēt etiķeti",
+        "label_placeholder": "Ievadiet mezgla etiķeti",
+        "update_label": "Atjaunināt"
     },
     "chat": {
         "lobby_chat": "Loba čats",

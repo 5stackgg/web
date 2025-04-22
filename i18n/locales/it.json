@@ -647,8 +647,12 @@
         },
         "toast": {
             "cs_updating": "CS in aggiornamento",
-            "ports_updated": "Porte aggiornate"
-        }
+            "ports_updated": "Porte aggiornate",
+            "label_updated": "Node Label Aggiornato"
+        },
+        "edit_label": "Modifica dell'etichetta",
+        "label_placeholder": "Inserire l'etichetta del nodo",
+        "update_label": "Etichetta di aggiornamento"
     },
     "chat": {
         "lobby_chat": "Chat lobby",

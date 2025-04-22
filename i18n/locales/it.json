@@ -177,7 +177,13 @@
                 "no_nodes": "Nessun nodo"
             },
             "build_id": "ID build",
-            "last_updated": "Ultimo aggiornamento"
+            "last_updated": "Ultimo aggiornamento",
+            "status": {
+                "offline": "Offline",
+                "online": "Solo online",
+                "setup": "Impostazione",
+                "not_accepting": "Non accettare nuove partite"
+            }
         },
         "dedicated_servers": {
             "title": "Server dedicati",
@@ -208,6 +214,11 @@
                     "description": "Vuoi davvero eliminare questo server?",
                     "cancel": "Annulla",
                     "continue": "Continua"
+                },
+                "status": {
+                    "disconnected": "Il server è disconnesso",
+                    "no_rcon": "Server è collegato ma RCON non è disponibile",
+                    "connected": "Server è collegato e RCON è disponibile"
                 }
             }
         },

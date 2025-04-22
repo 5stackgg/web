@@ -177,7 +177,13 @@
                 "no_nodes": "Inga spelservrar"
             },
             "build_id": "Build ID: {id}",
-            "last_updated": "Senast uppdaterad: {date}"
+            "last_updated": "Senast uppdaterad: {date}",
+            "status": {
+                "offline": "Offline",
+                "online": "Online",
+                "setup": "Setup",
+                "not_accepting": "Inte acceptera nya matcher"
+            }
         },
         "dedicated_servers": {
             "title": "Dedikerade servrar",
@@ -208,6 +214,11 @@
                     "description": "Denna åtgärd kan inte ångras. Detta kommer permanent ta bort din server och ta bort associerade data från våra servrar.",
                     "cancel": "Avbryt",
                     "continue": "Fortsätt"
+                },
+                "status": {
+                    "disconnected": "Server är kopplad",
+                    "no_rcon": "Servern är ansluten men RCON är inte tillgänglig",
+                    "connected": "Server är ansluten och RCON är tillgänglig"
                 }
             }
         },

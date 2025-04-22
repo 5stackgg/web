@@ -177,7 +177,13 @@
                 "no_nodes": "노드가 없습니다"
             },
             "build_id": "빌드 ID",
-            "last_updated": "마지막 업데이트"
+            "last_updated": "마지막 업데이트",
+            "status": {
+                "offline": "오프라인",
+                "online": "온라인만",
+                "setup": "설치하기",
+                "not_accepting": "새로운 일치를 받아들이기"
+            }
         },
         "dedicated_servers": {
             "title": "전용 서버",
@@ -208,6 +214,11 @@
                     "description": "이 서버를 삭제하시겠습니까?",
                     "cancel": "취소",
                     "continue": "계속"
+                },
+                "status": {
+                    "disconnected": "서버가 연결됩니다",
+                    "no_rcon": "서버가 연결되지만 RCON은 사용할 수 없습니다",
+                    "connected": "서버가 연결되고 RCON는 유효합니다"
                 }
             }
         },

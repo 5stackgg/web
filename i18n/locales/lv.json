@@ -177,7 +177,13 @@
                 "no_nodes": "Nav mezglu"
             },
             "build_id": "Būvējuma ID",
-            "last_updated": "Pēdējais atjauninājums"
+            "last_updated": "Pēdējais atjauninājums",
+            "status": {
+                "offline": "Bezsaistē",
+                "online": "Tikai tiešsaistē",
+                "setup": "Iestatījumi",
+                "not_accepting": "Nepieņem jaunas atbilstības"
+            }
         },
         "dedicated_servers": {
             "title": "Dedzēts",
@@ -208,6 +214,11 @@
                     "description": "Vai tiešām vēlaties dzēst šo serveri?",
                     "cancel": "Atcelt",
                     "continue": "Turpināt"
+                },
+                "status": {
+                    "disconnected": "Serveris ir atvienots",
+                    "no_rcon": "Serveris ir pieslēgts, bet RCON nav pieejams",
+                    "connected": "Serveris ir pieslēgts un pieejams RPON"
                 }
             }
         },

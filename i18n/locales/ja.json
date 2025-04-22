@@ -177,7 +177,13 @@
                 "no_nodes": "ノードがありません"
             },
             "build_id": "ビルドID",
-            "last_updated": "最終更新"
+            "last_updated": "最終更新",
+            "status": {
+                "offline": "オフライン",
+                "online": "オンラインのみ",
+                "setup": "セットアップ",
+                "not_accepting": "新しいマッチを受け入れない"
+            }
         },
         "dedicated_servers": {
             "title": "専用",
@@ -208,6 +214,11 @@
                     "description": "このサーバーを削除してもよろしいですか？",
                     "cancel": "キャンセル",
                     "continue": "続行"
+                },
+                "status": {
+                    "disconnected": "サーバが切断される",
+                    "no_rcon": "サーバーは接続されますが、RCONは利用できません",
+                    "connected": "サーバーは接続され、RCONは利用できます"
                 }
             }
         },

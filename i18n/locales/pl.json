@@ -177,7 +177,13 @@
                 "no_nodes": "Brak węzłów"
             },
             "build_id": "ID kompilacji",
-            "last_updated": "Ostatnio zaktualizowano"
+            "last_updated": "Ostatnio zaktualizowano",
+            "status": {
+                "offline": "Offline",
+                "online": "Tylko online",
+                "setup": "Ustawienia",
+                "not_accepting": "Nieakceptowanie nowych zapałek"
+            }
         },
         "dedicated_servers": {
             "title": "Dedykowany",
@@ -208,6 +214,11 @@
                     "description": "Czy na pewno chcesz usunąć ten serwer?",
                     "cancel": "Anuluj",
                     "continue": "Kontynuuj"
+                },
+                "status": {
+                    "disconnected": "Serwer jest wyłączony",
+                    "no_rcon": "Serwer jest podłączony, ale RCON nie jest dostępny",
+                    "connected": "Serwer jest podłączony i RCON jest dostępny"
                 }
             }
         },

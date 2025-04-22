@@ -177,7 +177,13 @@
                 "no_nodes": "Keine Knoten vorhanden"
             },
             "build_id": "Build-ID",
-            "last_updated": "Zuletzt aktualisiert"
+            "last_updated": "Zuletzt aktualisiert",
+            "status": {
+                "offline": "Offline",
+                "online": "Nur Online",
+                "setup": "Einrichtung",
+                "not_accepting": "Neue Spiele nicht akzeptieren"
+            }
         },
         "dedicated_servers": {
             "title": "Dedizierte Server",
@@ -208,6 +214,11 @@
                     "description": "Möchten Sie diesen Server wirklich löschen?",
                     "cancel": "Abbrechen",
                     "continue": "Fortfahren"
+                },
+                "status": {
+                    "disconnected": "Server wird abgeschaltet",
+                    "no_rcon": "Server ist angeschlossen, aber RCON ist nicht verfügbar",
+                    "connected": "Server ist angeschlossen und RCON ist verfügbar"
                 }
             }
         },

@@ -171,7 +171,11 @@
                 "no_nodes": "没有节点"
             },
             "build_id": "构建ID",
-            "last_updated": "最后更新"
+            "last_updated": "最后更新",
+            "status": {
+                "offline": "离线",
+                "online": "仅在线"
+            }
         },
         "dedicated_servers": {
             "title": "专用",

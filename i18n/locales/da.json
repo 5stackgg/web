@@ -177,7 +177,13 @@
                 "no_nodes": "Ingen noder"
             },
             "build_id": "Build ID",
-            "last_updated": "Sidst opdateret"
+            "last_updated": "Sidst opdateret",
+            "status": {
+                "offline": "Offline",
+                "online": "Kun online",
+                "setup": "Opsætning",
+                "not_accepting": "Accepterer ikke nye kampe"
+            }
         },
         "dedicated_servers": {
             "title": "Dedikeret",
@@ -208,6 +214,11 @@
                     "description": "Er du sikker på, at du vil slette denne server?",
                     "cancel": "Annuller",
                     "continue": "Fortsæt"
+                },
+                "status": {
+                    "disconnected": "Serveren er afbrudt",
+                    "no_rcon": "Serveren er tilsluttet, men RCON er ikke tilgængelig",
+                    "connected": "Serveren er tilsluttet og RCON er tilgængelig"
                 }
             }
         },

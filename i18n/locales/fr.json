@@ -177,7 +177,13 @@
                 "no_nodes": "Aucun nœud"
             },
             "build_id": "ID de build",
-            "last_updated": "Dernière mise à jour"
+            "last_updated": "Dernière mise à jour",
+            "status": {
+                "online": "En ligne uniquement",
+                "offline": "Hors ligne",
+                "setup": "Configuration",
+                "not_accepting": "Ne pas accepter de nouvelles correspondances"
+            }
         },
         "dedicated_servers": {
             "title": "Dédié",
@@ -208,6 +214,11 @@
                     "description": "Voulez-vous vraiment supprimer ce serveur ?",
                     "cancel": "Annuler",
                     "continue": "Continuer"
+                },
+                "status": {
+                    "disconnected": "Le serveur est déconnecté",
+                    "no_rcon": "Le serveur est connecté mais RCON n'est pas disponible",
+                    "connected": "Serveur connecté et RCON disponible"
                 }
             }
         },

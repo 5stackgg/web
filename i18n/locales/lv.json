@@ -731,7 +731,8 @@
             "delete": "Dzēst",
             "dismiss": "Noraidīt",
             "delete_all_read": "Dzēst visus izlasītos paziņojumus",
-            "no_notifications": "Nav paziņojumu"
+            "no_notifications": "Nav paziņojumu",
+            "dismiss_all": "Noņemt visus paziņojumus"
         },
         "app_nav": {
             "brand": "5stack",

@@ -311,7 +311,8 @@
             "delete": "削除",
             "dismiss": "閉じる",
             "delete_all_read": "既読をすべて削除",
-            "no_notifications": "通知はありません"
+            "no_notifications": "通知はありません",
+            "dismiss_all": "すべての通知を却下"
         },
         "app_nav": {
             "brand": "5stack",

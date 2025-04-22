@@ -731,7 +731,8 @@
             "delete": "Удалить",
             "dismiss": "Отклонить",
             "delete_all_read": "Удалить все прочитанные уведомления",
-            "no_notifications": "Нет уведомлений"
+            "no_notifications": "Нет уведомлений",
+            "dismiss_all": "Отклонить все уведомления"
         },
         "app_nav": {
             "brand": "5stack",

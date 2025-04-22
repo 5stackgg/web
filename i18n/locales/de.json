@@ -731,7 +731,8 @@
             "delete": "Löschen",
             "dismiss": "Schließen",
             "delete_all_read": "Alle gelesenen Benachrichtigungen löschen",
-            "no_notifications": "Keine Benachrichtigungen"
+            "no_notifications": "Keine Benachrichtigungen",
+            "dismiss_all": "Alle Mitteilungen abweisen"
         },
         "app_nav": {
             "brand": "5stack",

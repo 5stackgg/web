@@ -731,7 +731,8 @@
             "delete": "삭제",
             "dismiss": "닫기",
             "delete_all_read": "읽은 알림 모두 삭제",
-            "no_notifications": "알림이 없습니다"
+            "no_notifications": "알림이 없습니다",
+            "dismiss_all": "모든 알림을 삭제"
         },
         "app_nav": {
             "brand": "5stack",

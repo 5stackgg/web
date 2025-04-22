@@ -731,7 +731,8 @@
             "delete": "Usuń",
             "dismiss": "Odrzuć",
             "delete_all_read": "Usuń wszystkie przeczytane powiadomienia",
-            "no_notifications": "Brak powiadomień"
+            "no_notifications": "Brak powiadomień",
+            "dismiss_all": "Rozejść wszystkie powiadomienia"
         },
         "app_nav": {
             "brand": "5stack",

@@ -311,7 +311,8 @@
             "delete": "Ta bort",
             "dismiss": "Avvisa",
             "delete_all_read": "Ta bort alla lästa aviseringar",
-            "no_notifications": "Inga aviseringar just nu."
+            "no_notifications": "Inga aviseringar just nu.",
+            "dismiss_all": "Avfärda alla meddelanden"
         },
         "app_nav": {
             "brand": "5stack",

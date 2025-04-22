@@ -731,7 +731,8 @@
             "delete": "Slet",
             "dismiss": "Afvis",
             "delete_all_read": "Slet alle læste notifikationer",
-            "no_notifications": "Ingen notifikationer"
+            "no_notifications": "Ingen notifikationer",
+            "dismiss_all": "Gå glip af alle meddelelser"
         },
         "app_nav": {
             "brand": "5stack",

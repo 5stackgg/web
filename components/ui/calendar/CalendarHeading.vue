@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 import { cn } from '@/lib/utils'
-import { CalendarHeading, type CalendarHeadingProps, useForwardProps } from 'radix-vue'
+import { CalendarHeading, type CalendarHeadingProps, useForwardProps } from 'reka-ui'
 import { computed, type HTMLAttributes } from 'vue'
 
 const props = defineProps<CalendarHeadingProps & { class?: HTMLAttributes['class'] }>()
+
+defineSlots<{
+  default: (props: { headingValue: string }) => any
+}>()
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props

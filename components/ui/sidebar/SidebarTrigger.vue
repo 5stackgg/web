@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import Button from '@/components/ui/button/Button.vue'
 import { cn } from '@/lib/utils'
-import { PanelLeft } from 'lucide-vue-next'
+import { Button } from '@/components/ui/button'
+import { ViewVerticalIcon } from '@radix-icons/vue'
 import { useSidebar } from './utils'
 
 const props = defineProps<{
@@ -20,9 +20,7 @@ const { toggleSidebar } = useSidebar()
     :class="cn('h-7 w-7', props.class)"
     @click="toggleSidebar"
   >
-    <slot>
-      <PanelLeft />
-    </slot>
+    <ViewVerticalIcon />
     <span class="sr-only">Toggle Sidebar</span>
   </Button>
 </template>

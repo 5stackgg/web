@@ -76,6 +76,12 @@
                 "players": {
                     "force_name_registration": "强制玩家名称注册",
                     "force_name_registration_description": "如果强制玩家注册，玩家需要提交一个将在平台上使用的名称。"
+                },
+                "game_type_configs": {
+                    "title": "",
+                    "description": "",
+                    "type": "",
+                    "base_config": ""
                 }
             }
         },
@@ -174,7 +180,9 @@
             "last_updated": "最后更新",
             "status": {
                 "offline": "离线",
-                "online": "仅在线"
+                "online": "仅在线",
+                "setup": "",
+                "not_accepting": ""
             }
         },
         "dedicated_servers": {
@@ -206,6 +214,11 @@
                     "description": "确定要删除此服务器吗？",
                     "cancel": "取消",
                     "continue": "继续"
+                },
+                "status": {
+                    "disconnected": "",
+                    "no_rcon": "",
+                    "connected": ""
                 }
             }
         },
@@ -231,13 +244,18 @@
                 "success": {
                     "create": "地图创建成功",
                     "update": "地图更新成功",
-                    "delete": "地图删除成功"
+                    "delete": "地图删除成功",
+                    "workshop_refresh": ""
                 },
                 "error": {
                     "create": "创建地图时出错",
-                    "update": "更新地图时出错"
+                    "update": "更新地图时出错",
+                    "invalid_workshop": "",
+                    "workshop_refresh": ""
                 },
-                "label": "标签"
+                "label": "标签",
+                "name_description": "",
+                "refresh_workshop": ""
             },
             "pool": {
                 "title": "{type}地图池",
@@ -377,14 +395,19 @@
                     "options": {
                         "admins": "管理员",
                         "coaches": "教练",
-                        "everyone": "所有人"
+                        "everyone": "所有人",
+                        "captains": ""
                     }
                 },
                 "ready_settings": {
                     "options": {
                         "admins": "管理员",
-                        "coaches": "教练"
-                    }
+                        "coaches": "教练",
+                        "everyone": "",
+                        "captains": "队长"
+                    },
+                    "label": "",
+                    "description": ""
                 }
             },
             "max_rounds": "最大回合数",
@@ -398,7 +421,8 @@
             "substitutes": "替补",
             "timeout_setting": "暂停设置",
             "tech_timeout_setting": "技术暂停设置",
-            "map_pool": "地图池"
+            "map_pool": "地图池",
+            "ready_setting": ""
         },
         "schedule": {
             "pick_date": "选择日期",
@@ -634,8 +658,12 @@
         },
         "toast": {
             "cs_updating": "正在更新CS",
-            "ports_updated": "端口已更新"
-        }
+            "ports_updated": "端口已更新",
+            "label_updated": ""
+        },
+        "edit_label": "",
+        "label_placeholder": "",
+        "update_label": ""
     },
     "chat": {
         "lobby_chat": "大厅聊天",
@@ -703,7 +731,8 @@
             "delete": "删除",
             "dismiss": "忽略",
             "delete_all_read": "删除所有已读通知",
-            "no_notifications": "没有通知"
+            "no_notifications": "没有通知",
+            "dismiss_all": ""
         },
         "app_nav": {
             "brand": "5stack",
@@ -971,8 +1000,29 @@
     "game_type_configs": {
         "form": {
             "revert_confirm": {
-                "cancel": "取消"
-            }
+                "cancel": "取消",
+                "title": "",
+                "confirm": "",
+                "description": "描述"
+            },
+            "cfg": "",
+            "create": "",
+            "update": "",
+            "revert_to_defaults": "",
+            "success": {
+                "revert": "",
+                "create": "地图创建成功",
+                "update": "地图更新成功"
+            },
+            "error": {
+                "create": "",
+                "update": "",
+                "revert": ""
+            },
+            "edit": ""
         }
+    },
+    "validation": {
+        "map_pool_required": ""
     }
 }

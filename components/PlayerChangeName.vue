@@ -1,13 +1,13 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div
-    class="text-blue-500 text-sm hover:underline cursor-pointer"
+  <p
+    class="text-blue-500 text-sm hover:underline cursor-pointer w-fit"
     @click.prevent="showRequestNameChangeDialog = true"
     v-if="canChangeName"
   >
     {{ $t("player.change_name.button") }}
-  </div>
+</p>
   <AlertDialog :open="showRequestNameChangeDialog">
     <AlertDialogTrigger asChild> </AlertDialogTrigger>
     <AlertDialogContent>

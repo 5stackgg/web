@@ -82,6 +82,9 @@
                     "base_config": "Base Config (5stack.base.cfg)",
                     "title": "Game Type Configs",
                     "description": "Manage Spieltyp configs."
+                },
+                "s3": {
+                    "update": "Aktualisieren"
                 }
             }
         },

@@ -82,6 +82,9 @@
                     "description": "Gestione los configs tipo juego.",
                     "type": "Tipo de juego",
                     "base_config": "Base Config (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "Actualizar"
                 }
             }
         },

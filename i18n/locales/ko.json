@@ -82,6 +82,9 @@
                     "description": "게임 유형 설정 관리.",
                     "type": "게임 유형",
                     "base_config": "기본 구성 (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "업데이트"
                 }
             }
         },

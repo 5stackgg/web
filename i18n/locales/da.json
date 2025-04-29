@@ -82,6 +82,9 @@
                     "description": "Administrer spiltype config.",
                     "type": "Spiltype",
                     "base_config": "Base Config (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "Opdater"
                 }
             }
         },

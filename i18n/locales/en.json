@@ -86,15 +86,12 @@
         "s3": {
           "update": "Update",
           "title": "Demo Settings",
-          "description": "Settings for the demo storage and retirival and retention.",
           "min_retention": "Minimum Retention",
           "max_storage": "Maximum Storage",
-          "retention_days": "Retention Days",
           "cloudflare_worker_url": "Cloudflare Worker URL",
           "max_storage_description": "The maximum storage size for the demo files in GB.",
           "cloudflare_worker_url_description": "The URL of the Cloudflare worker that will be used to store and retrieve the demo files.",
-          "min_retention_description": "The minimum retention days for the demo files.",
-          "retention_days_placeholder": "Enter the number of days to retain the demo files."
+          "min_retention_description": "The minimum retention days for the demo files."
         }
       }
     },

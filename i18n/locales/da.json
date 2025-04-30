@@ -82,6 +82,16 @@
                     "description": "Administrer spiltype config.",
                     "type": "Spiltype",
                     "base_config": "Base Config (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "Opdater",
+                    "title": "Demo- indstillinger",
+                    "min_retention": "Minimum tilbageholdelse",
+                    "max_storage": "Maksimal opbevaring",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Den maksimale lagerstørrelse for demo-filer i GB.",
+                    "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
+                    "min_retention_description": "Den mindste opbevaring dage for demo-filer."
                 }
             }
         },
@@ -575,7 +585,8 @@
             "dedicated": "Dedikeret",
             "on_demand": "Efterspørgsel",
             "assigned": "Tildelt"
-        }
+        },
+        "download_demo": "Download Demo"
     },
     "ui": {
         "tooltips": {

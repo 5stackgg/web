@@ -82,6 +82,16 @@
                     "description": "게임 유형 설정 관리.",
                     "type": "게임 유형",
                     "base_config": "기본 구성 (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "업데이트",
+                    "title": "데모 설정",
+                    "min_retention": "최소 보유",
+                    "max_storage": "최대 저장",
+                    "cloudflare_worker_url": "Cloudflare 노동자 URL",
+                    "max_storage_description": "GB의 데모 파일에 대한 최대 저장 크기.",
+                    "cloudflare_worker_url_description": "Cloudflare 작업자의 URL은 데모 파일을 저장하고 검색하는 데 사용됩니다.",
+                    "min_retention_description": "데모 파일에 대한 최소 유지 일."
                 }
             }
         },
@@ -575,7 +585,8 @@
             "dedicated": "전용 서버",
             "on_demand": "온디맨드",
             "assigned": "할당됨"
-        }
+        },
+        "download_demo": "데모 다운로드"
     },
     "ui": {
         "tooltips": {

@@ -82,6 +82,16 @@
                     "description": "Gerenciar configurações do tipo de jogo.",
                     "type": "Tipo de Jogo",
                     "base_config": "Configuração da Base (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "Atualizar",
+                    "title": "Configuração da Demonstração",
+                    "min_retention": "Retenção mínima",
+                    "max_storage": "Armazenamento Máximo",
+                    "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
+                    "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demonstração em GB.",
+                    "cloudflare_worker_url_description": "O URL do trabalhador Cloudflare que será usado para armazenar e recuperar os arquivos de demonstração.",
+                    "min_retention_description": "Os dias mínimos de retenção para os arquivos de demonstração."
                 }
             }
         },
@@ -575,7 +585,8 @@
             "dedicated": "Dedicado",
             "on_demand": "Sob demanda",
             "assigned": "Atribuído"
-        }
+        },
+        "download_demo": "Baixar demonstração"
     },
     "ui": {
         "tooltips": {

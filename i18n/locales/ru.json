@@ -82,6 +82,16 @@
                     "description": "Управляйте конфигурациями типа игры.",
                     "type": "Тип игры",
                     "base_config": "Базовый конфигуратор (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "Обновить",
+                    "min_retention": "Минимальное удержание",
+                    "max_storage": "Максимальное хранение",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Максимальный размер хранилища для демонстрационных файлов в GB.",
+                    "cloudflare_worker_url_description": "URL сотрудника Cloudflare, который будет использоваться для хранения и извлечения демонстрационных файлов.",
+                    "title": "Демо-настройки",
+                    "min_retention_description": "Минимальные дни хранения демо-файлов."
                 }
             }
         },
@@ -575,7 +585,8 @@
             "dedicated": "Выделенный",
             "on_demand": "По требованию",
             "assigned": "Назначен"
-        }
+        },
+        "download_demo": "Скачать Demo"
     },
     "ui": {
         "tooltips": {

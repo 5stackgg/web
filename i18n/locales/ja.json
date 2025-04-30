@@ -82,6 +82,16 @@
                     "title": "ゲームの種類 設定",
                     "description": "ゲーム型コンフィグの管理.",
                     "type": "ゲームの種類"
+                },
+                "s3": {
+                    "update": "更新",
+                    "min_retention": "最小限の保持",
+                    "title": "デモ設定",
+                    "max_storage": "最高の貯蔵",
+                    "cloudflare_worker_url": "Cloudflareワーカー URL",
+                    "max_storage_description": "GB のデモファイルの最大ストレージサイズ.",
+                    "cloudflare_worker_url_description": "デモファイルを保存および取得するために使用されるCloudflareワーカーのURL.",
+                    "min_retention_description": "デモファイルの最小保持日."
                 }
             }
         },
@@ -681,7 +691,8 @@
             "dedicated": "専用",
             "on_demand": "オンデマンド",
             "assigned": "割り当て済み"
-        }
+        },
+        "download_demo": "ダウンロードデモ"
     },
     "team": {
         "table": {

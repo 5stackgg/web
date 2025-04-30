@@ -82,6 +82,9 @@
                     "description": "",
                     "type": "",
                     "base_config": ""
+                },
+                "s3": {
+                    "update": "更新"
                 }
             }
         },

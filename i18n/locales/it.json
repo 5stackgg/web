@@ -82,6 +82,16 @@
                     "description": "Gestisci configurazioni di tipo di gioco.",
                     "type": "Tipo di gioco",
                     "base_config": "Configurazione di base (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "Aggiorna",
+                    "min_retention": "Conservazione minima",
+                    "max_storage": "Massima conservazione",
+                    "cloudflare_worker_url": "URL del Cloudflare Worker",
+                    "max_storage_description": "La dimensione massima di archiviazione per i file demo in GB.",
+                    "cloudflare_worker_url_description": "L'URL del lavoratore Cloudflare che verrà utilizzato per memorizzare e recuperare i file demo.",
+                    "min_retention_description": "I giorni di conservazione minimi per i file demo.",
+                    "title": "Impostazioni demo"
                 }
             }
         },
@@ -575,7 +585,8 @@
             "dedicated": "Server dedicati",
             "on_demand": "Su richiesta",
             "assigned": "Assegnato"
-        }
+        },
+        "download_demo": "Scarica Demo"
     },
     "ui": {
         "tooltips": {

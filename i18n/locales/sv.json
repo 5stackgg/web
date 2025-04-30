@@ -82,6 +82,16 @@
                     "description": "Hantera spel typ configs.",
                     "type": "Speltyp",
                     "base_config": "Base Config (5stack.base.cfg)"
+                },
+                "s3": {
+                    "update": "Uppdatera",
+                    "title": "Demo Inställningar",
+                    "cloudflare_worker_url_description": "URL för Cloudflare-arbetaren som kommer att användas för att lagra och hämta demofilerna.",
+                    "min_retention_description": "Minsta lagringsdagar för demofilerna.",
+                    "min_retention": "Minsta lagring",
+                    "max_storage": "Maximal lagring",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Den maximala lagringsstorleken för demofilerna i GB."
                 }
             }
         },
@@ -838,7 +848,8 @@
         },
         "lobby": {
             "access_updated": "Matchlobbyåtkomst uppdaterad till {access}"
-        }
+        },
+        "download_demo": "Ladda ner Demo"
     },
     "ui": {
         "tooltips": {

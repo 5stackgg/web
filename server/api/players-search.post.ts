@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
       ...(body.per_page ? { per_page: body.per_page } : {}),
     });
 
-  if (results.found === 0 && query.match(/^[0-9]+$/)) {
+  if (process.env.STEAM_API_KEY && results.found === 0 && query.match(/^[0-9]+$/)) {
     console.info("No results found, trying to find by steam id");
     try {
       const steamResponse = await fetch(

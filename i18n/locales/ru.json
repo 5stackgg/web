@@ -100,6 +100,12 @@
                     "number_of_cpus_per_server": "Количество процессоров на сервер",
                     "number_of_cpus_per_server_description": "Количество процессоров для выделения на сервер",
                     "update": "Обновить"
+                },
+                "telemetry": {
+                    "title": "Телеметрия",
+                    "telemetry": "Телеметрия",
+                    "telemetry_description": "Помогите улучшить 5stack путем обмена анонимными данными об использовании.",
+                    "update": "Обновленные настройки Telemetry"
                 }
             }
         },
@@ -310,7 +316,8 @@
             "remove": "Удалить",
             "online": "В сети",
             "offline": "Не в сети",
-            "join_lobby": "Присоединиться к Лобби"
+            "join_lobby": "Присоединиться к Лобби",
+            "view_profile": "Просмотр профиля"
         },
         "leave": "Выйти",
         "position": "Позиция",

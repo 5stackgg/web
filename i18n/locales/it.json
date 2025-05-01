@@ -100,6 +100,12 @@
                     "number_of_cpus_per_server": "Numero di CPU per Server",
                     "number_of_cpus_per_server_description": "Numero di CPU da assegnare per server",
                     "update": "Aggiorna"
+                },
+                "telemetry": {
+                    "title": "Telemetria",
+                    "telemetry": "Telemetria",
+                    "telemetry_description": "Aiuta a migliorare 5stack condividendo i dati di utilizzo anonimi.",
+                    "update": "Impostazioni telemetriche aggiornate"
                 }
             }
         },
@@ -310,7 +316,8 @@
             "invite_to_lobby": "Invita al Lobby",
             "remove": "Rimuovi",
             "join_lobby": "Unisciti al Lobby",
-            "offline": "Offline"
+            "offline": "Offline",
+            "view_profile": "Visualizza il profilo"
         },
         "leave": "Esci",
         "position": "Posizione",

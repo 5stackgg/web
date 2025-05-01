@@ -100,6 +100,12 @@
                     "number_of_cpus_per_server": "Anzahl der CPUs pro Server",
                     "number_of_cpus_per_server_description": "Anzahl der CPUs pro Server zuzuordnen",
                     "update": "Aktualisieren"
+                },
+                "telemetry": {
+                    "title": "Telemetrie",
+                    "telemetry": "Telemetrie",
+                    "telemetry_description": "Helfen Sie 5stack zu verbessern, indem Sie anonyme Nutzungsdaten teilen.",
+                    "update": "Telemetrie-Einstellungen aktualisiert"
                 }
             }
         },
@@ -310,7 +316,8 @@
             "invite_to_lobby": "In Lobby einladen",
             "remove": "Entfernen",
             "join_lobby": "Lobby beitreten",
-            "offline": "Offline"
+            "offline": "Offline",
+            "view_profile": "Profil anzeigen"
         },
         "leave": "Verlassen",
         "position": "Aktuelle Position",

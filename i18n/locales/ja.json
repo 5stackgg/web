@@ -100,6 +100,12 @@
                     "number_of_cpus_per_server": "サーバーごとの CPU の数",
                     "number_of_cpus_per_server_description": "サーバーごとに割り当てる CPU の数",
                     "update": "更新"
+                },
+                "telemetry": {
+                    "title": "テレメトリー",
+                    "telemetry": "テレメトリー",
+                    "telemetry_description": "匿名利用データを共有することで、5スタックの改善を支援します.",
+                    "update": "テレメトリー設定更新"
                 }
             }
         },
@@ -416,7 +422,8 @@
             "invite_to_lobby": "ロビーに招待",
             "remove": "削除",
             "join_lobby": "ロビーに参加",
-            "offline": "オフライン"
+            "offline": "オフライン",
+            "view_profile": "プロフィールを見る"
         },
         "leave": "退出",
         "position": "位置",

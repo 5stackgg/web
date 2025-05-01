@@ -100,6 +100,12 @@
                     "number_of_cpus_per_server": "Liczba CPU na serwer",
                     "number_of_cpus_per_server_description": "Liczba procesorów do przydzielenia na serwer",
                     "update": "Aktualizuj"
+                },
+                "telemetry": {
+                    "title": "Telemetria",
+                    "telemetry": "Telemetria",
+                    "telemetry_description": "Pomoc poprawić 5stosu poprzez udostępnianie anonimowych danych dotyczących użytkowania.",
+                    "update": "Aktualizacja ustawień telemetrii"
                 }
             }
         },
@@ -310,7 +316,8 @@
             "remove": "Usuń",
             "online": "Online",
             "offline": "Offline",
-            "join_lobby": "Dołącz do Lobby"
+            "join_lobby": "Dołącz do Lobby",
+            "view_profile": "Widok profilu"
         },
         "leave": "Wyjdź",
         "position": "Pozycja",

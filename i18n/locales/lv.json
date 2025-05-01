@@ -100,6 +100,12 @@
                     "number_of_cpus_per_server": "Procesoru skaits uz vienu serveri",
                     "number_of_cpus_per_server_description": "CPU skaits, ko piešķirt vienam serverim",
                     "update": "Atjaunināt"
+                },
+                "telemetry": {
+                    "title": "Telemetrija",
+                    "telemetry": "Telemetrija",
+                    "telemetry_description": "Palīdzēt uzlabot 5stack, daloties ar anonīmu lietošanas datiem.",
+                    "update": "Atjaunināti telemetrijas iestatījumi"
                 }
             }
         },
@@ -310,7 +316,8 @@
             "invite_to_lobby": "Uzaicināt uz lobi",
             "remove": "Noņemt",
             "join_lobby": "Pievienoties lobij",
-            "offline": "Bezsaistē"
+            "offline": "Bezsaistē",
+            "view_profile": "Skata profils"
         },
         "leave": "Iziet",
         "position": "Pozīcija",

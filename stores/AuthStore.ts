@@ -74,6 +74,10 @@ export const useAuthStore = defineStore("auth", () => {
 
   const isUser = computed(() => me.value?.role === e_player_roles_enum.user);
 
+  const isVerifiedUser = computed(
+    () => me.value?.role === e_player_roles_enum.verified_user,
+  );
+
   const isAdmin = computed(
     () => me.value?.role === e_player_roles_enum.administrator,
   );
@@ -90,6 +94,7 @@ export const useAuthStore = defineStore("auth", () => {
     me,
     getMe,
     isUser,
+    isVerifiedUser,
     isAdmin,
     hasDiscordLinked,
     isMatchOrganizer,

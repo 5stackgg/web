@@ -149,6 +149,15 @@ export const useApplicationSettingsStore = defineStore(
         return true;
       }
 
+      if (matchCreateRole.value === e_player_roles_enum.verified_user) {
+        return [
+          e_player_roles_enum.verified_user,
+          e_player_roles_enum.match_organizer,
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
+        ].includes(me.role);
+      }
+
       if (matchCreateRole.value === e_player_roles_enum.match_organizer) {
         return [
           e_player_roles_enum.match_organizer,

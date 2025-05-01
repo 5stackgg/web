@@ -233,6 +233,15 @@ export default {
         return true;
       }
 
+      if (allowedRole === e_player_roles_enum.verified_user) {
+        return [
+          e_player_roles_enum.verified_user,
+          e_player_roles_enum.match_organizer,
+          e_player_roles_enum.tournament_organizer,
+          e_player_roles_enum.administrator,
+        ].includes(this.me.role);
+      }
+
       if (allowedRole === e_player_roles_enum.match_organizer) {
         return [
           e_player_roles_enum.match_organizer,

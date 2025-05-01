@@ -92,6 +92,14 @@
                     "cloudflare_worker_url_description": "URL сотрудника Cloudflare, который будет использоваться для хранения и извлечения демонстрационных файлов.",
                     "title": "Демо-настройки",
                     "min_retention_description": "Минимальные дни хранения демо-файлов."
+                },
+                "servers": {
+                    "title": "Настройки сервера",
+                    "enable_cpu_pinning": "Включить CPU Пиннинг",
+                    "enable_cpu_pinning_description": "Включить CPU pinning для лучшей производительности",
+                    "number_of_cpus_per_server": "Количество процессоров на сервер",
+                    "number_of_cpus_per_server_description": "Количество процессоров для выделения на сервер",
+                    "update": "Обновить"
                 }
             }
         },

@@ -92,6 +92,14 @@
                     "max_storage_description": "GB のデモファイルの最大ストレージサイズ.",
                     "cloudflare_worker_url_description": "デモファイルを保存および取得するために使用されるCloudflareワーカーのURL.",
                     "min_retention_description": "デモファイルの最小保持日."
+                },
+                "servers": {
+                    "title": "サーバー設定",
+                    "enable_cpu_pinning": "CPUを有効にする ピニング",
+                    "enable_cpu_pinning_description": "CPU ピンニングを有効にして、パフォーマンスを改善",
+                    "number_of_cpus_per_server": "サーバーごとの CPU の数",
+                    "number_of_cpus_per_server_description": "サーバーごとに割り当てる CPU の数",
+                    "update": "更新"
                 }
             }
         },

@@ -92,6 +92,14 @@
                     "max_storage_description": "La taille maximale de stockage pour les fichiers de démonstration en GB.",
                     "cloudflare_worker_url_description": "L'URL du travailleur Cloudflare qui sera utilisé pour stocker et récupérer les fichiers de démonstration.",
                     "min_retention_description": "Les jours de conservation minimum pour les fichiers de démonstration."
+                },
+                "servers": {
+                    "title": "Paramètres du serveur",
+                    "enable_cpu_pinning": "Activer le processeur Pinnage",
+                    "enable_cpu_pinning_description": "Activer le pinnage CPU pour une meilleure performance",
+                    "number_of_cpus_per_server": "Nombre de processeurs par serveur",
+                    "number_of_cpus_per_server_description": "Nombre de processeurs à attribuer par serveur",
+                    "update": "Mettre à jour"
                 }
             }
         },

@@ -92,6 +92,14 @@
                     "max_storage_description": "Demo failu maksimālais glabāšanas izmērs GB.",
                     "cloudflare_worker_url_description": "Cloudflare darba ņēmēja URL, kas tiks izmantots demo failu glabāšanai un izguvei.",
                     "min_retention_description": "Minimālo saglabāšanas dienu demo failiem."
+                },
+                "servers": {
+                    "title": "Servera iestatījumi",
+                    "enable_cpu_pinning": "Ieslēgt CPU Skalošana",
+                    "enable_cpu_pinning_description": "Ieslēgt CPU tapošanu labākai veiktspējai",
+                    "number_of_cpus_per_server": "Procesoru skaits uz vienu serveri",
+                    "number_of_cpus_per_server_description": "CPU skaits, ko piešķirt vienam serverim",
+                    "update": "Atjaunināt"
                 }
             }
         },

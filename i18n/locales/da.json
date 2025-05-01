@@ -92,6 +92,14 @@
                     "max_storage_description": "Den maksimale lagerstørrelse for demo-filer i GB.",
                     "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
                     "min_retention_description": "Den mindste opbevaring dage for demo-filer."
+                },
+                "servers": {
+                    "title": "Serverindstillinger",
+                    "enable_cpu_pinning": "Aktivér CPU Rinning",
+                    "enable_cpu_pinning_description": "Aktivér CPU-pinning for bedre ydeevne",
+                    "number_of_cpus_per_server": "Antal CPU 'er pr. server",
+                    "number_of_cpus_per_server_description": "Antal CPU 'er der skal tildeles pr. server",
+                    "update": "Opdater"
                 }
             }
         },

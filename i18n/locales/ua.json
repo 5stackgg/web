@@ -92,6 +92,14 @@
                     "cloudflare_worker_url": "Статус на сервери",
                     "max_storage_description": "Максимальний розмір пам'яті для демо-файлів у GB.",
                     "cloudflare_worker_url_description": "URL конструктора Cloudflare, який буде використовуватися для зберігання та отримання демо файлів."
+                },
+                "servers": {
+                    "title": "Налаштування серверів",
+                    "enable_cpu_pinning": "Увімкнути процесор Штани",
+                    "enable_cpu_pinning_description": "Увімкнути пінінг процесора для кращої продуктивності",
+                    "number_of_cpus_per_server": "Кількість процесорів на сервер",
+                    "number_of_cpus_per_server_description": "Кількість ЦП для виділення на сервер",
+                    "update": "Оновити"
                 }
             }
         },

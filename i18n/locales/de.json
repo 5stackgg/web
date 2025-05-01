@@ -92,6 +92,14 @@
                     "max_storage_description": "Die maximale Speichergröße für die Demo-Dateien in GB.",
                     "cloudflare_worker_url_description": "Die URL des Cloudflare Workers, die verwendet werden, um die Demo-Dateien zu speichern und abzurufen.",
                     "min_retention_description": "Die Mindesteinhaltungstage für die Demo-Dateien."
+                },
+                "servers": {
+                    "title": "Servereinstellungen",
+                    "enable_cpu_pinning": "CPU aktivieren Pinien",
+                    "enable_cpu_pinning_description": "CPU Pinning für bessere Leistung aktivieren",
+                    "number_of_cpus_per_server": "Anzahl der CPUs pro Server",
+                    "number_of_cpus_per_server_description": "Anzahl der CPUs pro Server zuzuordnen",
+                    "update": "Aktualisieren"
                 }
             }
         },

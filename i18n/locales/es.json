@@ -92,6 +92,14 @@
                     "cloudflare_worker_url_description": "La URL del trabajador Cloudflare que se utilizará para almacenar y recuperar los archivos demo.",
                     "min_retention_description": "Los días mínimos de retención para los archivos demo.",
                     "title": "Ajustes de Demo"
+                },
+                "servers": {
+                    "title": "Configuración del servidor",
+                    "enable_cpu_pinning": "Activar la CPU Pinning",
+                    "enable_cpu_pinning_description": "Activar pinning CPU para un mejor rendimiento",
+                    "number_of_cpus_per_server": "Número de CPU por servidor",
+                    "number_of_cpus_per_server_description": "Número de CPU para asignar por servidor",
+                    "update": "Actualizar"
                 }
             }
         },

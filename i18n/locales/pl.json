@@ -92,6 +92,14 @@
                     "max_storage_description": "Maksymalny rozmiar pamięci dla plików demo w GB.",
                     "cloudflare_worker_url_description": "URL pracownika Cloudflare, który będzie używany do przechowywania i pobierania plików demo.",
                     "min_retention_description": "Minimalne dni retencji plików demo."
+                },
+                "servers": {
+                    "title": "Ustawienia serwera",
+                    "enable_cpu_pinning": "Włącz procesor Pining",
+                    "enable_cpu_pinning_description": "Włącz mocowanie procesora dla lepszej wydajności",
+                    "number_of_cpus_per_server": "Liczba CPU na serwer",
+                    "number_of_cpus_per_server_description": "Liczba procesorów do przydzielenia na serwer",
+                    "update": "Aktualizuj"
                 }
             }
         },

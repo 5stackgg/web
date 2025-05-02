@@ -67,7 +67,6 @@ export const useApplicationSettingsStore = defineStore(
       const matchmakingEnabled = matchMakingSetting ? matchMakingSetting.value === "true" : true;
 
       if(!matchmakingEnabled) {
-        console.log("Matchmaking is disabled");
         return false;
       }
 

@@ -16,14 +16,9 @@ import { PlusCircle } from "lucide-vue-next";
     <template #description>{{ $t("pages.matches.description") }}</template>
     <template #actions>
       <div class="flex gap-4 items-center">
-        <template v-if="!canCreateMatch">
-          <FiveStackToolTip :size="16" class="text-red-600">{{
-            $t("pages.matches.admin_disabled")
-          }}</FiveStackToolTip>
-        </template>
         <Button
           size="lg"
-          :disabled="!canCreateMatch"
+          v-if="canCreateMatch"
           @click="canCreateMatch && navigateTo('/matches/create')"
         >
           <PlusCircle class="w-4 h-4" />

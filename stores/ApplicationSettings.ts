@@ -55,7 +55,7 @@ export const useApplicationSettingsStore = defineStore(
       return create_tournaments_role?.value || e_player_roles_enum.user;
     });
 
-    const matchMakingAllowed = computed(() => {
+    const matchmakingAllowed = computed(() => {
       if (!settings.value) {
         return false;
       }
@@ -63,7 +63,23 @@ export const useApplicationSettingsStore = defineStore(
       const matchMakingSetting = settings.value.find(
         (setting) => setting.name === "public.matchmaking",
       );
-      return matchMakingSetting ? matchMakingSetting.value === "true" : true;
+
+      const matchmakingEnabled = matchMakingSetting ? matchMakingSetting.value === "true" : true;
+
+      if(!matchmakingEnabled) {
+        console.log("Matchmaking is disabled");
+        return false;
+      }
+
+      const matchmakingMinRole = settings.value.find(
+        (setting) => setting.name === "public.matchmaking_min_role",
+      );
+
+      if(!matchmakingMinRole) {
+        return true;
+      }
+
+      return useAuthStore().isRoleAbove(matchmakingMinRole.value);
     });
 
     const supportsDiscordBot = computed(() => {
@@ -144,47 +160,18 @@ export const useApplicationSettingsStore = defineStore(
 
     const canCreateMatch = computed(() => {
       const me = useAuthStore().me;
-
-      if (matchCreateRole.value === e_player_roles_enum.user) {
-        return true;
+      if(!me) {
+        return false;
       }
 
-      if (matchCreateRole.value === e_player_roles_enum.verified_user) {
-        return [
-          e_player_roles_enum.verified_user,
-          e_player_roles_enum.match_organizer,
-          e_player_roles_enum.tournament_organizer,
-          e_player_roles_enum.administrator,
-        ].includes(me.role);
-      }
-
-      if (matchCreateRole.value === e_player_roles_enum.match_organizer) {
-        return [
-          e_player_roles_enum.match_organizer,
-          e_player_roles_enum.tournament_organizer,
-          e_player_roles_enum.administrator,
-        ].includes(me.role);
-      }
-
-      if (matchCreateRole.value === e_player_roles_enum.tournament_organizer) {
-        return [
-          e_player_roles_enum.tournament_organizer,
-          e_player_roles_enum.administrator,
-        ].includes(me.role);
-      }
-
-      if (matchCreateRole.value === e_player_roles_enum.administrator) {
-        return me.role === e_player_roles_enum.administrator;
-      }
-
-      return false;
+      return useAuthStore().isRoleAbove(matchCreateRole.value);
     });
 
     return {
       settings,
       availableRegions,
       matchCreateRole,
-      matchMakingAllowed,
+      matchmakingAllowed,
       tournamentCreateRole,
       supportsDiscordBot,
       supportsGameServerNodes,

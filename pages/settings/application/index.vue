@@ -26,6 +26,35 @@ definePageMeta({
       />
     </div>
 
+    <FormField v-slot="{ componentField }" name="public.matchmaking_min_role">
+      <FormItem>
+        <FormLabel class="text-lg font-semibold">{{
+          $t("pages.settings.application.matchmaking_min_role")
+        }}</FormLabel>
+        <FormControl>
+          <Select v-bind="componentField">
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem
+                  :value="role.value"
+                  v-for="role in roles"
+                  :key="role.value"
+                >
+                  <span class="capitalize">{{ role.display }}</span>
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="public.create_matches_role">
       <FormItem>
         <FormLabel class="text-lg font-semibold">{{
@@ -41,11 +70,11 @@ definePageMeta({
             <SelectContent>
               <SelectGroup>
                 <SelectItem
-                  :value="role"
-                  v-for="role in e_player_roles_enum"
-                  :key="role"
+                  :value="role.value"
+                  v-for="role in roles"
+                  :key="role.value"
                 >
-                  <span class="capitalize">{{ role.replace("_", " ") }}</span>
+                  <span >{{ role.display }}</span>
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
@@ -54,6 +83,8 @@ definePageMeta({
         <FormMessage />
       </FormItem>
     </FormField>
+
+   
 
     <FormField
       v-slot="{ componentField }"
@@ -73,11 +104,11 @@ definePageMeta({
             <SelectContent>
               <SelectGroup>
                 <SelectItem
-                  :value="role"
-                  v-for="role in e_player_roles_enum"
-                  :key="role"
+                  :value="role.value"
+                  v-for="role in roles"
+                  :key="role.value"
                 >
-                  <span class="capitalize">{{ role.replace("_", " ") }}</span>
+                  <span class="capitalize">{{ role.display }}</span>
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
@@ -110,6 +141,13 @@ import { toast } from "@/components/ui/toast";
 export default {
   data() {
     return {
+      roles: [
+        { value: e_player_roles_enum.user, display: "User" },
+        { value: e_player_roles_enum.verified_user, display: "Verified User" },
+        { value: e_player_roles_enum.match_organizer, display: "Match Organizer" },
+        { value: e_player_roles_enum.tournament_organizer, display: "Tournament Organizer" },
+        { value: e_player_roles_enum.administrator, display: "Administrator" },  
+      ],
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -118,6 +156,7 @@ export default {
               create_tournaments_role: z
                 .string()
                 .default(e_player_roles_enum.user),
+              matchmaking_min_role: z.string().default(e_player_roles_enum.user),
             }),
           }),
         ),
@@ -169,6 +208,10 @@ export default {
                 {
                   name: "public.create_tournaments_role",
                   value: this.form.values.public.create_tournaments_role,
+                },
+                {
+                  name: "public.matchmaking_min_role",
+                  value: this.form.values.public.matchmaking_min_role,
                 },
               ],
               on_conflict: {

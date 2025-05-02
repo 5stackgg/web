@@ -17,7 +17,6 @@
     "coming_soon": "Coming Soon!",
     "tournaments": {
       "title": "Upcoming Tournaments",
-      "admin_disabled": "Admin has disabled creation of tournaments",
       "create": "Create Tournament",
       "tabs": {
         "tournaments": "Tournaments",
@@ -84,6 +83,7 @@
         },
         "create_matches_role": "Minimum Role Allowed to Create Matches",
         "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
+        "matchmaking_min_role": "Minimum Role Allowed to Join Matchmaking",
         "update": "Update",
         "players": {
           "force_name_registration": "Force Player Name Registration",
@@ -146,7 +146,6 @@
     "play": {
       "title": "Upcoming Matches",
       "description": "Your upcoming matches that either you manage or are in the lineup.",
-      "admin_disabled": "Admin has disabled creation of matches",
       "create_match": "Create Match",
       "open_matches": {
         "title": "Open Matches",
@@ -159,7 +158,6 @@
     "matches": {
       "title": "My Recent Matches",
       "description": "Your most recent completed matches",
-      "admin_disabled": "Admin has disabled creation of matches",
       "create": "Create Match",
       "last_ten_wins": "Last 10 Wins",
       "last_ten_losses": "Last 10 Losses",

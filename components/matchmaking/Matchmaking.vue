@@ -2,11 +2,10 @@
 import { AlertTriangle } from "lucide-vue-next";
 import MatchmakingRegion from "./MatchmakingRegion.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
-  <div v-if="matchMakingAllowed">
+  <div v-if="matchmakingAllowed">
     <template v-if="me.is_banned">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
@@ -107,8 +106,8 @@ export default {
     confirmationDetails() {
       return useMatchmakingStore().joinedMatchmakingQueues.confirmation;
     },
-    matchMakingAllowed() {
-      return useApplicationSettingsStore().matchMakingAllowed;
+    matchmakingAllowed() {
+      return useApplicationSettingsStore().matchmakingAllowed;
     },
     me() {
       return useAuthStore().me;

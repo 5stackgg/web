@@ -20,14 +20,9 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
 
         <template #actions>
           <div class="flex gap-4 items-center">
-            <template v-if="!canCreateMatch">
-              <FiveStackToolTip :size="16" class="text-red-600">{{
-                $t("pages.play.admin_disabled")
-              }}</FiveStackToolTip>
-            </template>
             <Button
               size="lg"
-              :disabled="!canCreateMatch"
+              v-if="canCreateMatch"
               @click="canCreateMatch && navigateTo('/matches/create')"
             >
               <PlusCircle class="w-4 h-4" />
@@ -59,7 +54,7 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
     <div class="lg:w-1/4 flex flex-col gap-4">
       <Card
         class="bg-gradient-to-br from-blue-900 to-purple-900 hidden lg:block"
-        v-if="regions.length > 0 && matchMakingAllowed"
+        v-if="regions.length > 0 && matchmakingAllowed"
       >
         <CardHeader>
           <CardTitle class="text-xl font-bold text-center">
@@ -96,8 +91,8 @@ export default {
     regions() {
       return useApplicationSettingsStore().availableRegions;
     },
-    matchMakingAllowed() {
-      return useApplicationSettingsStore().matchMakingAllowed;
+    matchmakingAllowed() {
+      return useApplicationSettingsStore().matchmakingAllowed;
     },
     canCreateMatch() {
       return useApplicationSettingsStore().canCreateMatch;

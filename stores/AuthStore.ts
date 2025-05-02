@@ -19,6 +19,26 @@ export const useAuthStore = defineStore("auth", () => {
   useNotificationStore();
   useApplicationSettingsStore();
 
+  const roleOrder = [
+    e_player_roles_enum.user,
+    e_player_roles_enum.verified_user,
+    e_player_roles_enum.match_organizer,
+    e_player_roles_enum.tournament_organizer,
+    e_player_roles_enum.administrator,
+  ];
+
+  function isRoleAbove(role: e_player_roles_enum) {
+    if(!me.value) {
+      return false;
+    }
+
+    console.info(`checking if ${me.value.role} is above ${role}`);
+    const meRoleIndex = roleOrder.indexOf(me.value.role);
+    const roleIndex = roleOrder.indexOf(role);
+
+    return meRoleIndex >= roleIndex;
+  }
+
   async function getMe(): Promise<boolean> {
     function subscribeToMe(steam_id: string, callback: () => void) {
       const subscription = getGraphqlClient().subscribe({
@@ -99,6 +119,7 @@ export const useAuthStore = defineStore("auth", () => {
     hasDiscordLinked,
     isMatchOrganizer,
     isTournamentOrganizer,
+    isRoleAbove,
   };
 });
 

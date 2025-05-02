@@ -105,7 +105,8 @@
                     "telemetry": "Telemetrija",
                     "telemetry_description": "Palīdzēt uzlabot 5stack, daloties ar anonīmu lietošanas datiem.",
                     "update": "Atjaunināti telemetrijas iestatījumi"
-                }
+                },
+                "matchmaking_min_role": "Minimālā loma, kas ļauj pievienoties kontaktbiržai"
             }
         },
         "regions": {
@@ -567,11 +568,8 @@
             "switch_teams": "Mainīt komandas",
             "remove_from_lineup": "Noņemt no sastāva",
             "leave_lineup": "Pamest sastāvu",
-            "kills": "Nogalinājumi",
             "kills_full": "Nogalinājumi",
-            "assists": "Palīdzība",
             "assists_full": "Palīdzība",
-            "deaths": "Nāves",
             "deaths_full": "Nāves",
             "kd": "K/D",
             "hs": "Galvas šāviens",

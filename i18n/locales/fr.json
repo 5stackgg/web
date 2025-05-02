@@ -105,7 +105,8 @@
                     "telemetry": "Télémétrie",
                     "telemetry_description": "Aidez à améliorer 5stack en partageant des données d'utilisation anonymes.",
                     "update": "Paramètres de télémétrie mis à jour"
-                }
+                },
+                "matchmaking_min_role": "Rôle minimum autorisé à s'associer à la prise de correspondance"
             }
         },
         "regions": {
@@ -567,11 +568,8 @@
             "switch_teams": "Changer d'équipe",
             "remove_from_lineup": "Retirer de la composition",
             "leave_lineup": "Quitter la composition",
-            "kills": "K",
             "kills_full": "Kills",
-            "assists": "A",
             "assists_full": "Assists",
-            "deaths": "M",
             "deaths_full": "Morts",
             "kd": "K/D",
             "hs": "Headshots",

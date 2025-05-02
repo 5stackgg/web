@@ -105,7 +105,8 @@
                     "telemetry": "Телеметрия",
                     "telemetry_description": "Помогите улучшить 5stack путем обмена анонимными данными об использовании.",
                     "update": "Обновленные настройки Telemetry"
-                }
+                },
+                "matchmaking_min_role": "Минимальная роль, разрешенная для участия в игре"
             }
         },
         "regions": {
@@ -567,11 +568,8 @@
             "switch_teams": "Поменять команды",
             "remove_from_lineup": "Удалить из состава",
             "leave_lineup": "Покинуть состав",
-            "kills": "Убийства",
             "kills_full": "Убийства",
-            "assists": "Помощь",
             "assists_full": "Помощь",
-            "deaths": "Смерти",
             "deaths_full": "Смерти",
             "kd": "K/D",
             "hs": "Хедшот",

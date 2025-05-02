@@ -105,7 +105,8 @@
                     "telemetry": "Telemetrie",
                     "telemetry_description": "Helfen Sie 5stack zu verbessern, indem Sie anonyme Nutzungsdaten teilen.",
                     "update": "Telemetrie-Einstellungen aktualisiert"
-                }
+                },
+                "matchmaking_min_role": "Mindeste Rolle erlaubt Matchmaking"
             }
         },
         "regions": {
@@ -567,11 +568,8 @@
             "switch_teams": "Teams wechseln",
             "remove_from_lineup": "Aus Aufstellung entfernen",
             "leave_lineup": "Aufstellung verlassen",
-            "kills": "K",
             "kills_full": "Kills",
-            "assists": "A",
             "assists_full": "Assists",
-            "deaths": "T",
             "deaths_full": "Tode",
             "kd": "K/D",
             "hs": "Kopfschüsse",

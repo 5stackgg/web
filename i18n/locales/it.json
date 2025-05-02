@@ -105,7 +105,8 @@
                     "telemetry": "Telemetria",
                     "telemetry_description": "Aiuta a migliorare 5stack condividendo i dati di utilizzo anonimi.",
                     "update": "Impostazioni telemetriche aggiornate"
-                }
+                },
+                "matchmaking_min_role": "Ruolo minimo consentito di aderire Matchmaking"
             }
         },
         "regions": {
@@ -567,11 +568,8 @@
             "switch_teams": "Cambia squadre",
             "remove_from_lineup": "Rimuovi dalla formazione",
             "leave_lineup": "Lascia formazione",
-            "kills": "K",
             "kills_full": "Kill",
-            "assists": "A",
             "assists_full": "Assist",
-            "deaths": "M",
             "deaths_full": "Morti",
             "kd": "K/D",
             "hs": "Headshot",

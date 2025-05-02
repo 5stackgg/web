@@ -105,7 +105,8 @@
                     "telemetry": "Telemetri",
                     "telemetry_description": "Hjälp till att förbättra 5stack genom att dela anonym användningsdata.",
                     "update": "Telemetriinställningar uppdaterade"
-                }
+                },
+                "matchmaking_min_role": "Minsta roll tillåten att gå med Matchmaking"
             }
         },
         "regions": {
@@ -826,11 +827,8 @@
             "switch_teams": "Byt lag",
             "remove_from_lineup": "Ta bort från uppställning",
             "leave_lineup": "Lämna uppställning",
-            "kills": "D",
             "kills_full": "Dödade",
-            "assists": "A",
             "assists_full": "Assists",
-            "deaths": "D",
             "deaths_full": "Dödsfall",
             "kd": "K/D",
             "hs": "HS%",

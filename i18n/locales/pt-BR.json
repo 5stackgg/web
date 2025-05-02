@@ -105,7 +105,8 @@
                     "telemetry": "Telemetria",
                     "telemetry_description": "Ajude a melhorar o 5stack compartilhando dados de uso anônimos.",
                     "update": "Configurações de telemetria atualizadas"
-                }
+                },
+                "matchmaking_min_role": "Papel Mínimo Permitido Entrar na Matchmaking"
             }
         },
         "regions": {
@@ -567,11 +568,8 @@
             "switch_teams": "Trocar equipes",
             "remove_from_lineup": "Remover da escalação",
             "leave_lineup": "Sair da escalação",
-            "kills": "Abates",
             "kills_full": "Abates",
-            "assists": "Assistências",
             "assists_full": "Assistências",
-            "deaths": "Mortes",
             "deaths_full": "Mortes",
             "kd": "K/D",
             "hs": "Tiro na cabeça",

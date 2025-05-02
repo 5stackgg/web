@@ -105,7 +105,8 @@
                     "telemetry": "Telemetria",
                     "telemetry_description": "Pomoc poprawić 5stosu poprzez udostępnianie anonimowych danych dotyczących użytkowania.",
                     "update": "Aktualizacja ustawień telemetrii"
-                }
+                },
+                "matchmaking_min_role": "Minimalna rola umożliwiająca dołączenie do Matchmaking"
             }
         },
         "regions": {
@@ -567,11 +568,8 @@
             "switch_teams": "Zamień drużyny",
             "remove_from_lineup": "Usuń ze składu",
             "leave_lineup": "Opuść skład",
-            "kills": "Zabójstwa",
             "kills_full": "Zabójstwa",
-            "assists": "Asysty",
             "assists_full": "Asysty",
-            "deaths": "Śmierci",
             "deaths_full": "Śmierci",
             "kd": "K/D",
             "hs": "Headshot",

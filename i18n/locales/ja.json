@@ -105,7 +105,8 @@
                     "telemetry": "テレメトリー",
                     "telemetry_description": "匿名利用データを共有することで、5スタックの改善を支援します.",
                     "update": "テレメトリー設定更新"
-                }
+                },
+                "matchmaking_min_role": "マッチメイキングに参加できる最小限のロール"
             }
         },
         "regions": {
@@ -673,11 +674,8 @@
             "switch_teams": "チームを切り替え",
             "remove_from_lineup": "ラインナップから削除",
             "leave_lineup": "ラインナップを退出",
-            "kills": "K",
             "kills_full": "キル数",
-            "assists": "A",
             "assists_full": "アシスト数",
-            "deaths": "D",
             "deaths_full": "デス数",
             "kd": "K/D",
             "hs": "ヘッドショット",

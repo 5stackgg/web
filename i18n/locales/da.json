@@ -105,7 +105,8 @@
                     "telemetry": "Telemetri",
                     "telemetry_description": "Hjælp med at forbedre 5stack ved at dele anonyme brugsdata.",
                     "update": "Indstillinger for telemetri"
-                }
+                },
+                "matchmaking_min_role": "Minimum rolle tilladt at deltage i matchmaking"
             }
         },
         "regions": {

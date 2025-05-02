@@ -17,7 +17,6 @@
         "coming_soon": "곧 출시 예정!",
         "tournaments": {
             "title": "예정된 토너먼트",
-            "admin_disabled": "관리자가 토너먼트 생성을 비활성화했습니다",
             "create": "토너먼트 생성",
             "tabs": {
                 "tournaments": "토너먼트",
@@ -146,7 +145,6 @@
         "play": {
             "title": "플레이",
             "description": "매치 시작",
-            "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
             "create_match": "생성",
             "open_matches": {
                 "title": "오픈 매치",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "매치",
             "description": "매치 관리",
-            "admin_disabled": "관리자가 매치 생성을 비활성화했습니다",
             "create": "생성",
             "last_ten_wins": "최근 10경기 승리",
             "last_ten_losses": "최근 10경기 패배",

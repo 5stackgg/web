@@ -17,7 +17,6 @@
         "coming_soon": "近日公開！",
         "tournaments": {
             "title": "予定されているトーナメント",
-            "admin_disabled": "管理者がトーナメントの作成を無効にしました",
             "create": "トーナメントを作成",
             "tabs": {
                 "tournaments": "トーナメント",
@@ -146,7 +145,6 @@
         "play": {
             "title": "プレイ",
             "description": "マッチを開始",
-            "admin_disabled": "管理者がマッチ作成を無効にしました",
             "create_match": "作成",
             "open_matches": {
                 "title": "オープンマッチ",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "マッチ",
             "description": "マッチの管理",
-            "admin_disabled": "管理者がマッチ作成を無効にしました",
             "create": "作成",
             "last_ten_wins": "直近10試合の勝利",
             "last_ten_losses": "直近10試合の敗北",

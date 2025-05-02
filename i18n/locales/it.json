@@ -17,7 +17,6 @@
         "coming_soon": "Presto disponibile!",
         "tournaments": {
             "title": "Tornei in arrivo",
-            "admin_disabled": "La creazione di tornei è stata disabilitata dall'amministratore",
             "create": "Crea torneo",
             "tabs": {
                 "tournaments": "Tornei",
@@ -146,7 +145,6 @@
         "play": {
             "title": "Gioca",
             "description": "Inizia una partita",
-            "admin_disabled": "La creazione di partite è stata disabilitata dall'amministratore",
             "create_match": "Crea partita",
             "open_matches": {
                 "title": "Partite aperte",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "Partite",
             "description": "Gestione partite",
-            "admin_disabled": "La creazione di partite è stata disabilitata dall'amministratore",
             "create": "Crea partita",
             "last_ten_wins": "Ultime 10 vittorie",
             "last_ten_losses": "Ultime 10 sconfitte",

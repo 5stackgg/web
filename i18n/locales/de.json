@@ -17,7 +17,6 @@
         "coming_soon": "Demnächst verfügbar!",
         "tournaments": {
             "title": "Anstehende Turniere",
-            "admin_disabled": "Turniererstellung wurde vom Administrator deaktiviert",
             "create": "Turnier erstellen",
             "tabs": {
                 "tournaments": "Turniere",
@@ -146,7 +145,6 @@
         "play": {
             "title": "Spielen",
             "description": "Spiel starten",
-            "admin_disabled": "Spielerstellung wurde vom Administrator deaktiviert",
             "create_match": "Erstellen",
             "open_matches": {
                 "title": "Offene Spiele",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "Spiele",
             "description": "Spielverwaltung",
-            "admin_disabled": "Spielerstellung wurde vom Administrator deaktiviert",
             "create": "Erstellen",
             "last_ten_wins": "Letzte 10 Spiele gewonnen",
             "last_ten_losses": "Letzte 10 Spiele verloren",

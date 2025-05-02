@@ -17,7 +17,6 @@
         "coming_soon": "即将推出！",
         "tournaments": {
             "title": "即将举行的比赛",
-            "admin_disabled": "管理员已禁用比赛创建",
             "create": "创建比赛",
             "tabs": {
                 "tournaments": "锦标赛",
@@ -128,7 +127,6 @@
         "play": {
             "title": "游戏",
             "description": "开始一场比赛",
-            "admin_disabled": "管理员已禁用比赛创建",
             "create_match": "创建",
             "open_matches": {
                 "title": "开放比赛",
@@ -141,7 +139,6 @@
         "matches": {
             "title": "比赛",
             "description": "比赛管理",
-            "admin_disabled": "管理员已禁用比赛创建",
             "create": "创建",
             "last_ten_wins": "最近10场胜利",
             "last_ten_losses": "最近10场失败",

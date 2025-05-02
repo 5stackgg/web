@@ -17,7 +17,6 @@
         "coming_soon": "Drīz!",
         "tournaments": {
             "title": "Gaidāmie turnīri",
-            "admin_disabled": "Turnīru izveide atspējota administratora",
             "create": "Izveidot turnīru",
             "tabs": {
                 "tournaments": "Turnīri",
@@ -146,7 +145,6 @@
         "play": {
             "title": "Spēlēt",
             "description": "Sākt spēli",
-            "admin_disabled": "Spēļu izveide atspējota administratora",
             "create_match": "Izveidot",
             "open_matches": {
                 "title": "Atvērtās spēles",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "Spēles",
             "description": "Spēļu pārvaldība",
-            "admin_disabled": "Spēļu izveide atspējota administratora",
             "create": "Izveidot",
             "last_ten_wins": "Pēdējās 10 uzvaras",
             "last_ten_losses": "Pēdējās 10 zaļšanas",

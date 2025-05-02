@@ -17,7 +17,6 @@
         "coming_soon": "Скоро!",
         "tournaments": {
             "title": "Майбутні турніри",
-            "admin_disabled": "Адміністратор відключив створення турнірів",
             "create": "Створити турнір",
             "tabs": {
                 "tournaments": "Турніри",
@@ -146,7 +145,6 @@
         "play": {
             "title": "Гра",
             "description": "Почати матч",
-            "admin_disabled": "Адміністратор відключив створення матчів",
             "create_match": "Створити",
             "open_matches": {
                 "title": "Відкриті матчі",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "Матчі",
             "description": "Керування матчами",
-            "admin_disabled": "Адміністратор відключив створення матчів",
             "create": "Створити",
             "last_ten_wins": "Останні 10 перемог",
             "last_ten_losses": "Останні 10 поразок",

@@ -17,7 +17,6 @@
         "coming_soon": "Kommer snart!",
         "tournaments": {
             "title": "Kommande turneringar",
-            "admin_disabled": "Administratören har inaktiverat skapande av turneringar",
             "create": "Skapa turnering",
             "tabs": {
                 "tournaments": "Turneringar",
@@ -146,7 +145,6 @@
         "play": {
             "title": "Kommande matcher",
             "description": "Dina kommande matcher som du antingen hanterar eller är med i uppställningen.",
-            "admin_disabled": "Administratören har inaktiverat skapande av matcher",
             "create_match": "Skapa match",
             "open_matches": {
                 "title": "Öppna matcher",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "Mina senaste matcher",
             "description": "Dina senaste avslutade matcher",
-            "admin_disabled": "Administratören har inaktiverat skapande av matcher",
             "create": "Skapa match",
             "last_ten_wins": "Sista 10 vinster",
             "last_ten_losses": "Sista 10 förluster",

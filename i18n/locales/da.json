@@ -17,7 +17,6 @@
         "coming_soon": "Kommer snart!",
         "tournaments": {
             "title": "Kommende turneringer",
-            "admin_disabled": "Oprettelse af turneringer er blevet deaktiveret af administratoren",
             "create": "Opret turnering",
             "tabs": {
                 "tournaments": "Turneringer",
@@ -146,7 +145,6 @@
         "play": {
             "title": "Spil",
             "description": "Start en kamp",
-            "admin_disabled": "Oprettelse af kampe er blevet deaktiveret af administratoren",
             "create_match": "Opret",
             "open_matches": {
                 "title": "Åbne kampe",
@@ -159,7 +157,6 @@
         "matches": {
             "title": "Kampe",
             "description": "Kampadministration",
-            "admin_disabled": "Oprettelse af kampe er blevet deaktiveret af administratoren",
             "create": "Opret",
             "last_ten_wins": "Sidste 10 sejre",
             "last_ten_losses": "Sidste 10 nederlag",

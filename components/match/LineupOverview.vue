@@ -44,20 +44,20 @@ import { UserPlusIcon } from "lucide-vue-next";
         </TableHead>
         <template v-if="showStats">
           <TableHead class="w-[4ch] text-center">
-            {{ $t("match.overview.kills")
-            }}<span class="hidden xl:inline">{{
+            <span class="xl:hidden">K</span>
+            <span class="hidden xl:inline">{{
               $t("match.overview.kills_full")
             }}</span>
           </TableHead>
           <TableHead class="hidden md:table-cell w-[4ch] text-center">
-            {{ $t("match.overview.assists")
-            }}<span class="hidden xl:inline">{{
+            <span class="xl:hidden">A</span>
+            <span class="hidden xl:inline">{{
               $t("match.overview.assists_full")
             }}</span>
           </TableHead>
           <TableHead class="w-[4ch] text-center">
-            {{ $t("match.overview.deaths")
-            }}<span class="hidden xl:inline">{{
+            <span class="xl:hidden">D</span>
+            <span class="hidden xl:inline">{{
               $t("match.overview.deaths_full")
             }}</span>
           </TableHead>

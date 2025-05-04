@@ -47,6 +47,12 @@
         "no_country_found": "No country found.",
         "update": "Update Profile"
       },
+      "language": {
+        "title": "Language",
+        "description": "Choose your preferred language for the application interface.",
+        "select": "Select Language",
+        "help": "The selected language will be applied to all text in the application."
+      },
       "appearance": {
         "title": "Appearance",
         "description": "Customize the appearance of the app. Automatically switch between day and night themes.",
@@ -315,6 +321,9 @@
           "confirm": "Unlink"
         },
         "unlinked": "Discord account unlinked successfully"
+      },
+      "language": {
+        "title": "Language"
       }
     },
     "application_settings": {
@@ -341,7 +350,7 @@
       "no_notifications": "No notifications at the moment."
     },
     "app_nav": {
-      "brand": "5stack",
+      "brand": "CS2",
       "navigation": {
         "play": "Play",
         "matches": "Matches",

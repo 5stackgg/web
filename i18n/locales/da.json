@@ -47,6 +47,12 @@
                 "no_country_found": "Ingen lande fundet",
                 "update": "Opdater profil"
             },
+            "language": {
+                "title": "",
+                "description": "",
+                "select": "",
+                "help": ""
+            },
             "appearance": {
                 "title": "Udseende",
                 "description": "Tilpas applikationens udseende",
@@ -730,6 +736,9 @@
                     "confirm": "Fravælg"
                 },
                 "unlinked": "Discord er blevet fravalgt"
+            },
+            "language": {
+                "title": ""
             }
         },
         "application_settings": {
@@ -756,7 +765,7 @@
             "dismiss_all": "Gå glip af alle meddelelser"
         },
         "app_nav": {
-            "brand": "5stack",
+            "brand": "CS2",
             "navigation": {
                 "play": "Spil",
                 "matches": "Kampe",

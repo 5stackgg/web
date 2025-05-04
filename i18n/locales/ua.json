@@ -47,6 +47,12 @@
                 "no_country_found": "Країну не знайдено",
                 "update": "Оновити профіль"
             },
+            "language": {
+                "title": "",
+                "description": "",
+                "select": "",
+                "help": ""
+            },
             "appearance": {
                 "title": "Зовнішній вигляд",
                 "description": "Налаштування зовнішнього вигляду додатку",
@@ -730,6 +736,9 @@
                     "confirm": "Відв'язати"
                 },
                 "unlinked": "Discord відв'язано"
+            },
+            "language": {
+                "title": ""
             }
         },
         "application_settings": {
@@ -756,7 +765,7 @@
             "dismiss_all": "Видача всіх повідомлень"
         },
         "app_nav": {
-            "brand": "5stack",
+            "brand": "CS2",
             "navigation": {
                 "play": "Грати",
                 "matches": "Матчі",

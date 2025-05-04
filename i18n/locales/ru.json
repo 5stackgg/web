@@ -47,6 +47,12 @@
                 "no_country_found": "Страны не найдены",
                 "update": "Обновить профиль"
             },
+            "language": {
+                "title": "",
+                "description": "",
+                "select": "",
+                "help": ""
+            },
             "appearance": {
                 "title": "Внешний вид",
                 "description": "Настройка внешнего вида приложения",
@@ -730,6 +736,9 @@
                     "confirm": "Отвязать"
                 },
                 "unlinked": "Discord отвязан"
+            },
+            "language": {
+                "title": ""
             }
         },
         "application_settings": {
@@ -756,7 +765,7 @@
             "dismiss_all": "Отклонить все уведомления"
         },
         "app_nav": {
-            "brand": "5stack",
+            "brand": "CS2",
             "navigation": {
                 "play": "Играть",
                 "matches": "Матчи",

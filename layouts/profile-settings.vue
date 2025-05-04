@@ -32,13 +32,21 @@ import Default from "~/layouts/default.vue";
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <aside>
         <nav class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-          <nuxt-link
-            :to="item.to"
-            v-for="item in sidebarNavItems"
-            :key="item.title"
-          >
+          <nuxt-link to="/settings">
             <Button variant="ghost" class="w-full text-left justify-start">
-              {{ item.title }}
+              {{ $t("pages.settings.profile.title") }}
+            </Button>
+          </nuxt-link>
+
+          <nuxt-link to="/settings/appearance">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              {{ $t("pages.settings.appearance.title") }}
+            </Button>
+          </nuxt-link>
+
+          <nuxt-link to="/settings/language">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              {{ $t("pages.settings.language.title") }}
             </Button>
           </nuxt-link>
 
@@ -100,18 +108,6 @@ export default {
     return {
       showUnlinkDiscordDialog: false,
       showRequestNameChangeDialog: false,
-      sidebarNavItems: [
-        {
-          title: "Profile",
-          key: "profile",
-          to: "/settings",
-        },
-        {
-          title: "Appearance",
-          key: "appearance",
-          to: "/settings/appearance",
-        },
-      ],
     };
   },
   methods: {

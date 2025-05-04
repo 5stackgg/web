@@ -47,6 +47,12 @@
                 "no_country_found": "No se encontraron países",
                 "update": "Actualizar Perfil"
             },
+            "language": {
+                "title": "",
+                "description": "",
+                "select": "",
+                "help": ""
+            },
             "appearance": {
                 "title": "Apariencia",
                 "description": "Personaliza la apariencia de la aplicación",
@@ -730,6 +736,9 @@
                     "confirm": "Desvincular"
                 },
                 "unlinked": "Discord ha sido desvinculado"
+            },
+            "language": {
+                "title": ""
             }
         },
         "application_settings": {
@@ -756,7 +765,7 @@
             "dismiss_all": "Desestimar todas las notificaciones"
         },
         "app_nav": {
-            "brand": "5stack",
+            "brand": "CS2",
             "navigation": {
                 "play": "Jugar",
                 "matches": "Partidas",

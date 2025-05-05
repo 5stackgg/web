@@ -38,7 +38,6 @@
             "profile": {
                 "title": "Configuración de perfil",
                 "description": "Gestiona la configuración de tu cuenta",
-                "steam_id": "ID de Steam",
                 "name": "Nombre",
                 "avatar_url": "URL de avatar",
                 "country": "País",
@@ -47,9 +46,9 @@
                 "no_country_found": "No se encontraron países",
                 "update": "Actualizar Perfil",
                 "language": "Idioma",
-                "search_language": "Idioma de búsqueda...",
                 "my_account": "Mi cuenta",
-                "appearance": "Apariencia"
+                "appearance": "Apariencia",
+                "matchmaking": "Matchmaking"
             },
             "appearance": {
                 "title": "Apariencia",
@@ -117,6 +116,15 @@
                 "description": "Elija su idioma preferido para la interfaz de aplicación.",
                 "select": "Seleccionar idioma",
                 "search": "Idioma de búsqueda..."
+            },
+            "matchmaking": {
+                "title": "Ajustes de coincidencia",
+                "description": "Configure sus preferencias de concordancia y ver los retrasos de la región.",
+                "average_latency": "Edad media",
+                "preferred": "Preferencias",
+                "max_acceptable_ping": "Maximum Aceptable Ping",
+                "max_ping_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con ping por debajo de este valor.",
+                "region": "Región"
             }
         },
         "regions": {
@@ -154,15 +162,9 @@
             }
         },
         "play": {
-            "title": "Jugar",
-            "description": "Inicia una partida",
-            "create_match": "Crear",
             "open_matches": {
                 "title": "Partidas abiertas",
                 "description": "Partidas disponibles"
-            },
-            "matchmaking": {
-                "title": "Matchmaking"
             }
         },
         "matches": {
@@ -327,17 +329,16 @@
             "offline": "Desconectado",
             "view_profile": "Ver perfil"
         },
-        "leave": "Salir",
-        "position": "Posición",
-        "join": "Unirse",
         "confirm": {
-            "title": "Confirmar",
             "ready": "Listo",
             "players": "Jugadores"
         },
         "banned": "Baneado",
         "go_to_match": "Ir a la partida",
-        "temp_banned": "Baneado temporalmente"
+        "temp_banned": "Baneado temporalmente",
+        "settings_section": {
+            "toggle": "Ajuste de ajustes"
+        }
     },
     "match": {
         "lobby": {
@@ -840,7 +841,8 @@
             "delete": "Eliminar"
         },
         "close": "Cerrar",
-        "confirm": "Confirmar"
+        "confirm": "Confirmar",
+        "refresh": "Refresh"
     },
     "tournament": {
         "overview": "Resumen",

@@ -38,7 +38,6 @@
             "profile": {
                 "title": "Налаштування профілю",
                 "description": "Керування налаштуваннями облікового запису",
-                "steam_id": "Steam ID",
                 "name": "Назва",
                 "avatar_url": "URL аватара",
                 "country": "Країна",
@@ -47,9 +46,9 @@
                 "no_country_found": "Країну не знайдено",
                 "update": "Оновити профіль",
                 "language": "Українська",
-                "search_language": "Пошукова мова.",
                 "my_account": "Мій обліковий запис",
-                "appearance": "Зовнішній вигляд"
+                "appearance": "Зовнішній вигляд",
+                "matchmaking": "Матчмейкінг"
             },
             "appearance": {
                 "title": "Зовнішній вигляд",
@@ -117,6 +116,15 @@
                 "description": "Виберіть мову для інтерфейсу програми.",
                 "select": "Виберіть мову",
                 "search": "Пошукова мова."
+            },
+            "matchmaking": {
+                "region": "Регіон",
+                "title": "Налаштування матчів",
+                "description": "Налаштуйте налаштування та переглядайте межі регіону.",
+                "average_latency": "Середня Latency",
+                "preferred": "Поповнення",
+                "max_acceptable_ping": "Максимальний придатковий Пінг",
+                "max_ping_description": "Якщо не потрібні регіони, то відповідне значення буде використовувати тільки регіони з пінгом нижче."
             }
         },
         "regions": {
@@ -154,15 +162,9 @@
             }
         },
         "play": {
-            "title": "Гра",
-            "description": "Почати матч",
-            "create_match": "Створити",
             "open_matches": {
                 "title": "Відкриті матчі",
                 "description": "Доступні матчі"
-            },
-            "matchmaking": {
-                "title": "Матчмейкінг"
             }
         },
         "matches": {
@@ -327,17 +329,16 @@
             "join_lobby": "Приєднатися до Лобі",
             "view_profile": "Переглянути профіль"
         },
-        "leave": "Покинути",
-        "position": "Позиція",
-        "join": "Приєднатися",
         "confirm": {
-            "title": "Підтвердити",
             "ready": "Готово",
             "players": "Гравці"
         },
         "banned": "Заблоковано",
         "go_to_match": "Перейти до матчу",
-        "temp_banned": "Тимчасово заблоковано"
+        "temp_banned": "Тимчасово заблоковано",
+        "settings_section": {
+            "toggle": "Налаштування налаштування"
+        }
     },
     "match": {
         "lobby": {
@@ -840,7 +841,8 @@
             "delete": "Видалити"
         },
         "close": "Закрити",
-        "confirm": "Підтвердити"
+        "confirm": "Підтвердити",
+        "refresh": "Реверс"
     },
     "tournament": {
         "overview": "Огляд",

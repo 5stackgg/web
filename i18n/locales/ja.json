@@ -38,7 +38,6 @@
             "profile": {
                 "title": "プロフィール設定",
                 "description": "アカウント設定を管理",
-                "steam_id": "Steam ID",
                 "name": "名前",
                 "avatar_url": "アバターURL",
                 "country": "国",
@@ -47,9 +46,9 @@
                 "no_country_found": "国が見つかりません",
                 "update": "プロフィールを更新",
                 "language": "用語集",
-                "search_language": "言語検索.",
                 "my_account": "私のアカウント",
-                "appearance": "外観設定"
+                "appearance": "外観設定",
+                "matchmaking": "マッチメイキング"
             },
             "appearance": {
                 "title": "外観設定",
@@ -117,6 +116,15 @@
                 "description": "アプリケーションインターフェイスで希望する言語を選択します.",
                 "select": "言語を選択",
                 "search": "言語検索."
+            },
+            "matchmaking": {
+                "region": "リージョン",
+                "title": "マッチメイキング設定",
+                "description": "マッチメイキングの好みとビュー領域のレイテンシーを設定します.",
+                "average_latency": "平均レイテンシー",
+                "preferred": "採用情報",
+                "max_acceptable_ping": "最高の受諾可能 ピン",
+                "max_ping_description": "地域が好まない場合は、マッチメイキングは、この値の下のpingでのみ使用します."
             }
         },
         "regions": {
@@ -154,15 +162,9 @@
             }
         },
         "play": {
-            "title": "プレイ",
-            "description": "マッチを開始",
-            "create_match": "作成",
             "open_matches": {
                 "title": "オープンマッチ",
                 "description": "参加可能なマッチ"
-            },
-            "matchmaking": {
-                "title": "マッチメイキング"
             }
         },
         "matches": {
@@ -411,7 +413,8 @@
             "delete": "削除"
         },
         "close": "閉じる",
-        "confirm": "確認"
+        "confirm": "確認",
+        "refresh": "リフレッシュ"
     },
     "matchmaking": {
         "lobby": {
@@ -433,17 +436,16 @@
             "offline": "オフライン",
             "view_profile": "プロフィールを見る"
         },
-        "leave": "退出",
-        "position": "位置",
-        "join": "参加",
         "confirm": {
-            "title": "確認",
             "ready": "準備完了",
             "players": "プレイヤー"
         },
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
-        "temp_banned": "一時BAN"
+        "temp_banned": "一時BAN",
+        "settings_section": {
+            "toggle": "設定を調整する"
+        }
     },
     "match": {
         "lobby": {

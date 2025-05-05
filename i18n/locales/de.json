@@ -38,7 +38,6 @@
             "profile": {
                 "title": "Profil-Einstellungen",
                 "description": "Kontoeinstellungen verwalten",
-                "steam_id": "Steam-ID",
                 "name": "Name",
                 "avatar_url": "Avatar-URL",
                 "country": "Land",
@@ -46,10 +45,10 @@
                 "search_country": "Land suchen...",
                 "no_country_found": "Kein Land gefunden",
                 "update": "Profil aktualisieren",
-                "search_language": "Suchsprache...",
                 "language": "Sprache",
                 "my_account": "Mein Konto",
-                "appearance": "Erscheinungsbild"
+                "appearance": "Erscheinungsbild",
+                "matchmaking": "Matchmaking"
             },
             "appearance": {
                 "title": "Erscheinungsbild",
@@ -117,6 +116,15 @@
                 "description": "Wählen Sie Ihre bevorzugte Sprache für die Anwendungsschnittstelle.",
                 "select": "Sprache auswählen",
                 "search": "Suchsprache..."
+            },
+            "matchmaking": {
+                "title": "Anpassungseinstellungen",
+                "description": "Konfigurieren Sie Ihre Spieleinstellungen und Ansicht Region Latenzen.",
+                "average_latency": "Durchschnittliche Latency",
+                "preferred": "Bevorzugt",
+                "max_acceptable_ping": "Maximal zulässig Plüsch",
+                "max_ping_description": "Wenn keine Regionen bevorzugt werden, wird Matchmaking nur Bereiche mit ping unter diesem Wert verwenden.",
+                "region": "Region"
             }
         },
         "regions": {
@@ -154,15 +162,9 @@
             }
         },
         "play": {
-            "title": "Spielen",
-            "description": "Spiel starten",
-            "create_match": "Erstellen",
             "open_matches": {
                 "title": "Offene Spiele",
                 "description": "Verfügbare Spiele"
-            },
-            "matchmaking": {
-                "title": "Matchmaking"
             }
         },
         "matches": {
@@ -327,17 +329,16 @@
             "offline": "Offline",
             "view_profile": "Profil anzeigen"
         },
-        "leave": "Verlassen",
-        "position": "Aktuelle Position",
-        "join": "Beitreten",
         "confirm": {
-            "title": "Matchmaking bestätigen",
             "ready": "Bereit",
             "players": "Spieler in der Warteschlange"
         },
         "banned": "Sie sind vom Matchmaking gesperrt",
         "go_to_match": "Zum Spiel gehen",
-        "temp_banned": "Sie sind vorübergehend vom Matchmaking gesperrt"
+        "temp_banned": "Sie sind vorübergehend vom Matchmaking gesperrt",
+        "settings_section": {
+            "toggle": "Einstellungen anpassen"
+        }
     },
     "match": {
         "lobby": {
@@ -840,7 +841,8 @@
             "delete": "Löschen"
         },
         "close": "Schließen",
-        "confirm": "Bestätigen"
+        "confirm": "Bestätigen",
+        "refresh": "Refreshing"
     },
     "tournament": {
         "overview": "Übersicht",

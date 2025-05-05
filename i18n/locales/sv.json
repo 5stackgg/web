@@ -38,7 +38,6 @@
             "profile": {
                 "title": "Profil",
                 "description": "Dina profildetaljer",
-                "steam_id": "Steam ID",
                 "name": "Namn",
                 "avatar_url": "Profilbilds-URL",
                 "country": "Land",
@@ -46,10 +45,10 @@
                 "search_country": "Sök land...",
                 "no_country_found": "Inget land hittades.",
                 "update": "Uppdatera profil",
-                "search_language": "Sök språk...",
                 "language": "Språkspråk",
                 "my_account": "Mitt konto",
-                "appearance": "Utseende"
+                "appearance": "Utseende",
+                "matchmaking": "Matchmaking"
             },
             "appearance": {
                 "title": "Utseende",
@@ -117,6 +116,15 @@
                 "description": "Välj ditt föredragna språk för programgränssnittet.",
                 "select": "Välj språk",
                 "search": "Sök språk..."
+            },
+            "matchmaking": {
+                "region": "Region",
+                "title": "Matchmaking Inställningar",
+                "description": "Konfigurera dina matchmaking preferenser och visa regionens latenser.",
+                "average_latency": "Genomsnittlig latens",
+                "preferred": "Preferred",
+                "max_acceptable_ping": "Maximal acceptabel Ping",
+                "max_ping_description": "Om inga regioner föredras kommer matchmaking endast att använda regioner med ping under detta värde."
             }
         },
         "regions": {
@@ -154,15 +162,9 @@
             }
         },
         "play": {
-            "title": "Kommande matcher",
-            "description": "Dina kommande matcher som du antingen hanterar eller är med i uppställningen.",
-            "create_match": "Skapa match",
             "open_matches": {
                 "title": "Öppna matcher",
                 "description": "Matcher som är öppna lobbies för alla att gå med i."
-            },
-            "matchmaking": {
-                "title": "Matchmaking"
             }
         },
         "matches": {
@@ -421,7 +423,8 @@
             "delete": "Ta bort"
         },
         "close": "Stäng",
-        "confirm": "Bekräfta"
+        "confirm": "Bekräfta",
+        "refresh": "Refresh"
     },
     "tournament": {
         "overview": "Översikt",
@@ -960,17 +963,16 @@
             "join_lobby": "Gå med i Lobby",
             "view_profile": "Visa profil"
         },
-        "leave": "Lämna",
-        "position": "Nuvarande position",
-        "join": "Gå med",
         "confirm": {
-            "title": "Bekräfta matchmaking",
             "ready": "Redo",
             "players": "Spelare i kö"
         },
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
-        "temp_banned": "Du är tillfälligt bannad från matchmaking"
+        "temp_banned": "Du är tillfälligt bannad från matchmaking",
+        "settings_section": {
+            "toggle": "Justera inställningar"
+        }
     },
     "game_server": {
         "update_cs": "Uppdatera CS",

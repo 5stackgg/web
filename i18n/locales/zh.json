@@ -38,7 +38,6 @@
             "profile": {
                 "title": "个人资料设置",
                 "description": "账户设置管理",
-                "steam_id": "Steam ID",
                 "name": "名称",
                 "avatar_url": "头像URL",
                 "country": "国家",
@@ -46,7 +45,8 @@
                 "search_country": "搜索国家...",
                 "no_country_found": "未找到国家",
                 "update": "更新个人资料",
-                "appearance": "外观"
+                "appearance": "外观",
+                "matchmaking": "匹配"
             },
             "appearance": {
                 "title": "外观",
@@ -89,6 +89,9 @@
                 "servers": {
                     "update": "更新"
                 }
+            },
+            "matchmaking": {
+                "region": "地区"
             }
         },
         "regions": {
@@ -126,15 +129,9 @@
             }
         },
         "play": {
-            "title": "游戏",
-            "description": "开始一场比赛",
-            "create_match": "创建",
             "open_matches": {
                 "title": "开放比赛",
                 "description": "可用比赛"
-            },
-            "matchmaking": {
-                "title": "匹配"
             }
         },
         "matches": {
@@ -298,11 +295,7 @@
             "join_lobby": "加入大厅",
             "offline": "离线"
         },
-        "leave": "离开",
-        "position": "位置",
-        "join": "加入",
         "confirm": {
-            "title": "确认",
             "ready": "准备就绪",
             "players": "玩家"
         },

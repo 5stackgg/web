@@ -45,7 +45,11 @@
                 "select_country": "国を選択",
                 "search_country": "国を検索...",
                 "no_country_found": "国が見つかりません",
-                "update": "プロフィールを更新"
+                "update": "プロフィールを更新",
+                "language": "用語集",
+                "search_language": "言語検索.",
+                "my_account": "私のアカウント",
+                "appearance": "外観設定"
             },
             "appearance": {
                 "title": "外観設定",
@@ -107,6 +111,12 @@
                     "update": "テレメトリー設定更新"
                 },
                 "matchmaking_min_role": "マッチメイキングに参加できる最小限のロール"
+            },
+            "language": {
+                "title": "用語集",
+                "description": "アプリケーションインターフェイスで希望する言語を選択します.",
+                "select": "言語を選択",
+                "search": "言語検索."
             }
         },
         "regions": {

@@ -45,7 +45,11 @@
                 "select_country": "Land auswählen",
                 "search_country": "Land suchen...",
                 "no_country_found": "Kein Land gefunden",
-                "update": "Profil aktualisieren"
+                "update": "Profil aktualisieren",
+                "search_language": "Suchsprache...",
+                "language": "Sprache",
+                "my_account": "Mein Konto",
+                "appearance": "Erscheinungsbild"
             },
             "appearance": {
                 "title": "Erscheinungsbild",
@@ -107,6 +111,12 @@
                     "update": "Telemetrie-Einstellungen aktualisiert"
                 },
                 "matchmaking_min_role": "Mindeste Rolle erlaubt Matchmaking"
+            },
+            "language": {
+                "title": "Sprache",
+                "description": "Wählen Sie Ihre bevorzugte Sprache für die Anwendungsschnittstelle.",
+                "select": "Sprache auswählen",
+                "search": "Suchsprache..."
             }
         },
         "regions": {

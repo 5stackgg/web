@@ -45,7 +45,11 @@
                 "select_country": "Vælg land",
                 "search_country": "Søg efter land...",
                 "no_country_found": "Ingen lande fundet",
-                "update": "Opdater profil"
+                "update": "Opdater profil",
+                "language": "Sprog",
+                "search_language": "Søg i sprog...",
+                "my_account": "Min konto",
+                "appearance": "Udseende"
             },
             "appearance": {
                 "title": "Udseende",
@@ -107,6 +111,12 @@
                     "update": "Indstillinger for telemetri"
                 },
                 "matchmaking_min_role": "Minimum rolle tilladt at deltage i matchmaking"
+            },
+            "language": {
+                "select": "Vælg sprog",
+                "search": "Søg i sprog...",
+                "title": "Sprog",
+                "description": "Vælg dit foretrukne sprog for programgrænsefladen."
             }
         },
         "regions": {

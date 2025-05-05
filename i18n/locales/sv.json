@@ -45,7 +45,11 @@
                 "select_country": "Välj land...",
                 "search_country": "Sök land...",
                 "no_country_found": "Inget land hittades.",
-                "update": "Uppdatera profil"
+                "update": "Uppdatera profil",
+                "search_language": "Sök språk...",
+                "language": "Språkspråk",
+                "my_account": "Mitt konto",
+                "appearance": "Utseende"
             },
             "appearance": {
                 "title": "Utseende",
@@ -107,6 +111,12 @@
                     "update": "Telemetriinställningar uppdaterade"
                 },
                 "matchmaking_min_role": "Minsta roll tillåten att gå med Matchmaking"
+            },
+            "language": {
+                "title": "Språkspråk",
+                "description": "Välj ditt föredragna språk för programgränssnittet.",
+                "select": "Välj språk",
+                "search": "Sök språk..."
             }
         },
         "regions": {

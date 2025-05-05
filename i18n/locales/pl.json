@@ -45,7 +45,11 @@
                 "select_country": "Wybierz kraj",
                 "search_country": "Szukaj kraju...",
                 "no_country_found": "Nie znaleziono krajów",
-                "update": "Aktualizuj profil"
+                "update": "Aktualizuj profil",
+                "language": "Język",
+                "search_language": "Język wyszukiwania...",
+                "my_account": "Moje konto",
+                "appearance": "Wygląd"
             },
             "appearance": {
                 "title": "Wygląd",
@@ -107,6 +111,12 @@
                     "update": "Aktualizacja ustawień telemetrii"
                 },
                 "matchmaking_min_role": "Minimalna rola umożliwiająca dołączenie do Matchmaking"
+            },
+            "language": {
+                "title": "Język",
+                "description": "Wybierz preferowany język interfejsu aplikacji.",
+                "select": "Wybierz język",
+                "search": "Język wyszukiwania..."
             }
         },
         "regions": {

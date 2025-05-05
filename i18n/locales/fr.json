@@ -45,7 +45,11 @@
                 "select_country": "Sélectionner un pays",
                 "search_country": "Rechercher un pays...",
                 "no_country_found": "Aucun pays trouvé",
-                "update": "Mettre à jour le profil"
+                "update": "Mettre à jour le profil",
+                "language": "Langue",
+                "search_language": "Langue de recherche...",
+                "my_account": "Mon dossier",
+                "appearance": "Apparence"
             },
             "appearance": {
                 "title": "Apparence",
@@ -107,6 +111,12 @@
                     "update": "Paramètres de télémétrie mis à jour"
                 },
                 "matchmaking_min_role": "Rôle minimum autorisé à s'associer à la prise de correspondance"
+            },
+            "language": {
+                "title": "Langue",
+                "description": "Choisissez votre langue préférée pour l'interface de l'application.",
+                "select": "Sélectionner la langue",
+                "search": "Langue de recherche..."
             }
         },
         "regions": {

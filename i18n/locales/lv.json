@@ -45,7 +45,11 @@
                 "select_country": "Izvēlieties valsti",
                 "search_country": "Meklēt valsti...",
                 "no_country_found": "Nav atrastas valstis",
-                "update": "Atjaunināt profilu"
+                "update": "Atjaunināt profilu",
+                "language": "Valoda",
+                "search_language": "Meklēt valodu...",
+                "my_account": "Mans konts",
+                "appearance": "Izskats"
             },
             "appearance": {
                 "title": "Izskats",
@@ -107,6 +111,12 @@
                     "update": "Atjaunināti telemetrijas iestatījumi"
                 },
                 "matchmaking_min_role": "Minimālā loma, kas ļauj pievienoties kontaktbiržai"
+            },
+            "language": {
+                "select": "Izvēlieties valodu",
+                "search": "Meklēt valodu...",
+                "title": "Valoda",
+                "description": "Izvēlieties vēlamo valodu programmas saskarnei."
             }
         },
         "regions": {

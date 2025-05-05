@@ -45,7 +45,8 @@
                 "select_country": "选择国家",
                 "search_country": "搜索国家...",
                 "no_country_found": "未找到国家",
-                "update": "更新个人资料"
+                "update": "更新个人资料",
+                "appearance": "外观"
             },
             "appearance": {
                 "title": "外观",

@@ -45,7 +45,11 @@
                 "select_country": "국가 선택",
                 "search_country": "국가 검색...",
                 "no_country_found": "국가를 찾을 수 없습니다",
-                "update": "프로필 업데이트"
+                "update": "프로필 업데이트",
+                "language": "* 이름",
+                "search_language": "언어 선택.",
+                "my_account": "내 계정",
+                "appearance": "외관 설정"
             },
             "appearance": {
                 "title": "외관 설정",
@@ -107,6 +111,12 @@
                     "update": "Telemetry 설정 업데이트"
                 },
                 "matchmaking_min_role": "최소 역할은 Matchmaking에 참여하도록 허용"
+            },
+            "language": {
+                "title": "* 이름",
+                "description": "응용 프로그램 인터페이스에 대한 선호된 언어를 선택하십시오.",
+                "select": "언어 선택",
+                "search": "언어 선택."
             }
         },
         "regions": {

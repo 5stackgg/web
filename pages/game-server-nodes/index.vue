@@ -97,6 +97,19 @@ import { Info, ExternalLink } from "lucide-vue-next";
             <TableHead>{{
               $t("pages.game_server_nodes.table.lan_public_ip")
             }}</TableHead>
+             <TableHead>
+              <a
+                href="https://docs.5stack.gg/servers/low-latency-kernel"
+                target="_blank"
+                class="flex items-center gap-1 hover:text-white transition-colors"
+              >
+                {{
+                  $t("pages.game_server_nodes.table.supports_low_latency")
+                }}
+                <ExternalLink class="w-4 h-4" />
+              </a>
+
+            </TableHead>
             <TableHead>
               <a
                 href="https://docs.5stack.gg/servers/cpu-pinning"
@@ -189,6 +202,7 @@ export default {
               public_ip: true,
               start_port_range: true,
               end_port_range: true,
+              supports_low_latency: true,
               supports_cpu_pinning: true,
               update_status: true,
               e_region: {

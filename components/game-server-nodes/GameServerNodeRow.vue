@@ -17,7 +17,7 @@ import {
 import { Button } from "~/components/ui/button";
 import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
 import { e_game_server_node_statuses_enum } from "~/generated/zeus";
-import { Trash2, RefreshCw, Pencil, BadgeCheck } from "lucide-vue-next";
+import { Trash2, RefreshCw, Pencil, Activity, Cpu } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 </script>
 
@@ -34,8 +34,13 @@ import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServ
       {{ gameServerNode.public_ip }}
     </TableCell>
     <TableCell>
+      <template v-if="gameServerNode.supports_low_latency">
+        <Activity class="h-4 w-4" />
+      </template>
+    </TableCell>
+    <TableCell>
       <template v-if="gameServerNode.supports_cpu_pinning">
-        <BadgeCheck class="h-4 w-4" />
+        <Cpu class="h-4 w-4" />
       </template>
     </TableCell>
     <TableCell>

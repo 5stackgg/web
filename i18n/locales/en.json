@@ -215,6 +215,7 @@
         "ports_tooltip": "Forwarded Ports to Node",
         "enabled": "Enabled",
         "no_nodes": "No Game Server Nodes",
+        "supports_low_latency": "Supports Low Latency",
         "supports_cpu_pinning": "Supports CPU Pinning"
       },
       "build_id": "Build ID: {id}",

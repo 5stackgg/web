@@ -1607,6 +1607,7 @@ export const AllTypesProps: Record<string,any> = {
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp",
 		supports_cpu_pinning:"Boolean_comparison_exp",
+		supports_low_latency:"Boolean_comparison_exp",
 		token:"String_comparison_exp",
 		total_server_count:"Int_comparison_exp",
 		update_status:"String_comparison_exp"
@@ -1670,6 +1671,7 @@ export const AllTypesProps: Record<string,any> = {
 		start_port_range:"order_by",
 		status:"order_by",
 		supports_cpu_pinning:"order_by",
+		supports_low_latency:"order_by",
 		token:"order_by",
 		total_server_count:"order_by",
 		update_status:"order_by"
@@ -13645,6 +13647,7 @@ export const ReturnTypes: Record<string,any> = {
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum",
 		supports_cpu_pinning:"Boolean",
+		supports_low_latency:"Boolean",
 		token:"String",
 		total_server_count:"Int",
 		update_status:"String"

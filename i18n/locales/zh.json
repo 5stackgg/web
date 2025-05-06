@@ -46,7 +46,9 @@
                 "no_country_found": "未找到国家",
                 "update": "更新个人资料",
                 "appearance": "外观",
-                "matchmaking": "匹配"
+                "matchmaking": "匹配",
+                "my_account": "",
+                "language": ""
             },
             "appearance": {
                 "title": "外观",
@@ -84,14 +86,45 @@
                     "base_config": ""
                 },
                 "s3": {
-                    "update": "更新"
+                    "update": "更新",
+                    "title": "",
+                    "min_retention": "",
+                    "max_storage": "",
+                    "cloudflare_worker_url": "",
+                    "max_storage_description": "",
+                    "cloudflare_worker_url_description": "",
+                    "min_retention_description": ""
                 },
                 "servers": {
-                    "update": "更新"
-                }
+                    "update": "更新",
+                    "title": "",
+                    "enable_cpu_pinning": "",
+                    "enable_cpu_pinning_description": "",
+                    "number_of_cpus_per_server": "",
+                    "number_of_cpus_per_server_description": ""
+                },
+                "telemetry": {
+                    "title": "",
+                    "telemetry": "",
+                    "telemetry_description": "",
+                    "update": ""
+                },
+                "matchmaking_min_role": ""
             },
             "matchmaking": {
-                "region": "地区"
+                "region": "地区",
+                "title": "",
+                "description": "",
+                "preferred": "",
+                "max_acceptable_ping": "",
+                "max_ping_description": "",
+                "average_latency": ""
+            },
+            "language": {
+                "title": "",
+                "description": "",
+                "select": "",
+                "search": ""
             }
         },
         "regions": {
@@ -175,7 +208,9 @@
                 "ports": "端口",
                 "ports_tooltip": "可用端口范围",
                 "enabled": "启用",
-                "no_nodes": "没有节点"
+                "no_nodes": "没有节点",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "构建ID",
             "last_updated": "最后更新",
@@ -268,7 +303,8 @@
             "active_duty": "服役地图",
             "available_modes": "可用模式",
             "workshop_id": "创意工坊ID",
-            "edit": "编辑"
+            "edit": "编辑",
+            "search": ""
         },
         "map_pool": {
             "toggle_pool_type": "地图{map}已{type}为{type}",
@@ -293,7 +329,8 @@
             "remove": "移除",
             "online": "在线",
             "join_lobby": "加入大厅",
-            "offline": "离线"
+            "offline": "离线",
+            "view_profile": ""
         },
         "confirm": {
             "ready": "准备就绪",
@@ -301,7 +338,10 @@
         },
         "banned": "已封禁",
         "go_to_match": "前往比赛",
-        "temp_banned": "临时封禁"
+        "temp_banned": "临时封禁",
+        "settings_section": {
+            "toggle": ""
+        }
     },
     "match": {
         "lobby": {
@@ -419,7 +459,8 @@
             "timeout_setting": "暂停设置",
             "tech_timeout_setting": "技术暂停设置",
             "map_pool": "地图池",
-            "ready_setting": ""
+            "ready_setting": "",
+            "filter_maps": ""
         },
         "schedule": {
             "pick_date": "选择日期",
@@ -569,7 +610,8 @@
             "dedicated": "专用",
             "on_demand": "按需",
             "assigned": "已分配"
-        }
+        },
+        "download_demo": ""
     },
     "ui": {
         "tooltips": {
@@ -803,7 +845,8 @@
             "delete": "删除"
         },
         "close": "关闭",
-        "confirm": "确认"
+        "confirm": "确认",
+        "refresh": ""
     },
     "tournament": {
         "overview": "概览",
@@ -1018,5 +1061,9 @@
     },
     "validation": {
         "map_pool_required": ""
+    },
+    "custom_match": {
+        "title": "",
+        "description": ""
     }
 }

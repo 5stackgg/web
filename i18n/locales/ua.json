@@ -208,7 +208,9 @@
                 "ports": "Порти",
                 "ports_tooltip": "Діапазон доступних портів",
                 "enabled": "Увімкнено",
-                "no_nodes": "Немає вузлів"
+                "no_nodes": "Немає вузлів",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "ID збірки",
             "last_updated": "Останнє оновлення",

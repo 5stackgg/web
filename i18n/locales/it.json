@@ -208,7 +208,9 @@
                 "ports": "Porte",
                 "ports_tooltip": "Intervallo porte disponibile",
                 "enabled": "Abilitato",
-                "no_nodes": "Nessun nodo"
+                "no_nodes": "Nessun nodo",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "ID build",
             "last_updated": "Ultimo aggiornamento",

@@ -208,7 +208,9 @@
                 "ports": "Porti",
                 "ports_tooltip": "Pieejamais portu diapazons",
                 "enabled": "Iespējots",
-                "no_nodes": "Nav mezglu"
+                "no_nodes": "Nav mezglu",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "Būvējuma ID",
             "last_updated": "Pēdējais atjauninājums",

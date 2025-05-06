@@ -208,7 +208,9 @@
                 "ports": "Porty",
                 "ports_tooltip": "Dostępny zakres portów",
                 "enabled": "Włączone",
-                "no_nodes": "Brak węzłów"
+                "no_nodes": "Brak węzłów",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "ID kompilacji",
             "last_updated": "Ostatnio zaktualizowano",

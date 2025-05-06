@@ -208,7 +208,9 @@
                 "ports": "Порты",
                 "ports_tooltip": "Доступный диапазон портов",
                 "enabled": "Включено",
-                "no_nodes": "Нет узлов"
+                "no_nodes": "Нет узлов",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "ID сборки",
             "last_updated": "Последнее обновление",

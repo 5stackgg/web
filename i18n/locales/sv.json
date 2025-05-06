@@ -208,7 +208,9 @@
                 "ports": "Portar",
                 "ports_tooltip": "Vidarebefordrade portar till nod",
                 "enabled": "Aktiverad",
-                "no_nodes": "Inga spelservrar"
+                "no_nodes": "Inga spelservrar",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "Build ID: {id}",
             "last_updated": "Senast uppdaterad: {date}",

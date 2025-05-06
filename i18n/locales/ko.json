@@ -208,7 +208,9 @@
                 "ports": "포트",
                 "ports_tooltip": "사용 가능한 포트 범위",
                 "enabled": "활성화",
-                "no_nodes": "노드가 없습니다"
+                "no_nodes": "노드가 없습니다",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "빌드 ID",
             "last_updated": "마지막 업데이트",

@@ -208,7 +208,9 @@
                 "ports": "ポート",
                 "ports_tooltip": "使用可能なポート範囲",
                 "enabled": "有効",
-                "no_nodes": "ノードがありません"
+                "no_nodes": "ノードがありません",
+                "supports_low_latency": "",
+                "supports_cpu_pinning": ""
             },
             "build_id": "ビルドID",
             "last_updated": "最終更新",

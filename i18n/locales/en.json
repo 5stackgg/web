@@ -214,7 +214,8 @@
         "ports": "Ports",
         "ports_tooltip": "Forwarded Ports to Node",
         "enabled": "Enabled",
-        "no_nodes": "No Game Server Nodes"
+        "no_nodes": "No Game Server Nodes",
+        "supports_cpu_pinning": "Supports CPU Pinning"
       },
       "build_id": "Build ID: {id}",
       "last_updated": "Last Updated: {date}"

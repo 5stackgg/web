@@ -6,7 +6,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { PlusCircle } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
-import { Info } from "lucide-vue-next";
+import { Info, ExternalLink } from "lucide-vue-next";
 </script>
 
 <template>
@@ -97,6 +97,19 @@ import { Info } from "lucide-vue-next";
             <TableHead>{{
               $t("pages.game_server_nodes.table.lan_public_ip")
             }}</TableHead>
+            <TableHead>
+              <a
+                href="https://docs.5stack.gg/servers/cpu-pinning"
+                target="_blank"
+                class="flex items-center gap-1 hover:text-white transition-colors"
+              >
+                {{
+                  $t("pages.game_server_nodes.table.supports_cpu_pinning")
+                }}
+                <ExternalLink class="w-4 h-4" />
+              </a>
+
+            </TableHead>
             <TableHead>{{
               $t("pages.game_server_nodes.table.cs_build_id")
             }}</TableHead>
@@ -176,6 +189,7 @@ export default {
               public_ip: true,
               start_port_range: true,
               end_port_range: true,
+              supports_cpu_pinning: true,
               update_status: true,
               e_region: {
                 description: true,

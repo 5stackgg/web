@@ -1606,6 +1606,7 @@ export const AllTypesProps: Record<string,any> = {
 		servers_aggregate:"servers_aggregate_bool_exp",
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp",
+		supports_cpu_pinning:"Boolean_comparison_exp",
 		token:"String_comparison_exp",
 		total_server_count:"Int_comparison_exp",
 		update_status:"String_comparison_exp"
@@ -1668,6 +1669,7 @@ export const AllTypesProps: Record<string,any> = {
 		servers_aggregate:"servers_aggregate_order_by",
 		start_port_range:"order_by",
 		status:"order_by",
+		supports_cpu_pinning:"order_by",
 		token:"order_by",
 		total_server_count:"order_by",
 		update_status:"order_by"
@@ -5925,6 +5927,7 @@ export const AllTypesProps: Record<string,any> = {
 		data:"my_friends_insert_input"
 	},
 	my_friends_avg_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
@@ -5937,6 +5940,7 @@ export const AllTypesProps: Record<string,any> = {
 		country:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		discord_id:"String_comparison_exp",
+		elo:"numeric_comparison_exp",
 		friend_steam_id:"bigint_comparison_exp",
 		invited_by_steam_id:"bigint_comparison_exp",
 		name:"String_comparison_exp",
@@ -5948,12 +5952,14 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"bigint_comparison_exp"
 	},
 	my_friends_inc_input:{
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		steam_id:"bigint"
 	},
 	my_friends_insert_input:{
 		created_at:"timestamptz",
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		player:"players_obj_rel_insert_input",
@@ -5964,6 +5970,7 @@ export const AllTypesProps: Record<string,any> = {
 		country:"order_by",
 		created_at:"order_by",
 		discord_id:"order_by",
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		name:"order_by",
@@ -5977,6 +5984,7 @@ export const AllTypesProps: Record<string,any> = {
 		country:"order_by",
 		created_at:"order_by",
 		discord_id:"order_by",
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		name:"order_by",
@@ -5990,6 +5998,7 @@ export const AllTypesProps: Record<string,any> = {
 		country:"order_by",
 		created_at:"order_by",
 		discord_id:"order_by",
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		name:"order_by",
@@ -6005,21 +6014,25 @@ export const AllTypesProps: Record<string,any> = {
 	my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	my_friends_set_input:{
 		created_at:"timestamptz",
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		steam_id:"bigint"
 	},
 	my_friends_stddev_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_stddev_pop_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_stddev_samp_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
@@ -6030,11 +6043,13 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	my_friends_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		steam_id:"bigint"
 	},
 	my_friends_sum_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
@@ -6045,16 +6060,19 @@ export const AllTypesProps: Record<string,any> = {
 		where:"my_friends_bool_exp"
 	},
 	my_friends_var_pop_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_var_samp_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_variance_order_by:{
+		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
@@ -13626,6 +13644,7 @@ export const ReturnTypes: Record<string,any> = {
 		servers_aggregate:"servers_aggregate",
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum",
+		supports_cpu_pinning:"Boolean",
 		token:"String",
 		total_server_count:"Int",
 		update_status:"String"
@@ -15341,6 +15360,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		name:"String",
@@ -15369,6 +15389,7 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"my_friends_variance_fields"
 	},
 	my_friends_avg_fields:{
+		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
@@ -15378,6 +15399,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		name:"String",
@@ -15391,6 +15413,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		name:"String",
@@ -15404,36 +15427,43 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"my_friends"
 	},
 	my_friends_stddev_fields:{
+		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_stddev_pop_fields:{
+		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_stddev_samp_fields:{
+		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_sum_fields:{
+		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		steam_id:"bigint"
 	},
 	my_friends_var_pop_fields:{
+		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_var_samp_fields:{
+		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_variance_fields:{
+		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"

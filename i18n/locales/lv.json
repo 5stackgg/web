@@ -1059,5 +1059,9 @@
             },
             "edit": "Rediģēt konfigurāciju"
         }
+    },
+    "custom_match": {
+        "title": "Pielāgota atbilstība",
+        "description": "Izveidot un pielāgot savu spēli. Iestatīt noteikumus, izvēlēties kartes, un uzaicināt draugus personalizētu spēļu pieredzi."
     }
 }

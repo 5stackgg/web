@@ -1059,5 +1059,9 @@
             },
             "edit": "Editar a Configuração"
         }
+    },
+    "custom_match": {
+        "description": "Crie e personalize seu próprio jogo. Defina regras, escolha mapas e convide amigos para uma experiência de jogo personalizada.",
+        "title": "Correspondência Personalizada"
     }
 }

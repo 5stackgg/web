@@ -1059,5 +1059,9 @@
             },
             "edit": "Redigér config"
         }
+    },
+    "custom_match": {
+        "description": "Opret og tilpasse din egen kamp. Sæt regler, vælge kort, og invitere venner til en personlig gaming oplevelse.",
+        "title": "Brugerdefineret match"
     }
 }

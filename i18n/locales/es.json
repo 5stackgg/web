@@ -1059,5 +1059,9 @@
             },
             "edit": "Editar Config"
         }
+    },
+    "custom_match": {
+        "title": "Partido Personalizado",
+        "description": "Cree y personalice su propio partido. Establecer reglas, elegir mapas e invitar a amigos para una experiencia de juego personalizada."
     }
 }

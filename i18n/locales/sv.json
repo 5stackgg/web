@@ -1059,5 +1059,9 @@
             },
             "edit": "Edit Config"
         }
+    },
+    "custom_match": {
+        "description": "Skapa och anpassa din egen match. Ange regler, välj kartor och bjud in vänner för en personlig spelupplevelse.",
+        "title": "Anpassad match"
     }
 }

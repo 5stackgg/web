@@ -1059,5 +1059,9 @@
             },
             "edit": "Modifier la configuration"
         }
+    },
+    "custom_match": {
+        "description": "Créez et personnalisez votre propre match. Définir des règles, choisir des cartes et inviter des amis pour une expérience de jeu personnalisée.",
+        "title": "Match personnalisé"
     }
 }

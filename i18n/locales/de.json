@@ -1059,5 +1059,9 @@
             },
             "edit": "Bearbeiten von Config"
         }
+    },
+    "custom_match": {
+        "title": "Individuelles Match",
+        "description": "Erstellen und anpassen Sie Ihr eigenes Spiel. Regeln festlegen, Karten auswählen und Freunde für ein personalisiertes Spielerlebnis einladen."
     }
 }

@@ -1059,5 +1059,9 @@
             },
             "edit": "Modifica conflitto"
         }
+    },
+    "custom_match": {
+        "title": "Abbinamento personalizzato",
+        "description": "Creare e personalizzare il proprio match. Impostare le regole, scegliere le mappe e invitare gli amici per un'esperienza di gioco personalizzata."
     }
 }

@@ -1059,5 +1059,9 @@
             },
             "edit": "Edytuj konfigurację"
         }
+    },
+    "custom_match": {
+        "title": "Niestandardowe dopasowanie",
+        "description": "Tworzenie i dostosowywanie własnego meczu. Ustaw zasady, wybierz mapy i zaproś znajomych do spersonalizowanych doświadczeń w grach."
     }
 }

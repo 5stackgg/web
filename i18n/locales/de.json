@@ -208,7 +208,9 @@
                 "ports": "Ports",
                 "ports_tooltip": "Verfügbarer Portbereich",
                 "enabled": "Aktiviert",
-                "no_nodes": "Keine Knoten vorhanden"
+                "no_nodes": "Keine Knoten vorhanden",
+                "supports_low_latency": "Unterstützt niedrige Latency",
+                "supports_cpu_pinning": "Unterstützt CPU Pinien"
             },
             "build_id": "Build-ID",
             "last_updated": "Zuletzt aktualisiert",

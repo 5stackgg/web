@@ -208,7 +208,9 @@
                 "ports": "Ports",
                 "ports_tooltip": "Plage de ports disponible",
                 "enabled": "Activé",
-                "no_nodes": "Aucun nœud"
+                "no_nodes": "Aucun nœud",
+                "supports_low_latency": "Soutient la faible latence",
+                "supports_cpu_pinning": "Prise en charge du processeur Pinnage"
             },
             "build_id": "ID de build",
             "last_updated": "Dernière mise à jour",

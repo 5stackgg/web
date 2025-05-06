@@ -208,7 +208,9 @@
                 "ports": "Porte",
                 "ports_tooltip": "Tilgængelig portområde",
                 "enabled": "Aktiveret",
-                "no_nodes": "Ingen noder"
+                "no_nodes": "Ingen noder",
+                "supports_low_latency": "Understøtter lav latency",
+                "supports_cpu_pinning": "Understøtter CPU Rinning"
             },
             "build_id": "Build ID",
             "last_updated": "Sidst opdateret",

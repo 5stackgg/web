@@ -301,7 +301,8 @@
             "workshop_id": "워크샵 링크",
             "edit": "편집",
             "maps": "지도보기",
-            "active_duty": "액티브 듀티"
+            "active_duty": "액티브 듀티",
+            "search": "검색지도"
         },
         "map_pool": {
             "toggle_pool_type": "지도 {map}는 {type}입니다. {type}",
@@ -456,7 +457,8 @@
             "timeout_setting": "타임아웃 설정",
             "tech_timeout_setting": "기술 타임아웃 설정",
             "map_pool": "맵 풀",
-            "ready_setting": "준비 설정"
+            "ready_setting": "준비 설정",
+            "filter_maps": "필터 맵"
         },
         "schedule": {
             "pick_date": "날짜 선택",

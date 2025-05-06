@@ -301,7 +301,8 @@
             "active_duty": "Aktiv tjänst",
             "available_modes": "Tillgänglig i lägen",
             "workshop_id": "Workshop Link",
-            "add_new_map": "Lägg till ny karta"
+            "add_new_map": "Lägg till ny karta",
+            "search": "Sök Kartor"
         },
         "map_pool": {
             "toggle_pool_type": "Karta {map} har varit {typ} för {typ}",
@@ -717,7 +718,8 @@
             "timeout_setting": "Timeout-inställning",
             "tech_timeout_setting": "Teknisk timeout-inställning",
             "map_pool": "Kartpool",
-            "ready_setting": "Ready Setting"
+            "ready_setting": "Ready Setting",
+            "filter_maps": "Filter Kartor"
         },
         "schedule": {
             "pick_date": "Välj ett datum",

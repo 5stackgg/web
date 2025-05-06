@@ -301,7 +301,8 @@
             "add_new_map": "Добавить новую карту",
             "edit": "Редактировать",
             "maps": "Доступные карты",
-            "active_duty": "Active Duty"
+            "active_duty": "Active Duty",
+            "search": "Карты поиска"
         },
         "map_pool": {
             "toggle_pool_type": "Карта {map} была для {type}",
@@ -456,7 +457,8 @@
             "timeout_setting": "Настройка таймаута",
             "tech_timeout_setting": "Настройка технического таймаута",
             "map_pool": "Пул карт",
-            "ready_setting": "Готовая настройка"
+            "ready_setting": "Готовая настройка",
+            "filter_maps": "Карты фильтров"
         },
         "schedule": {
             "pick_date": "Выберите дату",

@@ -301,7 +301,8 @@
             "workshop_id": "Ligação do Workshop",
             "maps": "Mapas Disponíveis",
             "active_duty": "Active Duty",
-            "edit": "Editar"
+            "edit": "Editar",
+            "search": "Pesquisar mapas"
         },
         "map_pool": {
             "toggle_pool_type": "Mapa {mapa} foi {tipo} para {tipo}",
@@ -456,7 +457,8 @@
             "timeout_setting": "Configuração de timeout",
             "tech_timeout_setting": "Configuração de timeout técnico",
             "map_pool": "Pool de mapas",
-            "ready_setting": "Configuração Pronto"
+            "ready_setting": "Configuração Pronto",
+            "filter_maps": "Mapas de Filtros"
         },
         "schedule": {
             "pick_date": "Selecione uma data",

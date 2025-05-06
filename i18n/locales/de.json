@@ -301,7 +301,8 @@
             "active_duty": "Aktiver Dienst",
             "available_modes": "Verfügbar im Modus",
             "workshop_id": "Link zum Thema",
-            "edit": "Bearbeiten"
+            "edit": "Bearbeiten",
+            "search": "Landkarten suchen"
         },
         "map_pool": {
             "toggle_pool_type": "Karte {map} wurde für {type} {type}",
@@ -456,7 +457,8 @@
             "timeout_setting": "Auszeiteinstellung",
             "tech_timeout_setting": "Technische Auszeiteinstellung",
             "map_pool": "Kartenpool",
-            "ready_setting": "Fertigstellung"
+            "ready_setting": "Fertigstellung",
+            "filter_maps": "Filterkarten"
         },
         "schedule": {
             "pick_date": "Datum auswählen",

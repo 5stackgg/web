@@ -301,7 +301,8 @@
             "active_duty": "Aktiv tjeneste",
             "available_modes": "Tilgængelig i Modes",
             "workshop_id": "Workshop link",
-            "edit": "Rediger"
+            "edit": "Rediger",
+            "search": "Søg i kort"
         },
         "map_pool": {
             "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
@@ -456,7 +457,8 @@
             "timeout_setting": "Timeout indstilling",
             "tech_timeout_setting": "Teknisk timeout indstilling",
             "map_pool": "Kortpool",
-            "ready_setting": "Klar indstilling"
+            "ready_setting": "Klar indstilling",
+            "filter_maps": "Filterkort"
         },
         "schedule": {
             "pick_date": "Vælg dato",

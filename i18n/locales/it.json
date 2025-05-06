@@ -301,7 +301,8 @@
             "workshop_id": "Link del laboratorio",
             "edit": "Modifica",
             "maps": "Mappe disponibili",
-            "active_duty": "Active Duty"
+            "active_duty": "Active Duty",
+            "search": "Mappa di ricerca"
         },
         "map_pool": {
             "toggle_pool_type": "La mappa {map} è stata {type} per {type}",
@@ -456,7 +457,8 @@
             "timeout_setting": "Impostazione timeout",
             "tech_timeout_setting": "Impostazione timeout tecnico",
             "map_pool": "Pool mappe",
-            "ready_setting": "Impostazioni pronte"
+            "ready_setting": "Impostazioni pronte",
+            "filter_maps": "Filtra le mappe"
         },
         "schedule": {
             "pick_date": "Seleziona data",

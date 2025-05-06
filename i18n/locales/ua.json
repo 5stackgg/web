@@ -301,7 +301,8 @@
             "workshop_id": "Веб-сайт",
             "edit": "Редагувати",
             "maps": "Доступні карти",
-            "active_duty": "Активні карти"
+            "active_duty": "Активні карти",
+            "search": "Карта сайту"
         },
         "map_pool": {
             "toggle_pool_type": "Карта {map} {type} для {type}",
@@ -456,7 +457,8 @@
             "timeout_setting": "Налаштування паузи",
             "tech_timeout_setting": "Налаштування технічної паузи",
             "map_pool": "Пул карт",
-            "ready_setting": "Налаштування готовності"
+            "ready_setting": "Налаштування готовності",
+            "filter_maps": "Фільтр карти"
         },
         "schedule": {
             "pick_date": "Вибрати дату",

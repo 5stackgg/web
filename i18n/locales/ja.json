@@ -301,7 +301,8 @@
             "add_new_map": "新規マップの追加",
             "edit": "編集",
             "maps": "サイトマップ",
-            "active_duty": "アクティブデューティ"
+            "active_duty": "アクティブデューティ",
+            "search": "サイトマップ"
         },
         "map_pool": {
             "toggle_pool_type": "{type} の {type} は {type} の {type} です",
@@ -563,7 +564,8 @@
             "timeout_setting": "タイムアウト設定",
             "tech_timeout_setting": "テクニカルタイムアウト設定",
             "map_pool": "マッププール",
-            "ready_setting": "Ready の設定"
+            "ready_setting": "Ready の設定",
+            "filter_maps": "フィルターマップ"
         },
         "schedule": {
             "pick_date": "日付を選択",

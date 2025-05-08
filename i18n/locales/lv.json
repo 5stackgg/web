@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "Tiešraidē",
-            "call_organizer": "Zvanīt organizatoram",
-            "connect": ""
+            "call_organizer": "Zvanīt organizatoram"
         },
         "check_in": {
             "title": "Reģistrēties",

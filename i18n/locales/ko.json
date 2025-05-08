@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "라이브",
-            "call_organizer": "주최자 호출",
-            "connect": ""
+            "call_organizer": "주최자 호출"
         },
         "check_in": {
             "title": "체크인",

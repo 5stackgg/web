@@ -815,8 +815,7 @@
         },
         "join": {
             "live": "Match är live",
-            "call_organizer": "Ring efter organisatör",
-            "connect": ""
+            "call_organizer": "Ring efter organisatör"
         },
         "check_in": {
             "title": "Checka in",

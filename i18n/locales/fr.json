@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "En direct",
-            "call_organizer": "Appeler l'organisateur",
-            "connect": "Rejoignez le serveur"
+            "call_organizer": "Appeler l'organisateur"
         },
         "check_in": {
             "title": "Check-in",

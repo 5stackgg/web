@@ -661,8 +661,7 @@
         },
         "join": {
             "live": "ライブ",
-            "call_organizer": "主催者を呼び出す",
-            "connect": ""
+            "call_organizer": "主催者を呼び出す"
         },
         "check_in": {
             "title": "チェックイン",

@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "Na żywo",
-            "call_organizer": "Zadzwoń do organizatora",
-            "connect": ""
+            "call_organizer": "Zadzwoń do organizatora"
         },
         "check_in": {
             "title": "Zarejestruj się",

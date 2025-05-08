@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "En vivo",
-            "call_organizer": "Llamar organizador",
-            "connect": ""
+            "call_organizer": "Llamar organizador"
         },
         "check_in": {
             "title": "Check-in",

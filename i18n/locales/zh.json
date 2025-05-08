@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "直播",
-            "call_organizer": "呼叫组织者",
-            "connect": ""
+            "call_organizer": "呼叫组织者"
         },
         "check_in": {
             "title": "签到",

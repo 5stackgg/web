@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "Ao vivo",
-            "call_organizer": "Chamar organizador",
-            "connect": ""
+            "call_organizer": "Chamar organizador"
         },
         "check_in": {
             "title": "Fazer check-in",

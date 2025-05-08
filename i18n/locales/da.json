@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "Live",
-            "call_organizer": "Ring til organisator",
-            "connect": "Deltag i server"
+            "call_organizer": "Ring til organisator"
         },
         "check_in": {
             "title": "Check ind",

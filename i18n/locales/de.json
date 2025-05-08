@@ -554,8 +554,7 @@
         },
         "join": {
             "live": "Spiel ist live",
-            "call_organizer": "Organisator anrufen",
-            "connect": "Anmelden"
+            "call_organizer": "Organisator anrufen"
         },
         "check_in": {
             "title": "Einchecken",

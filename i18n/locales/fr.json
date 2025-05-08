@@ -99,7 +99,23 @@
                     "telemetry_description": "Aidez à améliorer 5stack en partageant des données d'utilisation anonymes.",
                     "update": "Paramètres de télémétrie mis à jour"
                 },
-                "matchmaking_min_role": "Rôle minimum autorisé à s'associer à la prise de correspondance"
+                "matchmaking_min_role": "Rôle minimum autorisé à s'associer à la prise de correspondance",
+                "demo_settings": {
+                    "update": "Mettre à jour",
+                    "title": "Paramètres de la démo",
+                    "min_retention": "Conservation minimale",
+                    "max_storage": "Stockage maximal",
+                    "cloudflare_worker_url": "URL du worker Cloudflare",
+                    "max_storage_description": "La taille maximale de stockage pour les fichiers de démonstration en GB.",
+                    "cloudflare_worker_url_description": "L'URL du travailleur Cloudflare qui sera utilisé pour stocker et récupérer les fichiers de démonstration.",
+                    "min_retention_description": "Les jours de conservation minimum pour les fichiers de démonstration.",
+                    "current_storage": "Stockage actuel",
+                    "used_storage": "Stockage approximatif utilisé"
+                },
+                "update_map_pools": {
+                    "title": "Pools de cartes de mise à jour automatique",
+                    "description": "Ajouter automatiquement / mettre à jour les pools de cartes lorsque de nouvelles cartes sont ajoutées ou retirées du pool actif."
+                }
             },
             "language": {
                 "title": "Langue",
@@ -315,12 +331,13 @@
             "sync": "Synchroniser",
             "search": "Rechercher",
             "pending_requests": "Demandes en attente",
-            "online": "En ligne",
+            "online": "En ligne uniquement",
             "invite_to_lobby": "Inviter au Lobby",
             "remove": "Supprimer",
             "join_lobby": "Rejoindre le Lobby",
             "offline": "Hors ligne",
-            "view_profile": "Affichage du profil"
+            "view_profile": "Affichage du profil",
+            "invite_to_match": "Inviter le joueur à correspondre"
         },
         "confirm": {
             "ready": "Prêt",
@@ -331,7 +348,8 @@
         "temp_banned": "Banni temporairement",
         "settings_section": {
             "toggle": "Régler les paramètres"
-        }
+        },
+        "confirm_selection": "Confirmation"
     },
     "match": {
         "lobby": {
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "En direct",
-            "call_organizer": "Appeler l'organisateur",
-            "connect": "Rejoignez le serveur"
+            "call_organizer": "Appeler l'organisateur"
         },
         "check_in": {
             "title": "Check-in",
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "description": "Créez et personnalisez votre propre match. Définir des règles, choisir des cartes et inviter des amis pour une expérience de jeu personnalisée.",
         "title": "Match personnalisé"
+    },
+    "notifications": {
+        "invite": {
+            "deny": "Refuser",
+            "accept": "Accepter"
+        },
+        "match": {
+            "invited_by": "Invité par",
+            "title": "Appel de correspondance",
+            "description": "Vous avez été invité à participer à un match"
+        }
     }
 }

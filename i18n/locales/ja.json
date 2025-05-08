@@ -99,7 +99,23 @@
                     "telemetry_description": "匿名利用データを共有することで、5スタックの改善を支援します.",
                     "update": "テレメトリー設定更新"
                 },
-                "matchmaking_min_role": "マッチメイキングに参加できる最小限のロール"
+                "matchmaking_min_role": "マッチメイキングに参加できる最小限のロール",
+                "demo_settings": {
+                    "update": "更新",
+                    "title": "デモ設定",
+                    "min_retention": "最小限の保持",
+                    "max_storage": "最高の貯蔵",
+                    "cloudflare_worker_url": "Cloudflareワーカー URL",
+                    "max_storage_description": "GB のデモファイルの最大ストレージサイズ.",
+                    "cloudflare_worker_url_description": "デモファイルを保存および取得するために使用されるCloudflareワーカーのURL.",
+                    "min_retention_description": "デモファイルの最小保持日.",
+                    "current_storage": "現在の貯蔵",
+                    "used_storage": "使用されるおよその貯蔵"
+                },
+                "update_map_pools": {
+                    "title": "自動更新マッププール",
+                    "description": "アクティブデューティプールから新しいマップを追加または削除したときに、自動的にマッププールを追加/更新します."
+                }
             },
             "language": {
                 "title": "用語集",
@@ -199,8 +215,8 @@
                 "ports_tooltip": "使用可能なポート範囲",
                 "enabled": "有効",
                 "no_nodes": "ノードがありません",
-                "supports_low_latency": "",
-                "supports_cpu_pinning": ""
+                "supports_low_latency": "低レイテンシに対応",
+                "supports_cpu_pinning": "CPU対応 ピニング"
             },
             "build_id": "ビルドID",
             "last_updated": "最終更新",
@@ -427,7 +443,8 @@
             "remove": "削除",
             "join_lobby": "ロビーに参加",
             "offline": "オフライン",
-            "view_profile": "プロフィールを見る"
+            "view_profile": "プロフィールを見る",
+            "invite_to_match": "プレイヤーにマッチする招待状"
         },
         "confirm": {
             "ready": "準備完了",
@@ -438,7 +455,8 @@
         "temp_banned": "一時BAN",
         "settings_section": {
             "toggle": "設定を調整する"
-        }
+        },
+        "confirm_selection": "確認する"
     },
     "match": {
         "lobby": {
@@ -661,8 +679,7 @@
         },
         "join": {
             "live": "ライブ",
-            "call_organizer": "主催者を呼び出す",
-            "connect": ""
+            "call_organizer": "主催者を呼び出す"
         },
         "check_in": {
             "title": "チェックイン",
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "title": "カスタムマッチ",
         "description": "独自のマッチを作成してカスタマイズします。 ルールを設定し、マップを選択し、パーソナライズされたゲーム体験のために友達を招待します."
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "招待者",
+            "title": "マッチ招待状",
+            "description": "マッチングに参加してくださる"
+        },
+        "invite": {
+            "deny": "拒否",
+            "accept": "承認"
+        }
     }
 }

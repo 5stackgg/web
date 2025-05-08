@@ -99,7 +99,23 @@
                     "telemetry_description": "익명 사용 데이터를 공유하여 5stack을 개선합니다.",
                     "update": "Telemetry 설정 업데이트"
                 },
-                "matchmaking_min_role": "최소 역할은 Matchmaking에 참여하도록 허용"
+                "matchmaking_min_role": "최소 역할은 Matchmaking에 참여하도록 허용",
+                "demo_settings": {
+                    "update": "업데이트",
+                    "title": "데모 설정",
+                    "min_retention": "최소 보유",
+                    "max_storage": "최대 저장",
+                    "cloudflare_worker_url": "Cloudflare 노동자 URL",
+                    "max_storage_description": "GB의 데모 파일에 대한 최대 저장 크기.",
+                    "cloudflare_worker_url_description": "Cloudflare 작업자의 URL은 데모 파일을 저장하고 검색하는 데 사용됩니다.",
+                    "min_retention_description": "데모 파일에 대한 최소 유지 일.",
+                    "current_storage": "현재 저장",
+                    "used_storage": "사용되는 대략적인 저장"
+                },
+                "update_map_pools": {
+                    "title": "자동 업데이트 맵 풀",
+                    "description": "자동 추가 / 업데이트 맵 풀 때 새로운지도가 추가되거나 활성 의무 풀에서 제거."
+                }
             },
             "language": {
                 "title": "* 이름",
@@ -199,8 +215,8 @@
                 "ports_tooltip": "사용 가능한 포트 범위",
                 "enabled": "활성화",
                 "no_nodes": "노드가 없습니다",
-                "supports_low_latency": "",
-                "supports_cpu_pinning": ""
+                "supports_low_latency": "낮은 지연 지원",
+                "supports_cpu_pinning": "지원 CPU 핀닝"
             },
             "build_id": "빌드 ID",
             "last_updated": "마지막 업데이트",
@@ -320,7 +336,8 @@
             "remove": "제거",
             "join_lobby": "로비 참가",
             "offline": "오프라인",
-            "view_profile": "공지사항"
+            "view_profile": "공지사항",
+            "invite_to_match": "Invite Player를 일치"
         },
         "confirm": {
             "ready": "준비",
@@ -331,7 +348,8 @@
         "temp_banned": "임시 차단",
         "settings_section": {
             "toggle": "설정 조정"
-        }
+        },
+        "confirm_selection": "이름 *"
     },
     "match": {
         "lobby": {
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "라이브",
-            "call_organizer": "주최자 호출",
-            "connect": ""
+            "call_organizer": "주최자 호출"
         },
         "check_in": {
             "title": "체크인",
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "title": "주문 일치",
         "description": "자신의 일치를 만들고 사용자 정의합니다. 규칙을 설정하고지도를 선택하고 개인화 된 게임 경험을 초대합니다."
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "초대자",
+            "title": "경기 Invite",
+            "description": "당신은 일치에 초대되었습니다"
+        },
+        "invite": {
+            "deny": "거절",
+            "accept": "수락"
+        }
     }
 }

@@ -99,7 +99,23 @@
                     "telemetry_description": "Ajude a melhorar o 5stack compartilhando dados de uso anônimos.",
                     "update": "Configurações de telemetria atualizadas"
                 },
-                "matchmaking_min_role": "Papel Mínimo Permitido Entrar na Matchmaking"
+                "matchmaking_min_role": "Papel Mínimo Permitido Entrar na Matchmaking",
+                "demo_settings": {
+                    "update": "Atualizar",
+                    "title": "Configuração da Demonstração",
+                    "min_retention": "Retenção mínima",
+                    "max_storage": "Armazenamento Máximo",
+                    "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
+                    "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demonstração em GB.",
+                    "cloudflare_worker_url_description": "O URL do trabalhador Cloudflare que será usado para armazenar e recuperar os arquivos de demonstração.",
+                    "min_retention_description": "Os dias mínimos de retenção para os arquivos de demonstração.",
+                    "current_storage": "Armazenamento atual",
+                    "used_storage": "Armazenamento aproximado usado"
+                },
+                "update_map_pools": {
+                    "title": "Atualizar automaticamente os conjuntos de mapas",
+                    "description": "Adicionar / atualizar automaticamente conjuntos de mapas quando novos mapas são adicionados ou removidos do conjunto de tarefas ativa."
+                }
             },
             "language": {
                 "title": "Língua",
@@ -199,8 +215,8 @@
                 "ports_tooltip": "Intervalo de portas disponível",
                 "enabled": "Ativado",
                 "no_nodes": "Nenhum nó",
-                "supports_low_latency": "",
-                "supports_cpu_pinning": ""
+                "supports_low_latency": "Suporta baixa latência",
+                "supports_cpu_pinning": "Suporta CPU Pinting"
             },
             "build_id": "ID de build",
             "last_updated": "Última atualização",
@@ -320,7 +336,8 @@
             "online": "Online",
             "offline": "Offline",
             "join_lobby": "Entrar no Lobby",
-            "view_profile": "Visualizar perfil"
+            "view_profile": "Visualizar perfil",
+            "invite_to_match": "Convidar o jogador para o jogo"
         },
         "confirm": {
             "ready": "Pronto",
@@ -331,7 +348,8 @@
         "temp_banned": "Banido temporariamente",
         "settings_section": {
             "toggle": "Ajustar as Configurações"
-        }
+        },
+        "confirm_selection": "Confirmando"
     },
     "match": {
         "lobby": {
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "Ao vivo",
-            "call_organizer": "Chamar organizador",
-            "connect": ""
+            "call_organizer": "Chamar organizador"
         },
         "check_in": {
             "title": "Fazer check-in",
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "description": "Crie e personalize seu próprio jogo. Defina regras, escolha mapas e convide amigos para uma experiência de jogo personalizada.",
         "title": "Correspondência Personalizada"
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "Convidado por",
+            "title": "Coincidir convite",
+            "description": "Você foi convidado para participar de um jogo"
+        },
+        "invite": {
+            "deny": "Recusar",
+            "accept": "Aceitar"
+        }
     }
 }

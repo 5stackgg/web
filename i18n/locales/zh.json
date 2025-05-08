@@ -99,7 +99,23 @@
                     "telemetry_description": "",
                     "update": ""
                 },
-                "matchmaking_min_role": ""
+                "matchmaking_min_role": "",
+                "demo_settings": {
+                    "update": "更新",
+                    "title": "",
+                    "min_retention": "",
+                    "max_storage": "",
+                    "cloudflare_worker_url": "",
+                    "max_storage_description": "",
+                    "cloudflare_worker_url_description": "",
+                    "min_retention_description": "",
+                    "current_storage": "",
+                    "used_storage": ""
+                },
+                "update_map_pools": {
+                    "title": "",
+                    "description": ""
+                }
             },
             "matchmaking": {
                 "region": "地区",
@@ -206,7 +222,7 @@
             "last_updated": "最后更新",
             "status": {
                 "offline": "离线",
-                "online": "仅在线",
+                "online": "在线",
                 "setup": "",
                 "not_accepting": ""
             }
@@ -320,7 +336,8 @@
             "online": "在线",
             "join_lobby": "加入大厅",
             "offline": "离线",
-            "view_profile": ""
+            "view_profile": "",
+            "invite_to_match": ""
         },
         "confirm": {
             "ready": "准备就绪",
@@ -331,7 +348,8 @@
         "temp_banned": "临时封禁",
         "settings_section": {
             "toggle": ""
-        }
+        },
+        "confirm_selection": ""
     },
     "match": {
         "lobby": {
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "直播",
-            "call_organizer": "呼叫组织者",
-            "connect": ""
+            "call_organizer": "呼叫组织者"
         },
         "check_in": {
             "title": "签到",
@@ -622,7 +639,7 @@
             "reason_description": "为此制裁提供明确的理由"
         },
         "search": {
-            "online_only": "仅在线",
+            "online_only": "在线",
             "no_players_found": "未找到玩家",
             "found_players": "找到的玩家",
             "placeholder": "搜索玩家..."
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "title": "",
         "description": ""
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "邀请人",
+            "title": "",
+            "description": ""
+        },
+        "invite": {
+            "deny": "拒绝",
+            "accept": "接受"
+        }
     }
 }

@@ -99,7 +99,23 @@
                     "telemetry_description": "Hjælp med at forbedre 5stack ved at dele anonyme brugsdata.",
                     "update": "Indstillinger for telemetri"
                 },
-                "matchmaking_min_role": "Minimum rolle tilladt at deltage i matchmaking"
+                "matchmaking_min_role": "Minimum rolle tilladt at deltage i matchmaking",
+                "demo_settings": {
+                    "update": "Opdater",
+                    "title": "Demo- indstillinger",
+                    "min_retention": "Minimum tilbageholdelse",
+                    "max_storage": "Maksimal opbevaring",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Den maksimale lagerstørrelse for demo-filer i GB.",
+                    "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
+                    "min_retention_description": "Den mindste opbevaring dage for demo-filer.",
+                    "current_storage": "Aktuel opbevaring",
+                    "used_storage": "Omtrentlige opbevaring brugt"
+                },
+                "update_map_pools": {
+                    "title": "Automatisk opdateringskortspil",
+                    "description": "Tilføj / opdater automatisk kortpuljer når nye kort tilføjes eller fjernes fra den aktive duty pool."
+                }
             },
             "language": {
                 "select": "Vælg sprog",
@@ -320,7 +336,8 @@
             "online": "Online",
             "join_lobby": "Tilmeld Lobby",
             "offline": "Offline",
-            "view_profile": "Vis profil"
+            "view_profile": "Vis profil",
+            "invite_to_match": "Inviter spiller til Match"
         },
         "confirm": {
             "ready": "Klar",
@@ -331,7 +348,8 @@
         "temp_banned": "Midlertidigt bannet",
         "settings_section": {
             "toggle": "Justér indstillinger"
-        }
+        },
+        "confirm_selection": "Bekræftelse"
     },
     "match": {
         "lobby": {
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "Live",
-            "call_organizer": "Ring til organisator",
-            "connect": "Deltag i server"
+            "call_organizer": "Ring til organisator"
         },
         "check_in": {
             "title": "Check ind",
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "description": "Opret og tilpasse din egen kamp. Sæt regler, vælge kort, og invitere venner til en personlig gaming oplevelse.",
         "title": "Brugerdefineret match"
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "Inviteret af",
+            "title": "Match Invitér",
+            "description": "Du er blevet inviteret til en kamp"
+        },
+        "invite": {
+            "deny": "Afvis",
+            "accept": "Acceptér"
+        }
     }
 }

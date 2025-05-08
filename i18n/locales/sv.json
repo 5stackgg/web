@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Server Inställningar",
                     "enable_cpu_pinning": "Aktivera CPU Pinning",
-                    "enable_cpu_pinning_description": "Aktivera CPU pinning för bättre prestanda",
+                    "enable_cpu_pinning_description": "Aktivera CPU-pinning på spelservernoder för bättre prestanda",
                     "number_of_cpus_per_server": "Antal CPU per server",
                     "number_of_cpus_per_server_description": "Antal CPU:er att fördela per server",
                     "update": "Uppdatera"
@@ -99,7 +99,23 @@
                     "telemetry_description": "Hjälp till att förbättra 5stack genom att dela anonym användningsdata.",
                     "update": "Telemetriinställningar uppdaterade"
                 },
-                "matchmaking_min_role": "Minsta roll tillåten att gå med Matchmaking"
+                "matchmaking_min_role": "Minsta roll tillåten att gå med Matchmaking",
+                "demo_settings": {
+                    "update": "Uppdatera",
+                    "title": "Demo Inställningar",
+                    "min_retention": "Minsta lagring",
+                    "max_storage": "Maximal lagring",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Den maximala lagringsstorleken för demofilerna i GB.",
+                    "cloudflare_worker_url_description": "URL för Cloudflare-arbetaren som kommer att användas för att lagra och hämta demofilerna.",
+                    "min_retention_description": "Minsta lagringsdagar för demofilerna.",
+                    "current_storage": "Nuvarande lagring",
+                    "used_storage": "Ungefärlig lagring som används"
+                },
+                "update_map_pools": {
+                    "title": "Automatisk uppdatering Map Pools",
+                    "description": "Lägg automatiskt till / uppdatera kartpooler när nya kartor läggs till eller tas bort från den aktiva tullpoolen."
+                }
             },
             "language": {
                 "title": "Språkspråk",
@@ -111,7 +127,7 @@
                 "region": "Region",
                 "title": "Matchmaking Inställningar",
                 "description": "Konfigurera dina matchmaking preferenser och visa regionens latenser.",
-                "average_latency": "Genomsnittlig latens",
+                "average_latency": "Latency",
                 "preferred": "Preferred",
                 "max_acceptable_ping": "Maximal acceptabel Ping",
                 "max_ping_description": "Om inga regioner föredras kommer matchmaking endast att använda regioner med ping under detta värde."
@@ -199,8 +215,8 @@
                 "ports_tooltip": "Vidarebefordrade portar till nod",
                 "enabled": "Aktiverad",
                 "no_nodes": "Inga spelservrar",
-                "supports_low_latency": "",
-                "supports_cpu_pinning": ""
+                "supports_low_latency": "Stöder låg latens",
+                "supports_cpu_pinning": "Stöder CPU Pinning"
             },
             "build_id": "Build ID: {id}",
             "last_updated": "Senast uppdaterad: {date}",
@@ -297,8 +313,8 @@
             "search": "Sök Kartor"
         },
         "map_pool": {
-            "toggle_pool_type": "Karta {map} har varit {typ} för {typ}",
-            "toggle_active_pool": "Karta {map} har varit {typ} för aktiv plikt",
+            "toggle_pool_type": "Uppdaterade Map Pools",
+            "toggle_active_pool": "Kartor Aktivitetsstatus uppdaterad",
             "save_success": "Karta pool sparad framgångsrikt"
         }
     },
@@ -366,7 +382,7 @@
                 "join_discord": "Gå med i Discord"
             },
             "profile": {
-                "my_account": "Mitt Konto",
+                "my_account": "Mina inställningar",
                 "logout": "Logga ut"
             },
             "logout_dialog": {
@@ -815,8 +831,7 @@
         },
         "join": {
             "live": "Match är live",
-            "call_organizer": "Ring efter organisatör",
-            "connect": ""
+            "call_organizer": "Ring efter organisatör"
         },
         "check_in": {
             "title": "Checka in",
@@ -949,25 +964,27 @@
         "friends": {
             "title": "Vänner",
             "sync": "Synkronisera",
-            "search": "Sök",
+            "search": "Lägg till vän",
             "pending_requests": "Väntande förfrågningar",
             "invite_to_lobby": "Bjud in till lobby",
             "remove": "Ta bort",
             "online": "Online",
             "offline": "Offline",
             "join_lobby": "Gå med i Lobby",
-            "view_profile": "Visa profil"
+            "view_profile": "Visa profil",
+            "invite_to_match": "Inbjud spelare till match"
         },
         "confirm": {
             "ready": "Redo",
-            "players": "Spelare i kö"
+            "players": "Spelare redo"
         },
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
         "temp_banned": "Du är tillfälligt bannad från matchmaking",
         "settings_section": {
             "toggle": "Justera inställningar"
-        }
+        },
+        "confirm_selection": "Bekräfta"
     },
     "game_server": {
         "update_cs": "Uppdatera CS",
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "description": "Skapa och anpassa din egen match. Ange regler, välj kartor och bjud in vänner för en personlig spelupplevelse.",
         "title": "Anpassad match"
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "Inbjuden av",
+            "title": "Match Invite",
+            "description": "Du har blivit inbjuden att delta i en match"
+        },
+        "invite": {
+            "deny": "Neka",
+            "accept": "Acceptera"
+        }
     }
 }

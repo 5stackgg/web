@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Servereinstellungen",
                     "enable_cpu_pinning": "CPU aktivieren Pinien",
-                    "enable_cpu_pinning_description": "CPU Pinning für bessere Leistung aktivieren",
+                    "enable_cpu_pinning_description": "Aktivieren Sie CPU Pinning auf Spielserver-Knoten für bessere Leistung",
                     "number_of_cpus_per_server": "Anzahl der CPUs pro Server",
                     "number_of_cpus_per_server_description": "Anzahl der CPUs pro Server zuzuordnen",
                     "update": "Aktualisieren"
@@ -99,7 +99,23 @@
                     "telemetry_description": "Helfen Sie 5stack zu verbessern, indem Sie anonyme Nutzungsdaten teilen.",
                     "update": "Telemetrie-Einstellungen aktualisiert"
                 },
-                "matchmaking_min_role": "Mindeste Rolle erlaubt Matchmaking"
+                "matchmaking_min_role": "Mindeste Rolle erlaubt Matchmaking",
+                "demo_settings": {
+                    "update": "Aktualisieren",
+                    "title": "Demo-Einstellungen",
+                    "min_retention": "Mindestretention",
+                    "max_storage": "Maximale Speicherung",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Die maximale Speichergröße für die Demo-Dateien in GB.",
+                    "cloudflare_worker_url_description": "Die URL des Cloudflare Workers, die verwendet werden, um die Demo-Dateien zu speichern und abzurufen.",
+                    "min_retention_description": "Die Mindesteinhaltungstage für die Demo-Dateien.",
+                    "current_storage": "Aktueller Speicher",
+                    "used_storage": "Benutzter Speicher"
+                },
+                "update_map_pools": {
+                    "title": "Automatisches Update von Kartenpools",
+                    "description": "Fügen Sie automatisch Kartenpools hinzu, wenn neue Karten hinzugefügt oder aus dem aktiven Pflichtpool entfernt werden."
+                }
             },
             "language": {
                 "title": "Sprache",
@@ -110,7 +126,7 @@
             "matchmaking": {
                 "title": "Anpassungseinstellungen",
                 "description": "Konfigurieren Sie Ihre Spieleinstellungen und Ansicht Region Latenzen.",
-                "average_latency": "Durchschnittliche Latency",
+                "average_latency": "Latenz",
                 "preferred": "Bevorzugt",
                 "max_acceptable_ping": "Maximal zulässig Plüsch",
                 "max_ping_description": "Wenn keine Regionen bevorzugt werden, wird Matchmaking nur Bereiche mit ping unter diesem Wert verwenden.",
@@ -297,8 +313,8 @@
             "search": "Landkarten suchen"
         },
         "map_pool": {
-            "toggle_pool_type": "Karte {map} wurde für {type} {type}",
-            "toggle_active_pool": "Karte {map} wurde für aktiven Dienst {type}",
+            "toggle_pool_type": "Aktualisierte Kartenpools",
+            "toggle_active_pool": "Karten Aktivitätsstatus aktualisiert",
             "save_success": "Kartenpool erfolgreich gespeichert"
         }
     },
@@ -313,25 +329,27 @@
         "friends": {
             "title": "Freunde",
             "sync": "Synchronisieren",
-            "search": "Suchen",
+            "search": "In den Warenkorb",
             "pending_requests": "Ausstehende Anfragen",
-            "online": "Online-Freunde",
+            "online": "Nur Online",
             "invite_to_lobby": "In Lobby einladen",
             "remove": "Entfernen",
             "join_lobby": "Lobby beitreten",
             "offline": "Offline",
-            "view_profile": "Profil anzeigen"
+            "view_profile": "Profil anzeigen",
+            "invite_to_match": "Einladen des Spielers zum Match"
         },
         "confirm": {
             "ready": "Bereit",
-            "players": "Spieler in der Warteschlange"
+            "players": "Spieler bereit"
         },
         "banned": "Sie sind vom Matchmaking gesperrt",
         "go_to_match": "Zum Spiel gehen",
         "temp_banned": "Sie sind vorübergehend vom Matchmaking gesperrt",
         "settings_section": {
             "toggle": "Einstellungen anpassen"
-        }
+        },
+        "confirm_selection": "Bestätigung"
     },
     "match": {
         "lobby": {
@@ -422,7 +440,7 @@
                     "options": {
                         "admins": "Administratoren",
                         "coaches": "Trainer",
-                        "everyone": "Alle",
+                        "everyone": "Jeder",
                         "captains": "Coaches / Captains"
                     }
                 },
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "Spiel ist live",
-            "call_organizer": "Organisator anrufen",
-            "connect": "Anmelden"
+            "call_organizer": "Organisator anrufen"
         },
         "check_in": {
             "title": "Einchecken",
@@ -782,7 +799,7 @@
                 "map_pools": "Map Pools"
             },
             "profile": {
-                "my_account": "Mein Konto",
+                "my_account": "Meine Einstellungen",
                 "logout": "Abmelden"
             },
             "footer": {
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "title": "Individuelles Match",
         "description": "Erstellen und anpassen Sie Ihr eigenes Spiel. Regeln festlegen, Karten auswählen und Freunde für ein personalisiertes Spielerlebnis einladen."
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "Eingeladen von",
+            "title": "Invitation des Spiels",
+            "description": "Sie wurden eingeladen, sich an einem Spiel zu beteiligen"
+        },
+        "invite": {
+            "deny": "Ablehnen",
+            "accept": "Annehmen"
+        }
     }
 }

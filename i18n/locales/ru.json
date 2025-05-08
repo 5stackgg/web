@@ -99,7 +99,23 @@
                     "telemetry_description": "Помогите улучшить 5stack путем обмена анонимными данными об использовании.",
                     "update": "Обновленные настройки Telemetry"
                 },
-                "matchmaking_min_role": "Минимальная роль, разрешенная для участия в игре"
+                "matchmaking_min_role": "Минимальная роль, разрешенная для участия в игре",
+                "demo_settings": {
+                    "update": "Обновить",
+                    "title": "Демо-настройки",
+                    "min_retention": "Минимальное удержание",
+                    "max_storage": "Максимальное хранение",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Максимальный размер хранилища для демонстрационных файлов в GB.",
+                    "cloudflare_worker_url_description": "URL сотрудника Cloudflare, который будет использоваться для хранения и извлечения демонстрационных файлов.",
+                    "min_retention_description": "Минимальные дни хранения демо-файлов.",
+                    "current_storage": "Текущее хранение",
+                    "used_storage": "Приблизительное хранение используется"
+                },
+                "update_map_pools": {
+                    "title": "Автоматическое обновление Map Pools",
+                    "description": "Автоматическое добавление/обновление пулов карт при добавлении или удалении новых карт из пула активных операций."
+                }
             },
             "language": {
                 "title": "Язык языка",
@@ -199,8 +215,8 @@
                 "ports_tooltip": "Доступный диапазон портов",
                 "enabled": "Включено",
                 "no_nodes": "Нет узлов",
-                "supports_low_latency": "",
-                "supports_cpu_pinning": ""
+                "supports_low_latency": "Поддерживает низкую задержку",
+                "supports_cpu_pinning": "Поддержка CPU Пиннинг"
             },
             "build_id": "ID сборки",
             "last_updated": "Последнее обновление",
@@ -320,7 +336,8 @@
             "online": "В сети",
             "offline": "Не в сети",
             "join_lobby": "Присоединиться к Лобби",
-            "view_profile": "Просмотр профиля"
+            "view_profile": "Просмотр профиля",
+            "invite_to_match": "Пригласить игрока на матч"
         },
         "confirm": {
             "ready": "Готов",
@@ -331,7 +348,8 @@
         "temp_banned": "Временно забанен",
         "settings_section": {
             "toggle": "Адаптация настроек"
-        }
+        },
+        "confirm_selection": "Подтверждающий"
     },
     "match": {
         "lobby": {
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "В прямом эфире",
-            "call_organizer": "Позвонить организатору",
-            "connect": ""
+            "call_organizer": "Позвонить организатору"
         },
         "check_in": {
             "title": "Зарегистрироваться",
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "description": "Создайте и настройте свой собственный матч. Установите правила, выберите карты и пригласите друзей для персонализированного игрового опыта.",
         "title": "Пользовательский матч"
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "Приглашен",
+            "title": "Пригласить на матч",
+            "description": "Вас пригласили присоединиться к матчу"
+        },
+        "invite": {
+            "deny": "Отклонить",
+            "accept": "Принять"
+        }
     }
 }

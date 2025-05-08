@@ -99,7 +99,23 @@
                     "telemetry_description": "Palīdzēt uzlabot 5stack, daloties ar anonīmu lietošanas datiem.",
                     "update": "Atjaunināti telemetrijas iestatījumi"
                 },
-                "matchmaking_min_role": "Minimālā loma, kas ļauj pievienoties kontaktbiržai"
+                "matchmaking_min_role": "Minimālā loma, kas ļauj pievienoties kontaktbiržai",
+                "demo_settings": {
+                    "update": "Atjaunināt",
+                    "title": "Demonstrācijas iestatījumi",
+                    "min_retention": "Minimālā saglabāšana",
+                    "max_storage": "Maksimālā glabāšana",
+                    "cloudflare_worker_url": "Mākoņu laka darbotāja URL",
+                    "max_storage_description": "Demo failu maksimālais glabāšanas izmērs GB.",
+                    "cloudflare_worker_url_description": "Cloudflare darba ņēmēja URL, kas tiks izmantots demo failu glabāšanai un izguvei.",
+                    "min_retention_description": "Minimālo saglabāšanas dienu demo failiem.",
+                    "current_storage": "Pašreizējā glabāšana",
+                    "used_storage": "Aptuvenais glabāšanas laiks"
+                },
+                "update_map_pools": {
+                    "title": "Automātiski atjaunināt karšu kopnes",
+                    "description": "Automātiski pievienojiet/atjauniniet karšu baseinus, kad tiek pievienotas vai noņemtas jaunas kartes no aktīvā darba baseina."
+                }
             },
             "language": {
                 "select": "Izvēlieties valodu",
@@ -199,14 +215,14 @@
                 "ports_tooltip": "Pieejamais portu diapazons",
                 "enabled": "Iespējots",
                 "no_nodes": "Nav mezglu",
-                "supports_low_latency": "",
-                "supports_cpu_pinning": ""
+                "supports_low_latency": "Atbalsta zemu latentumu",
+                "supports_cpu_pinning": "Atbalsta CPU Skalošana"
             },
             "build_id": "Būvējuma ID",
             "last_updated": "Pēdējais atjauninājums",
             "status": {
                 "offline": "Bezsaistē",
-                "online": "Tikai tiešsaistē",
+                "online": "Tiešsaistē",
                 "setup": "Iestatījumi",
                 "not_accepting": "Nepieņem jaunas atbilstības"
             }
@@ -320,7 +336,8 @@
             "remove": "Noņemt",
             "join_lobby": "Pievienoties lobij",
             "offline": "Bezsaistē",
-            "view_profile": "Skata profils"
+            "view_profile": "Skata profils",
+            "invite_to_match": "Uzlūgt spēlētāju sacensībām"
         },
         "confirm": {
             "ready": "Gatavs",
@@ -331,7 +348,8 @@
         "temp_banned": "Pagaidām aizliegts",
         "settings_section": {
             "toggle": "Pielāgot iestatījumus"
-        }
+        },
+        "confirm_selection": "Apstiprinājums"
     },
     "match": {
         "lobby": {
@@ -554,8 +572,7 @@
         },
         "join": {
             "live": "Tiešraidē",
-            "call_organizer": "Zvanīt organizatoram",
-            "connect": ""
+            "call_organizer": "Zvanīt organizatoram"
         },
         "check_in": {
             "title": "Reģistrēties",
@@ -622,7 +639,7 @@
             "reason_description": "Norādiet skaidru iemeslu šai sankcijai"
         },
         "search": {
-            "online_only": "Tikai tiešsaistē",
+            "online_only": "Tiešsaistē",
             "no_players_found": "Nav atrasti spēlētāji",
             "found_players": "Atrasti spēlētāji",
             "placeholder": "Meklēt spēlētājus..."
@@ -1056,5 +1073,16 @@
     "custom_match": {
         "title": "Pielāgota atbilstība",
         "description": "Izveidot un pielāgot savu spēli. Iestatīt noteikumus, izvēlēties kartes, un uzaicināt draugus personalizētu spēļu pieredzi."
+    },
+    "notifications": {
+        "match": {
+            "invited_by": "Uzaicināja",
+            "title": "Meklēt",
+            "description": "Jūs esat uzaicināts pievienoties mačam"
+        },
+        "invite": {
+            "deny": "Noraidīt",
+            "accept": "Pieņemt"
+        }
     }
 }

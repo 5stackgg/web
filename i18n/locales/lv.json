@@ -85,16 +85,6 @@
                     "type": "Spēles veids",
                     "base_config": "Bāzes konfigurācija (5stack.base.cfg)"
                 },
-                "s3": {
-                    "update": "Atjaunināt",
-                    "title": "Demonstrācijas iestatījumi",
-                    "min_retention": "Minimālā saglabāšana",
-                    "max_storage": "Maksimālā glabāšana",
-                    "cloudflare_worker_url": "Mākoņu laka darbotāja URL",
-                    "max_storage_description": "Demo failu maksimālais glabāšanas izmērs GB.",
-                    "cloudflare_worker_url_description": "Cloudflare darba ņēmēja URL, kas tiks izmantots demo failu glabāšanai un izguvei.",
-                    "min_retention_description": "Minimālo saglabāšanas dienu demo failiem."
-                },
                 "servers": {
                     "title": "Servera iestatījumi",
                     "enable_cpu_pinning": "Ieslēgt CPU Skalošana",
@@ -564,7 +554,8 @@
         },
         "join": {
             "live": "Tiešraidē",
-            "call_organizer": "Zvanīt organizatoram"
+            "call_organizer": "Zvanīt organizatoram",
+            "connect": ""
         },
         "check_in": {
             "title": "Reģistrēties",

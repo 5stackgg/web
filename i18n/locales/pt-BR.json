@@ -85,16 +85,6 @@
                     "type": "Tipo de Jogo",
                     "base_config": "Configuração da Base (5stack.base.cfg)"
                 },
-                "s3": {
-                    "update": "Atualizar",
-                    "title": "Configuração da Demonstração",
-                    "min_retention": "Retenção mínima",
-                    "max_storage": "Armazenamento Máximo",
-                    "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
-                    "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demonstração em GB.",
-                    "cloudflare_worker_url_description": "O URL do trabalhador Cloudflare que será usado para armazenar e recuperar os arquivos de demonstração.",
-                    "min_retention_description": "Os dias mínimos de retenção para os arquivos de demonstração."
-                },
                 "servers": {
                     "title": "Configuração do Servidor",
                     "enable_cpu_pinning": "Habilitar CPU Pinting",
@@ -564,7 +554,8 @@
         },
         "join": {
             "live": "Ao vivo",
-            "call_organizer": "Chamar organizador"
+            "call_organizer": "Chamar organizador",
+            "connect": ""
         },
         "check_in": {
             "title": "Fazer check-in",

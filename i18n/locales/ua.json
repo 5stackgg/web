@@ -85,16 +85,6 @@
                     "type": "Тип гри",
                     "base_config": "База Конфіг (5stack.base.cfg)"
                 },
-                "s3": {
-                    "update": "Оновити",
-                    "title": "Демо налаштування",
-                    "min_retention_description": "Мінімальні дні затримки для демо файлів.",
-                    "min_retention": "Мінімальне затримання",
-                    "max_storage": "Максимальне зберігання",
-                    "cloudflare_worker_url": "Статус на сервери",
-                    "max_storage_description": "Максимальний розмір пам'яті для демо-файлів у GB.",
-                    "cloudflare_worker_url_description": "URL конструктора Cloudflare, який буде використовуватися для зберігання та отримання демо файлів."
-                },
                 "servers": {
                     "title": "Налаштування серверів",
                     "enable_cpu_pinning": "Увімкнути процесор Штани",
@@ -564,7 +554,8 @@
         },
         "join": {
             "live": "Пряма трансляція",
-            "call_organizer": "Викликати організатора"
+            "call_organizer": "Викликати організатора",
+            "connect": ""
         },
         "check_in": {
             "title": "Зареєструватися",

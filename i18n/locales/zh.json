@@ -85,16 +85,6 @@
                     "type": "",
                     "base_config": ""
                 },
-                "s3": {
-                    "update": "更新",
-                    "title": "",
-                    "min_retention": "",
-                    "max_storage": "",
-                    "cloudflare_worker_url": "",
-                    "max_storage_description": "",
-                    "cloudflare_worker_url_description": "",
-                    "min_retention_description": ""
-                },
                 "servers": {
                     "update": "更新",
                     "title": "",
@@ -564,7 +554,8 @@
         },
         "join": {
             "live": "直播",
-            "call_organizer": "呼叫组织者"
+            "call_organizer": "呼叫组织者",
+            "connect": ""
         },
         "check_in": {
             "title": "签到",

@@ -85,16 +85,6 @@
                     "type": "Speltyp",
                     "base_config": "Base Config (5stack.base.cfg)"
                 },
-                "s3": {
-                    "update": "Uppdatera",
-                    "title": "Demo Inställningar",
-                    "cloudflare_worker_url_description": "URL för Cloudflare-arbetaren som kommer att användas för att lagra och hämta demofilerna.",
-                    "min_retention_description": "Minsta lagringsdagar för demofilerna.",
-                    "min_retention": "Minsta lagring",
-                    "max_storage": "Maximal lagring",
-                    "cloudflare_worker_url": "Cloudflare Worker URL",
-                    "max_storage_description": "Den maximala lagringsstorleken för demofilerna i GB."
-                },
                 "servers": {
                     "title": "Server Inställningar",
                     "enable_cpu_pinning": "Aktivera CPU Pinning",
@@ -825,7 +815,8 @@
         },
         "join": {
             "live": "Match är live",
-            "call_organizer": "Ring efter organisatör"
+            "call_organizer": "Ring efter organisatör",
+            "connect": ""
         },
         "check_in": {
             "title": "Checka in",

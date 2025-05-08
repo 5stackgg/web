@@ -85,16 +85,6 @@
                     "description": "ゲーム型コンフィグの管理.",
                     "type": "ゲームの種類"
                 },
-                "s3": {
-                    "update": "更新",
-                    "min_retention": "最小限の保持",
-                    "title": "デモ設定",
-                    "max_storage": "最高の貯蔵",
-                    "cloudflare_worker_url": "Cloudflareワーカー URL",
-                    "max_storage_description": "GB のデモファイルの最大ストレージサイズ.",
-                    "cloudflare_worker_url_description": "デモファイルを保存および取得するために使用されるCloudflareワーカーのURL.",
-                    "min_retention_description": "デモファイルの最小保持日."
-                },
                 "servers": {
                     "title": "サーバー設定",
                     "enable_cpu_pinning": "CPUを有効にする ピニング",
@@ -671,7 +661,8 @@
         },
         "join": {
             "live": "ライブ",
-            "call_organizer": "主催者を呼び出す"
+            "call_organizer": "主催者を呼び出す",
+            "connect": ""
         },
         "check_in": {
             "title": "チェックイン",

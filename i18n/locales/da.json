@@ -85,16 +85,6 @@
                     "type": "Spiltype",
                     "base_config": "Base Config (5stack.base.cfg)"
                 },
-                "s3": {
-                    "update": "Opdater",
-                    "title": "Demo- indstillinger",
-                    "min_retention": "Minimum tilbageholdelse",
-                    "max_storage": "Maksimal opbevaring",
-                    "cloudflare_worker_url": "Cloudflare Worker URL",
-                    "max_storage_description": "Den maksimale lagerstørrelse for demo-filer i GB.",
-                    "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
-                    "min_retention_description": "Den mindste opbevaring dage for demo-filer."
-                },
                 "servers": {
                     "title": "Serverindstillinger",
                     "enable_cpu_pinning": "Aktivér CPU Rinning",
@@ -564,7 +554,8 @@
         },
         "join": {
             "live": "Live",
-            "call_organizer": "Ring til organisator"
+            "call_organizer": "Ring til organisator",
+            "connect": "Deltag i server"
         },
         "check_in": {
             "title": "Check ind",

@@ -35,21 +35,6 @@
             "search": "Rechercher"
         },
         "settings": {
-            "profile": {
-                "title": "Paramètres du profil",
-                "description": "Gérer les paramètres du compte",
-                "name": "Nom",
-                "avatar_url": "URL de l'avatar",
-                "country": "Pays",
-                "select_country": "Sélectionner un pays",
-                "search_country": "Rechercher un pays...",
-                "no_country_found": "Aucun pays trouvé",
-                "update": "Mettre à jour le profil",
-                "language": "Langue",
-                "my_account": "Mon dossier",
-                "appearance": "Apparence",
-                "matchmaking": "Matchmaking"
-            },
             "appearance": {
                 "title": "Apparence",
                 "description": "Personnaliser l'apparence de l'application",
@@ -131,6 +116,32 @@
                 "max_acceptable_ping": "Maximum acceptable Ping",
                 "max_ping_description": "Si aucune région n'est préférée, l'appariement n'utilisera que des régions dont le ping est inférieur à cette valeur.",
                 "region": "Région"
+            },
+            "account": {
+                "title": "Paramètres du compte",
+                "description": "Détails de votre compte",
+                "my_account": "Mon dossier",
+                "avatar_url": "URL Avatar",
+                "country": "Pays",
+                "select_country": "Sélectionner un pays...",
+                "search_country": "Pays de recherche...",
+                "no_country_found": "Aucun pays trouvé.",
+                "update": "Mettre à jour le compte",
+                "update_success": "Profil mis à jour",
+                "discord": {
+                    "unlink": "Déconnecter la discorde",
+                    "link": "Lien Discorde",
+                    "unlink_dialog": {
+                        "title": "Déconnecter le compte Discord",
+                        "description": "Voulez-vous vraiment déconnecter votre compte Discord ? Cela supprimera la connexion entre vos comptes 5Stack et Discord.",
+                        "confirm": "Déconnecter",
+                        "cancel": "Annuler"
+                    },
+                    "unlinked": "Discord compte déconnecté avec succès"
+                },
+                "appearance": "Apparence",
+                "matchmaking": "Matchmaking",
+                "name": "Nom"
             }
         },
         "regions": {
@@ -740,21 +751,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "Paramètres du profil",
-            "description": "Gérer les informations du profil",
-            "discord": {
-                "unlink": "Délier Discord",
-                "link": "Lier Discord",
-                "unlink_dialog": {
-                    "title": "Délier Discord",
-                    "description": "Voulez-vous vraiment délier Discord ?",
-                    "cancel": "Annuler",
-                    "confirm": "Délier"
-                },
-                "unlinked": "Discord a été délié"
-            }
-        },
         "application_settings": {
             "title": "Paramètres de l'application",
             "description": "Gérer les paramètres de l'application"
@@ -800,7 +796,8 @@
             },
             "profile": {
                 "my_account": "Mes paramètres",
-                "logout": "Déconnexion"
+                "logout": "Déconnexion",
+                "my_profile": "Mon profil"
             },
             "footer": {
                 "report_issue": "Signaler un Problème",
@@ -829,6 +826,10 @@
                 "cancel": "Annuler",
                 "confirm": "Déconnexion"
             }
+        },
+        "account_settings": {
+            "title": "Paramètres du compte",
+            "description": "Gérer les paramètres et préférences de votre compte"
         }
     },
     "pwa": {

@@ -35,21 +35,6 @@
             "search": "Поиск"
         },
         "settings": {
-            "profile": {
-                "title": "Настройки профиля",
-                "description": "Управление настройками аккаунта",
-                "name": "Название",
-                "avatar_url": "URL аватара",
-                "country": "Страна",
-                "select_country": "Выберите страну",
-                "search_country": "Поиск страны...",
-                "no_country_found": "Страны не найдены",
-                "update": "Обновить профиль",
-                "language": "Язык языка",
-                "appearance": "Внешний вид",
-                "my_account": "Мой счет",
-                "matchmaking": "Матчмейкинг"
-            },
             "appearance": {
                 "title": "Внешний вид",
                 "description": "Настройка внешнего вида приложения",
@@ -131,6 +116,32 @@
                 "preferred": "Предпочтительный",
                 "max_acceptable_ping": "Максимально приемлемый Пинг",
                 "max_ping_description": "Если регионы не являются предпочтительными, сватовство будет использовать только регионы с пингом ниже этого значения."
+            },
+            "account": {
+                "title": "Настройки аккаунта",
+                "description": "Подробности вашего аккаунта",
+                "my_account": "Мой счет",
+                "avatar_url": "URL аватара",
+                "country": "Страна",
+                "select_country": "Выберите страну...",
+                "search_country": "Поиск по стране...",
+                "no_country_found": "Ни одна страна не найдена.",
+                "update": "Обновление аккаунта",
+                "update_success": "Обновленный профиль",
+                "discord": {
+                    "unlink": "Разногласия Unlink",
+                    "link": "Диссонация Link",
+                    "unlink_dialog": {
+                        "title": "Учетная запись Unlink Discord",
+                        "description": "Вы уверены, что хотите удалить свою учетную запись Discord? Это удалит связь между вашими учетными записями 5Stack и Discord.",
+                        "confirm": "Ссылка",
+                        "cancel": "Отмена"
+                    },
+                    "unlinked": "Удачно несвязанный аккаунт"
+                },
+                "appearance": "Внешний вид",
+                "name": "Название",
+                "matchmaking": "Матчмейкинг"
             }
         },
         "regions": {
@@ -740,21 +751,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "Настройки профиля",
-            "description": "Управление информацией профиля",
-            "discord": {
-                "unlink": "Отвязать Discord",
-                "link": "Привязать Discord",
-                "unlink_dialog": {
-                    "title": "Отвязать Discord",
-                    "description": "Вы уверены, что хотите отвязать Discord?",
-                    "cancel": "Отмена",
-                    "confirm": "Отвязать"
-                },
-                "unlinked": "Discord отвязан"
-            }
-        },
         "application_settings": {
             "title": "Настройки приложения",
             "description": "Управление настройками приложения"
@@ -804,7 +800,8 @@
             },
             "profile": {
                 "my_account": "Мои настройки",
-                "logout": "Выйти"
+                "logout": "Выйти",
+                "my_profile": "Мой профиль"
             },
             "tooltips": {
                 "play": "Играть",
@@ -829,6 +826,10 @@
                 "cancel": "Отмена",
                 "confirm": "Выйти"
             }
+        },
+        "account_settings": {
+            "title": "Настройки аккаунта",
+            "description": "Управляйте настройками и предпочтениями вашей учетной записи"
         }
     },
     "pwa": {

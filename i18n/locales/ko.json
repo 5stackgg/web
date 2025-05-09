@@ -35,21 +35,6 @@
             "search": "검색"
         },
         "settings": {
-            "profile": {
-                "title": "프로필 설정",
-                "description": "계정 설정 관리",
-                "name": "이름",
-                "avatar_url": "아바타 URL",
-                "country": "국가",
-                "select_country": "국가 선택",
-                "search_country": "국가 검색...",
-                "no_country_found": "국가를 찾을 수 없습니다",
-                "update": "프로필 업데이트",
-                "language": "* 이름",
-                "my_account": "내 계정",
-                "appearance": "외관 설정",
-                "matchmaking": "매치메이킹"
-            },
             "appearance": {
                 "title": "외관 설정",
                 "description": "애플리케이션 외관 커스터마이징",
@@ -131,6 +116,32 @@
                 "preferred": "이름 *",
                 "max_acceptable_ping": "최대 수락가능한 핑거",
                 "max_ping_description": "지역이 선호되지 않는 경우, matchmaking는 이 값의 밑에 ping를 가진 단지 사용 지구일 것입니다."
+            },
+            "account": {
+                "title": "계정 설정",
+                "description": "계정 세부 정보",
+                "my_account": "내 계정",
+                "avatar_url": "URL 복사",
+                "country": "국가 *",
+                "select_country": "국가 선택 ...",
+                "search_country": "검색 국가...",
+                "no_country_found": "찾을 수 없습니다.",
+                "update": "공지사항",
+                "update_success": "자주 묻는 질문",
+                "discord": {
+                    "unlink": "링크 Discord",
+                    "link": "링크 Discord",
+                    "unlink_dialog": {
+                        "title": "Unlink Discord 계정",
+                        "description": "Discord 계정을 연결하지 않겠습니까? 5Stack과 Discord 계정 간의 연결을 제거합니다.",
+                        "confirm": "관련 상품",
+                        "cancel": "취소"
+                    },
+                    "unlinked": "Discord 계정이 성공적으로 연결되지 않았습니다"
+                },
+                "appearance": "외관 설정",
+                "name": "이름",
+                "matchmaking": "매치메이킹"
             }
         },
         "regions": {
@@ -740,21 +751,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "프로필 설정",
-            "description": "프로필 정보 관리",
-            "discord": {
-                "unlink": "Discord 연결 해제",
-                "link": "Discord 연결",
-                "unlink_dialog": {
-                    "title": "Discord 연결 해제",
-                    "description": "Discord 연결을 해제하시겠습니까?",
-                    "cancel": "취소",
-                    "confirm": "연결 해제"
-                },
-                "unlinked": "Discord 연결이 해제되었습니다"
-            }
-        },
         "application_settings": {
             "title": "애플리케이션 설정",
             "description": "애플리케이션 설정 관리"
@@ -800,7 +796,8 @@
             },
             "profile": {
                 "my_account": "내 설정",
-                "logout": "로그아웃"
+                "logout": "로그아웃",
+                "my_profile": "내 프로필"
             },
             "footer": {
                 "report_issue": "문제 보고",
@@ -829,6 +826,10 @@
                 "cancel": "취소",
                 "confirm": "로그아웃"
             }
+        },
+        "account_settings": {
+            "title": "계정 설정",
+            "description": "계정 설정 및 선호 사항 관리"
         }
     },
     "pwa": {

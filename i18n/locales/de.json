@@ -35,21 +35,6 @@
             "search": "Suchen"
         },
         "settings": {
-            "profile": {
-                "title": "Profil-Einstellungen",
-                "description": "Kontoeinstellungen verwalten",
-                "name": "Name",
-                "avatar_url": "Avatar-URL",
-                "country": "Land",
-                "select_country": "Land auswählen",
-                "search_country": "Land suchen...",
-                "no_country_found": "Kein Land gefunden",
-                "update": "Profil aktualisieren",
-                "language": "Sprache",
-                "my_account": "Mein Konto",
-                "appearance": "Erscheinungsbild",
-                "matchmaking": "Matchmaking"
-            },
             "appearance": {
                 "title": "Erscheinungsbild",
                 "description": "Anpassung des Anwendungsaussehens",
@@ -131,6 +116,32 @@
                 "max_acceptable_ping": "Maximal zulässig Plüsch",
                 "max_ping_description": "Wenn keine Regionen bevorzugt werden, wird Matchmaking nur Bereiche mit ping unter diesem Wert verwenden.",
                 "region": "Region"
+            },
+            "account": {
+                "title": "Kontoeinstellungen",
+                "description": "Ihr Konto Details",
+                "my_account": "Mein Konto",
+                "avatar_url": "Avatar URL",
+                "country": "Land",
+                "select_country": "Wählen Sie Land...",
+                "search_country": "Suchland...",
+                "no_country_found": "Kein Land gefunden.",
+                "update": "Update-Konto",
+                "update_success": "Aktualisiertes Profil",
+                "discord": {
+                    "unlink": "Unlink Discord",
+                    "link": "Link zur Übersicht",
+                    "unlink_dialog": {
+                        "title": "Unlink Discord Account",
+                        "description": "Sind Sie sicher, dass Sie Ihr Discord-Konto deaktivieren möchten? Dies wird die Verbindung zwischen Ihren 5Stack- und Discord-Konten entfernen.",
+                        "confirm": "Unlink",
+                        "cancel": "Abbrechen"
+                    },
+                    "unlinked": "Discord Account unverlinkt erfolgreich"
+                },
+                "appearance": "Erscheinungsbild",
+                "matchmaking": "Matchmaking",
+                "name": "Name"
             }
         },
         "regions": {
@@ -740,21 +751,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "Profil-Einstellungen",
-            "description": "Profilinformationen verwalten",
-            "discord": {
-                "unlink": "Discord-Verbindung aufheben",
-                "link": "Mit Discord verbinden",
-                "unlink_dialog": {
-                    "title": "Discord-Verbindung aufheben",
-                    "description": "Möchten Sie die Discord-Verbindung wirklich aufheben?",
-                    "cancel": "Abbrechen",
-                    "confirm": "Verbindung aufheben"
-                },
-                "unlinked": "Discord-Verbindung wurde aufgehoben"
-            }
-        },
         "application_settings": {
             "title": "Anwendungseinstellungen",
             "description": "Anwendungseinstellungen verwalten"
@@ -800,7 +796,8 @@
             },
             "profile": {
                 "my_account": "Meine Einstellungen",
-                "logout": "Abmelden"
+                "logout": "Abmelden",
+                "my_profile": "Mein Profil"
             },
             "footer": {
                 "report_issue": "Problem melden",
@@ -829,6 +826,10 @@
                 "cancel": "Abbrechen",
                 "confirm": "Abmelden"
             }
+        },
+        "account_settings": {
+            "title": "Kontoeinstellungen",
+            "description": "Verwalten Sie Ihre Kontoeinstellungen und Präferenzen"
         }
     },
     "pwa": {

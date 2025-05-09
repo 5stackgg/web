@@ -35,21 +35,6 @@
             "search": "検索..."
         },
         "settings": {
-            "profile": {
-                "title": "プロフィール設定",
-                "description": "アカウント設定を管理",
-                "name": "名前",
-                "avatar_url": "アバターURL",
-                "country": "国",
-                "select_country": "国を選択",
-                "search_country": "国を検索...",
-                "no_country_found": "国が見つかりません",
-                "update": "プロフィールを更新",
-                "language": "用語集",
-                "my_account": "私のアカウント",
-                "appearance": "外観設定",
-                "matchmaking": "マッチメイキング"
-            },
             "appearance": {
                 "title": "外観設定",
                 "description": "アプリケーションの外観をカスタマイズ",
@@ -131,6 +116,32 @@
                 "preferred": "採用情報",
                 "max_acceptable_ping": "最高の受諾可能 ピン",
                 "max_ping_description": "地域が好まない場合は、マッチメイキングは、この値の下のpingでのみ使用します."
+            },
+            "account": {
+                "name": "名前",
+                "appearance": "外観設定",
+                "matchmaking": "マッチメイキング",
+                "discord": {
+                    "unlink_dialog": {
+                        "cancel": "キャンセル",
+                        "title": "Unlink Discordアカウント",
+                        "description": "Discordアカウントをアンインストールしますか? 5StackとDiscordアカウント間の接続を削除します.",
+                        "confirm": "ダウンロード"
+                    },
+                    "unlink": "UnlinkのDiscord",
+                    "link": "リンクの記録",
+                    "unlinked": "Discordアカウントが正常にリンクされていない"
+                },
+                "title": "アカウント設定",
+                "description": "あなたのアカウントの詳細",
+                "my_account": "私のアカウント",
+                "avatar_url": "アバター URL",
+                "country": "カントリー",
+                "select_country": "国を選択.",
+                "search_country": "国を検索...",
+                "no_country_found": "国が見つかりません.",
+                "update": "アカウントの更新",
+                "update_success": "プロフィール"
             }
         },
         "regions": {
@@ -319,21 +330,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "プロフィール設定",
-            "description": "アカウント設定を管理",
-            "discord": {
-                "unlink": "Discordの連携を解除",
-                "link": "Discordと連携",
-                "unlink_dialog": {
-                    "title": "Discordの連携を解除",
-                    "description": "Discordの連携を解除してもよろしいですか？",
-                    "cancel": "キャンセル",
-                    "confirm": "連携を解除"
-                },
-                "unlinked": "Discordの連携が解除されました"
-            }
-        },
         "application_settings": {
             "title": "アプリケーション設定",
             "description": "アプリケーションの設定を管理"
@@ -383,7 +379,8 @@
             },
             "profile": {
                 "my_account": "私の設定",
-                "logout": "ログアウト"
+                "logout": "ログアウト",
+                "my_profile": "私のプロフィール"
             },
             "logout_dialog": {
                 "title": "ログアウト",
@@ -408,6 +405,10 @@
                 "join_discord": "Discordに参加",
                 "map_pools": "マッププール"
             }
+        },
+        "account_settings": {
+            "title": "アカウント設定",
+            "description": "アカウント設定と設定の管理"
         }
     },
     "common": {

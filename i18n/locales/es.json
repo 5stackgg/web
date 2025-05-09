@@ -35,21 +35,6 @@
             "search": "Buscar"
         },
         "settings": {
-            "profile": {
-                "title": "Configuración de perfil",
-                "description": "Gestiona la configuración de tu cuenta",
-                "name": "Nombre",
-                "avatar_url": "URL de avatar",
-                "country": "País",
-                "select_country": "Seleccionar país",
-                "search_country": "Buscar país...",
-                "no_country_found": "No se encontraron países",
-                "update": "Actualizar Perfil",
-                "language": "Idioma",
-                "my_account": "Mi cuenta",
-                "appearance": "Apariencia",
-                "matchmaking": "Matchmaking"
-            },
             "appearance": {
                 "title": "Apariencia",
                 "description": "Personaliza la apariencia de la aplicación",
@@ -131,6 +116,32 @@
                 "max_acceptable_ping": "Maximum Aceptable Ping",
                 "max_ping_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con ping por debajo de este valor.",
                 "region": "Región"
+            },
+            "account": {
+                "title": "Ajustes de la cuenta",
+                "description": "Detalles de su cuenta",
+                "my_account": "Mi cuenta",
+                "avatar_url": "URL de Avatar",
+                "country": "País",
+                "select_country": "Seleccionar país...",
+                "search_country": "País de búsqueda...",
+                "no_country_found": "No hay país encontrado.",
+                "update": "Cuenta de actualización",
+                "update_success": "Perfil actualizado",
+                "discord": {
+                    "unlink": "Unlink Discord",
+                    "link": "Link Discord",
+                    "unlink_dialog": {
+                        "title": "Cuenta de discordia sin conexión",
+                        "description": "¿Seguro que quieres desconectar tu cuenta de discordia? Esto eliminará la conexión entre sus cuentas de 5Stack y Discord.",
+                        "confirm": "Unlink",
+                        "cancel": "Cancelar"
+                    },
+                    "unlinked": "Cuenta de discordia sin conexión con éxito"
+                },
+                "appearance": "Apariencia",
+                "matchmaking": "Matchmaking",
+                "name": "Nombre"
             }
         },
         "regions": {
@@ -740,21 +751,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "Configuración de perfil",
-            "description": "Gestiona la información de tu perfil",
-            "discord": {
-                "unlink": "Desvincular Discord",
-                "link": "Vincular Discord",
-                "unlink_dialog": {
-                    "title": "Desvincular Discord",
-                    "description": "¿Estás seguro de que quieres desvincular Discord?",
-                    "cancel": "Cancelar",
-                    "confirm": "Desvincular"
-                },
-                "unlinked": "Discord ha sido desvinculado"
-            }
-        },
         "application_settings": {
             "title": "Configuración de aplicación",
             "description": "Gestiona la configuración de la aplicación"
@@ -800,7 +796,8 @@
             },
             "profile": {
                 "my_account": "Mis ajustes",
-                "logout": "Cerrar Sesión"
+                "logout": "Cerrar Sesión",
+                "my_profile": "Mi perfil"
             },
             "footer": {
                 "report_issue": "Reportar un Problema",
@@ -829,6 +826,10 @@
                 "cancel": "Cancelar",
                 "confirm": "Cerrar Sesión"
             }
+        },
+        "account_settings": {
+            "title": "Ajustes de la cuenta",
+            "description": "Administrar los ajustes y preferencias de su cuenta"
         }
     },
     "pwa": {

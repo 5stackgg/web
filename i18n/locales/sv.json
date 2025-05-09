@@ -35,21 +35,6 @@
             "search": "Sök..."
         },
         "settings": {
-            "profile": {
-                "title": "Profil",
-                "description": "Dina profildetaljer",
-                "name": "Namn",
-                "avatar_url": "Profilbilds-URL",
-                "country": "Land",
-                "select_country": "Välj land...",
-                "search_country": "Sök land...",
-                "no_country_found": "Inget land hittades.",
-                "update": "Uppdatera profil",
-                "language": "Språkspråk",
-                "my_account": "Mitt konto",
-                "appearance": "Utseende",
-                "matchmaking": "Matchmaking"
-            },
             "appearance": {
                 "title": "Utseende",
                 "description": "Anpassa appens utseende. Växla automatiskt mellan ljust och mörkt tema.",
@@ -131,6 +116,32 @@
                 "preferred": "Preferred",
                 "max_acceptable_ping": "Maximal acceptabel Ping",
                 "max_ping_description": "Om inga regioner föredras kommer matchmaking endast att använda regioner med ping under detta värde."
+            },
+            "account": {
+                "name": "Namn",
+                "appearance": "Utseende",
+                "matchmaking": "Matchmaking",
+                "discord": {
+                    "unlink_dialog": {
+                        "cancel": "Avbryt",
+                        "title": "Unlink Discord-konto",
+                        "description": "Är du säker på att du vill koppla bort ditt Discord-konto? Detta tar bort anslutningen mellan dina 5Stack- och Discord-konton.",
+                        "confirm": "Unlink"
+                    },
+                    "unlink": "Unlink Discord",
+                    "link": "Link Discord",
+                    "unlinked": "Discord konto unlinked framgångsrikt"
+                },
+                "title": "Kontoinställningar",
+                "description": "Ditt konto detaljer",
+                "my_account": "Mitt konto",
+                "avatar_url": "Avatar URL",
+                "country": "Landet",
+                "select_country": "Välj land...",
+                "search_country": "Sök land...",
+                "no_country_found": "Inget land hittades.",
+                "update": "Uppdatera konto",
+                "update_success": "Uppdaterad profil"
             }
         },
         "regions": {
@@ -319,21 +330,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "Profilinställningar",
-            "description": "Hantera dina kontoinställningar och preferenser",
-            "discord": {
-                "unlink": "Koppla bort Discord",
-                "link": "Koppla Discord",
-                "unlink_dialog": {
-                    "title": "Koppla bort Discord-konto",
-                    "description": "Är du säker på att du vill koppla bort ditt Discord-konto? Detta kommer ta bort anslutningen mellan dina 5Stack- och Discord-konton.",
-                    "cancel": "Avbryt",
-                    "confirm": "Koppla bort"
-                },
-                "unlinked": "Discord-konto kopplat bort framgångsrikt"
-            }
-        },
         "application_settings": {
             "title": "Applikationsinställningar",
             "description": "Inställningar som påverkar applikationen."
@@ -383,7 +379,8 @@
             },
             "profile": {
                 "my_account": "Mina inställningar",
-                "logout": "Logga ut"
+                "logout": "Logga ut",
+                "my_profile": "Min profil"
             },
             "logout_dialog": {
                 "title": "Logga ut",
@@ -408,6 +405,10 @@
                 "join_discord": "Gå med i Discord",
                 "map_pools": "Kartpooler"
             }
+        },
+        "account_settings": {
+            "title": "Kontoinställningar",
+            "description": "Hantera dina kontoinställningar och preferenser"
         }
     },
     "pwa": {

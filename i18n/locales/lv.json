@@ -35,21 +35,6 @@
             "search": "Meklēt"
         },
         "settings": {
-            "profile": {
-                "title": "Profila iestatījumi",
-                "description": "Konta iestatījumu pārvaldība",
-                "name": "Nosaukums",
-                "avatar_url": "Avatara URL",
-                "country": "Valsts",
-                "select_country": "Izvēlieties valsti",
-                "search_country": "Meklēt valsti...",
-                "no_country_found": "Nav atrastas valstis",
-                "update": "Atjaunināt profilu",
-                "language": "Valoda",
-                "my_account": "Mans konts",
-                "appearance": "Izskats",
-                "matchmaking": "Spēļu meklēšana"
-            },
             "appearance": {
                 "title": "Izskats",
                 "description": "Lietotnes izskata iestatīšana",
@@ -131,6 +116,32 @@
                 "preferred": "Vēlamais",
                 "max_acceptable_ping": "Maksimāli pieņemams Ping",
                 "max_ping_description": "Ja reģionus neizvēlas, kontaktbirža izmantos tikai tos reģionus, kuru pingi ir zemāki par šo vērtību."
+            },
+            "account": {
+                "title": "Konta iestatījumi",
+                "description": "Jūsu konta informācija",
+                "my_account": "Mans konts",
+                "avatar_url": "Avatars URL",
+                "country": "Valsts",
+                "select_country": "Izvēlēties valsti...",
+                "search_country": "Meklēšanas valsts...",
+                "no_country_found": "Valsts nav atrasta.",
+                "update": "Atjaunināt kontu",
+                "update_success": "Atjaunināts profils",
+                "discord": {
+                    "unlink": "Atsaistīt nesaskaņas",
+                    "link": "Saites neatbilstības",
+                    "unlink_dialog": {
+                        "title": "Nesaistīt nesaskaņu kontu",
+                        "description": "Vai tiešām vēlaties atsaistīt savu Discord kontu? Tas novērsīs saistību starp jūsu 5Stack un Discord kontiem.",
+                        "confirm": "Atsaistīt",
+                        "cancel": "Atcelt"
+                    },
+                    "unlinked": "Neatbilstības konts veiksmīgi piesaistīts"
+                },
+                "appearance": "Izskats",
+                "matchmaking": "Spēļu meklēšana",
+                "name": "Nosaukums"
             }
         },
         "regions": {
@@ -740,21 +751,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "Profila iestatījumi",
-            "description": "Profila informācijas pārvaldība",
-            "discord": {
-                "unlink": "Atvienot Discord",
-                "link": "Pievienot Discord",
-                "unlink_dialog": {
-                    "title": "Atvienot Discord",
-                    "description": "Vai tiešām vēlaties atvienot Discord?",
-                    "cancel": "Atcelt",
-                    "confirm": "Atvienot"
-                },
-                "unlinked": "Discord atvienots"
-            }
-        },
         "application_settings": {
             "title": "Lietotnes iestatījumi",
             "description": "Lietotnes iestatījumu pārvaldība"
@@ -804,7 +800,8 @@
             },
             "profile": {
                 "my_account": "Mani iestatījumi",
-                "logout": "Izrakstīties"
+                "logout": "Izrakstīties",
+                "my_profile": "Mans profils"
             },
             "logout_dialog": {
                 "title": "Izrakstīties",
@@ -829,6 +826,10 @@
                 "join_discord": "Pievienoties Discord",
                 "map_pools": "Kartu Kopas"
             }
+        },
+        "account_settings": {
+            "title": "Konta iestatījumi",
+            "description": "Pārvaldīt konta iestatījumus un iestatījumus"
         }
     },
     "pwa": {

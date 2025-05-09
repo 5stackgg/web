@@ -35,21 +35,6 @@
             "search": "Szukaj"
         },
         "settings": {
-            "profile": {
-                "title": "Ustawienia profilu",
-                "description": "Zarządzaj ustawieniami konta",
-                "name": "Nazwa",
-                "avatar_url": "URL avatara",
-                "country": "Kraj",
-                "select_country": "Wybierz kraj",
-                "search_country": "Szukaj kraju...",
-                "no_country_found": "Nie znaleziono krajów",
-                "update": "Aktualizuj profil",
-                "language": "Język",
-                "my_account": "Moje konto",
-                "appearance": "Wygląd",
-                "matchmaking": "Matchmaking"
-            },
             "appearance": {
                 "title": "Wygląd",
                 "description": "Dostosuj wygląd aplikacji",
@@ -131,6 +116,32 @@
                 "max_acceptable_ping": "Maksymalna dopuszczalna Ping",
                 "max_ping_description": "Jeżeli żadne regiony nie są preferowane, tworzenie zapałek będzie miało zastosowanie tylko w regionach o wartości poniżej tej wartości.",
                 "region": "Region"
+            },
+            "account": {
+                "title": "Ustawienia konta",
+                "description": "Szczegóły konta",
+                "my_account": "Moje konto",
+                "avatar_url": "Avatar URL",
+                "country": "Kraj",
+                "select_country": "Wybierz kraj...",
+                "search_country": "Kraj poszukiwań...",
+                "no_country_found": "Nie znaleziono żadnego kraju.",
+                "update": "Aktualizacja konta",
+                "update_success": "Aktualizacja profilu",
+                "discord": {
+                    "unlink": "Rozwiąż problem",
+                    "link": "Link Discord",
+                    "unlink_dialog": {
+                        "title": "Odłącz konto Discord",
+                        "description": "Na pewno chcesz odłączyć konto Discord? To usunie połączenie pomiędzy kontami 5Stack i Discord.",
+                        "confirm": "Odłącz",
+                        "cancel": "Anuluj"
+                    },
+                    "unlinked": "Konto Discord niepołączone pomyślnie"
+                },
+                "appearance": "Wygląd",
+                "name": "Nazwa",
+                "matchmaking": "Matchmaking"
             }
         },
         "regions": {
@@ -740,21 +751,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "Ustawienia profilu",
-            "description": "Zarządzaj informacjami profilu",
-            "discord": {
-                "unlink": "Odłącz Discord",
-                "link": "Połącz Discord",
-                "unlink_dialog": {
-                    "title": "Odłącz Discord",
-                    "description": "Czy na pewno chcesz odłączyć Discord?",
-                    "cancel": "Anuluj",
-                    "confirm": "Odłącz"
-                },
-                "unlinked": "Discord został odłączony"
-            }
-        },
         "application_settings": {
             "title": "Ustawienia aplikacji",
             "description": "Zarządzaj ustawieniami aplikacji"
@@ -800,7 +796,8 @@
             },
             "profile": {
                 "my_account": "Moje ustawienia",
-                "logout": "Wyloguj"
+                "logout": "Wyloguj",
+                "my_profile": "Mój profil"
             },
             "footer": {
                 "report_issue": "Zgłoś Problem",
@@ -829,6 +826,10 @@
                 "cancel": "Anuluj",
                 "confirm": "Wyloguj"
             }
+        },
+        "account_settings": {
+            "title": "Ustawienia konta",
+            "description": "Zarządzanie ustawieniami i preferencjami konta"
         }
     },
     "pwa": {

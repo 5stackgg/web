@@ -35,21 +35,6 @@
             "search": "搜索"
         },
         "settings": {
-            "profile": {
-                "title": "个人资料设置",
-                "description": "账户设置管理",
-                "name": "名称",
-                "avatar_url": "头像URL",
-                "country": "国家",
-                "select_country": "选择国家",
-                "search_country": "搜索国家...",
-                "no_country_found": "未找到国家",
-                "update": "更新个人资料",
-                "appearance": "外观",
-                "matchmaking": "匹配",
-                "my_account": "",
-                "language": ""
-            },
             "appearance": {
                 "title": "外观",
                 "description": "应用程序外观设置",
@@ -131,6 +116,16 @@
                 "description": "",
                 "select": "",
                 "search": ""
+            },
+            "account": {
+                "appearance": "外观",
+                "matchmaking": "匹配",
+                "name": "名称",
+                "discord": {
+                    "unlink_dialog": {
+                        "cancel": "取消"
+                    }
+                }
             }
         },
         "regions": {
@@ -740,21 +735,6 @@
         }
     },
     "layouts": {
-        "profile_settings": {
-            "title": "个人资料设置",
-            "description": "个人资料信息管理",
-            "discord": {
-                "unlink": "解除Discord链接",
-                "link": "链接Discord",
-                "unlink_dialog": {
-                    "title": "解除Discord链接",
-                    "description": "确定要解除Discord链接吗？",
-                    "cancel": "取消",
-                    "confirm": "解除"
-                },
-                "unlinked": "Discord已解除链接"
-            }
-        },
         "application_settings": {
             "title": "应用程序设置",
             "description": "应用程序设置管理"

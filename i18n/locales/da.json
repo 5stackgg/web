@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Serverindstillinger",
                     "enable_cpu_pinning": "Aktivér CPU Rinning",
-                    "enable_cpu_pinning_description": "Aktivér CPU-pinning for bedre ydeevne",
+                    "enable_cpu_pinning_description": "Aktivér CPU-pinning på spilserver-knuder for bedre ydeevne",
                     "number_of_cpus_per_server": "Antal CPU 'er pr. server",
                     "number_of_cpus_per_server_description": "Antal CPU 'er der skal tildeles pr. server",
                     "update": "Opdater"
@@ -127,7 +127,7 @@
                 "region": "Region",
                 "title": "Indstillinger for matchning",
                 "description": "Indstil dine matchmaking præferencer og se region latesser.",
-                "average_latency": "Gennemsnitlig latency",
+                "average_latency": "Latency",
                 "preferred": "Foretrukket",
                 "max_acceptable_ping": "Maksimalt acceptabelt Ping",
                 "max_ping_description": "Hvis ingen regioner foretrækkes, vil matchmaking kun anvende regioner med ping under denne værdi."
@@ -313,8 +313,8 @@
             "search": "Søg i kort"
         },
         "map_pool": {
-            "toggle_pool_type": "Kortet {map} er blevet {type} for {type}",
-            "toggle_active_pool": "Kortet {map} er blevet {type} for aktiv tjeneste",
+            "toggle_pool_type": "Opdateret kort pools",
+            "toggle_active_pool": "Kort Aktivitetsstatus opdateret",
             "save_success": "Kort-pool gemt med succes"
         }
     },
@@ -329,11 +329,11 @@
         "friends": {
             "title": "Venner",
             "sync": "Synkroniser",
-            "search": "Søg",
+            "search": "Tilføj ven",
             "pending_requests": "Afventende anmodninger",
             "invite_to_lobby": "Inviter til lobby",
             "remove": "Fjern",
-            "online": "Online",
+            "online": "Kun online",
             "join_lobby": "Tilmeld Lobby",
             "offline": "Offline",
             "view_profile": "Vis profil",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Klar",
-            "players": "Spillere"
+            "players": "Spillere klar"
         },
         "banned": "Bannet",
         "go_to_match": "Gå til kamp",
@@ -799,7 +799,7 @@
                 "map_pools": "Kortpuljer"
             },
             "profile": {
-                "my_account": "Min Konto",
+                "my_account": "Mine indstillinger",
                 "logout": "Log ud"
             },
             "footer": {

@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Server 설정",
                     "enable_cpu_pinning": "CPU 사용 핀닝",
-                    "enable_cpu_pinning_description": "더 나은 성능을 위해 CPU pinning 사용",
+                    "enable_cpu_pinning_description": "더 나은 성능을위한 게임 서버 노드에 CPU pinning 사용",
                     "number_of_cpus_per_server": "서버 당 CPU의 수",
                     "number_of_cpus_per_server_description": "서버 당 할당하는 CPU의 수",
                     "update": "업데이트"
@@ -127,7 +127,7 @@
                 "region": "리전",
                 "title": "Matchmaking 설정",
                 "description": "당신의 matchmaking 선호도 및 보기 영역 latencies 구성.",
-                "average_latency": "평균 대기시간",
+                "average_latency": "연락처",
                 "preferred": "이름 *",
                 "max_acceptable_ping": "최대 수락가능한 핑거",
                 "max_ping_description": "지역이 선호되지 않는 경우, matchmaking는 이 값의 밑에 ping를 가진 단지 사용 지구일 것입니다."
@@ -313,8 +313,8 @@
             "search": "검색지도"
         },
         "map_pool": {
-            "toggle_pool_type": "지도 {map}는 {type}입니다. {type}",
-            "toggle_active_pool": "Map {map}는 {type}가 활성 의무에 대한",
+            "toggle_pool_type": "업데이트 된 맵 풀",
+            "toggle_active_pool": "지도 활동 상태 업데이트",
             "save_success": "MAP 풀은 성공적으로 저장"
         }
     },
@@ -329,9 +329,9 @@
         "friends": {
             "title": "친구",
             "sync": "동기화",
-            "search": "검색",
+            "search": "친구 추가",
             "pending_requests": "대기 중인 요청",
-            "online": "온라인",
+            "online": "온라인만",
             "invite_to_lobby": "로비에 초대",
             "remove": "제거",
             "join_lobby": "로비 참가",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "준비",
-            "players": "플레이어"
+            "players": "플레이어 준비"
         },
         "banned": "차단됨",
         "go_to_match": "매치로 이동",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "관리자",
                         "coaches": "코치",
-                        "everyone": "모두",
+                        "everyone": "이름 *",
                         "captains": "코치 / 캡틴"
                     }
                 },
@@ -799,7 +799,7 @@
                 "map_pools": "맵 풀"
             },
             "profile": {
-                "my_account": "내 계정",
+                "my_account": "내 설정",
                 "logout": "로그아웃"
             },
             "footer": {

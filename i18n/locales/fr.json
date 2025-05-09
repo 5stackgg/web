@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Paramètres du serveur",
                     "enable_cpu_pinning": "Activer le processeur Pinnage",
-                    "enable_cpu_pinning_description": "Activer le pinnage CPU pour une meilleure performance",
+                    "enable_cpu_pinning_description": "Activer le pinning CPU sur les nœuds du serveur de jeu pour une meilleure performance",
                     "number_of_cpus_per_server": "Nombre de processeurs par serveur",
                     "number_of_cpus_per_server_description": "Nombre de processeurs à attribuer par serveur",
                     "update": "Mettre à jour"
@@ -126,7 +126,7 @@
             "matchmaking": {
                 "title": "Paramètres de correspondance",
                 "description": "Configurez vos préférences de matchmaking et visualisez les latences régionales.",
-                "average_latency": "Latence moyenne",
+                "average_latency": "Latence",
                 "preferred": "Préféré",
                 "max_acceptable_ping": "Maximum acceptable Ping",
                 "max_ping_description": "Si aucune région n'est préférée, l'appariement n'utilisera que des régions dont le ping est inférieur à cette valeur.",
@@ -313,8 +313,8 @@
             "search": "Recherche de cartes"
         },
         "map_pool": {
-            "toggle_pool_type": "La carte {map} a été {type} pour {type}",
-            "toggle_active_pool": "La carte {map} a été {type} pour le service actif",
+            "toggle_pool_type": "Pools de cartes mis à jour",
+            "toggle_active_pool": "État de l'activité des cartes Mise à jour",
             "save_success": "Modifications enregistrées avec succès"
         }
     },
@@ -329,7 +329,7 @@
         "friends": {
             "title": "Amis",
             "sync": "Synchroniser",
-            "search": "Rechercher",
+            "search": "Ajouter un ami",
             "pending_requests": "Demandes en attente",
             "online": "En ligne uniquement",
             "invite_to_lobby": "Inviter au Lobby",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Prêt",
-            "players": "Joueurs"
+            "players": "Les joueurs sont prêts"
         },
         "banned": "Banni",
         "go_to_match": "Aller au match",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "Administrateurs",
                         "coaches": "Coachs",
-                        "everyone": "Tout le monde",
+                        "everyone": "N'importe qui",
                         "captains": "Entraîneurs / Capitaines"
                     }
                 },
@@ -799,7 +799,7 @@
                 "map_pools": "Groupes de Cartes"
             },
             "profile": {
-                "my_account": "Mon Compte",
+                "my_account": "Mes paramètres",
                 "logout": "Déconnexion"
             },
             "footer": {

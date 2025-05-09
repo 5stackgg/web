@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Configuración del servidor",
                     "enable_cpu_pinning": "Activar la CPU Pinning",
-                    "enable_cpu_pinning_description": "Activar pinning CPU para un mejor rendimiento",
+                    "enable_cpu_pinning_description": "Activar CPU pinning en los nodos del servidor del juego para un mejor rendimiento",
                     "number_of_cpus_per_server": "Número de CPU por servidor",
                     "number_of_cpus_per_server_description": "Número de CPU para asignar por servidor",
                     "update": "Actualizar"
@@ -126,7 +126,7 @@
             "matchmaking": {
                 "title": "Ajustes de coincidencia",
                 "description": "Configure sus preferencias de concordancia y ver los retrasos de la región.",
-                "average_latency": "Edad media",
+                "average_latency": "Latency",
                 "preferred": "Preferencias",
                 "max_acceptable_ping": "Maximum Aceptable Ping",
                 "max_ping_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con ping por debajo de este valor.",
@@ -313,8 +313,8 @@
             "search": "Mapas de búsqueda"
         },
         "map_pool": {
-            "toggle_pool_type": "El mapa {map} ha sido {type} para {type}",
-            "toggle_active_pool": "El mapa {map} ha sido {type} para servicio activo",
+            "toggle_pool_type": "Mapa actualizado Piscinas",
+            "toggle_active_pool": "Mapas Actividad Estado Actualizado",
             "save_success": "Grupo de mapas guardado con éxito"
         }
     },
@@ -329,9 +329,9 @@
         "friends": {
             "title": "Amigos",
             "sync": "Sincronizar",
-            "search": "Buscar",
+            "search": "Agregar amigo",
             "pending_requests": "Solicitudes Pendientes",
-            "online": "En línea",
+            "online": "Solo en línea",
             "invite_to_lobby": "Invitar al Lobby",
             "remove": "Eliminar",
             "join_lobby": "Unirse al Lobby",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Listo",
-            "players": "Jugadores"
+            "players": "Los jugadores listos"
         },
         "banned": "Baneado",
         "go_to_match": "Ir a la partida",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "Administradores",
                         "coaches": "Entrenadores",
-                        "everyone": "Todos",
+                        "everyone": "Cualquiera",
                         "captains": "Entrenadores / Capitáns"
                     }
                 },
@@ -799,7 +799,7 @@
                 "map_pools": "Grupos de Mapas"
             },
             "profile": {
-                "my_account": "Mi Cuenta",
+                "my_account": "Mis ajustes",
                 "logout": "Cerrar Sesión"
             },
             "footer": {

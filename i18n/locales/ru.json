@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Настройки сервера",
                     "enable_cpu_pinning": "Включить CPU Пиннинг",
-                    "enable_cpu_pinning_description": "Включить CPU pinning для лучшей производительности",
+                    "enable_cpu_pinning_description": "Включите CPU на узлах игрового сервера для лучшей производительности",
                     "number_of_cpus_per_server": "Количество процессоров на сервер",
                     "number_of_cpus_per_server_description": "Количество процессоров для выделения на сервер",
                     "update": "Обновить"
@@ -127,7 +127,7 @@
                 "region": "Регион",
                 "title": "Настройки для игр",
                 "description": "Настройте свои предпочтения и просмотрите задержки в регионе.",
-                "average_latency": "Средняя задержка",
+                "average_latency": "Задержка",
                 "preferred": "Предпочтительный",
                 "max_acceptable_ping": "Максимально приемлемый Пинг",
                 "max_ping_description": "Если регионы не являются предпочтительными, сватовство будет использовать только регионы с пингом ниже этого значения."
@@ -313,8 +313,8 @@
             "search": "Карты поиска"
         },
         "map_pool": {
-            "toggle_pool_type": "Карта {map} была для {type}",
-            "toggle_active_pool": "Карта {map} была {type} для активной службы",
+            "toggle_pool_type": "Обновленные пулы карт",
+            "toggle_active_pool": "Обновлен статус активности карт",
             "save_success": "Картографический пул успешно сохранен"
         }
     },
@@ -329,7 +329,7 @@
         "friends": {
             "title": "Друзья",
             "sync": "Синхронизировать",
-            "search": "Поиск",
+            "search": "Добавить друзей",
             "pending_requests": "Ожидающие запросы",
             "invite_to_lobby": "Пригласить в лобби",
             "remove": "Удалить",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Готов",
-            "players": "Игроки"
+            "players": "Игроки готовы"
         },
         "banned": "Забанен",
         "go_to_match": "Перейти к матчу",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "Администраторы",
                         "coaches": "Тренеры",
-                        "everyone": "Все",
+                        "everyone": "Любой",
                         "captains": "Тренеры / Капитаны"
                     }
                 },
@@ -803,7 +803,7 @@
                 "join_discord": "Присоединиться к Discord"
             },
             "profile": {
-                "my_account": "Мой Аккаунт",
+                "my_account": "Мои настройки",
                 "logout": "Выйти"
             },
             "tooltips": {

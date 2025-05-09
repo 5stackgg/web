@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Налаштування серверів",
                     "enable_cpu_pinning": "Увімкнути процесор Штани",
-                    "enable_cpu_pinning_description": "Увімкнути пінінг процесора для кращої продуктивності",
+                    "enable_cpu_pinning_description": "Увімкнути налаштування процесора на ігрових серверах для кращої продуктивності",
                     "number_of_cpus_per_server": "Кількість процесорів на сервер",
                     "number_of_cpus_per_server_description": "Кількість ЦП для виділення на сервер",
                     "update": "Оновити"
@@ -127,7 +127,7 @@
                 "region": "Регіон",
                 "title": "Налаштування матчів",
                 "description": "Налаштуйте налаштування та переглядайте межі регіону.",
-                "average_latency": "Середня Latency",
+                "average_latency": "Проживання",
                 "preferred": "Поповнення",
                 "max_acceptable_ping": "Максимальний придатковий Пінг",
                 "max_ping_description": "Якщо не потрібні регіони, то відповідне значення буде використовувати тільки регіони з пінгом нижче."
@@ -313,8 +313,8 @@
             "search": "Карта сайту"
         },
         "map_pool": {
-            "toggle_pool_type": "Карта {map} {type} для {type}",
-            "toggle_active_pool": "Карта {map} {type} для активних обов'язків",
+            "toggle_pool_type": "Оновлені карти басейни",
+            "toggle_active_pool": "Статус на сервери",
             "save_success": "Карта басейну успішно збережено"
         }
     },
@@ -329,11 +329,11 @@
         "friends": {
             "title": "Друзі",
             "sync": "Синхронізувати",
-            "search": "Пошук",
+            "search": "Додати друг",
             "pending_requests": "Очікуючі запити",
             "invite_to_lobby": "Запросити в лобі",
             "remove": "Видалити",
-            "online": "В мережі",
+            "online": "Тільки онлайн",
             "offline": "Не в мережі",
             "join_lobby": "Приєднатися до Лобі",
             "view_profile": "Переглянути профіль",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Готово",
-            "players": "Гравці"
+            "players": "Гравці Готові"
         },
         "banned": "Заблоковано",
         "go_to_match": "Перейти до матчу",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "Адміністратори",
                         "coaches": "Тренери",
-                        "everyone": "Всі",
+                        "everyone": "Будь",
                         "captains": "Тренери / Капітани"
                     }
                 },
@@ -803,7 +803,7 @@
                 "join_discord": "Приєднатися до Discord"
             },
             "profile": {
-                "my_account": "Мій Обліковий Запис",
+                "my_account": "Моє налаштування",
                 "logout": "Вийти"
             },
             "logout_dialog": {

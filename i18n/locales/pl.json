@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Ustawienia serwera",
                     "enable_cpu_pinning": "Włącz procesor Pining",
-                    "enable_cpu_pinning_description": "Włącz mocowanie procesora dla lepszej wydajności",
+                    "enable_cpu_pinning_description": "Włącz przypinanie procesora na węzłach serwerów dla lepszej wydajności",
                     "number_of_cpus_per_server": "Liczba CPU na serwer",
                     "number_of_cpus_per_server_description": "Liczba procesorów do przydzielenia na serwer",
                     "update": "Aktualizuj"
@@ -126,7 +126,7 @@
             "matchmaking": {
                 "title": "Ustawienia tworzenia dopasowań",
                 "description": "Skonfiguruj swoje preferencje swatania i zobacz opóźnienia w regionie.",
-                "average_latency": "Średnie opóźnienie",
+                "average_latency": "Opóźnienie",
                 "preferred": "Preferowane",
                 "max_acceptable_ping": "Maksymalna dopuszczalna Ping",
                 "max_ping_description": "Jeżeli żadne regiony nie są preferowane, tworzenie zapałek będzie miało zastosowanie tylko w regionach o wartości poniżej tej wartości.",
@@ -313,8 +313,8 @@
             "search": "Mapy wyszukiwania"
         },
         "map_pool": {
-            "toggle_pool_type": "Mapa {mapa} została {typ} dla {typ}",
-            "toggle_active_pool": "Mapa {mapa} została {typ} do czynnej służby",
+            "toggle_pool_type": "Aktualizacja puli map",
+            "toggle_active_pool": "Aktualizacja statusu aktywności map",
             "save_success": "Mapa pula zapisana pomyślnie"
         }
     },
@@ -329,11 +329,11 @@
         "friends": {
             "title": "Znajomi",
             "sync": "Synchronizuj",
-            "search": "Szukaj",
+            "search": "Dodaj znajomego",
             "pending_requests": "Oczekujące zaproszenia",
             "invite_to_lobby": "Zaproś do lobby",
             "remove": "Usuń",
-            "online": "Online",
+            "online": "Tylko online",
             "offline": "Offline",
             "join_lobby": "Dołącz do Lobby",
             "view_profile": "Widok profilu",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Gotowy",
-            "players": "Gracze"
+            "players": "Gracze gotowi"
         },
         "banned": "Zbanowany",
         "go_to_match": "Przejdź do meczu",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "Administratorzy",
                         "coaches": "Trenerzy",
-                        "everyone": "Wszyscy",
+                        "everyone": "Ktokolwiek",
                         "captains": "Żurawiny"
                     }
                 },
@@ -799,7 +799,7 @@
                 "map_pools": "Pule Map"
             },
             "profile": {
-                "my_account": "Moje Konto",
+                "my_account": "Moje ustawienia",
                 "logout": "Wyloguj"
             },
             "footer": {

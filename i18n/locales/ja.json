@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "サーバー設定",
                     "enable_cpu_pinning": "CPUを有効にする ピニング",
-                    "enable_cpu_pinning_description": "CPU ピンニングを有効にして、パフォーマンスを改善",
+                    "enable_cpu_pinning_description": "より良いパフォーマンスのために、ゲームサーバーノードで CPU ピン留めを有効にします",
                     "number_of_cpus_per_server": "サーバーごとの CPU の数",
                     "number_of_cpus_per_server_description": "サーバーごとに割り当てる CPU の数",
                     "update": "更新"
@@ -127,7 +127,7 @@
                 "region": "リージョン",
                 "title": "マッチメイキング設定",
                 "description": "マッチメイキングの好みとビュー領域のレイテンシーを設定します.",
-                "average_latency": "平均レイテンシー",
+                "average_latency": "レイテンシー",
                 "preferred": "採用情報",
                 "max_acceptable_ping": "最高の受諾可能 ピン",
                 "max_ping_description": "地域が好まない場合は、マッチメイキングは、この値の下のpingでのみ使用します."
@@ -313,8 +313,8 @@
             "search": "サイトマップ"
         },
         "map_pool": {
-            "toggle_pool_type": "{type} の {type} は {type} の {type} です",
-            "toggle_active_pool": "アクティブデューティの {map} が {type} になりました",
+            "toggle_pool_type": "地図プールの更新",
+            "toggle_active_pool": "地図 活動状況 更新",
             "save_success": "正常に保存されたマッププール"
         }
     },
@@ -382,7 +382,7 @@
                 "join_discord": "Discordに参加"
             },
             "profile": {
-                "my_account": "マイアカウント",
+                "my_account": "私の設定",
                 "logout": "ログアウト"
             },
             "logout_dialog": {
@@ -436,9 +436,9 @@
         "friends": {
             "title": "フレンド",
             "sync": "同期",
-            "search": "検索",
+            "search": "フレンドを追加",
             "pending_requests": "保留中のリクエスト",
-            "online": "オンライン",
+            "online": "オンラインのみ",
             "invite_to_lobby": "ロビーに招待",
             "remove": "削除",
             "join_lobby": "ロビーに参加",
@@ -448,7 +448,7 @@
         },
         "confirm": {
             "ready": "準備完了",
-            "players": "プレイヤー"
+            "players": "プレーヤーの準備"
         },
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
@@ -547,7 +547,7 @@
                     "options": {
                         "admins": "管理者のみ",
                         "coaches": "コーチ",
-                        "everyone": "全員",
+                        "everyone": "スタッフ",
                         "captains": "コーチ/キャプテン"
                     }
                 },

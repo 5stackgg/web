@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Servera iestatījumi",
                     "enable_cpu_pinning": "Ieslēgt CPU Skalošana",
-                    "enable_cpu_pinning_description": "Ieslēgt CPU tapošanu labākai veiktspējai",
+                    "enable_cpu_pinning_description": "Ieslēgt CPU pieskaršanos spēļu servera mezgliem, lai nodrošinātu labāku veiktspēju",
                     "number_of_cpus_per_server": "Procesoru skaits uz vienu serveri",
                     "number_of_cpus_per_server_description": "CPU skaits, ko piešķirt vienam serverim",
                     "update": "Atjaunināt"
@@ -127,7 +127,7 @@
                 "region": "Reģions",
                 "title": "Kontaktu veidošanas iestatījumi",
                 "description": "Konfigurēt jūsu meklēšanas iestatījumus un skata reģionu latences.",
-                "average_latency": "Vidējais latentums",
+                "average_latency": "Atrašanās vieta",
                 "preferred": "Vēlamais",
                 "max_acceptable_ping": "Maksimāli pieņemams Ping",
                 "max_ping_description": "Ja reģionus neizvēlas, kontaktbirža izmantos tikai tos reģionus, kuru pingi ir zemāki par šo vērtību."
@@ -313,8 +313,8 @@
             "search": "Meklēšanas kartes"
         },
         "map_pool": {
-            "toggle_pool_type": "Karte {map} ir {type} {type} kopai",
-            "toggle_active_pool": "Karte {map} ir {type} aktīvajai dienestam",
+            "toggle_pool_type": "Atjauninātie karšu baseini",
+            "toggle_active_pool": "Karšu darbības statuss atjaunināts",
             "save_success": "Karšu kopa veiksmīgi saglabāta"
         }
     },
@@ -329,9 +329,9 @@
         "friends": {
             "title": "Draugi",
             "sync": "Sinhronizēt",
-            "search": "Meklēt",
+            "search": "Pievienot draugu",
             "pending_requests": "Gaida pieprasījumi",
-            "online": "Tiešsaistē",
+            "online": "Tikai tiešsaistē",
             "invite_to_lobby": "Uzaicināt uz lobi",
             "remove": "Noņemt",
             "join_lobby": "Pievienoties lobij",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Gatavs",
-            "players": "Spēlētāji"
+            "players": "Spēlētāji gatavi"
         },
         "banned": "Aizliegts",
         "go_to_match": "Doties uz spēli",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "Administratori",
                         "coaches": "Treneri",
-                        "everyone": "Visi",
+                        "everyone": "Jebkurš",
                         "captains": "Karači / Kapteiņi"
                     }
                 },
@@ -803,7 +803,7 @@
                 "join_discord": "Pievienoties Discord"
             },
             "profile": {
-                "my_account": "Mans Konts",
+                "my_account": "Mani iestatījumi",
                 "logout": "Izrakstīties"
             },
             "logout_dialog": {

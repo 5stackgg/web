@@ -16,7 +16,7 @@
         },
         "coming_soon": "Em breve!",
         "tournaments": {
-            "title": "Torneios próximos",
+            "title": "Próximos Torneios",
             "create": "Criar torneio",
             "tabs": {
                 "tournaments": "Torneios",
@@ -36,7 +36,7 @@
         },
         "settings": {
             "profile": {
-                "title": "Configurações de perfil",
+                "title": "Perfil",
                 "description": "Gerenciamento de configurações da conta",
                 "name": "Nome",
                 "avatar_url": "URL do avatar",
@@ -88,7 +88,7 @@
                 "servers": {
                     "title": "Configuração do Servidor",
                     "enable_cpu_pinning": "Habilitar CPU Pinting",
-                    "enable_cpu_pinning_description": "Activar a fixação da CPU para um melhor desempenho",
+                    "enable_cpu_pinning_description": "Activar a fixação da CPU nos nós do servidor de jogos para um melhor desempenho",
                     "number_of_cpus_per_server": "Número de CPUs por servidor",
                     "number_of_cpus_per_server_description": "Número de CPUs para alocar por servidor",
                     "update": "Atualizar"
@@ -118,7 +118,7 @@
                 }
             },
             "language": {
-                "title": "Língua",
+                "title": "Idioma",
                 "description": "Escolha seu idioma preferido para a interface do aplicativo.",
                 "select": "Selecionar idioma",
                 "search": "Procurar idioma..."
@@ -127,7 +127,7 @@
                 "region": "Região",
                 "title": "Configurações de Matchmaking",
                 "description": "Configure suas preferências de matchmaking e visualize as latências das regiões.",
-                "average_latency": "Latência Média",
+                "average_latency": "Latência",
                 "preferred": "Preferido",
                 "max_acceptable_ping": "Máximo Aceitável Ping",
                 "max_ping_description": "Se nenhuma região for preferida, o matchmaking usará apenas regiões com ping abaixo deste valor."
@@ -313,8 +313,8 @@
             "search": "Pesquisar mapas"
         },
         "map_pool": {
-            "toggle_pool_type": "Mapa {mapa} foi {tipo} para {tipo}",
-            "toggle_active_pool": "Mapa {mapa} foi {tipo} para o direito activo",
+            "toggle_pool_type": "Grupos de mapas atualizados",
+            "toggle_active_pool": "Estado de atividade dos mapas atualizado",
             "save_success": "Pool do mapa salvo com sucesso"
         }
     },
@@ -329,11 +329,11 @@
         "friends": {
             "title": "Amigos",
             "sync": "Sincronizar",
-            "search": "Pesquisar",
+            "search": "Adicionar um Amigo",
             "pending_requests": "Solicitações pendentes",
             "invite_to_lobby": "Convidar para o lobby",
             "remove": "Remover",
-            "online": "Online",
+            "online": "Apenas online",
             "offline": "Offline",
             "join_lobby": "Entrar no Lobby",
             "view_profile": "Visualizar perfil",
@@ -341,7 +341,7 @@
         },
         "confirm": {
             "ready": "Pronto",
-            "players": "Jogadores"
+            "players": "Jogadores Prontos"
         },
         "banned": "Banido",
         "go_to_match": "Ir para a partida",
@@ -440,7 +440,7 @@
                     "options": {
                         "admins": "Administradores",
                         "coaches": "Treinadores",
-                        "everyone": "Todos",
+                        "everyone": "Qualquer um",
                         "captains": "Treinadores / Capitães"
                     }
                 },
@@ -799,7 +799,7 @@
                 "map_pools": "Conjuntos de Mapas"
             },
             "profile": {
-                "my_account": "Minha Conta",
+                "my_account": "Minhas Configurações",
                 "logout": "Sair"
             },
             "footer": {
@@ -1072,7 +1072,7 @@
     },
     "custom_match": {
         "description": "Crie e personalize seu próprio jogo. Defina regras, escolha mapas e convide amigos para uma experiência de jogo personalizada.",
-        "title": "Correspondência Personalizada"
+        "title": "Partida Personalizada"
     },
     "notifications": {
         "match": {

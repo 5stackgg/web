@@ -358,9 +358,11 @@
         "go_to_match": "Ir a la partida",
         "temp_banned": "Baneado temporalmente",
         "settings_section": {
-            "toggle": "Ajuste de ajustes"
+            "toggle": "Ajuste de ajustes",
+            "queue_order": "Queue Order"
         },
-        "confirm_selection": "Confirmación"
+        "confirm_selection": "Confirmación",
+        "searching_for_match": "Buscando un {tipo} partido"
     },
     "match": {
         "lobby": {

@@ -983,9 +983,11 @@
         "go_to_match": "Gå till match",
         "temp_banned": "Du är tillfälligt bannad från matchmaking",
         "settings_section": {
-            "toggle": "Justera inställningar"
+            "toggle": "Justera inställningar",
+            "queue_order": "Queue Order"
         },
-        "confirm_selection": "Bekräfta"
+        "confirm_selection": "Bekräfta",
+        "searching_for_match": "Söka efter en {typ} match"
     },
     "game_server": {
         "update_cs": "Uppdatera CS",

@@ -358,9 +358,11 @@
         "go_to_match": "Aller au match",
         "temp_banned": "Banni temporairement",
         "settings_section": {
-            "toggle": "Régler les paramètres"
+            "toggle": "Régler les paramètres",
+            "queue_order": "Ordre des requêtes"
         },
-        "confirm_selection": "Confirmation"
+        "confirm_selection": "Confirmation",
+        "searching_for_match": "Recherche d'une correspondance {type}"
     },
     "match": {
         "lobby": {

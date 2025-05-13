@@ -358,9 +358,11 @@
         "go_to_match": "Перейти к матчу",
         "temp_banned": "Временно забанен",
         "settings_section": {
-            "toggle": "Адаптация настроек"
+            "toggle": "Адаптация настроек",
+            "queue_order": "Порядок очереди"
         },
-        "confirm_selection": "Подтверждающий"
+        "confirm_selection": "Подтверждающий",
+        "searching_for_match": "Поиск совпадения {тип}"
     },
     "match": {
         "lobby": {

@@ -104,7 +104,7 @@
             },
             "matchmaking": {
                 "region": "地区",
-                "title": "",
+                "title": "设置",
                 "description": "",
                 "preferred": "",
                 "max_acceptable_ping": "",
@@ -344,7 +344,7 @@
         "settings_section": {
             "toggle": ""
         },
-        "confirm_selection": ""
+        "confirm_selection": "确认"
     },
     "match": {
         "lobby": {
@@ -614,7 +614,7 @@
             "on_demand": "按需",
             "assigned": "已分配"
         },
-        "download_demo": ""
+        "download_demo": "下载录像"
     },
     "ui": {
         "tooltips": {
@@ -1058,7 +1058,7 @@
         "match": {
             "invited_by": "邀请人",
             "title": "",
-            "description": ""
+            "description": "队伍邀请消息"
         },
         "invite": {
             "deny": "拒绝",

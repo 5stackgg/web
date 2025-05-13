@@ -455,9 +455,11 @@
         "go_to_match": "マッチへ移動",
         "temp_banned": "一時BAN",
         "settings_section": {
-            "toggle": "設定を調整する"
+            "toggle": "設定を調整する",
+            "queue_order": "キューオーダー"
         },
-        "confirm_selection": "確認する"
+        "confirm_selection": "確認する",
+        "searching_for_match": "{type}マッチを検索する"
     },
     "match": {
         "lobby": {

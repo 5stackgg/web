@@ -358,9 +358,11 @@
         "go_to_match": "Doties uz spēli",
         "temp_banned": "Pagaidām aizliegts",
         "settings_section": {
-            "toggle": "Pielāgot iestatījumus"
+            "toggle": "Pielāgot iestatījumus",
+            "queue_order": "Rindas kārtība"
         },
-        "confirm_selection": "Apstiprinājums"
+        "confirm_selection": "Apstiprinājums",
+        "searching_for_match": "Meklē {type} atbilstību"
     },
     "match": {
         "lobby": {

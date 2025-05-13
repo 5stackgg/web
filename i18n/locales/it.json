@@ -358,9 +358,11 @@
         "go_to_match": "Vai alla partita",
         "temp_banned": "Bannato temporaneamente",
         "settings_section": {
-            "toggle": "Regolare le impostazioni"
+            "toggle": "Regolare le impostazioni",
+            "queue_order": "Ordine di coda"
         },
-        "confirm_selection": "Conferma"
+        "confirm_selection": "Conferma",
+        "searching_for_match": "Ricerca di una corrispondenza {type}"
     },
     "match": {
         "lobby": {

@@ -358,9 +358,11 @@
         "go_to_match": "Gå til kamp",
         "temp_banned": "Midlertidigt bannet",
         "settings_section": {
-            "toggle": "Justér indstillinger"
+            "toggle": "Justér indstillinger",
+            "queue_order": "Kø rækkefølge"
         },
-        "confirm_selection": "Bekræftelse"
+        "confirm_selection": "Bekræftelse",
+        "searching_for_match": "Søgning efter en {type} match"
     },
     "match": {
         "lobby": {

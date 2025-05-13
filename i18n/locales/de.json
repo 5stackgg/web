@@ -358,9 +358,11 @@
         "go_to_match": "Zum Spiel gehen",
         "temp_banned": "Sie sind vorübergehend vom Matchmaking gesperrt",
         "settings_section": {
-            "toggle": "Einstellungen anpassen"
+            "toggle": "Einstellungen anpassen",
+            "queue_order": "Bestellung"
         },
-        "confirm_selection": "Bestätigung"
+        "confirm_selection": "Bestätigung",
+        "searching_for_match": "Suche nach einem {type} Spiel"
     },
     "match": {
         "lobby": {

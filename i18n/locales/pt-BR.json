@@ -358,9 +358,11 @@
         "go_to_match": "Ir para a partida",
         "temp_banned": "Banido temporariamente",
         "settings_section": {
-            "toggle": "Ajustar as Configurações"
+            "toggle": "Ajustar as Configurações",
+            "queue_order": "Ordem da Fila"
         },
-        "confirm_selection": "Confirmando"
+        "confirm_selection": "Confirmando",
+        "searching_for_match": "A procurar por uma correspondência {type}"
     },
     "match": {
         "lobby": {

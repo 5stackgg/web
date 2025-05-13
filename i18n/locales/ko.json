@@ -358,9 +358,11 @@
         "go_to_match": "매치로 이동",
         "temp_banned": "임시 차단",
         "settings_section": {
-            "toggle": "설정 조정"
+            "toggle": "설정 조정",
+            "queue_order": "견적 요청"
         },
-        "confirm_selection": "이름 *"
+        "confirm_selection": "이름 *",
+        "searching_for_match": "{type} 일치 검색"
     },
     "match": {
         "lobby": {

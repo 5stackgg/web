@@ -358,9 +358,11 @@
         "go_to_match": "Przejdź do meczu",
         "temp_banned": "Tymczasowo zbanowany",
         "settings_section": {
-            "toggle": "Dostosuj ustawienia"
+            "toggle": "Dostosuj ustawienia",
+            "queue_order": "Kolejka kolejowa"
         },
-        "confirm_selection": "Potwierdzenie"
+        "confirm_selection": "Potwierdzenie",
+        "searching_for_match": "Poszukiwanie dopasowania {type}"
     },
     "match": {
         "lobby": {

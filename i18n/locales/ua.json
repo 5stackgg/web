@@ -358,9 +358,11 @@
         "go_to_match": "Перейти до матчу",
         "temp_banned": "Тимчасово заблоковано",
         "settings_section": {
-            "toggle": "Налаштування налаштування"
+            "toggle": "Налаштування налаштування",
+            "queue_order": "Замовлення"
         },
-        "confirm_selection": "Підтвердження"
+        "confirm_selection": "Підтвердження",
+        "searching_for_match": "Пошук по {type} матч"
     },
     "match": {
         "lobby": {

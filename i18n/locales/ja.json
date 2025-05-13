@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "自動更新マッププール",
                     "description": "アクティブデューティプールから新しいマップを追加または削除したときに、自動的にマッププールを追加/更新します."
-                }
+                },
+                "max_acceptable_latency": "最高の受諾可能 レイテンシー",
+                "create_matches_role_description": "このロールはマッチを作成することができます.",
+                "create_tournaments_role_description": "この役割は、トーナメントを作成することができます.",
+                "matchmaking_min_role_description": "マッチメイキングに参加できる役割.",
+                "max_acceptable_latency_description": "プレイヤーが試合に参加できる最大レイテンシです."
             },
             "language": {
                 "title": "用語集",
@@ -114,8 +119,8 @@
                 "description": "マッチメイキングの好みとビュー領域のレイテンシーを設定します.",
                 "average_latency": "レイテンシー",
                 "preferred": "採用情報",
-                "max_acceptable_ping": "最高の受諾可能 ピン",
-                "max_ping_description": "地域が好まない場合は、マッチメイキングは、この値の下のpingでのみ使用します."
+                "max_acceptable_latency": "最高の受諾可能 レイテンシー",
+                "max_latency_description": "地域が好まない場合は、マッチメイキングは、この値の下のレイテンシを持つ地域のみを使用します."
             },
             "account": {
                 "name": "名前",
@@ -459,7 +464,8 @@
             "queue_order": "キューオーダー"
         },
         "confirm_selection": "確認する",
-        "searching_for_match": "{type}マッチを検索する"
+        "searching_for_match": "{type}マッチを検索する",
+        "high_latency_warning": "あなたのレイテンシは競争相手のために余りに高いです"
     },
     "match": {
         "lobby": {

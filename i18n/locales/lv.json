@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Automātiski atjaunināt karšu kopnes",
                     "description": "Automātiski pievienojiet/atjauniniet karšu baseinus, kad tiek pievienotas vai noņemtas jaunas kartes no aktīvā darba baseina."
-                }
+                },
+                "create_matches_role_description": "Šī loma spēs radīt spēles.",
+                "create_tournaments_role_description": "Šī loma spēs radīt turnīrus.",
+                "matchmaking_min_role_description": "Šī loma ļaus apvienoties kontaktbiržā.",
+                "max_acceptable_latency": "Maksimāli pieņemams Atrašanās vieta",
+                "max_acceptable_latency_description": "Tas ir maksimālais latentums, kas spēlētājam var būt jāpievienojas mačam."
             },
             "language": {
                 "select": "Izvēlieties valodu",
@@ -114,8 +119,8 @@
                 "description": "Konfigurēt jūsu meklēšanas iestatījumus un skata reģionu latences.",
                 "average_latency": "Atrašanās vieta",
                 "preferred": "Vēlamais",
-                "max_acceptable_ping": "Maksimāli pieņemams Ping",
-                "max_ping_description": "Ja reģionus neizvēlas, kontaktbirža izmantos tikai tos reģionus, kuru pingi ir zemāki par šo vērtību."
+                "max_acceptable_latency": "Maksimāli pieņemams Atrašanās vieta",
+                "max_latency_description": "Ja reģionu nav, kontaktbirža izmantos tikai tos reģionus, kuru latentums ir zemāks par šo vērtību."
             },
             "account": {
                 "title": "Konta iestatījumi",
@@ -362,7 +367,8 @@
             "queue_order": "Rindas kārtība"
         },
         "confirm_selection": "Apstiprinājums",
-        "searching_for_match": "Meklē {type} atbilstību"
+        "searching_for_match": "Meklē {type} atbilstību",
+        "high_latency_warning": "Jūsu latentums ir pārāk augsts konkurences spēlēm"
     },
     "match": {
         "lobby": {

@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "자동 업데이트 맵 풀",
                     "description": "자동 추가 / 업데이트 맵 풀 때 새로운지도가 추가되거나 활성 의무 풀에서 제거."
-                }
+                },
+                "create_matches_role_description": "이 역할은 일치를 만들 수 있습니다.",
+                "create_tournaments_role_description": "이 역할은 토너먼트를 만들 수 있습니다.",
+                "matchmaking_min_role_description": "이 역할은 matchmaking에 참여할 수 있습니다.",
+                "max_acceptable_latency": "최대 수락가능한 연락처",
+                "max_acceptable_latency_description": "이것은 플레이어가 일치해야 할 수있는 최대 대기 시간입니다."
             },
             "language": {
                 "title": "* 이름",
@@ -114,8 +119,8 @@
                 "description": "당신의 matchmaking 선호도 및 보기 영역 latencies 구성.",
                 "average_latency": "연락처",
                 "preferred": "이름 *",
-                "max_acceptable_ping": "최대 수락가능한 핑거",
-                "max_ping_description": "지역이 선호되지 않는 경우, matchmaking는 이 값의 밑에 ping를 가진 단지 사용 지구일 것입니다."
+                "max_acceptable_latency": "최대 수락가능한 연락처",
+                "max_latency_description": "지역이 선호되지 않는 경우, matchmaking는 이 값의 밑에 대기권을 가진 단지 사용 지구일 것입니다."
             },
             "account": {
                 "title": "계정 설정",
@@ -362,7 +367,8 @@
             "queue_order": "견적 요청"
         },
         "confirm_selection": "이름 *",
-        "searching_for_match": "{type} 일치 검색"
+        "searching_for_match": "{type} 일치 검색",
+        "high_latency_warning": "당신의 대기권은 경쟁적인 경기를 위해 너무 높습니다"
     },
     "match": {
         "lobby": {

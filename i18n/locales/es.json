@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Mapa de actualización automático Piscinas",
                     "description": "Agregue / actualice automáticamente las piscinas de mapa cuando se agregan o eliminan nuevos mapas de la piscina activa."
-                }
+                },
+                "create_matches_role_description": "Este papel será capaz de crear partidos.",
+                "create_tournaments_role_description": "Este papel será capaz de crear torneos.",
+                "matchmaking_min_role_description": "Este papel será capaz de unirse al matchmaking.",
+                "max_acceptable_latency": "Maximum Aceptable Latency",
+                "max_acceptable_latency_description": "Esta es la latencia máxima que un jugador puede tener que unirse a un partido."
             },
             "language": {
                 "title": "Idioma",
@@ -113,9 +118,9 @@
                 "description": "Configure sus preferencias de concordancia y ver los retrasos de la región.",
                 "average_latency": "Latency",
                 "preferred": "Preferencias",
-                "max_acceptable_ping": "Maximum Aceptable Ping",
-                "max_ping_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con ping por debajo de este valor.",
-                "region": "Región"
+                "region": "Región",
+                "max_latency_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con latencia inferior a este valor.",
+                "max_acceptable_latency": "Maximum Aceptable Latency"
             },
             "account": {
                 "title": "Ajustes de la cuenta",
@@ -362,7 +367,8 @@
             "queue_order": "Queue Order"
         },
         "confirm_selection": "Confirmación",
-        "searching_for_match": "Buscando un {tipo} partido"
+        "searching_for_match": "Buscando un {tipo} partido",
+        "high_latency_warning": "Su latencia es demasiado alta para los partidos competitivos"
     },
     "match": {
         "lobby": {

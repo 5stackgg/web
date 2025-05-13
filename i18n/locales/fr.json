@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Pools de cartes de mise à jour automatique",
                     "description": "Ajouter automatiquement / mettre à jour les pools de cartes lorsque de nouvelles cartes sont ajoutées ou retirées du pool actif."
-                }
+                },
+                "matchmaking_min_role_description": "Ce rôle sera en mesure de s'associer à des rencontres.",
+                "max_acceptable_latency_description": "C'est la latence maximale qu'un joueur peut avoir à rejoindre un match.",
+                "create_matches_role_description": "Ce rôle sera en mesure de créer des correspondances.",
+                "create_tournaments_role_description": "Ce rôle sera capable de créer des tournois.",
+                "max_acceptable_latency": "Maximum acceptable Latence"
             },
             "language": {
                 "title": "Langue",
@@ -113,9 +118,9 @@
                 "description": "Configurez vos préférences de matchmaking et visualisez les latences régionales.",
                 "average_latency": "Latence",
                 "preferred": "Préféré",
-                "max_acceptable_ping": "Maximum acceptable Ping",
-                "max_ping_description": "Si aucune région n'est préférée, l'appariement n'utilisera que des régions dont le ping est inférieur à cette valeur.",
-                "region": "Région"
+                "region": "Région",
+                "max_acceptable_latency": "Maximum acceptable Latence",
+                "max_latency_description": "Si aucune région n'est préférée, l'appariement n'utilisera que des régions dont la latence est inférieure à cette valeur."
             },
             "account": {
                 "title": "Paramètres du compte",
@@ -362,7 +367,8 @@
             "queue_order": "Ordre des requêtes"
         },
         "confirm_selection": "Confirmation",
-        "searching_for_match": "Recherche d'une correspondance {type}"
+        "searching_for_match": "Recherche d'une correspondance {type}",
+        "high_latency_warning": "Votre latence est trop élevée pour des matches compétitifs"
     },
     "match": {
         "lobby": {

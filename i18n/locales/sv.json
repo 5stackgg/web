@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Automatisk uppdatering Map Pools",
                     "description": "Lägg automatiskt till / uppdatera kartpooler när nya kartor läggs till eller tas bort från den aktiva tullpoolen."
-                }
+                },
+                "create_matches_role_description": "Denna roll kommer att kunna skapa matcher.",
+                "create_tournaments_role_description": "Denna roll kommer att kunna skapa turneringar.",
+                "matchmaking_min_role_description": "Denna roll kommer att kunna ansluta sig till matchmaking.",
+                "max_acceptable_latency": "Maximal acceptabel Latency",
+                "max_acceptable_latency_description": "Detta är den maximala latens som en spelare kan behöva gå med i en match."
             },
             "language": {
                 "title": "Språkspråk",
@@ -114,8 +119,8 @@
                 "description": "Konfigurera dina matchmaking preferenser och visa regionens latenser.",
                 "average_latency": "Latency",
                 "preferred": "Preferred",
-                "max_acceptable_ping": "Maximal acceptabel Ping",
-                "max_ping_description": "Om inga regioner föredras kommer matchmaking endast att använda regioner med ping under detta värde."
+                "max_acceptable_latency": "Maximal acceptabel Latency",
+                "max_latency_description": "Om inga regioner föredras kommer matchmaking endast att använda regioner med latens under detta värde."
             },
             "account": {
                 "name": "Namn",
@@ -987,7 +992,8 @@
             "queue_order": "Queue Order"
         },
         "confirm_selection": "Bekräfta",
-        "searching_for_match": "Söka efter en {typ} match"
+        "searching_for_match": "Söka efter en {typ} match",
+        "high_latency_warning": "Din latens är för hög för konkurrenskraftiga matcher"
     },
     "game_server": {
         "update_cs": "Uppdatera CS",

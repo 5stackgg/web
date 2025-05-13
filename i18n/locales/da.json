@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Automatisk opdateringskortspil",
                     "description": "Tilføj / opdater automatisk kortpuljer når nye kort tilføjes eller fjernes fra den aktive duty pool."
-                }
+                },
+                "create_matches_role_description": "Denne rolle vil være i stand til at skabe kampe.",
+                "create_tournaments_role_description": "Denne rolle vil være i stand til at skabe turneringer.",
+                "matchmaking_min_role_description": "Denne rolle vil være i stand til at deltage i matchmaking.",
+                "max_acceptable_latency": "Maksimalt acceptabelt Latency",
+                "max_acceptable_latency_description": "Dette er den maksimale latency, som en spiller kan have til at deltage i en kamp."
             },
             "language": {
                 "select": "Vælg sprog",
@@ -114,8 +119,8 @@
                 "description": "Indstil dine matchmaking præferencer og se region latesser.",
                 "average_latency": "Latency",
                 "preferred": "Foretrukket",
-                "max_acceptable_ping": "Maksimalt acceptabelt Ping",
-                "max_ping_description": "Hvis ingen regioner foretrækkes, vil matchmaking kun anvende regioner med ping under denne værdi."
+                "max_acceptable_latency": "Maksimalt acceptabelt Latency",
+                "max_latency_description": "Hvis ingen regioner foretrækkes, vil matchmaking kun anvende regioner med en latency under denne værdi."
             },
             "account": {
                 "title": "Kontoindstillinger",
@@ -362,7 +367,8 @@
             "queue_order": "Kø rækkefølge"
         },
         "confirm_selection": "Bekræftelse",
-        "searching_for_match": "Søgning efter en {type} match"
+        "searching_for_match": "Søgning efter en {type} match",
+        "high_latency_warning": "Din latency er for høj til konkurrence kampe"
     },
     "match": {
         "lobby": {

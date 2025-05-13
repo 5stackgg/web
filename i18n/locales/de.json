@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Automatisches Update von Kartenpools",
                     "description": "Fügen Sie automatisch Kartenpools hinzu, wenn neue Karten hinzugefügt oder aus dem aktiven Pflichtpool entfernt werden."
-                }
+                },
+                "create_matches_role_description": "Diese Rolle wird in der Lage sein, Spiele zu erstellen.",
+                "create_tournaments_role_description": "Diese Rolle wird in der Lage sein, Turniere zu erstellen.",
+                "matchmaking_min_role_description": "Diese Rolle wird in der Lage sein, sich zusammenzufügen.",
+                "max_acceptable_latency": "Maximal zulässig Latenz",
+                "max_acceptable_latency_description": "Dies ist die maximale Latenz, die ein Spieler einem Spiel beitreten muss."
             },
             "language": {
                 "title": "Sprache",
@@ -113,9 +118,9 @@
                 "description": "Konfigurieren Sie Ihre Spieleinstellungen und Ansicht Region Latenzen.",
                 "average_latency": "Latenz",
                 "preferred": "Bevorzugt",
-                "max_acceptable_ping": "Maximal zulässig Plüsch",
-                "max_ping_description": "Wenn keine Regionen bevorzugt werden, wird Matchmaking nur Bereiche mit ping unter diesem Wert verwenden.",
-                "region": "Region"
+                "region": "Region",
+                "max_acceptable_latency": "Maximal zulässig Latenz",
+                "max_latency_description": "Werden keine Regionen bevorzugt, wird Matchmaking nur Regionen mit Latenz unterhalb dieses Wertes verwenden."
             },
             "account": {
                 "title": "Kontoeinstellungen",
@@ -362,7 +367,8 @@
             "queue_order": "Bestellung"
         },
         "confirm_selection": "Bestätigung",
-        "searching_for_match": "Suche nach einem {type} Spiel"
+        "searching_for_match": "Suche nach einem {type} Spiel",
+        "high_latency_warning": "Ihre Latenz ist zu hoch für Wettkämpfe"
     },
     "match": {
         "lobby": {

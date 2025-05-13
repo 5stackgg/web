@@ -107,8 +107,6 @@
                 "title": "设置",
                 "description": "",
                 "preferred": "",
-                "max_acceptable_ping": "",
-                "max_ping_description": "",
                 "average_latency": ""
             },
             "language": {

@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Atualizar automaticamente os conjuntos de mapas",
                     "description": "Adicionar / atualizar automaticamente conjuntos de mapas quando novos mapas são adicionados ou removidos do conjunto de tarefas ativa."
-                }
+                },
+                "create_matches_role_description": "Este papel será capaz de criar correspondências.",
+                "create_tournaments_role_description": "Este papel será capaz de criar torneios.",
+                "matchmaking_min_role_description": "Este papel poderá juntar-se à matchmaking.",
+                "max_acceptable_latency": "Máximo Aceitável Latência",
+                "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida."
             },
             "language": {
                 "title": "Idioma",
@@ -114,8 +119,8 @@
                 "description": "Configure suas preferências de matchmaking e visualize as latências das regiões.",
                 "average_latency": "Latência",
                 "preferred": "Preferido",
-                "max_acceptable_ping": "Máximo Aceitável Ping",
-                "max_ping_description": "Se nenhuma região for preferida, o matchmaking usará apenas regiões com ping abaixo deste valor."
+                "max_acceptable_latency": "Máximo Aceitável Latência",
+                "max_latency_description": "Se nenhuma região é preferida, matchmaking só usará regiões com latência abaixo deste valor."
             },
             "account": {
                 "title": "Configuração da Conta",
@@ -362,7 +367,8 @@
             "queue_order": "Ordem da Fila"
         },
         "confirm_selection": "Confirmando",
-        "searching_for_match": "A procurar por uma correspondência {type}"
+        "searching_for_match": "A procurar por uma correspondência {type}",
+        "high_latency_warning": "Sua latência é muito alta para jogos competitivos"
     },
     "match": {
         "lobby": {

@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Automatyczna aktualizacja puli map",
                     "description": "Automatycznie dodawać / aktualizować pule map, gdy nowe mapy są dodawane lub usuwane z puli aktywnych obowiązków."
-                }
+                },
+                "create_matches_role_description": "Ta rola będzie w stanie tworzyć mecze.",
+                "create_tournaments_role_description": "Ta rola będzie w stanie tworzyć turnieje.",
+                "matchmaking_min_role_description": "Rola ta będzie mogła dołączyć do swatów.",
+                "max_acceptable_latency": "Maksymalna dopuszczalna Opóźnienie",
+                "max_acceptable_latency_description": "Jest to maksymalne opóźnienie, że gracz może dołączyć do meczu."
             },
             "language": {
                 "title": "Język",
@@ -113,9 +118,9 @@
                 "description": "Skonfiguruj swoje preferencje swatania i zobacz opóźnienia w regionie.",
                 "average_latency": "Opóźnienie",
                 "preferred": "Preferowane",
-                "max_acceptable_ping": "Maksymalna dopuszczalna Ping",
-                "max_ping_description": "Jeżeli żadne regiony nie są preferowane, tworzenie zapałek będzie miało zastosowanie tylko w regionach o wartości poniżej tej wartości.",
-                "region": "Region"
+                "region": "Region",
+                "max_acceptable_latency": "Maksymalna dopuszczalna Opóźnienie",
+                "max_latency_description": "Jeżeli żadne regiony nie będą preferowane, tworzenie zapałek będzie miało zastosowanie tylko w regionach o opóźnieniu poniżej tej wartości."
             },
             "account": {
                 "title": "Ustawienia konta",
@@ -362,7 +367,8 @@
             "queue_order": "Kolejka kolejowa"
         },
         "confirm_selection": "Potwierdzenie",
-        "searching_for_match": "Poszukiwanie dopasowania {type}"
+        "searching_for_match": "Poszukiwanie dopasowania {type}",
+        "high_latency_warning": "Twoje opóźnienie jest zbyt wysokie, by rywalizować"
     },
     "match": {
         "lobby": {

@@ -100,7 +100,12 @@
                 "update_map_pools": {
                     "title": "Aggiornamento automatico delle piscine",
                     "description": "Aggiungi automaticamente / aggiorna i pool di mappe quando vengono aggiunte nuove mappe o rimosse dal pool attivo."
-                }
+                },
+                "create_matches_role_description": "Questo ruolo sarà in grado di creare partite.",
+                "create_tournaments_role_description": "Questo ruolo sarà in grado di creare tornei.",
+                "matchmaking_min_role_description": "Questo ruolo sarà in grado di aderire matchmaking.",
+                "max_acceptable_latency": "Massimo Accettabile Lattice",
+                "max_acceptable_latency_description": "Questa è la latenza massima che un giocatore può dover partecipare a una partita."
             },
             "language": {
                 "description": "Scegli la tua lingua preferita per l'interfaccia di applicazione.",
@@ -113,9 +118,9 @@
                 "description": "Configurare le preferenze di matchmaking e visualizzare le latencies della regione.",
                 "average_latency": "Lattice",
                 "preferred": "Preferito",
-                "max_acceptable_ping": "Massimo Accettabile Ping",
-                "max_ping_description": "Se nessuna regione è preferita, il matchmaking utilizzerà solo le regioni con ping al di sotto di questo valore.",
-                "region": "Regione singola"
+                "region": "Regione singola",
+                "max_acceptable_latency": "Massimo Accettabile Lattice",
+                "max_latency_description": "Se nessuna regione è preferita, il matchmaking utilizzerà solo regioni con latenza al di sotto di questo valore."
             },
             "account": {
                 "title": "Impostazioni account",
@@ -362,7 +367,8 @@
             "queue_order": "Ordine di coda"
         },
         "confirm_selection": "Conferma",
-        "searching_for_match": "Ricerca di una corrispondenza {type}"
+        "searching_for_match": "Ricerca di una corrispondenza {type}",
+        "high_latency_warning": "La latenza è troppo alta per le partite concorrenziali"
     },
     "match": {
         "lobby": {

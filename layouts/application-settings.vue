@@ -20,19 +20,19 @@ import Default from "~/layouts/default.vue";
         <nav
           class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
         >
-          <nuxt-link to="/settings/application">
-            <Button variant="ghost" class="w-full text-left justify-start">
-              {{ $t("pages.settings.application.matchmaking.title") }}
-            </Button>
-          </nuxt-link>
           <nuxt-link to="/settings/application/players">
             <Button variant="ghost" class="w-full text-left justify-start">
               {{ $t("pages.players.title") }}
             </Button>
           </nuxt-link>
-          <nuxt-link to="/settings/application/discord">
+          <nuxt-link to="/settings/application">
             <Button variant="ghost" class="w-full text-left justify-start">
-              {{ $t("pages.settings.application.discord.title") }}
+              {{ $t("pages.settings.application.matchmaking.title") }}
+            </Button>
+          </nuxt-link>
+          <nuxt-link to="/settings/application/streaming">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              {{ $t("pages.settings.application.streaming.title") }}
             </Button>
           </nuxt-link>
           <nuxt-link to="/settings/application/game-type-configs">
@@ -48,6 +48,11 @@ import Default from "~/layouts/default.vue";
           <nuxt-link to="/settings/application/servers">
             <Button variant="ghost" class="w-full text-left justify-start">
               {{ $t("pages.settings.application.servers.title") }}
+            </Button>
+          </nuxt-link>
+          <nuxt-link to="/settings/application/discord">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              {{ $t("pages.settings.application.discord.title") }}
             </Button>
           </nuxt-link>
           <nuxt-link to="/settings/application/telemetry">

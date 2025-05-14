@@ -70,6 +70,8 @@
                 "dark": "Dark"
             },
             "application": {
+                "miniminum_role_to_stream": "Minimum Role Required to Stream",
+                "miniminum_role_to_stream_description": "Set the minimum role required for users to stream matches on the platform.",
                 "telemetry": {
                     "title": "Telemetry",
                     "telemetry": "Telemetry",
@@ -146,7 +148,8 @@
                 "average_latency": "Latency",
                 "preferred": "Preferred",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
-                "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value."
+                "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value.",
+                "high_ping_warning": "Your ping to this region is higher than the maximum acceptable latency. You may experience lag during gameplay."
             }
         },
         "regions": {

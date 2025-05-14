@@ -452,10 +452,6 @@
             "view_profile": "プロフィールを見る",
             "invite_to_match": "プレイヤーにマッチする招待状"
         },
-        "confirm": {
-            "ready": "準備完了",
-            "players": "プレーヤーの準備"
-        },
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
         "temp_banned": "一時BAN",

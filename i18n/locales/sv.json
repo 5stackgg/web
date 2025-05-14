@@ -980,10 +980,6 @@
             "view_profile": "Visa profil",
             "invite_to_match": "Inbjud spelare till match"
         },
-        "confirm": {
-            "ready": "Redo",
-            "players": "Spelare redo"
-        },
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
         "temp_banned": "Du är tillfälligt bannad från matchmaking",

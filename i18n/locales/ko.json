@@ -355,10 +355,6 @@
             "view_profile": "공지사항",
             "invite_to_match": "Invite Player를 일치"
         },
-        "confirm": {
-            "ready": "준비",
-            "players": "플레이어 준비"
-        },
         "banned": "차단됨",
         "go_to_match": "매치로 이동",
         "temp_banned": "임시 차단",

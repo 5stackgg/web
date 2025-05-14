@@ -355,10 +355,6 @@
             "view_profile": "Skata profils",
             "invite_to_match": "Uzlūgt spēlētāju sacensībām"
         },
-        "confirm": {
-            "ready": "Gatavs",
-            "players": "Spēlētāji gatavi"
-        },
         "banned": "Aizliegts",
         "go_to_match": "Doties uz spēli",
         "temp_banned": "Pagaidām aizliegts",

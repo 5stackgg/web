@@ -355,10 +355,6 @@
             "view_profile": "Vis profil",
             "invite_to_match": "Inviter spiller til Match"
         },
-        "confirm": {
-            "ready": "Klar",
-            "players": "Spillere klar"
-        },
         "banned": "Bannet",
         "go_to_match": "Gå til kamp",
         "temp_banned": "Midlertidigt bannet",

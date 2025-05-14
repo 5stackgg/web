@@ -355,10 +355,6 @@
             "view_profile": "Visualizar perfil",
             "invite_to_match": "Convidar o jogador para o jogo"
         },
-        "confirm": {
-            "ready": "Pronto",
-            "players": "Jogadores Prontos"
-        },
         "banned": "Banido",
         "go_to_match": "Ir para a partida",
         "temp_banned": "Banido temporariamente",

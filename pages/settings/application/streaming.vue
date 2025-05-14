@@ -15,7 +15,9 @@ definePageMeta({
         }}</FormLabel>
         <FormDescription>
           {{
-            $t("pages.settings.application.miniminum_role_to_stream_description")
+            $t(
+              "pages.settings.application.miniminum_role_to_stream_description",
+            )
           }}
         </FormDescription>
         <FormControl>
@@ -83,7 +85,9 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            minimum_role_to_stream: z.string().default(e_player_roles_enum.user),
+            minimum_role_to_stream: z
+              .string()
+              .default(e_player_roles_enum.user),
           }),
         ),
       }),

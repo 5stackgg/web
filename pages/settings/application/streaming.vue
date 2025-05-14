@@ -7,16 +7,16 @@ definePageMeta({
 </script>
 
 <template>
-  <form @submit.prevent="updateSettings" class="grid gap-4">
-    <FormField v-slot="{ componentField }" name="miniminum_role_to_stream">
+    <form @submit.prevent="updateSettings" class="grid gap-4">
+    <FormField v-slot="{ componentField }" name="public.minimum_role_to_stream">
       <FormItem>
         <FormLabel class="text-lg font-semibold">{{
-          $t("pages.settings.application.miniminum_role_to_stream")
+          $t("pages.settings.application.streaming.minimum_role_to_stream")
         }}</FormLabel>
         <FormDescription>
           {{
             $t(
-              "pages.settings.application.miniminum_role_to_stream_description",
+              "pages.settings.application.streaming.minimum_role_to_stream_description",
             )
           }}
         </FormDescription>
@@ -85,9 +85,9 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            minimum_role_to_stream: z
-              .string()
-              .default(e_player_roles_enum.user),
+            public: z.object({  
+              minimum_role_to_stream: z.string().default(e_player_roles_enum.user),
+            }),
           }),
         ),
       }),
@@ -104,27 +104,6 @@ export default {
     },
   },
   methods: {
-    async toggleMatchmaking() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings_one: [
-            {
-              object: {
-                name: "minimum_role_to_stream",
-                value: this.form.values.minimum_role_to_stream,
-              },
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
     async updateSettings() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -132,8 +111,8 @@ export default {
             {
               objects: [
                 {
-                  name: "minimum_role_to_stream",
-                  value: this.form.values.minimum_role_to_stream,
+                  name: "public.minimum_role_to_stream",
+                  value: this.form.values.public.minimum_role_to_stream,
                 },
               ],
               on_conflict: {

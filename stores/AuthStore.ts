@@ -22,6 +22,7 @@ export const useAuthStore = defineStore("auth", () => {
   const roleOrder = [
     e_player_roles_enum.user,
     e_player_roles_enum.verified_user,
+    e_player_roles_enum.streamer,
     e_player_roles_enum.match_organizer,
     e_player_roles_enum.tournament_organizer,
     e_player_roles_enum.administrator,
@@ -97,6 +98,10 @@ export const useAuthStore = defineStore("auth", () => {
     () => me.value?.role === e_player_roles_enum.verified_user,
   );
 
+  const isStreamer = computed(
+    () => me.value?.role === e_player_roles_enum.streamer,
+  );
+
   const isAdmin = computed(
     () => me.value?.role === e_player_roles_enum.administrator,
   );
@@ -114,6 +119,7 @@ export const useAuthStore = defineStore("auth", () => {
     getMe,
     isUser,
     isVerifiedUser,
+    isStreamer,
     isMatchOrganizer,
     isTournamentOrganizer,
     isAdmin,

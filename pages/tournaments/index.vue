@@ -216,41 +216,14 @@ export default {
       return useAuthStore().me;
     },
     canCreateTournament() {
-      const allowedRole = useApplicationSettingsStore().tournamentCreateRole;
-
-      if (allowedRole === e_player_roles_enum.user) {
-        return true;
+      const me = useAuthStore().me;
+      if (!me) {
+        return false;
       }
 
-      if (allowedRole === e_player_roles_enum.verified_user) {
-        return [
-          e_player_roles_enum.verified_user,
-          e_player_roles_enum.match_organizer,
-          e_player_roles_enum.tournament_organizer,
-          e_player_roles_enum.administrator,
-        ].includes(this.me.role);
-      }
-
-      if (allowedRole === e_player_roles_enum.match_organizer) {
-        return [
-          e_player_roles_enum.match_organizer,
-          e_player_roles_enum.tournament_organizer,
-          e_player_roles_enum.administrator,
-        ].includes(this.me.role);
-      }
-
-      if (allowedRole === e_player_roles_enum.tournament_organizer) {
-        return [
-          e_player_roles_enum.tournament_organizer,
-          e_player_roles_enum.administrator,
-        ].includes(this.me.role);
-      }
-
-      if (allowedRole === e_player_roles_enum.administrator) {
-        return this.me.role === e_player_roles_enum.administrator;
-      }
-
-      return false;
+      return useAuthStore().isRoleAbove(
+        useApplicationSettingsStore().tournamentCreateRole,
+      );
     },
   },
 };

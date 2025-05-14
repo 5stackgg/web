@@ -336,6 +336,7 @@ export default {
       roles: [
         { value: e_player_roles_enum.user, display: "User" },
         { value: e_player_roles_enum.verified_user, display: "Verified User" },
+        { value: e_player_roles_enum.streamer, display: "Streamer" },
         {
           value: e_player_roles_enum.match_organizer,
           display: "Match Organizer",

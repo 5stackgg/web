@@ -279,6 +279,9 @@ export default {
     isVerified() {
       return this.player?.role === e_player_roles_enum.verified_user;
     },
+    isStreamer() {
+      return this.player?.role === e_player_roles_enum.streamer;
+    },
     isOrganizer() {
       return this.player?.role === e_player_roles_enum.match_organizer;
     },

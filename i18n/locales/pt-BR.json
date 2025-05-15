@@ -32,7 +32,7 @@
                 "my_teams": "Minhas equipes",
                 "other_teams": "Outras equipes"
             },
-            "search": "Pesquisar"
+            "search": "Pesquisar..."
         },
         "settings": {
             "appearance": {
@@ -87,12 +87,12 @@
                 "matchmaking_min_role": "Papel Mínimo Permitido Entrar na Matchmaking",
                 "demo_settings": {
                     "update": "Atualizar",
-                    "title": "Configuração da Demonstração",
+                    "title": "Configuração da Demo",
                     "min_retention": "Retenção mínima",
                     "max_storage": "Armazenamento Máximo",
                     "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
-                    "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demonstração em GB.",
-                    "cloudflare_worker_url_description": "O URL do trabalhador Cloudflare que será usado para armazenar e recuperar os arquivos de demonstração.",
+                    "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demo em GB.",
+                    "cloudflare_worker_url_description": "O URL do trabalhador Cloudflare que será usado para armazenar e recuperar os arquivos de demo.",
                     "min_retention_description": "Os dias mínimos de retenção para os arquivos de demo.",
                     "current_storage": "Armazenamento atual",
                     "used_storage": "Armazenamento aproximado usado"
@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Este papel será capaz de criar torneios.",
                 "matchmaking_min_role_description": "Este papel poderá juntar-se à matchmaking.",
                 "max_acceptable_latency": "Máximo Aceitável Latência",
-                "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida."
+                "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida.",
+                "streaming": {
+                    "minimum_role_to_stream": "Papel Mínimo Permitido a Fluxo",
+                    "title": "Streaming",
+                    "minimum_role_to_stream_description": "Este papel será capaz de criar correspondências."
+                }
             },
             "language": {
                 "title": "Idioma",
@@ -132,7 +137,7 @@
                 "search_country": "Procurar no país...",
                 "no_country_found": "Nenhum país encontrado.",
                 "update": "Atualizar conta",
-                "update_success": "Perfil Actualizado",
+                "update_success": "Perfil Atualizado",
                 "discord": {
                     "unlink": "Desvincular a Discórdia",
                     "link": "Discórdia da Ligação",
@@ -286,7 +291,7 @@
             "form": {
                 "poster": "Poster (opcional)",
                 "poster_placeholder": "http://exemplo.com/poster.png",
-                "patch": "Correcção (opcional)",
+                "patch": "Patch (opcional)",
                 "patch_placeholder": "http://exemplo.com/patch.png",
                 "workshop_map_id": "ID do mapa da oficina (opcional)",
                 "create_map": "Criar mapa",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Grupos de mapas atualizados",
             "toggle_active_pool": "Estado de atividade dos mapas atualizado",
             "save_success": "Pool do mapa salvo com sucesso"
+        },
+        "manage_matches": {
+            "title": "Gerenciar Partidas",
+            "description": "Veja e gerencie todas as partidas em toda a plataforma."
         }
     },
     "matchmaking": {
@@ -354,10 +363,6 @@
             "join_lobby": "Entrar no Lobby",
             "view_profile": "Visualizar perfil",
             "invite_to_match": "Convidar o jogador para o jogo"
-        },
-        "confirm": {
-            "ready": "Pronto",
-            "players": "Jogadores Prontos"
         },
         "banned": "Banido",
         "go_to_match": "Ir para a partida",
@@ -449,7 +454,7 @@
                 },
                 "timeouts": {
                     "tactical": {
-                        "label": "Configurações de Pause Tático",
+                        "label": "Pause tático",
                         "description": "Os pauses táticos são chamados digitando .tac e duram 30 segundos."
                     },
                     "technical": {
@@ -464,7 +469,7 @@
                     }
                 },
                 "ready_settings": {
-                    "label": "Configurações de \"Ready\"",
+                    "label": "Configuração de Preparação (ready)",
                     "description": "Controla como o jogo determina estar pronto para começar.",
                     "options": {
                         "captains": "Capitães",
@@ -535,7 +540,7 @@
         },
         "region_veto": {
             "banning": "Banindo",
-            "organizer_override": "Substituição do organizador",
+            "organizer_override": "Vetos pelo Organizador",
             "confirm_ban": "Confirmar ban",
             "server_region": "Região do servidor",
             "select_region": "Selecionar região"
@@ -672,9 +677,9 @@
         "registration": {
             "title": "Registro",
             "description": "Descrição",
-            "warning": "Aviso",
+            "warning": "Este nome não pode ser alterado após ser enviado",
             "name_label": "Nome",
-            "confirm_button": "Botão de confirmação",
+            "confirm_button": "Confirmar Nome",
             "success": "Sucesso"
         },
         "status": {
@@ -800,7 +805,8 @@
                 "logs": "Logs do Sistema",
                 "metrics": "Métricas do Sistema",
                 "app_settings": "Configurações do App",
-                "map_pools": "Conjuntos de Mapas"
+                "map_pools": "Conjuntos de Mapas",
+                "manage_matches": "Gerenciar correspondências"
             },
             "profile": {
                 "my_account": "Minhas Configurações",
@@ -826,7 +832,8 @@
                 "app_settings": "Configurações do App",
                 "report_issue": "Reportar Problema",
                 "join_discord": "Entrar no Discord",
-                "map_pools": "Conjuntos de Mapas"
+                "map_pools": "Conjuntos de Mapas",
+                "manage_matches": "Gerenciar correspondências"
             },
             "logout_dialog": {
                 "title": "Sair",
@@ -875,7 +882,7 @@
         "join": {
             "title": "Entrar no torneio",
             "joined_with": "Equipe entrou",
-            "requirements": "Requisitos"
+            "requirements": "Você precisa de pelo menos {count} jogadores para participar deste torneio"
         },
         "tournament_team": {
             "players_registered": "Jogadores registrados",
@@ -1058,7 +1065,7 @@
         "form": {
             "cfg": "Configuração",
             "create": "Criar uma Configuração",
-            "update": "Actualizar a Configuração",
+            "update": "Atualizar a Configuração",
             "revert_to_defaults": "Reverter para padrões",
             "revert_confirm": {
                 "title": "Reverter para padrões",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Convidado por",
-            "title": "Coincidir convite",
-            "description": "Você foi convidado para participar de um jogo"
-        },
-        "invite": {
-            "deny": "Recusar",
-            "accept": "Aceitar"
+            "title": "Coincidir com convites"
         }
     }
 }

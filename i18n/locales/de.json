@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Diese Rolle wird in der Lage sein, Turniere zu erstellen.",
                 "matchmaking_min_role_description": "Diese Rolle wird in der Lage sein, sich zusammenzufügen.",
                 "max_acceptable_latency": "Maximal zulässig Latenz",
-                "max_acceptable_latency_description": "Dies ist die maximale Latenz, die ein Spieler einem Spiel beitreten muss."
+                "max_acceptable_latency_description": "Dies ist die maximale Latenz, die ein Spieler einem Spiel beitreten muss.",
+                "streaming": {
+                    "minimum_role_to_stream_description": "Diese Rolle wird in der Lage sein, Spiele zu erstellen.",
+                    "title": "Streaming",
+                    "minimum_role_to_stream": "Mindeste Rolle erlaubt zu Streamen"
+                }
             },
             "language": {
                 "title": "Sprache",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Aktualisierte Kartenpools",
             "toggle_active_pool": "Karten Aktivitätsstatus aktualisiert",
             "save_success": "Kartenpool erfolgreich gespeichert"
+        },
+        "manage_matches": {
+            "title": "Manage Matches",
+            "description": "Alle Spiele auf der Plattform anzeigen und verwalten."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Profil anzeigen",
             "invite_to_match": "Einladen des Spielers zum Match"
         },
-        "confirm": {
-            "ready": "Bereit",
-            "players": "Spieler bereit"
-        },
         "banned": "Sie sind vom Matchmaking gesperrt",
         "go_to_match": "Zum Spiel gehen",
         "temp_banned": "Sie sind vorübergehend vom Matchmaking gesperrt",
@@ -366,7 +371,7 @@
             "toggle": "Einstellungen anpassen",
             "queue_order": "Bestellung"
         },
-        "confirm_selection": "Bestätigung",
+        "confirm_selection": "Jetzt anmelden",
         "searching_for_match": "Suche nach einem {type} Spiel",
         "high_latency_warning": "Ihre Latenz ist zu hoch für Wettkämpfe"
     },
@@ -800,7 +805,8 @@
                 "logs": "System Logs",
                 "metrics": "System Metriken",
                 "app_settings": "App Einstellungen",
-                "map_pools": "Map Pools"
+                "map_pools": "Map Pools",
+                "manage_matches": "Manage Matches"
             },
             "profile": {
                 "my_account": "Meine Einstellungen",
@@ -826,7 +832,8 @@
                 "app_settings": "App Einstellungen",
                 "report_issue": "Problem melden",
                 "join_discord": "Discord beitreten",
-                "map_pools": "Map Pools"
+                "map_pools": "Map Pools",
+                "manage_matches": "Manage Matches"
             },
             "logout_dialog": {
                 "title": "Abmelden",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Eingeladen von",
-            "title": "Invitation des Spiels",
-            "description": "Sie wurden eingeladen, sich an einem Spiel zu beteiligen"
-        },
-        "invite": {
-            "deny": "Ablehnen",
-            "accept": "Annehmen"
+            "title": "Spiele Einladungen"
         }
     }
 }

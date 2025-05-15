@@ -105,7 +105,12 @@
                 "create_matches_role_description": "このロールはマッチを作成することができます.",
                 "create_tournaments_role_description": "この役割は、トーナメントを作成することができます.",
                 "matchmaking_min_role_description": "マッチメイキングに参加できる役割.",
-                "max_acceptable_latency_description": "プレイヤーが試合に参加できる最大レイテンシです."
+                "max_acceptable_latency_description": "プレイヤーが試合に参加できる最大レイテンシです.",
+                "streaming": {
+                    "title": "ストリーミング",
+                    "minimum_role_to_stream": "ストリームを可能にする最小限のロール",
+                    "minimum_role_to_stream_description": "このロールはマッチを作成することができます."
+                }
             },
             "language": {
                 "title": "用語集",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "地図プールの更新",
             "toggle_active_pool": "地図 活動状況 更新",
             "save_success": "正常に保存されたマッププール"
+        },
+        "manage_matches": {
+            "title": "マッチを管理する",
+            "description": "プラットフォーム全体ですべてのマッチを表示および管理します."
         }
     },
     "layouts": {
@@ -376,7 +385,8 @@
                 "logs": "システムログ",
                 "metrics": "システムメトリクス",
                 "app_settings": "アプリ設定",
-                "map_pools": "マッププール"
+                "map_pools": "マッププール",
+                "manage_matches": "マッチを管理する"
             },
             "footer": {
                 "report_issue": "問題を報告",
@@ -408,7 +418,8 @@
                 "app_settings": "アプリ設定",
                 "report_issue": "問題を報告",
                 "join_discord": "Discordに参加",
-                "map_pools": "マッププール"
+                "map_pools": "マッププール",
+                "manage_matches": "マッチを管理する"
             }
         },
         "account_settings": {
@@ -452,10 +463,6 @@
             "view_profile": "プロフィールを見る",
             "invite_to_match": "プレイヤーにマッチする招待状"
         },
-        "confirm": {
-            "ready": "準備完了",
-            "players": "プレーヤーの準備"
-        },
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
         "temp_banned": "一時BAN",
@@ -463,7 +470,7 @@
             "toggle": "設定を調整する",
             "queue_order": "キューオーダー"
         },
-        "confirm_selection": "確認する",
+        "confirm_selection": "Queueに参加する",
         "searching_for_match": "{type}マッチを検索する",
         "high_latency_warning": "あなたのレイテンシは競争相手のために余りに高いです"
     },
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "招待者",
-            "title": "マッチ招待状",
-            "description": "マッチングに参加してくださる"
-        },
-        "invite": {
-            "deny": "拒否",
-            "accept": "承認"
+            "title": "マッチ招待状"
         }
     }
 }

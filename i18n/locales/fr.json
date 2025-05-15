@@ -105,7 +105,12 @@
                 "max_acceptable_latency_description": "C'est la latence maximale qu'un joueur peut avoir à rejoindre un match.",
                 "create_matches_role_description": "Ce rôle sera en mesure de créer des correspondances.",
                 "create_tournaments_role_description": "Ce rôle sera capable de créer des tournois.",
-                "max_acceptable_latency": "Maximum acceptable Latence"
+                "max_acceptable_latency": "Maximum acceptable Latence",
+                "streaming": {
+                    "minimum_role_to_stream": "Rôle minimum autorisé à diffuser",
+                    "title": "Streaming",
+                    "minimum_role_to_stream_description": "Ce rôle sera en mesure de créer des correspondances."
+                }
             },
             "language": {
                 "title": "Langue",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Pools de cartes mis à jour",
             "toggle_active_pool": "État de l'activité des cartes Mise à jour",
             "save_success": "Modifications enregistrées avec succès"
+        },
+        "manage_matches": {
+            "title": "Gérer les correspondances",
+            "description": "Afficher et gérer tous les matches sur la plateforme."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Affichage du profil",
             "invite_to_match": "Inviter le joueur à correspondre"
         },
-        "confirm": {
-            "ready": "Prêt",
-            "players": "Les joueurs sont prêts"
-        },
         "banned": "Banni",
         "go_to_match": "Aller au match",
         "temp_banned": "Banni temporairement",
@@ -366,7 +371,7 @@
             "toggle": "Régler les paramètres",
             "queue_order": "Ordre des requêtes"
         },
-        "confirm_selection": "Confirmation",
+        "confirm_selection": "Rejoignez la file d'attente",
         "searching_for_match": "Recherche d'une correspondance {type}",
         "high_latency_warning": "Votre latence est trop élevée pour des matches compétitifs"
     },
@@ -800,7 +805,8 @@
                 "logs": "Journaux Système",
                 "metrics": "Métriques Système",
                 "app_settings": "Paramètres de l'Application",
-                "map_pools": "Groupes de Cartes"
+                "map_pools": "Groupes de Cartes",
+                "manage_matches": "Gérer les correspondances"
             },
             "profile": {
                 "my_account": "Mes paramètres",
@@ -826,7 +832,8 @@
                 "app_settings": "Paramètres de l'Application",
                 "report_issue": "Signaler un Problème",
                 "join_discord": "Rejoindre Discord",
-                "map_pools": "Groupes de Cartes"
+                "map_pools": "Groupes de Cartes",
+                "manage_matches": "Gérer les correspondances"
             },
             "logout_dialog": {
                 "title": "Déconnexion",
@@ -1084,14 +1091,8 @@
         "title": "Match personnalisé"
     },
     "notifications": {
-        "invite": {
-            "deny": "Refuser",
-            "accept": "Accepter"
-        },
         "match": {
-            "invited_by": "Invité par",
-            "title": "Appel de correspondance",
-            "description": "Vous avez été invité à participer à un match"
+            "title": "Invites de match"
         }
     }
 }

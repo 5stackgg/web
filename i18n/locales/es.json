@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Este papel será capaz de crear torneos.",
                 "matchmaking_min_role_description": "Este papel será capaz de unirse al matchmaking.",
                 "max_acceptable_latency": "Maximum Aceptable Latency",
-                "max_acceptable_latency_description": "Esta es la latencia máxima que un jugador puede tener que unirse a un partido."
+                "max_acceptable_latency_description": "Esta es la latencia máxima que un jugador puede tener que unirse a un partido.",
+                "streaming": {
+                    "title": "Streaming",
+                    "minimum_role_to_stream": "Función mínima permitida",
+                    "minimum_role_to_stream_description": "Este papel será capaz de crear partidos."
+                }
             },
             "language": {
                 "title": "Idioma",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Mapa actualizado Piscinas",
             "toggle_active_pool": "Mapas Actividad Estado Actualizado",
             "save_success": "Grupo de mapas guardado con éxito"
+        },
+        "manage_matches": {
+            "title": "Gestion Matches",
+            "description": "Ver y gestionar todos los partidos en toda la plataforma."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Ver perfil",
             "invite_to_match": "Invitar jugador a Match"
         },
-        "confirm": {
-            "ready": "Listo",
-            "players": "Los jugadores listos"
-        },
         "banned": "Baneado",
         "go_to_match": "Ir a la partida",
         "temp_banned": "Baneado temporalmente",
@@ -366,7 +371,7 @@
             "toggle": "Ajuste de ajustes",
             "queue_order": "Queue Order"
         },
-        "confirm_selection": "Confirmación",
+        "confirm_selection": "Join Queue",
         "searching_for_match": "Buscando un {tipo} partido",
         "high_latency_warning": "Su latencia es demasiado alta para los partidos competitivos"
     },
@@ -800,7 +805,8 @@
                 "logs": "Registros del Sistema",
                 "metrics": "Métricas del Sistema",
                 "app_settings": "Configuración de la App",
-                "map_pools": "Grupos de Mapas"
+                "map_pools": "Grupos de Mapas",
+                "manage_matches": "Gestion Matches"
             },
             "profile": {
                 "my_account": "Mis ajustes",
@@ -826,7 +832,8 @@
                 "app_settings": "Configuración de la App",
                 "report_issue": "Reportar un Problema",
                 "join_discord": "Unirse a Discord",
-                "map_pools": "Grupos de Mapas"
+                "map_pools": "Grupos de Mapas",
+                "manage_matches": "Gestion Matches"
             },
             "logout_dialog": {
                 "title": "Cerrar Sesión",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Invitado por",
-            "title": "Match Invite",
-            "description": "Has sido invitado a unirte a un partido"
-        },
-        "invite": {
-            "deny": "Rechazar",
-            "accept": "Aceptar"
+            "title": "Match Invitas"
         }
     }
 }

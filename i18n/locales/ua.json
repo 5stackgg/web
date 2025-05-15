@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Ця роль зможе створити турніри.",
                 "matchmaking_min_role_description": "Ця роль буде в змозі приєднатися до матчу.",
                 "max_acceptable_latency": "Максимальний придатковий Проживання",
-                "max_acceptable_latency_description": "Це максимальна лояльність, яку гравець може приєднатися до матчу."
+                "max_acceptable_latency_description": "Це максимальна лояльність, яку гравець може приєднатися до матчу.",
+                "streaming": {
+                    "minimum_role_to_stream": "Мінімальна роль, що допускається до потоку",
+                    "title": "Потоки",
+                    "minimum_role_to_stream_description": "Ця роль зможе створювати матчі."
+                }
             },
             "language": {
                 "title": "Українська",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Оновлені карти басейни",
             "toggle_active_pool": "Статус на сервери",
             "save_success": "Карта басейну успішно збережено"
+        },
+        "manage_matches": {
+            "title": "Керування матчами",
+            "description": "Переглядайте і встановіть всі матчі по всій платформі."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Переглянути профіль",
             "invite_to_match": "Запрошення гравця до матчу"
         },
-        "confirm": {
-            "ready": "Готово",
-            "players": "Гравці Готові"
-        },
         "banned": "Заблоковано",
         "go_to_match": "Перейти до матчу",
         "temp_banned": "Тимчасово заблоковано",
@@ -366,7 +371,7 @@
             "toggle": "Налаштування налаштування",
             "queue_order": "Замовлення"
         },
-        "confirm_selection": "Підтвердження",
+        "confirm_selection": "Приєднатися",
         "searching_for_match": "Пошук по {type} матч",
         "high_latency_warning": "Ваша лояльність є занадто високою для конкурентних матчів"
     },
@@ -800,7 +805,8 @@
                 "logs": "Системні Логи",
                 "metrics": "Системні Метрики",
                 "app_settings": "Налаштування Додатку",
-                "map_pools": "Пул Карт"
+                "map_pools": "Пул Карт",
+                "manage_matches": "Керування матчами"
             },
             "footer": {
                 "report_issue": "Повідомити про Проблему",
@@ -832,7 +838,8 @@
                 "app_settings": "Налаштування Додатку",
                 "report_issue": "Повідомити про Проблему",
                 "join_discord": "Приєднатися до Discord",
-                "map_pools": "Пул Карт"
+                "map_pools": "Пул Карт",
+                "manage_matches": "Керування матчами"
             }
         },
         "account_settings": {
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Запрошено",
-            "title": "Матч запрошення",
-            "description": "Ви запрошували приєднатися до матчу"
-        },
-        "invite": {
-            "deny": "Відхилити",
-            "accept": "Прийняти"
+            "title": "Матч запрошення"
         }
     }
 }

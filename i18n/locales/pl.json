@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Ta rola będzie w stanie tworzyć turnieje.",
                 "matchmaking_min_role_description": "Rola ta będzie mogła dołączyć do swatów.",
                 "max_acceptable_latency": "Maksymalna dopuszczalna Opóźnienie",
-                "max_acceptable_latency_description": "Jest to maksymalne opóźnienie, że gracz może dołączyć do meczu."
+                "max_acceptable_latency_description": "Jest to maksymalne opóźnienie, że gracz może dołączyć do meczu.",
+                "streaming": {
+                    "title": "Streaming",
+                    "minimum_role_to_stream": "Minimalna rola dozwolona dla strumienia",
+                    "minimum_role_to_stream_description": "Ta rola będzie w stanie tworzyć mecze."
+                }
             },
             "language": {
                 "title": "Język",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Aktualizacja puli map",
             "toggle_active_pool": "Aktualizacja statusu aktywności map",
             "save_success": "Mapa pula zapisana pomyślnie"
+        },
+        "manage_matches": {
+            "title": "Zarządzanie meczami",
+            "description": "Zobacz i zarządzaj wszystkimi meczami na całej platformie."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Widok profilu",
             "invite_to_match": "Zaproś gracza do meczu"
         },
-        "confirm": {
-            "ready": "Gotowy",
-            "players": "Gracze gotowi"
-        },
         "banned": "Zbanowany",
         "go_to_match": "Przejdź do meczu",
         "temp_banned": "Tymczasowo zbanowany",
@@ -366,7 +371,7 @@
             "toggle": "Dostosuj ustawienia",
             "queue_order": "Kolejka kolejowa"
         },
-        "confirm_selection": "Potwierdzenie",
+        "confirm_selection": "Dołącz do kolejki",
         "searching_for_match": "Poszukiwanie dopasowania {type}",
         "high_latency_warning": "Twoje opóźnienie jest zbyt wysokie, by rywalizować"
     },
@@ -800,7 +805,8 @@
                 "logs": "Logi Systemowe",
                 "metrics": "Metryki Systemowe",
                 "app_settings": "Ustawienia Aplikacji",
-                "map_pools": "Pule Map"
+                "map_pools": "Pule Map",
+                "manage_matches": "Zarządzanie meczami"
             },
             "profile": {
                 "my_account": "Moje ustawienia",
@@ -826,7 +832,8 @@
                 "app_settings": "Ustawienia Aplikacji",
                 "report_issue": "Zgłoś Problem",
                 "join_discord": "Dołącz do Discorda",
-                "map_pools": "Pule Map"
+                "map_pools": "Pule Map",
+                "manage_matches": "Zarządzanie meczami"
             },
             "logout_dialog": {
                 "title": "Wyloguj",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Zaproszony przez",
-            "title": "Zaproszenie do meczu",
-            "description": "Zostałeś zaproszony na mecz"
-        },
-        "invite": {
-            "deny": "Odrzuć",
-            "accept": "Akceptuj"
+            "title": "Dopasowanie zaproszeń"
         }
     }
 }

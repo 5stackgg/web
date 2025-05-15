@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Questo ruolo sarà in grado di creare tornei.",
                 "matchmaking_min_role_description": "Questo ruolo sarà in grado di aderire matchmaking.",
                 "max_acceptable_latency": "Massimo Accettabile Lattice",
-                "max_acceptable_latency_description": "Questa è la latenza massima che un giocatore può dover partecipare a una partita."
+                "max_acceptable_latency_description": "Questa è la latenza massima che un giocatore può dover partecipare a una partita.",
+                "streaming": {
+                    "minimum_role_to_stream_description": "Questo ruolo sarà in grado di creare partite.",
+                    "title": "Streaming",
+                    "minimum_role_to_stream": "Ruolo minimo consentito a Stream"
+                }
             },
             "language": {
                 "description": "Scegli la tua lingua preferita per l'interfaccia di applicazione.",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Piscine mappa aggiornata",
             "toggle_active_pool": "Mappe Attività Status Aggiornato",
             "save_success": "Mappa pool salvato con successo"
+        },
+        "manage_matches": {
+            "title": "Gestione delle partite",
+            "description": "Visualizza e gestisci tutte le partite attraverso la piattaforma."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Visualizza il profilo",
             "invite_to_match": "Invita il giocatore a abbinare"
         },
-        "confirm": {
-            "ready": "Pronto",
-            "players": "Giocatori pronti"
-        },
         "banned": "Bannato",
         "go_to_match": "Vai alla partita",
         "temp_banned": "Bannato temporaneamente",
@@ -366,7 +371,7 @@
             "toggle": "Regolare le impostazioni",
             "queue_order": "Ordine di coda"
         },
-        "confirm_selection": "Conferma",
+        "confirm_selection": "Iscriviti a Queue",
         "searching_for_match": "Ricerca di una corrispondenza {type}",
         "high_latency_warning": "La latenza è troppo alta per le partite concorrenziali"
     },
@@ -800,7 +805,8 @@
                 "logs": "Log di Sistema",
                 "metrics": "Metriche di Sistema",
                 "app_settings": "Impostazioni App",
-                "map_pools": "Pool di Mappe"
+                "map_pools": "Pool di Mappe",
+                "manage_matches": "Gestione delle partite"
             },
             "profile": {
                 "my_account": "Le mie impostazioni",
@@ -826,7 +832,8 @@
                 "app_settings": "Impostazioni App",
                 "report_issue": "Segnala un Problema",
                 "join_discord": "Unisciti a Discord",
-                "map_pools": "Pool di Mappe"
+                "map_pools": "Pool di Mappe",
+                "manage_matches": "Gestione delle partite"
             },
             "logout_dialog": {
                 "title": "Disconnessione",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Invitato da",
-            "title": "Invito di corrispondenza",
-            "description": "Sei stato invitato a partecipare a una partita"
-        },
-        "invite": {
-            "deny": "Rifiuta",
-            "accept": "Accetta"
+            "title": "Invito di corrispondenza"
         }
     }
 }

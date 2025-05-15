@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Šī loma spēs radīt turnīrus.",
                 "matchmaking_min_role_description": "Šī loma ļaus apvienoties kontaktbiržā.",
                 "max_acceptable_latency": "Maksimāli pieņemams Atrašanās vieta",
-                "max_acceptable_latency_description": "Tas ir maksimālais latentums, kas spēlētājam var būt jāpievienojas mačam."
+                "max_acceptable_latency_description": "Tas ir maksimālais latentums, kas spēlētājam var būt jāpievienojas mačam.",
+                "streaming": {
+                    "minimum_role_to_stream_description": "Šī loma spēs radīt spēles.",
+                    "title": "Straumēšana",
+                    "minimum_role_to_stream": "Minimālā loma, ko atļauts straumēt"
+                }
             },
             "language": {
                 "select": "Izvēlieties valodu",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Atjauninātie karšu baseini",
             "toggle_active_pool": "Karšu darbības statuss atjaunināts",
             "save_success": "Karšu kopa veiksmīgi saglabāta"
+        },
+        "manage_matches": {
+            "title": "Pārvaldīt atbilstību",
+            "description": "Skatīt un pārvaldīt visas spēles visā platformā."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Skata profils",
             "invite_to_match": "Uzlūgt spēlētāju sacensībām"
         },
-        "confirm": {
-            "ready": "Gatavs",
-            "players": "Spēlētāji gatavi"
-        },
         "banned": "Aizliegts",
         "go_to_match": "Doties uz spēli",
         "temp_banned": "Pagaidām aizliegts",
@@ -366,7 +371,7 @@
             "toggle": "Pielāgot iestatījumus",
             "queue_order": "Rindas kārtība"
         },
-        "confirm_selection": "Apstiprinājums",
+        "confirm_selection": "Pievienoties rindai",
         "searching_for_match": "Meklē {type} atbilstību",
         "high_latency_warning": "Jūsu latentums ir pārāk augsts konkurences spēlēm"
     },
@@ -800,7 +805,8 @@
                 "logs": "Sistēmas Žurnāli",
                 "metrics": "Sistēmas Metrikas",
                 "app_settings": "Lietotnes Iestatījumi",
-                "map_pools": "Kartu Kopas"
+                "map_pools": "Kartu Kopas",
+                "manage_matches": "Pārvaldīt atbilstību"
             },
             "footer": {
                 "report_issue": "Ziņot par Problēmu",
@@ -832,7 +838,8 @@
                 "app_settings": "Lietotnes Iestatījumi",
                 "report_issue": "Ziņot par Problēmu",
                 "join_discord": "Pievienoties Discord",
-                "map_pools": "Kartu Kopas"
+                "map_pools": "Kartu Kopas",
+                "manage_matches": "Pārvaldīt atbilstību"
             }
         },
         "account_settings": {
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Uzaicināja",
-            "title": "Meklēt",
-            "description": "Jūs esat uzaicināts pievienoties mačam"
-        },
-        "invite": {
-            "deny": "Noraidīt",
-            "accept": "Pieņemt"
+            "title": "Saskaņot uzaicinājumus"
         }
     }
 }

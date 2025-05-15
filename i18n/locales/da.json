@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Denne rolle vil være i stand til at skabe turneringer.",
                 "matchmaking_min_role_description": "Denne rolle vil være i stand til at deltage i matchmaking.",
                 "max_acceptable_latency": "Maksimalt acceptabelt Latency",
-                "max_acceptable_latency_description": "Dette er den maksimale latency, som en spiller kan have til at deltage i en kamp."
+                "max_acceptable_latency_description": "Dette er den maksimale latency, som en spiller kan have til at deltage i en kamp.",
+                "streaming": {
+                    "title": "Streaming",
+                    "minimum_role_to_stream": "Minimum Rolle Tilladt Stream",
+                    "minimum_role_to_stream_description": "Denne rolle vil være i stand til at skabe kampe."
+                }
             },
             "language": {
                 "select": "Vælg sprog",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Opdateret kort pools",
             "toggle_active_pool": "Kort Aktivitetsstatus opdateret",
             "save_success": "Kort-pool gemt med succes"
+        },
+        "manage_matches": {
+            "title": "Håndtér matches",
+            "description": "Få vist og administrere alle kampe på tværs af platformen."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Vis profil",
             "invite_to_match": "Inviter spiller til Match"
         },
-        "confirm": {
-            "ready": "Klar",
-            "players": "Spillere klar"
-        },
         "banned": "Bannet",
         "go_to_match": "Gå til kamp",
         "temp_banned": "Midlertidigt bannet",
@@ -366,7 +371,7 @@
             "toggle": "Justér indstillinger",
             "queue_order": "Kø rækkefølge"
         },
-        "confirm_selection": "Bekræftelse",
+        "confirm_selection": "Deltag i kø",
         "searching_for_match": "Søgning efter en {type} match",
         "high_latency_warning": "Din latency er for høj til konkurrence kampe"
     },
@@ -800,7 +805,8 @@
                 "logs": "Systemlogs",
                 "metrics": "Systemmetrik",
                 "app_settings": "Appindstillinger",
-                "map_pools": "Kortpuljer"
+                "map_pools": "Kortpuljer",
+                "manage_matches": "Håndtér matches"
             },
             "profile": {
                 "my_account": "Mine indstillinger",
@@ -826,7 +832,8 @@
                 "app_settings": "Appindstillinger",
                 "report_issue": "Rapportér Problem",
                 "join_discord": "Tilmeld Discord",
-                "map_pools": "Kortpuljer"
+                "map_pools": "Kortpuljer",
+                "manage_matches": "Håndtér matches"
             },
             "logout_dialog": {
                 "title": "Log ud",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Inviteret af",
-            "title": "Match Invitér",
-            "description": "Du er blevet inviteret til en kamp"
-        },
-        "invite": {
-            "deny": "Afvis",
-            "accept": "Acceptér"
+            "title": "Match- invitationer"
         }
     }
 }

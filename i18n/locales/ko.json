@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "이 역할은 토너먼트를 만들 수 있습니다.",
                 "matchmaking_min_role_description": "이 역할은 matchmaking에 참여할 수 있습니다.",
                 "max_acceptable_latency": "최대 수락가능한 연락처",
-                "max_acceptable_latency_description": "이것은 플레이어가 일치해야 할 수있는 최대 대기 시간입니다."
+                "max_acceptable_latency_description": "이것은 플레이어가 일치해야 할 수있는 최대 대기 시간입니다.",
+                "streaming": {
+                    "minimum_role_to_stream": "최소 역할은 스트림에 허용",
+                    "title": "관련 동영상",
+                    "minimum_role_to_stream_description": "이 역할은 일치를 만들 수 있습니다."
+                }
             },
             "language": {
                 "title": "* 이름",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "업데이트 된 맵 풀",
             "toggle_active_pool": "지도 활동 상태 업데이트",
             "save_success": "MAP 풀은 성공적으로 저장"
+        },
+        "manage_matches": {
+            "title": "매칭 관리",
+            "description": "플랫폼에서 모든 경기를 조회하고 관리합니다."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "공지사항",
             "invite_to_match": "Invite Player를 일치"
         },
-        "confirm": {
-            "ready": "준비",
-            "players": "플레이어 준비"
-        },
         "banned": "차단됨",
         "go_to_match": "매치로 이동",
         "temp_banned": "임시 차단",
@@ -366,7 +371,7 @@
             "toggle": "설정 조정",
             "queue_order": "견적 요청"
         },
-        "confirm_selection": "이름 *",
+        "confirm_selection": "구독하기",
         "searching_for_match": "{type} 일치 검색",
         "high_latency_warning": "당신의 대기권은 경쟁적인 경기를 위해 너무 높습니다"
     },
@@ -800,7 +805,8 @@
                 "logs": "시스템 로그",
                 "metrics": "시스템 메트릭",
                 "app_settings": "앱 설정",
-                "map_pools": "맵 풀"
+                "map_pools": "맵 풀",
+                "manage_matches": "매칭 관리"
             },
             "profile": {
                 "my_account": "내 설정",
@@ -826,7 +832,8 @@
                 "app_settings": "앱 설정",
                 "report_issue": "문제 보고",
                 "join_discord": "Discord 참여",
-                "map_pools": "맵 풀"
+                "map_pools": "맵 풀",
+                "manage_matches": "매칭 관리"
             },
             "logout_dialog": {
                 "title": "로그아웃",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "초대자",
-            "title": "경기 Invite",
-            "description": "당신은 일치에 초대되었습니다"
-        },
-        "invite": {
-            "deny": "거절",
-            "accept": "수락"
+            "title": "경기 Invites"
         }
     }
 }

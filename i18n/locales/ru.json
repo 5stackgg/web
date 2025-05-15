@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Эта роль позволит создавать турниры.",
                 "matchmaking_min_role_description": "Эта роль сможет присоединиться к сватовству.",
                 "max_acceptable_latency": "Максимально приемлемый задержка",
-                "max_acceptable_latency_description": "Это максимальная задержка, которую игрок может иметь, чтобы присоединиться к матчу."
+                "max_acceptable_latency_description": "Это максимальная задержка, которую игрок может иметь, чтобы присоединиться к матчу.",
+                "streaming": {
+                    "title": "Поток",
+                    "minimum_role_to_stream": "Минимальная роль, разрешенная для потоковой передачи",
+                    "minimum_role_to_stream_description": "Эта роль сможет создавать матчи."
+                }
             },
             "language": {
                 "title": "Язык языка",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Обновленные пулы карт",
             "toggle_active_pool": "Обновлен статус активности карт",
             "save_success": "Картографический пул успешно сохранен"
+        },
+        "manage_matches": {
+            "title": "Управлять матчами",
+            "description": "Просмотр и управление всеми матчами на платформе."
         }
     },
     "matchmaking": {
@@ -355,10 +364,6 @@
             "view_profile": "Просмотр профиля",
             "invite_to_match": "Пригласить игрока на матч"
         },
-        "confirm": {
-            "ready": "Готов",
-            "players": "Игроки готовы"
-        },
         "banned": "Забанен",
         "go_to_match": "Перейти к матчу",
         "temp_banned": "Временно забанен",
@@ -366,7 +371,7 @@
             "toggle": "Адаптация настроек",
             "queue_order": "Порядок очереди"
         },
-        "confirm_selection": "Подтверждающий",
+        "confirm_selection": "Присоединяйтесь к Queue",
         "searching_for_match": "Поиск совпадения {type}",
         "high_latency_warning": "Ваша задержка слишком высока для конкурентных матчей"
     },
@@ -800,7 +805,8 @@
                 "logs": "Системные Логи",
                 "metrics": "Системные Метрики",
                 "app_settings": "Настройки Приложения",
-                "map_pools": "Пул Карт"
+                "map_pools": "Пул Карт",
+                "manage_matches": "Управлять матчами"
             },
             "footer": {
                 "report_issue": "Сообщить о Проблеме",
@@ -826,7 +832,8 @@
                 "app_settings": "Настройки Приложения",
                 "report_issue": "Сообщить о Проблеме",
                 "join_discord": "Присоединиться к Discord",
-                "map_pools": "Пул Карт"
+                "map_pools": "Пул Карт",
+                "manage_matches": "Управлять матчами"
             },
             "logout_dialog": {
                 "title": "Выйти",
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Приглашен",
-            "title": "Пригласить на матч",
-            "description": "Вас пригласили присоединиться к матчу"
-        },
-        "invite": {
-            "deny": "Отклонить",
-            "accept": "Принять"
+            "title": "Матч приглашений"
         }
     }
 }

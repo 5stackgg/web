@@ -105,7 +105,12 @@
                 "create_tournaments_role_description": "Denna roll kommer att kunna skapa turneringar.",
                 "matchmaking_min_role_description": "Denna roll kommer att kunna ansluta sig till matchmaking.",
                 "max_acceptable_latency": "Maximal acceptabel Latency",
-                "max_acceptable_latency_description": "Detta är den maximala latens som en spelare kan behöva gå med i en match."
+                "max_acceptable_latency_description": "Detta är den maximala latens som en spelare kan behöva gå med i en match.",
+                "streaming": {
+                    "minimum_role_to_stream": "Minsta roll tillåten att strömma",
+                    "title": "Streaming",
+                    "minimum_role_to_stream_description": "Denna roll kommer att kunna skapa matcher."
+                }
             },
             "language": {
                 "title": "Språkspråk",
@@ -332,6 +337,10 @@
             "toggle_pool_type": "Uppdaterade Map Pools",
             "toggle_active_pool": "Kartor Aktivitetsstatus uppdaterad",
             "save_success": "Karta pool sparad framgångsrikt"
+        },
+        "manage_matches": {
+            "title": "Hantera matcher",
+            "description": "Visa och hantera alla matcher över plattformen."
         }
     },
     "layouts": {
@@ -376,7 +385,8 @@
                 "logs": "Systemloggar",
                 "metrics": "Systemmetrik",
                 "app_settings": "Appinställningar",
-                "map_pools": "Kartpooler"
+                "map_pools": "Kartpooler",
+                "manage_matches": "Hantera matcher"
             },
             "footer": {
                 "report_issue": "Rapportera Problem",
@@ -408,7 +418,8 @@
                 "app_settings": "Appinställningar",
                 "report_issue": "Rapportera Problem",
                 "join_discord": "Gå med i Discord",
-                "map_pools": "Kartpooler"
+                "map_pools": "Kartpooler",
+                "manage_matches": "Hantera matcher"
             }
         },
         "account_settings": {
@@ -980,10 +991,6 @@
             "view_profile": "Visa profil",
             "invite_to_match": "Inbjud spelare till match"
         },
-        "confirm": {
-            "ready": "Redo",
-            "players": "Spelare redo"
-        },
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
         "temp_banned": "Du är tillfälligt bannad från matchmaking",
@@ -991,7 +998,7 @@
             "toggle": "Justera inställningar",
             "queue_order": "Queue Order"
         },
-        "confirm_selection": "Bekräfta",
+        "confirm_selection": "Följ Queue",
         "searching_for_match": "Söka efter en {typ} match",
         "high_latency_warning": "Din latens är för hög för konkurrenskraftiga matcher"
     },
@@ -1085,13 +1092,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "Inbjuden av",
-            "title": "Match Invite",
-            "description": "Du har blivit inbjuden att delta i en match"
-        },
-        "invite": {
-            "deny": "Neka",
-            "accept": "Acceptera"
+            "title": "Match Invites"
         }
     }
 }

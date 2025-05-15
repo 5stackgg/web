@@ -298,7 +298,7 @@
                 "modify_maps": "修改池中的地图"
             },
             "add_new_map": "添加新地图",
-            "maps": "地图",
+            "maps": "可用模式",
             "active_duty": "服役地图",
             "available_modes": "可用模式",
             "workshop_id": "创意工坊ID",
@@ -331,10 +331,6 @@
             "offline": "离线",
             "view_profile": "",
             "invite_to_match": ""
-        },
-        "confirm": {
-            "ready": "准备就绪",
-            "players": "玩家"
         },
         "banned": "已封禁",
         "go_to_match": "前往比赛",
@@ -781,7 +777,7 @@
                 "join_discord": "加入 Discord"
             },
             "profile": {
-                "my_account": "我的账户",
+                "my_account": "设置",
                 "logout": "退出"
             },
             "logout_dialog": {
@@ -1054,13 +1050,7 @@
     },
     "notifications": {
         "match": {
-            "invited_by": "邀请人",
-            "title": "",
-            "description": "队伍邀请消息"
-        },
-        "invite": {
-            "deny": "拒绝",
-            "accept": "接受"
+            "title": ""
         }
     }
 }

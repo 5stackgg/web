@@ -774,7 +774,8 @@
             "note": "Note : L'application n'est pas disponible pendant la mise à jour",
             "fix_link": "Afficher la solution",
             "cancel": "Annuler",
-            "update": "Mettre à jour"
+            "update": "Mettre à jour",
+            "panel_update": "Votre panneau est obsolète, tirez et exécutez le script de mise à jour"
         },
         "match_lobby": {
             "versus": "contre"

@@ -774,7 +774,8 @@
             "note": "Nota: L'applicazione non è disponibile durante l'aggiornamento",
             "fix_link": "Mostra soluzione",
             "cancel": "Annulla",
-            "update": "Aggiorna"
+            "update": "Aggiorna",
+            "panel_update": "Il pannello è fuori data, tirare ed eseguire lo script di aggiornamento"
         },
         "match_lobby": {
             "versus": "contro"

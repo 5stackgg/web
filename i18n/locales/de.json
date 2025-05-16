@@ -774,7 +774,8 @@
             "note": "Hinweis: Die Anwendung ist während der Aktualisierung nicht verfügbar",
             "fix_link": "Lösung anzeigen",
             "cancel": "Abbrechen",
-            "update": "Aktualisieren"
+            "update": "Aktualisieren",
+            "panel_update": "Ihr Panel ist aus dem Datum, ziehen und führen Sie das Update-Skript"
         },
         "match_lobby": {
             "versus": "gegen"

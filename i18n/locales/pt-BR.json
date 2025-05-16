@@ -26,7 +26,7 @@
         },
         "teams": {
             "title": "Times",
-            "description": "Gerenciamento de equipes",
+            "description": "Gerenciar equipes e escalações",
             "create": "Criar",
             "tabs": {
                 "my_teams": "Minhas equipes",
@@ -37,7 +37,7 @@
         "settings": {
             "appearance": {
                 "title": "Aparência",
-                "description": "Configuração da aparência do aplicativo",
+                "description": "Personalize a aparência do aplicativo. Alterne automaticamente entre os temas diurno e noturno.",
                 "theme": "Tema",
                 "theme_description": "Escolha o esquema de cores para o aplicativo",
                 "light": "Claro",
@@ -46,7 +46,7 @@
             "application": {
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "Gerencie as configurações de matchmaking"
+                    "description": "O matchmaking permite que os jogadores entrem em uma fila e sejam pareados com outros jogadores."
                 },
                 "discord": {
                     "title": "Discord",
@@ -72,8 +72,8 @@
                 },
                 "servers": {
                     "title": "Configuração do Servidor",
-                    "enable_cpu_pinning": "Habilitar CPU Pinting",
-                    "enable_cpu_pinning_description": "Activar a fixação da CPU nos nós do servidor de jogos para um melhor desempenho",
+                    "enable_cpu_pinning": "Habilitar fixação de CPU",
+                    "enable_cpu_pinning_description": "Ativar a fixação da CPU nos nós de servidores de jogos para um melhor desempenho",
                     "number_of_cpus_per_server": "Número de CPUs por servidor",
                     "number_of_cpus_per_server_description": "Número de CPUs para alocar por servidor",
                     "update": "Atualizar"
@@ -81,10 +81,10 @@
                 "telemetry": {
                     "title": "Telemetria",
                     "telemetry": "Telemetria",
-                    "telemetry_description": "Ajude a melhorar o 5stack compartilhando dados de uso anônimos.",
+                    "telemetry_description": "Ajude a melhorar o 5stack compartilhando seus dados de telemetria anonimamente.",
                     "update": "Configurações de telemetria atualizadas"
                 },
-                "matchmaking_min_role": "Papel Mínimo Permitido Entrar na Matchmaking",
+                "matchmaking_min_role": "Cargo Mínimo Permitido para entrar na Matchmaking",
                 "demo_settings": {
                     "update": "Atualizar",
                     "title": "Configuração da Demo",
@@ -101,15 +101,15 @@
                     "title": "Atualizar automaticamente os conjuntos de mapas",
                     "description": "Adicionar / atualizar automaticamente conjuntos de mapas quando novos mapas são adicionados ou removidos do conjunto de tarefas ativa."
                 },
-                "create_matches_role_description": "Este papel será capaz de criar correspondências.",
-                "create_tournaments_role_description": "Este papel será capaz de criar torneios.",
-                "matchmaking_min_role_description": "Este papel poderá juntar-se à matchmaking.",
+                "create_matches_role_description": "Este cargo poderá criar partidas",
+                "create_tournaments_role_description": "Este cargo será capaz de criar torneios.",
+                "matchmaking_min_role_description": "Este cargo poderá juntar-se ao matchmaking.",
                 "max_acceptable_latency": "Máximo Aceitável Latência",
                 "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida.",
                 "streaming": {
-                    "minimum_role_to_stream": "Papel Mínimo Permitido a Fluxo",
+                    "minimum_role_to_stream": "Funão Mínima Permitida para Stremar",
                     "title": "Streaming",
-                    "minimum_role_to_stream_description": "Este papel será capaz de criar correspondências."
+                    "minimum_role_to_stream_description": "Esta função poderá transmitir partidas."
                 }
             },
             "language": {
@@ -134,20 +134,20 @@
                 "avatar_url": "URL do Avatar",
                 "country": "País",
                 "select_country": "Selecionar país...",
-                "search_country": "Procurar no país...",
+                "search_country": "Procurar país...",
                 "no_country_found": "Nenhum país encontrado.",
                 "update": "Atualizar conta",
                 "update_success": "Perfil Atualizado",
                 "discord": {
-                    "unlink": "Desvincular a Discórdia",
-                    "link": "Discórdia da Ligação",
+                    "unlink": "Desvincular a Discord",
+                    "link": "Link do Discord",
                     "unlink_dialog": {
-                        "title": "Desvincular a Conta de Discórdia",
-                        "description": "Tem certeza de que deseja desvincular sua conta Discord? Isso removerá a conexão entre suas contas 5Stack e Discord.",
+                        "title": "Desvincular a Conta do Discord",
+                        "description": "Tem certeza de que deseja desvincular sua conta do Discord? Isso removerá a conexão entre suas contas do 5Stack e do Discord.",
                         "confirm": "Desvincular",
                         "cancel": "Cancelar"
                     },
-                    "unlinked": "Conta de discórdia desconectada com sucesso"
+                    "unlinked": "Conta do Discord desvinculada com sucesso"
                 },
                 "appearance": "Aparência",
                 "name": "Nome",
@@ -239,8 +239,8 @@
                 "supports_low_latency": "Suporta baixa latência",
                 "supports_cpu_pinning": "Suporta CPU Pinting"
             },
-            "build_id": "ID de build",
-            "last_updated": "Última atualização",
+            "build_id": "ID de build: {id}",
+            "last_updated": "Última atualização: {date}",
             "status": {
                 "offline": "Offline",
                 "online": "Apenas online",
@@ -321,7 +321,7 @@
                 "name_description": "Isto deve corresponder ao nome do mapa no jogo que o servidor reconhece."
             },
             "pool": {
-                "title": "Padrão {tipo} Pool do mapa",
+                "title": "Pool de mapas {type} padrão",
                 "description": "Gerenciar mapas no pool {type}",
                 "modify_maps": "Modificar mapas na piscina"
             },
@@ -349,7 +349,7 @@
             "leave": "Sair",
             "invite_player": "Convidar jogador",
             "invites": "Convites",
-            "access_updated": "Permissões de acesso atualizadas"
+            "access_updated": "Acesso ao lobby atualizado para {access}"
         },
         "friends": {
             "title": "Amigos",
@@ -372,12 +372,12 @@
             "queue_order": "Ordem da Fila"
         },
         "confirm_selection": "Entrar na Fila",
-        "searching_for_match": "A procurar por uma correspondência {type}",
+        "searching_for_match": "A procurar por uma partida {type}",
         "high_latency_warning": "Sua latência é muito alta para jogos competitivos"
     },
     "match": {
         "lobby": {
-            "access_updated": "Permissões de acesso atualizadas"
+            "access_updated": "Acesso ao lobby da partida atualizado para {access}"
         },
         "simple": {
             "vs": "vs"
@@ -454,7 +454,7 @@
                 },
                 "timeouts": {
                     "tactical": {
-                        "label": "Pause tático",
+                        "label": "Configurações de Pause Tático",
                         "description": "Os pauses táticos são chamados digitando .tac e duram 30 segundos."
                     },
                     "technical": {
@@ -526,7 +526,7 @@
             "server_information": "Informações do servidor",
             "type": "Tipo",
             "region": "Região",
-            "round": "Rodada"
+            "round": "Rodada {number}"
         },
         "status": {
             "cancelled": "Cancelado",
@@ -592,7 +592,7 @@
             "against": "contra",
             "no_clutches": "Nenhum clutch",
             "vs": "vs",
-            "round": "Rodada"
+            "round": "Round {number}"
         },
         "join": {
             "live": "Ao vivo",
@@ -609,7 +609,7 @@
         },
         "download_demos": "Baixar demos",
         "coaches": "Treinadores",
-        "best_of": "Melhor de",
+        "best_of": "Melhor de {count}",
         "overview": {
             "promote_captain": "Promover a capitão",
             "switch_teams": "Trocar equipes",
@@ -632,7 +632,7 @@
             "total_damage": "Dano total",
             "substitute": "Substituto",
             "join": "Entrar",
-            "slot": "Slot"
+            "slot": "Slot {number}"
         },
         "server": {
             "offline": "Offline",
@@ -774,7 +774,8 @@
             "note": "Nota: O aplicativo não estará disponível durante a atualização",
             "fix_link": "Mostrar solução",
             "cancel": "Cancelar",
-            "update": "Atualizar"
+            "update": "Atualizar",
+            "panel_update": "Seu painel está desatualizado, puxe e execute o script de atualização"
         },
         "match_lobby": {
             "versus": "vs"
@@ -806,7 +807,7 @@
                 "metrics": "Métricas do Sistema",
                 "app_settings": "Configurações do App",
                 "map_pools": "Conjuntos de Mapas",
-                "manage_matches": "Gerenciar correspondências"
+                "manage_matches": "Gerenciar Partidas"
             },
             "profile": {
                 "my_account": "Minhas Configurações",
@@ -833,7 +834,7 @@
                 "report_issue": "Reportar Problema",
                 "join_discord": "Entrar no Discord",
                 "map_pools": "Conjuntos de Mapas",
-                "manage_matches": "Gerenciar correspondências"
+                "manage_matches": "Gerenciar Partidas"
             },
             "logout_dialog": {
                 "title": "Sair",
@@ -850,7 +851,7 @@
     "pwa": {
         "install": {
             "title": "Instalar aplicativo",
-            "description": "Instale o 5Stack para uma melhor experiência",
+            "description": "Este site oferece recursos semelhantes aos de um aplicativo. Adicione-o à sua tela inicial para facilitar o acesso.",
             "step1": "Passo 1",
             "step2": "Passo 2",
             "tooltip": "Instalar",
@@ -875,17 +876,17 @@
     "tournament": {
         "overview": "Visão geral",
         "bracket": "Chaveamento",
-        "teams": "Equipes",
+        "teams": "{count} Equipes",
         "settings": "Configurações",
         "admin": "Administração",
         "organizers": "Organizadores",
         "join": {
             "title": "Entrar no torneio",
-            "joined_with": "Equipe entrou",
+            "joined_with": "Entrou com  {name}",
             "requirements": "Você precisa de pelo menos {count} jogadores para participar deste torneio"
         },
         "tournament_team": {
-            "players_registered": "Jogadores registrados",
+            "players_registered": "{count} Jogadores registrados",
             "remove": "Remover"
         },
         "add_team": {
@@ -910,8 +911,8 @@
             "no_tournaments_found": "Nenhum torneio encontrado"
         },
         "stage": {
-            "title": "Fase",
-            "teams": "Equipes",
+            "title": "Fase  {number}",
+            "teams": "{min}-{max} Equipes",
             "edit": "Editar fase",
             "delete": "Excluir fase",
             "edit_title": "Editar fase",
@@ -934,7 +935,7 @@
         "match": {
             "team_1": "Equipe 1",
             "team_2": "Equipe 2",
-            "round_match": "Partida de rodada"
+            "round_match": "Round {round} Partida {match}"
         },
         "organizer": {
             "title": "Organizador",
@@ -951,12 +952,12 @@
         "team": {
             "manage_roster": "Gerenciar elenco",
             "eligible": "Elegível",
-            "not_eligible": "Não elegível",
+            "not_eligible": "Necessário {count} mais jogadores",
             "leave_tournament": "Sair do torneio",
             "leave_team": "Sair",
             "player": "Jogador",
             "role": "Função",
-            "slot": "Slot",
+            "slot": "Slot {number}",
             "add_player": "Adicionar jogador",
             "pending_invites": "Convites pendentes",
             "new": "Novo",

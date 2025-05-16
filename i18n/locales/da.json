@@ -774,7 +774,8 @@
             "note": "Bemærk: Applikationen er ikke tilgængelig under opdateringen",
             "fix_link": "Vis løsning",
             "cancel": "Annuller",
-            "update": "Opdater"
+            "update": "Opdater",
+            "panel_update": "Dit panel er forældet, træk og kør opdateringsscriptet"
         },
         "match_lobby": {
             "versus": "vs"

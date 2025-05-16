@@ -774,7 +774,8 @@
             "note": "Uwaga: Aplikacja nie jest dostępna podczas aktualizacji",
             "fix_link": "Pokaż rozwiązanie",
             "cancel": "Anuluj",
-            "update": "Aktualizuj"
+            "update": "Aktualizuj",
+            "panel_update": "Twój panel jest przestarzały, pociągnij i uruchom skrypt aktualizacji"
         },
         "match_lobby": {
             "versus": "vs"

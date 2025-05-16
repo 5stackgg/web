@@ -774,7 +774,8 @@
             "note": "Piezīme: Lietotne nav pieejama atjaunināšanas laikā",
             "fix_link": "Rādīt risinājumu",
             "cancel": "Atcelt",
-            "update": "Atjaunināt"
+            "update": "Atjaunināt",
+            "panel_update": "Jūsu panelis ir novecojis, pull un palaist atjaunināšanas skriptu"
         },
         "match_lobby": {
             "versus": "pret"

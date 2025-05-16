@@ -354,7 +354,8 @@
             "note": "Observera: Det kommer ta några minuter att bearbeta och verifiera de nya uppdateringarna.",
             "fix_link": "Om en systemuppgradering kvarstår, kan du behöva fixa dina versioner",
             "cancel": "Avbryt",
-            "update": "Uppdatera"
+            "update": "Uppdatera",
+            "panel_update": "Din panel är ur datum, dra och kör uppdateringsskriptet"
         },
         "match_lobby": {
             "versus": "MOT"

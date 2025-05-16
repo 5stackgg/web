@@ -456,7 +456,7 @@
             "timeout_setting": "暂停设置",
             "tech_timeout_setting": "技术暂停设置",
             "map_pool": "地图池",
-            "ready_setting": "",
+            "ready_setting": "设置",
             "filter_maps": ""
         },
         "schedule": {

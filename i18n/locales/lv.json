@@ -261,7 +261,8 @@
                 "tv_port": "TV ports",
                 "enabled": "Iespējots",
                 "yes": "Jā",
-                "no": "Nē"
+                "no": "Nē",
+                "plugin_version": "Spraudņu versija"
             },
             "detail": {
                 "enabled": "Iespējots",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "Serveris ir atvienots",
                     "no_rcon": "Serveris ir pieslēgts, bet RCON nav pieejams",
-                    "connected": "Serveris ir pieslēgts un pieejams RPON"
+                    "connected": "Serveris ir pieslēgts un pieejams RPON",
+                    "plugin_version_mismatch": "spraudņa versija nav atjaunināta"
                 }
             }
         },

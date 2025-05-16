@@ -261,7 +261,8 @@
                 "tv_port": "Porta TV",
                 "enabled": "Abilitato",
                 "yes": "Sì",
-                "no": "No"
+                "no": "No",
+                "plugin_version": "Versione Plugin"
             },
             "detail": {
                 "enabled": "Abilitato",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "Il server è disconnesso",
                     "no_rcon": "Server è collegato ma RCON non è disponibile",
-                    "connected": "Server è collegato e RCON è disponibile"
+                    "connected": "Server è collegato e RCON è disponibile",
+                    "plugin_version_mismatch": "versione plugin non è aggiornato"
                 }
             }
         },

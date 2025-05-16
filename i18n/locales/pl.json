@@ -261,7 +261,8 @@
                 "tv_port": "Port TV",
                 "enabled": "Włączone",
                 "yes": "Tak",
-                "no": "Nie"
+                "no": "Nie",
+                "plugin_version": "Wersja wtyczki"
             },
             "detail": {
                 "enabled": "Włączone",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "Serwer jest wyłączony",
                     "no_rcon": "Serwer jest podłączony, ale RCON nie jest dostępny",
-                    "connected": "Serwer jest podłączony i RCON jest dostępny"
+                    "connected": "Serwer jest podłączony i RCON jest dostępny",
+                    "plugin_version_mismatch": "wersja wtyczki nie jest aktualna"
                 }
             }
         },

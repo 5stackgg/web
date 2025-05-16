@@ -261,7 +261,8 @@
                 "tv_port": "TV 포트",
                 "enabled": "활성화",
                 "yes": "예",
-                "no": "아니오"
+                "no": "아니오",
+                "plugin_version": "플러그인 버전"
             },
             "detail": {
                 "enabled": "활성화",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "서버가 연결됩니다",
                     "no_rcon": "서버가 연결되지만 RCON은 사용할 수 없습니다",
-                    "connected": "서버가 연결되고 RCON는 유효합니다"
+                    "connected": "서버가 연결되고 RCON는 유효합니다",
+                    "plugin_version_mismatch": "플러그인 버전은 현재까지 없습니다"
                 }
             }
         },

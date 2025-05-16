@@ -261,7 +261,8 @@
                 "tv_port": "TVポート",
                 "enabled": "有効",
                 "yes": "はい",
-                "no": "いいえ"
+                "no": "いいえ",
+                "plugin_version": "プラグインバージョン"
             },
             "detail": {
                 "enabled": "有効",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "サーバが切断される",
                     "no_rcon": "サーバーは接続されますが、RCONは利用できません",
-                    "connected": "サーバーは接続され、RCONは利用できます"
+                    "connected": "サーバーは接続され、RCONは利用できます",
+                    "plugin_version_mismatch": "プラグインバージョンは最新ではありません"
                 }
             }
         },

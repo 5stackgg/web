@@ -236,14 +236,14 @@
                 "ports_tooltip": "Intervalo de portas disponível",
                 "enabled": "Ativado",
                 "no_nodes": "Nenhum nó",
-                "supports_low_latency": "Suporta baixa latência",
-                "supports_cpu_pinning": "Suporta CPU Pinting"
+                "supports_low_latency": "Suporta Kernel-Low-Latency",
+                "supports_cpu_pinning": "Suporta CPU Pinning"
             },
             "build_id": "ID de build: {id}",
             "last_updated": "Última atualização: {date}",
             "status": {
                 "offline": "Offline",
-                "online": "Apenas online",
+                "online": "Online",
                 "setup": "Configuração",
                 "not_accepting": "Não Aceitar Novos Partidas"
             }
@@ -261,7 +261,8 @@
                 "tv_port": "Porta TV",
                 "enabled": "Ativado",
                 "yes": "Sim",
-                "no": "Não"
+                "no": "Não",
+                "plugin_version": "Versão do plug-in"
             },
             "detail": {
                 "enabled": "Ativado",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "O servidor está desligado",
                     "no_rcon": "O servidor está ligado, mas o RCON não está disponível",
-                    "connected": "O servidor está conectado e RCON está disponível"
+                    "connected": "O servidor está conectado e RCON está disponível",
+                    "plugin_version_mismatch": "a versão do plugin não está atualizada"
                 }
             }
         },
@@ -358,7 +360,7 @@
             "pending_requests": "Solicitações pendentes",
             "invite_to_lobby": "Convidar para o lobby",
             "remove": "Remover",
-            "online": "Apenas online",
+            "online": "Online",
             "offline": "Offline",
             "join_lobby": "Entrar no Lobby",
             "view_profile": "Visualizar perfil",
@@ -663,7 +665,7 @@
             "reason_description": "Forneça um motivo claro para esta sanção"
         },
         "search": {
-            "online_only": "Apenas online",
+            "online_only": "Online",
             "no_players_found": "Nenhum jogador encontrado",
             "found_players": "Jogadores encontrados",
             "placeholder": "Buscar jogadores..."
@@ -883,10 +885,10 @@
         "join": {
             "title": "Entrar no torneio",
             "joined_with": "Entrou com  {name}",
-            "requirements": "Você precisa de pelo menos {count} jogadores para participar deste torneio"
+            "requirements": "Você precisa de pelo menos {count} jogador(es) para participar deste torneio"
         },
         "tournament_team": {
-            "players_registered": "{count} Jogadores registrados",
+            "players_registered": "{count} Jogador(es) registrado(s)",
             "remove": "Remover"
         },
         "add_team": {

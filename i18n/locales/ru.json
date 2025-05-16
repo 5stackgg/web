@@ -261,7 +261,8 @@
                 "tv_port": "Порт TV",
                 "enabled": "Включено",
                 "yes": "Да",
-                "no": "Нет"
+                "no": "Нет",
+                "plugin_version": "Версия плагина"
             },
             "detail": {
                 "enabled": "Включено",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "Сервер отключен",
                     "no_rcon": "Сервер подключен, но RCON недоступен",
-                    "connected": "Сервер подключен, RCON доступен"
+                    "connected": "Сервер подключен, RCON доступен",
+                    "plugin_version_mismatch": "версия плагина не обновлена"
                 }
             }
         },

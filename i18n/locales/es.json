@@ -261,7 +261,8 @@
                 "tv_port": "Puerto TV",
                 "enabled": "Habilitado",
                 "yes": "Sí",
-                "no": "No"
+                "no": "No",
+                "plugin_version": "Versión Plugin"
             },
             "detail": {
                 "enabled": "Habilitado",
@@ -281,7 +282,8 @@
                 "status": {
                     "disconnected": "El servidor está desconectado",
                     "no_rcon": "El servidor está conectado pero RCON no está disponible",
-                    "connected": "El servidor está conectado y RCON está disponible"
+                    "connected": "El servidor está conectado y RCON está disponible",
+                    "plugin_version_mismatch": "versión plugin no está actualizada"
                 }
             }
         },

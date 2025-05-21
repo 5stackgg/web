@@ -26,7 +26,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
           class="shrink-0 p-3 rounded-md"
         ></ClipBoard>
         <a
-          :href="`https://${useRuntimeConfig().public.webDomain}${match.connection_link}`"
+          :href="match.connection_link"
           class="flex items-center justify-center gap-2 rounded-md p-3 w-full transition-colors bg-background hover:bg-background/50"
         >
           <div class="relative flex items-center" v-if="isInLineup">

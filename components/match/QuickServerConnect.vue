@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader, ExternalLink } from "lucide-vue-next";
+import { Loader, ExternalLink, Copy } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 </script>
 
@@ -24,24 +24,37 @@ import ClipBoard from "~/components/ClipBoard.vue";
         <ClipBoard
           :data="match.connection_string"
           class="shrink-0 p-3 rounded-md"
-        ></ClipBoard>
-        <a
-          :href="match.connection_link"
-          class="flex items-center justify-center gap-2 rounded-md p-3 w-full transition-colors bg-background hover:bg-background/50"
+          :class="{
+            grow: !match.connection_link,
+          }"
         >
-          <div class="relative flex items-center" v-if="isInLineup">
-            <span
-              class="absolute w-2 h-2 rounded-full animate-ping"
-              :class="inGame ? 'bg-green-500' : 'bg-red-500'"
-            ></span>
-            <span
-              class="relative w-2 h-2 rounded-full"
-              :class="inGame ? 'bg-green-500' : 'bg-red-500'"
-            ></span>
+          <div
+            class="flex items-center justify-center gap-2"
+            v-if="!match.connection_link"
+          >
+            <Copy class="w-4 h-4" />
+            <span>Copy Link</span>
           </div>
-          <span>Join Server</span>
-          <ExternalLink class="w-4 h-4" />
-        </a>
+        </ClipBoard>
+        <template v-if="match.connection_link">
+          <a
+            :href="match.connection_link"
+            class="flex items-center justify-center gap-2 rounded-md p-3 w-full transition-colors bg-background hover:bg-background/50"
+          >
+            <div class="relative flex items-center" v-if="isInLineup">
+              <span
+                class="absolute w-2 h-2 rounded-full animate-ping"
+                :class="inGame ? 'bg-green-500' : 'bg-red-500'"
+              ></span>
+              <span
+                class="relative w-2 h-2 rounded-full"
+                :class="inGame ? 'bg-green-500' : 'bg-red-500'"
+              ></span>
+            </div>
+            <span>Join Server</span>
+            <ExternalLink class="w-4 h-4" />
+          </a>
+        </template>
       </div>
     </template>
   </div>

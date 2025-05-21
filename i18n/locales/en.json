@@ -119,7 +119,11 @@
                     "enable_cpu_pinning_description": "Enable CPU pinning on game server nodes for better performance",
                     "number_of_cpus_per_server": "Number of CPUs per Server",
                     "number_of_cpus_per_server_description": "Number of CPUs to allocate per server",
-                    "update": "Update"
+                    "steam_relay": "Steam Relay",
+                    "steam_relay_description": "Enable Steam Relay for game servers to hide their IP address from the public.",
+                    "update": "Update",
+                    "update_steam_relay": "Steam Relay updated",
+                    "update_cpu_pinning": "CPU Pinning updated"
                 },
                 "demo_settings": {
                     "update": "Update",

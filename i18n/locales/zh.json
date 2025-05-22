@@ -67,8 +67,7 @@
                 "game_type_configs": {
                     "title": "",
                     "description": "",
-                    "type": "",
-                    "base_config": ""
+                    "type": ""
                 },
                 "servers": {
                     "update": "更新",

@@ -67,8 +67,7 @@
                 "game_type_configs": {
                     "title": "게임 유형 Configs",
                     "description": "게임 유형 설정 관리.",
-                    "type": "게임 유형",
-                    "base_config": "기본 구성 (5stack.base.cfg)"
+                    "type": "게임 유형"
                 },
                 "servers": {
                     "title": "Server 설정",
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "더 나은 성능을위한 게임 서버 노드에 CPU pinning 사용",
                     "number_of_cpus_per_server": "서버 당 CPU의 수",
                     "number_of_cpus_per_server_description": "서버 당 할당하는 CPU의 수",
-                    "update": "업데이트"
+                    "update": "업데이트",
+                    "update_cpu_pinning": "CPU의 Pinning 업데이트"
                 },
                 "telemetry": {
                     "title": "원격 측정",
@@ -164,7 +164,9 @@
                 "available_servers": "사용 가능한 서버",
                 "description": "설명",
                 "use_lan_ip": "LAN 사용",
-                "actions": "작업"
+                "actions": "작업",
+                "use_steam_relay": "증기 릴레이",
+                "use_steam_relay_description": "게임 서버에 대한 스팀 릴레이를 활성화하여 IP 주소를 공개합니다."
             },
             "edit": "편집",
             "delete": {

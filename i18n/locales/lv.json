@@ -67,8 +67,7 @@
                 "game_type_configs": {
                     "title": "Spēles tipa konfigurācijas",
                     "description": "Pārvaldīt spēles tipa konfigurācijas.",
-                    "type": "Spēles veids",
-                    "base_config": "Bāzes konfigurācija (5stack.base.cfg)"
+                    "type": "Spēles veids"
                 },
                 "servers": {
                     "title": "Servera iestatījumi",
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "Ieslēgt CPU pieskaršanos spēļu servera mezgliem, lai nodrošinātu labāku veiktspēju",
                     "number_of_cpus_per_server": "Procesoru skaits uz vienu serveri",
                     "number_of_cpus_per_server_description": "CPU skaits, ko piešķirt vienam serverim",
-                    "update": "Atjaunināt"
+                    "update": "Atjaunināt",
+                    "update_cpu_pinning": "CPU Pinning atjaunināts"
                 },
                 "telemetry": {
                     "title": "Telemetrija",
@@ -164,7 +164,9 @@
                 "available_servers": "Pieejamie serveri",
                 "description": "Apraksts",
                 "use_lan_ip": "Izmantot LAN",
-                "actions": "Darbības"
+                "actions": "Darbības",
+                "use_steam_relay": "Izmantot tvaika releju",
+                "use_steam_relay_description": "Ieslēgt Steam Relay spēļu serveriem, lai slēptu savu IP adresi no sabiedrības."
             },
             "edit": "Rediģēt",
             "delete": {

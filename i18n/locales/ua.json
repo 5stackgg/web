@@ -67,8 +67,7 @@
                 "game_type_configs": {
                     "title": "Налаштування типу гри",
                     "description": "Управління налаштуваннями типу гри.",
-                    "type": "Тип гри",
-                    "base_config": "База Конфіг (5stack.base.cfg)"
+                    "type": "Тип гри"
                 },
                 "servers": {
                     "title": "Налаштування серверів",
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "Увімкнути налаштування процесора на ігрових серверах для кращої продуктивності",
                     "number_of_cpus_per_server": "Кількість процесорів на сервер",
                     "number_of_cpus_per_server_description": "Кількість ЦП для виділення на сервер",
-                    "update": "Оновити"
+                    "update": "Оновити",
+                    "update_cpu_pinning": "Процесор Pinning оновлений"
                 },
                 "telemetry": {
                     "title": "Телеметрія",
@@ -164,7 +164,9 @@
                 "available_servers": "Доступні сервери",
                 "description": "Опис",
                 "use_lan_ip": "Використовувати локальну мережу",
-                "actions": "Дії"
+                "actions": "Дії",
+                "use_steam_relay": "Використовуйте парову реле",
+                "use_steam_relay_description": "Увімкнути реле Steam для ігрових серверів, щоб приховати IP-адресу від громадськості."
             },
             "edit": "Редагувати",
             "delete": {

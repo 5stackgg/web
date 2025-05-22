@@ -66,7 +66,6 @@
                 },
                 "game_type_configs": {
                     "type": "Spieltyp",
-                    "base_config": "Base Config (5stack.base.cfg)",
                     "title": "Game Type Configs",
                     "description": "Manage Spieltyp configs."
                 },
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "Aktivieren Sie CPU Pinning auf Spielserver-Knoten für bessere Leistung",
                     "number_of_cpus_per_server": "Anzahl der CPUs pro Server",
                     "number_of_cpus_per_server_description": "Anzahl der CPUs pro Server zuzuordnen",
-                    "update": "Aktualisieren"
+                    "update": "Aktualisieren",
+                    "update_cpu_pinning": "CPU Pinning aktualisiert"
                 },
                 "telemetry": {
                     "title": "Telemetrie",
@@ -164,7 +164,9 @@
                 "available_servers": "Verfügbare Server",
                 "description": "Beschreibung",
                 "use_lan_ip": "LAN verwenden",
-                "actions": "Aktionen"
+                "actions": "Aktionen",
+                "use_steam_relay": "Verwenden Sie Steam Relay",
+                "use_steam_relay_description": "Aktivieren Sie Steam Relay für Spielserver, um ihre IP-Adresse von der Öffentlichkeit zu verstecken."
             },
             "edit": "Bearbeiten",
             "delete": {

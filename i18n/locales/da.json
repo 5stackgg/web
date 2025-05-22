@@ -67,8 +67,7 @@
                 "game_type_configs": {
                     "title": "Spil type configs",
                     "description": "Administrer spiltype config.",
-                    "type": "Spiltype",
-                    "base_config": "Base Config (5stack.base.cfg)"
+                    "type": "Spiltype"
                 },
                 "servers": {
                     "title": "Serverindstillinger",
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "Aktivér CPU-pinning på spilserver-knuder for bedre ydeevne",
                     "number_of_cpus_per_server": "Antal CPU 'er pr. server",
                     "number_of_cpus_per_server_description": "Antal CPU 'er der skal tildeles pr. server",
-                    "update": "Opdater"
+                    "update": "Opdater",
+                    "update_cpu_pinning": "CPU Pinning opdateret"
                 },
                 "telemetry": {
                     "title": "Telemetri",
@@ -164,7 +164,9 @@
                 "available_servers": "Tilgængelige servere",
                 "description": "Beskrivelse",
                 "use_lan_ip": "Brug LAN",
-                "actions": "Handlinger"
+                "actions": "Handlinger",
+                "use_steam_relay_description": "Aktivér Steam Relay for spilservere til at skjule deres IP-adresse fra offentligheden.",
+                "use_steam_relay": "Brug Steam relay"
             },
             "edit": "Rediger",
             "delete": {

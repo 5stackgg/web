@@ -65,7 +65,6 @@
                     "force_name_registration_description": "プレイヤー登録を強制する場合、プレイヤーはプラットフォームで使用される名前を提出する必要があります。"
                 },
                 "game_type_configs": {
-                    "base_config": "ベースコンフィグ(5stack.base.cfg)",
                     "title": "ゲームの種類 設定",
                     "description": "ゲーム型コンフィグの管理.",
                     "type": "ゲームの種類"
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "より良いパフォーマンスのために、ゲームサーバーノードで CPU ピン留めを有効にします",
                     "number_of_cpus_per_server": "サーバーごとの CPU の数",
                     "number_of_cpus_per_server_description": "サーバーごとに割り当てる CPU の数",
-                    "update": "更新"
+                    "update": "更新",
+                    "update_cpu_pinning": "ログイン ピニング更新"
                 },
                 "telemetry": {
                     "title": "テレメトリー",
@@ -164,7 +164,9 @@
                 "available_servers": "利用可能なサーバー",
                 "description": "説明",
                 "use_lan_ip": "LANを使用",
-                "actions": "アクション"
+                "actions": "アクション",
+                "use_steam_relay": "蒸気のリレーを使用して下さい",
+                "use_steam_relay_description": "パブリックからIPアドレスを隠すためにゲームサーバー用のSteam Relayを有効にします."
             },
             "edit": "編集",
             "delete": {

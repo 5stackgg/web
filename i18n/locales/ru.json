@@ -67,8 +67,7 @@
                 "game_type_configs": {
                     "title": "Тип игры Configs",
                     "description": "Управляйте конфигурациями типа игры.",
-                    "type": "Тип игры",
-                    "base_config": "Базовый конфигуратор (5stack.base.cfg)"
+                    "type": "Тип игры"
                 },
                 "servers": {
                     "title": "Настройки сервера",
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "Включите CPU на узлах игрового сервера для лучшей производительности",
                     "number_of_cpus_per_server": "Количество процессоров на сервер",
                     "number_of_cpus_per_server_description": "Количество процессоров для выделения на сервер",
-                    "update": "Обновить"
+                    "update": "Обновить",
+                    "update_cpu_pinning": "Процессор Pinning обновился"
                 },
                 "telemetry": {
                     "title": "Телеметрия",
@@ -164,7 +164,9 @@
                 "available_servers": "Доступные серверы",
                 "description": "Описание",
                 "use_lan_ip": "Использовать LAN",
-                "actions": "Действия"
+                "actions": "Действия",
+                "use_steam_relay": "Используйте Steam Relay",
+                "use_steam_relay_description": "Включите Steam Relay для игровых серверов, чтобы скрыть их IP-адрес от общественности."
             },
             "edit": "Редактировать",
             "delete": {

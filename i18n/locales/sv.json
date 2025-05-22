@@ -67,8 +67,7 @@
                 "game_type_configs": {
                     "title": "Game Type Configs",
                     "description": "Hantera spel typ configs.",
-                    "type": "Speltyp",
-                    "base_config": "Base Config (5stack.base.cfg)"
+                    "type": "Speltyp"
                 },
                 "servers": {
                     "title": "Server Inställningar",
@@ -76,7 +75,8 @@
                     "enable_cpu_pinning_description": "Aktivera CPU-pinning på spelservernoder för bättre prestanda",
                     "number_of_cpus_per_server": "Antal CPU per server",
                     "number_of_cpus_per_server_description": "Antal CPU:er att fördela per server",
-                    "update": "Uppdatera"
+                    "update": "Uppdatera",
+                    "update_cpu_pinning": "CPU Pinning uppdaterad"
                 },
                 "telemetry": {
                     "title": "Telemetri",
@@ -164,7 +164,9 @@
                 "available_servers": "Tillgängliga servrar / Totalt antal servrar",
                 "description": "Beskrivning",
                 "use_lan_ip": "Använd LAN",
-                "actions": "Åtgärder"
+                "actions": "Åtgärder",
+                "use_steam_relay": "Använd Steam Relay",
+                "use_steam_relay_description": "Aktivera Steam Relay för spelservrar att dölja sin IP-adress från allmänheten."
             },
             "edit": "Redigera region",
             "delete": {

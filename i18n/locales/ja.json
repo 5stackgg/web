@@ -795,9 +795,6 @@
             "update": "更新",
             "create": "作成"
         },
-        "search": {
-            "no_teams": "チームが見つかりません"
-        },
         "member": {
             "remove": "削除",
             "cancel_invite": "招待をキャンセル",

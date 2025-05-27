@@ -1043,9 +1043,6 @@
             "update": "Team aktualisieren",
             "create": "Team erstellen"
         },
-        "search": {
-            "no_teams": "Keine Teams gefunden"
-        },
         "member": {
             "remove": "Mitglied entfernen",
             "cancel_invite": "Einladung stornieren",

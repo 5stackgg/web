@@ -1043,9 +1043,6 @@
             "update": "Actualizar",
             "create": "Crear"
         },
-        "search": {
-            "no_teams": "Sin equipos"
-        },
         "member": {
             "remove": "Eliminar",
             "cancel_invite": "Cancelar invitación",

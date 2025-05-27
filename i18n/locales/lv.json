@@ -1043,9 +1043,6 @@
             "update": "Atjaunināt",
             "create": "Izveidot"
         },
-        "search": {
-            "no_teams": "Nav komandu"
-        },
         "member": {
             "remove": "Noņemt",
             "cancel_invite": "Atcelt uzaicinājumu",

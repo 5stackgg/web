@@ -1043,9 +1043,6 @@
             "update": "업데이트",
             "create": "생성"
         },
-        "search": {
-            "no_teams": "팀이 없습니다"
-        },
         "member": {
             "remove": "제거",
             "cancel_invite": "초대 취소",

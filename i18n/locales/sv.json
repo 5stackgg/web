@@ -623,9 +623,6 @@
             "update": "Uppdatera lag",
             "create": "Skapa lag"
         },
-        "search": {
-            "no_teams": "Inga lag hittades"
-        },
         "member": {
             "remove": "Ta bort medlem",
             "cancel_invite": "Avbryt inbjudan",

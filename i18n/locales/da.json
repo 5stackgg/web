@@ -1043,9 +1043,6 @@
             "update": "Opdater hold",
             "create": "Opret hold"
         },
-        "search": {
-            "no_teams": "Ingen hold fundet"
-        },
         "member": {
             "remove": "Fjern medlem",
             "cancel_invite": "Annuller invitation",

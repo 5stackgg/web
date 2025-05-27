@@ -995,9 +995,6 @@
             "update": "更新",
             "create": "创建"
         },
-        "search": {
-            "no_teams": "没有队伍"
-        },
         "member": {
             "remove": "移除",
             "cancel_invite": "取消邀请",

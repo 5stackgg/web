@@ -1050,6 +1050,12 @@
             "confirm_remove": "Apstiprināt noņemšanu",
             "cancel_invite_description": "Vai tiešām vēlaties atcelt šo uzaicinājumu?",
             "remove_description": "Vai tiešām vēlaties noņemt šo dalībnieku?"
+        },
+        "search": {
+            "found_teams": "{count} komandas atrastas",
+            "my_teams_only": "Tikai manas komandas",
+            "no_teams_found": "Nav atrasta neviena komanda",
+            "placeholder": "Meklēt komandu..."
         }
     },
     "components": {

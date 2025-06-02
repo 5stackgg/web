@@ -1050,6 +1050,12 @@
             "confirm_remove": "Potwierdź usunięcie",
             "cancel_invite_description": "Czy na pewno chcesz anulować to zaproszenie?",
             "remove_description": "Czy na pewno chcesz usunąć tego członka?"
+        },
+        "search": {
+            "my_teams_only": "Tylko moje drużyny",
+            "no_teams_found": "Nie znaleziono żadnych zespołów",
+            "found_teams": "odnalezione zespoły",
+            "placeholder": "Szukaj drużyny..."
         }
     },
     "components": {

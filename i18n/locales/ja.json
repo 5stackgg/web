@@ -802,6 +802,12 @@
             "confirm_remove": "メンバーを削除",
             "cancel_invite_description": "この招待をキャンセルしてもよろしいですか？",
             "remove_description": "このメンバーを削除してもよろしいですか？"
+        },
+        "search": {
+            "found_teams": "{count} チームが見つかりました",
+            "my_teams_only": "私のチームのみ",
+            "no_teams_found": "チームが見つかりません",
+            "placeholder": "チームを検索..."
         }
     },
     "player": {

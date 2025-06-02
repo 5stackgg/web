@@ -1050,6 +1050,12 @@
             "confirm_remove": "Er du sikker på, at du vil fjerne dette medlem?",
             "cancel_invite_description": "Dette vil annullere invitationen til dette medlem",
             "remove_description": "Dette vil fjerne medlemmet fra holdet"
+        },
+        "search": {
+            "found_teams": "{count} hold fundet",
+            "my_teams_only": "Kun mine hold",
+            "placeholder": "Søg efter et hold...",
+            "no_teams_found": "Ingen hold fundet"
         }
     },
     "components": {

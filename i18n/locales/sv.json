@@ -630,6 +630,12 @@
             "confirm_remove": "Är du säker på att du vill ta bort denna medlem?",
             "cancel_invite_description": "Detta kommer avbryta inbjudan för denna medlem",
             "remove_description": "Detta kommer ta bort medlemmen från laget"
+        },
+        "search": {
+            "found_teams": "team hittade",
+            "my_teams_only": "Mina lag Endast",
+            "no_teams_found": "Inga team hittade",
+            "placeholder": "Sök efter ett lag..."
         }
     },
     "match": {

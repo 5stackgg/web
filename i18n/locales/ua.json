@@ -1050,6 +1050,12 @@
             "confirm_remove": "Підтвердити видалення",
             "cancel_invite_description": "Ви впевнені, що хочете скасувати це запрошення?",
             "remove_description": "Ви впевнені, що хочете видалити цього учасника?"
+        },
+        "search": {
+            "found_teams": "{count} команди",
+            "my_teams_only": "Моя команда",
+            "no_teams_found": "Немає команд",
+            "placeholder": "Пошук команди..."
         }
     },
     "components": {

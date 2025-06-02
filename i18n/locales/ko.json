@@ -1050,6 +1050,12 @@
             "confirm_remove": "제거 확인",
             "cancel_invite_description": "이 초대를 취소하시겠습니까?",
             "remove_description": "이 멤버를 제거하시겠습니까?"
+        },
+        "search": {
+            "found_teams": "{count} 팀 찾기",
+            "my_teams_only": "내 팀 만",
+            "no_teams_found": "찾을 수 없음",
+            "placeholder": "팀 검색..."
         }
     },
     "components": {

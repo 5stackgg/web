@@ -1050,6 +1050,12 @@
             "confirm_remove": "Confirmer le retrait",
             "cancel_invite_description": "Voulez-vous vraiment annuler cette invitation ?",
             "remove_description": "Voulez-vous vraiment retirer ce membre ?"
+        },
+        "search": {
+            "found_teams": "équipes trouvées",
+            "my_teams_only": "Mes équipes seulement",
+            "no_teams_found": "Aucune équipe trouvée",
+            "placeholder": "Rechercher une équipe..."
         }
     },
     "components": {

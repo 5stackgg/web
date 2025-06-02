@@ -1050,6 +1050,12 @@
             "confirm_remove": "Подтвердить удаление",
             "cancel_invite_description": "Вы уверены, что хотите отменить это приглашение?",
             "remove_description": "Вы уверены, что хотите удалить этого участника?"
+        },
+        "search": {
+            "found_teams": "найдены команды",
+            "my_teams_only": "Только мои команды",
+            "no_teams_found": "Команды не найдены",
+            "placeholder": "Поиск команды..."
         }
     },
     "components": {

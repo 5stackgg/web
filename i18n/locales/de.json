@@ -1050,6 +1050,12 @@
             "confirm_remove": "Sind Sie sicher, dass Sie dieses Mitglied entfernen möchten?",
             "cancel_invite_description": "Dies wird die Einladung für dieses Mitglied stornieren",
             "remove_description": "Dies wird das Mitglied aus dem Team entfernen"
+        },
+        "search": {
+            "found_teams": "teams gefunden",
+            "my_teams_only": "Nur meine Teams",
+            "placeholder": "Nach Team suchen...",
+            "no_teams_found": "Keine Teams gefunden"
         }
     },
     "components": {

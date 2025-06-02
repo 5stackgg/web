@@ -1002,6 +1002,10 @@
             "confirm_remove": "确认移除",
             "cancel_invite_description": "确定要取消此邀请吗？",
             "remove_description": "确定要移除此成员吗？"
+        },
+        "search": {
+            "placeholder": "搜索队伍...",
+            "no_teams_found": "未找到队伍"
         }
     },
     "components": {

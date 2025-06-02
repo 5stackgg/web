@@ -1050,6 +1050,12 @@
             "confirm_remove": "Confirmar remoção",
             "cancel_invite_description": "Tem certeza que deseja cancelar este convite?",
             "remove_description": "Tem certeza que deseja remover este membro?"
+        },
+        "search": {
+            "found_teams": "{conta} equipas encontradas",
+            "my_teams_only": "Somente as Minhas Equipes",
+            "no_teams_found": "Nenhuma equipe encontrada",
+            "placeholder": "Pesquisar equipe..."
         }
     },
     "components": {

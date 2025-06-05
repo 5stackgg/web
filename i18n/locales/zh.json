@@ -839,7 +839,8 @@
         "join": {
             "title": "参加比赛",
             "joined_with": "队伍已加入",
-            "requirements": "要求"
+            "requirements": "要求",
+            "team_owner": "所有者"
         },
         "tournament_team": {
             "players_registered": "已注册玩家",

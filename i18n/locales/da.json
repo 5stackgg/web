@@ -496,7 +496,8 @@
             "tech_timeout_setting": "Teknisk timeout indstilling",
             "map_pool": "Kortpool",
             "ready_setting": "Klar indstilling",
-            "filter_maps": "Filterkort"
+            "filter_maps": "Filterkort",
+            "advanced_settings": "Vis avancerede indstillinger"
         },
         "schedule": {
             "pick_date": "Vælg dato",
@@ -887,7 +888,9 @@
         "join": {
             "title": "Deltag i turnering",
             "joined_with": "Hold deltaget med {name}",
-            "requirements": "Du skal have mindst {count} spillere for at deltage i denne turnering"
+            "requirements": "Du skal have mindst {count} spillere for at deltage i denne turnering",
+            "add_self_to_lineup": "Tilføj selv til lineup",
+            "team_owner": "Holdejer"
         },
         "tournament_team": {
             "players_registered": "{count} Registrerede spillere",
@@ -995,7 +998,9 @@
             "remove": "Fjern server",
             "confirm_remove": "Er du sikker på, at du vil fjerne denne server?",
             "remove_description": "Dette vil fjerne serveren fra turneringen"
-        }
+        },
+        "show_organizers": "Vis Organisatorer",
+        "hide_organizers": "Skjul organisatorer"
     },
     "team": {
         "table": {

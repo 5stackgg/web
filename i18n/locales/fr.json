@@ -496,7 +496,8 @@
             "tech_timeout_setting": "Paramètre de temps mort technique",
             "map_pool": "Pool de maps",
             "ready_setting": "Réglage prêt",
-            "filter_maps": "Filtrer les cartes"
+            "filter_maps": "Filtrer les cartes",
+            "advanced_settings": "Afficher les paramètres avancés"
         },
         "schedule": {
             "pick_date": "Sélectionner une date",
@@ -887,7 +888,9 @@
         "join": {
             "title": "Rejoindre le tournoi",
             "joined_with": "Équipe rejointe",
-            "requirements": "Prérequis"
+            "requirements": "Prérequis",
+            "add_self_to_lineup": "Ajouter self à lineup",
+            "team_owner": "Propriétaire"
         },
         "tournament_team": {
             "players_registered": "Joueurs inscrits",
@@ -995,7 +998,9 @@
             "remove": "Retirer",
             "confirm_remove": "Retirer le serveur",
             "remove_description": "Voulez-vous vraiment retirer ce serveur ?"
-        }
+        },
+        "show_organizers": "Afficher les organisateurs",
+        "hide_organizers": "Cacher les organisateurs"
     },
     "team": {
         "table": {

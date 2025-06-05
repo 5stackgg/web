@@ -496,7 +496,8 @@
             "tech_timeout_setting": "Tehniskā pārtraukuma iestatījums",
             "map_pool": "Karšu kopa",
             "ready_setting": "Gatavs iestatījums",
-            "filter_maps": "Filtru kartes"
+            "filter_maps": "Filtru kartes",
+            "advanced_settings": "Rādīt paplašinātos iestatījumus"
         },
         "schedule": {
             "pick_date": "Izvēlieties datumu",
@@ -887,7 +888,9 @@
         "join": {
             "title": "Pievienoties turnīram",
             "joined_with": "Komanda pievienojās",
-            "requirements": "Prasības"
+            "requirements": "Prasības",
+            "add_self_to_lineup": "Pievienot paš rindām",
+            "team_owner": "Īpašnieks"
         },
         "tournament_team": {
             "players_registered": "Reģistrētie spēlētāji",
@@ -995,7 +998,9 @@
             "remove": "Noņemt",
             "confirm_remove": "Noņemt serveri",
             "remove_description": "Vai tiešām vēlaties noņemt šo serveri?"
-        }
+        },
+        "show_organizers": "Skatīt organizatori",
+        "hide_organizers": "Slēpt organizatorus"
     },
     "team": {
         "table": {

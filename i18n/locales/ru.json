@@ -496,7 +496,8 @@
             "tech_timeout_setting": "Настройка технического таймаута",
             "map_pool": "Пул карт",
             "ready_setting": "Готовая настройка",
-            "filter_maps": "Карты фильтров"
+            "filter_maps": "Карты фильтров",
+            "advanced_settings": "Показать Advanced Settings"
         },
         "schedule": {
             "pick_date": "Выберите дату",
@@ -887,7 +888,9 @@
         "join": {
             "title": "Присоединиться к турниру",
             "joined_with": "Команда присоединилась",
-            "requirements": "Требования"
+            "requirements": "Требования",
+            "add_self_to_lineup": "Добавить себя в Lineup",
+            "team_owner": "Владелец"
         },
         "tournament_team": {
             "players_registered": "Зарегистрированные игроки",
@@ -995,7 +998,9 @@
             "remove": "Удалить",
             "confirm_remove": "Удалить сервер",
             "remove_description": "Вы уверены, что хотите удалить этот сервер?"
-        }
+        },
+        "show_organizers": "Посмотреть Организаторы",
+        "hide_organizers": "Скрыть организаторов"
     },
     "team": {
         "table": {

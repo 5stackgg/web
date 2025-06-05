@@ -496,7 +496,8 @@
             "tech_timeout_setting": "Ustawienie timeoutu technicznego",
             "map_pool": "Pula map",
             "ready_setting": "Ustawienia gotowe",
-            "filter_maps": "Mapy filtrów"
+            "filter_maps": "Mapy filtrów",
+            "advanced_settings": "Pokaż zaawansowane ustawienia"
         },
         "schedule": {
             "pick_date": "Wybierz datę",
@@ -887,7 +888,9 @@
         "join": {
             "title": "Dołącz do turnieju",
             "joined_with": "Drużyna dołączyła",
-            "requirements": "Wymagania"
+            "requirements": "Wymagania",
+            "add_self_to_lineup": "Dodaj Jaźń do lineup",
+            "team_owner": "Właściciel"
         },
         "tournament_team": {
             "players_registered": "Zarejestrowani gracze",
@@ -995,7 +998,9 @@
             "remove": "Usuń",
             "confirm_remove": "Usuń serwer",
             "remove_description": "Czy na pewno chcesz usunąć ten serwer?"
-        }
+        },
+        "show_organizers": "Organizatorzy widoku",
+        "hide_organizers": "Ukryj organizatorów"
     },
     "team": {
         "table": {

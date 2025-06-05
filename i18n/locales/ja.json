@@ -596,7 +596,8 @@
             "tech_timeout_setting": "テクニカルタイムアウト設定",
             "map_pool": "マッププール",
             "ready_setting": "Ready の設定",
-            "filter_maps": "フィルターマップ"
+            "filter_maps": "フィルターマップ",
+            "advanced_settings": "高度な設定を表示する"
         },
         "schedule": {
             "pick_date": "日付を選択",
@@ -936,7 +937,9 @@
         "join": {
             "title": "トーナメントに参加",
             "joined_with": "参加チーム",
-            "requirements": "参加要件"
+            "requirements": "参加要件",
+            "add_self_to_lineup": "ラインアップにセルフを追加",
+            "team_owner": "オーナー"
         },
         "tournament_team": {
             "players_registered": "登録プレイヤー",
@@ -1044,7 +1047,9 @@
             "remove": "削除",
             "confirm_remove": "サーバーを削除",
             "remove_description": "このサーバーを削除してもよろしいですか？"
-        }
+        },
+        "show_organizers": "主催者を見る",
+        "hide_organizers": "組織を隠す"
     },
     "ui": {
         "tooltips": {

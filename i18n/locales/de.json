@@ -496,7 +496,8 @@
             "tech_timeout_setting": "Technische Auszeiteinstellung",
             "map_pool": "Kartenpool",
             "ready_setting": "Fertigstellung",
-            "filter_maps": "Filterkarten"
+            "filter_maps": "Filterkarten",
+            "advanced_settings": "Erweiterte Einstellungen anzeigen"
         },
         "schedule": {
             "pick_date": "Datum auswählen",
@@ -887,7 +888,9 @@
         "join": {
             "title": "Turnier beitreten",
             "joined_with": "Beigetreten mit {name}",
-            "requirements": "Sie benötigen mindestens {count} Spieler, um an diesem Turnier teilzunehmen"
+            "requirements": "Sie benötigen mindestens {count} Spieler, um an diesem Turnier teilzunehmen",
+            "add_self_to_lineup": "Selbst in Lineup hinzufügen",
+            "team_owner": "Teambesitzer"
         },
         "tournament_team": {
             "players_registered": "{count} registrierte Spieler",
@@ -995,7 +998,9 @@
             "remove": "Server entfernen",
             "confirm_remove": "Möchten Sie diesen Server wirklich entfernen?",
             "remove_description": "Dies wird den Server aus dem Turnier entfernen"
-        }
+        },
+        "show_organizers": "Organizer ansehen",
+        "hide_organizers": "Verstecken Organizer"
     },
     "team": {
         "table": {

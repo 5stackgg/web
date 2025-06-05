@@ -496,7 +496,8 @@
             "tech_timeout_setting": "Налаштування технічної паузи",
             "map_pool": "Пул карт",
             "ready_setting": "Налаштування готовності",
-            "filter_maps": "Фільтр карти"
+            "filter_maps": "Фільтр карти",
+            "advanced_settings": "Показати розширені налаштування"
         },
         "schedule": {
             "pick_date": "Вибрати дату",
@@ -887,7 +888,9 @@
         "join": {
             "title": "Приєднатися до турніру",
             "joined_with": "Команда приєдналася",
-            "requirements": "Вимоги"
+            "requirements": "Вимоги",
+            "add_self_to_lineup": "Додати самостійно до Lineup",
+            "team_owner": "Власник"
         },
         "tournament_team": {
             "players_registered": "Зареєстровані гравці",
@@ -995,7 +998,9 @@
             "remove": "Видалити",
             "confirm_remove": "Видалити сервер",
             "remove_description": "Ви впевнені, що хочете видалити цей сервер?"
-        }
+        },
+        "show_organizers": "Перегляд організаторів",
+        "hide_organizers": "Приховати Організатори"
     },
     "team": {
         "table": {

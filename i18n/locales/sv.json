@@ -467,7 +467,9 @@
         "join": {
             "title": "Gå med i turnering",
             "joined_with": "Gick med med {name}",
-            "requirements": "Du behöver minst {count} spelare för att gå med i denna turnering"
+            "requirements": "Du behöver minst {count} spelare för att gå med i denna turnering",
+            "add_self_to_lineup": "Lägg till själv till lineup",
+            "team_owner": "Lägare"
         },
         "tournament_team": {
             "players_registered": "{count} registrerade spelare",
@@ -575,7 +577,9 @@
             "remove": "Ta bort server",
             "confirm_remove": "Är du säker på att du vill ta bort denna server?",
             "remove_description": "Detta kommer ta bort servern från turneringen"
-        }
+        },
+        "show_organizers": "Visa organisatörer",
+        "hide_organizers": "Dölj organisatörer"
     },
     "team": {
         "table": {
@@ -752,7 +756,8 @@
             "tech_timeout_setting": "Teknisk timeout-inställning",
             "map_pool": "Kartpool",
             "ready_setting": "Ready Setting",
-            "filter_maps": "Filter Kartor"
+            "filter_maps": "Filter Kartor",
+            "advanced_settings": "Visa avancerade inställningar"
         },
         "schedule": {
             "pick_date": "Välj ett datum",

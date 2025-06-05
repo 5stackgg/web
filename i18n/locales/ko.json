@@ -496,7 +496,8 @@
             "tech_timeout_setting": "기술 타임아웃 설정",
             "map_pool": "맵 풀",
             "ready_setting": "준비 설정",
-            "filter_maps": "필터 맵"
+            "filter_maps": "필터 맵",
+            "advanced_settings": "고급 설정 표시"
         },
         "schedule": {
             "pick_date": "날짜 선택",
@@ -887,7 +888,9 @@
         "join": {
             "title": "토너먼트 참가",
             "joined_with": "참가 팀",
-            "requirements": "참가 요건"
+            "requirements": "참가 요건",
+            "add_self_to_lineup": "자동을 Lineup에 추가",
+            "team_owner": "소유자"
         },
         "tournament_team": {
             "players_registered": "등록된 플레이어",
@@ -995,7 +998,9 @@
             "remove": "제거",
             "confirm_remove": "서버 제거",
             "remove_description": "이 서버를 제거하시겠습니까?"
-        }
+        },
+        "show_organizers": "공지사항",
+        "hide_organizers": "회사 소개"
     },
     "team": {
         "table": {

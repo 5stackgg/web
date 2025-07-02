@@ -99,7 +99,8 @@ export default defineNuxtConfig({
       { code: "ru", name: "Русский", file: "ru.json", flag: "🇷🇺" }, // Russian
       { code: "tr", name: "Türkçe", file: "tr.json", flag: "🇹🇷" }, // Turkish
       { code: "uk", name: "Українська", file: "uk.json", flag: "🇺🇦" }, // Ukrainian
-      { code: "zh", name: "中文", file: "zh.json", flag: "🇨🇳" }, // Chinese
+      { code: "zh-CN", name: "中文 (简体)", file: "zh_CN.json", flag: "🇨🇳" }, // Simplified Chinese
+      { code: "zh-TW", name: "中文 (繁體)", file: "zh_TW.json", flag: "🇹🇼" }, // Traditional Chinese
     ],
     lazy: true,
     defaultLocale: "en",

@@ -1,654 +1,655 @@
 {
     "pages": {
         "system_metrics": {
-            "node": "Nodo",
-            "cpu_usage": "Uso de CPU",
-            "memory_usage": "Uso de memoria",
-            "services": "Servicios"
+            "node": "Node",
+            "cpu_usage": "CPU Usage",
+            "memory_usage": "Memory Usage",
+            "services": "Services"
         },
         "system_logs": {
-            "follow_logs": "Seguir",
-            "timestamps": "Marcas de tiempo"
+            "follow_logs": "Follow Logs",
+            "timestamps": "Timestamps"
         },
         "login": {
-            "sign_in": "Iniciar sesión con Steam",
-            "powered_by": "Desarrollado por"
+            "sign_in": "Sign in with Steam",
+            "powered_by": "Powered by"
         },
-        "coming_soon": "¡Próximamente!",
+        "coming_soon": "Coming Soon!",
         "tournaments": {
-            "title": "Próximos torneos",
-            "create": "Crear torneo",
+            "title": "Upcoming Tournaments",
+            "create": "Create Tournament",
             "tabs": {
-                "tournaments": "Torneos",
-                "my_recent": "Mis torneos recientes"
+                "tournaments": "Tournaments",
+                "my_recent": "My Recent Tournaments"
             },
-            "no_recent": "No hay torneos recientes."
+            "no_recent": "You don't have any recent tournaments."
         },
         "teams": {
-            "title": "Equipos",
-            "description": "Gestión de equipos",
-            "create": "Crear",
+            "title": "Teams",
+            "description": "Manage teams and rosters.",
+            "create": "Create Team",
             "tabs": {
-                "my_teams": "Mis equipos",
-                "other_teams": "Otros equipos"
+                "my_teams": "My Teams",
+                "other_teams": "Other Teams"
             },
-            "search": "Buscar"
+            "search": "Search..."
         },
         "settings": {
             "account": {
-                "title": "Ajustes de la cuenta",
-                "description": "Detalles de su cuenta",
-                "my_account": "Mi cuenta",
-                "appearance": "Apariencia",
-                "name": "Nombre",
-                "avatar_url": "URL de Avatar",
-                "country": "País",
-                "select_country": "Seleccionar país...",
-                "search_country": "País de búsqueda...",
-                "no_country_found": "No hay país encontrado.",
-                "update": "Cuenta de actualización",
+                "title": "Account Settings",
+                "description": "Your Account Details",
+                "my_account": "My Account",
+                "appearance": "Appearance",
+                "name": "Name",
+                "avatar_url": "Avatar URL",
+                "country": "Country",
+                "select_country": "Select country...",
+                "search_country": "Search country...",
+                "no_country_found": "No country found.",
+                "update": "Update Account",
                 "matchmaking": "Matchmaking",
-                "update_success": "Perfil actualizado",
+                "update_success": "Updated Profile",
                 "discord": {
                   "unlink": "Unlink Discord",
                   "link": "Link Discord",
                   "unlink_dialog": {
-                      "title": "Cuenta de discordia sin conexión",
-                      "description": "¿Seguro que quieres desconectar tu cuenta de discordia? Esto eliminará la conexión entre sus cuentas de 5Stack y Discord.",
-                      "cancel": "Cancelar",
+                      "title": "Unlink Discord Account",
+                      "description": "Are you sure you want to unlink your Discord account? This will remove the connection between your 5Stack and Discord accounts.",
+                      "cancel": "Cancel",
                       "confirm": "Unlink"
                   },
-                  "unlinked": "Cuenta de discordia sin conexión con éxito"
+                  "unlinked": "Discord account unlinked successfully"
                 }
             },
             "appearance": {
-                "title": "Apariencia",
-                "description": "Personaliza la apariencia de la aplicación",
-                "theme": "Tema",
-                "theme_description": "Elige un esquema de colores para la aplicación",
-                "light": "Claro",
-                "dark": "Oscuro"
+                "title": "Appearance",
+                "description": "Customize the appearance of the app. Automatically switch between day and night themes.",
+                "theme": "Theme",
+                "theme_description": "Select the theme for the dashboard.",
+                "light": "Light",
+                "dark": "Dark"
             },
             "application": {
                 "telemetry": {
-                  "title": "Telemetría",
-                  "telemetry": "Telemetría",
-                  "telemetry_description": "Ayuda a mejorar 5stack compartiendo datos de uso anónimos.",
-                  "update": "Ajustes de telemetría actualizados"
+                  "title": "Telemetry",
+                  "telemetry": "Telemetry",
+                  "telemetry_description": "Help improve 5stack by sharing anonymous usage data.",
+                  "update": "Telemetry settings updated"
                 },
                 "matchmaking": {
                   "title": "Matchmaking",
-                  "description": "Gérez les paramètres de matchmaking"
+                  "description": "Matchmaking allows players to join a queue and be matched with other players."
                 },
                 "discord": {
                   "title": "Discord",
-                  "invite_link": "Enlace de invitación de Discord",
-                  "webhook": "Webhook de Discord",
-                  "webhook_description": "Usamos este webhook de Discord para enviar notificaciones que requieren acción de un jugador. Ej. problemas de partida, errores, etc.",
-                  "support_role": "ID del rol de soporte de Discord",
-                  "support_role_description": "Este rol será mencionado cuando se use para acciones de soporte. Puedes obtener el ID del rol desde la aplicación de Discord activando el modo desarrollador y haciendo clic derecho para copiar el ID.",
-                  "update": "Actualizar"
+                  "invite_link": "Discord Invite Link",
+                  "webhook": "Discord Webhook",
+                  "webhook_description": "We use this discord webhook to send notifications that require action from a player. Ex. match issues, bugs, etc.",
+                  "support_role": "Discord Support Role ID",
+                  "support_role_description": "This role will be pinged when used for support actions. You can get the Role ID from the Discord application by turning on developer mode and right clicking and copy id.",
+                  "update": "Update"
                 },
                 "game_type_configs": {
-                  "title": "Tipo de juego Configs",
-                  "description": "Gestione los configs tipo juego.",
-                  "type": "Tipo de juego"
+                  "title": "Game Type Configs",
+                  "description": "Manage game type configs.",
+                  "type": "Game Type"
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Función mínima permitida",
-                  "minimum_role_to_stream_description": "Este papel será capaz de crear partidos."
+                  "minimum_role_to_stream": "Minimum Role Allowed to Stream",
+                  "minimum_role_to_stream_description": "This role will be able to stream matches."
                 },
-                "create_matches_role": "Rol de creación de partidas",
-                "create_matches_role_description": "Este papel será capaz de crear partidos.",
-                "create_tournaments_role": "Rol de creación de torneos",
-                "create_tournaments_role_description": "Este papel será capaz de crear torneos.",
-                "matchmaking_min_role": "Función mínima Permitida unirse a la Matchmaking",
-                "matchmaking_min_role_description": "Este papel será capaz de unirse al matchmaking.",
-                "max_acceptable_latency": "Maximum Aceptable Latency",
-                "max_acceptable_latency_description": "Esta es la latencia máxima que un jugador puede tener que unirse a un partido.",
-                "update": "Actualizar",
+                "create_matches_role": "Minimum Role Allowed to Create Matches",
+                "create_matches_role_description": "This role will be able to create matches.",
+                "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
+                "create_tournaments_role_description": "This role will be able to create tournaments.",
+                "matchmaking_min_role": "Minimum Role Allowed to Join Matchmaking",
+                "matchmaking_min_role_description": "This role will be able to join matchmaking.",
+                "max_acceptable_latency": "Maximum Acceptable Latency",
+                "max_acceptable_latency_description": "This is the maximum latency that a player can have to join a match.",
+                "update": "Update",
                 "players": {
-                  "force_name_registration": "Forzar registro de nombre de jugador",
-                  "force_name_registration_description": "Si se fuerza el registro de jugador, el jugador deberá enviar un nombre que se usará en la plataforma."
+                  "force_name_registration": "Force Player Name Registration",
+                  "force_name_registration_description": "If forced to have player registration, the player will be required to submit a name that will be used on the platform."
                 },
                 "servers": {
-                  "title": "Configuración del servidor",
-                  "enable_cpu_pinning": "Activar la CPU Pinning",
-                  "enable_cpu_pinning_description": "Activar CPU pinning en los nodos del servidor del juego para un mejor rendimiento",
-                  "number_of_cpus_per_server": "Número de CPU por servidor",
-                  "number_of_cpus_per_server_description": "Número de CPU para asignar por servidor",
-                  "update": "Actualizar",
-                  "update_cpu_pinning": "CPU Pinning actualizado"
+                  "title": "Server Settings",
+                  "enable_cpu_pinning": "Enable CPU Pinning",
+                  "enable_cpu_pinning_description": "Enable CPU pinning on game server nodes for better performance",
+                  "number_of_cpus_per_server": "Number of CPUs per Server",
+                  "number_of_cpus_per_server_description": "Number of CPUs to allocate per server",
+                  "update": "Update",
+                  "update_cpu_pinning": "CPU Pinning updated"
                 },
                 "demo_settings": {
-                  "update": "Actualizar",
-                  "title": "Ajustes de Demo",
-                  "min_retention": "Retención mínima",
-                  "max_storage": "Almacenamiento máximo",
-                  "cloudflare_worker_url": "URL de trabajo de nubes",
-                  "max_storage_description": "El tamaño máximo de almacenamiento para los archivos demo en GB.",
-                  "cloudflare_worker_url_description": "La URL del trabajador Cloudflare que se utilizará para almacenar y recuperar los archivos demo.",
-                  "min_retention_description": "Los días mínimos de retención para los archivos demo.",
-                  "current_storage": "Almacenamiento actual",
-                  "used_storage": "Almacenamiento aproximado usado"
+                  "update": "Update",
+                  "title": "Demo Settings",
+                  "min_retention": "Minimum Retention",
+                  "max_storage": "Maximum Storage",
+                  "cloudflare_worker_url": "Cloudflare Worker URL",
+                  "max_storage_description": "The maximum storage size for the demo files in GB.",
+                  "cloudflare_worker_url_description": "The URL of the Cloudflare worker that will be used to store and retrieve the demo files.",
+                  "min_retention_description": "The minimum retention days for the demo files.",
+                  "current_storage": "Current Storage",
+                  "used_storage": "Approximate Storage Used"
                 },
                 "update_map_pools": {
-                  "title": "Mapa de actualización automático Piscinas",
-                  "description": "Agregue / actualice automáticamente las piscinas de mapa cuando se agregan o eliminan nuevos mapas de la piscina activa."
+                  "title": "Automatic Update Map Pools",
+                  "description": "Automatically add / update map pools when new maps are added or removed from the active duty pool."
                 }
             },
             "language": {
-                "title": "Idioma",
-                "description": "Elija su idioma preferido para la interfaz de aplicación.",
-                "select": "Seleccionar idioma",
-                "search": "Idioma de búsqueda..."
+                "title": "Language",
+                "description": "Choose your preferred language for the application interface.",
+                "select": "Select Language",
+                "search": "Search language..."
             },
             "matchmaking": {
-                "title": "Ajustes de coincidencia",
-                "description": "Configure sus preferencias de concordancia y ver los retrasos de la región.",
-                "region": "Región",
+                "title": "Matchmaking Settings",
+                "description": "Configure your matchmaking preferences and view region latencies.",
+                "region": "Region",
                 "average_latency": "Latency",
-                "preferred": "Preferencias",
-                "max_acceptable_latency": "Maximum Aceptable Latency",
-                "max_latency_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con latencia inferior a este valor."
+                "preferred": "Preferred",
+                "max_acceptable_latency": "Maximum Acceptable Latency",
+                "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value."
             }
         },
         "regions": {
-            "title": "Regiones",
-            "description": "Gestión de regiones",
-            "create": "Crear",
+            "title": "Regions",
+            "description": "Regions allow you to group game servers by geographic location. Players can select preferred regions during matchmaking and veto undesired regions during match setup.",
+            "create": "Create Region",
             "table": {
-                "name": "Nombre",
-                "status": "Estado",
-                "available_servers": "Servidores disponibles",
-                "description": "Descripción",
-                "use_lan_ip": "Usar LAN",
+                "name": "Name",
+                "status": "Status",
+                "available_servers": "Available Servers / Total Servers",
+                "description": "Description",
+                "use_lan_ip": "Use LAN IP",
                 "use_steam_relay": "Use Steam Relay",
-                "use_steam_relay_description": "Permitir Steam Relay para los servidores del juego para ocultar su dirección IP del público.",
-                "actions": "Acciones"
+                "use_steam_relay_description": "Enable Steam Relay for game servers to hide their IP address from the public.",
+                "actions": "Actions"
             },
-            "edit": "Editar",
+            "edit": "Edit Region",
             "delete": {
-                "title": "Eliminar región",
-                "description": "¿Estás seguro de que quieres eliminar esta región?",
-                "cancel": "Cancelar",
-                "confirm": "Eliminar"
+                "title": "Delete Region",
+                "description": "Are you sure you want to delete this region? This action cannot be undone.",
+                "cancel": "Cancel",
+                "confirm": "Delete"
             }
         },
         "players": {
-            "title": "Jugadores",
-            "search": "Buscar Jugadores",
+            "title": "Players",
+            "search": "Search Players",
             "detail": {
-                "player_stats": "Estadísticas del jugador",
+                "player_stats": "Player Stats",
                 "kills": "Kills",
-                "assists": "Asistencias",
-                "deaths": "Muertes",
-                "kd": "K/D",
-                "last_ten_wins": "Últimas 10 victorias",
-                "last_ten_losses": "Últimas 10 derrotas",
-                "matches": "Partidas"
+                "assists": "Assists",
+                "deaths": "Deaths",
+                "kd": "KD",
+                "last_ten_wins": "Last 10 Wins",
+                "last_ten_losses": "Last 10 Losses",
+                "matches": "Matches"
             }
         },
         "play": {
             "open_matches": {
-                "title": "Partidas abiertas",
-                "description": "Partidas disponibles"
+                "title": "Open Matches",
+                "description": "Matches that are open lobbies for anyone to join."
             }
         },
         "matches": {
-            "title": "Partidas",
-            "description": "Gestión de partidas",
-            "create": "Crear",
-            "last_ten_wins": "Últimas 10 victorias",
-            "last_ten_losses": "Últimas 10 derrotas",
-            "my_match_history": "Mi historial de partidas",
-            "other_matches": "Otras partidas",
+            "title": "My Recent Matches",
+            "description": "Your most recent completed matches",
+            "create": "Create Match",
+            "last_ten_wins": "Last 10 Wins",
+            "last_ten_losses": "Last 10 Losses",
+            "my_match_history": "My Match History",
+            "other_matches": "Other Matches",
             "create_page": {
-                "title": "Crear",
-                "pick_up_game": "Partida pickup",
-                "pick_up_game_description": "Crear una partida pickup",
-                "team_1": "Equipo 1",
-                "search_team": "Buscar equipo",
-                "team_2": "Equipo 2",
-                "intra_team_scrimmage": "Scrimmage intra-equipo",
-                "create_button": "Crear"
+                "title": "Create Match",
+                "pick_up_game": "Pick Up Game",
+                "pick_up_game_description": "A Pick up game does not require selection of teams.",
+                "team_1": "Team 1",
+                "search_team": "Search for a Team ...",
+                "team_2": "Team 2",
+                "intra_team_scrimmage": "You can select the same team for both slots to create an intra-team scrimmage.",
+                "create_button": "Create Match"
             },
             "detail": {
-                "schedule": "Programar"
+                "schedule": "Schedule"
             }
         },
         "game_server_nodes": {
-            "title": "Nodos de Servidor de Juego",
-            "description": "Gestiona los nodos de servidor de juego",
+            "title": "Game Server Nodes",
+            "description": "Game server nodes expand your server offerings into different regions or provide redundancy for on-demand servers.",
             "not_supported": {
-                "title": "No soportado",
-                "description": "Esta plataforma no es compatible"
+                "title": "Your Panel currently does not support Game Server Nodes.",
+                "description": "View the documentation to setup Game Server Nodes."
             },
-            "create": "Crear nodo",
-            "installation_script": "Script de instalación",
-            "cs_version_info": "Información de versión de CS",
+            "create": "Create Game Server Node",
+            "installation_script": "Installation Script",
+            "cs_version_info": "CS2 Version Information:",
             "status": {
-                "offline": "Desconectado",
-                "online": "Solo en línea",
-                "setup": "Configuración",
-                "not_accepting": "No aceptar nuevos partidos"
+                "offline": "Offline",
+                "online": "Online",
+                "setup": "Setup",
+                "not_accepting": "Not Accepting New Matches"
             },
             "table": {
-                "node": "Nodo",
-                "lan_public_ip": "IP LAN/Público",
-                "cs_build_id": "ID de build de CS",
-                "region": "Región",
-                "capacity": "Capacidad",
-                "ports": "Puertos",
-                "ports_tooltip": "Rango de puertos disponible",
-                "enabled": "Habilitado",
-                "no_nodes": "No hay nodos",
-                "supports_low_latency": "Soportes Low Latency",
+                "node": "Node",
+                "lan_public_ip": "Lan/Public IP",
+                "cs_build_id": "CS Build ID",
+                "region": "Region",
+                "capacity": "Capacity",
+                "ports": "Ports",
+                "ports_tooltip": "Forwarded Ports to Node",
+                "enabled": "Enabled",
+                "no_nodes": "No Game Server Nodes",
+                "supports_low_latency": "Supports Low Latency",
                 "supports_cpu_pinning": "Supports CPU Pinning"
             },
-            "build_id": "ID de build",
-            "last_updated": "Última actualización"
+            "build_id": "Build ID: {id}",
+            "last_updated": "Last Updated: {date}"
         },
         "dedicated_servers": {
-            "title": "Dedicado",
-            "description": "Gestiona los servidores dedicados",
+            "title": "Dedicated Servers",
+            "description": "You can set up a dedicated server that will always run the game server mod",
             "create": {
-                "title": "Crear servidor"
+                "title": "Create Dedicated Server"
             },
             "table": {
-                "connection_details": "Detalles de conexión",
-                "label": "Etiqueta",
-                "region": "Región",
-                "tv_port": "Puerto TV",
-                "plugin_version": "Versión Plugin",
-                "enabled": "Habilitado",
-                "yes": "Sí",
+                "connection_details": "Connection Details",
+                "label": "Label",
+                "region": "Region",
+                "tv_port": "TV Port",
+                "plugin_version": "Plugin Version",
+                "enabled": "Enabled",
+                "yes": "Yes",
                 "no": "No"
             },
             "detail": {
-                "enabled": "Habilitado",
-                "server_plugin_config": "Configuración de plugin del servidor",
-                "hide_config": "Ocultar configuración",
-                "show_config": "Mostrar configuración",
-                "config_location": "Ubicación del archivo de configuración",
-                "copy": "Copiar",
-                "edit": "Editar",
-                "delete": "Eliminar",
+                "enabled": "Enabled",
+                "server_plugin_config": "Server Plugin Config",
+                "hide_config": "Hide Config",
+                "show_config": "Show Config",
+                "config_location": "This config should be placed in:",
+                "copy": "Copy",
+                "edit": "Edit",
+                "delete": "Delete",
                 "status": {
-                  "disconnected": "El servidor está desconectado",
-                  "no_rcon": "El servidor está conectado pero RCON no está disponible",
-                  "connected": "El servidor está conectado y RCON está disponible",
-                  "plugin_version_mismatch": "versión plugin no está actualizada"
+                  "disconnected": "Server is disconnected",
+                  "no_rcon": "Server is connected but RCON is not available",
+                  "connected": "Server is connected and RCON is available",
+                  "plugin_version_mismatch": "plugin version is not up to date"
                 },
                 "delete_confirm": {
-                  "title": "Eliminar servidor",
-                  "description": "¿Estás seguro de que quieres eliminar este servidor?",
-                  "cancel": "Cancelar",
-                  "continue": "Continuar"
+                  "title": "Are you absolutely sure?",
+                  "description": "This action cannot be undone. This will permanently delete your server and remove associated data from our servers.",
+                  "cancel": "Cancel",
+                  "continue": "Continue"
                 }
             }
         },
         "map_pools": {
-            "title": "Mapa predeterminado Piscinas",
-            "description": "Gestionar grupos de mapas y mapas disponibles para matchmaking.",
+            "title": "Default Map Pools",
+            "description": "Manage map pools and available maps for matchmaking.",
             "form": {
-                "name": "Nombre",
-                "name_description": "Esto debe coincidir con el nombre del mapa en el juego que el servidor reconoce.",
-                "label": "Etiqueta",
-                "poster": "Póster (opcional)",
-                "poster_placeholder": "http://ejemplo.com/poster.png",
-                "patch": "Parche (opcional)",
-                "patch_placeholder": "http://ejemplo.com/patch.png",
-                "workshop_map_id": "ID de mapa de Workshop (opcional)",
-                "create_map": "Crear mapa",
-                "update_map": "Actualizar mapa",
-                "delete_map": "Eliminar mapa",
+                "name": "Name",
+                "name_description": "This must match the name of the map in the game that the server recognizes.",
+                "label": "Label",
+                "poster": "Poster (optional)",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "Patch (optional)",
+                "patch_placeholder": "http://example.com/patch.png",
+                "workshop_map_id": "Workshop Map ID (optional)",
+                "create_map": "Create Map",
+                "update_map": "Update Map",
+                "delete_map": "Delete Map",
                 "delete_confirm": {
-                  "title": "Eliminar mapa",
-                  "description": "¿Estás seguro de que quieres eliminar este mapa? Esta acción no se puede deshacer.",
-                  "cancel": "Cancelar",
-                  "confirm": "Eliminar"
+                  "title": "Delete Map",
+                  "description": "Are you sure you want to delete this map? This action cannot be undone.",
+                  "cancel": "Cancel",
+                  "confirm": "Delete"
                 },
                 "success": {
-                  "create": "Mapa creado con éxito",
-                  "update": "Mapa actualizado con éxito",
-                  "delete": "Mapa eliminado con éxito",
-                  "workshop_refresh": "Detalles del mapa del taller refrescados con éxito"
+                  "create": "Map created successfully",
+                  "update": "Map updated successfully",
+                  "delete": "Map deleted successfully",
+                  "workshop_refresh": "Workshop map details refreshed successfully"
                 },
                 "error": {
-                  "create": "Error al crear el mapa",
-                  "update": "Error al actualizar el mapa",
-                  "invalid_workshop": "ID de mapa de taller inválido. Por favor, compruebe la identificación existe en Steam Workshop.",
-                  "workshop_refresh": "Detalles del mapa del taller de actualización de errores"
+                  "create": "Error creating map",
+                  "update": "Error updating map",
+                  "invalid_workshop": "Invalid workshop map ID. Please verify the ID exists on Steam Workshop.",
+                  "workshop_refresh": "Error refreshing workshop map details"
                 },
-                "refresh_workshop": "Detalles de referencia"
+                "refresh_workshop": "Refresh Details"
             },
             "pool": {
-                "title": "Default {type} Mapa Piscina",
-                "description": "Gestionar mapas en el grupo {type}",
-                "modify_maps": "Modificar mapas en el grupo"
+                "title": "Default {type} Map Pool",
+                "description": "Manage maps in the {type} pool",
+                "modify_maps": "Modify maps in the pool"
             },
-            "add_new_map": "Añadir nuevo mapa",
-            "edit": "Editar",
-            "maps": "Mapas disponibles",
-            "active_duty": "Servicio activo",
-            "available_modes": "Disponible en Modos",
-            "workshop_id": "Enlace del taller",
-            "search": "Mapas de búsqueda"
+            "add_new_map": "Add New Map",
+            "edit": "Edit",
+            "maps": "Available Maps",
+            "active_duty": "Active Duty",
+            "available_modes": "Available In Modes",
+            "workshop_id": "Workshop Link",
+            "search": "Search Maps"
         },
         "map_pool": {
-            "toggle_pool_type": "Mapa actualizado Piscinas",
-            "toggle_active_pool": "Mapas Actividad Estado Actualizado",
-            "save_success": "Grupo de mapas guardado con éxito"
+            "toggle_pool_type": "Updated Map Pools",
+            "toggle_active_pool": "Maps Activity Status Updated",
+            "save_success": "Map pool saved successfully"
         },
         "manage_matches": {
-            "title": "Gestion Matches",
-            "description": "Ver y gestionar todos los partidos en toda la plataforma."
+            "title": "Manage Matches",
+            "only_my_matches": "Only My Organized Matches",
+            "description": "View and manage all matches across the platform."
         }
     },
     "notifications": {
         "match": {
-            "title": "Match Invitas"
+            "title": "Match Invites"
         }
     },
     "custom_match": {
-        "title": "Partido Personalizado",
-        "description": "Cree y personalice su propio partido. Establecer reglas, elegir mapas e invitar a amigos para una experiencia de juego personalizada."
+        "title": "Custom Match",
+        "description": "Create and customize your own match. Set rules, choose maps, and invite friends for a personalized gaming experience."
     },
     "layouts": {
         "account_settings": {
-            "title": "Ajustes de la cuenta",
-            "description": "Administrar los ajustes y preferencias de su cuenta"
+            "title": "Account Settings",
+            "description": "Manage your account settings and preferences"
         },
         "application_settings": {
-            "title": "Configuración de aplicación",
-            "description": "Gestiona la configuración de la aplicación"
+            "title": "Application Settings",
+            "description": "Settings that effect the application."
         },
         "system_update": {
-            "title": "Actualización del sistema",
-            "description": "Se requiere una actualización del sistema",
-            "note": "Nota: La aplicación no está disponible durante la actualización",
-            "fix_link": "Mostrar solución",
-            "cancel": "Cancelar",
-            "update": "Actualizar",
-            "panel_update": "Su panel está fuera de la fecha, tire y ejecute el script de actualización"
+            "title": "System Update Available",
+            "description": "The following services have updates:",
+            "note": "Please note: It will take a few minutes to process and verify the new updates.",
+            "fix_link": "If a system upgrade persists, you may need to fix your versions",
+            "cancel": "Cancel",
+            "update": "Update",
+            "panel_update": "Your panel is out of date, pull and run the update script"
         },
         "match_lobby": {
-            "versus": "vs"
+            "versus": "VS"
         },
         "notifications": {
-            "title": "Notificaciones",
-            "delete": "Eliminar",
-            "dismiss": "Cerrar",
-            "dismiss_all": "Desestimar todas las notificaciones",
-            "delete_all_read": "Eliminar todas las notificaciones leídas",
-            "no_notifications": "Sin notificaciones"
+            "title": "Notifications",
+            "delete": "Delete",
+            "dismiss": "Dismiss",
+            "dismiss_all": "Dismiss All Notifications",
+            "delete_all_read": "Delete All Read Notifications",
+            "no_notifications": "No notifications at the moment."
         },
         "app_nav": {
             "brand": "5stack",
             "navigation": {
-                "play": "Jugar",
-                "matches": "Partidas",
-                "tournaments": "Torneos",
-                "players": "Jugadores",
-                "teams": "Equipos"
+                "play": "Play",
+                "matches": "Matches",
+                "tournaments": "Tournaments",
+                "players": "Players",
+                "teams": "Teams"
             },
             "administration": {
-                "title": "Administración",
-                "regions": "Regiones",
-                "servers": "Servidores",
-                "dedicated_servers": "Dedicado",
-                "game_server_nodes": "Nodos de Servidor de Juego",
-                "logs": "Registros del Sistema",
-                "metrics": "Métricas del Sistema",
-                "app_settings": "Configuración de la App",
-                "map_pools": "Grupos de Mapas",
-                "manage_matches": "Gestion Matches"
+                "title": "Administration",
+                "regions": "Regions",
+                "servers": "Servers",
+                "dedicated_servers": "Dedicated Servers",
+                "game_server_nodes": "Game Server Nodes",
+                "logs": "System Logs",
+                "metrics": "System Metrics",
+                "app_settings": "App Settings",
+                "map_pools": "Map Pools",
+                "manage_matches": "Manage Matches"
             },
             "profile": {
-                "my_profile": "Mi perfil",
-                "my_account": "Mis ajustes",
-                "logout": "Cerrar Sesión"
+                "my_profile": "My Profile",
+                "my_account": "My Settings",
+                "logout": "Logout"
             },
             "footer": {
-                "report_issue": "Reportar un Problema",
-                "join_discord": "Unirse a Discord"
+                "report_issue": "Report an Issue",
+                "join_discord": "Join our Discord"
             },
             "tooltips": {
-                "play": "Jugar",
-                "matches": "Partidas",
-                "tournaments": "Torneos",
-                "players": "Jugadores",
-                "teams": "Equipos",
-                "regions": "Regiones",
-                "servers": "Servidores",
-                "dedicated_servers": "Dedicado",
-                "game_server_nodes": "Nodos de Servidor de Juego",
-                "system_logs": "Registros del Sistema",
-                "system_metrics": "Métricas del Sistema",
-                "app_settings": "Configuración de la App",
-                "report_issue": "Reportar un Problema",
-                "join_discord": "Unirse a Discord",
-                "map_pools": "Grupos de Mapas",
-                "manage_matches": "Gestion Matches"
+                "play": "Play",
+                "matches": "Matches",
+                "tournaments": "Tournaments",
+                "players": "Players",
+                "teams": "Teams",
+                "regions": "Regions",
+                "servers": "Servers",
+                "dedicated_servers": "Dedicated Servers",
+                "game_server_nodes": "Game Server Nodes",
+                "system_logs": "System Logs",
+                "system_metrics": "System Metrics",
+                "app_settings": "App Settings",
+                "report_issue": "Report an Issue",
+                "join_discord": "Join our Discord",
+                "map_pools": "Map Pools",
+                "manage_matches": "Manage Matches"
             },
             "logout_dialog": {
-                "title": "Cerrar Sesión",
-                "description": "¿Estás seguro de que quieres cerrar sesión?",
-                "cancel": "Cancelar",
-                "confirm": "Cerrar Sesión"
+                "title": "Logout",
+                "description": "Are you sure you want to logout?",
+                "cancel": "Cancel",
+                "confirm": "Logout"
             }
         }
     },
     "pwa": {
         "install": {
-            "title": "Instalar aplicación",
-            "description": "Instala 5Stack para una mejor experiencia",
-            "step1": "Paso 1",
-            "step2": "Paso 2",
-            "tooltip": "Instalar",
-            "button": "Instalar"
+            "title": "Add to Home Screen",
+            "description": "This website offers app-like features. Add it to your home screen for easy access.",
+            "step1": "Press the 'Share' button",
+            "step2": "Select 'Add to Home Screen'",
+            "tooltip": "Install App",
+            "button": "Install App"
         }
     },
     "common": {
-        "cancel": "Cancelar",
-        "tbd": "Por determinar",
+        "cancel": "Cancel",
+        "tbd": "TBD",
         "boolean": {
-            "yes": "Sí",
+            "yes": "Yes",
             "no": "No"
         },
         "actions": {
-            "edit": "Editar",
-            "delete": "Eliminar"
+            "edit": "Edit",
+            "delete": "Delete"
         },
-        "close": "Cerrar",
-        "confirm": "Confirmar",
+        "close": "Close",
+        "confirm": "Confirm",
         "refresh": "Refresh"
     },
     "tournament": {
-        "overview": "Resumen",
+        "overview": "Overview",
         "bracket": "Bracket",
-        "teams": "Equipos",
-        "settings": "Configuración",
-        "admin": "Administración",
-        "organizers": "Organizadores",
-        "show_organizers": "Ver Organizadores",
-        "hide_organizers": "Ocultar organizadores",
+        "teams": "{count} Teams",
+        "settings": "Settings",
+        "admin": "Admin",
+        "organizers": "Organizers",
+        "show_organizers": "View Organizers",
+        "hide_organizers": "Hide Organizers",
         "join": {
-            "title": "Unirse al torneo",
-            "joined_with": "Equipo unido",
+            "title": "Join Tournament",
+            "joined_with": "Joined with {name}",
             "add_self_to_lineup": "Add Self to Lineup",
-            "team_owner": "Propietario",
-            "requirements": "Requisitos"
+            "team_owner": "Team Owner",
+            "requirements": "You need at least {count} players to join this tournament"
         },
         "tournament_team": {
-            "players_registered": "Jugadores registrados",
-            "remove": "Eliminar"
+            "players_registered": "{count} Players Registered",
+            "remove": "Remove Team"
         },
         "add_team": {
-            "title": "Añadir equipo"
+            "title": "Add Team"
         },
         "form": {
-            "create": "Crear torneo",
-            "description_help": "Ingresa la descripción del torneo",
-            "name": "Nombre",
-            "description": "Descripción",
-            "start": "Inicio",
-            "pick_date": "Seleccionar fecha",
-            "update": "Actualizar",
-            "match_options": "Opciones de partida"
+            "create": "Create Tournament",
+            "description_help": "Create a new tournament for your community",
+            "name": "Tournament Name",
+            "description": "Description",
+            "start": "Start Date",
+            "pick_date": "Pick a date",
+            "update": "Update Tournament",
+            "match_options": "Match Options"
         },
         "table": {
-            "tournament": "Torneo",
-            "status": "Estado",
-            "type": "Tipo",
-            "teams_joined": "Equipos unidos",
-            "starts": "Inicio",
-            "no_tournaments_found": "No se encontraron torneos"
+            "tournament": "Tournament",
+            "status": "Status",
+            "type": "Type",
+            "teams_joined": "Teams Joined",
+            "starts": "Starts",
+            "no_tournaments_found": "No tournaments found"
         },
         "stage": {
-            "title": "Fase",
-            "teams": "Equipos",
-            "edit": "Editar fase",
-            "delete": "Eliminar fase",
-            "edit_title": "Editar fase",
-            "confirm_delete": "Eliminar fase",
-            "delete_description": "¿Estás seguro de que quieres eliminar esta fase?",
-            "type": "Tipo",
-            "type_placeholder": "Seleccionar tipo de fase",
-            "min_teams": "Equipos mínimos",
-            "min_teams_placeholder": "Ingresar número de equipos mínimos",
-            "max_teams": "Equipos máximos",
-            "max_teams_placeholder": "Ingresar número de equipos máximos",
-            "update": "Actualizar",
-            "create": "Crear",
-            "no_stages": "Sin fases",
-            "start_building": "Iniciar construcción de bracket",
-            "add_first": "Añadir primera fase",
-            "add_another": "Añadir otra fase",
-            "not_setup": "Fase no configurada"
+            "title": "Stage {number}",
+            "teams": "{min}-{max} Teams",
+            "edit": "Edit Stage",
+            "delete": "Delete Stage",
+            "edit_title": "Edit Stage",
+            "confirm_delete": "Delete Stage",
+            "delete_description": "Are you sure you want to delete this stage?",
+            "type": "Stage Type",
+            "type_placeholder": "Select stage type...",
+            "min_teams": "Minimum Teams",
+            "min_teams_placeholder": "Select minimum teams...",
+            "max_teams": "Maximum Teams",
+            "max_teams_placeholder": "Select maximum teams...",
+            "update": "Update Stage",
+            "create": "Create Stage",
+            "no_stages": "No Stages",
+            "start_building": "Start Building Your Tournament",
+            "add_first": "Add First Stage",
+            "add_another": "Add Another Stage",
+            "not_setup": "Tournament stages not set up"
         },
         "match": {
-            "team_1": "Equipo 1",
-            "team_2": "Equipo 2",
-            "round_match": "Partida de ronda"
+            "team_1": "Team 1",
+            "team_2": "Team 2",
+            "round_match": "Round {round} Match {match}"
         },
         "organizer": {
-            "title": "Organizador",
-            "description": "Gestiona los organizadores del torneo",
-            "add": "Añadir organizador",
-            "name": "Nombre",
-            "actions": "Acciones",
-            "no_organizers": "Sin organizadores",
-            "no_organizers_description": "Este torneo no tiene organizadores",
-            "remove": "Eliminar",
-            "confirm_remove": "Eliminar organizador",
-            "remove_description": "¿Estás seguro de que quieres eliminar este organizador?"
+            "title": "Tournament Organizers",
+            "description": "Manage tournament organizers",
+            "add": "Add Organizer",
+            "name": "Name",
+            "actions": "Actions",
+            "no_organizers": "No Organizers",
+            "no_organizers_description": "No organizers have been added to this tournament yet",
+            "remove": "Remove Organizer",
+            "confirm_remove": "Are you sure you want to remove this organizer?",
+            "remove_description": "This will remove the organizer from the tournament"
         },
         "team": {
-            "manage_roster": "Gestionar alineación",
-            "eligible": "Elegible",
-            "not_eligible": "No elegible",
-            "leave_tournament": "Salir del torneo",
-            "leave_team": "Salir",
-            "player": "Jugador",
-            "role": "Rol",
-            "slot": "Slot",
-            "add_player": "Añadir jugador",
-            "pending_invites": "Invitaciones pendientes",
-            "new": "Nuevo",
-            "select": "Seleccionar",
-            "name": "Nombre",
-            "select_role": "Seleccionar rol",
-            "no_roles": "Sin roles",
-            "remove_member": "Eliminar",
-            "confirm_remove_member": "Confirmar eliminación",
-            "remove_member_description": "¿Estás seguro de que quieres eliminar este miembro?",
-            "cancel_invite": "Cancelar invitación",
-            "confirm_cancel_invite": "Cancelar invitación",
-            "cancel_invite_description": "¿Estás seguro de que quieres cancelar esta invitación?",
-            "my_teams": "Mis equipos",
-            "my_teams_description": "Equipos de los que eres miembro",
-            "no_eligible_teams": "Sin equipos elegibles",
-            "team": "Equipo",
-            "select_team": "Seleccionar equipo",
-            "search_team": "Buscar equipo...",
-            "add_to_tournament": "Añadir al torneo"
+            "manage_roster": "Manage Roster",
+            "eligible": "Eligible",
+            "not_eligible": "Need {count} more players",
+            "leave_tournament": "Leave Tournament",
+            "leave_team": "Leave Team",
+            "player": "Player",
+            "role": "Role",
+            "slot": "Slot {number}",
+            "add_player": "Add Player",
+            "pending_invites": "Pending Invites",
+            "new": "Create New Team",
+            "select": "Select Existing Team",
+            "name": "Team Name",
+            "select_role": "Select Role",
+            "no_roles": "No Roles Available",
+            "remove_member": "Remove Member",
+            "confirm_remove_member": "Are you sure you want to remove this member?",
+            "remove_member_description": "This will remove the member from the tournament team",
+            "cancel_invite": "Cancel Invite",
+            "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
+            "cancel_invite_description": "This will cancel the invite for this member",
+            "my_teams": "My Teams",
+            "my_teams_description": "Add one of your teams to the tournament",
+            "no_eligible_teams": "You don't have any eligible teams to add to this tournament",
+            "team": "Team",
+            "select_team": "Select a team...",
+            "search_team": "Search for a team...",
+            "add_to_tournament": "Add to Tournament"
         },
         "actions": {
-            "open_registration": "Abrir registro",
-            "close_registration": "Cerrar registro",
-            "cancel": "Cancelar"
+            "open_registration": "Open Registration",
+            "close_registration": "Close Registration",
+            "cancel": "Cancel Tournament"
         },
         "upcoming": {
-            "empty": "Sin torneos próximos"
+            "empty": "You don't have any upcoming tournaments."
         },
         "server": {
-            "remove": "Eliminar",
-            "confirm_remove": "Eliminar servidor",
-            "remove_description": "¿Estás seguro de que quieres eliminar este servidor?"
+            "remove": "Remove Server",
+            "confirm_remove": "Are you sure you want to remove this server?",
+            "remove_description": "This will remove the server from the tournament"
         }
     },
     "team": {
         "table": {
-            "team": "Equipo",
-            "wins": "Victorias",
-            "losses": "Derrotas",
-            "overtime_losses": "Derrotas en tiempo extra",
-            "no_teams_found": "No se encontraron equipos"
+            "team": "Team",
+            "wins": "Wins",
+            "losses": "Losses",
+            "overtime_losses": "Overtime Losses",
+            "no_teams_found": "No Teams Found"
         },
         "invite": {
-            "team_title": "Invitación de equipo",
-            "tournament_title": "Invitación de torneo",
-            "tournament_message": "Mensaje de invitación de torneo",
-            "team_message": "Mensaje de invitación de equipo",
-            "invited_by": "Invitado por",
-            "deny": "Rechazar",
-            "accept": "Aceptar"
+            "team_title": "Team Invite",
+            "tournament_title": "Tournament Invite",
+            "tournament_message": "You have been invited to join a tournament",
+            "team_message": "You have been invited to join a team",
+            "invited_by": "Invited by",
+            "deny": "Deny",
+            "accept": "Accept"
         },
         "roles": {
-            "captain": "Capitán"
+            "captain": "Captain"
         },
-        "leave": "Salir",
+        "leave": "Leave Team",
         "management": {
-            "edit": "Editar"
+            "edit": "Edit Team"
         },
         "confirm": {
-            "leave": "Salir",
+            "leave": "Are you sure you want to leave this team?",
             "delete": {
-                "title": "Eliminar",
-                "description": "Descripción"
+                "title": "Delete Team",
+                "description": "Are you sure you want to delete this team? This action cannot be undone."
             }
         },
         "members": {
-            "title": "Miembros",
-            "invite_player": "Invitar jugador",
-            "pending_invites": "Invitaciones pendientes"
+            "title": "Team Members",
+            "invite_player": "Invite Player",
+            "pending_invites": "Pending Invites"
         },
         "form": {
-            "name": "Nombre",
-            "name_placeholder": "Ingresar nombre de equipo",
-            "short_name": "Nombre corto",
-            "short_name_placeholder": "Ingresar nombre corto de equipo",
-            "owner": "Propietario",
-            "select_owner": "Seleccionar propietario",
-            "update": "Actualizar",
-            "create": "Crear"
+            "name": "Team Name",
+            "name_placeholder": "Enter team name...",
+            "short_name": "Short Name",
+            "short_name_placeholder": "Enter short name (max 3 characters)...",
+            "owner": "Team Owner",
+            "select_owner": "Select team owner...",
+            "update": "Update Team",
+            "create": "Create Team"
         },
         "search": {
-            "found_teams": "equipos encontrados",
-            "placeholder": "Buscar equipo...",
-            "my_teams_only": "Mis equipos sólo",
-            "no_teams_found": "No hay equipos encontrados"
+            "found_teams": "{count} teams found",
+            "placeholder": "Search for a team...",
+            "my_teams_only": "My Teams Only",
+            "no_teams_found": "No teams found"
         },
         "member": {
-            "remove": "Eliminar",
-            "cancel_invite": "Cancelar invitación",
-            "confirm_cancel_invite": "Cancelar invitación",
-            "confirm_remove": "Confirmar eliminación",
-            "cancel_invite_description": "¿Estás seguro de que quieres cancelar esta invitación?",
-            "remove_description": "¿Estás seguro de que quieres eliminar este miembro?"
+            "remove": "Remove Member",
+            "cancel_invite": "Cancel Invite",
+            "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
+            "confirm_remove": "Are you sure you want to remove this member?",
+            "cancel_invite_description": "This will cancel the invite for this member",
+            "remove_description": "This will remove the member from the team"
         }
     },
     "match": {
@@ -656,455 +657,455 @@
             "vs": "vs"
         },
         "my_upcoming": {
-            "no_matches": "No hay partidas próximas"
+            "no_matches": "You don't have any upcoming matches."
         },
         "recent": {
-            "title": "Partidas recientes",
-            "no_matches": "No hay partidas recientes"
+            "title": "Recent Matches",
+            "no_matches": "You don't have any recent matches."
         },
         "options": {
-            "filter_maps": "Mapas de filtros",
+            "filter_maps": "Filter Maps",
             "table": {
-                "match": "Partida",
-                "type": "Tipo",
-                "maps": "Mapas",
-                "no_matches_found": "No se encontraron partidas",
-                "join": "Unirse"
+                "match": "Match",
+                "type": "Type",
+                "maps": "Maps",
+                "no_matches_found": "No Matches Found",
+                "join": "Join"
             },
             "type": {
-                "label": "Tipo"
+                "label": "Match Type"
             },
             "best_of": {
-                "label": "Mejor de",
-                "description": "Número de mapas necesarios para ganar la partida",
-                "placeholder": "Seleccionar mejor de"
+                "label": "Best Of",
+                "description": "The winner is determined by who wins the majority of a specified number of games",
+                "placeholder": "Select a best of value"
             },
             "map_veto_settings": {
-                "label": "Veto de mapas",
-                "description": "Descripción de configuración de veto de mapas",
-                "custom_pool": "Pool de mapas personalizado",
-                "active_duty": "Active Duty",
-                "custom_pool_tooltip": "Tooltip de pool de mapas personalizado"
+                "label": "Map Veto",
+                "description": "Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick side, team 2 pick, team 1 pick side, team 2 ban. Process repeats until final map is selected",
+                "custom_pool": "Custom Map Pool",
+                "active_duty": "Active Duty Map Pool",
+                "custom_pool_tooltip": "Choosing a custom map pool allows you to select maps outside the current active duty pool"
             },
             "advanced": {
-                "title": "Configuración avanzada",
-                "hide": "Ocultar",
-                "show": "Mostrar",
-                "toggle": "Alternar",
+                "title": "Advanced Settings",
+                "hide": "Hide",
+                "show": "Show",
+                "toggle": "Toggle Advanced Settings",
                 "overtime": {
-                  "label": "Tiempo extra",
-                  "description": "Descripción de tiempo extra"
+                  "label": "Overtime",
+                  "description": "Each overtime is a best of 6."
                 },
                 "knife_round": {
-                  "label": "Ronda de cuchillo",
-                  "description": "Descripción de ronda de cuchillo"
+                  "label": "Knife Round",
+                  "description": "Knife rounds are only played when neither team picked the map in the veto."
                 },
                 "max_rounds": {
-                  "label": "Rondas máximas",
-                  "description": "Descripción de rondas máximas",
-                  "placeholder": "Ingresar número de rondas máximas"
+                  "label": "Max Rounds",
+                  "description": "The number of rounds played before teams switch sides.",
+                  "placeholder": "Select max rounds"
                 },
                 "region": {
-                  "title": "Región",
-                  "lan_match": "Partida LAN",
+                  "title": "Region Settings",
+                  "lan_match": "LAN Match",
                   "veto": {
-                      "label": "Veto de región",
-                      "description": "Descripción de veto de región"
+                      "label": "Veto",
+                      "description": "Allows teams to veto and select the server region."
                   },
-                  "preferred": "Región preferida",
-                  "single": "Región",
-                  "placeholder": "Seleccionar región",
-                  "any": "Cualquier región",
-                  "description": "Descripción de región"
+                  "preferred": "Preferred Regions",
+                  "single": "Region",
+                  "placeholder": "Select Region",
+                  "any": "Any",
+                  "description": "Select preferred regions for the match."
                 },
                 "substitutes": {
-                  "label": "Suplentes",
-                  "description": "Descripción de suplentes",
-                  "range": "Rango de suplentes"
+                  "label": "Number of Substitutes",
+                  "description": "Adds additional slots to be added to each lineup.",
+                  "range": "Enter value between 0 and 5."
                 },
                 "tv_delay": {
-                  "label": "Retraso de TV",
-                  "range": "Rango de retraso"
+                  "label": "TV Delay",
+                  "range": "Enter value between 0 and 120."
                 },
                 "timeouts": {
                   "tactical": {
-                      "label": "Tiempo muerto táctico",
-                      "description": "Descripción de tiempo muerto táctico"
+                      "label": "Tactical Timeout Settings",
+                      "description": "Tactical Timeouts are called by typing .tac, and are 30 seconds long."
                   },
                   "technical": {
-                      "label": "Tiempo muerto técnico",
-                      "description": "Descripción de tiempo muerto técnico"
+                      "label": "Technical Timeout Settings",
+                      "description": "Technical timeouts are called by typing .pause, and do not have a time limit."
                   },
                   "options": {
-                      "admins": "Administradores",
-                      "coaches": "Entrenadores",
-                      "captains": "Entrenadores / Capitáns",
-                      "everyone": "Cualquiera"
+                      "admins": "Admins",
+                      "coaches": "Coaches",
+                      "captains": "Coaches / Captains",
+                      "everyone": "Anyone"
                   }
                 },
                 "ready_settings": {
-                  "label": "Configuración lista",
-                  "description": "Controla cómo el partido determina estar listo para empezar.",
+                  "label": "Ready Settings",
+                  "description": "Controls how the match determines to be ready to start.",
                   "options": {
-                      "admins": "Administradores",
-                      "coaches": "Entrenadores",
-                      "captains": "Capitáns",
-                      "everyone": "Todos los jugadores requeridos para estar listos"
+                      "admins": "Admins",
+                      "coaches": "Coaches",
+                      "captains": "Captains",
+                      "everyone": "All Players Required to be Ready"
                   }
                 }
             },
-            "max_rounds": "Rondas máximas",
-            "tv_delay": "Retraso de TV",
-            "seconds": "Segundos",
-            "coaches": "Entrenadores",
-            "overtime": "Tiempo extra",
-            "knife_round": "Ronda de cuchillo",
-            "map_veto_enabled": "Veto de mapas",
-            "region_veto": "Veto de región",
-            "substitutes": "Suplentes",
-            "timeout_setting": "Configuración de tiempo muerto",
-            "tech_timeout_setting": "Configuración de tiempo muerto técnico",
-            "ready_setting": "Configuración",
-            "map_pool": "Pool de mapas",
-            "advanced_settings": "Mostrar configuraciones avanzadas"
+            "max_rounds": "Max Rounds",
+            "tv_delay": "TV Delay",
+            "seconds": "seconds",
+            "coaches": "Coaches",
+            "overtime": "Overtime",
+            "knife_round": "Knife Round",
+            "map_veto_enabled": "Map Veto",
+            "region_veto": "Region Veto",
+            "substitutes": "Substitutes",
+            "timeout_setting": "Timeout Setting",
+            "tech_timeout_setting": "Tech Timeout Setting",
+            "ready_setting": "Ready Setting",
+            "map_pool": "Map Pool",
+            "advanced_settings": "Show Advanced Settings"
         },
         "schedule": {
-            "pick_date": "Seleccionar fecha",
-            "schedule": "Programar"
+            "pick_date": "Pick a date",
+            "schedule": "Schedule"
         },
         "player": {
-            "captain": "Capitán",
+            "captain": "Captain",
             "status": {
-                "offline_not_ready": "Desconectado, no listo",
-                "online_not_ready": "En línea, no listo",
-                "ready": "Listo",
-                "offline": "Desconectado",
-                "online_not_in_game": "En línea, no en juego",
-                "in_game": "En juego"
+                "offline_not_ready": "Offline and not ready",
+                "online_not_ready": "Online but not ready",
+                "ready": "Ready",
+                "offline": "Offline",
+                "online_not_in_game": "Online but not in game",
+                "in_game": "In game"
             },
-            "assign_slot": "Asignar slot"
+            "assign_slot": "Assign Slot"
         },
         "tabs": {
-            "overview": "Resumen",
-            "utility": "Utilidad",
-            "opening_duels": "Duelos iniciales",
-            "clutches": "Clutch",
-            "map_veto_tab": "Veto de mapas",
-            "settings": "Configuración",
-            "server_console": "Consola del servidor",
-            "randomize_teams": "Equipos aleatorios",
-            "invited_to_match": "Invitado a la partida",
-            "join_roster": "Unirse a la alineación",
-            "restore_round": "Restaurar ronda",
-            "select_round_to_restore": "Seleccionar ronda para restaurar",
-            "server_information": "Información del servidor",
-            "type": "Tipo",
-            "region": "Región",
-            "round": "Ronda"
+            "overview": "Overview",
+            "utility": "Utility",
+            "opening_duels": "Opening Duels",
+            "clutches": "Clutches",
+            "map_veto_tab": "Map Veto",
+            "settings": "Match Settings",
+            "server_console": "Server Console",
+            "randomize_teams": "Randomize Teams",
+            "invited_to_match": "Invited to Match",
+            "join_roster": "Join a roster",
+            "restore_round": "Restore Round",
+            "select_round_to_restore": "Select the round to restore",
+            "server_information": "Server Information",
+            "type": "Type",
+            "region": "Region",
+            "round": "Round {number}"
         },
         "status": {
-            "cancelled": "Cancelada",
-            "finished": "Finalizada",
-            "waiting_server": "Esperando servidor",
-            "scheduled_asap": "Programada lo antes posible"
+            "cancelled": "Cancelled",
+            "finished": "Finished",
+            "waiting_server": "Waiting for server ...",
+            "scheduled_asap": "Scheduled ASAP"
         },
         "winner": {
-            "set": "Establecer ganador",
-            "select_lineup": "Seleccionar alineación"
+            "set": "Set Match Winner",
+            "select_lineup": "Select Lineup"
         },
         "region_veto": {
-            "banning": "Baneando",
-            "organizer_override": "Anulación del organizador",
-            "confirm_ban": "Confirmar ban",
-            "server_region": "Región del servidor",
-            "select_region": "Seleccionar región"
+            "banning": "is Banning a Region",
+            "organizer_override": "Match Organizer Override",
+            "confirm_ban": "Confirm Ban",
+            "server_region": "Server Region",
+            "select_region": "Select A Region"
         },
         "picks": {
-            "decider": "Mapa decisivo"
+            "decider": "Decider"
         },
-        "decider": "Mapa decisivo",
+        "decider": "Decider",
         "map_veto": {
-            "is_picking": "Está eligiendo",
-            "organizer_override": "Anulación del organizador",
-            "select_side": "Seleccionar lado",
-            "your_turn": "Es tu turno",
-            "pick": "Elegir",
-            "confirm": "Confirmar"
+            "is_picking": "is Picking a",
+            "organizer_override": "Match Organizer Override",
+            "select_side": "Select the Side your team wants to start on",
+            "your_turn": "Your Turn",
+            "pick": "Pick",
+            "confirm": "Confirm"
         },
         "map_lineup": {
-            "picked": "Elegido"
+            "picked": "Picked"
         },
         "vs": "vs",
-        "auto_canceling": "Cancelación automática",
+        "auto_canceling": "Auto Canceling",
         "actions": {
-            "call_support": "Llamar soporte",
-            "start_veto": "Iniciar veto",
-            "skip_checkin": "Omitir check-in",
-            "cancel": "Cancelar"
+            "call_support": "Call for Support",
+            "start_veto": "Start Veto",
+            "skip_checkin": "Skip Check In",
+            "cancel": "Cancel Match"
         },
         "lineup": {
             "stats": {
-                "flashes_thrown": "Flash lanzados",
-                "flash_assists": "Asistencias por flash",
-                "enemies_flashed": "Enemigos cegados",
-                "team_flashed": "Compañeros cegados",
-                "avg_blind_time": "Tiempo promedio de ceguera",
-                "he_damage": "Daño HE",
-                "molotov_damage": "Daño Molotov",
-                "seconds": "Segundos"
+                "flashes_thrown": "Flashes Thrown",
+                "flash_assists": "Flash Assists",
+                "enemies_flashed": "Enemies Flashed",
+                "team_flashed": "Team Flashed",
+                "avg_blind_time": "Avg blind time",
+                "he_damage": "HE Damage",
+                "molotov_damage": "Incendiary / Molotov Damage",
+                "seconds": "seconds"
             },
-            "discord_user": "Usuario de Discord",
-            "discord_link": "Enlace de Discord"
+            "discord_user": "This is a Discord user, register your discord id to enable stat tracking by typing",
+            "discord_link": "in the official discord channel."
         },
         "overview": {
-            "promote_captain": "Promover a capitán",
-            "switch_teams": "Cambiar equipos",
-            "remove_from_lineup": "Eliminar de la alineación",
-            "leave_lineup": "Salir de la alineación",
+            "promote_captain": "Promote to Captain",
+            "switch_teams": "Switch Teams",
+            "remove_from_lineup": "Remove from Lineup",
+            "leave_lineup": "Leave Lineup",
             "kills_full": "Kills",
-            "assists_full": "Asistencias",
-            "deaths_full": "Muertes",
+            "assists_full": "Assists",
+            "deaths_full": "Deaths",
             "kd": "K/D",
-            "hs": "Headshot",
-            "team_damage": "Daño al equipo",
-            "multi_kill_rounds": "Rondas multi-kill",
+            "hs": "HS%",
+            "team_damage": "Team Damage",
+            "multi_kill_rounds": "Multi Kill Rounds",
             "mkr": "MKR",
             "k2": "2K",
             "k3": "3K",
             "k4": "4K",
             "k5": "5K",
-            "knifes": "Cuchillo",
+            "knifes": "Knives",
             "zeus": "Zeus",
-            "total_damage": "Daño total",
-            "substitute": "Suplente",
-            "join": "Unirse",
-            "slot": "Slot"
+            "total_damage": "Total Damage",
+            "substitute": "(substitute)",
+            "join": "Join",
+            "slot": "Slot {number}"
         },
         "opening_duels": {
-            "attempts": "Intentos",
-            "success": "Éxito"
+            "attempts": "Attempts",
+            "success": "Success"
         },
         "clutches": {
-            "won": "Ganado",
-            "lost": "Perdido",
-            "against": "contra",
-            "no_clutches": "Sin clutches",
+            "won": "Won",
+            "lost": "Lost",
+            "against": "Against",
+            "no_clutches": "No clutches this round",
             "vs": "vs",
-            "round": "Ronda"
+            "round": "Round {number}"
         },
         "join": {
-            "live": "En vivo",
-            "call_organizer": "Llamar organizador"
+            "live": "Match is Live",
+            "call_organizer": "Call For Organizer"
         },
         "check_in": {
-            "title": "Check-in",
-            "checked_in": "Check-in realizado",
-            "check_in": "Check-in",
-            "description": "Descripción de check-in"
+            "title": "Check In",
+            "checked_in": "Checked In",
+            "check_in": "Check In",
+            "description": "Please check in to confirm your participation in this match"
         },
         "coach": {
-            "assign": "Asignar entrenador"
+            "assign": "Assign Coach"
         },
-        "download_demo": "Descargar Demo",
-        "download_demos": "Descargar demos",
-        "coaches": "Entrenadores",
-        "best_of": "Mejor de",
+        "download_demo": "Download Demo",
+        "download_demos": "Download Demos",
+        "coaches": "Coaches",
+        "best_of": "Best of {count}",
         "server": {
-            "offline": "Desconectado",
-            "booting": "Iniciando",
-            "assign": "Asignar",
-            "select": "Seleccionar",
-            "dedicated": "Dedicado",
-            "on_demand": "Bajo demanda",
-            "assigned": "Asignado"
+            "offline": "Server is offline!",
+            "booting": "Server Booting",
+            "assign": "Assign Match Server",
+            "select": "Select a server",
+            "dedicated": "Dedicated Servers",
+            "on_demand": "On Demand",
+            "assigned": "Assigned Match Server"
         },
         "lobby": {
-            "access_updated": "Los permisos de acceso han sido actualizados"
+            "access_updated": "Match lobby access updated to {access}"
         }
     },
     "ui": {
         "tooltips": {
-            "expand": "Expandir",
-            "fullscreen": "Pantalla completa",
-            "download": "Descargar"
+            "expand": "Expand",
+            "fullscreen": "Fullscreen",
+            "download": "Download Logs"
         },
         "logs": {
-            "follow": "Seguir",
-            "timestamps": "Marcas de tiempo",
-            "container": "Contenedor"
+            "follow": "Follow Logs",
+            "timestamps": "Show Timestamps",
+            "container": "Container Logs"
         }
     },
     "player": {
         "sanction": {
-            "button": "Sancionar jugador",
-            "reason_description": "Proporciona una razón clara para esta sanción"
+            "button": "Sanction Player",
+            "reason_description": "Please provide a clear reason for this sanction"
         },
         "search": {
-            "online_only": "Solo en línea",
-            "no_players_found": "No se encontraron jugadores",
-            "found_players": "Jugadores encontrados",
-            "placeholder": "Buscar jugadores..."
+            "online_only": "Online",
+            "no_players_found": "No Players Found.",
+            "found_players": "Players Found",
+            "placeholder": "Search players..."
         },
         "sanctions": {
-            "title": "Sanciones",
-            "expires": "Expira",
-            "active_count": "Sanciones activas",
-            "past_count": "Sanciones pasadas"
+            "title": "Sanctions",
+            "expires": "Expires",
+            "active_count": "Active Sanctions",
+            "past_count": "Past Sanctions"
         },
         "registration": {
-            "title": "Registro",
-            "description": "Descripción",
-            "warning": "Advertencia",
-            "name_label": "Nombre",
-            "confirm_button": "Botón de confirmar",
-            "success": "Éxito"
+            "title": "Register your name",
+            "description": "This name will be used for all matches / tournaments you participate in.",
+            "warning": "This name cannot be changed after being submitted",
+            "name_label": "Name",
+            "confirm_button": "Confirm Name",
+            "success": "Name confirmed"
         },
         "status": {
-            "banned": "Baneado",
-            "muted": "Silenciado",
-            "gagged": "Amordazado",
-            "add_friend": "Añadir amigo"
+            "banned": "Player is banned",
+            "muted": "Player is muted",
+            "gagged": "Player is gagged",
+            "add_friend": "Add as friend"
         },
         "change_name": {
-            "button": "Cambiar nombre",
-            "title": "Cambiar nombre",
-            "request_title": "Solicitud de cambio de nombre",
-            "description": "Descripción",
-            "request_description": "Descripción de solicitud",
-            "name_label": "Nombre",
-            "success": "Éxito",
-            "request_success": "Éxito de solicitud"
+            "button": "Change Name",
+            "title": "Change Name",
+            "request_title": "Request Name Change",
+            "description": "Please enter the name you would like to change to.",
+            "request_description": "Please enter the name you would like to change your account to.",
+            "name_label": "Name",
+            "success": "Changed Players Name",
+            "request_success": "Requested Name Change"
         }
     },
     "maps": {
         "veto": {
-            "pick": "Elegir"
+            "pick": "Pick Map"
         },
-        "official": "Oficial",
-        "workshop": "Workshop",
-        "active_duty": "Servicio activo"
+        "official": "Official Maps",
+        "workshop": "Workshop Maps",
+        "active_duty": "Active Duty"
     },
     "region": {
         "form": {
-            "name": "Nombre",
-            "description": "Descripción",
-            "update": "Actualizar",
-            "create": "Crear"
+            "name": "Name",
+            "description": "Description",
+            "update": "Update Region",
+            "create": "Create Region"
         }
     },
     "matchmaking": {
-        "searching_for_match": "Buscando un {tipo} partido",
+        "searching_for_match": "Searching for a {type} match",
         "lobby": {
-            "title": "Lobby de matchmaking",
-            "leave": "Salir",
-            "invite_player": "Invitar jugador",
-            "invites": "Invitaciones",
-            "access_updated": "Los permisos de acceso han sido actualizados"
+            "title": "Matchmaking Lobby",
+            "leave": "Leave Lobby",
+            "invite_player": "Invite Player to Lobby",
+            "invites": "Lobby invites",
+            "access_updated": "Lobby access updated to {access}"
         },
         "friends": {
-            "title": "Amigos",
-            "sync": "Sincronizar",
-            "search": "Agregar amigo",
-            "pending_requests": "Solicitudes Pendientes",
-            "online": "Solo en línea",
-            "invite_to_lobby": "Invitar al Lobby",
-            "invite_to_match": "Invitar jugador a Match",
-            "remove": "Eliminar",
-            "join_lobby": "Unirse al Lobby",
-            "offline": "Desconectado",
-            "view_profile": "Ver perfil"
+            "title": "Friends",
+            "sync": "Sync Friends",
+            "search": "Add Friend",
+            "pending_requests": "Pending Requests",
+            "online": "Online",
+            "invite_to_lobby": "Invite to Lobby",
+            "invite_to_match": "Invite Player to Match",
+            "remove": "Remove Friend",
+            "join_lobby": "Join Lobby",
+            "offline": "Offline",
+            "view_profile": "View Profile"
         },
-        "banned": "Baneado",
-        "go_to_match": "Ir a la partida",
+        "banned": "You are banned from matchmaking",
+        "go_to_match": "Go to Match",
         "confirm_selection": "Join Queue",
-        "temp_banned": "Baneado temporalmente",
+        "temp_banned": "You are temporarily banned from matchmaking",
         "settings_section": {
-            "toggle": "Ajuste de ajustes",
+            "toggle": "Adjust Settings",
             "queue_order": "Queue Order"
         },
-        "high_latency_warning": "Su latencia es demasiado alta para los partidos competitivos"
+        "high_latency_warning": "Your latency is too high for competitive matches"
     },
     "game_server": {
-        "update_cs": "Actualizar CS",
-        "install_cs": "Instalar CS",
-        "select_region": "Seleccionar región",
-        "remove_node": "Eliminar nodo",
-        "edit_label": "Edite Label",
+        "update_cs": "Update CS",
+        "install_cs": "Install CS",
+        "select_region": "Select Region",
+        "remove_node": "Remove Node",
+        "edit_label": "Edit Label",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",
         "validation": {
-            "start_port_less_than_end": "El puerto inicial debe ser menor que el puerto final",
-            "end_port_greater_than_start": "El puerto final debe ser mayor que el puerto inicial"
+            "start_port_less_than_end": "Start port range must be less than end port range",
+            "end_port_greater_than_start": "End port range must be greater than start port range by at least 2"
         },
         "toast": {
-            "cs_updating": "CS actualizando",
-            "ports_updated": "Puertos actualizados",
-            "label_updated": "Node Label Actualizado"
+            "cs_updating": "CS2 is being updated on the node",
+            "ports_updated": "Node Ports Updated",
+            "label_updated": "Node Label Updated"
         }
     },
     "chat": {
-        "lobby_chat": "Chat del lobby",
-        "message_placeholder": "Escribe un mensaje..."
+        "lobby_chat": "Lobby Chat",
+        "message_placeholder": "Type a message..."
     },
     "charts": {
-        "usage": "Uso"
+        "usage": "Usage"
     },
     "server": {
         "form": {
-            "label": "Etiqueta",
+            "label": "Server Label",
             "host": "Host",
-            "region": "Región",
-            "select_region": "Seleccionar región",
-            "rcon_password": "Contraseña RCON",
-            "rcon_password_description": "Descripción de contraseña RCON",
-            "port": "Puerto",
-            "tv_port": "Puerto TV",
-            "update": "Actualizar",
-            "create": "Crear"
+            "region": "Region",
+            "select_region": "Select Region",
+            "rcon_password": "RCON Password",
+            "rcon_password_description": "Leave blank to keep the current password",
+            "port": "Game Port",
+            "tv_port": "TV Port",
+            "update": "Update Server",
+            "create": "Create Server"
         },
         "rcon": {
-            "quick_commands": "Comandos rápidos",
-            "refresh_match": "Actualizar partida",
-            "metamod_info": "Info de Metamod",
-            "css_info": "Info de CSS",
-            "output": "Salida",
-            "command_placeholder": "Ingresar comando",
-            "send_command": "Enviar comando"
+            "quick_commands": "Quick Commands",
+            "refresh_match": "Refresh Match",
+            "metamod_info": "Metamod Info",
+            "css_info": "CSS Info",
+            "output": "Output",
+            "command_placeholder": "Enter command...",
+            "send_command": "Send Command"
         }
     },
     "components": {
         "map_pools": {
-            "view_on_steam": "Ver en Steam"
+            "view_on_steam": "View on Steam"
         }
     },
     "map_pools": {
-        "edit_map": "Editar mapa"
+        "edit_map": "Edit Map"
     },
     "validation": {
-        "map_pool_required": "La piscina de mapa es necesaria"
+        "map_pool_required": "Map pool is required"
     },
     "game_type_configs": {
         "form": {
             "cfg": "Config",
-            "create": "Crear Config",
-            "update": "Actualizar Config",
-            "edit": "Editar Config",
-            "revert_to_defaults": "Revertir a los defectos",
+            "create": "Create Config",
+            "update": "Update Config",
+            "edit": "Edit Config",
+            "revert_to_defaults": "Revert to Defaults",
             "revert_confirm": {
-                "title": "Revertir a los defectos",
-                "description": "¿Estás seguro de que quieres revertir este config a sus valores predeterminados? Esta acción no se puede deshacer.",
-                "cancel": "Cancelar",
-                "confirm": "Revertir"
+                "title": "Revert to Defaults",
+                "description": "Are you sure you want to revert this config to its default values? This action cannot be undone.",
+                "cancel": "Cancel",
+                "confirm": "Revert"
             },
             "success": {
-                "create": "Config creado con éxito",
-                "update": "Config actualizado con éxito",
-                "revert": "Config revertido a defectos con éxito"
+                "create": "Config created successfully",
+                "update": "Config updated successfully",
+                "revert": "Config reverted to defaults successfully"
             },
             "error": {
-                "create": "Error creando config",
-                "update": "Actualización de errores",
-                "revert": "Configuración de revertir errores a defectos"
+                "create": "Error creating config",
+                "update": "Error updating config",
+                "revert": "Error reverting config to defaults"
             }
         }
     }

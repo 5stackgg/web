@@ -86,25 +86,20 @@ export default defineNuxtConfig({
     },
     locales: [
       { code: "en", name: "English", file: "en.json", flag: "🇬🇧" },
-      { code: "sv", name: "Svenska", file: "sv.json", flag: "🇸🇪" }, // Swedish
-      { code: "ua", name: "Українська", file: "ua.json", flag: "🇺🇦" }, // Ukrainian
-      { code: "ko", name: "한국어", file: "ko.json", flag: "🇰🇷" }, // Korean
-      { code: "ja", name: "日本語", file: "ja.json", flag: "🇯🇵" }, // Japanese
+      { code: "ar", name: "العربية", file: "ar.json", flag: "🇸🇦" }, // Arabic
+      { code: "da", name: "Dansk", file: "da.json", flag: "🇩🇰" }, // Danish
       { code: "de", name: "Deutsch", file: "de.json", flag: "🇩🇪" }, // German
+      { code: "es", name: "Español", file: "es.json", flag: "🇪🇸" }, // Spanish
       { code: "fr", name: "Français", file: "fr.json", flag: "🇫🇷" }, // French
       { code: "it", name: "Italiano", file: "it.json", flag: "🇮🇹" }, // Italian
-      { code: "es", name: "Español", file: "es.json", flag: "🇪🇸" }, // Spanish
-      { code: "da", name: "Dansk", file: "da.json", flag: "🇩🇰" }, // Danish
+      { code: "ja", name: "日本語", file: "ja.json", flag: "🇯🇵" }, // Japanese
+      { code: "ko", name: "한국어", file: "ko.json", flag: "🇰🇷" }, // Korean
       { code: "pl", name: "Polski", file: "pl.json", flag: "🇵🇱" }, // Polish
+      { code: "pt", name: "Português", file: "pt.json", flag: "🇵🇹" }, // Portuguese
       { code: "ru", name: "Русский", file: "ru.json", flag: "🇷🇺" }, // Russian
-      { code: "lv", name: "Latviešu", file: "lv.json", flag: "🇱🇻" }, // Latvian
-      {
-        code: "pt-BR",
-        name: "Português Brasileiro",
-        file: "pt-BR.json",
-        flag: "🇧🇷",
-      },
-      { code: "zh", name: "中文", file: "zh.json", flag: "🇨🇳" },
+      { code: "tr", name: "Türkçe", file: "tr.json", flag: "🇹🇷" }, // Turkish
+      { code: "uk", name: "Українська", file: "uk.json", flag: "🇺🇦" }, // Ukrainian
+      { code: "zh", name: "中文", file: "zh.json", flag: "🇨🇳" }, // Chinese
     ],
     lazy: true,
     defaultLocale: "en",

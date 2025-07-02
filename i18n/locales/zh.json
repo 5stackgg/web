@@ -36,29 +36,29 @@
         },
         "settings": {
             "account": {
-                "title": "Account Settings",
-                "description": "Your Account Details",
-                "my_account": "My Account",
+                "title": "账号设置",
+                "description": "账号详细资料",
+                "my_account": "我的账户",
                 "appearance": "外观",
                 "name": "名称",
-                "avatar_url": "Avatar URL",
-                "country": "Country",
-                "select_country": "Select country...",
-                "search_country": "Search country...",
-                "no_country_found": "No country found.",
-                "update": "Update Account",
+                "avatar_url": "头像链接",
+                "country": "国家",
+                "select_country": "选择国家……",
+                "search_country": "搜索国家……",
+                "no_country_found": "未找到国家。",
+                "update": "更新账号",
                 "matchmaking": "匹配",
-                "update_success": "Updated Profile",
+                "update_success": "更新个人资料",
                 "discord": {
-                  "unlink": "Unlink Discord",
-                  "link": "Link Discord",
+                  "unlink": "取消链接 Discord",
+                  "link": "链接Discord",
                   "unlink_dialog": {
-                      "title": "Unlink Discord Account",
-                      "description": "Are you sure you want to unlink your Discord account? This will remove the connection between your 5Stack and Discord accounts.",
+                      "title": "取消链接 Discord 账号",
+                      "description": "你确定要解除 Discord 账户的绑定吗？这将会移除你在 5Stack 与 Discord 之间的关联。",
                       "cancel": "取消",
-                      "confirm": "Unlink"
+                      "confirm": "取消关联"
                   },
-                  "unlinked": "Discord account unlinked successfully"
+                  "unlinked": "Discord账号已成功取消关联"
                 }
             },
             "appearance": {
@@ -71,10 +71,10 @@
             },
             "application": {
                 "telemetry": {
-                  "title": "Telemetry",
-                  "telemetry": "Telemetry",
-                  "telemetry_description": "Help improve 5stack by sharing anonymous usage data.",
-                  "update": "Telemetry settings updated"
+                  "title": "遥测",
+                  "telemetry": "遥测",
+                  "telemetry_description": "通过分享匿名使用数据来帮助改进 5stack。",
+                  "update": "遥测设置已更新"
                 },
                 "matchmaking": {
                   "title": "匹配",
@@ -90,13 +90,13 @@
                   "update": "更新"
                 },
                 "game_type_configs": {
-                  "title": "Game Type Configs",
-                  "description": "Manage game type configs.",
-                  "type": "Game Type"
+                  "title": "游戏类型配置",
+                  "description": "管理游戏类型配置。",
+                  "type": "游戏类型"
                 },
                 "streaming": {
-                  "title": "Streaming",
-                  "minimum_role_to_stream": "Minimum Role Allowed to Stream",
+                  "title": "串流",
+                  "minimum_role_to_stream": "允许流的最低角色",
                   "minimum_role_to_stream_description": "This role will be able to stream matches."
                 },
                 "create_matches_role": "创建比赛所需的最低角色",

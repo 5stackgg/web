@@ -35,6 +35,32 @@
             "search": "Rechercher"
         },
         "settings": {
+            "account": {
+                "title": "Paramètres du compte",
+                "description": "Détails de votre compte",
+                "my_account": "Mon dossier",
+                "appearance": "Apparence",
+                "name": "Nom",
+                "avatar_url": "URL Avatar",
+                "country": "Pays",
+                "select_country": "Sélectionner un pays...",
+                "search_country": "Pays de recherche...",
+                "no_country_found": "Aucun pays trouvé.",
+                "update": "Mettre à jour le compte",
+                "matchmaking": "Matchmaking",
+                "update_success": "Profil mis à jour",
+                "discord": {
+                  "unlink": "Déconnecter la discorde",
+                  "link": "Lien Discorde",
+                  "unlink_dialog": {
+                      "title": "Déconnecter le compte Discord",
+                      "description": "Voulez-vous vraiment déconnecter votre compte Discord ? Cela supprimera la connexion entre vos comptes 5Stack et Discord.",
+                      "cancel": "Annuler",
+                      "confirm": "Déconnecter"
+                  },
+                  "unlinked": "Discord compte déconnecté avec succès"
+                }
+            },
             "appearance": {
                 "title": "Apparence",
                 "description": "Personnaliser l'apparence de l'application",
@@ -44,72 +70,72 @@
                 "dark": "Sombre"
             },
             "application": {
+                "telemetry": {
+                  "title": "Télémétrie",
+                  "telemetry": "Télémétrie",
+                  "telemetry_description": "Aidez à améliorer 5stack en partageant des données d'utilisation anonymes.",
+                  "update": "Paramètres de télémétrie mis à jour"
+                },
                 "matchmaking": {
-                    "title": "Matchmaking",
-                    "description": "Gérez les paramètres de matchmaking"
+                  "title": "Matchmaking",
+                  "description": "Gérez les paramètres de matchmaking"
                 },
                 "discord": {
-                    "title": "Discord",
-                    "invite_link": "Lien d'invitation Discord",
-                    "webhook": "Webhook Discord",
-                    "webhook_description": "Nous utilisons ce webhook Discord pour envoyer des notifications qui nécessitent une action d'un joueur. Ex. problèmes de match, bugs, etc.",
-                    "support_role": "ID du rôle de support Discord",
-                    "support_role_description": "Ce rôle sera mentionné lorsqu'il est utilisé pour les actions de support. Vous pouvez obtenir l'ID du rôle depuis l'application Discord en activant le mode développeur et en faisant un clic droit pour copier l'ID.",
-                    "update": "Mettre à jour"
-                },
-                "create_matches_role": "Rôle minimum autorisé à créer des matchs",
-                "create_tournaments_role": "Rôle de création de tournois",
-                "update": "Mettre à jour",
-                "players": {
-                    "force_name_registration": "Forcer l'enregistrement du nom",
-                    "force_name_registration_description": "Si l'enregistrement du nom est forcé, le joueur doit soumettre un nom à utiliser sur la plateforme."
+                  "title": "Discord",
+                  "invite_link": "Lien d'invitation Discord",
+                  "webhook": "Webhook Discord",
+                  "webhook_description": "Nous utilisons ce webhook Discord pour envoyer des notifications qui nécessitent une action d'un joueur. Ex. problèmes de match, bugs, etc.",
+                  "support_role": "ID du rôle de support Discord",
+                  "support_role_description": "Ce rôle sera mentionné lorsqu'il est utilisé pour les actions de support. Vous pouvez obtenir l'ID du rôle depuis l'application Discord en activant le mode développeur et en faisant un clic droit pour copier l'ID.",
+                  "update": "Mettre à jour"
                 },
                 "game_type_configs": {
-                    "title": "Type de jeu Configs",
-                    "description": "Gérer les configurations de type de jeu.",
-                    "type": "Type de jeu"
+                  "title": "Type de jeu Configs",
+                  "description": "Gérer les configurations de type de jeu.",
+                  "type": "Type de jeu"
+                },
+                "streaming": {
+                  "title": "Streaming",
+                  "minimum_role_to_stream": "Rôle minimum autorisé à diffuser",
+                  "minimum_role_to_stream_description": "Ce rôle sera en mesure de créer des correspondances."
+                },
+                "create_matches_role": "Rôle minimum autorisé à créer des matchs",
+                "create_matches_role_description": "Ce rôle sera en mesure de créer des correspondances.",
+                "create_tournaments_role": "Rôle de création de tournois",
+                "create_tournaments_role_description": "Ce rôle sera capable de créer des tournois.",
+                "matchmaking_min_role": "Rôle minimum autorisé à s'associer à la prise de correspondance",
+                "matchmaking_min_role_description": "Ce rôle sera en mesure de s'associer à des rencontres.",
+                "max_acceptable_latency": "Maximum acceptable Latence",
+                "max_acceptable_latency_description": "C'est la latence maximale qu'un joueur peut avoir à rejoindre un match.",
+                "update": "Mettre à jour",
+                "players": {
+                  "force_name_registration": "Forcer l'enregistrement du nom",
+                  "force_name_registration_description": "Si l'enregistrement du nom est forcé, le joueur doit soumettre un nom à utiliser sur la plateforme."
                 },
                 "servers": {
-                    "title": "Paramètres du serveur",
-                    "enable_cpu_pinning": "Activer le processeur Pinnage",
-                    "enable_cpu_pinning_description": "Activer le pinning CPU sur les nœuds du serveur de jeu pour une meilleure performance",
-                    "number_of_cpus_per_server": "Nombre de processeurs par serveur",
-                    "number_of_cpus_per_server_description": "Nombre de processeurs à attribuer par serveur",
-                    "update": "Mettre à jour",
-                    "update_cpu_pinning": "CPU Pinning mis à jour"
+                  "title": "Paramètres du serveur",
+                  "enable_cpu_pinning": "Activer le processeur Pinnage",
+                  "enable_cpu_pinning_description": "Activer le pinning CPU sur les nœuds du serveur de jeu pour une meilleure performance",
+                  "number_of_cpus_per_server": "Nombre de processeurs par serveur",
+                  "number_of_cpus_per_server_description": "Nombre de processeurs à attribuer par serveur",
+                  "update": "Mettre à jour",
+                  "update_cpu_pinning": "CPU Pinning mis à jour"
                 },
-                "telemetry": {
-                    "title": "Télémétrie",
-                    "telemetry": "Télémétrie",
-                    "telemetry_description": "Aidez à améliorer 5stack en partageant des données d'utilisation anonymes.",
-                    "update": "Paramètres de télémétrie mis à jour"
-                },
-                "matchmaking_min_role": "Rôle minimum autorisé à s'associer à la prise de correspondance",
                 "demo_settings": {
-                    "update": "Mettre à jour",
-                    "title": "Paramètres de la démo",
-                    "min_retention": "Conservation minimale",
-                    "max_storage": "Stockage maximal",
-                    "cloudflare_worker_url": "URL du worker Cloudflare",
-                    "max_storage_description": "La taille maximale de stockage pour les fichiers de démonstration en GB.",
-                    "cloudflare_worker_url_description": "L'URL du travailleur Cloudflare qui sera utilisé pour stocker et récupérer les fichiers de démonstration.",
-                    "min_retention_description": "Les jours de conservation minimum pour les fichiers de démonstration.",
-                    "current_storage": "Stockage actuel",
-                    "used_storage": "Stockage approximatif utilisé"
+                  "update": "Mettre à jour",
+                  "title": "Paramètres de la démo",
+                  "min_retention": "Conservation minimale",
+                  "max_storage": "Stockage maximal",
+                  "cloudflare_worker_url": "URL du worker Cloudflare",
+                  "max_storage_description": "La taille maximale de stockage pour les fichiers de démonstration en GB.",
+                  "cloudflare_worker_url_description": "L'URL du travailleur Cloudflare qui sera utilisé pour stocker et récupérer les fichiers de démonstration.",
+                  "min_retention_description": "Les jours de conservation minimum pour les fichiers de démonstration.",
+                  "current_storage": "Stockage actuel",
+                  "used_storage": "Stockage approximatif utilisé"
                 },
                 "update_map_pools": {
-                    "title": "Pools de cartes de mise à jour automatique",
-                    "description": "Ajouter automatiquement / mettre à jour les pools de cartes lorsque de nouvelles cartes sont ajoutées ou retirées du pool actif."
-                },
-                "matchmaking_min_role_description": "Ce rôle sera en mesure de s'associer à des rencontres.",
-                "max_acceptable_latency_description": "C'est la latence maximale qu'un joueur peut avoir à rejoindre un match.",
-                "create_matches_role_description": "Ce rôle sera en mesure de créer des correspondances.",
-                "create_tournaments_role_description": "Ce rôle sera capable de créer des tournois.",
-                "max_acceptable_latency": "Maximum acceptable Latence",
-                "streaming": {
-                    "minimum_role_to_stream": "Rôle minimum autorisé à diffuser",
-                    "title": "Streaming",
-                    "minimum_role_to_stream_description": "Ce rôle sera en mesure de créer des correspondances."
+                  "title": "Pools de cartes de mise à jour automatique",
+                  "description": "Ajouter automatiquement / mettre à jour les pools de cartes lorsque de nouvelles cartes sont ajoutées ou retirées du pool actif."
                 }
             },
             "language": {
@@ -121,37 +147,11 @@
             "matchmaking": {
                 "title": "Paramètres de correspondance",
                 "description": "Configurez vos préférences de matchmaking et visualisez les latences régionales.",
+                "region": "Région",
                 "average_latency": "Latence",
                 "preferred": "Préféré",
-                "region": "Région",
                 "max_acceptable_latency": "Maximum acceptable Latence",
                 "max_latency_description": "Si aucune région n'est préférée, l'appariement n'utilisera que des régions dont la latence est inférieure à cette valeur."
-            },
-            "account": {
-                "title": "Paramètres du compte",
-                "description": "Détails de votre compte",
-                "my_account": "Mon dossier",
-                "avatar_url": "URL Avatar",
-                "country": "Pays",
-                "select_country": "Sélectionner un pays...",
-                "search_country": "Pays de recherche...",
-                "no_country_found": "Aucun pays trouvé.",
-                "update": "Mettre à jour le compte",
-                "update_success": "Profil mis à jour",
-                "discord": {
-                    "unlink": "Déconnecter la discorde",
-                    "link": "Lien Discorde",
-                    "unlink_dialog": {
-                        "title": "Déconnecter le compte Discord",
-                        "description": "Voulez-vous vraiment déconnecter votre compte Discord ? Cela supprimera la connexion entre vos comptes 5Stack et Discord.",
-                        "confirm": "Déconnecter",
-                        "cancel": "Annuler"
-                    },
-                    "unlinked": "Discord compte déconnecté avec succès"
-                },
-                "appearance": "Apparence",
-                "matchmaking": "Matchmaking",
-                "name": "Nom"
             }
         },
         "regions": {
@@ -164,9 +164,9 @@
                 "available_servers": "Serveurs disponibles",
                 "description": "Description",
                 "use_lan_ip": "Utiliser LAN",
-                "actions": "Actions",
                 "use_steam_relay": "Utiliser le relais de vapeur",
-                "use_steam_relay_description": "Activer Steam Relay pour les serveurs de jeu pour cacher leur adresse IP au public."
+                "use_steam_relay_description": "Activer Steam Relay pour les serveurs de jeu pour cacher leur adresse IP au public.",
+                "actions": "Actions"
             },
             "edit": "Modifier",
             "delete": {
@@ -228,6 +228,12 @@
             "create": "Créer un nœud",
             "installation_script": "Script d'installation",
             "cs_version_info": "Informations de version CS",
+            "status": {
+                "offline": "Hors ligne",
+                "online": "En ligne uniquement",
+                "setup": "Configuration",
+                "not_accepting": "Ne pas accepter de nouvelles correspondances"
+            },
             "table": {
                 "node": "Nœud",
                 "lan_public_ip": "IP LAN/Publique",
@@ -242,13 +248,7 @@
                 "supports_cpu_pinning": "Prise en charge du processeur Pinnage"
             },
             "build_id": "ID de build",
-            "last_updated": "Dernière mise à jour",
-            "status": {
-                "online": "En ligne uniquement",
-                "offline": "Hors ligne",
-                "setup": "Configuration",
-                "not_accepting": "Ne pas accepter de nouvelles correspondances"
-            }
+            "last_updated": "Dernière mise à jour"
         },
         "dedicated_servers": {
             "title": "Dédié",
@@ -261,10 +261,10 @@
                 "label": "Étiquette",
                 "region": "Région",
                 "tv_port": "Port TV",
+                "plugin_version": "Version du plugin",
                 "enabled": "Activé",
                 "yes": "Oui",
-                "no": "Non",
-                "plugin_version": "Version du plugin"
+                "no": "Non"
             },
             "detail": {
                 "enabled": "Activé",
@@ -275,17 +275,17 @@
                 "copy": "Copier",
                 "edit": "Modifier",
                 "delete": "Supprimer",
-                "delete_confirm": {
-                    "title": "Supprimer le serveur",
-                    "description": "Voulez-vous vraiment supprimer ce serveur ?",
-                    "cancel": "Annuler",
-                    "continue": "Continuer"
-                },
                 "status": {
-                    "disconnected": "Le serveur est déconnecté",
-                    "no_rcon": "Le serveur est connecté mais RCON n'est pas disponible",
-                    "connected": "Serveur connecté et RCON disponible",
-                    "plugin_version_mismatch": "plugin version n'est pas à jour"
+                  "disconnected": "Le serveur est déconnecté",
+                  "no_rcon": "Le serveur est connecté mais RCON n'est pas disponible",
+                  "connected": "Serveur connecté et RCON disponible",
+                  "plugin_version_mismatch": "plugin version n'est pas à jour"
+                },
+                "delete_confirm": {
+                  "title": "Supprimer le serveur",
+                  "description": "Voulez-vous vraiment supprimer ce serveur ?",
+                  "cancel": "Annuler",
+                  "continue": "Continuer"
                 }
             }
         },
@@ -294,6 +294,8 @@
             "description": "Gérer les pools de cartes et les cartes disponibles pour le matchmaking.",
             "form": {
                 "name": "Nom",
+                "name_description": "Cela doit correspondre au nom de la carte dans le jeu que le serveur reconnaît.",
+                "label": "Étiquette",
                 "poster": "Affiche (optionnel)",
                 "poster_placeholder": "http://exemple.com/affiche.png",
                 "patch": "Patch (optionnel)",
@@ -303,25 +305,23 @@
                 "update_map": "Mettre à jour la carte",
                 "delete_map": "Supprimer la carte",
                 "delete_confirm": {
-                    "title": "Supprimer la carte",
-                    "description": "Êtes-vous sûr de vouloir supprimer cette carte ? Cette action ne peut pas être annulée.",
-                    "cancel": "Annuler",
-                    "confirm": "Supprimer"
+                  "title": "Supprimer la carte",
+                  "description": "Êtes-vous sûr de vouloir supprimer cette carte ? Cette action ne peut pas être annulée.",
+                  "cancel": "Annuler",
+                  "confirm": "Supprimer"
                 },
                 "success": {
-                    "create": "Carte créée avec succès",
-                    "update": "Carte mise à jour avec succès",
-                    "delete": "Carte supprimée avec succès",
-                    "workshop_refresh": "Détails de la carte de l'atelier rafraîchis avec succès"
+                  "create": "Carte créée avec succès",
+                  "update": "Carte mise à jour avec succès",
+                  "delete": "Carte supprimée avec succès",
+                  "workshop_refresh": "Détails de la carte de l'atelier rafraîchis avec succès"
                 },
                 "error": {
-                    "create": "Erreur lors de la création de la carte",
-                    "update": "Erreur lors de la mise à jour de la carte",
-                    "invalid_workshop": "Carte d'atelier non valide. Veuillez vérifier l'identité sur Steam Workshop.",
-                    "workshop_refresh": "Erreur de rafraîchissement des détails de la carte de l'atelier"
+                  "create": "Erreur lors de la création de la carte",
+                  "update": "Erreur lors de la mise à jour de la carte",
+                  "invalid_workshop": "Carte d'atelier non valide. Veuillez vérifier l'identité sur Steam Workshop.",
+                  "workshop_refresh": "Erreur de rafraîchissement des détails de la carte de l'atelier"
                 },
-                "label": "Étiquette",
-                "name_description": "Cela doit correspondre au nom de la carte dans le jeu que le serveur reconnaît.",
                 "refresh_workshop": "Rafraîchir les détails"
             },
             "pool": {
@@ -329,12 +329,12 @@
                 "description": "Gérer les cartes dans la pool {type}",
                 "modify_maps": "Modifier les cartes dans la pool"
             },
+            "add_new_map": "Ajouter une nouvelle carte",
             "edit": "Modifier",
             "maps": "Cartes disponibles",
             "active_duty": "Service actif",
             "available_modes": "Disponible en mode",
             "workshop_id": "Lien de l'atelier",
-            "add_new_map": "Ajouter une nouvelle carte",
             "search": "Recherche de cartes"
         },
         "map_pool": {
@@ -347,428 +347,20 @@
             "description": "Afficher et gérer tous les matches sur la plateforme."
         }
     },
-    "matchmaking": {
-        "lobby": {
-            "title": "Lobby de matchmaking",
-            "leave": "Quitter",
-            "invite_player": "Inviter un joueur",
-            "invites": "Invitations",
-            "access_updated": "Les permissions d'accès ont été mises à jour"
-        },
-        "friends": {
-            "title": "Amis",
-            "sync": "Synchroniser",
-            "search": "Ajouter un ami",
-            "pending_requests": "Demandes en attente",
-            "online": "En ligne uniquement",
-            "invite_to_lobby": "Inviter au Lobby",
-            "remove": "Supprimer",
-            "join_lobby": "Rejoindre le Lobby",
-            "offline": "Hors ligne",
-            "view_profile": "Affichage du profil",
-            "invite_to_match": "Inviter le joueur à correspondre"
-        },
-        "banned": "Banni",
-        "go_to_match": "Aller au match",
-        "temp_banned": "Banni temporairement",
-        "settings_section": {
-            "toggle": "Régler les paramètres",
-            "queue_order": "Ordre des requêtes"
-        },
-        "confirm_selection": "Rejoignez la file d'attente",
-        "searching_for_match": "Recherche d'une correspondance {type}",
-        "high_latency_warning": "Votre latence est trop élevée pour des matches compétitifs"
-    },
-    "match": {
-        "lobby": {
-            "access_updated": "Les permissions d'accès ont été mises à jour"
-        },
-        "simple": {
-            "vs": "contre"
-        },
-        "my_upcoming": {
-            "no_matches": "Aucun match à venir"
-        },
-        "recent": {
-            "title": "Matchs récents",
-            "no_matches": "Aucun match récent"
-        },
-        "options": {
-            "table": {
-                "match": "Match",
-                "type": "Type",
-                "maps": "Cartes",
-                "no_matches_found": "Aucun match trouvé",
-                "join": "Rejoindre"
-            },
-            "type": {
-                "label": "Type"
-            },
-            "best_of": {
-                "label": "Best of",
-                "description": "Nombre de maps nécessaires pour gagner le match",
-                "placeholder": "Sélectionner le best of"
-            },
-            "map_veto_settings": {
-                "label": "Veto de map",
-                "description": "Description des paramètres de veto de map",
-                "custom_pool": "Pool de maps personnalisé",
-                "active_duty": "Active Duty",
-                "custom_pool_tooltip": "Info-bulle du pool de maps personnalisé"
-            },
-            "advanced": {
-                "title": "Paramètres avancés",
-                "hide": "Masquer",
-                "show": "Afficher",
-                "toggle": "Basculer",
-                "overtime": {
-                    "label": "Prolongation",
-                    "description": "Description de la prolongation"
-                },
-                "knife_round": {
-                    "label": "Round couteau",
-                    "description": "Description du round couteau"
-                },
-                "max_rounds": {
-                    "label": "Rounds maximum",
-                    "description": "Description des rounds maximum",
-                    "placeholder": "Entrer le nombre de rounds maximum"
-                },
-                "region": {
-                    "title": "Région",
-                    "lan_match": "Match LAN",
-                    "veto": {
-                        "label": "Veto de région",
-                        "description": "Description du veto de région"
-                    },
-                    "preferred": "Région préférée",
-                    "single": "Région",
-                    "placeholder": "Sélectionner une région",
-                    "any": "N'importe quelle région",
-                    "description": "Description de la région"
-                },
-                "substitutes": {
-                    "label": "Remplaçants",
-                    "description": "Description des remplaçants",
-                    "range": "Plage de remplaçants"
-                },
-                "tv_delay": {
-                    "label": "Délai TV",
-                    "range": "Plage de délai"
-                },
-                "timeouts": {
-                    "tactical": {
-                        "label": "Temps mort tactique",
-                        "description": "Description du temps mort tactique"
-                    },
-                    "technical": {
-                        "label": "Temps mort technique",
-                        "description": "Description du temps mort technique"
-                    },
-                    "options": {
-                        "admins": "Administrateurs",
-                        "coaches": "Coachs",
-                        "everyone": "N'importe qui",
-                        "captains": "Entraîneurs / Capitaines"
-                    }
-                },
-                "ready_settings": {
-                    "label": "Paramètres prêts",
-                    "description": "Contrôle comment le match détermine d'être prêt à démarrer.",
-                    "options": {
-                        "captains": "Capitaines",
-                        "everyone": "Tous les joueurs doivent être prêts",
-                        "admins": "Administrateurs",
-                        "coaches": "Coachs"
-                    }
-                }
-            },
-            "max_rounds": "Rounds maximum",
-            "tv_delay": "Délai TV",
-            "seconds": "Secondes",
-            "coaches": "Coachs",
-            "overtime": "Prolongation",
-            "knife_round": "Round couteau",
-            "map_veto_enabled": "Veto de map",
-            "region_veto": "Veto de région",
-            "substitutes": "Remplaçants",
-            "timeout_setting": "Paramètre de temps mort",
-            "tech_timeout_setting": "Paramètre de temps mort technique",
-            "map_pool": "Pool de maps",
-            "ready_setting": "Réglage prêt",
-            "filter_maps": "Filtrer les cartes",
-            "advanced_settings": "Afficher les paramètres avancés"
-        },
-        "schedule": {
-            "pick_date": "Sélectionner une date",
-            "schedule": "Planifier"
-        },
-        "player": {
-            "captain": "Capitaine",
-            "status": {
-                "offline_not_ready": "Hors ligne, pas prêt",
-                "online_not_ready": "En ligne, pas prêt",
-                "ready": "Prêt",
-                "offline": "Hors ligne",
-                "online_not_in_game": "En ligne, pas en jeu",
-                "in_game": "En jeu"
-            },
-            "assign_slot": "Assigner un slot"
-        },
-        "tabs": {
-            "overview": "Vue d'ensemble",
-            "utility": "Utility",
-            "opening_duels": "Duels d'ouverture",
-            "clutches": "Clutches",
-            "map_veto_tab": "Veto de map",
-            "settings": "Paramètres",
-            "server_console": "Console serveur",
-            "randomize_teams": "Équipes aléatoires",
-            "invited_to_match": "Invité au match",
-            "join_roster": "Rejoindre la composition",
-            "restore_round": "Restaurer le round",
-            "select_round_to_restore": "Sélectionner le round à restaurer",
-            "server_information": "Informations serveur",
-            "type": "Type",
-            "region": "Région",
-            "round": "Round"
-        },
-        "status": {
-            "cancelled": "Annulé",
-            "finished": "Terminé",
-            "waiting_server": "En attente du serveur",
-            "scheduled_asap": "Planifié dès que possible"
-        },
-        "winner": {
-            "set": "Définir le gagnant",
-            "select_lineup": "Sélectionner la composition"
-        },
-        "region_veto": {
-            "banning": "Bannissement",
-            "organizer_override": "Surcharge organisateur",
-            "confirm_ban": "Confirmer le bannissement",
-            "server_region": "Région serveur",
-            "select_region": "Sélectionner une région"
-        },
-        "picks": {
-            "decider": "Map décisive"
-        },
-        "decider": "Map décisive",
-        "map_veto": {
-            "is_picking": "En train de choisir",
-            "organizer_override": "Surcharge organisateur",
-            "select_side": "Sélectionner le côté",
-            "your_turn": "C'est votre tour",
-            "pick": "Choisir",
-            "confirm": "Confirmer"
-        },
-        "map_lineup": {
-            "picked": "Choisie"
-        },
-        "vs": "contre",
-        "auto_canceling": "Annulation automatique",
-        "actions": {
-            "call_support": "Appeler le support",
-            "start_veto": "Démarrer le veto",
-            "skip_checkin": "Passer le check-in",
-            "cancel": "Annuler"
-        },
-        "lineup": {
-            "stats": {
-                "flashes_thrown": "Flashs lancés",
-                "flash_assists": "Assists par flash",
-                "enemies_flashed": "Ennemis flashés",
-                "team_flashed": "Coéquipiers flashés",
-                "avg_blind_time": "Temps d'aveuglement moyen",
-                "he_damage": "Dégâts HE",
-                "molotov_damage": "Dégâts Molotov",
-                "seconds": "Secondes"
-            },
-            "discord_user": "Utilisateur Discord",
-            "discord_link": "Lien Discord"
-        },
-        "opening_duels": {
-            "attempts": "Tentatives",
-            "success": "Succès"
-        },
-        "clutches": {
-            "won": "Gagné",
-            "lost": "Perdu",
-            "against": "contre",
-            "no_clutches": "Aucun clutch",
-            "vs": "contre",
-            "round": "Round"
-        },
-        "join": {
-            "live": "En direct",
-            "call_organizer": "Appeler l'organisateur"
-        },
-        "check_in": {
-            "title": "Check-in",
-            "checked_in": "Check-in effectué",
-            "check_in": "Check-in",
-            "description": "Description du check-in"
-        },
-        "coach": {
-            "assign": "Assigner un coach"
-        },
-        "download_demos": "Télécharger les démos",
-        "coaches": "Coachs",
-        "best_of": "Best of",
-        "overview": {
-            "promote_captain": "Promouvoir capitaine",
-            "switch_teams": "Changer d'équipe",
-            "remove_from_lineup": "Retirer de la composition",
-            "leave_lineup": "Quitter la composition",
-            "kills_full": "Kills",
-            "assists_full": "Assists",
-            "deaths_full": "Morts",
-            "kd": "K/D",
-            "hs": "Headshots",
-            "team_damage": "Dégâts équipe",
-            "multi_kill_rounds": "Rounds multi-kills",
-            "mkr": "MKR",
-            "k2": "2K",
-            "k3": "3K",
-            "k4": "4K",
-            "k5": "5K",
-            "knifes": "Couteau",
-            "zeus": "Zeus",
-            "total_damage": "Dégâts totaux",
-            "substitute": "Remplaçant",
-            "join": "Rejoindre",
-            "slot": "Slot"
-        },
-        "server": {
-            "offline": "Hors ligne",
-            "booting": "Démarrage",
-            "assign": "Assigner",
-            "select": "Sélectionner",
-            "dedicated": "Dédié",
-            "on_demand": "À la demande",
-            "assigned": "Assigné"
-        },
-        "download_demo": "Télécharger la démo"
-    },
-    "ui": {
-        "tooltips": {
-            "expand": "Développer",
-            "fullscreen": "Plein écran",
-            "download": "Télécharger"
-        },
-        "logs": {
-            "follow": "Suivre",
-            "timestamps": "Horodatages",
-            "container": "Conteneur"
+    "notifications": {
+        "match": {
+            "title": "Invites de match"
         }
     },
-    "player": {
-        "sanction": {
-            "button": "Sanctionner le joueur",
-            "reason_description": "Veuillez fournir une raison claire pour cette sanction"
-        },
-        "search": {
-            "online_only": "En ligne uniquement",
-            "no_players_found": "Aucun joueur trouvé",
-            "found_players": "Joueurs trouvés",
-            "placeholder": "Rechercher des joueurs..."
-        },
-        "sanctions": {
-            "title": "Sanctions",
-            "expires": "Expire",
-            "active_count": "Sanctions actives",
-            "past_count": "Sanctions passées"
-        },
-        "registration": {
-            "title": "Inscription",
-            "description": "Description",
-            "warning": "Avertissement",
-            "name_label": "Nom",
-            "confirm_button": "Bouton de confirmation",
-            "success": "Succès"
-        },
-        "status": {
-            "banned": "Banni",
-            "muted": "Muet",
-            "gagged": "Bâillonné",
-            "add_friend": "Ajouter un ami"
-        },
-        "change_name": {
-            "button": "Changer le nom",
-            "title": "Changer le nom",
-            "request_title": "Demande de changement de nom",
-            "description": "Description",
-            "request_description": "Description de la demande",
-            "name_label": "Nom",
-            "success": "Succès",
-            "request_success": "Succès de la demande"
-        }
-    },
-    "maps": {
-        "veto": {
-            "pick": "Choisir"
-        },
-        "official": "Officiel",
-        "workshop": "Workshop",
-        "active_duty": "Service actif"
-    },
-    "region": {
-        "form": {
-            "name": "Nom",
-            "description": "Description",
-            "update": "Mettre à jour",
-            "create": "Créer"
-        }
-    },
-    "game_server": {
-        "update_cs": "Mettre à jour CS",
-        "install_cs": "Installer CS",
-        "select_region": "Sélectionner une région",
-        "remove_node": "Supprimer le nœud",
-        "validation": {
-            "start_port_less_than_end": "Le port de début doit être inférieur au port de fin",
-            "end_port_greater_than_start": "Le port de fin doit être supérieur au port de début"
-        },
-        "toast": {
-            "cs_updating": "CS en cours de mise à jour",
-            "ports_updated": "Ports mis à jour",
-            "label_updated": "Mise à jour de l'étiquette du nœud"
-        },
-        "edit_label": "Modifier l'étiquette",
-        "label_placeholder": "Entrez l'étiquette du nœud",
-        "update_label": "Mettre à jour l'étiquette"
-    },
-    "chat": {
-        "lobby_chat": "Chat du lobby",
-        "message_placeholder": "Entrer un message..."
-    },
-    "charts": {
-        "usage": "Utilisation"
-    },
-    "server": {
-        "form": {
-            "label": "Étiquette",
-            "host": "Hôte",
-            "region": "Région",
-            "select_region": "Sélectionner une région",
-            "rcon_password": "Mot de passe RCON",
-            "rcon_password_description": "Description du mot de passe RCON",
-            "port": "Port",
-            "tv_port": "Port TV",
-            "update": "Mettre à jour",
-            "create": "Créer"
-        },
-        "rcon": {
-            "quick_commands": "Commandes rapides",
-            "refresh_match": "Actualiser le match",
-            "metamod_info": "Info Metamod",
-            "css_info": "Info CSS",
-            "output": "Sortie",
-            "command_placeholder": "Entrer une commande",
-            "send_command": "Envoyer la commande"
-        }
+    "custom_match": {
+        "title": "Match personnalisé",
+        "description": "Créez et personnalisez votre propre match. Définir des règles, choisir des cartes et inviter des amis pour une expérience de jeu personnalisée."
     },
     "layouts": {
+        "account_settings": {
+            "title": "Paramètres du compte",
+            "description": "Gérer les paramètres et préférences de votre compte"
+        },
         "application_settings": {
             "title": "Paramètres de l'application",
             "description": "Gérer les paramètres de l'application"
@@ -789,9 +381,9 @@
             "title": "Notifications",
             "delete": "Supprimer",
             "dismiss": "Fermer",
+            "dismiss_all": "Rejeter toutes les notifications",
             "delete_all_read": "Supprimer toutes les notifications lues",
-            "no_notifications": "Aucune notification",
-            "dismiss_all": "Rejeter toutes les notifications"
+            "no_notifications": "Aucune notification"
         },
         "app_nav": {
             "brand": "5stack",
@@ -815,9 +407,9 @@
                 "manage_matches": "Gérer les correspondances"
             },
             "profile": {
+                "my_profile": "Mon profil",
                 "my_account": "Mes paramètres",
-                "logout": "Déconnexion",
-                "my_profile": "Mon profil"
+                "logout": "Déconnexion"
             },
             "footer": {
                 "report_issue": "Signaler un Problème",
@@ -847,10 +439,6 @@
                 "cancel": "Annuler",
                 "confirm": "Déconnexion"
             }
-        },
-        "account_settings": {
-            "title": "Paramètres du compte",
-            "description": "Gérer les paramètres et préférences de votre compte"
         }
     },
     "pwa": {
@@ -885,12 +473,14 @@
         "settings": "Paramètres",
         "admin": "Administration",
         "organizers": "Organisateurs",
+        "show_organizers": "Afficher les organisateurs",
+        "hide_organizers": "Cacher les organisateurs",
         "join": {
             "title": "Rejoindre le tournoi",
             "joined_with": "Équipe rejointe",
-            "requirements": "Prérequis",
             "add_self_to_lineup": "Ajouter self à lineup",
-            "team_owner": "Propriétaire"
+            "team_owner": "Propriétaire",
+            "requirements": "Prérequis"
         },
         "tournament_team": {
             "players_registered": "Joueurs inscrits",
@@ -998,9 +588,7 @@
             "remove": "Retirer",
             "confirm_remove": "Retirer le serveur",
             "remove_description": "Voulez-vous vraiment retirer ce serveur ?"
-        },
-        "show_organizers": "Afficher les organisateurs",
-        "hide_organizers": "Cacher les organisateurs"
+        }
     },
     "team": {
         "table": {
@@ -1048,6 +636,12 @@
             "update": "Mettre à jour",
             "create": "Créer"
         },
+        "search": {
+            "found_teams": "équipes trouvées",
+            "placeholder": "Rechercher une équipe...",
+            "my_teams_only": "Mes équipes seulement",
+            "no_teams_found": "Aucune équipe trouvée"
+        },
         "member": {
             "remove": "Retirer",
             "cancel_invite": "Annuler l'invitation",
@@ -1055,12 +649,427 @@
             "confirm_remove": "Confirmer le retrait",
             "cancel_invite_description": "Voulez-vous vraiment annuler cette invitation ?",
             "remove_description": "Voulez-vous vraiment retirer ce membre ?"
+        }
+    },
+    "match": {
+        "simple": {
+            "vs": "contre"
+        },
+        "my_upcoming": {
+            "no_matches": "Aucun match à venir"
+        },
+        "recent": {
+            "title": "Matchs récents",
+            "no_matches": "Aucun match récent"
+        },
+        "options": {
+            "filter_maps": "Filtrer les cartes",
+            "table": {
+                "match": "Match",
+                "type": "Type",
+                "maps": "Cartes",
+                "no_matches_found": "Aucun match trouvé",
+                "join": "Rejoindre"
+            },
+            "type": {
+                "label": "Type"
+            },
+            "best_of": {
+                "label": "Best of",
+                "description": "Nombre de maps nécessaires pour gagner le match",
+                "placeholder": "Sélectionner le best of"
+            },
+            "map_veto_settings": {
+                "label": "Veto de map",
+                "description": "Description des paramètres de veto de map",
+                "custom_pool": "Pool de maps personnalisé",
+                "active_duty": "Active Duty",
+                "custom_pool_tooltip": "Info-bulle du pool de maps personnalisé"
+            },
+            "advanced": {
+                "title": "Paramètres avancés",
+                "hide": "Masquer",
+                "show": "Afficher",
+                "toggle": "Basculer",
+                "overtime": {
+                  "label": "Prolongation",
+                  "description": "Description de la prolongation"
+                },
+                "knife_round": {
+                  "label": "Round couteau",
+                  "description": "Description du round couteau"
+                },
+                "max_rounds": {
+                  "label": "Rounds maximum",
+                  "description": "Description des rounds maximum",
+                  "placeholder": "Entrer le nombre de rounds maximum"
+                },
+                "region": {
+                  "title": "Région",
+                  "lan_match": "Match LAN",
+                  "veto": {
+                      "label": "Veto de région",
+                      "description": "Description du veto de région"
+                  },
+                  "preferred": "Région préférée",
+                  "single": "Région",
+                  "placeholder": "Sélectionner une région",
+                  "any": "N'importe quelle région",
+                  "description": "Description de la région"
+                },
+                "substitutes": {
+                  "label": "Remplaçants",
+                  "description": "Description des remplaçants",
+                  "range": "Plage de remplaçants"
+                },
+                "tv_delay": {
+                  "label": "Délai TV",
+                  "range": "Plage de délai"
+                },
+                "timeouts": {
+                  "tactical": {
+                      "label": "Temps mort tactique",
+                      "description": "Description du temps mort tactique"
+                  },
+                  "technical": {
+                      "label": "Temps mort technique",
+                      "description": "Description du temps mort technique"
+                  },
+                  "options": {
+                      "admins": "Administrateurs",
+                      "coaches": "Coachs",
+                      "captains": "Entraîneurs / Capitaines",
+                      "everyone": "N'importe qui"
+                  }
+                },
+                "ready_settings": {
+                  "label": "Paramètres prêts",
+                  "description": "Contrôle comment le match détermine d'être prêt à démarrer.",
+                  "options": {
+                      "admins": "Administrateurs",
+                      "coaches": "Coachs",
+                      "captains": "Capitaines",
+                      "everyone": "Tous les joueurs doivent être prêts"
+                  }
+                }
+            },
+            "max_rounds": "Rounds maximum",
+            "tv_delay": "Délai TV",
+            "seconds": "Secondes",
+            "coaches": "Coachs",
+            "overtime": "Prolongation",
+            "knife_round": "Round couteau",
+            "map_veto_enabled": "Veto de map",
+            "region_veto": "Veto de région",
+            "substitutes": "Remplaçants",
+            "timeout_setting": "Paramètre de temps mort",
+            "tech_timeout_setting": "Paramètre de temps mort technique",
+            "ready_setting": "Réglage prêt",
+            "map_pool": "Pool de maps",
+            "advanced_settings": "Afficher les paramètres avancés"
+        },
+        "schedule": {
+            "pick_date": "Sélectionner une date",
+            "schedule": "Planifier"
+        },
+        "player": {
+            "captain": "Capitaine",
+            "status": {
+                "offline_not_ready": "Hors ligne, pas prêt",
+                "online_not_ready": "En ligne, pas prêt",
+                "ready": "Prêt",
+                "offline": "Hors ligne",
+                "online_not_in_game": "En ligne, pas en jeu",
+                "in_game": "En jeu"
+            },
+            "assign_slot": "Assigner un slot"
+        },
+        "tabs": {
+            "overview": "Vue d'ensemble",
+            "utility": "Utility",
+            "opening_duels": "Duels d'ouverture",
+            "clutches": "Clutches",
+            "map_veto_tab": "Veto de map",
+            "settings": "Paramètres",
+            "server_console": "Console serveur",
+            "randomize_teams": "Équipes aléatoires",
+            "invited_to_match": "Invité au match",
+            "join_roster": "Rejoindre la composition",
+            "restore_round": "Restaurer le round",
+            "select_round_to_restore": "Sélectionner le round à restaurer",
+            "server_information": "Informations serveur",
+            "type": "Type",
+            "region": "Région",
+            "round": "Round"
+        },
+        "status": {
+            "cancelled": "Annulé",
+            "finished": "Terminé",
+            "waiting_server": "En attente du serveur",
+            "scheduled_asap": "Planifié dès que possible"
+        },
+        "winner": {
+            "set": "Définir le gagnant",
+            "select_lineup": "Sélectionner la composition"
+        },
+        "region_veto": {
+            "banning": "Bannissement",
+            "organizer_override": "Surcharge organisateur",
+            "confirm_ban": "Confirmer le bannissement",
+            "server_region": "Région serveur",
+            "select_region": "Sélectionner une région"
+        },
+        "picks": {
+            "decider": "Map décisive"
+        },
+        "decider": "Map décisive",
+        "map_veto": {
+            "is_picking": "En train de choisir",
+            "organizer_override": "Surcharge organisateur",
+            "select_side": "Sélectionner le côté",
+            "your_turn": "C'est votre tour",
+            "pick": "Choisir",
+            "confirm": "Confirmer"
+        },
+        "map_lineup": {
+            "picked": "Choisie"
+        },
+        "vs": "contre",
+        "auto_canceling": "Annulation automatique",
+        "actions": {
+            "call_support": "Appeler le support",
+            "start_veto": "Démarrer le veto",
+            "skip_checkin": "Passer le check-in",
+            "cancel": "Annuler"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "Flashs lancés",
+                "flash_assists": "Assists par flash",
+                "enemies_flashed": "Ennemis flashés",
+                "team_flashed": "Coéquipiers flashés",
+                "avg_blind_time": "Temps d'aveuglement moyen",
+                "he_damage": "Dégâts HE",
+                "molotov_damage": "Dégâts Molotov",
+                "seconds": "Secondes"
+            },
+            "discord_user": "Utilisateur Discord",
+            "discord_link": "Lien Discord"
+        },
+        "overview": {
+            "promote_captain": "Promouvoir capitaine",
+            "switch_teams": "Changer d'équipe",
+            "remove_from_lineup": "Retirer de la composition",
+            "leave_lineup": "Quitter la composition",
+            "kills_full": "Kills",
+            "assists_full": "Assists",
+            "deaths_full": "Morts",
+            "kd": "K/D",
+            "hs": "Headshots",
+            "team_damage": "Dégâts équipe",
+            "multi_kill_rounds": "Rounds multi-kills",
+            "mkr": "MKR",
+            "k2": "2K",
+            "k3": "3K",
+            "k4": "4K",
+            "k5": "5K",
+            "knifes": "Couteau",
+            "zeus": "Zeus",
+            "total_damage": "Dégâts totaux",
+            "substitute": "Remplaçant",
+            "join": "Rejoindre",
+            "slot": "Slot"
+        },
+        "opening_duels": {
+            "attempts": "Tentatives",
+            "success": "Succès"
+        },
+        "clutches": {
+            "won": "Gagné",
+            "lost": "Perdu",
+            "against": "contre",
+            "no_clutches": "Aucun clutch",
+            "vs": "contre",
+            "round": "Round"
+        },
+        "join": {
+            "live": "En direct",
+            "call_organizer": "Appeler l'organisateur"
+        },
+        "check_in": {
+            "title": "Check-in",
+            "checked_in": "Check-in effectué",
+            "check_in": "Check-in",
+            "description": "Description du check-in"
+        },
+        "coach": {
+            "assign": "Assigner un coach"
+        },
+        "download_demo": "Télécharger la démo",
+        "download_demos": "Télécharger les démos",
+        "coaches": "Coachs",
+        "best_of": "Best of",
+        "server": {
+            "offline": "Hors ligne",
+            "booting": "Démarrage",
+            "assign": "Assigner",
+            "select": "Sélectionner",
+            "dedicated": "Dédié",
+            "on_demand": "À la demande",
+            "assigned": "Assigné"
+        },
+        "lobby": {
+            "access_updated": "Les permissions d'accès ont été mises à jour"
+        }
+    },
+    "ui": {
+        "tooltips": {
+            "expand": "Développer",
+            "fullscreen": "Plein écran",
+            "download": "Télécharger"
+        },
+        "logs": {
+            "follow": "Suivre",
+            "timestamps": "Horodatages",
+            "container": "Conteneur"
+        }
+    },
+    "player": {
+        "sanction": {
+            "button": "Sanctionner le joueur",
+            "reason_description": "Veuillez fournir une raison claire pour cette sanction"
         },
         "search": {
-            "found_teams": "équipes trouvées",
-            "my_teams_only": "Mes équipes seulement",
-            "no_teams_found": "Aucune équipe trouvée",
-            "placeholder": "Rechercher une équipe..."
+            "online_only": "En ligne uniquement",
+            "no_players_found": "Aucun joueur trouvé",
+            "found_players": "Joueurs trouvés",
+            "placeholder": "Rechercher des joueurs..."
+        },
+        "sanctions": {
+            "title": "Sanctions",
+            "expires": "Expire",
+            "active_count": "Sanctions actives",
+            "past_count": "Sanctions passées"
+        },
+        "registration": {
+            "title": "Inscription",
+            "description": "Description",
+            "warning": "Avertissement",
+            "name_label": "Nom",
+            "confirm_button": "Bouton de confirmation",
+            "success": "Succès"
+        },
+        "status": {
+            "banned": "Banni",
+            "muted": "Muet",
+            "gagged": "Bâillonné",
+            "add_friend": "Ajouter un ami"
+        },
+        "change_name": {
+            "button": "Changer le nom",
+            "title": "Changer le nom",
+            "request_title": "Demande de changement de nom",
+            "description": "Description",
+            "request_description": "Description de la demande",
+            "name_label": "Nom",
+            "success": "Succès",
+            "request_success": "Succès de la demande"
+        }
+    },
+    "maps": {
+        "veto": {
+            "pick": "Choisir"
+        },
+        "official": "Officiel",
+        "workshop": "Workshop",
+        "active_duty": "Service actif"
+    },
+    "region": {
+        "form": {
+            "name": "Nom",
+            "description": "Description",
+            "update": "Mettre à jour",
+            "create": "Créer"
+        }
+    },
+    "matchmaking": {
+        "searching_for_match": "Recherche d'une correspondance {type}",
+        "lobby": {
+            "title": "Lobby de matchmaking",
+            "leave": "Quitter",
+            "invite_player": "Inviter un joueur",
+            "invites": "Invitations",
+            "access_updated": "Les permissions d'accès ont été mises à jour"
+        },
+        "friends": {
+            "title": "Amis",
+            "sync": "Synchroniser",
+            "search": "Ajouter un ami",
+            "pending_requests": "Demandes en attente",
+            "online": "En ligne uniquement",
+            "invite_to_lobby": "Inviter au Lobby",
+            "invite_to_match": "Inviter le joueur à correspondre",
+            "remove": "Supprimer",
+            "join_lobby": "Rejoindre le Lobby",
+            "offline": "Hors ligne",
+            "view_profile": "Affichage du profil"
+        },
+        "banned": "Banni",
+        "go_to_match": "Aller au match",
+        "confirm_selection": "Rejoignez la file d'attente",
+        "temp_banned": "Banni temporairement",
+        "settings_section": {
+            "toggle": "Régler les paramètres",
+            "queue_order": "Ordre des requêtes"
+        },
+        "high_latency_warning": "Votre latence est trop élevée pour des matches compétitifs"
+    },
+    "game_server": {
+        "update_cs": "Mettre à jour CS",
+        "install_cs": "Installer CS",
+        "select_region": "Sélectionner une région",
+        "remove_node": "Supprimer le nœud",
+        "edit_label": "Modifier l'étiquette",
+        "label_placeholder": "Entrez l'étiquette du nœud",
+        "update_label": "Mettre à jour l'étiquette",
+        "validation": {
+            "start_port_less_than_end": "Le port de début doit être inférieur au port de fin",
+            "end_port_greater_than_start": "Le port de fin doit être supérieur au port de début"
+        },
+        "toast": {
+            "cs_updating": "CS en cours de mise à jour",
+            "ports_updated": "Ports mis à jour",
+            "label_updated": "Mise à jour de l'étiquette du nœud"
+        }
+    },
+    "chat": {
+        "lobby_chat": "Chat du lobby",
+        "message_placeholder": "Entrer un message..."
+    },
+    "charts": {
+        "usage": "Utilisation"
+    },
+    "server": {
+        "form": {
+            "label": "Étiquette",
+            "host": "Hôte",
+            "region": "Région",
+            "select_region": "Sélectionner une région",
+            "rcon_password": "Mot de passe RCON",
+            "rcon_password_description": "Description du mot de passe RCON",
+            "port": "Port",
+            "tv_port": "Port TV",
+            "update": "Mettre à jour",
+            "create": "Créer"
+        },
+        "rcon": {
+            "quick_commands": "Commandes rapides",
+            "refresh_match": "Actualiser le match",
+            "metamod_info": "Info Metamod",
+            "css_info": "Info CSS",
+            "output": "Sortie",
+            "command_placeholder": "Entrer une commande",
+            "send_command": "Envoyer la commande"
         }
     },
     "components": {
@@ -1079,12 +1088,13 @@
             "cfg": "Config",
             "create": "Créer une configuration",
             "update": "Mettre à jour la configuration",
+            "edit": "Modifier la configuration",
             "revert_to_defaults": "Retourner aux valeurs par défaut",
             "revert_confirm": {
                 "title": "Retourner aux valeurs par défaut",
                 "description": "Voulez-vous vraiment retourner cette config à ses valeurs par défaut ? Cette action ne peut être annulée.",
-                "confirm": "Répandre",
-                "cancel": "Annuler"
+                "cancel": "Annuler",
+                "confirm": "Répandre"
             },
             "success": {
                 "create": "Config créé avec succès",
@@ -1095,17 +1105,7 @@
                 "create": "Erreur lors de la création de configuration",
                 "update": "Erreur de mise à jour de la configuration",
                 "revert": "Erreur lors du retour de la configuration aux valeurs par défaut"
-            },
-            "edit": "Modifier la configuration"
-        }
-    },
-    "custom_match": {
-        "description": "Créez et personnalisez votre propre match. Définir des règles, choisir des cartes et inviter des amis pour une expérience de jeu personnalisée.",
-        "title": "Match personnalisé"
-    },
-    "notifications": {
-        "match": {
-            "title": "Invites de match"
+            }
         }
     }
 }

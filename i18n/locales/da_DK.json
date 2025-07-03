@@ -2,654 +2,654 @@
     "pages": {
         "system_metrics": {
             "node": "Node",
-            "cpu_usage": "CPU Usage",
-            "memory_usage": "Memory Usage",
-            "services": "Services"
+            "cpu_usage": "CPU-forbrug",
+            "memory_usage": "Hukommelsesforbrug",
+            "services": "Tjenester"
         },
         "system_logs": {
-            "follow_logs": "Follow Logs",
-            "timestamps": "Timestamps"
+            "follow_logs": "Følg",
+            "timestamps": "Tidsstempler"
         },
         "login": {
-            "sign_in": "Sign in with Steam",
-            "powered_by": "Powered by"
+            "sign_in": "Log ind med Steam",
+            "powered_by": "Drevet af"
         },
-        "coming_soon": "Coming Soon!",
+        "coming_soon": "Kommer snart!",
         "tournaments": {
-            "title": "Upcoming Tournaments",
-            "create": "Create Tournament",
+            "title": "Kommende turneringer",
+            "create": "Opret turnering",
             "tabs": {
-                "tournaments": "Tournaments",
-                "my_recent": "My Recent Tournaments"
+                "tournaments": "Turneringer",
+                "my_recent": "Mine seneste turneringer"
             },
-            "no_recent": "You don't have any recent tournaments."
+            "no_recent": "Ingen seneste turneringer."
         },
         "teams": {
-            "title": "Teams",
-            "description": "Manage teams and rosters.",
-            "create": "Create Team",
+            "title": "Hold",
+            "description": "Holdadministration",
+            "create": "Opret hold",
             "tabs": {
-                "my_teams": "My Teams",
-                "other_teams": "Other Teams"
+                "my_teams": "Mine hold",
+                "other_teams": "Andre hold"
             },
-            "search": "Search..."
+            "search": "Søg"
         },
         "settings": {
             "account": {
-                "title": "Account Settings",
-                "description": "Your Account Details",
-                "my_account": "My Account",
-                "appearance": "Appearance",
-                "name": "Name",
+                "title": "Kontoindstillinger",
+                "description": "Dine kontooplysninger",
+                "my_account": "Min konto",
+                "appearance": "Udseende",
+                "name": "Navn",
                 "avatar_url": "Avatar URL",
-                "country": "Country",
-                "select_country": "Select country...",
-                "search_country": "Search country...",
-                "no_country_found": "No country found.",
-                "update": "Update Account",
+                "country": "Land",
+                "select_country": "Vælg land...",
+                "search_country": "Søg land...",
+                "no_country_found": "Intet land fundet.",
+                "update": "Opdatér konto",
                 "matchmaking": "Matchmaking",
-                "update_success": "Updated Profile",
+                "update_success": "Opdateret profil",
                 "discord": {
-                  "unlink": "Unlink Discord",
-                  "link": "Link Discord",
+                  "unlink": "Afslut diskord",
+                  "link": "Link Diskord",
                   "unlink_dialog": {
-                      "title": "Unlink Discord Account",
-                      "description": "Are you sure you want to unlink your Discord account? This will remove the connection between your 5Stack and Discord accounts.",
-                      "cancel": "Cancel",
-                      "confirm": "Unlink"
+                      "title": "Unlink Discord-konto",
+                      "description": "Er du sikker på, at du vil afkoble din Discord-konto? Dette vil fjerne forbindelsen mellem dine 5Stack og Discord konti.",
+                      "cancel": "Annuller",
+                      "confirm": "Aflink"
                   },
-                  "unlinked": "Discord account unlinked successfully"
+                  "unlinked": "Diskord konto uden forbindelse med succes"
                 }
             },
             "appearance": {
-                "title": "Appearance",
-                "description": "Customize the appearance of the app. Automatically switch between day and night themes.",
-                "theme": "Theme",
-                "theme_description": "Select the theme for the dashboard.",
-                "light": "Light",
-                "dark": "Dark"
+                "title": "Udseende",
+                "description": "Tilpas applikationens udseende",
+                "theme": "Tema",
+                "theme_description": "Vælg et farveskema til applikationen",
+                "light": "Lyst",
+                "dark": "Mørkt"
             },
             "application": {
                 "telemetry": {
-                  "title": "Telemetry",
-                  "telemetry": "Telemetry",
-                  "telemetry_description": "Help improve 5stack by sharing anonymous usage data.",
-                  "update": "Telemetry settings updated"
+                  "title": "Telemetri",
+                  "telemetry": "Telemetri",
+                  "telemetry_description": "Hjælp med at forbedre 5stack ved at dele anonyme brugsdata.",
+                  "update": "Indstillinger for telemetri"
                 },
                 "matchmaking": {
                   "title": "Matchmaking",
-                  "description": "Matchmaking allows players to join a queue and be matched with other players."
+                  "description": "Administrer matchmaking-indstillinger"
                 },
                 "discord": {
                   "title": "Discord",
-                  "invite_link": "Discord Invite Link",
+                  "invite_link": "Discord invitation-link",
                   "webhook": "Discord Webhook",
-                  "webhook_description": "We use this discord webhook to send notifications that require action from a player. Ex. match issues, bugs, etc.",
-                  "support_role": "Discord Support Role ID",
-                  "support_role_description": "This role will be pinged when used for support actions. You can get the Role ID from the Discord application by turning on developer mode and right clicking and copy id.",
-                  "update": "Update"
+                  "webhook_description": "Vi bruger denne Discord Webhook til at sende meddelelser, der kræver handling fra en spiller. F.eks. matchproblemer, fejl osv.",
+                  "support_role": "Discord support-rolle ID",
+                  "support_role_description": "Denne rolle vil blive nævnt, når den bruges til support-handlinger. Du kan få rolle-ID fra Discord-applikationen ved at aktivere udviklertilstand og højreklikke for at kopiere ID.",
+                  "update": "Opdater"
                 },
                 "game_type_configs": {
-                  "title": "Game Type Configs",
-                  "description": "Manage game type configs.",
-                  "type": "Game Type"
+                  "title": "Spil type configs",
+                  "description": "Administrer spiltype config.",
+                  "type": "Spiltype"
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Minimum Role Allowed to Stream",
-                  "minimum_role_to_stream_description": "This role will be able to stream matches."
+                  "minimum_role_to_stream": "Minimum Rolle Tilladt Stream",
+                  "minimum_role_to_stream_description": "Denne rolle vil være i stand til at skabe kampe."
                 },
-                "create_matches_role": "Minimum Role Allowed to Create Matches",
-                "create_matches_role_description": "This role will be able to create matches.",
-                "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
-                "create_tournaments_role_description": "This role will be able to create tournaments.",
-                "matchmaking_min_role": "Minimum Role Allowed to Join Matchmaking",
-                "matchmaking_min_role_description": "This role will be able to join matchmaking.",
-                "max_acceptable_latency": "Maximum Acceptable Latency",
-                "max_acceptable_latency_description": "This is the maximum latency that a player can have to join a match.",
-                "update": "Update",
+                "create_matches_role": "Mindste rolle til at oprette kampe",
+                "create_matches_role_description": "Denne rolle vil være i stand til at skabe kampe.",
+                "create_tournaments_role": "Rolle til oprettelse af turneringer",
+                "create_tournaments_role_description": "Denne rolle vil være i stand til at skabe turneringer.",
+                "matchmaking_min_role": "Minimum rolle tilladt at deltage i matchmaking",
+                "matchmaking_min_role_description": "Denne rolle vil være i stand til at deltage i matchmaking.",
+                "max_acceptable_latency": "Maksimalt acceptabelt Latency",
+                "max_acceptable_latency_description": "Dette er den maksimale latency, som en spiller kan have til at deltage i en kamp.",
+                "update": "Opdater",
                 "players": {
-                  "force_name_registration": "Force Player Name Registration",
-                  "force_name_registration_description": "If forced to have player registration, the player will be required to submit a name that will be used on the platform."
+                  "force_name_registration": "Tving spiller navn registrering",
+                  "force_name_registration_description": "Hvis spiller registrering er tvunget, skal spilleren indsende et navn, der vil blive brugt på platformen."
                 },
                 "servers": {
-                  "title": "Server Settings",
-                  "enable_cpu_pinning": "Enable CPU Pinning",
-                  "enable_cpu_pinning_description": "Enable CPU pinning on game server nodes for better performance",
-                  "number_of_cpus_per_server": "Number of CPUs per Server",
-                  "number_of_cpus_per_server_description": "Number of CPUs to allocate per server",
-                  "update": "Update",
-                  "update_cpu_pinning": "CPU Pinning updated"
+                  "title": "Serverindstillinger",
+                  "enable_cpu_pinning": "Aktivér CPU Rinning",
+                  "enable_cpu_pinning_description": "Aktivér CPU-pinning på spilserver-knuder for bedre ydeevne",
+                  "number_of_cpus_per_server": "Antal CPU 'er pr. server",
+                  "number_of_cpus_per_server_description": "Antal CPU 'er der skal tildeles pr. server",
+                  "update": "Opdater",
+                  "update_cpu_pinning": "CPU Pinning opdateret"
                 },
                 "demo_settings": {
-                  "update": "Update",
-                  "title": "Demo Settings",
-                  "min_retention": "Minimum Retention",
-                  "max_storage": "Maximum Storage",
+                  "update": "Opdater",
+                  "title": "Demo- indstillinger",
+                  "min_retention": "Minimum tilbageholdelse",
+                  "max_storage": "Maksimal opbevaring",
                   "cloudflare_worker_url": "Cloudflare Worker URL",
-                  "max_storage_description": "The maximum storage size for the demo files in GB.",
-                  "cloudflare_worker_url_description": "The URL of the Cloudflare worker that will be used to store and retrieve the demo files.",
-                  "min_retention_description": "The minimum retention days for the demo files.",
-                  "current_storage": "Current Storage",
-                  "used_storage": "Approximate Storage Used"
+                  "max_storage_description": "Den maksimale lagerstørrelse for demo-filer i GB.",
+                  "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
+                  "min_retention_description": "Den mindste opbevaring dage for demo-filer.",
+                  "current_storage": "Aktuel opbevaring",
+                  "used_storage": "Omtrentlige opbevaring brugt"
                 },
                 "update_map_pools": {
-                  "title": "Automatic Update Map Pools",
-                  "description": "Automatically add / update map pools when new maps are added or removed from the active duty pool."
+                  "title": "Automatisk opdateringskortspil",
+                  "description": "Tilføj / opdater automatisk kortpuljer når nye kort tilføjes eller fjernes fra den aktive duty pool."
                 }
             },
             "language": {
-                "title": "Language",
-                "description": "Choose your preferred language for the application interface.",
-                "select": "Select Language",
-                "search": "Search language..."
+                "title": "Sprog",
+                "description": "Vælg dit foretrukne sprog for programgrænsefladen.",
+                "select": "Vælg sprog",
+                "search": "Søg i sprog..."
             },
             "matchmaking": {
-                "title": "Matchmaking Settings",
-                "description": "Configure your matchmaking preferences and view region latencies.",
+                "title": "Indstillinger for matchning",
+                "description": "Indstil dine matchmaking præferencer og se region latesser.",
                 "region": "Region",
                 "average_latency": "Latency",
-                "preferred": "Preferred",
-                "max_acceptable_latency": "Maximum Acceptable Latency",
-                "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value."
+                "preferred": "Foretrukket",
+                "max_acceptable_latency": "Maksimalt acceptabelt Latency",
+                "max_latency_description": "Hvis ingen regioner foretrækkes, vil matchmaking kun anvende regioner med en latency under denne værdi."
             }
         },
         "regions": {
-            "title": "Regions",
-            "description": "Regions allow you to group game servers by geographic location. Players can select preferred regions during matchmaking and veto undesired regions during match setup.",
-            "create": "Create Region",
+            "title": "Regioner",
+            "description": "Regionsadministration",
+            "create": "Opret",
             "table": {
-                "name": "Name",
+                "name": "Navn",
                 "status": "Status",
-                "available_servers": "Available Servers / Total Servers",
-                "description": "Description",
-                "use_lan_ip": "Use LAN IP",
-                "use_steam_relay": "Use Steam Relay",
-                "use_steam_relay_description": "Enable Steam Relay for game servers to hide their IP address from the public.",
-                "actions": "Actions"
+                "available_servers": "Tilgængelige servere",
+                "description": "Beskrivelse",
+                "use_lan_ip": "Brug LAN",
+                "use_steam_relay": "Brug Steam relay",
+                "use_steam_relay_description": "Aktivér Steam Relay for spilservere til at skjule deres IP-adresse fra offentligheden.",
+                "actions": "Handlinger"
             },
-            "edit": "Edit Region",
+            "edit": "Rediger",
             "delete": {
-                "title": "Delete Region",
-                "description": "Are you sure you want to delete this region? This action cannot be undone.",
-                "cancel": "Cancel",
-                "confirm": "Delete"
+                "title": "Slet region",
+                "description": "Er du sikker på, at du vil slette denne region?",
+                "cancel": "Annuller",
+                "confirm": "Slet"
             }
         },
         "players": {
-            "title": "Players",
-            "search": "Search Players",
+            "title": "Spillere",
+            "search": "Søg efter spillere",
             "detail": {
-                "player_stats": "Player Stats",
+                "player_stats": "Spillerstatistik",
                 "kills": "Kills",
                 "assists": "Assists",
-                "deaths": "Deaths",
-                "kd": "KD",
-                "last_ten_wins": "Last 10 Wins",
-                "last_ten_losses": "Last 10 Losses",
-                "matches": "Matches"
+                "deaths": "Dødsfald",
+                "kd": "K/D",
+                "last_ten_wins": "Sidste 10 sejre",
+                "last_ten_losses": "Sidste 10 nederlag",
+                "matches": "Kampe"
             }
         },
         "play": {
             "open_matches": {
-                "title": "Open Matches",
-                "description": "Matches that are open lobbies for anyone to join."
+                "title": "Åbne kampe",
+                "description": "Tilgængelige kampe"
             }
         },
         "matches": {
-            "title": "My Recent Matches",
-            "description": "Your most recent completed matches",
-            "create": "Create Match",
-            "last_ten_wins": "Last 10 Wins",
-            "last_ten_losses": "Last 10 Losses",
-            "my_match_history": "My Match History",
-            "other_matches": "Other Matches",
+            "title": "Kampe",
+            "description": "Kampadministration",
+            "create": "Opret",
+            "last_ten_wins": "Sidste 10 sejre",
+            "last_ten_losses": "Sidste 10 nederlag",
+            "my_match_history": "Min kamp historik",
+            "other_matches": "Andre kampe",
             "create_page": {
-                "title": "Create Match",
-                "pick_up_game": "Pick Up Game",
-                "pick_up_game_description": "A Pick up game does not require selection of teams.",
-                "team_1": "Team 1",
-                "search_team": "Search for a Team ...",
-                "team_2": "Team 2",
-                "intra_team_scrimmage": "You can select the same team for both slots to create an intra-team scrimmage.",
-                "create_button": "Create Match"
+                "title": "Opret",
+                "pick_up_game": "Pickup kamp",
+                "pick_up_game_description": "Opret en pickup kamp",
+                "team_1": "Hold 1",
+                "search_team": "Søg efter hold",
+                "team_2": "Hold 2",
+                "intra_team_scrimmage": "Intra-hold scrimmage",
+                "create_button": "Opret"
             },
             "detail": {
-                "schedule": "Schedule"
+                "schedule": "Planlæg"
             }
         },
         "game_server_nodes": {
-            "title": "Game Server Nodes",
-            "description": "Game server nodes expand your server offerings into different regions or provide redundancy for on-demand servers.",
+            "title": "Spilserver Nodes",
+            "description": "Administrer spilserver-noder",
             "not_supported": {
-                "title": "Your Panel currently does not support Game Server Nodes.",
-                "description": "View the documentation to setup Game Server Nodes."
+                "title": "Ikke understøttet",
+                "description": "Denne platform understøttes ikke"
             },
-            "create": "Create Game Server Node",
-            "installation_script": "Installation Script",
-            "cs_version_info": "CS2 Version Information:",
+            "create": "Opret node",
+            "installation_script": "Installationsscript",
+            "cs_version_info": "CS versionsinfo",
             "status": {
                 "offline": "Offline",
-                "online": "Online",
-                "setup": "Setup",
-                "not_accepting": "Not Accepting New Matches"
+                "online": "Kun online",
+                "setup": "Opsætning",
+                "not_accepting": "Accepterer ikke nye kampe"
             },
             "table": {
                 "node": "Node",
-                "lan_public_ip": "Lan/Public IP",
-                "cs_build_id": "CS Build ID",
+                "lan_public_ip": "LAN/Offentlig IP",
+                "cs_build_id": "CS build ID",
                 "region": "Region",
-                "capacity": "Capacity",
-                "ports": "Ports",
-                "ports_tooltip": "Forwarded Ports to Node",
-                "enabled": "Enabled",
-                "no_nodes": "No Game Server Nodes",
-                "supports_low_latency": "Supports Low Latency",
-                "supports_cpu_pinning": "Supports CPU Pinning"
+                "capacity": "Kapacitet",
+                "ports": "Porte",
+                "ports_tooltip": "Tilgængelig portområde",
+                "enabled": "Aktiveret",
+                "no_nodes": "Ingen noder",
+                "supports_low_latency": "Understøtter lav latency",
+                "supports_cpu_pinning": "Understøtter CPU Rinning"
             },
-            "build_id": "Build ID: {id}",
-            "last_updated": "Last Updated: {date}"
+            "build_id": "Build ID",
+            "last_updated": "Sidst opdateret"
         },
         "dedicated_servers": {
-            "title": "Dedicated Servers",
-            "description": "You can set up a dedicated server that will always run the game server mod",
+            "title": "Dedikeret",
+            "description": "Administrer dedikerede servere",
             "create": {
-                "title": "Create Dedicated Server"
+                "title": "Opret server"
             },
             "table": {
-                "connection_details": "Connection Details",
-                "label": "Label",
+                "connection_details": "Forbindelsesdetaljer",
+                "label": "Etiket",
                 "region": "Region",
-                "tv_port": "TV Port",
-                "plugin_version": "Plugin Version",
-                "enabled": "Enabled",
-                "yes": "Yes",
-                "no": "No"
+                "tv_port": "TV port",
+                "plugin_version": "Plugin- version",
+                "enabled": "Aktiveret",
+                "yes": "Ja",
+                "no": "Nej"
             },
             "detail": {
-                "enabled": "Enabled",
-                "server_plugin_config": "Server Plugin Config",
-                "hide_config": "Hide Config",
-                "show_config": "Show Config",
-                "config_location": "This config should be placed in:",
-                "copy": "Copy",
-                "edit": "Edit",
-                "delete": "Delete",
+                "enabled": "Aktiveret",
+                "server_plugin_config": "Server plugin konfiguration",
+                "hide_config": "Skjul konfiguration",
+                "show_config": "Vis konfiguration",
+                "config_location": "Konfigurationsfilplacering",
+                "copy": "Kopier",
+                "edit": "Rediger",
+                "delete": "Slet",
                 "status": {
-                  "disconnected": "Server is disconnected",
-                  "no_rcon": "Server is connected but RCON is not available",
-                  "connected": "Server is connected and RCON is available",
-                  "plugin_version_mismatch": "plugin version is not up to date"
+                  "disconnected": "Serveren er afbrudt",
+                  "no_rcon": "Serveren er tilsluttet, men RCON er ikke tilgængelig",
+                  "connected": "Serveren er tilsluttet og RCON er tilgængelig",
+                  "plugin_version_mismatch": "plugin version er ikke opdateret"
                 },
                 "delete_confirm": {
-                  "title": "Are you absolutely sure?",
-                  "description": "This action cannot be undone. This will permanently delete your server and remove associated data from our servers.",
-                  "cancel": "Cancel",
-                  "continue": "Continue"
+                  "title": "Slet server",
+                  "description": "Er du sikker på, at du vil slette denne server?",
+                  "cancel": "Annuller",
+                  "continue": "Fortsæt"
                 }
             }
         },
         "map_pools": {
-            "title": "Default Map Pools",
-            "description": "Manage map pools and available maps for matchmaking.",
+            "title": "Standard kort pooler",
+            "description": "Administrer kort-pools og tilgængelige kort til matchmaking.",
             "form": {
-                "name": "Name",
-                "name_description": "This must match the name of the map in the game that the server recognizes.",
-                "label": "Label",
-                "poster": "Poster (optional)",
-                "poster_placeholder": "http://example.com/poster.png",
-                "patch": "Patch (optional)",
-                "patch_placeholder": "http://example.com/patch.png",
-                "workshop_map_id": "Workshop Map ID (optional)",
-                "create_map": "Create Map",
-                "update_map": "Update Map",
-                "delete_map": "Delete Map",
+                "name": "Navn",
+                "name_description": "Dette skal matche navnet på kortet i spillet som serveren genkender.",
+                "label": "Etiket",
+                "poster": "Plakat (valgfrit)",
+                "poster_placeholder": "http://eksempel.com/plakat.png",
+                "patch": "Patch (valgfrit)",
+                "patch_placeholder": "http://eksempel.com/patch.png",
+                "workshop_map_id": "Workshop kort ID (valgfrit)",
+                "create_map": "Opret kort",
+                "update_map": "Opdater kort",
+                "delete_map": "Slet kort",
                 "delete_confirm": {
-                  "title": "Delete Map",
-                  "description": "Are you sure you want to delete this map? This action cannot be undone.",
-                  "cancel": "Cancel",
-                  "confirm": "Delete"
+                  "title": "Slet kort",
+                  "description": "Er du sikker på, at du vil slette dette kort? Denne handling kan ikke fortrydes.",
+                  "cancel": "Annuller",
+                  "confirm": "Slet"
                 },
                 "success": {
-                  "create": "Map created successfully",
-                  "update": "Map updated successfully",
-                  "delete": "Map deleted successfully",
-                  "workshop_refresh": "Workshop map details refreshed successfully"
+                  "create": "Kort oprettet med succes",
+                  "update": "Kort opdateret med succes",
+                  "delete": "Kort slettet med succes",
+                  "workshop_refresh": "Workshop kort detaljer genopfrisket med succes"
                 },
                 "error": {
-                  "create": "Error creating map",
-                  "update": "Error updating map",
-                  "invalid_workshop": "Invalid workshop map ID. Please verify the ID exists on Steam Workshop.",
-                  "workshop_refresh": "Error refreshing workshop map details"
+                  "create": "Fejl ved oprettelse af kort",
+                  "update": "Fejl ved opdatering af kort",
+                  "invalid_workshop": "Ugyldigt værkstedskort-id. Bekræft venligst ID findes på Steam Workshop.",
+                  "workshop_refresh": "Fejlforfriskende oplysninger om værkstedskort"
                 },
-                "refresh_workshop": "Refresh Details"
+                "refresh_workshop": "Genopfrisk detaljer"
             },
             "pool": {
-                "title": "Default {type} Map Pool",
-                "description": "Manage maps in the {type} pool",
-                "modify_maps": "Modify maps in the pool"
+                "title": "Standard {type} Kortpulje",
+                "description": "Administrer kort i {type} pool",
+                "modify_maps": "Rediger kort i poolen"
             },
-            "add_new_map": "Add New Map",
-            "edit": "Edit",
-            "maps": "Available Maps",
-            "active_duty": "Active Duty",
-            "available_modes": "Available In Modes",
-            "workshop_id": "Workshop Link",
-            "search": "Search Maps"
+            "add_new_map": "Tilføj nyt kort",
+            "edit": "Rediger",
+            "maps": "Tilgængelige kort",
+            "active_duty": "Aktiv tjeneste",
+            "available_modes": "Tilgængelig i Modes",
+            "workshop_id": "Workshop link",
+            "search": "Søg i kort"
         },
         "map_pool": {
-            "toggle_pool_type": "Updated Map Pools",
-            "toggle_active_pool": "Maps Activity Status Updated",
-            "save_success": "Map pool saved successfully"
+            "toggle_pool_type": "Opdateret kort pools",
+            "toggle_active_pool": "Kort Aktivitetsstatus opdateret",
+            "save_success": "Kort-pool gemt med succes"
         },
         "manage_matches": {
-            "title": "Manage Matches",
+            "title": "Håndtér matches",
             "only_my_matches": "Only My Organized Matches",
-            "description": "View and manage all matches across the platform."
+            "description": "Få vist og administrere alle kampe på tværs af platformen."
         }
     },
     "notifications": {
         "match": {
-            "title": "Match Invites"
+            "title": "Match- invitationer"
         }
     },
     "custom_match": {
-        "title": "Custom Match",
-        "description": "Create and customize your own match. Set rules, choose maps, and invite friends for a personalized gaming experience."
+        "title": "Brugerdefineret match",
+        "description": "Opret og tilpasse din egen kamp. Sæt regler, vælge kort, og invitere venner til en personlig gaming oplevelse."
     },
     "layouts": {
         "account_settings": {
-            "title": "Account Settings",
-            "description": "Manage your account settings and preferences"
+            "title": "Kontoindstillinger",
+            "description": "Administrer dine kontoindstillinger og indstillinger"
         },
         "application_settings": {
-            "title": "Application Settings",
-            "description": "Settings that effect the application."
+            "title": "Applikationsindstillinger",
+            "description": "Administrer applikationsindstillinger"
         },
         "system_update": {
-            "title": "System Update Available",
-            "description": "The following services have updates:",
-            "note": "Please note: It will take a few minutes to process and verify the new updates.",
-            "fix_link": "If a system upgrade persists, you may need to fix your versions",
-            "cancel": "Cancel",
-            "update": "Update",
-            "panel_update": "Your panel is out of date, pull and run the update script"
+            "title": "Systemopdatering",
+            "description": "En systemopdatering er påkrævet",
+            "note": "Bemærk: Applikationen er ikke tilgængelig under opdateringen",
+            "fix_link": "Vis løsning",
+            "cancel": "Annuller",
+            "update": "Opdater",
+            "panel_update": "Dit panel er forældet, træk og kør opdateringsscriptet"
         },
         "match_lobby": {
-            "versus": "VS"
+            "versus": "vs"
         },
         "notifications": {
-            "title": "Notifications",
-            "delete": "Delete",
-            "dismiss": "Dismiss",
-            "dismiss_all": "Dismiss All Notifications",
-            "delete_all_read": "Delete All Read Notifications",
-            "no_notifications": "No notifications at the moment."
+            "title": "Notifikationer",
+            "delete": "Slet",
+            "dismiss": "Afvis",
+            "dismiss_all": "Gå glip af alle meddelelser",
+            "delete_all_read": "Slet alle læste notifikationer",
+            "no_notifications": "Ingen notifikationer"
         },
         "app_nav": {
             "brand": "5stack",
             "navigation": {
-                "play": "Play",
-                "matches": "Matches",
-                "tournaments": "Tournaments",
-                "players": "Players",
-                "teams": "Teams"
+                "play": "Spil",
+                "matches": "Kampe",
+                "tournaments": "Turneringer",
+                "players": "Spillere",
+                "teams": "Hold"
             },
             "administration": {
                 "title": "Administration",
-                "regions": "Regions",
-                "servers": "Servers",
-                "dedicated_servers": "Dedicated Servers",
-                "game_server_nodes": "Game Server Nodes",
-                "logs": "System Logs",
-                "metrics": "System Metrics",
-                "app_settings": "App Settings",
-                "map_pools": "Map Pools",
-                "manage_matches": "Manage Matches"
+                "regions": "Regioner",
+                "servers": "Servere",
+                "dedicated_servers": "Dedikeret",
+                "game_server_nodes": "Spilserver Nodes",
+                "logs": "Systemlogs",
+                "metrics": "Systemmetrik",
+                "app_settings": "Appindstillinger",
+                "map_pools": "Kortpuljer",
+                "manage_matches": "Håndtér matches"
             },
             "profile": {
-                "my_profile": "My Profile",
-                "my_account": "My Settings",
-                "logout": "Logout"
+                "my_profile": "Min profil",
+                "my_account": "Mine indstillinger",
+                "logout": "Log ud"
             },
             "footer": {
-                "report_issue": "Report an Issue",
-                "join_discord": "Join our Discord"
+                "report_issue": "Rapportér Problem",
+                "join_discord": "Tilmeld Discord"
             },
             "tooltips": {
-                "play": "Play",
-                "matches": "Matches",
-                "tournaments": "Tournaments",
-                "players": "Players",
-                "teams": "Teams",
-                "regions": "Regions",
-                "servers": "Servers",
-                "dedicated_servers": "Dedicated Servers",
-                "game_server_nodes": "Game Server Nodes",
-                "system_logs": "System Logs",
-                "system_metrics": "System Metrics",
-                "app_settings": "App Settings",
-                "report_issue": "Report an Issue",
-                "join_discord": "Join our Discord",
-                "map_pools": "Map Pools",
-                "manage_matches": "Manage Matches"
+                "play": "Spil",
+                "matches": "Kampe",
+                "tournaments": "Turneringer",
+                "players": "Spillere",
+                "teams": "Hold",
+                "regions": "Regioner",
+                "servers": "Servere",
+                "dedicated_servers": "Dedikeret",
+                "game_server_nodes": "Spilserver Nodes",
+                "system_logs": "Systemlogs",
+                "system_metrics": "Systemmetrik",
+                "app_settings": "Appindstillinger",
+                "report_issue": "Rapportér Problem",
+                "join_discord": "Tilmeld Discord",
+                "map_pools": "Kortpuljer",
+                "manage_matches": "Håndtér matches"
             },
             "logout_dialog": {
-                "title": "Logout",
-                "description": "Are you sure you want to logout?",
-                "cancel": "Cancel",
-                "confirm": "Logout"
+                "title": "Log ud",
+                "description": "Er du sikker på, at du vil logge ud?",
+                "cancel": "Annuller",
+                "confirm": "Log ud"
             }
         }
     },
     "pwa": {
         "install": {
-            "title": "Add to Home Screen",
-            "description": "This website offers app-like features. Add it to your home screen for easy access.",
-            "step1": "Press the 'Share' button",
-            "step2": "Select 'Add to Home Screen'",
-            "tooltip": "Install App",
-            "button": "Install App"
+            "title": "Installer applikation",
+            "description": "Installer 5Stack for en bedre oplevelse",
+            "step1": "Trin 1",
+            "step2": "Trin 2",
+            "tooltip": "Installer",
+            "button": "Installer"
         }
     },
     "common": {
-        "cancel": "Cancel",
-        "tbd": "TBD",
+        "cancel": "Annuller",
+        "tbd": "Afgøres",
         "boolean": {
-            "yes": "Yes",
-            "no": "No"
+            "yes": "Ja",
+            "no": "Nej"
         },
         "actions": {
-            "edit": "Edit",
-            "delete": "Delete"
+            "edit": "Rediger",
+            "delete": "Slet"
         },
-        "close": "Close",
-        "confirm": "Confirm",
-        "refresh": "Refresh"
+        "close": "Luk",
+        "confirm": "Bekræft",
+        "refresh": "Genopfrisk"
     },
     "tournament": {
-        "overview": "Overview",
+        "overview": "Oversigt",
         "bracket": "Bracket",
-        "teams": "{count} Teams",
-        "settings": "Settings",
-        "admin": "Admin",
-        "organizers": "Organizers",
-        "show_organizers": "View Organizers",
-        "hide_organizers": "Hide Organizers",
+        "teams": "{count} Hold",
+        "settings": "Indstillinger",
+        "admin": "Administration",
+        "organizers": "Organisatorer",
+        "show_organizers": "Vis Organisatorer",
+        "hide_organizers": "Skjul organisatorer",
         "join": {
-            "title": "Join Tournament",
-            "joined_with": "Joined with {name}",
-            "add_self_to_lineup": "Add Self to Lineup",
-            "team_owner": "Team Owner",
-            "requirements": "You need at least {count} players to join this tournament"
+            "title": "Deltag i turnering",
+            "joined_with": "Hold deltaget med {name}",
+            "add_self_to_lineup": "Tilføj selv til lineup",
+            "team_owner": "Holdejer",
+            "requirements": "Du skal have mindst {count} spillere for at deltage i denne turnering"
         },
         "tournament_team": {
-            "players_registered": "{count} Players Registered",
-            "remove": "Remove Team"
+            "players_registered": "{count} Registrerede spillere",
+            "remove": "Fjern hold"
         },
         "add_team": {
-            "title": "Add Team"
+            "title": "Tilføj hold"
         },
         "form": {
-            "create": "Create Tournament",
-            "description_help": "Create a new tournament for your community",
-            "name": "Tournament Name",
-            "description": "Description",
-            "start": "Start Date",
-            "pick_date": "Pick a date",
-            "update": "Update Tournament",
-            "match_options": "Match Options"
+            "create": "Opret turnering",
+            "description_help": "Indtast turneringsbeskrivelse",
+            "name": "Navn",
+            "description": "Beskrivelse",
+            "start": "Start",
+            "pick_date": "Vælg dato",
+            "update": "Opdater",
+            "match_options": "Kampindstillinger"
         },
         "table": {
-            "tournament": "Tournament",
+            "tournament": "Turnering",
             "status": "Status",
             "type": "Type",
-            "teams_joined": "Teams Joined",
-            "starts": "Starts",
-            "no_tournaments_found": "No tournaments found"
+            "teams_joined": "Hold deltaget",
+            "starts": "Starter",
+            "no_tournaments_found": "Ingen turneringer fundet"
         },
         "stage": {
-            "title": "Stage {number}",
-            "teams": "{min}-{max} Teams",
-            "edit": "Edit Stage",
-            "delete": "Delete Stage",
-            "edit_title": "Edit Stage",
-            "confirm_delete": "Delete Stage",
-            "delete_description": "Are you sure you want to delete this stage?",
-            "type": "Stage Type",
-            "type_placeholder": "Select stage type...",
-            "min_teams": "Minimum Teams",
-            "min_teams_placeholder": "Select minimum teams...",
-            "max_teams": "Maximum Teams",
-            "max_teams_placeholder": "Select maximum teams...",
-            "update": "Update Stage",
-            "create": "Create Stage",
-            "no_stages": "No Stages",
-            "start_building": "Start Building Your Tournament",
-            "add_first": "Add First Stage",
-            "add_another": "Add Another Stage",
-            "not_setup": "Tournament stages not set up"
+            "title": "Fase {number}",
+            "teams": "{min}-{max} Hold",
+            "edit": "Rediger fase",
+            "delete": "Slet fase",
+            "edit_title": "Rediger fase",
+            "confirm_delete": "Slet fase",
+            "delete_description": "Er du sikker på, at du vil slette denne fase?",
+            "type": "Fasetype",
+            "type_placeholder": "Vælg fasetype...",
+            "min_teams": "Minimum hold",
+            "min_teams_placeholder": "Vælg minimum hold...",
+            "max_teams": "Maksimum hold",
+            "max_teams_placeholder": "Vælg maksimum hold...",
+            "update": "Opdater fase",
+            "create": "Opret fase",
+            "no_stages": "Ingen faser",
+            "start_building": "Start bracket opbygning",
+            "add_first": "Tilføj første fase",
+            "add_another": "Tilføj en anden fase",
+            "not_setup": "Fase ikke opsat"
         },
         "match": {
-            "team_1": "Team 1",
-            "team_2": "Team 2",
-            "round_match": "Round {round} Match {match}"
+            "team_1": "Hold 1",
+            "team_2": "Hold 2",
+            "round_match": "Rundekamp {round} Kamp {match}"
         },
         "organizer": {
-            "title": "Tournament Organizers",
-            "description": "Manage tournament organizers",
-            "add": "Add Organizer",
-            "name": "Name",
-            "actions": "Actions",
-            "no_organizers": "No Organizers",
-            "no_organizers_description": "No organizers have been added to this tournament yet",
-            "remove": "Remove Organizer",
-            "confirm_remove": "Are you sure you want to remove this organizer?",
-            "remove_description": "This will remove the organizer from the tournament"
+            "title": "Turneringsorganisatorer",
+            "description": "Administrer turneringsorganisatorer",
+            "add": "Tilføj organisator",
+            "name": "Navn",
+            "actions": "Handlinger",
+            "no_organizers": "Ingen organisatorer",
+            "no_organizers_description": "Ingen organisatorer er blevet tilføjet til denne turnering endnu",
+            "remove": "Fjern organisator",
+            "confirm_remove": "Er du sikker på, at du vil fjerne denne organisator?",
+            "remove_description": "Dette vil fjerne organisatoren fra turneringen"
         },
         "team": {
-            "manage_roster": "Manage Roster",
-            "eligible": "Eligible",
-            "not_eligible": "Need {count} more players",
-            "leave_tournament": "Leave Tournament",
-            "leave_team": "Leave Team",
-            "player": "Player",
-            "role": "Role",
+            "manage_roster": "Administrer trup",
+            "eligible": "Berettiget",
+            "not_eligible": "Mangler {count} flere spillere",
+            "leave_tournament": "Forlad turnering",
+            "leave_team": "Forlad hold",
+            "player": "Spiller",
+            "role": "Rolle",
             "slot": "Slot {number}",
-            "add_player": "Add Player",
-            "pending_invites": "Pending Invites",
-            "new": "Create New Team",
-            "select": "Select Existing Team",
-            "name": "Team Name",
-            "select_role": "Select Role",
-            "no_roles": "No Roles Available",
-            "remove_member": "Remove Member",
-            "confirm_remove_member": "Are you sure you want to remove this member?",
-            "remove_member_description": "This will remove the member from the tournament team",
-            "cancel_invite": "Cancel Invite",
-            "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
-            "cancel_invite_description": "This will cancel the invite for this member",
-            "my_teams": "My Teams",
-            "my_teams_description": "Add one of your teams to the tournament",
-            "no_eligible_teams": "You don't have any eligible teams to add to this tournament",
-            "team": "Team",
-            "select_team": "Select a team...",
-            "search_team": "Search for a team...",
-            "add_to_tournament": "Add to Tournament"
+            "add_player": "Tilføj spiller",
+            "pending_invites": "Afventende invitationer",
+            "new": "Opret nyt hold",
+            "select": "Vælg eksisterende hold",
+            "name": "Holdnavn",
+            "select_role": "Vælg rolle",
+            "no_roles": "Ingen roller tilgængelige",
+            "remove_member": "Fjern medlem",
+            "confirm_remove_member": "Er du sikker på, at du vil fjerne dette medlem?",
+            "remove_member_description": "Dette vil fjerne medlemmet fra turneringsholdet",
+            "cancel_invite": "Annuller invitation",
+            "confirm_cancel_invite": "Er du sikker på, at du vil annullere denne invitation?",
+            "cancel_invite_description": "Dette vil annullere invitationen til dette medlem",
+            "my_teams": "Mine hold",
+            "my_teams_description": "Tilføj et af dine hold til turneringen",
+            "no_eligible_teams": "Du har ingen berettigede hold at tilføje til denne turnering",
+            "team": "Hold",
+            "select_team": "Vælg et hold...",
+            "search_team": "Søg efter et hold...",
+            "add_to_tournament": "Tilføj til turnering"
         },
         "actions": {
-            "open_registration": "Open Registration",
-            "close_registration": "Close Registration",
-            "cancel": "Cancel Tournament"
+            "open_registration": "Åbn registrering",
+            "close_registration": "Luk registrering",
+            "cancel": "Annuller"
         },
         "upcoming": {
-            "empty": "You don't have any upcoming tournaments."
+            "empty": "Ingen kommende turneringer"
         },
         "server": {
-            "remove": "Remove Server",
-            "confirm_remove": "Are you sure you want to remove this server?",
-            "remove_description": "This will remove the server from the tournament"
+            "remove": "Fjern server",
+            "confirm_remove": "Er du sikker på, at du vil fjerne denne server?",
+            "remove_description": "Dette vil fjerne serveren fra turneringen"
         }
     },
     "team": {
         "table": {
-            "team": "Team",
-            "wins": "Wins",
-            "losses": "Losses",
-            "overtime_losses": "Overtime Losses",
-            "no_teams_found": "No Teams Found"
+            "team": "Hold",
+            "wins": "Sejre",
+            "losses": "Nederlag",
+            "overtime_losses": "Overtidsnederlag",
+            "no_teams_found": "Ingen hold fundet"
         },
         "invite": {
-            "team_title": "Team Invite",
-            "tournament_title": "Tournament Invite",
-            "tournament_message": "You have been invited to join a tournament",
-            "team_message": "You have been invited to join a team",
-            "invited_by": "Invited by",
-            "deny": "Deny",
-            "accept": "Accept"
+            "team_title": "Holdinvitation",
+            "tournament_title": "Turneringsinvitation",
+            "tournament_message": "Du er blevet inviteret til at deltage i en turnering",
+            "team_message": "Du er blevet inviteret til at deltage i et hold",
+            "invited_by": "Inviteret af",
+            "deny": "Afvis",
+            "accept": "Acceptér"
         },
         "roles": {
-            "captain": "Captain"
+            "captain": "Kaptajn"
         },
-        "leave": "Leave Team",
+        "leave": "Forlad hold",
         "management": {
-            "edit": "Edit Team"
+            "edit": "Rediger hold"
         },
         "confirm": {
-            "leave": "Are you sure you want to leave this team?",
+            "leave": "Er du sikker på, at du vil forlade dette hold?",
             "delete": {
-                "title": "Delete Team",
-                "description": "Are you sure you want to delete this team? This action cannot be undone."
+                "title": "Slet hold",
+                "description": "Er du sikker på, at du vil slette dette hold? Denne handling kan ikke fortrydes."
             }
         },
         "members": {
-            "title": "Team Members",
-            "invite_player": "Invite Player",
-            "pending_invites": "Pending Invites"
+            "title": "Holdmedlemmer",
+            "invite_player": "Inviter spiller",
+            "pending_invites": "Afventende invitationer"
         },
         "form": {
-            "name": "Team Name",
-            "name_placeholder": "Enter team name...",
-            "short_name": "Short Name",
-            "short_name_placeholder": "Enter short name (max 3 characters)...",
-            "owner": "Team Owner",
-            "select_owner": "Select team owner...",
-            "update": "Update Team",
-            "create": "Create Team"
+            "name": "Holdnavn",
+            "name_placeholder": "Indtast holdnavn...",
+            "short_name": "Kort navn",
+            "short_name_placeholder": "Indtast kort navn (maks 3 tegn)...",
+            "owner": "Holdejer",
+            "select_owner": "Vælg holdejer...",
+            "update": "Opdater hold",
+            "create": "Opret hold"
         },
         "search": {
-            "found_teams": "{count} teams found",
-            "placeholder": "Search for a team...",
-            "my_teams_only": "My Teams Only",
-            "no_teams_found": "No teams found"
+            "found_teams": "{count} hold fundet",
+            "placeholder": "Søg efter et hold...",
+            "my_teams_only": "Kun mine hold",
+            "no_teams_found": "Ingen hold fundet"
         },
         "member": {
-            "remove": "Remove Member",
-            "cancel_invite": "Cancel Invite",
-            "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
-            "confirm_remove": "Are you sure you want to remove this member?",
-            "cancel_invite_description": "This will cancel the invite for this member",
-            "remove_description": "This will remove the member from the team"
+            "remove": "Fjern medlem",
+            "cancel_invite": "Annuller invitation",
+            "confirm_cancel_invite": "Er du sikker på, at du vil annullere denne invitation?",
+            "confirm_remove": "Er du sikker på, at du vil fjerne dette medlem?",
+            "cancel_invite_description": "Dette vil annullere invitationen til dette medlem",
+            "remove_description": "Dette vil fjerne medlemmet fra holdet"
         }
     },
     "match": {
@@ -657,455 +657,455 @@
             "vs": "vs"
         },
         "my_upcoming": {
-            "no_matches": "You don't have any upcoming matches."
+            "no_matches": "Ingen kommende kampe"
         },
         "recent": {
-            "title": "Recent Matches",
-            "no_matches": "You don't have any recent matches."
+            "title": "Seneste kampe",
+            "no_matches": "Ingen seneste kampe"
         },
         "options": {
-            "filter_maps": "Filter Maps",
+            "filter_maps": "Filterkort",
             "table": {
-                "match": "Match",
+                "match": "Kamp",
                 "type": "Type",
-                "maps": "Maps",
-                "no_matches_found": "No Matches Found",
-                "join": "Join"
+                "maps": "Kort",
+                "no_matches_found": "Ingen kampe fundet",
+                "join": "Deltag"
             },
             "type": {
-                "label": "Match Type"
+                "label": "Type"
             },
             "best_of": {
-                "label": "Best Of",
-                "description": "The winner is determined by who wins the majority of a specified number of games",
-                "placeholder": "Select a best of value"
+                "label": "Bedst af",
+                "description": "Antal kort der kræves for at vinde kampen",
+                "placeholder": "Vælg bedst af"
             },
             "map_veto_settings": {
-                "label": "Map Veto",
-                "description": "Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick side, team 2 pick, team 1 pick side, team 2 ban. Process repeats until final map is selected",
-                "custom_pool": "Custom Map Pool",
-                "active_duty": "Active Duty Map Pool",
-                "custom_pool_tooltip": "Choosing a custom map pool allows you to select maps outside the current active duty pool"
+                "label": "Kort veto",
+                "description": "Beskrivelse af kort veto indstillinger",
+                "custom_pool": "Tilpasset kortpool",
+                "active_duty": "Active Duty",
+                "custom_pool_tooltip": "Tilpasset kortpool tooltip"
             },
             "advanced": {
-                "title": "Advanced Settings",
-                "hide": "Hide",
-                "show": "Show",
-                "toggle": "Toggle Advanced Settings",
+                "title": "Avancerede indstillinger",
+                "hide": "Skjul",
+                "show": "Vis",
+                "toggle": "Skift",
                 "overtime": {
-                  "label": "Overtime",
-                  "description": "Each overtime is a best of 6."
+                  "label": "Overtid",
+                  "description": "Beskrivelse af overtid"
                 },
                 "knife_round": {
-                  "label": "Knife Round",
-                  "description": "Knife rounds are only played when neither team picked the map in the veto."
+                  "label": "Knivrunde",
+                  "description": "Beskrivelse af knivrunde"
                 },
                 "max_rounds": {
-                  "label": "Max Rounds",
-                  "description": "The number of rounds played before teams switch sides.",
-                  "placeholder": "Select max rounds"
+                  "label": "Maksimale runder",
+                  "description": "Beskrivelse af maksimale runder",
+                  "placeholder": "Indtast antal maksimale runder"
                 },
                 "region": {
-                  "title": "Region Settings",
-                  "lan_match": "LAN Match",
+                  "title": "Region",
+                  "lan_match": "LAN kamp",
                   "veto": {
-                      "label": "Veto",
-                      "description": "Allows teams to veto and select the server region."
+                      "label": "Region veto",
+                      "description": "Beskrivelse af region veto"
                   },
-                  "preferred": "Preferred Regions",
+                  "preferred": "Foretrukket region",
                   "single": "Region",
-                  "placeholder": "Select Region",
-                  "any": "Any",
-                  "description": "Select preferred regions for the match."
+                  "placeholder": "Vælg region",
+                  "any": "Enhver region",
+                  "description": "Beskrivelse af region"
                 },
                 "substitutes": {
-                  "label": "Number of Substitutes",
-                  "description": "Adds additional slots to be added to each lineup.",
-                  "range": "Enter value between 0 and 5."
+                  "label": "Erstatninger",
+                  "description": "Beskrivelse af erstatninger",
+                  "range": "Erstatningsområde"
                 },
                 "tv_delay": {
-                  "label": "TV Delay",
-                  "range": "Enter value between 0 and 120."
+                  "label": "TV forsinkelse",
+                  "range": "Forsinkelsesområde"
                 },
                 "timeouts": {
                   "tactical": {
-                      "label": "Tactical Timeout Settings",
-                      "description": "Tactical Timeouts are called by typing .tac, and are 30 seconds long."
+                      "label": "Taktisk timeout",
+                      "description": "Beskrivelse af taktisk timeout"
                   },
                   "technical": {
-                      "label": "Technical Timeout Settings",
-                      "description": "Technical timeouts are called by typing .pause, and do not have a time limit."
+                      "label": "Teknisk timeout",
+                      "description": "Beskrivelse af teknisk timeout"
                   },
                   "options": {
-                      "admins": "Admins",
-                      "coaches": "Coaches",
-                      "captains": "Coaches / Captains",
-                      "everyone": "Anyone"
+                      "admins": "Administratorer",
+                      "coaches": "Trænere",
+                      "captains": "Kapers",
+                      "everyone": "Alle"
                   }
                 },
                 "ready_settings": {
-                  "label": "Ready Settings",
-                  "description": "Controls how the match determines to be ready to start.",
+                  "label": "Klar indstilling",
+                  "description": "Styrer hvordan kampen bestemmer at være klar til at starte.",
                   "options": {
-                      "admins": "Admins",
-                      "coaches": "Coaches",
-                      "captains": "Captains",
-                      "everyone": "All Players Required to be Ready"
+                      "admins": "Administratorer",
+                      "coaches": "Trænere",
+                      "captains": "Kaptajner",
+                      "everyone": "Alle spillere skal være klar"
                   }
                 }
             },
-            "max_rounds": "Max Rounds",
-            "tv_delay": "TV Delay",
-            "seconds": "seconds",
-            "coaches": "Coaches",
-            "overtime": "Overtime",
-            "knife_round": "Knife Round",
-            "map_veto_enabled": "Map Veto",
-            "region_veto": "Region Veto",
-            "substitutes": "Substitutes",
-            "timeout_setting": "Timeout Setting",
-            "tech_timeout_setting": "Tech Timeout Setting",
-            "ready_setting": "Ready Setting",
-            "map_pool": "Map Pool",
-            "advanced_settings": "Show Advanced Settings"
+            "max_rounds": "Maksimale runder",
+            "tv_delay": "TV forsinkelse",
+            "seconds": "Sekunder",
+            "coaches": "Trænere",
+            "overtime": "Overtid",
+            "knife_round": "Knivrunde",
+            "map_veto_enabled": "Kort veto",
+            "region_veto": "Region veto",
+            "substitutes": "Erstatninger",
+            "timeout_setting": "Timeout indstilling",
+            "tech_timeout_setting": "Teknisk timeout indstilling",
+            "ready_setting": "Klar indstilling",
+            "map_pool": "Kortpool",
+            "advanced_settings": "Vis avancerede indstillinger"
         },
         "schedule": {
-            "pick_date": "Pick a date",
-            "schedule": "Schedule"
+            "pick_date": "Vælg dato",
+            "schedule": "Planlæg"
         },
         "player": {
-            "captain": "Captain",
+            "captain": "Kaptajn",
             "status": {
-                "offline_not_ready": "Offline and not ready",
-                "online_not_ready": "Online but not ready",
-                "ready": "Ready",
+                "offline_not_ready": "Offline, ikke klar",
+                "online_not_ready": "Online, ikke klar",
+                "ready": "Klar",
                 "offline": "Offline",
-                "online_not_in_game": "Online but not in game",
-                "in_game": "In game"
+                "online_not_in_game": "Online, ikke i spil",
+                "in_game": "I spil"
             },
-            "assign_slot": "Assign Slot"
+            "assign_slot": "Tildel slot"
         },
         "tabs": {
-            "overview": "Overview",
+            "overview": "Oversigt",
             "utility": "Utility",
-            "opening_duels": "Opening Duels",
-            "clutches": "Clutches",
-            "map_veto_tab": "Map Veto",
-            "settings": "Match Settings",
-            "server_console": "Server Console",
-            "randomize_teams": "Randomize Teams",
-            "invited_to_match": "Invited to Match",
-            "join_roster": "Join a roster",
-            "restore_round": "Restore Round",
-            "select_round_to_restore": "Select the round to restore",
-            "server_information": "Server Information",
+            "opening_duels": "Åbningsdueller",
+            "clutches": "Clutch",
+            "map_veto_tab": "Kort veto",
+            "settings": "Indstillinger",
+            "server_console": "Server konsol",
+            "randomize_teams": "Tilfældige hold",
+            "invited_to_match": "Inviteret til kamp",
+            "join_roster": "Deltag i trup",
+            "restore_round": "Gendan runde",
+            "select_round_to_restore": "Vælg runde at gendanne",
+            "server_information": "Server information",
             "type": "Type",
             "region": "Region",
-            "round": "Round {number}"
+            "round": "Runde"
         },
         "status": {
-            "cancelled": "Cancelled",
-            "finished": "Finished",
-            "waiting_server": "Waiting for server ...",
-            "scheduled_asap": "Scheduled ASAP"
+            "cancelled": "Annulleret",
+            "finished": "Afsluttet",
+            "waiting_server": "Venter på server",
+            "scheduled_asap": "Planlagt hurtigst muligt"
         },
         "winner": {
-            "set": "Set Match Winner",
-            "select_lineup": "Select Lineup"
+            "set": "Angiv vinder",
+            "select_lineup": "Vælg opstilling"
         },
         "region_veto": {
-            "banning": "is Banning a Region",
-            "organizer_override": "Match Organizer Override",
-            "confirm_ban": "Confirm Ban",
-            "server_region": "Server Region",
-            "select_region": "Select A Region"
+            "banning": "Banner",
+            "organizer_override": "Organisator overskrivning",
+            "confirm_ban": "Bekræft ban",
+            "server_region": "Server region",
+            "select_region": "Vælg region"
         },
         "picks": {
-            "decider": "Decider"
+            "decider": "Afgørende kort"
         },
-        "decider": "Decider",
+        "decider": "Afgørende kort",
         "map_veto": {
-            "is_picking": "is Picking a",
-            "organizer_override": "Match Organizer Override",
-            "select_side": "Select the Side your team wants to start on",
-            "your_turn": "Your Turn",
-            "pick": "Pick",
-            "confirm": "Confirm"
+            "is_picking": "Vælger",
+            "organizer_override": "Organisator overskrivning",
+            "select_side": "Vælg side",
+            "your_turn": "Din tur",
+            "pick": "Vælg",
+            "confirm": "Bekræft"
         },
         "map_lineup": {
-            "picked": "Picked"
+            "picked": "Valgt"
         },
         "vs": "vs",
-        "auto_canceling": "Auto Canceling",
+        "auto_canceling": "Automatisk annullering",
         "actions": {
-            "call_support": "Call for Support",
-            "start_veto": "Start Veto",
-            "skip_checkin": "Skip Check In",
-            "cancel": "Cancel Match"
+            "call_support": "Ring til support",
+            "start_veto": "Start veto",
+            "skip_checkin": "Spring check-in over",
+            "cancel": "Annuller"
         },
         "lineup": {
             "stats": {
-                "flashes_thrown": "Flashes Thrown",
-                "flash_assists": "Flash Assists",
-                "enemies_flashed": "Enemies Flashed",
-                "team_flashed": "Team Flashed",
-                "avg_blind_time": "Avg blind time",
-                "he_damage": "HE Damage",
-                "molotov_damage": "Incendiary / Molotov Damage",
-                "seconds": "seconds"
+                "flashes_thrown": "Flash kastet",
+                "flash_assists": "Flash assists",
+                "enemies_flashed": "Fjender blændet",
+                "team_flashed": "Hold blændet",
+                "avg_blind_time": "Gns. blændingstid",
+                "he_damage": "HE skade",
+                "molotov_damage": "Molotov skade",
+                "seconds": "Sekunder"
             },
-            "discord_user": "This is a Discord user, register your discord id to enable stat tracking by typing",
-            "discord_link": "in the official discord channel."
+            "discord_user": "Discord bruger",
+            "discord_link": "Discord link"
         },
         "overview": {
-            "promote_captain": "Promote to Captain",
-            "switch_teams": "Switch Teams",
-            "remove_from_lineup": "Remove from Lineup",
-            "leave_lineup": "Leave Lineup",
+            "promote_captain": "Forfrem til kaptajn",
+            "switch_teams": "Skift hold",
+            "remove_from_lineup": "Fjern fra opstilling",
+            "leave_lineup": "Forlad opstilling",
             "kills_full": "Kills",
             "assists_full": "Assists",
-            "deaths_full": "Deaths",
+            "deaths_full": "Dødsfald",
             "kd": "K/D",
-            "hs": "HS%",
-            "team_damage": "Team Damage",
-            "multi_kill_rounds": "Multi Kill Rounds",
+            "hs": "Headshot",
+            "team_damage": "Holdskade",
+            "multi_kill_rounds": "Multi-kill runder",
             "mkr": "MKR",
             "k2": "2K",
             "k3": "3K",
             "k4": "4K",
             "k5": "5K",
-            "knifes": "Knives",
+            "knifes": "Kniv",
             "zeus": "Zeus",
-            "total_damage": "Total Damage",
-            "substitute": "(substitute)",
-            "join": "Join",
+            "total_damage": "Total skade",
+            "substitute": "Erstatning",
+            "join": "Deltag",
             "slot": "Slot {number}"
         },
         "opening_duels": {
-            "attempts": "Attempts",
-            "success": "Success"
+            "attempts": "Forsøg",
+            "success": "Succes"
         },
         "clutches": {
-            "won": "Won",
-            "lost": "Lost",
-            "against": "Against",
-            "no_clutches": "No clutches this round",
+            "won": "Vundet",
+            "lost": "Tabt",
+            "against": "mod",
+            "no_clutches": "Ingen clutches",
             "vs": "vs",
-            "round": "Round {number}"
+            "round": "Runde"
         },
         "join": {
-            "live": "Match is Live",
-            "call_organizer": "Call For Organizer"
+            "live": "Live",
+            "call_organizer": "Ring til organisator"
         },
         "check_in": {
-            "title": "Check In",
-            "checked_in": "Checked In",
-            "check_in": "Check In",
-            "description": "Please check in to confirm your participation in this match"
+            "title": "Check ind",
+            "checked_in": "Checket ind",
+            "check_in": "Check ind",
+            "description": "Check-in beskrivelse"
         },
         "coach": {
-            "assign": "Assign Coach"
+            "assign": "Tildel træner"
         },
         "download_demo": "Download Demo",
-        "download_demos": "Download Demos",
-        "coaches": "Coaches",
-        "best_of": "Best of {count}",
+        "download_demos": "Download demos",
+        "coaches": "Trænere",
+        "best_of": "Bedst af",
         "server": {
-            "offline": "Server is offline!",
-            "booting": "Server Booting",
-            "assign": "Assign Match Server",
-            "select": "Select a server",
-            "dedicated": "Dedicated Servers",
-            "on_demand": "On Demand",
-            "assigned": "Assigned Match Server"
+            "offline": "Offline",
+            "booting": "Starter op",
+            "assign": "Tildel",
+            "select": "Vælg",
+            "dedicated": "Dedikeret",
+            "on_demand": "Efterspørgsel",
+            "assigned": "Tildelt"
         },
         "lobby": {
-            "access_updated": "Match lobby access updated to {access}"
+            "access_updated": "Adgangsrettigheder er blevet opdateret"
         }
     },
     "ui": {
         "tooltips": {
-            "expand": "Expand",
-            "fullscreen": "Fullscreen",
-            "download": "Download Logs"
+            "expand": "Udvid",
+            "fullscreen": "Fuldskærm",
+            "download": "Download"
         },
         "logs": {
-            "follow": "Follow Logs",
-            "timestamps": "Show Timestamps",
-            "container": "Container Logs"
+            "follow": "Følg",
+            "timestamps": "Tidsstempler",
+            "container": "Container"
         }
     },
     "player": {
         "sanction": {
-            "button": "Sanction Player",
-            "reason_description": "Please provide a clear reason for this sanction"
+            "button": "Sanktioner spiller",
+            "reason_description": "Angiv en klar grund til denne sanktion"
         },
         "search": {
-            "online_only": "Online",
-            "no_players_found": "No Players Found.",
-            "found_players": "Players Found",
-            "placeholder": "Search players..."
+            "online_only": "Kun online",
+            "no_players_found": "Ingen spillere fundet",
+            "found_players": "Spillere fundet",
+            "placeholder": "Søg efter spillere..."
         },
         "sanctions": {
-            "title": "Sanctions",
-            "expires": "Expires",
-            "active_count": "Active Sanctions",
-            "past_count": "Past Sanctions"
+            "title": "Sanktioner",
+            "expires": "Udløber",
+            "active_count": "Aktive sanktioner",
+            "past_count": "Tidligere sanktioner"
         },
         "registration": {
-            "title": "Register your name",
-            "description": "This name will be used for all matches / tournaments you participate in.",
-            "warning": "This name cannot be changed after being submitted",
-            "name_label": "Name",
-            "confirm_button": "Confirm Name",
-            "success": "Name confirmed"
+            "title": "Registrering",
+            "description": "Beskrivelse",
+            "warning": "Advarsel",
+            "name_label": "Navn",
+            "confirm_button": "Bekræft knap",
+            "success": "Succes"
         },
         "status": {
-            "banned": "Player is banned",
-            "muted": "Player is muted",
-            "gagged": "Player is gagged",
-            "add_friend": "Add as friend"
+            "banned": "Bannet",
+            "muted": "Muted",
+            "gagged": "Gagged",
+            "add_friend": "Tilføj ven"
         },
         "change_name": {
-            "button": "Change Name",
-            "title": "Change Name",
-            "request_title": "Request Name Change",
-            "description": "Please enter the name you would like to change to.",
-            "request_description": "Please enter the name you would like to change your account to.",
-            "name_label": "Name",
-            "success": "Changed Players Name",
-            "request_success": "Requested Name Change"
+            "button": "Skift navn",
+            "title": "Skift navn",
+            "request_title": "Navneændringsanmodning",
+            "description": "Beskrivelse",
+            "request_description": "Anmodningsbeskrivelse",
+            "name_label": "Navn",
+            "success": "Succes",
+            "request_success": "Anmodningssucces"
         }
     },
     "maps": {
         "veto": {
-            "pick": "Pick Map"
+            "pick": "Vælg"
         },
-        "official": "Official Maps",
-        "workshop": "Workshop Maps",
-        "active_duty": "Active Duty"
+        "official": "Officiel",
+        "workshop": "Workshop",
+        "active_duty": "Aktiv tjeneste"
     },
     "region": {
         "form": {
-            "name": "Name",
-            "description": "Description",
-            "update": "Update Region",
-            "create": "Create Region"
+            "name": "Navn",
+            "description": "Beskrivelse",
+            "update": "Opdater",
+            "create": "Opret"
         }
     },
     "matchmaking": {
-        "searching_for_match": "Searching for a {type} match",
+        "searching_for_match": "Søgning efter en {type} match",
         "lobby": {
-            "title": "Matchmaking Lobby",
-            "leave": "Leave Lobby",
-            "invite_player": "Invite Player to Lobby",
-            "invites": "Lobby invites",
-            "access_updated": "Lobby access updated to {access}"
+            "title": "Matchmaking lobby",
+            "leave": "Forlad",
+            "invite_player": "Inviter spiller",
+            "invites": "Invitationer",
+            "access_updated": "Adgangsrettigheder er blevet opdateret"
         },
         "friends": {
-            "title": "Friends",
-            "sync": "Sync Friends",
-            "search": "Add Friend",
-            "pending_requests": "Pending Requests",
-            "online": "Online",
-            "invite_to_lobby": "Invite to Lobby",
-            "invite_to_match": "Invite Player to Match",
-            "remove": "Remove Friend",
-            "join_lobby": "Join Lobby",
+            "title": "Venner",
+            "sync": "Synkroniser",
+            "search": "Tilføj ven",
+            "pending_requests": "Afventende anmodninger",
+            "online": "Kun online",
+            "invite_to_lobby": "Inviter til lobby",
+            "invite_to_match": "Inviter spiller til Match",
+            "remove": "Fjern",
+            "join_lobby": "Tilmeld Lobby",
             "offline": "Offline",
-            "view_profile": "View Profile"
+            "view_profile": "Vis profil"
         },
-        "banned": "You are banned from matchmaking",
-        "go_to_match": "Go to Match",
-        "confirm_selection": "Join Queue",
-        "temp_banned": "You are temporarily banned from matchmaking",
+        "banned": "Bannet",
+        "go_to_match": "Gå til kamp",
+        "confirm_selection": "Deltag i kø",
+        "temp_banned": "Midlertidigt bannet",
         "settings_section": {
-            "toggle": "Adjust Settings",
-            "queue_order": "Queue Order"
+            "toggle": "Justér indstillinger",
+            "queue_order": "Kø rækkefølge"
         },
-        "high_latency_warning": "Your latency is too high for competitive matches"
+        "high_latency_warning": "Din latency er for høj til konkurrence kampe"
     },
     "game_server": {
-        "update_cs": "Update CS",
-        "install_cs": "Install CS",
-        "select_region": "Select Region",
-        "remove_node": "Remove Node",
-        "edit_label": "Edit Label",
-        "label_placeholder": "Enter node label",
-        "update_label": "Update Label",
+        "update_cs": "Opdater CS",
+        "install_cs": "Installer CS",
+        "select_region": "Vælg region",
+        "remove_node": "Fjern node",
+        "edit_label": "Redigér etiket",
+        "label_placeholder": "Indtast nodeetiket",
+        "update_label": "Opdatér etiket",
         "validation": {
-            "start_port_less_than_end": "Start port range must be less than end port range",
-            "end_port_greater_than_start": "End port range must be greater than start port range by at least 2"
+            "start_port_less_than_end": "Startport skal være mindre end slutport",
+            "end_port_greater_than_start": "Slutport skal være større end startport"
         },
         "toast": {
-            "cs_updating": "CS2 is being updated on the node",
-            "ports_updated": "Node Ports Updated",
-            "label_updated": "Node Label Updated"
+            "cs_updating": "CS opdaterer",
+            "ports_updated": "Porte opdateret",
+            "label_updated": "Node Label opdateret"
         }
     },
     "chat": {
-        "lobby_chat": "Lobby Chat",
-        "message_placeholder": "Type a message..."
+        "lobby_chat": "Lobby chat",
+        "message_placeholder": "Skriv en besked..."
     },
     "charts": {
-        "usage": "Usage"
+        "usage": "Forbrug"
     },
     "server": {
         "form": {
-            "label": "Server Label",
+            "label": "Etiket",
             "host": "Host",
             "region": "Region",
-            "select_region": "Select Region",
-            "rcon_password": "RCON Password",
-            "rcon_password_description": "Leave blank to keep the current password",
-            "port": "Game Port",
-            "tv_port": "TV Port",
-            "update": "Update Server",
-            "create": "Create Server"
+            "select_region": "Vælg region",
+            "rcon_password": "RCON adgangskode",
+            "rcon_password_description": "RCON adgangskode beskrivelse",
+            "port": "Port",
+            "tv_port": "TV port",
+            "update": "Opdater",
+            "create": "Opret"
         },
         "rcon": {
-            "quick_commands": "Quick Commands",
-            "refresh_match": "Refresh Match",
-            "metamod_info": "Metamod Info",
-            "css_info": "CSS Info",
+            "quick_commands": "Hurtige kommandoer",
+            "refresh_match": "Opdater kamp",
+            "metamod_info": "Metamod info",
+            "css_info": "CSS info",
             "output": "Output",
-            "command_placeholder": "Enter command...",
-            "send_command": "Send Command"
+            "command_placeholder": "Indtast kommando",
+            "send_command": "Send kommando"
         }
     },
     "components": {
         "map_pools": {
-            "view_on_steam": "View on Steam"
+            "view_on_steam": "Se på Steam"
         }
     },
     "map_pools": {
-        "edit_map": "Edit Map"
+        "edit_map": "Rediger kort"
     },
     "validation": {
-        "map_pool_required": "Map pool is required"
+        "map_pool_required": "Kortpulje er påkrævet"
     },
     "game_type_configs": {
         "form": {
-            "cfg": "Config",
-            "create": "Create Config",
-            "update": "Update Config",
-            "edit": "Edit Config",
-            "revert_to_defaults": "Revert to Defaults",
+            "cfg": "Konfig",
+            "create": "Opret config",
+            "update": "Opdatér konfiguration",
+            "edit": "Redigér config",
+            "revert_to_defaults": "Vend tilbage til indstillinger",
             "revert_confirm": {
-                "title": "Revert to Defaults",
-                "description": "Are you sure you want to revert this config to its default values? This action cannot be undone.",
-                "cancel": "Cancel",
-                "confirm": "Revert"
+                "title": "Vend tilbage til indstillinger",
+                "description": "Er du sikker på at du vil vende denne config tilbage til dens standardværdier? Denne handling kan ikke bringes til ophør.",
+                "cancel": "Annuller",
+                "confirm": "Vend om"
             },
             "success": {
-                "create": "Config created successfully",
-                "update": "Config updated successfully",
-                "revert": "Config reverted to defaults successfully"
+                "create": "Konfiguration oprettet med succes",
+                "update": "Konfiguration opdateret med succes",
+                "revert": "Konfiguration vendt tilbage til fejl med succes"
             },
             "error": {
-                "create": "Error creating config",
-                "update": "Error updating config",
-                "revert": "Error reverting config to defaults"
+                "create": "Fejl ved oprettelse af config",
+                "update": "Fejl under opdatering af config",
+                "revert": "Fejl ved returnering af config til standard"
             }
         }
     }

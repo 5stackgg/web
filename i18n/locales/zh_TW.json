@@ -344,6 +344,7 @@
         },
         "manage_matches": {
             "title": "比賽管理",
+            "only_my_matches": "只顯示我主辦的比賽",
             "description": "檢視與管理平台上的所有比賽。"
         }
     },

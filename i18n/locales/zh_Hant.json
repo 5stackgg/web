@@ -681,8 +681,8 @@
                 "placeholder": "選擇 BO 數值"
             },
             "map_veto_settings": {
-                "label": "地圖 Veto 設定",
-                "description": "Veto 流程：隊伍1禁地圖、隊伍2禁地圖、隊伍1選地圖、隊伍2選邊、隊伍2選地圖、隊伍1選邊、隊伍2禁地圖，重複直到剩一張地圖",
+                "label": "地圖投票設定",
+                "description": "投票流程：隊伍1禁地圖、隊伍2禁地圖、隊伍1選地圖、隊伍2選邊、隊伍2選地圖、隊伍1選邊、隊伍2禁地圖，重複直到剩一張地圖",
                 "custom_pool": "自訂地圖池",
                 "active_duty": "現役地圖池",
                 "custom_pool_tooltip": "使用自訂地圖池可選擇現役地圖池以外的地圖"
@@ -709,8 +709,8 @@
                   "title": "地區設定",
                   "lan_match": "區網對戰（LAN）",
                   "veto": {
-                      "label": "地區 Veto",
-                      "description": "允許隊伍 veto 並選擇伺服器地區"
+                      "label": "地區投票",
+                      "description": "允許隊伍投票並選擇伺服器地區"
                   },
                   "preferred": "偏好地區",
                   "single": "地區",
@@ -760,8 +760,8 @@
             "coaches": "教練",
             "overtime": "加時賽",
             "knife_round": "刀戰回合",
-            "map_veto_enabled": "啟用地圖 veto",
-            "region_veto": "地區 veto",
+            "map_veto_enabled": "啟用地圖投票",
+            "region_veto": "地區投票",
             "substitutes": "替補人員",
             "timeout_setting": "戰術暫停設定",
             "tech_timeout_setting": "技術暫停設定",
@@ -790,7 +790,7 @@
             "utility": "實用數據",
             "opening_duels": "開局對槍",
             "clutches": "單挑翻盤",
-            "map_veto_tab": "地圖 Veto",
+            "map_veto_tab": "地圖投票",
             "settings": "比賽設定",
             "server_console": "伺服器控制台",
             "randomize_teams": "隨機分隊",
@@ -839,7 +839,7 @@
         "auto_canceling": "自動取消中",
         "actions": {
             "call_support": "請求支援",
-            "start_veto": "開始 Veto",
+            "start_veto": "開始投票",
             "skip_checkin": "跳過報到",
             "cancel": "取消比賽"
         },

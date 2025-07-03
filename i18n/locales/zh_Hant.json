@@ -1,0 +1,1111 @@
+{
+    "pages": {
+        "system_metrics": {
+            "node": "節點",
+            "cpu_usage": "CPU 使用率",
+            "memory_usage": "記憶體使用率",
+            "services": "服務"
+        },
+        "system_logs": {
+            "follow_logs": "即時日誌",
+            "timestamps": "時間戳記"
+        },
+        "login": {
+            "sign_in": "使用 Steam 登入",
+            "powered_by": "技術支援"
+        },
+        "coming_soon": "即將推出！",
+        "tournaments": {
+            "title": "即將舉行的錦標賽",
+            "create": "建立錦標賽",
+            "tabs": {
+                "tournaments": "錦標賽",
+                "my_recent": "我最近的錦標賽"
+            },
+            "no_recent": "你最近沒有參加任何錦標賽。"
+        },
+        "teams": {
+            "title": "戰隊",
+            "description": "管理戰隊與選手名單。",
+            "create": "建立戰隊",
+            "tabs": {
+                "my_teams": "我的戰隊",
+                "other_teams": "其他戰隊"
+            },
+            "search": "搜尋..."
+        },
+        "settings": {
+            "account": {
+                "title": "帳戶設定",
+                "description": "你的帳戶資料",
+                "my_account": "我的帳戶",
+                "appearance": "外觀",
+                "name": "名稱",
+                "avatar_url": "頭像網址",
+                "country": "國家",
+                "select_country": "選擇國家...",
+                "search_country": "搜尋國家...",
+                "no_country_found": "找不到符合的國家。",
+                "update": "更新帳戶",
+                "matchmaking": "配對設定",
+                "update_success": "資料已更新",
+                "discord": {
+                  "unlink": "取消連結 Discord",
+                  "link": "連結 Discord",
+                  "unlink_dialog": {
+                      "title": "取消連結 Discord 帳號",
+                      "description": "確定要取消與 Discord 帳號的連結嗎？這將會移除 5Stack 與 Discord 之間的關聯。",
+                      "cancel": "取消",
+                      "confirm": "解除連結"
+                  },
+                  "unlinked": "已成功取消連結 Discord 帳號"
+                }
+            },
+            "appearance": {
+                "title": "外觀",
+                "description": "自訂面板外觀。可自動在日夜模式間切換。",
+                "theme": "主題",
+                "theme_description": "選擇面板的顯示主題。",
+                "light": "淺色",
+                "dark": "深色"
+            },
+            "application": {
+                "telemetry": {
+                  "title": "遙測",
+                  "telemetry": "遙測資料",
+                  "telemetry_description": "透過匿名使用數據協助改善 5Stack。",
+                  "update": "已更新遙測設定"
+                },
+                "matchmaking": {
+                  "title": "配對系統",
+                  "description": "配對功能讓玩家可以加入佇列，並與其他玩家自動配對。"
+                },
+                "discord": {
+                  "title": "Discord",
+                  "invite_link": "Discord 邀請連結",
+                  "webhook": "Discord Webhook",
+                  "webhook_description": "我們會使用此 Webhook 傳送需要玩家回應的通知，例如比賽問題或錯誤回報。",
+                  "support_role": "支援角色 ID",
+                  "support_role_description": "進行支援操作時會 Tag 此角色。在 Discord 中開啟開發者模式後，右鍵角色名稱即可複製 ID。",
+                  "update": "更新"
+                },
+                "game_type_configs": {
+                  "title": "遊戲模式設定",
+                  "description": "管理不同遊戲模式的設定。",
+                  "type": "遊戲類型"
+                },
+                "streaming": {
+                  "title": "串流設定",
+                  "minimum_role_to_stream": "允許串流的最低權限",
+                  "minimum_role_to_stream_description": "擁有此角色的使用者可以直播比賽。"
+                },
+                "create_matches_role": "允許建立比賽的最低權限",
+                "create_matches_role_description": "此角色可以建立比賽。",
+                "create_tournaments_role": "允許建立錦標賽的最低權限",
+                "create_tournaments_role_description": "此角色可以建立錦標賽。",
+                "matchmaking_min_role": "允許加入配對的最低權限",
+                "matchmaking_min_role_description": "此角色可以加入配對佇列。",
+                "max_acceptable_latency": "可接受的最高延遲",
+                "max_acceptable_latency_description": "加入比賽時，玩家所允許的最高延遲值。",
+                "update": "更新",
+                "players": {
+                  "force_name_registration": "強制註冊玩家名稱",
+                  "force_name_registration_description": "啟用後，玩家必須提交一個在平台上顯示的名稱。"
+                },
+                "servers": {
+                  "title": "伺服器設定",
+                  "enable_cpu_pinning": "啟用 CPU 綁定",
+                  "enable_cpu_pinning_description": "在遊戲伺服器節點上啟用 CPU 綁定以提升效能",
+                  "number_of_cpus_per_server": "每台伺服器分配的 CPU 數量",
+                  "number_of_cpus_per_server_description": "每台伺服器分配的 CPU 數量",
+                  "update": "更新",
+                  "update_cpu_pinning": "CPU 綁定設定已更新"
+                },
+                "demo_settings": {
+                  "update": "更新",
+                  "title": "Demo 設定",
+                  "min_retention": "最短保留天數",
+                  "max_storage": "最大儲存空間",
+                  "cloudflare_worker_url": "Cloudflare Worker URL",
+                  "max_storage_description": "Demo 檔案最大儲存空間（GB）。",
+                  "cloudflare_worker_url_description": "用來儲存與讀取 Demo 檔案的 Cloudflare Worker 網址。",
+                  "min_retention_description": "Demo 檔案的最短保留天數。",
+                  "current_storage": "目前儲存量",
+                  "used_storage": "已使用大約儲存量"
+                },
+                "update_map_pools": {
+                  "title": "自動更新地圖池",
+                  "description": "當現役地圖池有新增或刪除時，自動更新地圖清單。"
+                }
+            },
+            "language": {
+                "title": "語言",
+                "description": "選擇你偏好的介面語言。",
+                "select": "選擇語言",
+                "search": "搜尋語言..."
+            },
+            "matchmaking": {
+                "title": "配對設定",
+                "description": "設定配對偏好並檢視各地區延遲。",
+                "region": "地區",
+                "average_latency": "延遲",
+                "preferred": "偏好地區",
+                "max_acceptable_latency": "可接受的最高延遲",
+                "max_latency_description": "若未選擇偏好地區，將只配對至延遲低於此值的地區。"
+            }
+        },
+        "regions": {
+            "title": "地區",
+            "description": "地區功能可讓你依據地理位置分類遊戲伺服器。玩家可在配對時選擇偏好地區或排除不想加入的地區。",
+            "create": "新增地區",
+            "table": {
+                "name": "名稱",
+                "status": "狀態",
+                "available_servers": "可用伺服器 / 總伺服器",
+                "description": "描述",
+                "use_lan_ip": "使用區網 IP",
+                "use_steam_relay": "使用 Steam Relay",
+                "use_steam_relay_description": "為遊戲伺服器啟用 Steam Relay，可隱藏其真實 IP。",
+                "actions": "操作"
+            },
+            "edit": "編輯地區",
+            "delete": {
+                "title": "刪除地區",
+                "description": "確定要刪除此地區嗎？此操作無法復原。",
+                "cancel": "取消",
+                "confirm": "刪除"
+            }
+        },
+        "players": {
+            "title": "玩家",
+            "search": "搜尋玩家",
+            "detail": {
+                "player_stats": "玩家數據",
+                "kills": "擊殺",
+                "assists": "助攻",
+                "deaths": "死亡",
+                "kd": "擊殺死亡比",
+                "last_ten_wins": "最近 10 場勝利",
+                "last_ten_losses": "最近 10 場失敗",
+                "matches": "比賽數"
+            }
+        },
+        "play": {
+            "open_matches": {
+                "title": "開放比賽",
+                "description": "任何人都可加入的公開比賽大廳。"
+            }
+        },
+        "matches": {
+            "title": "我最近的比賽",
+            "description": "你最近完成的比賽紀錄",
+            "create": "建立比賽",
+            "last_ten_wins": "最近 10 場勝利",
+            "last_ten_losses": "最近 10 場失敗",
+            "my_match_history": "我的比賽歷史",
+            "other_matches": "其他比賽",
+            "create_page": {
+                "title": "建立比賽",
+                "pick_up_game": "隨機匹配賽（PUG）",
+                "pick_up_game_description": "PUG 賽不需要預先指定隊伍。",
+                "team_1": "隊伍 1",
+                "search_team": "搜尋隊伍...",
+                "team_2": "隊伍 2",
+                "intra_team_scrimmage": "你可以在兩邊都選擇同一隊伍以建立隊內對抗（Scrim）。",
+                "create_button": "建立比賽"
+            },
+            "detail": {
+                "schedule": "賽程安排"
+            }
+        },
+        "game_server_nodes": {
+            "title": "遊戲伺服器節點",
+            "description": "遊戲伺服器節點可以讓你拓展伺服器至不同地區，或提供彈性備援伺服器。",
+            "not_supported": {
+                "title": "你的控制面板目前不支援遊戲伺服器節點。",
+                "description": "請參閱文件以設定伺服器節點。"
+            },
+            "create": "新增伺服器節點",
+            "installation_script": "安裝腳本",
+            "cs_version_info": "CS2 版本資訊：",
+            "status": {
+                "offline": "離線",
+                "online": "在線",
+                "setup": "設定中",
+                "not_accepting": "暫停接受新比賽"
+            },
+            "table": {
+                "node": "節點",
+                "lan_public_ip": "區網 / 公網 IP",
+                "cs_build_id": "CS Build ID",
+                "region": "地區",
+                "capacity": "容量",
+                "ports": "通訊埠",
+                "ports_tooltip": "已轉發至節點的通訊埠",
+                "enabled": "啟用",
+                "no_nodes": "尚未建立遊戲伺服器節點",
+                "supports_low_latency": "支援低延遲",
+                "supports_cpu_pinning": "支援 CPU 綁定"
+            },
+            "build_id": "版本 ID：{id}",
+            "last_updated": "上次更新時間：{date}"
+        },
+        "dedicated_servers": {
+            "title": "專用伺服器",
+            "description": "你可以設置一台專用伺服器，持續執行遊戲伺服器模組",
+            "create": {
+                "title": "建立專用伺服器"
+            },
+            "table": {
+                "connection_details": "連線資訊",
+                "label": "標籤",
+                "region": "地區",
+                "tv_port": "TV 埠口",
+                "plugin_version": "插件版本",
+                "enabled": "啟用",
+                "yes": "是",
+                "no": "否"
+            },
+            "detail": {
+                "enabled": "已啟用",
+                "server_plugin_config": "伺服器插件設定",
+                "hide_config": "隱藏設定",
+                "show_config": "顯示設定",
+                "config_location": "請將此設定檔放置於：",
+                "copy": "複製",
+                "edit": "編輯",
+                "delete": "刪除",
+                "status": {
+                  "disconnected": "伺服器已斷線",
+                  "no_rcon": "伺服器已連線但 RCON 無法使用",
+                  "connected": "伺服器已連線，RCON 正常",
+                  "plugin_version_mismatch": "插件版本未更新"
+                },
+                "delete_confirm": {
+                  "title": "你確定嗎？",
+                  "description": "此操作無法復原。這將永久刪除伺服器並移除所有相關資料。",
+                  "cancel": "取消",
+                  "continue": "繼續"
+                }
+            }
+        },
+        "map_pools": {
+            "title": "預設地圖池",
+            "description": "管理配對所使用的地圖池與可用地圖。",
+            "form": {
+                "name": "名稱",
+                "name_description": "必須與遊戲中地圖名稱完全相符，伺服器才能識別。",
+                "label": "標籤",
+                "poster": "海報（選填）",
+                "poster_placeholder": "http://example.com/poster.png",
+                "patch": "貼圖（選填）",
+                "patch_placeholder": "http://example.com/patch.png",
+                "workshop_map_id": "Workshop 地圖 ID（選填）",
+                "create_map": "建立地圖",
+                "update_map": "更新地圖",
+                "delete_map": "刪除地圖",
+                "delete_confirm": {
+                  "title": "刪除地圖",
+                  "description": "確定要刪除此地圖？此操作無法復原。",
+                  "cancel": "取消",
+                  "confirm": "刪除"
+                },
+                "success": {
+                  "create": "地圖已成功建立",
+                  "update": "地圖已成功更新",
+                  "delete": "地圖已成功刪除",
+                  "workshop_refresh": "Workshop 地圖資訊已刷新"
+                },
+                "error": {
+                  "create": "建立地圖時發生錯誤",
+                  "update": "更新地圖時發生錯誤",
+                  "invalid_workshop": "無效的 Workshop 地圖 ID，請確認該 ID 是否存在於 Steam Workshop。",
+                  "workshop_refresh": "刷新 Workshop 地圖資訊時發生錯誤"
+                },
+                "refresh_workshop": "刷新地圖資訊"
+            },
+            "pool": {
+                "title": "預設 {type} 地圖池",
+                "description": "管理 {type} 地圖池內的地圖",
+                "modify_maps": "修改池中地圖"
+            },
+            "add_new_map": "新增地圖",
+            "edit": "編輯",
+            "maps": "可用地圖",
+            "active_duty": "現役地圖",
+            "available_modes": "支援的模式",
+            "workshop_id": "Workshop 連結",
+            "search": "搜尋地圖"
+        },
+        "map_pool": {
+            "toggle_pool_type": "地圖池類型已更新",
+            "toggle_active_pool": "地圖啟用狀態已更新",
+            "save_success": "地圖池儲存成功"
+        },
+        "manage_matches": {
+            "title": "比賽管理",
+            "description": "檢視與管理平台上的所有比賽。"
+        }
+    },
+    "notifications": {
+        "match": {
+            "title": "比賽邀請"
+        }
+    },
+    "custom_match": {
+        "title": "自訂比賽",
+        "description": "建立並自訂你的專屬比賽。設定規則、選擇地圖、邀請好友，打造個人化遊戲體驗。"
+    },
+    "layouts": {
+        "account_settings": {
+            "title": "帳戶設定",
+            "description": "管理你的帳戶設定與偏好"
+        },
+        "application_settings": {
+            "title": "應用程式設定",
+            "description": "控制整體應用程式行為的設定"
+        },
+        "system_update": {
+            "title": "有系統更新可用",
+            "description": "下列服務有可用更新：",
+            "note": "請注意：處理與驗證更新可能需花費數分鐘。",
+            "fix_link": "若無法更新系統，請檢查你的版本並執行修正",
+            "cancel": "取消",
+            "update": "更新",
+            "panel_update": "你的控制面板已過期，請拉取並執行更新腳本"
+        },
+        "match_lobby": {
+            "versus": "對戰"
+        },
+        "notifications": {
+            "title": "通知",
+            "delete": "刪除",
+            "dismiss": "關閉",
+            "dismiss_all": "關閉所有通知",
+            "delete_all_read": "刪除所有已讀通知",
+            "no_notifications": "目前沒有任何通知。"
+        },
+        "app_nav": {
+            "brand": "5stack",
+            "navigation": {
+                "play": "遊玩",
+                "matches": "比賽",
+                "tournaments": "錦標賽",
+                "players": "玩家",
+                "teams": "戰隊"
+            },
+            "administration": {
+                "title": "後台管理",
+                "regions": "地區管理",
+                "servers": "伺服器",
+                "dedicated_servers": "專用伺服器",
+                "game_server_nodes": "遊戲伺服器節點",
+                "logs": "系統日誌",
+                "metrics": "系統效能",
+                "app_settings": "應用程式設定",
+                "map_pools": "地圖池",
+                "manage_matches": "比賽管理"
+            },
+            "profile": {
+                "my_profile": "我的個人資料",
+                "my_account": "我的設定",
+                "logout": "登出"
+            },
+            "footer": {
+                "report_issue": "回報問題",
+                "join_discord": "加入我們的 Discord"
+            },
+            "tooltips": {
+                "play": "遊玩",
+                "matches": "比賽",
+                "tournaments": "錦標賽",
+                "players": "玩家",
+                "teams": "戰隊",
+                "regions": "地區管理",
+                "servers": "伺服器",
+                "dedicated_servers": "專用伺服器",
+                "game_server_nodes": "遊戲伺服器節點",
+                "system_logs": "系統日誌",
+                "system_metrics": "系統效能",
+                "app_settings": "應用程式設定",
+                "report_issue": "回報問題",
+                "join_discord": "加入 Discord",
+                "map_pools": "地圖池",
+                "manage_matches": "比賽管理"
+            },
+            "logout_dialog": {
+                "title": "登出",
+                "description": "你確定要登出嗎？",
+                "cancel": "取消",
+                "confirm": "登出"
+            }
+        }
+    },
+    "pwa": {
+        "install": {
+            "title": "新增至主畫面",
+            "description": "此網站提供應用程式體驗。可將其新增至主畫面，方便快速使用。",
+            "step1": "點擊『分享』按鈕",
+            "step2": "選擇『加入主畫面』",
+            "tooltip": "安裝應用程式",
+            "button": "安裝應用程式"
+        }
+    },
+    "common": {
+        "cancel": "取消",
+        "tbd": "待定",
+        "boolean": {
+            "yes": "是",
+            "no": "否"
+        },
+        "actions": {
+            "edit": "編輯",
+            "delete": "刪除"
+        },
+        "close": "關閉",
+        "confirm": "確認",
+        "refresh": "重新整理"
+    },
+    "tournament": {
+        "overview": "總覽",
+        "bracket": "賽程圖",
+        "teams": "{count} 支戰隊",
+        "settings": "設定",
+        "admin": "管理員",
+        "organizers": "主辦單位",
+        "show_organizers": "查看主辦者",
+        "hide_organizers": "隱藏主辦者",
+        "join": {
+            "title": "加入錦標賽",
+            "joined_with": "已使用 {name} 加入",
+            "add_self_to_lineup": "將自己加入名單",
+            "team_owner": "隊伍擁有者",
+            "requirements": "此錦標賽需要至少 {count} 名玩家才能加入"
+        },
+        "tournament_team": {
+            "players_registered": "已註冊 {count} 名玩家",
+            "remove": "移除戰隊"
+        },
+        "add_team": {
+            "title": "新增戰隊"
+        },
+        "form": {
+            "create": "建立錦標賽",
+            "description_help": "為你的社群建立新錦標賽",
+            "name": "錦標賽名稱",
+            "description": "描述",
+            "start": "開始日期",
+            "pick_date": "選擇日期",
+            "update": "更新錦標賽",
+            "match_options": "比賽選項"
+        },
+        "table": {
+            "tournament": "錦標賽",
+            "status": "狀態",
+            "type": "類型",
+            "teams_joined": "已加入戰隊",
+            "starts": "開始時間",
+            "no_tournaments_found": "找不到錦標賽"
+        },
+        "stage": {
+            "title": "階段 {number}",
+            "teams": "{min}-{max} 支戰隊",
+            "edit": "編輯階段",
+            "delete": "刪除階段",
+            "edit_title": "編輯階段",
+            "confirm_delete": "刪除階段",
+            "delete_description": "你確定要刪除此階段嗎？",
+            "type": "階段類型",
+            "type_placeholder": "選擇階段類型...",
+            "min_teams": "最少戰隊數",
+            "min_teams_placeholder": "選擇最少戰隊數...",
+            "max_teams": "最多戰隊數",
+            "max_teams_placeholder": "選擇最多戰隊數...",
+            "update": "更新階段",
+            "create": "新增階段",
+            "no_stages": "尚無階段",
+            "start_building": "開始建立你的錦標賽",
+            "add_first": "新增第一階段",
+            "add_another": "新增階段",
+            "not_setup": "錦標賽階段尚未設定"
+        },
+        "match": {
+            "team_1": "隊伍 1",
+            "team_2": "隊伍 2",
+            "round_match": "第 {round} 回合，第 {match} 場"
+        },
+        "organizer": {
+            "title": "錦標賽主辦者",
+            "description": "管理錦標賽主辦人員",
+            "add": "新增主辦者",
+            "name": "名稱",
+            "actions": "操作",
+            "no_organizers": "尚無主辦者",
+            "no_organizers_description": "此錦標賽尚未新增任何主辦者",
+            "remove": "移除主辦者",
+            "confirm_remove": "你確定要移除此主辦者嗎？",
+            "remove_description": "這將從錦標賽中移除此主辦者"
+        },
+        "team": {
+            "manage_roster": "管理名單",
+            "eligible": "符合資格",
+            "not_eligible": "還需 {count} 名玩家",
+            "leave_tournament": "退出錦標賽",
+            "leave_team": "離開戰隊",
+            "player": "玩家",
+            "role": "角色",
+            "slot": "位置 {number}",
+            "add_player": "新增玩家",
+            "pending_invites": "待確認邀請",
+            "new": "建立新戰隊",
+            "select": "選擇現有戰隊",
+            "name": "戰隊名稱",
+            "select_role": "選擇角色",
+            "no_roles": "無可選角色",
+            "remove_member": "移除成員",
+            "confirm_remove_member": "確定要移除此成員嗎？",
+            "remove_member_description": "此操作將從錦標賽中移除該成員",
+            "cancel_invite": "取消邀請",
+            "confirm_cancel_invite": "確定要取消這個邀請嗎？",
+            "cancel_invite_description": "這將取消對該成員的邀請",
+            "my_teams": "我的戰隊",
+            "my_teams_description": "將你的一支戰隊加入此錦標賽",
+            "no_eligible_teams": "你目前沒有符合資格的戰隊可以加入此錦標賽",
+            "team": "戰隊",
+            "select_team": "選擇一支戰隊...",
+            "search_team": "搜尋戰隊...",
+            "add_to_tournament": "加入錦標賽"
+        },
+        "actions": {
+            "open_registration": "開放報名",
+            "close_registration": "關閉報名",
+            "cancel": "取消錦標賽"
+        },
+        "upcoming": {
+            "empty": "你目前沒有即將到來的錦標賽。"
+        },
+        "server": {
+            "remove": "移除伺服器",
+            "confirm_remove": "你確定要移除此伺服器嗎？",
+            "remove_description": "這將會從錦標賽中移除此伺服器"
+        }
+    },
+    "team": {
+        "table": {
+            "team": "戰隊",
+            "wins": "勝場",
+            "losses": "敗場",
+            "overtime_losses": "加時賽敗場",
+            "no_teams_found": "找不到任何戰隊"
+        },
+        "invite": {
+            "team_title": "戰隊邀請",
+            "tournament_title": "錦標賽邀請",
+            "tournament_message": "你被邀請加入一場錦標賽",
+            "team_message": "你被邀請加入一支戰隊",
+            "invited_by": "邀請人",
+            "deny": "拒絕",
+            "accept": "接受"
+        },
+        "roles": {
+            "captain": "隊長"
+        },
+        "leave": "離開戰隊",
+        "management": {
+            "edit": "編輯戰隊"
+        },
+        "confirm": {
+            "leave": "你確定要離開這支戰隊嗎？",
+            "delete": {
+                "title": "刪除戰隊",
+                "description": "你確定要刪除這支戰隊嗎？此操作無法復原。"
+            }
+        },
+        "members": {
+            "title": "戰隊成員",
+            "invite_player": "邀請玩家",
+            "pending_invites": "待確認邀請"
+        },
+        "form": {
+            "name": "戰隊名稱",
+            "name_placeholder": "輸入戰隊名稱...",
+            "short_name": "縮寫",
+            "short_name_placeholder": "輸入縮寫（最多 3 個字元）...",
+            "owner": "戰隊擁有者",
+            "select_owner": "選擇戰隊擁有者...",
+            "update": "更新戰隊",
+            "create": "建立戰隊"
+        },
+        "search": {
+            "found_teams": "找到 {count} 支戰隊",
+            "placeholder": "搜尋戰隊...",
+            "my_teams_only": "只顯示我的戰隊",
+            "no_teams_found": "找不到任何戰隊"
+        },
+        "member": {
+            "remove": "移除成員",
+            "cancel_invite": "取消邀請",
+            "confirm_cancel_invite": "你確定要取消這個邀請嗎？",
+            "confirm_remove": "你確定要移除此成員嗎？",
+            "cancel_invite_description": "這將取消對該成員的邀請",
+            "remove_description": "這將會從戰隊中移除此成員"
+        }
+    },
+    "match": {
+        "simple": {
+            "vs": "對戰"
+        },
+        "my_upcoming": {
+            "no_matches": "你目前沒有即將進行的比賽。"
+        },
+        "recent": {
+            "title": "最近比賽",
+            "no_matches": "你目前沒有最近的比賽紀錄。"
+        },
+        "options": {
+            "filter_maps": "篩選地圖",
+            "table": {
+                "match": "比賽",
+                "type": "類型",
+                "maps": "地圖",
+                "no_matches_found": "找不到比賽",
+                "join": "加入"
+            },
+            "type": {
+                "label": "比賽類型"
+            },
+            "best_of": {
+                "label": "BO 規則",
+                "description": "勝者將由多場中獲勝次數最多者決定",
+                "placeholder": "選擇 BO 數值"
+            },
+            "map_veto_settings": {
+                "label": "地圖投票設定",
+                "description": "投票流程：隊伍1禁地圖、隊伍2禁地圖、隊伍1選地圖、隊伍2選邊、隊伍2選地圖、隊伍1選邊、隊伍2禁地圖，重複直到剩一張地圖",
+                "custom_pool": "自訂地圖池",
+                "active_duty": "現役地圖池",
+                "custom_pool_tooltip": "使用自訂地圖池可選擇現役地圖池以外的地圖"
+            },
+            "advanced": {
+                "title": "進階設定",
+                "hide": "隱藏",
+                "show": "顯示",
+                "toggle": "切換進階設定",
+                "overtime": {
+                  "label": "加時賽",
+                  "description": "每次加時為 BO6"
+                },
+                "knife_round": {
+                  "label": "刀戰回合",
+                  "description": "當雙方都未選地圖時，進行刀戰決定開局方"
+                },
+                "max_rounds": {
+                  "label": "最大回合數",
+                  "description": "達到此回合數後雙方換邊",
+                  "placeholder": "選擇最大回合數"
+                },
+                "region": {
+                  "title": "地區設定",
+                  "lan_match": "區網對戰（LAN）",
+                  "veto": {
+                      "label": "地區投票",
+                      "description": "允許隊伍投票並選擇伺服器地區"
+                  },
+                  "preferred": "偏好地區",
+                  "single": "地區",
+                  "placeholder": "選擇地區",
+                  "any": "不限",
+                  "description": "為比賽選擇偏好的地區"
+                },
+                "substitutes": {
+                  "label": "替補人數",
+                  "description": "為每隊額外開放名額作為替補",
+                  "range": "請輸入 0 至 5 之間的數值"
+                },
+                "tv_delay": {
+                  "label": "TV 延遲（觀戰延遲）",
+                  "range": "請輸入 0 至 120 之間的數值"
+                },
+                "timeouts": {
+                  "tactical": {
+                      "label": "戰術暫停設定",
+                      "description": "輸入 .tac 觸發，持續 30 秒"
+                  },
+                  "technical": {
+                      "label": "技術暫停設定",
+                      "description": "輸入 .pause 觸發，無時間限制"
+                  },
+                  "options": {
+                      "admins": "僅限管理員",
+                      "coaches": "教練",
+                      "captains": "教練 / 隊長",
+                      "everyone": "所有人皆可"
+                  }
+                },
+                "ready_settings": {
+                  "label": "準備狀態設定",
+                  "description": "設定比賽何時可開始",
+                  "options": {
+                      "admins": "僅限管理員",
+                      "coaches": "教練",
+                      "captains": "隊長",
+                      "everyone": "所有玩家皆需準備好"
+                  }
+                }
+            },
+            "max_rounds": "最大回合數",
+            "tv_delay": "觀戰延遲",
+            "seconds": "秒",
+            "coaches": "教練",
+            "overtime": "加時賽",
+            "knife_round": "刀戰回合",
+            "map_veto_enabled": "啟用地圖投票",
+            "region_veto": "地區投票",
+            "substitutes": "替補人員",
+            "timeout_setting": "戰術暫停設定",
+            "tech_timeout_setting": "技術暫停設定",
+            "ready_setting": "準備狀態設定",
+            "map_pool": "地圖池",
+            "advanced_settings": "顯示進階設定"
+        },
+        "schedule": {
+            "pick_date": "選擇日期",
+            "schedule": "安排賽程"
+        },
+        "player": {
+            "captain": "隊長",
+            "status": {
+                "offline_not_ready": "離線且未準備",
+                "online_not_ready": "在線但未準備",
+                "ready": "已準備",
+                "offline": "離線",
+                "online_not_in_game": "在線但不在遊戲中",
+                "in_game": "遊戲中"
+            },
+            "assign_slot": "指派位置"
+        },
+        "tabs": {
+            "overview": "總覽",
+            "utility": "實用數據",
+            "opening_duels": "開局對槍",
+            "clutches": "單挑翻盤",
+            "map_veto_tab": "地圖投票",
+            "settings": "比賽設定",
+            "server_console": "伺服器控制台",
+            "randomize_teams": "隨機分隊",
+            "invited_to_match": "已受邀參加比賽",
+            "join_roster": "加入隊伍",
+            "restore_round": "恢復回合",
+            "select_round_to_restore": "選擇要恢復的回合",
+            "server_information": "伺服器資訊",
+            "type": "類型",
+            "region": "地區",
+            "round": "第 {number} 回合"
+        },
+        "status": {
+            "cancelled": "已取消",
+            "finished": "已完成",
+            "waiting_server": "等待伺服器中...",
+            "scheduled_asap": "儘快安排"
+        },
+        "winner": {
+            "set": "設定比賽勝方",
+            "select_lineup": "選擇參賽陣容"
+        },
+        "region_veto": {
+            "banning": "正在禁用地區",
+            "organizer_override": "賽事主辦者強制介入",
+            "confirm_ban": "確認禁用",
+            "server_region": "伺服器地區",
+            "select_region": "選擇一個地區"
+        },
+        "picks": {
+            "decider": "決勝地圖"
+        },
+        "decider": "決勝地圖",
+        "map_veto": {
+            "is_picking": "正在選擇",
+            "organizer_override": "賽事主辦者強制介入",
+            "select_side": "選擇開局方",
+            "your_turn": "輪到你了",
+            "pick": "選擇",
+            "confirm": "確認"
+        },
+        "map_lineup": {
+            "picked": "已選擇"
+        },
+        "vs": "對戰",
+        "auto_canceling": "自動取消中",
+        "actions": {
+            "call_support": "請求支援",
+            "start_veto": "開始投票",
+            "skip_checkin": "跳過報到",
+            "cancel": "取消比賽"
+        },
+        "lineup": {
+            "stats": {
+                "flashes_thrown": "投擲閃光數",
+                "flash_assists": "閃光助攻",
+                "enemies_flashed": "閃到敵人數",
+                "team_flashed": "閃到隊友數",
+                "avg_blind_time": "平均致盲時間",
+                "he_damage": "高爆手榴彈傷害",
+                "molotov_damage": "燃燒瓶/燃燒彈傷害",
+                "seconds": "秒"
+            },
+            "discord_user": "這是 Discord 使用者，請註冊 Discord ID 以啟用數據追蹤，輸入",
+            "discord_link": "至官方 Discord 頻道"
+        },
+        "overview": {
+            "promote_captain": "提升為隊長",
+            "switch_teams": "交換隊伍",
+            "remove_from_lineup": "移出陣容",
+            "leave_lineup": "退出陣容",
+            "kills_full": "擊殺",
+            "assists_full": "助攻",
+            "deaths_full": "死亡",
+            "kd": "擊殺/死亡比",
+            "hs": "爆頭率",
+            "team_damage": "隊友傷害",
+            "multi_kill_rounds": "多殺回合",
+            "mkr": "多殺率",
+            "k2": "雙殺",
+            "k3": "三殺",
+            "k4": "四殺",
+            "k5": "五殺",
+            "knifes": "匕首擊殺",
+            "zeus": "Zeus 擊殺",
+            "total_damage": "總傷害",
+            "substitute": "(替補)",
+            "join": "加入",
+            "slot": "位置 {number}"
+        },
+        "opening_duels": {
+            "attempts": "發起次數",
+            "success": "成功次數"
+        },
+        "clutches": {
+            "won": "成功",
+            "lost": "失敗",
+            "against": "對抗",
+            "no_clutches": "此回合無單挑",
+            "vs": "對",
+            "round": "第 {number} 回合"
+        },
+        "join": {
+            "live": "比賽進行中",
+            "call_organizer": "聯繫主辦者"
+        },
+        "check_in": {
+            "title": "報到",
+            "checked_in": "已報到",
+            "check_in": "報到",
+            "description": "請報到以確認你將參與此比賽"
+        },
+        "coach": {
+            "assign": "指派教練"
+        },
+        "download_demo": "下載 Demo",
+        "download_demos": "下載所有 Demo",
+        "coaches": "教練",
+        "best_of": "BO{count}",
+        "server": {
+            "offline": "伺服器離線！",
+            "booting": "伺服器啟動中",
+            "assign": "指派比賽伺服器",
+            "select": "選擇伺服器",
+            "dedicated": "專用伺服器",
+            "on_demand": "隨需啟動",
+            "assigned": "已指派比賽伺服器"
+        },
+        "lobby": {
+            "access_updated": "比賽大廳權限已更新為 {access}"
+        }
+    },
+    "ui": {
+        "tooltips": {
+            "expand": "展開",
+            "fullscreen": "全螢幕",
+            "download": "下載日誌"
+        },
+        "logs": {
+            "follow": "即時追蹤",
+            "timestamps": "顯示時間戳記",
+            "container": "容器日誌"
+        }
+    },
+    "player": {
+        "sanction": {
+            "button": "懲處玩家",
+            "reason_description": "請明確說明此懲處的理由"
+        },
+        "search": {
+            "online_only": "僅限上線玩家",
+            "no_players_found": "找不到玩家。",
+            "found_players": "找到玩家",
+            "placeholder": "搜尋玩家..."
+        },
+        "sanctions": {
+            "title": "懲處紀錄",
+            "expires": "到期時間",
+            "active_count": "現行懲處",
+            "past_count": "過往紀錄"
+        },
+        "registration": {
+            "title": "註冊玩家名稱",
+            "description": "此名稱將用於你參與的所有比賽與錦標賽中。",
+            "warning": "提交後無法更改",
+            "name_label": "名稱",
+            "confirm_button": "確認名稱",
+            "success": "名稱已確認"
+        },
+        "status": {
+            "banned": "玩家已被封鎖",
+            "muted": "玩家已被禁言",
+            "gagged": "玩家被限制語音",
+            "add_friend": "加入好友"
+        },
+        "change_name": {
+            "button": "更改名稱",
+            "title": "更改玩家名稱",
+            "request_title": "申請名稱更改",
+            "description": "請輸入你想更改的新名稱。",
+            "request_description": "請輸入你希望更改為的新帳號名稱。",
+            "name_label": "名稱",
+            "success": "名稱已更新",
+            "request_success": "已提交名稱更改申請"
+        }
+    },
+    "maps": {
+        "veto": {
+            "pick": "選擇地圖"
+        },
+        "official": "官方地圖",
+        "workshop": "Workshop 地圖",
+        "active_duty": "現役地圖"
+    },
+    "region": {
+        "form": {
+            "name": "名稱",
+            "description": "描述",
+            "update": "更新地區",
+            "create": "建立地區"
+        }
+    },
+    "matchmaking": {
+        "searching_for_match": "正在尋找 {type} 比賽中",
+        "lobby": {
+            "title": "配對大廳",
+            "leave": "離開大廳",
+            "invite_player": "邀請玩家加入大廳",
+            "invites": "大廳邀請",
+            "access_updated": "大廳權限已更新為 {access}"
+        },
+        "friends": {
+            "title": "好友",
+            "sync": "同步好友",
+            "search": "新增好友",
+            "pending_requests": "待確認邀請",
+            "online": "上線中",
+            "invite_to_lobby": "邀請加入大廳",
+            "invite_to_match": "邀請參加比賽",
+            "remove": "刪除好友",
+            "join_lobby": "加入大廳",
+            "offline": "離線中",
+            "view_profile": "查看個人資料"
+        },
+        "banned": "你已被禁止參加配對",
+        "go_to_match": "前往比賽頁面",
+        "confirm_selection": "加入佇列",
+        "temp_banned": "你已被暫時禁止參加配對",
+        "settings_section": {
+            "toggle": "調整設定",
+            "queue_order": "佇列順序"
+        },
+        "high_latency_warning": "你的延遲過高，不適合進行競技比賽"
+    },
+    "game_server": {
+        "update_cs": "更新 CS",
+        "install_cs": "安裝 CS",
+        "select_region": "選擇地區",
+        "remove_node": "移除節點",
+        "edit_label": "編輯標籤",
+        "label_placeholder": "輸入節點標籤",
+        "update_label": "更新標籤",
+        "validation": {
+            "start_port_less_than_end": "起始埠號必須小於結束埠號",
+            "end_port_greater_than_start": "結束埠號必須比起始埠號多至少 2"
+        },
+        "toast": {
+            "cs_updating": "節點上的 CS2 正在更新中",
+            "ports_updated": "節點埠號已更新",
+            "label_updated": "節點標籤已更新"
+        }
+    },
+    "chat": {
+        "lobby_chat": "大廳聊天",
+        "message_placeholder": "輸入訊息..."
+    },
+    "charts": {
+        "usage": "使用情況"
+    },
+    "server": {
+        "form": {
+            "label": "伺服器標籤",
+            "host": "主機位址",
+            "region": "地區",
+            "select_region": "選擇地區",
+            "rcon_password": "RCON 密碼",
+            "rcon_password_description": "若不變更請留空",
+            "port": "遊戲埠口",
+            "tv_port": "觀戰埠口",
+            "update": "更新伺服器",
+            "create": "建立伺服器"
+        },
+        "rcon": {
+            "quick_commands": "快速指令",
+            "refresh_match": "刷新比賽",
+            "metamod_info": "Metamod 資訊",
+            "css_info": "CSS 資訊",
+            "output": "輸出結果",
+            "command_placeholder": "輸入指令...",
+            "send_command": "送出指令"
+        }
+    },
+    "components": {
+        "map_pools": {
+            "view_on_steam": "在 Steam 上查看"
+        }
+    },
+    "map_pools": {
+        "edit_map": "編輯地圖"
+    },
+    "validation": {
+        "map_pool_required": "必須選擇地圖池"
+    },
+    "game_type_configs": {
+        "form": {
+            "cfg": "設定檔",
+            "create": "建立設定",
+            "update": "更新設定",
+            "edit": "編輯設定",
+            "revert_to_defaults": "還原為預設值",
+            "revert_confirm": {
+                "title": "還原為預設值",
+                "description": "你確定要將設定還原為預設值嗎？此操作無法復原。",
+                "cancel": "取消",
+                "confirm": "還原"
+            },
+            "success": {
+                "create": "設定建立成功",
+                "update": "設定更新成功",
+                "revert": "已成功還原為預設值"
+            },
+            "error": {
+                "create": "建立設定時發生錯誤",
+                "update": "更新設定時發生錯誤",
+                "revert": "還原預設設定時發生錯誤"
+            }
+        }
+    }
+}

@@ -47,16 +47,16 @@
                 "search_country": "País de búsqueda...",
                 "no_country_found": "No hay país encontrado.",
                 "update": "Cuenta de actualización",
-                "matchmaking": "Matchmaking",
+                "matchmaking": "",
                 "update_success": "Perfil actualizado",
                 "discord": {
-                  "unlink": "Unlink Discord",
-                  "link": "Link Discord",
+                  "unlink": "",
+                  "link": "",
                   "unlink_dialog": {
                       "title": "Cuenta de discordia sin conexión",
                       "description": "¿Seguro que quieres desconectar tu cuenta de discordia? Esto eliminará la conexión entre sus cuentas de 5Stack y Discord.",
                       "cancel": "Cancelar",
-                      "confirm": "Unlink"
+                      "confirm": ""
                   },
                   "unlinked": "Cuenta de discordia sin conexión con éxito"
                 }
@@ -77,11 +77,11 @@
                   "update": "Ajustes de telemetría actualizados"
                 },
                 "matchmaking": {
-                  "title": "Matchmaking",
+                  "title": "",
                   "description": "Gérez les paramètres de matchmaking"
                 },
                 "discord": {
-                  "title": "Discord",
+                  "title": "",
                   "invite_link": "Enlace de invitación de Discord",
                   "webhook": "Webhook de Discord",
                   "webhook_description": "Usamos este webhook de Discord para enviar notificaciones que requieren acción de un jugador. Ej. problemas de partida, errores, etc.",
@@ -95,7 +95,7 @@
                   "type": "Tipo de juego"
                 },
                 "streaming": {
-                  "title": "Streaming",
+                  "title": "",
                   "minimum_role_to_stream": "Función mínima permitida",
                   "minimum_role_to_stream_description": "Este papel será capaz de crear partidos."
                 },
@@ -148,7 +148,7 @@
                 "title": "Ajustes de coincidencia",
                 "description": "Configure sus preferencias de concordancia y ver los retrasos de la región.",
                 "region": "Región",
-                "average_latency": "Latency",
+                "average_latency": "",
                 "preferred": "Preferencias",
                 "max_acceptable_latency": "Maximum Aceptable Latency",
                 "max_latency_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con latencia inferior a este valor."
@@ -164,7 +164,7 @@
                 "available_servers": "Servidores disponibles",
                 "description": "Descripción",
                 "use_lan_ip": "Usar LAN",
-                "use_steam_relay": "Use Steam Relay",
+                "use_steam_relay": "",
                 "use_steam_relay_description": "Permitir Steam Relay para los servidores del juego para ocultar su dirección IP del público.",
                 "actions": "Acciones"
             },
@@ -181,7 +181,7 @@
             "search": "Buscar Jugadores",
             "detail": {
                 "player_stats": "Estadísticas del jugador",
-                "kills": "Kills",
+                "kills": "",
                 "assists": "Asistencias",
                 "deaths": "Muertes",
                 "kd": "K/D",
@@ -245,7 +245,7 @@
                 "enabled": "Habilitado",
                 "no_nodes": "No hay nodos",
                 "supports_low_latency": "Soportes Low Latency",
-                "supports_cpu_pinning": "Supports CPU Pinning"
+                "supports_cpu_pinning": ""
             },
             "build_id": "ID de build",
             "last_updated": "Última actualización"
@@ -264,7 +264,7 @@
                 "plugin_version": "Versión Plugin",
                 "enabled": "Habilitado",
                 "yes": "Sí",
-                "no": "No"
+                "no": ""
             },
             "detail": {
                 "enabled": "Habilitado",
@@ -344,7 +344,7 @@
         },
         "manage_matches": {
             "title": "Gestion Matches",
-            "only_my_matches": "Only My Organized Matches",
+            "only_my_matches": "",
             "description": "Ver y gestionar todos los partidos en toda la plataforma."
         }
     },
@@ -387,7 +387,7 @@
             "no_notifications": "Sin notificaciones"
         },
         "app_nav": {
-            "brand": "5stack",
+            "brand": "",
             "navigation": {
                 "play": "Jugar",
                 "matches": "Partidas",
@@ -457,7 +457,7 @@
         "tbd": "Por determinar",
         "boolean": {
             "yes": "Sí",
-            "no": "No"
+            "no": ""
         },
         "actions": {
             "edit": "Editar",
@@ -465,11 +465,11 @@
         },
         "close": "Cerrar",
         "confirm": "Confirmar",
-        "refresh": "Refresh"
+        "refresh": ""
     },
     "tournament": {
         "overview": "Resumen",
-        "bracket": "Bracket",
+        "bracket": "",
         "teams": "Equipos",
         "settings": "Configuración",
         "admin": "Administración",
@@ -479,7 +479,7 @@
         "join": {
             "title": "Unirse al torneo",
             "joined_with": "Equipo unido",
-            "add_self_to_lineup": "Add Self to Lineup",
+            "add_self_to_lineup": "",
             "team_owner": "Propietario",
             "requirements": "Requisitos"
         },
@@ -654,7 +654,7 @@
     },
     "match": {
         "simple": {
-            "vs": "vs"
+            "vs": ""
         },
         "my_upcoming": {
             "no_matches": "No hay partidas próximas"
@@ -835,7 +835,7 @@
         "map_lineup": {
             "picked": "Elegido"
         },
-        "vs": "vs",
+        "vs": "",
         "auto_canceling": "Cancelación automática",
         "actions": {
             "call_support": "Llamar soporte",
@@ -862,20 +862,20 @@
             "switch_teams": "Cambiar equipos",
             "remove_from_lineup": "Eliminar de la alineación",
             "leave_lineup": "Salir de la alineación",
-            "kills_full": "Kills",
+            "kills_full": "",
             "assists_full": "Asistencias",
             "deaths_full": "Muertes",
-            "kd": "K/D",
+            "kd": "",
             "hs": "Headshot",
             "team_damage": "Daño al equipo",
             "multi_kill_rounds": "Rondas multi-kill",
-            "mkr": "MKR",
-            "k2": "2K",
-            "k3": "3K",
-            "k4": "4K",
-            "k5": "5K",
+            "mkr": "",
+            "k2": "",
+            "k3": "",
+            "k4": "",
+            "k5": "",
             "knifes": "Cuchillo",
-            "zeus": "Zeus",
+            "zeus": "",
             "total_damage": "Daño total",
             "substitute": "Suplente",
             "join": "Unirse",
@@ -890,7 +890,7 @@
             "lost": "Perdido",
             "against": "contra",
             "no_clutches": "Sin clutches",
-            "vs": "vs",
+            "vs": "",
             "round": "Ronda"
         },
         "join": {
@@ -1017,11 +1017,11 @@
         },
         "banned": "Baneado",
         "go_to_match": "Ir a la partida",
-        "confirm_selection": "Join Queue",
+        "confirm_selection": "",
         "temp_banned": "Baneado temporalmente",
         "settings_section": {
             "toggle": "Ajuste de ajustes",
-            "queue_order": "Queue Order"
+            "queue_order": ""
         },
         "high_latency_warning": "Su latencia es demasiado alta para los partidos competitivos"
     },
@@ -1031,8 +1031,8 @@
         "select_region": "Seleccionar región",
         "remove_node": "Eliminar nodo",
         "edit_label": "Edite Label",
-        "label_placeholder": "Enter node label",
-        "update_label": "Update Label",
+        "label_placeholder": "",
+        "update_label": "",
         "validation": {
             "start_port_less_than_end": "El puerto inicial debe ser menor que el puerto final",
             "end_port_greater_than_start": "El puerto final debe ser mayor que el puerto inicial"
@@ -1053,7 +1053,7 @@
     "server": {
         "form": {
             "label": "Etiqueta",
-            "host": "Host",
+            "host": "",
             "region": "Región",
             "select_region": "Seleccionar región",
             "rcon_password": "Contraseña RCON",
@@ -1086,7 +1086,7 @@
     },
     "game_type_configs": {
         "form": {
-            "cfg": "Config",
+            "cfg": "",
             "create": "Crear Config",
             "update": "Actualizar Config",
             "edit": "Editar Config",

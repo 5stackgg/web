@@ -344,6 +344,7 @@
         },
         "manage_matches": {
             "title": "Manage Matches",
+            "only_my_matches": "فقط مطابقاتي المنظمة",
             "description": "View and manage all matches across the platform."
         }
     },

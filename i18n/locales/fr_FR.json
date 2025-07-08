@@ -344,6 +344,7 @@
         },
         "manage_matches": {
             "title": "Gérer les correspondances",
+            "only_my_matches": "Seulement mes matchs organisés",
             "description": "Afficher et gérer tous les matches sur la plateforme."
         }
     },

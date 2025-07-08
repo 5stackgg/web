@@ -344,6 +344,7 @@
         },
         "manage_matches": {
             "title": "Gestione delle partite",
+            "only_my_matches": "Solo Le Mie Partite Organizzate",
             "description": "Visualizza e gestisci tutte le partite attraverso la piattaforma."
         }
     },

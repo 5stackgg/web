@@ -344,6 +344,7 @@
         },
         "manage_matches": {
             "title": "マッチを管理する",
+            "only_my_matches": "組織化された試合のみ",
             "description": "プラットフォーム全体ですべてのマッチを表示および管理します."
         }
     },

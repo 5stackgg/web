@@ -20,6 +20,4 @@ import PlayerNameRegistration from "~/components/PlayerNameRegistration.vue";
   <div id="global-chat-container"></div>
 </template>
 
-<script lang="ts">
-export default {};
-</script>
+<script lang="ts"></script>

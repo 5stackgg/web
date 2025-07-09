@@ -394,7 +394,8 @@
                 "matches": "Matches",
                 "tournaments": "Tournaments",
                 "players": "Players",
-                "teams": "Teams"
+                "teams": "Teams",
+                "community": "Community"
             },
             "administration": {
                 "title": "Administration",

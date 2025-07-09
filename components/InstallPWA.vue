@@ -1,28 +1,43 @@
 <script setup lang="ts">
 import { MonitorDown, PlusSquare, Share } from "lucide-vue-next";
 import { useSidebar } from "@/components/ui/sidebar";
-
+import FiveStackTooltip from "~/components/FiveStackTooltip.vue";
 const { state, isMobile } = useSidebar();
 </script>
 
 <template>
-  <div>
-    <NuxtPwaManifest />
-
-    <SidebarMenuItem
-      class="mb-1"
-      :class="{ 'mx-4': isMobile || state === 'expanded' }"
-      v-if="canInstall"
-    >
-      <SidebarMenuButton as-child :tooltip="$t('pwa.install.tooltip')">
-        <Button @click="installPWA" size="sm">
-          <MonitorDown />
-          <span v-if="isMobile || state === 'expanded'">{{
-            $t("pwa.install.button")
-          }}</span>
-        </Button>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
+  <NuxtPwaManifest />
+  <div v-if="canInstall">
+    <template v-if="isMenuItem">
+      <SidebarMenuItem
+        class="mb-1"
+        :class="{ 'mx-4': isMobile || state === 'expanded' }"
+        v-if="canInstall"
+      >
+        <SidebarMenuButton as-child :tooltip="$t('pwa.install.tooltip')">
+          <Button @click="installPWA" size="sm">
+            <MonitorDown />
+            <span v-if="isMobile || state === 'expanded'">{{
+              $t("pwa.install.button")
+            }}</span>
+          </Button>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </template>
+    <template v-else>
+      <FiveStackTooltip v-if="!isMobile">
+        <template #trigger>
+          <Button @click="installPWA" size="sm">
+            <MonitorDown />
+          </Button>
+        </template>
+        {{ $t("pwa.install.button") }}
+      </FiveStackTooltip>
+      <div class="flex items-center gap-2 uppercase font-bold" v-else>
+        <MonitorDown class="size-5" @click="installPWA" />
+        {{ $t("pwa.install.button") }}
+      </div>
+    </template>
 
     <Drawer
       :open="installPWADrawer"
@@ -75,6 +90,12 @@ const { state, isMobile } = useSidebar();
 import type { BeforeInstallPromptEvent } from "@vite-pwa/nuxt/dist/runtime/plugins/types.js";
 
 export default {
+  props: {
+    isMenuItem: {
+      type: Boolean,
+      default: true,
+    },
+  },
   created() {
     window.addEventListener(
       "beforeinstallprompt",
@@ -118,6 +139,7 @@ export default {
       return /iPad|iPhone|iPod/.test(navigator.userAgent);
     },
     canInstall() {
+      return true;
       if (this.$pwa?.isPWAInstalled) {
         return false;
       }

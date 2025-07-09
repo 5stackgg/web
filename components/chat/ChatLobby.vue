@@ -63,6 +63,10 @@ import ChatInput from "~/components/chat/ChatInput.vue";
 import socket from "~/web-sockets/Socket";
 import type { Lobby } from "~/web-sockets/Socket";
 
+import { useRightSidebar } from "~/composables/useRightSidebar";
+
+const { rightSidebarOpen } = useRightSidebar();
+
 interface ChatMessagesRef {
   scrollToBottom: (force?: boolean) => void;
 }
@@ -88,10 +92,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    sidebarOpen: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -107,11 +107,10 @@ export default {
     rightSidebarOffset() {
       const baseOffset = 120;
 
-      if (this.sidebarOpen) {
+      if (rightSidebarOpen?.value) {
         return baseOffset + 300;
       }
 
-      // When sidebar is closed, use base offset
       return baseOffset;
     },
   },

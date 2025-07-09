@@ -996,12 +996,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Searching for a {type} match",
+        "invites": "Invites",
         "lobby": {
+            "access": "Lobby Access",
+            "access_description": "Controls who can join the lobby. Open allows anyone to join, Friends allows only friends to join, and Invite allows only players you invite to join.",
             "title": "Matchmaking Lobby",
             "leave": "Leave Lobby",
             "invite_player": "Invite Player to Lobby",
             "invites": "Lobby invites",
-            "access_updated": "Lobby access updated to {access}"
+            "access_updated": "Lobby access updated to {access}",
+            "join": "Join Lobby"
         },
         "friends": {
             "title": "Friends",

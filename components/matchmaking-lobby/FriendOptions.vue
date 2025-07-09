@@ -1,46 +1,78 @@
 <script lang="ts" setup>
-import { Plus, Trash2, User } from "lucide-vue-next";
+import { Plus, Trash2 } from "lucide-vue-next";
+import FiveStackToolTip from "../FiveStackToolTip.vue";
 </script>
 
 <template>
-  <DropdownMenu>
-    <DropdownMenuTrigger as-child>
+  <div @contextmenu="handleRightClick" class="flex items-center cursor-pointer">
+    <div class="grow">
       <slot></slot>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent class="w-56">
-      <DropdownMenuItem>
-        <NuxtLink
-          :to="{ name: 'players-id', params: { id: player.steam_id } }"
-          class="flex items-center"
-        >
-          <User class="mr-2 h-4 w-4" />
-          <span>{{ $t("matchmaking.friends.view_profile") }}</span>
-        </NuxtLink>
-      </DropdownMenuItem>
+      <DropdownMenu v-model:open="isOpen">
+        <DropdownMenuTrigger as-child>
+          <div></div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent class="w-56">
+          <DropdownMenuItem @click="removeFriend" class="text-red-500">
+            <Trash2 class="mr-2 h-4 w-4" />
+            <span>{{ $t("matchmaking.friends.remove") }}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+    <template v-if="canInviteToMatch || canInviteToLobby">
+      <template v-if="canInviteToMatch && canInviteToLobby">
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            class="hover:bg-muted/50 transition-all duration-200 rounded-md p-4"
+          >
+            <Plus class="h-4 w-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent class="w-56">
+            <DropdownMenuItem @click="inviteToLobby">
+              <Plus class="mr-2 h-4 w-4" />
+              <span>{{ $t("matchmaking.friends.invite_to_lobby") }}</span>
+            </DropdownMenuItem>
 
-      <DropdownMenuItem @click="inviteToLobby">
-        <Plus class="mr-2 h-4 w-4" />
-        <span>{{ $t("matchmaking.friends.invite_to_lobby") }}</span>
-      </DropdownMenuItem>
+            <DropdownMenuItem
+              @click="inviteToMatch"
+              :class="!canInviteToMatch ? 'opacity-50 pointer-events-none' : ''"
+            >
+              <Plus class="mr-2 h-4 w-4" />
+              <span>{{ $t("matchmaking.friends.invite_to_match") }}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </template>
+      <template v-else>
+        <div
+            @click="inviteToLobby"
+            class="hover:bg-muted/50 transition-all duration-200 rounded-md p-4"
 
-      <DropdownMenuSeparator />
+            v-if="canInviteToLobby"
+          >
+            <FiveStackToolTip>
+              {{ $t("matchmaking.friends.invite_to_lobby") }}
+              <template #trigger>
+                <Plus class="h-4 w-4" />
+              </template>
+            </FiveStackToolTip>
+          </div>
+          <div
+            @click="inviteToMatch"
+            class="hover:bg-muted/50 transition-all duration-200 rounded-md p-4"
 
-      <DropdownMenuItem
-        @click="inviteToMatch"
-        :class="!canInviteToMatch ? 'opacity-50 pointer-events-none' : ''"
-      >
-        <Plus class="mr-2 h-4 w-4" />
-        <span>{{ $t("matchmaking.friends.invite_to_match") }}</span>
-      </DropdownMenuItem>
-
-      <DropdownMenuSeparator />
-
-      <DropdownMenuItem @click="removeFriend" class="text-red-500">
-        <Trash2 class="mr-2 h-4 w-4" />
-        <span>{{ $t("matchmaking.friends.remove") }}</span>
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
+            v-if="canInviteToMatch"
+          >
+            <FiveStackToolTip>
+              {{ $t("matchmaking.friends.invite_to_match") }}
+              <template #trigger>
+                <Plus class="h-4 w-4" />
+              </template>
+            </FiveStackToolTip>
+          </div>
+      </template>
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
@@ -55,6 +87,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isOpen: false,
+    };
+  },
   computed: {
     me() {
       return useAuthStore().me;
@@ -62,12 +99,35 @@ export default {
     currentMatch() {
       return useMatchLobbyStore().currentMatch;
     },
+    currentLobby() {
+      return useMatchmakingStore().lobbies?.find((lobby: any) => {
+        return lobby.id === this.me?.current_lobby_id;
+      });
+    },
+    canInviteToLobby() {
+      return (
+        !this.currentLobby ||
+        (this.currentLobby &&
+          !this.currentLobby.players.find(
+            (player: any) => player.player.steam_id === this.player.steam_id,
+          ))
+      );
+    },
     canInviteToMatch() {
+      if (!this.canInviteToLobby) {
+        return false;
+      }
+
       if (!this.currentMatch) {
         return false;
       }
 
+      if (this.invitedToMatch) {
+        return false;
+      }
+
       if (
+        this.currentMatch.organizer_steam_id !== this.me.steam_id &&
         ![
           e_lobby_access_enum.Open,
           e_lobby_access_enum.Friends,
@@ -99,6 +159,11 @@ export default {
     },
   },
   methods: {
+    handleRightClick(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.isOpen = !this.isOpen;
+    },
     async inviteToLobby() {
       await useMatchmakingStore().inviteToLobby(this.player.steam_id);
     },

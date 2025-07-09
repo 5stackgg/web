@@ -12,10 +12,13 @@ import debounce from "~/utilities/debounce";
         @click="searchPlayers()"
         variant="outline"
         :aria-expanded="open"
-        :class="{
-          'justify-between w-full py-8': selected,
-          'justify-between': !selected,
-        }"
+        :class="[
+          {
+            'justify-between w-full py-8': selected,
+            'justify-between': !selected,
+          },
+          $props.class,
+        ]"
       >
         <template v-if="selected">
           <PlayerDisplay :player="selected" />
@@ -120,6 +123,11 @@ export default {
       type: Object,
       required: false,
       default: null,
+    },
+    class: {
+      type: String,
+      required: false,
+      default: "",
     },
   },
   data() {

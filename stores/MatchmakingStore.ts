@@ -71,6 +71,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   };
 
   const friends = ref([]);
+  const lobbies = ref([]);
   const subscribeToFriends = async (mySteamId: bigint) => {
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
@@ -181,12 +182,52 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     });
   };
 
+  const subscribeToLobbies = async (steam_id: bigint) => {
+    const subscription = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        lobbies: [
+          {
+            where: {
+              players: {
+                steam_id: {
+                  _eq: $("steam_id", "bigint!"),
+                },
+              },
+            },
+          },
+          {
+            id: true,
+            access: true,
+            players: [
+              {},
+              {
+                status: true,
+                captain: true,
+                player: playerFields,
+              },
+            ],
+          },
+        ],
+      }),
+      variables: {
+        steam_id,
+      },
+    });
+
+    subscription.subscribe({
+      next: ({ data }) => {
+        lobbies.value = data.lobbies;
+      },
+    });
+  };
+
   watch(
     () => useAuthStore().me,
     (me) => {
       if (me) {
         subscribeToFriends(me.steam_id);
         subscribeToMatchInvites(me.steam_id);
+        subscribeToLobbies(me.steam_id);
       }
     },
     { immediate: true },
@@ -411,8 +452,17 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       });
   });
 
+  const lobbyInvites = computed(() => {
+    const me = useAuthStore().me;
+    if (!lobbies.value) return [];
+    return lobbies.value.filter((lobby: any) => {
+      return lobby.id !== me?.current_lobby_id;
+    });
+  });
+
   return {
     friends,
+    lobbies,
     matchInvites,
     regionStats,
     playersOnline,
@@ -429,6 +479,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     storedRegions,
     preferredRegions,
     playerMaxAcceptableLatency,
+    lobbyInvites,
 
     inviteToLobby,
   };

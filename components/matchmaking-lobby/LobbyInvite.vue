@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-import TimeAgo from "./TimeAgo.vue";
-import PlayerDisplay from "./PlayerDisplay.vue";
+import TimeAgo from "../TimeAgo.vue";
+import PlayerDisplay from "../PlayerDisplay.vue";
 import { Check, XIcon } from "lucide-vue-next";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 </script>
 
 <template>
-  <div class="flex flex-row gap-2 justify-between" v-if="matches_by_pk">
+  <div class="flex flex-row gap-2 justify-between" v-if="invite">
     <div class="flex flex-row gap-2 items-center overflow-scroll">
       <div class="flex flex-row gap-2 items-center overflow-scroll">
         <TooltipProvider>
@@ -19,7 +25,7 @@ import { Check, XIcon } from "lucide-vue-next";
                 :showRole="false"
               />
             </TooltipTrigger>
-            <TooltipContent> {{ invitedBy.name }} </TooltipContent>
+            <TooltipContent> {{ invitedBy?.name }} </TooltipContent>
           </Tooltip>
         </TooltipProvider>
 
@@ -59,9 +65,7 @@ import { Check, XIcon } from "lucide-vue-next";
 </template>
 
 <script lang="ts">
-import { $ } from "~/generated/zeus";
-import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 export default {
   props: {
@@ -74,61 +78,37 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      matches_by_pk: null,
-    };
-  },
-  apollo: {
-    $subscribe: {
-      matches_by_pk: {
-        query: generateSubscription({
-          matches_by_pk: [
-            {
-              id: $("id", "uuid!"),
-            },
-            simpleMatchFields,
-          ],
-        }),
-        variables() {
-          return {
-            id: this.invite.match_id,
-          };
-        },
-        result({ data }: { data: any }) {
-          this.matches_by_pk = data.matches_by_pk;
-        },
-      },
-    },
-  },
   methods: {
-    async acceptInvite(inviteId: string) {
+    async acceptInvite(lobby_id: string) {
       await this.$apollo.mutate({
-        mutation: generateMutation({
-          acceptInvite: [
+        mutation: typedGql("mutation")({
+          update_lobby_players_by_pk: [
             {
-              type: this.type,
-              invite_id: inviteId,
+              pk_columns: {
+                lobby_id,
+                steam_id: this.me?.steam_id,
+              },
+              _set: {
+                status: "Accepted",
+              },
             },
             {
-              success: true,
+              __typename: true,
             },
           ],
         }),
       });
-
-      this.$router.push(`/matches/${this.invite.match_id}`);
     },
-    async denyInvite(inviteId: string) {
+    async denyInvite(lobby_id: string) {
       await this.$apollo.mutate({
-        mutation: generateMutation({
-          denyInvite: [
+        mutation: typedGql("mutation")({
+          delete_lobby_players_by_pk: [
             {
-              type: this.type,
-              invite_id: inviteId,
+              lobby_id,
+              steam_id: this.me?.steam_id,
             },
             {
-              success: true,
+              __typename: true,
             },
           ],
         }),
@@ -136,23 +116,24 @@ export default {
     },
   },
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
     allPlayers() {
-      if (!this.matches_by_pk) {
+      if (!this.invite?.players) {
         return [];
       }
-      return this.matches_by_pk.lineup_1.lineup_players.concat(
-        this.matches_by_pk.lineup_2.lineup_players,
-      );
+      return this.invite.players;
     },
     players() {
       return this.allPlayers.filter(
-        (player) => player.player.steam_id !== this.invite.invited_by.steam_id,
+        (player: any) => player.player.steam_id !== this.invitedBy?.steam_id,
       );
     },
     invitedBy() {
-      return this.allPlayers.find((player) => {
-        return player.player.steam_id === this.invite.invited_by.steam_id;
-      }).player;
+      return this.allPlayers.find((player: any) => {
+        return player.captain === true;
+      })?.player;
     },
   },
 };

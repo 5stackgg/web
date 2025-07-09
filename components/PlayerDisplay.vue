@@ -12,6 +12,8 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         ? { name: 'players-id', params: { id: player?.steam_id } }
         : null
     "
+    active-class="player-display-active"
+    exact-active-class="player-display-active"
     class="grid gap-2"
     :class="{
       'cursor-pointer': linkable,

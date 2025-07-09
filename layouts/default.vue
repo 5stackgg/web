@@ -16,6 +16,8 @@ import PlayerNameRegistration from "~/components/PlayerNameRegistration.vue";
       </main>
     </AppNav>
   </div>
+
+  <div id="global-chat-container"></div>
 </template>
 
 <script lang="ts">

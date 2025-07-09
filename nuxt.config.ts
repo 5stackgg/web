@@ -105,8 +105,18 @@ export default defineNuxtConfig({
       { code: "sv", name: "Svenska", file: "sv_SE.json", flag: "🇸🇪" }, // Swedish
       { code: "tr", name: "Türkçe", file: "tr_TR.json", flag: "🇹🇷" }, // Turkish
       { code: "uk", name: "Українська", file: "uk_UA.json", flag: "🇺🇦" }, // Ukrainian
-      { code: "zh-Hans", name: "中文 (简体)", file: "zh_Hans.json", flag: "🇨🇳" }, // Simplified Chinese
-      { code: "zh-Hant", name: "中文 (繁體)", file: "zh_Hant.json", flag: "🇨🇳" } // Traditional Chinese
+      {
+        code: "zh-Hans",
+        name: "中文 (简体)",
+        file: "zh_Hans.json",
+        flag: "🇨🇳",
+      }, // Simplified Chinese
+      {
+        code: "zh-Hant",
+        name: "中文 (繁體)",
+        file: "zh_Hant.json",
+        flag: "🇨🇳",
+      }, // Traditional Chinese
     ],
     lazy: true,
     defaultLocale: "en",

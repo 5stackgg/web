@@ -39,6 +39,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
                 :player="player"
                 :showOnline="false"
                 :showAddFriend="false"
+                :linkable="true"
               />
             </FriendOptions>
           </template>
@@ -47,6 +48,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
               :player="player"
               :showOnline="false"
               :showAddFriend="false"
+              :linkable="true"
             />
 
             <div class="flex flex-col gap-2">
@@ -84,6 +86,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
                 :player="player"
                 :showOnline="false"
                 :showAddFriend="false"
+                :linkable="true"
               />
             </FriendOptions>
             <div
@@ -112,6 +115,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
                     :showFlag="false"
                     :showElo="false"
                     :showRole="false"
+                    :linkable="true"
                   />
                 </template>
               </div>

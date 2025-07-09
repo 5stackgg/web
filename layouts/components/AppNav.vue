@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  BadgeCheck,
   ChevronsRight,
   ChevronRight,
   ChevronsUpDownIcon,
@@ -31,10 +30,12 @@ import MatchLobbies from "./MatchLobbies.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import InstallPWA from "~/components/InstallPWA.vue";
-import MatchmakingLobby from "~/components/matchmaking-lobby/MatchmakingLobby.vue";
 import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
-import ChatLobby from "~/components/chat/ChatLobby.vue";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
+import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
+import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
+import ChatLobby from "~/components/chat/ChatLobby.vue";
+import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
 </script>
 
 <template>
@@ -537,6 +538,7 @@ import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
     </Sidebar>
 
     <SidebarInset class="bg-muted/40 pt-4 overflow-hidden">
+
       <header
         class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 px-4"
       >
@@ -547,8 +549,22 @@ import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
             <bread-crumbs></bread-crumbs>
           </div>
 
+
           <div class="flex gap-4">
             <MatchLobbies></MatchLobbies>
+            <div class="flex">
+              <template v-if="currentLobby">
+                <ChatLobby
+                  class="max-h-[25vh]"
+                  :global="true"
+                  instance="matchmaking"
+                  :lobby-id="me.current_lobby_id"
+                  type="matchmaking"
+                />
+
+                <MatchLobby :lobby="currentLobby" />
+              </template>
+            </div>
 
             <SystemUpdate v-if="isAdmin"></SystemUpdate>
 
@@ -673,28 +689,26 @@ import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup :class="{ 'overflow-hidden': !me.current_lobby_id }">
-            <SidebarMenu :class="{ 'overflow-hidden': !me.current_lobby_id }">
-              <MatchmakingLobby :mini="!rightSidebarOpen" />
-            </SidebarMenu>
-          </SidebarGroup>
+          <SidebarGroup class="overflow-hidden -mt-4">
+            <template
+              v-if="
+                rightSidebarOpen &&
+                (matchInvites.length > 0 || lobbyInvites.length > 0)
+              "
+            >
+              <div class="flex flex-col gap-4">
+                <h3 class="text-lg font-semibold">
+                  {{ $t("matchmaking.invites") }}
+                  <span class="text-sm text-muted-foreground"
+                    >({{ matchInvites.length + lobbyInvites.length }})</span
+                  >
+                </h3>
 
-          <SidebarGroup v-if="me.current_lobby_id">
-            <ChatLobby
-              class="max-h-[25vh]"
-              instance="matchmaking"
-              :lobby-id="me.current_lobby_id"
-              type="matchmaking"
-              v-show="rightSidebarOpen"
-            />
-          </SidebarGroup>
-
-          <SidebarGroup
-            v-if="me.current_lobby_id"
-            class="overflow-hidden"
-            :class="{ '-mt-8': !rightSidebarOpen }"
-          >
-            <SidebarSeparator class="my-4" />
+                <MatchInvites></MatchInvites>
+                <LobbyInvites></LobbyInvites>
+              </div>
+              <SidebarSeparator class="my-4" />
+            </template>
             <FriendsList v-if="rightSidebarOpen" />
             <MiniDisplay v-if="!rightSidebarOpen" />
           </SidebarGroup>
@@ -823,14 +837,25 @@ export default {
     },
   },
   computed: {
+    matchInvites() {
+      return useMatchmakingStore().matchInvites;
+    },
+    lobbyInvites() {
+      return useMatchmakingStore().lobbyInvites;
+    },
     myMatches() {
       return useMatchLobbyStore().myMatches;
     },
     managingMatchesCount() {
       return useMatchLobbyStore().managingMatchesCount;
     },
-    inlobby() {
-      return useAuthStore().me.current_lobby_id !== null;
+    lobbies() {
+      return useMatchmakingStore().lobbies;
+    },
+    currentLobby() {
+      return this.lobbies?.find((lobby: any) => {
+        return lobby.id === this.me?.current_lobby_id;
+      });
     },
     isMedium() {
       return useMediaQuery("(max-width: 1400px)").value;

@@ -555,6 +555,7 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
                 <ChatLobby
                   class="max-h-[25vh]"
                   :global="true"
+                  :sidebarOpen="rightSidebarOpen"
                   instance="matchmaking"
                   :lobby-id="me.current_lobby_id"
                   type="matchmaking"

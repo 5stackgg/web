@@ -8,8 +8,11 @@ import ChatInput from "~/components/chat/ChatInput.vue";
   <div>
     <Teleport to="#global-chat-container" v-if="global" defer>
       <div
-        class="fixed bottom-4 right-4 w-80 bg-background border rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out flex flex-col"
+        class="fixed bottom-4 bg-background border rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out flex flex-col w-96"
         :class="{ 'h-12': isMinimized, 'h-96': !isMinimized }"
+        :style="{
+          right: rightSidebarOffset + 'px',
+        }"
       >
         <ChatHeader
           variant="global"
@@ -79,6 +82,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    sidebarOpen: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -89,6 +96,18 @@ export default {
       unreadCount: 0,
       lastReadMessageCount: 0,
     };
+  },
+  computed: {
+    rightSidebarOffset() {
+      const baseOffset = 120;
+
+      if (this.sidebarOpen) {
+        return baseOffset + 300;
+      }
+
+      // When sidebar is closed, use base offset
+      return baseOffset;
+    },
   },
   methods: {
     updateLobbyMessages(newMessages: any) {

@@ -45,31 +45,29 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
       </template>
       <template v-else>
         <div
-            @click="inviteToLobby"
-            class="hover:bg-muted/50 transition-all duration-200 rounded-md p-4"
-
-            v-if="canInviteToLobby"
-          >
-            <FiveStackToolTip>
-              {{ $t("matchmaking.friends.invite_to_lobby") }}
-              <template #trigger>
-                <Plus class="h-4 w-4" />
-              </template>
-            </FiveStackToolTip>
-          </div>
-          <div
-            @click="inviteToMatch"
-            class="hover:bg-muted/50 transition-all duration-200 rounded-md p-4"
-
-            v-if="canInviteToMatch"
-          >
-            <FiveStackToolTip>
-              {{ $t("matchmaking.friends.invite_to_match") }}
-              <template #trigger>
-                <Plus class="h-4 w-4" />
-              </template>
-            </FiveStackToolTip>
-          </div>
+          @click="inviteToLobby"
+          class="hover:bg-muted/50 transition-all duration-200 rounded-md p-4"
+          v-if="canInviteToLobby"
+        >
+          <FiveStackToolTip>
+            {{ $t("matchmaking.friends.invite_to_lobby") }}
+            <template #trigger>
+              <Plus class="h-4 w-4" />
+            </template>
+          </FiveStackToolTip>
+        </div>
+        <div
+          @click="inviteToMatch"
+          class="hover:bg-muted/50 transition-all duration-200 rounded-md p-4"
+          v-if="canInviteToMatch"
+        >
+          <FiveStackToolTip>
+            {{ $t("matchmaking.friends.invite_to_match") }}
+            <template #trigger>
+              <Plus class="h-4 w-4" />
+            </template>
+          </FiveStackToolTip>
+        </div>
       </template>
     </template>
   </div>

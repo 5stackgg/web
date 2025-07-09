@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { CornerDownLeft } from "lucide-vue-next";
+</script>
+
 <template>
   <form
     v-if="variant === 'global'"
@@ -50,7 +54,6 @@
 </template>
 
 <script lang="ts">
-import { CornerDownLeft } from "lucide-vue-next";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import * as z from "zod";
 import { useForm } from "vee-validate";

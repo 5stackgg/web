@@ -5,56 +5,57 @@ import ChatInput from "~/components/chat/ChatInput.vue";
 </script>
 
 <template>
-  <div>
-    <Teleport to="#global-chat-container" v-if="global" defer>
-      <div
-        class="fixed bottom-4 bg-background border rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out flex flex-col w-96"
-        :class="{ 'h-12': isMinimized, 'h-96': !isMinimized }"
-        :style="{
-          right: rightSidebarOffset + 'px',
-        }"
-      >
-        <ChatHeader
-          variant="global"
-          :is-minimized="isMinimized"
-          :unread-count="unreadCount"
-          @toggle-minimize="toggleMinimize"
-        >
-          <template #title>
-            <slot name="chat-label">{{ $t("chat.lobby_chat") }}</slot>
-          </template>
-        </ChatHeader>
-        <div
-          v-if="!isMinimized"
-          class="flex flex-col flex-1 transition-opacity duration-200"
-          :class="{ 'opacity-0': isMinimized, 'opacity-100': !isMinimized }"
-        >
-          <ChatMessages
-            ref="chatMessagesRef"
-            :messages="messages"
-            variant="global"
-            :is-minimized="isMinimized"
-          />
-          <ChatInput variant="global" @send-message="handleSendMessage" />
-        </div>
-      </div>
-    </Teleport>
+  <Teleport to="#global-chat-container" v-if="global" defer>
     <div
-      v-if="!global"
-      class="relative flex min-h-[25vh] flex-col rounded-xl bg-muted/50 p-4"
+      v-bind="$attrs"
+      class="fixed bottom-4 bg-background border rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out flex flex-col w-96"
+      :class="{ 'h-12': isMinimized, 'h-96': !isMinimized }"
+      :style="{
+        right: rightSidebarOffset + 'px',
+      }"
     >
-      <ChatHeader variant="embedded">
+      <ChatHeader
+        variant="global"
+        :is-minimized="isMinimized"
+        :unread-count="unreadCount"
+        @toggle-minimize="toggleMinimize"
+      >
         <template #title>
           <slot name="chat-label">{{ $t("chat.lobby_chat") }}</slot>
         </template>
       </ChatHeader>
-      <ChatMessages
-        ref="chatMessagesRef"
-        :messages="messages"
-        variant="embedded"
-      />
-      <ChatInput variant="embedded" @send-message="handleSendMessage" />
+      <div
+        v-if="!isMinimized"
+        class="flex flex-col flex-1 min-h-0 transition-opacity duration-200"
+        :class="{ 'opacity-0': isMinimized, 'opacity-100': !isMinimized }"
+      >
+        <ChatMessages
+          ref="chatMessagesRef"
+          :messages="messages"
+          variant="global"
+          :is-minimized="isMinimized"
+          class="flex-1 overflow-y-auto max-h-96"
+        />
+        <ChatInput variant="global" @send-message="handleSendMessage" />
+      </div>
     </div>
+  </Teleport>
+  <div
+    v-else
+    v-bind="$attrs"
+    class="relative flex min-h-[25vh] flex-col rounded-xl bg-muted/50 p-4"
+  >
+    <ChatHeader variant="embedded">
+      <template #title>
+        <slot name="chat-label">{{ $t("chat.lobby_chat") }}</slot>
+      </template>
+    </ChatHeader>
+    <ChatMessages
+      ref="chatMessagesRef"
+      :messages="messages"
+      variant="embedded"
+    />
+    <ChatInput variant="embedded" @send-message="handleSendMessage" />
   </div>
 </template>
 
@@ -62,7 +63,12 @@ import ChatInput from "~/components/chat/ChatInput.vue";
 import socket from "~/web-sockets/Socket";
 import type { Lobby } from "~/web-sockets/Socket";
 
+interface ChatMessagesRef {
+  scrollToBottom: (force?: boolean) => void;
+}
+
 export default {
+  inheritAttrs: false,
   props: {
     instance: {
       type: String,
@@ -118,16 +124,26 @@ export default {
     toggleMinimize() {
       this.isMinimized = !this.isMinimized;
     },
+    safeScrollToBottom(force = false) {
+      this.$nextTick(() => {
+        const chatMessagesRef = this.$refs.chatMessagesRef as ChatMessagesRef;
+        if (
+          chatMessagesRef &&
+          typeof chatMessagesRef.scrollToBottom === "function"
+        ) {
+          chatMessagesRef.scrollToBottom(force);
+        } else {
+          console.error("ChatMessagesRef not found");
+        }
+      });
+    },
     handleSendMessage(message: string) {
       socket.chat(
         this.type as "match" | "team" | "matchmaking",
         this.lobbyId,
         message,
       );
-      this.$nextTick(() => {
-        const chatMessagesRef = this.$refs.chatMessagesRef as any;
-        chatMessagesRef?.scrollToBottom();
-      });
+      this.safeScrollToBottom();
     },
   },
   watch: {
@@ -150,20 +166,15 @@ export default {
             if (this.isMinimized && this.global) {
               this.unreadCount++;
             }
-            this.$nextTick(() => {
-              const chatMessagesRef = this.$refs.chatMessagesRef as any;
-              chatMessagesRef?.scrollToBottom();
-            });
+            this.safeScrollToBottom();
           },
         );
       },
     },
     messages: {
+      immediate: true,
       handler(current, prev) {
-        this.$nextTick(() => {
-          const chatMessagesRef = this.$refs.chatMessagesRef as any;
-          chatMessagesRef?.scrollToBottom(prev.length === 0);
-        });
+        this.safeScrollToBottom(!prev || prev.length === 0);
       },
     },
     isMinimized: {
@@ -171,6 +182,9 @@ export default {
         if (!minimized) {
           this.unreadCount = 0;
           this.lastReadMessageCount = this.messages.length;
+          this.$nextTick(() => {
+            this.safeScrollToBottom(true);
+          });
         } else {
           this.lastReadMessageCount = this.messages.length;
         }

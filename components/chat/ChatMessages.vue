@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import ChatMessage from "~/components/chat/ChatMessage.vue";
-</script>
-
 <template>
   <div
     v-if="variant === 'global' && !isMinimized"
@@ -30,7 +26,12 @@ import ChatMessage from "~/components/chat/ChatMessage.vue";
 </template>
 
 <script lang="ts">
+import ChatMessage from "~/components/chat/ChatMessage.vue";
+
 export default {
+  components: {
+    ChatMessage,
+  },
   props: {
     messages: {
       type: Array as () => any[],

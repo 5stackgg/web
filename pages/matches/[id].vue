@@ -36,7 +36,7 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
       <JoinMatch :match="match"></JoinMatch>
       <MatchInfo :match="match"></MatchInfo>
       <ChatLobby
-        class="max-h-[50vh]"
+        class="max-h-96"
         instance="matches/id"
         type="match"
         :lobby-id="match.id"

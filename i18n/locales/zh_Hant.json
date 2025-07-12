@@ -393,7 +393,8 @@
                 "matches": "比賽",
                 "tournaments": "錦標賽",
                 "players": "玩家",
-                "teams": "戰隊"
+                "teams": "戰隊",
+                "community": "社群"
             },
             "administration": {
                 "title": "後台管理",
@@ -995,12 +996,16 @@
     },
     "matchmaking": {
         "searching_for_match": "正在尋找 {type} 比賽中",
+        "invites": "邀請",
         "lobby": {
+            "access": "大廳權限",
+            "access_description": "控制誰可以加入大廳。開放表示任何人都可以加入，好友表示僅限好友加入，邀請表示僅限受邀玩家加入。",
             "title": "配對大廳",
             "leave": "離開大廳",
             "invite_player": "邀請玩家加入大廳",
             "invites": "大廳邀請",
-            "access_updated": "大廳權限已更新為 {access}"
+            "access_updated": "大廳權限已更新為 {access}",
+            "join": "加入大廳"
         },
         "friends": {
             "title": "好友",

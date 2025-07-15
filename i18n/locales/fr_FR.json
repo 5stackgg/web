@@ -393,7 +393,8 @@
                 "matches": "Matchs",
                 "tournaments": "Tournois",
                 "players": "Joueurs",
-                "teams": "Équipes"
+                "teams": "Équipes",
+                "community": "Communauté"
             },
             "administration": {
                 "title": "Administration",
@@ -995,12 +996,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Recherche d'une correspondance {type}",
+        "invites": "Invitations",
         "lobby": {
+            "access": "Accès au lobby",
+            "access_description": "Définit qui peut rejoindre le lobby. Ouvert autorise tous les joueurs à rejoindre, Amis autorise seulement vos amis à rejoindre, et Invitations autorise à rejoindre uniquement les joueurs que vous invitez.",
             "title": "Lobby de matchmaking",
             "leave": "Quitter",
             "invite_player": "Inviter un joueur",
             "invites": "Invitations",
-            "access_updated": "Les permissions d'accès ont été mises à jour"
+            "access_updated": "Les permissions d'accès ont été mises à jour",
+            "join": "Rejoindre le lobby"
         },
         "friends": {
             "title": "Amis",

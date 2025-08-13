@@ -161,6 +161,7 @@ export default {
                 tech_timeout_setting: true,
                 ready_setting: true,
                 lobby_access: true,
+                map_pool_id: true,
                 map_pool: {
                   type: true,
                   e_type: {

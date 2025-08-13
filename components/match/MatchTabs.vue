@@ -21,6 +21,7 @@ import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { e_match_types_enum } from "~/generated/zeus";
+import MatchForm from "~/components/match/MatchForm.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -254,7 +255,10 @@ provide("commander", commander);
         </form>
       </RconCommander>
     </TabsContent>
-    <TabsContent value="settings">
+    <TabsContent value="settings" class="flex flex-col gap-4">
+      <Card class="p-3">
+        <MatchForm :match="match" />
+      </Card>
       <Card class="p-3 w-full sm:max-w-[500px]">
         <CardContent>
           <MatchOptionsDisplay

@@ -118,6 +118,41 @@ export default {
       }, 300),
     };
   },
+  watch: {
+    query(newQuery: string) {
+      this.debouncedSearch(newQuery);
+    },
+    modelValue: {
+      once: true,
+      immediate: true,
+      async handler(teamId: string) {
+        if (!teamId) {
+          return;
+        }
+
+        const { data } = await this.$apollo.query({
+          query: generateQuery({
+            teams: [
+              {
+                where: {
+                  id: {
+                    _eq: teamId,
+                  },
+                },
+              },
+              {
+                id: true,
+                name: true,
+                short_name: true,
+              },
+            ],
+          }),
+        });
+
+        this.teams = data.teams;
+      },
+    },
+  },
   computed: {
     me() {
       return useAuthStore().me;
@@ -178,11 +213,6 @@ export default {
         }),
       });
       this.teams = data.teams;
-    },
-  },
-  watch: {
-    query(newQuery: string) {
-      this.debouncedSearch(newQuery);
     },
   },
 };

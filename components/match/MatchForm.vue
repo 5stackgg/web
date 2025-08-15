@@ -114,6 +114,7 @@ import { useForm } from "vee-validate";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -379,6 +380,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: this.$t("pages.matches.match_updated"),
       });
     },
     async createMatch() {

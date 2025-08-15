@@ -256,9 +256,6 @@ provide("commander", commander);
       </RconCommander>
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4">
-      <Card class="p-3">
-        <MatchForm :match="match" />
-      </Card>
       <Card class="p-3 w-full sm:max-w-[500px]">
         <CardContent>
           <MatchOptionsDisplay
@@ -295,6 +292,9 @@ provide("commander", commander);
             </div>
           </template>
         </CardContent>
+      </Card>
+      <Card class="p-3" v-if="match.is_organizer">
+        <MatchForm :match="match" />
       </Card>
     </TabsContent>
   </Tabs>

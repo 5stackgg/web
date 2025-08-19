@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "URL конструктора Cloudflare, який буде використовуватися для зберігання та отримання демо файлів.",
                   "min_retention_description": "Мінімальні дні затримки для демо файлів.",
                   "current_storage": "Поточне зберігання",
-                  "used_storage": "Приблизний зберігання"
+                  "used_storage": "Приблизний зберігання",
+                  "test_s3_title": "Тест S3",
+                  "test_s3_description": "Перевірте підключення S3 та завантажте файл до демо-відра.",
+                  "test_upload": "Перевірка завантаження",
+                  "test_upload_success": "Успішне тестування завантаження",
+                  "test_upload_failed": "Перевірка невдала",
+                  "test_download": "Тест завантаження",
+                  "test_download_failed": "Тестування завантаження не вдалося"
                 },
                 "update_map_pools": {
                   "title": "Автоматичні оновлення карти басейни",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Останні 10 поразок",
             "my_match_history": "Історія моїх матчів",
             "other_matches": "Інші матчі",
+            "match_updated": "Матч оновлено",
             "create_page": {
                 "title": "Створити",
                 "pick_up_game": "Публічний матч",
@@ -212,7 +220,8 @@
                 "search_team": "Пошук команди",
                 "team_2": "Команда 2",
                 "intra_team_scrimmage": "Тренувальний матч команди",
-                "create_button": "Створити"
+                "create_button": "Створити",
+                "update_button": "Оновлення збігів"
             },
             "detail": {
                 "schedule": "Запланувати"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Вузол",
                 "lan_public_ip": "Локальна/Публічна IP",
-                "cs_build_id": "ID збірки CS",
+                "cs_build_id": "CS-збірка",
                 "region": "Регіон",
                 "capacity": "Місткість",
                 "ports": "Порти",
@@ -393,7 +402,8 @@
                 "matches": "Матчі",
                 "tournaments": "Турніри",
                 "players": "Гравці",
-                "teams": "Команди"
+                "teams": "Команди",
+                "community": "Спільнота"
             },
             "administration": {
                 "title": "Адміністрування",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Пошук по {type} матч",
+        "invites": "Запрошення",
         "lobby": {
+            "access": "Доступ до лобі",
+            "access_description": "Визначає, хто може приєднатися до коридору. Відкритий доступ дає змогу будь-кому приєднатися, друзі можуть приєднуватися тільки до друзів і запрошувати тільки гравців, до яких ви запрошуєте.",
             "title": "Лобі матчмейкінгу",
             "leave": "Покинути лобі",
             "invite_player": "Запросити гравця в лобі",
             "invites": "Запрошення в лобі",
-            "access_updated": "Доступ до лобі оновлено до {access}"
+            "access_updated": "Доступ до лобі оновлено до {access}",
+            "join": "Приєднатися до лобі"
         },
         "friends": {
             "title": "Друзі",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "Оновити CS",
+        "pin_build_id": "Версія Pin Server",
+        "unpin_build_id": "Використовувати останню версію",
+        "pinned_build_id": "Закріплена версія сервера",
         "install_cs": "Встановити CS",
         "select_region": "Вибрати регіон",
         "remove_node": "Видалити вузол",

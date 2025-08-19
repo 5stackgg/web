@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "用來儲存與讀取 Demo 檔案的 Cloudflare Worker 網址。",
                   "min_retention_description": "Demo 檔案的最短保留天數。",
                   "current_storage": "目前儲存量",
-                  "used_storage": "已使用大約儲存量"
+                  "used_storage": "已使用大約儲存量",
+                  "test_s3_title": "测试 S3",
+                  "test_s3_description": "测试 S3 连接并将文件上传到演示桶。",
+                  "test_upload": "测试上传",
+                  "test_upload_success": "测试上传成功",
+                  "test_upload_failed": "测试上传失败",
+                  "test_download": "测试下载",
+                  "test_download_failed": "测试下载失败"
                 },
                 "update_map_pools": {
                   "title": "自動更新地圖池",
@@ -204,6 +211,7 @@
             "last_ten_losses": "最近 10 場失敗",
             "my_match_history": "我的比賽歷史",
             "other_matches": "其他比賽",
+            "match_updated": "比赛已更新",
             "create_page": {
                 "title": "建立比賽",
                 "pick_up_game": "隨機匹配賽（PUG）",
@@ -212,7 +220,8 @@
                 "search_team": "搜尋隊伍...",
                 "team_2": "隊伍 2",
                 "intra_team_scrimmage": "你可以在兩邊都選擇同一隊伍以建立隊內對抗（Scrim）。",
-                "create_button": "建立比賽"
+                "create_button": "建立比賽",
+                "update_button": "更新比赛"
             },
             "detail": {
                 "schedule": "賽程安排"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "節點",
                 "lan_public_ip": "區網 / 公網 IP",
-                "cs_build_id": "CS Build ID",
+                "cs_build_id": "CS 生成",
                 "region": "地區",
                 "capacity": "容量",
                 "ports": "通訊埠",
@@ -344,6 +353,7 @@
         },
         "manage_matches": {
             "title": "比賽管理",
+            "only_my_matches": "仅我有组织的比赛",
             "description": "檢視與管理平台上的所有比賽。"
         }
     },
@@ -392,7 +402,8 @@
                 "matches": "比賽",
                 "tournaments": "錦標賽",
                 "players": "玩家",
-                "teams": "戰隊"
+                "teams": "戰隊",
+                "community": "社区"
             },
             "administration": {
                 "title": "後台管理",
@@ -994,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "正在尋找 {type} 比賽中",
+        "invites": "邀请",
         "lobby": {
+            "access": "大厅访问",
+            "access_description": "控制谁可以加入大厅。 打开允许任何人加入，朋友只允许朋友加入，并且只允许您邀请玩家加入。",
             "title": "配對大廳",
             "leave": "離開大廳",
             "invite_player": "邀請玩家加入大廳",
             "invites": "大廳邀請",
-            "access_updated": "大廳權限已更新為 {access}"
+            "access_updated": "大廳權限已更新為 {access}",
+            "join": "加入大厅"
         },
         "friends": {
             "title": "好友",
@@ -1026,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "更新 CS",
+        "pin_build_id": "Pin 服务器版本",
+        "unpin_build_id": "使用最新版本",
+        "pinned_build_id": "服务器版本置頂了",
         "install_cs": "安裝 CS",
         "select_region": "選擇地區",
         "remove_node": "移除節點",

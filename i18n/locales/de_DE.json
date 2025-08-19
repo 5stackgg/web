@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "Die URL des Cloudflare Workers, die verwendet werden, um die Demo-Dateien zu speichern und abzurufen.",
                   "min_retention_description": "Die Mindesteinhaltungstage für die Demo-Dateien.",
                   "current_storage": "Aktueller Speicher",
-                  "used_storage": "Benutzter Speicher"
+                  "used_storage": "Benutzter Speicher",
+                  "test_s3_title": "S3 testen",
+                  "test_s3_description": "Testen Sie die S3-Verbindung und laden Sie eine Datei in den Demo-Bucket hoch.",
+                  "test_upload": "Upload testen",
+                  "test_upload_success": "Test erfolgreich hochgeladen",
+                  "test_upload_failed": "Test Upload fehlgeschlagen",
+                  "test_download": "Download testen",
+                  "test_download_failed": "Test Download fehlgeschlagen"
                 },
                 "update_map_pools": {
                   "title": "Automatisches Update von Kartenpools",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Letzte 10 Spiele verloren",
             "my_match_history": "Meine Spielhistorie",
             "other_matches": "Andere Spiele",
+            "match_updated": "Match aktualisiert",
             "create_page": {
                 "title": "Erstellen",
                 "pick_up_game": "Pickup-Spiel",
@@ -212,7 +220,8 @@
                 "search_team": "Team suchen",
                 "team_2": "Team 2",
                 "intra_team_scrimmage": "Teaminternes Training",
-                "create_button": "Erstellen"
+                "create_button": "Erstellen",
+                "update_button": "Spiel aktualisieren"
             },
             "detail": {
                 "schedule": "Zeitplan"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Knoten",
                 "lan_public_ip": "LAN/Öffentliche IP",
-                "cs_build_id": "CS-Build-ID",
+                "cs_build_id": "CS Build",
                 "region": "Region",
                 "capacity": "Kapazität",
                 "ports": "Ports",
@@ -393,7 +402,8 @@
                 "matches": "Spiele",
                 "tournaments": "Turniere",
                 "players": "Spieler",
-                "teams": "Teams"
+                "teams": "Teams",
+                "community": "Community"
             },
             "administration": {
                 "title": "Administration",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Suche nach einem {type} Spiel",
+        "invites": "Einladungen",
         "lobby": {
+            "access": "Lobby-Zugang",
+            "access_description": "Steuert wer der Lobby beitreten kann. Open erlaubt jedem zu beitreten, Freunde erlaubt es nur Freunden beizutreten und Einladungen erlaubt nur Spieler, die du einlädst.",
             "title": "Matchmaking-Lobby",
             "leave": "Verlassen",
             "invite_player": "Spieler einladen",
             "invites": "Einladungen",
-            "access_updated": "Zugriffsberechtigungen wurden aktualisiert"
+            "access_updated": "Zugriffsberechtigungen wurden aktualisiert",
+            "join": "Lobby beitreten"
         },
         "friends": {
             "title": "Freunde",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "CS aktualisieren",
+        "pin_build_id": "Server-Version anheften",
+        "unpin_build_id": "Neueste Version verwenden",
+        "pinned_build_id": "Server-Version angepinnt",
         "install_cs": "CS installieren",
         "select_region": "Region auswählen",
         "remove_node": "Knoten entfernen",

@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "The URL of the Cloudflare worker that will be used to store and retrieve the demo files.",
                   "min_retention_description": "The minimum retention days for the demo files.",
                   "current_storage": "Current Storage",
-                  "used_storage": "Approximate Storage Used"
+                  "used_storage": "Approximate Storage Used",
+                  "test_s3_title": "اختبار S3",
+                  "test_s3_description": "اختبر اتصال S3 ورفع ملف إلى دلو تجريبي.",
+                  "test_upload": "اختبار الرفع",
+                  "test_upload_success": "اختبار التحميل بنجاح",
+                  "test_upload_failed": "فشل تحميل الاختبار",
+                  "test_download": "اختبار التحميل",
+                  "test_download_failed": "فشل تحميل الاختبار"
                 },
                 "update_map_pools": {
                   "title": "Automatic Update Map Pools",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Last 10 Losses",
             "my_match_history": "My Match History",
             "other_matches": "Other Matches",
+            "match_updated": "تم تحديث المباراة",
             "create_page": {
                 "title": "Create Match",
                 "pick_up_game": "Pick Up Game",
@@ -212,7 +220,8 @@
                 "search_team": "Search for a Team ...",
                 "team_2": "Team 2",
                 "intra_team_scrimmage": "You can select the same team for both slots to create an intra-team scrimmage.",
-                "create_button": "Create Match"
+                "create_button": "Create Match",
+                "update_button": "تحديث المطابقة"
             },
             "detail": {
                 "schedule": "Schedule"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Node",
                 "lan_public_ip": "Lan/Public IP",
-                "cs_build_id": "CS Build ID",
+                "cs_build_id": "بناء CS",
                 "region": "Region",
                 "capacity": "Capacity",
                 "ports": "Ports",
@@ -393,7 +402,8 @@
                 "matches": "Matches",
                 "tournaments": "Tournaments",
                 "players": "Players",
-                "teams": "Teams"
+                "teams": "Teams",
+                "community": "المجتمع"
             },
             "administration": {
                 "title": "Administration",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Searching for a {type} match",
+        "invites": "دعوات",
         "lobby": {
+            "access": "الوصول إلى الردهة",
+            "access_description": "يتحكم من يمكنه الانضمام إلى ردهة الرغبة. فتح يسمح لأي شخص بالانضمام، الأصدقاء فقط بالانضمام، ودعوة لا تسمح إلا للاعبين الذين تدعوهم للانضمام.",
             "title": "Matchmaking Lobby",
             "leave": "Leave Lobby",
             "invite_player": "Invite Player to Lobby",
             "invites": "Lobby invites",
-            "access_updated": "Lobby access updated to {access}"
+            "access_updated": "Lobby access updated to {access}",
+            "join": "الانضمام إلى الردهة"
         },
         "friends": {
             "title": "Friends",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "Update CS",
+        "pin_build_id": "تثبيت نسخة السيرفر",
+        "unpin_build_id": "استخدام أحدث إصدار",
+        "pinned_build_id": "نسخة السيرفر المثبتة",
         "install_cs": "Install CS",
         "select_region": "Select Region",
         "remove_node": "Remove Node",

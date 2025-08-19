@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "URL pracownika Cloudflare, który będzie używany do przechowywania i pobierania plików demo.",
                   "min_retention_description": "Minimalne dni retencji plików demo.",
                   "current_storage": "Aktualne przechowywanie",
-                  "used_storage": "Stosowane przybliżone przechowywanie"
+                  "used_storage": "Stosowane przybliżone przechowywanie",
+                  "test_s3_title": "Badanie S3",
+                  "test_s3_description": "Przetestuj połączenie S3 i wgraj plik do wiadra demo.",
+                  "test_upload": "Prześlij test",
+                  "test_upload_success": "Przesłano pomyślnie",
+                  "test_upload_failed": "Przesyłanie nie powiodło się",
+                  "test_download": "Sprawdź pobieranie",
+                  "test_download_failed": "Test pobierania nie powiódł się"
                 },
                 "update_map_pools": {
                   "title": "Automatyczna aktualizacja puli map",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Ostatnie 10 porażek",
             "my_match_history": "Moja historia meczów",
             "other_matches": "Inne mecze",
+            "match_updated": "Mecz zaktualizowany",
             "create_page": {
                 "title": "Utwórz",
                 "pick_up_game": "Mecz pickup",
@@ -212,7 +220,8 @@
                 "search_team": "Szukaj drużyny",
                 "team_2": "Drużyna 2",
                 "intra_team_scrimmage": "Scrimmage wewnątrz drużyny",
-                "create_button": "Utwórz"
+                "create_button": "Utwórz",
+                "update_button": "Aktualizuj mecz"
             },
             "detail": {
                 "schedule": "Zaplanuj"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Węzeł",
                 "lan_public_ip": "LAN/IP publiczny",
-                "cs_build_id": "ID kompilacji CS",
+                "cs_build_id": "Kompilacja CS",
                 "region": "Region",
                 "capacity": "Pojemność",
                 "ports": "Porty",
@@ -393,7 +402,8 @@
                 "matches": "Mecze",
                 "tournaments": "Turnieje",
                 "players": "Gracze",
-                "teams": "Drużyny"
+                "teams": "Drużyny",
+                "community": "Społeczność"
             },
             "administration": {
                 "title": "Administracja",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Poszukiwanie dopasowania {type}",
+        "invites": "Zaproszenia",
         "lobby": {
+            "access": "Dostęp do lobby",
+            "access_description": "Kontrole, które mogą dołączyć do lobby. Otwarte pozwala każdemu na dołączenie, znajomi mogą dołączyć tylko do znajomych, a zaproszenie pozwala tylko graczom, których zaprosisz do dołączenia.",
             "title": "Lobby matchmakingu",
             "leave": "Wyjdź",
             "invite_player": "Zaproś gracza",
             "invites": "Zaproszenia",
-            "access_updated": "Uprawnienia dostępu zostały zaktualizowane"
+            "access_updated": "Uprawnienia dostępu zostały zaktualizowane",
+            "join": "Dołącz do Lobby"
         },
         "friends": {
             "title": "Znajomi",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "Aktualizuj CS",
+        "pin_build_id": "Przypnij wersję serwera",
+        "unpin_build_id": "Użyj najnowszej wersji",
+        "pinned_build_id": "Wersja serwera przypięta",
         "install_cs": "Zainstaluj CS",
         "select_region": "Wybierz region",
         "remove_node": "Usuń węzeł",

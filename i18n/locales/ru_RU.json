@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "URL сотрудника Cloudflare, который будет использоваться для хранения и извлечения демонстрационных файлов.",
                   "min_retention_description": "Минимальные дни хранения демо-файлов.",
                   "current_storage": "Текущее хранение",
-                  "used_storage": "Приблизительное хранение используется"
+                  "used_storage": "Приблизительное хранение используется",
+                  "test_s3_title": "Тест S3",
+                  "test_s3_description": "Проверьте соединение с S3 и загрузите файл на демо-корзину.",
+                  "test_upload": "Тестовая загрузка",
+                  "test_upload_success": "Успешная загрузка теста",
+                  "test_upload_failed": "Ошибка загрузки теста",
+                  "test_download": "Проверить загрузку",
+                  "test_download_failed": "Проверить загрузку не удалось"
                 },
                 "update_map_pools": {
                   "title": "Автоматическое обновление Map Pools",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Последние 10 поражений",
             "my_match_history": "Моя история матчей",
             "other_matches": "Другие матчи",
+            "match_updated": "Матч Обновлен",
             "create_page": {
                 "title": "Создать",
                 "pick_up_game": "Матч для всех",
@@ -212,7 +220,8 @@
                 "search_team": "Поиск команды",
                 "team_2": "Команда 2",
                 "intra_team_scrimmage": "Тренировочный матч внутри команды",
-                "create_button": "Создать"
+                "create_button": "Создать",
+                "update_button": "Обновить матч"
             },
             "detail": {
                 "schedule": "Запланировать"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Узел",
                 "lan_public_ip": "LAN/Публичный IP",
-                "cs_build_id": "ID сборки CS",
+                "cs_build_id": "Сборка CS",
                 "region": "Регион",
                 "capacity": "Емкость",
                 "ports": "Порты",
@@ -393,7 +402,8 @@
                 "matches": "Матчи",
                 "tournaments": "Турниры",
                 "players": "Игроки",
-                "teams": "Команды"
+                "teams": "Команды",
+                "community": "Сообщество"
             },
             "administration": {
                 "title": "Администрирование",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Поиск совпадения {type}",
+        "invites": "Приглашения",
         "lobby": {
+            "access": "Доступ в лобби",
+            "access_description": "Определяет, кто может присоединиться к лобби. Открытие позволяет любому присоединиться, друзья позволяют только друзьям вступить в игру, а Приглашение позволяет только пригласить вас в игру.",
             "title": "Лобби матчмейкинга",
             "leave": "Выйти",
             "invite_player": "Пригласить игрока",
             "invites": "Приглашения",
-            "access_updated": "Права доступа обновлены"
+            "access_updated": "Права доступа обновлены",
+            "join": "Вступить в Лобби"
         },
         "friends": {
             "title": "Друзья",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "Обновить CS",
+        "pin_build_id": "Версия Pin Server",
+        "unpin_build_id": "Использовать последнюю версию",
+        "pinned_build_id": "Установлена версия сервера",
         "install_cs": "Установить CS",
         "select_region": "Выбрать регион",
         "remove_node": "Удалить узел",

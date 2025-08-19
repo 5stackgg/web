@@ -240,7 +240,7 @@
             "table": {
                 "node": "Node",
                 "lan_public_ip": "Lan/Public IP",
-                "cs_build_id": "CS Build ID",
+                "cs_build_id": "CS Build",
                 "region": "Region",
                 "capacity": "Capacity",
                 "ports": "Ports",
@@ -1035,6 +1035,9 @@
     },
     "game_server": {
         "update_cs": "Update CS",
+        "pin_build_id": "Pin Server Version",
+        "unpin_build_id": "Use Latest Version",
+        "pinned_build_id": "Server version pinned",
         "install_cs": "Install CS",
         "select_region": "Select Region",
         "remove_node": "Remove Node",

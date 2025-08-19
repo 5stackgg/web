@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "URL för Cloudflare-arbetaren som kommer att användas för att lagra och hämta demofilerna.",
                   "min_retention_description": "Minsta lagringsdagar för demofilerna.",
                   "current_storage": "Nuvarande lagring",
-                  "used_storage": "Ungefärlig lagring som används"
+                  "used_storage": "Ungefärlig lagring som används",
+                  "test_s3_title": "Testa S3",
+                  "test_s3_description": "Testa S3-anslutningen och ladda upp en fil till demohinken.",
+                  "test_upload": "Testa uppladdning",
+                  "test_upload_success": "Uppladdning av test lyckades",
+                  "test_upload_failed": "Uppladdning av test misslyckades",
+                  "test_download": "Testa nedladdning",
+                  "test_download_failed": "Nedladdning av testet misslyckades"
                 },
                 "update_map_pools": {
                   "title": "Automatisk uppdatering Map Pools",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Sista 10 förluster",
             "my_match_history": "Min matchhistorik",
             "other_matches": "Andra matcher",
+            "match_updated": "Matchning uppdaterad",
             "create_page": {
                 "title": "Skapa match",
                 "pick_up_game": "Pick-up-spel",
@@ -212,7 +220,8 @@
                 "search_team": "Sök efter ett lag...",
                 "team_2": "Lag 2",
                 "intra_team_scrimmage": "Du kan välja samma lag för båda platserna för att skapa en intra-lag träning.",
-                "create_button": "Skapa match"
+                "create_button": "Skapa match",
+                "update_button": "Uppdatera matchning"
             },
             "detail": {
                 "schedule": "Schema"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Nod",
                 "lan_public_ip": "LAN/Publik IP",
-                "cs_build_id": "CS Bygg-ID",
+                "cs_build_id": "CS Bygg",
                 "region": "Region",
                 "capacity": "Kapacitet",
                 "ports": "Portar",
@@ -393,7 +402,8 @@
                 "matches": "Matcher",
                 "tournaments": "Turneringar",
                 "players": "Spelare",
-                "teams": "Lag"
+                "teams": "Lag",
+                "community": "Gemenskap"
             },
             "administration": {
                 "title": "Administration",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Söka efter en {typ} match",
+        "invites": "Inbjudningar",
         "lobby": {
+            "access": "Lobby åtkomst",
+            "access_description": "Kontroller som kan gå med i lobbyn. Öppna tillåter vem som helst att gå med, Vänner tillåter bara vänner att gå med, och Bjud tillåter bara spelare du bjuder in att gå med.",
             "title": "Matchmaking lobby",
             "leave": "Lämna lobby",
             "invite_player": "Bjud in spelare till lobby",
             "invites": "Lobby-inbjudningar",
-            "access_updated": "Lobbyåtkomst uppdaterad till {access}"
+            "access_updated": "Lobbyåtkomst uppdaterad till {access}",
+            "join": "Gå med i lobbyn"
         },
         "friends": {
             "title": "Vänner",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "Uppdatera CS",
+        "pin_build_id": "Fäst serverversion",
+        "unpin_build_id": "Använd senaste versionen",
+        "pinned_build_id": "Serverversion fäst",
         "install_cs": "Installera CS",
         "select_region": "Välj region",
         "remove_node": "Ta bort nod",

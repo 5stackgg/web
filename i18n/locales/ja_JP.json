@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "デモファイルを保存および取得するために使用されるCloudflareワーカーのURL.",
                   "min_retention_description": "デモファイルの最小保持日.",
                   "current_storage": "現在の貯蔵",
-                  "used_storage": "使用されるおよその貯蔵"
+                  "used_storage": "使用されるおよその貯蔵",
+                  "test_s3_title": "テストS3",
+                  "test_s3_description": "S3接続をテストし、デモバケットにファイルをアップロードします。",
+                  "test_upload": "アップロードテスト",
+                  "test_upload_success": "テストアップロード成功",
+                  "test_upload_failed": "テストアップロードに失敗しました",
+                  "test_download": "ダウンロードをテスト",
+                  "test_download_failed": "テストに失敗しました"
                 },
                 "update_map_pools": {
                   "title": "自動更新マッププール",
@@ -204,6 +211,7 @@
             "last_ten_losses": "直近10試合の敗北",
             "my_match_history": "マイマッチ履歴",
             "other_matches": "その他のマッチ",
+            "match_updated": "一致の更新",
             "create_page": {
                 "title": "作成",
                 "pick_up_game": "ピックアップゲーム",
@@ -212,7 +220,8 @@
                 "search_team": "チームを検索",
                 "team_2": "チーム2",
                 "intra_team_scrimmage": "チーム内スクリム",
-                "create_button": "作成"
+                "create_button": "作成",
+                "update_button": "試合を更新"
             },
             "detail": {
                 "schedule": "スケジュール"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "ノード",
                 "lan_public_ip": "LAN/パブリックIP",
-                "cs_build_id": "CSビルドID",
+                "cs_build_id": "CS ビルド",
                 "region": "リージョン",
                 "capacity": "容量",
                 "ports": "ポート",
@@ -393,7 +402,8 @@
                 "matches": "マッチ",
                 "tournaments": "トーナメント",
                 "players": "プレイヤー",
-                "teams": "チーム"
+                "teams": "チーム",
+                "community": "コミュニティ"
             },
             "administration": {
                 "title": "管理",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "{type}マッチを検索する",
+        "invites": "招待",
         "lobby": {
+            "access": "ロビーアクセス",
+            "access_description": "ロビーに参加できるユーザーを制御します。 開くと誰でも参加できます。フレンドはフレンドのみ参加できます。招待は招待したプレイヤーのみ参加できます。",
             "title": "マッチメイキングロビー",
             "leave": "ロビーを退出",
             "invite_player": "プレイヤーをロビーに招待",
             "invites": "ロビーへの招待",
-            "access_updated": "ロビーへのアクセスが{access}に更新されました"
+            "access_updated": "ロビーへのアクセスが{access}に更新されました",
+            "join": "ロビーに参加"
         },
         "friends": {
             "title": "フレンド",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "CSを更新",
+        "pin_build_id": "サーバーのバージョンをピン留めする",
+        "unpin_build_id": "最新バージョンを使用する",
+        "pinned_build_id": "サーバーのバージョンを留めました",
         "install_cs": "CSをインストール",
         "select_region": "リージョンを選択",
         "remove_node": "ノードを削除",

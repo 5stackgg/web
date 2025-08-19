@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
                   "min_retention_description": "Den mindste opbevaring dage for demo-filer.",
                   "current_storage": "Aktuel opbevaring",
-                  "used_storage": "Omtrentlige opbevaring brugt"
+                  "used_storage": "Omtrentlige opbevaring brugt",
+                  "test_s3_title": "Test S3",
+                  "test_s3_description": "Test S3-forbindelsen og upload en fil til demo-spanden.",
+                  "test_upload": "Test Upload",
+                  "test_upload_success": "Test Upload Gennemført",
+                  "test_upload_failed": "Test Upload Mislykkedes",
+                  "test_download": "Test Download",
+                  "test_download_failed": "Test Download Mislykkedes"
                 },
                 "update_map_pools": {
                   "title": "Automatisk opdateringskortspil",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Sidste 10 nederlag",
             "my_match_history": "Min kamp historik",
             "other_matches": "Andre kampe",
+            "match_updated": "Match Opdateret",
             "create_page": {
                 "title": "Opret",
                 "pick_up_game": "Pickup kamp",
@@ -212,7 +220,8 @@
                 "search_team": "Søg efter hold",
                 "team_2": "Hold 2",
                 "intra_team_scrimmage": "Intra-hold scrimmage",
-                "create_button": "Opret"
+                "create_button": "Opret",
+                "update_button": "Opdater Match"
             },
             "detail": {
                 "schedule": "Planlæg"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Node",
                 "lan_public_ip": "LAN/Offentlig IP",
-                "cs_build_id": "CS build ID",
+                "cs_build_id": "CS Byg",
                 "region": "Region",
                 "capacity": "Kapacitet",
                 "ports": "Porte",
@@ -393,7 +402,8 @@
                 "matches": "Kampe",
                 "tournaments": "Turneringer",
                 "players": "Spillere",
-                "teams": "Hold"
+                "teams": "Hold",
+                "community": "Fællesskab"
             },
             "administration": {
                 "title": "Administration",
@@ -995,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Søgning efter en {type} match",
+        "invites": "Invitationer",
         "lobby": {
+            "access": "Lobby Adgang",
+            "access_description": "Kontrollerer, hvem der kan deltage i lobbyen. Åbn giver alle mulighed for at deltage, Venner giver kun venner mulighed for at deltage, og Invitation giver kun spillere du inviterer til at deltage.",
             "title": "Matchmaking lobby",
             "leave": "Forlad",
             "invite_player": "Inviter spiller",
             "invites": "Invitationer",
-            "access_updated": "Adgangsrettigheder er blevet opdateret"
+            "access_updated": "Adgangsrettigheder er blevet opdateret",
+            "join": "Deltag I Lobby"
         },
         "friends": {
             "title": "Venner",
@@ -1027,6 +1041,9 @@
     },
     "game_server": {
         "update_cs": "Opdater CS",
+        "pin_build_id": "Pin Server Version",
+        "unpin_build_id": "Brug Seneste Version",
+        "pinned_build_id": "Server version fastgjort",
         "install_cs": "Installer CS",
         "select_region": "Vælg region",
         "remove_node": "Fjern node",

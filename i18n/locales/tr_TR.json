@@ -131,7 +131,14 @@
                   "cloudflare_worker_url_description": "The URL of the Cloudflare worker that will be used to store and retrieve the demo files.",
                   "min_retention_description": "The minimum retention days for the demo files.",
                   "current_storage": "Current Storage",
-                  "used_storage": "Approximate Storage Used"
+                  "used_storage": "Approximate Storage Used",
+                  "test_s3_title": "Test S3",
+                  "test_s3_description": "S3 bağlantısını test edin ve demo kovasına bir dosya yükleyin.",
+                  "test_upload": "Test Yükleme",
+                  "test_upload_success": "Test Yüklemesi Başarılı",
+                  "test_upload_failed": "Test Yüklemesi Başarısız Oldu",
+                  "test_download": "Test İndirme",
+                  "test_download_failed": "Test İndirmesi Başarısız Oldu"
                 },
                 "update_map_pools": {
                   "title": "Automatic Update Map Pools",
@@ -204,6 +211,7 @@
             "last_ten_losses": "Last 10 Losses",
             "my_match_history": "My Match History",
             "other_matches": "Other Matches",
+            "match_updated": "Maç Güncellendi",
             "create_page": {
                 "title": "Create Match",
                 "pick_up_game": "Pick Up Game",
@@ -212,7 +220,8 @@
                 "search_team": "Search for a Team ...",
                 "team_2": "Team 2",
                 "intra_team_scrimmage": "You can select the same team for both slots to create an intra-team scrimmage.",
-                "create_button": "Create Match"
+                "create_button": "Create Match",
+                "update_button": "Maçı Güncelle"
             },
             "detail": {
                 "schedule": "Schedule"
@@ -237,7 +246,7 @@
             "table": {
                 "node": "Node",
                 "lan_public_ip": "Lan/Public IP",
-                "cs_build_id": "CS Build ID",
+                "cs_build_id": "CS Derleme Numarası",
                 "region": "Region",
                 "capacity": "Capacity",
                 "ports": "Ports",
@@ -344,6 +353,7 @@
         },
         "manage_matches": {
             "title": "Manage Matches",
+            "only_my_matches": "Sadece Benim Düzenlediğim Maçlar",
             "description": "View and manage all matches across the platform."
         }
     },
@@ -392,7 +402,8 @@
                 "matches": "Matches",
                 "tournaments": "Tournaments",
                 "players": "Players",
-                "teams": "Teams"
+                "teams": "Teams",
+                "community": "Topluluk"
             },
             "administration": {
                 "title": "Administration",
@@ -994,12 +1005,16 @@
     },
     "matchmaking": {
         "searching_for_match": "Searching for a {type} match",
+        "invites": "Davetler",
         "lobby": {
+            "access": "Lobi Erişimi",
+            "access_description": "Lobiye kimlerin katılabileceğini kontrol eder. Açık seçeneği herkesin katılmasını sağlar, Arkadaşlar seçeneği sadece arkadaşların katılmasını sağlar ve Davet seçeneği sadece davet ettiğiniz oyuncuların katılmasını sağlar.",
             "title": "Matchmaking Lobby",
             "leave": "Leave Lobby",
             "invite_player": "Invite Player to Lobby",
             "invites": "Lobby invites",
-            "access_updated": "Lobby access updated to {access}"
+            "access_updated": "Lobby access updated to {access}",
+            "join": "Lobiye Katıl"
         },
         "friends": {
             "title": "Friends",
@@ -1026,12 +1041,16 @@
     },
     "game_server": {
         "update_cs": "Update CS",
+        "pin_build_id": "Sunucu Sürümünü Sabitleme",
+        "unpin_build_id": "En Son Sürümü Kullan",
+        "pinned_build_id": "Sunucu sürümü sabitlendi",
         "install_cs": "Install CS",
         "select_region": "Select Region",
         "remove_node": "Remove Node",
         "edit_label": "Edit Label",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",
+        "version_pinning_not_supported": "Bu sunucuda sürüm sabitleme desteklenmemektedir.",
         "validation": {
             "start_port_less_than_end": "Start port range must be less than end port range",
             "end_port_greater_than_start": "End port range must be greater than start port range by at least 2"

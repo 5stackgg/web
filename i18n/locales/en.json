@@ -1051,6 +1051,7 @@
         "edit_label": "Edit Label",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",
+        "version_pinning_not_supported": "Version pinning is not supported on this server.",
         "validation": {
             "start_port_less_than_end": "Start port range must be less than end port range",
             "end_port_greater_than_start": "End port range must be greater than start port range by at least 2"

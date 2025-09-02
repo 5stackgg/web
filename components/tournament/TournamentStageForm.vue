@@ -20,6 +20,21 @@ import {
 
 <template>
   <form @submit.prevent="updateCreateStage" class="grid gap-4">
+    <FormField v-slot="{ componentField }" name="groups">
+      <FormItem>
+        <FormLabel>{{ $t("tournament.stage.groups") }}</FormLabel>
+        <FormControl>
+          <Input
+            v-bind="componentField"
+            type="number"
+            min="1"
+            :placeholder="$t('tournament.stage.groups_placeholder')"
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="type">
       <FormItem>
         <FormLabel>{{ $t("tournament.stage.type") }}</FormLabel>
@@ -151,6 +166,7 @@ export default {
         validationSchema: toTypedSchema(
           z
             .object({
+              groups: z.number().default(1),
               type: z.string(),
               min_teams: z.string().refine((val) => !isNaN(parseInt(val)), {
                 message: "min teams must be a number",
@@ -177,10 +193,16 @@ export default {
         if (stage) {
           this.form.setValues({
             type: stage.type,
+            groups: stage.groups,
             min_teams: stage.min_teams.toString(),
             max_teams: stage.max_teams.toString(),
           });
+          return;
         }
+
+        this.form.setValues({
+          groups: 1,
+        });
       },
     },
   },
@@ -199,6 +221,7 @@ export default {
     baseNumberOfTeamsOptions() {
       let options = [];
       switch (this.form.values.type) {
+        case e_tournament_stage_types_enum.DoubleElimination:
         case e_tournament_stage_types_enum.SingleElimination:
           let max = 256;
 
@@ -209,6 +232,13 @@ export default {
             });
 
             max = max / 2;
+          }
+
+          if (this.order > 1) {
+            options.push({
+              value: "2",
+              display: 2,
+            });
           }
 
           break;
@@ -235,6 +265,7 @@ export default {
                 },
                 _set: {
                   order: this.order,
+                  groups: this.form.values.groups,
                   type: this.form.values.type,
                   min_teams: this.form.values.min_teams,
                   max_teams: this.form.values.max_teams,
@@ -256,6 +287,7 @@ export default {
             {
               object: {
                 order: this.order,
+                groups: this.form.values.groups,
                 type: this.form.values.type,
                 min_teams: this.form.values.min_teams,
                 max_teams: this.form.values.max_teams,

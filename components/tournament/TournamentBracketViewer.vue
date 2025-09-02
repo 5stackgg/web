@@ -1,7 +1,12 @@
+t
 <script lang="ts" setup>
-import { ref, watch, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import { Maximize, Minimize } from "lucide-vue-next";
+import {
+  getRoundLabel,
+  getWinnerLabel,
+} from "~/utilities/tournamentRoundLabels";
 
 interface TournamentRound {
   length: number;
@@ -13,6 +18,20 @@ const props = defineProps({
     type: Map<number, TournamentRound>,
     required: true,
   },
+  isFinalStage: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const roundLabels = computed(() => {
+  const labels = new Map<number, string>();
+
+  for (const [roundNumber, round] of props.rounds.entries()) {
+    const label = getRoundLabel(roundNumber, props.isFinalStage, round.length);
+    labels.set(roundNumber, label);
+  }
+  return labels;
 });
 
 const bracketContainer = ref<HTMLElement | null>(null);
@@ -424,22 +443,22 @@ function startMomentum() {
       <div class="grid grid-flow-col auto-cols-max gap-20 min-w-max">
         <div
           v-for="round of Array.from(props.rounds.keys())"
-          class="flex flex-col justify-around bracket-column"
+          class="flex flex-col bracket-column"
         >
-          <TournamentMatch
-            :round="Number(round)"
-            :brackets="props.rounds.get(round) as any[]"
-          ></TournamentMatch>
-        </div>
-        <div class="flex flex-col justify-around bracket-column">
-          <div class="tournament-match">
-            <div class="items-center mx-4">
-              <div
-                class="bg-gray-600 text-gray-300 rounded-lg p-3 shadow-md -mt-6"
-              >
-                <span class="font-bold text-xl"> </span>
-              </div>
+          <!-- Round Label -->
+          <div class="text-center mb-2">
+            <div class="bg-gray-700 text-white rounded-lg px-4 py-2 shadow-md">
+              <span class="font-semibold text-sm">{{
+                roundLabels.get(round) || `Round ${round}`
+              }}</span>
             </div>
+          </div>
+
+          <div class="flex flex-col justify-around flex-1">
+            <TournamentMatch
+              :round="Number(round)"
+              :brackets="props.rounds.get(round) as any[]"
+            ></TournamentMatch>
           </div>
         </div>
       </div>

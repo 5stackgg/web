@@ -481,7 +481,6 @@
     "tournament": {
         "overview": "Overview",
         "bracket": "Bracket",
-        "teams": "{count} Teams",
         "settings": "Settings",
         "admin": "Admin",
         "organizers": "Organizers",
@@ -521,7 +520,6 @@
         },
         "stage": {
             "title": "Stage {number}",
-            "teams": "{min}-{max} Teams",
             "edit": "Edit Stage",
             "delete": "Delete Stage",
             "edit_title": "Edit Stage",
@@ -529,6 +527,9 @@
             "delete_description": "Are you sure you want to delete this stage?",
             "type": "Stage Type",
             "type_placeholder": "Select stage type...",
+            "group": "Group {group}",
+            "stage_tab": "Stage {stage}",
+            "advances_to_next_stage": "Winners advance to the next stage",
             "min_teams": "Minimum Teams",
             "min_teams_placeholder": "Select minimum teams...",
             "max_teams": "Maximum Teams",
@@ -539,12 +540,34 @@
             "start_building": "Start Building Your Tournament",
             "add_first": "Add First Stage",
             "add_another": "Add Another Stage",
-            "not_setup": "Tournament stages not set up"
+            "not_setup": "Tournament stages not set up",
+            "groups": "Groups",
+            "groups_placeholder": "Enter number of groups for this stage..."
         },
         "match": {
             "team_1": "Team 1",
             "team_2": "Team 2",
-            "round_match": "Round {round} Match {match}"
+            "round_match": "Round {round} Match {match}",
+            "bye_round": "Bye Round",
+            "scheduled_for": "Scheduled for"
+        },
+        "rounds": {
+            "opening_round": "Opening Round",
+            "round": "Round {number}",
+            "round_of_8": "Round of 8",
+            "round_of_16": "Round of 16",
+            "round_of_32": "Round of 32",
+            "quarter_finals": "Quarter Finals",
+            "semi_finals": "Semi Finals",
+            "finals": "Finals",
+            "winner": "Winner",
+            "advances_to_next_stage": "Advances to Next Stage",
+            "final_round": "Final Round",
+            "2nd_round": "2nd Round",
+            "3rd_round": "3rd Round",
+            "4th_round": "4th Round",
+            "5th_round": "5th Round",
+            "6th_round": "6th Round"
         },
         "organizer": {
             "title": "Tournament Organizers",
@@ -587,6 +610,13 @@
             "select_team": "Select a team...",
             "search_team": "Search for a team...",
             "add_to_tournament": "Add to Tournament"
+        },
+        "teams": {
+            "count": "{count} Teams",
+            "my_teams": "My Teams",
+            "other_teams": "Other Teams",
+            "no_my_team": "You don't have a team in this tournament",
+            "no_other_teams": "There are no other teams in this tournament"
         },
         "actions": {
             "open_registration": "Open Registration",

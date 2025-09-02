@@ -167,6 +167,14 @@ export default {
     },
   },
   watch: {
+    "form.values.add_self_to_lineup": {
+      handler(newVal) {
+        if (newVal) {
+          this.teamOwner = null;
+          this.form.setFieldValue("owner_steam_id", this.me.steam_id);
+        }
+      },
+    },
     "form.values.new_team": {
       handler(newVal) {
         if (!newVal) {

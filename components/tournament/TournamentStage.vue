@@ -23,22 +23,12 @@ import {
 } from "~/components/ui/alert-dialog";
 import TournamentBracketViewer from "./TournamentBracketViewer.vue";
 </script>
-
 <template>
   <h1 class="flex justify-between items-center mb-8">
     <div class="flex flex-col space-y-2">
-      <h2 class="text-xl">
-        {{ $t("tournament.stage.title", { number: stage.order }) }}
-      </h2>
       <div class="flex items-center space-x-2">
         <Badge class="text-sm">{{
           stage.e_tournament_stage_type.description
-        }}</Badge>
-        <Badge variant="secondary" class="text-sm">{{
-          $t("tournament.stage.teams", {
-            min: stage.min_teams,
-            max: stage.max_teams,
-          })
         }}</Badge>
       </div>
     </div>
@@ -68,7 +58,18 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
     </DropdownMenu>
   </h1>
 
-  <TournamentBracketViewer :rounds="rounds"></TournamentBracketViewer>
+  <!-- Loop through groups -->
+  <div v-for="groupNumber in stage.groups" :key="groupNumber" class="mb-8">
+    <h3 class="text-lg font-semibold mb-4" v-if="stage.groups > 1">
+      {{
+        $t("tournament.stage.group", { group: getGroupDisplay(groupNumber) })
+      }}
+    </h3>
+    <TournamentBracketViewer
+      :rounds="getRoundsForGroup(groupNumber)"
+      :is-final-stage="isFinalStage"
+    ></TournamentBracketViewer>
+  </div>
 
   <Sheet :open="editStage" @update:open="(open) => (editStage = open)">
     <SheetTrigger></SheetTrigger>
@@ -119,6 +120,10 @@ export default {
       type: Object,
       required: true,
     },
+    isFinalStage: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -128,17 +133,28 @@ export default {
     };
   },
   computed: {
-    rounds() {
-      const rounds = new Map();
-      for (const bracket of this.stage?.brackets) {
-        let matches = rounds.get(bracket.round) || [];
-
-        matches.push(bracket);
-
-        rounds.set(bracket.round, matches);
-      }
-
-      return rounds;
+    getRoundsForGroup() {
+      return (groupNumber: number) => {
+        const rounds = new Map();
+        for (const match of this.stage?.brackets) {
+          if (match.group == groupNumber) {
+            const matches = rounds.get(match.round) || [];
+            matches.push(match);
+            rounds.set(match.round, matches);
+          }
+        }
+        return rounds;
+      };
+    },
+    getGroupDisplay() {
+      return (groupNumber: number) => {
+        // If we have 26 or fewer groups, use letters a-z
+        if (this.stage.groups <= 26) {
+          return String.fromCharCode(96 + groupNumber).toUpperCase();
+        }
+        // Otherwise use the original number
+        return groupNumber;
+      };
     },
   },
   methods: {

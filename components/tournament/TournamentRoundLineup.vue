@@ -4,14 +4,14 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
 
 <template>
   <div class="flex gap-2">
-    <template v-if="bracket.match">
+    <template v-if="match">
       <MatchLineupScoreDisplay
-        :match="bracket.match"
+        :match="match"
         :lineup="lineup"
       ></MatchLineupScoreDisplay>
     </template>
     <span>
-      {{ lineup.name }}
+      {{ lineup_name }}
     </span>
   </div>
 </template>
@@ -27,8 +27,8 @@ export default {
       type: Object,
       required: true,
     },
-    bracket: {
-      type: Object,
+    lineup_name: {
+      type: String,
       required: true,
     },
   },

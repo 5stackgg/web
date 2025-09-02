@@ -27,7 +27,7 @@ import { NuxtLink } from "#components";
           }}</TabsTrigger>
           <TabsTrigger value="teams">
             {{
-              $t("tournament.teams", {
+              $t("tournament.teams.count", {
                 count: tournament?.teams_aggregate?.aggregate?.count || 0,
               })
             }}
@@ -211,24 +211,59 @@ import { NuxtLink } from "#components";
       <TabsContent value="teams">
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-grow md:w-2/3">
+            <!-- Show tabs only if user has a team -->
             <template v-if="myTeam">
-              <Card class="p-4">
-                <TournamentTeam
-                  :tournament="tournament"
-                  :team="myTeam"
-                ></TournamentTeam>
-              </Card>
-              <Separator class="my-8" />
+              <Tabs default-value="my-teams" class="w-full">
+                <TabsList class="mb-4 w-full flex">
+                  <TabsTrigger value="my-teams" class="flex-1">
+                    {{ $t("tournament.teams.my_teams") }}
+                  </TabsTrigger>
+                  <TabsTrigger value="other-teams" class="flex-1">
+                    {{ $t("tournament.teams.other_teams") }}
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="my-teams">
+                  <Card class="p-4">
+                    <TournamentTeam
+                      :tournament="tournament"
+                      :team="myTeam"
+                    ></TournamentTeam>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="other-teams">
+                  <div class="grid gap-4">
+                    <Card
+                      class="p-4"
+                      v-for="team of tournament.teams.filter(
+                        (t) => t.id !== myTeam.id,
+                      )"
+                      :key="team.id"
+                    >
+                      <TournamentTeam
+                        :tournament="tournament"
+                        :team="team"
+                      ></TournamentTeam>
+                    </Card>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </template>
 
-            <div class="grid gap-4">
-              <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
-                <TournamentTeam
-                  :tournament="tournament"
-                  :team="team"
-                ></TournamentTeam>
-              </Card>
-            </div>
+            <!-- Show other teams directly if user has no team -->
+            <template v-else>
+              <div class="grid gap-4">
+                <Card
+                  class="p-4"
+                  v-for="team of tournament.teams"
+                  :key="team.id"
+                >
+                  <TournamentTeam
+                    :tournament="tournament"
+                    :team="team"
+                  ></TournamentTeam>
+                </Card>
+              </div>
+            </template>
           </div>
 
           <div class="w-full md:w-1/3 space-y-4" v-if="tournament.is_organizer">
@@ -338,6 +373,9 @@ export default {
                     {
                       eligible_at: order_by.asc,
                     },
+                    {
+                      created_at: order_by.asc,
+                    },
                   ],
                 },
                 tournamentTeamFields,
@@ -365,6 +403,7 @@ export default {
                     description: true,
                   },
                   order: true,
+                  groups: true,
                   min_teams: true,
                   max_teams: true,
                   brackets: [
@@ -374,6 +413,9 @@ export default {
                           round: order_by.asc,
                         },
                         {
+                          group: order_by.asc,
+                        },
+                        {
                           match_number: order_by.asc,
                         },
                       ],
@@ -381,7 +423,10 @@ export default {
                     {
                       id: true,
                       round: true,
+                      group: true,
+                      bye: true,
                       match_number: true,
+                      scheduled_eta: true,
                       match: {
                         id: true,
                         status: true,

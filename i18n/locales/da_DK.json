@@ -357,11 +357,6 @@
             "description": "Få vist og administrere alle kampe på tværs af platformen."
         }
     },
-    "notifications": {
-        "match": {
-            "title": "Match- invitationer"
-        }
-    },
     "custom_match": {
         "title": "Brugerdefineret match",
         "description": "Opret og tilpasse din egen kamp. Sæt regler, vælge kort, og invitere venner til en personlig gaming oplevelse."
@@ -402,8 +397,7 @@
                 "matches": "Kampe",
                 "tournaments": "Turneringer",
                 "players": "Spillere",
-                "teams": "Hold",
-                "community": "Fællesskab"
+                "teams": "Hold"
             },
             "administration": {
                 "title": "Administration",
@@ -477,13 +471,13 @@
         "confirm": "Bekræft",
         "refresh": "Genopfrisk"
     },
+    "error": {
+        "generic": "Der opstod en fejl. Prøv venligst igen."
+    },
     "tournament": {
         "overview": "Oversigt",
-        "bracket": "Bracket",
-        "teams": "{count} Hold",
         "settings": "Indstillinger",
         "admin": "Administration",
-        "organizers": "Organisatorer",
         "show_organizers": "Vis Organisatorer",
         "hide_organizers": "Skjul organisatorer",
         "join": {
@@ -494,7 +488,6 @@
             "requirements": "Du skal have mindst {count} spillere for at deltage i denne turnering"
         },
         "tournament_team": {
-            "players_registered": "{count} Registrerede spillere",
             "remove": "Fjern hold"
         },
         "add_team": {
@@ -507,8 +500,7 @@
             "description": "Beskrivelse",
             "start": "Start",
             "pick_date": "Vælg dato",
-            "update": "Opdater",
-            "match_options": "Kampindstillinger"
+            "update": "Opdater"
         },
         "table": {
             "tournament": "Turnering",
@@ -519,8 +511,6 @@
             "no_tournaments_found": "Ingen turneringer fundet"
         },
         "stage": {
-            "title": "Fase {number}",
-            "teams": "{min}-{max} Hold",
             "edit": "Rediger fase",
             "delete": "Slet fase",
             "edit_title": "Rediger fase",
@@ -528,6 +518,9 @@
             "delete_description": "Er du sikker på, at du vil slette denne fase?",
             "type": "Fasetype",
             "type_placeholder": "Vælg fasetype...",
+            "group": "Gruppe {group}",
+            "stage_tab": "Fase {stage}",
+            "advances_to_next_stage": "Vindere går videre til næste trin",
             "min_teams": "Minimum hold",
             "min_teams_placeholder": "Vælg minimum hold...",
             "max_teams": "Maksimum hold",
@@ -538,12 +531,16 @@
             "start_building": "Start bracket opbygning",
             "add_first": "Tilføj første fase",
             "add_another": "Tilføj en anden fase",
-            "not_setup": "Fase ikke opsat"
+            "not_setup": "Fase ikke opsat",
+            "groups": "Grupper",
+            "groups_placeholder": "Indtast antal grupper for dette trin..."
         },
         "match": {
             "team_1": "Hold 1",
             "team_2": "Hold 2",
-            "round_match": "Rundekamp {round} Kamp {match}"
+            "round_match": "Rundekamp {round} Kamp {match}",
+            "bye_round": "Bye Runde",
+            "scheduled_for": "Planlagt til"
         },
         "organizer": {
             "title": "Turneringsorganisatorer",
@@ -558,7 +555,6 @@
             "remove_description": "Dette vil fjerne organisatoren fra turneringen"
         },
         "team": {
-            "manage_roster": "Administrer trup",
             "eligible": "Berettiget",
             "not_eligible": "Mangler {count} flere spillere",
             "leave_tournament": "Forlad turnering",
@@ -578,14 +574,12 @@
             "remove_member_description": "Dette vil fjerne medlemmet fra turneringsholdet",
             "cancel_invite": "Annuller invitation",
             "confirm_cancel_invite": "Er du sikker på, at du vil annullere denne invitation?",
-            "cancel_invite_description": "Dette vil annullere invitationen til dette medlem",
-            "my_teams": "Mine hold",
-            "my_teams_description": "Tilføj et af dine hold til turneringen",
-            "no_eligible_teams": "Du har ingen berettigede hold at tilføje til denne turnering",
-            "team": "Hold",
-            "select_team": "Vælg et hold...",
-            "search_team": "Søg efter et hold...",
-            "add_to_tournament": "Tilføj til turnering"
+            "cancel_invite_description": "Dette vil annullere invitationen til dette medlem"
+        },
+        "teams": {
+            "count": "{count} Hold",
+            "my_teams": "Mine Hold",
+            "other_teams": "Andre Hold"
         },
         "actions": {
             "open_registration": "Åbn registrering",
@@ -1009,12 +1003,9 @@
         "lobby": {
             "access": "Lobby Adgang",
             "access_description": "Kontrollerer, hvem der kan deltage i lobbyen. Åbn giver alle mulighed for at deltage, Venner giver kun venner mulighed for at deltage, og Invitation giver kun spillere du inviterer til at deltage.",
-            "title": "Matchmaking lobby",
             "leave": "Forlad",
             "invite_player": "Inviter spiller",
-            "invites": "Invitationer",
-            "access_updated": "Adgangsrettigheder er blevet opdateret",
-            "join": "Deltag I Lobby"
+            "access_updated": "Adgangsrettigheder er blevet opdateret"
         },
         "friends": {
             "title": "Venner",
@@ -1026,8 +1017,7 @@
             "invite_to_match": "Inviter spiller til Match",
             "remove": "Fjern",
             "join_lobby": "Tilmeld Lobby",
-            "offline": "Offline",
-            "view_profile": "Vis profil"
+            "offline": "Offline"
         },
         "banned": "Bannet",
         "go_to_match": "Gå til kamp",
@@ -1050,6 +1040,7 @@
         "edit_label": "Redigér etiket",
         "label_placeholder": "Indtast nodeetiket",
         "update_label": "Opdatér etiket",
+        "version_pinning_not_supported": "Versionspinning understøttes ikke på denne server.",
         "validation": {
             "start_port_less_than_end": "Startport skal være mindre end slutport",
             "end_port_greater_than_start": "Slutport skal være større end startport"
@@ -1061,8 +1052,7 @@
         }
     },
     "chat": {
-        "lobby_chat": "Lobby chat",
-        "message_placeholder": "Skriv en besked..."
+        "lobby_chat": "Lobby chat"
     },
     "charts": {
         "usage": "Forbrug"

@@ -358,7 +358,11 @@
             "description": "View and manage all matches across the platform."
         }
     },
-
+    "notifications": {
+        "match": {
+            "title": "Match Invites"
+        }
+    },
     "custom_match": {
         "title": "Custom Match",
         "description": "Create and customize your own match. Set rules, choose maps, and invite friends for a personalized gaming experience."
@@ -399,7 +403,8 @@
                 "matches": "Matches",
                 "tournaments": "Tournaments",
                 "players": "Players",
-                "teams": "Teams"
+                "teams": "Teams",
+                "community": "Community"
             },
             "administration": {
                 "title": "Administration",
@@ -473,13 +478,12 @@
         "confirm": "Confirm",
         "refresh": "Refresh"
     },
-    "error": {
-        "generic": "An error occurred. Please try again."
-    },
     "tournament": {
         "overview": "Overview",
+        "bracket": "Bracket",
         "settings": "Settings",
         "admin": "Admin",
+        "organizers": "Organizers",
         "show_organizers": "View Organizers",
         "hide_organizers": "Hide Organizers",
         "join": {
@@ -490,6 +494,7 @@
             "requirements": "You need at least {count} players to join this tournament"
         },
         "tournament_team": {
+            "players_registered": "{count} Players Registered",
             "remove": "Remove Team"
         },
         "add_team": {
@@ -502,7 +507,8 @@
             "description": "Description",
             "start": "Start Date",
             "pick_date": "Pick a date",
-            "update": "Update Tournament"
+            "update": "Update Tournament",
+            "match_options": "Match Options"
         },
         "table": {
             "tournament": "Tournament",
@@ -513,6 +519,7 @@
             "no_tournaments_found": "No tournaments found"
         },
         "stage": {
+            "title": "Stage {number}",
             "edit": "Edit Stage",
             "delete": "Delete Stage",
             "edit_title": "Edit Stage",
@@ -544,7 +551,24 @@
             "bye_round": "Bye Round",
             "scheduled_for": "Scheduled for"
         },
-
+        "rounds": {
+            "opening_round": "Opening Round",
+            "round": "Round {number}",
+            "round_of_8": "Round of 8",
+            "round_of_16": "Round of 16",
+            "round_of_32": "Round of 32",
+            "quarter_finals": "Quarter Finals",
+            "semi_finals": "Semi Finals",
+            "finals": "Finals",
+            "winner": "Winner",
+            "advances_to_next_stage": "Advances to Next Stage",
+            "final_round": "Final Round",
+            "2nd_round": "2nd Round",
+            "3rd_round": "3rd Round",
+            "4th_round": "4th Round",
+            "5th_round": "5th Round",
+            "6th_round": "6th Round"
+        },
         "organizer": {
             "title": "Tournament Organizers",
             "description": "Manage tournament organizers",
@@ -558,6 +582,7 @@
             "remove_description": "This will remove the organizer from the tournament"
         },
         "team": {
+            "manage_roster": "Manage Roster",
             "eligible": "Eligible",
             "not_eligible": "Need {count} more players",
             "leave_tournament": "Leave Tournament",
@@ -577,12 +602,21 @@
             "remove_member_description": "This will remove the member from the tournament team",
             "cancel_invite": "Cancel Invite",
             "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
-            "cancel_invite_description": "This will cancel the invite for this member"
+            "cancel_invite_description": "This will cancel the invite for this member",
+            "my_teams": "My Teams",
+            "my_teams_description": "Add one of your teams to the tournament",
+            "no_eligible_teams": "You don't have any eligible teams to add to this tournament",
+            "team": "Team",
+            "select_team": "Select a team...",
+            "search_team": "Search for a team...",
+            "add_to_tournament": "Add to Tournament"
         },
         "teams": {
             "count": "{count} Teams",
             "my_teams": "My Teams",
-            "other_teams": "Other Teams"
+            "other_teams": "Other Teams",
+            "no_my_team": "You don't have a team in this tournament",
+            "no_other_teams": "There are no other teams in this tournament"
         },
         "actions": {
             "open_registration": "Open Registration",
@@ -1006,9 +1040,12 @@
         "lobby": {
             "access": "Lobby Access",
             "access_description": "Controls who can join the lobby. Open allows anyone to join, Friends allows only friends to join, and Invite allows only players you invite to join.",
+            "title": "Matchmaking Lobby",
             "leave": "Leave Lobby",
             "invite_player": "Invite Player to Lobby",
-            "access_updated": "Lobby access updated to {access}"
+            "invites": "Lobby invites",
+            "access_updated": "Lobby access updated to {access}",
+            "join": "Join Lobby"
         },
         "friends": {
             "title": "Friends",
@@ -1020,7 +1057,8 @@
             "invite_to_match": "Invite Player to Match",
             "remove": "Remove Friend",
             "join_lobby": "Join Lobby",
-            "offline": "Offline"
+            "offline": "Offline",
+            "view_profile": "View Profile"
         },
         "banned": "You are banned from matchmaking",
         "go_to_match": "Go to Match",
@@ -1055,7 +1093,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Lobby Chat"
+        "lobby_chat": "Lobby Chat",
+        "message_placeholder": "Type a message..."
     },
     "charts": {
         "usage": "Usage"

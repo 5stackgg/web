@@ -357,11 +357,6 @@
             "description": "プラットフォーム全体ですべてのマッチを表示および管理します."
         }
     },
-    "notifications": {
-        "match": {
-            "title": "マッチ招待状"
-        }
-    },
     "custom_match": {
         "title": "カスタムマッチ",
         "description": "独自のマッチを作成してカスタマイズします。 ルールを設定し、マップを選択し、パーソナライズされたゲーム体験のために友達を招待します."
@@ -402,8 +397,7 @@
                 "matches": "マッチ",
                 "tournaments": "トーナメント",
                 "players": "プレイヤー",
-                "teams": "チーム",
-                "community": "コミュニティ"
+                "teams": "チーム"
             },
             "administration": {
                 "title": "管理",
@@ -477,13 +471,13 @@
         "confirm": "確認",
         "refresh": "リフレッシュ"
     },
+    "error": {
+        "generic": "エラーが発生しました。もう一度やり直してください。"
+    },
     "tournament": {
         "overview": "概要",
-        "bracket": "ブラケット",
-        "teams": "チーム",
         "settings": "設定",
         "admin": "管理",
-        "organizers": "主催者",
         "show_organizers": "主催者を見る",
         "hide_organizers": "組織を隠す",
         "join": {
@@ -494,7 +488,6 @@
             "requirements": "参加要件"
         },
         "tournament_team": {
-            "players_registered": "登録プレイヤー",
             "remove": "削除"
         },
         "add_team": {
@@ -507,8 +500,7 @@
             "description": "説明",
             "start": "開始",
             "pick_date": "日付を選択",
-            "update": "更新",
-            "match_options": "マッチオプション"
+            "update": "更新"
         },
         "table": {
             "tournament": "トーナメント",
@@ -519,8 +511,6 @@
             "no_tournaments_found": "トーナメントが見つかりません"
         },
         "stage": {
-            "title": "ステージ",
-            "teams": "チーム",
             "edit": "ステージを編集",
             "delete": "ステージを削除",
             "edit_title": "ステージを編集",
@@ -528,6 +518,9 @@
             "delete_description": "このステージを削除してもよろしいですか？",
             "type": "タイプ",
             "type_placeholder": "ステージタイプを選択",
+            "group": "グループ {group}",
+            "stage_tab": "ステージ {stage}",
+            "advances_to_next_stage": "勝者は次のステージに進みます",
             "min_teams": "最小チーム数",
             "min_teams_placeholder": "最小チーム数を入力",
             "max_teams": "最大チーム数",
@@ -538,12 +531,16 @@
             "start_building": "ブラケットの構築を開始",
             "add_first": "最初のステージを追加",
             "add_another": "別のステージを追加",
-            "not_setup": "ステージが設定されていません"
+            "not_setup": "ステージが設定されていません",
+            "groups": "グループ",
+            "groups_placeholder": "このステージのグループ数を入力してください..."
         },
         "match": {
             "team_1": "チーム1",
             "team_2": "チーム2",
-            "round_match": "ラウンドマッチ"
+            "round_match": "ラウンドマッチ",
+            "bye_round": "Bye Round",
+            "scheduled_for": "予定日時"
         },
         "organizer": {
             "title": "主催者",
@@ -558,7 +555,6 @@
             "remove_description": "この主催者を削除してもよろしいですか？"
         },
         "team": {
-            "manage_roster": "ロスターを管理",
             "eligible": "参加可能",
             "not_eligible": "参加不可",
             "leave_tournament": "トーナメントを退出",
@@ -578,14 +574,12 @@
             "remove_member_description": "このメンバーを削除してもよろしいですか？",
             "cancel_invite": "招待をキャンセル",
             "confirm_cancel_invite": "招待をキャンセル",
-            "cancel_invite_description": "この招待をキャンセルしてもよろしいですか？",
-            "my_teams": "マイチーム",
-            "my_teams_description": "あなたが所属しているチーム",
-            "no_eligible_teams": "参加可能なチームがありません",
-            "team": "チーム",
-            "select_team": "チームを選択",
-            "search_team": "チームを検索...",
-            "add_to_tournament": "トーナメントに追加"
+            "cancel_invite_description": "この招待をキャンセルしてもよろしいですか？"
+        },
+        "teams": {
+            "count": "{count} チーム",
+            "my_teams": "自分のチーム",
+            "other_teams": "その他のチーム"
         },
         "actions": {
             "open_registration": "登録を開始",
@@ -1009,12 +1003,9 @@
         "lobby": {
             "access": "ロビーアクセス",
             "access_description": "ロビーに参加できるユーザーを制御します。 開くと誰でも参加できます。フレンドはフレンドのみ参加できます。招待は招待したプレイヤーのみ参加できます。",
-            "title": "マッチメイキングロビー",
             "leave": "ロビーを退出",
             "invite_player": "プレイヤーをロビーに招待",
-            "invites": "ロビーへの招待",
-            "access_updated": "ロビーへのアクセスが{access}に更新されました",
-            "join": "ロビーに参加"
+            "access_updated": "ロビーへのアクセスが{access}に更新されました"
         },
         "friends": {
             "title": "フレンド",
@@ -1026,8 +1017,7 @@
             "invite_to_match": "プレイヤーにマッチする招待状",
             "remove": "削除",
             "join_lobby": "ロビーに参加",
-            "offline": "オフライン",
-            "view_profile": "プロフィールを見る"
+            "offline": "オフライン"
         },
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
@@ -1050,6 +1040,7 @@
         "edit_label": "ラベルの編集",
         "label_placeholder": "ノードラベルを入力",
         "update_label": "ラベルの更新",
+        "version_pinning_not_supported": "このサーバーではバージョンのピン留めはサポートされていません。",
         "validation": {
             "start_port_less_than_end": "開始ポートは終了ポートより小さくなければなりません",
             "end_port_greater_than_start": "終了ポートは開始ポートより大きくなければなりません"
@@ -1061,8 +1052,7 @@
         }
     },
     "chat": {
-        "lobby_chat": "ロビーチャット",
-        "message_placeholder": "メッセージを入力..."
+        "lobby_chat": "ロビーチャット"
     },
     "charts": {
         "usage": "使用量"

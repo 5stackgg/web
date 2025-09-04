@@ -357,11 +357,6 @@
             "description": "Visualizza e gestisci tutte le partite attraverso la piattaforma."
         }
     },
-    "notifications": {
-        "match": {
-            "title": "Invito di corrispondenza"
-        }
-    },
     "custom_match": {
         "title": "Abbinamento personalizzato",
         "description": "Creare e personalizzare il proprio match. Impostare le regole, scegliere le mappe e invitare gli amici per un'esperienza di gioco personalizzata."
@@ -402,8 +397,7 @@
                 "matches": "Partite",
                 "tournaments": "Tornei",
                 "players": "Giocatori",
-                "teams": "Squadre",
-                "community": "Community"
+                "teams": "Squadre"
             },
             "administration": {
                 "title": "Amministrazione",
@@ -477,13 +471,13 @@
         "confirm": "Conferma",
         "refresh": "Rifiuti"
     },
+    "error": {
+        "generic": "Si è verificato un errore. Riprova."
+    },
     "tournament": {
         "overview": "Panoramica",
-        "bracket": "Bracket",
-        "teams": "Squadre",
         "settings": "Impostazioni",
         "admin": "Amministrazione",
-        "organizers": "Organizzatori",
         "show_organizers": "Visualizza gli organizzatori",
         "hide_organizers": "Nascondi gli organizzatori",
         "join": {
@@ -494,7 +488,6 @@
             "requirements": "Requisiti"
         },
         "tournament_team": {
-            "players_registered": "Giocatori registrati",
             "remove": "Rimuovi"
         },
         "add_team": {
@@ -507,8 +500,7 @@
             "description": "Descrizione",
             "start": "Inizio",
             "pick_date": "Seleziona data",
-            "update": "Aggiorna",
-            "match_options": "Opzioni partita"
+            "update": "Aggiorna"
         },
         "table": {
             "tournament": "Torneo",
@@ -519,8 +511,6 @@
             "no_tournaments_found": "Nessun torneo trovato"
         },
         "stage": {
-            "title": "Fase",
-            "teams": "Squadre",
             "edit": "Modifica",
             "delete": "Elimina",
             "edit_title": "Modifica",
@@ -528,6 +518,9 @@
             "delete_description": "Vuoi davvero eliminare questa fase?",
             "type": "Tipo",
             "type_placeholder": "Seleziona tipo fase",
+            "group": "Gruppo {group}",
+            "stage_tab": "Fase {stage}",
+            "advances_to_next_stage": "I vincitori avanzano alla prossima fase",
             "min_teams": "Squadre minime",
             "min_teams_placeholder": "Inserisci numero squadre minime",
             "max_teams": "Squadre massime",
@@ -538,12 +531,16 @@
             "start_building": "Inizia costruzione bracket",
             "add_first": "Aggiungi prima fase",
             "add_another": "Aggiungi altra fase",
-            "not_setup": "Fase non configurata"
+            "not_setup": "Fase non configurata",
+            "groups": "Gruppi",
+            "groups_placeholder": "Inserisci il numero di gruppi per questa fase..."
         },
         "match": {
             "team_1": "Squadra 1",
             "team_2": "Squadra 2",
-            "round_match": "Partita di round"
+            "round_match": "Partita di round",
+            "bye_round": "Bye Round",
+            "scheduled_for": "Programmato per"
         },
         "organizer": {
             "title": "Organizzatore",
@@ -558,7 +555,6 @@
             "remove_description": "Vuoi davvero rimuovere questo organizzatore?"
         },
         "team": {
-            "manage_roster": "Gestisci formazione",
             "eligible": "Eligibile",
             "not_eligible": "Non eligibile",
             "leave_tournament": "Lascia torneo",
@@ -578,14 +574,12 @@
             "remove_member_description": "Vuoi davvero rimuovere questo membro?",
             "cancel_invite": "Annulla invito",
             "confirm_cancel_invite": "Annulla invito",
-            "cancel_invite_description": "Vuoi davvero annullare questo invito?",
-            "my_teams": "Le mie squadre",
-            "my_teams_description": "Squadre di cui sei membro",
-            "no_eligible_teams": "Nessuna squadra eligibile",
-            "team": "Squadra",
-            "select_team": "Seleziona squadra",
-            "search_team": "Cerca squadra...",
-            "add_to_tournament": "Aggiungi al torneo"
+            "cancel_invite_description": "Vuoi davvero annullare questo invito?"
+        },
+        "teams": {
+            "count": "Squadre {count}",
+            "my_teams": "Le Mie Squadre",
+            "other_teams": "Altre Squadre"
         },
         "actions": {
             "open_registration": "Apri registrazione",
@@ -1009,12 +1003,9 @@
         "lobby": {
             "access": "Accesso Alla Lobby",
             "access_description": "Controlli che possono entrare nella lobby. Aperto permette a chiunque di unirsi, Amici permette solo agli amici di unirsi e Invita permette solo ai giocatori che inviti a unirsi.",
-            "title": "Lobby matchmaking",
             "leave": "Esci",
             "invite_player": "Invita giocatore",
-            "invites": "Inviti",
-            "access_updated": "I permessi di accesso sono stati aggiornati",
-            "join": "Unisciti Alla Lobby"
+            "access_updated": "I permessi di accesso sono stati aggiornati"
         },
         "friends": {
             "title": "Amici",
@@ -1026,8 +1017,7 @@
             "invite_to_match": "Invita il giocatore a abbinare",
             "remove": "Rimuovi",
             "join_lobby": "Unisciti al Lobby",
-            "offline": "Offline",
-            "view_profile": "Visualizza il profilo"
+            "offline": "Offline"
         },
         "banned": "Bannato",
         "go_to_match": "Vai alla partita",
@@ -1050,6 +1040,7 @@
         "edit_label": "Modifica dell'etichetta",
         "label_placeholder": "Inserire l'etichetta del nodo",
         "update_label": "Etichetta di aggiornamento",
+        "version_pinning_not_supported": "Il blocco della versione non è supportato su questo server.",
         "validation": {
             "start_port_less_than_end": "La porta iniziale deve essere inferiore alla porta finale",
             "end_port_greater_than_start": "La porta finale deve essere maggiore della porta iniziale"
@@ -1061,8 +1052,7 @@
         }
     },
     "chat": {
-        "lobby_chat": "Chat lobby",
-        "message_placeholder": "Inserisci un messaggio..."
+        "lobby_chat": "Chat lobby"
     },
     "charts": {
         "usage": "Utilizzo"

@@ -480,7 +480,6 @@
     "tournament": {
         "overview": "Übersicht",
         "bracket": "Bracket",
-        "teams": "{count} Teams",
         "settings": "Einstellungen",
         "admin": "Verwaltung",
         "organizers": "Organisatoren",
@@ -520,7 +519,6 @@
         },
         "stage": {
             "title": "Phase {number}",
-            "teams": "{min}-{max} Teams",
             "edit": "Phase bearbeiten",
             "delete": "Phase löschen",
             "edit_title": "Phase bearbeiten",
@@ -528,6 +526,9 @@
             "delete_description": "Möchten Sie diese Phase wirklich löschen?",
             "type": "Phasentyp",
             "type_placeholder": "Phasentyp auswählen...",
+            "group": "Gruppen- {group}",
+            "stage_tab": "Stage {stage}",
+            "advances_to_next_stage": "Sieger kommen auf die nächste Stufe",
             "min_teams": "Minimale Teams",
             "min_teams_placeholder": "Minimale Teams auswählen...",
             "max_teams": "Maximale Teams",
@@ -538,12 +539,34 @@
             "start_building": "Bracket-Erstellung starten",
             "add_first": "Erste Phase hinzufügen",
             "add_another": "Weitere Phase hinzufügen",
-            "not_setup": "Phasen nicht eingerichtet"
+            "not_setup": "Phasen nicht eingerichtet",
+            "groups": "Gruppen",
+            "groups_placeholder": "Geben Sie die Anzahl der Gruppen für diese Stufe ein..."
         },
         "match": {
             "team_1": "Team 1",
             "team_2": "Team 2",
-            "round_match": "Runde {round} Spiel {match}"
+            "round_match": "Runde {round} Spiel {match}",
+            "bye_round": "Bye Runde",
+            "scheduled_for": "Geplant für"
+        },
+        "rounds": {
+            "opening_round": "Eröffnungsrunde",
+            "round": "Runde {number}",
+            "round_of_8": "Runde von 8",
+            "round_of_16": "Runde von 16",
+            "round_of_32": "Runde von 32",
+            "quarter_finals": "Viertelfinale",
+            "semi_finals": "Halbfinale",
+            "finals": "Finale",
+            "winner": "Sieger",
+            "advances_to_next_stage": "Weiter zur nächsten Stufe",
+            "final_round": "Endrunde",
+            "2nd_round": "2. Runde",
+            "3rd_round": "3. Runde",
+            "4th_round": "4. Runde",
+            "5th_round": "5. Runde",
+            "6th_round": "6. Runde"
         },
         "organizer": {
             "title": "Turnierorganisatoren",
@@ -586,6 +609,13 @@
             "select_team": "Team auswählen...",
             "search_team": "Nach Team suchen...",
             "add_to_tournament": "Zum Turnier hinzufügen"
+        },
+        "teams": {
+            "count": "{count} Teams",
+            "my_teams": "Meine Teams",
+            "other_teams": "Andere Teams",
+            "no_my_team": "Du hast kein Team in diesem Turnier",
+            "no_other_teams": "Es gibt keine anderen Teams in diesem Turnier"
         },
         "actions": {
             "open_registration": "Registrierung öffnen",
@@ -1050,6 +1080,7 @@
         "edit_label": "Edit Label",
         "label_placeholder": "Geben Sie das Nodelabel ein",
         "update_label": "Update Label",
+        "version_pinning_not_supported": "Versionsfixierung wird auf diesem Server nicht unterstützt.",
         "validation": {
             "start_port_less_than_end": "Startport muss kleiner als Endport sein",
             "end_port_greater_than_start": "Endport muss größer als Startport sein und mindestens 2 größer"

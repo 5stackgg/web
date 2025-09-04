@@ -480,7 +480,6 @@
     "tournament": {
         "overview": "Vue d'ensemble",
         "bracket": "Arbre",
-        "teams": "Équipes",
         "settings": "Paramètres",
         "admin": "Administration",
         "organizers": "Organisateurs",
@@ -520,7 +519,6 @@
         },
         "stage": {
             "title": "Phase",
-            "teams": "Équipes",
             "edit": "Modifier la phase",
             "delete": "Supprimer la phase",
             "edit_title": "Modifier la phase",
@@ -528,6 +526,9 @@
             "delete_description": "Voulez-vous vraiment supprimer cette phase ?",
             "type": "Type",
             "type_placeholder": "Sélectionner le type de phase",
+            "group": "Groupe {group}",
+            "stage_tab": "Étape {stage}",
+            "advances_to_next_stage": "Les gagnants passent à l'étape suivante",
             "min_teams": "Équipes minimum",
             "min_teams_placeholder": "Entrer le nombre d'équipes minimum",
             "max_teams": "Équipes maximum",
@@ -538,12 +539,34 @@
             "start_building": "Commencer la construction de l'arbre",
             "add_first": "Ajouter la première phase",
             "add_another": "Ajouter une autre phase",
-            "not_setup": "Phase non configurée"
+            "not_setup": "Phase non configurée",
+            "groups": "Groupes",
+            "groups_placeholder": "Entrez le nombre de groupes pour cette étape..."
         },
         "match": {
             "team_1": "Équipe 1",
             "team_2": "Équipe 2",
-            "round_match": "Match de round"
+            "round_match": "Match de round",
+            "bye_round": "Arrondi au revoir",
+            "scheduled_for": "Planifié pour"
+        },
+        "rounds": {
+            "opening_round": "Arrondi d'ouverture",
+            "round": "Tour {number}",
+            "round_of_8": "Tour de 8",
+            "round_of_16": "Manche de 16",
+            "round_of_32": "Manche de 32",
+            "quarter_finals": "Quart de Finale",
+            "semi_finals": "Demi-finale",
+            "finals": "Finales",
+            "winner": "Gagnant",
+            "advances_to_next_stage": "Avancées vers l'étape suivante",
+            "final_round": "Tour final",
+            "2nd_round": "2ème manche",
+            "3rd_round": "3ème manche",
+            "4th_round": "4ème manche",
+            "5th_round": "5ème manche",
+            "6th_round": "6ème manche"
         },
         "organizer": {
             "title": "Organisateur",
@@ -586,6 +609,13 @@
             "select_team": "Sélectionner une équipe",
             "search_team": "Rechercher une équipe...",
             "add_to_tournament": "Ajouter au tournoi"
+        },
+        "teams": {
+            "count": "Équipes {count}",
+            "my_teams": "Mes équipes",
+            "other_teams": "Autres équipes",
+            "no_my_team": "Vous n'avez pas d'équipe dans ce tournoi",
+            "no_other_teams": "Il n'y a aucune autre équipe dans ce tournoi"
         },
         "actions": {
             "open_registration": "Ouvrir les inscriptions",
@@ -1050,6 +1080,7 @@
         "edit_label": "Modifier l'étiquette",
         "label_placeholder": "Entrez l'étiquette du nœud",
         "update_label": "Mettre à jour l'étiquette",
+        "version_pinning_not_supported": "L'épinglage de version n'est pas pris en charge sur ce serveur.",
         "validation": {
             "start_port_less_than_end": "Le port de début doit être inférieur au port de fin",
             "end_port_greater_than_start": "Le port de fin doit être supérieur au port de début"

@@ -357,11 +357,6 @@
             "description": "Zobacz i zarządzaj wszystkimi meczami na całej platformie."
         }
     },
-    "notifications": {
-        "match": {
-            "title": "Dopasowanie zaproszeń"
-        }
-    },
     "custom_match": {
         "title": "Niestandardowe dopasowanie",
         "description": "Tworzenie i dostosowywanie własnego meczu. Ustaw zasady, wybierz mapy i zaproś znajomych do spersonalizowanych doświadczeń w grach."
@@ -402,8 +397,7 @@
                 "matches": "Mecze",
                 "tournaments": "Turnieje",
                 "players": "Gracze",
-                "teams": "Drużyny",
-                "community": "Społeczność"
+                "teams": "Drużyny"
             },
             "administration": {
                 "title": "Administracja",
@@ -477,13 +471,13 @@
         "confirm": "Potwierdź",
         "refresh": "Odśwież"
     },
+    "error": {
+        "generic": "Wystąpił błąd. Spróbuj ponownie."
+    },
     "tournament": {
         "overview": "Przegląd",
-        "bracket": "Drabinka",
-        "teams": "Drużyny",
         "settings": "Ustawienia",
         "admin": "Administracja",
-        "organizers": "Organizatorzy",
         "show_organizers": "Organizatorzy widoku",
         "hide_organizers": "Ukryj organizatorów",
         "join": {
@@ -494,7 +488,6 @@
             "requirements": "Wymagania"
         },
         "tournament_team": {
-            "players_registered": "Zarejestrowani gracze",
             "remove": "Usuń"
         },
         "add_team": {
@@ -507,8 +500,7 @@
             "description": "Opis",
             "start": "Start",
             "pick_date": "Wybierz datę",
-            "update": "Aktualizuj",
-            "match_options": "Opcje meczu"
+            "update": "Aktualizuj"
         },
         "table": {
             "tournament": "Turniej",
@@ -519,8 +511,6 @@
             "no_tournaments_found": "Nie znaleziono turniejów"
         },
         "stage": {
-            "title": "Etap",
-            "teams": "Drużyny",
             "edit": "Edytuj etap",
             "delete": "Usuń etap",
             "edit_title": "Edytuj etap",
@@ -528,6 +518,9 @@
             "delete_description": "Czy na pewno chcesz usunąć ten etap?",
             "type": "Typ",
             "type_placeholder": "Wybierz typ etapu",
+            "group": "Grupa {group}",
+            "stage_tab": "Etap {stage}",
+            "advances_to_next_stage": "Zwycięzcy przeszli do następnego etapu",
             "min_teams": "Minimalna liczba drużyn",
             "min_teams_placeholder": "Wprowadź minimalną liczbę drużyn",
             "max_teams": "Maksymalna liczba drużyn",
@@ -538,12 +531,16 @@
             "start_building": "Rozpocznij budowanie drabinki",
             "add_first": "Dodaj pierwszy etap",
             "add_another": "Dodaj inny etap",
-            "not_setup": "Etap nie skonfigurowany"
+            "not_setup": "Etap nie skonfigurowany",
+            "groups": "Grupy",
+            "groups_placeholder": "Wprowadź liczbę grup dla tego etapu..."
         },
         "match": {
             "team_1": "Drużyna 1",
             "team_2": "Drużyna 2",
-            "round_match": "Mecz rundy"
+            "round_match": "Mecz rundy",
+            "bye_round": "Pożegnanie Rundy",
+            "scheduled_for": "Zaplanowane dla"
         },
         "organizer": {
             "title": "Organizator",
@@ -558,7 +555,6 @@
             "remove_description": "Czy na pewno chcesz usunąć tego organizatora?"
         },
         "team": {
-            "manage_roster": "Zarządzaj składem",
             "eligible": "Uprawniony",
             "not_eligible": "Nieuprawniony",
             "leave_tournament": "Opuść turniej",
@@ -578,14 +574,12 @@
             "remove_member_description": "Czy na pewno chcesz usunąć tego członka?",
             "cancel_invite": "Anuluj zaproszenie",
             "confirm_cancel_invite": "Anuluj zaproszenie",
-            "cancel_invite_description": "Czy na pewno chcesz anulować to zaproszenie?",
+            "cancel_invite_description": "Czy na pewno chcesz anulować to zaproszenie?"
+        },
+        "teams": {
+            "count": "Drużyny {count}",
             "my_teams": "Moje drużyny",
-            "my_teams_description": "Drużyny, których jesteś członkiem",
-            "no_eligible_teams": "Brak uprawnionych drużyn",
-            "team": "Drużyna",
-            "select_team": "Wybierz drużynę",
-            "search_team": "Szukaj drużyny...",
-            "add_to_tournament": "Dodaj do turnieju"
+            "other_teams": "Inne zespoły"
         },
         "actions": {
             "open_registration": "Otwórz rejestrację",
@@ -1009,12 +1003,9 @@
         "lobby": {
             "access": "Dostęp do lobby",
             "access_description": "Kontrole, które mogą dołączyć do lobby. Otwarte pozwala każdemu na dołączenie, znajomi mogą dołączyć tylko do znajomych, a zaproszenie pozwala tylko graczom, których zaprosisz do dołączenia.",
-            "title": "Lobby matchmakingu",
             "leave": "Wyjdź",
             "invite_player": "Zaproś gracza",
-            "invites": "Zaproszenia",
-            "access_updated": "Uprawnienia dostępu zostały zaktualizowane",
-            "join": "Dołącz do Lobby"
+            "access_updated": "Uprawnienia dostępu zostały zaktualizowane"
         },
         "friends": {
             "title": "Znajomi",
@@ -1026,8 +1017,7 @@
             "invite_to_match": "Zaproś gracza do meczu",
             "remove": "Usuń",
             "join_lobby": "Dołącz do Lobby",
-            "offline": "Offline",
-            "view_profile": "Widok profilu"
+            "offline": "Offline"
         },
         "banned": "Zbanowany",
         "go_to_match": "Przejdź do meczu",
@@ -1050,6 +1040,7 @@
         "edit_label": "Edytuj etykietę",
         "label_placeholder": "Wprowadź etykietę węzła",
         "update_label": "Aktualizuj etykietę",
+        "version_pinning_not_supported": "Przypinanie wersji nie jest obsługiwane na tym serwerze.",
         "validation": {
             "start_port_less_than_end": "Port początkowy musi być mniejszy niż końcowy",
             "end_port_greater_than_start": "Port końcowy musi być większy niż początkowy"
@@ -1061,8 +1052,7 @@
         }
     },
     "chat": {
-        "lobby_chat": "Czat lobby",
-        "message_placeholder": "Napisz wiadomość..."
+        "lobby_chat": "Czat lobby"
     },
     "charts": {
         "usage": "Użycie"

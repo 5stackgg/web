@@ -357,11 +357,6 @@
             "description": "Ver y gestionar todos los partidos en toda la plataforma."
         }
     },
-    "notifications": {
-        "match": {
-            "title": "Match Invitas"
-        }
-    },
     "custom_match": {
         "title": "Partido Personalizado",
         "description": "Cree y personalice su propio partido. Establecer reglas, elegir mapas e invitar a amigos para una experiencia de juego personalizada."
@@ -402,8 +397,7 @@
                 "matches": "Partidas",
                 "tournaments": "Torneos",
                 "players": "Jugadores",
-                "teams": "Equipos",
-                "community": "Comunidad"
+                "teams": "Equipos"
             },
             "administration": {
                 "title": "Administración",
@@ -477,13 +471,13 @@
         "confirm": "Confirmar",
         "refresh": "Refresh"
     },
+    "error": {
+        "generic": "Ocurrió un error. Por favor, inténtelo de nuevo."
+    },
     "tournament": {
         "overview": "Resumen",
-        "bracket": "Bracket",
-        "teams": "Equipos",
         "settings": "Configuración",
         "admin": "Administración",
-        "organizers": "Organizadores",
         "show_organizers": "Ver Organizadores",
         "hide_organizers": "Ocultar organizadores",
         "join": {
@@ -494,7 +488,6 @@
             "requirements": "Requisitos"
         },
         "tournament_team": {
-            "players_registered": "Jugadores registrados",
             "remove": "Eliminar"
         },
         "add_team": {
@@ -507,8 +500,7 @@
             "description": "Descripción",
             "start": "Inicio",
             "pick_date": "Seleccionar fecha",
-            "update": "Actualizar",
-            "match_options": "Opciones de partida"
+            "update": "Actualizar"
         },
         "table": {
             "tournament": "Torneo",
@@ -519,8 +511,6 @@
             "no_tournaments_found": "No se encontraron torneos"
         },
         "stage": {
-            "title": "Fase",
-            "teams": "Equipos",
             "edit": "Editar fase",
             "delete": "Eliminar fase",
             "edit_title": "Editar fase",
@@ -528,6 +518,9 @@
             "delete_description": "¿Estás seguro de que quieres eliminar esta fase?",
             "type": "Tipo",
             "type_placeholder": "Seleccionar tipo de fase",
+            "group": "Grupo {group}",
+            "stage_tab": "Fase {stage}",
+            "advances_to_next_stage": "Los ganadores avanzan a la siguiente etapa",
             "min_teams": "Equipos mínimos",
             "min_teams_placeholder": "Ingresar número de equipos mínimos",
             "max_teams": "Equipos máximos",
@@ -538,12 +531,16 @@
             "start_building": "Iniciar construcción de bracket",
             "add_first": "Añadir primera fase",
             "add_another": "Añadir otra fase",
-            "not_setup": "Fase no configurada"
+            "not_setup": "Fase no configurada",
+            "groups": "Grupos",
+            "groups_placeholder": "Introduzca el número de grupos para esta etapa..."
         },
         "match": {
             "team_1": "Equipo 1",
             "team_2": "Equipo 2",
-            "round_match": "Partida de ronda"
+            "round_match": "Partida de ronda",
+            "bye_round": "Ronda de Ado",
+            "scheduled_for": "Programado para"
         },
         "organizer": {
             "title": "Organizador",
@@ -558,7 +555,6 @@
             "remove_description": "¿Estás seguro de que quieres eliminar este organizador?"
         },
         "team": {
-            "manage_roster": "Gestionar alineación",
             "eligible": "Elegible",
             "not_eligible": "No elegible",
             "leave_tournament": "Salir del torneo",
@@ -578,14 +574,12 @@
             "remove_member_description": "¿Estás seguro de que quieres eliminar este miembro?",
             "cancel_invite": "Cancelar invitación",
             "confirm_cancel_invite": "Cancelar invitación",
-            "cancel_invite_description": "¿Estás seguro de que quieres cancelar esta invitación?",
+            "cancel_invite_description": "¿Estás seguro de que quieres cancelar esta invitación?"
+        },
+        "teams": {
+            "count": "Equipos {count}",
             "my_teams": "Mis equipos",
-            "my_teams_description": "Equipos de los que eres miembro",
-            "no_eligible_teams": "Sin equipos elegibles",
-            "team": "Equipo",
-            "select_team": "Seleccionar equipo",
-            "search_team": "Buscar equipo...",
-            "add_to_tournament": "Añadir al torneo"
+            "other_teams": "Otros equipos"
         },
         "actions": {
             "open_registration": "Abrir registro",
@@ -1009,12 +1003,9 @@
         "lobby": {
             "access": "Acceso al Lobby",
             "access_description": "Controla quién puede unirse al lobby. Abrir permite a cualquiera unirse, Amigos sólo permiten que se unan amigos y la invitación sólo permite a los jugadores a los que invites.",
-            "title": "Lobby de matchmaking",
             "leave": "Salir",
             "invite_player": "Invitar jugador",
-            "invites": "Invitaciones",
-            "access_updated": "Los permisos de acceso han sido actualizados",
-            "join": "Unirse al Lobby"
+            "access_updated": "Los permisos de acceso han sido actualizados"
         },
         "friends": {
             "title": "Amigos",
@@ -1026,8 +1017,7 @@
             "invite_to_match": "Invitar jugador a Match",
             "remove": "Eliminar",
             "join_lobby": "Unirse al Lobby",
-            "offline": "Desconectado",
-            "view_profile": "Ver perfil"
+            "offline": "Desconectado"
         },
         "banned": "Baneado",
         "go_to_match": "Ir a la partida",
@@ -1050,6 +1040,7 @@
         "edit_label": "Edite Label",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",
+        "version_pinning_not_supported": "El fijador de versiones no es compatible con este servidor.",
         "validation": {
             "start_port_less_than_end": "El puerto inicial debe ser menor que el puerto final",
             "end_port_greater_than_start": "El puerto final debe ser mayor que el puerto inicial"
@@ -1061,8 +1052,7 @@
         }
     },
     "chat": {
-        "lobby_chat": "Chat del lobby",
-        "message_placeholder": "Escribe un mensaje..."
+        "lobby_chat": "Chat del lobby"
     },
     "charts": {
         "usage": "Uso"

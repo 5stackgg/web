@@ -480,7 +480,6 @@
     "tournament": {
         "overview": "Panoramica",
         "bracket": "Bracket",
-        "teams": "Squadre",
         "settings": "Impostazioni",
         "admin": "Amministrazione",
         "organizers": "Organizzatori",
@@ -520,7 +519,6 @@
         },
         "stage": {
             "title": "Fase",
-            "teams": "Squadre",
             "edit": "Modifica",
             "delete": "Elimina",
             "edit_title": "Modifica",
@@ -528,6 +526,9 @@
             "delete_description": "Vuoi davvero eliminare questa fase?",
             "type": "Tipo",
             "type_placeholder": "Seleziona tipo fase",
+            "group": "Gruppo {group}",
+            "stage_tab": "Fase {stage}",
+            "advances_to_next_stage": "I vincitori avanzano alla prossima fase",
             "min_teams": "Squadre minime",
             "min_teams_placeholder": "Inserisci numero squadre minime",
             "max_teams": "Squadre massime",
@@ -538,12 +539,34 @@
             "start_building": "Inizia costruzione bracket",
             "add_first": "Aggiungi prima fase",
             "add_another": "Aggiungi altra fase",
-            "not_setup": "Fase non configurata"
+            "not_setup": "Fase non configurata",
+            "groups": "Gruppi",
+            "groups_placeholder": "Inserisci il numero di gruppi per questa fase..."
         },
         "match": {
             "team_1": "Squadra 1",
             "team_2": "Squadra 2",
-            "round_match": "Partita di round"
+            "round_match": "Partita di round",
+            "bye_round": "Bye Round",
+            "scheduled_for": "Programmato per"
+        },
+        "rounds": {
+            "opening_round": "Rotonda Di Apertura",
+            "round": "Round {number}",
+            "round_of_8": "Turno di 8",
+            "round_of_16": "Turno di 16",
+            "round_of_32": "Round of 32",
+            "quarter_finals": "Quarto Finale",
+            "semi_finals": "Semi Finali",
+            "finals": "Finali",
+            "winner": "Vincitore",
+            "advances_to_next_stage": "Anticipi alla fase successiva",
+            "final_round": "Round Finale",
+            "2nd_round": "2° Round",
+            "3rd_round": "3° Round",
+            "4th_round": "4° Rotondo",
+            "5th_round": "5° Round",
+            "6th_round": "Sesto Round"
         },
         "organizer": {
             "title": "Organizzatore",
@@ -586,6 +609,13 @@
             "select_team": "Seleziona squadra",
             "search_team": "Cerca squadra...",
             "add_to_tournament": "Aggiungi al torneo"
+        },
+        "teams": {
+            "count": "Squadre {count}",
+            "my_teams": "Le Mie Squadre",
+            "other_teams": "Altre Squadre",
+            "no_my_team": "Non hai una squadra in questo torneo",
+            "no_other_teams": "Non ci sono altre squadre in questo torneo"
         },
         "actions": {
             "open_registration": "Apri registrazione",
@@ -1050,6 +1080,7 @@
         "edit_label": "Modifica dell'etichetta",
         "label_placeholder": "Inserire l'etichetta del nodo",
         "update_label": "Etichetta di aggiornamento",
+        "version_pinning_not_supported": "Il blocco della versione non è supportato su questo server.",
         "validation": {
             "start_port_less_than_end": "La porta iniziale deve essere inferiore alla porta finale",
             "end_port_greater_than_start": "La porta finale deve essere maggiore della porta iniziale"

@@ -357,11 +357,6 @@
             "description": "Visa och hantera alla matcher över plattformen."
         }
     },
-    "notifications": {
-        "match": {
-            "title": "Matcha inbjudningar"
-        }
-    },
     "custom_match": {
         "title": "Anpassad match",
         "description": "Skapa och anpassa din egen match. Ange regler, välj kartor och bjud in vänner för en personlig spelupplevelse."
@@ -402,8 +397,7 @@
                 "matches": "Matcher",
                 "tournaments": "Turneringar",
                 "players": "Spelare",
-                "teams": "Lag",
-                "community": "Gemenskap"
+                "teams": "Lag"
             },
             "administration": {
                 "title": "Administration",
@@ -477,13 +471,13 @@
         "confirm": "Bekräfta",
         "refresh": "Uppdatera"
     },
+    "error": {
+        "generic": "Ett fel uppstod. Försök igen."
+    },
     "tournament": {
         "overview": "Översikt",
-        "bracket": "Turneringstabell",
-        "teams": "{count} lag",
         "settings": "Inställningar",
         "admin": "Administratör",
-        "organizers": "Organisatörer",
         "show_organizers": "Visa organisatörer",
         "hide_organizers": "Dölj organisatörer",
         "join": {
@@ -494,7 +488,6 @@
             "requirements": "Du behöver minst {count} spelare för att gå med i denna turnering"
         },
         "tournament_team": {
-            "players_registered": "{count} registrerade spelare",
             "remove": "Ta bort lag"
         },
         "add_team": {
@@ -507,8 +500,7 @@
             "description": "Beskrivning",
             "start": "Startdatum",
             "pick_date": "Välj ett datum",
-            "update": "Uppdatera turnering",
-            "match_options": "Matchalternativ"
+            "update": "Uppdatera turnering"
         },
         "table": {
             "tournament": "Turnering",
@@ -519,8 +511,6 @@
             "no_tournaments_found": "Inga turneringar hittades"
         },
         "stage": {
-            "title": "Fas {number}",
-            "teams": "{min}-{max} lag",
             "edit": "Redigera fas",
             "delete": "Ta bort fas",
             "edit_title": "Redigera fas",
@@ -528,6 +518,9 @@
             "delete_description": "Är du säker på att du vill ta bort denna fas?",
             "type": "Fastyp",
             "type_placeholder": "Välj fastyp...",
+            "group": "Grupp {group}",
+            "stage_tab": "Steg {stage}",
+            "advances_to_next_stage": "Vinnarna avancerar till nästa steg",
             "min_teams": "Minsta antal lag",
             "min_teams_placeholder": "Välj minsta antal lag...",
             "max_teams": "Största antal lag",
@@ -538,12 +531,16 @@
             "start_building": "Börja bygga din turnering",
             "add_first": "Lägg till första fasen",
             "add_another": "Lägg till en till fas",
-            "not_setup": "Turneringsfaser inte konfigurerade"
+            "not_setup": "Turneringsfaser inte konfigurerade",
+            "groups": "Grupper",
+            "groups_placeholder": "Ange antal grupper för det här stadiet..."
         },
         "match": {
             "team_1": "Lag 1",
             "team_2": "Lag 2",
-            "round_match": "Omgång {round} Match {match}"
+            "round_match": "Omgång {round} Match {match}",
+            "bye_round": "Båge runda",
+            "scheduled_for": "Schemalagd för"
         },
         "organizer": {
             "title": "Turneringsorganisatörer",
@@ -558,7 +555,6 @@
             "remove_description": "Detta kommer ta bort organisatören från turneringen"
         },
         "team": {
-            "manage_roster": "Hantera trupp",
             "eligible": "Behörig",
             "not_eligible": "Behöver {count} fler spelare",
             "leave_tournament": "Lämna turnering",
@@ -578,14 +574,12 @@
             "remove_member_description": "Detta kommer ta bort medlemmen från turneringslaget",
             "cancel_invite": "Avbryt inbjudan",
             "confirm_cancel_invite": "Är du säker på att du vill avbryta denna inbjudan?",
-            "cancel_invite_description": "Detta kommer avbryta inbjudan för denna medlem",
-            "my_teams": "Mina lag",
-            "my_teams_description": "Lägg till ett av dina lag i turneringen",
-            "no_eligible_teams": "Du har inga behöriga lag att lägga till i denna turnering",
-            "team": "Lag",
-            "select_team": "Välj ett lag...",
-            "search_team": "Sök efter ett lag...",
-            "add_to_tournament": "Lägg till i turnering"
+            "cancel_invite_description": "Detta kommer avbryta inbjudan för denna medlem"
+        },
+        "teams": {
+            "count": "{count} Lag",
+            "my_teams": "Mina team",
+            "other_teams": "Andra lag"
         },
         "actions": {
             "open_registration": "Öppna registrering",
@@ -1009,12 +1003,9 @@
         "lobby": {
             "access": "Lobby åtkomst",
             "access_description": "Kontroller som kan gå med i lobbyn. Öppna tillåter vem som helst att gå med, Vänner tillåter bara vänner att gå med, och Bjud tillåter bara spelare du bjuder in att gå med.",
-            "title": "Matchmaking lobby",
             "leave": "Lämna lobby",
             "invite_player": "Bjud in spelare till lobby",
-            "invites": "Lobby-inbjudningar",
-            "access_updated": "Lobbyåtkomst uppdaterad till {access}",
-            "join": "Gå med i lobbyn"
+            "access_updated": "Lobbyåtkomst uppdaterad till {access}"
         },
         "friends": {
             "title": "Vänner",
@@ -1026,8 +1017,7 @@
             "invite_to_match": "Inbjud spelare till match",
             "remove": "Ta bort",
             "join_lobby": "Gå med i Lobby",
-            "offline": "Offline",
-            "view_profile": "Visa profil"
+            "offline": "Offline"
         },
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
@@ -1050,6 +1040,7 @@
         "edit_label": "Redigera etikett",
         "label_placeholder": "Ange nod etikett",
         "update_label": "Uppdatera etikett",
+        "version_pinning_not_supported": "Fastnålning av version stöds inte på denna server.",
         "validation": {
             "start_port_less_than_end": "Startportintervall måste vara mindre än slutportintervall",
             "end_port_greater_than_start": "Slutportintervall måste vara större än startportintervall med minst 2"
@@ -1061,8 +1052,7 @@
         }
     },
     "chat": {
-        "lobby_chat": "Lobby-chatt",
-        "message_placeholder": "Skriv ett meddelande..."
+        "lobby_chat": "Lobby-chatt"
     },
     "charts": {
         "usage": "Användning"

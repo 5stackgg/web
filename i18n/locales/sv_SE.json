@@ -480,7 +480,6 @@
     "tournament": {
         "overview": "Översikt",
         "bracket": "Turneringstabell",
-        "teams": "{count} lag",
         "settings": "Inställningar",
         "admin": "Administratör",
         "organizers": "Organisatörer",
@@ -520,7 +519,6 @@
         },
         "stage": {
             "title": "Fas {number}",
-            "teams": "{min}-{max} lag",
             "edit": "Redigera fas",
             "delete": "Ta bort fas",
             "edit_title": "Redigera fas",
@@ -528,6 +526,9 @@
             "delete_description": "Är du säker på att du vill ta bort denna fas?",
             "type": "Fastyp",
             "type_placeholder": "Välj fastyp...",
+            "group": "Grupp {group}",
+            "stage_tab": "Steg {stage}",
+            "advances_to_next_stage": "Vinnarna avancerar till nästa steg",
             "min_teams": "Minsta antal lag",
             "min_teams_placeholder": "Välj minsta antal lag...",
             "max_teams": "Största antal lag",
@@ -538,12 +539,34 @@
             "start_building": "Börja bygga din turnering",
             "add_first": "Lägg till första fasen",
             "add_another": "Lägg till en till fas",
-            "not_setup": "Turneringsfaser inte konfigurerade"
+            "not_setup": "Turneringsfaser inte konfigurerade",
+            "groups": "Grupper",
+            "groups_placeholder": "Ange antal grupper för det här stadiet..."
         },
         "match": {
             "team_1": "Lag 1",
             "team_2": "Lag 2",
-            "round_match": "Omgång {round} Match {match}"
+            "round_match": "Omgång {round} Match {match}",
+            "bye_round": "Båge runda",
+            "scheduled_for": "Schemalagd för"
+        },
+        "rounds": {
+            "opening_round": "Öppningsrunda",
+            "round": "Rund {number}",
+            "round_of_8": "Rund av 8",
+            "round_of_16": "Omgång 16",
+            "round_of_32": "Rund av 32",
+            "quarter_finals": "Kvartalsfinaler",
+            "semi_finals": "Semifinaler",
+            "finals": "Finaler",
+            "winner": "Vinnare",
+            "advances_to_next_stage": "Framsteg till nästa steg",
+            "final_round": "Slutlig runda",
+            "2nd_round": "2:a omgången",
+            "3rd_round": "3:e omgången",
+            "4th_round": "4:e omgången",
+            "5th_round": "5:e omgången",
+            "6th_round": "6:e omgången"
         },
         "organizer": {
             "title": "Turneringsorganisatörer",
@@ -586,6 +609,13 @@
             "select_team": "Välj ett lag...",
             "search_team": "Sök efter ett lag...",
             "add_to_tournament": "Lägg till i turnering"
+        },
+        "teams": {
+            "count": "{count} Lag",
+            "my_teams": "Mina team",
+            "other_teams": "Andra lag",
+            "no_my_team": "Du har inget lag i den här turneringen",
+            "no_other_teams": "Det finns inga andra lag i denna turnering"
         },
         "actions": {
             "open_registration": "Öppna registrering",
@@ -1050,6 +1080,7 @@
         "edit_label": "Redigera etikett",
         "label_placeholder": "Ange nod etikett",
         "update_label": "Uppdatera etikett",
+        "version_pinning_not_supported": "Fastnålning av version stöds inte på denna server.",
         "validation": {
             "start_port_less_than_end": "Startportintervall måste vara mindre än slutportintervall",
             "end_port_greater_than_start": "Slutportintervall måste vara större än startportintervall med minst 2"

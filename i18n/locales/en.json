@@ -1055,7 +1055,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Lobby Chat"
+        "lobby_chat": "Lobby Chat",
+        "message_placeholder": "Type a message..."
     },
     "charts": {
         "usage": "Usage"

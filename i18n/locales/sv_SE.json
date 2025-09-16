@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "Strömning",
-                  "minimum_role_to_stream": "Minsta roll tillåten att strömma",
-                  "minimum_role_to_stream_description": "Denna roll kommer att kunna skapa matcher."
+                  "minimum_role_to_stream": "Minsta roll tillåten att ansluta till TV (försenad)",
+                  "minimum_role_to_stream_description": "Denna roll kommer att kunna ansluta till TV.",
+                  "minimum_role_to_spectate": "Minsta roll tillåts att åskådas (ingen fördröjning)",
+                  "minimum_role_to_spectate_description": "Denna roll kommer att kunna ansluta och åskåda matcher."
                 },
                 "create_matches_role": "Minsta roll för att skapa matcher",
                 "create_matches_role_description": "Denna roll kommer att kunna skapa matcher.",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "Maximal acceptabel Latency",
                 "max_latency_description": "Om inga regioner föredras kommer matchmaking endast att använda regioner med latens under detta värde."
             }
+        },
+        "watch": {
+            "title": "Titta",
+            "description": "Titta på matcher och turneringar.",
+            "live_matches": "Levande matchningar",
+            "upcoming_matches": "Kommande matcher",
+            "finished_matches": "Avslutade matchningar"
         },
         "regions": {
             "title": "Regioner",
@@ -394,6 +403,7 @@
             "brand": "5 högar",
             "navigation": {
                 "play": "Spela",
+                "watch": "Titta",
                 "matches": "Matcher",
                 "tournaments": "Turneringar",
                 "players": "Spelare",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "Spela",
+                "watch": "Titta",
                 "matches": "Matcher",
                 "tournaments": "Turneringar",
                 "players": "Spelare",
@@ -444,6 +455,44 @@
                 "cancel": "Avbryt",
                 "confirm": "Logga ut"
             }
+        },
+        "top_nav": {
+            "play_menu": "Spela",
+            "community_menu": "Gemenskap",
+            "watch_menu": "Titta",
+            "play": {
+                "find_match": "Hitta en matchning",
+                "tournaments": "Turneringar",
+                "view_previous_matches": "Visa tidigare matcher",
+                "hero": {
+                  "title": "Spela & Tävla",
+                  "subtitle": "Gå med i matcher, turneringar och se din matchhistorik."
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "Spelare",
+                  "subtitle": "Bläddra och sök efter spelare"
+                },
+                "teams": {
+                  "title": "Lag",
+                  "subtitle": "Hitta och hantera team"
+                },
+                "social": {
+                  "title": "Socialt",
+                  "join_discord": {
+                      "title": "Gå med i vår Discord",
+                      "subtitle": "Chatt, support och meddelanden"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "Visa 5stack på GitHub"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Gå med i vår Discord"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "Radera",
         "cancel": "Avbryt",
         "tbd": "TBD",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "Kopplingar",
             "map_veto_tab": "Kartveto",
             "settings": "Matchinställningar",
+            "streams": "Matcha levande strömmar",
             "server_console": "Serverkonsol",
             "randomize_teams": "Slumpmässiga lag",
             "invited_to_match": "Inbjuden till match",
@@ -921,7 +972,10 @@
             "select": "Välj en server",
             "dedicated": "Dedikerade servrar",
             "on_demand": "Vid efterfrågan",
-            "assigned": "Tilldelad matchserver"
+            "assigned": "Tilldelad matchserver",
+            "join_server": "Anslut till server",
+            "join_as_spectator": "Detaljer för åskådare",
+            "join_tv_stream": "Detaljer för TV-strömning"
         },
         "lobby": {
             "access_updated": "Matchlobbyåtkomst uppdaterad till {access}"
@@ -1022,6 +1076,7 @@
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
         "confirm_selection": "Följ Queue",
+        "in_queue": "i kö",
         "temp_banned": "Du är tillfälligt bannad från matchmaking",
         "settings_section": {
             "toggle": "Justera inställningar",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Lobby-chatt"
+        "lobby_chat": "Lobby-chatt",
+        "message_placeholder": "Skriv ett meddelande..."
     },
     "charts": {
         "usage": "Användning"
@@ -1115,5 +1171,29 @@
                 "revert": "Fel reverting konfig till standarder"
             }
         }
+    },
+    "streams": {
+        "add": "Lägg till ström",
+        "add_new": "Lägg till ny ström",
+        "add_description": "Lägg till en ny strömlänk för den här matchen.",
+        "added_successfully": "Stream tillagd",
+        "stream_added_message": "Strömmen har lagts till.",
+        "add_error": "Det gick inte att lägga till ström. Försök igen.",
+        "update": "Uppdatera ström",
+        "edit_stream": "Redigera ström",
+        "edit_description": "Uppdatera strömningsinformationen.",
+        "updated_successfully": "Strömmen uppdaterad",
+        "stream_updated_message": "Strömmen har uppdaterats.",
+        "update_error": "Det gick inte att uppdatera strömmen. Försök igen.",
+        "delete": "Ta bort ström",
+        "delete_title": "Ta bort ström",
+        "delete_description": "Är du säker på att du vill ta bort \"{title}\"? Denna åtgärd kan inte ångras.",
+        "deleted_successfully": "Stream borttagen",
+        "stream_deleted_message": "Strömmen har tagits bort.",
+        "delete_error": "Det gick inte att ta bort ström. Försök igen.",
+        "priority_update_error": "Det gick inte att uppdatera strömprioriteringar. Försök igen.",
+        "streams_description": "Strömmar",
+        "link": "Länk",
+        "title": "Titel"
     }
 }

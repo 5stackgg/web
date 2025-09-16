@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Función mínima permitida",
-                  "minimum_role_to_stream_description": "Este papel será capaz de crear partidos."
+                  "minimum_role_to_stream": "Rol mínimo permitido para conectarse al televisor (retrasado)",
+                  "minimum_role_to_stream_description": "Este rol podrá conectarse a la televisión.",
+                  "minimum_role_to_spectate": "Rol Mínimo Permitido para Observar (Sin Retraso)",
+                  "minimum_role_to_spectate_description": "Este rol será capaz de conectar y observar partidos."
                 },
                 "create_matches_role": "Rol de creación de partidas",
                 "create_matches_role_description": "Este papel será capaz de crear partidos.",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "Maximum Aceptable Latency",
                 "max_latency_description": "Si no se prefieren regiones, el emparejamiento sólo utilizará regiones con latencia inferior a este valor."
             }
+        },
+        "watch": {
+            "title": "Vigilar",
+            "description": "Ver partidas y torneos.",
+            "live_matches": "Partidas en vivo",
+            "upcoming_matches": "Próximas partidas",
+            "finished_matches": "Partidas Finalizadas"
         },
         "regions": {
             "title": "Regiones",
@@ -394,6 +403,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Jugar",
+                "watch": "Vigilar",
                 "matches": "Partidas",
                 "tournaments": "Torneos",
                 "players": "Jugadores",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "Jugar",
+                "watch": "Vigilar",
                 "matches": "Partidas",
                 "tournaments": "Torneos",
                 "players": "Jugadores",
@@ -444,6 +455,44 @@
                 "cancel": "Cancelar",
                 "confirm": "Cerrar Sesión"
             }
+        },
+        "top_nav": {
+            "play_menu": "Jugar",
+            "community_menu": "Comunidad",
+            "watch_menu": "Vigilar",
+            "play": {
+                "find_match": "Encuentra una partida",
+                "tournaments": "Torneos",
+                "view_previous_matches": "Ver partidas anteriores",
+                "hero": {
+                  "title": "Jugar y competir",
+                  "subtitle": "Únete a partidas, torneos y ve tu historial de partidas."
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "Jugadores",
+                  "subtitle": "Navegar y buscar jugadores"
+                },
+                "teams": {
+                  "title": "Equipos",
+                  "subtitle": "Encontrar y administrar equipos"
+                },
+                "social": {
+                  "title": "Social",
+                  "join_discord": {
+                      "title": "Únete a nuestro Discord",
+                      "subtitle": "Chat, soporte y anuncios"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "Ver 5stack en GitHub"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Únete a nuestro Discord"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "Eliminar",
         "cancel": "Cancelar",
         "tbd": "Por determinar",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "Clutch",
             "map_veto_tab": "Veto de mapas",
             "settings": "Configuración",
+            "streams": "Coincidir Streams en Vivo",
             "server_console": "Consola del servidor",
             "randomize_teams": "Equipos aleatorios",
             "invited_to_match": "Invitado a la partida",
@@ -921,7 +972,10 @@
             "select": "Seleccionar",
             "dedicated": "Dedicado",
             "on_demand": "Bajo demanda",
-            "assigned": "Asignado"
+            "assigned": "Asignado",
+            "join_server": "Unirse al servidor",
+            "join_as_spectator": "Detalles del Espectador",
+            "join_tv_stream": "Detalles de la cadena de TV"
         },
         "lobby": {
             "access_updated": "Los permisos de acceso han sido actualizados"
@@ -1022,6 +1076,7 @@
         "banned": "Baneado",
         "go_to_match": "Ir a la partida",
         "confirm_selection": "Join Queue",
+        "in_queue": "en cola",
         "temp_banned": "Baneado temporalmente",
         "settings_section": {
             "toggle": "Ajuste de ajustes",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Chat del lobby"
+        "lobby_chat": "Chat del lobby",
+        "message_placeholder": "Escriba un mensaje..."
     },
     "charts": {
         "usage": "Uso"
@@ -1115,5 +1171,29 @@
                 "revert": "Configuración de revertir errores a defectos"
             }
         }
+    },
+    "streams": {
+        "add": "Añadir Flujo",
+        "add_new": "Añadir nueva secuencia",
+        "add_description": "Añadir un nuevo enlace para esta partida.",
+        "added_successfully": "Flujo añadido",
+        "stream_added_message": "El flujo se ha añadido correctamente.",
+        "add_error": "Error al agregar la transmisión. Por favor, inténtalo de nuevo.",
+        "update": "Actualizar Flujo",
+        "edit_stream": "Editar flujo",
+        "edit_description": "Actualizar la información de la secuencia.",
+        "updated_successfully": "Flujo actualizado",
+        "stream_updated_message": "El stream se ha actualizado correctamente.",
+        "update_error": "Error al actualizar la secuencia. Por favor, inténtalo de nuevo.",
+        "delete": "Eliminar flujo",
+        "delete_title": "Eliminar flujo",
+        "delete_description": "¿Está seguro que desea eliminar \"{title}\"? Esta acción no se puede deshacer.",
+        "deleted_successfully": "Flujo eliminado",
+        "stream_deleted_message": "El stream se ha eliminado correctamente.",
+        "delete_error": "Error al eliminar la secuencia. Por favor, inténtalo de nuevo.",
+        "priority_update_error": "Error al actualizar las prioridades de la secuencia. Por favor, inténtalo de nuevo.",
+        "streams_description": "Flujos",
+        "link": "Enlace",
+        "title": "Título"
     }
 }

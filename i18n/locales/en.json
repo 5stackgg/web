@@ -1025,6 +1025,7 @@
         "banned": "You are banned from matchmaking",
         "go_to_match": "Go to Match",
         "confirm_selection": "Join Queue",
+        "in_queue": "in queue",
         "temp_banned": "You are temporarily banned from matchmaking",
         "settings_section": {
             "toggle": "Adjust Settings",

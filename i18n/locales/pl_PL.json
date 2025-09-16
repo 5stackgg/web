@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Minimalna rola dozwolona dla strumienia",
-                  "minimum_role_to_stream_description": "Ta rola będzie w stanie tworzyć mecze."
+                  "minimum_role_to_stream": "Minimalna rola dozwolona do połączenia z telewizorem (Docayed)",
+                  "minimum_role_to_stream_description": "Ta rola będzie mogła połączyć się z telewizorem.",
+                  "minimum_role_to_spectate": "Minimalna rola dozwolona do oglądania (bez opóźnienia)",
+                  "minimum_role_to_spectate_description": "Ta rola będzie mogła łączyć i oglądać mecze."
                 },
                 "create_matches_role": "Minimalna rola do tworzenia meczów",
                 "create_matches_role_description": "Ta rola będzie w stanie tworzyć mecze.",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "Maksymalna dopuszczalna Opóźnienie",
                 "max_latency_description": "Jeżeli żadne regiony nie będą preferowane, tworzenie zapałek będzie miało zastosowanie tylko w regionach o opóźnieniu poniżej tej wartości."
             }
+        },
+        "watch": {
+            "title": "Obejrzyj",
+            "description": "Oglądaj mecze i turniejy.",
+            "live_matches": "Mecze na żywo",
+            "upcoming_matches": "Nadchodzące mecze",
+            "finished_matches": "Zakończone mecze"
         },
         "regions": {
             "title": "Regiony",
@@ -394,6 +403,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Graj",
+                "watch": "Obejrzyj",
                 "matches": "Mecze",
                 "tournaments": "Turnieje",
                 "players": "Gracze",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "Graj",
+                "watch": "Obejrzyj",
                 "matches": "Mecze",
                 "tournaments": "Turnieje",
                 "players": "Gracze",
@@ -444,6 +455,44 @@
                 "cancel": "Anuluj",
                 "confirm": "Wyloguj"
             }
+        },
+        "top_nav": {
+            "play_menu": "Odtwórz",
+            "community_menu": "Społeczność",
+            "watch_menu": "Obejrzyj",
+            "play": {
+                "find_match": "Znajdź mecz",
+                "tournaments": "Turnieje",
+                "view_previous_matches": "Zobacz poprzednie mecze",
+                "hero": {
+                  "title": "Graj i rywalizuj",
+                  "subtitle": "Dołącz do meczów, turniejów i zobacz historię meczów."
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "Gracze",
+                  "subtitle": "Przeglądaj i szukaj graczy"
+                },
+                "teams": {
+                  "title": "Drużyny",
+                  "subtitle": "Znajdź i zarządzaj zespołami"
+                },
+                "social": {
+                  "title": "Społeczność",
+                  "join_discord": {
+                      "title": "Dołącz do naszego Discorda",
+                      "subtitle": "Czat, wsparcie i ogłoszenia"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "Zobacz 5stack na GitHub"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Dołącz do naszego Discorda"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "Usuń",
         "cancel": "Anuluj",
         "tbd": "Do ustalenia",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "Clutch",
             "map_veto_tab": "Veto map",
             "settings": "Ustawienia",
+            "streams": "Dopasuj strumienie na żywo",
             "server_console": "Konsola serwera",
             "randomize_teams": "Losowe drużyny",
             "invited_to_match": "Zaproszony do meczu",
@@ -921,7 +972,10 @@
             "select": "Wybierz",
             "dedicated": "Dedykowany",
             "on_demand": "Na żądanie",
-            "assigned": "Przypisany"
+            "assigned": "Przypisany",
+            "join_server": "Dołącz do serwera",
+            "join_as_spectator": "Szczegóły obserwatora",
+            "join_tv_stream": "Szczegóły strumienia TV"
         },
         "lobby": {
             "access_updated": "Uprawnienia dostępu zostały zaktualizowane"
@@ -1022,6 +1076,7 @@
         "banned": "Zbanowany",
         "go_to_match": "Przejdź do meczu",
         "confirm_selection": "Dołącz do kolejki",
+        "in_queue": "w kolejce",
         "temp_banned": "Tymczasowo zbanowany",
         "settings_section": {
             "toggle": "Dostosuj ustawienia",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Czat lobby"
+        "lobby_chat": "Czat lobby",
+        "message_placeholder": "Wpisz wiadomość..."
     },
     "charts": {
         "usage": "Użycie"
@@ -1115,5 +1171,29 @@
                 "revert": "Błąd odwracania konfiguratora do domyślnego"
             }
         }
+    },
+    "streams": {
+        "add": "Dodaj strumień",
+        "add_new": "Dodaj nowy strumień",
+        "add_description": "Dodaj nowy link strumienia dla tego meczu.",
+        "added_successfully": "Strumień dodany",
+        "stream_added_message": "Strumień został dodany pomyślnie.",
+        "add_error": "Nie udało się dodać strumienia. Spróbuj ponownie.",
+        "update": "Aktualizuj strumień",
+        "edit_stream": "Edytuj strumień",
+        "edit_description": "Aktualizuj informacje o strumieniu.",
+        "updated_successfully": "Strumień zaktualizowany",
+        "stream_updated_message": "Strumień został pomyślnie zaktualizowany.",
+        "update_error": "Nie udało się zaktualizować strumienia. Spróbuj ponownie.",
+        "delete": "Usuń strumień",
+        "delete_title": "Usuń strumień",
+        "delete_description": "Czy na pewno chcesz usunąć \"{title}\"? Tej akcji nie można cofnąć.",
+        "deleted_successfully": "Strumień usunięty",
+        "stream_deleted_message": "Strumień został pomyślnie usunięty.",
+        "delete_error": "Nie udało się usunąć strumienia. Spróbuj ponownie.",
+        "priority_update_error": "Nie udało się zaktualizować priorytetów strumienia. Spróbuj ponownie.",
+        "streams_description": "Strumienie",
+        "link": "Link",
+        "title": "Rozporządzenie Rady (EWG) nr 2658/87 z dnia 23 lipca 1987 r. w sprawie nomenklatury taryfowej i statystycznej oraz w sprawie Wspólnej Taryfy Celnej (Dz.U. L 256 z 7.9.1987, s. 1)."
     }
 }

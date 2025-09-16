@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Mindeste Rolle erlaubt zu Streamen",
-                  "minimum_role_to_stream_description": "Diese Rolle wird in der Lage sein, Spiele zu erstellen."
+                  "minimum_role_to_stream": "Minimale Rolle erlaubt Verbindung mit TV (Verzögert)",
+                  "minimum_role_to_stream_description": "Diese Rolle wird in der Lage sein, sich mit TV zu verbinden.",
+                  "minimum_role_to_spectate": "Minimale Rolle erlaubt zuzuschauen (Keine Verzögerung)",
+                  "minimum_role_to_spectate_description": "Diese Rolle wird in der Lage sein, Spiele zu verbinden und zuzusehen."
                 },
                 "create_matches_role": "Mindestrolle für Match-Erstellung",
                 "create_matches_role_description": "Diese Rolle wird in der Lage sein, Spiele zu erstellen.",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "Maximal zulässig Latenz",
                 "max_latency_description": "Werden keine Regionen bevorzugt, wird Matchmaking nur Regionen mit Latenz unterhalb dieses Wertes verwenden."
             }
+        },
+        "watch": {
+            "title": "Beobachten",
+            "description": "Spiele und Turniere beobachten.",
+            "live_matches": "Live Matches",
+            "upcoming_matches": "Kommende Spiele",
+            "finished_matches": "Beendete Matches"
         },
         "regions": {
             "title": "Regionen",
@@ -394,6 +403,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Spielen",
+                "watch": "Beobachten",
                 "matches": "Spiele",
                 "tournaments": "Turniere",
                 "players": "Spieler",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "Spielen",
+                "watch": "Beobachten",
                 "matches": "Spiele",
                 "tournaments": "Turniere",
                 "players": "Spieler",
@@ -444,6 +455,44 @@
                 "cancel": "Abbrechen",
                 "confirm": "Abmelden"
             }
+        },
+        "top_nav": {
+            "play_menu": "Abspielen",
+            "community_menu": "Community",
+            "watch_menu": "Beobachten",
+            "play": {
+                "find_match": "Finde ein Match",
+                "tournaments": "Turniere",
+                "view_previous_matches": "Vorherige Spiele anzeigen",
+                "hero": {
+                  "title": "Spielen & Wettbewerben",
+                  "subtitle": "Spiele Spiele, Turniere und sieh dir deinen Spielverlauf an."
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "Spieler",
+                  "subtitle": "Suche und Suche nach Spielern"
+                },
+                "teams": {
+                  "title": "Teams",
+                  "subtitle": "Teams finden und verwalten"
+                },
+                "social": {
+                  "title": "Soziale",
+                  "join_discord": {
+                      "title": "Trete unserem Discord bei",
+                      "subtitle": "Chat, Support und Ankündigungen"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "Zeige 5stack auf GitHub"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Trete unserem Discord bei"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "Löschen",
         "cancel": "Abbrechen",
         "tbd": "TBD",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "Clutches",
             "map_veto_tab": "Karten-Veto",
             "settings": "Spieleinstellungen",
+            "streams": "Live Streams Match",
             "server_console": "Server-Konsole",
             "randomize_teams": "Teams zufällig zuweisen",
             "invited_to_match": "Zum Spiel eingeladen",
@@ -921,7 +972,10 @@
             "select": "Server auswählen",
             "dedicated": "Dedizierte Server",
             "on_demand": "On-Demand",
-            "assigned": "Zugewiesener Spielserver"
+            "assigned": "Zugewiesener Spielserver",
+            "join_server": "Server beitreten",
+            "join_as_spectator": "Zuschauerdetails",
+            "join_tv_stream": "TV-Stream-Details"
         },
         "lobby": {
             "access_updated": "Spiel-Lobby-Zugriff auf {access} aktualisiert"
@@ -1022,6 +1076,7 @@
         "banned": "Sie sind vom Matchmaking gesperrt",
         "go_to_match": "Zum Spiel gehen",
         "confirm_selection": "Jetzt anmelden",
+        "in_queue": "in Warteschlange",
         "temp_banned": "Sie sind vorübergehend vom Matchmaking gesperrt",
         "settings_section": {
             "toggle": "Einstellungen anpassen",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Lobby-Chat"
+        "lobby_chat": "Lobby-Chat",
+        "message_placeholder": "Nachricht eingeben..."
     },
     "charts": {
         "usage": "Nutzung"
@@ -1115,5 +1171,29 @@
                 "revert": "Fehler reverting config auf Standardeinstellungen"
             }
         }
+    },
+    "streams": {
+        "add": "Stream hinzufügen",
+        "add_new": "Neuen Stream hinzufügen",
+        "add_description": "Füge einen neuen Stream-Link für dieses Spiel hinzu.",
+        "added_successfully": "Stream hinzugefügt",
+        "stream_added_message": "Der Stream wurde erfolgreich hinzugefügt.",
+        "add_error": "Fehler beim Hinzufügen des Streams. Bitte versuche es erneut.",
+        "update": "Stream aktualisieren",
+        "edit_stream": "Stream bearbeiten",
+        "edit_description": "Aktualisierung der Streaminformationen.",
+        "updated_successfully": "Stream aktualisiert",
+        "stream_updated_message": "Der Stream wurde erfolgreich aktualisiert.",
+        "update_error": "Fehler beim Aktualisieren des Streams. Bitte versuche es erneut.",
+        "delete": "Stream löschen",
+        "delete_title": "Stream löschen",
+        "delete_description": "Sind Sie sicher, dass Sie \"{title}\"löschen wollen? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "deleted_successfully": "Stream gelöscht",
+        "stream_deleted_message": "Der Stream wurde erfolgreich gelöscht.",
+        "delete_error": "Stream konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
+        "priority_update_error": "Fehler beim Aktualisieren der Streamprioritäten. Bitte versuchen Sie es erneut.",
+        "streams_description": "Streams",
+        "link": "Link",
+        "title": "Titel"
     }
 }

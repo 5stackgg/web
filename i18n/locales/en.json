@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                     "title": "Streaming",
-                    "minimum_role_to_stream": "Minimum Role Allowed to Stream",
-                    "minimum_role_to_stream_description": "This role will be able to stream matches."
+                    "minimum_role_to_stream": "Minimum Role Allowed to Connect to TV (Delayed)",
+                    "minimum_role_to_stream_description": "This role will be able to connect to TV.",
+                    "minimum_role_to_spectate": "Minimum Role Allowed to Spectate (No Delay)",
+                    "minimum_role_to_spectate_description": "This role will be able to connect and spectate matches."
                 },
                 "create_matches_role": "Minimum Role Allowed to Create Matches",
                 "create_matches_role_description": "This role will be able to create matches.",
@@ -161,6 +163,13 @@
                 "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value."
 
             }
+        },
+        "watch": {
+            "title": "Watch",
+            "description": "Watch matches and tournaments.",
+            "live_matches": "Live Matches",
+            "upcoming_matches": "Upcoming Matches",
+            "finished_matches": "Finished Matches"
         },
         "regions": {
             "title": "Regions",
@@ -396,6 +405,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Play",
+                "watch": "Watch",
                 "matches": "Matches",
                 "tournaments": "Tournaments",
                 "players": "Players",
@@ -424,6 +434,7 @@
             },
             "tooltips": {
                 "play": "Play",
+                "watch": "Watch",
                 "matches": "Matches",
                 "tournaments": "Tournaments",
                 "players": "Players",
@@ -445,6 +456,44 @@
                 "description": "Are you sure you want to logout?",
                 "cancel": "Cancel",
                 "confirm": "Logout"
+            }
+        },
+        "top_nav": {
+            "play_menu": "Play",
+            "community_menu": "Community",
+            "watch_menu": "Watch",
+            "play": {
+                "find_match": "Find a Match",
+                "tournaments": "Tournaments",
+                "view_previous_matches": "View Previous Matches",
+                "hero": {
+                    "title": "Play & Compete",
+                    "subtitle": "Join matches, tournaments, and view your match history."
+                }
+            },
+            "community": {
+                "players": {
+                    "title": "Players",
+                    "subtitle": "Browse and search for players"
+                },
+                "teams": {
+                    "title": "Teams",
+                    "subtitle": "Find and manage teams"
+                },
+                "social": {
+                    "title": "Social",
+                    "join_discord": {
+                        "title": "Join our Discord",
+                        "subtitle": "Chat, support, and announcements"
+                    },
+                    "github": {
+                        "title": "5stack.gg",
+                        "subtitle": "View 5stack on GitHub"
+                    }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Join our Discord"
             }
         }
     },
@@ -924,7 +973,10 @@
             "select": "Select a server",
             "dedicated": "Dedicated Servers",
             "on_demand": "On Demand",
-            "assigned": "Assigned Match Server"
+            "assigned": "Assigned Match Server",
+            "join_server": "Join Server",
+            "join_as_spectator": "Spectator Details",
+            "join_tv_stream": "TV Stream Details"
         },
         "lobby": {
             "access_updated": "Match lobby access updated to {access}"

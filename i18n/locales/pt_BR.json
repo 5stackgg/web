@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Funão Mínima Permitida para Stremar",
-                  "minimum_role_to_stream_description": "Esta função poderá transmitir partidas."
+                  "minimum_role_to_stream": "Papel Mínimo Permitido de Conectar-se à TV (Atrasado)",
+                  "minimum_role_to_stream_description": "Este cargo poderá se conectar à TV.",
+                  "minimum_role_to_spectate": "Papel Mínimo Permitido Assistir (Sem Atraso)",
+                  "minimum_role_to_spectate_description": "Este cargo será capaz de conectar e assistir partidas."
                 },
                 "create_matches_role": "Cargo mínimo para criar partidas",
                 "create_matches_role_description": "Este cargo poderá criar partidas",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "Máximo Aceitável Latência",
                 "max_latency_description": "Se nenhuma região é preferida, matchmaking só usará regiões com latência abaixo deste valor."
             }
+        },
+        "watch": {
+            "title": "Acompanhar",
+            "description": "Assista a partidas e torneios.",
+            "live_matches": "Jogos Ao Vivo",
+            "upcoming_matches": "Próximas Partidas",
+            "finished_matches": "Partidas concluídas"
         },
         "regions": {
             "title": "Regiões",
@@ -394,6 +403,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Jogar",
+                "watch": "Acompanhar",
                 "matches": "Partidas",
                 "tournaments": "Torneios",
                 "players": "Jogadores",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "Jogar",
+                "watch": "Acompanhar",
                 "matches": "Partidas",
                 "tournaments": "Torneios",
                 "players": "Jogadores",
@@ -444,6 +455,44 @@
                 "cancel": "Cancelar",
                 "confirm": "Sair"
             }
+        },
+        "top_nav": {
+            "play_menu": "Reproduzir",
+            "community_menu": "Comunidade",
+            "watch_menu": "Acompanhar",
+            "play": {
+                "find_match": "Encontrar uma partida",
+                "tournaments": "Torneios",
+                "view_previous_matches": "Ver partidas anteriores",
+                "hero": {
+                  "title": "Jogar e Compete",
+                  "subtitle": "Junte-se a jogos, torneios e veja o seu histórico de jogos."
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "Jogadores",
+                  "subtitle": "Navegue e procure por jogadores"
+                },
+                "teams": {
+                  "title": "Times",
+                  "subtitle": "Localizar e gerenciar equipes"
+                },
+                "social": {
+                  "title": "Sócio",
+                  "join_discord": {
+                      "title": "Junte-se ao nosso Discord",
+                      "subtitle": "Conversa, suporte e anúncios"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "Exibir 5stack no GitHub"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Junte-se ao nosso Discord"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "excluir",
         "cancel": "Cancelar",
         "tbd": "A definir",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "Clutches",
             "map_veto_tab": "Veto de mapas",
             "settings": "Configurações",
+            "streams": "Partida de transmissões ao vivo",
             "server_console": "Console do servidor",
             "randomize_teams": "Equipes aleatórias",
             "invited_to_match": "Convidado para a partida",
@@ -921,7 +972,10 @@
             "select": "Selecionar",
             "dedicated": "Dedicado",
             "on_demand": "Sob demanda",
-            "assigned": "Atribuído"
+            "assigned": "Atribuído",
+            "join_server": "Entrar no servidor",
+            "join_as_spectator": "Detalhes do Espectador",
+            "join_tv_stream": "Detalhes do Stream TV"
         },
         "lobby": {
             "access_updated": "Acesso ao lobby da partida atualizado para {access}"
@@ -1022,6 +1076,7 @@
         "banned": "Banido",
         "go_to_match": "Ir para a partida",
         "confirm_selection": "Entrar na Fila",
+        "in_queue": "na fila",
         "temp_banned": "Banido temporariamente",
         "settings_section": {
             "toggle": "Ajustar as Configurações",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Chat do lobby"
+        "lobby_chat": "Chat do lobby",
+        "message_placeholder": "Digite uma mensagem..."
     },
     "charts": {
         "usage": "Uso"
@@ -1115,5 +1171,29 @@
                 "revert": "Erro ao reverter a configuração para os padrões"
             }
         }
+    },
+    "streams": {
+        "add": "Adicionar fluxo",
+        "add_new": "Adicionar Novo Transmissão",
+        "add_description": "Adicione um novo link de transmissão para esta partida.",
+        "added_successfully": "Fluxo Adicionado",
+        "stream_added_message": "O fluxo foi adicionado com sucesso.",
+        "add_error": "Falha ao adicionar transmissão. Por favor, tente novamente.",
+        "update": "Atualizar fluxo",
+        "edit_stream": "Editar Transmissão",
+        "edit_description": "Atualize as informações do fluxo",
+        "updated_successfully": "Transmissão atualizada",
+        "stream_updated_message": "O fluxo foi atualizado com sucesso.",
+        "update_error": "Falha ao atualizar transmissão. Por favor, tente novamente.",
+        "delete": "Excluir Transmissão",
+        "delete_title": "Excluir Transmissão",
+        "delete_description": "Tem certeza que quer apagar \"{title}\"? Essa ação não pode ser desfeita.",
+        "deleted_successfully": "Transmissão Excluída",
+        "stream_deleted_message": "O fluxo foi excluído com sucesso.",
+        "delete_error": "Falha ao excluir transmissão. Por favor, tente novamente.",
+        "priority_update_error": "Falha ao atualizar as prioridades de transmissão. Por favor, tente novamente.",
+        "streams_description": "Transmissões",
+        "link": "Vincular",
+        "title": "Título"
     }
 }

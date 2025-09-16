@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Rôle minimum autorisé à diffuser",
-                  "minimum_role_to_stream_description": "Ce rôle sera en mesure de créer des correspondances."
+                  "minimum_role_to_stream": "Rôle minimum autorisé à se connecter au téléviseur (retardé)",
+                  "minimum_role_to_stream_description": "Ce rôle sera en mesure de se connecter au téléviseur.",
+                  "minimum_role_to_spectate": "Rôle minimum autorisé à regarder (sans délai)",
+                  "minimum_role_to_spectate_description": "Ce rôle sera en mesure de se connecter et de regarder les matchs."
                 },
                 "create_matches_role": "Rôle minimum autorisé à créer des matchs",
                 "create_matches_role_description": "Ce rôle sera en mesure de créer des correspondances.",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "Maximum acceptable Latence",
                 "max_latency_description": "Si aucune région n'est préférée, l'appariement n'utilisera que des régions dont la latence est inférieure à cette valeur."
             }
+        },
+        "watch": {
+            "title": "Regarder",
+            "description": "Regarde les matchs et les tournois.",
+            "live_matches": "Matchs en direct",
+            "upcoming_matches": "Prochains matchs",
+            "finished_matches": "Correspondances terminées"
         },
         "regions": {
             "title": "Régions",
@@ -394,6 +403,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Jouer",
+                "watch": "Regarder",
                 "matches": "Matchs",
                 "tournaments": "Tournois",
                 "players": "Joueurs",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "Jouer",
+                "watch": "Regarder",
                 "matches": "Matchs",
                 "tournaments": "Tournois",
                 "players": "Joueurs",
@@ -444,6 +455,44 @@
                 "cancel": "Annuler",
                 "confirm": "Déconnexion"
             }
+        },
+        "top_nav": {
+            "play_menu": "Jouer",
+            "community_menu": "Communauté",
+            "watch_menu": "Regarder",
+            "play": {
+                "find_match": "Trouver un match",
+                "tournaments": "Tournois",
+                "view_previous_matches": "Voir les matchs précédents",
+                "hero": {
+                  "title": "Jouer et participer",
+                  "subtitle": "Rejoignez des matchs, des tournois et affichez votre historique de match."
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "Joueurs",
+                  "subtitle": "Parcourir et rechercher des joueurs"
+                },
+                "teams": {
+                  "title": "Équipes",
+                  "subtitle": "Trouver et gérer des équipes"
+                },
+                "social": {
+                  "title": "Réseaux sociaux",
+                  "join_discord": {
+                      "title": "Rejoignez notre Discord",
+                      "subtitle": "Chat, support et annonces"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "Voir 5stack sur GitHub"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Rejoignez notre Discord"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "Supprimez",
         "cancel": "Annuler",
         "tbd": "À déterminer",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "Clutches",
             "map_veto_tab": "Veto de map",
             "settings": "Paramètres",
+            "streams": "Faire correspondre les Streams en direct",
             "server_console": "Console serveur",
             "randomize_teams": "Équipes aléatoires",
             "invited_to_match": "Invité au match",
@@ -921,7 +972,10 @@
             "select": "Sélectionner",
             "dedicated": "Dédié",
             "on_demand": "À la demande",
-            "assigned": "Assigné"
+            "assigned": "Assigné",
+            "join_server": "Rejoindre le serveur",
+            "join_as_spectator": "Détails du Spectateur",
+            "join_tv_stream": "Détails du flux TV"
         },
         "lobby": {
             "access_updated": "Les permissions d'accès ont été mises à jour"
@@ -1022,6 +1076,7 @@
         "banned": "Banni",
         "go_to_match": "Aller au match",
         "confirm_selection": "Rejoignez la file d'attente",
+        "in_queue": "en file d'attente",
         "temp_banned": "Banni temporairement",
         "settings_section": {
             "toggle": "Régler les paramètres",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Chat du lobby"
+        "lobby_chat": "Chat du lobby",
+        "message_placeholder": "Tapez un message..."
     },
     "charts": {
         "usage": "Utilisation"
@@ -1115,5 +1171,29 @@
                 "revert": "Erreur lors du retour de la configuration aux valeurs par défaut"
             }
         }
+    },
+    "streams": {
+        "add": "Ajouter un flux",
+        "add_new": "Ajouter un nouveau flux",
+        "add_description": "Ajouter un nouveau lien de flux pour ce match.",
+        "added_successfully": "Flux Ajouté",
+        "stream_added_message": "Le flux a été ajouté avec succès.",
+        "add_error": "Impossible d'ajouter le flux. Veuillez réessayer.",
+        "update": "Mettre à jour le flux",
+        "edit_stream": "Modifier le flux",
+        "edit_description": "Mettre à jour les informations du flux.",
+        "updated_successfully": "Flux mis à jour",
+        "stream_updated_message": "Le flux a été mis à jour avec succès.",
+        "update_error": "Échec de la mise à jour du flux. Veuillez réessayer.",
+        "delete": "Supprimer le flux",
+        "delete_title": "Supprimer le flux",
+        "delete_description": "Êtes-vous sûr de vouloir supprimer \"{title}\" ? Cette action ne peut pas être annulée.",
+        "deleted_successfully": "Flux Supprimé",
+        "stream_deleted_message": "Le flux a été supprimé avec succès.",
+        "delete_error": "Échec de la suppression du flux. Veuillez réessayer.",
+        "priority_update_error": "Impossible de mettre à jour les priorités du flux. Veuillez réessayer.",
+        "streams_description": "Streams",
+        "link": "Lier",
+        "title": "Titre de la page"
     }
 }

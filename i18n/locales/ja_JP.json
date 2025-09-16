@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "ストリーミング",
-                  "minimum_role_to_stream": "ストリームを可能にする最小限のロール",
-                  "minimum_role_to_stream_description": "このロールはマッチを作成することができます."
+                  "minimum_role_to_stream": "テレビへの接続を許可する最小ロール（遅延）",
+                  "minimum_role_to_stream_description": "この役割はテレビに接続することができます。",
+                  "minimum_role_to_spectate": "観戦を許可される最小ロール (遅延なし)",
+                  "minimum_role_to_spectate_description": "この役割はマッチを接続して観戦することができます。"
                 },
                 "create_matches_role": "マッチ作成に必要な最小ロール",
                 "create_matches_role_description": "このロールはマッチを作成することができます.",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "最高の受諾可能 レイテンシー",
                 "max_latency_description": "地域が好まない場合は、マッチメイキングは、この値の下のレイテンシを持つ地域のみを使用します."
             }
+        },
+        "watch": {
+            "title": "見る",
+            "description": "試合やトーナメントを見る。",
+            "live_matches": "ライブマッチ",
+            "upcoming_matches": "今後の試合",
+            "finished_matches": "完了した一致"
         },
         "regions": {
             "title": "リージョン",
@@ -394,6 +403,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "プレイ",
+                "watch": "見る",
                 "matches": "マッチ",
                 "tournaments": "トーナメント",
                 "players": "プレイヤー",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "プレイ",
+                "watch": "見る",
                 "matches": "マッチ",
                 "tournaments": "トーナメント",
                 "players": "プレイヤー",
@@ -444,6 +455,44 @@
                 "cancel": "キャンセル",
                 "confirm": "ログアウト"
             }
+        },
+        "top_nav": {
+            "play_menu": "再生",
+            "community_menu": "コミュニティ",
+            "watch_menu": "見る",
+            "play": {
+                "find_match": "マッチ相手を探す",
+                "tournaments": "トーナメント",
+                "view_previous_matches": "前回の試合を表示",
+                "hero": {
+                  "title": "プレイ & Compete",
+                  "subtitle": "試合、トーナメントに参加し、試合の履歴を表示します。"
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "プレイヤー",
+                  "subtitle": "プレイヤーを閲覧して検索"
+                },
+                "teams": {
+                  "title": "チーム",
+                  "subtitle": "チームの検索と管理"
+                },
+                "social": {
+                  "title": "ソーシャル",
+                  "join_discord": {
+                      "title": "Discordに参加する",
+                      "subtitle": "チャット、サポート、およびお知らせ"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "GitHubで5スタックを表示"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Discordに参加する"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "削除",
         "cancel": "キャンセル",
         "tbd": "未定",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "クラッチ",
             "map_veto_tab": "マップベート",
             "settings": "設定",
+            "streams": "ライブストリームと一致",
             "server_console": "サーバーコンソール",
             "randomize_teams": "チームをランダム化",
             "invited_to_match": "マッチに招待されました",
@@ -921,7 +972,10 @@
             "select": "選択",
             "dedicated": "専用",
             "on_demand": "オンデマンド",
-            "assigned": "割り当て済み"
+            "assigned": "割り当て済み",
+            "join_server": "サーバーに参加",
+            "join_as_spectator": "観戦者の詳細",
+            "join_tv_stream": "テレビストリームの詳細"
         },
         "lobby": {
             "access_updated": "マッチロビーへのアクセスが{access}に更新されました"
@@ -1022,6 +1076,7 @@
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
         "confirm_selection": "Queueに参加する",
+        "in_queue": "キューに",
         "temp_banned": "一時BAN",
         "settings_section": {
             "toggle": "設定を調整する",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "ロビーチャット"
+        "lobby_chat": "ロビーチャット",
+        "message_placeholder": "メッセージを入力してください..."
     },
     "charts": {
         "usage": "使用量"
@@ -1115,5 +1171,29 @@
                 "revert": "デフォルトで設定を反転するエラー"
             }
         }
+    },
+    "streams": {
+        "add": "ストリームを追加",
+        "add_new": "新しいストリームを追加",
+        "add_description": "このマッチに新しいストリームリンクを追加します。",
+        "added_successfully": "ストリームが追加されました",
+        "stream_added_message": "配信が正常に追加されました。",
+        "add_error": "ストリームを追加できませんでした。もう一度やり直してください。",
+        "update": "ストリームを更新",
+        "edit_stream": "ストリームを編集",
+        "edit_description": "ストリーム情報を更新します。",
+        "updated_successfully": "ストリームの更新",
+        "stream_updated_message": "配信の更新が完了しました",
+        "update_error": "ストリームの更新に失敗しました。もう一度やり直してください。",
+        "delete": "配信を削除",
+        "delete_title": "配信を削除",
+        "delete_description": "「{title}」を削除してもよろしいですか？この操作は元に戻せません。",
+        "deleted_successfully": "ストリームを削除しました",
+        "stream_deleted_message": "配信の削除が完了しました",
+        "delete_error": "ストリームの削除に失敗しました。もう一度やり直してください。",
+        "priority_update_error": "配信の優先順位を更新できませんでした。もう一度やり直してください。",
+        "streams_description": "ストリーム",
+        "link": "リンク",
+        "title": "タイトル"
     }
 }

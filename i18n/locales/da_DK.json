@@ -96,8 +96,10 @@
                 },
                 "streaming": {
                   "title": "Streaming",
-                  "minimum_role_to_stream": "Minimum Rolle Tilladt Stream",
-                  "minimum_role_to_stream_description": "Denne rolle vil være i stand til at skabe kampe."
+                  "minimum_role_to_stream": "Minimum rolle tilladt at oprette forbindelse til TV (forsinket)",
+                  "minimum_role_to_stream_description": "Denne rolle vil være i stand til at forbinde til TV.",
+                  "minimum_role_to_spectate": "Minimum Rolle Tilladt at se (Ingen forsinkelse)",
+                  "minimum_role_to_spectate_description": "Denne rolle vil være i stand til at forbinde og spectate kampe."
                 },
                 "create_matches_role": "Mindste rolle til at oprette kampe",
                 "create_matches_role_description": "Denne rolle vil være i stand til at skabe kampe.",
@@ -160,6 +162,13 @@
                 "max_acceptable_latency": "Maksimalt acceptabelt Latency",
                 "max_latency_description": "Hvis ingen regioner foretrækkes, vil matchmaking kun anvende regioner med en latency under denne værdi."
             }
+        },
+        "watch": {
+            "title": "Se",
+            "description": "Se kampe og turneringer.",
+            "live_matches": "Live Kampe",
+            "upcoming_matches": "Kommende Kampe",
+            "finished_matches": "Afsluttede Kampe"
         },
         "regions": {
             "title": "Regioner",
@@ -394,6 +403,7 @@
             "brand": "5stack",
             "navigation": {
                 "play": "Spil",
+                "watch": "Se",
                 "matches": "Kampe",
                 "tournaments": "Turneringer",
                 "players": "Spillere",
@@ -422,6 +432,7 @@
             },
             "tooltips": {
                 "play": "Spil",
+                "watch": "Se",
                 "matches": "Kampe",
                 "tournaments": "Turneringer",
                 "players": "Spillere",
@@ -444,6 +455,44 @@
                 "cancel": "Annuller",
                 "confirm": "Log ud"
             }
+        },
+        "top_nav": {
+            "play_menu": "Afspil",
+            "community_menu": "Fællesskab",
+            "watch_menu": "Se",
+            "play": {
+                "find_match": "Find et match",
+                "tournaments": "Turneringer",
+                "view_previous_matches": "Se Tidligere Kampe",
+                "hero": {
+                  "title": "Spil & Konkurrér",
+                  "subtitle": "Deltag i kampe, turneringer og se din matchhistorik."
+                }
+            },
+            "community": {
+                "players": {
+                  "title": "Spillere",
+                  "subtitle": "Gennemse og søg efter spillere"
+                },
+                "teams": {
+                  "title": "Hold",
+                  "subtitle": "Find og administrer teams"
+                },
+                "social": {
+                  "title": "Social",
+                  "join_discord": {
+                      "title": "Deltag i vores Discord",
+                      "subtitle": "Chat, support og meddelelser"
+                  },
+                  "github": {
+                      "title": "5stack.gg",
+                      "subtitle": "Se 5stak på GitHub"
+                  }
+                }
+            },
+            "tooltip": {
+                "join_discord": "Deltag i vores Discord"
+            }
         }
     },
     "pwa": {
@@ -457,6 +506,7 @@
         }
     },
     "common": {
+        "delete": "Slet",
         "cancel": "Annuller",
         "tbd": "Afgøres",
         "boolean": {
@@ -796,6 +846,7 @@
             "clutches": "Clutch",
             "map_veto_tab": "Kort veto",
             "settings": "Indstillinger",
+            "streams": "Match Live Streams",
             "server_console": "Server konsol",
             "randomize_teams": "Tilfældige hold",
             "invited_to_match": "Inviteret til kamp",
@@ -921,7 +972,10 @@
             "select": "Vælg",
             "dedicated": "Dedikeret",
             "on_demand": "Efterspørgsel",
-            "assigned": "Tildelt"
+            "assigned": "Tildelt",
+            "join_server": "Deltag I Server",
+            "join_as_spectator": "Tilskuer Detaljer",
+            "join_tv_stream": "TV Stream Detaljer"
         },
         "lobby": {
             "access_updated": "Adgangsrettigheder er blevet opdateret"
@@ -1022,6 +1076,7 @@
         "banned": "Bannet",
         "go_to_match": "Gå til kamp",
         "confirm_selection": "Deltag i kø",
+        "in_queue": "i kø",
         "temp_banned": "Midlertidigt bannet",
         "settings_section": {
             "toggle": "Justér indstillinger",
@@ -1052,7 +1107,8 @@
         }
     },
     "chat": {
-        "lobby_chat": "Lobby chat"
+        "lobby_chat": "Lobby chat",
+        "message_placeholder": "Skriv en besked..."
     },
     "charts": {
         "usage": "Forbrug"
@@ -1115,5 +1171,29 @@
                 "revert": "Fejl ved returnering af config til standard"
             }
         }
+    },
+    "streams": {
+        "add": "Tilføj Stream",
+        "add_new": "Tilføj Ny Stream",
+        "add_description": "Tilføj et nyt stream link til denne kamp.",
+        "added_successfully": "Stream Tilføjet",
+        "stream_added_message": "Stream er blevet tilføjet.",
+        "add_error": "Kunne ikke tilføje stream. Prøv venligst igen.",
+        "update": "Opdater Stream",
+        "edit_stream": "Rediger Stream",
+        "edit_description": "Opdater stream informationen.",
+        "updated_successfully": "Stream Opdateret",
+        "stream_updated_message": "Streamen er blevet opdateret korrekt.",
+        "update_error": "Kunne ikke opdatere stream. Prøv venligst igen.",
+        "delete": "Slet Stream",
+        "delete_title": "Slet Stream",
+        "delete_description": "Er du sikker på, at du vil slette \"{title}\"? Denne handling kan ikke fortrydes.",
+        "deleted_successfully": "Stream Slettet",
+        "stream_deleted_message": "Streamen er blevet slettet.",
+        "delete_error": "Kunne ikke slette stream. Prøv venligst igen.",
+        "priority_update_error": "Kunne ikke opdatere stream prioriteter. Prøv venligst igen.",
+        "streams_description": "Streams",
+        "link": "Link",
+        "title": "Titel"
     }
 }

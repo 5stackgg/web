@@ -1639,7 +1639,9 @@ export const AllTypesProps: Record<string,any> = {
 		lan_ip:"inet_comparison_exp",
 		node_ip:"inet_comparison_exp",
 		pin_build_id:"Int_comparison_exp",
+		pin_plugin_version:"String_comparison_exp",
 		pinned_version:"game_versions_bool_exp",
+		plugin_supported:"Boolean_comparison_exp",
 		public_ip:"inet_comparison_exp",
 		region:"String_comparison_exp",
 		servers:"servers_bool_exp",
@@ -1674,6 +1676,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		label:"order_by",
 		pin_build_id:"order_by",
+		pin_plugin_version:"order_by",
 		region:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
@@ -1685,6 +1688,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		label:"order_by",
 		pin_build_id:"order_by",
+		pin_plugin_version:"order_by",
 		region:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
@@ -1711,7 +1715,9 @@ export const AllTypesProps: Record<string,any> = {
 		lan_ip:"order_by",
 		node_ip:"order_by",
 		pin_build_id:"order_by",
+		pin_plugin_version:"order_by",
 		pinned_version:"game_versions_order_by",
+		plugin_supported:"order_by",
 		public_ip:"order_by",
 		region:"order_by",
 		servers_aggregate:"servers_aggregate_order_by",
@@ -4938,6 +4944,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_players_by_pk:{
 			steam_id:"bigint"
 		},
+		delete_plugin_versions:{
+			where:"plugin_versions_bool_exp"
+		},
+		delete_plugin_versions_by_pk:{
+
+		},
 		delete_server_regions:{
 			where:"server_regions_bool_exp"
 		},
@@ -5457,6 +5469,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_players_one:{
 			object:"players_insert_input",
 			on_conflict:"players_on_conflict"
+		},
+		insert_plugin_versions:{
+			objects:"plugin_versions_insert_input",
+			on_conflict:"plugin_versions_on_conflict"
+		},
+		insert_plugin_versions_one:{
+			object:"plugin_versions_insert_input",
+			on_conflict:"plugin_versions_on_conflict"
 		},
 		insert_server_regions:{
 			objects:"server_regions_insert_input",
@@ -6248,6 +6268,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_players_many:{
 			updates:"players_updates"
+		},
+		update_plugin_versions:{
+			_inc:"plugin_versions_inc_input",
+			_set:"plugin_versions_set_input",
+			where:"plugin_versions_bool_exp"
+		},
+		update_plugin_versions_by_pk:{
+			_inc:"plugin_versions_inc_input",
+			_set:"plugin_versions_set_input",
+			pk_columns:"plugin_versions_pk_columns_input"
+		},
+		update_plugin_versions_many:{
+			updates:"plugin_versions_updates"
 		},
 		update_server_regions:{
 			_set:"server_regions_set_input",
@@ -8884,6 +8917,56 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"players_set_input",
 		where:"players_bool_exp"
 	},
+	plugin_versions_aggregate_fields:{
+		count:{
+			columns:"plugin_versions_select_column"
+		}
+	},
+	plugin_versions_bool_exp:{
+		_and:"plugin_versions_bool_exp",
+		_not:"plugin_versions_bool_exp",
+		_or:"plugin_versions_bool_exp",
+		min_game_build_id:"Int_comparison_exp",
+		published_at:"timestamptz_comparison_exp",
+		version:"String_comparison_exp"
+	},
+	plugin_versions_constraint: "enum" as const,
+	plugin_versions_inc_input:{
+
+	},
+	plugin_versions_insert_input:{
+		published_at:"timestamptz"
+	},
+	plugin_versions_on_conflict:{
+		constraint:"plugin_versions_constraint",
+		update_columns:"plugin_versions_update_column",
+		where:"plugin_versions_bool_exp"
+	},
+	plugin_versions_order_by:{
+		min_game_build_id:"order_by",
+		published_at:"order_by",
+		version:"order_by"
+	},
+	plugin_versions_pk_columns_input:{
+
+	},
+	plugin_versions_select_column: "enum" as const,
+	plugin_versions_set_input:{
+		published_at:"timestamptz"
+	},
+	plugin_versions_stream_cursor_input:{
+		initial_value:"plugin_versions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	plugin_versions_stream_cursor_value_input:{
+		published_at:"timestamptz"
+	},
+	plugin_versions_update_column: "enum" as const,
+	plugin_versions_updates:{
+		_inc:"plugin_versions_inc_input",
+		_set:"plugin_versions_set_input",
+		where:"plugin_versions_bool_exp"
+	},
 	query_root:{
 		_map_pool:{
 			distinct_on:"_map_pool_select_column",
@@ -9585,6 +9668,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		players_by_pk:{
 			steam_id:"bigint"
+		},
+		plugin_versions:{
+			distinct_on:"plugin_versions_select_column",
+			order_by:"plugin_versions_order_by",
+			where:"plugin_versions_bool_exp"
+		},
+		plugin_versions_aggregate:{
+			distinct_on:"plugin_versions_select_column",
+			order_by:"plugin_versions_order_by",
+			where:"plugin_versions_bool_exp"
+		},
+		plugin_versions_by_pk:{
+
 		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
@@ -11107,6 +11203,23 @@ export const AllTypesProps: Record<string,any> = {
 		players_stream:{
 			cursor:"players_stream_cursor_input",
 			where:"players_bool_exp"
+		},
+		plugin_versions:{
+			distinct_on:"plugin_versions_select_column",
+			order_by:"plugin_versions_order_by",
+			where:"plugin_versions_bool_exp"
+		},
+		plugin_versions_aggregate:{
+			distinct_on:"plugin_versions_select_column",
+			order_by:"plugin_versions_order_by",
+			where:"plugin_versions_bool_exp"
+		},
+		plugin_versions_by_pk:{
+
+		},
+		plugin_versions_stream:{
+			cursor:"plugin_versions_stream_cursor_input",
+			where:"plugin_versions_bool_exp"
 		},
 		server_regions:{
 			distinct_on:"server_regions_select_column",
@@ -14476,7 +14589,9 @@ export const ReturnTypes: Record<string,any> = {
 		lan_ip:"inet",
 		node_ip:"inet",
 		pin_build_id:"Int",
+		pin_plugin_version:"String",
 		pinned_version:"game_versions",
+		plugin_supported:"Boolean",
 		public_ip:"inet",
 		region:"String",
 		servers:"servers",
@@ -14522,6 +14637,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"String",
 		label:"String",
 		pin_build_id:"Int",
+		pin_plugin_version:"String",
 		region:"String",
 		start_port_range:"Int",
 		token:"String",
@@ -14535,6 +14651,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"String",
 		label:"String",
 		pin_build_id:"Int",
+		pin_plugin_version:"String",
 		region:"String",
 		start_port_range:"Int",
 		token:"String",
@@ -16069,6 +16186,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_utility:"player_utility_mutation_response",
 		delete_players:"players_mutation_response",
 		delete_players_by_pk:"players",
+		delete_plugin_versions:"plugin_versions_mutation_response",
+		delete_plugin_versions_by_pk:"plugin_versions",
 		delete_server_regions:"server_regions_mutation_response",
 		delete_server_regions_by_pk:"server_regions",
 		delete_servers:"servers_mutation_response",
@@ -16210,6 +16329,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_utility_one:"player_utility",
 		insert_players:"players_mutation_response",
 		insert_players_one:"players",
+		insert_plugin_versions:"plugin_versions_mutation_response",
+		insert_plugin_versions_one:"plugin_versions",
 		insert_server_regions:"server_regions_mutation_response",
 		insert_server_regions_one:"server_regions",
 		insert_servers:"servers_mutation_response",
@@ -16414,6 +16535,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_players:"players_mutation_response",
 		update_players_by_pk:"players",
 		update_players_many:"players_mutation_response",
+		update_plugin_versions:"plugin_versions_mutation_response",
+		update_plugin_versions_by_pk:"plugin_versions",
+		update_plugin_versions_many:"plugin_versions_mutation_response",
 		update_server_regions:"server_regions_mutation_response",
 		update_server_regions_by_pk:"server_regions",
 		update_server_regions_many:"server_regions_mutation_response",
@@ -17741,6 +17865,66 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float",
 		total_matches:"Int"
 	},
+	plugin_versions:{
+		min_game_build_id:"Int",
+		published_at:"timestamptz",
+		version:"String"
+	},
+	plugin_versions_aggregate:{
+		aggregate:"plugin_versions_aggregate_fields",
+		nodes:"plugin_versions"
+	},
+	plugin_versions_aggregate_fields:{
+		avg:"plugin_versions_avg_fields",
+		count:"Int",
+		max:"plugin_versions_max_fields",
+		min:"plugin_versions_min_fields",
+		stddev:"plugin_versions_stddev_fields",
+		stddev_pop:"plugin_versions_stddev_pop_fields",
+		stddev_samp:"plugin_versions_stddev_samp_fields",
+		sum:"plugin_versions_sum_fields",
+		var_pop:"plugin_versions_var_pop_fields",
+		var_samp:"plugin_versions_var_samp_fields",
+		variance:"plugin_versions_variance_fields"
+	},
+	plugin_versions_avg_fields:{
+		min_game_build_id:"Float"
+	},
+	plugin_versions_max_fields:{
+		min_game_build_id:"Int",
+		published_at:"timestamptz",
+		version:"String"
+	},
+	plugin_versions_min_fields:{
+		min_game_build_id:"Int",
+		published_at:"timestamptz",
+		version:"String"
+	},
+	plugin_versions_mutation_response:{
+		affected_rows:"Int",
+		returning:"plugin_versions"
+	},
+	plugin_versions_stddev_fields:{
+		min_game_build_id:"Float"
+	},
+	plugin_versions_stddev_pop_fields:{
+		min_game_build_id:"Float"
+	},
+	plugin_versions_stddev_samp_fields:{
+		min_game_build_id:"Float"
+	},
+	plugin_versions_sum_fields:{
+		min_game_build_id:"Int"
+	},
+	plugin_versions_var_pop_fields:{
+		min_game_build_id:"Float"
+	},
+	plugin_versions_var_samp_fields:{
+		min_game_build_id:"Float"
+	},
+	plugin_versions_variance_fields:{
+		min_game_build_id:"Float"
+	},
 	query_root:{
 		_map_pool:"_map_pool",
 		_map_pool_aggregate:"_map_pool_aggregate",
@@ -17903,6 +18087,9 @@ export const ReturnTypes: Record<string,any> = {
 		players:"players",
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
+		plugin_versions:"plugin_versions",
+		plugin_versions_aggregate:"plugin_versions_aggregate",
+		plugin_versions_by_pk:"plugin_versions",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",
@@ -18385,6 +18572,10 @@ export const ReturnTypes: Record<string,any> = {
 		players_aggregate:"players_aggregate",
 		players_by_pk:"players",
 		players_stream:"players",
+		plugin_versions:"plugin_versions",
+		plugin_versions_aggregate:"plugin_versions_aggregate",
+		plugin_versions_by_pk:"plugin_versions",
+		plugin_versions_stream:"plugin_versions",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",

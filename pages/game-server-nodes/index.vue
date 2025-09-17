@@ -124,10 +124,22 @@ import { Info, ExternalLink } from "lucide-vue-next";
                 <ExternalLink class="w-4 h-4" />
               </a>
             </TableHead>
-            <TableHead>{{
-              $t("pages.game_server_nodes.table.cs_build_id")
-            }}</TableHead>
-            <TableHead></TableHead>
+            <TableHead
+              >{{ $t("pages.game_server_nodes.table.cs_build_id") }}
+            </TableHead>
+            <TableHead>
+              {{ $t("pages.game_server_nodes.table.pin_build_id") }}
+              <FiveStackToolTip>{{
+                $t("pages.game_server_nodes.table.pin_build_id_tooltip")
+              }}</FiveStackToolTip>
+            </TableHead>
+            <TableHead
+              >{{ $t("pages.game_server_nodes.table.pin_plugin_version") }}
+
+              <FiveStackToolTip>{{
+                $t("pages.game_server_nodes.table.pin_plugin_version_tooltip")
+              }}</FiveStackToolTip>
+            </TableHead>
             <TableHead>{{
               $t("pages.game_server_nodes.table.region")
             }}</TableHead>
@@ -219,6 +231,8 @@ export default {
               enabled: true,
               build_id: true,
               pin_build_id: true,
+              pin_plugin_version: true,
+              plugin_supported: true,
               lan_ip: true,
               public_ip: true,
               start_port_range: true,

@@ -264,7 +264,11 @@
                 "enabled": "Enabled",
                 "no_nodes": "No Game Server Nodes",
                 "supports_low_latency": "Supports Low Latency",
-                "supports_cpu_pinning": "Supports CPU Pinning"
+                "supports_cpu_pinning": "Supports CPU Pinning",
+                "pin_build_id": "Pin Build",
+                "pin_build_id_tooltip": "Pin the build ID of the CS2 server",
+                "pin_plugin_version": "Pin Plugin",
+                "pin_plugin_version_tooltip": "Pin the 5Stack plugin version"
             },
             "build_id": "Build ID: {id}",
             "last_updated": "Last Updated: {date}"
@@ -1092,6 +1096,9 @@
         "pin_build_id": "Pin Server Version",
         "unpin_build_id": "Use Latest Version",
         "pinned_build_id": "Server version pinned",
+        "pin_plugin_version": "Pin Plugin Version",
+        "unpin_plugin_version": "Use Latest Plugin Version",
+        "pinned_plugin_version": "Plugin version pinned",
         "install_cs": "Install CS",
         "select_region": "Select Region",
         "remove_node": "Remove Node",

@@ -155,6 +155,42 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
       </div>
     </TableCell>
     <TableCell>
+      <div class="flex items-center gap-2">
+        <Select
+          :model-value="pinPluginVersionForm.values.pin_plugin_version"
+          @update:model-value="(value) => pinPluginVersion(value)"
+          v-slot="{ open }"
+        >
+          <SelectTrigger>
+            <SelectValue :placeholder="$t('game_server.pin_plugin_version')" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem :value="null">
+                <div class="flex flex-col gap-1">
+                  <div>
+                    {{ $t("game_server.unpin_plugin_version") }}
+                  </div>
+                </div>
+              </SelectItem>
+              <SelectItem
+                :value="version.version"
+                v-for="version of pluginVersions"
+                :key="version.version"
+              >
+                <div class="flex flex-col gap-1">
+                  <div>{{ version.version }}</div>
+                  <div class="text-xs text-muted-foreground" v-if="open">
+                    {{ new Date(version.published_at).toLocaleString() }}
+                  </div>
+                </div>
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+    </TableCell>
+    <TableCell>
       <Select
         :model-value="regionForm.region"
         @update:model-value="(value) => updateRegion(value)"
@@ -266,11 +302,16 @@ interface GameServerNode {
   region: string;
   enabled: boolean;
   build_id?: string;
+  pin_build_id?: string;
+  pin_plugin_version?: string;
   lan_ip?: string;
   public_ip?: string;
   start_port_range: number;
   end_port_range: number;
   label?: string;
+  supports_low_latency?: boolean;
+  supports_cpu_pinning?: boolean;
+  update_status?: string;
   e_region?: {
     description: string;
   };
@@ -282,10 +323,14 @@ interface GameServerNode {
 }
 
 interface ComponentData {
+  gameVersions: any[];
+  pluginVersions: any[];
   regionForm: {
     region: string | undefined;
   };
   editLabelSheet: boolean;
+  pinBuildIdForm: ReturnType<typeof useForm>;
+  pinPluginVersionForm: ReturnType<typeof useForm>;
   portForm: ReturnType<typeof useForm>;
   server_regions: ServerRegion[];
 }
@@ -332,11 +377,31 @@ export default defineComponent({
           this.gameVersions = data.game_versions;
         },
       },
+      plugin_versions: {
+        query: typedGql("subscription")({
+          plugin_versions: [
+            {
+              order_by: {
+                published_at: "desc",
+              },
+            },
+            {
+              version: true,
+              min_game_build_id: true,
+              published_at: true,
+            },
+          ],
+        }),
+        result: function ({ data }) {
+          this.pluginVersions = data.plugin_versions;
+        },
+      },
     },
   },
   data(): ComponentData {
     return {
       gameVersions: [],
+      pluginVersions: [],
       regionForm: {
         region: undefined,
       },
@@ -345,6 +410,13 @@ export default defineComponent({
         validationSchema: toTypedSchema(
           z.object({
             pin_build_id: z.string().nullable(),
+          }),
+        ),
+      }),
+      pinPluginVersionForm: useForm({
+        validationSchema: toTypedSchema(
+          z.object({
+            pin_plugin_version: z.string().nullable(),
           }),
         ),
       }),
@@ -426,6 +498,12 @@ export default defineComponent({
             pin_build_id: this.gameServerNode.pin_build_id,
           });
         }
+
+        if (this.gameServerNode.pin_plugin_version) {
+          this.pinPluginVersionForm.setValues({
+            pin_plugin_version: this.gameServerNode.pin_plugin_version,
+          });
+        }
       },
     },
   },
@@ -448,7 +526,7 @@ export default defineComponent({
         title: this.$t("game_server.toast.cs_updating"),
       });
     },
-    async pinBuildId(buildId: string) {
+    async pinBuildId(buildId: string | null) {
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_game_server_nodes_by_pk: [
@@ -457,7 +535,7 @@ export default defineComponent({
                 id: this.gameServerNode.id,
               },
               _set: {
-                pin_build_id: buildId,
+                pin_build_id: buildId ? parseInt(buildId) : null,
               },
             },
             {
@@ -473,6 +551,33 @@ export default defineComponent({
 
       toast({
         title: this.$t("game_server.pinned_build_id"),
+      });
+    },
+    async pinPluginVersion(pluginVersion: string | null) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_game_server_nodes_by_pk: [
+            {
+              pk_columns: {
+                id: this.gameServerNode.id,
+              },
+              _set: {
+                pin_plugin_version: pluginVersion,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      this.pinPluginVersionForm.setValues({
+        pin_plugin_version: pluginVersion,
+      });
+
+      toast({
+        title: this.$t("game_server.pinned_plugin_version"),
       });
     },
     async removeGameNodeServer() {

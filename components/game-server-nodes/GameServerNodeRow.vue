@@ -25,6 +25,7 @@ import {
   Activity,
   Cpu,
   CircleFadingArrowUp,
+  AlertCircle,
 } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
@@ -104,7 +105,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
       </div>
     </TableCell>
     <TableCell>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 w-full">
         <FiveStackToolTip v-if="!supportsGameServerVersionPinning">
           <span>
             {{ $t("game_server.version_pinning_not_supported") }}
@@ -126,7 +127,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
           v-slot="{ open }"
           :disabled="!supportsGameServerVersionPinning"
         >
-          <SelectTrigger>
+          <SelectTrigger class="w-full">
             <SelectValue :placeholder="$t('game_server.pin_build_id')" />
           </SelectTrigger>
           <SelectContent>
@@ -154,14 +155,14 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
         </Select>
       </div>
     </TableCell>
-    <TableCell>
-      <div class="flex items-center gap-2">
+    <TableCell class="flex">
+      <div class="flex items-center gap-2 w-full">
         <Select
           :model-value="pinPluginVersionForm.values.pin_plugin_version"
           @update:model-value="(value) => pinPluginVersion(value)"
           v-slot="{ open }"
         >
-          <SelectTrigger>
+          <SelectTrigger class="w-full">
             <SelectValue :placeholder="$t('game_server.pin_plugin_version')" />
           </SelectTrigger>
           <SelectContent>
@@ -181,13 +182,31 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
                 <div class="flex flex-col gap-1">
                   <div>{{ version.version }}</div>
                   <div class="text-xs text-muted-foreground" v-if="open">
-                    {{ new Date(version.published_at).toLocaleString() }}
+                    <div
+                      v-if="version.min_game_build_id"
+                      class="text-green-500"
+                    >
+                      {{ $t("game_server.plugin_version_supports") }}:
+                      {{ version.min_game_build_id }}+
+                    </div>
+                    <div>
+                      {{ $t("game_server.plugin_version_published") }}:
+                      {{ new Date(version.published_at).toLocaleString() }}
+                    </div>
                   </div>
                 </div>
               </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
+        <template v-if="!gameServerNode.plugin_supported">
+          <FiveStackToolTip>
+            <template #trigger>
+              <AlertCircle class="h-4 w-4 animate-pulse text-red-500" />
+            </template>
+            {{ $t("game_server.plugin_not_supported") }}
+          </FiveStackToolTip>
+        </template>
       </div>
     </TableCell>
     <TableCell>
@@ -195,7 +214,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
         :model-value="regionForm.region"
         @update:model-value="(value) => updateRegion(value)"
       >
-        <SelectTrigger>
+        <SelectTrigger class="w-full">
           <SelectValue :placeholder="$t('game_server.select_region')" />
         </SelectTrigger>
         <SelectContent>

@@ -40,6 +40,40 @@
                 "description": "Ditt konto detaljer",
                 "my_account": "Mitt konto",
                 "appearance": "Utseende",
+                "api_keys": "API Nycklar",
+                "api_keys_management": {
+                    "your_api_keys": "Dina API-nycklar",
+                    "api_keys_description": "API-nycklar gör att du kan autentisera med 5Stack API programmatiskt.",
+                    "add_api_key": "Lägg till API-nyckel",
+                    "create_new_api_key": "Skapa ny API-nyckel",
+                    "create_new_description": "Skapa en ny API-nyckel med en beskrivande etikett för att identifiera dess syfte.",
+                    "label": "Etikett",
+                    "label_placeholder": "Exempelvis Min App, Utveckling, Produktion",
+                    "label_description": "Välj ett beskrivande namn för att identifiera denna API-nyckel.",
+                    "created": "Skapad",
+                    "last_used": "Senast använd",
+                    "never": "Aldrig",
+                    "actions": "Åtgärder",
+                    "delete_confirmation_title": "Ta bort API-nyckel",
+                    "delete_confirmation_description": "Är du säker på att du vill ta bort API-nyckeln \"{label}\"? Denna åtgärd kan inte ångras och alla program som använder denna nyckel kommer att förlora åtkomst.",
+                    "cancel": "Avbryt",
+                    "create_api_key": "Skapa API-nyckel",
+                    "delete_api_key_action": "Ta bort API-nyckel",
+                    "api_key_deleted": "API-nyckel borttagen",
+                    "api_key_deleted_description": "API-nyckeln har tagits bort.",
+                    "error_creating": "Fel",
+                    "error_creating_description": "Det gick inte att skapa API-nyckel. Försök igen.",
+                    "error_deleting": "Fel",
+                    "error_deleting_description": "Det gick inte att ta bort API-nyckel. Försök igen.",
+                    "copy_key_dialog": {
+                        "title": "API-nyckel skapad",
+                        "description": "Din nya API-nyckel har skapats. Kopiera den nu eftersom den inte kommer att visas igen.",
+                        "api_key_label": "API nyckel",
+                        "copied_button": "Jag har kopierat nyckeln",
+                        "warning_title": "Viktigt:",
+                        "warning_message": "Detta är den enda gången du kommer att kunna se denna API-nyckel. Se till att kopiera och lagra den på ett säkert sätt."
+                    }
+                },
                 "name": "Namn",
                 "avatar_url": "Profilens URL",
                 "country": "Landet",
@@ -50,15 +84,15 @@
                 "matchmaking": "Matchmaking",
                 "update_success": "Uppdaterad profil",
                 "discord": {
-                  "unlink": "Avlänka Discord",
-                  "link": "Länk Discord",
-                  "unlink_dialog": {
-                      "title": "Unlink Discord-konto",
-                      "description": "Är du säker på att du vill koppla bort ditt Discord-konto? Detta tar bort anslutningen mellan dina 5Stack- och Discord-konton.",
-                      "cancel": "Avbryt",
-                      "confirm": "Avlänka"
-                  },
-                  "unlinked": "Discord konto unlinked framgångsrikt"
+                    "unlink": "Avlänka Discord",
+                    "link": "Länk Discord",
+                    "unlink_dialog": {
+                        "title": "Unlink Discord-konto",
+                        "description": "Är du säker på att du vill koppla bort ditt Discord-konto? Detta tar bort anslutningen mellan dina 5Stack- och Discord-konton.",
+                        "cancel": "Avbryt",
+                        "confirm": "Avlänka"
+                    },
+                    "unlinked": "Discord konto unlinked framgångsrikt"
                 }
             },
             "appearance": {
@@ -71,35 +105,35 @@
             },
             "application": {
                 "telemetry": {
-                  "title": "Telemetri",
-                  "telemetry": "Telemetri",
-                  "telemetry_description": "Hjälp till att förbättra 5stack genom att dela anonym användningsdata.",
-                  "update": "Telemetriinställningar uppdaterade"
+                    "title": "Telemetri",
+                    "telemetry": "Telemetri",
+                    "telemetry_description": "Hjälp till att förbättra 5stack genom att dela anonym användningsdata.",
+                    "update": "Telemetriinställningar uppdaterade"
                 },
                 "matchmaking": {
-                  "title": "Matchmaking",
-                  "description": "Hantera matchmaking-inställningar"
+                    "title": "Matchmaking",
+                    "description": "Hantera matchmaking-inställningar"
                 },
                 "discord": {
-                  "title": "Discord",
-                  "invite_link": "Discord-inbjudningslänk",
-                  "webhook": "Discords webhook",
-                  "webhook_description": "Vi använder denna Discord Webhook för att skicka meddelanden som kräver åtgärd från en spelare. T.ex. matchproblem, buggar, etc.",
-                  "support_role": "Discord Support-roll ID",
-                  "support_role_description": "Denna roll kommer att nämnas när den används för supportåtgärder. Du kan få roll-ID från Discord-applikationen genom att aktivera utvecklarläge och högerklicka för att kopiera ID.",
-                  "update": "Uppdatera"
+                    "title": "Discord",
+                    "invite_link": "Discord-inbjudningslänk",
+                    "webhook": "Discords webhook",
+                    "webhook_description": "Vi använder denna Discord Webhook för att skicka meddelanden som kräver åtgärd från en spelare. T.ex. matchproblem, buggar, etc.",
+                    "support_role": "Discord Support-roll ID",
+                    "support_role_description": "Denna roll kommer att nämnas när den används för supportåtgärder. Du kan få roll-ID från Discord-applikationen genom att aktivera utvecklarläge och högerklicka för att kopiera ID.",
+                    "update": "Uppdatera"
                 },
                 "game_type_configs": {
-                  "title": "Konfigurering av speltyp",
-                  "description": "Hantera spel typ configs.",
-                  "type": "Speltyp"
+                    "title": "Konfigurering av speltyp",
+                    "description": "Hantera spel typ configs.",
+                    "type": "Speltyp"
                 },
                 "streaming": {
-                  "title": "Strömning",
-                  "minimum_role_to_stream": "Minsta roll tillåten att ansluta till TV (försenad)",
-                  "minimum_role_to_stream_description": "Denna roll kommer att kunna ansluta till TV.",
-                  "minimum_role_to_spectate": "Minsta roll tillåts att åskådas (ingen fördröjning)",
-                  "minimum_role_to_spectate_description": "Denna roll kommer att kunna ansluta och åskåda matcher."
+                    "title": "Strömning",
+                    "minimum_role_to_stream": "Minsta roll tillåten att ansluta till TV (försenad)",
+                    "minimum_role_to_stream_description": "Denna roll kommer att kunna ansluta till TV.",
+                    "minimum_role_to_spectate": "Minsta roll tillåts att åskådas (ingen fördröjning)",
+                    "minimum_role_to_spectate_description": "Denna roll kommer att kunna ansluta och åskåda matcher."
                 },
                 "create_matches_role": "Minsta roll för att skapa matcher",
                 "create_matches_role_description": "Denna roll kommer att kunna skapa matcher.",
@@ -109,42 +143,44 @@
                 "matchmaking_min_role_description": "Denna roll kommer att kunna ansluta sig till matchmaking.",
                 "max_acceptable_latency": "Maximal acceptabel Latency",
                 "max_acceptable_latency_description": "Detta är den maximala latens som en spelare kan behöva gå med i en match.",
+                "auto_cancel_duration": "Automatisk uppsägningstid",
+                "auto_cancel_duration_description": "Detta är varaktigheten i minuter som en match kommer att auto avbrytas om inte startas inom varaktigheten.",
                 "update": "Uppdatera",
                 "players": {
-                  "force_name_registration": "Tvinga spelarnamnregistrering",
-                  "force_name_registration_description": "Om tvingad att ha spelarregistrering måste spelaren ange ett namn som kommer att användas på plattformen."
+                    "force_name_registration": "Tvinga spelarnamnregistrering",
+                    "force_name_registration_description": "Om tvingad att ha spelarregistrering måste spelaren ange ett namn som kommer att användas på plattformen."
                 },
                 "servers": {
-                  "title": "Server Inställningar",
-                  "enable_cpu_pinning": "Aktivera CPU Pinning",
-                  "enable_cpu_pinning_description": "Aktivera CPU-pinning på spelservernoder för bättre prestanda",
-                  "number_of_cpus_per_server": "Antal CPU per server",
-                  "number_of_cpus_per_server_description": "Antal CPU:er att fördela per server",
-                  "update": "Uppdatera",
-                  "update_cpu_pinning": "CPU Pinning uppdaterad"
+                    "title": "Server Inställningar",
+                    "enable_cpu_pinning": "Aktivera CPU Pinning",
+                    "enable_cpu_pinning_description": "Aktivera CPU-pinning på spelservernoder för bättre prestanda",
+                    "number_of_cpus_per_server": "Antal CPU per server",
+                    "number_of_cpus_per_server_description": "Antal CPU:er att fördela per server",
+                    "update": "Uppdatera",
+                    "update_cpu_pinning": "CPU Pinning uppdaterad"
                 },
                 "demo_settings": {
-                  "update": "Uppdatera",
-                  "title": "Demo Inställningar",
-                  "min_retention": "Minsta lagring",
-                  "max_storage": "Maximal lagring",
-                  "cloudflare_worker_url": "Webbadress för Cloudflare Worker",
-                  "max_storage_description": "Den maximala lagringsstorleken för demofilerna i GB.",
-                  "cloudflare_worker_url_description": "URL för Cloudflare-arbetaren som kommer att användas för att lagra och hämta demofilerna.",
-                  "min_retention_description": "Minsta lagringsdagar för demofilerna.",
-                  "current_storage": "Nuvarande lagring",
-                  "used_storage": "Ungefärlig lagring som används",
-                  "test_s3_title": "Testa S3",
-                  "test_s3_description": "Testa S3-anslutningen och ladda upp en fil till demohinken.",
-                  "test_upload": "Testa uppladdning",
-                  "test_upload_success": "Uppladdning av test lyckades",
-                  "test_upload_failed": "Uppladdning av test misslyckades",
-                  "test_download": "Testa nedladdning",
-                  "test_download_failed": "Nedladdning av testet misslyckades"
+                    "update": "Uppdatera",
+                    "title": "Demo Inställningar",
+                    "min_retention": "Minsta lagring",
+                    "max_storage": "Maximal lagring",
+                    "cloudflare_worker_url": "Webbadress för Cloudflare Worker",
+                    "max_storage_description": "Den maximala lagringsstorleken för demofilerna i GB.",
+                    "cloudflare_worker_url_description": "URL för Cloudflare-arbetaren som kommer att användas för att lagra och hämta demofilerna.",
+                    "min_retention_description": "Minsta lagringsdagar för demofilerna.",
+                    "current_storage": "Nuvarande lagring",
+                    "used_storage": "Ungefärlig lagring som används",
+                    "test_s3_title": "Testa S3",
+                    "test_s3_description": "Testa S3-anslutningen och ladda upp en fil till demohinken.",
+                    "test_upload": "Testa uppladdning",
+                    "test_upload_success": "Uppladdning av test lyckades",
+                    "test_upload_failed": "Uppladdning av test misslyckades",
+                    "test_download": "Testa nedladdning",
+                    "test_download_failed": "Nedladdning av testet misslyckades"
                 },
                 "update_map_pools": {
-                  "title": "Automatisk uppdatering Map Pools",
-                  "description": "Lägg automatiskt till / uppdatera kartpooler när nya kartor läggs till eller tas bort från den aktiva tullpoolen."
+                    "title": "Automatisk uppdatering Map Pools",
+                    "description": "Lägg automatiskt till / uppdatera kartpooler när nya kartor läggs till eller tas bort från den aktiva tullpoolen."
                 }
             },
             "language": {
@@ -263,7 +299,11 @@
                 "enabled": "Aktiverad",
                 "no_nodes": "Inga spelservrar",
                 "supports_low_latency": "Stöder låg latens",
-                "supports_cpu_pinning": "Stöder CPU Pinning"
+                "supports_cpu_pinning": "Stöder CPU Pinning",
+                "pin_build_id": "Fäst bygg",
+                "pin_build_id_tooltip": "Fäst bygg-ID för CS2-servern",
+                "pin_plugin_version": "Fäst plugin",
+                "pin_plugin_version_tooltip": "Fäst plugin 5Stack version"
             },
             "build_id": "Bygg-ID: {id}",
             "last_updated": "Senast uppdaterad: {date}"
@@ -294,16 +334,16 @@
                 "edit": "Redigera",
                 "delete": "Ta bort",
                 "status": {
-                  "disconnected": "Server är kopplad",
-                  "no_rcon": "Servern är ansluten men RCON är inte tillgänglig",
-                  "connected": "Server är ansluten och RCON är tillgänglig",
-                  "plugin_version_mismatch": "plugin version är inte uppdaterad"
+                    "disconnected": "Server är kopplad",
+                    "no_rcon": "Servern är ansluten men RCON är inte tillgänglig",
+                    "connected": "Server är ansluten och RCON är tillgänglig",
+                    "plugin_version_mismatch": "plugin version är inte uppdaterad"
                 },
                 "delete_confirm": {
-                  "title": "Är du helt säker?",
-                  "description": "Denna åtgärd kan inte ångras. Detta kommer permanent ta bort din server och ta bort associerade data från våra servrar.",
-                  "cancel": "Avbryt",
-                  "continue": "Fortsätt"
+                    "title": "Är du helt säker?",
+                    "description": "Denna åtgärd kan inte ångras. Detta kommer permanent ta bort din server och ta bort associerade data från våra servrar.",
+                    "cancel": "Avbryt",
+                    "continue": "Fortsätt"
                 }
             }
         },
@@ -323,22 +363,22 @@
                 "update_map": "Uppdatera karta",
                 "delete_map": "Ta bort karta",
                 "delete_confirm": {
-                  "title": "Ta bort karta",
-                  "description": "Är du säker på att du vill ta bort den här kartan? Denna åtgärd kan inte ångras.",
-                  "cancel": "Avbryt",
-                  "confirm": "Ta bort"
+                    "title": "Ta bort karta",
+                    "description": "Är du säker på att du vill ta bort den här kartan? Denna åtgärd kan inte ångras.",
+                    "cancel": "Avbryt",
+                    "confirm": "Ta bort"
                 },
                 "success": {
-                  "create": "Karta som skapats framgångsrikt",
-                  "update": "Karta uppdaterad framgångsrikt",
-                  "delete": "Karta raderad framgångsrikt",
-                  "workshop_refresh": "Workshop karta detaljer uppdateras framgångsrikt"
+                    "create": "Karta som skapats framgångsrikt",
+                    "update": "Karta uppdaterad framgångsrikt",
+                    "delete": "Karta raderad framgångsrikt",
+                    "workshop_refresh": "Workshop karta detaljer uppdateras framgångsrikt"
                 },
                 "error": {
-                  "create": "Fel skapa karta",
-                  "update": "Fel uppdatera karta",
-                  "invalid_workshop": "Invalid workshop map ID. Kontrollera att ID finns på Steam Workshop.",
-                  "workshop_refresh": "Fel uppfriskande workshop kart detaljer"
+                    "create": "Fel skapa karta",
+                    "update": "Fel uppdatera karta",
+                    "invalid_workshop": "Invalid workshop map ID. Kontrollera att ID finns på Steam Workshop.",
+                    "workshop_refresh": "Fel uppfriskande workshop kart detaljer"
                 },
                 "refresh_workshop": "Refresh detaljer"
             },
@@ -465,34 +505,32 @@
                 "tournaments": "Turneringar",
                 "view_previous_matches": "Visa tidigare matcher",
                 "hero": {
-                  "title": "Spela & Tävla",
-                  "subtitle": "Gå med i matcher, turneringar och se din matchhistorik."
+                    "title": "Spela & Tävla",
+                    "subtitle": "Gå med i matcher, turneringar och se din matchhistorik."
                 }
             },
             "community": {
                 "players": {
-                  "title": "Spelare",
-                  "subtitle": "Bläddra och sök efter spelare"
+                    "title": "Spelare",
+                    "subtitle": "Bläddra och sök efter spelare"
                 },
                 "teams": {
-                  "title": "Lag",
-                  "subtitle": "Hitta och hantera team"
+                    "title": "Lag",
+                    "subtitle": "Hitta och hantera team"
                 },
                 "social": {
-                  "title": "Socialt",
-                  "join_discord": {
-                      "title": "Gå med i vår Discord",
-                      "subtitle": "Chatt, support och meddelanden"
-                  },
-                  "github": {
-                      "title": "5stack.gg",
-                      "subtitle": "Visa 5stack på GitHub"
-                  }
+                    "title": "Socialt",
+                    "join_discord": {
+                        "title": "Gå med i vår Discord",
+                        "subtitle": "Chatt, support och meddelanden"
+                    },
+                    "github": {
+                        "title": "5stack.gg",
+                        "subtitle": "Visa 5stack på GitHub"
+                    }
                 }
             },
-            "tooltip": {
-                "join_discord": "Gå med i vår Discord"
-            }
+            "tooltip": {}
         }
     },
     "pwa": {
@@ -508,6 +546,7 @@
     "common": {
         "delete": "Radera",
         "cancel": "Avbryt",
+        "error": "Fel",
         "tbd": "TBD",
         "boolean": {
             "yes": "Ja",
@@ -747,65 +786,65 @@
                 "show": "Visa",
                 "toggle": "Växla avancerade inställningar",
                 "overtime": {
-                  "label": "Övertid",
-                  "description": "Varje övertid är ett bäst av 6."
+                    "label": "Övertid",
+                    "description": "Varje övertid är ett bäst av 6."
                 },
                 "knife_round": {
-                  "label": "Knivrunda",
-                  "description": "Knivrundor spelas endast när inget lag valde kartan i vetot."
+                    "label": "Knivrunda",
+                    "description": "Knivrundor spelas endast när inget lag valde kartan i vetot."
                 },
                 "max_rounds": {
-                  "label": "Max rundor",
-                  "description": "Antalet rundor som spelas innan lagen byter sida.",
-                  "placeholder": "Välj max rundor"
+                    "label": "Max rundor",
+                    "description": "Antalet rundor som spelas innan lagen byter sida.",
+                    "placeholder": "Välj max rundor"
                 },
                 "region": {
-                  "title": "Regioninställningar",
-                  "lan_match": "LAN-match",
-                  "veto": {
-                      "label": "Veto",
-                      "description": "Låter lag veto och välja serverregion."
-                  },
-                  "preferred": "Föredragna regioner",
-                  "single": "Region",
-                  "placeholder": "Välj region",
-                  "any": "Vilken som helst",
-                  "description": "Välj föredragna regioner för matchen."
+                    "title": "Regioninställningar",
+                    "lan_match": "LAN-match",
+                    "veto": {
+                        "label": "Veto",
+                        "description": "Låter lag veto och välja serverregion."
+                    },
+                    "preferred": "Föredragna regioner",
+                    "single": "Region",
+                    "placeholder": "Välj region",
+                    "any": "Vilken som helst",
+                    "description": "Välj föredragna regioner för matchen."
                 },
                 "substitutes": {
-                  "label": "Antal ersättare",
-                  "description": "Lägger till ytterligare platser som ska läggas till i varje uppställning.",
-                  "range": "Ange värde mellan 0 och 5."
+                    "label": "Antal ersättare",
+                    "description": "Lägger till ytterligare platser som ska läggas till i varje uppställning.",
+                    "range": "Ange värde mellan 0 och 5."
                 },
                 "tv_delay": {
-                  "label": "TV-fördröjning",
-                  "range": "Ange värde mellan 0 och 120."
+                    "label": "TV-fördröjning",
+                    "range": "Ange värde mellan 0 och 120."
                 },
                 "timeouts": {
-                  "tactical": {
-                      "label": "Taktisk timeout-inställningar",
-                      "description": "Taktiska timeouts kallas genom att skriva .tac, och är 30 sekunder långa."
-                  },
-                  "technical": {
-                      "label": "Tekniska timeout-inställningar",
-                      "description": "Tekniska timeouts kallas genom att skriva .pause, och har ingen tidsgräns."
-                  },
-                  "options": {
-                      "admins": "Administratörer",
-                      "coaches": "Tränare",
-                      "captains": "Coaches / kaptener",
-                      "everyone": "Alla"
-                  }
+                    "tactical": {
+                        "label": "Taktisk timeout-inställningar",
+                        "description": "Taktiska timeouts kallas genom att skriva .tac, och är 30 sekunder långa."
+                    },
+                    "technical": {
+                        "label": "Tekniska timeout-inställningar",
+                        "description": "Tekniska timeouts kallas genom att skriva .pause, och har ingen tidsgräns."
+                    },
+                    "options": {
+                        "admins": "Administratörer",
+                        "coaches": "Tränare",
+                        "captains": "Coaches / kaptener",
+                        "everyone": "Alla"
+                    }
                 },
                 "ready_settings": {
-                  "label": "Redo Inställningar",
-                  "description": "Kontrollerar hur matchen bestämmer sig för att vara redo att börja.",
-                  "options": {
-                      "admins": "Administratörer",
-                      "coaches": "Tränare",
-                      "captains": "Kaptener",
-                      "everyone": "Alla spelare måste vara redo"
-                  }
+                    "label": "Redo Inställningar",
+                    "description": "Kontrollerar hur matchen bestämmer sig för att vara redo att börja.",
+                    "options": {
+                        "admins": "Administratörer",
+                        "coaches": "Tränare",
+                        "captains": "Kaptener",
+                        "everyone": "Alla spelare måste vara redo"
+                    }
                 }
             },
             "max_rounds": "Max rundor",
@@ -1089,6 +1128,12 @@
         "pin_build_id": "Fäst serverversion",
         "unpin_build_id": "Använd senaste versionen",
         "pinned_build_id": "Serverversion fäst",
+        "pin_plugin_version": "Version av Pin Plugin",
+        "unpin_plugin_version": "Använd senaste Plugin Version",
+        "plugin_not_supported": "Plugin-versionen stöds inte",
+        "pinned_plugin_version": "Plugin version fäst",
+        "plugin_version_supports": "Stöder",
+        "plugin_version_published": "Publicerad",
         "install_cs": "Installera CS",
         "select_region": "Välj region",
         "remove_node": "Ta bort nod",
@@ -1185,9 +1230,6 @@
         "updated_successfully": "Strömmen uppdaterad",
         "stream_updated_message": "Strömmen har uppdaterats.",
         "update_error": "Det gick inte att uppdatera strömmen. Försök igen.",
-        "delete": "Ta bort ström",
-        "delete_title": "Ta bort ström",
-        "delete_description": "Är du säker på att du vill ta bort \"{title}\"? Denna åtgärd kan inte ångras.",
         "deleted_successfully": "Stream borttagen",
         "stream_deleted_message": "Strömmen har tagits bort.",
         "delete_error": "Det gick inte att ta bort ström. Försök igen.",

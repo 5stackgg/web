@@ -250,7 +250,7 @@
             }
         },
         "matches": {
-            "title": "My Recent Matches",
+            "title": "My Matches",
             "description": "Your most recent completed matches",
             "create": "Create Match",
             "last_ten_wins": "Last 10 Wins",
@@ -446,7 +446,7 @@
             "navigation": {
                 "play": "Play",
                 "watch": "Watch",
-                "matches": "Matches",
+                "matches": "My Matches",
                 "tournaments": "Tournaments",
                 "players": "Players",
                 "teams": "Teams"
@@ -499,19 +499,24 @@
             }
         },
         "top_nav": {
+            "my_matches": "My Matches",
+            "home": "My Matches",
             "play_menu": "Play",
             "community_menu": "Community",
             "watch_menu": "Watch",
             "play": {
                 "find_match": "Find a Match",
                 "tournaments": "Tournaments",
-                "view_previous_matches": "View Previous Matches",
                 "hero": {
                     "title": "Play & Compete",
-                    "subtitle": "Join matches, tournaments, and view your match history."
+                    "subtitle": "Join matches, tournaments."
                 }
             },
             "community": {
+                "watch": {
+                    "title": "Watch",
+                    "subtitle": "Watch matches, tournaments."
+                },
                 "players": {
                     "title": "Players",
                     "subtitle": "Browse and search for players"

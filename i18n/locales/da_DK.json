@@ -40,6 +40,40 @@
                 "description": "Dine kontooplysninger",
                 "my_account": "Min konto",
                 "appearance": "Udseende",
+                "api_keys": "Api Nøgler",
+                "api_keys_management": {
+                    "your_api_keys": "Dine API-nøgler",
+                    "api_keys_description": "API-nøgler giver dig mulighed for at godkende med 5Stack API programmatisk.",
+                    "add_api_key": "Tilføj API-nøgle",
+                    "create_new_api_key": "Opret Ny API-nøgle",
+                    "create_new_description": "Opret en ny API-nøgle med en beskrivende etiket til at identificere dens formål.",
+                    "label": "Etiket",
+                    "label_placeholder": "f.eks. Min App, Udvikling, Produktion",
+                    "label_description": "Vælg et beskrivende navn til at identificere denne API-nøgle.",
+                    "created": "Oprettet",
+                    "last_used": "Sidst Brugt",
+                    "never": "Aldrig",
+                    "actions": "Handlinger",
+                    "delete_confirmation_title": "Slet API-nøgle",
+                    "delete_confirmation_description": "Er du sikker på du vil slette API-nøglen\"{label}\"? Denne handling kan ikke fortrydes og programmer, der bruger denne nøgle, vil miste adgang.",
+                    "cancel": "Annuller",
+                    "create_api_key": "Opret API-nøgle",
+                    "delete_api_key_action": "Slet API-nøgle",
+                    "api_key_deleted": "API-nøgle Slettet",
+                    "api_key_deleted_description": "API-nøglen er blevet slettet.",
+                    "error_creating": "Fejl",
+                    "error_creating_description": "Kunne ikke oprette API-nøgle. Prøv venligst igen.",
+                    "error_deleting": "Fejl",
+                    "error_deleting_description": "Kunne ikke slette API-nøgle. Prøv venligst igen.",
+                    "copy_key_dialog": {
+                        "title": "Api Nøgle Oprettet",
+                        "description": "Din nye API-nøgle er blevet oprettet. Kopier den nu, da den ikke vil blive vist igen.",
+                        "api_key_label": "API Nøgle",
+                        "copied_button": "Jeg har kopieret nøglen",
+                        "warning_title": "Vigtigt:",
+                        "warning_message": "Dette er den eneste tid, du vil kunne se denne API-nøgle. Sørg for at kopiere og gemme den sikkert."
+                    }
+                },
                 "name": "Navn",
                 "avatar_url": "Avatar URL",
                 "country": "Land",
@@ -50,15 +84,15 @@
                 "matchmaking": "Matchmaking",
                 "update_success": "Opdateret profil",
                 "discord": {
-                  "unlink": "Afslut diskord",
-                  "link": "Link Diskord",
-                  "unlink_dialog": {
-                      "title": "Unlink Discord-konto",
-                      "description": "Er du sikker på, at du vil afkoble din Discord-konto? Dette vil fjerne forbindelsen mellem dine 5Stack og Discord konti.",
-                      "cancel": "Annuller",
-                      "confirm": "Aflink"
-                  },
-                  "unlinked": "Diskord konto uden forbindelse med succes"
+                    "unlink": "Afslut diskord",
+                    "link": "Link Diskord",
+                    "unlink_dialog": {
+                        "title": "Unlink Discord-konto",
+                        "description": "Er du sikker på, at du vil afkoble din Discord-konto? Dette vil fjerne forbindelsen mellem dine 5Stack og Discord konti.",
+                        "cancel": "Annuller",
+                        "confirm": "Aflink"
+                    },
+                    "unlinked": "Diskord konto uden forbindelse med succes"
                 }
             },
             "appearance": {
@@ -71,35 +105,35 @@
             },
             "application": {
                 "telemetry": {
-                  "title": "Telemetri",
-                  "telemetry": "Telemetri",
-                  "telemetry_description": "Hjælp med at forbedre 5stack ved at dele anonyme brugsdata.",
-                  "update": "Indstillinger for telemetri"
+                    "title": "Telemetri",
+                    "telemetry": "Telemetri",
+                    "telemetry_description": "Hjælp med at forbedre 5stack ved at dele anonyme brugsdata.",
+                    "update": "Indstillinger for telemetri"
                 },
                 "matchmaking": {
-                  "title": "Matchmaking",
-                  "description": "Administrer matchmaking-indstillinger"
+                    "title": "Matchmaking",
+                    "description": "Administrer matchmaking-indstillinger"
                 },
                 "discord": {
-                  "title": "Discord",
-                  "invite_link": "Discord invitation-link",
-                  "webhook": "Discord Webhook",
-                  "webhook_description": "Vi bruger denne Discord Webhook til at sende meddelelser, der kræver handling fra en spiller. F.eks. matchproblemer, fejl osv.",
-                  "support_role": "Discord support-rolle ID",
-                  "support_role_description": "Denne rolle vil blive nævnt, når den bruges til support-handlinger. Du kan få rolle-ID fra Discord-applikationen ved at aktivere udviklertilstand og højreklikke for at kopiere ID.",
-                  "update": "Opdater"
+                    "title": "Discord",
+                    "invite_link": "Discord invitation-link",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "Vi bruger denne Discord Webhook til at sende meddelelser, der kræver handling fra en spiller. F.eks. matchproblemer, fejl osv.",
+                    "support_role": "Discord support-rolle ID",
+                    "support_role_description": "Denne rolle vil blive nævnt, når den bruges til support-handlinger. Du kan få rolle-ID fra Discord-applikationen ved at aktivere udviklertilstand og højreklikke for at kopiere ID.",
+                    "update": "Opdater"
                 },
                 "game_type_configs": {
-                  "title": "Spil type configs",
-                  "description": "Administrer spiltype config.",
-                  "type": "Spiltype"
+                    "title": "Spil type configs",
+                    "description": "Administrer spiltype config.",
+                    "type": "Spiltype"
                 },
                 "streaming": {
-                  "title": "Streaming",
-                  "minimum_role_to_stream": "Minimum rolle tilladt at oprette forbindelse til TV (forsinket)",
-                  "minimum_role_to_stream_description": "Denne rolle vil være i stand til at forbinde til TV.",
-                  "minimum_role_to_spectate": "Minimum Rolle Tilladt at se (Ingen forsinkelse)",
-                  "minimum_role_to_spectate_description": "Denne rolle vil være i stand til at forbinde og spectate kampe."
+                    "title": "Streaming",
+                    "minimum_role_to_stream": "Minimum rolle tilladt at oprette forbindelse til TV (forsinket)",
+                    "minimum_role_to_stream_description": "Denne rolle vil være i stand til at forbinde til TV.",
+                    "minimum_role_to_spectate": "Minimum Rolle Tilladt at se (Ingen forsinkelse)",
+                    "minimum_role_to_spectate_description": "Denne rolle vil være i stand til at forbinde og spectate kampe."
                 },
                 "create_matches_role": "Mindste rolle til at oprette kampe",
                 "create_matches_role_description": "Denne rolle vil være i stand til at skabe kampe.",
@@ -109,42 +143,44 @@
                 "matchmaking_min_role_description": "Denne rolle vil være i stand til at deltage i matchmaking.",
                 "max_acceptable_latency": "Maksimalt acceptabelt Latency",
                 "max_acceptable_latency_description": "Dette er den maksimale latency, som en spiller kan have til at deltage i en kamp.",
+                "auto_cancel_duration": "Automatisk Annullér Varighed",
+                "auto_cancel_duration_description": "Dette er varigheden i minutter at en match vil blive auto annulleret, hvis ikke startet inden for varigheden.",
                 "update": "Opdater",
                 "players": {
-                  "force_name_registration": "Tving spiller navn registrering",
-                  "force_name_registration_description": "Hvis spiller registrering er tvunget, skal spilleren indsende et navn, der vil blive brugt på platformen."
+                    "force_name_registration": "Tving spiller navn registrering",
+                    "force_name_registration_description": "Hvis spiller registrering er tvunget, skal spilleren indsende et navn, der vil blive brugt på platformen."
                 },
                 "servers": {
-                  "title": "Serverindstillinger",
-                  "enable_cpu_pinning": "Aktivér CPU Rinning",
-                  "enable_cpu_pinning_description": "Aktivér CPU-pinning på spilserver-knuder for bedre ydeevne",
-                  "number_of_cpus_per_server": "Antal CPU 'er pr. server",
-                  "number_of_cpus_per_server_description": "Antal CPU 'er der skal tildeles pr. server",
-                  "update": "Opdater",
-                  "update_cpu_pinning": "CPU Pinning opdateret"
+                    "title": "Serverindstillinger",
+                    "enable_cpu_pinning": "Aktivér CPU Rinning",
+                    "enable_cpu_pinning_description": "Aktivér CPU-pinning på spilserver-knuder for bedre ydeevne",
+                    "number_of_cpus_per_server": "Antal CPU 'er pr. server",
+                    "number_of_cpus_per_server_description": "Antal CPU 'er der skal tildeles pr. server",
+                    "update": "Opdater",
+                    "update_cpu_pinning": "CPU Pinning opdateret"
                 },
                 "demo_settings": {
-                  "update": "Opdater",
-                  "title": "Demo- indstillinger",
-                  "min_retention": "Minimum tilbageholdelse",
-                  "max_storage": "Maksimal opbevaring",
-                  "cloudflare_worker_url": "Cloudflare Worker URL",
-                  "max_storage_description": "Den maksimale lagerstørrelse for demo-filer i GB.",
-                  "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
-                  "min_retention_description": "Den mindste opbevaring dage for demo-filer.",
-                  "current_storage": "Aktuel opbevaring",
-                  "used_storage": "Omtrentlige opbevaring brugt",
-                  "test_s3_title": "Test S3",
-                  "test_s3_description": "Test S3-forbindelsen og upload en fil til demo-spanden.",
-                  "test_upload": "Test Upload",
-                  "test_upload_success": "Test Upload Gennemført",
-                  "test_upload_failed": "Test Upload Mislykkedes",
-                  "test_download": "Test Download",
-                  "test_download_failed": "Test Download Mislykkedes"
+                    "update": "Opdater",
+                    "title": "Demo- indstillinger",
+                    "min_retention": "Minimum tilbageholdelse",
+                    "max_storage": "Maksimal opbevaring",
+                    "cloudflare_worker_url": "Cloudflare Worker URL",
+                    "max_storage_description": "Den maksimale lagerstørrelse for demo-filer i GB.",
+                    "cloudflare_worker_url_description": "URL for Cloudflare arbejdstager, der vil blive brugt til at gemme og hente demo-filer.",
+                    "min_retention_description": "Den mindste opbevaring dage for demo-filer.",
+                    "current_storage": "Aktuel opbevaring",
+                    "used_storage": "Omtrentlige opbevaring brugt",
+                    "test_s3_title": "Test S3",
+                    "test_s3_description": "Test S3-forbindelsen og upload en fil til demo-spanden.",
+                    "test_upload": "Test Upload",
+                    "test_upload_success": "Test Upload Gennemført",
+                    "test_upload_failed": "Test Upload Mislykkedes",
+                    "test_download": "Test Download",
+                    "test_download_failed": "Test Download Mislykkedes"
                 },
                 "update_map_pools": {
-                  "title": "Automatisk opdateringskortspil",
-                  "description": "Tilføj / opdater automatisk kortpuljer når nye kort tilføjes eller fjernes fra den aktive duty pool."
+                    "title": "Automatisk opdateringskortspil",
+                    "description": "Tilføj / opdater automatisk kortpuljer når nye kort tilføjes eller fjernes fra den aktive duty pool."
                 }
             },
             "language": {
@@ -263,7 +299,11 @@
                 "enabled": "Aktiveret",
                 "no_nodes": "Ingen noder",
                 "supports_low_latency": "Understøtter lav latency",
-                "supports_cpu_pinning": "Understøtter CPU Rinning"
+                "supports_cpu_pinning": "Understøtter CPU Rinning",
+                "pin_build_id": "Fastgør Byg",
+                "pin_build_id_tooltip": "Fastgør build ID på CS2 serveren",
+                "pin_plugin_version": "Fastgør Plugin",
+                "pin_plugin_version_tooltip": "Fastgør 5Stack plugin version"
             },
             "build_id": "Build ID",
             "last_updated": "Sidst opdateret"
@@ -294,16 +334,16 @@
                 "edit": "Rediger",
                 "delete": "Slet",
                 "status": {
-                  "disconnected": "Serveren er afbrudt",
-                  "no_rcon": "Serveren er tilsluttet, men RCON er ikke tilgængelig",
-                  "connected": "Serveren er tilsluttet og RCON er tilgængelig",
-                  "plugin_version_mismatch": "plugin version er ikke opdateret"
+                    "disconnected": "Serveren er afbrudt",
+                    "no_rcon": "Serveren er tilsluttet, men RCON er ikke tilgængelig",
+                    "connected": "Serveren er tilsluttet og RCON er tilgængelig",
+                    "plugin_version_mismatch": "plugin version er ikke opdateret"
                 },
                 "delete_confirm": {
-                  "title": "Slet server",
-                  "description": "Er du sikker på, at du vil slette denne server?",
-                  "cancel": "Annuller",
-                  "continue": "Fortsæt"
+                    "title": "Slet server",
+                    "description": "Er du sikker på, at du vil slette denne server?",
+                    "cancel": "Annuller",
+                    "continue": "Fortsæt"
                 }
             }
         },
@@ -323,22 +363,22 @@
                 "update_map": "Opdater kort",
                 "delete_map": "Slet kort",
                 "delete_confirm": {
-                  "title": "Slet kort",
-                  "description": "Er du sikker på, at du vil slette dette kort? Denne handling kan ikke fortrydes.",
-                  "cancel": "Annuller",
-                  "confirm": "Slet"
+                    "title": "Slet kort",
+                    "description": "Er du sikker på, at du vil slette dette kort? Denne handling kan ikke fortrydes.",
+                    "cancel": "Annuller",
+                    "confirm": "Slet"
                 },
                 "success": {
-                  "create": "Kort oprettet med succes",
-                  "update": "Kort opdateret med succes",
-                  "delete": "Kort slettet med succes",
-                  "workshop_refresh": "Workshop kort detaljer genopfrisket med succes"
+                    "create": "Kort oprettet med succes",
+                    "update": "Kort opdateret med succes",
+                    "delete": "Kort slettet med succes",
+                    "workshop_refresh": "Workshop kort detaljer genopfrisket med succes"
                 },
                 "error": {
-                  "create": "Fejl ved oprettelse af kort",
-                  "update": "Fejl ved opdatering af kort",
-                  "invalid_workshop": "Ugyldigt værkstedskort-id. Bekræft venligst ID findes på Steam Workshop.",
-                  "workshop_refresh": "Fejlforfriskende oplysninger om værkstedskort"
+                    "create": "Fejl ved oprettelse af kort",
+                    "update": "Fejl ved opdatering af kort",
+                    "invalid_workshop": "Ugyldigt værkstedskort-id. Bekræft venligst ID findes på Steam Workshop.",
+                    "workshop_refresh": "Fejlforfriskende oplysninger om værkstedskort"
                 },
                 "refresh_workshop": "Genopfrisk detaljer"
             },
@@ -465,34 +505,32 @@
                 "tournaments": "Turneringer",
                 "view_previous_matches": "Se Tidligere Kampe",
                 "hero": {
-                  "title": "Spil & Konkurrér",
-                  "subtitle": "Deltag i kampe, turneringer og se din matchhistorik."
+                    "title": "Spil & Konkurrér",
+                    "subtitle": "Deltag i kampe, turneringer og se din matchhistorik."
                 }
             },
             "community": {
                 "players": {
-                  "title": "Spillere",
-                  "subtitle": "Gennemse og søg efter spillere"
+                    "title": "Spillere",
+                    "subtitle": "Gennemse og søg efter spillere"
                 },
                 "teams": {
-                  "title": "Hold",
-                  "subtitle": "Find og administrer teams"
+                    "title": "Hold",
+                    "subtitle": "Find og administrer teams"
                 },
                 "social": {
-                  "title": "Social",
-                  "join_discord": {
-                      "title": "Deltag i vores Discord",
-                      "subtitle": "Chat, support og meddelelser"
-                  },
-                  "github": {
-                      "title": "5stack.gg",
-                      "subtitle": "Se 5stak på GitHub"
-                  }
+                    "title": "Social",
+                    "join_discord": {
+                        "title": "Deltag i vores Discord",
+                        "subtitle": "Chat, support og meddelelser"
+                    },
+                    "github": {
+                        "title": "5stack.gg",
+                        "subtitle": "Se 5stak på GitHub"
+                    }
                 }
             },
-            "tooltip": {
-                "join_discord": "Deltag i vores Discord"
-            }
+            "tooltip": {}
         }
     },
     "pwa": {
@@ -508,6 +546,7 @@
     "common": {
         "delete": "Slet",
         "cancel": "Annuller",
+        "error": "Fejl",
         "tbd": "Afgøres",
         "boolean": {
             "yes": "Ja",
@@ -747,65 +786,65 @@
                 "show": "Vis",
                 "toggle": "Skift",
                 "overtime": {
-                  "label": "Overtid",
-                  "description": "Beskrivelse af overtid"
+                    "label": "Overtid",
+                    "description": "Beskrivelse af overtid"
                 },
                 "knife_round": {
-                  "label": "Knivrunde",
-                  "description": "Beskrivelse af knivrunde"
+                    "label": "Knivrunde",
+                    "description": "Beskrivelse af knivrunde"
                 },
                 "max_rounds": {
-                  "label": "Maksimale runder",
-                  "description": "Beskrivelse af maksimale runder",
-                  "placeholder": "Indtast antal maksimale runder"
+                    "label": "Maksimale runder",
+                    "description": "Beskrivelse af maksimale runder",
+                    "placeholder": "Indtast antal maksimale runder"
                 },
                 "region": {
-                  "title": "Region",
-                  "lan_match": "LAN kamp",
-                  "veto": {
-                      "label": "Region veto",
-                      "description": "Beskrivelse af region veto"
-                  },
-                  "preferred": "Foretrukket region",
-                  "single": "Region",
-                  "placeholder": "Vælg region",
-                  "any": "Enhver region",
-                  "description": "Beskrivelse af region"
+                    "title": "Region",
+                    "lan_match": "LAN kamp",
+                    "veto": {
+                        "label": "Region veto",
+                        "description": "Beskrivelse af region veto"
+                    },
+                    "preferred": "Foretrukket region",
+                    "single": "Region",
+                    "placeholder": "Vælg region",
+                    "any": "Enhver region",
+                    "description": "Beskrivelse af region"
                 },
                 "substitutes": {
-                  "label": "Erstatninger",
-                  "description": "Beskrivelse af erstatninger",
-                  "range": "Erstatningsområde"
+                    "label": "Erstatninger",
+                    "description": "Beskrivelse af erstatninger",
+                    "range": "Erstatningsområde"
                 },
                 "tv_delay": {
-                  "label": "TV forsinkelse",
-                  "range": "Forsinkelsesområde"
+                    "label": "TV forsinkelse",
+                    "range": "Forsinkelsesområde"
                 },
                 "timeouts": {
-                  "tactical": {
-                      "label": "Taktisk timeout",
-                      "description": "Beskrivelse af taktisk timeout"
-                  },
-                  "technical": {
-                      "label": "Teknisk timeout",
-                      "description": "Beskrivelse af teknisk timeout"
-                  },
-                  "options": {
-                      "admins": "Administratorer",
-                      "coaches": "Trænere",
-                      "captains": "Kapers",
-                      "everyone": "Alle"
-                  }
+                    "tactical": {
+                        "label": "Taktisk timeout",
+                        "description": "Beskrivelse af taktisk timeout"
+                    },
+                    "technical": {
+                        "label": "Teknisk timeout",
+                        "description": "Beskrivelse af teknisk timeout"
+                    },
+                    "options": {
+                        "admins": "Administratorer",
+                        "coaches": "Trænere",
+                        "captains": "Kapers",
+                        "everyone": "Alle"
+                    }
                 },
                 "ready_settings": {
-                  "label": "Klar indstilling",
-                  "description": "Styrer hvordan kampen bestemmer at være klar til at starte.",
-                  "options": {
-                      "admins": "Administratorer",
-                      "coaches": "Trænere",
-                      "captains": "Kaptajner",
-                      "everyone": "Alle spillere skal være klar"
-                  }
+                    "label": "Klar indstilling",
+                    "description": "Styrer hvordan kampen bestemmer at være klar til at starte.",
+                    "options": {
+                        "admins": "Administratorer",
+                        "coaches": "Trænere",
+                        "captains": "Kaptajner",
+                        "everyone": "Alle spillere skal være klar"
+                    }
                 }
             },
             "max_rounds": "Maksimale runder",
@@ -1089,6 +1128,12 @@
         "pin_build_id": "Pin Server Version",
         "unpin_build_id": "Brug Seneste Version",
         "pinned_build_id": "Server version fastgjort",
+        "pin_plugin_version": "Pin Plugin Version",
+        "unpin_plugin_version": "Brug Seneste Plugin-version",
+        "plugin_not_supported": "Plugin version ikke understøttet",
+        "pinned_plugin_version": "Plugin version fastgjort",
+        "plugin_version_supports": "Understøtter",
+        "plugin_version_published": "Publiceret",
         "install_cs": "Installer CS",
         "select_region": "Vælg region",
         "remove_node": "Fjern node",
@@ -1185,9 +1230,6 @@
         "updated_successfully": "Stream Opdateret",
         "stream_updated_message": "Streamen er blevet opdateret korrekt.",
         "update_error": "Kunne ikke opdatere stream. Prøv venligst igen.",
-        "delete": "Slet Stream",
-        "delete_title": "Slet Stream",
-        "delete_description": "Er du sikker på, at du vil slette \"{title}\"? Denne handling kan ikke fortrydes.",
         "deleted_successfully": "Stream Slettet",
         "stream_deleted_message": "Streamen er blevet slettet.",
         "delete_error": "Kunne ikke slette stream. Prøv venligst igen.",

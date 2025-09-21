@@ -40,6 +40,40 @@
                 "description": "あなたのアカウントの詳細",
                 "my_account": "私のアカウント",
                 "appearance": "外観設定",
+                "api_keys": "API キー",
+                "api_keys_management": {
+                    "your_api_keys": "API キー",
+                    "api_keys_description": "API キーを使用すると、プログラムで 5Stack API を認証できます。",
+                    "add_api_key": "API キーを追加",
+                    "create_new_api_key": "新しいAPIキーを作成",
+                    "create_new_description": "目的を特定するために、説明ラベルを付けた新しい API キーを作成します。",
+                    "label": "ラベル",
+                    "label_placeholder": "例えば、私のアプリ、開発、生産",
+                    "label_description": "この API キーを識別するために、説明的な名前を選択してください。",
+                    "created": "作成済み",
+                    "last_used": "最後に使用したもの",
+                    "never": "一切なし",
+                    "actions": "アクション",
+                    "delete_confirmation_title": "API キーを削除",
+                    "delete_confirmation_description": "API キー \"{label}\" を削除してもよろしいですか？ この操作は元に戻すことができず、このキーを使用しているアプリケーションはアクセスできなくなります。",
+                    "cancel": "キャンセル",
+                    "create_api_key": "API キーを作成",
+                    "delete_api_key_action": "API キーを削除",
+                    "api_key_deleted": "APIキーを削除しました",
+                    "api_key_deleted_description": "API キーの削除が完了しました。",
+                    "error_creating": "エラー",
+                    "error_creating_description": "APIキーの作成に失敗しました。もう一度やり直してください。",
+                    "error_deleting": "エラー",
+                    "error_deleting_description": "API キーの削除に失敗しました。もう一度やり直してください。",
+                    "copy_key_dialog": {
+                        "title": "API キーが作成されました",
+                        "description": "新しいAPIキーが正常に作成されました。再度表示されないため、今すぐコピーしてください。",
+                        "api_key_label": "API キー",
+                        "copied_button": "鍵をコピーしました",
+                        "warning_title": "重要:",
+                        "warning_message": "この API キーが表示される唯一の時間です。コピーして安全に保存してください。"
+                    }
+                },
                 "name": "名前",
                 "avatar_url": "アバター URL",
                 "country": "カントリー",
@@ -50,15 +84,15 @@
                 "matchmaking": "マッチメイキング",
                 "update_success": "プロフィール",
                 "discord": {
-                  "unlink": "UnlinkのDiscord",
-                  "link": "リンクの記録",
-                  "unlink_dialog": {
-                      "title": "Unlink Discordアカウント",
-                      "description": "Discordアカウントをアンインストールしますか? 5StackとDiscordアカウント間の接続を削除します.",
-                      "cancel": "キャンセル",
-                      "confirm": "ダウンロード"
-                  },
-                  "unlinked": "Discordアカウントが正常にリンクされていない"
+                    "unlink": "UnlinkのDiscord",
+                    "link": "リンクの記録",
+                    "unlink_dialog": {
+                        "title": "Unlink Discordアカウント",
+                        "description": "Discordアカウントをアンインストールしますか? 5StackとDiscordアカウント間の接続を削除します.",
+                        "cancel": "キャンセル",
+                        "confirm": "ダウンロード"
+                    },
+                    "unlinked": "Discordアカウントが正常にリンクされていない"
                 }
             },
             "appearance": {
@@ -71,35 +105,35 @@
             },
             "application": {
                 "telemetry": {
-                  "title": "テレメトリー",
-                  "telemetry": "テレメトリー",
-                  "telemetry_description": "匿名利用データを共有することで、5スタックの改善を支援します.",
-                  "update": "テレメトリー設定更新"
+                    "title": "テレメトリー",
+                    "telemetry": "テレメトリー",
+                    "telemetry_description": "匿名利用データを共有することで、5スタックの改善を支援します.",
+                    "update": "テレメトリー設定更新"
                 },
                 "matchmaking": {
-                  "title": "マッチメイキング",
-                  "description": "マッチメイキングの設定を管理"
+                    "title": "マッチメイキング",
+                    "description": "マッチメイキングの設定を管理"
                 },
                 "discord": {
-                  "title": "Discord",
-                  "invite_link": "Discord招待リンク",
-                  "webhook": "Discord Webhook",
-                  "webhook_description": "このDiscord Webhookは、プレイヤーのアクションが必要な通知を送信するために使用されます。例：マッチの問題、バグなど。",
-                  "support_role": "DiscordサポートロールID",
-                  "support_role_description": "このロールは、サポートアクションで使用される際にメンションされます。Discordアプリケーションで開発者モードを有効にし、右クリックしてIDをコピーすることでロールIDを取得できます。",
-                  "update": "更新"
+                    "title": "Discord",
+                    "invite_link": "Discord招待リンク",
+                    "webhook": "Discord Webhook",
+                    "webhook_description": "このDiscord Webhookは、プレイヤーのアクションが必要な通知を送信するために使用されます。例：マッチの問題、バグなど。",
+                    "support_role": "DiscordサポートロールID",
+                    "support_role_description": "このロールは、サポートアクションで使用される際にメンションされます。Discordアプリケーションで開発者モードを有効にし、右クリックしてIDをコピーすることでロールIDを取得できます。",
+                    "update": "更新"
                 },
                 "game_type_configs": {
-                  "title": "ゲームの種類 設定",
-                  "description": "ゲーム型コンフィグの管理.",
-                  "type": "ゲームの種類"
+                    "title": "ゲームの種類 設定",
+                    "description": "ゲーム型コンフィグの管理.",
+                    "type": "ゲームの種類"
                 },
                 "streaming": {
-                  "title": "ストリーミング",
-                  "minimum_role_to_stream": "テレビへの接続を許可する最小ロール（遅延）",
-                  "minimum_role_to_stream_description": "この役割はテレビに接続することができます。",
-                  "minimum_role_to_spectate": "観戦を許可される最小ロール (遅延なし)",
-                  "minimum_role_to_spectate_description": "この役割はマッチを接続して観戦することができます。"
+                    "title": "ストリーミング",
+                    "minimum_role_to_stream": "テレビへの接続を許可する最小ロール（遅延）",
+                    "minimum_role_to_stream_description": "この役割はテレビに接続することができます。",
+                    "minimum_role_to_spectate": "観戦を許可される最小ロール (遅延なし)",
+                    "minimum_role_to_spectate_description": "この役割はマッチを接続して観戦することができます。"
                 },
                 "create_matches_role": "マッチ作成に必要な最小ロール",
                 "create_matches_role_description": "このロールはマッチを作成することができます.",
@@ -109,42 +143,44 @@
                 "matchmaking_min_role_description": "マッチメイキングに参加できる役割.",
                 "max_acceptable_latency": "最高の受諾可能 レイテンシー",
                 "max_acceptable_latency_description": "プレイヤーが試合に参加できる最大レイテンシです.",
+                "auto_cancel_duration": "自動キャンセル時間",
+                "auto_cancel_duration_description": "時間内に開始されていない場合、自動的にキャンセルされる時間を分単位で指定します。",
                 "update": "更新",
                 "players": {
-                  "force_name_registration": "プレイヤー名登録を強制",
-                  "force_name_registration_description": "プレイヤー登録を強制する場合、プレイヤーはプラットフォームで使用される名前を提出する必要があります。"
+                    "force_name_registration": "プレイヤー名登録を強制",
+                    "force_name_registration_description": "プレイヤー登録を強制する場合、プレイヤーはプラットフォームで使用される名前を提出する必要があります。"
                 },
                 "servers": {
-                  "title": "サーバー設定",
-                  "enable_cpu_pinning": "CPUを有効にする ピニング",
-                  "enable_cpu_pinning_description": "より良いパフォーマンスのために、ゲームサーバーノードで CPU ピン留めを有効にします",
-                  "number_of_cpus_per_server": "サーバーごとの CPU の数",
-                  "number_of_cpus_per_server_description": "サーバーごとに割り当てる CPU の数",
-                  "update": "更新",
-                  "update_cpu_pinning": "ログイン ピニング更新"
+                    "title": "サーバー設定",
+                    "enable_cpu_pinning": "CPUを有効にする ピニング",
+                    "enable_cpu_pinning_description": "より良いパフォーマンスのために、ゲームサーバーノードで CPU ピン留めを有効にします",
+                    "number_of_cpus_per_server": "サーバーごとの CPU の数",
+                    "number_of_cpus_per_server_description": "サーバーごとに割り当てる CPU の数",
+                    "update": "更新",
+                    "update_cpu_pinning": "ログイン ピニング更新"
                 },
                 "demo_settings": {
-                  "update": "更新",
-                  "title": "デモ設定",
-                  "min_retention": "最小限の保持",
-                  "max_storage": "最高の貯蔵",
-                  "cloudflare_worker_url": "Cloudflareワーカー URL",
-                  "max_storage_description": "GB のデモファイルの最大ストレージサイズ.",
-                  "cloudflare_worker_url_description": "デモファイルを保存および取得するために使用されるCloudflareワーカーのURL.",
-                  "min_retention_description": "デモファイルの最小保持日.",
-                  "current_storage": "現在の貯蔵",
-                  "used_storage": "使用されるおよその貯蔵",
-                  "test_s3_title": "テストS3",
-                  "test_s3_description": "S3接続をテストし、デモバケットにファイルをアップロードします。",
-                  "test_upload": "アップロードテスト",
-                  "test_upload_success": "テストアップロード成功",
-                  "test_upload_failed": "テストアップロードに失敗しました",
-                  "test_download": "ダウンロードをテスト",
-                  "test_download_failed": "テストに失敗しました"
+                    "update": "更新",
+                    "title": "デモ設定",
+                    "min_retention": "最小限の保持",
+                    "max_storage": "最高の貯蔵",
+                    "cloudflare_worker_url": "Cloudflareワーカー URL",
+                    "max_storage_description": "GB のデモファイルの最大ストレージサイズ.",
+                    "cloudflare_worker_url_description": "デモファイルを保存および取得するために使用されるCloudflareワーカーのURL.",
+                    "min_retention_description": "デモファイルの最小保持日.",
+                    "current_storage": "現在の貯蔵",
+                    "used_storage": "使用されるおよその貯蔵",
+                    "test_s3_title": "テストS3",
+                    "test_s3_description": "S3接続をテストし、デモバケットにファイルをアップロードします。",
+                    "test_upload": "アップロードテスト",
+                    "test_upload_success": "テストアップロード成功",
+                    "test_upload_failed": "テストアップロードに失敗しました",
+                    "test_download": "ダウンロードをテスト",
+                    "test_download_failed": "テストに失敗しました"
                 },
                 "update_map_pools": {
-                  "title": "自動更新マッププール",
-                  "description": "アクティブデューティプールから新しいマップを追加または削除したときに、自動的にマッププールを追加/更新します."
+                    "title": "自動更新マッププール",
+                    "description": "アクティブデューティプールから新しいマップを追加または削除したときに、自動的にマッププールを追加/更新します."
                 }
             },
             "language": {
@@ -263,7 +299,11 @@
                 "enabled": "有効",
                 "no_nodes": "ノードがありません",
                 "supports_low_latency": "低レイテンシに対応",
-                "supports_cpu_pinning": "CPU対応 ピニング"
+                "supports_cpu_pinning": "CPU対応 ピニング",
+                "pin_build_id": "ビルドをピン留めする",
+                "pin_build_id_tooltip": "CS2サーバーのビルドIDをピン留めする",
+                "pin_plugin_version": "ピン留めプラグイン",
+                "pin_plugin_version_tooltip": "5Stack プラグインのバージョンをピン留めする"
             },
             "build_id": "ビルドID",
             "last_updated": "最終更新"
@@ -294,16 +334,16 @@
                 "edit": "編集",
                 "delete": "削除",
                 "status": {
-                  "disconnected": "サーバが切断される",
-                  "no_rcon": "サーバーは接続されますが、RCONは利用できません",
-                  "connected": "サーバーは接続され、RCONは利用できます",
-                  "plugin_version_mismatch": "プラグインバージョンは最新ではありません"
+                    "disconnected": "サーバが切断される",
+                    "no_rcon": "サーバーは接続されますが、RCONは利用できません",
+                    "connected": "サーバーは接続され、RCONは利用できます",
+                    "plugin_version_mismatch": "プラグインバージョンは最新ではありません"
                 },
                 "delete_confirm": {
-                  "title": "サーバーを削除",
-                  "description": "このサーバーを削除してもよろしいですか？",
-                  "cancel": "キャンセル",
-                  "continue": "続行"
+                    "title": "サーバーを削除",
+                    "description": "このサーバーを削除してもよろしいですか？",
+                    "cancel": "キャンセル",
+                    "continue": "続行"
                 }
             }
         },
@@ -323,22 +363,22 @@
                 "update_map": "サイトマップ",
                 "delete_map": "削除マップ",
                 "delete_confirm": {
-                  "title": "削除マップ",
-                  "description": "このマップを削除したいですか? このアクションは元に戻すことができません.",
-                  "cancel": "キャンセル",
-                  "confirm": "削除"
+                    "title": "削除マップ",
+                    "description": "このマップを削除したいですか? このアクションは元に戻すことができません.",
+                    "cancel": "キャンセル",
+                    "confirm": "削除"
                 },
                 "success": {
-                  "create": "正常に作成されたマップ",
-                  "update": "正常に更新された地図",
-                  "delete": "正常に削除された地図",
-                  "workshop_refresh": "研修会の地図の細部は首尾よく更新しました"
+                    "create": "正常に作成されたマップ",
+                    "update": "正常に更新された地図",
+                    "delete": "正常に削除された地図",
+                    "workshop_refresh": "研修会の地図の細部は首尾よく更新しました"
                 },
                 "error": {
-                  "create": "地図の作成エラー",
-                  "update": "エラー更新マップ",
-                  "invalid_workshop": "無効なワークショップマップID。 Steam WorkshopにIDが存在しているかご確認ください.",
-                  "workshop_refresh": "エラーリフレッシュワークショップのマップ"
+                    "create": "地図の作成エラー",
+                    "update": "エラー更新マップ",
+                    "invalid_workshop": "無効なワークショップマップID。 Steam WorkshopにIDが存在しているかご確認ください.",
+                    "workshop_refresh": "エラーリフレッシュワークショップのマップ"
                 },
                 "refresh_workshop": "更新情報"
             },
@@ -465,34 +505,32 @@
                 "tournaments": "トーナメント",
                 "view_previous_matches": "前回の試合を表示",
                 "hero": {
-                  "title": "プレイ & Compete",
-                  "subtitle": "試合、トーナメントに参加し、試合の履歴を表示します。"
+                    "title": "プレイ & Compete",
+                    "subtitle": "試合、トーナメントに参加し、試合の履歴を表示します。"
                 }
             },
             "community": {
                 "players": {
-                  "title": "プレイヤー",
-                  "subtitle": "プレイヤーを閲覧して検索"
+                    "title": "プレイヤー",
+                    "subtitle": "プレイヤーを閲覧して検索"
                 },
                 "teams": {
-                  "title": "チーム",
-                  "subtitle": "チームの検索と管理"
+                    "title": "チーム",
+                    "subtitle": "チームの検索と管理"
                 },
                 "social": {
-                  "title": "ソーシャル",
-                  "join_discord": {
-                      "title": "Discordに参加する",
-                      "subtitle": "チャット、サポート、およびお知らせ"
-                  },
-                  "github": {
-                      "title": "5stack.gg",
-                      "subtitle": "GitHubで5スタックを表示"
-                  }
+                    "title": "ソーシャル",
+                    "join_discord": {
+                        "title": "Discordに参加する",
+                        "subtitle": "チャット、サポート、およびお知らせ"
+                    },
+                    "github": {
+                        "title": "5stack.gg",
+                        "subtitle": "GitHubで5スタックを表示"
+                    }
                 }
             },
-            "tooltip": {
-                "join_discord": "Discordに参加する"
-            }
+            "tooltip": {}
         }
     },
     "pwa": {
@@ -508,6 +546,7 @@
     "common": {
         "delete": "削除",
         "cancel": "キャンセル",
+        "error": "エラー",
         "tbd": "未定",
         "boolean": {
             "yes": "はい",
@@ -747,65 +786,65 @@
                 "show": "表示",
                 "toggle": "詳細設定を切り替え",
                 "overtime": {
-                  "label": "延長戦",
-                  "description": "延長戦の設定を管理"
+                    "label": "延長戦",
+                    "description": "延長戦の設定を管理"
                 },
                 "knife_round": {
-                  "label": "ナイフラウンド",
-                  "description": "ナイフラウンドの設定を管理"
+                    "label": "ナイフラウンド",
+                    "description": "ナイフラウンドの設定を管理"
                 },
                 "max_rounds": {
-                  "label": "最大ラウンド数",
-                  "description": "マッチの最大ラウンド数を設定",
-                  "placeholder": "最大ラウンド数を入力"
+                    "label": "最大ラウンド数",
+                    "description": "マッチの最大ラウンド数を設定",
+                    "placeholder": "最大ラウンド数を入力"
                 },
                 "region": {
-                  "title": "リージョン",
-                  "lan_match": "LANマッチ",
-                  "veto": {
-                      "label": "ベート",
-                      "description": "リージョンベートの設定を管理"
-                  },
-                  "preferred": "優先",
-                  "single": "リージョン",
-                  "placeholder": "リージョンを選択",
-                  "any": "任意",
-                  "description": "マッチのリージョンを設定"
+                    "title": "リージョン",
+                    "lan_match": "LANマッチ",
+                    "veto": {
+                        "label": "ベート",
+                        "description": "リージョンベートの設定を管理"
+                    },
+                    "preferred": "優先",
+                    "single": "リージョン",
+                    "placeholder": "リージョンを選択",
+                    "any": "任意",
+                    "description": "マッチのリージョンを設定"
                 },
                 "substitutes": {
-                  "label": "サブスティテュート",
-                  "description": "サブスティテュートの設定を管理",
-                  "range": "サブスティテュートの範囲"
+                    "label": "サブスティテュート",
+                    "description": "サブスティテュートの設定を管理",
+                    "range": "サブスティテュートの範囲"
                 },
                 "tv_delay": {
-                  "label": "TV遅延",
-                  "range": "TV遅延の範囲"
+                    "label": "TV遅延",
+                    "range": "TV遅延の範囲"
                 },
                 "timeouts": {
-                  "tactical": {
-                      "label": "タクティカルタイムアウト",
-                      "description": "タクティカルタイムアウトの設定を管理"
-                  },
-                  "technical": {
-                      "label": "テクニカルタイムアウト",
-                      "description": "テクニカルタイムアウトの設定を管理"
-                  },
-                  "options": {
-                      "admins": "管理者のみ",
-                      "coaches": "コーチ",
-                      "captains": "コーチ/キャプテン",
-                      "everyone": "スタッフ"
-                  }
+                    "tactical": {
+                        "label": "タクティカルタイムアウト",
+                        "description": "タクティカルタイムアウトの設定を管理"
+                    },
+                    "technical": {
+                        "label": "テクニカルタイムアウト",
+                        "description": "テクニカルタイムアウトの設定を管理"
+                    },
+                    "options": {
+                        "admins": "管理者のみ",
+                        "coaches": "コーチ",
+                        "captains": "コーチ/キャプテン",
+                        "everyone": "スタッフ"
+                    }
                 },
                 "ready_settings": {
-                  "label": "準備設定",
-                  "description": "マッチが開始する準備を決定する方法を制御します.",
-                  "options": {
-                      "admins": "管理者のみ",
-                      "coaches": "コーチ",
-                      "captains": "キャプテン",
-                      "everyone": "すべてのプレーヤーは準備ができている必要があります"
-                  }
+                    "label": "準備設定",
+                    "description": "マッチが開始する準備を決定する方法を制御します.",
+                    "options": {
+                        "admins": "管理者のみ",
+                        "coaches": "コーチ",
+                        "captains": "キャプテン",
+                        "everyone": "すべてのプレーヤーは準備ができている必要があります"
+                    }
                 }
             },
             "max_rounds": "最大ラウンド数",
@@ -1089,6 +1128,12 @@
         "pin_build_id": "サーバーのバージョンをピン留めする",
         "unpin_build_id": "最新バージョンを使用する",
         "pinned_build_id": "サーバーのバージョンを留めました",
+        "pin_plugin_version": "プラグインバージョンをピン留めする",
+        "unpin_plugin_version": "最新のプラグインバージョンを使用する",
+        "plugin_not_supported": "プラグインのバージョンはサポートされていません",
+        "pinned_plugin_version": "プラグインのバージョンを留めました",
+        "plugin_version_supports": "サポート",
+        "plugin_version_published": "公開済み",
         "install_cs": "CSをインストール",
         "select_region": "リージョンを選択",
         "remove_node": "ノードを削除",
@@ -1185,9 +1230,6 @@
         "updated_successfully": "ストリームの更新",
         "stream_updated_message": "配信の更新が完了しました",
         "update_error": "ストリームの更新に失敗しました。もう一度やり直してください。",
-        "delete": "配信を削除",
-        "delete_title": "配信を削除",
-        "delete_description": "「{title}」を削除してもよろしいですか？この操作は元に戻せません。",
         "deleted_successfully": "ストリームを削除しました",
         "stream_deleted_message": "配信の削除が完了しました",
         "delete_error": "ストリームの削除に失敗しました。もう一度やり直してください。",

@@ -40,6 +40,40 @@
                 "description": "Detalhes da sua conta",
                 "my_account": "Minha Conta",
                 "appearance": "Aparência",
+                "api_keys": "Chaves API",
+                "api_keys_management": {
+                    "your_api_keys": "Suas chaves de API",
+                    "api_keys_description": "Chaves de API permitem que você autentique com a API 5Stack programaticamente.",
+                    "add_api_key": "Adicionar chave API",
+                    "create_new_api_key": "Criar nova chave de API",
+                    "create_new_description": "Crie uma nova chave de API com um rótulo descritivo para identificar a sua finalidade.",
+                    "label": "Descrição",
+                    "label_placeholder": "Exemplo: Meu App, Desenvolvimento, Produção",
+                    "label_description": "Escolha um nome descritivo para identificar esta chave API.",
+                    "created": "Criado",
+                    "last_used": "Último uso",
+                    "never": "nunca",
+                    "actions": "Ações.",
+                    "delete_confirmation_title": "Apagar Chave de API",
+                    "delete_confirmation_description": "Tem certeza que deseja excluir a chave API \"{label}\"? Esta ação não pode ser desfeita e qualquer aplicativo que usar esta chave perderá o acesso.",
+                    "cancel": "cancelar",
+                    "create_api_key": "Criar chave de API",
+                    "delete_api_key_action": "Apagar Chave de API",
+                    "api_key_deleted": "Chave de API excluída",
+                    "api_key_deleted_description": "A chave API foi excluído com sucesso.",
+                    "error_creating": "ERRO",
+                    "error_creating_description": "Falha ao criar a chave de API. Por favor, tente novamente.",
+                    "error_deleting": "ERRO",
+                    "error_deleting_description": "Falha ao excluir a chave de API. Por favor, tente novamente.",
+                    "copy_key_dialog": {
+                        "title": "Chave de API Criada",
+                        "description": "Sua nova chave de API foi criada com sucesso. Por favor, copie-a agora que não vai ser exibida novamente.",
+                        "api_key_label": "Chave de API",
+                        "copied_button": "Eu copiei a chave",
+                        "warning_title": "Importante:",
+                        "warning_message": "Esta é a única vez que você poderá ver esta chave de API. Certifique-se de copiar e armazená-la de forma segura."
+                    }
+                },
                 "name": "Nome",
                 "avatar_url": "URL do Avatar",
                 "country": "País",
@@ -50,15 +84,15 @@
                 "matchmaking": "Matchmaking",
                 "update_success": "Perfil Atualizado",
                 "discord": {
-                  "unlink": "Desvincular a Discord",
-                  "link": "Link do Discord",
-                  "unlink_dialog": {
-                      "title": "Desvincular a Conta do Discord",
-                      "description": "Tem certeza de que deseja desvincular sua conta do Discord? Isso removerá a conexão entre suas contas do 5Stack e do Discord.",
-                      "cancel": "Cancelar",
-                      "confirm": "Desvincular"
-                  },
-                  "unlinked": "Conta do Discord desvinculada com sucesso"
+                    "unlink": "Desvincular a Discord",
+                    "link": "Link do Discord",
+                    "unlink_dialog": {
+                        "title": "Desvincular a Conta do Discord",
+                        "description": "Tem certeza de que deseja desvincular sua conta do Discord? Isso removerá a conexão entre suas contas do 5Stack e do Discord.",
+                        "cancel": "Cancelar",
+                        "confirm": "Desvincular"
+                    },
+                    "unlinked": "Conta do Discord desvinculada com sucesso"
                 }
             },
             "appearance": {
@@ -71,35 +105,35 @@
             },
             "application": {
                 "telemetry": {
-                  "title": "Telemetria",
-                  "telemetry": "Telemetria",
-                  "telemetry_description": "Ajude a melhorar o 5stack compartilhando seus dados de telemetria anonimamente.",
-                  "update": "Configurações de telemetria atualizadas"
+                    "title": "Telemetria",
+                    "telemetry": "Telemetria",
+                    "telemetry_description": "Ajude a melhorar o 5stack compartilhando seus dados de telemetria anonimamente.",
+                    "update": "Configurações de telemetria atualizadas"
                 },
                 "matchmaking": {
-                  "title": "Matchmaking",
-                  "description": "O matchmaking permite que os jogadores entrem em uma fila e sejam pareados com outros jogadores."
+                    "title": "Matchmaking",
+                    "description": "O matchmaking permite que os jogadores entrem em uma fila e sejam pareados com outros jogadores."
                 },
                 "discord": {
-                  "title": "Discord",
-                  "invite_link": "Link de convite do Discord",
-                  "webhook": "Webhook do Discord",
-                  "webhook_description": "Usamos este webhook do Discord para enviar notificações que requerem ação de um jogador. Ex: problemas de partida, bugs, etc.",
-                  "support_role": "ID do cargo de suporte do Discord",
-                  "support_role_description": "Este cargo será mencionado quando usado para ações de suporte. Você pode obter o ID do cargo do aplicativo Discord ativando o modo desenvolvedor e clicando com o botão direito para copiar o ID.",
-                  "update": "Atualizar"
+                    "title": "Discord",
+                    "invite_link": "Link de convite do Discord",
+                    "webhook": "Webhook do Discord",
+                    "webhook_description": "Usamos este webhook do Discord para enviar notificações que requerem ação de um jogador. Ex: problemas de partida, bugs, etc.",
+                    "support_role": "ID do cargo de suporte do Discord",
+                    "support_role_description": "Este cargo será mencionado quando usado para ações de suporte. Você pode obter o ID do cargo do aplicativo Discord ativando o modo desenvolvedor e clicando com o botão direito para copiar o ID.",
+                    "update": "Atualizar"
                 },
                 "game_type_configs": {
-                  "title": "Configuração do Tipo de Jogo",
-                  "description": "Gerenciar configurações do tipo de jogo.",
-                  "type": "Tipo de Jogo"
+                    "title": "Configuração do Tipo de Jogo",
+                    "description": "Gerenciar configurações do tipo de jogo.",
+                    "type": "Tipo de Jogo"
                 },
                 "streaming": {
-                  "title": "Streaming",
-                  "minimum_role_to_stream": "Papel Mínimo Permitido de Conectar-se à TV (Atrasado)",
-                  "minimum_role_to_stream_description": "Este cargo poderá se conectar à TV.",
-                  "minimum_role_to_spectate": "Papel Mínimo Permitido Assistir (Sem Atraso)",
-                  "minimum_role_to_spectate_description": "Este cargo será capaz de conectar e assistir partidas."
+                    "title": "Streaming",
+                    "minimum_role_to_stream": "Papel Mínimo Permitido de Conectar-se à TV (Atrasado)",
+                    "minimum_role_to_stream_description": "Este cargo poderá se conectar à TV.",
+                    "minimum_role_to_spectate": "Papel Mínimo Permitido Assistir (Sem Atraso)",
+                    "minimum_role_to_spectate_description": "Este cargo será capaz de conectar e assistir partidas."
                 },
                 "create_matches_role": "Cargo mínimo para criar partidas",
                 "create_matches_role_description": "Este cargo poderá criar partidas",
@@ -109,42 +143,44 @@
                 "matchmaking_min_role_description": "Este cargo poderá juntar-se ao matchmaking.",
                 "max_acceptable_latency": "Máximo Aceitável Latência",
                 "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida.",
+                "auto_cancel_duration": "Auto Cancelar Duração",
+                "auto_cancel_duration_description": "Esta é a duração em minutos que uma partida será automaticamente cancelada se não estiver iniciada dentro da duração.",
                 "update": "Atualizar",
                 "players": {
-                  "force_name_registration": "Forçar registro de nome do jogador",
-                  "force_name_registration_description": "Se forçado a ter registro de jogador, o jogador será obrigado a enviar um nome que será usado na plataforma."
+                    "force_name_registration": "Forçar registro de nome do jogador",
+                    "force_name_registration_description": "Se forçado a ter registro de jogador, o jogador será obrigado a enviar um nome que será usado na plataforma."
                 },
                 "servers": {
-                  "title": "Configuração do Servidor",
-                  "enable_cpu_pinning": "Habilitar fixação de CPU",
-                  "enable_cpu_pinning_description": "Ativar a fixação da CPU nos nós de servidores de jogos para um melhor desempenho",
-                  "number_of_cpus_per_server": "Número de CPUs por servidor",
-                  "number_of_cpus_per_server_description": "Número de CPUs para alocar por servidor",
-                  "update": "Atualizar",
-                  "update_cpu_pinning": "CPU Actualização do quadro"
+                    "title": "Configuração do Servidor",
+                    "enable_cpu_pinning": "Habilitar fixação de CPU",
+                    "enable_cpu_pinning_description": "Ativar a fixação da CPU nos nós de servidores de jogos para um melhor desempenho",
+                    "number_of_cpus_per_server": "Número de CPUs por servidor",
+                    "number_of_cpus_per_server_description": "Número de CPUs para alocar por servidor",
+                    "update": "Atualizar",
+                    "update_cpu_pinning": "CPU Actualização do quadro"
                 },
                 "demo_settings": {
-                  "update": "Atualizar",
-                  "title": "Configuração da Demo",
-                  "min_retention": "Retenção mínima",
-                  "max_storage": "Armazenamento Máximo",
-                  "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
-                  "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demo em GB.",
-                  "cloudflare_worker_url_description": "O URL do trabalhador Cloudflare que será usado para armazenar e recuperar os arquivos de demo.",
-                  "min_retention_description": "Os dias mínimos de retenção para os arquivos de demo.",
-                  "current_storage": "Armazenamento atual",
-                  "used_storage": "Armazenamento aproximado usado",
-                  "test_s3_title": "Teste S3",
-                  "test_s3_description": "Teste a conexão S3 e envie um arquivo para o grupo de demonstração.",
-                  "test_upload": "Testar Upload",
-                  "test_upload_success": "Teste Envio com Sucesso",
-                  "test_upload_failed": "Testar Upload Falhou",
-                  "test_download": "Testar Download",
-                  "test_download_failed": "Download de teste falhou"
+                    "update": "Atualizar",
+                    "title": "Configuração da Demo",
+                    "min_retention": "Retenção mínima",
+                    "max_storage": "Armazenamento Máximo",
+                    "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
+                    "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demo em GB.",
+                    "cloudflare_worker_url_description": "O URL do trabalhador Cloudflare que será usado para armazenar e recuperar os arquivos de demo.",
+                    "min_retention_description": "Os dias mínimos de retenção para os arquivos de demo.",
+                    "current_storage": "Armazenamento atual",
+                    "used_storage": "Armazenamento aproximado usado",
+                    "test_s3_title": "Teste S3",
+                    "test_s3_description": "Teste a conexão S3 e envie um arquivo para o grupo de demonstração.",
+                    "test_upload": "Testar Upload",
+                    "test_upload_success": "Teste Envio com Sucesso",
+                    "test_upload_failed": "Testar Upload Falhou",
+                    "test_download": "Testar Download",
+                    "test_download_failed": "Download de teste falhou"
                 },
                 "update_map_pools": {
-                  "title": "Atualizar automaticamente os conjuntos de mapas",
-                  "description": "Adicionar / atualizar automaticamente conjuntos de mapas quando novos mapas são adicionados ou removidos do conjunto de tarefas ativa."
+                    "title": "Atualizar automaticamente os conjuntos de mapas",
+                    "description": "Adicionar / atualizar automaticamente conjuntos de mapas quando novos mapas são adicionados ou removidos do conjunto de tarefas ativa."
                 }
             },
             "language": {
@@ -263,7 +299,11 @@
                 "enabled": "Ativado",
                 "no_nodes": "Nenhum nó",
                 "supports_low_latency": "Suporta Kernel-Low-Latency",
-                "supports_cpu_pinning": "Suporta CPU Pinning"
+                "supports_cpu_pinning": "Suporta CPU Pinning",
+                "pin_build_id": "Fixar Compilação",
+                "pin_build_id_tooltip": "Fixar o ID da compilação do servidor CS2",
+                "pin_plugin_version": "Fixar Plugin",
+                "pin_plugin_version_tooltip": "Pin a versão do plugin 5Stack"
             },
             "build_id": "ID de build: {id}",
             "last_updated": "Última atualização: {date}"
@@ -294,16 +334,16 @@
                 "edit": "Editar",
                 "delete": "Excluir",
                 "status": {
-                  "disconnected": "O servidor está desligado",
-                  "no_rcon": "O servidor está ligado, mas o RCON não está disponível",
-                  "connected": "O servidor está conectado e RCON está disponível",
-                  "plugin_version_mismatch": "a versão do plugin não está atualizada"
+                    "disconnected": "O servidor está desligado",
+                    "no_rcon": "O servidor está ligado, mas o RCON não está disponível",
+                    "connected": "O servidor está conectado e RCON está disponível",
+                    "plugin_version_mismatch": "a versão do plugin não está atualizada"
                 },
                 "delete_confirm": {
-                  "title": "Excluir servidor",
-                  "description": "Tem certeza que deseja excluir este servidor?",
-                  "cancel": "Cancelar",
-                  "continue": "Continuar"
+                    "title": "Excluir servidor",
+                    "description": "Tem certeza que deseja excluir este servidor?",
+                    "cancel": "Cancelar",
+                    "continue": "Continuar"
                 }
             }
         },
@@ -323,22 +363,22 @@
                 "update_map": "Atualizar mapa",
                 "delete_map": "Excluir mapa",
                 "delete_confirm": {
-                  "title": "Excluir mapa",
-                  "description": "Tem a certeza de que deseja apagar este mapa? Esta acção não pode ser desfeita.",
-                  "cancel": "Cancelar",
-                  "confirm": "Excluir"
+                    "title": "Excluir mapa",
+                    "description": "Tem a certeza de que deseja apagar este mapa? Esta acção não pode ser desfeita.",
+                    "cancel": "Cancelar",
+                    "confirm": "Excluir"
                 },
                 "success": {
-                  "create": "Mapa criado com sucesso",
-                  "update": "Mapa actualizado com sucesso",
-                  "delete": "Mapa excluído com sucesso",
-                  "workshop_refresh": "Detalhes do mapa da oficina atualizados com sucesso"
+                    "create": "Mapa criado com sucesso",
+                    "update": "Mapa actualizado com sucesso",
+                    "delete": "Mapa excluído com sucesso",
+                    "workshop_refresh": "Detalhes do mapa da oficina atualizados com sucesso"
                 },
                 "error": {
-                  "create": "Erro ao criar o mapa",
-                  "update": "Erro ao atualizar o mapa",
-                  "invalid_workshop": "ID do mapa da oficina inválido. Verifique se o ID existe no Steam Workshop.",
-                  "workshop_refresh": "Erro ao atualizar os detalhes do mapa da oficina"
+                    "create": "Erro ao criar o mapa",
+                    "update": "Erro ao atualizar o mapa",
+                    "invalid_workshop": "ID do mapa da oficina inválido. Verifique se o ID existe no Steam Workshop.",
+                    "workshop_refresh": "Erro ao atualizar os detalhes do mapa da oficina"
                 },
                 "refresh_workshop": "Atualizar detalhes"
             },
@@ -465,34 +505,32 @@
                 "tournaments": "Torneios",
                 "view_previous_matches": "Ver partidas anteriores",
                 "hero": {
-                  "title": "Jogar e Compete",
-                  "subtitle": "Junte-se a jogos, torneios e veja o seu histórico de jogos."
+                    "title": "Jogar e Compete",
+                    "subtitle": "Junte-se a jogos, torneios e veja o seu histórico de jogos."
                 }
             },
             "community": {
                 "players": {
-                  "title": "Jogadores",
-                  "subtitle": "Navegue e procure por jogadores"
+                    "title": "Jogadores",
+                    "subtitle": "Navegue e procure por jogadores"
                 },
                 "teams": {
-                  "title": "Times",
-                  "subtitle": "Localizar e gerenciar equipes"
+                    "title": "Times",
+                    "subtitle": "Localizar e gerenciar equipes"
                 },
                 "social": {
-                  "title": "Sócio",
-                  "join_discord": {
-                      "title": "Junte-se ao nosso Discord",
-                      "subtitle": "Conversa, suporte e anúncios"
-                  },
-                  "github": {
-                      "title": "5stack.gg",
-                      "subtitle": "Exibir 5stack no GitHub"
-                  }
+                    "title": "Sócio",
+                    "join_discord": {
+                        "title": "Junte-se ao nosso Discord",
+                        "subtitle": "Conversa, suporte e anúncios"
+                    },
+                    "github": {
+                        "title": "5stack.gg",
+                        "subtitle": "Exibir 5stack no GitHub"
+                    }
                 }
             },
-            "tooltip": {
-                "join_discord": "Junte-se ao nosso Discord"
-            }
+            "tooltip": {}
         }
     },
     "pwa": {
@@ -508,6 +546,7 @@
     "common": {
         "delete": "excluir",
         "cancel": "Cancelar",
+        "error": "ERRO",
         "tbd": "A definir",
         "boolean": {
             "yes": "Sim",
@@ -747,65 +786,65 @@
                 "show": "Mostrar",
                 "toggle": "Alternar",
                 "overtime": {
-                  "label": "Prorrogação",
-                  "description": "Descrição da prorrogação"
+                    "label": "Prorrogação",
+                    "description": "Descrição da prorrogação"
                 },
                 "knife_round": {
-                  "label": "Round Faca",
-                  "description": "\"Round faca\" só são jogadas quando nenhuma das equipes escolheu o mapa no veto."
+                    "label": "Round Faca",
+                    "description": "\"Round faca\" só são jogadas quando nenhuma das equipes escolheu o mapa no veto."
                 },
                 "max_rounds": {
-                  "label": "Máximo de rodadas",
-                  "description": "Descrição do máximo de rodadas",
-                  "placeholder": "Digite o máximo de rodadas"
+                    "label": "Máximo de rodadas",
+                    "description": "Descrição do máximo de rodadas",
+                    "placeholder": "Digite o máximo de rodadas"
                 },
                 "region": {
-                  "title": "Regiões",
-                  "lan_match": "Partida LAN",
-                  "veto": {
-                      "label": "Veto de região",
-                      "description": "Descrição do veto de região"
-                  },
-                  "preferred": "Região preferida",
-                  "single": "Região",
-                  "placeholder": "Selecionar região",
-                  "any": "Qualquer região",
-                  "description": "Descrição da região"
+                    "title": "Regiões",
+                    "lan_match": "Partida LAN",
+                    "veto": {
+                        "label": "Veto de região",
+                        "description": "Descrição do veto de região"
+                    },
+                    "preferred": "Região preferida",
+                    "single": "Região",
+                    "placeholder": "Selecionar região",
+                    "any": "Qualquer região",
+                    "description": "Descrição da região"
                 },
                 "substitutes": {
-                  "label": "Substitutos",
-                  "description": "Descrição dos substitutos",
-                  "range": "Intervalo de substitutos"
+                    "label": "Substitutos",
+                    "description": "Descrição dos substitutos",
+                    "range": "Intervalo de substitutos"
                 },
                 "tv_delay": {
-                  "label": "Atraso da TV",
-                  "range": "Intervalo de atraso"
+                    "label": "Atraso da TV",
+                    "range": "Intervalo de atraso"
                 },
                 "timeouts": {
-                  "tactical": {
-                      "label": "Configurações de Pause Tático",
-                      "description": "Os pauses táticos são chamados digitando .tac e duram 30 segundos."
-                  },
-                  "technical": {
-                      "label": "Configurações de Pause Técnico",
-                      "description": "Os pauses técnicos são solicitados digitando .pause e não têm limite de tempo."
-                  },
-                  "options": {
-                      "admins": "Administradores",
-                      "coaches": "Treinadores",
-                      "captains": "Treinadores / Capitães",
-                      "everyone": "Qualquer um"
-                  }
+                    "tactical": {
+                        "label": "Configurações de Pause Tático",
+                        "description": "Os pauses táticos são chamados digitando .tac e duram 30 segundos."
+                    },
+                    "technical": {
+                        "label": "Configurações de Pause Técnico",
+                        "description": "Os pauses técnicos são solicitados digitando .pause e não têm limite de tempo."
+                    },
+                    "options": {
+                        "admins": "Administradores",
+                        "coaches": "Treinadores",
+                        "captains": "Treinadores / Capitães",
+                        "everyone": "Qualquer um"
+                    }
                 },
                 "ready_settings": {
-                  "label": "Configuração de Preparação (ready)",
-                  "description": "Controla como o jogo determina estar pronto para começar.",
-                  "options": {
-                      "admins": "Administradores",
-                      "coaches": "Treinadores",
-                      "captains": "Capitães",
-                      "everyone": "Todos os jogadores precisam estar prontos"
-                  }
+                    "label": "Configuração de Preparação (ready)",
+                    "description": "Controla como o jogo determina estar pronto para começar.",
+                    "options": {
+                        "admins": "Administradores",
+                        "coaches": "Treinadores",
+                        "captains": "Capitães",
+                        "everyone": "Todos os jogadores precisam estar prontos"
+                    }
                 }
             },
             "max_rounds": "Máximo de rodadas",
@@ -1089,6 +1128,12 @@
         "pin_build_id": "Fixar versão do servidor",
         "unpin_build_id": "Usar Última Versão",
         "pinned_build_id": "Versão do servidor fixada",
+        "pin_plugin_version": "Pin Versão do Plugin",
+        "unpin_plugin_version": "Usar Última Versão do Plugin",
+        "plugin_not_supported": "Versão do plugin não suportada",
+        "pinned_plugin_version": "Versão do plugin fixada",
+        "plugin_version_supports": "Votação",
+        "plugin_version_published": "Publicado",
         "install_cs": "Instalar CS",
         "select_region": "Selecionar região",
         "remove_node": "Remover nó",
@@ -1185,9 +1230,6 @@
         "updated_successfully": "Transmissão atualizada",
         "stream_updated_message": "O fluxo foi atualizado com sucesso.",
         "update_error": "Falha ao atualizar transmissão. Por favor, tente novamente.",
-        "delete": "Excluir Transmissão",
-        "delete_title": "Excluir Transmissão",
-        "delete_description": "Tem certeza que quer apagar \"{title}\"? Essa ação não pode ser desfeita.",
         "deleted_successfully": "Transmissão Excluída",
         "stream_deleted_message": "O fluxo foi excluído com sucesso.",
         "delete_error": "Falha ao excluir transmissão. Por favor, tente novamente.",

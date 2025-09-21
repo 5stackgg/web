@@ -109,6 +109,8 @@
                 "matchmaking_min_role_description": "This role will be able to join matchmaking.",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
                 "max_acceptable_latency_description": "This is the maximum latency that a player can have to join a match.",
+                "auto_cancel_duration": "Auto Cancel Duration",
+                "auto_cancel_duration_description": "This is the duration in minutes that a match will be auto canceled if not started within the duration.",
                 "update": "Update",
                 "players": {
                     "force_name_registration": "Force Player Name Registration",

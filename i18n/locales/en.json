@@ -906,6 +906,8 @@
             "region": "Region",
             "round": "Round {number}"
         },
+        "show_players": "Show Players",
+        "hide_players": "Hide Players",
         "status": {
             "cancelled": "Cancelled",
             "finished": "Finished",

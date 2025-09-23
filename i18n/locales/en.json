@@ -4,7 +4,8 @@
             "node": "Node",
             "cpu_usage": "CPU Usage",
             "memory_usage": "Memory Usage",
-            "services": "Services"
+            "services": "Services",
+            "network": "Network"
         },
         "system_logs": {
             "follow_logs": "Follow Logs",

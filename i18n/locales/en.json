@@ -5,7 +5,9 @@
             "cpu_usage": "CPU Usage",
             "memory_usage": "Memory Usage",
             "services": "Services",
-            "network": "Network"
+            "network": "Network",
+            "show_metrics": "Show Metrics",
+            "hide_metrics": "Hide Metrics"
         },
         "system_logs": {
             "follow_logs": "Follow Logs",
@@ -281,6 +283,7 @@
                 "title": "Your Panel currently does not support Game Server Nodes.",
                 "description": "View the documentation to setup Game Server Nodes."
             },
+            "display_metrics": "Display Metrics",
             "create": "Create Game Server Node",
             "installation_script": "Installation Script",
             "cs_version_info": "CS2 Version Information:",

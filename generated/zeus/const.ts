@@ -10318,6 +10318,8 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"servers_on_conflict"
 	},
 	servers_avg_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
@@ -10331,8 +10333,10 @@ export const AllTypesProps: Record<string,any> = {
 		connected:"Boolean_comparison_exp",
 		current_match:"matches_bool_exp",
 		enabled:"Boolean_comparison_exp",
+		game_mode:"Int_comparison_exp",
 		game_server_node:"game_server_nodes_bool_exp",
 		game_server_node_id:"String_comparison_exp",
+		game_type:"Int_comparison_exp",
 		host:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		is_dedicated:"Boolean_comparison_exp",
@@ -10371,7 +10375,9 @@ export const AllTypesProps: Record<string,any> = {
 	servers_max_order_by:{
 		api_password:"order_by",
 		connect_password:"order_by",
+		game_mode:"order_by",
 		game_server_node_id:"order_by",
+		game_type:"order_by",
 		host:"order_by",
 		id:"order_by",
 		label:"order_by",
@@ -10387,7 +10393,9 @@ export const AllTypesProps: Record<string,any> = {
 	servers_min_order_by:{
 		api_password:"order_by",
 		connect_password:"order_by",
+		game_mode:"order_by",
 		game_server_node_id:"order_by",
+		game_type:"order_by",
 		host:"order_by",
 		id:"order_by",
 		label:"order_by",
@@ -10415,8 +10423,10 @@ export const AllTypesProps: Record<string,any> = {
 		connected:"order_by",
 		current_match:"matches_order_by",
 		enabled:"order_by",
+		game_mode:"order_by",
 		game_server_node:"game_server_nodes_order_by",
 		game_server_node_id:"order_by",
+		game_type:"order_by",
 		host:"order_by",
 		id:"order_by",
 		is_dedicated:"order_by",
@@ -10450,16 +10460,22 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	servers_stddev_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_stddev_pop_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_stddev_samp_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
@@ -10477,6 +10493,8 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	servers_sum_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
@@ -10488,16 +10506,22 @@ export const AllTypesProps: Record<string,any> = {
 		where:"servers_bool_exp"
 	},
 	servers_var_pop_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_var_samp_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_variance_order_by:{
+		game_mode:"order_by",
+		game_type:"order_by",
 		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
@@ -18698,8 +18722,10 @@ export const ReturnTypes: Record<string,any> = {
 		connected:"Boolean",
 		current_match:"matches",
 		enabled:"Boolean",
+		game_mode:"Int",
 		game_server_node:"game_server_nodes",
 		game_server_node_id:"String",
+		game_type:"Int",
 		host:"String",
 		id:"uuid",
 		is_dedicated:"Boolean",
@@ -18737,6 +18763,8 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"servers_variance_fields"
 	},
 	servers_avg_fields:{
+		game_mode:"Float",
+		game_type:"Float",
 		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
@@ -18744,7 +18772,9 @@ export const ReturnTypes: Record<string,any> = {
 	servers_max_fields:{
 		api_password:"uuid",
 		connect_password:"String",
+		game_mode:"Int",
 		game_server_node_id:"String",
+		game_type:"Int",
 		host:"String",
 		id:"uuid",
 		label:"String",
@@ -18760,7 +18790,9 @@ export const ReturnTypes: Record<string,any> = {
 	servers_min_fields:{
 		api_password:"uuid",
 		connect_password:"String",
+		game_mode:"Int",
 		game_server_node_id:"String",
+		game_type:"Int",
 		host:"String",
 		id:"uuid",
 		label:"String",
@@ -18778,36 +18810,50 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"servers"
 	},
 	servers_stddev_fields:{
+		game_mode:"Float",
+		game_type:"Float",
 		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_pop_fields:{
+		game_mode:"Float",
+		game_type:"Float",
 		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_samp_fields:{
+		game_mode:"Float",
+		game_type:"Float",
 		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_sum_fields:{
+		game_mode:"Int",
+		game_type:"Int",
 		max_players:"Int",
 		port:"Int",
 		tv_port:"Int"
 	},
 	servers_var_pop_fields:{
+		game_mode:"Float",
+		game_type:"Float",
 		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_var_samp_fields:{
+		game_mode:"Float",
+		game_type:"Float",
 		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_variance_fields:{
+		game_mode:"Float",
+		game_type:"Float",
 		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"

@@ -425,11 +425,7 @@ export default {
       return this.form.values.use_game_server_node;
     },
     serverTypes() {
-      return [
-        e_server_types_enum.Ranked,
-        e_server_types_enum.Deathmatch,
-        e_server_types_enum.Custom,
-      ];
+      return Object.values(e_server_types_enum);
     },
     isEditingGameServerNode() {
       return !!(this.server && this.server.game_server_node_id);

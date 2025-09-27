@@ -1157,6 +1157,7 @@
         "gpu": "GPU",
         "select_region": "Select Region",
         "remove_node": "Remove Node",
+        "show_update_logs": "Show Update Logs",
         "edit_label": "Edit Label",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",

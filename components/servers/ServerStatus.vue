@@ -55,6 +55,8 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </template>
 
 <script lang="ts">
+import { e_server_types_enum } from "~/generated/zeus";
+
 export default {
   props: {
     server: {
@@ -67,6 +69,10 @@ export default {
       return useApplicationSettingsStore().currentPluginVersion;
     },
     pluginVersionMismatch() {
+      if (this.server.type !== e_server_types_enum.Ranked) {
+        return false;
+      }
+
       return this.server.plugin_version != this.currentPluginVersion;
     },
   },

@@ -81,7 +81,12 @@ import ServerStatus from "~/components/servers/ServerStatus.vue";
               </TableCell>
               <TableCell>{{ server.label }}</TableCell>
               <TableCell>{{ server.region }}</TableCell>
-              <TableCell>v{{ server.plugin_version }}</TableCell>
+              <TableCell>
+                <template v-if="server.plugin_version">
+                  v{{ server.plugin_version }}
+                </template>
+                <template v-else> - </template>
+              </TableCell>
               <TableCell>{{ server.tv_port }}</TableCell>
               <TableCell>{{
                 server.enabled

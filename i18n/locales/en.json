@@ -1201,7 +1201,9 @@
             "port": "Game Port",
             "tv_port": "TV Port",
             "update": "Update Server",
-            "create": "Create Server"
+            "create": "Create Server",
+            "max_players": "Max Players",
+            "max_players_description": "The maximum number of players that can connect to the server"
         },
         "rcon": {
             "quick_commands": "Quick Commands",

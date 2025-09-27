@@ -139,7 +139,9 @@ export default {
               enabled: true,
               connected: true,
               rcon_status: true,
+              max_players: true,
               plugin_version: true,
+              connect_password: true,
               current_match: {
                 id: true,
               },

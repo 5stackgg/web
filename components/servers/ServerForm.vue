@@ -218,6 +218,23 @@ import { Switch } from "~/components/ui/switch";
       </FormItem>
     </FormField>
 
+    <FormField
+      v-slot="{ componentField }"
+      name="max_players"
+      v-if="isPublicServerType"
+    >
+      <FormItem>
+        <FormLabel>{{ $t("server.form.max_players") }}</FormLabel>
+        <FormControl>
+          <Input type="number" min="1" max="32" v-bind="componentField" />
+          <FormMessage />
+          <FormDescription>{{
+            $t("server.form.max_players_description")
+          }}</FormDescription>
+        </FormControl>
+      </FormItem>
+    </FormField>
+
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
       <template v-if="server">{{ $t("server.form.update") }}</template>
       <template v-else>{{ $t("server.form.create") }}</template>
@@ -320,6 +337,7 @@ export default {
               port: z.number().min(2).max(65535).default(27015).optional(),
               tv_port: z.number().min(2).max(65535).default(27020).optional(),
               rcon_password: z.string().optional(),
+              max_players: z.number().min(1).max(32).optional(),
             })
             .refine(
               (data) => {
@@ -359,6 +377,7 @@ export default {
             type,
             connect_password,
             game_server_node_id,
+            max_players,
           } = server;
           this.form.setValues({
             host,
@@ -372,6 +391,7 @@ export default {
               : undefined,
             type: type || "Ranked",
             connect_password: connect_password || "",
+            max_players: max_players || 32,
           });
           return;
         }
@@ -412,7 +432,7 @@ export default {
       ];
     },
     isEditingGameServerNode() {
-      return this.server && this.server.game_server_node_id;
+      return !!(this.server && this.server.game_server_node_id);
     },
   },
   methods: {
@@ -443,6 +463,7 @@ export default {
                   type: formValues.type,
                   label: formValues.label,
                   rcon_password: formValues.rcon_password,
+                  max_players: formValues.max_players,
                   ...(!this.server.game_server_node_id
                     ? {
                         host: formValues.host,
@@ -489,6 +510,7 @@ export default {
                   : formValues.tv_port,
                 rcon_password: formValues.rcon_password,
                 connect_password: formValues.connect_password,
+                max_players: formValues.max_players,
               },
             },
             {

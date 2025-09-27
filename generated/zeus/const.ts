@@ -10318,6 +10318,7 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"servers_on_conflict"
 	},
 	servers_avg_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
@@ -10338,6 +10339,7 @@ export const AllTypesProps: Record<string,any> = {
 		label:"String_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
+		max_players:"Int_comparison_exp",
 		plugin_version:"String_comparison_exp",
 		port:"Int_comparison_exp",
 		rcon_password:"bytea_comparison_exp",
@@ -10373,6 +10375,7 @@ export const AllTypesProps: Record<string,any> = {
 		host:"order_by",
 		id:"order_by",
 		label:"order_by",
+		max_players:"order_by",
 		plugin_version:"order_by",
 		port:"order_by",
 		region:"order_by",
@@ -10388,6 +10391,7 @@ export const AllTypesProps: Record<string,any> = {
 		host:"order_by",
 		id:"order_by",
 		label:"order_by",
+		max_players:"order_by",
 		plugin_version:"order_by",
 		port:"order_by",
 		region:"order_by",
@@ -10418,6 +10422,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_dedicated:"order_by",
 		label:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
+		max_players:"order_by",
 		plugin_version:"order_by",
 		port:"order_by",
 		rcon_password:"order_by",
@@ -10445,14 +10450,17 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	servers_stddev_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_stddev_pop_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_stddev_samp_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
@@ -10469,6 +10477,7 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz"
 	},
 	servers_sum_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
@@ -10479,14 +10488,17 @@ export const AllTypesProps: Record<string,any> = {
 		where:"servers_bool_exp"
 	},
 	servers_var_pop_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_var_samp_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
 	servers_variance_order_by:{
+		max_players:"order_by",
 		port:"order_by",
 		tv_port:"order_by"
 	},
@@ -18694,6 +18706,7 @@ export const ReturnTypes: Record<string,any> = {
 		label:"String",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
+		max_players:"Int",
 		plugin_version:"String",
 		port:"Int",
 		rcon_password:"bytea",
@@ -18724,6 +18737,7 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"servers_variance_fields"
 	},
 	servers_avg_fields:{
+		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
@@ -18734,6 +18748,7 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		label:"String",
+		max_players:"Int",
 		plugin_version:"String",
 		port:"Int",
 		region:"String",
@@ -18749,6 +18764,7 @@ export const ReturnTypes: Record<string,any> = {
 		host:"String",
 		id:"uuid",
 		label:"String",
+		max_players:"Int",
 		plugin_version:"String",
 		port:"Int",
 		region:"String",
@@ -18762,30 +18778,37 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"servers"
 	},
 	servers_stddev_fields:{
+		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_pop_fields:{
+		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_stddev_samp_fields:{
+		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_sum_fields:{
+		max_players:"Int",
 		port:"Int",
 		tv_port:"Int"
 	},
 	servers_var_pop_fields:{
+		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_var_samp_fields:{
+		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},
 	servers_variance_fields:{
+		max_players:"Float",
 		port:"Float",
 		tv_port:"Float"
 	},

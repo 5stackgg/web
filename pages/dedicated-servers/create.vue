@@ -10,8 +10,8 @@ import ServerForm from "~/components/servers/ServerForm.vue";
         $t("pages.dedicated_servers.create.title")
       }}</template>
     </PageHeading>
-    <div class="w-1/2">
+    <Card class="w-1/2 p-4">
       <server-form></server-form>
-    </div>
+    </Card>
   </div>
 </template>

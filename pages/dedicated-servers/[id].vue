@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { MoreHorizontal, Trash } from "lucide-vue-next";
 import PageHeading from "~/components/PageHeading.vue";
 import {
@@ -70,7 +73,10 @@ const serverMenu = ref(false);
     </template>
 
     <template #description>
-      <div class="bg-muted rounded-md p-4 my-4">
+      <div
+        v-if="server && server.type === 'Ranked'"
+        class="bg-muted rounded-md p-4 my-4"
+      >
         <div class="flex flex-col space-y-2">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold">
@@ -199,6 +205,7 @@ export default {
               id: $("serverId", "uuid!"),
             },
             {
+              type: true,
               id: true,
               host: true,
               region: true,
@@ -210,6 +217,7 @@ export default {
               api_password: true,
               plugin_version: true,
               rcon_status: true,
+              game_server_node_id: true,
             },
           ],
         }),

@@ -1180,6 +1180,8 @@
         "usage": "Usage"
     },
     "server": {
+        "copy_connection_string": "Copy Connection String",
+        "join_server": "Join Server",
         "form": {
             "label": "Server Label",
             "host": "Host",

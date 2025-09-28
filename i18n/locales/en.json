@@ -352,6 +352,25 @@
                 }
             }
         },
+        "public_servers": {
+            "title": "Public Servers",
+            "description": "Browse and join public servers",
+            "table": {
+                "connection_details": "Connection Details",
+                "label": "Label",
+                "region": "Region",
+                "type": "Type",
+                "tv_port": "TV Port",
+                "plugin_version": "Plugin Version",
+                "enabled": "Enabled",
+                "players": "Players",
+                "connect": "Connect",
+                "yes": "Yes",
+                "no": "No"
+            },
+            "no_servers": "No public servers available at the moment.",
+            "connect_button": "Connect to Server"
+        },
         "map_pools": {
             "title": "Default Map Pools",
             "description": "Manage map pools and available maps for matchmaking.",
@@ -452,6 +471,7 @@
                 "watch": "Watch",
                 "matches": "My Matches",
                 "tournaments": "Tournaments",
+                "public_servers": "Public Servers",
                 "players": "Players",
                 "teams": "Teams"
             },
@@ -483,6 +503,7 @@
                 "tournaments": "Tournaments",
                 "players": "Players",
                 "teams": "Teams",
+                "public_servers": "Public Servers",
                 "regions": "Regions",
                 "servers": "Servers",
                 "dedicated_servers": "Dedicated Servers",
@@ -511,6 +532,7 @@
             "play": {
                 "find_match": "Find a Match",
                 "tournaments": "Tournaments",
+                "public_servers": "Public Servers",
                 "hero": {
                     "title": "Play & Compete",
                     "subtitle": "Join matches, tournaments."

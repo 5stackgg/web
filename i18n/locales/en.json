@@ -305,7 +305,6 @@
                 "no_nodes": "No Game Server Nodes",
                 "supports_low_latency": "Supports Low Latency",
                 "supports_cpu_pinning": "Supports CPU Pinning",
-                "cpu_governor": "CPU Governor",
                 "pin_build_id": "Pin Build",
                 "pin_build_id_tooltip": "Pin the build ID of the CS2 server",
                 "pin_plugin_version": "Pin Plugin",
@@ -324,7 +323,6 @@
                 "connection_details": "Connection Details",
                 "label": "Label",
                 "region": "Region",
-                "type": "Type",
                 "tv_port": "TV Port",
                 "plugin_version": "Plugin Version", 
                 "enabled": "Enabled",
@@ -356,12 +354,9 @@
         },
         "public_servers": {
             "title": "Public Servers",
-            "lan_servers_title": "LAN Servers",
-            "no_public_servers": "No public servers available at the moment.",
             "description": "Browse and join public servers",
             "table": {
                 "connection_details": "Connection Details",
-                "map": "Map",
                 "label": "Label",
                 "region": "Region",
                 "type": "Type",
@@ -490,7 +485,7 @@
                 "metrics": "System Metrics",
                 "app_settings": "App Settings",
                 "map_pools": "Map Pools",
-                "manage_matches": "Manage Matches",
+                "manage_matches": "Manage Matches"
             },
             "profile": {
                 "my_profile": "My Profile",
@@ -756,13 +751,9 @@
             }
         },
         "members": {
-            "title": "Starters",
+            "title": "Team Members",
             "invite_player": "Invite Player",
-            "pending_invites": "Pending Invites",
-            "player": "Player",
-            "role": "Role",
-            "coaches": "Coaches",
-            "substitutes": "Substitutes"
+            "pending_invites": "Pending Invites"
         },
         "form": {
             "name": "Team Name",
@@ -786,12 +777,7 @@
             "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
             "confirm_remove": "Are you sure you want to remove this member?",
             "cancel_invite_description": "This will cancel the invite for this member",
-            "remove_description": "This will remove the member from the team",
-            "coach": "Coach",
-            "substitute": "Substitute",
-            "starter": "Starter",
-            "benched": "Benched",
-            "status": "Status"
+            "remove_description": "This will remove the member from the team"
         }
     },
     "match": {

@@ -4,7 +4,10 @@
             "node": "Węzeł",
             "cpu_usage": "Użycie CPU",
             "memory_usage": "Użycie pamięci",
-            "services": "Usługi"
+            "services": "Usługi",
+            "network": "Sieć",
+            "show_metrics": "Pokaż metryki",
+            "hide_metrics": "Ukryj metryki"
         },
         "system_logs": {
             "follow_logs": "Śledź",
@@ -249,7 +252,7 @@
             }
         },
         "matches": {
-            "title": "Mecze",
+            "title": "Moje mecze",
             "description": "Zarządzanie meczami",
             "create": "Utwórz",
             "last_ten_wins": "Ostatnie 10 zwycięstw",
@@ -279,6 +282,7 @@
                 "title": "Nieobsługiwane",
                 "description": "Ta platforma nie jest obsługiwana"
             },
+            "display_metrics": "Wyświetlaj Metryki",
             "create": "Utwórz węzeł",
             "installation_script": "Skrypt instalacyjny",
             "cs_version_info": "Informacje o wersji CS",
@@ -346,6 +350,25 @@
                     "continue": "Kontynuuj"
                 }
             }
+        },
+        "public_servers": {
+            "title": "Publiczne serwery",
+            "description": "Przeglądaj i dołącz do publicznych serwerów",
+            "table": {
+                "connection_details": "Szczegóły połączenia",
+                "label": "Etykieta",
+                "region": "Region",
+                "type": "Typ",
+                "tv_port": "Port TV",
+                "plugin_version": "Wersja wtyczki",
+                "enabled": "Włączone",
+                "players": "Gracze",
+                "connect": "Połącz",
+                "yes": "Tak",
+                "no": "Nie"
+            },
+            "no_servers": "Brak dostępnych serwerów publicznych w tej chwili.",
+            "connect_button": "Połącz z serwerem"
         },
         "map_pools": {
             "title": "Domyślne pule mapy",
@@ -444,8 +467,9 @@
             "navigation": {
                 "play": "Graj",
                 "watch": "Obejrzyj",
-                "matches": "Mecze",
+                "matches": "Moje mecze",
                 "tournaments": "Turnieje",
+                "public_servers": "Publiczne serwery",
                 "players": "Gracze",
                 "teams": "Drużyny"
             },
@@ -477,6 +501,7 @@
                 "tournaments": "Turnieje",
                 "players": "Gracze",
                 "teams": "Drużyny",
+                "public_servers": "Publiczne serwery",
                 "regions": "Regiony",
                 "servers": "Serwery",
                 "dedicated_servers": "Dedykowany",
@@ -497,19 +522,25 @@
             }
         },
         "top_nav": {
+            "my_matches": "Moje mecze",
+            "home": "Moje mecze",
             "play_menu": "Odtwórz",
             "community_menu": "Społeczność",
             "watch_menu": "Obejrzyj",
             "play": {
                 "find_match": "Znajdź mecz",
                 "tournaments": "Turnieje",
-                "view_previous_matches": "Zobacz poprzednie mecze",
+                "public_servers": "Publiczne serwery",
                 "hero": {
                     "title": "Graj i rywalizuj",
-                    "subtitle": "Dołącz do meczów, turniejów i zobacz historię meczów."
+                    "subtitle": "Dołącz do meczów, turniejów."
                 }
             },
             "community": {
+                "watch": {
+                    "title": "Obejrzyj",
+                    "subtitle": "Oglądaj mecze, turniejy."
+                },
                 "players": {
                     "title": "Gracze",
                     "subtitle": "Przeglądaj i szukaj graczy"
@@ -897,6 +928,8 @@
             "region": "Region",
             "round": "Runda"
         },
+        "show_players": "Pokaż graczy",
+        "hide_players": "Ukryj graczy",
         "status": {
             "cancelled": "Anulowany",
             "finished": "Zakończony",
@@ -1135,8 +1168,14 @@
         "plugin_version_supports": "Wsparcie",
         "plugin_version_published": "Opublikowane",
         "install_cs": "Zainstaluj CS",
+        "overprovisioned_warning": "Nadmierne zabezpieczenie",
+        "overprovisioned_warning_description": "Przypisałeś {total_server_count} możliwe serwery, ale Twój serwer może obsługiwać tylko serwery {max_servers}.",
+        "cpu_cores_per_socket": "Rdzenie procesora/gniazdo",
+        "cpu_threads_per_core": "CPU Wątki/Rdzeń",
+        "gpu": "GPU",
         "select_region": "Wybierz region",
         "remove_node": "Usuń węzeł",
+        "show_update_logs": "Pokaż dzienniki aktualizacji",
         "edit_label": "Edytuj etykietę",
         "label_placeholder": "Wprowadź etykietę węzła",
         "update_label": "Aktualizuj etykietę",
@@ -1159,17 +1198,32 @@
         "usage": "Użycie"
     },
     "server": {
+        "copy_connection_string": "Kopiuj ciąg połączeń",
+        "join_server": "Dołącz do serwera",
         "form": {
             "label": "Etykieta",
             "host": "Host",
             "region": "Region",
             "select_region": "Wybierz region",
+            "server_configuration": "Konfiguracja serwera",
+            "use_game_server_node": "Użyj serwera węzła gry",
+            "game_server_node": "Węzeł serwera gry",
+            "select_game_server_node": "Wybierz węzeł serwera gry",
+            "game_server_node_description": "Wybierz węzeł serwera gry z zainstalowaną CS",
+            "type": "Typ serwera",
+            "select_type": "Wybierz typ serwera",
+            "is_dedicated": "Serwer dedykowany",
+            "is_dedicated_description": "Sprawdź, czy jest to serwer dedykowany",
+            "connect_password": "Połącz hasło",
+            "connect_password_description": "Wymagane hasło do połączenia z serwerem (opcjonalne)",
             "rcon_password": "Hasło RCON",
             "rcon_password_description": "Opis hasła RCON",
             "port": "Port",
             "tv_port": "Port TV",
             "update": "Aktualizuj",
-            "create": "Utwórz"
+            "create": "Utwórz",
+            "max_players": "Maksymalna liczba graczy",
+            "max_players_description": "Maksymalna liczba graczy, którzy mogą połączyć się z serwerem"
         },
         "rcon": {
             "quick_commands": "Szybkie komendy",

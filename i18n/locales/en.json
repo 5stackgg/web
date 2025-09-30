@@ -1109,7 +1109,8 @@
             "banned": "Player is banned",
             "muted": "Player is muted",
             "gagged": "Player is gagged",
-            "add_friend": "Add as friend"
+            "add_friend": "Add as friend",
+            "available": "Available"
         },
         "change_name": {
             "button": "Change Name",
@@ -1158,7 +1159,9 @@
             "invite_to_match": "Invite Player to Match",
             "remove": "Remove Friend",
             "join_lobby": "Join Lobby",
-            "offline": "Offline"
+            "offline": "Offline",
+            "in_match": "In a match",
+            "in_lobby": "In a lobby"
         },
         "banned": "You are banned from matchmaking",
         "go_to_match": "Go to Match",

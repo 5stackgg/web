@@ -4,7 +4,10 @@
             "node": "Node",
             "cpu_usage": "CPU-forbrug",
             "memory_usage": "Hukommelsesforbrug",
-            "services": "Tjenester"
+            "services": "Tjenester",
+            "network": "Netværk",
+            "show_metrics": "Vis Målinger",
+            "hide_metrics": "Skjul Metrics"
         },
         "system_logs": {
             "follow_logs": "Følg",
@@ -249,7 +252,7 @@
             }
         },
         "matches": {
-            "title": "Kampe",
+            "title": "Mine Kampe",
             "description": "Kampadministration",
             "create": "Opret",
             "last_ten_wins": "Sidste 10 sejre",
@@ -279,6 +282,7 @@
                 "title": "Ikke understøttet",
                 "description": "Denne platform understøttes ikke"
             },
+            "display_metrics": "Vis Målinger",
             "create": "Opret node",
             "installation_script": "Installationsscript",
             "cs_version_info": "CS versionsinfo",
@@ -346,6 +350,25 @@
                     "continue": "Fortsæt"
                 }
             }
+        },
+        "public_servers": {
+            "title": "Offentlige Servere",
+            "description": "Gennemse og deltag i offentlige servere",
+            "table": {
+                "connection_details": "Forbindelse Detaljer",
+                "label": "Etiket",
+                "region": "Region",
+                "type": "Type",
+                "tv_port": "Tv Port",
+                "plugin_version": "Plugin Version",
+                "enabled": "Aktiveret",
+                "players": "Spillere",
+                "connect": "Forbind",
+                "yes": "Ja",
+                "no": "Nej"
+            },
+            "no_servers": "Ingen offentlige servere tilgængelige i øjeblikket.",
+            "connect_button": "Opret forbindelse til server"
         },
         "map_pools": {
             "title": "Standard kort pooler",
@@ -444,8 +467,9 @@
             "navigation": {
                 "play": "Spil",
                 "watch": "Se",
-                "matches": "Kampe",
+                "matches": "Mine Kampe",
                 "tournaments": "Turneringer",
+                "public_servers": "Offentlige Servere",
                 "players": "Spillere",
                 "teams": "Hold"
             },
@@ -477,6 +501,7 @@
                 "tournaments": "Turneringer",
                 "players": "Spillere",
                 "teams": "Hold",
+                "public_servers": "Offentlige Servere",
                 "regions": "Regioner",
                 "servers": "Servere",
                 "dedicated_servers": "Dedikeret",
@@ -497,19 +522,25 @@
             }
         },
         "top_nav": {
+            "my_matches": "Mine Kampe",
+            "home": "Mine Kampe",
             "play_menu": "Afspil",
             "community_menu": "Fællesskab",
             "watch_menu": "Se",
             "play": {
                 "find_match": "Find et match",
                 "tournaments": "Turneringer",
-                "view_previous_matches": "Se Tidligere Kampe",
+                "public_servers": "Offentlige Servere",
                 "hero": {
                     "title": "Spil & Konkurrér",
-                    "subtitle": "Deltag i kampe, turneringer og se din matchhistorik."
+                    "subtitle": "Deltag i kampe, turneringer."
                 }
             },
             "community": {
+                "watch": {
+                    "title": "Se",
+                    "subtitle": "Se kampe, turneringer."
+                },
                 "players": {
                     "title": "Spillere",
                     "subtitle": "Gennemse og søg efter spillere"
@@ -897,6 +928,8 @@
             "region": "Region",
             "round": "Runde"
         },
+        "show_players": "Vis Spillere",
+        "hide_players": "Skjul Spillere",
         "status": {
             "cancelled": "Annulleret",
             "finished": "Afsluttet",
@@ -1135,8 +1168,14 @@
         "plugin_version_supports": "Understøtter",
         "plugin_version_published": "Publiceret",
         "install_cs": "Installer CS",
+        "overprovisioned_warning": "Overordnet",
+        "overprovisioned_warning_description": "Du har tildelt {total_server_count} mulige servere, men din server kan kun understøtte {max_servers} servere.",
+        "cpu_cores_per_socket": "CPU Kerner/Sokkel",
+        "cpu_threads_per_core": "CPU-tråde/kerne",
+        "gpu": "GPU",
         "select_region": "Vælg region",
         "remove_node": "Fjern node",
+        "show_update_logs": "Vis Opdaterings Logs",
         "edit_label": "Redigér etiket",
         "label_placeholder": "Indtast nodeetiket",
         "update_label": "Opdatér etiket",
@@ -1159,17 +1198,32 @@
         "usage": "Forbrug"
     },
     "server": {
+        "copy_connection_string": "Kopier Forbindelsesstreng",
+        "join_server": "Deltag I Server",
         "form": {
             "label": "Etiket",
             "host": "Host",
             "region": "Region",
             "select_region": "Vælg region",
+            "server_configuration": "Server Konfiguration",
+            "use_game_server_node": "Brug Spil Node Server",
+            "game_server_node": "Spil Serverknude",
+            "select_game_server_node": "Vælg Spil Server Node",
+            "game_server_node_description": "Vælg en spilserver node med CS installeret",
+            "type": "Server Type",
+            "select_type": "Vælg Servertype",
+            "is_dedicated": "Dedikeret Server",
+            "is_dedicated_description": "Vælg om dette er en dedikeret server",
+            "connect_password": "Forbind Adgangskode",
+            "connect_password_description": "Adgangskode kræves for at oprette forbindelse til serveren (valgfrit)",
             "rcon_password": "RCON adgangskode",
             "rcon_password_description": "RCON adgangskode beskrivelse",
             "port": "Port",
             "tv_port": "TV port",
             "update": "Opdater",
-            "create": "Opret"
+            "create": "Opret",
+            "max_players": "Maks. Spillere",
+            "max_players_description": "Det maksimale antal spillere, der kan oprette forbindelse til serveren"
         },
         "rcon": {
             "quick_commands": "Hurtige kommandoer",

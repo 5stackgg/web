@@ -5,8 +5,9 @@
             "cpu_usage": "CPU Usage",
             "memory_usage": "Memory Usage",
             "services": "Services",
-            "network": "Network"
-            
+            "network": "Network",
+            "show_metrics": "Show Metrics",
+            "hide_metrics": "Hide Metrics"
         },
         "system_logs": {
             "follow_logs": "Follow Logs",
@@ -31,7 +32,8 @@
             "description": "Manage teams and rosters.",
             "create": "Create Team",
             "tabs": {
-                
+                "my_teams": "My Teams",
+                "other_teams": "Other Teams"
             },
             "search": "Search..."
         },
@@ -105,7 +107,6 @@
                 "dark": "Dark"
             },
             "application": {
-                "update_success": "Updated",
                 "telemetry": {
                     "title": "Telemetry",
                     "telemetry": "Telemetry",
@@ -141,8 +142,6 @@
                 "create_matches_role_description": "This role will be able to create matches.",
                 "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
                 "create_tournaments_role_description": "This role will be able to create tournaments.",
-                "dedicated_servers_min_role_to_connect": "Minimum Role to Connect to Dedicated Password-Protected Servers",
-                "dedicated_servers_min_role_to_connect_description": "Only players at or above this role may connect to dedicated servers that require a password.",
                 "matchmaking_min_role": "Minimum Role Allowed to Join Matchmaking",
                 "matchmaking_min_role_description": "This role will be able to join matchmaking.",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
@@ -259,7 +258,8 @@
             "create": "Create Match",
             "last_ten_wins": "Last 10 Wins",
             "last_ten_losses": "Last 10 Losses",
-            
+            "my_match_history": "My Match History",
+            "other_matches": "Other Matches",
             "match_updated": "Match Updated",
             "create_page": {
                 "title": "Create Match",
@@ -305,7 +305,6 @@
                 "no_nodes": "No Game Server Nodes",
                 "supports_low_latency": "Supports Low Latency",
                 "supports_cpu_pinning": "Supports CPU Pinning",
-                "cpu_governor": "CPU Governor",
                 "pin_build_id": "Pin Build",
                 "pin_build_id_tooltip": "Pin the build ID of the CS2 server",
                 "pin_plugin_version": "Pin Plugin",
@@ -323,10 +322,9 @@
             "table": {
                 "connection_details": "Connection Details",
                 "label": "Label",
-                "type": "Type",
                 "region": "Region",
-                "plugin_version": "Plugin Version",
                 "tv_port": "TV Port",
+                "plugin_version": "Plugin Version", 
                 "enabled": "Enabled",
                 "yes": "Yes",
                 "no": "No"
@@ -337,7 +335,7 @@
                 "hide_config": "Hide Config",
                 "show_config": "Show Config",
                 "config_location": "This config should be placed in:",
-                
+                "copy": "Copy",
                 "edit": "Edit",
                 "delete": "Delete",
                 "status": {
@@ -358,17 +356,20 @@
             "title": "Public Servers",
             "description": "Browse and join public servers",
             "table": {
-                
+                "connection_details": "Connection Details",
                 "label": "Label",
                 "region": "Region",
-                "map": "Map",
                 "type": "Type",
+                "tv_port": "TV Port",
+                "plugin_version": "Plugin Version",
+                "enabled": "Enabled",
                 "players": "Players",
-                "connect": "Connect"
+                "connect": "Connect",
+                "yes": "Yes",
+                "no": "No"
             },
-            
-            "no_public_servers": "No public servers available at the moment.",
-            "lan_servers_title": "LAN Servers"
+            "no_servers": "No public servers available at the moment.",
+            "connect_button": "Connect to Server"
         },
         "map_pools": {
             "title": "Default Map Pools",
@@ -585,12 +586,10 @@
             "yes": "Yes",
             "no": "No"
         },
-        "are_you_sure": "Are you sure you want to run this command?",
         "actions": {
             "edit": "Edit",
             "delete": "Delete"
         },
-        "actions_label": "Actions",
         "close": "Close",
         "confirm": "Confirm",
         "refresh": "Refresh"
@@ -723,9 +722,9 @@
     "team": {
         "table": {
             "team": "Team",
-            
-            
-            
+            "wins": "Wins",
+            "losses": "Losses",
+            "overtime_losses": "Overtime Losses",
             "no_teams_found": "No Teams Found"
         },
         "invite": {
@@ -753,10 +752,6 @@
         },
         "members": {
             "title": "Team Members",
-            "player": "Player",
-            "role": "Role",
-            "substitutes": "Substitutes",
-            "coaches": "Coaches",
             "invite_player": "Invite Player",
             "pending_invites": "Pending Invites"
         },
@@ -777,11 +772,6 @@
             "no_teams_found": "No teams found"
         },
         "member": {
-            "coach": "Coach",
-            "status": "Status",
-            "starter": "Starter",
-            "benched": "Benched",
-            "substitute": "Substitute",
             "remove": "Remove Member",
             "cancel_invite": "Cancel Invite",
             "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
@@ -798,12 +788,15 @@
             "no_matches": "You don't have any upcoming matches."
         },
         "recent": {
-            "title": "Recent Matches"
+            "title": "Recent Matches",
+            "no_matches": "You don't have any recent matches."
         },
         "options": {
             "filter_maps": "Filter Maps",
             "table": {
-                
+                "match": "Match",
+                "type": "Type",
+                "maps": "Maps",
                 "no_matches_found": "No Matches Found",
                 "join": "Join"
             },
@@ -928,9 +921,8 @@
             "map_veto_tab": "Map Veto",
             "settings": "Match Settings",
             "streams": "Match Live Streams",
-            "admin": "Admin",
+            "server_console": "Server Console",
             "randomize_teams": "Randomize Teams",
-            "swap_lineups": "Swap Lineups",
             "invited_to_match": "Invited to Match",
             "join_roster": "Join a roster",
             "restore_round": "Restore Round",
@@ -1210,7 +1202,7 @@
         "usage": "Usage"
     },
     "server": {
-        
+        "copy_connection_string": "Copy Connection String",
         "join_server": "Join Server",
         "form": {
             "label": "Server Label",
@@ -1224,8 +1216,8 @@
             "game_server_node_description": "Select a game server node with CS installed",
             "type": "Server Type",
             "select_type": "Select Server Type",
-            
-            
+            "is_dedicated": "Dedicated Server",
+            "is_dedicated_description": "Check if this is a dedicated server",
             "connect_password": "Connect Password",
             "connect_password_description": "Password required to connect to the server (optional)",
             "rcon_password": "RCON Password",

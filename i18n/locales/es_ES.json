@@ -4,7 +4,10 @@
             "node": "Nodo",
             "cpu_usage": "Uso de CPU",
             "memory_usage": "Uso de memoria",
-            "services": "Servicios"
+            "services": "Servicios",
+            "network": "Red",
+            "show_metrics": "Mostrar métricas",
+            "hide_metrics": "Ocultar métricas"
         },
         "system_logs": {
             "follow_logs": "Seguir",
@@ -249,7 +252,7 @@
             }
         },
         "matches": {
-            "title": "Partidas",
+            "title": "Mis partidas",
             "description": "Gestión de partidas",
             "create": "Crear",
             "last_ten_wins": "Últimas 10 victorias",
@@ -279,6 +282,7 @@
                 "title": "No soportado",
                 "description": "Esta plataforma no es compatible"
             },
+            "display_metrics": "Mostrar métricas",
             "create": "Crear nodo",
             "installation_script": "Script de instalación",
             "cs_version_info": "Información de versión de CS",
@@ -346,6 +350,25 @@
                     "continue": "Continuar"
                 }
             }
+        },
+        "public_servers": {
+            "title": "Servidores públicos",
+            "description": "Navegar y unirse a servidores públicos",
+            "table": {
+                "connection_details": "Detalles de la conexión",
+                "label": "Etiqueta",
+                "region": "Región",
+                "type": "Tipo",
+                "tv_port": "Puerto de TV",
+                "plugin_version": "Versión del plugin",
+                "enabled": "Activado",
+                "players": "Jugadores",
+                "connect": "Conectar",
+                "yes": "Sí",
+                "no": "Nu"
+            },
+            "no_servers": "No hay servidores públicos disponibles en este momento.",
+            "connect_button": "Conectar al servidor"
         },
         "map_pools": {
             "title": "Mapa predeterminado Piscinas",
@@ -444,8 +467,9 @@
             "navigation": {
                 "play": "Jugar",
                 "watch": "Vigilar",
-                "matches": "Partidas",
+                "matches": "Mis partidas",
                 "tournaments": "Torneos",
+                "public_servers": "Servidores públicos",
                 "players": "Jugadores",
                 "teams": "Equipos"
             },
@@ -477,6 +501,7 @@
                 "tournaments": "Torneos",
                 "players": "Jugadores",
                 "teams": "Equipos",
+                "public_servers": "Servidores públicos",
                 "regions": "Regiones",
                 "servers": "Servidores",
                 "dedicated_servers": "Dedicado",
@@ -497,19 +522,25 @@
             }
         },
         "top_nav": {
+            "my_matches": "Mis partidas",
+            "home": "Mis partidas",
             "play_menu": "Jugar",
             "community_menu": "Comunidad",
             "watch_menu": "Vigilar",
             "play": {
                 "find_match": "Encuentra una partida",
                 "tournaments": "Torneos",
-                "view_previous_matches": "Ver partidas anteriores",
+                "public_servers": "Servidores públicos",
                 "hero": {
                     "title": "Jugar y competir",
-                    "subtitle": "Únete a partidas, torneos y ve tu historial de partidas."
+                    "subtitle": "Únete a partidas, torneos."
                 }
             },
             "community": {
+                "watch": {
+                    "title": "Vigilar",
+                    "subtitle": "Ver partidas, torneos."
+                },
                 "players": {
                     "title": "Jugadores",
                     "subtitle": "Navegar y buscar jugadores"
@@ -897,6 +928,8 @@
             "region": "Región",
             "round": "Ronda"
         },
+        "show_players": "Mostrar jugadores",
+        "hide_players": "Ocultar jugadores",
         "status": {
             "cancelled": "Cancelada",
             "finished": "Finalizada",
@@ -1135,8 +1168,14 @@
         "plugin_version_supports": "Soporte",
         "plugin_version_published": "Publicado",
         "install_cs": "Instalar CS",
+        "overprovisioned_warning": "Suministrado",
+        "overprovisioned_warning_description": "Has asignado servidores {total_server_count} posibles, pero tu servidor solo puede ser compatible con servidores {max_servers}.",
+        "cpu_cores_per_socket": "Núcleo/Socket de CPU",
+        "cpu_threads_per_core": "Hilos/Núcleo de CPU",
+        "gpu": "GPU",
         "select_region": "Seleccionar región",
         "remove_node": "Eliminar nodo",
+        "show_update_logs": "Mostrar registros de actualización",
         "edit_label": "Edite Label",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",
@@ -1159,17 +1198,32 @@
         "usage": "Uso"
     },
     "server": {
+        "copy_connection_string": "Copiar cadena de conexión",
+        "join_server": "Unirse al servidor",
         "form": {
             "label": "Etiqueta",
             "host": "Host",
             "region": "Región",
             "select_region": "Seleccionar región",
+            "server_configuration": "Configuración del servidor",
+            "use_game_server_node": "Usar servidor de Nodo de Juego",
+            "game_server_node": "Nodo servidor de juegos",
+            "select_game_server_node": "Seleccionar nodo de servidor de juego",
+            "game_server_node_description": "Seleccione un nodo de servidor de juegos con CS instalado",
+            "type": "Tipo de servidor",
+            "select_type": "Seleccionar tipo de servidor",
+            "is_dedicated": "Servidor dedicado",
+            "is_dedicated_description": "Comprobar si este es un servidor dedicado",
+            "connect_password": "Conectar contraseña",
+            "connect_password_description": "Contraseña necesaria para conectarse al servidor (opcional)",
             "rcon_password": "Contraseña RCON",
             "rcon_password_description": "Descripción de contraseña RCON",
             "port": "Puerto",
             "tv_port": "Puerto TV",
             "update": "Actualizar",
-            "create": "Crear"
+            "create": "Crear",
+            "max_players": "Jugadores Máximos",
+            "max_players_description": "El número máximo de jugadores que pueden conectarse al servidor"
         },
         "rcon": {
             "quick_commands": "Comandos rápidos",

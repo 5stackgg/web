@@ -4,7 +4,10 @@
             "node": "ノード",
             "cpu_usage": "CPU使用率",
             "memory_usage": "メモリ使用率",
-            "services": "サービス"
+            "services": "サービス",
+            "network": "ネットワーク",
+            "show_metrics": "メトリックを表示",
+            "hide_metrics": "メトリクスを隠す"
         },
         "system_logs": {
             "follow_logs": "追跡",
@@ -249,7 +252,7 @@
             }
         },
         "matches": {
-            "title": "マッチ",
+            "title": "私の一致",
             "description": "マッチの管理",
             "create": "作成",
             "last_ten_wins": "直近10試合の勝利",
@@ -279,6 +282,7 @@
                 "title": "サポートされていません",
                 "description": "このプラットフォームはサポートされていません"
             },
+            "display_metrics": "メトリックを表示",
             "create": "ノードを作成",
             "installation_script": "インストールスクリプト",
             "cs_version_info": "CSバージョン情報",
@@ -346,6 +350,25 @@
                     "continue": "続行"
                 }
             }
+        },
+        "public_servers": {
+            "title": "公開サーバー",
+            "description": "パブリックサーバーを参照して参加する",
+            "table": {
+                "connection_details": "接続詳細",
+                "label": "ラベル",
+                "region": "地域",
+                "type": "タイプ",
+                "tv_port": "テレビポート",
+                "plugin_version": "プラグインのバージョン",
+                "enabled": "有効",
+                "players": "プレイヤー",
+                "connect": "接続する",
+                "yes": "はい",
+                "no": "いいえ"
+            },
+            "no_servers": "現在利用可能な公開サーバーはありません。",
+            "connect_button": "サーバーに接続"
         },
         "map_pools": {
             "title": "デフォルト地図プール",
@@ -444,8 +467,9 @@
             "navigation": {
                 "play": "プレイ",
                 "watch": "見る",
-                "matches": "マッチ",
+                "matches": "私の一致",
                 "tournaments": "トーナメント",
+                "public_servers": "公開サーバー",
                 "players": "プレイヤー",
                 "teams": "チーム"
             },
@@ -477,6 +501,7 @@
                 "tournaments": "トーナメント",
                 "players": "プレイヤー",
                 "teams": "チーム",
+                "public_servers": "公開サーバー",
                 "regions": "リージョン",
                 "servers": "サーバー",
                 "dedicated_servers": "専用",
@@ -497,19 +522,25 @@
             }
         },
         "top_nav": {
+            "my_matches": "私の一致",
+            "home": "私の一致",
             "play_menu": "再生",
             "community_menu": "コミュニティ",
             "watch_menu": "見る",
             "play": {
                 "find_match": "マッチ相手を探す",
                 "tournaments": "トーナメント",
-                "view_previous_matches": "前回の試合を表示",
+                "public_servers": "公開サーバー",
                 "hero": {
                     "title": "プレイ & Compete",
-                    "subtitle": "試合、トーナメントに参加し、試合の履歴を表示します。"
+                    "subtitle": "マッチ、トーナメントに参加します。"
                 }
             },
             "community": {
+                "watch": {
+                    "title": "見る",
+                    "subtitle": "試合、トーナメントを見る。"
+                },
                 "players": {
                     "title": "プレイヤー",
                     "subtitle": "プレイヤーを閲覧して検索"
@@ -897,6 +928,8 @@
             "region": "リージョン",
             "round": "ラウンド"
         },
+        "show_players": "プレイヤーを表示",
+        "hide_players": "プレイヤーを隠す",
         "status": {
             "cancelled": "キャンセル",
             "finished": "終了",
@@ -1135,8 +1168,14 @@
         "plugin_version_supports": "サポート",
         "plugin_version_published": "公開済み",
         "install_cs": "CSをインストール",
+        "overprovisioned_warning": "オーバープロビジョニング済み",
+        "overprovisioned_warning_description": "{total_server_count} 可能なサーバーを割り当てましたが、あなたのサーバーは {max_servers} サーバーのみサポートできます。",
+        "cpu_cores_per_socket": "CPUコア/ソケット",
+        "cpu_threads_per_core": "CPUスレッド/コア",
+        "gpu": "GPU",
         "select_region": "リージョンを選択",
         "remove_node": "ノードを削除",
+        "show_update_logs": "更新ログを表示",
         "edit_label": "ラベルの編集",
         "label_placeholder": "ノードラベルを入力",
         "update_label": "ラベルの更新",
@@ -1159,17 +1198,32 @@
         "usage": "使用量"
     },
     "server": {
+        "copy_connection_string": "接続文字列をコピー",
+        "join_server": "サーバーに参加",
         "form": {
             "label": "ラベル",
             "host": "ホスト",
             "region": "リージョン",
             "select_region": "リージョンを選択",
+            "server_configuration": "サーバーの設定",
+            "use_game_server_node": "ゲームノードサーバーを使用",
+            "game_server_node": "ゲームサーバーノード",
+            "select_game_server_node": "ゲームサーバーノードの選択",
+            "game_server_node_description": "CS がインストールされたゲームサーバーノードを選択します",
+            "type": "サーバーの種類",
+            "select_type": "サーバータイプを選択",
+            "is_dedicated": "専用サーバー",
+            "is_dedicated_description": "これが専用サーバーであるか確認してください",
+            "connect_password": "パスワードを接続する",
+            "connect_password_description": "サーバーに接続するために必要なパスワード (オプション)",
             "rcon_password": "RCONパスワード",
             "rcon_password_description": "サーバーのRCONパスワード",
             "port": "ポート",
             "tv_port": "TVポート",
             "update": "更新",
-            "create": "作成"
+            "create": "作成",
+            "max_players": "最大プレイヤー数",
+            "max_players_description": "サーバーに接続できるプレイヤーの最大数"
         },
         "rcon": {
             "quick_commands": "クイックコマンド",

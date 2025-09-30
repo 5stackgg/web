@@ -579,6 +579,7 @@
     "common": {
         "delete": "Delete",
         "cancel": "Cancel",
+        "save": "Save",
         "error": "Error",
         "tbd": "TBD",
         "boolean": {
@@ -1001,6 +1002,7 @@
             "switch_teams": "Switch Teams",
             "remove_from_lineup": "Remove from Lineup",
             "leave_lineup": "Leave Lineup",
+            "update_team_name": "Update Team Name",
             "kills_full": "Kills",
             "assists_full": "Assists",
             "deaths_full": "Deaths",
@@ -1018,7 +1020,8 @@
             "total_damage": "Total Damage",
             "substitute": "(substitute)",
             "join": "Join",
-            "slot": "Slot {number}"
+            "slot": "Slot {number}",
+            "team_name": "Team Name"
         },
         "opening_duels": {
             "attempts": "Attempts",

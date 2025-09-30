@@ -4,7 +4,10 @@
             "node": "Nod",
             "cpu_usage": "CPU-användning",
             "memory_usage": "Minnesanvändning",
-            "services": "Tjänster"
+            "services": "Tjänster",
+            "network": "Nätverk",
+            "show_metrics": "Visa mätvärden",
+            "hide_metrics": "Dölj mätvärden"
         },
         "system_logs": {
             "follow_logs": "Följ loggar",
@@ -249,7 +252,7 @@
             }
         },
         "matches": {
-            "title": "Mina senaste matcher",
+            "title": "Mina matchningar",
             "description": "Dina senaste avslutade matcher",
             "create": "Skapa match",
             "last_ten_wins": "Sista 10 vinster",
@@ -279,6 +282,7 @@
                 "title": "Din panel stöder för närvarande inte spelservrar.",
                 "description": "Se dokumentationen för att konfigurera spelservrar."
             },
+            "display_metrics": "Visa mätvärden",
             "create": "Skapa spelserver",
             "installation_script": "Installationsskript",
             "cs_version_info": "CS2 versionsinformation:",
@@ -346,6 +350,25 @@
                     "continue": "Fortsätt"
                 }
             }
+        },
+        "public_servers": {
+            "title": "Publika servrar",
+            "description": "Bläddra och gå med i offentliga servrar",
+            "table": {
+                "connection_details": "Kontaktuppgifter",
+                "label": "Etikett",
+                "region": "Region",
+                "type": "Typ",
+                "tv_port": "TV port",
+                "plugin_version": "Version för tillägg",
+                "enabled": "Aktiverad",
+                "players": "Spelare",
+                "connect": "Anslut",
+                "yes": "Ja",
+                "no": "Nej"
+            },
+            "no_servers": "Inga offentliga servrar tillgängliga för tillfället.",
+            "connect_button": "Anslut till server"
         },
         "map_pools": {
             "title": "Standard Map Pools",
@@ -444,8 +467,9 @@
             "navigation": {
                 "play": "Spela",
                 "watch": "Titta",
-                "matches": "Matcher",
+                "matches": "Mina matchningar",
                 "tournaments": "Turneringar",
+                "public_servers": "Publika servrar",
                 "players": "Spelare",
                 "teams": "Lag"
             },
@@ -477,6 +501,7 @@
                 "tournaments": "Turneringar",
                 "players": "Spelare",
                 "teams": "Lag",
+                "public_servers": "Publika servrar",
                 "regions": "Regioner",
                 "servers": "Servrar",
                 "dedicated_servers": "Dedikerade servrar",
@@ -497,19 +522,25 @@
             }
         },
         "top_nav": {
+            "my_matches": "Mina matchningar",
+            "home": "Mina matchningar",
             "play_menu": "Spela",
             "community_menu": "Gemenskap",
             "watch_menu": "Titta",
             "play": {
                 "find_match": "Hitta en matchning",
                 "tournaments": "Turneringar",
-                "view_previous_matches": "Visa tidigare matcher",
+                "public_servers": "Publika servrar",
                 "hero": {
                     "title": "Spela & Tävla",
-                    "subtitle": "Gå med i matcher, turneringar och se din matchhistorik."
+                    "subtitle": "Gå med i matcher, turneringar."
                 }
             },
             "community": {
+                "watch": {
+                    "title": "Titta",
+                    "subtitle": "Titta på matcher, turneringar."
+                },
                 "players": {
                     "title": "Spelare",
                     "subtitle": "Bläddra och sök efter spelare"
@@ -897,6 +928,8 @@
             "region": "Region",
             "round": "Runda {number}"
         },
+        "show_players": "Visa spelare",
+        "hide_players": "Dölj spelare",
         "status": {
             "cancelled": "Avbruten",
             "finished": "Avslutad",
@@ -1135,8 +1168,14 @@
         "plugin_version_supports": "Stöder",
         "plugin_version_published": "Publicerad",
         "install_cs": "Installera CS",
+        "overprovisioned_warning": "Överallokerad",
+        "overprovisioned_warning_description": "Du har tilldelat {total_server_count} möjliga servrar, men din server kan bara stödja {max_servers} servrar.",
+        "cpu_cores_per_socket": "CPU kärnor/uttag",
+        "cpu_threads_per_core": "CPU trådar/kärna",
+        "gpu": "GPU",
         "select_region": "Välj region",
         "remove_node": "Ta bort nod",
+        "show_update_logs": "Visa uppdateringsloggar",
         "edit_label": "Redigera etikett",
         "label_placeholder": "Ange nod etikett",
         "update_label": "Uppdatera etikett",
@@ -1159,17 +1198,32 @@
         "usage": "Användning"
     },
     "server": {
+        "copy_connection_string": "Kopiera anslutningssträngen",
+        "join_server": "Anslut till server",
         "form": {
             "label": "Serveretikett",
             "host": "Värd",
             "region": "Region",
             "select_region": "Välj region",
+            "server_configuration": "Serverns konfiguration",
+            "use_game_server_node": "Använd Game Node Server",
+            "game_server_node": "Spelets server nod",
+            "select_game_server_node": "Välj spelservernod",
+            "game_server_node_description": "Välj en spelservernod med CS installerat",
+            "type": "Typ av server",
+            "select_type": "Välj servertyp",
+            "is_dedicated": "Dedikerad server",
+            "is_dedicated_description": "Kontrollera om detta är en dedikerad server",
+            "connect_password": "Anslut lösenord",
+            "connect_password_description": "Lösenord krävs för att ansluta till servern (valfritt)",
             "rcon_password": "RCON-lösenord",
             "rcon_password_description": "Lämna tomt för att behålla det nuvarande lösenordet",
             "port": "Spelport",
             "tv_port": "TV-port",
             "update": "Uppdatera server",
-            "create": "Skapa server"
+            "create": "Skapa server",
+            "max_players": "Max antal spelare",
+            "max_players_description": "Det maximala antalet spelare som kan ansluta till servern"
         },
         "rcon": {
             "quick_commands": "Snabbkommandon",

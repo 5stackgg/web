@@ -104,6 +104,18 @@
                 "light": "Light",
                 "dark": "Dark"
             },
+            "notifications": {
+                "title": "Notifications",
+                "description": "Configure notification preferences for chat and other events.",
+                "chat_sound": {
+                    "title": "Chat Sound Notifications",
+                    "description": "Play a sound when receiving new chat messages"
+                },
+                "volume": {
+                    "title": "Volume"
+                },
+                "test_sound": "Test Sound"
+            },
             "application": {
                 "update_success": "Updated",
                 "telemetry": {

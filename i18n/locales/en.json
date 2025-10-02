@@ -114,7 +114,10 @@
                 "volume": {
                     "title": "Volume"
                 },
-                "test_sound": "Test Sound"
+                "test_chat_sound": "Test Chat Sound",
+                "test_match_found_sound": "Test Match Found Sound",
+                "test_tick_sound": "Test Tick Sound",
+                "test_countdown_sound": "Test Countdown Sound"
             },
             "application": {
                 "update_success": "Updated",

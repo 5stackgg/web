@@ -121,6 +121,13 @@
             },
             "application": {
                 "update_success": "Updated",
+                "db_backups": {
+                    "title": "DB Backups",
+                    "description": "Manage database backups.",
+                    "name": "Name",
+                    "size": "Size",
+                    "created_at": "Created"
+                },
                 "telemetry": {
                     "title": "Telemetry",
                     "telemetry": "Telemetry",
@@ -1077,7 +1084,8 @@
             "assigned": "Assigned Match Server",
             "join_server": "Join Server",
             "join_as_spectator": "Spectator Details",
-            "join_tv_stream": "TV Stream Details"
+            "join_tv_stream": "TV Stream Details",
+            "tv_delay": "TV is delayed by {delay} seconds, waiting for stream to be ready."
         },
         "lobby": {
             "access_updated": "Match lobby access updated to {access}"

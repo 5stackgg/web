@@ -202,7 +202,9 @@
                     "test_upload_success": "Test Upload Success",
                     "test_upload_failed": "Test Upload Failed",
                     "test_download": "Test Download",
-                    "test_download_failed": "Test Download Failed"
+                    "test_download_failed": "Test Download Failed",
+                    "demo_network_limiter": "Global Demo Network Limiter",
+                    "demo_network_limiter_description": "The global network limiter for the demo files."
                 },
                 "update_map_pools": {
                     "title": "Automatic Update Map Pools",
@@ -317,7 +319,7 @@
             },
             "table": {
                 "node": "Node",
-                "lan_public_ip": "Lan/Public IP",
+                "demo_network_limiter": "Demo Network Limiter",
                 "cs_build_id": "CS Build",
                 "region": "Region",
                 "capacity": "Capacity",
@@ -1332,5 +1334,9 @@
         "streams_description": "Streams",
         "link": "Link",
         "title": "Title"
+    },
+    "demo_network_limiter": {
+        "network_limit": "Network limit (Mbps)",
+        "unlimited": "Unlimited"
     }
 }

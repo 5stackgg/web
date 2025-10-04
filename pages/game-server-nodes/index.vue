@@ -265,6 +265,7 @@ export default {
               supports_cpu_pinning: true,
               update_status: true,
               gpu: true,
+              cpu_sockets: true,
               cpu_governor_info: true,
               cpu_cores_per_socket: true,
               cpu_threads_per_core: true,

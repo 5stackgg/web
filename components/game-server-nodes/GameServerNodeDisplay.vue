@@ -82,6 +82,13 @@ import TimeAgo from "~/components/TimeAgo.vue";
         v-if="gameServerNode.status !== e_game_server_node_statuses_enum.Setup"
       >
         <div class="flex items-center gap-1">
+          <div class="font-medium">{{ $t("game_server.cpu_sockets") }}:</div>
+          <div class="text-muted-foreground">
+            {{ gameServerNode.cpu_sockets || "-" }}
+          </div>
+        </div>
+        <span class="text-muted-foreground">|</span>
+        <div class="flex items-center gap-1">
           <div class="font-medium">
             {{ $t("game_server.cpu_cores_per_socket") }}:
           </div>

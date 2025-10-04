@@ -288,6 +288,15 @@ import { AlertTriangle } from "lucide-vue-next";
             >
               <div class="flex items-center gap-1">
                 <div class="font-medium">
+                  {{ $t("game_server.cpu_sockets") }}:
+                </div>
+                <div class="text-muted-foreground">
+                  {{ gameServerNode.cpu_sockets || "-" }}
+                </div>
+              </div>
+              <span class="text-muted-foreground">|</span>
+              <div class="flex items-center gap-1">
+                <div class="font-medium">
                   {{ $t("game_server.cpu_cores_per_socket") }}:
                 </div>
                 <div class="text-muted-foreground">
@@ -908,7 +917,8 @@ export default defineComponent({
     },
     maxServers() {
       const virtualCPUsAvailable =
-        this.gameServerNode.cpu_cores_per_socket *
+        this.gameServerNode.cpu_sockets *
+          this.gameServerNode.cpu_cores_per_socket *
           this.gameServerNode.cpu_threads_per_core -
         1;
 

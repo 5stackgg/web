@@ -1213,6 +1213,7 @@
         "install_cs": "Install CS",
         "overprovisioned_warning": "Overprovisioned",
         "overprovisioned_warning_description": "You have assigned {total_server_count} possible servers, but your server can only support {max_servers} servers.",
+        "cpu_sockets": "CPU Sockets",
         "cpu_cores_per_socket": "CPU Cores/Socket",
         "cpu_threads_per_core": "CPU Threads/Core",
         "gpu": "GPU",

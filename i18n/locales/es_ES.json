@@ -5,9 +5,7 @@
             "cpu_usage": "Uso de CPU",
             "memory_usage": "Uso de memoria",
             "services": "Servicios",
-            "network": "Red",
-            "show_metrics": "Mostrar métricas",
-            "hide_metrics": "Ocultar métricas"
+            "network": "Red"
         },
         "system_logs": {
             "follow_logs": "Seguir",
@@ -31,10 +29,7 @@
             "title": "Equipos",
             "description": "Gestión de equipos",
             "create": "Crear",
-            "tabs": {
-                "my_teams": "Mis equipos",
-                "other_teams": "Otros equipos"
-            },
+            "tabs": {},
             "search": "Buscar"
         },
         "settings": {
@@ -106,7 +101,30 @@
                 "light": "Claro",
                 "dark": "Oscuro"
             },
+            "notifications": {
+                "title": "Notificaciones",
+                "description": "Configurar las preferencias de notificación para el chat y otros eventos.",
+                "chat_sound": {
+                    "title": "Notificaciones de sonido del chat",
+                    "description": "Reproducir un sonido al recibir nuevos mensajes de chat"
+                },
+                "volume": {
+                    "title": "Volumen"
+                },
+                "test_chat_sound": "Probar sonido de chat",
+                "test_match_found_sound": "Prueba de Sonido Encontrado",
+                "test_tick_sound": "Probar Sonido de Tick",
+                "test_countdown_sound": "Sonido de cuenta regresiva de prueba"
+            },
             "application": {
+                "update_success": "Actualizado",
+                "db_backups": {
+                    "title": "Copias de seguridad",
+                    "description": "Administrar copias de seguridad de la base de datos.",
+                    "name": "Nombre",
+                    "size": "Tamaño",
+                    "created_at": "Creado"
+                },
                 "telemetry": {
                     "title": "Telemetría",
                     "telemetry": "Telemetría",
@@ -142,6 +160,8 @@
                 "create_matches_role_description": "Este papel será capaz de crear partidos.",
                 "create_tournaments_role": "Rol de creación de torneos",
                 "create_tournaments_role_description": "Este papel será capaz de crear torneos.",
+                "dedicated_servers_min_role_to_connect": "Rol mínimo para conectarse a servidores protegidos por contraseña",
+                "dedicated_servers_min_role_to_connect_description": "Sólo los jugadores en o por encima de este rol pueden conectarse a servidores dedicados que requieren una contraseña.",
                 "matchmaking_min_role": "Función mínima Permitida unirse a la Matchmaking",
                 "matchmaking_min_role_description": "Este papel será capaz de unirse al matchmaking.",
                 "max_acceptable_latency": "Maximum Aceptable Latency",
@@ -179,7 +199,9 @@
                     "test_upload_success": "Éxito al subir la prueba",
                     "test_upload_failed": "Prueba de carga fallida",
                     "test_download": "Probar descarga",
-                    "test_download_failed": "Prueba de descarga fallida"
+                    "test_download_failed": "Prueba de descarga fallida",
+                    "demo_network_limiter": "Limitador global de red de demostración",
+                    "demo_network_limiter_description": "El limitador global de red para los archivos demo."
                 },
                 "update_map_pools": {
                     "title": "Mapa de actualización automático Piscinas",
@@ -257,8 +279,6 @@
             "create": "Crear",
             "last_ten_wins": "Últimas 10 victorias",
             "last_ten_losses": "Últimas 10 derrotas",
-            "my_match_history": "Mi historial de partidas",
-            "other_matches": "Otras partidas",
             "match_updated": "Partida actualizada",
             "create_page": {
                 "title": "Crear",
@@ -294,7 +314,7 @@
             },
             "table": {
                 "node": "Nodo",
-                "lan_public_ip": "IP LAN/Público",
+                "demo_network_limiter": "Limitador de red demo",
                 "cs_build_id": "Construir CS",
                 "region": "Región",
                 "capacity": "Capacidad",
@@ -304,6 +324,7 @@
                 "no_nodes": "No hay nodos",
                 "supports_low_latency": "Soportes Low Latency",
                 "supports_cpu_pinning": "Supports CPU Pinning",
+                "cpu_governor": "Gobernador de CPU",
                 "pin_build_id": "Construir pin",
                 "pin_build_id_tooltip": "Anclar el ID de compilación del servidor CS2",
                 "pin_plugin_version": "Fijar Plugin",
@@ -321,9 +342,10 @@
             "table": {
                 "connection_details": "Detalles de conexión",
                 "label": "Etiqueta",
+                "type": "Tipo",
                 "region": "Región",
-                "tv_port": "Puerto TV",
                 "plugin_version": "Versión Plugin",
+                "tv_port": "Puerto TV",
                 "enabled": "Habilitado",
                 "yes": "Sí",
                 "no": "No"
@@ -334,7 +356,6 @@
                 "hide_config": "Ocultar configuración",
                 "show_config": "Mostrar configuración",
                 "config_location": "Ubicación del archivo de configuración",
-                "copy": "Copiar",
                 "edit": "Editar",
                 "delete": "Eliminar",
                 "status": {
@@ -355,20 +376,15 @@
             "title": "Servidores públicos",
             "description": "Navegar y unirse a servidores públicos",
             "table": {
-                "connection_details": "Detalles de la conexión",
                 "label": "Etiqueta",
                 "region": "Región",
+                "map": "Mapa",
                 "type": "Tipo",
-                "tv_port": "Puerto de TV",
-                "plugin_version": "Versión del plugin",
-                "enabled": "Activado",
                 "players": "Jugadores",
-                "connect": "Conectar",
-                "yes": "Sí",
-                "no": "Nu"
+                "connect": "Conectar"
             },
-            "no_servers": "No hay servidores públicos disponibles en este momento.",
-            "connect_button": "Conectar al servidor"
+            "no_public_servers": "No hay servidores públicos disponibles en este momento.",
+            "lan_servers_title": "Servidores LAN"
         },
         "map_pools": {
             "title": "Mapa predeterminado Piscinas",
@@ -577,16 +593,19 @@
     "common": {
         "delete": "Eliminar",
         "cancel": "Cancelar",
+        "save": "Guardar",
         "error": "Error",
         "tbd": "Por determinar",
         "boolean": {
             "yes": "Sí",
             "no": "No"
         },
+        "are_you_sure": "¿Estás seguro de que quieres ejecutar este comando?",
         "actions": {
             "edit": "Editar",
             "delete": "Eliminar"
         },
+        "actions_label": "Acciones",
         "close": "Cerrar",
         "confirm": "Confirmar",
         "refresh": "Refresh"
@@ -718,9 +737,6 @@
     "team": {
         "table": {
             "team": "Equipo",
-            "wins": "Victorias",
-            "losses": "Derrotas",
-            "overtime_losses": "Derrotas en tiempo extra",
             "no_teams_found": "No se encontraron equipos"
         },
         "invite": {
@@ -748,6 +764,10 @@
         },
         "members": {
             "title": "Miembros",
+            "player": "Jugador",
+            "role": "Rol",
+            "substitutes": "Sustitutos",
+            "coaches": "Tutores",
             "invite_player": "Invitar jugador",
             "pending_invites": "Invitaciones pendientes"
         },
@@ -768,6 +788,11 @@
             "no_teams_found": "No hay equipos encontrados"
         },
         "member": {
+            "coach": "Tutor",
+            "status": "Estado",
+            "starter": "Interruptor",
+            "benched": "Vinculado",
+            "substitute": "Sustituir",
             "remove": "Eliminar",
             "cancel_invite": "Cancelar invitación",
             "confirm_cancel_invite": "Cancelar invitación",
@@ -784,15 +809,11 @@
             "no_matches": "No hay partidas próximas"
         },
         "recent": {
-            "title": "Partidas recientes",
-            "no_matches": "No hay partidas recientes"
+            "title": "Partidas recientes"
         },
         "options": {
             "filter_maps": "Mapas de filtros",
             "table": {
-                "match": "Partida",
-                "type": "Tipo",
-                "maps": "Mapas",
                 "no_matches_found": "No se encontraron partidas",
                 "join": "Unirse"
             },
@@ -917,8 +938,9 @@
             "map_veto_tab": "Veto de mapas",
             "settings": "Configuración",
             "streams": "Coincidir Streams en Vivo",
-            "server_console": "Consola del servidor",
+            "admin": "Admin",
             "randomize_teams": "Equipos aleatorios",
+            "swap_lineups": "Intercambiar alineaciones",
             "invited_to_match": "Invitado a la partida",
             "join_roster": "Unirse a la alineación",
             "restore_round": "Restaurar ronda",
@@ -989,6 +1011,7 @@
             "switch_teams": "Cambiar equipos",
             "remove_from_lineup": "Eliminar de la alineación",
             "leave_lineup": "Salir de la alineación",
+            "update_team_name": "Actualizar nombre de equipo",
             "kills_full": "Kills",
             "assists_full": "Asistencias",
             "deaths_full": "Muertes",
@@ -1006,7 +1029,8 @@
             "total_damage": "Daño total",
             "substitute": "Suplente",
             "join": "Unirse",
-            "slot": "Slot"
+            "slot": "Slot",
+            "team_name": "Nombre del equipo"
         },
         "opening_duels": {
             "attempts": "Intentos",
@@ -1047,7 +1071,8 @@
             "assigned": "Asignado",
             "join_server": "Unirse al servidor",
             "join_as_spectator": "Detalles del Espectador",
-            "join_tv_stream": "Detalles de la cadena de TV"
+            "join_tv_stream": "Detalles de la cadena de TV",
+            "tv_delay": "El televisor está retrasado por {delay} segundos, esperando a que el stream esté listo."
         },
         "lobby": {
             "access_updated": "Los permisos de acceso han sido actualizados"
@@ -1094,7 +1119,8 @@
             "banned": "Baneado",
             "muted": "Silenciado",
             "gagged": "Amordazado",
-            "add_friend": "Añadir amigo"
+            "add_friend": "Añadir amigo",
+            "available": "Disponible"
         },
         "change_name": {
             "button": "Cambiar nombre",
@@ -1143,7 +1169,9 @@
             "invite_to_match": "Invitar jugador a Match",
             "remove": "Eliminar",
             "join_lobby": "Unirse al Lobby",
-            "offline": "Desconectado"
+            "offline": "Desconectado",
+            "in_match": "En una partida",
+            "in_lobby": "En un lobby"
         },
         "banned": "Baneado",
         "go_to_match": "Ir a la partida",
@@ -1170,6 +1198,7 @@
         "install_cs": "Instalar CS",
         "overprovisioned_warning": "Suministrado",
         "overprovisioned_warning_description": "Has asignado servidores {total_server_count} posibles, pero tu servidor solo puede ser compatible con servidores {max_servers}.",
+        "cpu_sockets": "Sockets de CPU",
         "cpu_cores_per_socket": "Núcleo/Socket de CPU",
         "cpu_threads_per_core": "Hilos/Núcleo de CPU",
         "gpu": "GPU",
@@ -1198,7 +1227,6 @@
         "usage": "Uso"
     },
     "server": {
-        "copy_connection_string": "Copiar cadena de conexión",
         "join_server": "Unirse al servidor",
         "form": {
             "label": "Etiqueta",
@@ -1212,8 +1240,10 @@
             "game_server_node_description": "Seleccione un nodo de servidor de juegos con CS instalado",
             "type": "Tipo de servidor",
             "select_type": "Seleccionar tipo de servidor",
-            "is_dedicated": "Servidor dedicado",
-            "is_dedicated_description": "Comprobar si este es un servidor dedicado",
+            "ranked_server": "Servidor Ranked",
+            "ranked_server_description": "Experiencia completamente gestionada por 5 stack.",
+            "valve_presets": "Ajustes de válvula",
+            "valve_presets_description": "Elegir entre casual/competitivo y otros ajustes de Válvulas.",
             "connect_password": "Conectar contraseña",
             "connect_password_description": "Contraseña necesaria para conectarse al servidor (opcional)",
             "rcon_password": "Contraseña RCON",
@@ -1291,5 +1321,9 @@
         "streams_description": "Flujos",
         "link": "Enlace",
         "title": "Título"
+    },
+    "demo_network_limiter": {
+        "network_limit": "Límite de red (Mbps)",
+        "unlimited": "Ilimitado"
     }
 }

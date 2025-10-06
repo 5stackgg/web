@@ -5,9 +5,7 @@
             "cpu_usage": "CPU-Auslastung",
             "memory_usage": "Speicherauslastung",
             "services": "Dienste",
-            "network": "Netzwerk",
-            "show_metrics": "Metriken anzeigen",
-            "hide_metrics": "Metriken ausblenden"
+            "network": "Netzwerk"
         },
         "system_logs": {
             "follow_logs": "Logs folgen",
@@ -31,10 +29,7 @@
             "title": "Teams",
             "description": "Teamverwaltung",
             "create": "Team erstellen",
-            "tabs": {
-                "my_teams": "Meine Teams",
-                "other_teams": "Andere Teams"
-            },
+            "tabs": {},
             "search": "Suchen"
         },
         "settings": {
@@ -106,7 +101,30 @@
                 "light": "Hell",
                 "dark": "Dunkel"
             },
+            "notifications": {
+                "title": "Benachrichtigungen",
+                "description": "Benachrichtigungseinstellungen für Chat und andere Ereignisse konfigurieren.",
+                "chat_sound": {
+                    "title": "Chat-Ton-Benachrichtigungen",
+                    "description": "Beim Empfang neuer Chat-Nachrichten einen Ton abspielen"
+                },
+                "volume": {
+                    "title": "Lautstärke"
+                },
+                "test_chat_sound": "Chat-Ton testen",
+                "test_match_found_sound": "Test-Match-Sound gefunden",
+                "test_tick_sound": "Tick Sound testen",
+                "test_countdown_sound": "Countdown-Ton testen"
+            },
             "application": {
+                "update_success": "Aktualisiert",
+                "db_backups": {
+                    "title": "Datenbank-Backups",
+                    "description": "Datenbank-Backups verwalten.",
+                    "name": "Name",
+                    "size": "Größe",
+                    "created_at": "Erstellt"
+                },
                 "telemetry": {
                     "title": "Telemetrie",
                     "telemetry": "Telemetrie",
@@ -142,6 +160,8 @@
                 "create_matches_role_description": "Diese Rolle wird in der Lage sein, Spiele zu erstellen.",
                 "create_tournaments_role": "Turniere erstellen Rolle",
                 "create_tournaments_role_description": "Diese Rolle wird in der Lage sein, Turniere zu erstellen.",
+                "dedicated_servers_min_role_to_connect": "Minimale Rolle für eine Verbindung zu dedizierten passwort-geschützten Servern",
+                "dedicated_servers_min_role_to_connect_description": "Nur Spieler unter oder über dieser Rolle können sich mit dedizierten Servern verbinden, die ein Passwort benötigen.",
                 "matchmaking_min_role": "Mindeste Rolle erlaubt Matchmaking",
                 "matchmaking_min_role_description": "Diese Rolle wird in der Lage sein, sich zusammenzufügen.",
                 "max_acceptable_latency": "Maximal zulässig Latenz",
@@ -179,7 +199,9 @@
                     "test_upload_success": "Test erfolgreich hochgeladen",
                     "test_upload_failed": "Test Upload fehlgeschlagen",
                     "test_download": "Download testen",
-                    "test_download_failed": "Test Download fehlgeschlagen"
+                    "test_download_failed": "Test Download fehlgeschlagen",
+                    "demo_network_limiter": "Globaler Demo-Netzwerk-Limiter",
+                    "demo_network_limiter_description": "Der globale Netzwerklimiter für die Demo-Dateien."
                 },
                 "update_map_pools": {
                     "title": "Automatisches Update von Kartenpools",
@@ -257,8 +279,6 @@
             "create": "Erstellen",
             "last_ten_wins": "Letzte 10 Spiele gewonnen",
             "last_ten_losses": "Letzte 10 Spiele verloren",
-            "my_match_history": "Meine Spielhistorie",
-            "other_matches": "Andere Spiele",
             "match_updated": "Match aktualisiert",
             "create_page": {
                 "title": "Erstellen",
@@ -294,7 +314,7 @@
             },
             "table": {
                 "node": "Knoten",
-                "lan_public_ip": "LAN/Öffentliche IP",
+                "demo_network_limiter": "Demo-Netzwerk-Limiter",
                 "cs_build_id": "CS Build",
                 "region": "Region",
                 "capacity": "Kapazität",
@@ -304,6 +324,7 @@
                 "no_nodes": "Keine Knoten vorhanden",
                 "supports_low_latency": "Unterstützt niedrige Latency",
                 "supports_cpu_pinning": "Unterstützt CPU Pinien",
+                "cpu_governor": "CPU-Governor",
                 "pin_build_id": "Pin Build",
                 "pin_build_id_tooltip": "Pin die Build-ID des CS2-Servers",
                 "pin_plugin_version": "Plugin anheften",
@@ -321,9 +342,10 @@
             "table": {
                 "connection_details": "Verbindungsdetails",
                 "label": "Bezeichnung",
+                "type": "Typ",
                 "region": "Region",
-                "tv_port": "TV-Port",
                 "plugin_version": "Plugin Version",
+                "tv_port": "TV-Port",
                 "enabled": "Aktiviert",
                 "yes": "Ja",
                 "no": "Nein"
@@ -334,7 +356,6 @@
                 "hide_config": "Konfiguration ausblenden",
                 "show_config": "Konfiguration anzeigen",
                 "config_location": "Konfigurationsdateipfad",
-                "copy": "Kopieren",
                 "edit": "Bearbeiten",
                 "delete": "Löschen",
                 "status": {
@@ -355,20 +376,15 @@
             "title": "Öffentliche Server",
             "description": "Durchsuchen und öffentlichen Servern beitreten",
             "table": {
-                "connection_details": "Verbindungsdetails",
                 "label": "Label",
                 "region": "Region",
+                "map": "Karte",
                 "type": "Typ",
-                "tv_port": "TV-Port",
-                "plugin_version": "Plugin-Version",
-                "enabled": "Aktiviert",
                 "players": "Spieler",
-                "connect": "Verbinden",
-                "yes": "Ja",
-                "no": "Nein"
+                "connect": "Verbinden"
             },
-            "no_servers": "Derzeit sind keine öffentlichen Server verfügbar.",
-            "connect_button": "Mit Server verbinden"
+            "no_public_servers": "Derzeit sind keine öffentlichen Server verfügbar.",
+            "lan_servers_title": "LAN-Server"
         },
         "map_pools": {
             "title": "Standardkarte Pools",
@@ -577,16 +593,19 @@
     "common": {
         "delete": "Löschen",
         "cancel": "Abbrechen",
+        "save": "Speichern",
         "error": "Fehler",
         "tbd": "TBD",
         "boolean": {
             "yes": "Ja",
             "no": "Nein"
         },
+        "are_you_sure": "Sind Sie sicher, dass Sie diesen Befehl ausführen möchten?",
         "actions": {
             "edit": "Bearbeiten",
             "delete": "Löschen"
         },
+        "actions_label": "Aktionen",
         "close": "Schließen",
         "confirm": "Bestätigen",
         "refresh": "Refreshing"
@@ -718,9 +737,6 @@
     "team": {
         "table": {
             "team": "Team",
-            "wins": "Siege",
-            "losses": "Niederlagen",
-            "overtime_losses": "Niederlagen nach Verlängerung",
             "no_teams_found": "Keine Teams gefunden"
         },
         "invite": {
@@ -748,6 +764,10 @@
         },
         "members": {
             "title": "Teammitglieder",
+            "player": "Spieler",
+            "role": "Rolle",
+            "substitutes": "Ersetzer",
+            "coaches": "Trainer",
             "invite_player": "Spieler einladen",
             "pending_invites": "Ausstehende Einladungen"
         },
@@ -768,6 +788,11 @@
             "no_teams_found": "Keine Teams gefunden"
         },
         "member": {
+            "coach": "Trainer",
+            "status": "Status",
+            "starter": "Starter",
+            "benched": "Benchtet",
+            "substitute": "Ersetzen",
             "remove": "Mitglied entfernen",
             "cancel_invite": "Einladung stornieren",
             "confirm_cancel_invite": "Sind Sie sicher, dass Sie diese Einladung stornieren möchten?",
@@ -784,15 +809,11 @@
             "no_matches": "Keine anstehenden Spiele"
         },
         "recent": {
-            "title": "Letzte Spiele",
-            "no_matches": "Keine kürzlichen Spiele"
+            "title": "Letzte Spiele"
         },
         "options": {
             "filter_maps": "Filterkarten",
             "table": {
-                "match": "Spiel",
-                "type": "Typ",
-                "maps": "Karten",
                 "no_matches_found": "Keine Spiele gefunden",
                 "join": "Beitreten"
             },
@@ -917,8 +938,9 @@
             "map_veto_tab": "Karten-Veto",
             "settings": "Spieleinstellungen",
             "streams": "Live Streams Match",
-            "server_console": "Server-Konsole",
+            "admin": "Admin",
             "randomize_teams": "Teams zufällig zuweisen",
+            "swap_lineups": "Swap-Auflagen",
             "invited_to_match": "Zum Spiel eingeladen",
             "join_roster": "Aufstellung beitreten",
             "restore_round": "Runde wiederherstellen",
@@ -989,6 +1011,7 @@
             "switch_teams": "Teams wechseln",
             "remove_from_lineup": "Aus Aufstellung entfernen",
             "leave_lineup": "Aufstellung verlassen",
+            "update_team_name": "Teamname aktualisieren",
             "kills_full": "Kills",
             "assists_full": "Assists",
             "deaths_full": "Tode",
@@ -1006,7 +1029,8 @@
             "total_damage": "Gesamtschaden",
             "substitute": "Ersatzspieler",
             "join": "Beitreten",
-            "slot": "Slot {number}"
+            "slot": "Slot {number}",
+            "team_name": "Teamname"
         },
         "opening_duels": {
             "attempts": "Versuche",
@@ -1047,7 +1071,8 @@
             "assigned": "Zugewiesener Spielserver",
             "join_server": "Server beitreten",
             "join_as_spectator": "Zuschauerdetails",
-            "join_tv_stream": "TV-Stream-Details"
+            "join_tv_stream": "TV-Stream-Details",
+            "tv_delay": "Der Fernseher wird von {delay} Sekunden verzögert und wartet darauf, dass der Stream bereit ist."
         },
         "lobby": {
             "access_updated": "Spiel-Lobby-Zugriff auf {access} aktualisiert"
@@ -1094,7 +1119,8 @@
             "banned": "Spieler ist gesperrt",
             "muted": "Spieler ist stummgeschaltet",
             "gagged": "Spieler ist gagged",
-            "add_friend": "Als Freund hinzufügen"
+            "add_friend": "Als Freund hinzufügen",
+            "available": "Verfügbar"
         },
         "change_name": {
             "button": "Namen ändern",
@@ -1143,7 +1169,9 @@
             "invite_to_match": "Einladen des Spielers zum Match",
             "remove": "Entfernen",
             "join_lobby": "Lobby beitreten",
-            "offline": "Offline"
+            "offline": "Offline",
+            "in_match": "In einem Spiel",
+            "in_lobby": "In einer Lobby"
         },
         "banned": "Sie sind vom Matchmaking gesperrt",
         "go_to_match": "Zum Spiel gehen",
@@ -1170,6 +1198,7 @@
         "install_cs": "CS installieren",
         "overprovisioned_warning": "Überstellt",
         "overprovisioned_warning_description": "Sie haben {total_server_count} mögliche Server zugewiesen, aber Ihr Server kann nur {max_servers} Server unterstützen.",
+        "cpu_sockets": "CPU-Sockets",
         "cpu_cores_per_socket": "CPU-Kerne/Socket",
         "cpu_threads_per_core": "CPU-Threads/Kern",
         "gpu": "GPU",
@@ -1198,7 +1227,6 @@
         "usage": "Nutzung"
     },
     "server": {
-        "copy_connection_string": "Verbindungszeichenkette kopieren",
         "join_server": "Server beitreten",
         "form": {
             "label": "Server-Bezeichnung",
@@ -1212,8 +1240,10 @@
             "game_server_node_description": "Wähle einen Gameserver Knoten mit CS installiert",
             "type": "Servertyp",
             "select_type": "Server Typ auswählen",
-            "is_dedicated": "Dedizierter Server",
-            "is_dedicated_description": "Überprüfen Sie, ob dies ein dedizierter Server ist",
+            "ranked_server": "Ranked-Server",
+            "ranked_server_description": "Voll verwaltete Rangliste Erfahrung von 5stack.",
+            "valve_presets": "Ventilvorgaben",
+            "valve_presets_description": "Wählen Sie unter Casual/Competitive und anderen Ventilvorgaben.",
             "connect_password": "Passwort verbinden",
             "connect_password_description": "Passwort erforderlich für eine Verbindung zum Server (optional)",
             "rcon_password": "RCON-Passwort",
@@ -1291,5 +1321,9 @@
         "streams_description": "Streams",
         "link": "Link",
         "title": "Titel"
+    },
+    "demo_network_limiter": {
+        "network_limit": "Netzwerklimit (Mbps)",
+        "unlimited": "Unbegrenzt"
     }
 }

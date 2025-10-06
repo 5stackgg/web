@@ -5,9 +5,7 @@
             "cpu_usage": "CPU-forbrug",
             "memory_usage": "Hukommelsesforbrug",
             "services": "Tjenester",
-            "network": "Netværk",
-            "show_metrics": "Vis Målinger",
-            "hide_metrics": "Skjul Metrics"
+            "network": "Netværk"
         },
         "system_logs": {
             "follow_logs": "Følg",
@@ -31,10 +29,7 @@
             "title": "Hold",
             "description": "Holdadministration",
             "create": "Opret hold",
-            "tabs": {
-                "my_teams": "Mine hold",
-                "other_teams": "Andre hold"
-            },
+            "tabs": {},
             "search": "Søg"
         },
         "settings": {
@@ -106,7 +101,30 @@
                 "light": "Lyst",
                 "dark": "Mørkt"
             },
+            "notifications": {
+                "title": "Notifikationer",
+                "description": "Konfigurer notifikationspræferencer for chat og andre begivenheder.",
+                "chat_sound": {
+                    "title": "Chat Lyd Notifikationer",
+                    "description": "Afspil en lyd, når du modtager nye chatbeskeder"
+                },
+                "volume": {
+                    "title": "Lydstyrke"
+                },
+                "test_chat_sound": "Test Chat- Lyd",
+                "test_match_found_sound": "Test Match Fundet Lyd",
+                "test_tick_sound": "Test Tick Lyd",
+                "test_countdown_sound": "Test Nedtællingslyd"
+            },
             "application": {
+                "update_success": "Opdateret",
+                "db_backups": {
+                    "title": "DB Sikkerhedskopier",
+                    "description": "Håndtér databasesikkerhedskopier.",
+                    "name": "Navn",
+                    "size": "Størrelse",
+                    "created_at": "Oprettet"
+                },
                 "telemetry": {
                     "title": "Telemetri",
                     "telemetry": "Telemetri",
@@ -142,6 +160,8 @@
                 "create_matches_role_description": "Denne rolle vil være i stand til at skabe kampe.",
                 "create_tournaments_role": "Rolle til oprettelse af turneringer",
                 "create_tournaments_role_description": "Denne rolle vil være i stand til at skabe turneringer.",
+                "dedicated_servers_min_role_to_connect": "Minimum Rolle for at forbinde til særlige adgangskodebeskyttede servere",
+                "dedicated_servers_min_role_to_connect_description": "Kun spillere på eller over denne rolle kan oprette forbindelse til dedikerede servere, der kræver en adgangskode.",
                 "matchmaking_min_role": "Minimum rolle tilladt at deltage i matchmaking",
                 "matchmaking_min_role_description": "Denne rolle vil være i stand til at deltage i matchmaking.",
                 "max_acceptable_latency": "Maksimalt acceptabelt Latency",
@@ -179,7 +199,9 @@
                     "test_upload_success": "Test Upload Gennemført",
                     "test_upload_failed": "Test Upload Mislykkedes",
                     "test_download": "Test Download",
-                    "test_download_failed": "Test Download Mislykkedes"
+                    "test_download_failed": "Test Download Mislykkedes",
+                    "demo_network_limiter": "Grænseværdi For Global Demo Netværk",
+                    "demo_network_limiter_description": "Den globale netværksbegrænser for demofilerne."
                 },
                 "update_map_pools": {
                     "title": "Automatisk opdateringskortspil",
@@ -257,8 +279,6 @@
             "create": "Opret",
             "last_ten_wins": "Sidste 10 sejre",
             "last_ten_losses": "Sidste 10 nederlag",
-            "my_match_history": "Min kamp historik",
-            "other_matches": "Andre kampe",
             "match_updated": "Match Opdateret",
             "create_page": {
                 "title": "Opret",
@@ -294,7 +314,7 @@
             },
             "table": {
                 "node": "Node",
-                "lan_public_ip": "LAN/Offentlig IP",
+                "demo_network_limiter": "Grænseværdi For Demo Netværk",
                 "cs_build_id": "CS Byg",
                 "region": "Region",
                 "capacity": "Kapacitet",
@@ -304,6 +324,7 @@
                 "no_nodes": "Ingen noder",
                 "supports_low_latency": "Understøtter lav latency",
                 "supports_cpu_pinning": "Understøtter CPU Rinning",
+                "cpu_governor": "CPU Guvernør",
                 "pin_build_id": "Fastgør Byg",
                 "pin_build_id_tooltip": "Fastgør build ID på CS2 serveren",
                 "pin_plugin_version": "Fastgør Plugin",
@@ -321,9 +342,10 @@
             "table": {
                 "connection_details": "Forbindelsesdetaljer",
                 "label": "Etiket",
+                "type": "Type",
                 "region": "Region",
-                "tv_port": "TV port",
                 "plugin_version": "Plugin- version",
+                "tv_port": "TV port",
                 "enabled": "Aktiveret",
                 "yes": "Ja",
                 "no": "Nej"
@@ -334,7 +356,6 @@
                 "hide_config": "Skjul konfiguration",
                 "show_config": "Vis konfiguration",
                 "config_location": "Konfigurationsfilplacering",
-                "copy": "Kopier",
                 "edit": "Rediger",
                 "delete": "Slet",
                 "status": {
@@ -355,20 +376,15 @@
             "title": "Offentlige Servere",
             "description": "Gennemse og deltag i offentlige servere",
             "table": {
-                "connection_details": "Forbindelse Detaljer",
                 "label": "Etiket",
                 "region": "Region",
+                "map": "Kort",
                 "type": "Type",
-                "tv_port": "Tv Port",
-                "plugin_version": "Plugin Version",
-                "enabled": "Aktiveret",
                 "players": "Spillere",
-                "connect": "Forbind",
-                "yes": "Ja",
-                "no": "Nej"
+                "connect": "Forbind"
             },
-            "no_servers": "Ingen offentlige servere tilgængelige i øjeblikket.",
-            "connect_button": "Opret forbindelse til server"
+            "no_public_servers": "Ingen offentlige servere tilgængelige i øjeblikket.",
+            "lan_servers_title": "LIN- Servere"
         },
         "map_pools": {
             "title": "Standard kort pooler",
@@ -577,16 +593,19 @@
     "common": {
         "delete": "Slet",
         "cancel": "Annuller",
+        "save": "Gem",
         "error": "Fejl",
         "tbd": "Afgøres",
         "boolean": {
             "yes": "Ja",
             "no": "Nej"
         },
+        "are_you_sure": "Er du sikker på du vil køre denne kommando?",
         "actions": {
             "edit": "Rediger",
             "delete": "Slet"
         },
+        "actions_label": "Handlinger",
         "close": "Luk",
         "confirm": "Bekræft",
         "refresh": "Genopfrisk"
@@ -718,9 +737,6 @@
     "team": {
         "table": {
             "team": "Hold",
-            "wins": "Sejre",
-            "losses": "Nederlag",
-            "overtime_losses": "Overtidsnederlag",
             "no_teams_found": "Ingen hold fundet"
         },
         "invite": {
@@ -748,6 +764,10 @@
         },
         "members": {
             "title": "Holdmedlemmer",
+            "player": "Spiller",
+            "role": "Rolle",
+            "substitutes": "Erstatninger",
+            "coaches": "Trænere",
             "invite_player": "Inviter spiller",
             "pending_invites": "Afventende invitationer"
         },
@@ -768,6 +788,11 @@
             "no_teams_found": "Ingen hold fundet"
         },
         "member": {
+            "coach": "Træner",
+            "status": "Status",
+            "starter": "Startside",
+            "benched": "Bænket",
+            "substitute": "Erstat",
             "remove": "Fjern medlem",
             "cancel_invite": "Annuller invitation",
             "confirm_cancel_invite": "Er du sikker på, at du vil annullere denne invitation?",
@@ -784,15 +809,11 @@
             "no_matches": "Ingen kommende kampe"
         },
         "recent": {
-            "title": "Seneste kampe",
-            "no_matches": "Ingen seneste kampe"
+            "title": "Seneste kampe"
         },
         "options": {
             "filter_maps": "Filterkort",
             "table": {
-                "match": "Kamp",
-                "type": "Type",
-                "maps": "Kort",
                 "no_matches_found": "Ingen kampe fundet",
                 "join": "Deltag"
             },
@@ -917,8 +938,9 @@
             "map_veto_tab": "Kort veto",
             "settings": "Indstillinger",
             "streams": "Match Live Streams",
-            "server_console": "Server konsol",
+            "admin": "Administrator",
             "randomize_teams": "Tilfældige hold",
+            "swap_lineups": "Byt Lineups",
             "invited_to_match": "Inviteret til kamp",
             "join_roster": "Deltag i trup",
             "restore_round": "Gendan runde",
@@ -989,6 +1011,7 @@
             "switch_teams": "Skift hold",
             "remove_from_lineup": "Fjern fra opstilling",
             "leave_lineup": "Forlad opstilling",
+            "update_team_name": "Opdater Holdnavn",
             "kills_full": "Kills",
             "assists_full": "Assists",
             "deaths_full": "Dødsfald",
@@ -1006,7 +1029,8 @@
             "total_damage": "Total skade",
             "substitute": "Erstatning",
             "join": "Deltag",
-            "slot": "Slot {number}"
+            "slot": "Slot {number}",
+            "team_name": "Hold Navn"
         },
         "opening_duels": {
             "attempts": "Forsøg",
@@ -1047,7 +1071,8 @@
             "assigned": "Tildelt",
             "join_server": "Deltag I Server",
             "join_as_spectator": "Tilskuer Detaljer",
-            "join_tv_stream": "TV Stream Detaljer"
+            "join_tv_stream": "TV Stream Detaljer",
+            "tv_delay": "TV er forsinket af {delay} sekunder, og venter på, at streamen er klar."
         },
         "lobby": {
             "access_updated": "Adgangsrettigheder er blevet opdateret"
@@ -1094,7 +1119,8 @@
             "banned": "Bannet",
             "muted": "Muted",
             "gagged": "Gagged",
-            "add_friend": "Tilføj ven"
+            "add_friend": "Tilføj ven",
+            "available": "Tilgængelig"
         },
         "change_name": {
             "button": "Skift navn",
@@ -1143,7 +1169,9 @@
             "invite_to_match": "Inviter spiller til Match",
             "remove": "Fjern",
             "join_lobby": "Tilmeld Lobby",
-            "offline": "Offline"
+            "offline": "Offline",
+            "in_match": "I en kamp",
+            "in_lobby": "I en lobby"
         },
         "banned": "Bannet",
         "go_to_match": "Gå til kamp",
@@ -1170,6 +1198,7 @@
         "install_cs": "Installer CS",
         "overprovisioned_warning": "Overordnet",
         "overprovisioned_warning_description": "Du har tildelt {total_server_count} mulige servere, men din server kan kun understøtte {max_servers} servere.",
+        "cpu_sockets": "CPU Sockets",
         "cpu_cores_per_socket": "CPU Kerner/Sokkel",
         "cpu_threads_per_core": "CPU-tråde/kerne",
         "gpu": "GPU",
@@ -1198,7 +1227,6 @@
         "usage": "Forbrug"
     },
     "server": {
-        "copy_connection_string": "Kopier Forbindelsesstreng",
         "join_server": "Deltag I Server",
         "form": {
             "label": "Etiket",
@@ -1212,8 +1240,10 @@
             "game_server_node_description": "Vælg en spilserver node med CS installeret",
             "type": "Server Type",
             "select_type": "Vælg Servertype",
-            "is_dedicated": "Dedikeret Server",
-            "is_dedicated_description": "Vælg om dette er en dedikeret server",
+            "ranked_server": "Rangeret Server",
+            "ranked_server_description": "Fuldt administreret rangeret oplevelse af 5stack.",
+            "valve_presets": "Ventil Forudindstillinger",
+            "valve_presets_description": "Vælg mellem afslappet / konkurrencedygtig og andre Valve-presets.",
             "connect_password": "Forbind Adgangskode",
             "connect_password_description": "Adgangskode kræves for at oprette forbindelse til serveren (valgfrit)",
             "rcon_password": "RCON adgangskode",
@@ -1291,5 +1321,9 @@
         "streams_description": "Streams",
         "link": "Link",
         "title": "Titel"
+    },
+    "demo_network_limiter": {
+        "network_limit": "Netværksgrænse (Mbps)",
+        "unlimited": "Ubegrænset"
     }
 }

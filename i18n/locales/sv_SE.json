@@ -5,9 +5,7 @@
             "cpu_usage": "CPU-användning",
             "memory_usage": "Minnesanvändning",
             "services": "Tjänster",
-            "network": "Nätverk",
-            "show_metrics": "Visa mätvärden",
-            "hide_metrics": "Dölj mätvärden"
+            "network": "Nätverk"
         },
         "system_logs": {
             "follow_logs": "Följ loggar",
@@ -31,10 +29,7 @@
             "title": "Lag",
             "description": "Hantera lag och trupper.",
             "create": "Skapa lag",
-            "tabs": {
-                "my_teams": "Mina lag",
-                "other_teams": "Andra lag"
-            },
+            "tabs": {},
             "search": "Sök..."
         },
         "settings": {
@@ -106,7 +101,30 @@
                 "light": "Ljust",
                 "dark": "Mörkt"
             },
+            "notifications": {
+                "title": "Aviseringar",
+                "description": "Konfigurera aviseringsinställningar för chatt och andra händelser.",
+                "chat_sound": {
+                    "title": "Ljud i chatt",
+                    "description": "Spela upp ett ljud när du tar emot nya chattmeddelanden"
+                },
+                "volume": {
+                    "title": "Volym"
+                },
+                "test_chat_sound": "Testa chattljud",
+                "test_match_found_sound": "Testa matchande ljud",
+                "test_tick_sound": "Testa Bocka Ljud",
+                "test_countdown_sound": "Testa nedräkningsljud"
+            },
             "application": {
+                "update_success": "Uppdaterad",
+                "db_backups": {
+                    "title": "DB säkerhetskopior",
+                    "description": "Hantera databassäkerhetskopior.",
+                    "name": "Namn",
+                    "size": "Storlek",
+                    "created_at": "Skapad"
+                },
                 "telemetry": {
                     "title": "Telemetri",
                     "telemetry": "Telemetri",
@@ -142,6 +160,8 @@
                 "create_matches_role_description": "Denna roll kommer att kunna skapa matcher.",
                 "create_tournaments_role": "Minsta roll som får skapa turneringar",
                 "create_tournaments_role_description": "Denna roll kommer att kunna skapa turneringar.",
+                "dedicated_servers_min_role_to_connect": "Minsta roll att ansluta till Dedicated Password-Protected Servers",
+                "dedicated_servers_min_role_to_connect_description": "Endast spelare på eller över denna roll kan ansluta till dedikerade servrar som kräver ett lösenord.",
                 "matchmaking_min_role": "Minsta roll tillåten att gå med Matchmaking",
                 "matchmaking_min_role_description": "Denna roll kommer att kunna ansluta sig till matchmaking.",
                 "max_acceptable_latency": "Maximal acceptabel Latency",
@@ -179,7 +199,9 @@
                     "test_upload_success": "Uppladdning av test lyckades",
                     "test_upload_failed": "Uppladdning av test misslyckades",
                     "test_download": "Testa nedladdning",
-                    "test_download_failed": "Nedladdning av testet misslyckades"
+                    "test_download_failed": "Nedladdning av testet misslyckades",
+                    "demo_network_limiter": "Gräns för globala demonätverk",
+                    "demo_network_limiter_description": "Den globala nätverksbegränsaren för demofilerna."
                 },
                 "update_map_pools": {
                     "title": "Automatisk uppdatering Map Pools",
@@ -257,8 +279,6 @@
             "create": "Skapa match",
             "last_ten_wins": "Sista 10 vinster",
             "last_ten_losses": "Sista 10 förluster",
-            "my_match_history": "Min matchhistorik",
-            "other_matches": "Andra matcher",
             "match_updated": "Matchning uppdaterad",
             "create_page": {
                 "title": "Skapa match",
@@ -294,7 +314,7 @@
             },
             "table": {
                 "node": "Nod",
-                "lan_public_ip": "LAN/Publik IP",
+                "demo_network_limiter": "Gräns för demonätverk",
                 "cs_build_id": "CS Bygg",
                 "region": "Region",
                 "capacity": "Kapacitet",
@@ -304,6 +324,7 @@
                 "no_nodes": "Inga spelservrar",
                 "supports_low_latency": "Stöder låg latens",
                 "supports_cpu_pinning": "Stöder CPU Pinning",
+                "cpu_governor": "CPU guvernör",
                 "pin_build_id": "Fäst bygg",
                 "pin_build_id_tooltip": "Fäst bygg-ID för CS2-servern",
                 "pin_plugin_version": "Fäst plugin",
@@ -321,9 +342,10 @@
             "table": {
                 "connection_details": "Anslutningsdetaljer",
                 "label": "Etikett",
+                "type": "Typ",
                 "region": "Region",
-                "tv_port": "TV-port",
                 "plugin_version": "Version för tillägg",
+                "tv_port": "TV-port",
                 "enabled": "Aktiverad",
                 "yes": "Ja",
                 "no": "Nej"
@@ -334,7 +356,6 @@
                 "hide_config": "Dölj konfiguration",
                 "show_config": "Visa konfiguration",
                 "config_location": "Denna konfiguration ska placeras i:",
-                "copy": "Kopiera",
                 "edit": "Redigera",
                 "delete": "Ta bort",
                 "status": {
@@ -355,20 +376,15 @@
             "title": "Publika servrar",
             "description": "Bläddra och gå med i offentliga servrar",
             "table": {
-                "connection_details": "Kontaktuppgifter",
                 "label": "Etikett",
                 "region": "Region",
+                "map": "Karta",
                 "type": "Typ",
-                "tv_port": "TV port",
-                "plugin_version": "Version för tillägg",
-                "enabled": "Aktiverad",
                 "players": "Spelare",
-                "connect": "Anslut",
-                "yes": "Ja",
-                "no": "Nej"
+                "connect": "Anslut"
             },
-            "no_servers": "Inga offentliga servrar tillgängliga för tillfället.",
-            "connect_button": "Anslut till server"
+            "no_public_servers": "Inga offentliga servrar tillgängliga för tillfället.",
+            "lan_servers_title": "LAN-servrar"
         },
         "map_pools": {
             "title": "Standard Map Pools",
@@ -577,16 +593,19 @@
     "common": {
         "delete": "Radera",
         "cancel": "Avbryt",
+        "save": "Spara",
         "error": "Fel",
         "tbd": "TBD",
         "boolean": {
             "yes": "Ja",
             "no": "Nej"
         },
+        "are_you_sure": "Är du säker på att du vill köra detta kommando?",
         "actions": {
             "edit": "Redigera",
             "delete": "Ta bort"
         },
+        "actions_label": "Åtgärder",
         "close": "Stäng",
         "confirm": "Bekräfta",
         "refresh": "Uppdatera"
@@ -718,9 +737,6 @@
     "team": {
         "table": {
             "team": "Lag",
-            "wins": "Vinster",
-            "losses": "Förluster",
-            "overtime_losses": "Övertidsförluster",
             "no_teams_found": "Inga lag hittades"
         },
         "invite": {
@@ -748,6 +764,10 @@
         },
         "members": {
             "title": "Lagmedlemmar",
+            "player": "Spelare",
+            "role": "Roll",
+            "substitutes": "Ersättare",
+            "coaches": "Coacher",
             "invite_player": "Bjud in spelare",
             "pending_invites": "Väntande inbjudningar"
         },
@@ -768,6 +788,11 @@
             "no_teams_found": "Inga team hittade"
         },
         "member": {
+            "coach": "Tränare",
+            "status": "Status",
+            "starter": "Starter",
+            "benched": "Bänkad",
+            "substitute": "Ersätt",
             "remove": "Ta bort medlem",
             "cancel_invite": "Avbryt inbjudan",
             "confirm_cancel_invite": "Är du säker på att du vill avbryta denna inbjudan?",
@@ -784,15 +809,11 @@
             "no_matches": "Du har inga kommande matcher."
         },
         "recent": {
-            "title": "Senaste matcher",
-            "no_matches": "Du har inga senaste matcher."
+            "title": "Senaste matcher"
         },
         "options": {
             "filter_maps": "Filter Kartor",
             "table": {
-                "match": "Matcha",
-                "type": "Typ",
-                "maps": "Kartor",
                 "no_matches_found": "Inga matcher hittades",
                 "join": "Gå med"
             },
@@ -917,8 +938,9 @@
             "map_veto_tab": "Kartveto",
             "settings": "Matchinställningar",
             "streams": "Matcha levande strömmar",
-            "server_console": "Serverkonsol",
+            "admin": "Administratör",
             "randomize_teams": "Slumpmässiga lag",
+            "swap_lineups": "Växla Lineups",
             "invited_to_match": "Inbjuden till match",
             "join_roster": "Gå med i en trupp",
             "restore_round": "Återställ runda",
@@ -989,6 +1011,7 @@
             "switch_teams": "Byt lag",
             "remove_from_lineup": "Ta bort från uppställning",
             "leave_lineup": "Lämna uppställning",
+            "update_team_name": "Uppdatera teamets namn",
             "kills_full": "Dödade",
             "assists_full": "Assister",
             "deaths_full": "Dödsfall",
@@ -1006,7 +1029,8 @@
             "total_damage": "Total skada",
             "substitute": "(ersättare)",
             "join": "Gå med",
-            "slot": "Plats {number}"
+            "slot": "Plats {number}",
+            "team_name": "Lag namn"
         },
         "opening_duels": {
             "attempts": "Försök",
@@ -1047,7 +1071,8 @@
             "assigned": "Tilldelad matchserver",
             "join_server": "Anslut till server",
             "join_as_spectator": "Detaljer för åskådare",
-            "join_tv_stream": "Detaljer för TV-strömning"
+            "join_tv_stream": "Detaljer för TV-strömning",
+            "tv_delay": "TV:n är försenad av {delay} sekunder och väntar på att strömmen ska vara klar."
         },
         "lobby": {
             "access_updated": "Matchlobbyåtkomst uppdaterad till {access}"
@@ -1094,7 +1119,8 @@
             "banned": "Spelaren är bannad",
             "muted": "Spelaren är tystad",
             "gagged": "Spelaren är gagged",
-            "add_friend": "Lägg till som vän"
+            "add_friend": "Lägg till som vän",
+            "available": "Tillgänglig"
         },
         "change_name": {
             "button": "Ändra namn",
@@ -1143,7 +1169,9 @@
             "invite_to_match": "Inbjud spelare till match",
             "remove": "Ta bort",
             "join_lobby": "Gå med i Lobby",
-            "offline": "Offline"
+            "offline": "Offline",
+            "in_match": "I en match",
+            "in_lobby": "I en lobby"
         },
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
@@ -1170,6 +1198,7 @@
         "install_cs": "Installera CS",
         "overprovisioned_warning": "Överallokerad",
         "overprovisioned_warning_description": "Du har tilldelat {total_server_count} möjliga servrar, men din server kan bara stödja {max_servers} servrar.",
+        "cpu_sockets": "CPU uttag",
         "cpu_cores_per_socket": "CPU kärnor/uttag",
         "cpu_threads_per_core": "CPU trådar/kärna",
         "gpu": "GPU",
@@ -1198,7 +1227,6 @@
         "usage": "Användning"
     },
     "server": {
-        "copy_connection_string": "Kopiera anslutningssträngen",
         "join_server": "Anslut till server",
         "form": {
             "label": "Serveretikett",
@@ -1212,8 +1240,10 @@
             "game_server_node_description": "Välj en spelservernod med CS installerat",
             "type": "Typ av server",
             "select_type": "Välj servertyp",
-            "is_dedicated": "Dedikerad server",
-            "is_dedicated_description": "Kontrollera om detta är en dedikerad server",
+            "ranked_server": "Rankad server",
+            "ranked_server_description": "Fullt hanterad rankad erfarenhet av 5stack.",
+            "valve_presets": "Förinställda termostater",
+            "valve_presets_description": "Välj mellan casual/konkurrenskraftiga och andra Valve-förinställningar.",
             "connect_password": "Anslut lösenord",
             "connect_password_description": "Lösenord krävs för att ansluta till servern (valfritt)",
             "rcon_password": "RCON-lösenord",
@@ -1291,5 +1321,9 @@
         "streams_description": "Strömmar",
         "link": "Länk",
         "title": "Titel"
+    },
+    "demo_network_limiter": {
+        "network_limit": "Nätverksgräns (Mbps)",
+        "unlimited": "Obegränsad"
     }
 }

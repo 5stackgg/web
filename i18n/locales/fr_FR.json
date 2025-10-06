@@ -5,9 +5,7 @@
             "cpu_usage": "Utilisation CPU",
             "memory_usage": "Utilisation mémoire",
             "services": "Services",
-            "network": "Réseau",
-            "show_metrics": "Afficher les métriques",
-            "hide_metrics": "Masquer les métriques"
+            "network": "Réseau"
         },
         "system_logs": {
             "follow_logs": "Suivre",
@@ -31,10 +29,7 @@
             "title": "Équipes",
             "description": "Gestion des équipes",
             "create": "Créer",
-            "tabs": {
-                "my_teams": "Mes équipes",
-                "other_teams": "Autres équipes"
-            },
+            "tabs": {},
             "search": "Rechercher"
         },
         "settings": {
@@ -106,7 +101,30 @@
                 "light": "Clair",
                 "dark": "Sombre"
             },
+            "notifications": {
+                "title": "Notifications",
+                "description": "Configurer les préférences de notification pour le chat et d'autres événements.",
+                "chat_sound": {
+                    "title": "Notifications sonores du chat",
+                    "description": "Jouer un son lors de la réception de nouveaux messages"
+                },
+                "volume": {
+                    "title": "Volume"
+                },
+                "test_chat_sound": "Tester le son du chat",
+                "test_match_found_sound": "Test du son trouvé",
+                "test_tick_sound": "Tester le son des ticks",
+                "test_countdown_sound": "Tester le compte à rebours"
+            },
             "application": {
+                "update_success": "Mis à jour",
+                "db_backups": {
+                    "title": "Sauvegardes DB",
+                    "description": "Gérer les sauvegardes de la base de données.",
+                    "name": "Nom",
+                    "size": "Taille",
+                    "created_at": "Créé"
+                },
                 "telemetry": {
                     "title": "Télémétrie",
                     "telemetry": "Télémétrie",
@@ -142,6 +160,8 @@
                 "create_matches_role_description": "Ce rôle sera en mesure de créer des correspondances.",
                 "create_tournaments_role": "Rôle de création de tournois",
                 "create_tournaments_role_description": "Ce rôle sera capable de créer des tournois.",
+                "dedicated_servers_min_role_to_connect": "Rôle minimum pour se connecter à des serveurs dédiés protégés par mot de passe",
+                "dedicated_servers_min_role_to_connect_description": "Seuls les joueurs situés à ou au-dessus de ce rôle peuvent se connecter à des serveurs dédiés qui nécessitent un mot de passe.",
                 "matchmaking_min_role": "Rôle minimum autorisé à s'associer à la prise de correspondance",
                 "matchmaking_min_role_description": "Ce rôle sera en mesure de s'associer à des rencontres.",
                 "max_acceptable_latency": "Maximum acceptable Latence",
@@ -179,7 +199,9 @@
                     "test_upload_success": "Test de l'envoi réussi",
                     "test_upload_failed": "Échec du test de téléchargement",
                     "test_download": "Tester le téléchargement",
-                    "test_download_failed": "Échec du téléchargement du test"
+                    "test_download_failed": "Échec du téléchargement du test",
+                    "demo_network_limiter": "Limite globale du réseau de démo",
+                    "demo_network_limiter_description": "Le limiteur de réseau global pour les fichiers de démonstration."
                 },
                 "update_map_pools": {
                     "title": "Pools de cartes de mise à jour automatique",
@@ -257,8 +279,6 @@
             "create": "Créer",
             "last_ten_wins": "Derniers 10 matchs gagnés",
             "last_ten_losses": "Derniers 10 matchs perdus",
-            "my_match_history": "Mon historique de matchs",
-            "other_matches": "Autres matchs",
             "match_updated": "Correspondance mise à jour",
             "create_page": {
                 "title": "Créer",
@@ -294,7 +314,7 @@
             },
             "table": {
                 "node": "Nœud",
-                "lan_public_ip": "IP LAN/Publique",
+                "demo_network_limiter": "Limiter réseau de démo",
                 "cs_build_id": "Construction de l'informatique",
                 "region": "Région",
                 "capacity": "Capacité",
@@ -304,6 +324,7 @@
                 "no_nodes": "Aucun nœud",
                 "supports_low_latency": "Soutient la faible latence",
                 "supports_cpu_pinning": "Prise en charge du processeur Pinnage",
+                "cpu_governor": "Gouverneur du CPU",
                 "pin_build_id": "Épingler la version",
                 "pin_build_id_tooltip": "Épingler l'ID de construction du serveur CS2",
                 "pin_plugin_version": "Plugin Pin",
@@ -321,9 +342,10 @@
             "table": {
                 "connection_details": "Détails de connexion",
                 "label": "Étiquette",
+                "type": "Type de texte",
                 "region": "Région",
-                "tv_port": "Port TV",
                 "plugin_version": "Version du plugin",
+                "tv_port": "Port TV",
                 "enabled": "Activé",
                 "yes": "Oui",
                 "no": "Non"
@@ -334,7 +356,6 @@
                 "hide_config": "Masquer la configuration",
                 "show_config": "Afficher la configuration",
                 "config_location": "Chemin du fichier de configuration",
-                "copy": "Copier",
                 "edit": "Modifier",
                 "delete": "Supprimer",
                 "status": {
@@ -355,20 +376,15 @@
             "title": "Serveurs publics",
             "description": "Naviguer et rejoindre les serveurs publics",
             "table": {
-                "connection_details": "Détails de la connexion",
                 "label": "Étiquette",
                 "region": "Région",
+                "map": "Carte",
                 "type": "Type de texte",
-                "tv_port": "Port TV",
-                "plugin_version": "Version du plugin",
-                "enabled": "Activé",
                 "players": "Joueurs",
-                "connect": "Connecter",
-                "yes": "Oui",
-                "no": "Non"
+                "connect": "Connecter"
             },
-            "no_servers": "Aucun serveur public disponible pour le moment.",
-            "connect_button": "Se connecter au serveur"
+            "no_public_servers": "Aucun serveur public disponible pour le moment.",
+            "lan_servers_title": "Serveurs LAN"
         },
         "map_pools": {
             "title": "Pools de cartes par défaut",
@@ -577,16 +593,19 @@
     "common": {
         "delete": "Supprimez",
         "cancel": "Annuler",
+        "save": "Enregistrer",
         "error": "Erreur",
         "tbd": "À déterminer",
         "boolean": {
             "yes": "Oui",
             "no": "Non"
         },
+        "are_you_sure": "Êtes-vous sûr de vouloir exécuter cette commande ?",
         "actions": {
             "edit": "Modifier",
             "delete": "Supprimer"
         },
+        "actions_label": "Actions",
         "close": "Fermer",
         "confirm": "Confirmer",
         "refresh": "Actualiser"
@@ -718,9 +737,6 @@
     "team": {
         "table": {
             "team": "Équipe",
-            "wins": "Victoires",
-            "losses": "Défaites",
-            "overtime_losses": "Défaites en prolongation",
             "no_teams_found": "Aucune équipe trouvée"
         },
         "invite": {
@@ -748,6 +764,10 @@
         },
         "members": {
             "title": "Membres",
+            "player": "Joueur",
+            "role": "Rôle",
+            "substitutes": "Substitutions",
+            "coaches": "Coachs",
             "invite_player": "Inviter un joueur",
             "pending_invites": "Invitations en attente"
         },
@@ -768,6 +788,11 @@
             "no_teams_found": "Aucune équipe trouvée"
         },
         "member": {
+            "coach": "Coach",
+            "status": "Statut",
+            "starter": "Démarrage",
+            "benched": "Bancé",
+            "substitute": "Substituer",
             "remove": "Retirer",
             "cancel_invite": "Annuler l'invitation",
             "confirm_cancel_invite": "Annuler l'invitation",
@@ -784,15 +809,11 @@
             "no_matches": "Aucun match à venir"
         },
         "recent": {
-            "title": "Matchs récents",
-            "no_matches": "Aucun match récent"
+            "title": "Matchs récents"
         },
         "options": {
             "filter_maps": "Filtrer les cartes",
             "table": {
-                "match": "Match",
-                "type": "Type",
-                "maps": "Cartes",
                 "no_matches_found": "Aucun match trouvé",
                 "join": "Rejoindre"
             },
@@ -917,8 +938,9 @@
             "map_veto_tab": "Veto de map",
             "settings": "Paramètres",
             "streams": "Faire correspondre les Streams en direct",
-            "server_console": "Console serveur",
+            "admin": "Administrateur",
             "randomize_teams": "Équipes aléatoires",
+            "swap_lineups": "Permuter les Lineups",
             "invited_to_match": "Invité au match",
             "join_roster": "Rejoindre la composition",
             "restore_round": "Restaurer le round",
@@ -989,6 +1011,7 @@
             "switch_teams": "Changer d'équipe",
             "remove_from_lineup": "Retirer de la composition",
             "leave_lineup": "Quitter la composition",
+            "update_team_name": "Mettre à jour le nom de l'équipe",
             "kills_full": "Kills",
             "assists_full": "Assists",
             "deaths_full": "Morts",
@@ -1006,7 +1029,8 @@
             "total_damage": "Dégâts totaux",
             "substitute": "Remplaçant",
             "join": "Rejoindre",
-            "slot": "Slot"
+            "slot": "Slot",
+            "team_name": "Nom de l'équipe"
         },
         "opening_duels": {
             "attempts": "Tentatives",
@@ -1047,7 +1071,8 @@
             "assigned": "Assigné",
             "join_server": "Rejoindre le serveur",
             "join_as_spectator": "Détails du Spectateur",
-            "join_tv_stream": "Détails du flux TV"
+            "join_tv_stream": "Détails du flux TV",
+            "tv_delay": "La TV est retardée par {delay} secondes, en attente de la préparation du stream."
         },
         "lobby": {
             "access_updated": "Les permissions d'accès ont été mises à jour"
@@ -1094,7 +1119,8 @@
             "banned": "Banni",
             "muted": "Muet",
             "gagged": "Bâillonné",
-            "add_friend": "Ajouter un ami"
+            "add_friend": "Ajouter un ami",
+            "available": "Disponible"
         },
         "change_name": {
             "button": "Changer le nom",
@@ -1143,7 +1169,9 @@
             "invite_to_match": "Inviter le joueur à correspondre",
             "remove": "Supprimer",
             "join_lobby": "Rejoindre le Lobby",
-            "offline": "Hors ligne"
+            "offline": "Hors ligne",
+            "in_match": "Dans un match",
+            "in_lobby": "Dans un lobby"
         },
         "banned": "Banni",
         "go_to_match": "Aller au match",
@@ -1170,6 +1198,7 @@
         "install_cs": "Installer CS",
         "overprovisioned_warning": "Surprovisionné",
         "overprovisioned_warning_description": "Vous avez assigné des serveurs {total_server_count} possibles, mais votre serveur ne peut prendre en charge que les serveurs {max_servers}.",
+        "cpu_sockets": "Sockets CPU",
         "cpu_cores_per_socket": "Cores/Socket du CPU",
         "cpu_threads_per_core": "Threads/Core du CPU",
         "gpu": "GPU",
@@ -1198,7 +1227,6 @@
         "usage": "Utilisation"
     },
     "server": {
-        "copy_connection_string": "Copier la chaîne de connexion",
         "join_server": "Rejoindre le serveur",
         "form": {
             "label": "Étiquette",
@@ -1212,8 +1240,10 @@
             "game_server_node_description": "Sélectionnez un serveur de jeu avec CS installé",
             "type": "Type de serveur",
             "select_type": "Sélectionnez le type de serveur",
-            "is_dedicated": "Serveur dédié",
-            "is_dedicated_description": "Vérifier si c'est un serveur dédié",
+            "ranked_server": "Serveur Classé",
+            "ranked_server_description": "Expérience classée entièrement gérée par 5pile.",
+            "valve_presets": "Préréglages de la Vanne",
+            "valve_presets_description": "Choisissez parmi les presets occasionnels et compétitifs et autres presets de Valve.",
             "connect_password": "Mot de passe de connexion",
             "connect_password_description": "Mot de passe requis pour se connecter au serveur (facultatif)",
             "rcon_password": "Mot de passe RCON",
@@ -1291,5 +1321,9 @@
         "streams_description": "Streams",
         "link": "Lier",
         "title": "Titre de la page"
+    },
+    "demo_network_limiter": {
+        "network_limit": "Limite réseau (Mbps)",
+        "unlimited": "Illimité"
     }
 }

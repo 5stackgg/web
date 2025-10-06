@@ -5,9 +5,7 @@
             "cpu_usage": "CPU使用率",
             "memory_usage": "メモリ使用率",
             "services": "サービス",
-            "network": "ネットワーク",
-            "show_metrics": "メトリックを表示",
-            "hide_metrics": "メトリクスを隠す"
+            "network": "ネットワーク"
         },
         "system_logs": {
             "follow_logs": "追跡",
@@ -31,10 +29,7 @@
             "title": "チーム",
             "description": "チームとロスターの管理。",
             "create": "作成",
-            "tabs": {
-                "my_teams": "マイチーム",
-                "other_teams": "その他のチーム"
-            },
+            "tabs": {},
             "search": "検索..."
         },
         "settings": {
@@ -106,7 +101,30 @@
                 "light": "ライト",
                 "dark": "ダーク"
             },
+            "notifications": {
+                "title": "通知",
+                "description": "チャットやその他のイベントの通知設定を設定します。",
+                "chat_sound": {
+                    "title": "チャットの通知音",
+                    "description": "新しいチャットメッセージを受信したときに音を鳴らす"
+                },
+                "volume": {
+                    "title": "音量"
+                },
+                "test_chat_sound": "チャットの音をテスト",
+                "test_match_found_sound": "テストマッチが見つかりました",
+                "test_tick_sound": "ティック音をテスト",
+                "test_countdown_sound": "テストカウントダウン音"
+            },
             "application": {
+                "update_success": "更新日時",
+                "db_backups": {
+                    "title": "DB バックアップ",
+                    "description": "データベース バックアップを管理します。",
+                    "name": "名前",
+                    "size": "サイズ",
+                    "created_at": "作成済み"
+                },
                 "telemetry": {
                     "title": "テレメトリー",
                     "telemetry": "テレメトリー",
@@ -142,6 +160,8 @@
                 "create_matches_role_description": "このロールはマッチを作成することができます.",
                 "create_tournaments_role": "トーナメント作成ロール",
                 "create_tournaments_role_description": "この役割は、トーナメントを作成することができます.",
+                "dedicated_servers_min_role_to_connect": "専用パスワード保護されたサーバーに接続するための最小ロール",
+                "dedicated_servers_min_role_to_connect_description": "この役割以上のプレイヤーのみが、パスワードが必要な専用サーバーに接続できます。",
                 "matchmaking_min_role": "マッチメイキングに参加できる最小限のロール",
                 "matchmaking_min_role_description": "マッチメイキングに参加できる役割.",
                 "max_acceptable_latency": "最高の受諾可能 レイテンシー",
@@ -179,7 +199,9 @@
                     "test_upload_success": "テストアップロード成功",
                     "test_upload_failed": "テストアップロードに失敗しました",
                     "test_download": "ダウンロードをテスト",
-                    "test_download_failed": "テストに失敗しました"
+                    "test_download_failed": "テストに失敗しました",
+                    "demo_network_limiter": "グローバルデモネットワーク制限",
+                    "demo_network_limiter_description": "デモファイルのグローバルネットワークリミッター。"
                 },
                 "update_map_pools": {
                     "title": "自動更新マッププール",
@@ -257,8 +279,6 @@
             "create": "作成",
             "last_ten_wins": "直近10試合の勝利",
             "last_ten_losses": "直近10試合の敗北",
-            "my_match_history": "マイマッチ履歴",
-            "other_matches": "その他のマッチ",
             "match_updated": "一致の更新",
             "create_page": {
                 "title": "作成",
@@ -294,7 +314,7 @@
             },
             "table": {
                 "node": "ノード",
-                "lan_public_ip": "LAN/パブリックIP",
+                "demo_network_limiter": "ネットワーク制限のデモ",
                 "cs_build_id": "CS ビルド",
                 "region": "リージョン",
                 "capacity": "容量",
@@ -304,6 +324,7 @@
                 "no_nodes": "ノードがありません",
                 "supports_low_latency": "低レイテンシに対応",
                 "supports_cpu_pinning": "CPU対応 ピニング",
+                "cpu_governor": "CPUガバナ",
                 "pin_build_id": "ビルドをピン留めする",
                 "pin_build_id_tooltip": "CS2サーバーのビルドIDをピン留めする",
                 "pin_plugin_version": "ピン留めプラグイン",
@@ -321,9 +342,10 @@
             "table": {
                 "connection_details": "接続詳細",
                 "label": "ラベル",
+                "type": "タイプ",
                 "region": "リージョン",
-                "tv_port": "TVポート",
                 "plugin_version": "プラグインバージョン",
+                "tv_port": "TVポート",
                 "enabled": "有効",
                 "yes": "はい",
                 "no": "いいえ"
@@ -334,7 +356,6 @@
                 "hide_config": "設定を非表示",
                 "show_config": "設定を表示",
                 "config_location": "設定ファイルの場所",
-                "copy": "コピー",
                 "edit": "編集",
                 "delete": "削除",
                 "status": {
@@ -355,20 +376,15 @@
             "title": "公開サーバー",
             "description": "パブリックサーバーを参照して参加する",
             "table": {
-                "connection_details": "接続詳細",
                 "label": "ラベル",
                 "region": "地域",
+                "map": "地図",
                 "type": "タイプ",
-                "tv_port": "テレビポート",
-                "plugin_version": "プラグインのバージョン",
-                "enabled": "有効",
                 "players": "プレイヤー",
-                "connect": "接続する",
-                "yes": "はい",
-                "no": "いいえ"
+                "connect": "接続する"
             },
-            "no_servers": "現在利用可能な公開サーバーはありません。",
-            "connect_button": "サーバーに接続"
+            "no_public_servers": "現在利用可能な公開サーバーはありません。",
+            "lan_servers_title": "LAN サーバー"
         },
         "map_pools": {
             "title": "デフォルト地図プール",
@@ -577,16 +593,19 @@
     "common": {
         "delete": "削除",
         "cancel": "キャンセル",
+        "save": "保存",
         "error": "エラー",
         "tbd": "未定",
         "boolean": {
             "yes": "はい",
             "no": "いいえ"
         },
+        "are_you_sure": "このコマンドを実行してもよろしいですか？",
         "actions": {
             "edit": "編集",
             "delete": "削除"
         },
+        "actions_label": "アクション",
         "close": "閉じる",
         "confirm": "確認",
         "refresh": "リフレッシュ"
@@ -718,9 +737,6 @@
     "team": {
         "table": {
             "team": "チーム",
-            "wins": "勝利",
-            "losses": "敗北",
-            "overtime_losses": "延長戦での敗北",
             "no_teams_found": "チームが見つかりません"
         },
         "invite": {
@@ -748,6 +764,10 @@
         },
         "members": {
             "title": "メンバー",
+            "player": "プレイヤー",
+            "role": "ロール",
+            "substitutes": "代替品",
+            "coaches": "Coaches",
             "invite_player": "プレイヤーを招待",
             "pending_invites": "保留中の招待"
         },
@@ -768,6 +788,11 @@
             "no_teams_found": "チームが見つかりません"
         },
         "member": {
+            "coach": "コーチformat@@0",
+            "status": "ステータス",
+            "starter": "Starter",
+            "benched": "ベンチ済み",
+            "substitute": "代用品",
             "remove": "削除",
             "cancel_invite": "招待をキャンセル",
             "confirm_cancel_invite": "招待をキャンセル",
@@ -784,15 +809,11 @@
             "no_matches": "予定されているマッチはありません"
         },
         "recent": {
-            "title": "最近のマッチ",
-            "no_matches": "最近のマッチはありません"
+            "title": "最近のマッチ"
         },
         "options": {
             "filter_maps": "フィルターマップ",
             "table": {
-                "match": "マッチ",
-                "type": "タイプ",
-                "maps": "マップ",
                 "no_matches_found": "マッチが見つかりません",
                 "join": "参加"
             },
@@ -917,8 +938,9 @@
             "map_veto_tab": "マップベート",
             "settings": "設定",
             "streams": "ライブストリームと一致",
-            "server_console": "サーバーコンソール",
+            "admin": "管理者",
             "randomize_teams": "チームをランダム化",
+            "swap_lineups": "ラインアップを入れ替え",
             "invited_to_match": "マッチに招待されました",
             "join_roster": "ロスターに参加",
             "restore_round": "ラウンドを復元",
@@ -989,6 +1011,7 @@
             "switch_teams": "チームを切り替え",
             "remove_from_lineup": "ラインナップから削除",
             "leave_lineup": "ラインナップを退出",
+            "update_team_name": "チーム名を更新",
             "kills_full": "キル数",
             "assists_full": "アシスト数",
             "deaths_full": "デス数",
@@ -1006,7 +1029,8 @@
             "total_damage": "総ダメージ",
             "substitute": "サブスティテュート",
             "join": "参加",
-            "slot": "スロット"
+            "slot": "スロット",
+            "team_name": "チーム名"
         },
         "opening_duels": {
             "attempts": "試行",
@@ -1047,7 +1071,8 @@
             "assigned": "割り当て済み",
             "join_server": "サーバーに参加",
             "join_as_spectator": "観戦者の詳細",
-            "join_tv_stream": "テレビストリームの詳細"
+            "join_tv_stream": "テレビストリームの詳細",
+            "tv_delay": "テレビが {delay} 秒遅れ、ストリームの準備ができます。"
         },
         "lobby": {
             "access_updated": "マッチロビーへのアクセスが{access}に更新されました"
@@ -1094,7 +1119,8 @@
             "banned": "BAN",
             "muted": "ミュート",
             "gagged": "ギャグ",
-            "add_friend": "フレンド追加"
+            "add_friend": "フレンド追加",
+            "available": "利用可能です"
         },
         "change_name": {
             "button": "名前を変更",
@@ -1143,7 +1169,9 @@
             "invite_to_match": "プレイヤーにマッチする招待状",
             "remove": "削除",
             "join_lobby": "ロビーに参加",
-            "offline": "オフライン"
+            "offline": "オフライン",
+            "in_match": "試合中",
+            "in_lobby": "ロビーで"
         },
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
@@ -1170,6 +1198,7 @@
         "install_cs": "CSをインストール",
         "overprovisioned_warning": "オーバープロビジョニング済み",
         "overprovisioned_warning_description": "{total_server_count} 可能なサーバーを割り当てましたが、あなたのサーバーは {max_servers} サーバーのみサポートできます。",
+        "cpu_sockets": "CPU Sockets",
         "cpu_cores_per_socket": "CPUコア/ソケット",
         "cpu_threads_per_core": "CPUスレッド/コア",
         "gpu": "GPU",
@@ -1198,7 +1227,6 @@
         "usage": "使用量"
     },
     "server": {
-        "copy_connection_string": "接続文字列をコピー",
         "join_server": "サーバーに参加",
         "form": {
             "label": "ラベル",
@@ -1212,8 +1240,10 @@
             "game_server_node_description": "CS がインストールされたゲームサーバーノードを選択します",
             "type": "サーバーの種類",
             "select_type": "サーバータイプを選択",
-            "is_dedicated": "専用サーバー",
-            "is_dedicated_description": "これが専用サーバーであるか確認してください",
+            "ranked_server": "Ranked サーバー",
+            "ranked_server_description": "5スタックごとに完全に管理された経験値。",
+            "valve_presets": "バルブプリセット",
+            "valve_presets_description": "負傷者/競争力およびその他のバルブプリセットから選択します。",
             "connect_password": "パスワードを接続する",
             "connect_password_description": "サーバーに接続するために必要なパスワード (オプション)",
             "rcon_password": "RCONパスワード",
@@ -1291,5 +1321,9 @@
         "streams_description": "ストリーム",
         "link": "リンク",
         "title": "タイトル"
+    },
+    "demo_network_limiter": {
+        "network_limit": "ネットワーク上限（MB）",
+        "unlimited": "無制限です"
     }
 }

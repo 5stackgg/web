@@ -903,6 +903,15 @@
                         "everyone": "Anyone"
                     }
                 },
+                "check_in_settings": {
+                    "label": "Check In Settings",
+                    "description": "Controls how players check in before the match starts.",
+                    "options": {
+                        "admins": "Admins",
+                        "captains": "Captains",
+                        "everyone": "All Players Required to Check In"
+                    }
+                },
                 "ready_settings": {
                     "label": "Ready Settings",
                     "description": "Controls how the match determines to be ready to start.",
@@ -926,6 +935,7 @@
             "timeout_setting": "Timeout Setting",
             "tech_timeout_setting": "Tech Timeout Setting",
             "ready_setting": "Ready Setting",
+            "check_in_setting": "Veto Setting",
             "map_pool": "Map Pool",
             "advanced_settings": "Show Advanced Settings"
         },
@@ -1067,7 +1077,8 @@
             "title": "Check In",
             "checked_in": "Checked In",
             "check_in": "Check In",
-            "description": "Please check in to confirm your participation in this match"
+            "description": "Please check in to confirm your participation in this match",
+            "checked_in_description": "You have checked in {checked} out of {required} players required to start the match"
         },
         "coach": {
             "assign": "Assign Coach"

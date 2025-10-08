@@ -1015,7 +1015,14 @@
             "call_support": "Call for Support",
             "start_veto": "Start Veto",
             "skip_checkin": "Skip Check In",
-            "cancel": "Cancel Match"
+            "cancel": "Cancel Match",
+            "delete": "Delete Match"
+        },
+        "delete_confirm": {
+            "title": "Delete Match",
+            "description": "Are you sure you want to delete this match? This action cannot be undone.",
+            "cancel": "Cancel",
+            "confirm": "Delete"
         },
         "lineup": {
             "stats": {
@@ -1176,6 +1183,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "Cancel Matchmaking",
         "searching_for_match": "Searching for a {type} match",
         "invites": "Invites",
         "lobby": {

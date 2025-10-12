@@ -136,7 +136,8 @@
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "Matchmaking allows players to join a queue and be matched with other players."
+                    "description": "Matchmaking allows players to join a queue and be matched with other players.",
+                    "updated": "Settings updated successfully"
                 },
                 "discord": {
                     "title": "Discord",
@@ -171,6 +172,8 @@
                 "matchmaking_min_role_description": "This role will be able to join matchmaking.",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
                 "max_acceptable_latency_description": "This is the maximum latency that a player can have to join a match.",
+                "lineup_add_without_invite": "Minimum Role to Add Players to Lineup Without Invite",
+                "lineup_add_without_invite_description": "This role will be able to add players to match lineups without sending an invite first.",
                 "auto_cancel_duration": "Auto Cancel Duration",
                 "auto_cancel_duration_description": "This is the duration in minutes that a match will be auto canceled if not started within the duration.",
                 "update": "Update",
@@ -1050,6 +1053,18 @@
             },
             "discord_user": "This is a Discord user, register your discord id to enable stat tracking by typing",
             "discord_link": "in the official discord channel."
+        },
+        "invites": {
+            "title": "Invites",
+            "no_invites": "No pending invites",
+            "invited_player": "Invited Player",
+            "invited_by": "Invited By",
+            "deleted_success": "Invite deleted successfully",
+            "delete_error": "Failed to delete invite",
+            "delete_confirm": {
+                "title": "Delete Invite",
+                "description": "Are you sure you want to delete the invite for {player} ({steam_id})? This action cannot be undone."
+            }
         },
         "overview": {
             "promote_captain": "Promote to Captain",

@@ -133,7 +133,8 @@
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "Gérez les paramètres de matchmaking"
+                    "description": "Gérez les paramètres de matchmaking",
+                    "updated": "Paramètres mis à jour avec succès"
                 },
                 "discord": {
                     "title": "Discord",
@@ -142,7 +143,8 @@
                     "webhook_description": "Nous utilisons ce webhook Discord pour envoyer des notifications qui nécessitent une action d'un joueur. Ex. problèmes de match, bugs, etc.",
                     "support_role": "ID du rôle de support Discord",
                     "support_role_description": "Ce rôle sera mentionné lorsqu'il est utilisé pour les actions de support. Vous pouvez obtenir l'ID du rôle depuis l'application Discord en activant le mode développeur et en faisant un clic droit pour copier l'ID.",
-                    "update": "Mettre à jour"
+                    "update": "Mettre à jour",
+                    "updated": "Paramètres Discord mis à jour"
                 },
                 "game_type_configs": {
                     "title": "Type de jeu Configs",
@@ -154,7 +156,8 @@
                     "minimum_role_to_stream": "Rôle minimum autorisé à se connecter au téléviseur (retardé)",
                     "minimum_role_to_stream_description": "Ce rôle sera en mesure de se connecter au téléviseur.",
                     "minimum_role_to_spectate": "Rôle minimum autorisé à regarder (sans délai)",
-                    "minimum_role_to_spectate_description": "Ce rôle sera en mesure de se connecter et de regarder les matchs."
+                    "minimum_role_to_spectate_description": "Ce rôle sera en mesure de se connecter et de regarder les matchs.",
+                    "updated": "Paramètres de streaming mis à jour"
                 },
                 "create_matches_role": "Rôle minimum autorisé à créer des matchs",
                 "create_matches_role_description": "Ce rôle sera en mesure de créer des correspondances.",
@@ -166,6 +169,8 @@
                 "matchmaking_min_role_description": "Ce rôle sera en mesure de s'associer à des rencontres.",
                 "max_acceptable_latency": "Maximum acceptable Latence",
                 "max_acceptable_latency_description": "C'est la latence maximale qu'un joueur peut avoir à rejoindre un match.",
+                "lineup_add_without_invite": "Rôle minimum pour ajouter des joueurs à la programmation sans invitation",
+                "lineup_add_without_invite_description": "Ce rôle sera en mesure d'ajouter des joueurs à des listes de joueurs sans envoyer d'invitation d'abord.",
                 "auto_cancel_duration": "Durée de l'annulation automatique",
                 "auto_cancel_duration_description": "Il s'agit de la durée en minutes où une partie sera automatiquement annulée si elle n'est pas démarrée dans la durée.",
                 "update": "Mettre à jour",
@@ -201,7 +206,8 @@
                     "test_download": "Tester le téléchargement",
                     "test_download_failed": "Échec du téléchargement du test",
                     "demo_network_limiter": "Limite globale du réseau de démo",
-                    "demo_network_limiter_description": "Le limiteur de réseau global pour les fichiers de démonstration."
+                    "demo_network_limiter_description": "Le limiteur de réseau global pour les fichiers de démonstration.",
+                    "updated_s3_settings": "Paramètres S3 mis à jour"
                 },
                 "update_map_pools": {
                     "title": "Pools de cartes de mise à jour automatique",
@@ -251,7 +257,8 @@
                 "description": "Voulez-vous vraiment supprimer cette région ?",
                 "cancel": "Annuler",
                 "confirm": "Supprimer"
-            }
+            },
+            "deleted": "Région supprimée"
         },
         "players": {
             "title": "Joueurs",
@@ -294,6 +301,9 @@
             "detail": {
                 "schedule": "Planifier"
             }
+        },
+        "toasts": {
+            "copied_to_clipboard": "Copié dans le presse-papiers"
         },
         "game_server_nodes": {
             "title": "Nœuds de Serveur de Jeu",
@@ -465,6 +475,7 @@
             "fix_link": "Afficher la solution",
             "cancel": "Annuler",
             "update": "Mettre à jour",
+            "updating": "Mise à jour du système",
             "panel_update": "Votre panneau est obsolète, tirez et exécutez le script de mise à jour"
         },
         "match_lobby": {
@@ -615,6 +626,8 @@
     },
     "tournament": {
         "overview": "Vue d'ensemble",
+        "joined": "Arène Rejointe",
+        "updated": "Arène mise à jour",
         "settings": "Paramètres",
         "admin": "Administration",
         "show_organizers": "Afficher les organisateurs",
@@ -888,6 +901,15 @@
                         "everyone": "N'importe qui"
                     }
                 },
+                "check_in_settings": {
+                    "label": "Vérifier dans les paramètres",
+                    "description": "Contrôle comment les joueurs s'enregistrent avant le début du match.",
+                    "options": {
+                        "admins": "Administrateurs",
+                        "captains": "Capitaines",
+                        "everyone": "Tous les joueurs sont requis pour se connecter"
+                    }
+                },
                 "ready_settings": {
                     "label": "Paramètres prêts",
                     "description": "Contrôle comment le match détermine d'être prêt à démarrer.",
@@ -911,6 +933,7 @@
             "timeout_setting": "Paramètre de temps mort",
             "tech_timeout_setting": "Paramètre de temps mort technique",
             "ready_setting": "Réglage prêt",
+            "check_in_setting": "Réglage Veto",
             "map_pool": "Pool de maps",
             "advanced_settings": "Afficher les paramètres avancés"
         },
@@ -990,7 +1013,17 @@
             "call_support": "Appeler le support",
             "start_veto": "Démarrer le veto",
             "skip_checkin": "Passer le check-in",
-            "cancel": "Annuler"
+            "cancel": "Annuler",
+            "delete": "Supprimer la correspondance",
+            "canceled": "Match annulé",
+            "deleted": "Correspondance supprimée",
+            "requested_organizer": "Organisateur demandé"
+        },
+        "delete_confirm": {
+            "title": "Supprimer la correspondance",
+            "description": "Êtes-vous sûr de vouloir supprimer ce match? Cette action ne peut pas être annulée.",
+            "cancel": "Abandonner",
+            "confirm": "Supprimez"
         },
         "lineup": {
             "stats": {
@@ -1005,6 +1038,18 @@
             },
             "discord_user": "Utilisateur Discord",
             "discord_link": "Lien Discord"
+        },
+        "invites": {
+            "title": "Invitations",
+            "no_invites": "Aucune invitation en attente",
+            "invited_player": "Joueur invité",
+            "invited_by": "Invité par",
+            "deleted_success": "Invitation supprimée avec succès",
+            "delete_error": "Échec de la suppression de l'invitation",
+            "delete_confirm": {
+                "title": "Supprimer l'invitation",
+                "description": "Êtes-vous sûr de vouloir supprimer l'invitation pour {player} ({steam_id}) ? Cette action ne peut pas être annulée."
+            }
         },
         "overview": {
             "promote_captain": "Promouvoir capitaine",
@@ -1052,7 +1097,8 @@
             "title": "Check-in",
             "checked_in": "Check-in effectué",
             "check_in": "Check-in",
-            "description": "Description du check-in"
+            "description": "Description du check-in",
+            "checked_in_description": "Vous avez vérifié {checked} sur {required} joueurs requis pour commencer le match"
         },
         "coach": {
             "assign": "Assigner un coach"
@@ -1150,6 +1196,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "Annuler la recherche de groupe",
         "searching_for_match": "Recherche d'une correspondance {type}",
         "invites": "Invitations",
         "lobby": {

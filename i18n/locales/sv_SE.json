@@ -133,7 +133,8 @@
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "Hantera matchmaking-inställningar"
+                    "description": "Hantera matchmaking-inställningar",
+                    "updated": "Inställningar har uppdaterats"
                 },
                 "discord": {
                     "title": "Discord",
@@ -142,7 +143,8 @@
                     "webhook_description": "Vi använder denna Discord Webhook för att skicka meddelanden som kräver åtgärd från en spelare. T.ex. matchproblem, buggar, etc.",
                     "support_role": "Discord Support-roll ID",
                     "support_role_description": "Denna roll kommer att nämnas när den används för supportåtgärder. Du kan få roll-ID från Discord-applikationen genom att aktivera utvecklarläge och högerklicka för att kopiera ID.",
-                    "update": "Uppdatera"
+                    "update": "Uppdatera",
+                    "updated": "Uppdaterade Discord-inställningar"
                 },
                 "game_type_configs": {
                     "title": "Konfigurering av speltyp",
@@ -154,7 +156,8 @@
                     "minimum_role_to_stream": "Minsta roll tillåten att ansluta till TV (försenad)",
                     "minimum_role_to_stream_description": "Denna roll kommer att kunna ansluta till TV.",
                     "minimum_role_to_spectate": "Minsta roll tillåts att åskådas (ingen fördröjning)",
-                    "minimum_role_to_spectate_description": "Denna roll kommer att kunna ansluta och åskåda matcher."
+                    "minimum_role_to_spectate_description": "Denna roll kommer att kunna ansluta och åskåda matcher.",
+                    "updated": "Uppdaterade strömningsinställningar"
                 },
                 "create_matches_role": "Minsta roll för att skapa matcher",
                 "create_matches_role_description": "Denna roll kommer att kunna skapa matcher.",
@@ -166,6 +169,8 @@
                 "matchmaking_min_role_description": "Denna roll kommer att kunna ansluta sig till matchmaking.",
                 "max_acceptable_latency": "Maximal acceptabel Latency",
                 "max_acceptable_latency_description": "Detta är den maximala latens som en spelare kan behöva gå med i en match.",
+                "lineup_add_without_invite": "Lägsta roll för att lägga till spelare till Lineup utan inbjudan",
+                "lineup_add_without_invite_description": "Denna roll kommer att kunna lägga till spelare att matcha lineuper utan att skicka en inbjudan först.",
                 "auto_cancel_duration": "Automatisk uppsägningstid",
                 "auto_cancel_duration_description": "Detta är varaktigheten i minuter som en match kommer att auto avbrytas om inte startas inom varaktigheten.",
                 "update": "Uppdatera",
@@ -201,7 +206,8 @@
                     "test_download": "Testa nedladdning",
                     "test_download_failed": "Nedladdning av testet misslyckades",
                     "demo_network_limiter": "Gräns för globala demonätverk",
-                    "demo_network_limiter_description": "Den globala nätverksbegränsaren för demofilerna."
+                    "demo_network_limiter_description": "Den globala nätverksbegränsaren för demofilerna.",
+                    "updated_s3_settings": "Uppdaterade S3-inställningar"
                 },
                 "update_map_pools": {
                     "title": "Automatisk uppdatering Map Pools",
@@ -251,7 +257,8 @@
                 "description": "Är du säker på att du vill ta bort denna region? Denna åtgärd kan inte ångras.",
                 "cancel": "Avbryt",
                 "confirm": "Ta bort"
-            }
+            },
+            "deleted": "Raderad region"
         },
         "players": {
             "title": "Spelare",
@@ -294,6 +301,9 @@
             "detail": {
                 "schedule": "Schema"
             }
+        },
+        "toasts": {
+            "copied_to_clipboard": "Kopierad till urklipp"
         },
         "game_server_nodes": {
             "title": "Spelserver Noder",
@@ -465,6 +475,7 @@
             "fix_link": "Om en systemuppgradering kvarstår, kan du behöva fixa dina versioner",
             "cancel": "Avbryt",
             "update": "Uppdatera",
+            "updating": "Systemet uppdateras",
             "panel_update": "Din panel är ur datum, dra och kör uppdateringsskriptet"
         },
         "match_lobby": {
@@ -615,6 +626,8 @@
     },
     "tournament": {
         "overview": "Översikt",
+        "joined": "Gick med i turneringen",
+        "updated": "Uppdaterad turnering",
         "settings": "Inställningar",
         "admin": "Administratör",
         "show_organizers": "Visa organisatörer",
@@ -888,6 +901,15 @@
                         "everyone": "Alla"
                     }
                 },
+                "check_in_settings": {
+                    "label": "Kontrollera i inställningar",
+                    "description": "Kontrollerar hur spelare checkar in innan matchen börjar.",
+                    "options": {
+                        "admins": "Administratörer",
+                        "captains": "Kaptener",
+                        "everyone": "Alla spelare som krävs för att checka in"
+                    }
+                },
                 "ready_settings": {
                     "label": "Redo Inställningar",
                     "description": "Kontrollerar hur matchen bestämmer sig för att vara redo att börja.",
@@ -911,6 +933,7 @@
             "timeout_setting": "Timeout-inställning",
             "tech_timeout_setting": "Teknisk timeout-inställning",
             "ready_setting": "Redo inställning",
+            "check_in_setting": "Veto inställning",
             "map_pool": "Kartpool",
             "advanced_settings": "Visa avancerade inställningar"
         },
@@ -990,7 +1013,17 @@
             "call_support": "Ring efter support",
             "start_veto": "Starta veto",
             "skip_checkin": "Hoppa över incheckning",
-            "cancel": "Avbryt match"
+            "cancel": "Avbryt match",
+            "delete": "Ta bort matchning",
+            "canceled": "Matchen avbröts",
+            "deleted": "Matchning borttagen",
+            "requested_organizer": "Begärd Arrangör"
+        },
+        "delete_confirm": {
+            "title": "Ta bort matchning",
+            "description": "Är du säker på att du vill ta bort denna match? Denna åtgärd kan inte ångras.",
+            "cancel": "Avbryt",
+            "confirm": "Radera"
         },
         "lineup": {
             "stats": {
@@ -1005,6 +1038,18 @@
             },
             "discord_user": "Detta är en Discord-användare, registrera ditt discord-id för att aktivera statistikspårning genom att skriva",
             "discord_link": "i den officiella discord-kanalen."
+        },
+        "invites": {
+            "title": "Inbjudningar",
+            "no_invites": "Inga väntande inbjudningar",
+            "invited_player": "Inbjuden spelare",
+            "invited_by": "Inbjuden av",
+            "deleted_success": "Inbjudan har tagits bort",
+            "delete_error": "Det gick inte att ta bort inbjudan",
+            "delete_confirm": {
+                "title": "Ta bort inbjudan",
+                "description": "Är du säker på att du vill ta bort inbjudan till {player} ({steam_id})? Denna åtgärd kan inte ångras."
+            }
         },
         "overview": {
             "promote_captain": "Befordra till kapten",
@@ -1052,7 +1097,8 @@
             "title": "Checka in",
             "checked_in": "Incheckad",
             "check_in": "Checka in",
-            "description": "Vänligen checka in för att bekräfta din deltagande i denna match"
+            "description": "Vänligen checka in för att bekräfta din deltagande i denna match",
+            "checked_in_description": "Du har checkat in {checked} av {required} spelare som krävs för att starta matchen"
         },
         "coach": {
             "assign": "Tilldela tränare"
@@ -1150,6 +1196,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "Avbryt matchmaking",
         "searching_for_match": "Söka efter en {typ} match",
         "invites": "Inbjudningar",
         "lobby": {

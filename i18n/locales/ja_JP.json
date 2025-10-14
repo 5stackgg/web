@@ -133,7 +133,8 @@
                 },
                 "matchmaking": {
                     "title": "マッチメイキング",
-                    "description": "マッチメイキングの設定を管理"
+                    "description": "マッチメイキングの設定を管理",
+                    "updated": "設定が正常に更新されました"
                 },
                 "discord": {
                     "title": "Discord",
@@ -142,7 +143,8 @@
                     "webhook_description": "このDiscord Webhookは、プレイヤーのアクションが必要な通知を送信するために使用されます。例：マッチの問題、バグなど。",
                     "support_role": "DiscordサポートロールID",
                     "support_role_description": "このロールは、サポートアクションで使用される際にメンションされます。Discordアプリケーションで開発者モードを有効にし、右クリックしてIDをコピーすることでロールIDを取得できます。",
-                    "update": "更新"
+                    "update": "更新",
+                    "updated": "Discordの設定を更新しました"
                 },
                 "game_type_configs": {
                     "title": "ゲームの種類 設定",
@@ -154,7 +156,8 @@
                     "minimum_role_to_stream": "テレビへの接続を許可する最小ロール（遅延）",
                     "minimum_role_to_stream_description": "この役割はテレビに接続することができます。",
                     "minimum_role_to_spectate": "観戦を許可される最小ロール (遅延なし)",
-                    "minimum_role_to_spectate_description": "この役割はマッチを接続して観戦することができます。"
+                    "minimum_role_to_spectate_description": "この役割はマッチを接続して観戦することができます。",
+                    "updated": "更新されたストリーミング設定"
                 },
                 "create_matches_role": "マッチ作成に必要な最小ロール",
                 "create_matches_role_description": "このロールはマッチを作成することができます.",
@@ -166,6 +169,8 @@
                 "matchmaking_min_role_description": "マッチメイキングに参加できる役割.",
                 "max_acceptable_latency": "最高の受諾可能 レイテンシー",
                 "max_acceptable_latency_description": "プレイヤーが試合に参加できる最大レイテンシです.",
+                "lineup_add_without_invite": "招待なしでプレイヤーを追加するための最小ロール",
+                "lineup_add_without_invite_description": "この役割は、最初に招待を送信することなく、プレイヤーを一致させることができます。",
                 "auto_cancel_duration": "自動キャンセル時間",
                 "auto_cancel_duration_description": "時間内に開始されていない場合、自動的にキャンセルされる時間を分単位で指定します。",
                 "update": "更新",
@@ -201,7 +206,8 @@
                     "test_download": "ダウンロードをテスト",
                     "test_download_failed": "テストに失敗しました",
                     "demo_network_limiter": "グローバルデモネットワーク制限",
-                    "demo_network_limiter_description": "デモファイルのグローバルネットワークリミッター。"
+                    "demo_network_limiter_description": "デモファイルのグローバルネットワークリミッター。",
+                    "updated_s3_settings": "S3設定を更新しました"
                 },
                 "update_map_pools": {
                     "title": "自動更新マッププール",
@@ -251,7 +257,8 @@
                 "description": "このリージョンを削除してもよろしいですか？",
                 "cancel": "キャンセル",
                 "confirm": "削除"
-            }
+            },
+            "deleted": "削除された地域"
         },
         "players": {
             "title": "プレイヤー",
@@ -294,6 +301,9 @@
             "detail": {
                 "schedule": "スケジュール"
             }
+        },
+        "toasts": {
+            "copied_to_clipboard": "クリップボードにコピーしました"
         },
         "game_server_nodes": {
             "title": "ゲームサーバーノード",
@@ -465,6 +475,7 @@
             "fix_link": "修正方法を確認",
             "cancel": "キャンセル",
             "update": "更新",
+            "updating": "システムが更新中です",
             "panel_update": "パネルは日付外で、更新スクリプトをプルして実行します"
         },
         "match_lobby": {
@@ -615,6 +626,8 @@
     },
     "tournament": {
         "overview": "概要",
+        "joined": "トーナメントに参加",
+        "updated": "更新されたトーナメント",
         "settings": "設定",
         "admin": "管理",
         "show_organizers": "主催者を見る",
@@ -788,7 +801,7 @@
             "no_teams_found": "チームが見つかりません"
         },
         "member": {
-            "coach": "コーチ",
+            "coach": "コーチformat@@0",
             "status": "ステータス",
             "starter": "Starter",
             "benched": "ベンチ済み",
@@ -888,6 +901,15 @@
                         "everyone": "スタッフ"
                     }
                 },
+                "check_in_settings": {
+                    "label": "チェックイン設定",
+                    "description": "試合開始前のプレイヤーのチェックイン方法を制御します。",
+                    "options": {
+                        "admins": "管理者",
+                        "captains": "キャプテンズ",
+                        "everyone": "チェックインに必要なすべてのプレイヤー"
+                    }
+                },
                 "ready_settings": {
                     "label": "準備設定",
                     "description": "マッチが開始する準備を決定する方法を制御します.",
@@ -911,6 +933,7 @@
             "timeout_setting": "タイムアウト設定",
             "tech_timeout_setting": "テクニカルタイムアウト設定",
             "ready_setting": "Ready の設定",
+            "check_in_setting": "Veto Setting",
             "map_pool": "マッププール",
             "advanced_settings": "高度な設定を表示する"
         },
@@ -990,7 +1013,17 @@
             "call_support": "サポートを呼び出す",
             "start_veto": "ベートを開始",
             "skip_checkin": "チェックインをスキップ",
-            "cancel": "キャンセル"
+            "cancel": "キャンセル",
+            "delete": "マッチを削除",
+            "canceled": "試合はキャンセルされました",
+            "deleted": "マッチが削除されました",
+            "requested_organizer": "要求されたオーガナイザー"
+        },
+        "delete_confirm": {
+            "title": "マッチを削除",
+            "description": "このマッチを削除してもよろしいですか？この操作は元に戻せません。",
+            "cancel": "キャンセル",
+            "confirm": "削除"
         },
         "lineup": {
             "stats": {
@@ -1005,6 +1038,18 @@
             },
             "discord_user": "Discordユーザー",
             "discord_link": "Discordリンク"
+        },
+        "invites": {
+            "title": "招待",
+            "no_invites": "保留中の招待はありません",
+            "invited_player": "招待されたプレイヤー",
+            "invited_by": "招待者",
+            "deleted_success": "招待を削除しました",
+            "delete_error": "招待の削除に失敗しました",
+            "delete_confirm": {
+                "title": "招待を削除",
+                "description": "{player} ({steam_id})の招待を削除してもよろしいですか？この操作は元に戻せません。"
+            }
         },
         "overview": {
             "promote_captain": "キャプテンに昇格",
@@ -1052,7 +1097,8 @@
             "title": "チェックイン",
             "checked_in": "チェックイン済み",
             "check_in": "チェックイン",
-            "description": "マッチに参加する準備ができたらチェックインしてください"
+            "description": "マッチに参加する準備ができたらチェックインしてください",
+            "checked_in_description": "試合開始に必要な {checked} プレイヤーのうち {required} をチェックインしました"
         },
         "coach": {
             "assign": "コーチを割り当て"
@@ -1150,6 +1196,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "マッチメイキングをキャンセル",
         "searching_for_match": "{type}マッチを検索する",
         "invites": "招待",
         "lobby": {

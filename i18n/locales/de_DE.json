@@ -133,7 +133,8 @@
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "Verwalten Sie die Matchmaking-Einstellungen"
+                    "description": "Verwalten Sie die Matchmaking-Einstellungen",
+                    "updated": "Einstellungen erfolgreich aktualisiert"
                 },
                 "discord": {
                     "title": "Discord",
@@ -142,7 +143,8 @@
                     "webhook_description": "Wir verwenden diesen Discord-Webhook, um Benachrichtigungen zu senden, die eine Aktion eines Spielers erfordern. Z.B. Match-Probleme, Bugs, etc.",
                     "support_role": "Discord-Support-Rollen-ID",
                     "support_role_description": "Diese Rolle wird bei Support-Aktionen erwähnt. Sie können die Rollen-ID aus der Discord-Anwendung erhalten, indem Sie den Entwicklermodus aktivieren und mit der rechten Maustaste klicken, um die ID zu kopieren.",
-                    "update": "Aktualisieren"
+                    "update": "Aktualisieren",
+                    "updated": "Aktualisierte Discord Einstellungen"
                 },
                 "game_type_configs": {
                     "title": "Game Type Configs",
@@ -154,7 +156,8 @@
                     "minimum_role_to_stream": "Minimale Rolle erlaubt Verbindung mit TV (Verzögert)",
                     "minimum_role_to_stream_description": "Diese Rolle wird in der Lage sein, sich mit TV zu verbinden.",
                     "minimum_role_to_spectate": "Minimale Rolle erlaubt zuzuschauen (Keine Verzögerung)",
-                    "minimum_role_to_spectate_description": "Diese Rolle wird in der Lage sein, Spiele zu verbinden und zuzusehen."
+                    "minimum_role_to_spectate_description": "Diese Rolle wird in der Lage sein, Spiele zu verbinden und zuzusehen.",
+                    "updated": "Aktualisierte Streaming-Einstellungen"
                 },
                 "create_matches_role": "Mindestrolle für Match-Erstellung",
                 "create_matches_role_description": "Diese Rolle wird in der Lage sein, Spiele zu erstellen.",
@@ -166,6 +169,8 @@
                 "matchmaking_min_role_description": "Diese Rolle wird in der Lage sein, sich zusammenzufügen.",
                 "max_acceptable_latency": "Maximal zulässig Latenz",
                 "max_acceptable_latency_description": "Dies ist die maximale Latenz, die ein Spieler einem Spiel beitreten muss.",
+                "lineup_add_without_invite": "Minimale Rolle zum Hinzufügen von Spielern zu Lineup ohne Einladung",
+                "lineup_add_without_invite_description": "Diese Rolle wird in der Lage sein, Spieler zu den Aufstellungen hinzuzufügen, ohne zuerst eine Einladung zu senden.",
                 "auto_cancel_duration": "Dauer automatisch abbrechen",
                 "auto_cancel_duration_description": "Dies ist die Dauer in Minuten, in der ein Spiel automatisch abgebrochen wird, wenn er nicht innerhalb der Dauer gestartet wird.",
                 "update": "Aktualisieren",
@@ -201,7 +206,8 @@
                     "test_download": "Download testen",
                     "test_download_failed": "Test Download fehlgeschlagen",
                     "demo_network_limiter": "Globaler Demo-Netzwerk-Limiter",
-                    "demo_network_limiter_description": "Der globale Netzwerklimiter für die Demo-Dateien."
+                    "demo_network_limiter_description": "Der globale Netzwerklimiter für die Demo-Dateien.",
+                    "updated_s3_settings": "S3 Einstellungen aktualisiert"
                 },
                 "update_map_pools": {
                     "title": "Automatisches Update von Kartenpools",
@@ -251,7 +257,8 @@
                 "description": "Möchten Sie diese Region wirklich löschen?",
                 "cancel": "Abbrechen",
                 "confirm": "Löschen"
-            }
+            },
+            "deleted": "Gelöschte Region"
         },
         "players": {
             "title": "Spieler",
@@ -294,6 +301,9 @@
             "detail": {
                 "schedule": "Zeitplan"
             }
+        },
+        "toasts": {
+            "copied_to_clipboard": "In Zwischenablage kopiert"
         },
         "game_server_nodes": {
             "title": "Game Server Nodes",
@@ -465,6 +475,7 @@
             "fix_link": "Lösung anzeigen",
             "cancel": "Abbrechen",
             "update": "Aktualisieren",
+            "updating": "System aktualisiert",
             "panel_update": "Ihr Panel ist aus dem Datum, ziehen und führen Sie das Update-Skript"
         },
         "match_lobby": {
@@ -615,6 +626,8 @@
     },
     "tournament": {
         "overview": "Übersicht",
+        "joined": "Turnier beigetreten",
+        "updated": "Turnier aktualisiert",
         "settings": "Einstellungen",
         "admin": "Verwaltung",
         "show_organizers": "Organizer ansehen",
@@ -888,6 +901,15 @@
                         "everyone": "Jeder"
                     }
                 },
+                "check_in_settings": {
+                    "label": "Check In Einstellungen",
+                    "description": "Legt fest, wie die Spieler einchecken, bevor das Spiel beginnt.",
+                    "options": {
+                        "admins": "Admins",
+                        "captains": "Kapitän",
+                        "everyone": "Alle Spieler müssen einchecken"
+                    }
+                },
                 "ready_settings": {
                     "label": "Fertige Einstellungen",
                     "description": "Kontrolliert, wie das Spiel entscheidet, bereit zu sein.",
@@ -911,6 +933,7 @@
             "timeout_setting": "Auszeiteinstellung",
             "tech_timeout_setting": "Technische Auszeiteinstellung",
             "ready_setting": "Fertigstellung",
+            "check_in_setting": "Veto-Einstellung",
             "map_pool": "Kartenpool",
             "advanced_settings": "Erweiterte Einstellungen anzeigen"
         },
@@ -990,7 +1013,17 @@
             "call_support": "Support anrufen",
             "start_veto": "Veto starten",
             "skip_checkin": "Check-in überspringen",
-            "cancel": "Spiel abbrechen"
+            "cancel": "Spiel abbrechen",
+            "delete": "Spiel löschen",
+            "canceled": "Match abgebrochen",
+            "deleted": "Spiel gelöscht",
+            "requested_organizer": "Angeforderter Organisator"
+        },
+        "delete_confirm": {
+            "title": "Spiel löschen",
+            "description": "Sind Sie sicher, dass Sie dieses Spiel löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+            "cancel": "Abbrechen",
+            "confirm": "Löschen"
         },
         "lineup": {
             "stats": {
@@ -1005,6 +1038,18 @@
             },
             "discord_user": "Dies ist ein Discord-Benutzer, registrieren Sie Ihre Discord-ID, um die Statistikverfolgung zu aktivieren, indem Sie eingeben",
             "discord_link": "im offiziellen Discord-Kanal."
+        },
+        "invites": {
+            "title": "Einladungen",
+            "no_invites": "Keine ausstehenden Einladungen",
+            "invited_player": "Eingeladener Spieler",
+            "invited_by": "Eingeladen von",
+            "deleted_success": "Einladung erfolgreich gelöscht",
+            "delete_error": "Einladung konnte nicht gelöscht werden",
+            "delete_confirm": {
+                "title": "Einladung löschen",
+                "description": "Sind Sie sicher, dass Sie die Einladung für {player} ({steam_id}) löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+            }
         },
         "overview": {
             "promote_captain": "Zum Kapitän befördern",
@@ -1052,7 +1097,8 @@
             "title": "Einchecken",
             "checked_in": "Eingecheckt",
             "check_in": "Einchecken",
-            "description": "Bitte checken Sie ein, um Ihre Teilnahme an diesem Spiel zu bestätigen"
+            "description": "Bitte checken Sie ein, um Ihre Teilnahme an diesem Spiel zu bestätigen",
+            "checked_in_description": "Es haben sich {checked} von {required} Spielern eingecheckt"
         },
         "coach": {
             "assign": "Trainer zuweisen"
@@ -1150,6 +1196,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "Matchmaking abbrechen",
         "searching_for_match": "Suche nach einem {type} Spiel",
         "invites": "Einladungen",
         "lobby": {

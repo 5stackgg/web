@@ -133,7 +133,8 @@
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "Administrer matchmaking-indstillinger"
+                    "description": "Administrer matchmaking-indstillinger",
+                    "updated": "Indstillinger opdateret"
                 },
                 "discord": {
                     "title": "Discord",
@@ -142,7 +143,8 @@
                     "webhook_description": "Vi bruger denne Discord Webhook til at sende meddelelser, der kræver handling fra en spiller. F.eks. matchproblemer, fejl osv.",
                     "support_role": "Discord support-rolle ID",
                     "support_role_description": "Denne rolle vil blive nævnt, når den bruges til support-handlinger. Du kan få rolle-ID fra Discord-applikationen ved at aktivere udviklertilstand og højreklikke for at kopiere ID.",
-                    "update": "Opdater"
+                    "update": "Opdater",
+                    "updated": "Opdaterede Discord Indstillinger"
                 },
                 "game_type_configs": {
                     "title": "Spil type configs",
@@ -154,7 +156,8 @@
                     "minimum_role_to_stream": "Minimum rolle tilladt at oprette forbindelse til TV (forsinket)",
                     "minimum_role_to_stream_description": "Denne rolle vil være i stand til at forbinde til TV.",
                     "minimum_role_to_spectate": "Minimum Rolle Tilladt at se (Ingen forsinkelse)",
-                    "minimum_role_to_spectate_description": "Denne rolle vil være i stand til at forbinde og spectate kampe."
+                    "minimum_role_to_spectate_description": "Denne rolle vil være i stand til at forbinde og spectate kampe.",
+                    "updated": "Opdaterede Streamingindstillinger"
                 },
                 "create_matches_role": "Mindste rolle til at oprette kampe",
                 "create_matches_role_description": "Denne rolle vil være i stand til at skabe kampe.",
@@ -166,6 +169,8 @@
                 "matchmaking_min_role_description": "Denne rolle vil være i stand til at deltage i matchmaking.",
                 "max_acceptable_latency": "Maksimalt acceptabelt Latency",
                 "max_acceptable_latency_description": "Dette er den maksimale latency, som en spiller kan have til at deltage i en kamp.",
+                "lineup_add_without_invite": "Minimumsrolle for at tilføje spillere til linjeopstilling uden invitation",
+                "lineup_add_without_invite_description": "Denne rolle vil være i stand til at tilføje spillere til at matche lineups uden at sende en invitation først.",
                 "auto_cancel_duration": "Automatisk Annullér Varighed",
                 "auto_cancel_duration_description": "Dette er varigheden i minutter at en match vil blive auto annulleret, hvis ikke startet inden for varigheden.",
                 "update": "Opdater",
@@ -201,7 +206,8 @@
                     "test_download": "Test Download",
                     "test_download_failed": "Test Download Mislykkedes",
                     "demo_network_limiter": "Grænseværdi For Global Demo Netværk",
-                    "demo_network_limiter_description": "Den globale netværksbegrænser for demofilerne."
+                    "demo_network_limiter_description": "Den globale netværksbegrænser for demofilerne.",
+                    "updated_s3_settings": "Opdateret S3 Indstillinger"
                 },
                 "update_map_pools": {
                     "title": "Automatisk opdateringskortspil",
@@ -251,7 +257,8 @@
                 "description": "Er du sikker på, at du vil slette denne region?",
                 "cancel": "Annuller",
                 "confirm": "Slet"
-            }
+            },
+            "deleted": "Slettet Region"
         },
         "players": {
             "title": "Spillere",
@@ -294,6 +301,9 @@
             "detail": {
                 "schedule": "Planlæg"
             }
+        },
+        "toasts": {
+            "copied_to_clipboard": "Kopieret til udklipsholder"
         },
         "game_server_nodes": {
             "title": "Spilserver Nodes",
@@ -465,6 +475,7 @@
             "fix_link": "Vis løsning",
             "cancel": "Annuller",
             "update": "Opdater",
+            "updating": "Systemet opdaterer",
             "panel_update": "Dit panel er forældet, træk og kør opdateringsscriptet"
         },
         "match_lobby": {
@@ -615,6 +626,8 @@
     },
     "tournament": {
         "overview": "Oversigt",
+        "joined": "Tilmeldt Turneringen",
+        "updated": "Opdateret Turnering",
         "settings": "Indstillinger",
         "admin": "Administration",
         "show_organizers": "Vis Organisatorer",
@@ -888,6 +901,15 @@
                         "everyone": "Alle"
                     }
                 },
+                "check_in_settings": {
+                    "label": "Tjek Ind Indstillinger",
+                    "description": "Kontrollerer, hvordan spillere tjekker ind, før kampen starter.",
+                    "options": {
+                        "admins": "Administratorer",
+                        "captains": "Kaptajner",
+                        "everyone": "Alle spillere er nødvendige for at tjekke ind"
+                    }
+                },
                 "ready_settings": {
                     "label": "Klar indstilling",
                     "description": "Styrer hvordan kampen bestemmer at være klar til at starte.",
@@ -911,6 +933,7 @@
             "timeout_setting": "Timeout indstilling",
             "tech_timeout_setting": "Teknisk timeout indstilling",
             "ready_setting": "Klar indstilling",
+            "check_in_setting": "Veto Indstilling",
             "map_pool": "Kortpool",
             "advanced_settings": "Vis avancerede indstillinger"
         },
@@ -990,7 +1013,17 @@
             "call_support": "Ring til support",
             "start_veto": "Start veto",
             "skip_checkin": "Spring check-in over",
-            "cancel": "Annuller"
+            "cancel": "Annuller",
+            "delete": "Slet Match",
+            "canceled": "Match Annulleret",
+            "deleted": "Match Slettet",
+            "requested_organizer": "Anmodet Arrangør"
+        },
+        "delete_confirm": {
+            "title": "Slet Match",
+            "description": "Er du sikker på, at du vil slette dette match? Denne handling kan ikke fortrydes.",
+            "cancel": "Annuller",
+            "confirm": "Slet"
         },
         "lineup": {
             "stats": {
@@ -1005,6 +1038,18 @@
             },
             "discord_user": "Discord bruger",
             "discord_link": "Discord link"
+        },
+        "invites": {
+            "title": "Invitationer",
+            "no_invites": "Ingen ventende invitationer",
+            "invited_player": "Inviteret Spiller",
+            "invited_by": "Inviteret Af",
+            "deleted_success": "Invitation slettet",
+            "delete_error": "Kunne ikke slette invitation",
+            "delete_confirm": {
+                "title": "Slet Invitation",
+                "description": "Er du sikker på du vil slette invitationen for {player} ({steam_id})? Denne handling kan ikke fortrydes."
+            }
         },
         "overview": {
             "promote_captain": "Forfrem til kaptajn",
@@ -1052,7 +1097,8 @@
             "title": "Check ind",
             "checked_in": "Checket ind",
             "check_in": "Check ind",
-            "description": "Check-in beskrivelse"
+            "description": "Check-in beskrivelse",
+            "checked_in_description": "Du har tjekket ind {checked} ud af {required} spillere som er nødvendige for at starte kampen"
         },
         "coach": {
             "assign": "Tildel træner"
@@ -1150,6 +1196,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "Annuller Matchmaking",
         "searching_for_match": "Søgning efter en {type} match",
         "invites": "Invitationer",
         "lobby": {

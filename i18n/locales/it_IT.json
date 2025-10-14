@@ -133,7 +133,8 @@
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "Gestisci le impostazioni del matchmaking"
+                    "description": "Gestisci le impostazioni del matchmaking",
+                    "updated": "Impostazioni aggiornate con successo"
                 },
                 "discord": {
                     "title": "Discord",
@@ -142,7 +143,8 @@
                     "webhook_description": "Utilizziamo questo webhook Discord per inviare notifiche che richiedono un'azione da parte di un giocatore. Es. problemi di partita, bug, ecc.",
                     "support_role": "ID ruolo supporto Discord",
                     "support_role_description": "Questo ruolo verrà menzionato quando utilizzato per le azioni di supporto. Puoi ottenere l'ID del ruolo dall'applicazione Discord attivando la modalità sviluppatore e facendo clic destro per copiare l'ID.",
-                    "update": "Aggiorna"
+                    "update": "Aggiorna",
+                    "updated": "Impostazioni Discord Aggiornate"
                 },
                 "game_type_configs": {
                     "title": "Tipo di gioco",
@@ -154,7 +156,8 @@
                     "minimum_role_to_stream": "Ruolo minimo consentito per connettersi alla TV (ritardato)",
                     "minimum_role_to_stream_description": "Questo ruolo sarà in grado di connettersi alla TV.",
                     "minimum_role_to_spectate": "Ruolo minimo consentito per osservare (senza ritardo)",
-                    "minimum_role_to_spectate_description": "Questo ruolo sarà in grado di connettersi e guardare le corrispondenze."
+                    "minimum_role_to_spectate_description": "Questo ruolo sarà in grado di connettersi e guardare le corrispondenze.",
+                    "updated": "Impostazioni Streaming Aggiornate"
                 },
                 "create_matches_role": "Ruolo minimo per creare partite",
                 "create_matches_role_description": "Questo ruolo sarà in grado di creare partite.",
@@ -166,6 +169,8 @@
                 "matchmaking_min_role_description": "Questo ruolo sarà in grado di aderire matchmaking.",
                 "max_acceptable_latency": "Massimo Accettabile Lattice",
                 "max_acceptable_latency_description": "Questa è la latenza massima che un giocatore può dover partecipare a una partita.",
+                "lineup_add_without_invite": "Ruolo minimo per aggiungere giocatori alla formazione senza invito",
+                "lineup_add_without_invite_description": "Questo ruolo sarà in grado di aggiungere giocatori per abbinare le formazioni senza inviare prima un invito.",
                 "auto_cancel_duration": "Durata Annullamento Automatico",
                 "auto_cancel_duration_description": "Questa è la durata in minuti che una corrispondenza sarà automaticamente annullata se non avviata entro la durata.",
                 "update": "Aggiorna",
@@ -201,7 +206,8 @@
                     "test_download": "Test Download",
                     "test_download_failed": "Test Download Fallito",
                     "demo_network_limiter": "Limitatore Globale Di Rete Demo",
-                    "demo_network_limiter_description": "Il limitatore di rete globale per i file demo."
+                    "demo_network_limiter_description": "Il limitatore di rete globale per i file demo.",
+                    "updated_s3_settings": "Impostazioni S3 Aggiornate"
                 },
                 "update_map_pools": {
                     "title": "Aggiornamento automatico delle piscine",
@@ -251,7 +257,8 @@
                 "description": "Vuoi davvero eliminare questa regione?",
                 "cancel": "Annulla",
                 "confirm": "Elimina"
-            }
+            },
+            "deleted": "Regione Eliminata"
         },
         "players": {
             "title": "Giocatori",
@@ -294,6 +301,9 @@
             "detail": {
                 "schedule": "Programma"
             }
+        },
+        "toasts": {
+            "copied_to_clipboard": "Copiato negli appunti"
         },
         "game_server_nodes": {
             "title": "Nodi server di gioco",
@@ -465,6 +475,7 @@
             "fix_link": "Mostra soluzione",
             "cancel": "Annulla",
             "update": "Aggiorna",
+            "updating": "Il sistema sta aggiornando",
             "panel_update": "Il pannello è fuori data, tirare ed eseguire lo script di aggiornamento"
         },
         "match_lobby": {
@@ -615,6 +626,8 @@
     },
     "tournament": {
         "overview": "Panoramica",
+        "joined": "Torneo Iscritto",
+        "updated": "Torneo Aggiornato",
         "settings": "Impostazioni",
         "admin": "Amministrazione",
         "show_organizers": "Visualizza gli organizzatori",
@@ -888,6 +901,15 @@
                         "everyone": "Chiunque"
                     }
                 },
+                "check_in_settings": {
+                    "label": "Impostazioni Di Controllo",
+                    "description": "Controlla il check-in dei giocatori prima dell'inizio della partita.",
+                    "options": {
+                        "admins": "Amministratori",
+                        "captains": "Capitano",
+                        "everyone": "Tutti i giocatori richiesti per il check-in"
+                    }
+                },
                 "ready_settings": {
                     "label": "Impostazioni pronte",
                     "description": "Controlla come il match determina di essere pronto per iniziare.",
@@ -911,6 +933,7 @@
             "timeout_setting": "Impostazione timeout",
             "tech_timeout_setting": "Impostazione timeout tecnico",
             "ready_setting": "Impostazioni pronte",
+            "check_in_setting": "Impostazione Veto",
             "map_pool": "Pool mappe",
             "advanced_settings": "Mostra impostazioni avanzate"
         },
@@ -990,7 +1013,17 @@
             "call_support": "Chiama supporto",
             "start_veto": "Inizia veto",
             "skip_checkin": "Salta check-in",
-            "cancel": "Annulla"
+            "cancel": "Annulla",
+            "delete": "Elimina Partita",
+            "canceled": "Partita Annullata",
+            "deleted": "Partita Eliminata",
+            "requested_organizer": "Organizzatore Richiesto"
+        },
+        "delete_confirm": {
+            "title": "Elimina Partita",
+            "description": "Sei sicuro di voler eliminare questa partita? Questa azione non può essere annullata.",
+            "cancel": "Annulla",
+            "confirm": "Elimina"
         },
         "lineup": {
             "stats": {
@@ -1005,6 +1038,18 @@
             },
             "discord_user": "Utente Discord",
             "discord_link": "Link Discord"
+        },
+        "invites": {
+            "title": "Inviti",
+            "no_invites": "Nessun invito in sospeso",
+            "invited_player": "Giocatore Invitato",
+            "invited_by": "Invitato Da",
+            "deleted_success": "Invito eliminato con successo",
+            "delete_error": "Impossibile eliminare l'invito",
+            "delete_confirm": {
+                "title": "Elimina Invito",
+                "description": "Sei sicuro di voler eliminare l'invito per {player} ({steam_id})? Questa azione non può essere annullata."
+            }
         },
         "overview": {
             "promote_captain": "Promuovi capitano",
@@ -1052,7 +1097,8 @@
             "title": "Check-in",
             "checked_in": "Check-in effettuato",
             "check_in": "Check-in",
-            "description": "Descrizione check-in"
+            "description": "Descrizione check-in",
+            "checked_in_description": "Hai effettuato il check in in {checked} fuori da {required} giocatori richiesti per iniziare la partita"
         },
         "coach": {
             "assign": "Assegna allenatore"
@@ -1150,6 +1196,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "Annulla Matchmaking",
         "searching_for_match": "Ricerca di una corrispondenza {type}",
         "invites": "Inviti",
         "lobby": {

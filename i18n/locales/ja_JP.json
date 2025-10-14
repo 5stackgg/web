@@ -801,7 +801,7 @@
             "no_teams_found": "チームが見つかりません"
         },
         "member": {
-            "coach": "コーチformat@@0",
+            "coach": "コーチ",
             "status": "ステータス",
             "starter": "Starter",
             "benched": "ベンチ済み",

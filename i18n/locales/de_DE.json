@@ -1,7 +1,7 @@
 {
     "pages": {
         "system_metrics": {
-            "node": "Node",
+            "node": "Knoten",
             "cpu_usage": "CPU-Auslastung",
             "memory_usage": "Speicherauslastung",
             "services": "Dienste",
@@ -83,7 +83,7 @@
                 "update_success": "Profil aktualisiert",
                 "discord": {
                     "unlink": "Unlink Discord",
-                    "link": "Link Discord",
+                    "link": "Link zur Übersicht",
                     "unlink_dialog": {
                         "title": "Unlink Discord Account",
                         "description": "Sind Sie sicher, dass Sie die Verknüpfung Ihres Discord-Kontos entfernen möchten? Dies wird die Verbindung zwischen Ihren 5Stack- und Discord-Konten entfernen.",
@@ -149,7 +149,7 @@
                 "game_type_configs": {
                     "title": "Game Type Configs",
                     "description": "Game Type Configs verwalten.",
-                    "type": "Game Type"
+                    "type": "Spieltyp"
                 },
                 "streaming": {
                     "title": "Streaming",
@@ -271,7 +271,7 @@
                 "kd": "K/D",
                 "last_ten_wins": "Letzte 10 Wins",
                 "last_ten_losses": "Letzte 10 Losses",
-                "matches": "Matches"
+                "matches": "Spiele"
             }
         },
         "play": {
@@ -299,7 +299,7 @@
                 "update_button": "Match aktualisieren"
             },
             "detail": {
-                "schedule": "Schedule"
+                "schedule": "Zeitplan"
             }
         },
         "toasts": {
@@ -318,12 +318,12 @@
             "cs_version_info": "CS2-Versionsinformationen",
             "status": {
                 "offline": "Offline",
-                "online": "Online",
-                "setup": "Setup",
+                "online": "Nur Online",
+                "setup": "Einrichtung",
                 "not_accepting": "Akzeptiert keine neuen Matches"
             },
             "table": {
-                "node": "Node",
+                "node": "Knoten",
                 "demo_network_limiter": "Demo-Netzwerk-Limiter",
                 "cs_build_id": "CS2 Build",
                 "region": "Region",
@@ -337,7 +337,7 @@
                 "cpu_governor": "CPU-Governor",
                 "pin_build_id": "Pin Build",
                 "pin_build_id_tooltip": "Pinnt die Build-ID des CS2-Servers",
-                "pin_plugin_version": "Pin Plugin",
+                "pin_plugin_version": "Plugin anheften",
                 "pin_plugin_version_tooltip": "Pinnt die 5Stack Plugin-Version"
             },
             "build_id": "Build-ID",
@@ -388,7 +388,7 @@
             "table": {
                 "label": "Label",
                 "region": "Region",
-                "map": "Map",
+                "map": "Karte",
                 "type": "Typ",
                 "players": "Spieler",
                 "connect": "Verbinden"
@@ -439,9 +439,9 @@
             "add_new_map": "Neue Map hinzufügen",
             "edit": "Bearbeiten",
             "maps": "Verfügbare Maps",
-            "active_duty": "Active Duty",
+            "active_duty": "Aktiver Dienst",
             "available_modes": "Verfügbar im Modus",
-            "workshop_id": "Workshop Link",
+            "workshop_id": "Link zum Thema",
             "search": "Maps suchen"
         },
         "map_pool": {
@@ -524,7 +524,7 @@
             "tooltips": {
                 "play": "Spielen",
                 "watch": "Beobachten",
-                "matches": "Matches",
+                "matches": "Spiele",
                 "tournaments": "Turniere",
                 "players": "Spieler",
                 "teams": "Teams",
@@ -577,7 +577,7 @@
                     "subtitle": "Teams finden und verwalten"
                 },
                 "social": {
-                    "title": "Social",
+                    "title": "Soziale",
                     "join_discord": {
                         "title": "Trete unserem Discord bei",
                         "subtitle": "Chat, Support und Ankündigungen"
@@ -629,7 +629,7 @@
         "joined": "Turnier beigetreten",
         "updated": "Turnier aktualisiert",
         "settings": "Einstellungen",
-        "admin": "Admin",
+        "admin": "Verwaltung",
         "show_organizers": "Organizer anzeigen",
         "hide_organizers": "Organizer verstecken",
         "join": {
@@ -762,7 +762,7 @@
             "accept": "Annehmen"
         },
         "roles": {
-            "captain": "Captain"
+            "captain": "Kapitän"
         },
         "leave": "Team verlassen",
         "management": {
@@ -779,8 +779,8 @@
             "title": "Teammitglieder",
             "player": "Spieler",
             "role": "Rolle",
-            "substitutes": "Substitutes",
-            "coaches": "Coaches",
+            "substitutes": "Ersetzer",
+            "coaches": "Trainer",
             "invite_player": "Spieler einladen",
             "pending_invites": "Ausstehende Einladungen"
         },
@@ -801,11 +801,11 @@
             "no_teams_found": "Keine Teams gefunden"
         },
         "member": {
-            "coach": "Coach",
+            "coach": "Trainer",
             "status": "Status",
             "starter": "Starter",
-            "benched": "Benched",
-            "substitute": "Substitute",
+            "benched": "Benchtet",
+            "substitute": "Ersetzen",
             "remove": "Mitglied entfernen",
             "cancel_invite": "Einladung stornieren",
             "confirm_cancel_invite": "Sind Sie sicher, dass Sie diese Einladung stornieren möchten?",
@@ -851,7 +851,7 @@
                 "show": "Anzeigen",
                 "toggle": "Erweiterte Einstellungen umschalten",
                 "overtime": {
-                    "label": "Overtime",
+                    "label": "Verlängerung",
                     "description": "Jede Overtime wird als MR6 gespielt."
                 },
                 "knife_round": {
@@ -896,7 +896,7 @@
                     },
                     "options": {
                         "admins": "Administratoren",
-                        "coaches": "Coaches",
+                        "coaches": "Trainer",
                         "captains": "Captains / Coaches",
                         "everyone": "Jeder"
                     }
@@ -915,8 +915,8 @@
                     "description": "Legt fest welche Spieler Ready sein müssen damit das Spiel startet.",
                     "options": {
                         "admins": "Administratoren",
-                        "coaches": "Coaches",
-                        "captains": "Captains",
+                        "coaches": "Trainer",
+                        "captains": "Kapitäne",
                         "everyone": "Alle Spieler müssen bereit sein"
                     }
                 }
@@ -924,8 +924,8 @@
             "max_rounds": "Maximale Runden",
             "tv_delay": "TV-Delay",
             "seconds": "Sekunden",
-            "coaches": "Coaches",
-            "overtime": "Overtime",
+            "coaches": "Trainer",
+            "overtime": "Verlängerung",
             "knife_round": "Messerrunde",
             "map_veto_enabled": "Map-Veto",
             "region_veto": "Regions-Veto",
@@ -939,10 +939,10 @@
         },
         "schedule": {
             "pick_date": "Datum auswählen",
-            "schedule": "Schedule"
+            "schedule": "Zeitplan"
         },
         "player": {
-            "captain": "Captain",
+            "captain": "Kapitän",
             "status": {
                 "offline_not_ready": "Offline und nicht bereit",
                 "online_not_ready": "Online, aber nicht bereit",
@@ -993,9 +993,9 @@
             "select_region": "Region auswählen"
         },
         "picks": {
-            "decider": "Decider"
+            "decider": "Entscheidungskarte"
         },
-        "decider": "Decider",
+        "decider": "Entscheidungskarte",
         "map_veto": {
             "is_picking": "wählt eine",
             "organizer_override": "Admin-Override",
@@ -1094,7 +1094,7 @@
             "call_organizer": "Organisator anfordern"
         },
         "check_in": {
-            "title": "Check In",
+            "title": "Einchecken",
             "checked_in": "Eingecheckt",
             "check_in": "Einchecken",
             "description": "Bitte checken Sie ein, um Ihre Teilnahme an diesem Spiel zu bestätigen",
@@ -1105,7 +1105,7 @@
         },
         "download_demo": "Demo herunterladen",
         "download_demos": "Demos herunterladen",
-        "coaches": "Coaches",
+        "coaches": "Trainer",
         "best_of": "Best of {count}",
         "server": {
             "offline": "Server ist offline!",
@@ -1185,7 +1185,7 @@
         },
         "official": "Official",
         "workshop": "Workshop",
-        "active_duty": "Active Duty"
+        "active_duty": "Aktiver Dienst"
     },
     "region": {
         "form": {
@@ -1243,7 +1243,7 @@
         "plugin_version_supports": "Unterstützt",
         "plugin_version_published": "Veröffentlicht",
         "install_cs": "CS2 installieren",
-        "overprovisioned_warning": "Overprovisioned",
+        "overprovisioned_warning": "Überstellt",
         "overprovisioned_warning_description": "Sie haben {total_server_count} mögliche Server zugewiesen, aber Ihr Gameserver-Node kann nur {max_servers} Server unterstützen.",
         "cpu_sockets": "CPU-Sockets",
         "cpu_cores_per_socket": "CPU-Kerne/Socket",
@@ -1325,7 +1325,7 @@
     },
     "game_type_configs": {
         "form": {
-            "cfg": "Config",
+            "cfg": "Konkret",
             "create": "Erstellen einer Config",
             "update": "Config updaten",
             "edit": "Config bearbeiten",

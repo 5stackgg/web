@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PageHeading from "~/components/PageHeading.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
-import { generateQuery } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 </script>
@@ -212,7 +212,7 @@ export default {
     },
     $subscribe: {
       servers: {
-        query: generateQuery({
+        query: generateSubscription({
           servers: [
             {
               where: {

@@ -122,7 +122,7 @@ import ServerStatus from "~/components/servers/ServerStatus.vue";
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 
 export default {
@@ -136,7 +136,7 @@ export default {
   apollo: {
     $subscribe: {
       servers: {
-        query: generateQuery({
+        query: generateSubscription({
           servers: [
             {
               limit: $("limit", "Int!"),

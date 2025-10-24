@@ -194,7 +194,6 @@ export default {
       },
     },
     picks: {
-      immediate: true,
       handler(currentPicks, oldPicks) {
         if (oldPicks && currentPicks.length > oldPicks.length) {
           this.playTickSound();

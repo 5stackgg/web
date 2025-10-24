@@ -108,7 +108,10 @@ export default {
       });
     },
     updateCountdown() {
-      if (this.confirmation?.expiresAt) {
+      if (
+        this.confirmation?.expiresAt &&
+        this.confirmation.confirmed !== this.confirmation.players
+      ) {
         const expiresAt = new Date(this.confirmation.expiresAt).getTime();
         const now = new Date().getTime();
         const difference = Math.max(0, Math.floor((expiresAt - now) / 1000));

@@ -324,10 +324,6 @@ export const useSound = () => {
       return;
     }
 
-    if (!import.meta.client) {
-      return;
-    }
-
     try {
       // Single-note countdown tone (repeatable every second)
       const audioContext = new (window.AudioContext ||

@@ -40,6 +40,34 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
                 <SteamIcon class="size-5 fill-foreground" />
               </a>
             </div>
+            <div
+              v-if="player?.teams && player.teams.length > 0"
+              class="flex flex-wrap gap-2 mt-2"
+            >
+              <NuxtLink
+                v-for="team in player.teams"
+                :key="team.id"
+                :to="`/teams/${team.id}`"
+                class="group relative inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 hover:bg-muted border border-transparent hover:border-border transition-all duration-200"
+              >
+                <div class="flex items-center gap-2">
+                  <div
+                    class="w-2 h-2 rounded-full bg-primary/60 group-hover:bg-primary transition-colors"
+                  ></div>
+                  <span
+                    class="font-medium text-sm text-foreground group-hover:text-primary transition-colors"
+                  >
+                    {{ team.name }}
+                  </span>
+                  <span
+                    v-if="team.short_name"
+                    class="text-xs text-muted-foreground bg-muted-foreground/10 px-1.5 py-0.5 rounded"
+                  >
+                    {{ team.short_name }}
+                  </span>
+                </div>
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </template>
@@ -156,8 +184,6 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
       </Card>
     </div>
 
-    <Separator />
-
     <Card class="p-4">
       <CardHeader>
         <CardTitle class="text-xl font-bold">
@@ -207,6 +233,14 @@ export default {
               ...playerFields,
               role: true,
               profile_url: true,
+              teams: [
+                {},
+                {
+                  id: true,
+                  name: true,
+                  short_name: true,
+                },
+              ],
               kills_aggregate: [
                 {
                   where: {

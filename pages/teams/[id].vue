@@ -87,7 +87,7 @@ const teamMenu = ref(false);
                   {{ $t("common.actions.delete") }}
                 </DropdownMenuItem>
               </template>
-              <template v-else>
+              <template v-if="isOnTeam">
                 <DropdownMenuItem
                   class="text-red-600"
                   @click="leaveTeamAlertDialog = true"

@@ -275,6 +275,7 @@
                 "kd": "KD",
                 "last_ten_wins": "Last 10 Wins",
                 "last_ten_losses": "Last 10 Losses",
+                "teams": "Teams",
                 "matches": "Matches"
             }
         },

@@ -47,6 +47,7 @@ import {
             <DropdownMenuItem
               @click="commander('get_match', '')"
               :disabled="!online"
+              v-if="matchId"
             >
               {{ $t("server.rcon.refresh_match") }}
             </DropdownMenuItem>
@@ -181,6 +182,10 @@ export default {
     online: {
       required: true,
       type: Boolean,
+    },
+    matchId: {
+      required: false,
+      type: String,
     },
   },
   data() {

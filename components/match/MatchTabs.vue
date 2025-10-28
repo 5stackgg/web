@@ -243,6 +243,7 @@ provide("commander", commander);
       <RconCommander
         :server-id="match.server_id"
         :online="match.is_server_online"
+        :match-id="match.id"
         v-slot="{ commander }"
       >
         <template v-for="command of availableCommands">

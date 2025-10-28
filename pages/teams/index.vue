@@ -157,16 +157,33 @@ export default {
     },
     teams_aggregate: {
       fetchPolicy: "network-only",
-      query: generateQuery({
-        teams_aggregate: [
-          {},
-          {
-            aggregate: {
-              count: [{}, true],
+      query: function (this: any) {
+        return generateQuery({
+          teams_aggregate: [
+            {
+              ...(this.form.values.teamQuery?.length >= 3
+                ? {
+                    where: {
+                      name: {
+                        _ilike: $("teamQuery", "String"),
+                      },
+                    },
+                  }
+                : {}),
             },
-          },
-        ],
-      }),
+            {
+              aggregate: {
+                count: [{}, true],
+              },
+            },
+          ],
+        });
+      },
+      variables: function (this: any): Record<string, any> {
+        return {
+          teamQuery: `%${this.form.values.teamQuery}%`,
+        };
+      },
     },
     $subscribe: {
       myTeams: {
@@ -192,7 +209,7 @@ export default {
             ],
           });
         },
-        result: function ({ data }) {
+        result: function (this: any, { data }: { data: any }) {
           this.myTeams = data.players?.[0].teams;
         },
       },

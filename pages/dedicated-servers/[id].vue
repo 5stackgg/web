@@ -37,6 +37,7 @@ import { Eye, EyeOff } from "lucide-vue-next";
 import Clipboard from "~/components/ClipBoard.vue";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
+import ServiceLogs from "~/components/ServiceLogs.vue";
 
 const serverMenu = ref(false);
 </script>
@@ -148,6 +149,13 @@ const serverMenu = ref(false);
   <div class="my-4" v-if="server">
     <QuickServerConnect :server="server" />
   </div>
+
+  <ServiceLogs
+    class="my-4"
+    :service="`dedicated-server-${$route.params.id}`"
+    :compact="true"
+    v-if="server?.game_server_node_id"
+  />
 
   <RconCommander :server-id="$route.params.id as string" :online="true" />
 

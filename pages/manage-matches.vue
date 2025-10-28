@@ -57,9 +57,14 @@ import { Separator } from "~/components/ui/separator";
             }}</Label>
             <Input
               id="match-id-search"
-              v-model="form.values.matchId"
+              :model-value="form.values.matchId"
+              @update:model-value="
+                (value) => {
+                  form.setFieldValue('matchId', value);
+                  onFilterChange();
+                }
+              "
               :placeholder="$t('pages.manage_matches.enter_match_id')"
-              @input="onFilterChange"
             />
           </div>
 
@@ -70,9 +75,14 @@ import { Separator } from "~/components/ui/separator";
             }}</Label>
             <Input
               id="team-search"
-              v-model="form.values.teamName"
+              :model-value="form.values.teamName"
+              @update:model-value="
+                (value) => {
+                  form.setFieldValue('teamName', value);
+                  onFilterChange();
+                }
+              "
               :placeholder="$t('pages.manage_matches.enter_team_name')"
-              @input="onFilterChange"
             />
           </div>
 
@@ -178,7 +188,17 @@ import { Separator } from "~/components/ui/separator";
     </div>
   </div>
 
-  <Card class="p-4">
+  <Card class="p-4 relative">
+    <div v-if="loading" class="absolute top-4 left-4 z-10">
+      <div
+        class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
+      >
+        <div
+          class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
+        ></div>
+        <span>{{ $t("pages.manage_matches.loading") }}</span>
+      </div>
+    </div>
     <MatchesTable class="p-3" :matches="matches" v-if="matches"></MatchesTable>
   </Card>
 
@@ -202,6 +222,7 @@ import { $, e_match_status_enum, order_by } from "~/generated/zeus";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
+import { validate as validateUUID } from "uuid";
 
 interface MatchesData {
   matches: any[];
@@ -215,6 +236,7 @@ interface ComponentData {
   form: any;
   sortField: string;
   sortDirection: string;
+  loading: boolean;
 }
 
 export default {
@@ -229,6 +251,7 @@ export default {
       showOnlyMyMatches: savedFilters.showOnlyMyMatches || false,
       sortField: savedFilters.sortField || "created_at",
       sortDirection: savedFilters.sortDirection || "desc",
+      loading: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -292,8 +315,14 @@ export default {
           const formValues = this.form.values;
 
           if (formValues.matchId?.trim()) {
+            const matchId = formValues.matchId.trim();
+
+            if (!validateUUID(matchId)) {
+              return;
+            }
+
             filterConditions.id = {
-              _eq: formValues.matchId.trim(),
+              _eq: matchId,
             };
           }
 
@@ -333,6 +362,8 @@ export default {
             };
           }
 
+          this.loading = true;
+
           return {
             limit: this.perPage,
             order_by: [this.getSortOrder()],
@@ -341,7 +372,11 @@ export default {
           };
         },
         result({ data }: { data: MatchesData }) {
+          this.loading = false;
           (this as any).matches = data.matches;
+        },
+        error(error: any) {
+          this.loading = false;
         },
       },
     },

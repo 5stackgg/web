@@ -479,7 +479,8 @@
             "newest_first": "Newest First",
             "oldest_first": "Oldest First",
             "showing": "Showing",
-            "matches": "matches"
+            "matches": "matches",
+            "loading": "Loading..."
         }
     },
 

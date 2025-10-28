@@ -43,25 +43,9 @@ import { Separator } from "~/components/ui/separator";
         <h3 class="text-lg font-semibold">
           {{ $t("pages.manage_matches.filters") }}
         </h3>
-        <div class="flex items-center space-x-3">
-          <div class="flex items-center space-x-2">
-            <Switch
-              :model-value="showOnlyMyMatches"
-              @update:model-value="showOnlyMyMatches = !showOnlyMyMatches"
-            />
-            <Label class="text-sm font-medium">{{
-              $t("pages.manage_matches.only_my_matches")
-            }}</Label>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            @click="clearFilters"
-            :disabled="!hasActiveFilters"
-          >
-            {{ $t("pages.manage_matches.clear_filters") }}
-          </Button>
-        </div>
+        <Button variant="outline" size="sm" @click="resetFilters">
+          {{ $t("pages.manage_matches.reset_filters") }}
+        </Button>
       </div>
 
       <form @submit.prevent="onFilterChange" class="space-y-4">
@@ -176,9 +160,21 @@ import { Separator } from "~/components/ui/separator";
       </Button>
     </div>
 
-    <div class="text-sm text-muted-foreground">
-      {{ $t("pages.manage_matches.showing") }} {{ matches.length }}
-      {{ $t("pages.manage_matches.matches") }}
+    <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2">
+        <Switch
+          :model-value="showOnlyMyMatches"
+          @update:model-value="showOnlyMyMatches = !showOnlyMyMatches"
+        />
+        <Label class="text-sm font-medium">{{
+          $t("pages.manage_matches.only_my_matches")
+        }}</Label>
+      </div>
+
+      <div class="text-sm text-muted-foreground">
+        {{ $t("pages.manage_matches.showing") }} {{ matches.length }}
+        {{ $t("pages.manage_matches.matches") }}
+      </div>
     </div>
   </div>
 
@@ -223,13 +219,16 @@ interface ComponentData {
 
 export default {
   data(): ComponentData {
+    // Load saved filters from localStorage
+    const savedFilters = this.loadFiltersFromStorage();
+
     return {
       page: 1,
       perPage: 10,
       matches: [] as any[],
-      showOnlyMyMatches: false,
-      sortField: "created_at",
-      sortDirection: "desc",
+      showOnlyMyMatches: savedFilters.showOnlyMyMatches || false,
+      sortField: savedFilters.sortField || "created_at",
+      sortDirection: savedFilters.sortDirection || "desc",
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -239,9 +238,9 @@ export default {
           }),
         ),
         initialValues: {
-          matchId: "",
-          teamName: "",
-          statuses: [
+          matchId: savedFilters.matchId || "",
+          teamName: savedFilters.teamName || "",
+          statuses: savedFilters.statuses || [
             e_match_status_enum.Live,
             e_match_status_enum.Veto,
             e_match_status_enum.WaitingForCheckIn,
@@ -260,6 +259,14 @@ export default {
         statuses: this.defaultStatuses,
       });
     }
+  },
+  watch: {
+    showOnlyMyMatches: {
+      handler() {
+        this.saveFiltersToStorage();
+      },
+      immediate: false,
+    },
   },
   apollo: {
     $subscribe: {
@@ -340,8 +347,41 @@ export default {
     },
   },
   methods: {
+    loadFiltersFromStorage() {
+      if (process.client) {
+        try {
+          const saved = localStorage.getItem("manage-matches-filters");
+          return saved ? JSON.parse(saved) : {};
+        } catch (error) {
+          console.warn("Failed to load filters from localStorage:", error);
+          return {};
+        }
+      }
+      return {};
+    },
+    saveFiltersToStorage() {
+      if (process.client) {
+        try {
+          const filters = {
+            matchId: this.form.values.matchId,
+            teamName: this.form.values.teamName,
+            statuses: this.form.values.statuses,
+            showOnlyMyMatches: this.showOnlyMyMatches,
+            sortField: this.sortField,
+            sortDirection: this.sortDirection,
+          };
+          localStorage.setItem(
+            "manage-matches-filters",
+            JSON.stringify(filters),
+          );
+        } catch (error) {
+          console.warn("Failed to save filters to localStorage:", error);
+        }
+      }
+    },
     onFilterChange() {
       this.page = 1;
+      this.saveFiltersToStorage();
     },
     onStatusChange(statuses: any) {
       this.form.setValues({
@@ -350,20 +390,26 @@ export default {
       });
       this.onFilterChange();
     },
-    clearFilters() {
+    resetFilters() {
       this.form.setValues({
         matchId: "",
         teamName: "",
         statuses: this.defaultStatuses,
       });
+      this.showOnlyMyMatches = false;
+      this.sortField = "created_at";
+      this.sortDirection = "desc";
       this.page = 1;
+      this.saveFiltersToStorage();
     },
     onSortChange() {
       this.page = 1;
+      this.saveFiltersToStorage();
     },
     toggleSortDirection() {
       this.sortDirection = this.sortDirection === "desc" ? "asc" : "desc";
       this.page = 1;
+      this.saveFiltersToStorage();
     },
     getSortOrder() {
       const orderBy =

@@ -461,7 +461,25 @@
         "manage_matches": {
             "title": "Manage Matches",
             "only_my_matches": "Only My Organized Matches",
-            "description": "View and manage all matches across the platform."
+            "description": "View and manage all matches across the platform.",
+            "filters": "Filters",
+            "clear_filters": "Clear Filters",
+            "search_by_id": "Search by Match ID",
+            "enter_match_id": "Enter match ID...",
+            "search_by_team": "Search by Team",
+            "enter_team_name": "Enter team name...",
+            "filter_by_status": "Filter by Status",
+            "select_statuses": "Select statuses...",
+            "clear_all": "Clear All",
+            "sort_by": "Sort by",
+            "created_at": "Created Date",
+            "started_at": "Started Date",
+            "scheduled_at": "Scheduled Date",
+            "ended_at": "Ended Date",
+            "newest_first": "Newest First",
+            "oldest_first": "Oldest First",
+            "showing": "Showing",
+            "matches": "matches"
         }
     },
 

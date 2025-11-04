@@ -4,13 +4,15 @@ import { Input } from "~/components/ui/input";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Terminal, ChevronDown, ChevronRight } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
-import { TrashIcon } from "@radix-icons/vue";
 import { ServerIcon } from "lucide-vue-next";
+import { RotateCcw } from "lucide-vue-next";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/components/ui/collapsible";
+import ClipBoard from "~/components/ClipBoard.vue";
+import { ButtonGroup } from "~/components/ui/button-group";
 </script>
 
 <template>
@@ -26,85 +28,80 @@ import {
       </Badge>
     </div>
 
-    <!-- Command Controls -->
-    <div class="flex items-center gap-3 mb-6">
-      <!-- Quick Commands Dropdown -->
-      <DropdownMenu>
-        <DropdownMenuTrigger as-child>
-          <Button variant="outline" size="default" class="h-10 px-4">
-            <ServerIcon class="mr-2 h-4 w-4" />
-            {{ $t("server.rcon.quick_commands") }}
-            <ChevronDown class="ml-2 h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-56">
-          <DropdownMenuGroup>
-            <slot :commander="commander"></slot>
+    <!-- Command Controls: unified input with right-side send + quick-commands -->
+    <div class="mb-6">
+      <form @submit.prevent="sendCommand" class="w-full">
+        <div class="relative">
+          <!-- The input with padding for left and right buttons -->
+          <FormField v-slot="{ componentField }" name="command">
+            <FormItem class="w-full">
+              <FormControl>
+                <Input
+                  :placeholder="$t('server.rcon.command_placeholder')"
+                  v-bind="componentField"
+                  class="bg-background h-12 pr-40"
+                  @keydown="onCommandKeyDown"
+                />
+              </FormControl>
+            </FormItem>
+          </FormField>
 
-            <DropdownMenuSeparator v-if="$slots.default">
-            </DropdownMenuSeparator>
+          <!-- Right: Send + Quick Commands dropdown inside input using ButtonGroup -->
+          <div class="absolute right-2 top-1/2 -translate-y-1/2">
+            <ButtonGroup>
+              <Button
+                :disabled="!online"
+                type="submit"
+                size="sm"
+                variant="secondary"
+                class="h-8 px-4"
+              >
+                Send
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="h-8 w-8 p-0"
+                    :disabled="!online && !$slots.default && !matchId"
+                  >
+                    <ChevronDown class="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="w-56">
+                  <DropdownMenuGroup>
+                    <slot :commander="commander"></slot>
 
-            <DropdownMenuItem
-              @click="commander('get_match', '')"
-              :disabled="!online"
-              v-if="matchId"
-            >
-              {{ $t("server.rcon.refresh_match") }}
-            </DropdownMenuItem>
+                    <DropdownMenuItem
+                      @click="commander('get_match', '')"
+                      :disabled="!online"
+                      v-if="matchId"
+                    >
+                      {{ $t("server.rcon.refresh_match") }}
+                    </DropdownMenuItem>
 
-            <DropdownMenuSeparator> </DropdownMenuSeparator>
+                    <DropdownMenuSeparator v-if="matchId" />
 
-            <DropdownMenuItem
-              @click="commander('meta version', '')"
-              :disabled="!online"
-            >
-              {{ $t("server.rcon.metamod_info") }}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              @click="commander(['css_plugins list', 'css'], '')"
-              :disabled="!online"
-            >
-              {{ $t("server.rcon.css_info") }}
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <!-- Command Input Form -->
-      <form
-        @submit.prevent="sendCommand"
-        class="flex items-center gap-2 flex-1"
-      >
-        <FormField v-slot="{ componentField }" name="command">
-          <FormItem class="flex-1">
-            <FormControl>
-              <Input
-                :placeholder="$t('server.rcon.command_placeholder')"
-                v-bind="componentField"
-                class="bg-background h-10"
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
-        <Button
-          :disabled="!online"
-          type="submit"
-          size="default"
-          class="h-10 px-6"
-        >
-          Send
-        </Button>
+                    <DropdownMenuItem
+                      @click="commander('meta version', '')"
+                      :disabled="!online"
+                    >
+                      {{ $t("server.rcon.metamod_info") }}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      @click="commander(['css_plugins list', 'css'], '')"
+                      :disabled="!online"
+                    >
+                      {{ $t("server.rcon.css_info") }}
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </ButtonGroup>
+          </div>
+        </div>
       </form>
-
-      <!-- Clear Button -->
-      <Button
-        @click="clearLogs"
-        variant="outline"
-        size="default"
-        class="h-10 w-10 p-0 text-muted-foreground hover:text-foreground"
-      >
-        <TrashIcon class="h-4 w-4" />
-      </Button>
     </div>
 
     <!-- Console Output -->
@@ -112,9 +109,19 @@ import {
       <div class="p-4 border-b bg-muted/30">
         <div class="flex items-center justify-between">
           <h5 class="text-sm font-medium text-foreground">Console Output</h5>
-          <span class="text-xs text-muted-foreground"
-            >{{ logs.length }} entries</span
-          >
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-muted-foreground"
+              >{{ logs.length }} entries</span
+            >
+            <Button
+              @click="clearLogs"
+              variant="outline"
+              size="icon"
+              class="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw class="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
       <div class="p-4 h-96 overflow-y-auto">
@@ -138,8 +145,11 @@ import {
                       {{ log.command }}
                     </span>
                   </div>
-                  <div class="text-sm text-muted-foreground font-mono">
-                    {{ log.timestamp }}
+                  <div class="flex items-center gap-2">
+                    <div class="text-sm text-muted-foreground font-mono">
+                      {{ log.timestamp }}
+                    </div>
+                    <ClipBoard :data="log.response" />
                   </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent class="px-3 py-3">
@@ -208,6 +218,9 @@ export default {
       logStates: [] as boolean[],
       uuid: undefined as string | undefined,
       rconListener: undefined as any,
+      history: [] as string[],
+      historyIndex: -1 as number, // -1 means not navigating history
+      historyTemp: "" as string, // buffer of current input before history navigation
       commander: (commands: string | Array<string>, value: string) => {
         if (!Array.isArray(commands)) {
           commands = [commands];
@@ -226,6 +239,13 @@ export default {
     };
   },
   watch: {
+    serverId: {
+      immediate: true,
+      handler() {
+        // reload history when server changes
+        this.loadHistory();
+      },
+    },
     $route: {
       immediate: true,
       handler() {
@@ -265,7 +285,52 @@ export default {
         command: command,
       });
 
+      // track history
+      this.history.push(command);
+      if (this.history.length > 50) {
+        this.history = this.history.slice(this.history.length - 50);
+      }
+      this.saveHistory();
+      this.historyIndex = -1;
+      this.historyTemp = "";
+
       this.form.resetForm();
+    },
+    onCommandKeyDown(event: KeyboardEvent) {
+      if (event.key === "ArrowUp") {
+        if (this.history.length === 0) {
+          return;
+        }
+        if (this.historyIndex === -1) {
+          this.historyTemp = this.form.values.command || "";
+        }
+        const nextIndex = Math.min(
+          this.historyIndex + 1,
+          this.history.length - 1,
+        );
+        const value = this.history[this.history.length - 1 - nextIndex];
+        this.form.setFieldValue("command", value);
+        this.historyIndex = nextIndex;
+        event.preventDefault();
+        return;
+      }
+
+      if (event.key === "ArrowDown") {
+        if (this.historyIndex === -1) {
+          return;
+        }
+        const nextIndex = this.historyIndex - 1;
+        if (nextIndex < 0) {
+          this.form.setFieldValue("command", this.historyTemp);
+          this.historyIndex = -1;
+          this.historyTemp = "";
+        } else {
+          const value = this.history[this.history.length - 1 - nextIndex];
+          this.form.setFieldValue("command", value);
+          this.historyIndex = nextIndex;
+        }
+        event.preventDefault();
+      }
     },
     addCommandResponse(
       command: string,
@@ -286,6 +351,38 @@ export default {
     clearLogs() {
       this.logs = [];
       this.logStates = [];
+    },
+    historyStorageKey(): string {
+      return `rcon_history_${this.serverId || "global"}`;
+    },
+    loadHistory() {
+      try {
+        const raw = localStorage.getItem(this.historyStorageKey());
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            this.history = parsed.slice(-50);
+          }
+        } else {
+          this.history = [];
+        }
+        this.historyIndex = -1;
+        this.historyTemp = "";
+      } catch (_) {
+        this.history = [];
+        this.historyIndex = -1;
+        this.historyTemp = "";
+      }
+    },
+    saveHistory() {
+      try {
+        localStorage.setItem(
+          this.historyStorageKey(),
+          JSON.stringify(this.history.slice(-50)),
+        );
+      } catch (_) {
+        // ignore storage errors
+      }
     },
   },
   beforeUnmount() {

@@ -171,21 +171,30 @@ import { e_player_roles_enum } from "~/generated/zeus";
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead class="cursor-pointer" @click="toggleSortDirection">
+            <TableHead class="cursor-pointer" @click="toggleSort('name')">
               <div class="flex items-center gap-1">
                 {{ $t("pages.players.table.player") }}
-                <ArrowUpIcon v-if="sortDirection === 'desc'" class="w-4 h-4" />
-                <ArrowDownIcon v-else class="w-4 h-4" />
+                <ArrowUpIcon
+                  v-if="sortField === 'name' && sortDirection === 'desc'"
+                  class="w-4 h-4"
+                />
+                <ArrowDownIcon
+                  v-else-if="sortField === 'name' && sortDirection === 'asc'"
+                  class="w-4 h-4"
+                />
               </div>
             </TableHead>
-            <TableHead class="cursor-pointer" @click="toggleEloSortDirection">
+            <TableHead class="cursor-pointer" @click="toggleSort('elo')">
               <div class="flex items-center gap-1">
                 {{ $t("pages.players.table.elo") }}
                 <ArrowUpIcon
-                  v-if="eloSortDirection === 'desc'"
+                  v-if="sortField === 'elo' && sortDirection === 'desc'"
                   class="w-4 h-4"
                 />
-                <ArrowDownIcon v-else class="w-4 h-4" />
+                <ArrowDownIcon
+                  v-else-if="sortField === 'elo' && sortDirection === 'asc'"
+                  class="w-4 h-4"
+                />
               </div>
             </TableHead>
             <TableHead>{{ $t("pages.players.table.privilege") }}</TableHead>
@@ -216,7 +225,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
                   <PlayerDisplay :player="player"></PlayerDisplay>
                 </TableCell>
                 <TableCell>
-                  <PlayerElo :player="player"></PlayerElo>
+                  <PlayerElo :elo="player.elo"></PlayerElo>
                 </TableCell>
                 <TableCell>
                   {{ getRoleDisplay(player.role) }}
@@ -255,9 +264,8 @@ export default {
       page: 1,
       perPage: 10,
       playersAggregate: 0,
-      sortDirection: this.loadFiltersFromStorage().sortDirection || "asc",
       sortField: this.loadFiltersFromStorage().sortField || "name",
-      eloSortDirection: this.loadFiltersFromStorage().eloSortDirection || null,
+      sortDirection: this.loadFiltersFromStorage().sortDirection || "asc",
       onlyPlayedMatches:
         this.loadFiltersFromStorage().onlyPlayedMatches || false,
       availableRoles: [
@@ -335,12 +343,12 @@ export default {
       this.saveFiltersToStorage();
       this.searchPlayers();
     },
-    sortDirection() {
+    sortField() {
       this.page = 1;
       this.saveFiltersToStorage();
       this.searchPlayers();
     },
-    eloSortDirection() {
+    sortDirection() {
       this.page = 1;
       this.saveFiltersToStorage();
       this.searchPlayers();
@@ -355,9 +363,8 @@ export default {
         eloMax: null,
       });
       this.onlyPlayedMatches = false;
-      this.sortDirection = "asc";
       this.sortField = "name";
-      this.eloSortDirection = null;
+      this.sortDirection = "asc";
       this.page = 1;
       this.saveFiltersToStorage();
       this.searchPlayers();
@@ -382,9 +389,8 @@ export default {
             eloMin: this.form.values.eloMin,
             eloMax: this.form.values.eloMax,
             onlyPlayedMatches: this.onlyPlayedMatches,
-            sortDirection: this.sortDirection,
             sortField: this.sortField,
-            eloSortDirection: this.eloSortDirection,
+            sortDirection: this.sortDirection,
           };
           localStorage.setItem("players-filters", JSON.stringify(filters));
         } catch (error) {
@@ -397,16 +403,14 @@ export default {
       this.saveFiltersToStorage();
       this.searchPlayers();
     },
-    toggleSortDirection() {
-      this.sortDirection = this.sortDirection === "desc" ? "asc" : "desc";
-      this.eloSortDirection = null; // Clear elo sort when sorting by name
-      this.saveFiltersToStorage();
-    },
-    toggleEloSortDirection() {
-      if (this.eloSortDirection === null) {
-        this.eloSortDirection = "desc";
+    toggleSort(field: "name" | "elo") {
+      if (this.sortField === field) {
+        // If clicking the same column, toggle direction
+        this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
       } else {
-        this.eloSortDirection = this.eloSortDirection === "desc" ? "asc" : null;
+        // If clicking a different column, set it as active with default direction
+        this.sortField = field;
+        this.sortDirection = "asc";
       }
       this.saveFiltersToStorage();
     },
@@ -478,10 +482,7 @@ export default {
       }
     },
     getSortBy() {
-      if (this.eloSortDirection) {
-        return `elo:${this.eloSortDirection === "desc" ? "desc" : "asc"}`;
-      }
-      return `name:${this.sortDirection === "desc" ? "desc" : "asc"}`;
+      return `${this.sortField}:${this.sortDirection}`;
     },
   },
   created() {

@@ -280,7 +280,7 @@ export default {
                 steam_id: this.me.steam_id,
               },
               _set: {
-                ...(useAuthStore().isAdmin || useAuthStore().isSystemAdmin
+                ...(useAuthStore().isAdmin
                   ? { avatar_url: this.form.values.avatar_url }
                   : {}),
                 country: this.form.values.country,

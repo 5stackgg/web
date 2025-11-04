@@ -160,9 +160,6 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <template v-if="isTournamentOrganizer">
                   <Shield class="w-3 h-3 mr-1 text-orange-500" />
                 </template>
-                <template v-if="isSystemAdmin">
-                  <Shield class="w-3 h-3 mr-1 text-purple-500" />
-                </template>
                 <template v-if="isAdmin">
                   <Crown class="w-3 h-3 mr-1 text-red-500" />
                 </template>
@@ -295,9 +292,6 @@ export default {
     },
     isTournamentOrganizer() {
       return this.player?.role === e_player_roles_enum.tournament_organizer;
-    },
-    isSystemAdmin() {
-      return this.player?.role === e_player_roles_enum.system_administrator;
     },
     isAdmin() {
       return this.player?.role === e_player_roles_enum.administrator;

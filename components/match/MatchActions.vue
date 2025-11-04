@@ -191,7 +191,7 @@ export default {
     canDeleteMatch() {
       return (
         this.match.status !== e_match_status_enum.Live &&
-        useAuthStore().isRoleAbove(e_player_roles_enum.system_administrator)
+        useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
       );
     },
     hasMinimumLineupPlayers() {

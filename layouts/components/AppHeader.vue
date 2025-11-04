@@ -26,7 +26,7 @@ const { isMobile } = useSidebar();
       <div class="flex gap-4">
         <MatchLobbies></MatchLobbies>
 
-        <SystemUpdate v-if="isAdmin || isSystemAdmin"></SystemUpdate>
+        <SystemUpdate v-if="isAdmin"></SystemUpdate>
 
         <SystemStatus></SystemStatus>
 
@@ -52,9 +52,6 @@ export default {
     },
     isAdmin() {
       return useAuthStore().isAdmin;
-    },
-    isSystemAdmin() {
-      return useAuthStore().isSystemAdmin;
     },
     lobbies() {
       return useMatchmakingStore().lobbies;

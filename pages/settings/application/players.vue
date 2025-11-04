@@ -175,10 +175,6 @@ export default {
           value: e_player_roles_enum.tournament_organizer,
           display: "Tournament Organizer",
         },
-        {
-          value: e_player_roles_enum.system_administrator,
-          display: "System Administrator",
-        },
         { value: e_player_roles_enum.administrator, display: "Administrator" },
       ],
       form: useForm({

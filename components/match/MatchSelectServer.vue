@@ -157,15 +157,9 @@ export default {
       return useApplicationSettingsStore().availableRegions;
     },
     canSelectDedicatedServer() {
-      const {
-        isAdmin,
-        isSystemAdmin,
-        isMatchOrganizer,
-        isTournamentOrganizer,
-      } = useAuthStore();
-      return (
-        isAdmin || isSystemAdmin || isMatchOrganizer || isTournamentOrganizer
-      );
+      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
+        useAuthStore();
+      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
     },
     availableServers() {
       return this.servers.map((server) => {

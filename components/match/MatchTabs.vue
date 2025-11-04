@@ -503,16 +503,10 @@ export default {
         return false;
       }
 
-      const {
-        isAdmin,
-        isSystemAdmin,
-        isMatchOrganizer,
-        isTournamentOrganizer,
-      } = useAuthStore();
+      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
+        useAuthStore();
 
-      return (
-        isAdmin || isSystemAdmin || isMatchOrganizer || isTournamentOrganizer
-      );
+      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
     },
     canAdjustLineups() {
       if (

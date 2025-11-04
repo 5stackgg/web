@@ -2190,6 +2190,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"game_versions_bool_exp",
 		build_id:"Int_comparison_exp",
 		current:"Boolean_comparison_exp",
+		cvars:"Boolean_comparison_exp",
 		description:"String_comparison_exp",
 		downloads:"jsonb_comparison_exp",
 		updated_at:"timestamptz_comparison_exp",
@@ -2224,6 +2225,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_versions_order_by:{
 		build_id:"order_by",
 		current:"order_by",
+		cvars:"order_by",
 		description:"order_by",
 		downloads:"order_by",
 		updated_at:"order_by",
@@ -15797,6 +15799,7 @@ export const ReturnTypes: Record<string,any> = {
 	game_versions:{
 		build_id:"Int",
 		current:"Boolean",
+		cvars:"Boolean",
 		description:"String",
 		downloads:"jsonb",
 		updated_at:"timestamptz",

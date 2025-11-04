@@ -267,6 +267,21 @@
         "players": {
             "title": "Players",
             "search": "Search Players",
+            "filter_by_privilege": "Filter by Privilege",
+            "select_privileges": "Select Privileges",
+            "elo_min": "Minimum Elo",
+            "elo_max": "Maximum Elo",
+            "min_elo": "Min Elo",
+            "max_elo": "Max Elo",
+            "only_played_matches": "Only Players Who Have Played Matches",
+            "played_matches": "Played Matches",
+            "all_players": "All Players",
+            "table": {
+                "player": "Player",
+                "elo": "Elo",
+                "privilege": "Privilege",
+                "no_players": "No players found"
+            },
             "detail": {
                 "player_stats": "Player Stats",
                 "kills": "Kills",

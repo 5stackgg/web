@@ -45,28 +45,63 @@ export default defineEventHandler(async (event) => {
 
   let queryBy = "name,steam_id";
 
-  let exclude = "";
+  // Build filter_by string
+  let filterBy: string[] = [];
+
+  // Exclude certain players
   if (body.exclude && Array.isArray(body.exclude)) {
     body.exclude.forEach((steamId: string) => {
-      exclude += (exclude ? " && " : "") + `steam_id:!=${steamId}`;
+      filterBy.push(`steam_id:!=${steamId}`);
     });
   }
+
+  // Filter by team
+  if (body.teamId) {
+    filterBy.push(`teams:${body.teamId}`);
+  }
+
+  // Filter by roles/privileges
+  if (body.roles && Array.isArray(body.roles) && body.roles.length > 0) {
+    const rolesFilter = body.roles
+      .map((role: string) => `role:=${role}`)
+      .join(" || ");
+    filterBy.push(`(${rolesFilter})`);
+  }
+
+  // Filter by elo range
+  if (body.elo_min !== undefined && body.elo_min !== null) {
+    filterBy.push(`elo:>=${body.elo_min}`);
+  }
+
+  if (body.elo_max !== undefined && body.elo_max !== null) {
+    filterBy.push(`elo:<=${body.elo_max}`);
+  }
+
+  // Use provided sort_by or default to name:asc
+  const sortBy = body.sort_by || "name:asc";
+
+  const searchParams: any = {
+    q: query ?? "*",
+    query_by: queryBy,
+    sort_by: sortBy,
+    infix: ["fallback", "off"],
+    ...(filterBy.length > 0 ? { filter_by: filterBy.join(" && ") } : {}),
+    ...(body.page ? { page: body.page } : {}),
+    ...(body.per_page ? { per_page: body.per_page } : {}),
+  };
 
   const results = await client
     .collections("players")
     .documents()
-    .search({
-      q: query ?? "*",
-      query_by: queryBy,
-      sort_by: "name:asc",
-      infix: ["fallback", "off"],
-      ...(body.exclude ? { filter_by: exclude } : {}),
-      ...(body.teamId ? { filter_by: `teams:${body.teamId}` } : {}),
-      ...(body.page ? { page: body.page } : {}),
-      ...(body.per_page ? { per_page: body.per_page } : {}),
-    });
+    .search(searchParams);
 
-  if (process.env.STEAM_API_KEY && !body.teamId && results.found === 0) {
+  // Only do Steam API search if we have a query and no results found
+  if (
+    process.env.STEAM_API_KEY &&
+    !body.teamId &&
+    query &&
+    results.found === 0
+  ) {
     try {
       const steamData = query.match(/^[0-9]+$/)
         ? await searchBySteamId(query)

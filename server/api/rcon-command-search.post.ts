@@ -20,8 +20,8 @@ export default defineEventHandler(async (event) => {
     .documents()
     .search({
       q: body.query?.trim() ?? "*",
-      query_by: "name",
-      sort_by: "name:asc",
+      query_by: "name,description",
+      sort_by: "_text_match:desc,name:asc",
       infix: ["fallback"],
     });
 

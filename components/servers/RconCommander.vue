@@ -67,18 +67,18 @@ import debounce from "~/utilities/debounce";
                   :key="s.name + '_' + i"
                   class="px-3 py-2 text-sm cursor-pointer hover:bg-muted/60"
                   :class="{ 'bg-muted/70': i === suggestionIndex }"
-                  @mousedown.prevent="selectSuggestion(s.name)"
+                  @mousedown.prevent="selectSuggestion(s.command)"
                 >
                   <div class="flex items-start gap-3">
                     <div class="min-w-0">
                       <div class="font-mono text-foreground break-words">
-                        {{ s.name }}
+                        <span v-html="s.name"></span>
                       </div>
                       <div
                         v-if="s.description"
                         class="text-xs text-muted-foreground mt-0.5 line-clamp-2"
                       >
-                        {{ s.description }}
+                        <span v-html="s.description"></span>
                       </div>
                     </div>
                     <div
@@ -271,6 +271,7 @@ export default {
       historyIndex: -1 as number, // -1 means not navigating history
       historyTemp: "" as string, // buffer of current input before history navigation
       suggestions: [] as Array<{
+        command: string;
         name: string;
         kind?: string;
         flags?: string;
@@ -352,16 +353,37 @@ export default {
         });
         const data = await res.json();
         const commands = Array.isArray(data?.hits) ? data.hits : [];
-        this.suggestions = commands.map(function (command: {
-          document: {
-            name: string;
-            kind: string;
-            flags: string;
-            description: string;
-          };
-        }) {
-          return command.document;
-        });
+        this.suggestions = commands.map(
+          (command: {
+            document: {
+              command: string;
+              name: string;
+              kind: string;
+              flags: string;
+              description: string;
+            };
+            highlights: Array<{
+              field: string;
+              snippet: string;
+            }>;
+            text_match_info: {
+              best_field_score: string;
+            };
+          }) => {
+            command.document.command = command.document.name;
+
+            for (const highlight of command.highlights) {
+              if (highlight.field === "name") {
+                command.document.name = highlight.snippet;
+              }
+              if (highlight.field === "description") {
+                command.document.description = highlight.snippet;
+              }
+            }
+
+            return command.document;
+          },
+        );
         this.showSuggestions = this.suggestions.length > 0;
       } catch (error) {
         console.error(`unable to fetch suggestions`, error);
@@ -384,8 +406,8 @@ export default {
     onCommandBlur() {
       setTimeout(() => (this.showSuggestions = false), 100);
     },
-    selectSuggestion(name: string) {
-      this.form.setFieldValue("command", name);
+    selectSuggestion(command: string) {
+      this.form.setFieldValue("command", command);
       this.showSuggestions = false;
       this.sendCommand();
     },
@@ -418,6 +440,14 @@ export default {
     onCommandKeyDown(event: KeyboardEvent) {
       // When suggestions are visible, arrow keys navigate suggestions instead of history
       if (this.showSuggestions && this.suggestions.length > 0) {
+        if (event.key === "Tab") {
+          const selected = this.suggestions[0];
+          if (selected?.command) {
+            this.selectSuggestion(selected.command);
+            event.preventDefault();
+            return;
+          }
+        }
         if (event.key === "ArrowDown") {
           this.suggestionIndex =
             (this.suggestionIndex + 1) % this.suggestions.length;
@@ -434,8 +464,8 @@ export default {
         if (event.key === "Enter") {
           if (this.suggestionIndex >= 0) {
             const selected = this.suggestions[this.suggestionIndex];
-            if (selected?.name) {
-              this.selectSuggestion(selected.name);
+            if (selected?.command) {
+              this.selectSuggestion(selected.command);
               event.preventDefault();
               return;
             }

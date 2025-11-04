@@ -234,3 +234,7 @@ div[role="menuitem"] {
   }
 }
 
+
+mark {
+  @apply bg-white/80;
+}

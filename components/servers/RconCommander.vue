@@ -16,6 +16,8 @@ import debounce from "~/utilities/debounce";
 </script>
 
 <template>
+  ?
+  <mark>aasdfds</mark>
   <!-- RCON Console Interface -->
   <div class="bg-muted/50 p-6 rounded-xl border">
     <div class="flex items-center justify-between mb-6">

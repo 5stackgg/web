@@ -4,7 +4,6 @@ import { Input } from "~/components/ui/input";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Terminal, ChevronDown, ChevronRight } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
-import { ServerIcon } from "lucide-vue-next";
 import { RotateCcw } from "lucide-vue-next";
 import {
   Collapsible,
@@ -13,6 +12,7 @@ import {
 } from "~/components/ui/collapsible";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { ButtonGroup } from "~/components/ui/button-group";
+import debounce from "~/utilities/debounce";
 </script>
 
 <template>
@@ -41,10 +41,59 @@ import { ButtonGroup } from "~/components/ui/button-group";
                   v-bind="componentField"
                   class="bg-background h-12 pr-40"
                   @keydown="onCommandKeyDown"
+                  @input="onCommandInput"
+                  @focus="onCommandFocus"
+                  @blur="onCommandBlur"
                 />
               </FormControl>
             </FormItem>
           </FormField>
+
+          <div
+            v-if="showSuggestions && suggestions.length > 0"
+            class="absolute left-0 right-0 top-full mt-2 z-50"
+          >
+            <div
+              class="bg-background border rounded-md shadow-xl ring-1 ring-border overflow-hidden"
+            >
+              <div
+                class="px-3 py-1.5 text-xs text-muted-foreground bg-muted/30 border-b"
+              >
+                Suggestions
+              </div>
+              <ul class="max-h-72 overflow-auto divide-y divide-muted/30">
+                <li
+                  v-for="(s, i) in suggestions"
+                  :key="s.name + '_' + i"
+                  class="px-3 py-2 text-sm cursor-pointer hover:bg-muted/60"
+                  :class="{ 'bg-muted/70': i === suggestionIndex }"
+                  @mousedown.prevent="selectSuggestion(s.name)"
+                >
+                  <div class="flex items-start gap-3">
+                    <div class="min-w-0">
+                      <div class="font-mono text-foreground break-words">
+                        {{ s.name }}
+                      </div>
+                      <div
+                        v-if="s.description"
+                        class="text-xs text-muted-foreground mt-0.5 line-clamp-2"
+                      >
+                        {{ s.description }}
+                      </div>
+                    </div>
+                    <div
+                      class="ml-auto shrink-0 text-xs text-muted-foreground flex items-center gap-2"
+                    >
+                      <span v-if="s.kind">{{ s.kind }}</span>
+                      <span v-if="s.flags" class="opacity-80">{{
+                        s.flags
+                      }}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
 
           <!-- Right: Send + Quick Commands dropdown inside input using ButtonGroup -->
           <div class="absolute right-2 top-1/2 -translate-y-1/2">
@@ -221,6 +270,15 @@ export default {
       history: [] as string[],
       historyIndex: -1 as number, // -1 means not navigating history
       historyTemp: "" as string, // buffer of current input before history navigation
+      suggestions: [] as Array<{
+        name: string;
+        kind?: string;
+        flags?: string;
+        description?: string;
+      }>,
+      showSuggestions: false as boolean,
+      _debouncedSearch: undefined as undefined | ((q: string) => void),
+      suggestionIndex: -1 as number,
       commander: (commands: string | Array<string>, value: string) => {
         if (!Array.isArray(commands)) {
           commands = [commands];
@@ -238,11 +296,16 @@ export default {
       form,
     };
   },
+  created() {
+    this._debouncedSearch = debounce(
+      (q: string) => this.fetchSuggestions(q),
+      50,
+    );
+  },
   watch: {
     serverId: {
       immediate: true,
       handler() {
-        // reload history when server changes
         this.loadHistory();
       },
     },
@@ -273,7 +336,63 @@ export default {
     },
   },
   methods: {
+    async fetchSuggestions(query: string) {
+      const q = (query || "").trim();
+      if (q.length < 1) {
+        this.suggestions = [];
+        this.showSuggestions = false;
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/rcon-command-search", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ query: q }),
+        });
+        const data = await res.json();
+        const commands = Array.isArray(data?.hits) ? data.hits : [];
+        this.suggestions = commands.map(function (command: {
+          document: {
+            name: string;
+            kind: string;
+            flags: string;
+            description: string;
+          };
+        }) {
+          return command.document;
+        });
+        this.showSuggestions = this.suggestions.length > 0;
+      } catch (error) {
+        console.error(`unable to fetch suggestions`, error);
+        this.suggestions = [];
+        this.showSuggestions = false;
+      }
+    },
+    onCommandInput(event: any) {
+      const value = event?.target?.value ?? this.form.values.command ?? "";
+      if (this._debouncedSearch) {
+        this._debouncedSearch(value);
+      }
+      this.suggestionIndex = -1;
+    },
+    onCommandFocus() {
+      if (this.suggestions.length > 0) {
+        this.showSuggestions = true;
+      }
+    },
+    onCommandBlur() {
+      setTimeout(() => (this.showSuggestions = false), 100);
+    },
+    selectSuggestion(name: string) {
+      this.form.setFieldValue("command", name);
+      this.showSuggestions = false;
+      this.sendCommand();
+    },
     sendCommand() {
+      this.suggestions = [];
+      this.showSuggestions = false;
+
       const command = this.form.values.command;
       if (!command || command.length === 0) {
         return;
@@ -297,6 +416,38 @@ export default {
       this.form.resetForm();
     },
     onCommandKeyDown(event: KeyboardEvent) {
+      // When suggestions are visible, arrow keys navigate suggestions instead of history
+      if (this.showSuggestions && this.suggestions.length > 0) {
+        if (event.key === "ArrowDown") {
+          this.suggestionIndex =
+            (this.suggestionIndex + 1) % this.suggestions.length;
+          event.preventDefault();
+          return;
+        }
+        if (event.key === "ArrowUp") {
+          this.suggestionIndex =
+            (this.suggestionIndex - 1 + this.suggestions.length) %
+            this.suggestions.length;
+          event.preventDefault();
+          return;
+        }
+        if (event.key === "Enter") {
+          if (this.suggestionIndex >= 0) {
+            const selected = this.suggestions[this.suggestionIndex];
+            if (selected?.name) {
+              this.selectSuggestion(selected.name);
+              event.preventDefault();
+              return;
+            }
+          }
+        }
+        if (event.key === "Escape") {
+          this.showSuggestions = false;
+          this.suggestionIndex = -1;
+          event.preventDefault();
+          return;
+        }
+      }
       if (event.key === "ArrowUp") {
         if (this.history.length === 0) {
           return;

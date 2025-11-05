@@ -6074,6 +6074,9 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			time:"timestamptz"
 		},
+		setGameNodeSchedulingState:{
+
+		},
 		setMatchWinner:{
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
@@ -17474,6 +17477,7 @@ export const ReturnTypes: Record<string,any> = {
 		requestNameChange:"SuccessOutput",
 		restartService:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
+		setGameNodeSchedulingState:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		startMatch:"SuccessOutput",

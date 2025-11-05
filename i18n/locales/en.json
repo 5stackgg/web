@@ -1322,8 +1322,11 @@
         "toast": {
             "cs_updating": "CS2 is being updated on the node",
             "ports_updated": "Node Ports Updated",
-            "label_updated": "Node Label Updated"
-        }
+            "label_updated": "Node Label Updated",
+            "scheduling_updated": "Node Scheduling Updated"
+        },
+        "enable_scheduling": "Enable Scheduling",
+        "disable_scheduling": "Disable Scheduling"
     },
     "chat": {
         "lobby_chat": "Lobby Chat",

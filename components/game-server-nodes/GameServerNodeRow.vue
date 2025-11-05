@@ -27,6 +27,8 @@ import {
   CircleFadingArrowUp,
   AlertCircle,
   Plus,
+  Ban,
+  CheckCircle2,
 } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
@@ -420,6 +422,26 @@ import { AlertTriangle } from "lucide-vue-next";
             <Pencil class="mr-2 h-4 w-4" />
             <span>{{ $t("game_server.edit_label") }}</span>
           </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem @click="toggleGameServerNodeScheduling">
+            <template
+              v-if="
+                gameServerNode.status ===
+                e_game_server_node_statuses_enum.NotAcceptingNewMatches
+              "
+            >
+              <CheckCircle2 class="mr-2 h-4 w-4" />
+              {{ $t("game_server.enable_scheduling") }}
+            </template>
+            <template v-else>
+              <Ban class="mr-2 h-4 w-4" />
+              {{ $t("game_server.disable_scheduling") }}
+            </template>
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator />
 
           <DropdownMenuItem @click="removeGameNodeServer" class="text-red-500">
             <Trash2 class="mr-2 h-4 w-4" />
@@ -884,6 +906,27 @@ export default defineComponent({
             },
           ],
         }),
+      });
+    },
+    async toggleGameServerNodeScheduling() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          setGameNodeSchedulingState: [
+            {
+              game_server_node_id: this.gameServerNode.id,
+              enabled:
+                this.gameServerNode.status ===
+                e_game_server_node_statuses_enum.NotAcceptingNewMatches,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("game_server.toast.scheduling_updated"),
       });
     },
     toggleLogs() {

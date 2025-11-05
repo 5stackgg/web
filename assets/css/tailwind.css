@@ -3,24 +3,12 @@
 @tailwind utilities;
  
 @font-face {
-  font-family: 'Stratum2';
-  src: url('/fonts/stratum2-regular-webfont.woff') format('woff');
-  font-weight: 400;
+  font-family: 'Oxanium';
+  src: url('/fonts/Oxanium-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 700;
   font-style: normal;
-}
-
-@font-face {
-  font-family: 'Stratum2';
-  src: url('/fonts/stratum2-medium-webfont.woff') format('woff');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Stratum2';
-  src: url('/fonts/stratum2-bold-webfont.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
+  font-display: swap;
+  font-stretch: 75% 100%;
 }
 
 @layer base {

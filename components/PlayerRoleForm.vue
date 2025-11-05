@@ -4,7 +4,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 </script>
 
 <template>
-  <Popover>
+  <Popover v-if="canChangeRole">
     <PopoverTrigger as-child>
       <Button variant="outline">
         <span class="capitalize">{{ player.role.replace("_", " ") }}</span>
@@ -66,6 +66,9 @@ export default {
     },
   },
   computed: {
+    canChangeRole() {
+      return useAuthStore().isRoleAbove(this.player.role);
+    },
     roles() {
       return [
         { value: e_player_roles_enum.user, display: "User" },
@@ -80,10 +83,9 @@ export default {
           display: "Tournament Organizer",
         },
         { value: e_player_roles_enum.administrator, display: "Administrator" },
-      ];
-      //   .filter((role) => {
-      //     return useAuthStore().isRoleAbove(role.value);
-      //   });
+      ].filter((role) => {
+        return useAuthStore().isRoleAbove(role.value);
+      });
     },
   },
   watch: {

@@ -11,7 +11,7 @@
 export default {
   props: {
     elo: {
-      type: String,
+      type: [String, Number],
       required: false,
     },
   },

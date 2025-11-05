@@ -17,6 +17,7 @@ import {
 } from "~/components/ui/select";
 import Pagination from "~/components/Pagination.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { useAuthStore } from "~/stores/AuthStore";
 </script>
 
 <template>
@@ -58,7 +59,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
             </div>
 
             <!-- Privilege/Role multi-select -->
-            <div class="space-y-2">
+            <div v-if="canFilterByPrivilege" class="space-y-2">
               <div class="flex items-center justify-between">
                 <Label for="roles-filter">{{
                   $t("pages.players.filter_by_privilege")
@@ -302,6 +303,11 @@ export default {
         },
       }),
     };
+  },
+  computed: {
+    canFilterByPrivilege() {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+    },
   },
   watch: {
     page: {

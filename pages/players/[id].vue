@@ -3,7 +3,6 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import { ChevronDownIcon } from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
 import LastTenWins from "~/components/charts/LastTenWins.vue";
 import LastTenLosses from "~/components/charts/LastTenLosses.vue";
@@ -12,6 +11,7 @@ import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
+import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 </script>
 
 <template>
@@ -76,31 +76,7 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
         <div class="flex gap-2">
           <template v-if="canSanction">
             <SanctionPlayer :player="player" />
-            <Popover>
-              <PopoverTrigger as-child>
-                <Button variant="outline" class="ml-auto">
-                  <span class="capitalize">{{
-                    player.role.replace("_", " ")
-                  }}</span>
-                  <ChevronDownIcon class="ml-2 h-4 w-4 text-muted-foreground" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent class="p-0" align="end">
-                <Command v-model="memberRole">
-                  <CommandList>
-                    <CommandGroup>
-                      <CommandItem
-                        :value="role.value"
-                        class="flex flex-col items-start px-4 py-2 cursor-pointer"
-                        v-for="role of roles"
-                      >
-                        <span class="capitalize">{{ role.display }}</span>
-                      </CommandItem>
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
+            <PlayerRoleForm :player="player" />
           </template>
           <template v-else-if="player.role !== e_player_roles_enum.user">
             <Badge class="capitalize">{{
@@ -217,7 +193,6 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 
 export default {
@@ -363,32 +338,7 @@ export default {
       player: undefined,
       page: 1,
       perPage: 10,
-      memberRole: undefined,
-      roles: [
-        { value: e_player_roles_enum.user, display: "User" },
-        { value: e_player_roles_enum.verified_user, display: "Verified User" },
-        { value: e_player_roles_enum.streamer, display: "Streamer" },
-        {
-          value: e_player_roles_enum.match_organizer,
-          display: "Match Organizer",
-        },
-        {
-          value: e_player_roles_enum.tournament_organizer,
-          display: "Tournament Organizer",
-        },
-        { value: e_player_roles_enum.administrator, display: "Administrator" },
-      ],
     };
-  },
-  watch: {
-    memberRole: {
-      handler(role) {
-        if (role) {
-          this.updateRole();
-          return;
-        }
-      },
-    },
   },
   computed: {
     me() {
@@ -408,27 +358,6 @@ export default {
         this.player?.kills_aggregate.aggregate.count /
           this.player?.deaths_aggregate.aggregate.count,
       );
-    },
-  },
-  methods: {
-    async updateRole() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_players_by_pk: [
-            {
-              _set: {
-                role: this.memberRole,
-              },
-              pk_columns: {
-                steam_id: this.player.steam_id,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
     },
   },
 };

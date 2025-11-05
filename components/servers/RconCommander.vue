@@ -441,7 +441,8 @@ export default {
       // When suggestions are visible, arrow keys navigate suggestions instead of history
       if (this.showSuggestions && this.suggestions.length > 0) {
         if (event.key === "Tab") {
-          const selectedIndex = this.suggestionIndex >= 0 ? this.suggestionIndex : 0;
+          const selectedIndex =
+            this.suggestionIndex >= 0 ? this.suggestionIndex : 0;
           const selected = this.suggestions[selectedIndex];
           if (selected?.command) {
             this.form.setFieldValue("command", selected.command + " ");

@@ -18,6 +18,7 @@ import {
 import Pagination from "~/components/Pagination.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 </script>
 
 <template>
@@ -198,7 +199,9 @@ import { useAuthStore } from "~/stores/AuthStore";
                 />
               </div>
             </TableHead>
-            <TableHead>{{ $t("pages.players.table.privilege") }}</TableHead>
+            <TableHead v-if="canFilterByPrivilege" class="text-right">{{
+              $t("pages.players.table.privilege")
+            }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -223,15 +226,20 @@ import { useAuthStore } from "~/stores/AuthStore";
                 class="contents"
               >
                 <TableCell class="font-medium">
-                  <PlayerDisplay :player="player"></PlayerDisplay>
+                  <PlayerDisplay
+                    :player="player"
+                    :show-elo="false"
+                  ></PlayerDisplay>
                 </TableCell>
                 <TableCell>
                   <PlayerElo :elo="player.elo"></PlayerElo>
                 </TableCell>
-                <TableCell>
-                  {{ getRoleDisplay(player.role) }}
-                </TableCell>
               </NuxtLink>
+              <TableCell v-if="canFilterByPrivilege" class="text-right">
+                <div class="flex justify-end">
+                  <PlayerRoleForm :player="player" />
+                </div>
+              </TableCell>
             </TableRow>
           </template>
         </TableBody>
@@ -439,16 +447,6 @@ export default {
       this.saveFiltersToStorage();
 
       try {
-        // If onlyPlayedMatches is true, ensure elo_min is at least 1
-        let eloMin =
-          this.form.values.eloMin !== null &&
-          this.form.values.eloMin !== undefined
-            ? this.form.values.eloMin
-            : undefined;
-        if (this.onlyPlayedMatches) {
-          eloMin = eloMin !== undefined ? Math.max(1, eloMin) : 1;
-        }
-
         const response = await $fetch("/api/players-search", {
           method: "post",
           body: {
@@ -459,12 +457,17 @@ export default {
               this.form.values.roles && this.form.values.roles.length > 0
                 ? this.form.values.roles
                 : undefined,
-            elo_min: eloMin,
+            elo_min:
+              this.form.values.eloMin !== null &&
+              this.form.values.eloMin !== undefined
+                ? this.form.values.eloMin
+                : undefined,
             elo_max:
               this.form.values.eloMax !== null &&
               this.form.values.eloMax !== undefined
                 ? this.form.values.eloMax
                 : undefined,
+            only_played_matches: this.onlyPlayedMatches,
             sort_by: this.getSortBy(),
           },
         });

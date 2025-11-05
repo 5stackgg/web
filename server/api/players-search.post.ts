@@ -69,8 +69,18 @@ export default defineEventHandler(async (event) => {
   }
 
   // Filter by elo range
-  if (body.elo_min !== undefined && body.elo_min !== null) {
-    filterBy.push(`elo:>=${body.elo_min}`);
+  // If only_played_matches is true, ensure elo_min is at least 1
+  let effectiveEloMin = body.elo_min;
+  if (body.only_played_matches) {
+    // Players who have played matches will have elo >= 1 (assuming starting elo is 0 or 1)
+    effectiveEloMin =
+      effectiveEloMin !== undefined && effectiveEloMin !== null
+        ? Math.max(1, effectiveEloMin)
+        : 1;
+  }
+
+  if (effectiveEloMin !== undefined && effectiveEloMin !== null) {
+    filterBy.push(`elo:>=${effectiveEloMin}`);
   }
 
   if (body.elo_max !== undefined && body.elo_max !== null) {

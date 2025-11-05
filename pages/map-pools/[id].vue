@@ -79,7 +79,16 @@ export default {
   apollo: {
     maps: {
       query: generateQuery({
-        maps: [{}, mapFields],
+        maps: [
+          {
+            where: {
+              enabled: {
+                _eq: true,
+              },
+            },
+          },
+          mapFields,
+        ],
       }),
     },
     map_pools_by_pk: {

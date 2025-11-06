@@ -19,6 +19,7 @@ import Pagination from "~/components/Pagination.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 </script>
 
 <template>
@@ -60,7 +61,7 @@ import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
             </div>
 
             <!-- Privilege/Role multi-select -->
-            <div v-if="canFilterByPrivilege" class="space-y-2">
+            <div v-if="canViewAdditionalDetails" class="space-y-2">
               <div class="flex items-center justify-between">
                 <Label for="roles-filter">{{
                   $t("pages.players.filter_by_privilege")
@@ -199,9 +200,12 @@ import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
                 />
               </div>
             </TableHead>
-            <TableHead v-if="canFilterByPrivilege" class="text-right">{{
+            <TableHead v-if="canViewAdditionalDetails">{{
               $t("pages.players.table.privilege")
             }}</TableHead>
+            <TableHead v-if="canViewAdditionalDetails">
+              {{ $t("pages.players.table.last_sign_in_at") }}
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -235,10 +239,11 @@ import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
                   <PlayerElo :elo="player.elo"></PlayerElo>
                 </TableCell>
               </NuxtLink>
-              <TableCell v-if="canFilterByPrivilege" class="text-right">
-                <div class="flex justify-end">
-                  <PlayerRoleForm :player="player" />
-                </div>
+              <TableCell v-if="canViewAdditionalDetails">
+                <PlayerRoleForm :player="player" />
+              </TableCell>
+              <TableCell v-if="canViewAdditionalDetails">
+                <TimeAgo :date="player.last_sign_in_at" />
               </TableCell>
             </TableRow>
           </template>
@@ -313,7 +318,7 @@ export default {
     };
   },
   computed: {
-    canFilterByPrivilege() {
+    canViewAdditionalDetails() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
   },

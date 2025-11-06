@@ -279,6 +279,7 @@
             "table": {
                 "player": "Player",
                 "elo": "Elo",
+                "last_sign_in_at": "Last Sign In At",
                 "privilege": "Privilege",
                 "no_players": "No players found"
             },

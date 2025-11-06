@@ -9306,6 +9306,7 @@ export const AllTypesProps: Record<string,any> = {
 		kills:"player_kills_bool_exp",
 		kills_aggregate:"player_kills_aggregate_bool_exp",
 		language:"String_comparison_exp",
+		last_sign_in_at:"timestamptz_comparison_exp",
 		lobby_players:"lobby_players_bool_exp",
 		lobby_players_aggregate:"lobby_players_aggregate_bool_exp",
 		matches:"matches_bool_exp",
@@ -9361,6 +9362,7 @@ export const AllTypesProps: Record<string,any> = {
 		friends:"my_friends_arr_rel_insert_input",
 		invited_players:"team_invites_arr_rel_insert_input",
 		kills:"player_kills_arr_rel_insert_input",
+		last_sign_in_at:"timestamptz",
 		lobby_players:"lobby_players_arr_rel_insert_input",
 		multi_kills:"v_player_multi_kills_arr_rel_insert_input",
 		notifications:"notifications_arr_rel_insert_input",
@@ -9412,6 +9414,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_muted:"order_by",
 		kills_aggregate:"player_kills_aggregate_order_by",
 		language:"order_by",
+		last_sign_in_at:"order_by",
 		lobby_players_aggregate:"lobby_players_aggregate_order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		matchmaking_cooldown:"order_by",
@@ -9441,6 +9444,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_select_column: "enum" as const,
 	players_set_input:{
 		created_at:"timestamptz",
+		last_sign_in_at:"timestamptz",
 		role:"e_player_roles_enum",
 		steam_id:"bigint"
 	},
@@ -9450,6 +9454,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		last_sign_in_at:"timestamptz",
 		role:"e_player_roles_enum",
 		steam_id:"bigint"
 	},
@@ -18870,6 +18875,7 @@ export const ReturnTypes: Record<string,any> = {
 		kills:"player_kills",
 		kills_aggregate:"player_kills_aggregate",
 		language:"String",
+		last_sign_in_at:"timestamptz",
 		lobby_players:"lobby_players",
 		lobby_players_aggregate:"lobby_players_aggregate",
 		matches:"matches",
@@ -18936,6 +18942,7 @@ export const ReturnTypes: Record<string,any> = {
 		discord_id:"String",
 		elo:"numeric",
 		language:"String",
+		last_sign_in_at:"timestamptz",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
 		profile_url:"String",
@@ -18950,6 +18957,7 @@ export const ReturnTypes: Record<string,any> = {
 		discord_id:"String",
 		elo:"numeric",
 		language:"String",
+		last_sign_in_at:"timestamptz",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
 		profile_url:"String",

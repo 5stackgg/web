@@ -243,7 +243,12 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 <PlayerRoleForm :player="player" />
               </TableCell>
               <TableCell v-if="canViewAdditionalDetails">
-                <TimeAgo :date="player.last_sign_in_at" />
+                <TimeAgo
+                  :date="player.last_sign_in_at"
+                  v-if="
+                    player.last_sign_in_at && player.last_sign_in_at !== `~~`
+                  "
+                />
               </TableCell>
             </TableRow>
           </template>

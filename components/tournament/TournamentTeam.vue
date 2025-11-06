@@ -96,7 +96,7 @@ import Badge from "../ui/badge/Badge.vue";
                   }"
                 />
                 <template v-if="slot === 1 && team.can_manage">
-                  <player-search
+                  <PlayerSearch
                     :label="$t('tournament.team.add_player')"
                     :exclude="
                       team.roster?.map((member) => member.player.steam_id) || []

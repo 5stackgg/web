@@ -18,12 +18,13 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
     </Button>
   </div>
 
-  <player-search
+  <PlayerSearch
     :label="$t('matchmaking.friends.search')"
     :self="false"
     @selected="(player) => addAsFriend(player.steam_id)"
     :exclude="friends?.map((friend) => friend.steam_id)"
-  ></player-search>
+    :registeredOnly="true"
+  ></PlayerSearch>
 
   <div class="overflow-auto mt-4">
     <div class="flex flex-col gap-4">

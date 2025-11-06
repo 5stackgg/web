@@ -55,6 +55,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  if (body.registeredOnly) {
+    filterBy.push(`last_sign_in_at:!~~`);
+  }
+
   // Filter by team
   if (body.teamId) {
     filterBy.push(`teams:${body.teamId}`);
@@ -104,6 +108,10 @@ export default defineEventHandler(async (event) => {
     .collections("players")
     .documents()
     .search(searchParams);
+
+  if (body.registeredOnly) {
+    return results;
+  }
 
   // Only do Steam API search if we have a query and no results found
   if (

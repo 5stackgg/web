@@ -60,20 +60,19 @@ import { XIcon, LogOut, PlusIcon } from "lucide-vue-next";
           :style="{ zIndex: lobby?.players.length + 1 }"
           v-if="isCaptain"
         >
-          <div
-            class="w-8 h-8 rounded-full p-0.5 bg-gray-800 border border-gray-600 flex items-center justify-center cursor-pointer hover:bg-gray-700 transition-colors duration-200"
-            @click="openPlayerSearch"
-          >
-            <PlusIcon class="h-3 w-3 text-white" />
-          </div>
-
-          <player-search
-            v-model:open="playerSearchOpen"
+          <PlayerSearch
             :label="$t('matchmaking.lobby.invite_player')"
             :self="false"
             @selected="(player) => inviteToLobby(player.steam_id)"
-            class="absolute inset-0 opacity-0 pointer-events-none"
-          ></player-search>
+            :registeredOnly="true"
+          >
+            <div
+              class="w-8 h-8 rounded-full p-0.5 bg-gray-800 border border-gray-600 flex items-center justify-center cursor-pointer hover:bg-gray-700 transition-colors duration-200"
+              @click="openPlayerSearch"
+            >
+              <PlusIcon class="h-3 w-3 text-white" />
+            </div>
+          </PlayerSearch>
         </div>
 
         <div

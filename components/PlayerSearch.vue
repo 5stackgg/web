@@ -8,26 +8,30 @@ import debounce from "~/utilities/debounce";
 <template>
   <Popover v-model:open="open">
     <PopoverTrigger as-child>
-      <Button
-        @click="searchPlayers()"
-        variant="outline"
-        :aria-expanded="open"
-        :class="[
-          {
-            'justify-between w-full py-8': selected,
-            'justify-between': !selected,
-          },
-          $props.class,
-        ]"
-      >
-        <template v-if="selected">
-          <PlayerDisplay :player="selected" />
-        </template>
-        <template v-else>
-          {{ label }}
-        </template>
-        <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </Button>
+      <div class="relative">
+        <slot>
+          <Button
+            @click="searchPlayers()"
+            variant="outline"
+            :aria-expanded="open"
+            :class="[
+              {
+                'justify-between w-full py-8': selected,
+                'justify-between': !selected,
+              },
+              $props.class,
+            ]"
+          >
+            <template v-if="selected">
+              <PlayerDisplay :player="selected" />
+            </template>
+            <template v-else>
+              {{ label }}
+            </template>
+            <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </slot>
+      </div>
     </PopoverTrigger>
     <PopoverContent class="p-0 w-[400px]">
       <div class="flex flex-col">
@@ -129,6 +133,11 @@ export default {
       required: false,
       default: "",
     },
+    registeredOnly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -187,6 +196,7 @@ export default {
           query,
           teamId: this.teamId,
           exclude: exclude,
+          registeredOnly: this.registeredOnly,
         },
       });
 
@@ -207,6 +217,13 @@ export default {
   watch: {
     query(newQuery: string) {
       this.debouncedSearch(newQuery);
+    },
+    open: {
+      handler(newOpen: boolean) {
+        if (newOpen) {
+          this.searchPlayers();
+        }
+      },
     },
   },
 };

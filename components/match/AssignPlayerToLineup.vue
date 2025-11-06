@@ -3,13 +3,13 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 </script>
 
 <template>
-  <player-search
+  <PlayerSearch
     :label="$t('match.player.assign_slot')"
     :exclude="exclude.map((player) => player.steam_id)"
     :team-id="lineup.team_id"
     :self="true"
     @selected="(player) => addMember(player.steam_id)"
-  ></player-search>
+  ></PlayerSearch>
 </template>
 
 <script lang="ts">

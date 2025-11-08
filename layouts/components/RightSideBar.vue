@@ -59,7 +59,7 @@ const { setRightSidebarOpen, toggleRightSidebar } = useRightSidebar();
                 (matchInvites.length > 0 || lobbyInvites.length > 0)
               "
             >
-              <div class="flex flex-col gap-4">
+              <div class="flex flex-col gap-4 mt-4">
                 <h3 class="text-lg font-semibold">
                   {{ $t("matchmaking.invites") }}
                   <span class="text-sm text-muted-foreground"

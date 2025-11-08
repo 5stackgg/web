@@ -5,14 +5,20 @@ import { Users, MailPlus } from "lucide-vue-next";
 <template>
   <div class="flex flex-col gap-4 mt-4">
     <div
-      v-if="matchInvites.length > 0 || lobbyInvites.length > 0"
+      v-if="
+        matchInvites.length > 0 ||
+        lobbyInvites.length > 0 ||
+        pendingFriends.length > 0
+      "
       class="flex items-center justify-center gap-2 text-sm text-muted-foreground relative"
     >
       <MailPlus class="h-4 w-4" />
       <div
         class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
       ></div>
-      <span>{{ matchInvites.length + lobbyInvites.length }}</span>
+      <span>{{
+        matchInvites.length + lobbyInvites.length + pendingFriends.length
+      }}</span>
     </div>
 
     <div
@@ -32,6 +38,11 @@ export default {
     },
     lobbyInvites() {
       return useMatchmakingStore().lobbyInvites;
+    },
+    pendingFriends() {
+      return this.friends?.filter((friend) => {
+        return friend.status === "Pending";
+      });
     },
     friends() {
       return useMatchmakingStore().friends.sort((a, b) => {

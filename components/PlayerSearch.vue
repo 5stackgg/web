@@ -225,6 +225,12 @@ export default {
         }
       },
     },
+    exclude(newExclude: string[], oldExclude: string[]) {
+      if (newExclude.length !== oldExclude.length) {
+        console.log("exclude changed");
+        this.searchPlayers();
+      }
+    },
   },
 };
 </script>

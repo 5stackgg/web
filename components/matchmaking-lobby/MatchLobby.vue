@@ -3,6 +3,7 @@ import MatchmakingLobbyAccess from "./MatchmakingLobbyAccess.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import { XIcon, LogOut, PlusIcon } from "lucide-vue-next";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
@@ -25,15 +26,20 @@ import { XIcon, LogOut, PlusIcon } from "lucide-vue-next";
         >
           <div class="relative">
             <div class="w-8 h-8 rounded-full p-0.5">
-              <PlayerDisplay
-                :player="player.player"
-                :showOnline="false"
-                :showFlag="false"
-                :showName="false"
-                :showRole="false"
-                size="xs"
-                class="rounded-full w-full h-full overflow-hidden bg-gray-800"
-              />
+              <FiveStackToolTip>
+                <template #trigger>
+                  <PlayerDisplay
+                    :player="player.player"
+                    :showOnline="false"
+                    :showFlag="false"
+                    :showName="false"
+                    :showRole="false"
+                    size="xs"
+                    class="rounded-full w-full h-full overflow-hidden bg-gray-800"
+                  />
+                </template>
+                {{ player.player.name }}
+              </FiveStackToolTip>
             </div>
             <Button
               class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rounded-full h-5 w-5 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-red-400 hover:bg-red-500 border-2 border-gray-900"
@@ -65,6 +71,7 @@ import { XIcon, LogOut, PlusIcon } from "lucide-vue-next";
             :self="false"
             @selected="(player) => inviteToLobby(player.steam_id)"
             :registeredOnly="true"
+            :exclude="lobby?.players.map((player) => player.player.steam_id)"
           >
             <div
               class="w-8 h-8 rounded-full p-0.5 bg-gray-800 border border-gray-600 flex items-center justify-center cursor-pointer hover:bg-gray-700 transition-colors duration-200"

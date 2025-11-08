@@ -35,13 +35,24 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
         <template v-for="player in pendingFriends">
           <template v-if="player.invited_by_steam_id === me.steam_id">
             <FriendOptions :player="player">
-              <PlayerDisplay
-                class="w-full cursor-pointer opacity-50 hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
-                :player="player"
-                :showOnline="false"
-                :showAddFriend="false"
-                :linkable="true"
-              />
+              <div class="flex items-center justify-between">
+                <PlayerDisplay
+                  class="w-full cursor-pointer opacity-50 hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
+                  :player="player"
+                  :showOnline="false"
+                  :showAddFriend="false"
+                  :linkable="true"
+                />
+                <div class="flex flex-col gap-2">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    @click="denyFriend(player.steam_id)"
+                  >
+                    <Ban class="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </FriendOptions>
           </template>
           <div class="flex items-center justify-between" v-else>

@@ -133,7 +133,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 <TooltipTrigger>
                   <UserPlus
                     class="w-4 h-4 cursor-pointer hover:text-primary"
-                    @click.stop="addAsFriend"
+                    @click.stop.prevent="addAsFriend"
                   />
                 </TooltipTrigger>
                 <TooltipContent>{{

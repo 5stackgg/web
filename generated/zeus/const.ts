@@ -4468,6 +4468,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"match_map_demos_order_by",
 			where:"match_map_demos_bool_exp"
 		},
+		elo_changes:{
+			distinct_on:"v_player_elo_select_column",
+			order_by:"v_player_elo_order_by",
+			where:"v_player_elo_bool_exp"
+		},
+		elo_changes_aggregate:{
+			distinct_on:"v_player_elo_select_column",
+			order_by:"v_player_elo_order_by",
+			where:"v_player_elo_bool_exp"
+		},
 		invites:{
 			distinct_on:"match_invites_select_column",
 			order_by:"match_invites_order_by",
@@ -4658,6 +4668,8 @@ export const AllTypesProps: Record<string,any> = {
 		demos_aggregate:"match_map_demos_aggregate_bool_exp",
 		e_match_status:"e_match_status_bool_exp",
 		e_region:"server_regions_bool_exp",
+		elo_changes:"v_player_elo_bool_exp",
+		elo_changes_aggregate:"v_player_elo_aggregate_bool_exp",
 		ended_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
@@ -4734,6 +4746,7 @@ export const AllTypesProps: Record<string,any> = {
 		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_status:"e_match_status_obj_rel_insert_input",
 		e_region:"server_regions_obj_rel_insert_input",
+		elo_changes:"v_player_elo_arr_rel_insert_input",
 		ended_at:"timestamptz",
 		id:"uuid",
 		invites:"match_invites_arr_rel_insert_input",
@@ -4822,6 +4835,7 @@ export const AllTypesProps: Record<string,any> = {
 		demos_aggregate:"match_map_demos_aggregate_order_by",
 		e_match_status:"e_match_status_order_by",
 		e_region:"server_regions_order_by",
+		elo_changes_aggregate:"v_player_elo_aggregate_order_by",
 		ended_at:"order_by",
 		id:"order_by",
 		invite_code:"order_by",
@@ -17356,6 +17370,8 @@ export const ReturnTypes: Record<string,any> = {
 		demos_aggregate:"match_map_demos_aggregate",
 		e_match_status:"e_match_status",
 		e_region:"server_regions",
+		elo_changes:"v_player_elo",
+		elo_changes_aggregate:"v_player_elo_aggregate",
 		ended_at:"timestamptz",
 		id:"uuid",
 		invite_code:"String",

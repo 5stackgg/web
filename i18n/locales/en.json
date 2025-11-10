@@ -297,6 +297,8 @@
                 "last_ten_wins": "Last 10 Wins",
                 "last_ten_losses": "Last 10 Losses",
                 "elo_history": "ELO History",
+                "no_elo_history": "Play A Match to genreate ELO",
+                "play_a_match": "Play A Match",
                 "teams": "Teams",
                 "matches": "Matches",
                 "match_record": "Match Record",
@@ -312,7 +314,6 @@
             }
         },
         "matches": {
-            "title": "My Matches",
             "description": "Your most recent completed matches",
             "create": "Create Match",
             "last_ten_wins": "Last 10 Wins",
@@ -556,7 +557,6 @@
             "navigation": {
                 "play": "Play",
                 "watch": "Watch",
-                "matches": "My Matches",
                 "tournaments": "Tournaments",
                 "public_servers": "Public Servers",
                 "players": "Players",
@@ -611,8 +611,7 @@
             }
         },
         "top_nav": {
-            "my_matches": "My Matches",
-            "home": "My Matches",
+            "home": "My Stats",
             "play_menu": "Play",
             "community_menu": "Community",
             "watch_menu": "Watch",

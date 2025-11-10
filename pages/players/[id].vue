@@ -14,10 +14,14 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import { kdrColor } from "~/utilities/kdrColor";
+
+definePageMeta({
+  alias: ["/me"],
+});
 </script>
 
 <template>
-  <PlayerSanctions class="my-4" :playerId="$route.params.id as string" />
+  <PlayerSanctions class="my-4" :playerId="playerId" />
 
   <div class="flex-grow flex flex-col gap-4" v-if="player">
     <PageHeading>
@@ -162,17 +166,28 @@ import { kdrColor } from "~/utilities/kdrColor";
           </CardContent>
         </Card>
 
-        <Card
-          class="flex flex-col md:col-span-2"
-          v-if="player?.elo_history && player.elo_history.length > 0"
-        >
+        <Card class="flex flex-col md:col-span-2" v-if="player?.elo_history">
           <CardHeader>
             <CardTitle class="text-xl font-bold text-center">
               {{ $t("pages.players.detail.elo_history") }}
             </CardTitle>
           </CardHeader>
           <CardContent class="flex-1 min-h-[300px]">
-            <PlayerEloChart :elo-history="player.elo_history" />
+            <template v-if="player.elo_history.length > 0">
+              <PlayerEloChart :elo-history="player.elo_history" />
+            </template>
+            <template v-else>
+              <div
+                class="flex justify-center items-center h-full uppercase text-muted-foreground text-center flex-col"
+              >
+                {{ $t("pages.players.detail.no_elo_history") }}
+                <NuxtLink to="/play" class="mt-2">
+                  <Button variant="outline" size="sm">{{
+                    $t("pages.players.detail.play_a_match")
+                  }}</Button>
+                </NuxtLink>
+              </div>
+            </template>
           </CardContent>
         </Card>
       </div>
@@ -186,10 +201,7 @@ import { kdrColor } from "~/utilities/kdrColor";
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <LastTenWins
-                class="max-h-[300px]"
-                :steam_id="$route.params.id as string"
-              />
+              <LastTenWins class="max-h-[300px]" :steam_id="playerId" />
             </CardContent>
           </div>
         </Card>
@@ -202,10 +214,7 @@ import { kdrColor } from "~/utilities/kdrColor";
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <LastTenLosses
-                class="max-h-[300px]"
-                :steam_id="$route.params.id as string"
-              />
+              <LastTenLosses class="max-h-[300px]" :steam_id="playerId" />
             </CardContent>
           </div>
         </Card>
@@ -353,7 +362,7 @@ export default {
         }),
         variables: function () {
           return {
-            playerId: this.$route.params.id,
+            playerId: this.playerId,
           };
         },
         result: function ({ data }) {
@@ -391,7 +400,7 @@ export default {
       }),
       variables: function () {
         return {
-          playerId: this.$route.params.id,
+          playerId: this.playerId,
           limit: this.perPage,
           offset: (this.page - 1) * this.perPage,
         };
@@ -415,7 +424,7 @@ export default {
       }),
       variables: function () {
         return {
-          playerId: this.$route.params.id,
+          playerId: this.playerId,
         };
       },
     },
@@ -428,6 +437,9 @@ export default {
     };
   },
   computed: {
+    playerId() {
+      return this.$route.params.id || this.me?.steam_id;
+    },
     me() {
       return useAuthStore().me;
     },

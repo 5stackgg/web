@@ -81,23 +81,6 @@ import Logout from "./Logout.vue";
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.matches')">
-            <SidebarMenuButton
-              as-child
-              :tooltip="$t('layouts.app_nav.tooltips.matches')"
-            >
-              <NuxtLink
-                :to="{ name: 'my-matches' }"
-                :class="{
-                  'router-link-active': isRouteActive('matches'),
-                }"
-              >
-                <Calendar />
-                {{ $t("layouts.app_nav.navigation.matches") }}
-              </NuxtLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-
           <SidebarMenuItem>
             <SidebarMenuButton
               as-child

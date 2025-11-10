@@ -53,7 +53,7 @@ const { isMobile } = useSidebar();
           <NavigationMenuItem class="hidden md:block">
             <NavigationMenuLink as-child>
               <NuxtLink
-                to="/my-matches"
+                to="/me"
                 class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent"
               >
                 {{ $t("layouts.top_nav.home") }}
@@ -103,16 +103,6 @@ const { isMobile } = useSidebar();
                       </NuxtLink>
                     </NavigationMenuLink>
                   </li>
-                  <NavigationMenuItem class="block md:hidden">
-                    <NavigationMenuLink as-child>
-                      <NuxtLink
-                        to="/my-matches"
-                        class="block w-full text-left px-4 py-2 uppercase font-bold text-sm transition-colors duration-150 border-none outline-none hover:text-green-300"
-                      >
-                        {{ $t("layouts.top_nav.my_matches") }}
-                      </NuxtLink>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
                 </ul>
                 <div
                   class="flex flex-col items-center justify-center bg-[#18181b] rounded-t-lg md:rounded-l-lg md:rounded-tr-none p-6 min-w-[120px] max-w-[200px]"

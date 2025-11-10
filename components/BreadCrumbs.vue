@@ -27,6 +27,9 @@
 <script lang="ts">
 export default {
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
     crumbs() {
       const segments = this.$route.path.split("/").filter((segment: string) => {
         return segment.trim() !== "";
@@ -40,12 +43,8 @@ export default {
       segments.forEach((segment: string) => {
         path += `/${segment}`;
 
-        if (path === "/matches") {
-          path = "/my-matches";
-        }
-
-        if (path.includes("/my-matches/")) {
-          path = path.replace("/my-matches/", "/matches/");
+        if (path === `/players/${this.me?.steam_id}`) {
+          path = "/";
         }
 
         breadcrumbs.push({

@@ -20,6 +20,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import { kdrColor } from "~/utilities/kdrColor";
 </script>
 
 <template>
@@ -187,6 +188,9 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 />
               </div>
             </TableHead>
+            <TableHead>{{ $t("pages.players.table.wins") }}</TableHead>
+            <TableHead>{{ $t("pages.players.table.losses") }}</TableHead>
+            <TableHead>{{ $t("pages.players.table.kdr") }}</TableHead>
             <TableHead class="cursor-pointer" @click="toggleSort('elo')">
               <div class="flex items-center gap-1">
                 {{ $t("pages.players.table.elo") }}
@@ -211,9 +215,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <TableBody>
           <template v-if="players?.length === 0">
             <TableRow>
-              <TableCell colspan="3" class="text-center">{{
-                $t("pages.players.table.no_players")
-              }}</TableCell>
+              <TableCell
+                :colspan="canViewAdditionalDetails ? 7 : 5"
+                class="text-center"
+                >{{ $t("pages.players.table.no_players") }}</TableCell
+              >
             </TableRow>
           </template>
           <template v-else>
@@ -235,6 +241,11 @@ import TimeAgo from "~/components/TimeAgo.vue";
                     :show-elo="false"
                   ></PlayerDisplay>
                 </TableCell>
+                <TableCell>{{ player.wins ?? 0 }}</TableCell>
+                <TableCell>{{ player.losses ?? 0 }}</TableCell>
+                <TableCell :class="kdrColor(calculateKDR(player))">{{
+                  calculateKDR(player)
+                }}</TableCell>
                 <TableCell>
                   <PlayerElo :elo="player.elo"></PlayerElo>
                 </TableCell>
@@ -451,6 +462,14 @@ export default {
     getRoleDisplay(role: string) {
       const roleObj = this.availableRoles.find((r) => r.value === role);
       return roleObj ? roleObj.display : role;
+    },
+    calculateKDR(player: any) {
+      const kills = player.kills_aggregate?.aggregate?.count ?? 0;
+      const deaths = player.deaths_aggregate?.aggregate?.count ?? 0;
+      if (deaths === 0) {
+        return kills > 0 ? kills.toFixed(2) : "0.00";
+      }
+      return (kills / deaths).toFixed(2);
     },
     async searchPlayers() {
       this.loading = true;

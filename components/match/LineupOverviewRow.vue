@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import formatStatValue from "~/utilities/formatStatValue";
+import { kdrColor } from "~/utilities/kdrColor";
 </script>
 <template>
   <TableRow>
@@ -17,14 +18,7 @@ import formatStatValue from "~/utilities/formatStatValue";
         {{ member.player?.deaths_aggregate.aggregate.count }}
       </TableCell>
       <TableCell class="hidden md:table-cell text-center">
-        <span
-          :class="{
-            'text-red-500': kd < 0.9,
-            'text-orange-500': kd >= 0.9 && kd < 1,
-            'text-green-400': kd >= 1 && kd < 1.1,
-            'text-green-600': kd >= 1.1,
-          }"
-        >
+        <span :class="kdrColor(kd)">
           {{ kd }}
         </span>
       </TableCell>

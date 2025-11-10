@@ -6,12 +6,14 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import LastTenWins from "~/components/charts/LastTenWins.vue";
 import LastTenLosses from "~/components/charts/LastTenLosses.vue";
+import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
+import { kdrColor } from "~/utilities/kdrColor";
 </script>
 
 <template>
@@ -87,77 +89,127 @@ import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
       </template>
     </PageHeading>
 
-    <div
-      class="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4"
-      v-if="player"
-    >
-      <Card class="flex flex-col h-full">
-        <CardHeader>
-          <CardTitle class="text-sm font-medium text-muted-foreground">{{
-            $t("pages.players.detail.player_stats")
-          }}</CardTitle>
-        </CardHeader>
-        <CardContent class="flex flex-col flex-grow">
-          <div class="flex justify-between items-center">
-            <div class="text-center">
-              <p class="text-sm text-muted-foreground">
-                {{ $t("pages.players.detail.kills") }}
-              </p>
-              <p class="text-2xl font-bold">
-                {{ player.kills_aggregate.aggregate.count }}
-              </p>
+    <div class="flex flex-col gap-4" v-if="player">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card class="flex flex-col h-full">
+          <CardHeader>
+            <CardTitle class="text-sm font-medium text-muted-foreground">{{
+              $t("pages.players.detail.player_stats")
+            }}</CardTitle>
+          </CardHeader>
+          <CardContent class="flex flex-col flex-grow gap-6">
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <div class="text-center flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    {{ $t("pages.players.detail.wins") }}
+                  </p>
+                  <p class="text-2xl font-bold">
+                    {{ player.wins || 0 }}
+                  </p>
+                </div>
+                <div class="text-center flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    {{ $t("pages.players.detail.losses") }}
+                  </p>
+                  <p class="text-2xl font-bold">
+                    {{ player.losses || 0 }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex justify-center items-center">
+                <Badge class="text-2xl px-4 py-2" :class="kdrColor(kd)">
+                  {{ $t("pages.players.detail.wl") }}: {{ winLossRatio }}
+                </Badge>
+              </div>
             </div>
-            <div class="text-center">
-              <p class="text-sm text-muted-foreground">
-                {{ $t("pages.players.detail.assists") }}
-              </p>
-              <p class="text-2xl font-bold">
-                {{ player.assists_aggregate.aggregate.count }}
-              </p>
-            </div>
-            <div class="text-center">
-              <p class="text-sm text-muted-foreground">
-                {{ $t("pages.players.detail.deaths") }}
-              </p>
-              <p class="text-2xl font-bold">
-                {{ player.deaths_aggregate.aggregate.count }}
-              </p>
-            </div>
-          </div>
 
-          <div class="flex justify-center items-center mt-4 h-full">
-            <Badge class="text-3xl p-2">
-              {{ $t("pages.players.detail.kd") }}: {{ kd }}
-            </Badge>
-          </div>
-        </CardContent>
-      </Card>
+            <div class="border-t border-border"></div>
 
-      <Card class="flex justify-center items-center">
-        <div class="text-center">
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-between items-center">
+                <div class="text-center flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    {{ $t("pages.players.detail.kills") }}
+                  </p>
+                  <p class="text-2xl font-bold">
+                    {{ player.kills_aggregate.aggregate.count }}
+                  </p>
+                </div>
+                <div class="text-center flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    {{ $t("pages.players.detail.assists") }}
+                  </p>
+                  <p class="text-2xl font-bold">
+                    {{ player.assists_aggregate.aggregate.count }}
+                  </p>
+                </div>
+                <div class="text-center flex-1">
+                  <p class="text-sm text-muted-foreground">
+                    {{ $t("pages.players.detail.deaths") }}
+                  </p>
+                  <p class="text-2xl font-bold">
+                    {{ player.deaths_aggregate.aggregate.count }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex justify-center items-center">
+                <Badge class="text-2xl px-4 py-2" :class="kdrColor(kd)">
+                  {{ $t("pages.players.detail.kd") }}: {{ kd }}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card
+          class="flex flex-col md:col-span-2"
+          v-if="player?.elo_history && player.elo_history.length > 0"
+        >
           <CardHeader>
             <CardTitle class="text-xl font-bold text-center">
-              {{ $t("pages.players.detail.last_ten_wins") }}
+              {{ $t("pages.players.detail.elo_history") }}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <LastTenWins :steam_id="$route.params.id as string" />
+          <CardContent class="flex-1 min-h-[300px]">
+            <PlayerEloChart :elo-history="player.elo_history" />
           </CardContent>
-        </div>
-      </Card>
+        </Card>
+      </div>
 
-      <Card class="flex justify-center items-center">
-        <div class="text-center">
-          <CardHeader>
-            <CardTitle class="text-xl font-bold text-center">
-              {{ $t("pages.players.detail.last_ten_losses") }}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <LastTenLosses :steam_id="$route.params.id as string" />
-          </CardContent>
-        </div>
-      </Card>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card class="flex justify-center items-center">
+          <div class="text-center w-full">
+            <CardHeader>
+              <CardTitle class="text-xl font-bold text-center">
+                {{ $t("pages.players.detail.last_ten_wins") }}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <LastTenWins
+                class="max-h-[300px]"
+                :steam_id="$route.params.id as string"
+              />
+            </CardContent>
+          </div>
+        </Card>
+
+        <Card class="flex justify-center items-center">
+          <div class="text-center w-full">
+            <CardHeader>
+              <CardTitle class="text-xl font-bold text-center">
+                {{ $t("pages.players.detail.last_ten_losses") }}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <LastTenLosses
+                class="max-h-[300px]"
+                :steam_id="$route.params.id as string"
+              />
+            </CardContent>
+          </div>
+        </Card>
+      </div>
     </div>
 
     <Card class="p-4">
@@ -216,6 +268,8 @@ export default {
                   short_name: true,
                 },
               ],
+              wins: true,
+              losses: true,
               kills_aggregate: [
                 {
                   where: {
@@ -259,6 +313,39 @@ export default {
                       count: true,
                     },
                   ],
+                },
+              ],
+              elo_history: [
+                {
+                  limit: 25,
+                  order_by: [
+                    {},
+                    {
+                      match_created_at: order_by.desc,
+                    },
+                  ],
+                },
+                {
+                  actual_score: true,
+                  assists: true,
+                  current_elo: true,
+                  damage: true,
+                  damage_percent: true,
+                  deaths: true,
+                  elo_change: true,
+                  expected_score: true,
+                  kda: true,
+                  kills: true,
+                  match_created_at: true,
+                  match_id: true,
+                  match_result: true,
+                  opponent_team_elo_avg: true,
+                  performance_multiplier: true,
+                  player_name: true,
+                  player_steam_id: true,
+                  player_team_elo_avg: true,
+                  team_avg_kda: true,
+                  updated_elo: true,
                 },
               ],
             },
@@ -358,6 +445,14 @@ export default {
         this.player?.kills_aggregate.aggregate.count /
           this.player?.deaths_aggregate.aggregate.count,
       );
+    },
+    winLossRatio() {
+      const wins = this.player?.wins || 0;
+      const losses = this.player?.losses || 0;
+      if (losses === 0) {
+        return wins > 0 ? wins : "0.00";
+      }
+      return formatStatValue(wins / losses);
     },
   },
 };

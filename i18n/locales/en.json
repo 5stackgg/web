@@ -281,6 +281,11 @@
                 "elo": "Elo",
                 "last_sign_in_at": "Last Sign In At",
                 "privilege": "Privilege",
+                "wins": "Wins",
+                "losses": "Losses",
+                "kdr": "KDR",
+                "kills": "Kills",
+                "deaths": "Deaths",
                 "no_players": "No players found"
             },
             "detail": {
@@ -291,8 +296,13 @@
                 "kd": "KD",
                 "last_ten_wins": "Last 10 Wins",
                 "last_ten_losses": "Last 10 Losses",
+                "elo_history": "ELO History",
                 "teams": "Teams",
-                "matches": "Matches"
+                "matches": "Matches",
+                "match_record": "Match Record",
+                "wins": "Wins",
+                "losses": "Losses",
+                "wl": "W/L"
             }
         },
         "play": {

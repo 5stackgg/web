@@ -15,7 +15,7 @@ import {
 
 <template>
   <div
-    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
     @click="navigateToMatch(match.id, $event)"
   >
     <div class="p-6 flex flex-col gap-3">
@@ -26,19 +26,19 @@ import {
             {{ match.options.type }}
           </Badge>
           <!-- Elo Change Display -->
-          <TooltipProvider v-if="hasEloChange">
+          <TooltipProvider v-if="eloChange">
             <Tooltip>
               <TooltipTrigger as-child>
                 <Badge
                   variant="outline"
                   :class="[
                     'text-xs font-semibold cursor-help',
-                    eloChangeValue > 0
+                    eloChange.elo_change > 0
                       ? 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30'
                       : 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30',
                   ]"
                 >
-                  {{ formatEloChange(eloChangeValue) }}
+                  {{ formatEloChange(eloChange.elo_change) }}
                 </Badge>
               </TooltipTrigger>
               <TooltipContent class="max-w-xs">
@@ -52,9 +52,7 @@ import {
                     <div class="flex items-center justify-between">
                       <span class="text-muted-foreground">Elo:</span>
                       <span class="font-medium">
-                        {{
-                          (eloChange.current_elo as number).toLocaleString()
-                        }}
+                        {{ (eloChange.current_elo as number).toLocaleString() }}
                         →
                         {{ (eloChange.updated_elo as number).toLocaleString() }}
                       </span>
@@ -202,7 +200,14 @@ import {
           </div>
           <div class="flex-1 min-w-0">
             <h3 class="font-semibold text-foreground truncate">
-              {{ match.lineup_1.name }}
+              <span
+                :class="{
+                  'border-b border-primary/40':
+                    playerLineup === match.lineup_1_id,
+                }"
+              >
+                {{ match.lineup_1.name }}
+              </span>
             </h3>
             <div
               v-if="match.status === e_match_status_enum.PickingPlayers"
@@ -236,7 +241,14 @@ import {
         <div class="flex items-center space-x-3 justify-end">
           <div class="flex-1 min-w-0">
             <h3 class="font-semibold text-foreground truncate text-right">
-              {{ match.lineup_2.name }}
+              <span
+                :class="{
+                  'border-b border-primary/40':
+                    playerLineup === match.lineup_2_id,
+                }"
+              >
+                {{ match.lineup_2.name }}
+              </span>
             </h3>
             <div
               v-if="match.status === e_match_status_enum.PickingPlayers"
@@ -446,7 +458,14 @@ import {
                     v-for="lineupPlayer in matchStats.lineup_1.lineup_players"
                     :key="lineupPlayer.steam_id"
                   >
-                    <tr class="border-b border-border/50 last:border-b-0">
+                    <tr
+                      class="border-b border-border/50 last:border-b-0"
+                      :class="{
+                        'bg-primary/10 border-l-2 border-l-primary':
+                          player &&
+                          lineupPlayer.player?.steam_id === player.steam_id,
+                      }"
+                    >
                       <td class="py-3 px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
@@ -562,7 +581,14 @@ import {
                     v-for="lineupPlayer in matchStats.lineup_2.lineup_players"
                     :key="lineupPlayer.steam_id"
                   >
-                    <tr class="border-b border-border/50 last:border-b-0">
+                    <tr
+                      class="border-b border-border/50 last:border-b-0"
+                      :class="{
+                        'bg-primary/10 border-l-2 border-l-primary':
+                          player &&
+                          lineupPlayer.player?.steam_id === player.steam_id,
+                      }"
+                    >
                       <td class="py-3 px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
@@ -671,6 +697,10 @@ import {
             <span>{{
               showPlayers ? $t("match.hide_players") : $t("match.show_players")
             }}</span>
+            <ChevronsDownIcon
+              class="h-3 w-3 transition-transform"
+              :class="{ 'rotate-180': showPlayers }"
+            />
           </span>
         </Separator>
       </div>
@@ -687,6 +717,11 @@ export default {
     match: {
       type: Object,
       required: true,
+    },
+    player: {
+      type: Object,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -814,6 +849,13 @@ export default {
       return this.match.status === e_match_status_enum.Live;
     },
     didTeamWin(lineupId: string): boolean {
+      if (this.playerLineup === lineupId) {
+        if (this.match.winning_lineup_id === lineupId) {
+          return true;
+        }
+        return false;
+      }
+
       if (this.match.winning_lineup_id === lineupId) {
         return true;
       }
@@ -825,6 +867,14 @@ export default {
       }
 
       if (this.match.status === e_match_status_enum.Finished) {
+        if (this.playerLineup) {
+          if (this.playerLineup === lineupId) {
+            return this.didTeamWin(lineupId)
+              ? "text-green-500"
+              : "text-red-500";
+          }
+          return "text-foreground";
+        }
         if (this.didTeamWin(lineupId)) {
           return "text-green-500";
         } else {
@@ -835,6 +885,15 @@ export default {
       return "text-foreground";
     },
     getMapScoreColorClasses(matchMap: any, lineupId: string): string {
+      if (this.playerLineup) {
+        if (this.playerLineup === lineupId) {
+          return matchMap.winning_lineup_id === lineupId
+            ? "text-green-500"
+            : "text-red-500";
+        }
+        return "text-foreground";
+      }
+
       if (!matchMap.winning_lineup_id) {
         return "text-foreground";
       }
@@ -857,26 +916,12 @@ export default {
     eloChange(): typeof eloFields {
       return this.match.elo_changes?.at(0);
     },
-    hasEloChange(): boolean {
-      const change = this.eloChange?.elo_change;
-      return (
-        change !== null && change !== undefined && typeof change === "number"
-      );
-    },
-    eloChangeValue(): number {
-      const change = this.eloChange?.elo_change;
-      if (typeof change === "number") {
-        return change;
-      }
-      return 0;
-    },
-    playerTeamId(): string | null {
+    playerLineup(): string | null {
       if (!this.eloChange?.player_steam_id) {
         return null;
       }
       const playerSteamId = this.eloChange.player_steam_id;
 
-      // Check if player is in lineup_1
       const inLineup1 = this.match.lineup_1?.lineup_players?.some(
         (lp: any) => lp.player?.steam_id === playerSteamId,
       );
@@ -885,7 +930,6 @@ export default {
         return this.match.lineup_1_id;
       }
 
-      // Check if player is in lineup_2
       const inLineup2 = this.match.lineup_2?.lineup_players?.some(
         (lp: any) => lp.player?.steam_id === playerSteamId,
       );
@@ -896,52 +940,6 @@ export default {
 
       return null;
     },
-    team1EloAvg(): string {
-      if (!this.eloChange) return "";
-
-      const playerTeam = this.eloChange.player_team_elo_avg;
-      const opponentTeam = this.eloChange.opponent_team_elo_avg;
-
-      if (typeof playerTeam !== "number" || typeof opponentTeam !== "number") {
-        return "";
-      }
-
-      // If player is in lineup_1, player_team_elo_avg is team1's avg
-      // Otherwise, opponent_team_elo_avg is team1's avg
-      if (this.playerTeamId === this.match.lineup_1_id) {
-        return (playerTeam as number).toLocaleString();
-      } else if (this.playerTeamId === this.match.lineup_2_id) {
-        return (opponentTeam as number).toLocaleString();
-      }
-
-      // Fallback: assume first team is player team if we can't determine
-      return (playerTeam as number).toLocaleString();
-    },
-    team2EloAvg(): string {
-      if (!this.eloChange) return "";
-
-      const playerTeam = this.eloChange.player_team_elo_avg;
-      const opponentTeam = this.eloChange.opponent_team_elo_avg;
-
-      if (typeof playerTeam !== "number" || typeof opponentTeam !== "number") {
-        return "";
-      }
-
-      // If player is in lineup_1, opponent_team_elo_avg is team2's avg
-      // Otherwise, player_team_elo_avg is team2's avg
-      if (this.playerTeamId === this.match.lineup_1_id) {
-        return (opponentTeam as number).toLocaleString();
-      } else if (this.playerTeamId === this.match.lineup_2_id) {
-        return (playerTeam as number).toLocaleString();
-      }
-
-      // Fallback: assume second team is opponent team if we can't determine
-      return (opponentTeam as number).toLocaleString();
-    },
   },
 };
 </script>
-
-<style scoped>
-/* no css transitions; using tailwind utility transitions */
-</style>

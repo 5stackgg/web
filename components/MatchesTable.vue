@@ -35,7 +35,8 @@ export default {
     },
     player: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
   },
 };

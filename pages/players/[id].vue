@@ -14,6 +14,7 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import { kdrColor } from "~/utilities/kdrColor";
+import { PlayIcon } from "lucide-vue-next";
 
 definePageMeta({
   alias: ["/me"],
@@ -79,16 +80,22 @@ definePageMeta({
       </template>
 
       <template #actions>
-        <div class="flex gap-2">
-          <template v-if="canSanction">
-            <SanctionPlayer :player="player" />
-            <PlayerRoleForm :player="player" />
-          </template>
-          <template v-else-if="player.role !== e_player_roles_enum.user">
-            <Badge class="capitalize">{{
-              player.role.replace("_", " ")
-            }}</Badge>
-          </template>
+        <template v-if="canSanction">
+          <SanctionPlayer :player="player" />
+          <PlayerRoleForm :player="player" />
+        </template>
+
+        <div class="flex items-center gap-2">
+          <NuxtLink to="/play" v-if="player.steam_id === me.steam_id">
+            <Button
+              variant="default"
+              size="lg"
+              class="shadow-lg hover:shadow-xl transition-all duration-200 font-semibold"
+            >
+              <PlayIcon class="w-5 h-5 mr-2" />
+              {{ $t("pages.players.detail.play_a_match") }}
+            </Button>
+          </NuxtLink>
         </div>
       </template>
     </PageHeading>

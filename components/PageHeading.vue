@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="flex justify-between items-start">
+  <div class="flex justify-between items-center">
     <div class="space-y-0.5">
       <h2 class="text-2xl font-bold tracking-tight">
         <slot name="title"></slot>

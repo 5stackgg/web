@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import {
-  UserPlusIcon,
-  UsersIcon,
-  ChevronsDownIcon,
-  ChevronsUpIcon,
-} from "lucide-vue-next";
+import { UserPlusIcon, UsersIcon, ChevronsDownIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 import cleanMapName from "~/utilities/cleanMapName";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { eloFields } from "~/graphql/eloFields";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 </script>
 
 <template>
   <div
-    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
     @click="navigateToMatch(match.id, $event)"
   >
     <div class="p-6 flex flex-col gap-3">
@@ -23,6 +25,130 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           <Badge variant="secondary" class="text-xs">
             {{ match.options.type }}
           </Badge>
+          <!-- Elo Change Display -->
+          <TooltipProvider v-if="eloChange">
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <Badge
+                  variant="outline"
+                  :class="[
+                    'text-xs font-semibold cursor-help',
+                    eloChange.elo_change > 0
+                      ? 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30'
+                      : 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30',
+                  ]"
+                >
+                  {{ formatEloChange(eloChange.elo_change) }}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent class="max-w-xs">
+                <div>
+                  <div class="font-semibold border-b border-border/50 pb-1">
+                    Elo Change Details
+                  </div>
+
+                  <!-- Current Elo → Updated Elo -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Elo:</span>
+                      <span class="font-medium">
+                        {{ (eloChange.current_elo as number).toLocaleString() }}
+                        →
+                        {{ (eloChange.updated_elo as number).toLocaleString() }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Team Elo Averages -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Team Elo Avg:</span>
+                      <span class="font-medium">
+                        {{
+                          (
+                            eloChange.player_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
+                        vs
+                        {{
+                          (
+                            eloChange.opponent_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Performance Multiplier -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Performance Multiplier:</span
+                      >
+                      <span class="font-medium"
+                        >{{
+                          parseFloat(eloChange.performance_multiplier).toFixed(
+                            5,
+                          )
+                        }}%</span
+                      >
+                    </div>
+                  </div>
+
+                  <!-- K/D/A -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Kills / Deaths / Assists:</span
+                      >
+                      <span class="font-medium">
+                        {{ eloChange.kills }} / {{ eloChange.deaths }} /
+                        {{ eloChange.assists }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- KDA -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.kda).toFixed(2)
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Team Avg KDA -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Team Avg Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.team_avg_kda).toFixed(2)
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Damage -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Damage:</span>
+                      <span class="font-medium">
+                        {{ eloChange.damage }}
+                        <span>
+                          ({{ Math.round(eloChange.damage_percent * 100) }}% of
+                          teams damage)
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <div class="flex items-center space-x-4">
           <!-- Join Button - Prominent Position -->
@@ -74,7 +200,14 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           </div>
           <div class="flex-1 min-w-0">
             <h3 class="font-semibold text-foreground truncate">
-              {{ match.lineup_1.name }}
+              <span
+                :class="{
+                  'border-b border-primary/40':
+                    playerLineup === match.lineup_1_id,
+                }"
+              >
+                {{ match.lineup_1.name }}
+              </span>
             </h3>
             <div
               v-if="match.status === e_match_status_enum.PickingPlayers"
@@ -108,7 +241,14 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         <div class="flex items-center space-x-3 justify-end">
           <div class="flex-1 min-w-0">
             <h3 class="font-semibold text-foreground truncate text-right">
-              {{ match.lineup_2.name }}
+              <span
+                :class="{
+                  'border-b border-primary/40':
+                    playerLineup === match.lineup_2_id,
+                }"
+              >
+                {{ match.lineup_2.name }}
+              </span>
             </h3>
             <div
               v-if="match.status === e_match_status_enum.PickingPlayers"
@@ -318,7 +458,14 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
                     v-for="lineupPlayer in matchStats.lineup_1.lineup_players"
                     :key="lineupPlayer.steam_id"
                   >
-                    <tr class="border-b border-border/50 last:border-b-0">
+                    <tr
+                      class="border-b border-border/50 last:border-b-0"
+                      :class="{
+                        'bg-primary/10 border-l-2 border-l-primary':
+                          player &&
+                          lineupPlayer.player?.steam_id === player.steam_id,
+                      }"
+                    >
                       <td class="py-3 px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
@@ -434,7 +581,14 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
                     v-for="lineupPlayer in matchStats.lineup_2.lineup_players"
                     :key="lineupPlayer.steam_id"
                   >
-                    <tr class="border-b border-border/50 last:border-b-0">
+                    <tr
+                      class="border-b border-border/50 last:border-b-0"
+                      :class="{
+                        'bg-primary/10 border-l-2 border-l-primary':
+                          player &&
+                          lineupPlayer.player?.steam_id === player.steam_id,
+                      }"
+                    >
                       <td class="py-3 px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
@@ -543,6 +697,10 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
             <span>{{
               showPlayers ? $t("match.hide_players") : $t("match.show_players")
             }}</span>
+            <ChevronsDownIcon
+              class="h-3 w-3 transition-transform"
+              :class="{ 'rotate-180': showPlayers }"
+            />
           </span>
         </Separator>
       </div>
@@ -559,6 +717,11 @@ export default {
     match: {
       type: Object,
       required: true,
+    },
+    player: {
+      type: Object,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -686,6 +849,13 @@ export default {
       return this.match.status === e_match_status_enum.Live;
     },
     didTeamWin(lineupId: string): boolean {
+      if (this.playerLineup === lineupId) {
+        if (this.match.winning_lineup_id === lineupId) {
+          return true;
+        }
+        return false;
+      }
+
       if (this.match.winning_lineup_id === lineupId) {
         return true;
       }
@@ -697,6 +867,14 @@ export default {
       }
 
       if (this.match.status === e_match_status_enum.Finished) {
+        if (this.playerLineup) {
+          if (this.playerLineup === lineupId) {
+            return this.didTeamWin(lineupId)
+              ? "text-green-500"
+              : "text-red-500";
+          }
+          return "text-foreground";
+        }
         if (this.didTeamWin(lineupId)) {
           return "text-green-500";
         } else {
@@ -707,6 +885,15 @@ export default {
       return "text-foreground";
     },
     getMapScoreColorClasses(matchMap: any, lineupId: string): string {
+      if (this.playerLineup) {
+        if (this.playerLineup === lineupId) {
+          return matchMap.winning_lineup_id === lineupId
+            ? "text-green-500"
+            : "text-red-500";
+        }
+        return "text-foreground";
+      }
+
       if (!matchMap.winning_lineup_id) {
         return "text-foreground";
       }
@@ -717,10 +904,42 @@ export default {
         return "text-red-500";
       }
     },
+    formatEloChange(change: number): string {
+      if (change === null || change === undefined) {
+        return "";
+      }
+      const sign = change > 0 ? "+" : "";
+      return `${sign}${change.toLocaleString()}`;
+    },
+  },
+  computed: {
+    eloChange(): typeof eloFields {
+      return this.match.elo_changes?.at(0);
+    },
+    playerLineup(): string | null {
+      if (!this.eloChange?.player_steam_id) {
+        return null;
+      }
+      const playerSteamId = this.eloChange.player_steam_id;
+
+      const inLineup1 = this.match.lineup_1?.lineup_players?.some(
+        (lp: any) => lp.player?.steam_id === playerSteamId,
+      );
+
+      if (inLineup1) {
+        return this.match.lineup_1_id;
+      }
+
+      const inLineup2 = this.match.lineup_2?.lineup_players?.some(
+        (lp: any) => lp.player?.steam_id === playerSteamId,
+      );
+
+      if (inLineup2) {
+        return this.match.lineup_2_id;
+      }
+
+      return null;
+    },
   },
 };
 </script>
-
-<style scoped>
-/* no css transitions; using tailwind utility transitions */
-</style>

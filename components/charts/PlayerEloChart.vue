@@ -94,7 +94,6 @@ ChartJS.register({
 
 <script lang="ts">
 interface EloHistoryEntry {
-  actual_score?: number | null;
   assists?: number | null;
   current_elo?: number | null;
   damage?: number | null;
@@ -106,7 +105,6 @@ interface EloHistoryEntry {
   kills?: number | null;
   match_created_at: string;
   match_id?: string | null;
-  match_result?: string | null;
   opponent_team_elo_avg?: number | null;
   performance_multiplier?: number | null;
   player_name?: string | null;
@@ -137,175 +135,7 @@ export default {
             display: false,
           },
           tooltip: {
-            mode: "index" as const,
-            intersect: false,
-            backgroundColor: "rgba(0, 0, 0, 0.9)",
-            titleColor: "#fff",
-            bodyColor: "#fff",
-            borderColor: "rgba(255, 255, 255, 0.1)",
-            borderWidth: 1,
-            padding: 12,
-            titleFont: {
-              size: 14,
-              weight: "bold" as const,
-            },
-            bodyFont: {
-              size: 12,
-            },
-            displayColors: false,
-            callbacks: {
-              title: (context: any[]) => {
-                const dataIndex = context[0].dataIndex;
-                const sortedHistory: EloHistoryEntry[] =
-                  (this as any).sortedHistory || [];
-                if (dataIndex >= sortedHistory.length) return "";
-                const entry = sortedHistory[dataIndex];
-                if (!entry?.match_created_at) return "";
-                const date = new Date(entry.match_created_at);
-                return date.toLocaleDateString(navigator.language, {
-                  weekday: "short",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                });
-              },
-              label: (context: any) => {
-                const dataIndex = context.dataIndex;
-                const sortedHistory: EloHistoryEntry[] =
-                  (this as any).sortedHistory || [];
-                if (dataIndex >= sortedHistory.length) return "";
-                const entry = sortedHistory[dataIndex];
-                if (!entry) return "";
-
-                const lines: string[] = [];
-
-                // ELO Section
-                const currentElo = entry.updated_elo || entry.current_elo;
-                if (currentElo !== null && currentElo !== undefined) {
-                  const eloValue =
-                    typeof currentElo === "number"
-                      ? currentElo.toLocaleString()
-                      : currentElo;
-                  lines.push(`ELO: ${eloValue}`);
-                }
-
-                if (
-                  entry.elo_change !== null &&
-                  entry.elo_change !== undefined
-                ) {
-                  const changeValue =
-                    typeof entry.elo_change === "number"
-                      ? entry.elo_change > 0
-                        ? `+${entry.elo_change.toLocaleString()}`
-                        : entry.elo_change.toLocaleString()
-                      : entry.elo_change;
-                  lines.push(`Change: ${changeValue}`);
-                }
-
-                // Match Result
-                if (
-                  entry.match_result !== null &&
-                  entry.match_result !== undefined
-                ) {
-                  const result =
-                    entry.match_result === "win"
-                      ? "Win"
-                      : entry.match_result === "loss"
-                        ? "Loss"
-                        : "Draw";
-                  lines.push(`Result: ${result}`);
-                }
-
-                // Separator
-                lines.push("━━━━━━━━━━━━━━━━");
-
-                // Combat Stats
-                if (
-                  entry.kills !== null &&
-                  entry.kills !== undefined &&
-                  entry.deaths !== null &&
-                  entry.deaths !== undefined &&
-                  entry.assists !== null &&
-                  entry.assists !== undefined
-                ) {
-                  lines.push(
-                    `K/D/A: ${entry.kills}/${entry.deaths}/${entry.assists}`,
-                  );
-                }
-
-                if (
-                  entry.kda !== null &&
-                  entry.kda !== undefined &&
-                  typeof entry.kda === "number"
-                ) {
-                  lines.push(`KDA: ${entry.kda.toFixed(2)}`);
-                }
-
-                if (entry.damage !== null && entry.damage !== undefined) {
-                  const damageFormatted =
-                    typeof entry.damage === "number"
-                      ? entry.damage.toLocaleString()
-                      : entry.damage;
-                  lines.push(`Damage: ${damageFormatted}`);
-
-                  if (
-                    entry.damage_percent !== null &&
-                    entry.damage_percent !== undefined &&
-                    typeof entry.damage_percent === "number"
-                  ) {
-                    lines.push(`Damage %: ${entry.damage_percent.toFixed(1)}%`);
-                  }
-                }
-
-                // Separator
-                lines.push("━━━━━━━━━━━━━━━━");
-
-                // Performance Metrics
-                if (
-                  entry.actual_score !== null &&
-                  entry.actual_score !== undefined &&
-                  entry.expected_score !== null &&
-                  entry.expected_score !== undefined &&
-                  typeof entry.actual_score === "number" &&
-                  typeof entry.expected_score === "number"
-                ) {
-                  lines.push(`Score: ${entry.actual_score.toFixed(2)}`);
-                  lines.push(`Expected: ${entry.expected_score.toFixed(2)}`);
-                }
-
-                if (
-                  entry.performance_multiplier !== null &&
-                  entry.performance_multiplier !== undefined &&
-                  typeof entry.performance_multiplier === "number"
-                ) {
-                  lines.push(
-                    `Performance: ${entry.performance_multiplier.toFixed(2)}x`,
-                  );
-                }
-
-                // Team ELO
-                if (
-                  entry.player_team_elo_avg !== null &&
-                  entry.player_team_elo_avg !== undefined &&
-                  entry.opponent_team_elo_avg !== null &&
-                  entry.opponent_team_elo_avg !== undefined
-                ) {
-                  const playerTeam =
-                    typeof entry.player_team_elo_avg === "number"
-                      ? entry.player_team_elo_avg.toFixed(1)
-                      : entry.player_team_elo_avg;
-                  const opponentTeam =
-                    typeof entry.opponent_team_elo_avg === "number"
-                      ? entry.opponent_team_elo_avg.toFixed(1)
-                      : entry.opponent_team_elo_avg;
-                  lines.push(`Team ELO: ${playerTeam} vs ${opponentTeam}`);
-                }
-
-                return lines;
-              },
-            },
+            enabled: false,
           },
         },
         scales: {

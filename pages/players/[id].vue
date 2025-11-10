@@ -14,6 +14,7 @@ import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import { kdrColor } from "~/utilities/kdrColor";
+import { PlayIcon } from "lucide-vue-next";
 
 definePageMeta({
   alias: ["/me"],
@@ -79,16 +80,22 @@ definePageMeta({
       </template>
 
       <template #actions>
-        <div class="flex gap-2">
-          <template v-if="canSanction">
-            <SanctionPlayer :player="player" />
-            <PlayerRoleForm :player="player" />
-          </template>
-          <template v-else-if="player.role !== e_player_roles_enum.user">
-            <Badge class="capitalize">{{
-              player.role.replace("_", " ")
-            }}</Badge>
-          </template>
+        <template v-if="canSanction">
+          <SanctionPlayer :player="player" />
+          <PlayerRoleForm :player="player" />
+        </template>
+
+        <div class="flex items-center gap-2">
+          <NuxtLink to="/play" v-if="player.steam_id === me.steam_id">
+            <Button
+              variant="default"
+              size="lg"
+              class="shadow-lg hover:shadow-xl transition-all duration-200 font-semibold"
+            >
+              <PlayIcon class="w-5 h-5 mr-2" />
+              {{ $t("pages.players.detail.play_a_match") }}
+            </Button>
+          </NuxtLink>
         </div>
       </template>
     </PageHeading>
@@ -229,6 +236,7 @@ definePageMeta({
       </CardHeader>
       <CardContent>
         <MatchesTable
+          :player="player"
           :matches="playerWithMatches?.matches"
           v-if="playerWithMatches?.matches"
         ></MatchesTable>
@@ -255,6 +263,7 @@ import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
+import { eloFields } from "~/graphql/eloFields";
 
 export default {
   apollo: {
@@ -334,28 +343,7 @@ export default {
                     },
                   ],
                 },
-                {
-                  actual_score: true,
-                  assists: true,
-                  current_elo: true,
-                  damage: true,
-                  damage_percent: true,
-                  deaths: true,
-                  elo_change: true,
-                  expected_score: true,
-                  kda: true,
-                  kills: true,
-                  match_created_at: true,
-                  match_id: true,
-                  match_result: true,
-                  opponent_team_elo_avg: true,
-                  performance_multiplier: true,
-                  player_name: true,
-                  player_steam_id: true,
-                  player_team_elo_avg: true,
-                  team_avg_kda: true,
-                  updated_elo: true,
-                },
+                eloFields,
               ],
             },
           ],
@@ -391,7 +379,19 @@ export default {
                       },
                     ],
                   },
-                  simpleMatchFields,
+                  {
+                    ...simpleMatchFields,
+                    elo_changes: [
+                      {
+                        where: {
+                          player_steam_id: {
+                            _eq: $("playerId", "bigint!"),
+                          },
+                        },
+                      },
+                      eloFields,
+                    ],
+                  },
                 ],
               },
             ],

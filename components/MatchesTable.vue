@@ -16,7 +16,12 @@ import MatchTableRow from "~/components/MatchTableRow.vue";
       </div>
     </template>
     <template v-else>
-      <MatchTableRow v-for="match of matches" :key="match.id" :match="match" />
+      <MatchTableRow
+        v-for="match of matches"
+        :key="match.id"
+        :match="match"
+        :player="player"
+      />
     </template>
   </div>
 </template>
@@ -27,6 +32,11 @@ export default {
     matches: {
       type: Array,
       required: true,
+    },
+    player: {
+      type: Object,
+      required: false,
+      default: null,
     },
   },
 };

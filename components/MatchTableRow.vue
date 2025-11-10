@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import {
-  UserPlusIcon,
-  UsersIcon,
-  ChevronsDownIcon,
-  ChevronsUpIcon,
-} from "lucide-vue-next";
+import { UserPlusIcon, UsersIcon, ChevronsDownIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 import cleanMapName from "~/utilities/cleanMapName";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { eloFields } from "~/graphql/eloFields";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 </script>
 
 <template>
@@ -23,6 +25,132 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           <Badge variant="secondary" class="text-xs">
             {{ match.options.type }}
           </Badge>
+          <!-- Elo Change Display -->
+          <TooltipProvider v-if="hasEloChange">
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <Badge
+                  variant="outline"
+                  :class="[
+                    'text-xs font-semibold cursor-help',
+                    eloChangeValue > 0
+                      ? 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30'
+                      : 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30',
+                  ]"
+                >
+                  {{ formatEloChange(eloChangeValue) }}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent class="max-w-xs">
+                <div>
+                  <div class="font-semibold border-b border-border/50 pb-1">
+                    Elo Change Details
+                  </div>
+
+                  <!-- Current Elo → Updated Elo -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Elo:</span>
+                      <span class="font-medium">
+                        {{
+                          (eloChange.current_elo as number).toLocaleString()
+                        }}
+                        →
+                        {{ (eloChange.updated_elo as number).toLocaleString() }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Team Elo Averages -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Team Elo Avg:</span>
+                      <span class="font-medium">
+                        {{
+                          (
+                            eloChange.player_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
+                        vs
+                        {{
+                          (
+                            eloChange.opponent_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Performance Multiplier -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Performance Multiplier:</span
+                      >
+                      <span class="font-medium"
+                        >{{
+                          parseFloat(eloChange.performance_multiplier).toFixed(
+                            5,
+                          )
+                        }}%</span
+                      >
+                    </div>
+                  </div>
+
+                  <!-- K/D/A -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Kills / Deaths / Assists:</span
+                      >
+                      <span class="font-medium">
+                        {{ eloChange.kills }} / {{ eloChange.deaths }} /
+                        {{ eloChange.assists }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- KDA -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.kda).toFixed(2)
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Team Avg KDA -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground"
+                        >Team Avg Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.team_avg_kda).toFixed(2)
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Damage -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Damage:</span>
+                      <span class="font-medium">
+                        {{ eloChange.damage }}
+                        <span>
+                          ({{ Math.round(eloChange.damage_percent * 100) }}% of
+                          teams damage)
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <div class="flex items-center space-x-4">
           <!-- Join Button - Prominent Position -->
@@ -716,6 +844,99 @@ export default {
       } else {
         return "text-red-500";
       }
+    },
+    formatEloChange(change: number): string {
+      if (change === null || change === undefined) {
+        return "";
+      }
+      const sign = change > 0 ? "+" : "";
+      return `${sign}${change.toLocaleString()}`;
+    },
+  },
+  computed: {
+    eloChange(): typeof eloFields {
+      return this.match.elo_changes?.at(0);
+    },
+    hasEloChange(): boolean {
+      const change = this.eloChange?.elo_change;
+      return (
+        change !== null && change !== undefined && typeof change === "number"
+      );
+    },
+    eloChangeValue(): number {
+      const change = this.eloChange?.elo_change;
+      if (typeof change === "number") {
+        return change;
+      }
+      return 0;
+    },
+    playerTeamId(): string | null {
+      if (!this.eloChange?.player_steam_id) {
+        return null;
+      }
+      const playerSteamId = this.eloChange.player_steam_id;
+
+      // Check if player is in lineup_1
+      const inLineup1 = this.match.lineup_1?.lineup_players?.some(
+        (lp: any) => lp.player?.steam_id === playerSteamId,
+      );
+
+      if (inLineup1) {
+        return this.match.lineup_1_id;
+      }
+
+      // Check if player is in lineup_2
+      const inLineup2 = this.match.lineup_2?.lineup_players?.some(
+        (lp: any) => lp.player?.steam_id === playerSteamId,
+      );
+
+      if (inLineup2) {
+        return this.match.lineup_2_id;
+      }
+
+      return null;
+    },
+    team1EloAvg(): string {
+      if (!this.eloChange) return "";
+
+      const playerTeam = this.eloChange.player_team_elo_avg;
+      const opponentTeam = this.eloChange.opponent_team_elo_avg;
+
+      if (typeof playerTeam !== "number" || typeof opponentTeam !== "number") {
+        return "";
+      }
+
+      // If player is in lineup_1, player_team_elo_avg is team1's avg
+      // Otherwise, opponent_team_elo_avg is team1's avg
+      if (this.playerTeamId === this.match.lineup_1_id) {
+        return (playerTeam as number).toLocaleString();
+      } else if (this.playerTeamId === this.match.lineup_2_id) {
+        return (opponentTeam as number).toLocaleString();
+      }
+
+      // Fallback: assume first team is player team if we can't determine
+      return (playerTeam as number).toLocaleString();
+    },
+    team2EloAvg(): string {
+      if (!this.eloChange) return "";
+
+      const playerTeam = this.eloChange.player_team_elo_avg;
+      const opponentTeam = this.eloChange.opponent_team_elo_avg;
+
+      if (typeof playerTeam !== "number" || typeof opponentTeam !== "number") {
+        return "";
+      }
+
+      // If player is in lineup_1, opponent_team_elo_avg is team2's avg
+      // Otherwise, player_team_elo_avg is team2's avg
+      if (this.playerTeamId === this.match.lineup_1_id) {
+        return (opponentTeam as number).toLocaleString();
+      } else if (this.playerTeamId === this.match.lineup_2_id) {
+        return (playerTeam as number).toLocaleString();
+      }
+
+      // Fallback: assume second team is opponent team if we can't determine
+      return (opponentTeam as number).toLocaleString();
     },
   },
 };

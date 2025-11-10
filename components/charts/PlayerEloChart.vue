@@ -94,7 +94,6 @@ ChartJS.register({
 
 <script lang="ts">
 interface EloHistoryEntry {
-  actual_score?: number | null;
   assists?: number | null;
   current_elo?: number | null;
   damage?: number | null;
@@ -106,7 +105,6 @@ interface EloHistoryEntry {
   kills?: number | null;
   match_created_at: string;
   match_id?: string | null;
-  match_result?: string | null;
   opponent_team_elo_avg?: number | null;
   performance_multiplier?: number | null;
   player_name?: string | null;
@@ -204,20 +202,6 @@ export default {
                   lines.push(`Change: ${changeValue}`);
                 }
 
-                // Match Result
-                if (
-                  entry.match_result !== null &&
-                  entry.match_result !== undefined
-                ) {
-                  const result =
-                    entry.match_result === "win"
-                      ? "Win"
-                      : entry.match_result === "loss"
-                        ? "Loss"
-                        : "Draw";
-                  lines.push(`Result: ${result}`);
-                }
-
                 // Separator
                 lines.push("━━━━━━━━━━━━━━━━");
 
@@ -261,19 +245,6 @@ export default {
 
                 // Separator
                 lines.push("━━━━━━━━━━━━━━━━");
-
-                // Performance Metrics
-                if (
-                  entry.actual_score !== null &&
-                  entry.actual_score !== undefined &&
-                  entry.expected_score !== null &&
-                  entry.expected_score !== undefined &&
-                  typeof entry.actual_score === "number" &&
-                  typeof entry.expected_score === "number"
-                ) {
-                  lines.push(`Score: ${entry.actual_score.toFixed(2)}`);
-                  lines.push(`Expected: ${entry.expected_score.toFixed(2)}`);
-                }
 
                 if (
                   entry.performance_multiplier !== null &&

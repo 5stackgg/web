@@ -335,7 +335,14 @@ export default {
               ],
               elo_history: [
                 {
-                  limit: 25,
+                  limit: 10,
+                  where: {
+                    match: {
+                      winning_lineup_id: {
+                        _is_null: false,
+                      },
+                    },
+                  },
                   order_by: [
                     {},
                     {

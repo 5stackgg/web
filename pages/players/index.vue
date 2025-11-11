@@ -251,7 +251,10 @@ import { kdrColor } from "~/utilities/kdrColor";
                 </TableCell>
               </NuxtLink>
               <TableCell v-if="canViewAdditionalDetails">
-                <PlayerRoleForm :player="player" />
+                <PlayerRoleForm
+                  :player="player"
+                  @updated="updatePlayerRole(player.steam_id, $event)"
+                />
               </TableCell>
               <TableCell v-if="canViewAdditionalDetails">
                 <TimeAgo
@@ -386,6 +389,17 @@ export default {
     },
   },
   methods: {
+    updatePlayerRole(steam_id: string, role: e_player_roles_enum) {
+      const player = this.players.find((player) => {
+        return player.steam_id === steam_id;
+      });
+
+      if (!player) {
+        return;
+      }
+
+      player.role = role;
+    },
     resetFilters() {
       this.form.setValues({
         name: "",

@@ -4,7 +4,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 </script>
 
 <template>
-  <Popover v-if="canChangeRole">
+  <Popover v-if="canChangeRole" v-model:open="popoverOpen">
     <PopoverTrigger as-child>
       <Button variant="outline">
         <span class="capitalize">{{
@@ -41,9 +41,11 @@ export default {
       required: true,
     },
   },
+  emits: ["updated"],
   data() {
     return {
       memberRole: undefined,
+      popoverOpen: false,
     };
   },
   methods: {
@@ -65,6 +67,8 @@ export default {
           ],
         }),
       });
+      this.popoverOpen = false;
+      this.$emit("updated", this.memberRole);
     },
   },
   computed: {

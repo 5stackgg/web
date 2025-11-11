@@ -5,7 +5,6 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 </script>
 <template>
-  {{ joinableLobbies }}---
   <div class="flex items-center justify-between my-4">
     <h3 class="text-lg font-medium">
       {{ $t("matchmaking.friends.title") }}
@@ -282,14 +281,6 @@ export default {
     friends() {
       return useMatchmakingStore().friends.sort((a, b) => {
         return a.name.localeCompare(b.name);
-      });
-    },
-    joinableLobbies() {
-      const lobbies = this.friends?.map((friend) => {
-        return friend.player.lobby_players?.at(0)?.lobby;
-      });
-      console.info({
-        lobbies,
       });
     },
     onlineFriends() {

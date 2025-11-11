@@ -41,7 +41,10 @@ export default {
     },
     pendingFriends() {
       return this.friends?.filter((friend) => {
-        return friend.status === "Pending";
+        return (
+          friend.status === "Pending" &&
+          friend.invited_by_steam_id !== useAuthStore().me?.steam_id
+        );
       });
     },
     friends() {

@@ -176,6 +176,7 @@ import {
           0,
           match.max_players_per_lineup - lineup.lineup_players.length,
         )"
+        v-if="canViewEmptySlows"
       >
         <TableCell colspan="100%">
           <div class="flex gap-4">
@@ -259,6 +260,14 @@ export default {
         this.lineup.can_update_lineup &&
         this.lineup.lineup_players.length < this.maxPlayers
       );
+    },
+    canViewEmptySlows() {
+      return ![
+        e_match_status_enum.Finished,
+        e_match_status_enum.Forfeit,
+        e_match_status_enum.Surrendered,
+        e_match_status_enum.Tie,
+      ].includes(this.match.status);
     },
     minPlayers() {
       return this.match.min_players_per_lineup;

@@ -95,6 +95,7 @@ interface Player {
   is_banned?: boolean;
   is_muted?: boolean;
   is_gagged?: boolean;
+  elo?: number;
 }
 
 interface SearchResponse {
@@ -210,6 +211,7 @@ export default {
           is_banned: document.is_banned,
           is_muted: document.is_muted,
           is_gagged: document.is_gagged,
+          elo: document.elo,
         } as Player;
       });
     },

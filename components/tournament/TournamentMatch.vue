@@ -35,14 +35,28 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <!-- Show only team 1 if it's a bye round -->
       <div v-if="bracket.bye && bracket.team_1" class="items-center m-2">
         <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
-          <span>{{ bracket.team_1.team.name }}</span>
+          <span
+            >{{ bracket.team_1.team?.name || bracket.team_1.name
+            }}<span
+              v-if="bracket.team_1_seed"
+              class="text-muted-foreground ml-2"
+              >(#{{ bracket.team_1_seed }})</span
+            ></span
+          >
         </div>
       </div>
 
       <!-- Show only team 2 if it's a bye round and team 1 doesn't exist -->
       <div v-else-if="bracket.bye && bracket.team_2" class="items-center m-2">
         <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
-          <span>{{ bracket.team_2.team.name }}</span>
+          <span
+            >{{ bracket.team_2.team?.name || bracket.team_2.name
+            }}<span
+              v-if="bracket.team_2_seed"
+              class="text-muted-foreground ml-2"
+              >(#{{ bracket.team_2_seed }})</span
+            ></span
+          >
         </div>
       </div>
 
@@ -50,18 +64,32 @@ import TimeAgo from "~/components/TimeAgo.vue";
       <template v-else>
         <div class="items-center m-2">
           <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
-            <TournamentRoundLineup
-              :lineup_name="bracket.team_1.team.name"
-              :match="bracket.match"
-              :lineup="bracket.match.lineup_1"
-              v-if="bracket.match"
-            ></TournamentRoundLineup>
+            <span v-if="bracket.match" class="flex items-center gap-2">
+              <TournamentRoundLineup
+                :lineup_name="bracket.team_1.team?.name || bracket.team_1.name"
+                :match="bracket.match"
+                :lineup="bracket.match.lineup_1"
+              ></TournamentRoundLineup>
+              <span v-if="bracket.team_1_seed" class="text-muted-foreground"
+                >(#{{ bracket.team_1_seed }})</span
+              >
+            </span>
             <template v-else>
               <span v-if="bracket.team_1">
-                {{ bracket.team_1.name }}
+                {{ bracket.team_1.name
+                }}<span
+                  v-if="bracket.team_1_seed"
+                  class="text-muted-foreground ml-2"
+                  >(#{{ bracket.team_1_seed }})</span
+                >
               </span>
               <span v-else>
                 {{ $t("tournament.match.team_1") }}
+                <span
+                  v-if="bracket.team_1_seed"
+                  class="text-muted-foreground ml-2"
+                  >(#{{ bracket.team_1_seed }})</span
+                >
               </span>
             </template>
           </div>
@@ -69,18 +97,32 @@ import TimeAgo from "~/components/TimeAgo.vue";
 
         <div class="items-center m-2">
           <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
-            <TournamentRoundLineup
-              :lineup_name="bracket.team_2.team.name"
-              :match="bracket.match"
-              :lineup="bracket.match.lineup_2"
-              v-if="bracket.match"
-            ></TournamentRoundLineup>
+            <span v-if="bracket.match" class="flex items-center gap-2">
+              <TournamentRoundLineup
+                :lineup_name="bracket.team_2.team?.name || bracket.team_2.name"
+                :match="bracket.match"
+                :lineup="bracket.match.lineup_2"
+              ></TournamentRoundLineup>
+              <span v-if="bracket.team_2_seed" class="text-muted-foreground"
+                >(#{{ bracket.team_2_seed }})</span
+              >
+            </span>
             <template v-else>
               <span v-if="bracket.team_2">
-                {{ bracket.team_2.name }}
+                {{ bracket.team_2.team?.name || bracket.team_2.name
+                }}<span
+                  v-if="bracket.team_2_seed"
+                  class="text-muted-foreground ml-2"
+                  >(#{{ bracket.team_2_seed }})</span
+                >
               </span>
               <span v-else>
                 {{ $t("tournament.match.team_2") }}
+                <span
+                  v-if="bracket.team_2_seed"
+                  class="text-muted-foreground ml-2"
+                  >(#{{ bracket.team_2_seed }})</span
+                >
               </span>
             </template>
           </div>

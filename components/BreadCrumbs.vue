@@ -25,6 +25,8 @@
 </template>
 
 <script lang="ts">
+import { e_player_roles_enum } from "~/generated/zeus";
+
 export default {
   computed: {
     me() {
@@ -45,6 +47,16 @@ export default {
 
         if (path === `/players/${this.me?.steam_id}`) {
           path = "/";
+        }
+
+        if (path === "/matches" || path.startsWith("/matches/")) {
+          path = useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
+            ? "/manage-matches"
+            : "/play";
+        }
+
+        if (path.startsWith("/manage-matches/")) {
+          path = path.replace("/manage-matches", "/matches");
         }
 
         breadcrumbs.push({

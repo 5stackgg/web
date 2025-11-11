@@ -22,6 +22,7 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 </script>
 
 <template>
+  {{ form.errors }}
   <form @submit.prevent="updateCreateServer" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="use_valve_modes">
       <FormItem>
@@ -405,7 +406,7 @@ export default {
                     data.region &&
                     data.port &&
                     data.tv_port &&
-                    data.rcon_password
+                    (this.server || data.rcon_password)
                   );
                 }
                 return true;

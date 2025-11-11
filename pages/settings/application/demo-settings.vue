@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { LucideCloud, LucideDownload, LucideUpload } from "lucide-vue-next";
+import { LucideDownload, LucideUpload, LucideHardDrive } from "lucide-vue-next";
+import formatBits from "~/utilities/formatBits";
 
 definePageMeta({
   layout: "application-settings",
@@ -7,7 +8,25 @@ definePageMeta({
 </script>
 
 <template>
-  {{ form.values.demo_network_limiter }}
+  <div
+    v-if="match_map_demos_aggregate"
+    class="mb-8 p-4 bg-muted rounded-lg flex items-center gap-4"
+  >
+    <div
+      class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+    >
+      <LucideHardDrive class="w-6 h-6 text-primary" />
+    </div>
+    <div class="flex-1">
+      <h3 class="text-sm font-medium text-muted-foreground">
+        {{ $t("pages.settings.application.demo_settings.used_storage") }}
+      </h3>
+      <p class="text-2xl font-bold mt-1">
+        {{ formatBits(match_map_demos_aggregate.aggregate.sum.size) }}~
+      </p>
+    </div>
+  </div>
+
   <div class="mb-8 p-4 bg-muted rounded-lg flex flex-col gap-2">
     <h3 class="text-lg font-semibold">
       {{ $t("pages.settings.application.demo_settings.test_s3_title") }}
@@ -146,14 +165,29 @@ definePageMeta({
 
 <script lang="ts">
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 
 export default {
-  apollo: {},
+  apollo: {
+    match_map_demos_aggregate: {
+      query: generateQuery({
+        match_map_demos_aggregate: [
+          {},
+          {
+            aggregate: {
+              sum: {
+                size: true,
+              },
+            },
+          },
+        ],
+      }),
+    },
+  },
   data() {
     return {
       form: useForm({

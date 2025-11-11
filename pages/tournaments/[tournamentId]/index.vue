@@ -427,6 +427,8 @@ export default {
                       bye: true,
                       match_number: true,
                       scheduled_eta: true,
+                      team_1_seed: true,
+                      team_2_seed: true,
                       match: {
                         id: true,
                         status: true,

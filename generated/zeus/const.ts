@@ -13004,7 +13004,9 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_avg_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_brackets_bool_exp:{
 		_and:"tournament_brackets_bool_exp",
@@ -13022,7 +13024,9 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_eta:"timestamptz_comparison_exp",
 		stage:"tournament_stages_bool_exp",
 		team_1:"tournament_teams_bool_exp",
+		team_1_seed:"Int_comparison_exp",
 		team_2:"tournament_teams_bool_exp",
+		team_2_seed:"Int_comparison_exp",
 		tournament_stage_id:"uuid_comparison_exp",
 		tournament_team_id_1:"uuid_comparison_exp",
 		tournament_team_id_2:"uuid_comparison_exp"
@@ -13055,6 +13059,8 @@ export const AllTypesProps: Record<string,any> = {
 		parent_bracket_id:"order_by",
 		round:"order_by",
 		scheduled_eta:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by",
 		tournament_stage_id:"order_by",
 		tournament_team_id_1:"order_by",
 		tournament_team_id_2:"order_by"
@@ -13068,6 +13074,8 @@ export const AllTypesProps: Record<string,any> = {
 		parent_bracket_id:"order_by",
 		round:"order_by",
 		scheduled_eta:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by",
 		tournament_stage_id:"order_by",
 		tournament_team_id_1:"order_by",
 		tournament_team_id_2:"order_by"
@@ -13090,7 +13098,9 @@ export const AllTypesProps: Record<string,any> = {
 		scheduled_eta:"order_by",
 		stage:"tournament_stages_order_by",
 		team_1:"tournament_teams_order_by",
+		team_1_seed:"order_by",
 		team_2:"tournament_teams_order_by",
+		team_2_seed:"order_by",
 		tournament_stage_id:"order_by",
 		tournament_team_id_1:"order_by",
 		tournament_team_id_2:"order_by"
@@ -13115,17 +13125,23 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_stddev_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_brackets_stddev_pop_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_brackets_stddev_samp_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_brackets_stream_cursor_input:{
 		initial_value:"tournament_brackets_stream_cursor_value_input",
@@ -13145,7 +13161,9 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_sum_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_brackets_update_column: "enum" as const,
 	tournament_brackets_updates:{
@@ -13156,17 +13174,23 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_var_pop_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_brackets_var_samp_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_brackets_variance_order_by:{
 		group:"order_by",
 		match_number:"order_by",
-		round:"order_by"
+		round:"order_by",
+		team_1_seed:"order_by",
+		team_2_seed:"order_by"
 	},
 	tournament_organizers_aggregate_bool_exp:{
 		count:"tournament_organizers_aggregate_bool_exp_count"
@@ -20547,7 +20571,9 @@ export const ReturnTypes: Record<string,any> = {
 		scheduled_eta:"timestamptz",
 		stage:"tournament_stages",
 		team_1:"tournament_teams",
+		team_1_seed:"Int",
 		team_2:"tournament_teams",
+		team_2_seed:"Int",
 		tournament_stage_id:"uuid",
 		tournament_team_id_1:"uuid",
 		tournament_team_id_2:"uuid"
@@ -20572,7 +20598,9 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_brackets_avg_fields:{
 		group:"Float",
 		match_number:"Float",
-		round:"Float"
+		round:"Float",
+		team_1_seed:"Float",
+		team_2_seed:"Float"
 	},
 	tournament_brackets_max_fields:{
 		created_at:"timestamptz",
@@ -20583,6 +20611,8 @@ export const ReturnTypes: Record<string,any> = {
 		parent_bracket_id:"uuid",
 		round:"Int",
 		scheduled_eta:"timestamptz",
+		team_1_seed:"Int",
+		team_2_seed:"Int",
 		tournament_stage_id:"uuid",
 		tournament_team_id_1:"uuid",
 		tournament_team_id_2:"uuid"
@@ -20596,6 +20626,8 @@ export const ReturnTypes: Record<string,any> = {
 		parent_bracket_id:"uuid",
 		round:"Int",
 		scheduled_eta:"timestamptz",
+		team_1_seed:"Int",
+		team_2_seed:"Int",
 		tournament_stage_id:"uuid",
 		tournament_team_id_1:"uuid",
 		tournament_team_id_2:"uuid"
@@ -20607,37 +20639,51 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_brackets_stddev_fields:{
 		group:"Float",
 		match_number:"Float",
-		round:"Float"
+		round:"Float",
+		team_1_seed:"Float",
+		team_2_seed:"Float"
 	},
 	tournament_brackets_stddev_pop_fields:{
 		group:"Float",
 		match_number:"Float",
-		round:"Float"
+		round:"Float",
+		team_1_seed:"Float",
+		team_2_seed:"Float"
 	},
 	tournament_brackets_stddev_samp_fields:{
 		group:"Float",
 		match_number:"Float",
-		round:"Float"
+		round:"Float",
+		team_1_seed:"Float",
+		team_2_seed:"Float"
 	},
 	tournament_brackets_sum_fields:{
 		group:"numeric",
 		match_number:"Int",
-		round:"Int"
+		round:"Int",
+		team_1_seed:"Int",
+		team_2_seed:"Int"
 	},
 	tournament_brackets_var_pop_fields:{
 		group:"Float",
 		match_number:"Float",
-		round:"Float"
+		round:"Float",
+		team_1_seed:"Float",
+		team_2_seed:"Float"
 	},
 	tournament_brackets_var_samp_fields:{
 		group:"Float",
 		match_number:"Float",
-		round:"Float"
+		round:"Float",
+		team_1_seed:"Float",
+		team_2_seed:"Float"
 	},
 	tournament_brackets_variance_fields:{
 		group:"Float",
 		match_number:"Float",
-		round:"Float"
+		round:"Float",
+		team_1_seed:"Float",
+		team_2_seed:"Float"
 	},
 	tournament_organizers:{
 		organizer:"players",

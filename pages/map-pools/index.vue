@@ -144,6 +144,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 interface Map {
   id: string;
   name: string;
+  label?: string;
   type: string;
   patch?: string;
   poster?: string;
@@ -277,9 +278,10 @@ export default {
           if (!this.searchQuery) {
             return true;
           }
-          return map.name
-            .toLowerCase()
-            .includes(this.searchQuery.toLowerCase());
+          return (
+            map.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+            map.label?.toLowerCase()?.includes(this.searchQuery.toLowerCase())
+          );
         });
     },
     settings() {

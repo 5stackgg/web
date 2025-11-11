@@ -1059,7 +1059,10 @@
             "organizer_override": "Match Organizer Override",
             "confirm_ban": "Confirm Ban",
             "server_region": "Server Region",
-            "select_region": "Select A Region"
+            "select_region": "Select A Region",
+            "no_regions_available": "No regions available",
+            "no_regions_available_description": "No regions are available for this server. Please contact an administrator to add a region.",
+            "set_server_region": "Set Server Region"
         },
         "picks": {
             "decider": "Decider"

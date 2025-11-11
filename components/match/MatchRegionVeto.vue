@@ -2,9 +2,21 @@
 import { Button } from "~/components/ui/button";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 </script>
 
 <template>
+  <template v-if="regions.length === 0">
+    <Alert variant="destructive" class="bg-red-600 text-white max-w-md">
+      <AlertTitle>{{
+        $t("match.region_veto.no_regions_available")
+      }}</AlertTitle>
+      <AlertDescription>
+        {{ $t("match.region_veto.no_regions_available_description") }}
+      </AlertDescription>
+    </Alert>
+  </template>
+
   <div v-if="isRegionVeto && (isBanning || canSelectRegion)">
     <template v-if="match.options.region_veto">
       <div class="flex justify-between my-3">
@@ -117,7 +129,7 @@ import { Separator } from "~/components/ui/separator";
                 type="submit"
                 :disabled="Object.keys(form.errors).length > 0"
               >
-                Set Server Region
+                {{ $t("match.region_veto.set_server_region") }}
               </Button>
             </form>
           </CardContent>

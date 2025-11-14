@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import formatBits from "~/utilities/formatBits";
 
 definePageMeta({
   layout: "application-settings",
@@ -34,7 +35,7 @@ definePageMeta({
         <TableRow v-for="backup in backups" :key="backup.id">
           <TableCell>{{ backup.name }}</TableCell>
           <TableCell class="text-right tabular-nums">{{
-            formatBytes(backup.size)
+            formatBits(backup.size)
           }}</TableCell>
           <TableCell>{{
             new Date(backup.created_at).toLocaleString()
@@ -87,15 +88,6 @@ export default {
           this.backups = data.db_backups;
         },
       },
-    },
-  },
-  methods: {
-    formatBytes(bytes: number) {
-      if (bytes === 0) return "0 B";
-      const units = ["B", "KB", "MB", "GB", "TB", "PB"];
-      const index = Math.floor(Math.log(bytes) / Math.log(1024));
-      const value = bytes / Math.pow(1024, index);
-      return `${value.toFixed(2)} ${units[index]}`;
     },
   },
 };

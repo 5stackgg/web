@@ -2,7 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import { Badge } from "~/components/ui/badge";
 import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
-import formatBits from "~/utilities/formatBits";
+import formatBytes from "~/utilities/formatBytes";
 </script>
 
 <template>
@@ -41,7 +41,7 @@ import formatBits from "~/utilities/formatBits";
                   ? $t("match.download_demos")
                   : $t("match.download_demo")
               }}
-              <small>{{ formatBits(matchMap.demos_total_size) }}~)</small>
+              <small>{{ formatBytes(matchMap.demos_total_size) }}~)</small>
             </Button>
           </a>
         </template>
@@ -50,7 +50,7 @@ import formatBits from "~/utilities/formatBits";
             <a :href="demo.download_url">
               <Button size="sm" variant="outline">
                 {{ $t("match.download_demo") }}
-                <small>({{ formatBits(demo.size) }}~)</small>
+                <small>({{ formatBytes(demo.size) }}~)</small>
               </Button>
             </a>
           </template>

@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import formatBits from "~/utilities/formatBits";
+import formatBytes from "~/utilities/formatBytes";
 
 definePageMeta({
   layout: "application-settings",
@@ -35,7 +35,7 @@ definePageMeta({
         <TableRow v-for="backup in backups" :key="backup.id">
           <TableCell>{{ backup.name }}</TableCell>
           <TableCell class="text-right tabular-nums">{{
-            formatBits(backup.size)
+            formatBytes(backup.size)
           }}</TableCell>
           <TableCell>{{
             new Date(backup.created_at).toLocaleString()

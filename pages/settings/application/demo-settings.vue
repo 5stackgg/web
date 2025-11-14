@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { LucideDownload, LucideUpload, LucideHardDrive } from "lucide-vue-next";
-import formatBits from "~/utilities/formatBits";
+import formatBytes from "~/utilities/formatBytes";
 
 definePageMeta({
   layout: "application-settings",
@@ -22,7 +22,7 @@ definePageMeta({
         {{ $t("pages.settings.application.demo_settings.used_storage") }}
       </h3>
       <p class="text-2xl font-bold mt-1">
-        {{ formatBits(match_map_demos_aggregate.aggregate.sum.size) }}~
+        {{ formatBytes(match_map_demos_aggregate.aggregate.sum.size) }}~
       </p>
     </div>
   </div>

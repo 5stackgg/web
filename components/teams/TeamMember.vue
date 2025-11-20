@@ -131,7 +131,7 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
     </div>
   </div>
 
-  <div class="col-span-12" v-else>
+  <div class="col-span-12" v-else-if="isInvite">
     <AlertDialog>
       <AlertDialogTrigger>
         <Button size="sm">{{ $t("team.member.cancel_invite") }}</Button>

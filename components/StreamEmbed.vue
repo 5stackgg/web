@@ -275,8 +275,7 @@ export default {
       iframe.width = "100%";
       iframe.height = "100%";
       iframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      iframe.allowFullscreen = true;
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen";
       iframe.style.aspectRatio = "16 / 9";
       iframe.style.width = "100%";
       iframe.style.height = "100%";
@@ -295,8 +294,7 @@ export default {
       iframe.src = `https://player.kick.com/${channelName}?autoplay=true`;
       iframe.width = "100%";
       iframe.height = "100%";
-      iframe.allow = "autoplay; fullscreen";
-      iframe.allowFullscreen = true;
+      iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
       iframe.style.aspectRatio = "16 / 9";
       iframe.style.width = "100%";
       iframe.style.height = "100%";
@@ -314,10 +312,8 @@ export default {
       iframe.src = url;
       iframe.width = "100%";
       iframe.height = "100%";
-      iframe.frameBorder = "0";
       iframe.allow =
         "autoplay; fullscreen; encrypted-media; picture-in-picture";
-      iframe.allowFullscreen = true;
       iframe.style.aspectRatio = "16 / 9";
       iframe.style.width = "100%";
       iframe.style.height = "100%";

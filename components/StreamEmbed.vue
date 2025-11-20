@@ -1,11 +1,22 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
+import { ExternalLink } from "lucide-vue-next";
 </script>
 
 <template>
   <div class="space-y-3">
-    <div class="aspect-video" v-if="selectedStreamId">
+    <div class="aspect-video relative" v-if="selectedStreamId">
       <div ref="playerRef" class="w-full h-full"></div>
+      <button
+        v-if="!preview && selectedStreamId"
+        class="absolute top-2 right-2 w-8 h-8 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
+        @click="setPreviewStream(selectedStream)"
+        type="button"
+        title="Move to global view"
+      >
+        <ExternalLink class="w-4 h-4" />
+        <span class="sr-only">Move to global view</span>
+      </button>
     </div>
 
     <div v-if="streams.length > 1" class="flex flex-wrap gap-2">
@@ -92,13 +103,17 @@ export default {
     },
   },
   methods: {
+    setPreviewStream(stream: MatchStream) {
+      this.selectedStreamId = null;
+      useApplicationSettingsStore().setStreamPreview(stream);
+    },
     selectStream(stream: MatchStream) {
       if (this.selectedStreamId === stream.id) {
         return;
       }
 
       if (this.preview) {
-        useApplicationSettingsStore().setStreamPreview(stream);
+        this.setPreviewStream(stream);
         return;
       }
 
@@ -294,7 +309,8 @@ export default {
       iframe.src = `https://player.kick.com/${channelName}?autoplay=true`;
       iframe.width = "100%";
       iframe.height = "100%";
-      iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
+      iframe.allow =
+        "autoplay; fullscreen; encrypted-media; picture-in-picture";
       iframe.style.aspectRatio = "16 / 9";
       iframe.style.width = "100%";
       iframe.style.height = "100%";

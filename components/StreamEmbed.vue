@@ -356,8 +356,10 @@ export default {
     await this.loadStream();
   },
   watch: {
-    selectedStreamId() {
-      this.loadStream();
+    selectedStreamId(newId, oldId) {
+      if (newId !== oldId) {
+        this.loadStream();
+      }
     },
     streams: {
       immediate: false,
@@ -373,8 +375,6 @@ export default {
             this.selectedStreamId = this.streams[0].id;
           }
         }
-
-        this.loadStream();
       },
     },
   },

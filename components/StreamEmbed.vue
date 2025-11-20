@@ -4,20 +4,11 @@ import { Button } from "~/components/ui/button";
 
 <template>
   <div class="space-y-3">
-    <div class="aspect-video">
+    <div class="aspect-video" v-if="selectedStreamId">
       <div ref="playerRef" class="w-full h-full"></div>
-      <div v-if="!isValid && selectedStream" class="text-red-500 mt-2 text-xs">
-        Unable to load stream.
-      </div>
-      <div
-        v-if="!selectedStream && streams && streams.length > 0"
-        class="text-muted-foreground mt-2 text-xs"
-      >
-        No stream selected.
-      </div>
     </div>
 
-    <div v-if="streams && streams.length > 1" class="flex flex-wrap gap-2">
+    <div v-if="streams.length > 1" class="flex flex-wrap gap-2">
       <Button
         v-for="stream in streams"
         :key="stream.id"
@@ -28,14 +19,14 @@ import { Button } from "~/components/ui/button";
             ? 'bg-primary text-primary-foreground'
             : '',
         ]"
-        @click="selectedStreamId = stream.id"
+        @click="selectStream(stream)"
       >
         <component
           :is="getPlatformIcon(stream.link)"
           class="h-4 w-4"
           v-if="getPlatformIcon(stream.link)"
         />
-        <span class="truncate max-w-[200px]">{{
+        <span class="truncate max-w-[200px]" v-if="showTitle">{{
           stream.title || stream.link
         }}</span>
       </Button>
@@ -51,6 +42,7 @@ interface MatchStream {
   link: string;
   title?: string;
   priority?: number;
+  preview: true;
 }
 
 import TwitchIcon from "~/components/icons/TwitchIcon.vue";
@@ -68,6 +60,14 @@ export default {
       type: Array as () => MatchStream[],
       default: () => [],
     },
+    showTitle: {
+      type: Boolean,
+      default: true,
+    },
+    preview: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -78,23 +78,36 @@ export default {
     };
   },
   computed: {
+    previewStream() {
+      return useApplicationSettingsStore().streamPreview;
+    },
     selectedStream(): MatchStream | undefined {
-      if (!this.streams || this.streams.length === 0) {
-        return;
-      }
       if (!this.selectedStreamId) {
-        return this.streams.at(0);
+        return;
       }
 
       return this.streams.find((stream) => {
         return stream.id === this.selectedStreamId;
       });
     },
-    isValid(): boolean {
-      return this.platform !== null && this.embedId !== null;
-    },
   },
   methods: {
+    selectStream(stream: MatchStream) {
+      if (this.selectedStreamId === stream.id) {
+        return;
+      }
+
+      if (this.preview) {
+        useApplicationSettingsStore().setStreamPreview(stream);
+        return;
+      }
+
+      if (!stream.preview && this.previewStream?.id === stream.id) {
+        return;
+      }
+
+      this.selectedStreamId = stream.id;
+    },
     cleanupPlayer() {
       const playerRef = this.$refs.playerRef as HTMLDivElement | null;
 
@@ -189,7 +202,7 @@ export default {
 
       return { platform: "iframe", embedId: link };
     },
-    loadTwitchPlayerScript(): Promise<void> {
+    async loadTwitchPlayerScript(): Promise<void> {
       return new Promise((resolve, reject) => {
         if ((window as any).Twitch && (window as any).Twitch.Player) {
           resolve();
@@ -312,11 +325,24 @@ export default {
       playerRef.appendChild(iframe);
       this.playerInstance = iframe;
     },
-    mountPlayer() {
-      if (!this.platform || !this.embedId) return;
+    async loadStream() {
+      if (!this.selectedStream || !this.selectedStream.link) {
+        this.platform = null;
+        this.embedId = null;
+        return;
+      }
+
+      const parsed = this.parseStreamLink(this.selectedStream.link);
+      this.platform = parsed.platform;
+      this.embedId = parsed.embedId;
+
+      if (!this.embedId) {
+        return;
+      }
 
       switch (this.platform) {
         case "twitch":
+          await this.loadTwitchPlayerScript();
           this.mountTwitchPlayer(this.embedId);
           break;
         case "youtube":
@@ -330,51 +356,27 @@ export default {
           break;
       }
     },
-    async loadStream() {
-      if (!this.selectedStream || !this.selectedStream.link) {
-        this.platform = null;
-        this.embedId = null;
-        return;
-      }
-
-      const parsed = this.parseStreamLink(this.selectedStream.link);
-      this.platform = parsed.platform;
-      this.embedId = parsed.embedId;
-
-      if (this.platform === "twitch") {
-        await this.loadTwitchPlayerScript();
-      }
-
-      if (this.isValid) {
-        this.mountPlayer();
-      }
-    },
-  },
-  async mounted() {
-    if (this.streams && this.streams.length > 0 && !this.selectedStreamId) {
-      this.selectedStreamId = this.streams[0].id;
-    }
-    await this.loadStream();
   },
   watch: {
     selectedStreamId(newId, oldId) {
-      if (newId !== oldId) {
-        this.loadStream();
+      if (newId !== oldId && newId !== null) {
+        // Use requestAnimationFrame to defer heavy operations
+        requestAnimationFrame(() => {
+          this.$nextTick(() => {
+            this.loadStream();
+          });
+        });
       }
     },
     streams: {
-      immediate: false,
+      immediate: true,
       handler() {
-        if (this.streams && this.streams.length > 0) {
-          const currentExists =
-            this.selectedStreamId &&
-            this.streams.some((stream) => {
-              return stream.id === this.selectedStreamId;
-            });
+        if (!this.streams || this.streams.length === 0) {
+          return;
+        }
 
-          if (!currentExists) {
-            this.selectedStreamId = this.streams[0].id;
-          }
+        if (!this.preview) {
+          this.selectStream(this.streams.at(0));
         }
       },
     },

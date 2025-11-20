@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import StreamEmbed from "~/components/StreamEmbed.vue";
 </script>
 
 <template>
@@ -172,6 +173,14 @@ import {
           <div
             class="flex items-center space-x-2 text-sm text-muted-foreground"
           >
+            <div v-if="match.streams?.length > 0">
+              <StreamEmbed
+                :streams="match.streams"
+                :show-title="false"
+                :preview="true"
+              />
+            </div>
+
             <Badge variant="outline" class="text-xs">
               {{ match.e_match_status.description }}
             </Badge>

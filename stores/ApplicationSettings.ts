@@ -226,6 +226,22 @@ export const useApplicationSettingsStore = defineStore(
         (setting) => setting.name === "public.max_acceptable_latency",
       )?.value;
     });
+    const streamPreview = ref<object | null>(null);
+
+    const setStreamPreview = async (stream: {
+      id: string;
+      link: string;
+      preview: boolean;
+      match_id: string;
+    }) => {
+      if (!stream) {
+        streamPreview.value = null;
+        return;
+      }
+
+      stream.preview = true;
+      streamPreview.value = stream;
+    };
 
     return {
       settings,
@@ -241,6 +257,8 @@ export const useApplicationSettingsStore = defineStore(
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,
+      streamPreview,
+      setStreamPreview,
     };
   },
 );

@@ -64,7 +64,22 @@ export default {
               ],
               where: $("where", "matches_bool_exp!"),
             },
-            simpleMatchFields,
+            {
+              ...simpleMatchFields,
+              streams: [
+                {
+                  order_by: [
+                    {
+                      priority: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  link: true,
+                },
+              ],
+            },
           ],
         }),
         variables: function () {

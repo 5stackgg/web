@@ -382,7 +382,7 @@ export default {
           return;
         }
 
-        if (!this.setGlobalStreamOnly) {
+        if (this.global || (!this.setGlobalStreamOnly && !this.globalStream)) {
           this.selectStream(this.streams.at(0));
         }
       },

@@ -226,21 +226,22 @@ export const useApplicationSettingsStore = defineStore(
         (setting) => setting.name === "public.max_acceptable_latency",
       )?.value;
     });
-    const streamPreview = ref<object | null>(null);
 
-    const setStreamPreview = async (stream: {
+    const globalStream = ref<object | null>(null);
+
+    const setGlobalStream = async (stream: {
       id: string;
       link: string;
       preview: boolean;
       match_id: string;
     }) => {
       if (!stream) {
-        streamPreview.value = null;
+        globalStream.value = null;
         return;
       }
 
       stream.preview = true;
-      streamPreview.value = stream;
+      globalStream.value = stream;
     };
 
     return {
@@ -257,8 +258,8 @@ export const useApplicationSettingsStore = defineStore(
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,
-      streamPreview,
-      setStreamPreview,
+      globalStream,
+      setGlobalStream,
     };
   },
 );

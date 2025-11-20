@@ -5,32 +5,36 @@ import { ExternalLink } from "lucide-vue-next";
 
 <template>
   <div class="space-y-3">
-    <div class="aspect-video relative" v-if="selectedStreamId">
+    <div class="aspect-video relative" v-if="selectedStream">
       <div ref="playerRef" class="w-full h-full"></div>
-      <button
-        v-if="!preview && selectedStreamId"
-        class="absolute top-2 right-2 w-8 h-8 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
-        @click="setPreviewStream(selectedStream)"
-        type="button"
-        title="Move to global view"
-      >
-        <ExternalLink class="w-4 h-4" />
-        <span class="sr-only">Move to global view</span>
-      </button>
+      <template v-if="global === false">
+        <Button
+          class="absolute top-2 right-2 w-8 h-8 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
+          @click="setGlobalStream(selectedStream)"
+          type="button"
+          :title="'Move to global view'"
+          variant="ghost"
+          size="icon"
+        >
+          <ExternalLink class="w-4 h-4" />
+          <span class="sr-only">Move to global view</span>
+        </Button>
+      </template>
     </div>
 
     <div v-if="streams.length > 1" class="flex flex-wrap gap-2">
       <Button
+        :size="showTitle ? 'sm' : 'icon'"
         v-for="stream in streams"
         :key="stream.id"
-        :variant="selectedStreamId === stream.id ? 'default' : 'outline'"
+        :variant="selectedStream?.id === stream.id ? 'default' : 'outline'"
         :class="[
           'flex items-center gap-2',
-          selectedStreamId === stream.id
+          selectedStream?.id === stream.id
             ? 'bg-primary text-primary-foreground'
             : '',
         ]"
-        @click="selectStream(stream)"
+        @click="globalStream ? setGlobalStream(stream) : selectStream(stream)"
       >
         <component
           :is="getPlatformIcon(stream.link)"
@@ -67,6 +71,10 @@ export default {
     KickIcon,
   },
   props: {
+    global: {
+      type: Boolean,
+      default: false,
+    },
     streams: {
       type: Array as () => MatchStream[],
       default: () => [],
@@ -75,7 +83,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    preview: {
+    setGlobalStreamOnly: {
       type: Boolean,
       default: false,
     },
@@ -85,43 +93,30 @@ export default {
       playerInstance: null as any,
       platform: null as Platform,
       embedId: null as string | null,
-      selectedStreamId: null as string | null,
+      selectedStream: null as MatchStream | null,
     };
   },
   computed: {
-    previewStream() {
-      return useApplicationSettingsStore().streamPreview;
-    },
-    selectedStream(): MatchStream | undefined {
-      if (!this.selectedStreamId) {
-        return;
-      }
-
-      return this.streams.find((stream) => {
-        return stream.id === this.selectedStreamId;
-      });
+    globalStream() {
+      return useApplicationSettingsStore().globalStream;
     },
   },
   methods: {
-    setPreviewStream(stream: MatchStream) {
-      this.selectedStreamId = null;
-      useApplicationSettingsStore().setStreamPreview(stream);
+    setGlobalStream(stream: MatchStream) {
+      this.selectedStream = null;
+      useApplicationSettingsStore().setGlobalStream(stream);
     },
     selectStream(stream: MatchStream) {
-      if (this.selectedStreamId === stream.id) {
+      if (this.selectedStream?.id === stream.id) {
         return;
       }
 
-      if (this.preview) {
-        this.setPreviewStream(stream);
+      if (this.setGlobalStreamOnly) {
+        this.setGlobalStream(stream);
         return;
       }
 
-      if (!stream.preview && this.previewStream?.id === stream.id) {
-        return;
-      }
-
-      this.selectedStreamId = stream.id;
+      this.selectedStream = stream;
     },
     cleanupPlayer() {
       const playerRef = this.$refs.playerRef as HTMLDivElement | null;
@@ -370,8 +365,8 @@ export default {
     },
   },
   watch: {
-    selectedStreamId(newId, oldId) {
-      if (newId !== oldId && newId !== null) {
+    selectedStream(stream, oldStream) {
+      if (stream !== oldStream && stream !== null) {
         // Use requestAnimationFrame to defer heavy operations
         requestAnimationFrame(() => {
           this.$nextTick(() => {
@@ -387,7 +382,7 @@ export default {
           return;
         }
 
-        if (!this.preview) {
+        if (!this.setGlobalStreamOnly) {
           this.selectStream(this.streams.at(0));
         }
       },

@@ -26,6 +26,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
           <Badge variant="secondary" class="text-xs">
             {{ match.options.type }}
           </Badge>
+
           <!-- Elo Change Display -->
           <TooltipProvider v-if="eloChange">
             <Tooltip>
@@ -173,13 +174,12 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
           <div
             class="flex items-center space-x-2 text-sm text-muted-foreground"
           >
-            <div v-if="match.streams?.length > 0">
-              <StreamEmbed
-                :streams="match.streams"
-                :show-title="false"
-                :preview="true"
-              />
-            </div>
+            <StreamEmbed
+              :streams="match.streams"
+              :show-title="false"
+              :set-global-stream-only="true"
+              v-if="match.streams?.length > 0"
+            />
 
             <Badge variant="outline" class="text-xs">
               {{ match.e_match_status.description }}

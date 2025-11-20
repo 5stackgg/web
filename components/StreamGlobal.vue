@@ -10,7 +10,7 @@ import { Cross2Icon } from "@radix-icons/vue";
     :style="containerStyle"
   >
     <div :class="{ 'pointer-events-none': isResizing }">
-      <StreamEmbed :streams="[stream]" />
+      <StreamEmbed :streams="[stream]" :global="true" />
     </div>
     <div
       class="absolute top-0 left-0 w-6 h-6 cursor-nwse-resize bg-border hover:bg-primary/50 transition-colors z-10 flex items-center justify-center"
@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     stream() {
-      return useApplicationSettingsStore().streamPreview;
+      return useApplicationSettingsStore().globalStream;
     },
     containerStyle() {
       return {

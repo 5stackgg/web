@@ -2,11 +2,11 @@
 import AppNav from "~/layouts/components/AppNav.vue";
 import MatchmakingConfirm from "~/components/matchmaking/MatchmakingConfirm.vue";
 import PlayerNameRegistration from "~/components/PlayerNameRegistration.vue";
-import StreamPreview from "~/components/StreamPreview.vue";
+import StreamGlobal from "~/components/StreamGlobal.vue";
 </script>
 
 <template>
-  <StreamPreview />
+  <StreamGlobal />
   <PlayerNameRegistration />
   <MatchmakingConfirm />
   <div class="flex min-h-screen w-full flex-col">

@@ -11,6 +11,7 @@ import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
+import StreamEmbed from "~/components/StreamEmbed.vue";
 </script>
 
 <template>
@@ -49,6 +50,11 @@ import { e_player_roles_enum } from "~/generated/zeus";
     </div>
 
     <div class="grid grid-cols-1 gap-y-4">
+      <StreamEmbed
+        :streams="match.streams"
+        v-if="match.streams.length > 0"
+      ></StreamEmbed>
+
       <template
         v-if="
           match.match_maps.length > 0 &&

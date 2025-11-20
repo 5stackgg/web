@@ -82,7 +82,7 @@ export default {
       this.height = initialWidth / aspectRatio;
     },
     closePreview() {
-      useApplicationSettingsStore().setStreamPreview();
+      useApplicationSettingsStore().setGlobalStream();
     },
     startResize(e: MouseEvent) {
       this.isResizing = true;

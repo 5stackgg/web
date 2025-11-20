@@ -226,7 +226,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
               </template>
               <!-- Spacer to preview insertion at the very end (after last row) -->
               <tr
-                v-if="isDragging && dragOverIndex === streams.length"
+                v-if="isDragging && dragOverIndex === match.streams.length"
                 class="h-0"
               >
                 <td colspan="4" class="p-0">
@@ -237,7 +237,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
           </Table>
           <!-- Floating drag overlay following the cursor (moves actual row look) -->
           <div
-            v-if="isDragging && streams && streams[draggedIndex]"
+            v-if="isDragging && match.streams && match.streams[draggedIndex]"
             class="pointer-events-none absolute left-0 right-0 z-50"
             :style="{ top: overlayY + 'px' }"
           >
@@ -254,14 +254,9 @@ import { e_player_roles_enum } from "~/generated/zeus";
                   <div class="table-cell align-middle">
                     <div class="flex items-center space-x-2 py-2">
                       <span class="font-medium">{{
-                        streams[draggedIndex].title
+                        match.streams[draggedIndex].title
                       }}</span>
                     </div>
-                  </div>
-                  <div class="table-cell align-middle">
-                    <Badge variant="secondary">
-                      {{ (dragOverIndex ?? draggedIndex) + 1 }}
-                    </Badge>
                   </div>
                   <div class="table-cell w-24 align-middle">
                     <div class="h-0"></div>

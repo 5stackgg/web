@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 <template>
   <div class="space-y-3">
     <div class="aspect-video">
-      <div ref="playerRef"></div>
+      <div ref="playerRef" class="w-full h-full"></div>
       <div v-if="!isValid && selectedStream" class="text-red-500 mt-2 text-xs">
         Unable to load stream.
       </div>
@@ -230,6 +230,7 @@ export default {
 
       const options: any = {
         width: "100%",
+        height: "100%",
         parent: [window.location.hostname],
         autoplay: true,
       };

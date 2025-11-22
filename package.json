@@ -64,7 +64,6 @@
     "javascript-time-ago": "^2.5.11",
     "lucide-vue-next": "^0.508.0",
     "minisearch": "^7.1.2",
-    "node-datachannel": "^0.27.0",
     "node-fetch": "^3.3.2",
     "pinia": "^3.0.2",
     "reka-ui": "^2.6.0",

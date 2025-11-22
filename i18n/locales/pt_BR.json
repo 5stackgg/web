@@ -5,9 +5,7 @@
             "cpu_usage": "Uso de CPU",
             "memory_usage": "Uso de memória",
             "services": "Serviços",
-            "network": "Rede",
-            "show_metrics": "Mostrar Métricas",
-            "hide_metrics": "Ocultar métricas"
+            "network": "Rede"
         },
         "system_logs": {
             "follow_logs": "Seguir",
@@ -31,10 +29,7 @@
             "title": "Times",
             "description": "Gerenciar equipes e escalações",
             "create": "Criar",
-            "tabs": {
-                "my_teams": "Minhas equipes",
-                "other_teams": "Outras equipes"
-            },
+            "tabs": {},
             "search": "Pesquisar..."
         },
         "settings": {
@@ -106,7 +101,30 @@
                 "light": "Claro",
                 "dark": "Escuro"
             },
+            "notifications": {
+                "title": "Notificação",
+                "description": "Configurar preferências de notificação para bate-papo e outros eventos.",
+                "chat_sound": {
+                    "title": "Notificações de som do Chat",
+                    "description": "Tocar um som quando receber novas mensagens de bate-papo"
+                },
+                "volume": {
+                    "title": "Volume"
+                },
+                "test_chat_sound": "Testar Som do Chat",
+                "test_match_found_sound": "Som encontrado para correspondência de teste",
+                "test_tick_sound": "Testar Som",
+                "test_countdown_sound": "Testar Som de Contagem Regressiva"
+            },
             "application": {
+                "update_success": "Atualizado",
+                "db_backups": {
+                    "title": "Backups de DB",
+                    "description": "Gerenciar backups do banco de dados.",
+                    "name": "Nome",
+                    "size": "Tamanho",
+                    "created_at": "Criado"
+                },
                 "telemetry": {
                     "title": "Telemetria",
                     "telemetry": "Telemetria",
@@ -115,7 +133,8 @@
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
-                    "description": "O matchmaking permite que os jogadores entrem em uma fila e sejam pareados com outros jogadores."
+                    "description": "O matchmaking permite que os jogadores entrem em uma fila e sejam pareados com outros jogadores.",
+                    "updated": "Configurações atualizadas com sucesso"
                 },
                 "discord": {
                     "title": "Discord",
@@ -124,7 +143,8 @@
                     "webhook_description": "Usamos este webhook do Discord para enviar notificações que requerem ação de um jogador. Ex: problemas de partida, bugs, etc.",
                     "support_role": "ID do cargo de suporte do Discord",
                     "support_role_description": "Este cargo será mencionado quando usado para ações de suporte. Você pode obter o ID do cargo do aplicativo Discord ativando o modo desenvolvedor e clicando com o botão direito para copiar o ID.",
-                    "update": "Atualizar"
+                    "update": "Atualizar",
+                    "updated": "Configurações Atualizadas do Discord"
                 },
                 "game_type_configs": {
                     "title": "Configuração do Tipo de Jogo",
@@ -136,16 +156,21 @@
                     "minimum_role_to_stream": "Papel Mínimo Permitido de Conectar-se à TV (Atrasado)",
                     "minimum_role_to_stream_description": "Este cargo poderá se conectar à TV.",
                     "minimum_role_to_spectate": "Papel Mínimo Permitido Assistir (Sem Atraso)",
-                    "minimum_role_to_spectate_description": "Este cargo será capaz de conectar e assistir partidas."
+                    "minimum_role_to_spectate_description": "Este cargo será capaz de conectar e assistir partidas.",
+                    "updated": "Configurações de streaming atualizadas"
                 },
                 "create_matches_role": "Cargo mínimo para criar partidas",
                 "create_matches_role_description": "Este cargo poderá criar partidas",
                 "create_tournaments_role": "Função para criar torneios",
                 "create_tournaments_role_description": "Este cargo será capaz de criar torneios.",
+                "dedicated_servers_min_role_to_connect": "Papel Mínimo para Conectar a Servidores Dedicados Protegidos por Senha",
+                "dedicated_servers_min_role_to_connect_description": "Somente jogadores dentro ou acima desse cargo podem se conectar a servidores dedicados que requerem senha.",
                 "matchmaking_min_role": "Cargo Mínimo Permitido para entrar na Matchmaking",
                 "matchmaking_min_role_description": "Este cargo poderá juntar-se ao matchmaking.",
                 "max_acceptable_latency": "Máximo Aceitável Latência",
                 "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida.",
+                "lineup_add_without_invite": "Função mínima para adicionar jogadores à Lineup sem convite",
+                "lineup_add_without_invite_description": "Este cargo será capaz de adicionar jogadores para as lineups sem enviar um convite primeiro.",
                 "auto_cancel_duration": "Auto Cancelar Duração",
                 "auto_cancel_duration_description": "Esta é a duração em minutos que uma partida será automaticamente cancelada se não estiver iniciada dentro da duração.",
                 "update": "Atualizar",
@@ -179,7 +204,10 @@
                     "test_upload_success": "Teste Envio com Sucesso",
                     "test_upload_failed": "Testar Upload Falhou",
                     "test_download": "Testar Download",
-                    "test_download_failed": "Download de teste falhou"
+                    "test_download_failed": "Download de teste falhou",
+                    "demo_network_limiter": "Limite da Rede Demonstrativa Global",
+                    "demo_network_limiter_description": "O limitador de rede global para os arquivos de demonstração.",
+                    "updated_s3_settings": "Configurações de S3 Atualizadas"
                 },
                 "update_map_pools": {
                     "title": "Atualizar automaticamente os conjuntos de mapas",
@@ -229,11 +257,33 @@
                 "description": "Tem certeza que deseja excluir esta região?",
                 "cancel": "Cancelar",
                 "confirm": "Excluir"
-            }
+            },
+            "deleted": "Região Excluída"
         },
         "players": {
             "title": "Jogadores",
             "search": "Buscar jogadores",
+            "filter_by_privilege": "Filtrar por Privilégio",
+            "select_privileges": "Selecionar Privilégios",
+            "elo_min": "Elo Mínimo",
+            "elo_max": "Elo Máximo",
+            "min_elo": "Elo Min",
+            "max_elo": "Elo Max",
+            "only_played_matches": "Apenas Jogadores que Jogaram Partidas",
+            "played_matches": "Partidas Jogadas",
+            "all_players": "Todos os Jogadores",
+            "table": {
+                "player": "Jogador",
+                "elo": "Elo/Rating",
+                "last_sign_in_at": "Último Acesso em",
+                "privilege": "Privilégio",
+                "wins": "Vitórias",
+                "losses": "Derrotas",
+                "kdr": "KDR",
+                "kills": "Abates",
+                "deaths": "Mortes",
+                "no_players": "Nenhum jogador encontrado"
+            },
             "detail": {
                 "player_stats": "Estatísticas do jogador",
                 "kills": "Abates",
@@ -242,7 +292,15 @@
                 "kd": "K/D",
                 "last_ten_wins": "Últimas 10 vitórias",
                 "last_ten_losses": "Últimas 10 derrotas",
-                "matches": "Partidas"
+                "elo_history": "Histórico de ELO",
+                "no_elo_history": "Jogue Uma Partida para gerar ELO",
+                "play_a_match": "Jogar Uma Partida",
+                "teams": "Equipes",
+                "matches": "Partidas",
+                "match_record": "Gravação da Partida",
+                "wins": "Vitórias",
+                "losses": "Derrotas",
+                "wl": "V/D"
             }
         },
         "play": {
@@ -252,13 +310,10 @@
             }
         },
         "matches": {
-            "title": "Minhas partidas",
             "description": "Gerenciamento de partidas",
             "create": "Criar",
             "last_ten_wins": "Últimas 10 vitórias",
             "last_ten_losses": "Últimas 10 derrotas",
-            "my_match_history": "Meu histórico de partidas",
-            "other_matches": "Outras partidas",
             "match_updated": "Partida Atualizada",
             "create_page": {
                 "title": "Criar",
@@ -275,6 +330,9 @@
                 "schedule": "Agendar"
             }
         },
+        "toasts": {
+            "copied_to_clipboard": "Copiado para o Clipboard"
+        },
         "game_server_nodes": {
             "title": "Nós de Servidor de Jogo",
             "description": "Gerenciamento de nós de servidor de jogo",
@@ -283,9 +341,12 @@
                 "description": "Esta plataforma não é suportada"
             },
             "display_metrics": "Mostrar Métricas",
+            "filters": "Filtros",
             "create": "Criar nó",
             "installation_script": "Script de instalação",
             "cs_version_info": "Informações da versão do CS",
+            "hide_offline": "Ocultar nós offline",
+            "only_enabled": "Somente Nós Habilitados",
             "status": {
                 "offline": "Offline",
                 "online": "Online",
@@ -294,7 +355,7 @@
             },
             "table": {
                 "node": "Nó",
-                "lan_public_ip": "IP LAN/Público",
+                "demo_network_limiter": "Limitador de Rede Demo",
                 "cs_build_id": "Compilação CS",
                 "region": "Região",
                 "capacity": "Capacidade",
@@ -304,6 +365,7 @@
                 "no_nodes": "Nenhum nó",
                 "supports_low_latency": "Suporta Kernel-Low-Latency",
                 "supports_cpu_pinning": "Suporta CPU Pinning",
+                "cpu_governor": "Governador da CPU",
                 "pin_build_id": "Fixar Compilação",
                 "pin_build_id_tooltip": "Fixar o ID da compilação do servidor CS2",
                 "pin_plugin_version": "Fixar Plugin",
@@ -321,9 +383,10 @@
             "table": {
                 "connection_details": "Detalhes de conexão",
                 "label": "Rótulo",
+                "type": "Tipo",
                 "region": "Região",
-                "tv_port": "Porta TV",
                 "plugin_version": "Versão do plug-in",
+                "tv_port": "Porta TV",
                 "enabled": "Ativado",
                 "yes": "Sim",
                 "no": "Não"
@@ -334,7 +397,6 @@
                 "hide_config": "Ocultar configuração",
                 "show_config": "Mostrar configuração",
                 "config_location": "Localização do arquivo de configuração",
-                "copy": "Copiar",
                 "edit": "Editar",
                 "delete": "Excluir",
                 "status": {
@@ -355,20 +417,15 @@
             "title": "Servidores Públicos",
             "description": "Navegar em servidores públicos",
             "table": {
-                "connection_details": "Detalhes da conexão",
                 "label": "Descrição",
                 "region": "Região",
+                "map": "Mapa",
                 "type": "tipo",
-                "tv_port": "Porta de TV",
-                "plugin_version": "Versão do plugin",
-                "enabled": "Ativado",
                 "players": "Jogadores",
-                "connect": "Conectar",
-                "yes": "sim",
-                "no": "Não"
+                "connect": "Conectar"
             },
-            "no_servers": "Nenhum servidor público disponível no momento.",
-            "connect_button": "Conectar ao servidor"
+            "no_public_servers": "Nenhum servidor público disponível no momento.",
+            "lan_servers_title": "Servidores LAN"
         },
         "map_pools": {
             "title": "Grupos de mapas padrão",
@@ -426,7 +483,30 @@
         "manage_matches": {
             "title": "Gerenciar Partidas",
             "only_my_matches": "Somente Minhas Partidas Organizadas",
-            "description": "Veja e gerencie todas as partidas em toda a plataforma."
+            "description": "Veja e gerencie todas as partidas em toda a plataforma.",
+            "filters": "Filtros",
+            "reset_filters": "Limpar filtros",
+            "search_by_name": "Pesquisar por Nome",
+            "enter_name": "Informe o nome...",
+            "search_by_id": "Busca por ID da Partida",
+            "enter_match_id": "Insira o ID da partida...",
+            "search_by_team": "Pesquisar por Equipe",
+            "enter_team_name": "Digite o nome da equipe...",
+            "filter_by_status": "Filtrar por Status",
+            "select_statuses": "Selecione os status...",
+            "filter_by_regions": "Filtrar por Regiões",
+            "select_regions": "Selecionar regiões...",
+            "clear_all": "Limpar Tudo",
+            "sort_by": "Ordenar por",
+            "created_at": "Data de Criação",
+            "started_at": "Início",
+            "scheduled_at": "Agendado Para",
+            "ended_at": "Terminado",
+            "newest_first": "Mais Recentes",
+            "oldest_first": "Mais Antigos",
+            "showing": "Mostrando",
+            "matches": "partidas",
+            "loading": "Carregando..."
         }
     },
     "custom_match": {
@@ -449,6 +529,7 @@
             "fix_link": "Mostrar solução",
             "cancel": "Cancelar",
             "update": "Atualizar",
+            "updating": "O sistema está a atualizar",
             "panel_update": "Seu painel está desatualizado, puxe e execute o script de atualização"
         },
         "match_lobby": {
@@ -467,7 +548,6 @@
             "navigation": {
                 "play": "Jogar",
                 "watch": "Acompanhar",
-                "matches": "Minhas partidas",
                 "tournaments": "Torneios",
                 "public_servers": "Servidores Públicos",
                 "players": "Jogadores",
@@ -522,8 +602,7 @@
             }
         },
         "top_nav": {
-            "my_matches": "Minhas partidas",
-            "home": "Minhas partidas",
+            "home": "Meu Status",
             "play_menu": "Reproduzir",
             "community_menu": "Comunidade",
             "watch_menu": "Acompanhar",
@@ -577,16 +656,21 @@
     "common": {
         "delete": "excluir",
         "cancel": "Cancelar",
+        "save": "Salvar",
         "error": "ERRO",
+        "enabled": "Habilitado",
+        "all": "Todos",
         "tbd": "A definir",
         "boolean": {
             "yes": "Sim",
             "no": "Não"
         },
+        "are_you_sure": "Tem certeza de que deseja executar este comando?",
         "actions": {
             "edit": "Editar",
             "delete": "Excluir"
         },
+        "actions_label": "Ações",
         "close": "Fechar",
         "confirm": "Confirmar",
         "refresh": "Atualizar"
@@ -596,6 +680,8 @@
     },
     "tournament": {
         "overview": "Visão geral",
+        "joined": "Torneio participado",
+        "updated": "Torneio Atualizado",
         "settings": "Configurações",
         "admin": "Administração",
         "show_organizers": "Ver Organizadores",
@@ -718,9 +804,6 @@
     "team": {
         "table": {
             "team": "Equipe",
-            "wins": "Vitórias",
-            "losses": "Derrotas",
-            "overtime_losses": "Derrotas na prorrogação",
             "no_teams_found": "Nenhuma equipe encontrada"
         },
         "invite": {
@@ -748,6 +831,10 @@
         },
         "members": {
             "title": "Membros",
+            "player": "Jogador",
+            "role": "Cargo",
+            "substitutes": "Suplentes",
+            "coaches": "Treinadores",
             "invite_player": "Convidar jogador",
             "pending_invites": "Convites pendentes"
         },
@@ -768,6 +855,11 @@
             "no_teams_found": "Nenhuma equipe encontrada"
         },
         "member": {
+            "coach": "Treinador",
+            "status": "SItuação",
+            "starter": "Iniciante",
+            "benched": "Enganado",
+            "substitute": "Substituto",
             "remove": "Remover",
             "cancel_invite": "Cancelar convite",
             "confirm_cancel_invite": "Cancelar convite",
@@ -784,15 +876,11 @@
             "no_matches": "Nenhuma partida próxima"
         },
         "recent": {
-            "title": "Partidas recentes",
-            "no_matches": "Nenhuma partida recente"
+            "title": "Partidas recentes"
         },
         "options": {
             "filter_maps": "Filtro de Mapas",
             "table": {
-                "match": "Partida",
-                "type": "Tipo",
-                "maps": "Mapas",
                 "no_matches_found": "Nenhuma partida encontrada",
                 "join": "Entrar"
             },
@@ -867,6 +955,15 @@
                         "everyone": "Qualquer um"
                     }
                 },
+                "check_in_settings": {
+                    "label": "Configurações de entrada",
+                    "description": "Controla como os jogadores fazem o check-in antes da partida começar.",
+                    "options": {
+                        "admins": "Administradores",
+                        "captains": "Capitães",
+                        "everyone": "Todos os jogadores são necessários para check-in"
+                    }
+                },
                 "ready_settings": {
                     "label": "Configuração de Preparação (ready)",
                     "description": "Controla como o jogo determina estar pronto para começar.",
@@ -890,6 +987,7 @@
             "timeout_setting": "Configuração de timeout",
             "tech_timeout_setting": "Configuração de timeout técnico",
             "ready_setting": "Configuração Pronto",
+            "check_in_setting": "Configuração de Veto",
             "map_pool": "Pool de mapas",
             "advanced_settings": "Mostrar configurações avançadas"
         },
@@ -917,8 +1015,9 @@
             "map_veto_tab": "Veto de mapas",
             "settings": "Configurações",
             "streams": "Partida de transmissões ao vivo",
-            "server_console": "Console do servidor",
+            "admin": "Administrador",
             "randomize_teams": "Equipes aleatórias",
+            "swap_lineups": "Trocar Linhas",
             "invited_to_match": "Convidado para a partida",
             "join_roster": "Entrar no elenco",
             "restore_round": "Restaurar rodada",
@@ -945,7 +1044,10 @@
             "organizer_override": "Vetos pelo Organizador",
             "confirm_ban": "Confirmar ban",
             "server_region": "Região do servidor",
-            "select_region": "Selecionar região"
+            "select_region": "Selecionar região",
+            "no_regions_available": "Não há regiões disponíveis",
+            "no_regions_available_description": "Nenhuma região está disponível para este servidor. Entre em contato com o administrador para adicionar uma região.",
+            "set_server_region": "Definir Região do Servidor"
         },
         "picks": {
             "decider": "Mapa decisivo"
@@ -968,7 +1070,17 @@
             "call_support": "Chamar suporte",
             "start_veto": "Iniciar veto",
             "skip_checkin": "Pular check-in",
-            "cancel": "Cancelar"
+            "cancel": "Cancelar",
+            "delete": "Excluir Partida",
+            "canceled": "Partida Cancelada",
+            "deleted": "Correspondência excluída",
+            "requested_organizer": "Organizador solicitado"
+        },
+        "delete_confirm": {
+            "title": "Excluir Partida",
+            "description": "Tem certeza de que deseja excluir esta correspondência? Esta ação não pode ser desfeita.",
+            "cancel": "cancelar",
+            "confirm": "excluir"
         },
         "lineup": {
             "stats": {
@@ -984,11 +1096,24 @@
             "discord_user": "Usuário do Discord",
             "discord_link": "Link do Discord"
         },
+        "invites": {
+            "title": "Convites",
+            "no_invites": "Sem convites pendentes",
+            "invited_player": "Reprodutor convidado",
+            "invited_by": "Convidado Por",
+            "deleted_success": "Convite excluído com sucesso",
+            "delete_error": "Falha ao excluir convite",
+            "delete_confirm": {
+                "title": "Convite de exclusão",
+                "description": "Tem certeza que deseja excluir o convite para {player} ({steam_id})? Esta ação não pode ser desfeita."
+            }
+        },
         "overview": {
             "promote_captain": "Promover a capitão",
             "switch_teams": "Trocar equipes",
             "remove_from_lineup": "Remover da escalação",
             "leave_lineup": "Sair da escalação",
+            "update_team_name": "Atualizar Nome do Time",
             "kills_full": "Abates",
             "assists_full": "Assistências",
             "deaths_full": "Mortes",
@@ -1006,7 +1131,8 @@
             "total_damage": "Dano total",
             "substitute": "Substituto",
             "join": "Entrar",
-            "slot": "Slot {number}"
+            "slot": "Slot {number}",
+            "team_name": "Nome do Time"
         },
         "opening_duels": {
             "attempts": "Tentativas",
@@ -1028,7 +1154,8 @@
             "title": "Fazer check-in",
             "checked_in": "Check-in realizado",
             "check_in": "Fazer check-in",
-            "description": "Descrição do check-in"
+            "description": "Descrição do check-in",
+            "checked_in_description": "Você fez o check-in de {checked} de {required} jogadores necessários para iniciar a partida"
         },
         "coach": {
             "assign": "Atribuir treinador"
@@ -1047,7 +1174,8 @@
             "assigned": "Atribuído",
             "join_server": "Entrar no servidor",
             "join_as_spectator": "Detalhes do Espectador",
-            "join_tv_stream": "Detalhes do Stream TV"
+            "join_tv_stream": "Detalhes do Stream TV",
+            "tv_delay": "A TV está atrasada em {delay} segundos, aguardando que a transmissão esteja pronta."
         },
         "lobby": {
             "access_updated": "Acesso ao lobby da partida atualizado para {access}"
@@ -1094,7 +1222,8 @@
             "banned": "Banido",
             "muted": "Silenciado",
             "gagged": "Silenciado",
-            "add_friend": "Adicionar amigo"
+            "add_friend": "Adicionar amigo",
+            "available": "Disponível"
         },
         "change_name": {
             "button": "Alterar nome",
@@ -1124,6 +1253,7 @@
         }
     },
     "matchmaking": {
+        "cancel_matchmaking": "Cancelar a busca",
         "searching_for_match": "A procurar por uma partida {type}",
         "invites": "Convites",
         "lobby": {
@@ -1143,7 +1273,9 @@
             "invite_to_match": "Convidar o jogador para o jogo",
             "remove": "Remover",
             "join_lobby": "Entrar no Lobby",
-            "offline": "Offline"
+            "offline": "Offline",
+            "in_match": "Em partida",
+            "in_lobby": "Em um lobby"
         },
         "banned": "Banido",
         "go_to_match": "Ir para a partida",
@@ -1170,6 +1302,7 @@
         "install_cs": "Instalar CS",
         "overprovisioned_warning": "Overprovisionado",
         "overprovisioned_warning_description": "Você atribuiu a servidores {total_server_count} possíveis, mas seu servidor só pode suportar servidores {max_servers}.",
+        "cpu_sockets": "Sockets de CPU",
         "cpu_cores_per_socket": "Núcleos/Socket da CPU",
         "cpu_threads_per_core": "Discussões de CPU",
         "gpu": "GPU",
@@ -1187,8 +1320,11 @@
         "toast": {
             "cs_updating": "Atualizando CS",
             "ports_updated": "Portas atualizadas",
-            "label_updated": "Rótulo do Nó Atualizado"
-        }
+            "label_updated": "Rótulo do Nó Atualizado",
+            "scheduling_updated": "Agendamento do nó atualizado"
+        },
+        "enable_scheduling": "Ativar Agendamento",
+        "disable_scheduling": "Desativar Agendamento"
     },
     "chat": {
         "lobby_chat": "Chat do lobby",
@@ -1198,7 +1334,6 @@
         "usage": "Uso"
     },
     "server": {
-        "copy_connection_string": "Copiar String de Conexão",
         "join_server": "Entrar no servidor",
         "form": {
             "label": "Rótulo",
@@ -1212,8 +1347,10 @@
             "game_server_node_description": "Selecione um nó de servidor de jogo com CS instalado",
             "type": "Tipo de Servidor",
             "select_type": "Selecionar tipo de servidor",
-            "is_dedicated": "Servidor dedicado",
-            "is_dedicated_description": "Verifique se este é um servidor dedicado",
+            "ranked_server": "Servidor Ranqueado",
+            "ranked_server_description": "Experiência ranqueada totalmente gerenciada por 5ack",
+            "valve_presets": "Predefinições da Valve",
+            "valve_presets_description": "Escolha entre caso/competitivo e outras predefinições de valor.",
             "connect_password": "Senha de conexão",
             "connect_password_description": "Senha necessária para conectar-se ao servidor (opcional)",
             "rcon_password": "Senha RCON",
@@ -1291,5 +1428,9 @@
         "streams_description": "Transmissões",
         "link": "Vincular",
         "title": "Título"
+    },
+    "demo_network_limiter": {
+        "network_limit": "Limite de rede (Mbps)",
+        "unlimited": "Ilimitado"
     }
 }

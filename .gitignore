@@ -26,4 +26,5 @@ logs
 .dev.vars
 .wrangler
 
-.yarn
+.yarn/cache
+.yarn/install-state.gz

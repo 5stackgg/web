@@ -25,3 +25,5 @@ logs
 
 .dev.vars
 .wrangler
+
+.yarn

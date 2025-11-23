@@ -26,7 +26,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         <SidebarMenuItem>
           <SidebarMenuButton
             size="icon"
-            :tooltip="$t('layouts.app_nav.tooltips.toggle_right_sidebar')"
+            tooltip="Open Friends List"
             @click="setRightSidebarOpen(!rightSidebarOpen)"
           >
             <Users class="h-4 w-4" />

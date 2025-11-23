@@ -13,11 +13,17 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useRightSidebar } from "@/composables/useRightSidebar";
+
+const { rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
   <div :style="{ '--header-height': '4rem' }" class="main-content-wrapper">
-    <SidebarProvider class="!min-h-[calc(100svh-var(--header-height))]">
+    <SidebarProvider
+      :open="rightSidebarOpen"
+      class="!min-h-[calc(100svh-var(--header-height))]"
+    >
       <SidebarInset
         class="!min-h-[calc(100svh-var(--header-height))] h-[calc(100svh-var(--header-height))]"
       >
@@ -35,7 +41,6 @@ import {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <SidebarTrigger class="-mr-1 ml-auto rotate-180" />
         </header>
 
         <div class="flex flex-1 flex-col gap-4 p-4 overflow-auto">

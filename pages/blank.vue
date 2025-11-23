@@ -21,6 +21,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { ViewVerticalIcon } from "@radix-icons/vue";
+import { Users } from "lucide-vue-next";
+import { useRightSidebar } from "@/composables/useRightSidebar";
+
+const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
@@ -52,6 +58,16 @@ import {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            class="h-7 w-7 -mr-1 ml-auto"
+            @click="setRightSidebarOpen(!rightSidebarOpen)"
+          >
+            <Users class="h-4 w-4" />
+            <span class="sr-only">Toggle Right Sidebar</span>
+          </Button>
         </div>
       </header>
 

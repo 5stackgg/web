@@ -75,7 +75,8 @@ export default {
       }
     },
     showLeftNav() {
-      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+      return true;
+      //return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
   },
 };

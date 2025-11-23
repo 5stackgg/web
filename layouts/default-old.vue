@@ -43,9 +43,9 @@ export default {
       }
     },
     showLeftNav() {
+      return true;
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
   },
 };
 </script>
-

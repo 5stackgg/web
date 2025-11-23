@@ -8,10 +8,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Users } from "lucide-vue-next";
+import { useRightSidebar } from "@/composables/useRightSidebar";
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   side: "left",
 });
+
+const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
@@ -30,6 +35,19 @@ const props = withDefaults(defineProps<SidebarProps>(), {
               </div>
             </a>
           </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem v-if="props.side === 'right'">
+          <div class="flex items-center justify-end w-full px-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              class="h-7 w-7"
+              @click="setRightSidebarOpen(!rightSidebarOpen)"
+            >
+              <Users class="h-4 w-4" />
+              <span class="sr-only">Toggle Right Sidebar</span>
+            </Button>
+          </div>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarHeader>

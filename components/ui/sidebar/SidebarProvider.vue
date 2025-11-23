@@ -95,8 +95,10 @@ defineSlots<{
       :style="{
         '--sidebar-width': SIDEBAR_WIDTH,
         '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+        '--sidebar-height': '100svh',
       }"
-      :class="cn('group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar', props.class)"
+      :class="cn('group/sidebar-wrapper flex w-full has-[[data-variant=inset]]:bg-sidebar', props.class)"
+      style="min-height: var(--sidebar-height, 100svh)"
       v-bind="$attrs"
     >
       <slot :open="open" :is-mobile="isMobile" />

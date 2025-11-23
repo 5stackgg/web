@@ -18,7 +18,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 
 <template>
   <header
-    class="flex h-16 shrink-0 items-center gap-2 transition-[width] ease-linear"
+    class="flex h-16 shrink-0 items-center gap-2 transition-[width] ease-linear bg-background sticky top-0 z-10"
   >
     <div class="flex items-center justify-between w-full">
       <div class="flex items-center gap-2">

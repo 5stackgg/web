@@ -46,15 +46,9 @@ const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
           </Breadcrumb>
         </header>
 
-        <div class="flex flex-1 flex-col gap-4 p-4 overflow-auto">
-          <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="bg-muted/50 aspect-video rounded-xl" />
-            <div class="bg-muted/50 aspect-video rounded-xl" />
-            <div class="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-
+        <div class="flex flex-1 flex-col gap-4 p-4">
           <div
-            class="bg-muted/50 min-h-[calc(100vh-var(--header-height))] flex-1 rounded-xl md:min-h-min"
+            class="bg-muted/50 flex-1 rounded-xl md:min-h-min bg-yellow-500"
           />
         </div>
         <div id="global-chat-container"></div>

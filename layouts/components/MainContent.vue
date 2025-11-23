@@ -14,16 +14,19 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useRightSidebar } from "@/composables/useRightSidebar";
+import SidebarMobileSync from "./SidebarMobileSync.vue";
 
-const { rightSidebarOpen } = useRightSidebar();
+const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
   <div :style="{ '--header-height': '4rem' }" class="main-content-wrapper">
     <SidebarProvider
       :open="rightSidebarOpen"
+      @update:open="setRightSidebarOpen"
       class="!min-h-[calc(100svh-var(--header-height))]"
     >
+      <SidebarMobileSync />
       <SidebarInset
         class="!min-h-[calc(100svh-var(--header-height))] h-[calc(100svh-var(--header-height))]"
       >

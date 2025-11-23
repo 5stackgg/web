@@ -161,6 +161,7 @@
 @layer base {
   html {
     touch-action: manipulation;
+    scrollbar-gutter: stable;
   }
 }
 

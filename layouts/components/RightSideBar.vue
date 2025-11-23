@@ -13,10 +13,6 @@ const { setRightSidebarOpen, toggleRightSidebar } = useRightSidebar();
     <SidebarProvider
       class="bg-muted/40"
       :open="rightSidebarOpen"
-      :style="{
-        '--sidebar-width': '24rem',
-        '--sidebar-width-icon': '4.25rem',
-      }"
       v-slot="{ isMobile }"
     >
       <Teleport defer to="#right-sidebar-trigger">

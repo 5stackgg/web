@@ -57,6 +57,7 @@ const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
             class="bg-muted/50 min-h-[calc(100vh-var(--header-height))] flex-1 rounded-xl md:min-h-min"
           />
         </div>
+        <div id="global-chat-container"></div>
       </SidebarInset>
 
       <AppSidebar side="right" class="main-content-sidebar" />
@@ -65,9 +66,10 @@ const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
 </template>
 
 <style scoped>
-/* Override SidebarProvider's --sidebar-height variable */
+/* Override SidebarProvider's --sidebar-height and --sidebar-width variables */
 .main-content-wrapper :deep(.group\/sidebar-wrapper) {
   --sidebar-height: calc(100svh - var(--header-height)) !important;
+  --sidebar-width: 22rem !important;
 }
 
 /* Define sidebar height variable for right sidebar group */

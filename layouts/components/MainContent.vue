@@ -27,9 +27,10 @@ const containContentValue = computed(() => containContent?.value ?? true);
       <SidebarMobileSync />
       <SidebarInset class="!min-h-[calc(100svh-var(--header-height))]">
         <div
-          class="p-4 w-full"
+          class="p-4"
           :class="{
-            'max-w-7xl mx-auto': containContentValue,
+            'mx-auto': !showLeftNavValue,
+            'lg:max-w-7xl': containContentValue,
           }"
         >
           <slot></slot>

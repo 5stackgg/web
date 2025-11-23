@@ -111,7 +111,7 @@ export default {
   },
   computed: {
     rightSidebarOffset() {
-      const baseOffset = 80;
+      const baseOffset = 96;
 
       if (rightSidebarOpen?.value) {
         return baseOffset + 288;

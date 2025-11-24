@@ -9,9 +9,11 @@ const props = withDefaults(defineProps<{
   defaultOpen?: boolean
   open?: boolean
   class?: HTMLAttributes['class']
+  side?: 'left' | 'right'
 }>(), {
   defaultOpen: true,
   open: undefined,
+  side: 'left',
 })
 
 const emits = defineEmits<{
@@ -44,7 +46,8 @@ function toggleSidebar() {
 }
 
 useEventListener('keydown', (event: KeyboardEvent) => {
-  if (event.key === SIDEBAR_KEYBOARD_SHORTCUT) {
+  // Only handle keyboard shortcut for left sidebar
+  if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && props.side === 'left') {
     event.preventDefault()
     toggleSidebar()
   }

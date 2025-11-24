@@ -22,6 +22,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
     <SidebarProvider
       :open="rightSidebarOpen"
       @update:open="setRightSidebarOpen"
+      side="right"
       class="!min-h-[calc(100svh-var(--header-height))]"
     >
       <SidebarMobileSync />

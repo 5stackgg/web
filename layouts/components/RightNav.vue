@@ -14,9 +14,8 @@ import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
 import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
-import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
+import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
@@ -36,7 +35,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             <TabsTrigger value="online-friends">
               {{ $t("matchmaking.players.title") }}
               <span class="text-xs text-muted-foreground ml-1"
-                >({{ playersOnline?.length || 0 }})</span
+                >({{ totalPlayersCount }})</span
               >
             </TabsTrigger>
           </TabsList>
@@ -71,16 +70,10 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
               </div>
               <SidebarSeparator class="my-4" />
             </template>
-            <FriendsList />
+            <PlayersList ref="friendsListRef" :friends-only="true" />
           </TabsContent>
           <TabsContent value="online-friends" class="mt-0">
-            <template :key="player.steam_id" v-for="player of playersOnline">
-              <PlayerDisplay
-                :player="player"
-                class="my-2"
-                :linkable="true"
-              ></PlayerDisplay>
-            </template>
+            <PlayersList ref="playersListRef" />
           </TabsContent>
         </SidebarGroup>
       </SidebarContent>
@@ -90,6 +83,12 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 
 <script lang="ts">
 export default {
+  data() {
+    return {
+      playersListRef: null as any,
+      friendsListRef: null as any,
+    };
+  },
   computed: {
     matchInvites() {
       return useMatchmakingStore().matchInvites;
@@ -101,11 +100,28 @@ export default {
       return useMatchmakingStore().playersOnline;
     },
     friendsOnline() {
+      // Get count from friendsListRef if available
+      if (this.friendsListRef?.totalPlayersCount !== undefined) {
+        return this.friendsListRef.totalPlayersCount;
+      }
+      // Fallback: count online friends
       const matchmakingStore = useMatchmakingStore();
       const onlineSteamIds = new Set(matchmakingStore.onlinePlayerSteamIds);
       return matchmakingStore.friends.filter((friend: any) =>
         onlineSteamIds.has(friend.steam_id)
-      );
+      ).length;
+    },
+    totalPlayersCount() {
+      // Get total count from PlayersList component, excluding current user
+      if (this.playersListRef?.totalPlayersCount !== undefined) {
+        return this.playersListRef.totalPlayersCount;
+      }
+      // Fallback: count online players excluding current user
+      const me = useAuthStore().me;
+      const onlinePlayers = useMatchmakingStore().playersOnline;
+      return onlinePlayers.filter(
+        (player: any) => player.steam_id !== me?.steam_id
+      ).length;
     },
   },
 };

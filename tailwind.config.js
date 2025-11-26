@@ -94,6 +94,10 @@ module.exports = {
           "0%,70%,100%": { opacity: "1" },
           "20%,50%": { opacity: "0" },
         },
+        "spin-smooth": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -101,6 +105,7 @@ module.exports = {
         "collapsible-down": "collapsible-down 0.2s ease-in-out",
         "collapsible-up": "collapsible-up 0.2s ease-in-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
+        "spin-smooth": "spin-smooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite",
       },
     },
   },

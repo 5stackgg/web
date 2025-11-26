@@ -241,10 +241,7 @@ import { getAllCountries } from "countries-and-timezones";
                 </PopoverContent>
               </Popover>
             </div>
-          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Has played matches toggle -->
             <div class="space-y-2">
               <Label>{{ $t("pages.players.only_played_matches") }}</Label>
               <div class="flex items-center gap-2">

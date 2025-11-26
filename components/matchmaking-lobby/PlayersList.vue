@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col gap-4 mt-4">
-    <div class="px-1 flex items-center gap-2">
+  <div class="flex flex-col gap-4 p-2">
+    <div class="flex items-center gap-2">
       <div class="relative flex-1">
         <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
@@ -33,7 +33,7 @@
     <div class="overflow-auto">
       <div class="flex flex-col gap-4">
         <div v-if="friendsOnly && pendingFriends?.length > 0">
-          <div class="mb-2 font-medium text-sm text-muted-foreground">
+          <div class="mb-2 font-medium text-sm">
             {{ $t("matchmaking.friends.pending_requests") }}
           </div>
           <template v-for="player in pendingFriends" :key="player.steam_id">
@@ -112,8 +112,8 @@
           "
         />
 
-        <div class="flex flex-col gap-4">
-          <div class="mb-2 font-medium text-sm text-muted-foreground">
+        <div class="">
+          <div class="mb-2 font-medium text-sm">
             {{ $t("matchmaking.friends.offline") }}
             <span class="text-muted-foreground">
               ({{ filteredOfflinePlayers.length }})

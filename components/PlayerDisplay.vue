@@ -266,7 +266,7 @@ export default {
       }
 
       return useMatchmakingStore().onlinePlayerSteamIds.includes(
-        this.player.steam_id,
+        this.player.steam_id
       );
     },
     isFriend() {

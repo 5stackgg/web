@@ -1,4 +1,7 @@
 {
+    "pagination": {
+        "items_per_page": "Items per page"
+    },
     "pages": {
         "system_metrics": {
             "node": "Node",
@@ -269,6 +272,12 @@
             "search": "Search Players",
             "filter_by_privilege": "Filter by Privilege",
             "select_privileges": "Select Privileges",
+            "filter_by_country": "Filter by Country",
+            "select_country": "Select country...",
+            "search_country": "Search country...",
+            "no_country_found": "No country found.",
+            "countries_selected": "countries selected",
+            "items_per_page": "Items per page",
             "elo_min": "Minimum Elo",
             "elo_max": "Maximum Elo",
             "min_elo": "Min Elo",

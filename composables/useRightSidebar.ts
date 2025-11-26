@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 
 const rightSidebarOpen = ref(false);
 
@@ -12,7 +12,7 @@ export function useRightSidebar() {
   };
 
   return {
-    rightSidebarOpen: computed(() => rightSidebarOpen.value),
+    rightSidebarOpen,
     setRightSidebarOpen,
     toggleRightSidebar,
   };

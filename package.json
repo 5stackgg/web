@@ -39,6 +39,7 @@
     "wrangler": "^4.14.4"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.8",
     "@iconify-json/radix-icons": "^1.2.2",
     "@iconify/vue": "^5.0.0",
     "@nuxtjs/color-mode": "^3.5.2",
@@ -47,6 +48,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "@tanstack/vue-table": "^8.21.3",
     "@vee-validate/zod": "^4.15.0",
+    "@vue/apollo-composable": "^4.2.2",
     "@vueuse/core": "^14.0.0",
     "ansi-to-html": "^0.7.2",
     "aws4fetch": "^1.0.20",
@@ -62,7 +64,6 @@
     "javascript-time-ago": "^2.5.11",
     "lucide-vue-next": "^0.508.0",
     "minisearch": "^7.1.2",
-    "node-datachannel": "^0.27.0",
     "node-fetch": "^3.3.2",
     "pinia": "^3.0.2",
     "reka-ui": "^2.6.0",
@@ -76,5 +77,5 @@
     "vue-chartjs": "^5.3.2",
     "zod": "^3.24.4"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@4.11.0"
 }

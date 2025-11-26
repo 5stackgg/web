@@ -14,7 +14,6 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const lobbies = ref(new Map<string, { players: any[]; match: any }>());
   const lobbyChat = ref<Record<string, Map<string, unknown>>>({});
-  const viewMatchLobby = ref();
 
   const myMatches = ref([]);
   const managingMatchesCount = ref(0);
@@ -182,7 +181,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     currentMatch: computed(() => {
       return myMatches.value.at(0);
     }),
-    viewMatchLobby,
     add,
     set,
     remove,

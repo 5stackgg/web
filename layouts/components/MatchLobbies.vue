@@ -6,10 +6,10 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
 </script>
 
 <template>
-  <div v-if="match" class="flex gap-2">
-    <MatchLobbySelector :match="match" :pulse="true" />
+  <div v-if="currentMatch" class="flex gap-2">
+    <MatchLobbySelector :match="currentMatch" :pulse="true" />
 
-    <template v-if="lobbies.length > 1">
+    <template v-if="myMatches.length > 1">
       <Popover v-model:open="choosingLobby">
         <PopoverTrigger>
           <Button variant="outline" class="px-3 py-5">
@@ -17,12 +17,12 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
           </Button>
         </PopoverTrigger>
         <PopoverContent class="p-2 flex flex-col gap-2 border-none">
-          <template v-for="lobby in lobbies" :key="lobby.match.id">
+          <template v-for="match in myMatches" :key="match.id">
             <MatchLobbySelector
-              @click="selectLobby(lobby.match.id)"
-              :match="lobby.match"
+              @click="selectLobby(match.id)"
+              :match="match"
               :show-switch="true"
-              v-if="match.id !== lobby.match.id"
+              v-if="match.id !== currentMatch.id"
             />
           </template>
         </PopoverContent>
@@ -44,7 +44,7 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
 
   <template v-else>
     <Button
-      @click="createLobByMatch"
+      @click="createLobby"
       class="relative group overflow-hidden rounded bg-transparent text-white shadow-lg hover:shadow px-5 py-4 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
     >
       <span
@@ -82,7 +82,7 @@ export default {
           return;
         }
 
-        switch (this.match.status) {
+        switch (this.currentMatch.status) {
           case e_match_status_enum.Veto:
           case e_match_status_enum.Live:
             if (oldMatch && currentMatch.status !== oldMatch.status) {
@@ -90,9 +90,10 @@ export default {
             }
             break;
           case e_match_status_enum.WaitingForCheckIn:
-            const matchLineups = this.match.lineup_1.lineup_players.concat(
-              this.match.lineup_2.lineup_players,
-            );
+            const matchLineups =
+              this.currentMatch.lineup_1.lineup_players.concat(
+                this.currentMatch.lineup_2.lineup_players,
+              );
             const meInMatch = matchLineups.find((lobby: any) => {
               return lobby.player.steam_id === this.me.steam_id;
             });
@@ -109,6 +110,9 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    myMatches() {
+      return useMatchLobbyStore().myMatches;
+    },
     lobbies() {
       return useMatchmakingStore().lobbies;
     },
@@ -117,25 +121,25 @@ export default {
         return lobby.id === this.me?.current_lobby_id;
       });
     },
-    match() {
+    currentMatch() {
       if (this.matchId) {
         return useMatchLobbyStore().lobbies.get(this.matchId)?.match;
       }
       return Array.from(useMatchLobbyStore().lobbies.values()).at(0)?.match;
     },
     onMatchPage() {
-      return this.$route.path === `/matches/${this.match?.id}`;
+      return this.$route.path === `/matches/${this.currentMatch?.id}`;
     },
     matchId() {
-      return useMatchLobbyStore().viewMatchLobby;
+      return useMatchmakingStore().viewingMatchId;
     },
   },
   methods: {
     selectLobby(matchId: string) {
       this.choosingLobby = false;
-      useMatchLobbyStore().viewMatchLobby = matchId;
+      useMatchmakingStore().viewingMatchId = matchId;
     },
-    createLobByMatch() {
+    createLobby() {
       useMatchmakingStore().createLobby();
     },
   },

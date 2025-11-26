@@ -24,7 +24,6 @@ import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import SystemStatus from "./SystemStatus.vue";
-import OnlinePlayers from "./OnlinePlayers.vue";
 import AppNotifications from "./AppNotifications.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
@@ -267,7 +266,6 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
     <div class="flex items-center gap-4">
       <InstallPWA v-if="!isMobile" :is-menu-item="false" />
       <MatchLobbies v-if="!isMobile" />
-      <OnlinePlayers v-if="!isMobile" />
       <AppNotifications />
 
       <Button

@@ -14,21 +14,17 @@ watch(
       setOpenMobile(newValue);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // Also sync in reverse: when mobile sidebar closes, update rightSidebarOpen
-watch(
-  openMobile,
-  (newValue) => {
-    if (isMobile.value && rightSidebarOpen.value !== newValue) {
-      setRightSidebarOpen(newValue);
-    }
+watch(openMobile, (newValue) => {
+  if (isMobile.value && rightSidebarOpen.value !== newValue) {
+    setRightSidebarOpen(newValue);
   }
-);
+});
 </script>
 
 <template>
   <!-- This component only syncs state, no rendering needed -->
 </template>
-

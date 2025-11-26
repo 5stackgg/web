@@ -1029,6 +1029,9 @@
             "offline": "Не в мережі",
             "view_profile": "Переглянути профіль"
         },
+        "players": {
+            "title": "Гравці"
+        },
         "banned": "Заблоковано",
         "go_to_match": "Перейти до матчу",
         "confirm_selection": "Приєднатися",

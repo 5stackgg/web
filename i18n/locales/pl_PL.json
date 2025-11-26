@@ -1145,6 +1145,9 @@
             "join_lobby": "Dołącz do Lobby",
             "offline": "Offline"
         },
+        "players": {
+            "title": "Gracze"
+        },
         "banned": "Zbanowany",
         "go_to_match": "Przejdź do meczu",
         "confirm_selection": "Dołącz do kolejki",

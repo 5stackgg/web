@@ -25,13 +25,13 @@ const { rightSidebarOpen } = useRightSidebar();
     </div>
 
     <div
-      class="flex items-center justify-center gap-2 text-sm text-muted-foreground"
+      class="flex items-center px-2 justify-center text-sm text-muted-foreground"
     >
       <component
         :is="rightSidebarOpen ? ChevronsRight : Users"
         class="h-4 w-4"
       />
-      <span>{{ onlineFriends?.length || 0 }}</span>
+      <span class="w-0">&nbsp;</span>
     </div>
   </div>
 </template>

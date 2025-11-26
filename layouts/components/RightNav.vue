@@ -25,13 +25,19 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
   <Sidebar collapsible="icon" side="right" variant="inset">
     <Tabs default-value="friends" class="w-full h-full flex flex-col">
       <SidebarHeader>
-        <div class="flex items-center gap-4 justify-end">
+        <div class="flex items-center gap-2 justify-end">
           <TabsList v-if="rightSidebarOpen" class="grid w-full grid-cols-2 m-0">
             <TabsTrigger value="friends">
               {{ $t("matchmaking.friends.title") }}
+              <span class="text-xs text-muted-foreground ml-1"
+                >({{ friendsOnline?.length || 0 }})</span
+              >
             </TabsTrigger>
             <TabsTrigger value="online-friends">
-              {{ $t("matchmaking.friends.online") }}
+              {{ $t("matchmaking.players.title") }}
+              <span class="text-xs text-muted-foreground ml-1"
+                >({{ playersOnline?.length || 0 }})</span
+              >
             </TabsTrigger>
           </TabsList>
           <SidebarMenu>
@@ -93,6 +99,13 @@ export default {
     },
     playersOnline() {
       return useMatchmakingStore().playersOnline;
+    },
+    friendsOnline() {
+      const matchmakingStore = useMatchmakingStore();
+      const onlineSteamIds = new Set(matchmakingStore.onlinePlayerSteamIds);
+      return matchmakingStore.friends.filter((friend: any) =>
+        onlineSteamIds.has(friend.steam_id)
+      );
     },
   },
 };

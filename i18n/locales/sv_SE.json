@@ -1220,6 +1220,9 @@
             "in_match": "I en match",
             "in_lobby": "I en lobby"
         },
+        "players": {
+            "title": "Spelare"
+        },
         "banned": "Du är bannad från matchmaking",
         "go_to_match": "Gå till match",
         "confirm_selection": "Följ Queue",

@@ -1292,6 +1292,9 @@
             "in_match": "In a match",
             "in_lobby": "In a lobby"
         },
+        "players": {
+            "title": "Players"
+        },
         "banned": "You are banned from matchmaking",
         "go_to_match": "Go to Match",
         "confirm_selection": "Join Queue",

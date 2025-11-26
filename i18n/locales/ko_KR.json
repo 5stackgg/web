@@ -1014,6 +1014,9 @@
             "offline": "오프라인",
             "view_profile": "공지사항"
         },
+        "players": {
+            "title": "플레이어"
+        },
         "banned": "차단됨",
         "go_to_match": "매치로 이동",
         "confirm_selection": "구독하기",

@@ -259,25 +259,36 @@ export default {
         }))
         .sort((a, b) => a.mapName.localeCompare(b.mapName));
 
+      const totalWins = sortedMaps.reduce((acc, map) => acc + map.wins, 0);
+      const totalLosses = sortedMaps.reduce((acc, map) => acc + map.losses, 0);
+
       return {
         labels: sortedMaps.map(({ mapName }) => mapName),
         datasets: [
-          {
-            label: "Wins",
-            backgroundColor: "rgba(74, 222, 128, .5)",
-            borderColor: "rgb(74, 222, 128)",
-            pointBackgroundColor: "rgb(74, 222, 128)",
-            pointBorderColor: "#fff",
-            data: sortedMaps.map(({ wins }) => wins),
-          },
-          {
-            label: "Losses",
-            backgroundColor: "rgba(239, 68, 68, 0.3)",
-            borderColor: "rgb(239, 68, 68)",
-            pointBackgroundColor: "rgb(239, 68, 68)",
-            pointBorderColor: "#fff",
-            data: sortedMaps.map(({ losses }) => losses),
-          },
+          ...(totalWins > 0
+            ? [
+                {
+                  label: "Wins",
+                  backgroundColor: "rgba(74, 222, 128, .5)",
+                  borderColor: "rgb(74, 222, 128)",
+                  pointBackgroundColor: "rgb(74, 222, 128)",
+                  pointBorderColor: "#fff",
+                  data: sortedMaps.map(({ wins }) => wins),
+                },
+              ]
+            : []),
+          ...(totalLosses > 0
+            ? [
+                {
+                  label: "Losses",
+                  backgroundColor: "rgba(239, 68, 68, 0.3)",
+                  borderColor: "rgb(239, 68, 68)",
+                  pointBackgroundColor: "rgb(239, 68, 68)",
+                  pointBorderColor: "#fff",
+                  data: sortedMaps.map(({ losses }) => losses),
+                },
+              ]
+            : []),
         ],
       };
     },

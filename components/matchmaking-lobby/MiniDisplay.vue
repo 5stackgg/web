@@ -6,7 +6,7 @@ const { rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col">
     <div
       v-if="
         matchInvites.length > 0 ||

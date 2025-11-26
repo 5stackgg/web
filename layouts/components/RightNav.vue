@@ -39,7 +39,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
               <SidebarMenuButton
                 tooltip="Open Friends List"
                 @click="setRightSidebarOpen(!rightSidebarOpen)"
-                class="w-full group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full mt-0"
+                class="w-full h-auto mt-0 group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full"
               >
                 <MiniDisplay />
                 <span class="sr-only">Toggle Right Sidebar</span>
@@ -84,63 +84,6 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 
 <script lang="ts">
 export default {
-  mounted() {
-    // Add fake data for 30 online friends
-    const matchmakingStore = useMatchmakingStore();
-    const fakeFriends = [];
-    const fakeSteamIds = [];
-    const fakePlayers = [];
-
-    for (let i = 1; i <= 30; i++) {
-      const steamId = `7656119800000000${i.toString().padStart(2, "0")}`;
-      fakeSteamIds.push(steamId);
-
-      fakeFriends.push({
-        steam_id: steamId,
-        name: `Friend ${i}`,
-        avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=Friend${i}`,
-        status: "Accepted",
-        elo: 1000 + Math.floor(Math.random() * 2000),
-        country: ["US", "CA", "GB", "DE", "FR", "BR", "AU"][
-          Math.floor(Math.random() * 7)
-        ],
-        role: "player",
-        invited_by_steam_id: null,
-        player: {
-          is_in_lobby: false,
-          is_in_another_match: false,
-          lobby_players: [],
-        },
-      });
-
-      fakePlayers.push({
-        steam_id: steamId,
-        name: `Friend ${i}`,
-        avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=Friend${i}`,
-        elo: 1000 + Math.floor(Math.random() * 2000),
-        country: ["US", "CA", "GB", "DE", "FR", "BR", "AU"][
-          Math.floor(Math.random() * 7)
-        ],
-        role: "player",
-        is_banned: false,
-        is_gagged: false,
-        is_muted: false,
-      });
-    }
-
-    // Add fake friends to store
-    matchmakingStore.friends = [...matchmakingStore.friends, ...fakeFriends];
-    // Add fake steam IDs to online players list
-    matchmakingStore.onlinePlayerSteamIds = [
-      ...matchmakingStore.onlinePlayerSteamIds,
-      ...fakeSteamIds,
-    ];
-    // Add fake players to online players
-    matchmakingStore.playersOnline = [
-      ...matchmakingStore.playersOnline,
-      ...fakePlayers,
-    ];
-  },
   computed: {
     matchInvites() {
       return useMatchmakingStore().matchInvites;

@@ -49,7 +49,7 @@ const { setRightSidebarOpen, toggleRightSidebar } = useRightSidebar();
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup class="-mt-4">
+          <SidebarGroup class="overflow-hidden -mt-4">
             <template
               v-if="
                 rightSidebarOpen &&

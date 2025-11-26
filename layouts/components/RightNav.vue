@@ -23,26 +23,10 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 
 <template>
   <Sidebar collapsible="icon" side="right" variant="inset">
-    <Tabs
-      v-if="rightSidebarOpen"
-      default-value="friends"
-      class="w-full h-full flex flex-col"
-    >
+    <Tabs default-value="friends" class="w-full h-full flex flex-col">
       <SidebarHeader>
-        <div class="flex items-center justify-between w-auto flex-shrink-0">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                tooltip="Open Friends List"
-                @click="setRightSidebarOpen(!rightSidebarOpen)"
-                class="w-auto flex-shrink-0 group-data-[collapsible=icon]:!h-auto"
-              >
-                <MiniDisplay />
-                <span class="sr-only">Toggle Right Sidebar</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-          <TabsList class="grid w-full grid-cols-2 m-0">
+        <div class="flex items-center gap-4 justify-end">
+          <TabsList v-if="rightSidebarOpen" class="grid w-full grid-cols-2 m-0">
             <TabsTrigger value="friends">
               {{ $t("matchmaking.friends.title") }}
             </TabsTrigger>
@@ -50,9 +34,21 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
               {{ $t("matchmaking.friends.online") }}
             </TabsTrigger>
           </TabsList>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Open Friends List"
+                @click="setRightSidebarOpen(!rightSidebarOpen)"
+                class="w-full group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full mt-0"
+              >
+                <MiniDisplay />
+                <span class="sr-only">Toggle Right Sidebar</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent v-if="rightSidebarOpen">
         <SidebarGroup>
           <TabsContent value="friends" class="mt-0">
             <template v-if="matchInvites.length > 0 || lobbyInvites.length > 0">
@@ -83,20 +79,6 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         </SidebarGroup>
       </SidebarContent>
     </Tabs>
-    <SidebarHeader v-else>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            tooltip="Open Friends List"
-            @click="setRightSidebarOpen(!rightSidebarOpen)"
-            class="w-auto flex-shrink-0 group-data-[collapsible=icon]:!h-auto"
-          >
-            <MiniDisplay />
-            <span class="sr-only">Toggle Right Sidebar</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </SidebarHeader>
   </Sidebar>
 </template>
 

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { Users, MailPlus } from "lucide-vue-next";
+import { Users, MailPlus, ChevronsRight } from "lucide-vue-next";
+import { useRightSidebar } from "@/composables/useRightSidebar";
+
+const { rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
@@ -24,7 +27,10 @@ import { Users, MailPlus } from "lucide-vue-next";
     <div
       class="flex items-center justify-center gap-2 text-sm text-muted-foreground"
     >
-      <Users class="h-4 w-4" />
+      <component
+        :is="rightSidebarOpen ? ChevronsRight : Users"
+        class="h-4 w-4"
+      />
       <span>{{ onlineFriends?.length || 0 }}</span>
     </div>
   </div>

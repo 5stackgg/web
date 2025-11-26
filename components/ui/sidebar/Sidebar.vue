@@ -59,7 +59,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
           ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]'
           : 'group-data-[collapsible=icon]:w-[--sidebar-width-icon]',
       )"
-      :style="{ height: 'var(--sidebar-height, calc(100svh - var(--header-height, 4rem)))' }"
+      :style="{ height: 'var(--sidebar-height, 100svh)' }"
     />
     <div
       :class="cn(
@@ -75,7 +75,7 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
           : 'group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l',
         props.class,
       )"
-      :style="{ height: 'var(--sidebar-height, calc(100svh - var(--header-height, 4rem)))' }"
+      :style="{ height: 'var(--sidebar-height, 100svh)' }"
       v-bind="$attrs"
     >
       <div

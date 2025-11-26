@@ -270,6 +270,16 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
       <OnlinePlayers v-if="!isMobile" />
       <AppNotifications />
 
+      <Button
+        variant="ghost"
+        size="icon"
+        class="h-7 w-7 md:hidden"
+        @click="setRightSidebarOpen(!rightSidebarOpen)"
+      >
+        <Users class="h-4 w-4" />
+        <span class="sr-only">Toggle Right Sidebar</span>
+      </Button>
+
       <!-- Player Profile Dropdown -->
       <DropdownMenu v-model:open="profileMenuOpen">
         <DropdownMenuTrigger as-child>
@@ -331,16 +341,6 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-7 w-7"
-        @click="setRightSidebarOpen(!rightSidebarOpen)"
-      >
-        <Users class="h-4 w-4" />
-        <span class="sr-only">Toggle Right Sidebar</span>
-      </Button>
 
       <div
         id="right-sidebar-trigger"

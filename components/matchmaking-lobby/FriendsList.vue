@@ -153,6 +153,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
               :player="player"
               :showOnline="false"
               :showAddFriend="false"
+              :linkable="true"
             />
           </FriendOptions>
         </template>

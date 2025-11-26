@@ -9,6 +9,7 @@
     show-edges
     :default-page="current"
     @update:page="paginate"
+    class="sticky bottom-0 bg-background p-4 border-t border-border"
   >
     <PaginationList v-slot="{ items }" class="flex items-center gap-1">
       <PaginationFirst />

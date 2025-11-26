@@ -111,10 +111,10 @@ export default {
   },
   computed: {
     rightSidebarOffset() {
-      const baseOffset = 120;
+      const baseOffset = 96;
 
       if (rightSidebarOpen?.value) {
-        return baseOffset + 300;
+        return baseOffset + 288;
       }
 
       return baseOffset;
@@ -144,7 +144,7 @@ export default {
       socket.chat(
         this.type as "match" | "team" | "matchmaking",
         this.lobbyId,
-        message,
+        message
       );
       this.safeScrollToBottom();
     },
@@ -157,7 +157,7 @@ export default {
         this.lobby = socket.joinLobby(
           this.instance,
           this.type as "match" | "team" | "matchmaking",
-          this.lobbyId,
+          this.lobbyId
         );
         this.updateLobbyMessages(this.lobby.messages);
         this.lobby.on("lobby:messages", this.updateLobbyMessages);
@@ -174,7 +174,7 @@ export default {
             if (this.playNotificationSound) {
               playNotificationSound();
             }
-          },
+          }
         );
       },
     },

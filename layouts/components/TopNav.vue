@@ -28,12 +28,17 @@ import OnlinePlayers from "./OnlinePlayers.vue";
 import AppNotifications from "./AppNotifications.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
+import { Button } from "@/components/ui/button";
+import { Users } from "lucide-vue-next";
+import { useRightSidebar } from "@/composables/useRightSidebar";
+
 const { isMobile } = useSidebar();
+const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
   <nav
-    class="text-sm w-full bg-[#28282b] border-t border-[#3a3a3d] border-b-2 border-[#18181b] shadow-lg flex items-center justify-between px-4 py-2 z-50 relative mb-2"
+    class="text-sm w-full bg-[#28282b] border-t border-[#3a3a3d] border-b-2 border-[#18181b] shadow-lg flex items-center justify-between px-4 z-50 relative sticky top-0"
   >
     <div class="flex items-center gap-2 relative">
       <NuxtLink
@@ -211,14 +216,14 @@ const { isMobile } = useSidebar();
                           <span class="block font-bold flex items-center gap-2">
                             {{
                               $t(
-                                "layouts.top_nav.community.social.join_discord.title",
+                                "layouts.top_nav.community.social.join_discord.title"
                               )
                             }}
                             <DiscordLogoIcon class="w-4 h-4" />
                           </span>
                           <span class="block text-xs text-neutral-400">{{
                             $t(
-                              "layouts.top_nav.community.social.join_discord.subtitle",
+                              "layouts.top_nav.community.social.join_discord.subtitle"
                             )
                           }}</span>
                         </a>
@@ -235,7 +240,7 @@ const { isMobile } = useSidebar();
                           <span class="block font-bold">
                             {{
                               $t(
-                                "layouts.top_nav.community.social.github.title",
+                                "layouts.top_nav.community.social.github.title"
                               )
                             }}
                           </span>
@@ -244,7 +249,7 @@ const { isMobile } = useSidebar();
                           >
                             {{
                               $t(
-                                "layouts.top_nav.community.social.github.subtitle",
+                                "layouts.top_nav.community.social.github.subtitle"
                               )
                             }}
                           </span>
@@ -326,6 +331,16 @@ const { isMobile } = useSidebar();
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        class="h-7 w-7"
+        @click="setRightSidebarOpen(!rightSidebarOpen)"
+      >
+        <Users class="h-4 w-4" />
+        <span class="sr-only">Toggle Right Sidebar</span>
+      </Button>
 
       <div
         id="right-sidebar-trigger"

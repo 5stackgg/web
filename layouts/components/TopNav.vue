@@ -216,14 +216,14 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           <span class="block font-bold flex items-center gap-2">
                             {{
                               $t(
-                                "layouts.top_nav.community.social.join_discord.title"
+                                "layouts.top_nav.community.social.join_discord.title",
                               )
                             }}
                             <DiscordLogoIcon class="w-4 h-4" />
                           </span>
                           <span class="block text-xs text-neutral-400">{{
                             $t(
-                              "layouts.top_nav.community.social.join_discord.subtitle"
+                              "layouts.top_nav.community.social.join_discord.subtitle",
                             )
                           }}</span>
                         </a>
@@ -240,7 +240,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           <span class="block font-bold">
                             {{
                               $t(
-                                "layouts.top_nav.community.social.github.title"
+                                "layouts.top_nav.community.social.github.title",
                               )
                             }}
                           </span>
@@ -249,7 +249,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           >
                             {{
                               $t(
-                                "layouts.top_nav.community.social.github.subtitle"
+                                "layouts.top_nav.community.social.github.subtitle",
                               )
                             }}
                           </span>

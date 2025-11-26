@@ -3,7 +3,7 @@ import { Users, MailPlus } from "lucide-vue-next";
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 mt-4">
+  <div class="flex flex-col gap-4">
     <div
       v-if="
         matchInvites.length > 0 ||
@@ -59,7 +59,7 @@ export default {
         }
 
         return useMatchmakingStore().onlinePlayerSteamIds.includes(
-          friend.steam_id,
+          friend.steam_id
         );
       });
     },

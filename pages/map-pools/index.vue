@@ -15,6 +15,9 @@ import { Search } from "lucide-vue-next";
 import MapForm from "~/components/map-pools/MapForm.vue";
 import MapPoolRow from "~/components/map-pools/MapPoolRow.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -27,34 +30,34 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       </template>
 
       <template #actions>
-        <div class="flex flex-row items-center gap-4">
-          <div class="flex flex-row items-center gap-2">
-            <FiveStackToolTip>
-              <template #trigger>
-                <div
-                  class="flex items-center gap-2"
-                  @click="toggleUpdateMapPools"
-                >
-                  <div class="flex items-center gap-1">
-                    <Info :size="14" />
-                    {{
-                      $t("pages.settings.application.update_map_pools.title")
-                    }}
-                  </div>
-                  <Switch
-                    :model-value="updateMapPools"
-                    @update:model-value="toggleUpdateMapPools"
-                  />
+        <div class="flex flex-col items-center gap-4 md:flex-row">
+          <FiveStackToolTip>
+            <template #trigger>
+              <div
+                class="flex items-center gap-2"
+                @click="toggleUpdateMapPools"
+              >
+                <div class="flex items-center gap-1">
+                  <Info :size="14" />
+                  {{ $t("pages.settings.application.update_map_pools.title") }}
                 </div>
-              </template>
-              {{
-                $t("pages.settings.application.update_map_pools.description")
-              }}
-            </FiveStackToolTip>
-          </div>
-          <Button @click="mapFormSheet = true">
+                <Switch
+                  :model-value="updateMapPools"
+                  @update:model-value="toggleUpdateMapPools"
+                />
+              </div>
+            </template>
+            {{ $t("pages.settings.application.update_map_pools.description") }}
+          </FiveStackToolTip>
+
+          <Button
+            @click="mapFormSheet = true"
+            :size="isMobile ? 'default' : 'lg'"
+          >
             <PlusCircle class="w-4 h-4" />
-            {{ $t("pages.map_pools.add_new_map") }}
+            <span class="hidden md:inline ml-2">{{
+              $t("pages.map_pools.add_new_map")
+            }}</span>
           </Button>
         </div>
       </template>

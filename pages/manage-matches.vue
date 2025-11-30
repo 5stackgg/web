@@ -16,6 +16,9 @@ import {
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { Separator } from "~/components/ui/separator";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -25,7 +28,10 @@ import { Separator } from "~/components/ui/separator";
       $t("pages.manage_matches.description")
     }}</template>
     <template #actions>
-      <Button size="lg" @click="navigateTo('/matches/create')">
+      <Button
+        :size="isMobile ? 'default' : 'lg'"
+        @click="navigateTo('/matches/create')"
+      >
         <PlusCircle class="w-4 h-4" />
         <span class="hidden md:inline ml-2">{{
           $t("pages.matches.create")

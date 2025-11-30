@@ -19,6 +19,9 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import Pagination from "~/components/Pagination.vue";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -61,7 +64,7 @@ import Pagination from "~/components/Pagination.vue";
               </template>
 
               <Button
-                size="lg"
+                :size="isMobile ? 'default' : 'lg'"
                 @click="createGameServerNode"
                 :disabled="!supportsGameServerNodes"
               >

@@ -6,6 +6,9 @@ import TeamsTable from "~/components/TeamsTable.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import { PlusCircle } from "lucide-vue-next";
 import Pagination from "@/components/Pagination.vue";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -15,7 +18,7 @@ import Pagination from "@/components/Pagination.vue";
       <template #description>{{ $t("pages.teams.description") }}</template>
       <template #actions>
         <NuxtLink :to="{ name: 'teams-create' }">
-          <Button size="lg">
+          <Button :size="isMobile ? 'default' : 'lg'">
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">{{
               $t("pages.teams.create")

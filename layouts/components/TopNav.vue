@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { DiscordLogoIcon } from "@radix-icons/vue";
-import { User, Settings, LogOut, ChevronsUpDown } from "lucide-vue-next";
+import { Settings, LogOut, ChevronsUpDown } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";
@@ -87,7 +87,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                       </NuxtLink>
                     </NavigationMenuLink>
                   </li>
-                  <!-- <li>
+                  <li>
                     <NavigationMenuLink as-child>
                       <NuxtLink
                         to="/tournaments"
@@ -96,7 +96,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                         {{ $t("layouts.top_nav.play.tournaments") }}
                       </NuxtLink>
                     </NavigationMenuLink>
-                  </li> -->
+                  </li>
                   <li>
                     <NavigationMenuLink as-child>
                       <NuxtLink

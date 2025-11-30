@@ -1,3 +1,18 @@
+<script setup lang="ts">
+import PlayerSearch from "~/components/PlayerSearch.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { Separator } from "~/components/ui/separator";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { Search, Check, Ban, RefreshCw } from "lucide-vue-next";
+import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
+</script>
+
 <template>
   <div class="flex flex-col gap-4 p-2">
     <div class="flex items-center gap-2">
@@ -95,74 +110,60 @@
             </span>
           </div>
           <div v-for="player in filteredOnlinePlayers" :key="player.steam_id">
-            <PlayerDisplay
-              class="w-full cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
-              :player="player"
-              :showOnline="false"
-              :showAddFriend="true"
-              :linkable="true"
-            />
+            <FriendOptions :player="player">
+              <div class="flex items-center justify-between">
+                <PlayerDisplay
+                  class="w-full cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
+                  :player="player"
+                  :showOnline="false"
+                  :showAddFriend="true"
+                  :linkable="true"
+                />
+              </div>
+            </FriendOptions>
           </div>
         </div>
 
-        <Separator
-          v-if="
-            filteredOnlinePlayers?.length > 0 &&
-            filteredOfflinePlayers?.length > 0
-          "
-        />
+        <template v-if="friendsOnly">
+          <Separator v-if="filteredOnlinePlayers?.length > 0" />
 
-        <div class="">
-          <div class="mb-2 font-medium text-sm">
-            {{ $t("matchmaking.friends.offline") }}
-            <span class="text-muted-foreground">
-              ({{ filteredOfflinePlayers.length }})
-            </span>
+          <div>
+            <div class="mb-2 font-medium text-sm">
+              {{ $t("matchmaking.friends.offline") }}
+              <span class="text-muted-foreground">
+                ({{ filteredOfflinePlayers.length }})
+              </span>
+            </div>
+            <template
+              v-for="player in filteredOfflinePlayers"
+              :key="player.steam_id"
+            >
+              <PlayerDisplay
+                class="opacity-50 cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
+                :player="player"
+                :showOnline="false"
+                :showAddFriend="true"
+                :linkable="true"
+              />
+            </template>
           </div>
-          <template
-            v-for="player in filteredOfflinePlayers"
-            :key="player.steam_id"
+
+          <div
+            v-if="
+              filteredOnlinePlayers?.length === 0 &&
+              filteredOfflinePlayers?.length === 0
+            "
+            class="text-sm text-muted-foreground text-center py-8"
           >
-            <PlayerDisplay
-              class="opacity-50 cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
-              :player="player"
-              :showOnline="false"
-              :showAddFriend="true"
-              :linkable="true"
-            />
-          </template>
-        </div>
-
-        <div
-          v-if="
-            filteredOnlinePlayers?.length === 0 &&
-            filteredOfflinePlayers?.length === 0
-          "
-          class="text-sm text-muted-foreground text-center py-8"
-        >
-          {{
-            searchQuery
-              ? $t("player.search.no_players_found")
-              : $t("matchmaking.players.no_players")
-          }}
-        </div>
+            {{ $t("player.search.no_players_found") }}
+          </div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import { Separator } from "~/components/ui/separator";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
-import { Search, Check, Ban, RefreshCw } from "lucide-vue-next";
-import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 export default {
@@ -171,20 +172,6 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
-  components: {
-    PlayerDisplay,
-    Separator,
-    Input,
-    Button,
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-    Search,
-    Check,
-    Ban,
-    RefreshCw,
-    FriendOptions,
   },
   data() {
     return {
@@ -196,85 +183,56 @@ export default {
   },
   computed: {
     friends() {
-      if (!this.friendsOnly) return [];
-      return useMatchmakingStore().friends || [];
-    },
-    friendSteamIds() {
-      if (!this.friendsOnly) return new Set();
-      return new Set(this.friends.map((friend: any) => friend.steam_id));
+      return useMatchmakingStore().friends;
     },
     me() {
       return useAuthStore().me;
     },
-    mySteamId() {
-      return this.me?.steam_id;
-    },
-    onlinePlayerSteamIds() {
-      return useMatchmakingStore().onlinePlayerSteamIds;
-    },
     onlinePlayers() {
-      const onlineIds = new Set(this.onlinePlayerSteamIds);
-      let players = [...this.allPlayers].filter(
-        (player) =>
-          player.steam_id !== this.mySteamId && onlineIds.has(player.steam_id),
-      );
-
-      // Filter to friends only if prop is set
-      if (this.friendsOnly) {
-        players = players.filter((player) =>
-          this.friendSteamIds.has(player.steam_id),
-        );
-      }
-
-      return players.sort((a: any, b: any) => {
-        return a.name.localeCompare(b.name);
-      });
+      return useMatchmakingStore().playersOnline;
     },
-    offlinePlayers() {
-      const onlineIds = new Set(this.onlinePlayerSteamIds);
-      let players = [...this.allPlayers].filter(
-        (player) =>
-          player.steam_id !== this.mySteamId && !onlineIds.has(player.steam_id),
-      );
-
-      // Filter to friends only if prop is set
-      if (this.friendsOnly) {
-        players = players.filter((player) =>
-          this.friendSteamIds.has(player.steam_id),
-        );
-      }
-
-      return players.sort((a: any, b: any) => {
-        return a.name.localeCompare(b.name);
-      });
+    onlineFriends() {
+      return useMatchmakingStore().onlineFriends;
+    },
+    offlineFriends() {
+      return useMatchmakingStore().offlineFriends;
     },
     filteredOnlinePlayers() {
-      if (!this.searchQuery.trim()) {
-        return this.onlinePlayers;
+      if (this.friendsOnly) {
+        return this.onlineFriends.filter((player: any) => {
+          return (
+            player.name
+              ?.toLowerCase()
+              .includes(this.searchQuery.toLowerCase()) ||
+            player.steam_id?.includes(this.searchQuery)
+          );
+        });
       }
-      const query = this.searchQuery.toLowerCase().trim();
+
       return this.onlinePlayers.filter((player: any) => {
         return (
-          player.name?.toLowerCase().includes(query) ||
-          player.steam_id?.includes(query)
+          player.steam_id !== this.me.steam_id &&
+          !this.friends?.some((f: any) => f.steam_id === player.steam_id) &&
+          (player.name
+            ?.toLowerCase()
+            .includes(this.searchQuery.toLowerCase()) ||
+            player.steam_id?.includes(this.searchQuery))
         );
       });
     },
     filteredOfflinePlayers() {
-      if (!this.searchQuery.trim()) {
-        return this.offlinePlayers;
+      if (this.friendsOnly) {
+        return this.offlineFriends.filter((player: any) => {
+          return (
+            player.name
+              ?.toLowerCase()
+              .includes(this.searchQuery.toLowerCase()) ||
+            player.steam_id?.includes(this.searchQuery)
+          );
+        });
       }
-      const query = this.searchQuery.toLowerCase().trim();
-      return this.offlinePlayers.filter((player: any) => {
-        return (
-          player.name?.toLowerCase().includes(query) ||
-          player.steam_id?.includes(query)
-        );
-      });
-    },
-    totalPlayersCount() {
-      // Total count of all players excluding current user
-      return this.onlinePlayers.length + this.offlinePlayers.length;
+
+      return [];
     },
     searchPlaceholder() {
       return this.friendsOnly
@@ -288,87 +246,7 @@ export default {
       });
     },
   },
-  async mounted() {
-    await this.loadAllPlayers();
-  },
   methods: {
-    async loadAllPlayers() {
-      this.loading = true;
-      try {
-        // Load all players using pagination, same as PlayerSearch
-        const allPlayers: any[] = [];
-        let page = 1;
-        const perPage = 250; // Load in batches
-        let hasMore = true;
-
-        while (hasMore) {
-          const response = await $fetch("/api/players-search", {
-            method: "post",
-            body: {
-              query: "*", // Match all players
-              registeredOnly: true, // Same as PlayerSearch when registeredOnly is true
-              per_page: perPage,
-              page: page,
-              sort_by: "name:asc",
-            },
-          });
-
-          const { hits, found } = response as any;
-
-          if (hits && hits.length > 0) {
-            const players = hits.map(({ document }: any) => {
-              return {
-                steam_id: document.steam_id,
-                name: document.name,
-                avatar_url: document.avatar_url,
-                country: document.country,
-                elo: document.elo,
-                role: document.role,
-                is_banned: document.is_banned,
-                is_muted: document.is_muted,
-                is_gagged: document.is_gagged,
-              };
-            });
-            allPlayers.push(...players);
-          }
-
-          // Check if we've loaded all players
-          // If we got fewer results than perPage, we've reached the end
-          // Or if we've loaded all found players
-          const loadedCount = allPlayers.length;
-          hasMore =
-            hits &&
-            hits.length === perPage &&
-            (found === undefined || loadedCount < found);
-          page++;
-
-          // Safety limit to prevent infinite loops
-          if (page > 100) {
-            console.warn("Reached pagination limit, stopping");
-            break;
-          }
-        }
-
-        this.allPlayers = allPlayers;
-      } catch (error) {
-        console.error("Error loading players:", error);
-        // Fallback to just showing online players if API fails
-        const onlinePlayers = useMatchmakingStore().playersOnline;
-        this.allPlayers = onlinePlayers.map((player: any) => ({
-          steam_id: player.steam_id,
-          name: player.name,
-          avatar_url: player.avatar_url,
-          country: player.country,
-          elo: player.elo,
-          role: player.role,
-          is_banned: player.is_banned,
-          is_muted: player.is_muted,
-          is_gagged: player.is_gagged,
-        }));
-      } finally {
-        this.loading = false;
-      }
-    },
     async acceptFriend(steam_id: string) {
       await (this as any).$apollo.mutate({
         mutation: typedGql("mutation")({

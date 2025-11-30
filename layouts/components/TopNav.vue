@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { DiscordLogoIcon } from "@radix-icons/vue";
-import { User, Settings, LogOut, ChevronsUpDown } from "lucide-vue-next";
+import { Settings, LogOut, ChevronsUpDown } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";

@@ -7,15 +7,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "~/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
 import { useRightSidebar } from "@/composables/useRightSidebar";
-import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
-import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
+import InvitesSection from "~/components/matchmaking-lobby/InvitesSection.vue";
 
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
@@ -39,37 +37,27 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
               >
             </TabsTrigger>
           </TabsList>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                tooltip="Open Friends List"
-                @click="setRightSidebarOpen(!rightSidebarOpen)"
-                class="w-full h-auto mt-0 group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full"
-              >
-                <MiniDisplay />
-                <span class="sr-only">Toggle Right Sidebar</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+          <div class="flex flex-col items-center gap-1">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  tooltip="Open Friends List"
+                  @click="setRightSidebarOpen(!rightSidebarOpen)"
+                  class="w-full h-auto mt-0 group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full"
+                >
+                  <MiniDisplay />
+                  <span class="sr-only">Toggle Right Sidebar</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </div>
         </div>
+        <InvitesSection :compact="true" />
       </SidebarHeader>
       <SidebarContent v-if="rightSidebarOpen">
         <SidebarGroup>
           <TabsContent value="friends" class="mt-0">
-            <template v-if="matchInvites.length > 0 || lobbyInvites.length > 0">
-              <div class="flex flex-col gap-4 mt-4">
-                <h3 class="text-lg font-semibold">
-                  {{ $t("matchmaking.invites") }}
-                  <span class="text-sm text-muted-foreground"
-                    >({{ matchInvites.length + lobbyInvites.length }})</span
-                  >
-                </h3>
-
-                <MatchInvites></MatchInvites>
-                <LobbyInvites></LobbyInvites>
-              </div>
-              <SidebarSeparator class="my-4" />
-            </template>
+            <InvitesSection :show-header="true" :show-content="true" />
             <PlayersList ref="friendsListRef" :friends-only="true" />
           </TabsContent>
           <TabsContent value="online-friends" class="mt-0">
@@ -90,12 +78,6 @@ export default {
     };
   },
   computed: {
-    matchInvites() {
-      return useMatchmakingStore().matchInvites;
-    },
-    lobbyInvites() {
-      return useMatchmakingStore().lobbyInvites;
-    },
     playersOnline() {
       return useMatchmakingStore().playersOnline;
     },

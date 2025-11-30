@@ -13,7 +13,8 @@ import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
-import InvitesSection from "~/components/matchmaking-lobby/InvitesSection.vue";
+import InvitesHeader from "~/components/matchmaking-lobby/InvitesHeader.vue";
+import InvitesContent from "~/components/matchmaking-lobby/InvitesContent.vue";
 
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
@@ -52,12 +53,12 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             </SidebarMenu>
           </div>
         </div>
-        <InvitesSection :compact="true" />
+        <InvitesHeader />
       </SidebarHeader>
       <SidebarContent v-if="rightSidebarOpen">
         <SidebarGroup>
           <TabsContent value="friends" class="mt-0">
-            <InvitesSection :show-header="true" :show-content="true" />
+            <InvitesContent />
             <PlayersList ref="friendsListRef" :friends-only="true" />
           </TabsContent>
           <TabsContent value="online-friends" class="mt-0">

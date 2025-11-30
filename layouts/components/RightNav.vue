@@ -28,7 +28,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             <TabsTrigger value="friends">
               {{ $t("matchmaking.friends.title") }}
               <span class="text-xs text-muted-foreground ml-1"
-                >({{ friendsOnline?.length || 0 }})</span
+                >({{ onlineFriends?.length || 0 }})</span
               >
             </TabsTrigger>
             <TabsTrigger value="online-friends">
@@ -82,17 +82,21 @@ export default {
     playersOnline() {
       return useMatchmakingStore().playersOnline;
     },
-    friendsOnline() {
-      // Get count from friendsListRef if available
-      if (this.friendsListRef?.totalPlayersCount !== undefined) {
-        return this.friendsListRef.totalPlayersCount;
-      }
-      // Fallback: count online friends
-      const matchmakingStore = useMatchmakingStore();
-      const onlineSteamIds = new Set(matchmakingStore.onlinePlayerSteamIds);
-      return matchmakingStore.friends.filter((friend: any) =>
-        onlineSteamIds.has(friend.steam_id),
-      ).length;
+    friends() {
+      return useMatchmakingStore().friends.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    },
+    onlineFriends() {
+      return this.friends?.filter((friend) => {
+        if (friend.status === "Pending") {
+          return false;
+        }
+
+        return useMatchmakingStore().onlinePlayerSteamIds.includes(
+          friend.steam_id,
+        );
+      });
     },
     totalPlayersCount() {
       // Get total count from PlayersList component, excluding current user

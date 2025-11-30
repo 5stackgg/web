@@ -1300,9 +1300,8 @@
             "in_match": "In a match",
             "in_lobby": "In a lobby"
         },
-        "players": {
-            "title": "Players",
-            "no_players": "No players found"
+        "others": {
+            "title": "Others"
         },
         "banned": "You are banned from matchmaking",
         "go_to_match": "Go to Match",

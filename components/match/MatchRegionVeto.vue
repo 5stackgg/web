@@ -6,7 +6,10 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 </script>
 
 <template>
-  <template v-if="regions.length === 0">
+  {{ match.region }}
+  <template
+    v-if="regions.length === 0 && match.options.region_veto && !match.region"
+  >
     <Alert variant="destructive" class="bg-red-600 text-white max-w-md">
       <AlertTitle>{{
         $t("match.region_veto.no_regions_available")

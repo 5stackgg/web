@@ -10,18 +10,7 @@ const { hasInvites, totalCount } = useInvites();
 
 <template>
   <template v-if="hasInvites">
-    <div class="flex flex-col gap-4 mt-4">
-      <h3 class="text-lg font-semibold flex items-center gap-2">
-        <div class="relative">
-          <MailPlus class="h-5 w-5" />
-          <div
-            class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
-          ></div>
-        </div>
-        {{ $t("matchmaking.invites") }}
-        <span class="text-sm text-muted-foreground">({{ totalCount }})</span>
-      </h3>
-
+    <div class="flex px-4">
       <MatchInvites />
       <LobbyInvites />
     </div>

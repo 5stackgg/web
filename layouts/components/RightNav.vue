@@ -53,7 +53,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             </SidebarMenu>
           </div>
         </div>
-        <InvitesHeader />
+        <InvitesHeader :sidebar-open="rightSidebarOpen" />
       </SidebarHeader>
       <SidebarContent v-if="rightSidebarOpen">
         <SidebarGroup>

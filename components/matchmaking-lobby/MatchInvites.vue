@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Mail } from "lucide-vue-next";
 import MatchInviteNotification from "~/components/MatchInviteNotification.vue";
 import { Separator } from "~/components/ui/separator";
 </script>

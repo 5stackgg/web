@@ -155,11 +155,7 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
             "
             class="text-sm text-muted-foreground text-center py-8"
           >
-            {{
-              searchQuery
-                ? $t("player.search.no_players_found")
-                : $t("matchmaking.players.no_players")
-            }}
+            {{ $t("player.search.no_players_found") }}
           </div>
         </template>
       </div>
@@ -214,13 +210,14 @@ export default {
       }
 
       return this.onlinePlayers.filter((player: any) => {
-        const notFriend = !this.friends
-          ?.map((f: any) => f.steam_id)
-          .includes(player.steam_id);
-        const matchesQuery =
-          player.name?.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          player.steam_id?.includes(this.searchQuery);
-        return notFriend && matchesQuery;
+        return (
+          player.steam_id !== this.me.steam_id &&
+          !this.friends?.some((f: any) => f.steam_id === player.steam_id) &&
+          (player.name
+            ?.toLowerCase()
+            .includes(this.searchQuery.toLowerCase()) ||
+            player.steam_id?.includes(this.searchQuery))
+        );
       });
     },
     filteredOfflinePlayers() {

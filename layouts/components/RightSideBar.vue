@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ChevronsRight, BookUser } from "lucide-vue-next";
-import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
-import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
+import InvitesList from "~/components/matchmaking-lobby/InvitesList.vue";
 import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
 import { useRightSidebar } from "~/composables/useRightSidebar";
@@ -64,8 +63,8 @@ const { setRightSidebarOpen, toggleRightSidebar } = useRightSidebar();
                   >
                 </h3>
 
-                <MatchInvites></MatchInvites>
-                <LobbyInvites></LobbyInvites>
+                <InvitesList type="match" />
+                <InvitesList type="lobby" />
               </div>
               <SidebarSeparator class="my-4" />
             </template>

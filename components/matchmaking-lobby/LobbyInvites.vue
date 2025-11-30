@@ -4,27 +4,32 @@ import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
-  <div
-    v-for="invite in lobbyInvites"
-    :key="(invite as any).id"
-    class="text-sm text-muted-foreground pb-2"
-  >
-    <template v-if="getInviterName(invite) === 'Unknown'">
-      {{ $t("matchmaking.invite_messages.unknown_inviter_lobby") }}
-    </template>
-    <template v-else>
-      {{
-        $t("matchmaking.invite_messages.known_inviter_lobby", {
-          name: getInviterName(invite),
-        })
-      }}
-    </template>
-  </div>
-  <div class="flex flex-col gap-4">
-    <template v-for="(invite, index) in lobbyInvites" :key="(invite as any).id">
-      <LobbyInvite type="lobby" :invite="invite" />
-      <Separator v-if="index < lobbyInvites.length - 1" class="my-2" />
-    </template>
+  <div class="flex flex-col gap-1">
+    <div
+      v-for="invite in lobbyInvites"
+      :key="(invite as any).id"
+      class="text-sm text-muted-foreground"
+    >
+      <template v-if="getInviterName(invite) === 'Unknown'">
+        {{ $t("matchmaking.invite_messages.unknown_inviter_lobby") }}
+      </template>
+      <template v-else>
+        {{
+          $t("matchmaking.invite_messages.known_inviter_lobby", {
+            name: getInviterName(invite),
+          })
+        }}
+      </template>
+    </div>
+    <div class="flex flex-col gap-4">
+      <template
+        v-for="(invite, index) in lobbyInvites"
+        :key="(invite as any).id"
+      >
+        <LobbyInvite type="lobby" :invite="invite" />
+        <Separator v-if="index < lobbyInvites.length - 1" class="my-2" />
+      </template>
+    </div>
   </div>
 </template>
 

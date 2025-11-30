@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { MailPlus } from "lucide-vue-next";
-import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
-import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
+import InvitesList from "~/components/matchmaking-lobby/InvitesList.vue";
 import { SidebarSeparator } from "~/components/ui/sidebar";
 import { useInvites } from "@/composables/useInvites";
 
@@ -10,9 +9,9 @@ const { hasInvites, totalCount } = useInvites();
 
 <template>
   <template v-if="hasInvites">
-    <div class="px-4">
-      <MatchInvites />
-      <LobbyInvites />
+    <div class="flex flex-col gap-4 px-4">
+      <InvitesList type="match" />
+      <InvitesList type="lobby" />
     </div>
     <SidebarSeparator class="my-4" />
   </template>

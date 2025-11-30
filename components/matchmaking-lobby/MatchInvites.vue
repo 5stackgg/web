@@ -3,7 +3,11 @@ import MatchInviteNotification from "~/components/MatchInviteNotification.vue";
 import { Separator } from "~/components/ui/separator";
 </script>
 <template>
-  <div v-for="invite in matchInvites" :key="(invite as any).id">
+  <div
+    v-for="invite in matchInvites"
+    :key="(invite as any).id"
+    class="text-sm text-muted-foreground pb-2"
+  >
     <template v-if="getInviterName(invite) === 'Unknown'">
       {{ $t("matchmaking.invite_messages.unknown_inviter") }}
     </template>

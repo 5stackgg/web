@@ -33,7 +33,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             <TabsTrigger value="online-friends">
               {{ $t("matchmaking.players.title") }}
               <span class="text-xs text-muted-foreground ml-1"
-                >({{ playersOnline.length }})</span
+                >({{ playersOnline }})</span
               >
             </TabsTrigger>
           </TabsList>
@@ -84,7 +84,9 @@ export default {
       return useMatchmakingStore().onlineFriends;
     },
     playersOnline() {
-      return useMatchmakingStore().playersOnline;
+      return (
+        useMatchmakingStore().playersOnline.length - this.onlineFriends.length
+      );
     },
   },
 };

@@ -187,10 +187,6 @@ export default {
   },
   computed: {
     friends() {
-      if (!this.friendsOnly) {
-        return [];
-      }
-
       return useMatchmakingStore().friends;
     },
     me() {
@@ -218,10 +214,13 @@ export default {
       }
 
       return this.onlinePlayers.filter((player: any) => {
-        return (
+        const notFriend = !this.friends
+          ?.map((f: any) => f.steam_id)
+          .includes(player.steam_id);
+        const matchesQuery =
           player.name?.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          player.steam_id?.includes(this.searchQuery)
-        );
+          player.steam_id?.includes(this.searchQuery);
+        return notFriend && matchesQuery;
       });
     },
     filteredOfflinePlayers() {

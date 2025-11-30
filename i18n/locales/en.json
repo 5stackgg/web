@@ -1290,6 +1290,7 @@
             "title": "Friends",
             "sync": "Sync Friends",
             "search": "Add Friend",
+            "search_placeholder": "Search friends...",
             "pending_requests": "Pending Requests",
             "online": "Online",
             "invite_to_lobby": "Invite to Lobby",
@@ -1299,6 +1300,10 @@
             "offline": "Offline",
             "in_match": "In a match",
             "in_lobby": "In a lobby"
+        },
+        "players": {
+            "title": "Players",
+            "no_players": "No players found"
         },
         "banned": "You are banned from matchmaking",
         "go_to_match": "Go to Match",

@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { Mail } from "lucide-vue-next";
 import MatchInviteNotification from "~/components/MatchInviteNotification.vue";
 import { Separator } from "~/components/ui/separator";
 </script>
 <template>
   <div class="flex flex-col gap-4">
-    <template v-for="(invite, index) in matchInvites" :key="invite.id">
+    <template v-for="(invite, index) in matchInvites" :key="(invite as any).id">
       <MatchInviteNotification type="match" :invite="invite" />
       <Separator v-if="index < matchInvites.length - 1" class="my-2" />
     </template>
@@ -16,7 +15,7 @@ import { Separator } from "~/components/ui/separator";
 export default {
   computed: {
     matchInvites() {
-      return useMatchmakingStore().matchInvites;
+      return useMatchmakingStore().matchInvites as any[];
     },
   },
 };

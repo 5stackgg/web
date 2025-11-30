@@ -1220,6 +1220,9 @@
             "in_match": "試合中",
             "in_lobby": "ロビーで"
         },
+        "players": {
+            "title": "プレイヤー"
+        },
         "banned": "BAN",
         "go_to_match": "マッチへ移動",
         "confirm_selection": "Queueに参加する",

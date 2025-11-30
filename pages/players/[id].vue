@@ -199,7 +199,7 @@ definePageMeta({
       </div>
 
       <Card class="flex justify-center items-center">
-        <div class="text-center w-full">
+        <div class="text-center">
           <CardHeader>
             <CardTitle class="text-xl font-bold text-center">
               {{ $t("pages.players.detail.recent_wins_and_losses") }}
@@ -446,7 +446,7 @@ export default {
       }
       return formatStatValue(
         this.player?.kills_aggregate.aggregate.count /
-          this.player?.deaths_aggregate.aggregate.count,
+          this.player?.deaths_aggregate.aggregate.count
       );
     },
     winLossRatio() {

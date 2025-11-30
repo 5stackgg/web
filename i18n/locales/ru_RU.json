@@ -1029,6 +1029,9 @@
             "offline": "Не в сети",
             "view_profile": "Просмотр профиля"
         },
+        "players": {
+            "title": "Игроки"
+        },
         "banned": "Забанен",
         "go_to_match": "Перейти к матчу",
         "confirm_selection": "Присоединяйтесь к Queue",

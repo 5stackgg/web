@@ -1145,6 +1145,9 @@
             "join_lobby": "Entrar no Lobby",
             "offline": "Offline"
         },
+        "players": {
+            "title": "Jogadores"
+        },
         "banned": "Banido",
         "go_to_match": "Ir para a partida",
         "confirm_selection": "Entrar na Fila",

@@ -1220,6 +1220,9 @@
             "in_match": "In una partita",
             "in_lobby": "In una lobby"
         },
+        "players": {
+            "title": "Giocatori"
+        },
         "banned": "Bannato",
         "go_to_match": "Vai alla partita",
         "confirm_selection": "Iscriviti a Queue",

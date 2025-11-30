@@ -1029,6 +1029,9 @@
             "offline": "Offline",
             "view_profile": "View Profile"
         },
+        "players": {
+            "title": "Players"
+        },
         "banned": "You are banned from matchmaking",
         "go_to_match": "Go to Match",
         "confirm_selection": "Join Queue",

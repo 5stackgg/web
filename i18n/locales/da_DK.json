@@ -1220,6 +1220,9 @@
             "in_match": "I en kamp",
             "in_lobby": "I en lobby"
         },
+        "players": {
+            "title": "Spillere"
+        },
         "banned": "Bannet",
         "go_to_match": "Gå til kamp",
         "confirm_selection": "Deltag i kø",

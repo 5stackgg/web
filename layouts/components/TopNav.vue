@@ -24,7 +24,6 @@ import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import SystemStatus from "./SystemStatus.vue";
-import OnlinePlayers from "./OnlinePlayers.vue";
 import AppNotifications from "./AppNotifications.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
@@ -216,14 +215,14 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           <span class="block font-bold flex items-center gap-2">
                             {{
                               $t(
-                                "layouts.top_nav.community.social.join_discord.title",
+                                "layouts.top_nav.community.social.join_discord.title"
                               )
                             }}
                             <DiscordLogoIcon class="w-4 h-4" />
                           </span>
                           <span class="block text-xs text-neutral-400">{{
                             $t(
-                              "layouts.top_nav.community.social.join_discord.subtitle",
+                              "layouts.top_nav.community.social.join_discord.subtitle"
                             )
                           }}</span>
                         </a>
@@ -240,7 +239,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           <span class="block font-bold">
                             {{
                               $t(
-                                "layouts.top_nav.community.social.github.title",
+                                "layouts.top_nav.community.social.github.title"
                               )
                             }}
                           </span>
@@ -249,7 +248,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           >
                             {{
                               $t(
-                                "layouts.top_nav.community.social.github.subtitle",
+                                "layouts.top_nav.community.social.github.subtitle"
                               )
                             }}
                           </span>
@@ -267,8 +266,17 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
     <div class="flex items-center gap-4">
       <InstallPWA v-if="!isMobile" :is-menu-item="false" />
       <MatchLobbies v-if="!isMobile" />
-      <OnlinePlayers v-if="!isMobile" />
       <AppNotifications />
+
+      <Button
+        variant="ghost"
+        size="icon"
+        class="h-7 w-7 md:hidden"
+        @click="setRightSidebarOpen(!rightSidebarOpen)"
+      >
+        <Users class="h-4 w-4" />
+        <span class="sr-only">Toggle Right Sidebar</span>
+      </Button>
 
       <!-- Player Profile Dropdown -->
       <DropdownMenu v-model:open="profileMenuOpen">
@@ -331,16 +339,6 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-7 w-7"
-        @click="setRightSidebarOpen(!rightSidebarOpen)"
-      >
-        <Users class="h-4 w-4" />
-        <span class="sr-only">Toggle Right Sidebar</span>
-      </Button>
 
       <div
         id="right-sidebar-trigger"

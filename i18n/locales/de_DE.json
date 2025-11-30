@@ -1220,6 +1220,9 @@
             "in_match": "In einem Spiel",
             "in_lobby": "In einer Lobby"
         },
+        "players": {
+            "title": "Spieler"
+        },
         "banned": "Sie sind vom Matchmaking auschgeschlossen",
         "go_to_match": "Zum Match gehen",
         "confirm_selection": "Jetzt anmelden",

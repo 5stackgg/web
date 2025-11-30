@@ -7,70 +7,104 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from "~/components/ui/sidebar";
-import { Users } from "lucide-vue-next";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
 import { useRightSidebar } from "@/composables/useRightSidebar";
-import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
-import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
-import FriendsList from "~/components/matchmaking-lobby/FriendsList.vue";
+import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
+import InvitesHeader from "~/components/matchmaking-lobby/InvitesHeader.vue";
+import InvitesContent from "~/components/matchmaking-lobby/InvitesContent.vue";
 
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
   <Sidebar collapsible="icon" side="right" variant="inset">
-    <SidebarHeader>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            size="icon"
-            tooltip="Open Friends List"
-            @click="setRightSidebarOpen(!rightSidebarOpen)"
-          >
-            <Users class="h-4 w-4" />
-            <span class="sr-only">Toggle Right Sidebar</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </SidebarHeader>
-    <SidebarContent>
-      <SidebarGroup class="overflow-hidden -mt-4">
-        <template
-          v-if="
-            rightSidebarOpen &&
-            (matchInvites.length > 0 || lobbyInvites.length > 0)
-          "
-        >
-          <div class="flex flex-col gap-4 mt-4">
-            <h3 class="text-lg font-semibold">
-              {{ $t("matchmaking.invites") }}
-              <span class="text-sm text-muted-foreground"
-                >({{ matchInvites.length + lobbyInvites.length }})</span
+    <Tabs default-value="friends" class="w-full h-full flex flex-col">
+      <SidebarHeader>
+        <div class="flex items-center gap-2 justify-end">
+          <TabsList v-if="rightSidebarOpen" class="grid w-full grid-cols-2 m-0">
+            <TabsTrigger value="friends">
+              {{ $t("matchmaking.friends.title") }}
+              <span class="text-xs text-muted-foreground ml-1"
+                >({{ friendsOnline?.length || 0 }})</span
               >
-            </h3>
-
-            <MatchInvites></MatchInvites>
-            <LobbyInvites></LobbyInvites>
+            </TabsTrigger>
+            <TabsTrigger value="online-friends">
+              {{ $t("matchmaking.players.title") }}
+              <span class="text-xs text-muted-foreground ml-1"
+                >({{ totalPlayersCount }})</span
+              >
+            </TabsTrigger>
+          </TabsList>
+          <div class="flex flex-col items-center gap-1">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  tooltip="Open Friends List"
+                  @click="setRightSidebarOpen(!rightSidebarOpen)"
+                  class="w-full h-auto mt-0 group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full"
+                >
+                  <MiniDisplay />
+                  <span class="sr-only">Toggle Right Sidebar</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </div>
-          <SidebarSeparator class="my-4" />
-        </template>
-        <FriendsList v-if="rightSidebarOpen" />
-        <MiniDisplay v-if="!rightSidebarOpen" />
-      </SidebarGroup>
-    </SidebarContent>
+        </div>
+        <InvitesHeader :sidebar-open="rightSidebarOpen" />
+      </SidebarHeader>
+      <SidebarContent v-if="rightSidebarOpen">
+        <SidebarGroup>
+          <TabsContent value="friends" class="mt-0">
+            <InvitesContent />
+            <PlayersList ref="friendsListRef" :friends-only="true" />
+          </TabsContent>
+          <TabsContent value="online-friends" class="mt-0">
+            <PlayersList ref="playersListRef" />
+          </TabsContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Tabs>
   </Sidebar>
 </template>
 
 <script lang="ts">
 export default {
+  data() {
+    return {
+      playersListRef: null as any,
+      friendsListRef: null as any,
+    };
+  },
   computed: {
-    matchInvites() {
-      return useMatchmakingStore().matchInvites;
+    playersOnline() {
+      return useMatchmakingStore().playersOnline;
     },
-    lobbyInvites() {
-      return useMatchmakingStore().lobbyInvites;
+    friendsOnline() {
+      // Get count from friendsListRef if available
+      if (this.friendsListRef?.totalPlayersCount !== undefined) {
+        return this.friendsListRef.totalPlayersCount;
+      }
+      // Fallback: count online friends
+      const matchmakingStore = useMatchmakingStore();
+      const onlineSteamIds = new Set(matchmakingStore.onlinePlayerSteamIds);
+      return matchmakingStore.friends.filter((friend: any) =>
+        onlineSteamIds.has(friend.steam_id)
+      ).length;
+    },
+    totalPlayersCount() {
+      // Get total count from PlayersList component, excluding current user
+      if (this.playersListRef?.totalPlayersCount !== undefined) {
+        return this.playersListRef.totalPlayersCount;
+      }
+      // Fallback: count online players excluding current user
+      const me = useAuthStore().me;
+      const onlinePlayers = useMatchmakingStore().playersOnline;
+      return onlinePlayers.filter(
+        (player: any) => player.steam_id !== me?.steam_id
+      ).length;
     },
   },
 };

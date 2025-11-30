@@ -1285,6 +1285,9 @@
             "in_match": "比賽中",
             "in_lobby": "大廳中"
         },
+        "players": {
+            "title": "玩家"
+        },
         "banned": "你已被禁止參加配對",
         "go_to_match": "前往比賽頁面",
         "confirm_selection": "加入佇列",

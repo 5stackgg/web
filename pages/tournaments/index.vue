@@ -7,6 +7,9 @@ import MyUpcomingTournaments from "~/components/tournament/MyUpcomingTournaments
 import Separator from "~/components/ui/separator/Separator.vue";
 import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDisplay.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -17,7 +20,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       <template #actions>
         <div class="flex gap-4 items-center">
           <NuxtLink v-if="canCreateTournament" to="/tournaments/create">
-            <Button size="lg">
+            <Button :size="isMobile ? 'default' : 'lg'">
               <PlusCircle class="w-4 h-4" />
               <span class="hidden md:inline ml-2">{{
                 $t("pages.tournaments.create")

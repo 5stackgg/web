@@ -11,6 +11,9 @@ import Pagination from "@/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import { PlusCircle } from "lucide-vue-next";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -27,7 +30,7 @@ import ServerStatus from "~/components/servers/ServerStatus.vue";
 
       <template #actions>
         <NuxtLink :to="{ name: 'dedicated-servers-create' }">
-          <Button size="lg">
+          <Button :size="isMobile ? 'default' : 'lg'">
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">{{
               $t("pages.dedicated_servers.create.title")

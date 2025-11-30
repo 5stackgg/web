@@ -87,7 +87,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                       </NuxtLink>
                     </NavigationMenuLink>
                   </li>
-                  <!-- <li>
+                  <li>
                     <NavigationMenuLink as-child>
                       <NuxtLink
                         to="/tournaments"
@@ -96,7 +96,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                         {{ $t("layouts.top_nav.play.tournaments") }}
                       </NuxtLink>
                     </NavigationMenuLink>
-                  </li> -->
+                  </li>
                   <li>
                     <NavigationMenuLink as-child>
                       <NuxtLink

@@ -4,6 +4,9 @@ import PageHeading from "~/components/PageHeading.vue";
 import { Pencil, Trash, PlusCircle, Info } from "lucide-vue-next";
 import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -16,7 +19,10 @@ import FivestackTooltip from "~/components/FiveStackToolTip.vue";
       </template>
 
       <template #actions>
-        <Button @click="regionDialogOpen = true">
+        <Button
+          @click="regionDialogOpen = true"
+          :size="isMobile ? 'default' : 'lg'"
+        >
           <PlusCircle class="w-4 h-4" />
           <span class="hidden md:inline ml-2">{{
             $t("pages.regions.create")

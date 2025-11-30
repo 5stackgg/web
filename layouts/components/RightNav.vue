@@ -62,6 +62,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             <PlayersList ref="friendsListRef" :friends-only="true" />
           </TabsContent>
           <TabsContent value="online-friends" class="mt-0">
+            <InvitesContent />
             <PlayersList ref="playersListRef" />
           </TabsContent>
         </SidebarGroup>
@@ -94,7 +95,7 @@ export default {
         }
 
         return useMatchmakingStore().onlinePlayerSteamIds.includes(
-          friend.steam_id,
+          friend.steam_id
         );
       });
     },
@@ -107,7 +108,7 @@ export default {
       const me = useAuthStore().me;
       const onlinePlayers = useMatchmakingStore().playersOnline;
       return onlinePlayers.filter(
-        (player: any) => player.steam_id !== me?.steam_id,
+        (player: any) => player.steam_id !== me?.steam_id
       ).length;
     },
   },

@@ -1280,7 +1280,9 @@
         "invites": "Invites",
         "invite_messages": {
             "unknown_inviter": "You have been invited to a match",
-            "known_inviter": "{name} has invited you to a match"
+            "known_inviter": "{name} has invited you to a match",
+            "unknown_inviter_lobby": "You have been invited to a lobby",
+            "known_inviter_lobby": "{name} has invited you to a lobby"
         },
         "lobby": {
             "access": "Lobby Access",

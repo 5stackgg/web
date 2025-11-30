@@ -18,6 +18,7 @@ import { Separator } from "~/components/ui/separator";
   <div class="flex flex-col gap-4">
     <template v-for="(invite, index) in matchInvites" :key="(invite as any).id">
       <MatchInviteNotification type="match" :invite="invite" />
+
       <Separator v-if="index < matchInvites.length - 1" class="my-2" />
     </template>
   </div>

@@ -27,6 +27,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
     >
       <SidebarMobileSync />
       <SidebarInset class="!min-h-[calc(100svh-var(--header-height))]">
+        <!-- todo fix bg color bg-muted/10 -->
         <div
           class="p-4 w-full self-center"
           :class="{

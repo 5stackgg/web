@@ -309,23 +309,11 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
           <DropdownMenuGroup>
             <DropdownMenuItem class="flex gap-2 cursor-pointer p-3" as-child>
               <NuxtLink
-                :to="{
-                  name: 'players-id',
-                  params: { id: me?.steam_id },
-                }"
-                class="flex items-center gap-2 hover:text-green-300 transition-colors"
-              >
-                <User class="w-4 h-4" />
-                My Profile
-              </NuxtLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem class="flex gap-2 cursor-pointer p-3" as-child>
-              <NuxtLink
                 :to="{ name: 'settings' }"
                 class="flex items-center gap-2 hover:text-green-300 transition-colors"
               >
                 <Settings class="w-4 h-4" />
-                My Account
+                {{ $t("layouts.app_nav.profile.my_account") }}
               </NuxtLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -335,7 +323,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             @click="showLogoutModal = true"
           >
             <LogOut class="w-4 h-4" />
-            Logout
+            {{ $t("layouts.app_nav.profile.logout") }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

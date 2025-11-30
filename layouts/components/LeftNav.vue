@@ -483,20 +483,6 @@ import Logout from "./Logout.vue";
               <DropdownMenuGroup>
                 <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
                   <NuxtLink
-                    :to="{ name: 'players-id', params: { id: me.steam_id } }"
-                    :class="{
-                      'router-link-active': isRouteActive('players'),
-                    }"
-                  >
-                    <User class="size-4" />
-                    {{ $t("layouts.app_nav.profile.my_profile") }}
-                  </NuxtLink>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-
-              <DropdownMenuGroup>
-                <DropdownMenuItem class="flex gap-2 cursor-pointer" as-child>
-                  <NuxtLink
                     :to="{ name: 'settings' }"
                     :class="{
                       'router-link-active': isRouteActive('settings'),

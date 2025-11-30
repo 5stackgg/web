@@ -91,6 +91,18 @@ export default defineEventHandler(async (event) => {
     filterBy.push(`elo:<=${body.elo_max}`);
   }
 
+  // Filter by countries
+  if (
+    body.countries &&
+    Array.isArray(body.countries) &&
+    body.countries.length > 0
+  ) {
+    const countriesFilter = body.countries
+      .map((country: string) => `country:=${country}`)
+      .join(" || ");
+    filterBy.push(`(${countriesFilter})`);
+  }
+
   // Use provided sort_by or default to name:asc
   const sortBy = body.sort_by || "name:asc";
 

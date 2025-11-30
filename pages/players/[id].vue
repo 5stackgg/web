@@ -4,8 +4,7 @@ import Pagination from "~/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
-import LastTenWins from "~/components/charts/LastTenWins.vue";
-import LastTenLosses from "~/components/charts/LastTenLosses.vue";
+import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
@@ -199,33 +198,18 @@ definePageMeta({
         </Card>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card class="flex justify-center items-center">
-          <div class="text-center w-full">
-            <CardHeader>
-              <CardTitle class="text-xl font-bold text-center">
-                {{ $t("pages.players.detail.last_ten_wins") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <LastTenWins class="max-h-[300px]" :steam_id="playerId" />
-            </CardContent>
-          </div>
-        </Card>
-
-        <Card class="flex justify-center items-center">
-          <div class="text-center w-full">
-            <CardHeader>
-              <CardTitle class="text-xl font-bold text-center">
-                {{ $t("pages.players.detail.last_ten_losses") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <LastTenLosses class="max-h-[300px]" :steam_id="playerId" />
-            </CardContent>
-          </div>
-        </Card>
-      </div>
+      <Card class="flex justify-center items-center">
+        <div class="text-center w-full">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold text-center">
+              {{ $t("pages.players.detail.recent_wins_and_losses") }}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LastTenWinsAndLosses class="max-h-[300px]" :steam_id="playerId" />
+          </CardContent>
+        </div>
+      </Card>
     </div>
 
     <Card class="p-4">

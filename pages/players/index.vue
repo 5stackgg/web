@@ -3,7 +3,12 @@ import { Button } from "~/components/ui/button";
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
-import { ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  Check,
+  ChevronsUpDown,
+} from "lucide-vue-next";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -15,12 +20,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "~/components/ui/command";
 import Pagination from "~/components/Pagination.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { kdrColor } from "~/utilities/kdrColor";
+import TimezoneFlag from "~/components/TimezoneFlag.vue";
+import { getAllCountries } from "countries-and-timezones";
 </script>
 
 <template>
@@ -138,10 +158,90 @@ import { kdrColor } from "~/utilities/kdrColor";
                 :placeholder="$t('pages.players.max_elo')"
               />
             </div>
-          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Has played matches toggle -->
+            <!-- Country multi-select -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <Label for="countries-filter">{{
+                  $t("pages.players.filter_by_country")
+                }}</Label>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  @click="clearAllCountries"
+                  class="text-xs h-6 px-2"
+                  :class="{ 'opacity-50': !form.values.countries?.length }"
+                >
+                  {{ $t("pages.manage_matches.clear_all") }}
+                </Button>
+              </div>
+              <Popover v-model:open="countryPopoverOpen">
+                <PopoverTrigger as-child>
+                  <Button
+                    id="countries-filter"
+                    role="combobox"
+                    variant="outline"
+                    class="w-full justify-between"
+                  >
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <template
+                        v-if="
+                          form.values.countries &&
+                          form.values.countries.length > 0
+                        "
+                      >
+                        <span class="text-sm">
+                          {{ form.values.countries.length }}
+                          {{ $t("pages.players.countries_selected") }}
+                        </span>
+                      </template>
+                      <template v-else>
+                        {{ $t("pages.players.select_country") }}
+                      </template>
+                    </div>
+                    <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-full p-0">
+                  <Command class="w-[300px]">
+                    <CommandInput
+                      :placeholder="$t('pages.players.search_country')"
+                    />
+                    <CommandEmpty>{{
+                      $t("pages.players.no_country_found")
+                    }}</CommandEmpty>
+                    <CommandList>
+                      <CommandGroup>
+                        <CommandItem
+                          v-for="country in sortedCountries"
+                          :key="country.id"
+                          :value="country.name"
+                          @select="
+                            () => {
+                              toggleCountry(country.id);
+                            }
+                          "
+                        >
+                          <div class="flex items-center gap-2 w-full">
+                            <TimezoneFlag :country="country.id" />
+                            <span class="truncate">{{ country.name }}</span>
+                          </div>
+                          <Check
+                            :class="[
+                              'ml-auto h-4 w-4 flex-shrink-0',
+                              form.values.countries?.includes(country.id)
+                                ? 'opacity-100'
+                                : 'opacity-0',
+                            ]"
+                          />
+                        </CommandItem>
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+
             <div class="space-y-2">
               <Label>{{ $t("pages.players.only_played_matches") }}</Label>
               <div class="flex items-center gap-2">
@@ -274,9 +374,18 @@ import { kdrColor } from "~/utilities/kdrColor";
   <Pagination
     :page="page"
     :per-page="perPage"
+    :show-per-page-selector="true"
     @page="
       (_page) => {
         page = _page;
+      }
+    "
+    @update:perPage="
+      (value) => {
+        perPage = value;
+        page = 1;
+        saveFiltersToStorage();
+        searchPlayers();
       }
     "
     :total="playersAggregate || 0"
@@ -295,12 +404,14 @@ export default {
       players: [] as any[],
       loading: false,
       page: 1,
-      perPage: 10,
+      perPage: this.loadFiltersFromStorage().perPage || 10,
       playersAggregate: 0,
       sortField: this.loadFiltersFromStorage().sortField || "name",
       sortDirection: this.loadFiltersFromStorage().sortDirection || "asc",
       onlyPlayedMatches:
         this.loadFiltersFromStorage().onlyPlayedMatches || false,
+      countryPopoverOpen: false,
+      countries: getAllCountries(),
       availableRoles: [
         { value: e_player_roles_enum.user, display: "User" },
         {
@@ -325,6 +436,7 @@ export default {
             roles: z.array(z.nativeEnum(e_player_roles_enum)).optional(),
             eloMin: z.number().nullable().optional(),
             eloMax: z.number().nullable().optional(),
+            countries: z.array(z.string()).optional(),
           }),
         ),
         initialValues: {
@@ -332,6 +444,7 @@ export default {
           roles: this.loadFiltersFromStorage().roles || [],
           eloMin: this.loadFiltersFromStorage().eloMin || null,
           eloMax: this.loadFiltersFromStorage().eloMax || null,
+          countries: this.loadFiltersFromStorage().countries || [],
         },
       }),
     };
@@ -339,6 +452,29 @@ export default {
   computed: {
     canViewAdditionalDetails() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+    },
+    sortedCountries() {
+      const allCountries = Object.values(this.countries);
+      const userCountry = useAuthStore().me?.country;
+
+      if (!userCountry) {
+        return allCountries;
+      }
+
+      // Find user's country and put it first
+      const userCountryObj = allCountries.find(
+        (country) => country.id === userCountry,
+      );
+
+      if (!userCountryObj) {
+        return allCountries;
+      }
+
+      // Return user's country first, then all others
+      return [
+        userCountryObj,
+        ...allCountries.filter((country) => country.id !== userCountry),
+      ];
     },
   },
   watch: {
@@ -351,41 +487,44 @@ export default {
     "form.values.name": {
       handler() {
         this.page = 1;
-        this.searchPlayers();
+        this.onFilterChange();
       },
     },
     "form.values.roles": {
       handler() {
         this.page = 1;
-        this.searchPlayers();
+        this.onFilterChange();
       },
     },
     "form.values.eloMin": {
       handler() {
         this.page = 1;
-        this.searchPlayers();
+        this.onFilterChange();
       },
     },
     "form.values.eloMax": {
       handler() {
         this.page = 1;
-        this.searchPlayers();
+        this.onFilterChange();
+      },
+    },
+    "form.values.countries": {
+      handler() {
+        this.page = 1;
+        this.onFilterChange();
       },
     },
     onlyPlayedMatches() {
       this.page = 1;
-      this.saveFiltersToStorage();
-      this.searchPlayers();
+      this.onFilterChange();
     },
     sortField() {
       this.page = 1;
-      this.saveFiltersToStorage();
-      this.searchPlayers();
+      this.onFilterChange();
     },
     sortDirection() {
       this.page = 1;
-      this.saveFiltersToStorage();
-      this.searchPlayers();
+      this.onFilterChange();
     },
   },
   methods: {
@@ -406,6 +545,7 @@ export default {
         roles: [],
         eloMin: null,
         eloMax: null,
+        countries: [],
       });
       this.onlyPlayedMatches = false;
       this.sortField = "name";
@@ -413,6 +553,32 @@ export default {
       this.page = 1;
       this.saveFiltersToStorage();
       this.searchPlayers();
+    },
+    toggleCountry(countryId: string) {
+      const currentCountries = this.form.values.countries || [];
+      const index = currentCountries.indexOf(countryId);
+
+      if (index === -1) {
+        // Add country
+        this.form.setValues({
+          ...this.form.values,
+          countries: [...currentCountries, countryId],
+        });
+      } else {
+        // Remove country
+        this.form.setValues({
+          ...this.form.values,
+          countries: currentCountries.filter((id) => id !== countryId),
+        });
+      }
+      this.onFilterChange();
+    },
+    clearAllCountries() {
+      this.form.setValues({
+        ...this.form.values,
+        countries: [],
+      });
+      this.onFilterChange();
     },
     loadFiltersFromStorage() {
       if (process.client) {
@@ -433,9 +599,11 @@ export default {
             roles: this.form.values.roles,
             eloMin: this.form.values.eloMin,
             eloMax: this.form.values.eloMax,
+            countries: this.form.values.countries,
             onlyPlayedMatches: this.onlyPlayedMatches,
             sortField: this.sortField,
             sortDirection: this.sortDirection,
+            perPage: this.perPage,
           };
           localStorage.setItem("players-filters", JSON.stringify(filters));
         } catch (error) {
@@ -510,6 +678,11 @@ export default {
               this.form.values.eloMax !== undefined
                 ? this.form.values.eloMax
                 : undefined,
+            countries:
+              this.form.values.countries &&
+              this.form.values.countries.length > 0
+                ? this.form.values.countries
+                : undefined,
             only_played_matches: this.onlyPlayedMatches,
             sort_by: this.getSortBy(),
           },
@@ -541,6 +714,12 @@ export default {
           this.form.setValues({
             ...this.form.values,
             roles: saved.roles || [],
+          });
+        }
+        if (!this.form.values.countries) {
+          this.form.setValues({
+            ...this.form.values,
+            countries: saved.countries || [],
           });
         }
       } catch (e) {

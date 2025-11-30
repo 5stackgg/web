@@ -340,6 +340,16 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         </DropdownMenuContent>
       </DropdownMenu>
 
+      <Button
+        variant="ghost"
+        size="icon"
+        class="h-7 w-7"
+        @click="setRightSidebarOpen(!rightSidebarOpen)"
+      >
+        <Users class="h-4 w-4" />
+        <span class="sr-only">Toggle Right Sidebar</span>
+      </Button>
+
       <div
         id="right-sidebar-trigger"
         class="flex items-center justify-center"

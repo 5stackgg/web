@@ -73,6 +73,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const friends = ref([]);
   const lobbies = ref([]);
+  const viewingMatchId = ref<string | undefined>();
   const subscribeToFriends = async (mySteamId: bigint) => {
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
@@ -505,6 +506,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
     createLobby,
     inviteToLobby,
+    viewingMatchId,
   };
 });
 

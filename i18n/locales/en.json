@@ -1278,6 +1278,10 @@
         "cancel_matchmaking": "Cancel Matchmaking",
         "searching_for_match": "Searching for a {type} match",
         "invites": "Invites",
+        "invite_messages": {
+            "unknown_inviter": "You have been invited to a match",
+            "known_inviter": "{name} has invited you to a match"
+        },
         "lobby": {
             "access": "Lobby Access",
             "access_description": "Controls who can join the lobby. Open allows anyone to join, Friends allows only friends to join, and Invite allows only players you invite to join.",

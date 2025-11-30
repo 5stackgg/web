@@ -10,7 +10,7 @@ const { hasInvites, totalCount } = useInvites();
 
 <template>
   <template v-if="hasInvites">
-    <div class="flex px-4">
+    <div class="px-4">
       <MatchInvites />
       <LobbyInvites />
     </div>

@@ -9,7 +9,6 @@ import {
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import ScrollArea from "~/components/ui/scroll-area/ScrollArea.vue";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
@@ -59,10 +58,10 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         <SidebarGroup>
           <TabsContent value="friends" class="mt-0">
             <InvitesContent />
-            <PlayersList ref="friendsListRef" :friends-only="true" />
+            <PlayersList :friends-only="true" />
           </TabsContent>
           <TabsContent value="online-friends" class="mt-0">
-            <PlayersList ref="playersListRef" />
+            <PlayersList />
           </TabsContent>
         </SidebarGroup>
       </SidebarContent>
@@ -75,12 +74,11 @@ export default {
   data() {
     return {
       playersListRef: null as any,
-      friendsListRef: null as any,
     };
   },
   computed: {
-    playersOnline() {
-      return useMatchmakingStore().playersOnline;
+    me() {
+      return useAuthStore().me;
     },
     friends() {
       return useMatchmakingStore().friends.sort((a, b) => {
@@ -99,16 +97,9 @@ export default {
       });
     },
     totalPlayersCount() {
-      // Get total count from PlayersList component, excluding current user
-      if (this.playersListRef?.totalPlayersCount !== undefined) {
-        return this.playersListRef.totalPlayersCount;
-      }
-      // Fallback: count online players excluding current user
-      const me = useAuthStore().me;
-      const onlinePlayers = useMatchmakingStore().playersOnline;
-      return onlinePlayers.filter(
-        (player: any) => player.steam_id !== me?.steam_id,
-      ).length;
+      return useMatchmakingStore().playersOnline.filter((player) => {
+        return player.steam_id !== this.me?.steam_id;
+      }).length;
     },
   },
 };

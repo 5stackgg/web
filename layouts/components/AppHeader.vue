@@ -8,12 +8,8 @@ import SystemStatus from "./SystemStatus.vue";
 import OnlinePlayers from "./OnlinePlayers.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
-import { Button } from "@/components/ui/button";
-import { Users } from "lucide-vue-next";
-import { useRightSidebar } from "@/composables/useRightSidebar";
 
 const { isMobile } = useSidebar();
-const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 </script>
 
 <template>
@@ -28,31 +24,15 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
       </div>
 
       <div class="flex gap-4">
-        <MatchLobbies></MatchLobbies>
+        <MatchLobbies v-if="!isMobile"></MatchLobbies>
 
         <SystemUpdate v-if="isAdmin"></SystemUpdate>
 
         <SystemStatus></SystemStatus>
 
-        <OnlinePlayers></OnlinePlayers>
+        <OnlinePlayers v-if="isMobile"></OnlinePlayers>
 
         <AppNotifications></AppNotifications>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          class="h-7 w-7"
-          @click="setRightSidebarOpen(!rightSidebarOpen)"
-        >
-          <Users class="h-4 w-4" />
-          <span class="sr-only">Toggle Right Sidebar</span>
-        </Button>
-
-        <div
-          id="right-sidebar-trigger"
-          class="flex items-center justify-center"
-          v-show="isMobile"
-        ></div>
       </div>
     </div>
   </header>

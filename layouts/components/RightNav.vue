@@ -91,7 +91,7 @@ export default {
       const matchmakingStore = useMatchmakingStore();
       const onlineSteamIds = new Set(matchmakingStore.onlinePlayerSteamIds);
       return matchmakingStore.friends.filter((friend: any) =>
-        onlineSteamIds.has(friend.steam_id)
+        onlineSteamIds.has(friend.steam_id),
       ).length;
     },
     totalPlayersCount() {
@@ -103,7 +103,7 @@ export default {
       const me = useAuthStore().me;
       const onlinePlayers = useMatchmakingStore().playersOnline;
       return onlinePlayers.filter(
-        (player: any) => player.steam_id !== me?.steam_id
+        (player: any) => player.steam_id !== me?.steam_id,
       ).length;
     },
   },

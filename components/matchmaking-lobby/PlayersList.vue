@@ -216,13 +216,13 @@ export default {
       const onlineIds = new Set(this.onlinePlayerSteamIds);
       let players = [...this.allPlayers].filter(
         (player) =>
-          player.steam_id !== this.mySteamId && onlineIds.has(player.steam_id)
+          player.steam_id !== this.mySteamId && onlineIds.has(player.steam_id),
       );
 
       // Filter to friends only if prop is set
       if (this.friendsOnly) {
         players = players.filter((player) =>
-          this.friendSteamIds.has(player.steam_id)
+          this.friendSteamIds.has(player.steam_id),
         );
       }
 
@@ -234,13 +234,13 @@ export default {
       const onlineIds = new Set(this.onlinePlayerSteamIds);
       let players = [...this.allPlayers].filter(
         (player) =>
-          player.steam_id !== this.mySteamId && !onlineIds.has(player.steam_id)
+          player.steam_id !== this.mySteamId && !onlineIds.has(player.steam_id),
       );
 
       // Filter to friends only if prop is set
       if (this.friendsOnly) {
         players = players.filter((player) =>
-          this.friendSteamIds.has(player.steam_id)
+          this.friendSteamIds.has(player.steam_id),
         );
       }
 

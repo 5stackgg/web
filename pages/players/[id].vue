@@ -446,7 +446,7 @@ export default {
       }
       return formatStatValue(
         this.player?.kills_aggregate.aggregate.count /
-          this.player?.deaths_aggregate.aggregate.count
+          this.player?.deaths_aggregate.aggregate.count,
       );
     },
     winLossRatio() {

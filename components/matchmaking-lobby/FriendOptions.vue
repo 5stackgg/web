@@ -23,7 +23,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
     <Badge
       variant="outline"
       class="flex items-center gap-1 p-2"
-      v-if="player.player.is_in_another_match && displayStatus"
+      v-if="player.player?.is_in_another_match && displayStatus"
     >
       <Gamepad2 class="h-3 w-3" />
       <span>{{ $t("matchmaking.friends.in_match") }}</span>
@@ -32,7 +32,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
     <Badge
       variant="outline"
       class="flex items-center gap-1 p-2"
-      v-else-if="player.player.is_in_lobby && displayStatus"
+      v-else-if="player.player?.is_in_lobby && displayStatus"
     >
       <Users class="h-3 w-3" />
       <span>{{ $t("matchmaking.friends.in_lobby") }}</span>

@@ -5,7 +5,7 @@ import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
 import { SidebarSeparator } from "~/components/ui/sidebar";
 import { useInvites } from "@/composables/useInvites";
 
-const { hasInvites, totalCount } = useInvites();
+const { hasInvites } = useInvites();
 </script>
 
 <template>

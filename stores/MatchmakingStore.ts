@@ -186,6 +186,25 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     });
   };
 
+  const onlineFriends = computed(() => {
+    return friends.value?.filter((friend: any) => {
+      if (friend.status === "Pending") {
+        return false;
+      }
+
+      return onlinePlayerSteamIds.value.includes(friend.steam_id);
+    });
+  });
+
+  const offlineFriends = computed(() => {
+    return friends.value?.filter((friend: any) => {
+      if (friend.status === "Pending") {
+        return false;
+      }
+      return !onlinePlayerSteamIds.value.includes(friend.steam_id);
+    });
+  });
+
   const subscribeToLobbies = async (steam_id: bigint) => {
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
@@ -484,6 +503,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   return {
     friends,
+    onlineFriends,
+    offlineFriends,
     lobbies,
     matchInvites,
     regionStats,

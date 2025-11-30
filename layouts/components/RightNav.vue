@@ -27,13 +27,13 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             <TabsTrigger value="friends">
               {{ $t("matchmaking.friends.title") }}
               <span class="text-xs text-muted-foreground ml-1"
-                >({{ onlineFriends?.length || 0 }})</span
+                >({{ onlineFriends.length }})</span
               >
             </TabsTrigger>
             <TabsTrigger value="online-friends">
               {{ $t("matchmaking.players.title") }}
               <span class="text-xs text-muted-foreground ml-1"
-                >({{ totalPlayersCount }})</span
+                >({{ playersOnline.length }})</span
               >
             </TabsTrigger>
           </TabsList>
@@ -80,26 +80,11 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    friends() {
-      return useMatchmakingStore().friends.sort((a, b) => {
-        return a.name.localeCompare(b.name);
-      });
-    },
     onlineFriends() {
-      return this.friends?.filter((friend) => {
-        if (friend.status === "Pending") {
-          return false;
-        }
-
-        return useMatchmakingStore().onlinePlayerSteamIds.includes(
-          friend.steam_id,
-        );
-      });
+      return useMatchmakingStore().onlineFriends;
     },
-    totalPlayersCount() {
-      return useMatchmakingStore().playersOnline.filter((player) => {
-        return player.steam_id !== this.me?.steam_id;
-      }).length;
+    playersOnline() {
+      return useMatchmakingStore().playersOnline;
     },
   },
 };

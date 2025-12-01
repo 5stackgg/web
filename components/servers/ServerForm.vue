@@ -22,7 +22,6 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 </script>
 
 <template>
-  {{ form.errors }}
   <form @submit.prevent="updateCreateServer" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="use_valve_modes">
       <FormItem>
@@ -150,7 +149,7 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
               {{
                 useGameServerNode
                   ? $t("server.form.use_game_server_node")
-                  : "Use Manual Host Configuration"
+                  : $t("server.form.use_manual_host_configuration")
               }}
             </FormDescription>
           </div>

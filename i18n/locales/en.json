@@ -1331,6 +1331,8 @@
         "cpu_sockets": "CPU Sockets",
         "cpu_cores_per_socket": "CPU Cores/Socket",
         "cpu_threads_per_core": "CPU Threads/Core",
+        "cpu_frequency": "CPU Max Frequency",
+        "cpu_frequency_warning": "CPU Max Frequency is less than 3GHz may effect CS2 server performance",
         "gpu": "GPU",
         "select_region": "Select Region",
         "remove_node": "Remove Node",

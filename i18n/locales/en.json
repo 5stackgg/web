@@ -761,7 +761,7 @@
         "match": {
             "team_1": "Team 1",
             "team_2": "Team 2",
-            "round_match": "Round {round} Match {match}",
+            "round_match": "{prefix} Round {round} Match {match}",
             "bye_round": "Bye Round",
             "scheduled_for": "Scheduled for"
         },

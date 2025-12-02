@@ -14,12 +14,15 @@ import TimeAgo from "~/components/TimeAgo.vue";
         <Badge v-if="bracket.bye">
           {{ $t("tournament.match.bye_round") }}
         </Badge>
-        <Badge v-else>{{
-          $t("tournament.match.round_match", {
-            round,
-            match: bracket.match_number,
-          })
-        }}</Badge>
+        <Badge v-else>
+          {{
+            $t("tournament.match.round_match", {
+              round,
+              match: bracket.match_number,
+              prefix: bracket.path === "LB" ? "Losers" : "",
+            })
+          }}</Badge
+        >
       </div>
 
       <!-- Display scheduled ETA if available -->
@@ -28,6 +31,19 @@ import TimeAgo from "~/components/TimeAgo.vue";
           {{ $t("tournament.match.scheduled_for") }}:
           <span class="text-blue-400 font-medium">
             <TimeAgo :date="bracket.scheduled_eta"></TimeAgo>
+          </span>
+        </div>
+      </div>
+
+      <div v-if="bracket.loser_bracket" class="text-center mt-2 mb-2">
+        <div class="text-xs text-red-400 font-medium">
+          <span class="inline-flex items-center gap-1">
+            <span>Loser →</span>
+            <span v-if="bracket.loser_bracket.match_number">
+              Round {{ bracket.loser_bracket.round }}, Match
+              {{ bracket.loser_bracket.match_number }}
+            </span>
+            <span v-else> Round {{ bracket.loser_bracket.round }} </span>
           </span>
         </div>
       </div>

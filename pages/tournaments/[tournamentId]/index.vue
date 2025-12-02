@@ -416,6 +416,9 @@ export default {
                           group: order_by.asc,
                         },
                         {
+                          path: order_by.desc,
+                        },
+                        {
                           match_number: order_by.asc,
                         },
                       ],
@@ -429,6 +432,15 @@ export default {
                       scheduled_eta: true,
                       team_1_seed: true,
                       team_2_seed: true,
+                      path: true,
+                      loser_parent_bracket_id: true,
+                      loser_bracket: {
+                        id: true,
+                        round: true,
+                        group: true,
+                        match_number: true,
+                        path: true,
+                      },
                       match: {
                         id: true,
                         status: true,

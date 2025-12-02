@@ -21,6 +21,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 e_game_server_node_statuses_enum.Setup ||
               gameServerNode.status ===
                 e_game_server_node_statuses_enum.NotAcceptingNewMatches,
+            ['bg-orange-600']: showMaxCPUFrequencyWarning,
           }"
         >
           <span
@@ -98,6 +99,25 @@ import TimeAgo from "~/components/TimeAgo.vue";
         </div>
         <span class="text-muted-foreground">|</span>
         <div class="flex items-center gap-1">
+          <div class="font-medium">{{ $t("game_server.cpu_frequency") }}:</div>
+          <div
+            class="text-muted-foreground"
+            :class="{ 'text-red-500': showMaxCPUFrequencyWarning }"
+          >
+            <FiveStackToolTip>
+              <template #trigger>
+                <div class="text-muted-foreground">
+                  {{ maxFrequency || "-" }}
+                </div>
+              </template>
+              <div class="text-red-500">
+                {{ $t("game_server.cpu_frequency_warning") }}
+              </div>
+            </FiveStackToolTip>
+          </div>
+        </div>
+        <span class="text-muted-foreground">|</span>
+        <div class="flex items-center gap-1">
           <div class="font-medium">
             {{ $t("game_server.cpu_threads_per_core") }}:
           </div>
@@ -146,6 +166,14 @@ export default {
     gameServerNode: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    maxFrequency() {
+      return this.gameServerNode.cpu_frequency_info?.frequency || "-";
+    },
+    showMaxCPUFrequencyWarning() {
+      return this.maxFrequency < 3000000;
     },
   },
 };

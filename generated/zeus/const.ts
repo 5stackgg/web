@@ -1851,6 +1851,9 @@ export const AllTypesProps: Record<string,any> = {
 		where:"friends_bool_exp"
 	},
 	game_server_nodes:{
+		cpu_frequency_info:{
+
+		},
 		cpu_governor_info:{
 
 		},
@@ -1904,6 +1907,7 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"game_server_nodes_variance_order_by"
 	},
 	game_server_nodes_append_input:{
+		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb"
 	},
 	game_server_nodes_arr_rel_insert_input:{
@@ -1927,6 +1931,7 @@ export const AllTypesProps: Record<string,any> = {
 		available_server_count:"Int_comparison_exp",
 		build_id:"Int_comparison_exp",
 		cpu_cores_per_socket:"Int_comparison_exp",
+		cpu_frequency_info:"jsonb_comparison_exp",
 		cpu_governor_info:"jsonb_comparison_exp",
 		cpu_sockets:"Int_comparison_exp",
 		cpu_threads_per_core:"Int_comparison_exp",
@@ -1972,6 +1977,7 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_server_nodes_insert_input:{
+		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
 		e_region:"server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
@@ -2031,6 +2037,7 @@ export const AllTypesProps: Record<string,any> = {
 		available_server_count:"order_by",
 		build_id:"order_by",
 		cpu_cores_per_socket:"order_by",
+		cpu_frequency_info:"order_by",
 		cpu_governor_info:"order_by",
 		cpu_sockets:"order_by",
 		cpu_threads_per_core:"order_by",
@@ -2065,12 +2072,14 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_server_nodes_prepend_input:{
+		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb"
 	},
 	game_server_nodes_select_column: "enum" as const,
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	game_server_nodes_set_input:{
+		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
 		lan_ip:"inet",
 		node_ip:"inet",
@@ -2113,6 +2122,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	game_server_nodes_stream_cursor_value_input:{
+		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
 		lan_ip:"inet",
 		node_ip:"inet",
@@ -13016,6 +13026,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz_comparison_exp",
 		group:"numeric_comparison_exp",
 		id:"uuid_comparison_exp",
+		loser_bracket:"tournament_brackets_bool_exp",
 		loser_parent_bracket_id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
@@ -13041,6 +13052,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		group:"numeric",
 		id:"uuid",
+		loser_bracket:"tournament_brackets_obj_rel_insert_input",
 		loser_parent_bracket_id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
@@ -13087,6 +13099,10 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_team_id_1:"order_by",
 		tournament_team_id_2:"order_by"
 	},
+	tournament_brackets_obj_rel_insert_input:{
+		data:"tournament_brackets_insert_input",
+		on_conflict:"tournament_brackets_on_conflict"
+	},
 	tournament_brackets_on_conflict:{
 		constraint:"tournament_brackets_constraint",
 		update_columns:"tournament_brackets_update_column",
@@ -13097,6 +13113,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"order_by",
 		group:"order_by",
 		id:"order_by",
+		loser_bracket:"tournament_brackets_order_by",
 		loser_parent_bracket_id:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
@@ -16072,6 +16089,7 @@ export const ReturnTypes: Record<string,any> = {
 		available_server_count:"Int",
 		build_id:"Int",
 		cpu_cores_per_socket:"Int",
+		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
 		cpu_sockets:"Int",
 		cpu_threads_per_core:"Int",
@@ -20574,6 +20592,7 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		group:"numeric",
 		id:"uuid",
+		loser_bracket:"tournament_brackets",
 		loser_parent_bracket_id:"uuid",
 		match:"matches",
 		match_id:"uuid",

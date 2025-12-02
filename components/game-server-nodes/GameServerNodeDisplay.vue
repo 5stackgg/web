@@ -107,7 +107,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
             <FiveStackToolTip>
               <template #trigger>
                 <div class="text-muted-foreground">
-                  {{ maxFrequency || "-" }}
+                  {{ maxFrequency ? `${maxFrequency}GHz` : "-" }}
                 </div>
               </template>
               <div class="text-red-500">
@@ -170,10 +170,16 @@ export default {
   },
   computed: {
     maxFrequency() {
-      return this.gameServerNode.cpu_frequency_info?.frequency || "-";
+      const maxFrequency = this.gameServerNode.cpu_frequency_info?.frequency;
+
+      if (!maxFrequency) {
+        return;
+      }
+
+      return maxFrequency / 1000000;
     },
     showMaxCPUFrequencyWarning() {
-      return this.maxFrequency < 3000000;
+      return this.maxFrequency && this.maxFrequency < 3;
     },
   },
 };

@@ -82,6 +82,13 @@ import TimeAgo from "~/components/TimeAgo.vue";
         class="flex items-center gap-4 text-xs"
         v-if="gameServerNode.status !== e_game_server_node_statuses_enum.Setup"
       >
+      <div class="flex items-center gap-1">
+          <div class="font-medium">{{ $t("game_server.cpu_model") }}:</div>
+          <div class="text-muted-foreground">
+            {{ gameServerNode.cpu_frequency_info.model || "-" }}
+          </div>
+        </div>
+        <span class="text-muted-foreground">|</span>
         <div class="flex items-center gap-1">
           <div class="font-medium">{{ $t("game_server.cpu_sockets") }}:</div>
           <div class="text-muted-foreground">
@@ -170,13 +177,7 @@ export default {
   },
   computed: {
     maxFrequency() {
-      const maxFrequency = this.gameServerNode.cpu_frequency_info?.frequency;
-
-      if (!maxFrequency) {
-        return;
-      }
-
-      return maxFrequency / 1000000;
+      return this.gameServerNode.cpu_frequency_info?.frequency;
     },
     showMaxCPUFrequencyWarning() {
       return this.maxFrequency && this.maxFrequency < 3;

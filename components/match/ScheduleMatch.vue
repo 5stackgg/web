@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Calendar } from "~/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-vue-next";
+import { Calendar as CalendarIcon, X } from "lucide-vue-next";
 </script>
 
 <template>
@@ -46,9 +46,28 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
               class="ml-2 w-[120px]"
             ></Input>
 
-            <Button type="submit" class="ml-4">{{
-              $t("match.schedule.schedule")
-            }}</Button>
+            <Button
+              v-if="form.values.scheduled_at"
+              type="button"
+              variant="ghost"
+              size="icon"
+              class="ml-2"
+              @click.prevent="resetSchedule"
+              :title="$t('match.schedule.reset')"
+            >
+              <X class="h-4 w-4" />
+            </Button>
+
+            <Button type="submit" class="ml-4">
+              <span v-if="!form.values.scheduled_at">
+                {{
+                  $t("match.schedule.start_match")
+                }}
+              </span>
+              <span v-else>
+                {{ $t("match.schedule.schedule") }}
+              </span>
+            </Button>
           </div>
           <FormMessage />
         </FormControl>
@@ -144,6 +163,14 @@ export default {
           ],
         }),
       });
+    },
+    async resetSchedule() {
+      this.form.setValues({
+        scheduled_at: undefined,
+      });
+      
+      this.startDate = undefined;
+      this.startTime = undefined;
     },
   },
 };

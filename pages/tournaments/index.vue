@@ -52,7 +52,7 @@ const { isMobile } = useSidebar();
           <Teleport defer to="#pagination">
             <pagination
               :page="page"
-              :per-page="perPage"
+              :items-per-page="perPage"
               @page="
                 (_page: number) => {
                   page = _page;

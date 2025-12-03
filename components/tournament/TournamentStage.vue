@@ -136,6 +136,9 @@ export default {
   },
   computed: {
     maxGroups() {
+      if (!this.stage.brackets || this.stage.brackets.length === 0) {
+        return this.stage.groups || 1;
+      }
       return Math.max(...this.stage.brackets.map((bracket) => bracket.group));
     },
     getRoundsForGroup() {

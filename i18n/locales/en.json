@@ -1015,7 +1015,9 @@
         },
         "schedule": {
             "pick_date": "Pick a date",
-            "schedule": "Schedule"
+            "schedule": "Schedule",
+            "start_match": "Start Match",
+            "reset": "Reset scheduled time"
         },
         "player": {
             "captain": "Captain",

@@ -49,11 +49,17 @@ export default {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+          mode: "index" as const,
+          intersect: false,
+        },
         plugins: {
           legend: {
             display: false,
           },
           tooltip: {
+            mode: "index" as const,
+            intersect: false,
             callbacks: {
               label: (context) => {
                 return `${context.parsed.y} ${this.label}`;

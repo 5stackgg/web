@@ -66,6 +66,10 @@ export default {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
         plugins: {
           legend: {
             display: true,
@@ -77,6 +81,8 @@ export default {
             },
           },
           tooltip: {
+            mode: "index",
+            intersect: false,
             callbacks: {
               label: (context: any) => {
                 const val = Number(context.parsed.y || 0).toLocaleString(

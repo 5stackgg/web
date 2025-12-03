@@ -197,25 +197,18 @@ export default {
 
       const datasets = mounts.flatMap((mount, idx) => {
         const color = colorForIndex(idx);
-        // Compute constant Total as the MAX observed (used + available) across samples for this mount
-        const maxTotalBytesForMount = metricsArr.reduce(
-          (max: number, point: any) => {
-            const disks = Array.isArray(point?.disks) ? point.disks : [];
-            const used = disks
-              .filter((d: any) => (d?.mountpoint || "unknown") === mount)
-              .reduce((sum: number, d: any) => sum + Number(d?.used || 0), 0);
-            const avail = disks
-              .filter((d: any) => (d?.mountpoint || "unknown") === mount)
-              .reduce(
-                (sum: number, d: any) => sum + Number(d?.available || 0),
-                0,
-              );
-            const total = used + avail;
-            return total > max ? total : max;
-          },
-          0,
-        );
-        const totalConstGb = toGb(maxTotalBytesForMount);
+
+        let totalBytesForMount = 0;
+        if (metricsArr.length > 0) {
+          const lastPoint = metricsArr[metricsArr.length - 1];
+          const disks = Array.isArray(lastPoint?.disks) ? lastPoint.disks : [];
+
+          totalBytesForMount = disks
+            .filter((d: any) => (d?.mountpoint || "unknown") === mount)
+            .reduce((sum: number, d: any) => sum + Number(d?.size || 0), 0);
+        }
+
+        const totalConstGb = toGb(totalBytesForMount);
         const label = this.formatMountName(mount);
         const used = {
           label,

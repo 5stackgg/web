@@ -522,7 +522,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                   <template
                     v-for="i in Math.max(
                       0,
-                      5 -
+                      maxPlayersPerLineup -
                         (matchStats.lineup_1?.lineup_players?.length ||
                           match.lineup_1?.lineup_players?.length ||
                           0),
@@ -645,7 +645,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                   <template
                     v-for="i in Math.max(
                       0,
-                      5 -
+                      maxPlayersPerLineup -
                         (matchStats.lineup_2?.lineup_players?.length ||
                           match.lineup_2?.lineup_players?.length ||
                           0),
@@ -922,6 +922,9 @@ export default {
     },
   },
   computed: {
+    maxPlayersPerLineup() {
+      return this.match.max_players_per_lineup;
+    },
     eloChange(): typeof eloFields {
       return this.match.elo_changes?.at(0);
     },

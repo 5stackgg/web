@@ -60,9 +60,7 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
 
             <Button type="submit" class="ml-4">
               <span v-if="!form.values.scheduled_at">
-                {{
-                  $t("match.schedule.start_match")
-                }}
+                {{ $t("match.schedule.start_match") }}
               </span>
               <span v-else>
                 {{ $t("match.schedule.schedule") }}
@@ -168,7 +166,7 @@ export default {
       this.form.setValues({
         scheduled_at: undefined,
       });
-      
+
       this.startDate = undefined;
       this.startTime = undefined;
     },

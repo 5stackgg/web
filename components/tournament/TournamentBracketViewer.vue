@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
-import { Maximize, Minimize } from "lucide-vue-next";
+import { Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-vue-next";
 import {
   getRoundLabel,
   getWinnerLabel,
@@ -28,6 +28,10 @@ const props = defineProps({
   isLoserBracket: {
     type: Boolean,
     default: false,
+  },
+  totalGroups: {
+    type: Number,
+    default: 1,
   },
 });
 
@@ -63,6 +67,25 @@ const MOMENTUM_MIN_VELOCITY = 0.5; // px/frame
 
 const isFullscreen = ref(false);
 const bracketWrapper = ref<HTMLElement | null>(null);
+const bracketContent = ref<HTMLElement | null>(null);
+const bracketContentWrapper = ref<HTMLElement | null>(null);
+const zoomLevel = ref(0.75);
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 3.0;
+const ZOOM_STEP = 0.1;
+
+// Calculate dynamic max height based on number of groups
+const maxHeight = computed(() => {
+  if (props.totalGroups === 1) {
+    return "80vh";
+  } else if (props.totalGroups === 2) {
+    return "40vh";
+  } else if (props.totalGroups === 3) {
+    return "28vh";
+  } else {
+    return "22vh";
+  }
+});
 
 const updateMinimap = () => {
   if (
@@ -145,9 +168,56 @@ const onFullscreenChange = () => {
   isFullscreen.value = !!document.fullscreenElement;
 };
 
+const redrawLines = () => {
+  clearConnectingLines();
+  // Wait for transform to be applied, then redraw
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      drawConnectingLines();
+      updateMinimap();
+    });
+  });
+};
+
+const zoomIn = () => {
+  zoomLevel.value = Math.min(MAX_ZOOM, zoomLevel.value + ZOOM_STEP);
+  nextTick(() => {
+    redrawLines();
+  });
+};
+
+const zoomOut = () => {
+  zoomLevel.value = Math.max(MIN_ZOOM, zoomLevel.value - ZOOM_STEP);
+  nextTick(() => {
+    redrawLines();
+  });
+};
+
+const resetZoom = () => {
+  zoomLevel.value = 0.75;
+  nextTick(() => {
+    redrawLines();
+  });
+};
+
+const handleWheel = (e: WheelEvent) => {
+  // Only zoom if Ctrl/Cmd key is held
+  if (e.ctrlKey || e.metaKey) {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      zoomIn();
+    } else {
+      zoomOut();
+    }
+  }
+};
+
 onMounted(() => {
   if (bracketContainer.value) {
     bracketContainer.value.addEventListener("scroll", handleScroll);
+    bracketContainer.value.addEventListener("wheel", handleWheel, {
+      passive: false,
+    });
     window.addEventListener("resize", updateMinimap);
     updateMinimap();
   }
@@ -157,6 +227,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (bracketContainer.value) {
     bracketContainer.value.removeEventListener("scroll", handleScroll);
+    bracketContainer.value.removeEventListener("wheel", handleWheel);
     window.removeEventListener("resize", updateMinimap);
   }
   window.removeEventListener("mousemove", onMinimapPointerMove);
@@ -185,26 +256,42 @@ watch(
   { deep: true, immediate: true },
 );
 
+watch(zoomLevel, () => {
+  nextTick(() => {
+    redrawLines();
+  });
+});
+
 const clearConnectingLines = () => {
-  if (!bracketContainer.value) return;
-  const container = bracketContainer.value as HTMLElement;
-  const existingSvg = container.querySelector("svg");
-  if (existingSvg) {
-    existingSvg.remove();
+  // Clear SVG from both container and wrapper (in case it's in either location)
+  if (bracketContainer.value) {
+    const container = bracketContainer.value as HTMLElement;
+    const existingSvg = container.querySelector("svg");
+    if (existingSvg) {
+      existingSvg.remove();
+    }
+  }
+  if (bracketContentWrapper.value) {
+    const wrapper = bracketContentWrapper.value as HTMLElement;
+    const existingSvg = wrapper.querySelector("svg");
+    if (existingSvg) {
+      existingSvg.remove();
+    }
   }
 };
 
 const drawConnectingLines = () => {
-  if (!bracketContainer.value) {
+  if (!bracketContainer.value || !bracketContentWrapper.value) {
     return;
   }
 
   const container = bracketContainer.value as HTMLElement;
+  const wrapper = bracketContentWrapper.value as HTMLElement;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
-  // Set SVG dimensions to match the full content size of the container
-  const fullWidth = container.scrollWidth;
-  const fullHeight = container.scrollHeight;
+  // Set SVG dimensions to match the wrapper size (unscaled dimensions)
+  const fullWidth = wrapper.scrollWidth;
+  const fullHeight = wrapper.scrollHeight;
 
   svg.setAttribute("width", fullWidth + "px");
   svg.setAttribute("height", fullHeight + "px");
@@ -226,15 +313,15 @@ const drawConnectingLines = () => {
     for (const bracket of brackets) {
       if (!bracket || !bracket.id) continue;
 
-      // Find the source match element by ID
-      const sourceMatchEl = container.querySelector(
+      // Find the source match element by ID (search within wrapper)
+      const sourceMatchEl = wrapper.querySelector(
         `#bracket-${bracket.id}`,
       ) as HTMLElement;
       if (!sourceMatchEl) continue;
 
       // Draw line to parent bracket (winner advances)
       if (bracket.parent_bracket?.id) {
-        const targetMatchEl = container.querySelector(
+        const targetMatchEl = wrapper.querySelector(
           `#bracket-${bracket.parent_bracket.id}`,
         ) as HTMLElement;
         if (targetMatchEl) {
@@ -244,7 +331,7 @@ const drawConnectingLines = () => {
 
       // Draw line to loser bracket (loser goes to losers bracket)
       if (bracket.loser_bracket?.id) {
-        const targetMatchEl = container.querySelector(
+        const targetMatchEl = wrapper.querySelector(
           `#bracket-${bracket.loser_bracket.id}`,
         ) as HTMLElement;
         if (targetMatchEl) {
@@ -254,7 +341,7 @@ const drawConnectingLines = () => {
     }
   }
 
-  container.appendChild(svg);
+  wrapper.appendChild(svg);
 };
 
 const drawLine = (
@@ -265,7 +352,8 @@ const drawLine = (
 ) => {
   const margins = 12.5;
 
-  // Get positions relative to the scrollable container
+  // Get positions relative to the wrapper (which has the scale transform)
+  // Since SVG is now in the same coordinate system, offsetLeft/offsetTop work correctly
   const sourceX = sourceEl.offsetLeft + sourceEl.offsetWidth;
   const sourceY = sourceEl.offsetTop + sourceEl.offsetHeight / 2;
 
@@ -482,41 +570,100 @@ function startMomentum() {
 <template>
   <div class="relative" ref="bracketWrapper">
     <div
-      class="tournament-bracket overflow-auto relative max-h-[80vh] cursor-grab"
+      class="tournament-bracket overflow-auto relative cursor-grab"
+      :style="{
+        maxHeight: maxHeight,
+        minHeight: props.totalGroups > 1 ? '200px' : 'auto',
+      }"
       ref="bracketContainer"
       @mousedown="onBracketPointerDown"
       @touchstart="onBracketPointerDown"
       :class="{ 'fullscreen-bracket': isFullscreen }"
     >
-      <div class="grid grid-flow-col auto-cols-max gap-20 min-w-max">
+      <div
+        class="bracket-content-wrapper"
+        ref="bracketContentWrapper"
+        :style="{
+          transform: `scale(${zoomLevel})`,
+          transformOrigin: 'top left',
+        }"
+      >
         <div
-          v-for="round of Array.from(props.rounds.keys())"
-          class="flex flex-col bracket-column"
+          class="grid grid-flow-col auto-cols-max gap-20 min-w-max"
+          ref="bracketContent"
         >
-          <!-- Round Label -->
-          <div class="text-center mb-2">
-            <div class="bg-gray-700 text-white rounded-lg px-4 py-2 shadow-md">
-              <span class="font-semibold text-sm">{{
-                roundLabels.get(round) || `Round ${round}`
-              }}</span>
+          <div
+            v-for="round of Array.from(props.rounds.keys())"
+            class="flex flex-col bracket-column"
+          >
+            <!-- Round Label -->
+            <div class="text-center mb-2">
+              <div
+                class="bg-gray-700 text-white rounded-lg px-4 py-2 shadow-md"
+              >
+                <span class="font-semibold text-sm">{{
+                  roundLabels.get(round) || `Round ${round}`
+                }}</span>
+              </div>
             </div>
-          </div>
 
-          <div class="flex flex-col justify-around flex-1">
-            <TournamentMatch
-              :round="Number(round)"
-              :brackets="props.rounds.get(round) as any[]"
-            ></TournamentMatch>
+            <div class="flex flex-col justify-around flex-1">
+              <TournamentMatch
+                :round="Number(round)"
+                :brackets="props.rounds.get(round) as any[]"
+              ></TournamentMatch>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Minimap and Controls Group -->
+    <!-- Zoom and Fullscreen Controls - Always Visible -->
     <div
-      class="absolute top-4 right-24 flex flex-row items-start z-50 space-x-2"
-      v-if="rounds.size > 4"
+      class="zoom-controls-container absolute top-4 right-4 z-50 flex flex-col gap-3 opacity-40 hover:opacity-100 transition-opacity duration-300 ease-in-out"
     >
+      <!-- Zoom Controls -->
+      <div
+        class="flex flex-col gap-1.5 bg-gray-800/90 backdrop-blur-md rounded-lg p-2.5 shadow-xl border border-gray-700/50"
+      >
+        <button
+          class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
+          @click="zoomIn"
+          :disabled="zoomLevel >= MAX_ZOOM"
+          title="Zoom In (Ctrl/Cmd + Scroll)"
+        >
+          <ZoomIn class="w-4 h-4" />
+        </button>
+        <button
+          class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
+          @click="zoomOut"
+          :disabled="zoomLevel <= MIN_ZOOM"
+          title="Zoom Out (Ctrl/Cmd + Scroll)"
+        >
+          <ZoomOut class="w-4 h-4" />
+        </button>
+        <button
+          class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md px-3 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out text-xs font-medium min-w-[3rem] flex items-center justify-center"
+          @click="resetZoom"
+          :disabled="zoomLevel === 0.75"
+          title="Reset Zoom"
+        >
+          {{ Math.round(zoomLevel * 100) }}%
+        </button>
+      </div>
+      <!-- Fullscreen Control -->
+      <button
+        class="zoom-control-btn bg-gray-800/90 backdrop-blur-md hover:bg-gray-700/90 active:bg-gray-600/90 text-white rounded-lg p-2.5 shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-gray-700/50 transition-all duration-200 ease-in-out flex items-center justify-center"
+        @click="toggleFullscreen"
+        :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'"
+      >
+        <Maximize v-if="!isFullscreen" class="w-4 h-4" />
+        <Minimize v-else class="w-4 h-4" />
+      </button>
+    </div>
+
+    <!-- Minimap - Only shown when there are more than 4 rounds -->
+    <div class="absolute top-4 right-24 z-40" v-if="rounds.size > 4">
       <!-- Minimap -->
       <div
         class="minimap-container cursor-grab w-80 h-56 bg-gray-700/70 rounded-sm overflow-hidden shadow-lg backdrop-blur-sm transition-all duration-200 ease-in-out relative"
@@ -550,17 +697,6 @@ function startMomentum() {
           class="viewport-indicator absolute border-4 rounded-sm border-blue-400 bg-blue-400/5 cursor-pointer shadow-lg transition-all duration-100 ease-out z-[70]"
           ref="viewportIndicator"
         ></div>
-        <!-- Controls -->
-        <div class="absolute top-2 right-2 z-[80]">
-          <button
-            class="bg-secondary hover:bg-background/80 text-white rounded p-2 shadow-lg focus:outline-none"
-            @click="toggleFullscreen"
-            :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'"
-          >
-            <Maximize v-if="!isFullscreen" class="w-5 h-5" />
-            <Minimize v-else class="w-5 h-5" />
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -571,6 +707,7 @@ function startMomentum() {
   position: relative;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  transition: max-height 0.3s ease-in-out;
 }
 
 .tournament-bracket::-webkit-scrollbar {
@@ -594,5 +731,44 @@ function startMomentum() {
 .fullscreen-bracket {
   max-height: none !important;
   height: 100vh !important;
+}
+
+.bracket-content-wrapper {
+  transition: transform 0.2s ease-out;
+}
+
+.zoom-control-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.zoom-control-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.zoom-control-btn:not(:disabled):active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.zoom-control-btn:not(:disabled)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.zoom-control-btn:not(:disabled):hover::before {
+  left: 100%;
 }
 </style>

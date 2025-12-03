@@ -59,8 +59,8 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
   </h1>
 
   <!-- Loop through groups -->
-  <div v-for="groupNumber in maxGroups" :key="groupNumber" class="mb-8">
-    <h3 class="text-lg font-semibold mb-4" v-if="stage.groups > 1">
+  <div v-for="groupNumber in maxGroups" :key="groupNumber" class="mb-6">
+    <h3 class="text-lg font-semibold mb-3" v-if="stage.groups > 1">
       {{
         $t("tournament.stage.group", { group: getGroupDisplay(groupNumber) })
       }}
@@ -70,6 +70,7 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
       :rounds="getRoundsForGroup(groupNumber)"
       :is-final-stage="isFinalStage"
       :is-loser-bracket="groupNumber > stage.groups"
+      :total-groups="maxGroups"
     ></TournamentBracketViewer>
   </div>
 

@@ -6,9 +6,12 @@ import TimeAgo from "~/components/TimeAgo.vue";
 <template>
   <template v-for="bracket in brackets" :key="bracket.id">
     <div
+      :id="`bracket-${bracket.id}`"
       @click="handleClick($event, bracket)"
       v-if="!(bracket.bye && !bracket.team_1 && !bracket.team_2)"
       class="tournament-match cursor-pointer my-4 border-2 border-gray-700 rounded-lg m-4 p-4 transition-all duration-200 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm"
+      :data-bracket-id="bracket.id"
+      :data-round="round"
     >
       <div class="text-center">
         <Badge v-if="bracket.bye">
@@ -31,6 +34,19 @@ import TimeAgo from "~/components/TimeAgo.vue";
           {{ $t("tournament.match.scheduled_for") }}:
           <span class="text-blue-400 font-medium">
             <TimeAgo :date="bracket.scheduled_eta"></TimeAgo>
+          </span>
+        </div>
+      </div>
+
+      <div v-if="bracket.parent_bracket" class="text-center mt-2 mb-2">
+        <div class="text-xs text-green-400 font-medium">
+          <span class="inline-flex items-center gap-1">
+            <span>Parent →</span>
+            <span v-if="bracket.parent_bracket.match_number">
+              Round {{ bracket.parent_bracket.round }}, Match
+              {{ bracket.parent_bracket.match_number }}
+            </span>
+            <span v-else> Round {{ bracket.parent_bracket.round }} </span>
           </span>
         </div>
       </div>

@@ -82,7 +82,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
         class="flex items-center gap-4 text-xs"
         v-if="gameServerNode.status !== e_game_server_node_statuses_enum.Setup"
       >
-      <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1">
           <div class="font-medium">{{ $t("game_server.cpu_model") }}:</div>
           <div class="text-muted-foreground">
             {{ gameServerNode.cpu_frequency_info.model || "-" }}

@@ -1,4 +1,3 @@
-t
 <script lang="ts" setup>
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
@@ -14,11 +13,19 @@ interface TournamentRound {
 }
 
 const props = defineProps({
+  stage: {
+    type: Number,
+    required: true,
+  },
   rounds: {
     type: Map<number, TournamentRound>,
     required: true,
   },
   isFinalStage: {
+    type: Boolean,
+    default: false,
+  },
+  isLoserBracket: {
     type: Boolean,
     default: false,
   },
@@ -28,7 +35,13 @@ const roundLabels = computed(() => {
   const labels = new Map<number, string>();
 
   for (const [roundNumber, round] of props.rounds.entries()) {
-    const label = getRoundLabel(roundNumber, props.isFinalStage, round.length);
+    const label = getRoundLabel(
+      roundNumber,
+      props.stage,
+      props.isFinalStage,
+      round.length,
+      props.isLoserBracket,
+    );
     labels.set(roundNumber, label);
   }
   return labels;
@@ -190,7 +203,6 @@ const drawConnectingLines = () => {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
   // Set SVG dimensions to match the full content size of the container
-  const containerRect = container.getBoundingClientRect();
   const fullWidth = container.scrollWidth;
   const fullHeight = container.scrollHeight;
 
@@ -203,51 +215,87 @@ const drawConnectingLines = () => {
 
   svg.style.pointerEvents = "none";
 
-  const columns = container.querySelectorAll(".bracket-column");
+  // Iterate through all rounds and brackets to draw connecting lines
+  for (const [roundNumber, round] of props.rounds.entries()) {
+    // Convert round to array (it's array-like with length property)
+    const brackets = Array.from(
+      { length: round.length },
+      (_, i) => round[i],
+    ).filter(Boolean);
 
-  for (let i = 0; i < columns.length - 1; i++) {
-    const currentColumn = columns[i];
-    const nextColumn = columns[i + 1];
+    for (const bracket of brackets) {
+      if (!bracket || !bracket.id) continue;
 
-    const currentMatches = currentColumn.querySelectorAll(".tournament-match");
-    const nextMatches = nextColumn.querySelectorAll(".tournament-match");
+      // Find the source match element by ID
+      const sourceMatchEl = container.querySelector(
+        `#bracket-${bracket.id}`,
+      ) as HTMLElement;
+      if (!sourceMatchEl) continue;
 
-    for (let index = 0; index < currentMatches.length; index++) {
-      const matchEl = currentMatches[index] as HTMLElement;
+      // Draw line to parent bracket (winner advances)
+      if (bracket.parent_bracket?.id) {
+        const targetMatchEl = container.querySelector(
+          `#bracket-${bracket.parent_bracket.id}`,
+        ) as HTMLElement;
+        if (targetMatchEl) {
+          drawLine(svg, sourceMatchEl, targetMatchEl, "winner");
+        }
+      }
 
-      const nextMatchEl = nextMatches[Math.floor(index / 2)] as HTMLElement;
-
-      // TODO - how to calcualte this
-      const margins = 12.5;
-
-      const startX = matchEl.offsetLeft + matchEl.offsetWidth;
-      const startY = matchEl.offsetTop + matchEl.offsetHeight / 2 - margins;
-
-      const endX = nextMatchEl.offsetLeft;
-      const endY =
-        nextMatchEl.offsetTop + nextMatchEl.offsetHeight / 2 - margins;
-
-      const midX = (startX + endX) / 2;
-
-      const path = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path",
-      );
-
-      path.setAttribute(
-        "d",
-        `M ${startX} ${startY} H ${midX} V ${endY} H ${endX}`,
-      );
-
-      path.setAttribute("fill", "none");
-      path.setAttribute("stroke", "white");
-      path.setAttribute("stroke-width", "2");
-
-      svg.appendChild(path);
+      // Draw line to loser bracket (loser goes to losers bracket)
+      if (bracket.loser_bracket?.id) {
+        const targetMatchEl = container.querySelector(
+          `#bracket-${bracket.loser_bracket.id}`,
+        ) as HTMLElement;
+        if (targetMatchEl) {
+          drawLine(svg, sourceMatchEl, targetMatchEl, "loser");
+        }
+      }
     }
   }
 
   container.appendChild(svg);
+};
+
+const drawLine = (
+  svg: SVGElement,
+  sourceEl: HTMLElement,
+  targetEl: HTMLElement,
+  type: "winner" | "loser",
+) => {
+  const margins = 12.5;
+
+  // Get positions relative to the scrollable container
+  const sourceX = sourceEl.offsetLeft + sourceEl.offsetWidth;
+  const sourceY = sourceEl.offsetTop + sourceEl.offsetHeight / 2;
+
+  const targetX = targetEl.offsetLeft;
+  const targetY = targetEl.offsetTop + targetEl.offsetHeight / 2;
+
+  // Adjust Y position based on type (winner goes to top, loser to bottom of target)
+  const adjustedSourceY =
+    type === "winner" ? sourceY - margins : sourceY + margins;
+
+  const adjustedTargetY =
+    type === "winner" ? targetY - margins : targetY + margins;
+
+  const midX = (sourceX + targetX) / 2;
+
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+  path.setAttribute(
+    "d",
+    `M ${sourceX} ${adjustedSourceY} H ${midX} V ${adjustedTargetY} H ${targetX}`,
+  );
+
+  path.setAttribute("fill", "none");
+  path.setAttribute(
+    "stroke",
+    type === "winner" ? "white" : "rgba(255, 100, 100, 0.7)",
+  );
+  path.setAttribute("stroke-width", "2");
+
+  svg.appendChild(path);
 };
 
 const getMinimapScroll = (clientX: number, clientY: number) => {

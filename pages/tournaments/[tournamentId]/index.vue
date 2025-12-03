@@ -434,6 +434,13 @@ export default {
                       team_2_seed: true,
                       path: true,
                       loser_parent_bracket_id: true,
+                      parent_bracket: {
+                        id: true,
+                        round: true,
+                        group: true,
+                        match_number: true,
+                        path: true,
+                      },
                       loser_bracket: {
                         id: true,
                         round: true,

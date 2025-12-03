@@ -1,27 +1,29 @@
 export function getRoundLabel(
   roundNumber: number,
+  stage: number,
   isFinalStage: boolean = false,
   totalMathcdesInRound: number,
+  isLoserBracket: boolean = false,
 ): string {
-  if (isFinalStage) {
-    if (totalMathcdesInRound === 4) {
-      return "Quarter Finals";
-    }
-
-    if (totalMathcdesInRound === 2) {
-      return "Semi Finals";
-    }
-
-    if (totalMathcdesInRound === 1) {
-      return "Grand Final";
-    }
-  }
-
-  if (roundNumber === 1) {
+  if (stage === 1 && roundNumber === 1 && !isLoserBracket) {
     return "Opening Round";
   }
 
-  return `${roundNumber}${getOrdinalSuffix(roundNumber)} Round`;
+  if (isFinalStage && !isLoserBracket) {
+    if (totalMathcdesInRound === 4) {
+      return `${isLoserBracket ? "Losers" : ""} Quarter Finals`;
+    }
+
+    if (totalMathcdesInRound === 2) {
+      return `${isLoserBracket ? "Losers" : ""} Semi Finals`;
+    }
+
+    if (totalMathcdesInRound === 1) {
+      return `${isLoserBracket ? "Losers" : ""} Grand Final`;
+    }
+  }
+
+  return `${isLoserBracket ? "Losers" : ""} ${roundNumber}${getOrdinalSuffix(roundNumber)} Round`;
 }
 
 export function getWinnerLabel(isFinalStage: boolean = false): string {

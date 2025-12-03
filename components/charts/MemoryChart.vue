@@ -111,6 +111,7 @@ export default {
             ),
           },
           x: {
+            display: false,
             ticks: {
               autoSkip: true,
               maxTicksLimit: 10,

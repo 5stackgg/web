@@ -123,6 +123,7 @@ export default {
             max: maxThroughput,
           },
           x: {
+            display: false,
             ticks: {
               autoSkip: true,
               maxTicksLimit: 10,

@@ -140,6 +140,7 @@ export default {
             max: yMax,
           },
           x: {
+            display: false,
             ticks: {
               autoSkip: true,
               maxTicksLimit: 10,

@@ -79,6 +79,7 @@ export default {
             max: 100,
           },
           x: {
+            display: false,
             ticks: {
               autoSkip: true,
               maxTicksLimit: 10,

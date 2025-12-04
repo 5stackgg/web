@@ -1085,7 +1085,7 @@
             "lost": "Perso",
             "against": "contro",
             "no_clutches": "Nessun clutch",
-            "vs": "contro",
+            "vs": "contro {count}",
             "round": "Round"
         },
         "join": {

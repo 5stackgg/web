@@ -1085,7 +1085,7 @@
             "lost": "敗北",
             "against": "対",
             "no_clutches": "クラッチなし",
-            "vs": "対",
+            "vs": "対 {count}",
             "round": "ラウンド"
         },
         "join": {

@@ -1085,7 +1085,7 @@
             "lost": "Tabt",
             "against": "mod",
             "no_clutches": "Ingen clutches",
-            "vs": "vs",
+            "vs": "vs {count}",
             "round": "Runde"
         },
         "join": {

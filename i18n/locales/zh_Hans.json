@@ -899,7 +899,7 @@
             "lost": "失敗",
             "against": "對抗",
             "no_clutches": "此回合無單挑",
-            "vs": "對",
+            "vs": "對 {count}",
             "round": "第 {number} 回合"
         },
         "join": {

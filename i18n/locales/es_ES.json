@@ -1085,7 +1085,7 @@
             "lost": "Perdido",
             "against": "contra",
             "no_clutches": "Sin clutches",
-            "vs": "vs",
+            "vs": "vs {count}",
             "round": "Ronda"
         },
         "join": {

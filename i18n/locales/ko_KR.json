@@ -888,7 +888,7 @@
             "lost": "패배",
             "against": "대",
             "no_clutches": "클러치 없음",
-            "vs": "대",
+            "vs": "대 {count}",
             "round": "라운드"
         },
         "join": {

@@ -1085,7 +1085,7 @@
             "lost": "Verloren",
             "against": "gegen",
             "no_clutches": "Keine Clutches in dieser Runde",
-            "vs": "gegen",
+            "vs": "gegen {count}",
             "round": "Runde {number}"
         },
         "join": {

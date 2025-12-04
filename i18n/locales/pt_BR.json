@@ -1016,7 +1016,7 @@
             "lost": "Perdidos",
             "against": "contra",
             "no_clutches": "Nenhum clutch",
-            "vs": "vs",
+            "vs": "vs {count}",
             "round": "Round {number}"
         },
         "join": {

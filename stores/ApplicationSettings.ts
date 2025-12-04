@@ -194,6 +194,13 @@ export const useApplicationSettingsStore = defineStore(
         next: ({ data }) => {
           availableRegions.value = data.server_regions;
           useMatchmakingStore().checkLatenies();
+
+          setInterval(
+            () => {
+              useMatchmakingStore().checkLatenies();
+            },
+            50 * 60 * 1000,
+          );
         },
       });
     };

@@ -1167,7 +1167,7 @@
             "lost": "Lost",
             "against": "Against",
             "no_clutches": "No clutches this round",
-            "vs": "vs",
+            "vs": "vs {count}",
             "round": "Round {number}"
         },
         "join": {

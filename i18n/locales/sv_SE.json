@@ -1085,7 +1085,7 @@
             "lost": "Förlorade",
             "against": "Mot",
             "no_clutches": "Inga clutches denna runda",
-            "vs": "mot",
+            "vs": "mot {count}",
             "round": "Runda {number}"
         },
         "join": {

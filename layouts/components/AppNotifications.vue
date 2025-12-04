@@ -4,6 +4,7 @@ import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
+import { playerFields } from "~/graphql/playerFields";
 </script>
 
 <template>
@@ -242,7 +243,7 @@ export default {
                 name: true,
               },
               invited_by: {
-                name: true,
+                ...playerFields,
               },
               created_at: true,
             },
@@ -283,7 +284,7 @@ export default {
                 },
               },
               invited_by: {
-                name: true,
+                ...playerFields,
               },
               created_at: true,
             },

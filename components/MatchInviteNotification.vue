@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import TimeAgo from "./TimeAgo.vue";
 import PlayerDisplay from "./PlayerDisplay.vue";
 import { Check, XIcon } from "lucide-vue-next";
 </script>
@@ -43,7 +42,7 @@ import { Check, XIcon } from "lucide-vue-next";
 
       <div
         class="border border-gray-200 border-dashed h-full p-4 rounded-md cursor-pointer hover:bg-green-500/20 bg-transparent transition-all duration-200"
-        @click="acceptInvite(invite.id)"
+        @click="acceptInvite"
       >
         <Check class="h-3 w-3" />
       </div>
@@ -51,7 +50,7 @@ import { Check, XIcon } from "lucide-vue-next";
 
     <div
       class="h-full p-4 rounded-md cursor-pointer hover:bg-red-500/20 bg-transparent transition-all duration-200"
-      @click="denyInvite(invite.id)"
+      @click="denyInvite"
     >
       <XIcon class="h-3 w-3" />
     </div>
@@ -102,13 +101,13 @@ export default {
     },
   },
   methods: {
-    async acceptInvite(inviteId: string) {
+    async acceptInvite() {
       await this.$apollo.mutate({
         mutation: generateMutation({
           acceptInvite: [
             {
               type: this.type,
-              invite_id: inviteId,
+              invite_id: this.invite.id,
             },
             {
               success: true,
@@ -150,9 +149,7 @@ export default {
       );
     },
     invitedBy() {
-      return this.allPlayers.find((player) => {
-        return player.player.steam_id === this.invite.invited_by.steam_id;
-      }).player;
+      return this.invite.invited_by;
     },
   },
 };

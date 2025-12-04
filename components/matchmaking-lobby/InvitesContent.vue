@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { MailPlus } from "lucide-vue-next";
 import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
 import { SidebarSeparator } from "~/components/ui/sidebar";

@@ -168,7 +168,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
             id: true,
             match_id: true,
             invited_by: {
-              steam_id: true,
+              ...playerFields,
             },
             created_at: true,
           },

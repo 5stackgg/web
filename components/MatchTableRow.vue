@@ -155,12 +155,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         <div class="flex items-center space-x-4">
           <!-- Join Button - Prominent Position -->
           <Button
-            v-if="
-              match.status === e_match_status_enum.PickingPlayers &&
-              match.options.lobby_access === e_lobby_access_enum.Open &&
-              !match.lineup_1.is_on_lineup &&
-              !match.lineup_2.is_on_lineup
-            "
+            v-if="canJoinMatch"
             variant="default"
             size="sm"
             class="flex items-center space-x-2"
@@ -801,14 +796,7 @@ export default {
       this.showPlayers = !this.showPlayers;
       await this.getMatchStats();
     },
-    navigateToMatch(matchId: string, event: Event) {
-      const target = event.target as HTMLElement;
-      const isToggleButton = target.closest("button");
-
-      if (isToggleButton) {
-        return;
-      }
-
+    navigateToMatch(matchId: string) {
       this.$router.push({ name: "matches-id", params: { id: matchId } });
     },
     getTeamInitials(teamName: string): string {
@@ -951,6 +939,21 @@ export default {
       }
 
       return null;
+    },
+    canJoinMatch(): boolean {
+      const hasAvailableSpot =
+        (this.match.lineup_counts?.lineup_1_count ?? 0) <
+          this.match.max_players_per_lineup ||
+        (this.match.lineup_counts?.lineup_2_count ?? 0) <
+          this.match.max_players_per_lineup;
+
+      return (
+        this.match.status === e_match_status_enum.PickingPlayers &&
+        this.match.options.lobby_access === e_lobby_access_enum.Open &&
+        !this.match.lineup_1.is_on_lineup &&
+        !this.match.lineup_2.is_on_lineup &&
+        hasAvailableSpot
+      );
     },
   },
 };

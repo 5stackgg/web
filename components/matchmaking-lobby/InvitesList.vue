@@ -75,6 +75,7 @@ export default {
   methods: {
     getInviterName(invite: any) {
       let steamId: string | undefined;
+      // TODO: fix logic here for lobby invites
 
       if (this.type === "match") {
         // Match invites have invited_by.steam_id

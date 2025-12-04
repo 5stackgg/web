@@ -5334,8 +5334,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_assists_bool_exp"
 		},
 		delete_player_assists_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -5344,7 +5344,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_player_damages_by_pk:{
 			id:"uuid",
-			match_id:"uuid",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -5359,8 +5358,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_flashes_bool_exp"
 		},
 		delete_player_flashes_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -5368,8 +5367,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_kills_bool_exp"
 		},
 		delete_player_kills_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -5377,9 +5376,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_objectives_bool_exp"
 		},
 		delete_player_objectives_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
 			match_map_id:"uuid",
+			player_steam_id:"bigint",
 			time:"timestamptz"
 		},
 		delete_player_sanctions:{
@@ -5393,14 +5391,14 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_unused_utility_bool_exp"
 		},
 		delete_player_unused_utility_by_pk:{
-			id:"uuid"
+			match_map_id:"uuid",
+			player_steam_id:"bigint"
 		},
 		delete_player_utility:{
 			where:"player_utility_bool_exp"
 		},
 		delete_player_utility_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -7565,7 +7563,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_team:"String_comparison_exp",
 		deleted_at:"timestamptz_comparison_exp",
 		flash:"Boolean_comparison_exp",
-		id:"uuid_comparison_exp",
 		is_team_assist:"Boolean_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
@@ -7585,7 +7582,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
@@ -7599,7 +7595,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -7611,7 +7606,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		attacker_team:"order_by",
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -7630,7 +7624,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_team:"order_by",
 		deleted_at:"order_by",
 		flash:"order_by",
-		id:"order_by",
 		is_team_assist:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
@@ -7641,8 +7634,8 @@ export const AllTypesProps: Record<string,any> = {
 		time:"order_by"
 	},
 	player_assists_pk_columns_input:{
-		id:"uuid",
-		match_id:"uuid",
+		attacked_steam_id:"bigint",
+		attacker_steam_id:"bigint",
 		match_map_id:"uuid",
 		time:"timestamptz"
 	},
@@ -7653,7 +7646,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz"
@@ -7681,7 +7673,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz"
@@ -7879,7 +7870,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_damages_pk_columns_input:{
 		id:"uuid",
-		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz"
 	},
@@ -8109,7 +8099,6 @@ export const AllTypesProps: Record<string,any> = {
 		blinded:"players_bool_exp",
 		deleted_at:"timestamptz_comparison_exp",
 		duration:"numeric_comparison_exp",
-		id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
@@ -8131,7 +8120,6 @@ export const AllTypesProps: Record<string,any> = {
 		blinded:"players_obj_rel_insert_input",
 		deleted_at:"timestamptz",
 		duration:"numeric",
-		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
@@ -8144,7 +8132,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		deleted_at:"order_by",
 		duration:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -8155,7 +8142,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"order_by",
 		deleted_at:"order_by",
 		duration:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -8172,7 +8158,6 @@ export const AllTypesProps: Record<string,any> = {
 		blinded:"players_order_by",
 		deleted_at:"order_by",
 		duration:"order_by",
-		id:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
@@ -8183,8 +8168,8 @@ export const AllTypesProps: Record<string,any> = {
 		time:"order_by"
 	},
 	player_flashes_pk_columns_input:{
-		id:"uuid",
-		match_id:"uuid",
+		attacked_steam_id:"bigint",
+		attacker_steam_id:"bigint",
 		match_map_id:"uuid",
 		time:"timestamptz"
 	},
@@ -8196,7 +8181,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		duration:"numeric",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz"
@@ -8228,7 +8212,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		duration:"numeric",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz"
@@ -8328,7 +8311,6 @@ export const AllTypesProps: Record<string,any> = {
 		deleted_at:"timestamptz_comparison_exp",
 		headshot:"Boolean_comparison_exp",
 		hitgroup:"String_comparison_exp",
-		id:"uuid_comparison_exp",
 		in_air:"Boolean_comparison_exp",
 		is_suicide:"Boolean_comparison_exp",
 		match:"matches_bool_exp",
@@ -8354,7 +8336,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
@@ -8373,7 +8354,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_team:"order_by",
 		deleted_at:"order_by",
 		hitgroup:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -8391,7 +8371,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_team:"order_by",
 		deleted_at:"order_by",
 		hitgroup:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -8418,7 +8397,6 @@ export const AllTypesProps: Record<string,any> = {
 		deleted_at:"order_by",
 		headshot:"order_by",
 		hitgroup:"order_by",
-		id:"order_by",
 		in_air:"order_by",
 		is_suicide:"order_by",
 		match:"matches_order_by",
@@ -8435,8 +8413,8 @@ export const AllTypesProps: Record<string,any> = {
 		with:"order_by"
 	},
 	player_kills_pk_columns_input:{
-		id:"uuid",
-		match_id:"uuid",
+		attacked_steam_id:"bigint",
+		attacker_steam_id:"bigint",
 		match_map_id:"uuid",
 		time:"timestamptz"
 	},
@@ -8447,7 +8425,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz"
@@ -8475,7 +8452,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"bigint",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz"
@@ -8545,7 +8521,6 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"player_objectives_bool_exp",
 		_or:"player_objectives_bool_exp",
 		deleted_at:"timestamptz_comparison_exp",
-		id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
@@ -8562,7 +8537,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_objectives_insert_input:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
@@ -8574,7 +8548,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_objectives_max_order_by:{
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		player_steam_id:"order_by",
@@ -8583,7 +8556,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_objectives_min_order_by:{
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		player_steam_id:"order_by",
@@ -8597,7 +8569,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_objectives_order_by:{
 		deleted_at:"order_by",
-		id:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
@@ -8609,15 +8580,13 @@ export const AllTypesProps: Record<string,any> = {
 		type:"order_by"
 	},
 	player_objectives_pk_columns_input:{
-		id:"uuid",
-		match_id:"uuid",
 		match_map_id:"uuid",
+		player_steam_id:"bigint",
 		time:"timestamptz"
 	},
 	player_objectives_select_column: "enum" as const,
 	player_objectives_set_input:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
@@ -8642,7 +8611,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_objectives_stream_cursor_value_input:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
@@ -8795,7 +8763,6 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"player_unused_utility_bool_exp",
 		_or:"player_unused_utility_bool_exp",
 		deleted_at:"timestamptz_comparison_exp",
-		id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
@@ -8811,7 +8778,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_unused_utility_insert_input:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
@@ -8821,7 +8787,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_unused_utility_max_order_by:{
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		player_steam_id:"order_by",
@@ -8830,7 +8795,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_unused_utility_min_order_by:{
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		player_steam_id:"order_by",
@@ -8844,7 +8808,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_unused_utility_order_by:{
 		deleted_at:"order_by",
-		id:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
@@ -8855,12 +8818,12 @@ export const AllTypesProps: Record<string,any> = {
 		unused:"order_by"
 	},
 	player_unused_utility_pk_columns_input:{
-		id:"uuid"
+		match_map_id:"uuid",
+		player_steam_id:"bigint"
 	},
 	player_unused_utility_select_column: "enum" as const,
 	player_unused_utility_set_input:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint"
@@ -8886,7 +8849,6 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_unused_utility_stream_cursor_value_input:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint"
@@ -8958,7 +8920,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"String_comparison_exp",
 		attacker_steam_id:"bigint_comparison_exp",
 		deleted_at:"timestamptz_comparison_exp",
-		id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
@@ -8975,7 +8936,6 @@ export const AllTypesProps: Record<string,any> = {
 	player_utility_insert_input:{
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
@@ -8988,7 +8948,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -8998,7 +8957,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		deleted_at:"order_by",
-		id:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
 		round:"order_by",
@@ -9013,7 +8971,6 @@ export const AllTypesProps: Record<string,any> = {
 		attacker_location_coordinates:"order_by",
 		attacker_steam_id:"order_by",
 		deleted_at:"order_by",
-		id:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
@@ -9024,8 +8981,7 @@ export const AllTypesProps: Record<string,any> = {
 		type:"order_by"
 	},
 	player_utility_pk_columns_input:{
-		id:"uuid",
-		match_id:"uuid",
+		attacker_steam_id:"bigint",
 		match_map_id:"uuid",
 		time:"timestamptz"
 	},
@@ -9033,7 +8989,6 @@ export const AllTypesProps: Record<string,any> = {
 	player_utility_set_input:{
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz",
@@ -9058,7 +9013,6 @@ export const AllTypesProps: Record<string,any> = {
 	player_utility_stream_cursor_value_input:{
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		time:"timestamptz",
@@ -10282,8 +10236,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_assists_bool_exp"
 		},
 		player_assists_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -10299,7 +10253,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		player_damages_by_pk:{
 			id:"uuid",
-			match_id:"uuid",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -10328,8 +10281,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_flashes_bool_exp"
 		},
 		player_flashes_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -10344,8 +10297,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_kills_bool_exp"
 		},
 		player_kills_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -10360,9 +10313,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_objectives_bool_exp"
 		},
 		player_objectives_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
 			match_map_id:"uuid",
+			player_steam_id:"bigint",
 			time:"timestamptz"
 		},
 		player_sanctions:{
@@ -10390,7 +10342,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_unused_utility_bool_exp"
 		},
 		player_unused_utility_by_pk:{
-			id:"uuid"
+			match_map_id:"uuid",
+			player_steam_id:"bigint"
 		},
 		player_utility:{
 			distinct_on:"player_utility_select_column",
@@ -10403,8 +10356,7 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_utility_bool_exp"
 		},
 		player_utility_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -11928,8 +11880,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_assists_bool_exp"
 		},
 		player_assists_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -11949,7 +11901,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		player_damages_by_pk:{
 			id:"uuid",
-			match_id:"uuid",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -11986,8 +11937,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_flashes_bool_exp"
 		},
 		player_flashes_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -12006,8 +11957,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_kills_bool_exp"
 		},
 		player_kills_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacked_steam_id:"bigint",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -12026,9 +11977,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_objectives_bool_exp"
 		},
 		player_objectives_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
 			match_map_id:"uuid",
+			player_steam_id:"bigint",
 			time:"timestamptz"
 		},
 		player_objectives_stream:{
@@ -12064,7 +12014,8 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_unused_utility_bool_exp"
 		},
 		player_unused_utility_by_pk:{
-			id:"uuid"
+			match_map_id:"uuid",
+			player_steam_id:"bigint"
 		},
 		player_unused_utility_stream:{
 			cursor:"player_unused_utility_stream_cursor_input",
@@ -12081,8 +12032,7 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_utility_bool_exp"
 		},
 		player_utility_by_pk:{
-			id:"uuid",
-			match_id:"uuid",
+			attacker_steam_id:"bigint",
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
@@ -13024,6 +12974,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"tournament_brackets_bool_exp",
 		bye:"Boolean_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
+		finished:"Boolean_comparison_exp",
 		group:"numeric_comparison_exp",
 		id:"uuid_comparison_exp",
 		loser_bracket:"tournament_brackets_bool_exp",
@@ -13031,6 +12982,7 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_number:"Int_comparison_exp",
+		parent_bracket:"tournament_brackets_bool_exp",
 		parent_bracket_id:"uuid_comparison_exp",
 		path:"String_comparison_exp",
 		round:"Int_comparison_exp",
@@ -13056,6 +13008,7 @@ export const AllTypesProps: Record<string,any> = {
 		loser_parent_bracket_id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
+		parent_bracket:"tournament_brackets_obj_rel_insert_input",
 		parent_bracket_id:"uuid",
 		scheduled_eta:"timestamptz",
 		stage:"tournament_stages_obj_rel_insert_input",
@@ -13111,6 +13064,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_order_by:{
 		bye:"order_by",
 		created_at:"order_by",
+		finished:"order_by",
 		group:"order_by",
 		id:"order_by",
 		loser_bracket:"tournament_brackets_order_by",
@@ -13118,6 +13072,7 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_number:"order_by",
+		parent_bracket:"tournament_brackets_order_by",
 		parent_bracket_id:"order_by",
 		path:"order_by",
 		round:"order_by",
@@ -18397,7 +18352,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_team:"String",
 		deleted_at:"timestamptz",
 		flash:"Boolean",
-		id:"uuid",
 		is_team_assist:"Boolean",
 		match:"matches",
 		match_id:"uuid",
@@ -18435,7 +18389,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -18447,7 +18400,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"bigint",
 		attacker_team:"String",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -18746,7 +18698,6 @@ export const ReturnTypes: Record<string,any> = {
 		blinded:"players",
 		deleted_at:"timestamptz",
 		duration:"numeric",
-		id:"uuid",
 		match:"matches",
 		match_id:"uuid",
 		match_map:"match_maps",
@@ -18784,7 +18735,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		duration:"numeric",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -18795,7 +18745,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
 		duration:"numeric",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -18862,7 +18811,6 @@ export const ReturnTypes: Record<string,any> = {
 		deleted_at:"timestamptz",
 		headshot:"Boolean",
 		hitgroup:"String",
-		id:"uuid",
 		in_air:"Boolean",
 		is_suicide:"Boolean",
 		match:"matches",
@@ -18911,7 +18859,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_team:"String",
 		deleted_at:"timestamptz",
 		hitgroup:"String",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -18929,7 +18876,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_team:"String",
 		deleted_at:"timestamptz",
 		hitgroup:"String",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -18977,7 +18923,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_objectives:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches",
 		match_id:"uuid",
 		match_map:"match_maps",
@@ -19011,7 +18956,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_objectives_max_fields:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
@@ -19020,7 +18964,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_objectives_min_fields:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
@@ -19142,7 +19085,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_unused_utility:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches",
 		match_id:"uuid",
 		match_map:"match_maps",
@@ -19176,7 +19118,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_unused_utility_max_fields:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
@@ -19185,7 +19126,6 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_unused_utility_min_fields:{
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		player_steam_id:"bigint",
@@ -19235,7 +19175,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match:"matches",
 		match_id:"uuid",
 		match_map:"match_maps",
@@ -19270,7 +19209,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -19280,7 +19218,6 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_location_coordinates:"String",
 		attacker_steam_id:"bigint",
 		deleted_at:"timestamptz",
-		id:"uuid",
 		match_id:"uuid",
 		match_map_id:"uuid",
 		round:"Int",
@@ -20590,6 +20527,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_brackets:{
 		bye:"Boolean",
 		created_at:"timestamptz",
+		finished:"Boolean",
 		group:"numeric",
 		id:"uuid",
 		loser_bracket:"tournament_brackets",
@@ -20597,6 +20535,7 @@ export const ReturnTypes: Record<string,any> = {
 		match:"matches",
 		match_id:"uuid",
 		match_number:"Int",
+		parent_bracket:"tournament_brackets",
 		parent_bracket_id:"uuid",
 		path:"String",
 		round:"Int",

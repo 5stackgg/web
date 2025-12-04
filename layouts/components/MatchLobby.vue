@@ -16,6 +16,7 @@ import MatchLobbyLineup from "./MatchLobbyLineup.vue";
 
 <script lang="ts">
 import socket from "~/web-sockets/Socket";
+import type { Lobby } from "~/web-sockets/Socket";
 export default {
   props: {
     match: {
@@ -25,7 +26,7 @@ export default {
   },
   data() {
     return {
-      lobby: undefined,
+      lobby: undefined as unknown as Lobby,
     };
   },
   created() {

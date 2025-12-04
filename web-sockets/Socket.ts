@@ -19,6 +19,7 @@ class Socket extends EventEmitter {
   private connection?: WebSocket;
   private connected = false;
   private heartBeat?: NodeJS.Timeout;
+  private rejoinTimers: Map<string, NodeJS.Timeout> = new Map();
   private offlineQueue: Array<{
     event: string;
     data: Record<string, unknown>;
@@ -95,19 +96,49 @@ class Socket extends EventEmitter {
   private rooms: Map<string, Record<string, unknown>> = new Map();
 
   public join(room: string, data: Record<string, unknown>) {
+    console.info(`[ws] joining room ${room}:${data.type}`);
+
     this.rooms.set(room, data);
 
     if (!this.connected || !this.connection) {
       return;
     }
+
     this.event(`${room}:join`, data);
-    console.info(`[ws] joining room ${room}:${data.type}`);
+
+    // Our lobbies expire server-side after 24 hours, so we need to
+    // periodically re-join to ensure we stay in the room for long-lived sessions.
+    const existingTimer = this.rejoinTimers.get(room);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    const REJOIN_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
+
+    const timer = setTimeout(() => {
+      if (this.connected && this.connection && this.rooms.has(room)) {
+        console.info(`[ws] rejoining room ${room} after 24 hours`);
+        this.join(room, data);
+      }
+    }, REJOIN_INTERVAL_MS);
+
+    this.rejoinTimers.set(room, timer);
   }
 
-  public leave(room: string) {
+  public leave(room: string, type: ChatType, id: string) {
+    console.info(`[ws] leaving room ${room}:${type}:${id}`);
+
     this.rooms.delete(room);
-    this.event(`${room}:leave`, {});
-    console.info(`[ws] leaving room ${room}`);
+    this.event(`lobby:leave`, {
+      id,
+      type,
+    });
+
+    const existingTimer = this.rejoinTimers.get(room);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+      this.rejoinTimers.delete(room);
+    }
   }
 
   public event(event: string, data: Record<string, unknown>) {
@@ -157,7 +188,7 @@ class Socket extends EventEmitter {
     };
   }
 
-  public joinLobby(instance: string, type: ChatType, _id: string) {
+  public joinLobby(instance: string, type: ChatType, _id: string): Lobby {
     const lobbyId = `${type}:${_id}`;
     let lobby = this.lobbies.get(lobbyId);
 
@@ -188,10 +219,7 @@ class Socket extends EventEmitter {
         }
 
         this.lobbies.delete(lobbyId);
-        socket.leave(`lobby`, {
-          id: _id,
-          type,
-        });
+        socket.leave("lobby", type, _id);
       },
       setMessages: function (data: any[]) {
         this.messages = data;

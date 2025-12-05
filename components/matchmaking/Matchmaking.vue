@@ -64,7 +64,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
           <div class="text-xl text-gray-400/90 flex items-center gap-2">
             <TimeAgo
               v-if="matchMakingQueueDetails.joinedAt"
-              :date="matchMakingQueueDetails.joinedAt"
+              :date="Math.min(new Date().getTime(), new Date(matchMakingQueueDetails.joinedAt).getTime())"
               :seconds="true"
             />
           </div>

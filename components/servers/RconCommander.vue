@@ -280,6 +280,7 @@ export default {
       showSuggestions: false as boolean,
       _debouncedSearch: undefined as undefined | ((q: string) => void),
       suggestionIndex: -1 as number,
+      _suppressSuggestions: false,
       commander: (commands: string | Array<string>, value: string) => {
         if (!Array.isArray(commands)) {
           commands = [commands];
@@ -345,6 +346,13 @@ export default {
         return;
       }
 
+      // Don't show suggestions if we just sent a command
+      if (this._suppressSuggestions) {
+        this.suggestions = [];
+        this.showSuggestions = false;
+        return;
+      }
+
       try {
         const res = await fetch("/api/rcon-command-search", {
           method: "POST",
@@ -384,7 +392,8 @@ export default {
             return command.document;
           },
         );
-        this.showSuggestions = this.suggestions.length > 0;
+        this.showSuggestions =
+          !this._suppressSuggestions && this.suggestions.length > 0;
       } catch (error) {
         console.error(`unable to fetch suggestions`, error);
         this.suggestions = [];
@@ -393,6 +402,7 @@ export default {
     },
     onCommandInput(event: any) {
       const value = event?.target?.value ?? this.form.values.command ?? "";
+      this._suppressSuggestions = false;
       if (this._debouncedSearch) {
         this._debouncedSearch(value);
       }
@@ -414,6 +424,7 @@ export default {
     sendCommand() {
       this.suggestions = [];
       this.showSuggestions = false;
+      this._suppressSuggestions = true;
 
       const command = this.form.values.command;
       if (!command || command.length === 0) {

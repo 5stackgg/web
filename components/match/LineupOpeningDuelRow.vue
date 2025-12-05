@@ -33,12 +33,17 @@ export default {
 
       for (const match_map of this.match.match_maps) {
         for (const round of match_map.rounds) {
-          const firstKill = round.kills.at(0);
+          const firstKill = round.kills.find((kill: any) => {
+            return kill.player && kill.player?.steam_id !== kill.attacked_player.steam_id;
+          });
+
+          if (!firstKill) {
+            continue;
+          }
 
           if (
-            firstKill &&
-            (this.member.steam_id === firstKill.player?.steam_id ||
-              this.member.steam_id === firstKill.attacked_player.steam_id)
+            this.member.steam_id === firstKill.player?.steam_id ||
+            this.member.steam_id === firstKill.attacked_player.steam_id
           ) {
             attempts++;
           }
@@ -51,12 +56,15 @@ export default {
 
       for (const match_map of this.match.match_maps) {
         for (const round of match_map.rounds) {
-          const firstKill = round.kills[0];
+          const firstKill = round.kills.find((kill: any) => {
+            return kill.player && kill.player?.steam_id !== kill.attacked_player.steam_id;
+          });
 
-          if (
-            firstKill &&
-            this.member.steam_id === firstKill.player?.steam_id
-          ) {
+          if (!firstKill) {
+            continue;
+          }
+
+          if (this.member.steam_id === firstKill.player?.steam_id) {
             success++;
           }
         }

@@ -89,7 +89,7 @@ export default {
           this.playTickSound();
         }
 
-        if (this.confirmation?.matchId) {
+        if (!oldConfirmation?.matchId && this.confirmation?.matchId) {
           if (this.routedConfirmedId !== this.confirmation.matchId) {
             this.routedConfirmedId = this.confirmation.matchId;
             this.$router.push(`/matches/${this.confirmation.matchId}`);

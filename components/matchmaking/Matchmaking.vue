@@ -197,7 +197,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
 
         <Button>
           <NuxtLink
-            :to="{ name: 'matches', params: { id: match.id } }"
+            :to="{ name: 'matches-id', params: { id: match.id } }"
             class="text-xl font-bold bg-foreground"
           >
             {{ $t("matchmaking.go_to_match") }}
@@ -290,10 +290,16 @@ export default {
             {
               id: true,
               status: true,
-              region: true,
               server_type: true,
+              is_in_lineup: true,
+              is_organizer: true,
               is_server_online: true,
               connection_string: true,
+              connection_link: true,
+              tv_connection_string: true,
+              options: {
+                tv_delay: true,
+              }
             },
           ],
         }),

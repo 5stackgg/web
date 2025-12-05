@@ -351,7 +351,11 @@ provide("commander", commander);
 </template>
 
 <script lang="ts">
-import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
+import {
+  e_match_map_status_enum,
+  e_match_status_enum,
+  e_player_roles_enum,
+} from "~/generated/zeus";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";

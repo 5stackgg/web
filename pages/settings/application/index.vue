@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
+import { Switch } from "~/components/ui/switch";
 
 definePageMeta({
   layout: "application-settings",
@@ -133,6 +134,24 @@ definePageMeta({
       </FormItem>
     </FormField>
 
+    <div
+      class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+      @click="toggleDefaultModels"
+    >
+      <div class="space-y-0.5">
+        <h4 class="text-base font-medium">
+          {{ $t("pages.settings.application.default_models") }}
+        </h4>
+        <p class="text-sm text-muted-foreground">
+          {{ $t("match.options.advanced.default_player_models.description") }}
+        </p>
+      </div>
+      <Switch
+        :model-value="defaultModelsEnabled"
+        @update:model-value="toggleDefaultModels"
+      />
+    </div>
+
     <div class="flex justify-start">
       <Button
         type="submit"
@@ -239,6 +258,27 @@ export default {
         }),
       });
     },
+    async toggleDefaultModels() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: "public.default_models",
+                value: this.defaultModelsEnabled ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
     async updateSettings() {
       await (this as any).$apollo.mutate({
         mutation: generateMutation({
@@ -297,6 +337,18 @@ export default {
       }
 
       return true;
+    },
+    defaultModelsEnabled() {
+      const defaultModelsSetting = this.settings.find(
+        (setting: { name: string; value: string | null }) =>
+          setting.name === "public.default_models",
+      );
+
+      if (defaultModelsSetting) {
+        return defaultModelsSetting.value === "true";
+      }
+
+      return false;
     },
   },
 };

@@ -177,6 +177,8 @@
                 "max_acceptable_latency_description": "This is the maximum latency that a player can have to join a match.",
                 "lineup_add_without_invite": "Minimum Role to Add Players to Lineup Without Invite",
                 "lineup_add_without_invite_description": "This role will be able to add players to match lineups without sending an invite first.",
+                "default_models": "Default Player Models",
+                "default_models_description": "Enable default player models for all players in the match.",
                 "auto_cancel_duration": "Auto Cancel Duration",
                 "auto_cancel_duration_description": "This is the duration in minutes that a match will be auto canceled if not started within the duration.",
                 "update": "Update",
@@ -977,6 +979,10 @@
                         "everyone": "Anyone"
                     }
                 },
+                "default_models": {
+                    "label": "Default Player Models",
+                    "description": "Enable default player models for all players in the match."
+                },
                 "check_in_settings": {
                     "label": "Check In Settings",
                     "description": "Controls how players check in before the match starts.",
@@ -995,6 +1001,10 @@
                         "captains": "Captains",
                         "everyone": "All Players Required to be Ready"
                     }
+                },
+                "default_player_models": {
+                    "label": "Default Player Models",
+                    "description": "Enable default player models for all players in the match."
                 }
             },
             "max_rounds": "Max Rounds",

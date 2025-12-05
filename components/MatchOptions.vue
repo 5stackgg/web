@@ -832,6 +832,29 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 </FormItem>
               </FormField>
             </div>
+
+            <FormField v-slot="{ value, handleChange }" name="default_models">
+              <FormItem
+                class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
+                @click="handleChange(!value)"
+              >
+                <div class="flex justify-between items-center">
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.default_models.label")
+                  }}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      class="pointer-events-none"
+                      :model-value="value"
+                      @update:model-value="handleChange"
+                    />
+                  </FormControl>
+                </div>
+                <FormDescription>
+                  {{ $t("match.options.advanced.default_models.description") }}
+                </FormDescription>
+              </FormItem>
+            </FormField>
           </div>
         </CollapsibleContent>
       </Collapsible>

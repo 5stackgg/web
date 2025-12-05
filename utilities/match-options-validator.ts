@@ -7,7 +7,15 @@ import {
   e_check_in_settings_enum,
 } from "~/generated/zeus";
 
-export default function matchOptionsValidator(component: any, additional: any) {
+export default function matchOptionsValidator(
+  component: any,
+  additional: any,
+  settings: any,
+) {
+  const defaultPlayerModels =
+    settings.find((setting) => setting.name === "public.default_models")
+      ?.value === "true";
+
   return toTypedSchema(
     z.object({
       mr: z.string().default("12"),
@@ -17,6 +25,7 @@ export default function matchOptionsValidator(component: any, additional: any) {
       coaches: z.boolean().default(false),
       tv_delay: z.number().min(0).max(120).default(115),
       knife_round: z.boolean().default(true),
+      default_models: z.boolean().default(defaultPlayerModels),
       overtime: z.boolean().default(true),
       best_of: z.string().default("1"),
       number_of_substitutes: z.number().min(0).max(5).default(0),

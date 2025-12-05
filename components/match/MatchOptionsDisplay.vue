@@ -71,6 +71,12 @@ import {
         </li>
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground">{{
+            $t("match.options.default_player_models")
+          }}</span>
+          <BooleanToText :value="options.default_skins" />
+        </li>
+        <li class="flex items-center justify-between">
+          <span class="text-muted-foreground">{{
             $t("match.options.map_veto_enabled")
           }}</span>
           <BooleanToText :value="options.map_veto" />

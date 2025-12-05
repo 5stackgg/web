@@ -147,13 +147,17 @@ export default {
       startTime: undefined,
       form: useForm({
         keepValuesOnUnmount: true,
-        validationSchema: matchOptionsValidator(this, {
-          name: z.string().min(1),
-          start: z.date().refine((date) => date > new Date(), {
-            message: "Date must be in the future",
-          }),
-          description: z.string().nullable().default(null),
-        }),
+        validationSchema: matchOptionsValidator(
+          this,
+          {
+            name: z.string().min(1),
+            start: z.date().refine((date) => date > new Date(), {
+              message: "Date must be in the future",
+            }),
+            description: z.string().nullable().default(null),
+          },
+          useApplicationSettingsStore().settings,
+        ),
       }),
     };
   },

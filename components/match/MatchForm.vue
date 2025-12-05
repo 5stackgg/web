@@ -131,11 +131,15 @@ export default {
     return {
       form: useForm({
         keepValuesOnUnmount: true,
-        validationSchema: matchOptionsValidator(this, {
-          pug: z.boolean().default(true),
-          team_1: z.string().optional(),
-          team_2: z.string().optional(),
-        }),
+        validationSchema: matchOptionsValidator(
+          this,
+          {
+            pug: z.boolean().default(true),
+            team_1: z.string().optional(),
+            team_2: z.string().optional(),
+          },
+          useApplicationSettingsStore().settings,
+        ),
       }),
     };
   },

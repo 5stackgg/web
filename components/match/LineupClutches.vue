@@ -14,7 +14,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
-        v-for="round in match_map.rounds"
+        v-for="round in match_map.rounds.filter((r: any) => r.round !== 0)"
         :key="round.round"
         class="bg-background p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
       >

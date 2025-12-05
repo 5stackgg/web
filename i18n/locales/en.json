@@ -1021,7 +1021,8 @@
             "ready_setting": "Ready Setting",
             "check_in_setting": "Veto Setting",
             "map_pool": "Map Pool",
-            "advanced_settings": "Show Advanced Settings"
+            "advanced_settings": "Show Advanced Settings",
+            "default_player_models": "Default Player Models"
         },
         "schedule": {
             "pick_date": "Pick a date",

@@ -338,6 +338,7 @@ export default {
                 map_veto: true,
                 coaches: true,
                 knife_round: true,
+                default_models: true,
                 overtime: true,
                 region_veto: true,
                 best_of: true,

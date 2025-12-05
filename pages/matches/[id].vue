@@ -166,6 +166,7 @@ export default {
                 region_veto: true,
                 overtime: true,
                 knife_round: true,
+                default_models: true,
                 number_of_substitutes: true,
                 timeout_setting: true,
                 tech_timeout_setting: true,

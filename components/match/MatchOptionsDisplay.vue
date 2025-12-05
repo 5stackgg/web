@@ -73,7 +73,7 @@ import {
           <span class="text-muted-foreground">{{
             $t("match.options.default_player_models")
           }}</span>
-          <BooleanToText :value="options.default_skins" />
+          <BooleanToText :value="options.default_models ?? false" />
         </li>
         <li class="flex items-center justify-between">
           <span class="text-muted-foreground">{{

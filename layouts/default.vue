@@ -4,9 +4,6 @@ import MainContent from "@/layouts/components/MainContent.vue";
 import TopNav from "@/layouts/components/TopNav.vue";
 import AppHeader from "@/layouts/components/AppHeader.vue";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import MatchmakingConfirm from "~/components/matchmaking/MatchmakingConfirm.vue";
-import PlayerNameRegistration from "~/components/PlayerNameRegistration.vue";
-import StreamGlobal from "~/components/StreamGlobal.vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -38,10 +35,6 @@ provide("containContent", containContent);
 </script>
 
 <template>
-  <StreamGlobal />
-  <PlayerNameRegistration />
-  <MatchmakingConfirm />
-
   <SidebarProvider>
     <AppSidebar v-if="showLeftNav" />
 

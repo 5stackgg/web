@@ -299,7 +299,7 @@ export default {
               tv_connection_string: true,
               options: {
                 tv_delay: true,
-              }
+              },
             },
           ],
         }),

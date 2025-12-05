@@ -6,12 +6,10 @@ import {
   Logs,
   LineChart,
   Server,
-  Calendar,
   Play,
   Globe,
   Map,
   Settings,
-  User,
   CalendarCog,
   ShieldHalf,
   ChevronRight,
@@ -33,7 +31,11 @@ import Logout from "./Logout.vue";
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
             <nuxt-link to="/">
-              <NuxtImg class="rounded max-w-8" src="/favicon/64.png" v-if="isMobile || !isPWA || !sideBarOpen" />
+              <NuxtImg
+                class="rounded max-w-8"
+                src="/favicon/64.png"
+                v-if="isMobile || !isPWA || !sideBarOpen"
+              />
               <span v-if="!isPWA"> {{ $t("layouts.app_nav.brand") }} </span>
             </nuxt-link>
           </SidebarMenuButton>
@@ -564,8 +566,8 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    isPWA(){
-      return window.matchMedia('(display-mode: standalone)').matches;
+    isPWA() {
+      return window.matchMedia("(display-mode: standalone)").matches;
     },
     myMatches() {
       return useMatchLobbyStore().myMatches;

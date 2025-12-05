@@ -229,6 +229,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { validate as validateUUID } from "uuid";
+import { useAuthStore } from "~/stores/AuthStore";
 
 interface MatchesData {
   matches: any[];
@@ -238,6 +239,7 @@ interface ComponentData {
   page: number;
   perPage: number;
   matches: any[];
+  matchesAggregate: number;
   showOnlyMyMatches: boolean;
   form: any;
   sortField: string;
@@ -254,6 +256,7 @@ export default {
       page: 1,
       perPage: 10,
       matches: [] as any[],
+      matchesAggregate: 0,
       showOnlyMyMatches: savedFilters.showOnlyMyMatches || false,
       sortField: savedFilters.sortField || "created_at",
       sortDirection: savedFilters.sortDirection || "desc",
@@ -311,70 +314,32 @@ export default {
             simpleMatchFields,
           ],
         }),
-        variables(this: any): {
-          limit: number;
-          order_by: any[];
-          offset: number;
-          where_clause: any;
-        } {
-          const filterConditions: any = {};
+        variables(this: any):
+          | {
+              limit: number;
+              order_by: any[];
+              offset: number;
+              where_clause: any;
+            }
+          | undefined {
           const formValues = this.form.values;
 
-          if (formValues.matchId?.trim()) {
-            const matchId = formValues.matchId.trim();
-
-            if (!validateUUID(matchId)) {
-              return;
-            }
-
-            filterConditions.id = {
-              _eq: matchId,
-            };
-          }
-
-          if (formValues.teamName?.trim()) {
-            const teamName = formValues.teamName.trim();
-            filterConditions._or = [
-              {
-                lineup_1: {
-                  name: {
-                    _ilike: `%${teamName}%`,
-                  },
-                },
-              },
-              {
-                lineup_2: {
-                  name: {
-                    _ilike: `%${teamName}%`,
-                  },
-                },
-              },
-            ];
-          }
-
-          if (formValues.statuses && formValues.statuses.length > 0) {
-            filterConditions.status = {
-              _in: formValues.statuses,
-            };
-          }
-
-          const whereClause = {
-            ...filterConditions,
-          };
-
-          if (this.showOnlyMyMatches) {
-            whereClause.organizer_steam_id = {
-              _eq: useAuthStore().me?.steam_id,
-            };
+          // Check for invalid UUID before running query
+          if (
+            formValues.matchId?.trim() &&
+            !validateUUID(formValues.matchId.trim())
+          ) {
+            this.loading = false;
+            (this as any).matches = [];
+            return undefined;
           }
 
           this.loading = true;
-
           return {
             limit: this.perPage,
             order_by: [this.getSortOrder()],
             offset: (this.page - 1) * this.perPage,
-            where_clause: whereClause,
+            where_clause: this.getWhereClause(),
           };
         },
         result({ data }: { data: MatchesData }) {
@@ -385,9 +350,110 @@ export default {
           this.loading = false;
         },
       },
+      matchesAggregate: {
+        query: typedGql("subscription")({
+          matches_aggregate: [
+            {
+              where: $("where_clause", "matches_bool_exp!"),
+            },
+            {
+              aggregate: {
+                count: true,
+              },
+            },
+          ],
+        }),
+        variables(this: any):
+          | {
+              where_clause: any;
+            }
+          | undefined {
+          const formValues = this.form.values;
+
+          // Check for invalid UUID before running query
+          if (
+            formValues.matchId?.trim() &&
+            !validateUUID(formValues.matchId.trim())
+          ) {
+            (this as any).matchesAggregate = 0;
+            return undefined;
+          }
+
+          return {
+            where_clause: this.getWhereClause(),
+          };
+        },
+        result({
+          data,
+        }: {
+          data: { matches_aggregate: { aggregate: { count: number } } };
+        }) {
+          (this as any).matchesAggregate =
+            data.matches_aggregate?.aggregate?.count || 0;
+        },
+      },
     },
   },
   methods: {
+    getWhereClause() {
+      const filterConditions: any = {};
+      const formValues = this.form.values;
+
+      if (formValues.matchId?.trim()) {
+        const matchId = formValues.matchId.trim();
+
+        if (!validateUUID(matchId)) {
+          // Return a where clause that will return 0 results for invalid UUID
+          return {
+            id: {
+              _eq: "00000000-0000-0000-0000-000000000000",
+            },
+          };
+        }
+
+        filterConditions.id = {
+          _eq: matchId,
+        };
+      }
+
+      if (formValues.teamName?.trim()) {
+        const teamName = formValues.teamName.trim();
+        filterConditions._or = [
+          {
+            lineup_1: {
+              name: {
+                _ilike: `%${teamName}%`,
+              },
+            },
+          },
+          {
+            lineup_2: {
+              name: {
+                _ilike: `%${teamName}%`,
+              },
+            },
+          },
+        ];
+      }
+
+      if (formValues.statuses && formValues.statuses.length > 0) {
+        filterConditions.status = {
+          _in: formValues.statuses,
+        };
+      }
+
+      const whereClause = {
+        ...filterConditions,
+      };
+
+      if (this.showOnlyMyMatches) {
+        whereClause.organizer_steam_id = {
+          _eq: useAuthStore().me?.steam_id,
+        };
+      }
+
+      return whereClause;
+    },
     loadFiltersFromStorage() {
       if (process.client) {
         try {
@@ -477,9 +543,6 @@ export default {
     },
   },
   computed: {
-    matchesAggregate() {
-      return useMatchLobbyStore().managingMatchesCount;
-    },
     hasActiveFilters(): boolean {
       const formValues = this.form.values;
       return !!(

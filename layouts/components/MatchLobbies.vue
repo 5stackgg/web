@@ -75,7 +75,46 @@ export default {
     };
   },
   watch: {
-    match: {
+    myMatches: {
+      immediate: true,
+      handler() {
+        if (this.myMatches.length === 0) {
+          return;
+        }
+
+        const match = this.myMatches
+          .sort((a: any, b: any) => {
+            if (a.started_at && !b.started_at) {
+              return -1;
+            }
+            if (!a.started_at && b.started_at) {
+              return 1;
+            }
+
+            if (a.started_at && b.started_at) {
+              const dateDiff =
+                new Date(a.started_at).getTime() -
+                new Date(b.started_at).getTime();
+              if (dateDiff !== 0) {
+                return dateDiff;
+              }
+            }
+
+            return (
+              this.getStatusPriority(a.status) -
+              this.getStatusPriority(b.status)
+            );
+          })
+          .at(0);
+
+        if (!match) {
+          return;
+        }
+
+        this.selectLobby(match.id);
+      },
+    },
+    currentMatch: {
       immediate: true,
       handler(currentMatch, oldMatch) {
         if (!currentMatch || currentMatch.id === oldMatch?.id) {
@@ -113,19 +152,15 @@ export default {
     myMatches() {
       return useMatchLobbyStore().myMatches;
     },
-    lobbies() {
-      return useMatchmakingStore().lobbies;
-    },
     currentLobby() {
-      return this.lobbies?.find((lobby: any) => {
-        return lobby.id === this.me?.current_lobby_id;
-      });
+      return useMatchmakingStore().currentLobby;
     },
     currentMatch() {
-      if (this.matchId) {
-        return useMatchLobbyStore().lobbies.get(this.matchId)?.match;
+      if (!this.matchId) {
       }
-      return Array.from(useMatchLobbyStore().lobbies.values()).at(0)?.match;
+      return this.myMatches.find((match: { id: string }) => {
+        return match.id === this.matchId;
+      });
     },
     onMatchPage() {
       return this.$route.path === `/matches/${this.currentMatch?.id}`;
@@ -135,6 +170,20 @@ export default {
     },
   },
   methods: {
+    getStatusPriority(status: e_match_status_enum): number {
+      switch (status) {
+        case e_match_status_enum.Live:
+          return 1;
+        case e_match_status_enum.WaitingForServer:
+          return 2;
+        case e_match_status_enum.Veto:
+          return 3;
+        case e_match_status_enum.WaitingForCheckIn:
+          return 4;
+        default:
+          return 999;
+      }
+    },
     selectLobby(matchId: string) {
       this.choosingLobby = false;
       useMatchmakingStore().viewingMatchId = matchId;

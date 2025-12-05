@@ -73,6 +73,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const friends = ref([]);
   const lobbies = ref([]);
+
   const viewingMatchId = ref<string | undefined>();
   const subscribeToFriends = async (mySteamId: bigint) => {
     const subscription = getGraphqlClient().subscribe({
@@ -501,11 +502,18 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     });
   });
 
+  const currentLobby = computed(() => {
+    return lobbies.value.find((lobby: any) => {
+      return lobby.id === useAuthStore().me?.current_lobby_id;
+    });
+  });
+
   return {
     friends,
     onlineFriends,
     offlineFriends,
     lobbies,
+    currentLobby,
     matchInvites,
     regionStats,
     playersOnline,

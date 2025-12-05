@@ -12,7 +12,6 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 
 export const useMatchLobbyStore = defineStore("matchLobby", () => {
-  const lobbies = ref(new Map<string, { players: any[]; match: any }>());
   const lobbyChat = ref<Record<string, Map<string, unknown>>>({});
 
   const myMatches = ref([]);
@@ -116,22 +115,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     subscription.subscribe({
       next: ({ data }) => {
         myMatches.value = data?.matches;
-
-        if (myMatches.value) {
-          const newMatchIds = new Set(myMatches.value.map((match) => match.id));
-
-          // Remove matches that are no longer in data.matches
-          for (const [matchId] of lobbies.value.entries()) {
-            if (!newMatchIds.has(matchId)) {
-              lobbies.value.delete(matchId);
-            }
-          }
-
-          // Update or add matches
-          for (const match of myMatches.value) {
-            lobbies.value.set(match.id, { players: [], match });
-          }
-        }
       },
     });
   };
@@ -174,7 +157,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   };
 
   return {
-    lobbies,
     lobbyChat,
     myMatches,
     managingMatchesCount,

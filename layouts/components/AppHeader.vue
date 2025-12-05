@@ -47,9 +47,6 @@ export default {
     isAdmin() {
       return useAuthStore().isAdmin;
     },
-    lobbies() {
-      return useMatchmakingStore().lobbies;
-    },
   },
 };
 </script>

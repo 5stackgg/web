@@ -28,13 +28,13 @@ import Logout from "./Logout.vue";
 
 <template>
   <Sidebar collapsible="icon">
-    <SidebarHeader>
+    <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
             <nuxt-link to="/">
-              <NuxtImg class="rounded max-w-8" src="/favicon/64.png" />
-              <span> {{ $t("layouts.app_nav.brand") }} </span>
+              <NuxtImg class="rounded max-w-8" src="/favicon/64.png" v-if="isMobile || !isPWA || !sideBarOpen" />
+              <span v-if="!isPWA"> {{ $t("layouts.app_nav.brand") }} </span>
             </nuxt-link>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -563,6 +563,9 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    isPWA(){
+      return window.matchMedia('(display-mode: standalone)').matches;
     },
     myMatches() {
       return useMatchLobbyStore().myMatches;

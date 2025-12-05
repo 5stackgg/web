@@ -356,7 +356,7 @@ export default {
       });
     },
     leaveMatchmaking(): void {
-      socket.leave("matchmaking");
+      socket.event("matchmaking:leave");
     },
   },
   computed: {

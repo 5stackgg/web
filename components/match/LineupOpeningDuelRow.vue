@@ -34,7 +34,10 @@ export default {
       for (const match_map of this.match.match_maps) {
         for (const round of match_map.rounds) {
           const firstKill = round.kills.find((kill: any) => {
-            return kill.player && kill.player?.steam_id !== kill.attacked_player.steam_id;
+            return (
+              kill.player &&
+              kill.player?.steam_id !== kill.attacked_player.steam_id
+            );
           });
 
           if (!firstKill) {
@@ -57,7 +60,10 @@ export default {
       for (const match_map of this.match.match_maps) {
         for (const round of match_map.rounds) {
           const firstKill = round.kills.find((kill: any) => {
-            return kill.player && kill.player?.steam_id !== kill.attacked_player.steam_id;
+            return (
+              kill.player &&
+              kill.player?.steam_id !== kill.attacked_player.steam_id
+            );
           });
 
           if (!firstKill) {

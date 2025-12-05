@@ -58,7 +58,7 @@ provide("commander", commander);
       <TabsTrigger value="settings">
         {{ $t("match.tabs.settings") }}
       </TabsTrigger>
-      <TabsTrigger value="streams">
+      <TabsTrigger value="streams" v-if="canConfigureStreams">
         {{ $t("match.tabs.streams") }}
       </TabsTrigger>
       <TabsTrigger
@@ -433,6 +433,28 @@ export default {
     },
   },
   computed: {
+    canConfigureStreams() {
+      if (
+        [
+          e_match_status_enum.Finished,
+          e_match_status_enum.Forfeit,
+          e_match_status_enum.Surrendered,
+          e_match_status_enum.Tie,
+          e_match_status_enum.Canceled,
+        ].includes(this.match.status)
+      ) {
+        return false;
+      }
+
+      if (
+        !this.match.is_organizer &&
+        !useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
+      ) {
+        return false;
+      }
+
+      return true;
+    },
     disableStats() {
       return [
         e_match_status_enum.PickingPlayers,

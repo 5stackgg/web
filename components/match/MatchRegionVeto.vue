@@ -6,7 +6,6 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 </script>
 
 <template>
-  {{ match.region }}
   <template
     v-if="regions.length === 0 && match.options.region_veto && !match.region"
   >

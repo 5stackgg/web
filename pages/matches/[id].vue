@@ -303,6 +303,22 @@ export default {
       );
     },
     canViewStreams() {
+      if (!this.match) {
+        return false;
+      }
+
+      if (
+        [
+          e_match_status_enum.Finished,
+          e_match_status_enum.Forfeit,
+          e_match_status_enum.Surrendered,
+          e_match_status_enum.Tie,
+          e_match_status_enum.Canceled,
+        ].includes(this.match.status)
+      ) {
+        return false;
+      }
+
       if (
         this.match.is_organizer ||
         useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
@@ -310,7 +326,7 @@ export default {
         return true;
       }
 
-      if (this.match?.streams.length === 0) {
+      if (!this.match.streams || this.match.streams.length === 0) {
         return false;
       }
 

@@ -25,6 +25,11 @@ import Logout from "./Logout.vue";
 </script>
 
 <template>
+
+
+
+
+  WOW LETS GOO.....
   <Sidebar collapsible="icon">
     <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
       <SidebarMenu>

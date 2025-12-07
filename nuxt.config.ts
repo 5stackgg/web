@@ -150,6 +150,11 @@ export default defineNuxtConfig({
     },
     workbox: {
       globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff}"],
+      navigateFallbackDenylist: [
+        /^\/auth/,
+        /^\/discord-invite/,
+        /^\/discord-bot/,
+      ],
     },
     includeAssets: [
       "img/**/*.png",

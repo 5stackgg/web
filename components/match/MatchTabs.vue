@@ -494,12 +494,12 @@ export default {
           break;
         case e_match_map_status_enum.Paused:
           commands.push(CommandDetails[AvailableCommands.Resume]);
+          commands.push(CommandDetails[AvailableCommands.Warmup]);
+          commands.push(CommandDetails[AvailableCommands.Knife]);
           break;
         case e_match_map_status_enum.Live:
         case e_match_map_status_enum.Overtime:
           commands.push(CommandDetails[AvailableCommands.Pause]);
-          commands.push(CommandDetails[AvailableCommands.Warmup]);
-          commands.push(CommandDetails[AvailableCommands.Knife]);
           break;
       }
 

@@ -287,6 +287,13 @@
             "only_played_matches": "Only Players Who Have Played Matches",
             "played_matches": "Played Matches",
             "all_players": "All Players",
+            "min_sanctions": "Minimum Sanctions",
+            "is_banned": "Banned",
+            "is_gagged": "Gagged",
+            "is_muted": "Muted",
+            "banned_only": "Banned Only",
+            "gagged_only": "Gagged Only",
+            "muted_only": "Muted Only",
             "table": {
                 "player": "Player",
                 "elo": "Elo",

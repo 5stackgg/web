@@ -103,6 +103,26 @@ export default defineEventHandler(async (event) => {
     filterBy.push(`(${countriesFilter})`);
   }
 
+  // Filter by sanctions minimum count
+  if (body.sanctions_min !== undefined && body.sanctions_min !== null) {
+    filterBy.push(`sanctions:>=${body.sanctions_min}`);
+  }
+
+  // Filter by is_banned
+  if (body.is_banned !== undefined && body.is_banned !== null) {
+    filterBy.push(`is_banned:=${body.is_banned}`);
+  }
+
+  // Filter by is_gagged
+  if (body.is_gagged !== undefined && body.is_gagged !== null) {
+    filterBy.push(`is_gagged:=${body.is_gagged}`);
+  }
+
+  // Filter by is_muted
+  if (body.is_muted !== undefined && body.is_muted !== null) {
+    filterBy.push(`is_muted:=${body.is_muted}`);
+  }
+
   // Use provided sort_by or default to name:asc
   const sortBy = body.sort_by || "name:asc";
 

@@ -256,6 +256,89 @@ import { getAllCountries } from "countries-and-timezones";
                 }}</span>
               </div>
             </div>
+
+            <!-- Sanction Filters (only visible to authorized users) -->
+            <div v-if="canViewAdditionalDetails" class="space-y-2">
+              <Label for="sanctions-min">{{
+                $t("pages.players.min_sanctions")
+              }}</Label>
+              <Input
+                id="sanctions-min"
+                type="number"
+                :model-value="form.values.sanctionsMin?.toString() || ''"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue(
+                      'sanctionsMin',
+                      value ? parseInt(value as string) || null : null,
+                    );
+                    onFilterChange();
+                  }
+                "
+                :placeholder="$t('pages.players.min_sanctions')"
+                min="0"
+              />
+            </div>
+
+            <div v-if="canViewAdditionalDetails" class="space-y-2">
+              <Label>{{ $t("pages.players.is_banned") }}</Label>
+              <div class="flex items-center gap-2">
+                <Switch
+                  :model-value="form.values.isBanned || false"
+                  @update:model-value="
+                    (value) => {
+                      form.setFieldValue('isBanned', value);
+                      onFilterChange();
+                    }
+                  "
+                />
+                <span class="text-sm text-muted-foreground">{{
+                  form.values.isBanned
+                    ? $t("pages.players.banned_only")
+                    : $t("pages.players.all_players")
+                }}</span>
+              </div>
+            </div>
+
+            <div v-if="canViewAdditionalDetails" class="space-y-2">
+              <Label>{{ $t("pages.players.is_gagged") }}</Label>
+              <div class="flex items-center gap-2">
+                <Switch
+                  :model-value="form.values.isGagged || false"
+                  @update:model-value="
+                    (value) => {
+                      form.setFieldValue('isGagged', value);
+                      onFilterChange();
+                    }
+                  "
+                />
+                <span class="text-sm text-muted-foreground">{{
+                  form.values.isGagged
+                    ? $t("pages.players.gagged_only")
+                    : $t("pages.players.all_players")
+                }}</span>
+              </div>
+            </div>
+
+            <div v-if="canViewAdditionalDetails" class="space-y-2">
+              <Label>{{ $t("pages.players.is_muted") }}</Label>
+              <div class="flex items-center gap-2">
+                <Switch
+                  :model-value="form.values.isMuted || false"
+                  @update:model-value="
+                    (value) => {
+                      form.setFieldValue('isMuted', value);
+                      onFilterChange();
+                    }
+                  "
+                />
+                <span class="text-sm text-muted-foreground">{{
+                  form.values.isMuted
+                    ? $t("pages.players.muted_only")
+                    : $t("pages.players.all_players")
+                }}</span>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -376,12 +459,12 @@ import { getAllCountries } from "countries-and-timezones";
     :per-page="perPage"
     :show-per-page-selector="true"
     @page="
-      (_page) => {
+      (_page: number) => {
         page = _page;
       }
     "
     @update:perPage="
-      (value) => {
+      (value: number) => {
         perPage = value;
         page = 1;
         saveFiltersToStorage();
@@ -437,6 +520,10 @@ export default {
             eloMin: z.number().nullable().optional(),
             eloMax: z.number().nullable().optional(),
             countries: z.array(z.string()).optional(),
+            sanctionsMin: z.number().nullable().optional(),
+            isBanned: z.boolean().optional(),
+            isGagged: z.boolean().optional(),
+            isMuted: z.boolean().optional(),
           }),
         ),
         initialValues: {
@@ -445,6 +532,10 @@ export default {
           eloMin: this.loadFiltersFromStorage().eloMin || null,
           eloMax: this.loadFiltersFromStorage().eloMax || null,
           countries: this.loadFiltersFromStorage().countries || [],
+          sanctionsMin: this.loadFiltersFromStorage().sanctionsMin || null,
+          isBanned: this.loadFiltersFromStorage().isBanned || false,
+          isGagged: this.loadFiltersFromStorage().isGagged || false,
+          isMuted: this.loadFiltersFromStorage().isMuted || false,
         },
       }),
     };
@@ -514,6 +605,30 @@ export default {
         this.onFilterChange();
       },
     },
+    "form.values.sanctionsMin": {
+      handler() {
+        this.page = 1;
+        this.onFilterChange();
+      },
+    },
+    "form.values.isBanned": {
+      handler() {
+        this.page = 1;
+        this.onFilterChange();
+      },
+    },
+    "form.values.isGagged": {
+      handler() {
+        this.page = 1;
+        this.onFilterChange();
+      },
+    },
+    "form.values.isMuted": {
+      handler() {
+        this.page = 1;
+        this.onFilterChange();
+      },
+    },
     onlyPlayedMatches() {
       this.page = 1;
       this.onFilterChange();
@@ -546,6 +661,10 @@ export default {
         eloMin: null,
         eloMax: null,
         countries: [],
+        sanctionsMin: null,
+        isBanned: false,
+        isGagged: false,
+        isMuted: false,
       });
       this.onlyPlayedMatches = false;
       this.sortField = "name";
@@ -600,6 +719,10 @@ export default {
             eloMin: this.form.values.eloMin,
             eloMax: this.form.values.eloMax,
             countries: this.form.values.countries,
+            sanctionsMin: this.form.values.sanctionsMin,
+            isBanned: this.form.values.isBanned,
+            isGagged: this.form.values.isGagged,
+            isMuted: this.form.values.isMuted,
             onlyPlayedMatches: this.onlyPlayedMatches,
             sortField: this.sortField,
             sortDirection: this.sortDirection,
@@ -682,6 +805,26 @@ export default {
               this.form.values.countries &&
               this.form.values.countries.length > 0
                 ? this.form.values.countries
+                : undefined,
+            sanctions_min:
+              this.form.values.sanctionsMin !== null &&
+              this.form.values.sanctionsMin !== undefined
+                ? this.form.values.sanctionsMin
+                : undefined,
+            is_banned:
+              this.form.values.isBanned !== undefined &&
+              this.form.values.isBanned !== false
+                ? this.form.values.isBanned
+                : undefined,
+            is_gagged:
+              this.form.values.isGagged !== undefined &&
+              this.form.values.isGagged !== false
+                ? this.form.values.isGagged
+                : undefined,
+            is_muted:
+              this.form.values.isMuted !== undefined &&
+              this.form.values.isMuted !== false
+                ? this.form.values.isMuted
                 : undefined,
             only_played_matches: this.onlyPlayedMatches,
             sort_by: this.getSortBy(),

@@ -376,6 +376,7 @@ export default {
           type: form.type,
           best_of: form.best_of,
           knife_round: form.knife_round,
+          default_models: form.default_models,
           overtime: form.overtime,
           coaches: form.coaches,
           region_veto: form.region_veto,

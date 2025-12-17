@@ -311,8 +311,17 @@ export default {
           e_match_status_enum.Surrendered,
           e_match_status_enum.Tie,
           e_match_status_enum.Canceled,
-        ].includes(this.match.status)
+        ].includes(this.match?.status)
       ) {
+        if (this.match?.ended_at) {
+          const allowExtraTime = new Date(this.match.ended_at);
+          allowExtraTime.setMinutes(allowExtraTime.getMinutes() + 10);
+
+          if (allowExtraTime > new Date()) {
+            return true;
+          }
+        }
+
         return false;
       }
 

@@ -52,7 +52,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
     <div class="grid grid-cols-1 gap-y-4">
       <StreamEmbed
         :streams="match.streams"
-        v-if="match.streams.length > 0"
+        v-if="match.streams.length > 0 && showLiveStreams"
       ></StreamEmbed>
 
       <template
@@ -303,11 +303,7 @@ export default {
         this.match.is_coach
       );
     },
-    canViewStreams() {
-      if (!this.match) {
-        return false;
-      }
-
+    showLiveStreams() {
       if (
         [
           e_match_status_enum.Finished,
@@ -317,6 +313,13 @@ export default {
           e_match_status_enum.Canceled,
         ].includes(this.match.status)
       ) {
+        return false;
+      }
+
+      return true;
+    },
+    canViewStreams() {
+      if (!this.match || !this.showLiveStreams) {
         return false;
       }
 

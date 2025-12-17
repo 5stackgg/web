@@ -22,7 +22,7 @@ import { ExternalLink } from "lucide-vue-next";
       </template>
     </div>
 
-    <div v-if="streams.length > 1" class="flex flex-wrap gap-2">
+    <div v-if="streams.length > 0" class="flex flex-wrap gap-2">
       <Button
         :size="showTitle ? 'sm' : 'icon'"
         v-for="stream in streams"

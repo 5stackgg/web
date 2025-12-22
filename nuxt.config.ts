@@ -128,6 +128,7 @@ export default defineNuxtConfig({
       wsDomain: "",
       webDomain: "",
       demosDomain: "",
+      relayDomain: "",
     },
   },
 

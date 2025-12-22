@@ -256,6 +256,7 @@ export default {
 {
   "WS_DOMAIN": "wss://${useRuntimeConfig().public.wsDomain}",
   "API_DOMAIN": "https://${useRuntimeConfig().public.apiDomain}", 
+  "RELAY_DOMAIN": "https://${useRuntimeConfig().public.relayDomain}",
   "DEMOS_DOMAIN": "https://${useRuntimeConfig().public.demosDomain}",
   "SERVER_ID": "${this.server.id}",
   "SERVER_API_PASSWORD": "${this.server.api_password}"

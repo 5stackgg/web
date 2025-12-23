@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import debounce from "~/utilities/debounce";
+import { e_team_roles_enum } from "~/generated/zeus";
 </script>
 
 <template>
@@ -35,7 +36,7 @@ import debounce from "~/utilities/debounce";
                 debouncedSearch((e.target as HTMLInputElement).value)
             "
           />
-          <div class="flex items-center gap-2 ml-4">
+          <div class="flex items-center gap-2 ml-4" v-if="!myTeams">
             <Switch
               class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
               :model-value="myTeamsOnly"
@@ -106,6 +107,16 @@ export default {
       default: "",
       required: false,
     },
+    isAdmin: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    myTeams: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -144,6 +155,7 @@ export default {
                 id: true,
                 name: true,
                 short_name: true,
+                owner_steam_id: true,
               },
             ],
           }),
@@ -174,8 +186,12 @@ export default {
     async searchTeams(query?: string) {
       this.query = query || "";
 
-      if (this.myTeamsOnly) {
+      if (this.myTeamsOnly || this.myTeams) {
         this.teams = this.me.teams.filter((team: Team) => {
+          if (this.isAdmin && team.role !== e_team_roles_enum.Admin) {
+            return false;
+          }
+
           return !this.exclude.includes(team.id);
         });
         return;

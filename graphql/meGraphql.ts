@@ -16,6 +16,7 @@ export const meFields = Selector("players")({
       id: true,
       name: true,
       short_name: true,
+      role: true,
     },
   ],
 });

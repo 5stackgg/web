@@ -25,10 +25,7 @@ import { NuxtLink } from "#components";
           <TabsTrigger value="overview">{{
             $t("tournament.overview")
           }}</TabsTrigger>
-          <TabsTrigger
-            v-if="myTeam"
-            value="my-team"
-          >
+          <TabsTrigger v-if="myTeam" value="my-team">
             {{ $t("tournament.teams.my_teams") }}
           </TabsTrigger>
           <TabsTrigger value="teams">
@@ -214,10 +211,7 @@ import { NuxtLink } from "#components";
           </div>
         </div>
       </TabsContent>
-      <TabsContent
-        value="my-team"
-        v-if="myTeam"
-      >
+      <TabsContent value="my-team" v-if="myTeam">
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-grow md:w-2/3">
             <Card class="p-4">
@@ -233,11 +227,7 @@ import { NuxtLink } from "#components";
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-grow md:w-2/3">
             <div class="grid gap-4">
-              <Card
-                class="p-4"
-                v-for="team of tournament.teams"
-                :key="team.id"
-              >
+              <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
                 <TournamentTeam
                   :tournament="tournament"
                   :team="team"

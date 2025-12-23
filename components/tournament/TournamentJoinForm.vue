@@ -77,6 +77,8 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
         <FormItem>
           <TeamSearch
             :label="$t('tournament.team.select')"
+            :my-teams="tournament.is_organizer ? false : true"
+            :is-admin="tournament.is_organizer ? false : true"
             @selected="
               (team) => {
                 handleChange(team.id);
@@ -171,7 +173,9 @@ export default {
       handler(newVal) {
         if (newVal) {
           this.teamOwner = null;
-          this.form.setFieldValue("owner_steam_id", this.me.steam_id);
+          if (this.tournament.is_organizer) {
+            this.form.setFieldValue("owner_steam_id", this.me.steam_id);
+          }
         }
       },
     },
@@ -181,7 +185,13 @@ export default {
           this.teamOwner = null;
           this.form.setFieldValue("owner_steam_id", null);
           this.form.setFieldValue("add_self_to_lineup", false);
+          return;
         }
+
+        this.form.setFieldValue(
+          "add_self_to_lineup",
+          this.tournament.is_organizer ? false : true,
+        );
       },
     },
   },
@@ -217,7 +227,7 @@ export default {
               object: {
                 tournament_id: this.$route.params.tournamentId,
                 name: teamName,
-                ...(addPlayerSteamId
+                ...(this.tournament.is_organizer && addPlayerSteamId
                   ? { owner_steam_id: addPlayerSteamId }
                   : {}),
                 team_id: this.form.values.new_team

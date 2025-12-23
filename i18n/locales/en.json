@@ -780,7 +780,8 @@
             "scheduled_for": "Scheduled for"
         },
         "results": {
-            "title": "Results"
+            "title": "Results",
+            "matches": "Matches"
         },
 
         "organizer": {

@@ -287,8 +287,11 @@ export default {
       return Math.max(...this.tournament.stages.map((s: any) => s.order || 1));
     },
     shouldShowTabs() {
-      // Show tabs if multiple stages OR user is organizer
-      return this.maxStageNumber > 1 || this.tournament.is_organizer;
+      return (
+        this.maxStageNumber > 1 ||
+        (this.tournament.is_organizer &&
+          this.tournament.status === e_tournament_status_enum.Setup)
+      );
     },
   },
   methods: {

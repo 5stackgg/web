@@ -5,6 +5,7 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
+import TournamentResults from "~/components/tournament/TournamentResults.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
@@ -329,6 +330,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
       <TabsContent value="overview">
         <div class="space-y-6">
+          <!-- Show results table if tournament is finished -->
+          <template
+            v-if="tournament.status === e_tournament_status_enum.Finished"
+          >
+            <TournamentResults :tournament="tournament" :show-matches="false" />
+            <Separator class="my-4" />
+          </template>
+
           <!-- Full-width Bracket -->
           <TournamentStageBuilder
             class="w-full"
@@ -406,76 +415,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
         </div>
       </TabsContent>
       <TabsContent value="results">
-        <div class="space-y-6">
-          <!-- Results Table -->
-          <Card>
-            <CardHeader>
-              <CardTitle>{{ $t("tournament.results.title") }}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Team</TableHead>
-                    <TableHead class="text-center">Wins</TableHead>
-                    <TableHead class="text-center">Losses</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow
-                    v-for="teamResult in teamResults"
-                    :key="teamResult.teamId"
-                  >
-                    <TableCell class="font-medium">
-                      {{ teamResult.teamName }}
-                    </TableCell>
-                    <TableCell class="text-center">
-                      {{ teamResult.wins }}
-                    </TableCell>
-                    <TableCell class="text-center">
-                      {{ teamResult.losses }}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow v-if="teamResults.length === 0">
-                    <TableCell
-                      colspan="3"
-                      class="text-center text-muted-foreground"
-                    >
-                      No results yet
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <!-- Matches by Team -->
-          <div class="space-y-6">
-            <Card
-              v-for="teamResult in teamResults"
-              :key="`matches-${teamResult.teamId}`"
-            >
-              <CardHeader>
-                <CardTitle>{{ teamResult.teamName }} - Matches</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div class="space-y-4">
-                  <MatchTableRow
-                    v-for="match in teamResult.matches"
-                    :key="match.id"
-                    :match="match"
-                  />
-                  <div
-                    v-if="teamResult.matches.length === 0"
-                    class="text-center text-muted-foreground py-8"
-                  >
-                    No matches played yet
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        <TournamentResults :tournament="tournament" />
       </TabsContent>
       <TabsContent value="match-options" v-if="tournament?.is_organizer">
         <Card class="p-6">
@@ -920,106 +860,8 @@ export default {
       }
       return null;
     },
-    teamResults() {
-      if (!this.tournament?.stages || !this.tournament?.teams) {
-        return [];
-      }
-
-      // Map to track team stats
-      const teamStatsMap = new Map();
-
-      // Initialize all teams with 0 wins/losses
-      this.tournament.teams.forEach((team: any) => {
-        teamStatsMap.set(team.id, {
-          teamId: team.id,
-          teamName: team.name || team.team?.name || `Team ${team.id}`,
-          wins: 0,
-          losses: 0,
-          matches: [],
-        });
-      });
-
-      // Process all brackets to calculate wins/losses and collect matches
-      this.tournament.stages.forEach((stage: any) => {
-        if (stage.brackets) {
-          stage.brackets.forEach((bracket: any) => {
-            if (bracket.match && bracket.match.status === "Finished") {
-              const match = bracket.match;
-              const winningLineupId = match.winning_lineup_id;
-
-              // Determine which team won/lost
-              let team1Id = null;
-              let team2Id = null;
-
-              // Find team IDs from bracket or match lineups
-              if (bracket.team_1?.id) {
-                team1Id = bracket.team_1.id;
-              } else if (match.lineup_1?.team_id) {
-                team1Id = match.lineup_1.team_id;
-              }
-
-              if (bracket.team_2?.id) {
-                team2Id = bracket.team_2.id;
-              } else if (match.lineup_2?.team_id) {
-                team2Id = match.lineup_2.team_id;
-              }
-
-              // Update wins/losses and add match
-              if (team1Id && teamStatsMap.has(team1Id)) {
-                const stats = teamStatsMap.get(team1Id);
-                if (winningLineupId === match.lineup_1_id) {
-                  stats.wins++;
-                } else if (winningLineupId === match.lineup_2_id) {
-                  stats.losses++;
-                }
-                stats.matches.push(match);
-              }
-
-              if (team2Id && teamStatsMap.has(team2Id)) {
-                const stats = teamStatsMap.get(team2Id);
-                if (winningLineupId === match.lineup_2_id) {
-                  stats.wins++;
-                } else if (winningLineupId === match.lineup_1_id) {
-                  stats.losses++;
-                }
-                stats.matches.push(match);
-              }
-            } else if (bracket.match) {
-              // Add unfinished matches too
-              const match = bracket.match;
-              let team1Id = null;
-              let team2Id = null;
-
-              if (bracket.team_1?.id) {
-                team1Id = bracket.team_1.id;
-              } else if (match.lineup_1?.team_id) {
-                team1Id = match.lineup_1.team_id;
-              }
-
-              if (bracket.team_2?.id) {
-                team2Id = bracket.team_2.id;
-              } else if (match.lineup_2?.team_id) {
-                team2Id = match.lineup_2.team_id;
-              }
-
-              if (team1Id && teamStatsMap.has(team1Id)) {
-                teamStatsMap.get(team1Id).matches.push(match);
-              }
-              if (team2Id && teamStatsMap.has(team2Id)) {
-                teamStatsMap.get(team2Id).matches.push(match);
-              }
-            }
-          });
-        }
-      });
-
-      // Convert to array and sort by wins (descending)
-      return Array.from(teamStatsMap.values())
-        .filter(
-          (stats) =>
-            stats.matches.length > 0 || stats.wins > 0 || stats.losses > 0,
-        )
-        .sort((a, b) => b.wins - a.wins);
+    e_tournament_status_enum() {
+      return e_tournament_status_enum;
     },
   },
   methods: {

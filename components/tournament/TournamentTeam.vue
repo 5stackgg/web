@@ -2,6 +2,7 @@
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -12,6 +13,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
 import TournamentTeamInvite from "./TournamentTeamInvite.vue";
 import Badge from "../ui/badge/Badge.vue";
 import Input from "../ui/input/Input.vue";
+import { Button } from "~/components/ui/button";
 </script>
 
 <template>
@@ -75,7 +77,7 @@ import Input from "../ui/input/Input.vue";
         </Button>
 
         <Button
-          v-if="tournament.is_organizer"
+          v-if="tournament.is_organizer && canRemoveTeam"
           @click="removeTeam()"
           variant="destructive"
           class="w-full sm:w-auto"
@@ -196,17 +198,54 @@ export default {
       ].includes(status);
     },
     canLeaveTournament() {
-      return this.team.can_manage;
+      if (!this.team.can_manage) return false;
+      const status = this.tournament.status;
+      const restrictedStatuses = [
+        e_tournament_status_enum.Cancelled,
+        e_tournament_status_enum.CancelledMinTeams,
+        e_tournament_status_enum.Finished,
+      ];
+
+      // For non-organizers, also restrict Live status
+      if (!this.tournament.is_organizer) {
+        restrictedStatuses.push(e_tournament_status_enum.Live);
+      }
+
+      return !restrictedStatuses.includes(status);
     },
     requiredPlayers() {
       return this.tournament.max_players_per_lineup;
     },
     canLeaveTeam() {
-      return (
+      const isMember =
         this.team.roster.find((member) => {
           return member.player.steam_id === useAuthStore().me.steam_id;
-        }) !== undefined
-      );
+        }) !== undefined;
+
+      if (!isMember) return false;
+
+      const status = this.tournament.status;
+      const restrictedStatuses = [
+        e_tournament_status_enum.Cancelled,
+        e_tournament_status_enum.CancelledMinTeams,
+        e_tournament_status_enum.Finished,
+      ];
+
+      // For non-organizers, also restrict Live status
+      if (!this.tournament.is_organizer) {
+        restrictedStatuses.push(e_tournament_status_enum.Live);
+      }
+
+      return !restrictedStatuses.includes(status);
+    },
+    canRemoveTeam() {
+      if (!this.tournament.is_organizer) return false;
+      const status = this.tournament.status;
+      return ![
+        e_tournament_status_enum.Cancelled,
+        e_tournament_status_enum.CancelledMinTeams,
+        e_tournament_status_enum.Finished,
+      ].includes(status);
     },
   },
   methods: {

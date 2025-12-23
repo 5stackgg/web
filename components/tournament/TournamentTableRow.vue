@@ -1,0 +1,168 @@
+<script setup lang="ts">
+import { UsersIcon } from "lucide-vue-next";
+import TimeAgo from "~/components/TimeAgo.vue";
+import cleanMapName from "~/utilities/cleanMapName";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+</script>
+
+<template>
+  <div
+    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
+    @click="navigateToTournament(tournament.id, $event)"
+  >
+    <div class="p-6 flex flex-col gap-4">
+      <!-- Tournament Header -->
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-lg text-foreground truncate mb-2">
+            {{ tournament.name }}
+          </h3>
+
+          <!-- Type, Description, and Stage Badges - Second Line -->
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <Badge variant="secondary" class="text-xs shrink-0">
+              {{ tournament.options.type }}: {{ tournamentTypeDescription }}
+            </Badge>
+            <Badge
+              v-if="stageCount > 1"
+              variant="outline"
+              class="text-xs shrink-0"
+            >
+              {{ stageCount }} {{ $t("tournament.stage.stages") }}
+            </Badge>
+            <Badge
+              v-if="singleStageType"
+              variant="outline"
+              class="text-xs shrink-0"
+            >
+              {{ singleStageType }}
+            </Badge>
+          </div>
+
+          <!-- Description -->
+          <p
+            v-if="tournament.description"
+            class="text-sm text-muted-foreground line-clamp-2"
+          >
+            {{ tournament.description }}
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <Badge variant="outline" class="text-xs">
+            {{ tournament.e_tournament_status.description }}
+          </Badge>
+          <div class="text-sm text-muted-foreground">
+            <TimeAgo :date="tournament.start"></TimeAgo>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Pool and Teams Info -->
+      <div
+        class="flex items-center justify-between gap-4 pt-2 border-t border-border/50"
+      >
+        <!-- Map Pool -->
+        <div class="flex-1 min-w-0">
+          <div
+            v-if="
+              tournament.options?.map_pool &&
+              tournament.options.map_pool.maps?.length > 0
+            "
+            class="flex flex-wrap gap-2 items-center"
+          >
+            <span
+              class="text-xs text-muted-foreground uppercase tracking-wide shrink-0"
+            >
+              Maps:
+            </span>
+            <div class="flex flex-wrap gap-2">
+              <div
+                v-for="map in tournament.options.map_pool.maps"
+                :key="map.id"
+                class="flex items-center space-x-2 bg-muted/50 rounded-lg px-2 py-1 border border-border"
+              >
+                <img
+                  v-if="map.patch"
+                  :src="map.patch"
+                  :alt="map.name"
+                  class="w-5 h-5"
+                  @error="
+                    ($event.target as HTMLImageElement).style.display = 'none'
+                  "
+                />
+                <span class="text-xs font-medium first-letter:uppercase">{{
+                  cleanMapName(map.name)
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teams Count -->
+        <div
+          class="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0"
+        >
+          <UsersIcon class="h-4 w-4" />
+          <span>
+            {{ tournament.teams_aggregate?.aggregate?.count || 0 }}
+            {{ $t("tournament.table.teams_joined") }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+export default {
+  props: {
+    tournament: {
+      type: Object,
+      required: true,
+    },
+    eMatchTypes: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    tournamentTypeDescription() {
+      if (!this.tournament?.options?.type || !this.eMatchTypes?.length) {
+        return this.tournament?.options?.type || "";
+      }
+      const matchType = this.eMatchTypes.find(
+        (type: any) => type.value === this.tournament.options.type,
+      );
+      return matchType?.description || this.tournament.options.type;
+    },
+    stageCount() {
+      return this.tournament?.stages?.length || 0;
+    },
+    singleStageType() {
+      if (
+        this.stageCount === 1 &&
+        this.tournament?.stages?.[0]?.e_tournament_stage_type
+      ) {
+        return this.tournament.stages[0].e_tournament_stage_type.description;
+      }
+      return null;
+    },
+  },
+  methods: {
+    navigateToTournament(tournamentId: string, event?: Event) {
+      if (event) {
+        event.stopPropagation();
+      }
+      this.$router.push({
+        name: "tournaments-tournamentId",
+        params: { tournamentId },
+      });
+    },
+  },
+};
+</script>

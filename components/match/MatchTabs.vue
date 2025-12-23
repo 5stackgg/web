@@ -303,7 +303,7 @@ provide("commander", commander);
       </RconCommander>
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4">
-      <Card class="p-3 w-full sm:max-w-[500px]">
+      <Card class="p-3">
         <CardContent>
           <MatchOptionsDisplay
             :options="match.options"

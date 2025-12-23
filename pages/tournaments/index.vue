@@ -1,17 +1,3 @@
-<script setup lang="ts">
-import TournamentsTable from "~/components/TournamentsTable.vue";
-import PageHeading from "~/components/PageHeading.vue";
-import { Button } from "~/components/ui/button";
-import { PlusCircle } from "lucide-vue-next";
-import MyUpcomingTournaments from "~/components/tournament/MyUpcomingTournaments.vue";
-import Separator from "~/components/ui/separator/Separator.vue";
-import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDisplay.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-import { useSidebar } from "~/components/ui/sidebar/utils";
-
-const { isMobile } = useSidebar();
-</script>
-
 <template>
   <div class="flex-grow flex flex-col gap-4">
     <PageHeading>
@@ -33,8 +19,6 @@ const { isMobile } = useSidebar();
 
     <MyUpcomingTournaments></MyUpcomingTournaments>
 
-    <Separator></Separator>
-
     <Card class="p-4">
       <Tabs default-value="other">
         <TabsList>
@@ -47,7 +31,22 @@ const { isMobile } = useSidebar();
         </TabsList>
 
         <TabsContent value="other">
-          <TournamentsTable :tournaments="tournaments || []"></TournamentsTable>
+          <div
+            v-if="!tournaments || tournaments.length === 0"
+            class="text-center py-8"
+          >
+            <p class="text-muted-foreground">
+              {{ $t("tournament.table.no_tournaments_found") }}
+            </p>
+          </div>
+          <div v-else class="space-y-4">
+            <TournamentTableRow
+              v-for="tournament in tournaments"
+              :key="tournament.id"
+              :tournament="tournament"
+              :e-match-types="eMatchTypes"
+            ></TournamentTableRow>
+          </div>
 
           <Teleport defer to="#pagination">
             <pagination
@@ -64,22 +63,21 @@ const { isMobile } = useSidebar();
         </TabsContent>
 
         <TabsContent value="my">
-          <div class="flex gap-4 overflow-x-auto">
-            <template v-if="myRecentTournaments?.length > 0">
-              <SimpleTournamentDisplay
-                :key="tournament.id"
-                :tournament="tournament"
-                class="flex-shrink-0"
-                v-for="tournament of myRecentTournaments"
-              ></SimpleTournamentDisplay>
-            </template>
-            <template v-else>
-              <div class="text-center w-full p-4">
-                <p class="text-muted-foreground">
-                  {{ $t("pages.tournaments.no_recent") }}
-                </p>
-              </div>
-            </template>
+          <div
+            v-if="!myRecentTournaments || myRecentTournaments.length === 0"
+            class="text-center py-8"
+          >
+            <p class="text-muted-foreground">
+              {{ $t("pages.tournaments.no_recent") }}
+            </p>
+          </div>
+          <div v-else class="space-y-4">
+            <TournamentTableRow
+              v-for="tournament in myRecentTournaments"
+              :key="tournament.id"
+              :tournament="tournament"
+              :e-match-types="eMatchTypes"
+            ></TournamentTableRow>
           </div>
         </TabsContent>
       </Tabs>
@@ -90,18 +88,52 @@ const { isMobile } = useSidebar();
 </template>
 
 <script lang="ts">
+import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import PageHeading from "~/components/PageHeading.vue";
+import { Button } from "~/components/ui/button";
+import { PlusCircle } from "lucide-vue-next";
+import MyUpcomingTournaments from "~/components/tournament/MyUpcomingTournaments.vue";
+import Separator from "~/components/ui/separator/Separator.vue";
+import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDisplay.vue";
 import { mapFields } from "~/graphql/mapGraphql";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
+import { useSidebar } from "~/components/ui/sidebar/utils";
 
 export default {
+  components: {
+    TournamentTableRow,
+    PageHeading,
+    Button,
+    PlusCircle,
+    MyUpcomingTournaments,
+    Separator,
+    SimpleTournamentDisplay,
+  },
+  setup() {
+    const { isMobile } = useSidebar();
+    return { isMobile };
+  },
   data() {
     return {
       page: 1,
       perPage: 10,
+      eMatchTypes: [],
     };
   },
   apollo: {
+    eMatchTypes: {
+      fetchPolicy: "cache-first",
+      query: generateQuery({
+        e_match_types: [
+          {},
+          {
+            value: true,
+            description: true,
+          },
+        ],
+      }),
+    },
     tournaments: {
       fetchPolicy: "network-only",
       query: function () {
@@ -121,12 +153,41 @@ export default {
               id: true,
               name: true,
               start: true,
+              description: true,
               e_tournament_status: {
                 description: true,
               },
               options: {
                 type: true,
+                map_pool: [
+                  {},
+                  {
+                    id: true,
+                    type: true,
+                    e_type: {
+                      description: true,
+                    },
+                    maps: [{}, mapFields],
+                  },
+                ],
               },
+              stages: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
+                  order: true,
+                },
+              ],
               teams_aggregate: [
                 {},
                 {
@@ -188,14 +249,49 @@ export default {
                 id: true,
                 name: true,
                 start: true,
+                description: true,
                 e_tournament_status: {
                   description: true,
                 },
                 options: {
-                  map_pool: {
-                    maps: [{}, mapFields],
-                  },
+                  type: true,
+                  map_pool: [
+                    {},
+                    {
+                      id: true,
+                      type: true,
+                      e_type: {
+                        description: true,
+                      },
+                      maps: [{}, mapFields],
+                    },
+                  ],
                 },
+                stages: [
+                  {
+                    order_by: [
+                      {
+                        order: order_by.asc,
+                      },
+                    ],
+                  },
+                  {
+                    id: true,
+                    type: true,
+                    e_tournament_stage_type: {
+                      description: true,
+                    },
+                    order: true,
+                  },
+                ],
+                teams_aggregate: [
+                  {},
+                  {
+                    aggregate: {
+                      count: true,
+                    },
+                  },
+                ],
               },
             ],
           },

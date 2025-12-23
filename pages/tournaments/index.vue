@@ -133,13 +133,6 @@ export default {
           },
         ],
       }),
-      result({
-        data,
-      }: {
-        data: { e_match_types: Array<{ value: string; description: string }> };
-      }) {
-        this.eMatchTypes = data.e_match_types;
-      },
     },
     tournaments: {
       fetchPolicy: "network-only",

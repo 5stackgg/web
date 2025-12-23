@@ -17,6 +17,7 @@ import {
   Unlock,
   Ban,
   UserPlus,
+  Trash,
 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +46,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { NuxtLink } from "#components";
 import MatchTableRow from "~/components/MatchTableRow.vue";
 import {
@@ -140,6 +152,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
             >
               <Ban class="mr-2 h-4 w-4" />
               <span>{{ $t("tournament.actions.cancel") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator
+              v-if="tournament.can_cancel && tournament.is_organizer"
+            />
+
+            <DropdownMenuItem
+              v-if="tournament.is_organizer"
+              @click="deleteDialogOpen = true"
+              class="text-destructive cursor-pointer"
+            >
+              <Trash class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.delete") }}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -458,6 +483,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
         <TournamentOrganizers :tournament="tournament"></TournamentOrganizers>
       </TabsContent>
     </Tabs>
+
+    <!-- Delete Tournament Dialog -->
+    <AlertDialog
+      :open="deleteDialogOpen"
+      @update:open="(open) => (deleteDialogOpen = open)"
+    >
+      <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("tournament.actions.confirm_delete")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("tournament.actions.delete_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction
+            @click="deleteTournament"
+            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {{ $t("tournament.actions.delete") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
 
@@ -482,6 +534,7 @@ export default {
       organizersDialogOpen: false,
       joinSheetOpen: false,
       overviewExpanded: true,
+      deleteDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
       e_match_types: [],
@@ -1003,6 +1056,23 @@ export default {
           ],
         }),
       });
+    },
+    async deleteTournament() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          delete_tournaments_by_pk: [
+            {
+              id: this.tournament.id,
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+      this.deleteDialogOpen = false;
+      // Redirect to tournaments list
+      this.$router.push({ name: "tournaments" });
     },
   },
   watch: {

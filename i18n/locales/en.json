@@ -788,7 +788,8 @@
             "no_organizers_description": "No organizers have been added to this tournament yet",
             "remove": "Remove Organizer",
             "confirm_remove": "Are you sure you want to remove this organizer?",
-            "remove_description": "This will remove the organizer from the tournament"
+            "remove_description": "This will remove the organizer from the tournament",
+            "organized_by": "Organized by"
         },
         "team": {
             "eligible": "Eligible",
@@ -1031,7 +1032,7 @@
             "timeout_setting": "Timeout Setting",
             "tech_timeout_setting": "Tech Timeout Setting",
             "ready_setting": "Ready Setting",
-            "check_in_setting": "Veto Setting",
+            "check_in_setting": "Check In Setting",
             "map_pool": "Map Pool",
             "advanced_settings": "Show Advanced Settings",
             "default_player_models": "Default Player Models"

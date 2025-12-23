@@ -3,24 +3,51 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
-import TournamentActions from "~/components/tournament/TournamentActions.vue";
+import TournamentForm from "~/components/tournament/TournamentForm.vue";
+import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { Settings, Users } from "lucide-vue-next";
+import { Settings, Users, ChevronDown, Lock, Unlock, Ban, UserPlus } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/components/ui/avatar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { NuxtLink } from "#components";
 </script>
 
 <template>
   <div v-if="tournament">
-    <Tabs default-value="overview">
-      <div class="flex justify-between">
+    <Tabs v-model="activeTab" default-value="overview">
+      <div class="flex items-center gap-2">
         <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
           <TabsTrigger value="overview">{{
             $t("tournament.overview")
@@ -35,181 +62,238 @@ import { NuxtLink } from "#components";
               })
             }}
           </TabsTrigger>
+          <TabsTrigger v-if="tournament?.is_organizer" value="match-options">
+            Match Options
+          </TabsTrigger>
+          <TabsTrigger v-if="tournament?.is_organizer" value="organizers">
+            Organizers
+          </TabsTrigger>
         </TabsList>
+        
+        <!-- Combined Admin Actions Dropdown - Next to Organizers tab -->
+        <DropdownMenu v-if="tournament?.is_organizer">
+          <DropdownMenuTrigger as-child>
+            <Button
+              variant="outline"
+              size="icon"
+              :title="$t('tournament.settings')"
+              class="hover:bg-accent shrink-0"
+            >
+              <Settings class="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent class="w-56" align="end">
+            <DropdownMenuSeparator
+              v-if="
+                tournament.can_open_registration ||
+                tournament.can_close_registration ||
+                tournament.can_cancel
+              "
+            />
+
+            <DropdownMenuItem
+              v-if="tournament.can_open_registration"
+              @click="openRegistration"
+              class="cursor-pointer"
+            >
+              <Unlock class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.open_registration") }}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              v-if="tournament.can_close_registration"
+              @click="closeRegistration"
+              class="cursor-pointer"
+            >
+              <Lock class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.close_registration") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator
+              v-if="
+                (tournament.can_open_registration ||
+                  tournament.can_close_registration) &&
+                tournament.can_cancel
+              "
+            />
+
+            <DropdownMenuItem
+              v-if="tournament.can_cancel"
+              @click="cancelTournament"
+              class="text-destructive cursor-pointer"
+            >
+              <Ban class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.cancel") }}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div
         class="bg-muted/40 rounded-xl px-6 py-4 mt-2 mb-6 shadow-sm border border-border"
       >
         <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+          class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
         >
           <div class="flex flex-col min-w-0 flex-1">
-            <div class="flex flex-wrap items-center gap-2 min-w-0">
-              <h1 class="truncate text-2xl sm:text-3xl font-bold">
+            <div class="flex flex-wrap items-center gap-3 min-w-0">
+              <h1 class="truncate text-2xl sm:text-3xl font-bold leading-tight">
                 {{ tournament.name }}
               </h1>
+            </div>
+            <!-- Tournament Type Badge -->
+            <div class="mt-2 flex">
               <Badge
                 variant="secondary"
-                class="text-xs font-semibold h-6 flex items-center"
+                class="text-xs font-semibold h-6 flex items-center shrink-0 w-fit"
               >
-                {{ tournament.options.type }}
+                {{ tournament.options.type }}: {{ tournamentTypeDescription }}
               </Badge>
-            </div>
-            <div class="flex items-center gap-2 mt-1">
-              <TimeAgo
-                :date="tournament.start"
-                class="text-xs text-muted-foreground"
-              />
-            </div>
-            <div
-              v-if="tournament.description"
-              class="mt-2 text-sm text-muted-foreground line-clamp-3"
-            >
-              {{ tournament.description }}
             </div>
           </div>
 
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <Badge v-if="tournament" class="text-xs h-6 flex items-center">
-              {{ tournament.e_tournament_status.description }}
-            </Badge>
-            <Popover>
-              <PopoverTrigger as-child>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  v-if="tournament.is_organizer"
-                  :title="$t('tournament.settings')"
-                  class="hover:bg-accent"
+          <div class="flex flex-col items-end gap-2 flex-shrink-0 sm:pt-1">
+            <!-- Status Badge and Join Button -->
+            <div class="flex flex-wrap items-center gap-2 justify-end">
+              <Badge
+                v-if="tournament"
+                class="text-sm font-semibold h-7 px-3 flex items-center shrink-0 hover:bg-primary"
+              >
+                {{ tournament.e_tournament_status.description }}
+              </Badge>
+              <Button
+                v-if="
+                  tournament.status === e_tournament_status_enum.RegistrationOpen &&
+                  tournament.can_join
+                "
+                size="sm"
+                class="h-7 px-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold text-sm border-0 hover:scale-105 active:scale-95"
+                @click="joinSheetOpen = true"
+              >
+                <UserPlus class="h-3.5 w-3.5 mr-1.5" />
+                {{ $t("tournament.join.title") }}
+              </Button>
+            </div>
+            <!-- Date/Time Info -->
+            <div class="flex items-center gap-2 justify-end text-xs text-muted-foreground">
+              Starts
+              <TimeAgo
+                :date="tournament.start"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Collapsible Description and Overview -->
+        <Collapsible v-model:open="overviewExpanded" class="mt-2">
+          <div v-if="tournament.description" class="w-full">
+            <CollapsibleTrigger as-child>
+              <Button
+                variant="ghost"
+                class="w-full justify-between p-0 h-auto hover:bg-transparent text-left text-sm text-muted-foreground hover:text-foreground"
+              >
+                <span 
+                  :class="{ 'line-clamp-2': !overviewExpanded }" 
+                  class="flex-1 break-words text-wrap pr-2"
+                  style="word-wrap: break-word; overflow-wrap: break-word;"
                 >
-                  <Settings class="h-5 w-5" />
-                </Button>
+                  {{ tournament.description }}
+                </span>
+                <ChevronDown
+                  class="h-3 w-3 transition-transform duration-200 shrink-0"
+                  :class="{ 'rotate-180': overviewExpanded }"
+                />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent>
+            <div class="mt-2 pt-3 border-t border-border space-y-6">
+              <!-- Match Options -->
+              <MatchOptionsDisplay
+                 :show-details-by-default="false"
+                   :options="tournament.options"
+                ></MatchOptionsDisplay>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
+        <!-- Organized By - Bottom Right -->
+        <div class="flex items-center justify-end gap-1.5 mt-4 pt-3 border-t border-border">
+          <span class="text-xs text-muted-foreground">{{ $t("tournament.organizer.organized_by") }}</span>
+          <template
+            v-for="(organizer, index) in organizersList"
+            :key="organizer.steam_id"
+          >
+            <Popover v-model:open="organizerPopoversOpen[index]">
+              <PopoverTrigger as-child>
+                <button
+                  class="relative group"
+                  @mouseenter="organizerPopoversOpen[index] = true"
+                  @mouseleave="organizerPopoversOpen[index] = false"
+                >
+                  <Avatar shape="square" class="h-7 w-7 border-2 border-background cursor-pointer hover:opacity-80 transition-opacity">
+                    <AvatarImage
+                      :src="organizer.avatar_url"
+                      :alt="organizer.name"
+                      v-if="organizer?.avatar_url"
+                    />
+                    <AvatarFallback class="text-xs">
+                      {{ organizer?.name.slice(0, 2) }}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
               </PopoverTrigger>
-              <PopoverContent class="w-80">
-                <div class="grid gap-4">
-                  <div class="space-y-2">
-                    <h4 class="font-medium">Tournament Settings</h4>
-                    <p class="text-sm text-muted-foreground">
-                      Manage tournament settings and options
-                    </p>
-                  </div>
-                  <Separator />
-                  <div class="grid gap-2">
-                    <NuxtLink
-                      :to="{
-                        name: 'tournaments-tournamentId-match-options',
-                        params: { tournamentId: tournament.id },
-                      }"
-                      class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
-                    >
-                      <Settings class="mr-2 h-4 w-4" />
-                      Match Options
-                    </NuxtLink>
-                    <NuxtLink
-                      :to="{
-                        name: 'tournaments-tournamentId-organizers',
-                        params: { tournamentId: tournament.id },
-                      }"
-                      class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
-                    >
-                      <Users class="mr-2 h-4 w-4" />
-                      Organizers
-                    </NuxtLink>
-                  </div>
+              <PopoverContent
+                class="w-64 p-0"
+                @mouseenter="organizerPopoversOpen[index] = true"
+                @mouseleave="organizerPopoversOpen[index] = false"
+              >
+                <div class="p-4">
+                  <PlayerDisplay
+                    :player="organizer"
+                    :linkable="true"
+                    :tooltip="false"
+                  />
                 </div>
               </PopoverContent>
             </Popover>
-            <TournamentActions
-              :tournament="tournament"
-              class="ml-2"
-            ></TournamentActions>
-          </div>
+          </template>
         </div>
       </div>
 
       <TabsContent value="overview">
-        <div class="flex flex-col md:flex-row gap-6">
-          <Card class="h-fit p-6 md:w-1/3">
-            <CardContent>
-              <MatchOptionsDisplay
-                :show-details-by-default="false"
-                :options="tournament.options"
-              ></MatchOptionsDisplay>
-
-              <div class="mt-4 space-y-4">
-                <div class="flex items-center justify-between">
-                  <h3 class="text-lg font-semibold">
-                    {{ $t("tournament.admin") }}
-                  </h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    @click="showOrganizers = !showOrganizers"
-                    v-if="tournament.organizers.length > 0"
-                  >
-                    {{
-                      showOrganizers
-                        ? $t("tournament.hide_organizers")
-                        : $t("tournament.show_organizers")
-                    }}
-                  </Button>
-                </div>
-                <PlayerDisplay :player="tournament.admin" />
-
-                <template
-                  v-if="tournament.organizers.length > 0 && showOrganizers"
-                >
-                  <Separator class="my-4" />
-                  <div
-                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
-                  >
-                    <div
-                      v-for="{ organizer } of tournament.organizers"
-                      :key="organizer.steam_id"
-                      class="flex items-center space-x-2"
-                    >
-                      <PlayerDisplay :player="organizer" />
-                    </div>
-                  </div>
-                </template>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div class="w-full md:w-2/3 space-y-4">
-            <div
-              v-if="
-                tournament.status === e_tournament_status_enum.RegistrationOpen
-              "
-            >
-              <Card class="p-4">
-                <CardHeader>
-                  <CardTitle class="text-xl">{{
-                    $t("tournament.join.title")
-                  }}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <template v-if="tournament.can_join">
-                    <TournamentJoinForm
-                      :tournament="tournament"
-                      @close="tournamentDialog = false"
-                    />
-                  </template>
-                  <template v-else-if="myTeam">
-                    {{
-                      $t("tournament.join.joined_with", { name: myTeam.name })
-                    }}
-                  </template>
-                </CardContent>
-              </Card>
-            </div>
-            <TournamentStageBuilder
-              class="border-2 border-dashed p-6"
-              :tournament="tournament"
-            ></TournamentStageBuilder>
-          </div>
+        <div class="space-y-6">
+          <!-- Full-width Bracket -->
+          <TournamentStageBuilder
+            class="w-full"
+            :tournament="tournament"
+          ></TournamentStageBuilder>
         </div>
+
+        <!-- Join Tournament Sheet -->
+        <Sheet :open="joinSheetOpen" @update:open="(open) => (joinSheetOpen = open)">
+          <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle class="text-2xl">
+                {{ $t("tournament.join.title") }}
+              </SheetTitle>
+              <SheetDescription>
+                {{
+                  $t("tournament.join.requirements", {
+                    count: tournament.min_players_per_lineup,
+                  })
+                }}
+              </SheetDescription>
+            </SheetHeader>
+
+            <div class="mt-6">
+              <TournamentJoinForm
+                :tournament="tournament"
+                @close="joinSheetOpen = false"
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+
       </TabsContent>
       <TabsContent value="my-team" v-if="myTeam">
         <div class="flex flex-col md:flex-row gap-6">
@@ -252,6 +336,14 @@ import { NuxtLink } from "#components";
           </div>
         </div>
       </TabsContent>
+      <TabsContent value="match-options" v-if="tournament?.is_organizer">
+        <Card class="p-6">
+          <TournamentForm :tournament="tournament"></TournamentForm>
+        </Card>
+      </TabsContent>
+      <TabsContent value="organizers" v-if="tournament?.is_organizer">
+        <TournamentOrganizers :tournament="tournament"></TournamentOrganizers>
+      </TabsContent>
     </Tabs>
   </div>
 </template>
@@ -263,6 +355,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
 import { playerFields } from "~/graphql/playerFields";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 
 export default {
   data() {
@@ -273,10 +366,29 @@ export default {
       teamSearchQuery: undefined,
       settingsDialogOpen: false,
       organizersDialogOpen: false,
-      showOrganizers: false,
+      joinSheetOpen: false,
+      overviewExpanded: true,
+      organizerPopoversOpen: {},
+      activeTab: "overview",
+      e_match_types: [],
     };
   },
   apollo: {
+    e_match_types: {
+      fetchPolicy: "cache-first",
+      query: generateQuery({
+        e_match_types: [
+          {},
+          {
+            value: true,
+            description: true,
+          },
+        ],
+      }),
+      result({ data }: { data: { e_match_types: Array<{ value: string; description: string }> } }) {
+        this.e_match_types = data.e_match_types;
+      },
+    },
     $subscribe: {
       tournaments_by_pk: {
         query: typedGql("subscription")({
@@ -309,6 +421,7 @@ export default {
                 coaches: true,
                 knife_round: true,
                 default_models: true,
+                check_in_setting: true,
                 overtime: true,
                 region_veto: true,
                 best_of: true,
@@ -529,6 +642,30 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    tournamentTypeDescription() {
+      if (!this.tournament?.options?.type || !this.e_match_types) {
+        return this.tournament?.options?.type || "";
+      }
+      const matchType = this.e_match_types.find(
+        (type) => type.value === this.tournament.options.type,
+      );
+      return matchType?.description || this.tournament.options.type;
+    },
+    organizersList() {
+      if (!this.tournament) return [];
+      const list = [];
+      if (this.tournament.admin) {
+        list.push(this.tournament.admin);
+      }
+      if (this.tournament.organizers) {
+        this.tournament.organizers.forEach((item) => {
+          if (item.organizer) {
+            list.push(item.organizer);
+          }
+        });
+      }
+      return list;
+    },
   },
   methods: {
     openSettingsDialog() {
@@ -536,6 +673,76 @@ export default {
     },
     openOrganizersDialog() {
       this.organizersDialogOpen = true;
+    },
+    async cancelTournament() {
+      await this.updateTournamentStatus(e_tournament_status_enum.Cancelled);
+    },
+    async openRegistration() {
+      await this.updateTournamentStatus(e_tournament_status_enum.RegistrationOpen);
+    },
+    async closeRegistration() {
+      await this.updateTournamentStatus(e_tournament_status_enum.RegistrationClosed);
+    },
+    async updateTournamentStatus(status) {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_tournaments_by_pk: [
+            {
+              pk_columns: {
+                id: this.tournament.id,
+              },
+              _set: {
+                status,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+  },
+  watch: {
+    tournament: {
+      handler(newTournament) {
+        if (newTournament) {
+          // Collapse overview by default when tournament is Live, expand otherwise
+          this.overviewExpanded =
+            newTournament.status !== e_tournament_status_enum.Live;
+        }
+      },
+      immediate: true,
+    },
+    organizersList: {
+      handler(newList) {
+        // Initialize organizer popovers state based on the combined list
+        if (newList && newList.length > 0) {
+          this.organizerPopoversOpen = newList.reduce(
+            (acc, _, index) => {
+              acc[index] = false;
+              return acc;
+            },
+            {},
+          );
+        }
+      },
+      immediate: true,
+    },
+    activeTab: {
+      handler(newTab) {
+        // Collapse overview when on match-options or organizers tabs
+        if (newTab === "match-options" || newTab === "organizers") {
+          this.overviewExpanded = false;
+        } else if (newTab === "overview") {
+          // Expand overview when switching back to overview tab
+          // unless tournament is Live
+          if (this.tournament) {
+            this.overviewExpanded =
+              this.tournament.status !== e_tournament_status_enum.Live;
+          }
+        }
+      },
     },
   },
 };

@@ -143,7 +143,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             </TooltipProvider>
           </div>
           <div class="flex items-center gap-2" v-if="player.steam_id">
-            <FiveStackToolTip v-if="showRole">
+            <FiveStackToolTip v-if="showRole && tooltip">
               <template #trigger>
                 <template v-if="isUser">
                   <BadgeIcon class="w-3 h-3 mr-1" />
@@ -227,6 +227,10 @@ export default {
       default: true,
     },
     showElo: {
+      type: Boolean,
+      default: true,
+    },
+    tooltip: {
       type: Boolean,
       default: true,
     },

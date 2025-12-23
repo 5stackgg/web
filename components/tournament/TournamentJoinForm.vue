@@ -116,6 +116,7 @@ import { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 
 export default {
+  emits: ["close"],
   props: {
     tournament: {
       type: Object,
@@ -257,6 +258,9 @@ export default {
       });
 
       this.form.resetForm();
+      
+      // Emit close event to close drawer/modal
+      this.$emit("close");
     },
   },
 };

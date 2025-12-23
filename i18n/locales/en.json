@@ -779,6 +779,9 @@
             "bye_round": "Bye Round",
             "scheduled_for": "Scheduled for"
         },
+        "results": {
+            "title": "Results"
+        },
 
         "organizer": {
             "title": "Tournament Organizers",

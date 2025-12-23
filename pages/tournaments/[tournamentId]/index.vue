@@ -46,6 +46,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { NuxtLink } from "#components";
+import MatchTableRow from "~/components/MatchTableRow.vue";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 </script>
 
 <template>
@@ -65,6 +75,9 @@ import { NuxtLink } from "#components";
                 count: tournament?.teams_aggregate?.aggregate?.count || 0,
               })
             }}
+          </TabsTrigger>
+          <TabsTrigger value="results">
+            {{ $t("tournament.results.title") }}
           </TabsTrigger>
           <TabsTrigger v-if="tournament?.is_organizer" value="match-options">
             Match Options
@@ -364,6 +377,78 @@ import { NuxtLink } from "#components";
           </div>
         </div>
       </TabsContent>
+      <TabsContent value="results">
+        <div class="space-y-6">
+          <!-- Results Table -->
+          <Card>
+            <CardHeader>
+              <CardTitle>{{ $t("tournament.results.title") }}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Team</TableHead>
+                    <TableHead class="text-center">Wins</TableHead>
+                    <TableHead class="text-center">Losses</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow
+                    v-for="teamResult in teamResults"
+                    :key="teamResult.teamId"
+                  >
+                    <TableCell class="font-medium">
+                      {{ teamResult.teamName }}
+                    </TableCell>
+                    <TableCell class="text-center">
+                      {{ teamResult.wins }}
+                    </TableCell>
+                    <TableCell class="text-center">
+                      {{ teamResult.losses }}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow v-if="teamResults.length === 0">
+                    <TableCell
+                      colspan="3"
+                      class="text-center text-muted-foreground"
+                    >
+                      No results yet
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          <!-- Matches by Team -->
+          <div class="space-y-6">
+            <Card
+              v-for="teamResult in teamResults"
+              :key="`matches-${teamResult.teamId}`"
+            >
+              <CardHeader>
+                <CardTitle>{{ teamResult.teamName }} - Matches</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div class="space-y-4">
+                  <MatchTableRow
+                    v-for="match in teamResult.matches"
+                    :key="match.id"
+                    :match="match"
+                  />
+                  <div
+                    v-if="teamResult.matches.length === 0"
+                    class="text-center text-muted-foreground py-8"
+                  >
+                    No matches played yet
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </TabsContent>
       <TabsContent value="match-options" v-if="tournament?.is_organizer">
         <Card class="p-6">
           <TournamentForm :tournament="tournament"></TournamentForm>
@@ -384,6 +469,7 @@ import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
 import { playerFields } from "~/graphql/playerFields";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 
 export default {
   data() {
@@ -567,14 +653,21 @@ export default {
                       match: {
                         id: true,
                         status: true,
-                        winning_lineup_id: true,
-                        lineup_1: {
-                          id: true,
-                          name: true,
+                        ended_at: true,
+                        e_match_status: {
+                          description: true,
                         },
-                        lineup_2: {
-                          id: true,
-                          name: true,
+                        winning_lineup_id: true,
+                        lineup_1_id: true,
+                        lineup_2_id: true,
+                        created_at: true,
+                        started_at: true,
+                        scheduled_at: true,
+                        options: {
+                          mr: true,
+                          best_of: true,
+                          type: true,
+                          lobby_access: true,
                         },
                         match_maps: [
                           {
@@ -585,10 +678,70 @@ export default {
                             ],
                           },
                           {
-                            order: true,
-                            status: true,
+                            map: mapFields,
                             lineup_1_score: true,
                             lineup_2_score: true,
+                            winning_lineup_id: true,
+                            order: true,
+                            status: true,
+                            vetos: {
+                              side: true,
+                              type: true,
+                              match_lineup_id: true,
+                            },
+                          },
+                        ],
+                        lineup_1: {
+                          id: true,
+                          name: true,
+                          is_on_lineup: true,
+                          team_id: true,
+                          lineup_players: [
+                            {},
+                            {
+                              checked_in: true,
+                              placeholder_name: true,
+                              player: playerFields,
+                            },
+                          ],
+                        },
+                        lineup_2: {
+                          id: true,
+                          name: true,
+                          is_on_lineup: true,
+                          team_id: true,
+                          lineup_players: [
+                            {},
+                            {
+                              checked_in: true,
+                              placeholder_name: true,
+                              player: playerFields,
+                            },
+                          ],
+                        },
+                        max_players_per_lineup: true,
+                        min_players_per_lineup: true,
+                        lineup_counts: [{}, true],
+                        streams: [
+                          {
+                            order_by: [
+                              {
+                                priority: order_by.asc,
+                              },
+                            ],
+                          },
+                          {
+                            id: true,
+                            link: true,
+                            title: true,
+                            priority: true,
+                          },
+                        ],
+                        elo_changes: [
+                          {},
+                          {
+                            player_steam_id: true,
+                            elo_change: true,
                           },
                         ],
                       },
@@ -709,6 +862,107 @@ export default {
         return this.tournament.stages[0].e_tournament_stage_type.description;
       }
       return null;
+    },
+    teamResults() {
+      if (!this.tournament?.stages || !this.tournament?.teams) {
+        return [];
+      }
+
+      // Map to track team stats
+      const teamStatsMap = new Map();
+
+      // Initialize all teams with 0 wins/losses
+      this.tournament.teams.forEach((team: any) => {
+        teamStatsMap.set(team.id, {
+          teamId: team.id,
+          teamName: team.name || team.team?.name || `Team ${team.id}`,
+          wins: 0,
+          losses: 0,
+          matches: [],
+        });
+      });
+
+      // Process all brackets to calculate wins/losses and collect matches
+      this.tournament.stages.forEach((stage: any) => {
+        if (stage.brackets) {
+          stage.brackets.forEach((bracket: any) => {
+            if (bracket.match && bracket.match.status === "Finished") {
+              const match = bracket.match;
+              const winningLineupId = match.winning_lineup_id;
+
+              // Determine which team won/lost
+              let team1Id = null;
+              let team2Id = null;
+
+              // Find team IDs from bracket or match lineups
+              if (bracket.team_1?.id) {
+                team1Id = bracket.team_1.id;
+              } else if (match.lineup_1?.team_id) {
+                team1Id = match.lineup_1.team_id;
+              }
+
+              if (bracket.team_2?.id) {
+                team2Id = bracket.team_2.id;
+              } else if (match.lineup_2?.team_id) {
+                team2Id = match.lineup_2.team_id;
+              }
+
+              // Update wins/losses and add match
+              if (team1Id && teamStatsMap.has(team1Id)) {
+                const stats = teamStatsMap.get(team1Id);
+                if (winningLineupId === match.lineup_1_id) {
+                  stats.wins++;
+                } else if (winningLineupId === match.lineup_2_id) {
+                  stats.losses++;
+                }
+                stats.matches.push(match);
+              }
+
+              if (team2Id && teamStatsMap.has(team2Id)) {
+                const stats = teamStatsMap.get(team2Id);
+                if (winningLineupId === match.lineup_2_id) {
+                  stats.wins++;
+                } else if (winningLineupId === match.lineup_1_id) {
+                  stats.losses++;
+                }
+                stats.matches.push(match);
+              }
+            } else if (bracket.match) {
+              // Add unfinished matches too
+              const match = bracket.match;
+              let team1Id = null;
+              let team2Id = null;
+
+              if (bracket.team_1?.id) {
+                team1Id = bracket.team_1.id;
+              } else if (match.lineup_1?.team_id) {
+                team1Id = match.lineup_1.team_id;
+              }
+
+              if (bracket.team_2?.id) {
+                team2Id = bracket.team_2.id;
+              } else if (match.lineup_2?.team_id) {
+                team2Id = match.lineup_2.team_id;
+              }
+
+              if (team1Id && teamStatsMap.has(team1Id)) {
+                teamStatsMap.get(team1Id).matches.push(match);
+              }
+              if (team2Id && teamStatsMap.has(team2Id)) {
+                teamStatsMap.get(team2Id).matches.push(match);
+              }
+            }
+          });
+        }
+      });
+
+      // Convert to array and sort by wins (descending)
+      return Array.from(teamStatsMap.values())
+        .filter(
+          (stats) =>
+            stats.matches.length > 0 || stats.wins > 0 || stats.losses > 0,
+        )
+        .sort((a, b) => b.wins - a.wins);
     },
   },
   methods: {

@@ -1,24 +1,19 @@
 <script lang="ts" setup>
 import SimpleTournamentDisplay from "./SimpleTournamentDisplay.vue";
+import Separator from "~/components/ui/separator/Separator.vue";
 </script>
 
 <template>
-  <div class="flex gap-4 overflow-x-auto">
-    <template v-if="tournaments?.length > 0">
+  <template v-if="tournaments?.length > 0">
+    <div class="flex gap-4 overflow-x-auto">
       <SimpleTournamentDisplay
         :key="tournament.id"
         :tournament="tournament"
         v-for="tournament of tournaments"
       ></SimpleTournamentDisplay>
-    </template>
-    <template v-else>
-      <div class="text-center w-full p-4">
-        <p class="text-muted-foreground">
-          {{ $t("tournament.upcoming.empty") }}
-        </p>
-      </div>
-    </template>
-  </div>
+    </div>
+    <Separator></Separator>
+  </template>
 </template>
 
 <script lang="ts">

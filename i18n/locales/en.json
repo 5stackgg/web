@@ -163,6 +163,9 @@
                     "minimum_role_to_stream_description": "This role will be able to connect to TV.",
                     "minimum_role_to_spectate": "Minimum Role Allowed to Spectate (No Delay)",
                     "minimum_role_to_spectate_description": "This role will be able to connect and spectate matches.",
+                    "playcast": "Playcast",
+                    "playcast_description": "Enable Playcast over using TV ports directly. ",
+                    "playcast_learn_more": "Learn more",
                     "updated": "Updated Streaming Settings"
                 },
                 "create_matches_role": "Minimum Role Allowed to Create Matches",

@@ -258,7 +258,7 @@ export default {
       });
 
       this.form.resetForm();
-      
+
       // Emit close event to close drawer/modal
       this.$emit("close");
     },

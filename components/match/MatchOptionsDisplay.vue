@@ -6,12 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/components/ui/collapsible";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 </script>
 
 <template>
@@ -138,7 +133,9 @@ import {
               <span class="text-sm text-muted-foreground">{{
                 $t("match.options.timeout_setting")
               }}</span>
-              <span class="text-sm font-medium">{{ options.timeout_setting }}</span>
+              <span class="text-sm font-medium">{{
+                options.timeout_setting
+              }}</span>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-sm text-muted-foreground">{{
@@ -152,7 +149,9 @@ import {
               <span class="text-sm text-muted-foreground">{{
                 $t("match.options.ready_setting")
               }}</span>
-              <span class="text-sm font-medium">{{ options.ready_setting }}</span>
+              <span class="text-sm font-medium">{{
+                options.ready_setting
+              }}</span>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-sm text-muted-foreground">{{

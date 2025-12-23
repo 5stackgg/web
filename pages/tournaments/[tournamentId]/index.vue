@@ -9,14 +9,18 @@ import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { Settings, Users, ChevronDown, Lock, Unlock, Ban, UserPlus } from "lucide-vue-next";
+import {
+  Settings,
+  Users,
+  ChevronDown,
+  Lock,
+  Unlock,
+  Ban,
+  UserPlus,
+} from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Popover,
   PopoverContent,
@@ -69,7 +73,7 @@ import { NuxtLink } from "#components";
             Organizers
           </TabsTrigger>
         </TabsList>
-        
+
         <!-- Combined Admin Actions Dropdown - Next to Organizers tab -->
         <DropdownMenu v-if="tournament?.is_organizer">
           <DropdownMenuTrigger as-child>
@@ -162,7 +166,8 @@ import { NuxtLink } from "#components";
               </Badge>
               <Button
                 v-if="
-                  tournament.status === e_tournament_status_enum.RegistrationOpen &&
+                  tournament.status ===
+                    e_tournament_status_enum.RegistrationOpen &&
                   tournament.can_join
                 "
                 size="sm"
@@ -174,11 +179,11 @@ import { NuxtLink } from "#components";
               </Button>
             </div>
             <!-- Date/Time Info -->
-            <div class="flex items-center gap-2 justify-end text-xs text-muted-foreground">
+            <div
+              class="flex items-center gap-2 justify-end text-xs text-muted-foreground"
+            >
               Starts
-              <TimeAgo
-                :date="tournament.start"
-              />
+              <TimeAgo :date="tournament.start" />
             </div>
           </div>
         </div>
@@ -191,10 +196,10 @@ import { NuxtLink } from "#components";
                 variant="ghost"
                 class="w-full justify-between p-0 h-auto hover:bg-transparent text-left text-sm text-muted-foreground hover:text-foreground"
               >
-                <span 
-                  :class="{ 'line-clamp-2': !overviewExpanded }" 
+                <span
+                  :class="{ 'line-clamp-2': !overviewExpanded }"
                   class="flex-1 break-words text-wrap pr-2"
-                  style="word-wrap: break-word; overflow-wrap: break-word;"
+                  style="word-wrap: break-word; overflow-wrap: break-word"
                 >
                   {{ tournament.description }}
                 </span>
@@ -209,16 +214,20 @@ import { NuxtLink } from "#components";
             <div class="mt-2 pt-3 border-t border-border space-y-6">
               <!-- Match Options -->
               <MatchOptionsDisplay
-                 :show-details-by-default="false"
-                   :options="tournament.options"
-                ></MatchOptionsDisplay>
+                :show-details-by-default="false"
+                :options="tournament.options"
+              ></MatchOptionsDisplay>
             </div>
           </CollapsibleContent>
         </Collapsible>
 
         <!-- Organized By - Bottom Right -->
-        <div class="flex items-center justify-end gap-1.5 mt-4 pt-3 border-t border-border">
-          <span class="text-xs text-muted-foreground">{{ $t("tournament.organizer.organized_by") }}</span>
+        <div
+          class="flex items-center justify-end gap-1.5 mt-4 pt-3 border-t border-border"
+        >
+          <span class="text-xs text-muted-foreground">{{
+            $t("tournament.organizer.organized_by")
+          }}</span>
           <template
             v-for="(organizer, index) in organizersList"
             :key="organizer.steam_id"
@@ -230,7 +239,10 @@ import { NuxtLink } from "#components";
                   @mouseenter="organizerPopoversOpen[index] = true"
                   @mouseleave="organizerPopoversOpen[index] = false"
                 >
-                  <Avatar shape="square" class="h-7 w-7 border-2 border-background cursor-pointer hover:opacity-80 transition-opacity">
+                  <Avatar
+                    shape="square"
+                    class="h-7 w-7 border-2 border-background cursor-pointer hover:opacity-80 transition-opacity"
+                  >
                     <AvatarImage
                       :src="organizer.avatar_url"
                       :alt="organizer.name"
@@ -270,7 +282,10 @@ import { NuxtLink } from "#components";
         </div>
 
         <!-- Join Tournament Sheet -->
-        <Sheet :open="joinSheetOpen" @update:open="(open) => (joinSheetOpen = open)">
+        <Sheet
+          :open="joinSheetOpen"
+          @update:open="(open) => (joinSheetOpen = open)"
+        >
           <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
             <SheetHeader>
               <SheetTitle class="text-2xl">
@@ -293,7 +308,6 @@ import { NuxtLink } from "#components";
             </div>
           </SheetContent>
         </Sheet>
-
       </TabsContent>
       <TabsContent value="my-team" v-if="myTeam">
         <div class="flex flex-col md:flex-row gap-6">
@@ -385,7 +399,11 @@ export default {
           },
         ],
       }),
-      result({ data }: { data: { e_match_types: Array<{ value: string; description: string }> } }) {
+      result({
+        data,
+      }: {
+        data: { e_match_types: Array<{ value: string; description: string }> };
+      }) {
         this.e_match_types = data.e_match_types;
       },
     },
@@ -678,10 +696,14 @@ export default {
       await this.updateTournamentStatus(e_tournament_status_enum.Cancelled);
     },
     async openRegistration() {
-      await this.updateTournamentStatus(e_tournament_status_enum.RegistrationOpen);
+      await this.updateTournamentStatus(
+        e_tournament_status_enum.RegistrationOpen,
+      );
     },
     async closeRegistration() {
-      await this.updateTournamentStatus(e_tournament_status_enum.RegistrationClosed);
+      await this.updateTournamentStatus(
+        e_tournament_status_enum.RegistrationClosed,
+      );
     },
     async updateTournamentStatus(status) {
       await this.$apollo.mutate({
@@ -718,13 +740,10 @@ export default {
       handler(newList) {
         // Initialize organizer popovers state based on the combined list
         if (newList && newList.length > 0) {
-          this.organizerPopoversOpen = newList.reduce(
-            (acc, _, index) => {
-              acc[index] = false;
-              return acc;
-            },
-            {},
-          );
+          this.organizerPopoversOpen = newList.reduce((acc, _, index) => {
+            acc[index] = false;
+            return acc;
+          }, {});
         }
       },
       immediate: true,

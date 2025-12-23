@@ -746,6 +746,8 @@
             "no_tournaments_found": "No tournaments found"
         },
         "stage": {
+            "stage": "Stage",
+            "stages": "Stages",
             "edit": "Edit Stage",
             "delete": "Delete Stage",
             "edit_title": "Edit Stage",
@@ -777,6 +779,10 @@
             "bye_round": "Bye Round",
             "scheduled_for": "Scheduled for"
         },
+        "results": {
+            "title": "Results",
+            "matches": "Matches"
+        },
 
         "organizer": {
             "title": "Tournament Organizers",
@@ -788,7 +794,8 @@
             "no_organizers_description": "No organizers have been added to this tournament yet",
             "remove": "Remove Organizer",
             "confirm_remove": "Are you sure you want to remove this organizer?",
-            "remove_description": "This will remove the organizer from the tournament"
+            "remove_description": "This will remove the organizer from the tournament",
+            "organized_by": "Organized by"
         },
         "team": {
             "eligible": "Eligible",
@@ -822,7 +829,11 @@
         "actions": {
             "open_registration": "Open Registration",
             "close_registration": "Close Registration",
-            "cancel": "Cancel Tournament"
+            "start": "Start Tournament",
+            "cancel": "Cancel Tournament",
+            "delete": "Delete Tournament",
+            "confirm_delete": "Delete Tournament",
+            "delete_description": "Are you sure you want to delete this tournament? This action cannot be undone."
         },
         "upcoming": {
             "empty": "You don't have any upcoming tournaments."
@@ -1031,7 +1042,7 @@
             "timeout_setting": "Timeout Setting",
             "tech_timeout_setting": "Tech Timeout Setting",
             "ready_setting": "Ready Setting",
-            "check_in_setting": "Veto Setting",
+            "check_in_setting": "Check In Setting",
             "map_pool": "Map Pool",
             "advanced_settings": "Show Advanced Settings",
             "default_player_models": "Default Player Models"

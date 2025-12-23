@@ -71,6 +71,7 @@ export default {
               description: true,
               is_organizer: true,
               can_join: true,
+              can_start: true,
               can_cancel: true,
               can_open_registration: true,
               can_close_registration: true,

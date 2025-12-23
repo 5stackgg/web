@@ -18,6 +18,7 @@ import {
   Ban,
   UserPlus,
   Trash,
+  Play,
 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -112,14 +113,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent class="w-56" align="end">
-            <DropdownMenuSeparator
-              v-if="
-                tournament.can_open_registration ||
-                tournament.can_close_registration ||
-                tournament.can_cancel
-              "
-            />
-
             <DropdownMenuItem
               v-if="tournament.can_open_registration"
               @click="openRegistration"
@@ -137,11 +130,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
               <span>{{ $t("tournament.actions.close_registration") }}</span>
             </DropdownMenuItem>
 
+            <DropdownMenuItem
+              v-if="tournament.can_start"
+              @click="startTournament"
+              class="cursor-pointer"
+            >
+              <Play class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.start") }}</span>
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator
               v-if="
                 (tournament.can_open_registration ||
-                  tournament.can_close_registration) &&
-                tournament.can_cancel
+                  tournament.can_close_registration ||
+                  tournament.can_start) &&
+                (tournament.can_cancel || tournament.is_organizer)
               "
             />
 
@@ -578,6 +581,7 @@ export default {
               description: true,
               is_organizer: true,
               can_join: true,
+              can_start: true,
               can_cancel: true,
               can_open_registration: true,
               can_close_registration: true,
@@ -1027,6 +1031,9 @@ export default {
     },
     async cancelTournament() {
       await this.updateTournamentStatus(e_tournament_status_enum.Cancelled);
+    },
+    async startTournament() {
+      await this.updateTournamentStatus(e_tournament_status_enum.Live);
     },
     async openRegistration() {
       await this.updateTournamentStatus(

@@ -7,6 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
+import { Switch } from "~/components/ui/switch";
 import { MessageCircleWarning } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
@@ -44,7 +45,11 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
     </FormField>
 
     <template v-if="tournament.is_organizer && form.values.new_team">
-      <FormField v-slot="{ value, handleChange }" name="add_self_to_lineup">
+      <FormField
+        v-if="tournament.can_join"
+        v-slot="{ value, handleChange }"
+        name="add_self_to_lineup"
+      >
         <FormItem
           class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
           @click="handleChange(!value)"
@@ -80,8 +85,9 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
             :my-teams="tournament.is_organizer ? false : true"
             :is-admin="tournament.is_organizer ? false : true"
             @selected="
-              (team) => {
-                handleChange(team.id);
+              async (team) => {
+                handleChange(String(team.id));
+                await form.validateField('team_id');
               }
             "
             v-model="componentField.modelValue"
@@ -100,7 +106,13 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
       </FormField>
     </template>
 
-    <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+    <Button
+      type="submit"
+      :disabled="
+        (!form.values.new_team && !form.values.team_id) ||
+        (form.values.new_team && !form.values.team_name)
+      "
+    >
       {{ $t("tournament.join.title") }}
     </Button>
   </form>
@@ -189,10 +201,11 @@ export default {
           return;
         }
 
-        this.form.setFieldValue(
-          "add_self_to_lineup",
-          this.tournament.is_organizer ? false : true,
-        );
+        // Only set add_self_to_lineup to true if can_join is true
+        const shouldAddSelf = this.tournament.is_organizer
+          ? false
+          : this.tournament.can_join;
+        this.form.setFieldValue("add_self_to_lineup", shouldAddSelf);
       },
     },
   },

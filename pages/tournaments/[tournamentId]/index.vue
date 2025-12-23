@@ -344,34 +344,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
             :tournament="tournament"
           ></TournamentStageBuilder>
         </div>
-
-        <!-- Join Tournament Sheet -->
-        <Sheet
-          :open="joinSheetOpen"
-          @update:open="(open) => (joinSheetOpen = open)"
-        >
-          <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle class="text-2xl">
-                {{ $t("tournament.join.title") }}
-              </SheetTitle>
-              <SheetDescription>
-                {{
-                  $t("tournament.join.requirements", {
-                    count: tournament.min_players_per_lineup,
-                  })
-                }}
-              </SheetDescription>
-            </SheetHeader>
-
-            <div class="mt-6">
-              <TournamentJoinForm
-                :tournament="tournament"
-                @close="joinSheetOpen = false"
-              />
-            </div>
-          </SheetContent>
-        </Sheet>
       </TabsContent>
       <TabsContent value="my-team" v-if="myTeam">
         <div class="flex flex-col md:flex-row gap-6">
@@ -426,6 +398,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
         <TournamentOrganizers :tournament="tournament"></TournamentOrganizers>
       </TabsContent>
     </Tabs>
+
+    <!-- Join Tournament Sheet - Available for all tabs -->
+    <Sheet
+      :open="joinSheetOpen"
+      @update:open="(open) => (joinSheetOpen = open)"
+    >
+      <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle class="text-2xl">
+            {{ $t("tournament.join.title") }}
+          </SheetTitle>
+          <SheetDescription>
+            {{
+              $t("tournament.join.requirements", {
+                count: tournament.min_players_per_lineup,
+              })
+            }}
+          </SheetDescription>
+        </SheetHeader>
+
+        <div class="mt-6">
+          <TournamentJoinForm
+            :tournament="tournament"
+            @close="joinSheetOpen = false"
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
 
     <!-- Delete Tournament Dialog -->
     <AlertDialog

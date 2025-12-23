@@ -118,6 +118,7 @@ import Input from "../ui/input/Input.vue";
                 <template v-if="slot === 1 && team.can_manage">
                   <PlayerSearch
                     :label="$t('tournament.team.add_player')"
+                    :self="true"
                     :exclude="
                       team.roster?.map((member) => member.player.steam_id) || []
                     "

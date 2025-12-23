@@ -39,7 +39,8 @@ import {
   <div class="space-y-6">
     <!-- Display stages organized by stage number in tabs -->
     <div v-if="tournament.stages.length > 0">
-      <Tabs default-value="stage-1" class="w-full">
+      <!-- Show tabs only if multiple stages OR user is organizer -->
+      <Tabs v-if="shouldShowTabs" default-value="stage-1" class="w-full">
         <TabsList
           :style="{ gridTemplateColumns: `repeat(${maxStageNumber}, 1fr)` }"
         >
@@ -165,6 +166,20 @@ import {
         </TabsContent>
       </Tabs>
 
+      <!-- Show stages directly without tabs if single stage and not organizer -->
+      <div v-else class="space-y-6">
+        <div
+          v-for="stage of tournament.stages.filter((s: any) => s.order === 1)"
+          :key="stage.id"
+          class="mb-4"
+        >
+          <TournamentStage
+            :stage="stage"
+            :is-final-stage="true"
+          ></TournamentStage>
+        </div>
+      </div>
+
       <!-- Edit Stage Sheets -->
       <Sheet
         v-for="stageNumber in maxStageNumber"
@@ -270,6 +285,10 @@ export default {
     maxStageNumber() {
       if (!this.tournament.stages?.length) return 0;
       return Math.max(...this.tournament.stages.map((s: any) => s.order || 1));
+    },
+    shouldShowTabs() {
+      // Show tabs if multiple stages OR user is organizer
+      return this.maxStageNumber > 1 || this.tournament.is_organizer;
     },
   },
   methods: {

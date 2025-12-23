@@ -810,11 +810,13 @@
             "remove_member_description": "This will remove the member from the tournament team",
             "cancel_invite": "Cancel Invite",
             "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
-            "cancel_invite_description": "This will cancel the invite for this member"
+            "cancel_invite_description": "This will cancel the invite for this member",
+            "seed_label": "Seed",
+            "seed_display": "Seed #{seed}"
         },
         "teams": {
             "count": "{count} Teams",
-            "my_teams": "My Teams",
+            "my_teams": "My Team",
             "other_teams": "Other Teams"
         },
         "actions": {

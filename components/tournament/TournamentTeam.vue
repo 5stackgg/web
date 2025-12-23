@@ -11,6 +11,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import PlayerDisplay from "../PlayerDisplay.vue";
 import TournamentTeamInvite from "./TournamentTeamInvite.vue";
 import Badge from "../ui/badge/Badge.vue";
+import Input from "../ui/input/Input.vue";
 </script>
 
 <template>
@@ -23,6 +24,25 @@ import Badge from "../ui/badge/Badge.vue";
           {{ team.team?.name || team.name }}
           <small> ({{ team.roster.length }} / {{ requiredPlayers }}) </small>
         </h2>
+        <div class="flex items-center gap-3 mb-2">
+          <template v-if="canEditSeed">
+            <label class="flex items-center gap-2 text-sm">
+              <span class="text-muted-foreground">
+                {{ $t("tournament.team.seed_label") }}
+              </span>
+              <Input
+                type="number"
+                min="1"
+                class="h-8 w-20"
+                :model-value="team.seed ?? ''"
+                @update:model-value="onSeedChange"
+              />
+            </label>
+          </template>
+          <Badge v-if="!canEditSeed && team.seed" variant="outline">
+            {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
+          </Badge>
+        </div>
         <template v-if="team.eligible_at">
           <Badge>{{ $t("tournament.team.eligible") }}</Badge>
         </template>
@@ -128,7 +148,7 @@ import Badge from "../ui/badge/Badge.vue";
 </template>
 
 <script lang="ts">
-import { e_team_roles_enum } from "~/generated/zeus";
+import { e_team_roles_enum, e_tournament_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 
@@ -164,6 +184,16 @@ export default {
     },
   },
   computed: {
+    canEditSeed() {
+      if (!this.tournament?.is_organizer) return false;
+      const status = this.tournament.status;
+      return ![
+        e_tournament_status_enum.Live,
+        e_tournament_status_enum.Finished,
+        e_tournament_status_enum.Cancelled,
+        e_tournament_status_enum.CancelledMinTeams,
+      ].includes(status);
+    },
     canLeaveTournament() {
       return this.team.can_manage;
     },
@@ -179,6 +209,32 @@ export default {
     },
   },
   methods: {
+    async onSeedChange(rawValue: string | number) {
+      const stringValue = String(rawValue);
+      const value = stringValue.trim() === "" ? null : Number(stringValue);
+      if (value !== null && (!Number.isFinite(value) || value < 1)) {
+        return;
+      }
+
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_tournament_teams_by_pk: [
+            {
+              pk_columns: {
+                id: this.team.id,
+              },
+              _set: {
+                seed: value,
+              },
+            },
+            {
+              id: true,
+              seed: true,
+            },
+          ],
+        }),
+      });
+    },
     async cancelInvite() {},
     async leaveTournament() {
       await this.$apollo.mutate({

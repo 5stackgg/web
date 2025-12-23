@@ -144,13 +144,27 @@ import { NuxtLink } from "#components";
                 {{ tournament.name }}
               </h1>
             </div>
-            <!-- Tournament Type Badge -->
-            <div class="mt-2 flex">
+            <!-- Tournament Type Badge and Stage Info -->
+            <div class="mt-2 flex flex-wrap items-center gap-2">
               <Badge
                 variant="secondary"
                 class="text-xs font-semibold h-6 flex items-center shrink-0 w-fit"
               >
                 {{ tournament.options.type }}: {{ tournamentTypeDescription }}
+              </Badge>
+              <Badge
+                v-if="stageCount > 1"
+                variant="outline"
+                class="text-xs font-semibold h-6 flex items-center shrink-0 w-fit"
+              >
+                {{ stageCount }} {{ $t("tournament.stage.stages") }}
+              </Badge>
+              <Badge
+                v-if="singleStageType"
+                variant="outline"
+                class="text-xs font-semibold h-6 flex items-center shrink-0 w-fit"
+              >
+                {{ singleStageType }}
               </Badge>
             </div>
           </div>
@@ -683,6 +697,18 @@ export default {
         });
       }
       return list;
+    },
+    stageCount() {
+      return this.tournament?.stages?.length || 0;
+    },
+    singleStageType() {
+      if (
+        this.stageCount === 1 &&
+        this.tournament?.stages?.[0]?.e_tournament_stage_type
+      ) {
+        return this.tournament.stages[0].e_tournament_stage_type.description;
+      }
+      return null;
     },
   },
   methods: {

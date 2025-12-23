@@ -746,6 +746,8 @@
             "no_tournaments_found": "No tournaments found"
         },
         "stage": {
+            "stage": "Stage",
+            "stages": "Stages",
             "edit": "Edit Stage",
             "delete": "Delete Stage",
             "edit_title": "Edit Stage",

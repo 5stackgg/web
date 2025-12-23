@@ -90,7 +90,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
               })
             }}
           </TabsTrigger>
-          <TabsTrigger value="results">
+          <TabsTrigger
+            v-if="
+              tournament.status === e_tournament_status_enum.Live ||
+              tournament.status === e_tournament_status_enum.Finished
+            "
+            value="results"
+          >
             {{ $t("tournament.results.title") }}
           </TabsTrigger>
           <TabsTrigger v-if="tournament?.is_organizer" value="match-options">
@@ -386,7 +392,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
           </div>
         </div>
       </TabsContent>
-      <TabsContent value="results">
+      <TabsContent
+        v-if="
+          tournament.status === e_tournament_status_enum.Live ||
+          tournament.status === e_tournament_status_enum.Finished
+        "
+        value="results"
+      >
         <TournamentResults :tournament="tournament" />
       </TabsContent>
       <TabsContent value="match-options" v-if="tournament?.is_organizer">

@@ -38,6 +38,12 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
       <CheckIntoMatch :match="match"></CheckIntoMatch>
       <QuickMatchConnect :match="match"></QuickMatchConnect>
       <MatchInfo :match="match"></MatchInfo>
+
+      <StreamEmbed
+        :streams="match.streams"
+        v-if="match.streams.length > 0 && showLiveStreams"
+      ></StreamEmbed>
+
       <ChatLobby
         class="max-h-96"
         instance="matches/id"
@@ -50,11 +56,6 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
     </div>
 
     <div class="grid grid-cols-1 gap-y-4">
-      <StreamEmbed
-        :streams="match.streams"
-        v-if="match.streams.length > 0 && showLiveStreams"
-      ></StreamEmbed>
-
       <template
         v-if="
           match.match_maps.length > 0 &&
@@ -304,6 +305,10 @@ export default {
       );
     },
     showLiveStreams() {
+      if (this.match.is_in_lineup) {
+        return false;
+      }
+
       if (
         [
           e_match_status_enum.Finished,

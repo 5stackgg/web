@@ -9,8 +9,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
       {{ $t("match.status.cancelled") }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Finished">
-      {{ $t("match.status.finished") }} &nbsp;
-      <time-ago :date="match.ended_at"></time-ago>
+      {{ $t("match.status.finished") }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Scheduled">
       <div v-if="match.server && !match.is_match_server_available">

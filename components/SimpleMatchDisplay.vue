@@ -11,7 +11,9 @@ import { e_match_status_enum } from "~/generated/zeus";
     :to="{ name: 'matches-id', params: { id: match.id } }"
     class="relative w-80 h-48 overflow-hidden rounded-lg cursor-pointer block"
   >
-    <div class="flex w-full h-full transition-transform duration-300 hover:scale-105">
+    <div
+      class="flex w-full h-full transition-transform duration-300 hover:scale-105"
+    >
       <template v-if="match.match_maps.length === 0">
         <div
           class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]"

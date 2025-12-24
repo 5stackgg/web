@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
+import { Badge } from "~/components/ui/badge";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
@@ -11,64 +12,86 @@ import { e_match_status_enum } from "~/generated/zeus";
 
 <template>
   <Card>
-    <CardHeader class="bg-muted/50">
-      <CardTitle>
-        <MatchStatus :match="match" />
-        <div class="flex justify-between items-center">
-          <div class="flex gap-1">
-            {{ match.options.type }}
-            <Badge class="text-xs">
-              {{ $t("match.best_of", { count: match.options.best_of }) }}
-            </Badge>
-          </div>
-
-          <MatchActions :match="match" />
-        </div>
-      </CardTitle>
-    </CardHeader>
-    <CardContent class="p-4">
+    <CardContent class="p-6">
+      <!-- Match Type and Best Of - Secondary Info -->
       <div
-        class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4"
+        class="mb-6 flex items-center justify-between text-sm text-muted-foreground"
+      >
+        <div class="flex flex-col items-center">
+          <span>{{ match.options.type }}</span>
+          <Badge
+            v-if="match.options.best_of > 1"
+            variant="secondary"
+            class="text-[10px] leading-tight w-fit mt-0.5"
+          >
+            {{ $t("match.best_of", { count: match.options.best_of }) }}
+          </Badge>
+        </div>
+        <MatchStatus :match="match" />
+        <MatchActions :match="match" />
+      </div>
+
+      <!-- Teams and Scores - Primary Focus -->
+      <div
+        class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0 md:space-x-6"
       >
         <div
-          class="flex flex-col items-center md:items-start space-y-2 md:w-2/5"
+          class="flex flex-col items-center md:items-start space-y-1 md:w-2/5"
         >
           <span
-            class="font-semibold text-center md:text-left truncate w-full"
+            class="text-xl font-bold text-center md:text-left truncate w-full"
             >{{ match.lineup_1.name }}</span
           >
-          <span class="text-muted-foreground">
-            (<MatchLineupScoreDisplay
-              :match="match"
-              :lineup="match.lineup_1"
-            />)
+          <span class="text-lg text-muted-foreground">
+            <MatchLineupScoreDisplay :match="match" :lineup="match.lineup_1" />
           </span>
         </div>
 
-        <span class="text-muted-foreground">{{ $t("match.vs") }}</span>
+        <span class="text-muted-foreground font-medium">{{
+          $t("match.vs")
+        }}</span>
 
-        <div class="flex flex-col items-center md:items-end space-y-2 md:w-2/5">
+        <div class="flex flex-col items-center md:items-end space-y-1 md:w-2/5">
           <span
-            class="font-semibold text-center md:text-right truncate w-full"
+            class="text-xl font-bold text-center md:text-right truncate w-full"
             >{{ match.lineup_2.name }}</span
           >
-          <span class="text-muted-foreground">
-            (<MatchLineupScoreDisplay
-              :match="match"
-              :lineup="match.lineup_2"
-            />)
+          <span class="text-lg text-muted-foreground">
+            <MatchLineupScoreDisplay :match="match" :lineup="match.lineup_2" />
           </span>
         </div>
       </div>
 
+      <!-- Auto Canceling or Finished Information -->
       <div
-        class="mt-4 flex flex-wrap justify-center md:justify-end space-x-4"
-        v-if="match.cancels_at && match.status !== e_match_status_enum.Canceled"
+        v-if="
+          (match.cancels_at && match.status !== e_match_status_enum.Canceled) ||
+          (match.status === e_match_status_enum.Finished && match.ended_at)
+        "
+        class="mt-6 pt-4 border-t border-border"
       >
-        <Badge variant="destructive" class="flex items-center mb-2 md:mb-0">
-          <span class="mr-2">{{ $t("match.auto_canceling") }}</span>
-          <TimeAgo :date="match.cancels_at" />
-        </Badge>
+        <div class="flex justify-center sm:justify-start">
+          <Badge
+            v-if="
+              match.cancels_at && match.status !== e_match_status_enum.Canceled
+            "
+            variant="destructive"
+            class="flex items-center"
+          >
+            <span class="mr-2">{{ $t("match.auto_canceling") }}</span>
+            <TimeAgo :date="match.cancels_at" />
+          </Badge>
+          <Badge
+            v-else-if="
+              match.status === e_match_status_enum.Finished && match.ended_at
+            "
+            variant="secondary"
+            class="flex items-center"
+          >
+            <span class="mr-2">{{ $t("match.status.finished") }}</span>
+            <TimeAgo :date="match.ended_at" />
+          </Badge>
+        </div>
       </div>
     </CardContent>
 

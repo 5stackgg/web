@@ -22,7 +22,7 @@ import { ExternalLink } from "lucide-vue-next";
       </template>
     </div>
 
-    <div v-if="streams.length > 0" class="flex flex-wrap gap-2">
+    <div v-if="streams.length > 1" class="flex flex-wrap gap-2">
       <Button
         :size="showTitle ? 'sm' : 'icon'"
         v-for="stream in streams"
@@ -383,7 +383,10 @@ export default {
         }
 
         if (this.global || (!this.setGlobalStreamOnly && !this.globalStream)) {
-          this.selectStream(this.streams.at(0));
+          const firstStream = this.streams.at(0);
+          if (firstStream) {
+            this.selectStream(firstStream);
+          }
         }
       },
     },

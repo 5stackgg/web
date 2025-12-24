@@ -12,32 +12,27 @@ import { e_match_status_enum } from "~/generated/zeus";
 
 <template>
   <Card>
-    <CardContent class="p-6">
+    <CardContent class="p-6 flex flex-col gap-6">
       <!-- Match Type and Best Of - Secondary Info -->
       <div
-        class="mb-6 flex items-center justify-between text-sm text-muted-foreground"
+        class="flex items-start justify-between text-sm text-muted-foreground"
       >
-        <div class="flex flex-col items-center">
-          <span>{{ match.options.type }}</span>
-          <Badge
-            v-if="match.options.best_of > 1"
-            variant="secondary"
-            class="text-[10px] leading-tight w-fit mt-0.5"
-          >
-            {{ $t("match.best_of", { count: match.options.best_of }) }}
-          </Badge>
+        <div class="flex flex-col items-start gap-2">
+          <MatchStatus :match="match" />
+          <div class="flex items-center gap-2">
+            <span>{{ match.options.type }}</span>
+            <span>•</span>
+            <span>{{
+              $t("match.best_of", { count: match.options.best_of })
+            }}</span>
+          </div>
         </div>
-        <MatchStatus :match="match" />
         <MatchActions :match="match" />
       </div>
 
       <!-- Teams and Scores - Primary Focus -->
-      <div
-        class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0 md:space-x-6"
-      >
-        <div
-          class="flex flex-col items-center md:items-start space-y-1 md:w-2/5"
-        >
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex flex-col items-center md:items-start gap-1 md:w-2/5">
           <span
             class="text-xl font-bold text-center md:text-left truncate w-full"
             >{{ match.lineup_1.name }}</span
@@ -68,7 +63,7 @@ import { e_match_status_enum } from "~/generated/zeus";
           (match.cancels_at && match.status !== e_match_status_enum.Canceled) ||
           (match.status === e_match_status_enum.Finished && match.ended_at)
         "
-        class="mt-6 pt-4 border-t border-border"
+        class="flex flex-col gap-4 pt-4 border-t border-border"
       >
         <div class="flex justify-center sm:justify-start">
           <Badge
@@ -76,9 +71,9 @@ import { e_match_status_enum } from "~/generated/zeus";
               match.cancels_at && match.status !== e_match_status_enum.Canceled
             "
             variant="destructive"
-            class="flex items-center"
+            class="flex items-center gap-2"
           >
-            <span class="mr-2">{{ $t("match.auto_canceling") }}</span>
+            <span>{{ $t("match.auto_canceling") }}</span>
             <TimeAgo :date="match.cancels_at" />
           </Badge>
           <Badge
@@ -86,23 +81,24 @@ import { e_match_status_enum } from "~/generated/zeus";
               match.status === e_match_status_enum.Finished && match.ended_at
             "
             variant="secondary"
-            class="flex items-center"
+            class="flex items-center gap-2"
           >
-            <span class="mr-2">{{ $t("match.status.finished") }}</span>
+            <span>{{ $t("match.status.finished") }}</span>
             <TimeAgo :date="match.ended_at" />
           </Badge>
         </div>
       </div>
     </CardContent>
 
-    <CardContent v-if="match.options.coaches">
-      <h3 class="font-semibold text-lg mb-4">{{ $t("match.coaches") }}</h3>
-      <ul class="space-y-6">
+    <CardContent v-if="match.options.coaches" class="flex flex-col gap-4">
+      <h3 class="font-semibold text-lg">{{ $t("match.coaches") }}</h3>
+      <ul class="flex flex-col gap-6">
         <li
           v-for="lineup in [match.lineup_1, match.lineup_2]"
           :key="lineup.name"
+          class="flex flex-col gap-2"
         >
-          <div class="text-muted-foreground mb-2">{{ lineup.name }}</div>
+          <div class="text-muted-foreground">{{ lineup.name }}</div>
           <PlayerDisplay v-if="lineup.coach" :player="lineup.coach" />
           <AssignCoachToLineup
             v-if="lineup.can_update_lineup"

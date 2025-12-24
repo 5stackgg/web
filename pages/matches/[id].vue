@@ -333,7 +333,7 @@ export default {
       return true;
     },
     canViewStreams() {
-      if (!this.match || !this.showLiveStreams) {
+      if (!this.match || this.showLiveStreams) {
         return false;
       }
 

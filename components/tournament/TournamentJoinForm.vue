@@ -14,6 +14,8 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
 </script>
 
 <template>
+  {{ form.values }}
+  {{ form.errors }}
   <form @submit.prevent="joinTournament" class="grid gap-4">
     <h1 class="flex gap-2" v-if="!tournament.is_organizer">
       <MessageCircleWarning />
@@ -196,7 +198,7 @@ export default {
       handler(newVal) {
         if (!newVal) {
           this.teamOwner = null;
-          this.form.setFieldValue("owner_steam_id", null);
+          this.form.setFieldValue("owner_steam_id", undefined);
           this.form.setFieldValue("add_self_to_lineup", false);
           return;
         }

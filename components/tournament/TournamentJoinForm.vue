@@ -14,8 +14,6 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
 </script>
 
 <template>
-  {{ form.values }}
-  {{ form.errors }}
   <form @submit.prevent="joinTournament" class="grid gap-4">
     <h1 class="flex gap-2" v-if="!tournament.is_organizer">
       <MessageCircleWarning />

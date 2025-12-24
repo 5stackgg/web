@@ -63,8 +63,6 @@ interface GameTypeConfig {
 }
 
 interface ComponentData {
-  baseConfig: string;
-  liveConfig: string;
   gameTypeConfigs: GameTypeConfig[];
   loading: boolean;
 }
@@ -88,9 +86,7 @@ export default defineComponent<ComponentData>({
           data: { match_type_cfgs: GameTypeConfig[] };
         }) {
           const gameConfigTypes = [
-            e_game_cfg_types_enum.Base,
             e_game_cfg_types_enum.Lan,
-            e_game_cfg_types_enum.Live,
             e_game_cfg_types_enum.Competitive,
             e_game_cfg_types_enum.Wingman,
             e_game_cfg_types_enum.Duel,

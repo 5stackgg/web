@@ -10,9 +10,9 @@ import MapDisplay from "~/components/MapDisplay.vue";
       name: 'tournaments-tournamentId',
       params: { tournamentId: tournament.id },
     }"
-    class="relative w-80 h-48 overflow-hidden rounded-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
+    class="relative w-80 h-48 overflow-hidden rounded-lg cursor-pointer block"
   >
-    <div class="flex w-full h-full">
+    <div class="flex w-full h-full transition-transform duration-300 hover:scale-105">
       <MapDisplay
         class="rounded-none"
         v-for="map of tournament.options?.map_pool?.maps || []"

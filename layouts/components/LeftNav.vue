@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Users,
   Radio,
+  Home,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -45,6 +46,29 @@ import Logout from "./Logout.vue";
     <SidebarContent>
       <SidebarGroup>
         <SidebarMenu>
+          <SidebarMenuItem
+            v-if="isPWA"
+            :tooltip="$t('layouts.app_nav.tooltips.dashboard')"
+          >
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.dashboard')"
+            >
+              <NuxtLink
+                to="/me"
+                :class="{
+                  'router-link-active':
+                    $route.path === '/me' ||
+                    ($route.path.startsWith('/players/') &&
+                      $route.params.id === me?.steam_id),
+                }"
+              >
+                <Home />
+                {{ $t("layouts.app_nav.navigation.dashboard") }}
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
           <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
             <SidebarMenuButton
               as-child
@@ -59,8 +83,8 @@ import Logout from "./Logout.vue";
                 <Play />
                 {{ $t("layouts.app_nav.navigation.play") }}
 
-                <Badge size="sm" v-if="myMatches.length > 0" class="ml-auto">
-                  {{ myMatches.length }}
+                <Badge size="sm" v-if="playTotalCount > 0" class="ml-auto">
+                  {{ playTotalCount }}
                 </Badge>
               </NuxtLink>
             </SidebarMenuButton>
@@ -607,6 +631,9 @@ export default {
       return (
         store.liveTournamentsCount + store.openRegistrationTournamentsCount
       );
+    },
+    playTotalCount() {
+      return this.myMatches.length + this.activeTournamentsCount;
     },
   },
 };

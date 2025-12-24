@@ -70,9 +70,12 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
           <!-- Play menu with hero card -->
           <NavigationMenuItem>
             <NavigationMenuTrigger
-              class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent"
+              class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent flex items-center gap-2"
             >
               {{ $t("layouts.top_nav.play_menu") }}
+              <Badge size="sm" v-if="playTotalCount > 0" class="ml-1">
+                {{ playTotalCount }}
+              </Badge>
             </NavigationMenuTrigger>
             <NavigationMenuContent
               class="bg-[#232326] border border-neutral-800 rounded-lg shadow-lg p-0 min-w-[350px] md:min-w-[500px] max-w-[95vw] flex mt-0"
@@ -386,6 +389,9 @@ export default {
     },
     openMatchesCount() {
       return useMatchLobbyStore().openMatchesCount;
+    },
+    playTotalCount() {
+      return this.openMatchesCount + this.activeTournamentsCount;
     },
   },
 };

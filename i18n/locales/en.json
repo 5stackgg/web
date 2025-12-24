@@ -575,6 +575,7 @@
         "app_nav": {
             "brand": "5stack",
             "navigation": {
+                "dashboard": "My Stats",
                 "play": "Play",
                 "watch": "Watch",
                 "tournaments": "Tournaments",
@@ -603,6 +604,7 @@
                 "join_discord": "Join our Discord"
             },
             "tooltips": {
+                "dashboard": "My Stats",
                 "play": "Play",
                 "watch": "Watch",
                 "matches": "Matches",

@@ -1,9 +1,11 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import {
   $,
   e_match_status_enum,
+  e_tournament_status_enum,
+  e_lobby_access_enum,
   order_by,
   e_player_roles_enum,
 } from "~/generated/zeus";
@@ -16,6 +18,145 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
 
   const myMatches = ref([]);
   const managingMatchesCount = ref(0);
+  const liveMatchesCount = ref(0);
+  const liveTournamentsCount = ref(0);
+  const openRegistrationTournamentsCount = ref(0);
+  const openMatchesCount = ref(0);
+
+  const subscribeToLiveMatches = async () => {
+    const subscription = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        matches_aggregate: [
+          {
+            where: {
+              status: {
+                _in: [
+                  e_match_status_enum.Live,
+                  e_match_status_enum.Veto,
+                  e_match_status_enum.WaitingForCheckIn,
+                  e_match_status_enum.WaitingForServer,
+                ],
+              },
+            },
+          },
+          {
+            aggregate: {
+              count: true,
+            },
+          },
+        ],
+      }),
+    });
+
+    subscription.subscribe({
+      next: ({ data }) => {
+        liveMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
+      },
+      error: (error) => {
+        console.error("Error in live matches subscription:", error);
+      },
+    });
+  };
+
+  const subscribeToLiveTournaments = async () => {
+    const subscription = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        tournaments_aggregate: [
+          {
+            where: {
+              status: {
+                _eq: e_tournament_status_enum.Live,
+              },
+            },
+          },
+          {
+            aggregate: {
+              count: true,
+            },
+          },
+        ],
+      }),
+    });
+
+    subscription.subscribe({
+      next: ({ data }) => {
+        liveTournamentsCount.value =
+          data?.tournaments_aggregate?.aggregate?.count || 0;
+      },
+      error: (error) => {
+        console.error("Error in live tournaments subscription:", error);
+      },
+    });
+  };
+
+  const subscribeToOpenRegistrationTournaments = async () => {
+    const subscription = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        tournaments_aggregate: [
+          {
+            where: {
+              status: {
+                _eq: e_tournament_status_enum.RegistrationOpen,
+              },
+            },
+          },
+          {
+            aggregate: {
+              count: true,
+            },
+          },
+        ],
+      }),
+    });
+
+    subscription.subscribe({
+      next: ({ data }) => {
+        openRegistrationTournamentsCount.value =
+          data?.tournaments_aggregate?.aggregate?.count || 0;
+      },
+      error: (error) => {
+        console.error(
+          "Error in open registration tournaments subscription:",
+          error,
+        );
+      },
+    });
+  };
+
+  const subscribeToOpenMatches = async () => {
+    const subscription = getGraphqlClient().subscribe({
+      query: generateSubscription({
+        matches_aggregate: [
+          {
+            where: {
+              status: {
+                _eq: e_match_status_enum.PickingPlayers,
+              },
+              options: {
+                lobby_access: {
+                  _eq: e_lobby_access_enum.Open,
+                },
+              },
+            },
+          },
+          {
+            aggregate: {
+              count: true,
+            },
+          },
+        ],
+      }),
+    });
+
+    subscription.subscribe({
+      next: ({ data }) => {
+        openMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
+      },
+      error: (error) => {
+        console.error("Error in open matches subscription:", error);
+      },
+    });
+  };
 
   const subscribeToManagingMatches = async () => {
     const subscription = getGraphqlClient().subscribe({
@@ -46,7 +187,14 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
 
     subscription.subscribe({
       next: ({ data }) => {
-        managingMatchesCount.value = data.matches_aggregate.aggregate.count;
+        if (data?.matches_aggregate?.aggregate?.count !== undefined) {
+          managingMatchesCount.value = data.matches_aggregate.aggregate.count;
+        } else {
+          managingMatchesCount.value = 0;
+        }
+      },
+      error: (error) => {
+        console.error("Error in managing matches subscription:", error);
       },
     });
   };
@@ -160,6 +308,10 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     lobbyChat,
     myMatches,
     managingMatchesCount,
+    liveMatchesCount,
+    liveTournamentsCount,
+    openRegistrationTournamentsCount,
+    openMatchesCount,
     currentMatch: computed(() => {
       return myMatches.value.at(0);
     }),
@@ -168,6 +320,10 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     remove,
     subscribeToMyMatches,
     subscribeToManagingMatches,
+    subscribeToLiveMatches,
+    subscribeToLiveTournaments,
+    subscribeToOpenRegistrationTournaments,
+    subscribeToOpenMatches,
   };
 });
 

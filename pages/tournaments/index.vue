@@ -17,7 +17,17 @@
       </template>
     </PageHeading>
 
-    <MyUpcomingTournaments></MyUpcomingTournaments>
+    <div
+      v-if="activeTournaments && activeTournaments.length > 0"
+      class="space-y-4"
+    >
+      <TournamentTableRow
+        v-for="tournament in activeTournaments"
+        :key="tournament.id"
+        :tournament="tournament"
+        :e-match-types="eMatchTypes"
+      ></TournamentTableRow>
+    </div>
 
     <Card class="p-4">
       <Tabs default-value="other">
@@ -92,9 +102,6 @@ import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import { Button } from "~/components/ui/button";
 import { PlusCircle } from "lucide-vue-next";
-import MyUpcomingTournaments from "~/components/tournament/MyUpcomingTournaments.vue";
-import Separator from "~/components/ui/separator/Separator.vue";
-import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDisplay.vue";
 import { mapFields } from "~/graphql/mapGraphql";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
@@ -106,9 +113,6 @@ export default {
     PageHeading,
     Button,
     PlusCircle,
-    MyUpcomingTournaments,
-    Separator,
-    SimpleTournamentDisplay,
   },
   setup() {
     const { isMobile } = useSidebar();
@@ -119,6 +123,7 @@ export default {
       page: 1,
       perPage: 10,
       eMatchTypes: [],
+      activeTournaments: [],
     };
   },
   apollo: {
@@ -133,6 +138,85 @@ export default {
           },
         ],
       }),
+    },
+    activeTournaments: {
+      fetchPolicy: "network-only",
+      query: generateQuery({
+        tournaments: [
+          {
+            where: {
+              status: {
+                _in: $("statuses", "[e_tournament_status_enum]"),
+              },
+            },
+            order_by: [
+              {},
+              {
+                start: order_by.asc,
+              },
+            ],
+          },
+          {
+            id: true,
+            name: true,
+            start: true,
+            description: true,
+            e_tournament_status: {
+              description: true,
+            },
+            options: {
+              type: true,
+              map_pool: [
+                {},
+                {
+                  id: true,
+                  type: true,
+                  e_type: {
+                    description: true,
+                  },
+                  maps: [{}, mapFields],
+                },
+              ],
+            },
+            stages: [
+              {
+                order_by: [
+                  {
+                    order: order_by.asc,
+                  },
+                ],
+              },
+              {
+                id: true,
+                type: true,
+                e_tournament_stage_type: {
+                  description: true,
+                },
+                order: true,
+              },
+            ],
+            teams_aggregate: [
+              {},
+              {
+                aggregate: {
+                  count: true,
+                },
+              },
+            ],
+          },
+        ],
+      }),
+      variables: function () {
+        return {
+          statuses: [
+            e_tournament_status_enum.Live,
+            e_tournament_status_enum.RegistrationOpen,
+          ],
+        };
+      },
+      result({ data }) {
+        this.activeTournaments = data.tournaments;
+      },
     },
     tournaments: {
       fetchPolicy: "network-only",

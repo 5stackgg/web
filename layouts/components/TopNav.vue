@@ -21,6 +21,7 @@ import { DiscordLogoIcon } from "@radix-icons/vue";
 import { Settings, LogOut, ChevronsUpDown } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import SystemStatus from "./SystemStatus.vue";
@@ -28,6 +29,7 @@ import AppNotifications from "./AppNotifications.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 
@@ -81,9 +83,16 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                     <NavigationMenuLink as-child>
                       <NuxtLink
                         to="/play"
-                        class="block w-full text-left px-4 py-2 uppercase font-bold text-sm transition-colors duration-150 border-none outline-none hover:text-green-300"
+                        class="block w-full text-left px-4 py-2 uppercase font-bold text-sm transition-colors duration-150 border-none outline-none hover:text-green-300 flex items-center gap-2"
                       >
                         {{ $t("layouts.top_nav.play.find_match") }}
+                        <Badge
+                          size="sm"
+                          v-if="openMatchesCount > 0"
+                          class="ml-1"
+                        >
+                          {{ openMatchesCount }}
+                        </Badge>
                       </NuxtLink>
                     </NavigationMenuLink>
                   </li>
@@ -91,9 +100,16 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                     <NavigationMenuLink as-child>
                       <NuxtLink
                         to="/tournaments"
-                        class="block w-full text-left px-4 py-2 uppercase font-bold text-sm transition-colors duration-150 border-none outline-none hover:text-green-300"
+                        class="block w-full text-left px-4 py-2 uppercase font-bold text-sm transition-colors duration-150 border-none outline-none hover:text-green-300 flex items-center gap-2"
                       >
                         {{ $t("layouts.top_nav.play.tournaments") }}
+                        <Badge
+                          size="sm"
+                          v-if="activeTournamentsCount > 0"
+                          class="ml-1"
+                        >
+                          {{ activeTournamentsCount }}
+                        </Badge>
                       </NuxtLink>
                     </NavigationMenuLink>
                   </li>
@@ -125,9 +141,12 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
             <NavigationMenuLink as-child>
               <NuxtLink
                 to="/watch"
-                class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent"
+                class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent flex items-center gap-2"
               >
                 {{ $t("layouts.top_nav.watch_menu") }}
+                <Badge size="sm" v-if="liveMatchesCount > 0" class="ml-1">
+                  {{ liveMatchesCount }}
+                </Badge>
               </NuxtLink>
             </NavigationMenuLink>
           </NavigationMenuItem>
@@ -155,9 +174,12 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           to="/watch"
                           class="flex flex-col px-2 py-2 rounded hover:text-green-300 transition-colors"
                         >
-                          <span class="block font-bold">{{
-                            $t("layouts.top_nav.community.watch.title")
-                          }}</span>
+                          <span class="block font-bold flex items-center gap-2"
+                            >{{ $t("layouts.top_nav.community.watch.title") }}
+                            <Badge size="sm" v-if="liveMatchesCount > 0">
+                              {{ liveMatchesCount }}
+                            </Badge>
+                          </span>
                           <span class="block text-xs text-neutral-400">{{
                             $t("layouts.top_nav.community.watch.subtitle")
                           }}</span>
@@ -352,6 +374,18 @@ export default {
     },
     me() {
       return useAuthStore().me;
+    },
+    liveMatchesCount() {
+      return useMatchLobbyStore().liveMatchesCount;
+    },
+    activeTournamentsCount() {
+      const store = useMatchLobbyStore();
+      return (
+        store.liveTournamentsCount + store.openRegistrationTournamentsCount
+      );
+    },
+    openMatchesCount() {
+      return useMatchLobbyStore().openMatchesCount;
     },
   },
 };

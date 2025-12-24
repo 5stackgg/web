@@ -59,7 +59,7 @@ import Logout from "./Logout.vue";
                 <Play />
                 {{ $t("layouts.app_nav.navigation.play") }}
 
-                <Badge size="sm" v-if="myMatches.length > 0">
+                <Badge size="sm" v-if="myMatches.length > 0" class="ml-auto">
                   {{ myMatches.length }}
                 </Badge>
               </NuxtLink>
@@ -79,6 +79,10 @@ import Logout from "./Logout.vue";
               >
                 <Radio />
                 {{ $t("layouts.app_nav.navigation.watch") }}
+
+                <Badge size="sm" v-if="liveMatchesCount > 0" class="ml-auto">
+                  {{ liveMatchesCount }}
+                </Badge>
               </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -96,7 +100,14 @@ import Logout from "./Logout.vue";
               >
                 <TournamentBracket />
                 {{ $t("layouts.app_nav.navigation.tournaments") }}
-                <Badge variant="destructive" class="ml-2">alpha</Badge>
+                <Badge variant="destructive" class="ml-2">beta</Badge>
+                <Badge
+                  size="sm"
+                  v-if="activeTournamentsCount > 0"
+                  class="ml-auto"
+                >
+                  {{ activeTournamentsCount }}
+                </Badge>
               </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -587,6 +598,15 @@ export default {
     },
     managingMatchesCount() {
       return useMatchLobbyStore().managingMatchesCount;
+    },
+    liveMatchesCount() {
+      return useMatchLobbyStore().liveMatchesCount;
+    },
+    activeTournamentsCount() {
+      const store = useMatchLobbyStore();
+      return (
+        store.liveTournamentsCount + store.openRegistrationTournamentsCount
+      );
     },
   },
 };

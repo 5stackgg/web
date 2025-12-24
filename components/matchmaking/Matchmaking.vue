@@ -88,7 +88,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
         </Button>
       </div>
 
-      <div class="flex flex-col gap-4 bg-card p-8 rounded-lg" v-else>
+      <div class="flex flex-col gap-4 bg-card rounded-lg" v-else>
         <div v-if="availableRegionsWithNodes.length > 0">
           <div
             class="flex mb-4"

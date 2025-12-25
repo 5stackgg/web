@@ -244,7 +244,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
             <div
               class="flex items-center gap-2 justify-end text-xs text-muted-foreground"
             >
-              Starts
               <TimeAgo :date="tournament.start" />
             </div>
           </div>

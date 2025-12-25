@@ -3,7 +3,7 @@ import MyUpcoming from "~/components/MyUpcoming.vue";
 import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
 import OpenMatches from "~/components/match/OpenMatches.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
-import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDisplay.vue";
+import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 </script>
 
 <template>
@@ -27,12 +27,11 @@ import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDis
           {{ $t("pages.play.open_registration_tournaments.description") }}
         </CardDescription>
       </CardHeader>
-      <SimpleTournamentDisplay
+      <TournamentTableRow
+        v-for="tournament of openRegistrationTournaments"
         :key="tournament.id"
         :tournament="tournament"
-        v-for="tournament of openRegistrationTournaments"
-        class="flex-shrink-0"
-      ></SimpleTournamentDisplay>
+      ></TournamentTableRow>
     </Card>
 
     <Card class="p-4">

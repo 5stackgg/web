@@ -6,12 +6,13 @@ import { toast } from "@/components/ui/toast";
  */
 function isPublicRoute(path: string): boolean {
   const publicRoutes = [
+    "/",
     "/login",
     "/players",
     "/teams",
     "/tournaments",
     "/watch",
-    "/public-servers"
+    "/public-servers",
   ];
 
   // Exact matches

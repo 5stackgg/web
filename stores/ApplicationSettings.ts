@@ -46,7 +46,10 @@ export const useApplicationSettingsStore = defineStore(
     const subscribeToPluginVersion = async () => {
       const authStore = useAuthStore();
       // Only subscribe if user exists and is match organizer or above
-      if (!authStore.me || !authStore.isRoleAbove(e_player_roles_enum.match_organizer)) {
+      if (
+        !authStore.me ||
+        !authStore.isRoleAbove(e_player_roles_enum.match_organizer)
+      ) {
         return;
       }
 

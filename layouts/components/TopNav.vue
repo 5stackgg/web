@@ -361,16 +361,14 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         ></div>
       </div>
       <Logout v-if="showLogoutModal" @update:open="showLogoutModal = $event" />
-     </template>
-     <template v-else>
-       <div class="flex items-center gap-4">
-         <NuxtLink to="/login">
-           <Button variant="outline" class="uppercase font-bold">
-             Login
-           </Button>
-         </NuxtLink>
-       </div>
-     </template>
+    </template>
+    <template v-else>
+      <div class="flex items-center gap-4">
+        <NuxtLink to="/login">
+          <Button variant="outline" class="uppercase font-bold"> Login </Button>
+        </NuxtLink>
+      </div>
+    </template>
   </nav>
 </template>
 

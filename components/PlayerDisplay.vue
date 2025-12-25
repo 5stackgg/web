@@ -127,7 +127,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             </div>
             <slot name="name-postfix"></slot>
             <TooltipProvider
-              v-if="!isMe && showAddFriend && !isFriend && player?.steam_id"
+              v-if="me && !isMe && showAddFriend && !isFriend && player?.steam_id"
             >
               <Tooltip>
                 <TooltipTrigger>

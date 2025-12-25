@@ -1,6 +1,8 @@
 import { useAuthStore } from "~/stores/AuthStore";
 import { toast } from "@/components/ui/toast";
 
+let checkedMe = false;
+
 /**
  * Check if a route is in the public whitelist (doesn't require authentication)
  */
@@ -66,7 +68,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   let hasMe: boolean = useAuthStore().me?.steam_id ? true : false;
 
-  if (!hasMe) {
+  if (!checkedMe) {
+    checkedMe = true;
     hasMe = await useAuthStore().getMe();
   }
 

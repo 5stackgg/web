@@ -13,9 +13,6 @@ definePageMeta({
     <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-3xl font-bold text-center">5Stack</CardTitle>
-        <CardDescription class="text-center">
-          {{ $t("pages.login.sign_in") }}
-        </CardDescription>
       </CardHeader>
       <CardContent class="flex flex-col items-center">
         <img

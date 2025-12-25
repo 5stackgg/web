@@ -56,14 +56,17 @@ export const useAuthStore = defineStore("auth", () => {
         next: ({ data }) => {
           me.value = data?.players_by_pk;
 
-          useMatchLobbyStore().subscribeToMyMatches();
-          useMatchLobbyStore().subscribeToLiveMatches();
-          useMatchLobbyStore().subscribeToLiveTournaments();
-          useMatchLobbyStore().subscribeToOpenRegistrationTournaments();
-          useMatchLobbyStore().subscribeToOpenMatches();
+          // Only subscribe to match-related data if user exists
+          if (me.value) {
+            useMatchLobbyStore().subscribeToMyMatches();
+            useMatchLobbyStore().subscribeToLiveMatches();
+            useMatchLobbyStore().subscribeToLiveTournaments();
+            useMatchLobbyStore().subscribeToOpenRegistrationTournaments();
+            useMatchLobbyStore().subscribeToOpenMatches();
 
-          if (useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)) {
-            useMatchLobbyStore().subscribeToManagingMatches();
+            if (useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)) {
+              useMatchLobbyStore().subscribeToManagingMatches();
+            }
           }
 
           callback();
@@ -89,6 +92,7 @@ export const useAuthStore = defineStore("auth", () => {
           return;
         }
 
+        // Only connect socket and subscribe to matches if user exists
         socket.connect();
 
         hasDiscordLinked.value = !!response.data.me.discord_id;

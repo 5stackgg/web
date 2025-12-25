@@ -251,8 +251,11 @@ export default {
         }),
         variables: function () {
           return {
-            steam_id: this.me.steam_id,
+            steam_id: this.me?.steam_id,
           };
+        },
+        skip: function () {
+          return !this.me?.steam_id;
         },
         result({ data }: { data: any }) {
           this.team_invites = data.team_invites;
@@ -292,8 +295,11 @@ export default {
         }),
         variables: function () {
           return {
-            steam_id: this.me.steam_id,
+            steam_id: this.me?.steam_id,
           };
+        },
+        skip: function () {
+          return !this.me?.steam_id;
         },
         result({ data }: { data: any }) {
           this.tournament_team_invites = data.tournament_team_invites;
@@ -357,6 +363,9 @@ export default {
             },
           ],
         }),
+        skip: function () {
+          return !this.me?.steam_id;
+        },
         result({ data }: { data: any }) {
           this.notifications = data.notifications;
         },

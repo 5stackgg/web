@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { Separator } from "~/components/ui/separator";
-import AppNotifications from "./AppNotifications.vue";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import SystemStatus from "./SystemStatus.vue";
@@ -31,8 +30,6 @@ const { isMobile } = useSidebar();
         <SystemStatus></SystemStatus>
 
         <OnlinePlayers v-if="isMobile"></OnlinePlayers>
-
-        <AppNotifications></AppNotifications>
       </div>
     </div>
   </header>

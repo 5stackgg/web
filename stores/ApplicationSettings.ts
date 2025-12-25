@@ -1,9 +1,10 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { useMatchmakingStore } from "./MatchmakingStore";
+import { useAuthStore } from "./AuthStore";
 import { order_by } from "@/generated/zeus";
 
 interface Region {
@@ -43,6 +44,12 @@ export const useApplicationSettingsStore = defineStore(
     const currentPluginVersion = ref<string | null>(null);
 
     const subscribeToPluginVersion = async () => {
+      const authStore = useAuthStore();
+      // Only subscribe if user exists and is match organizer or above
+      if (!authStore.me || !authStore.isRoleAbove(e_player_roles_enum.match_organizer)) {
+        return;
+      }
+
       const subscription = getGraphqlClient().subscribe({
         query: generateSubscription({
           plugin_versions: [
@@ -68,7 +75,16 @@ export const useApplicationSettingsStore = defineStore(
       });
     };
 
-    subscribeToPluginVersion();
+    // Watch for user authentication before subscribing
+    watch(
+      () => useAuthStore().me,
+      (me) => {
+        if (me) {
+          subscribeToPluginVersion();
+        }
+      },
+      { immediate: true },
+    );
 
     const matchCreateRole = computed(() => {
       if (!settings.value) {

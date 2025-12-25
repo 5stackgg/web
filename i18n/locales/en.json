@@ -331,6 +331,10 @@
             "open_matches": {
                 "title": "Open Matches",
                 "description": "Matches that are open lobbies for anyone to join."
+            },
+            "open_registration_tournaments": {
+                "title": "Open Registration Tournaments",
+                "description": "Tournaments that are open for registration for anyone to join."
             }
         },
         "matches": {

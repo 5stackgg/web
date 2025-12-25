@@ -100,7 +100,7 @@ export default {
         }),
         variables: function () {
           return {
-            steam_id: useAuthStore().me?.steam_id || null,
+            steam_id: useAuthStore().me?.steam_id,
             statuses: [
               e_tournament_status_enum.Cancelled,
               e_tournament_status_enum.CancelledMinTeams,
@@ -108,12 +108,9 @@ export default {
             ],
           };
         },
-        skip() {
-          return !useAuthStore().me?.steam_id;
-        },
-        result({ data }: { data: any }) {
-          this.tournaments = data?.tournaments || [];
-        },
+        result: function ({ data }) {
+          this.tournaments = data.tournaments;
+        }
       },
     },
   },

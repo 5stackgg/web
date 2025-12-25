@@ -11,6 +11,7 @@ function isPublicRoute(path: string): boolean {
     "/teams",
     "/tournaments",
     "/watch",
+    "/public-servers"
   ];
 
   // Exact matches

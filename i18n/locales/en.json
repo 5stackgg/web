@@ -43,7 +43,6 @@
                 "title": "Account Settings",
                 "description": "Your Account Details",
                 "my_account": "My Account",
-                "appearance": "Appearance",
                 "api_keys": "API Keys",
                 "api_keys_management": {
                     "your_api_keys": "Your API Keys",
@@ -98,14 +97,6 @@
                   },
                   "unlinked": "Discord account unlinked successfully"
               }
-            },
-            "appearance": {
-                "title": "Appearance",
-                "description": "Customize the appearance of the app. Automatically switch between day and night themes.",
-                "theme": "Theme",
-                "theme_description": "Select the theme for the dashboard.",
-                "light": "Light",
-                "dark": "Dark"
             },
             "notifications": {
                 "title": "Notifications",
@@ -640,6 +631,7 @@
             "play_menu": "Play",
             "community_menu": "Community",
             "watch_menu": "Watch",
+            "login": "Login to Play",
             "play": {
                 "find_match": "Find a Match",
                 "tournaments": "Tournaments",

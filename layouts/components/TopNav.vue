@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
+import SteamIcon from "~/components/icons/SteamIcon.vue";
 
 const { isMobile } = useSidebar();
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
@@ -363,9 +364,15 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
       <Logout v-if="showLogoutModal" @update:open="showLogoutModal = $event" />
     </template>
     <template v-else>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 py-2">
         <NuxtLink to="/login">
-          <Button variant="outline" class="uppercase font-bold"> Login </Button>
+          <Button
+            variant="outline"
+            class="fill-white uppercase font-bold px-4 py-2 transition-colors duration-150 hover:text-green-300 hover:border-green-300/50"
+          >
+            <SteamIcon class="w-4 h-4 mr-2" />
+            {{ $t("layouts.top_nav.login") }}
+          </Button>
         </NuxtLink>
       </div>
     </template>

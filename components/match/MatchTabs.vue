@@ -136,7 +136,7 @@ provide("commander", commander);
         </DrawerContent>
       </Drawer>
 
-      <PlayerInvites />
+      <PlayerInvites v-if="me" />
 
       <div class="flex gap-4" v-if="canAdjustLineups">
         <Button variant="destructive" @click="randomizeTeams">
@@ -437,6 +437,9 @@ export default {
     },
   },
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
     canConfigureStreams() {
       if (
         [

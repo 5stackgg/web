@@ -100,7 +100,7 @@ export default {
         }),
         variables: function () {
           return {
-            steam_id: useAuthStore().me?.steam_id,
+            steam_id: useAuthStore().me.steam_id,
             statuses: [
               e_tournament_status_enum.Cancelled,
               e_tournament_status_enum.CancelledMinTeams,
@@ -110,7 +110,7 @@ export default {
         },
         result: function ({ data }) {
           this.tournaments = data.tournaments;
-        }
+        },
       },
     },
   },

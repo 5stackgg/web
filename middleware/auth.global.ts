@@ -3,9 +3,6 @@ import { toast } from "@/components/ui/toast";
 
 let checkedMe = false;
 
-/**
- * Check if a route is in the public whitelist (doesn't require authentication)
- */
 function isPublicRoute(path: string): boolean {
   const publicRoutes = [
     "/",
@@ -16,12 +13,10 @@ function isPublicRoute(path: string): boolean {
     "/public-servers",
   ];
 
-  // Exact matches
   if (publicRoutes.includes(path)) {
     return true;
   }
 
-  // Dynamic route patterns
   if (path.startsWith("/players/")) {
     return true;
   }

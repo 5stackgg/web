@@ -56,14 +56,18 @@ export const useAuthStore = defineStore("auth", () => {
         next: ({ data }) => {
           me.value = data?.players_by_pk;
 
-          useMatchLobbyStore().subscribeToMyMatches();
-          useMatchLobbyStore().subscribeToLiveMatches();
-          useMatchLobbyStore().subscribeToLiveTournaments();
-          useMatchLobbyStore().subscribeToOpenRegistrationTournaments();
-          useMatchLobbyStore().subscribeToOpenMatches();
+          if (me.value) {
+            useMatchLobbyStore().subscribeToMyMatches();
+            useMatchLobbyStore().subscribeToLiveMatches();
+            useMatchLobbyStore().subscribeToLiveTournaments();
+            useMatchLobbyStore().subscribeToOpenRegistrationTournaments();
+            useMatchLobbyStore().subscribeToOpenMatches();
 
-          if (useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)) {
-            useMatchLobbyStore().subscribeToManagingMatches();
+            if (
+              useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
+            ) {
+              useMatchLobbyStore().subscribeToManagingMatches();
+            }
           }
 
           callback();

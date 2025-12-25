@@ -88,7 +88,7 @@ const { isMobile } = useSidebar();
         </template>
 
         <div class="flex items-center gap-2">
-          <NuxtLink to="/play" v-if="player.steam_id === me.steam_id">
+          <NuxtLink to="/play" v-if="me && player.steam_id === me.steam_id">
             <Button
               variant="default"
               :size="isMobile ? 'default' : 'lg'"
@@ -192,7 +192,7 @@ const { isMobile } = useSidebar();
                 class="flex justify-center items-center h-full uppercase text-muted-foreground text-center flex-col"
               >
                 {{ $t("pages.players.detail.no_elo_history") }}
-                <NuxtLink to="/play" class="mt-2">
+                <NuxtLink v-if="me" to="/play" class="mt-2">
                   <Button variant="outline" size="sm">{{
                     $t("pages.players.detail.play_a_match")
                   }}</Button>
@@ -434,12 +434,15 @@ export default {
   },
   computed: {
     playerId() {
-      return this.$route.params.id || this.me?.steam_id;
+      return this.$route.params.id || this.me?.steam_id || null;
     },
     me() {
       return useAuthStore().me;
     },
     canSanction() {
+      if (!this.me || !this.player) {
+        return false;
+      }
       return (
         this.player.steam_id !== this.me.steam_id &&
         useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)

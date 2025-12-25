@@ -40,12 +40,6 @@ import Default from "~/layouts/default.vue";
             </Button>
           </nuxt-link>
 
-          <nuxt-link to="/settings/appearance">
-            <Button variant="ghost" class="w-full text-left justify-start">
-              {{ $t("pages.settings.account.appearance") }}
-            </Button>
-          </nuxt-link>
-
           <nuxt-link to="/settings/matchmaking">
             <Button variant="ghost" class="w-full text-left justify-start">
               {{ $t("pages.settings.account.matchmaking") }}

@@ -34,7 +34,7 @@
           <TabsTrigger value="other">{{
             $t("pages.tournaments.tabs.tournaments")
           }}</TabsTrigger>
-          <TabsTrigger value="my">{{
+          <TabsTrigger v-if="me" value="my">{{
             $t("pages.tournaments.tabs.my_recent")
           }}</TabsTrigger>
         </TabsList>
@@ -367,13 +367,16 @@ export default {
         }),
         variables: function () {
           return {
-            steam_id: useAuthStore().me.steam_id,
+            steam_id: useAuthStore().me?.steam_id,
             statuses: [
               e_tournament_status_enum.Cancelled,
               e_tournament_status_enum.CancelledMinTeams,
               e_tournament_status_enum.Finished,
             ],
           };
+        },
+        skip: function () {
+          return !useAuthStore().me?.steam_id;
         },
         result: function ({ data }: { data: any }) {
           this.myRecentTournaments = data.tournaments;

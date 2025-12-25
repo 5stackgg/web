@@ -32,7 +32,7 @@ const { isMobile } = useSidebar();
 
         <OnlinePlayers v-if="isMobile"></OnlinePlayers>
 
-        <AppNotifications></AppNotifications>
+        <AppNotifications v-if="me"></AppNotifications>
       </div>
     </div>
   </header>

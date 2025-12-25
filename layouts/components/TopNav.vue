@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
+import SteamIcon from "~/components/icons/SteamIcon.vue";
 
 const { isMobile } = useSidebar();
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
@@ -56,7 +57,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
       <!-- Unified Play and Community menus for all screen sizes -->
       <NavigationMenu>
         <NavigationMenuList class="flex items-center">
-          <NavigationMenuItem class="hidden md:block">
+          <NavigationMenuItem v-if="me" class="hidden md:block">
             <NavigationMenuLink as-child>
               <NuxtLink
                 to="/me"
@@ -288,78 +289,93 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         </NavigationMenuList>
       </NavigationMenu>
     </div>
-    <div class="flex items-center gap-4">
-      <InstallPWA v-if="!isMobile" :is-menu-item="false" />
-      <MatchLobbies v-if="!isMobile" />
-      <AppNotifications />
+    <template v-if="me">
+      <div class="flex items-center gap-4">
+        <InstallPWA v-if="!isMobile" :is-menu-item="false" />
+        <MatchLobbies v-if="!isMobile" />
+        <AppNotifications />
 
-      <Button
-        variant="ghost"
-        size="icon"
-        class="h-7 w-7 md:hidden"
-        @click="setRightSidebarOpen(!rightSidebarOpen)"
-      >
-        <Users class="h-4 w-4" />
-        <span class="sr-only">Toggle Right Sidebar</span>
-      </Button>
-
-      <!-- Player Profile Dropdown -->
-      <DropdownMenu v-model:open="profileMenuOpen">
-        <DropdownMenuTrigger as-child>
-          <button
-            class="flex items-center gap-2 px-3 py-2 hover:text-green-300 transition-colors duration-150 rounded"
-            type="button"
-          >
-            <PlayerDisplay
-              :player="me"
-              :show-online="false"
-              :show-name="false"
-              :show-elo="false"
-              :show-flag="false"
-              :show-role="false"
-              size="sm"
-            />
-            <ChevronsUpDown class="w-4 h-4" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          class="w-56 bg-[#232326] border border-neutral-800 rounded-lg shadow-lg"
-          align="end"
-          :side-offset="4"
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-7 w-7 md:hidden"
+          @click="setRightSidebarOpen(!rightSidebarOpen)"
         >
-          <DropdownMenuLabel class="font-normal p-3">
-            <PlayerDisplay :player="me" :show-online="false" />
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator class="bg-neutral-700" />
-          <DropdownMenuGroup>
-            <DropdownMenuItem class="flex gap-2 cursor-pointer p-3" as-child>
-              <NuxtLink
-                :to="{ name: 'settings' }"
-                class="flex items-center gap-2 hover:text-green-300 transition-colors"
-              >
-                <Settings class="w-4 h-4" />
-                {{ $t("layouts.app_nav.profile.my_account") }}
-              </NuxtLink>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator class="bg-neutral-700" />
-          <DropdownMenuItem
-            class="flex gap-2 cursor-pointer p-3 hover:text-green-300 transition-colors"
-            @click="showLogoutModal = true"
-          >
-            <LogOut class="w-4 h-4" />
-            {{ $t("layouts.app_nav.profile.logout") }}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <Users class="h-4 w-4" />
+          <span class="sr-only">Toggle Right Sidebar</span>
+        </Button>
 
-      <div
-        id="right-sidebar-trigger"
-        class="flex items-center justify-center"
-        v-show="isMobile"
-      ></div>
-    </div>
-    <Logout v-if="showLogoutModal" @update:open="showLogoutModal = $event" />
+        <!-- Player Profile Dropdown -->
+        <DropdownMenu v-model:open="profileMenuOpen">
+          <DropdownMenuTrigger as-child>
+            <button
+              class="flex items-center gap-2 px-3 py-2 hover:text-green-300 transition-colors duration-150 rounded"
+              type="button"
+            >
+              <PlayerDisplay
+                :player="me"
+                :show-online="false"
+                :show-name="false"
+                :show-elo="false"
+                :show-flag="false"
+                :show-role="false"
+                size="sm"
+              />
+              <ChevronsUpDown class="w-4 h-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            class="w-56 bg-[#232326] border border-neutral-800 rounded-lg shadow-lg"
+            align="end"
+            :side-offset="4"
+          >
+            <DropdownMenuLabel class="font-normal p-3">
+              <PlayerDisplay :player="me" :show-online="false" />
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator class="bg-neutral-700" />
+            <DropdownMenuGroup>
+              <DropdownMenuItem class="flex gap-2 cursor-pointer p-3" as-child>
+                <NuxtLink
+                  :to="{ name: 'settings' }"
+                  class="flex items-center gap-2 hover:text-green-300 transition-colors"
+                >
+                  <Settings class="w-4 h-4" />
+                  {{ $t("layouts.app_nav.profile.my_account") }}
+                </NuxtLink>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator class="bg-neutral-700" />
+            <DropdownMenuItem
+              class="flex gap-2 cursor-pointer p-3 hover:text-green-300 transition-colors"
+              @click="showLogoutModal = true"
+            >
+              <LogOut class="w-4 h-4" />
+              {{ $t("layouts.app_nav.profile.logout") }}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <div
+          id="right-sidebar-trigger"
+          class="flex items-center justify-center"
+          v-show="isMobile"
+        ></div>
+      </div>
+      <Logout v-if="showLogoutModal" @update:open="showLogoutModal = $event" />
+    </template>
+    <template v-else>
+      <div class="flex items-center gap-4 py-2">
+        <NuxtLink to="/login">
+          <Button
+            variant="outline"
+            class="fill-white uppercase font-bold px-4 py-2 transition-colors duration-150 hover:text-green-300 hover:border-green-300/50"
+          >
+            <SteamIcon class="w-4 h-4 mr-2" />
+            {{ $t("layouts.top_nav.login") }}
+          </Button>
+        </NuxtLink>
+      </div>
+    </template>
   </nav>
 </template>
 

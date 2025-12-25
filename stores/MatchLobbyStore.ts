@@ -159,6 +159,11 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   };
 
   const subscribeToManagingMatches = async () => {
+    const me = useAuthStore().me;
+    if (!me) {
+      return;
+    }
+
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
         matches_aggregate: [
@@ -200,6 +205,11 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   };
 
   const subscribeToMyMatches = async () => {
+    const me = useAuthStore().me;
+    if (!me?.steam_id) {
+      return;
+    }
+
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
         matches: [
@@ -252,11 +262,19 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
               },
             ],
           },
-          simpleMatchFields,
+          {
+            ...simpleMatchFields,
+            invites: [
+              {},
+              {
+                steam_id: true,
+              },
+            ],
+          },
         ],
       }),
       variables: {
-        steam_id: useAuthStore().me?.steam_id,
+        steam_id: me.steam_id,
       },
     });
 

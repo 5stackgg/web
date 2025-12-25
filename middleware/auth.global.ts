@@ -1,6 +1,41 @@
 import { useAuthStore } from "~/stores/AuthStore";
 import { toast } from "@/components/ui/toast";
 
+let checkedMe = false;
+
+function isPublicRoute(path: string): boolean {
+  const publicRoutes = [
+    "/",
+    "/login",
+    "/players",
+    "/teams",
+    "/watch",
+    "/public-servers",
+  ];
+
+  if (publicRoutes.includes(path)) {
+    return true;
+  }
+
+  if (path.startsWith("/players/")) {
+    return true;
+  }
+
+  if (path.startsWith("/teams/")) {
+    return true;
+  }
+
+  if (path.startsWith("/tournaments/")) {
+    return true;
+  }
+
+  if (path.startsWith("/matches/")) {
+    return true;
+  }
+
+  return false;
+}
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.server) return;
 
@@ -28,11 +63,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   let hasMe: boolean = useAuthStore().me?.steam_id ? true : false;
 
-  if (!hasMe) {
+  if (!checkedMe) {
+    checkedMe = true;
     hasMe = await useAuthStore().getMe();
   }
 
-  if (!hasMe && to.path !== "/login") {
+  if (!hasMe && !isPublicRoute(to.path) && to.path !== "/login") {
     return navigateTo(`/login${to.path === "/" ? "" : `?redirect=${to.path}`}`);
   }
 

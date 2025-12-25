@@ -17,7 +17,7 @@ const { isMobile } = useSidebar();
       <template #title>{{ $t("pages.teams.title") }}</template>
       <template #description>{{ $t("pages.teams.description") }}</template>
       <template #actions>
-        <NuxtLink :to="{ name: 'teams-create' }">
+        <NuxtLink v-if="me" :to="{ name: 'teams-create' }">
           <Button :size="isMobile ? 'default' : 'lg'">
             <PlusCircle class="w-4 h-4" />
             <span class="hidden md:inline ml-2">{{
@@ -29,6 +29,7 @@ const { isMobile } = useSidebar();
     </PageHeading>
 
     <div
+      v-if="me"
       class="flex items-center space-x-2 mb-4 justify-end cursor-pointer"
       @click="showOnlyMyTeams = !showOnlyMyTeams"
     >
@@ -109,6 +110,11 @@ export default {
         ),
       }),
     };
+  },
+  computed: {
+    me() {
+      return useAuthStore().me;
+    },
   },
   watch: {
     "form.values.teamQuery": {
@@ -211,6 +217,9 @@ export default {
               },
             ],
           });
+        },
+        skip: function () {
+          return !useAuthStore().me?.steam_id;
         },
         result: function (this: any, { data }: { data: any }) {
           this.myTeams = data.players?.[0].teams;

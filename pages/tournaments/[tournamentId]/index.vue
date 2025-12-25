@@ -234,7 +234,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
                 "
                 size="sm"
                 class="h-7 px-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all font-semibold text-sm border-0 hover:scale-105 active:scale-95"
-                @click="joinSheetOpen = true"
+                @click="handleJoinTournament"
               >
                 <UserPlus class="h-3.5 w-3.5 mr-1.5" />
                 {{ $t("tournament.join.title") }}
@@ -821,9 +821,12 @@ export default {
         }),
         variables: function () {
           return {
-            steam_id: this.me.steam_id,
+            steam_id: this.me?.steam_id,
             tournamentId: this.$route.params.tournamentId,
           };
+        },
+        skip: function () {
+          return !this.me?.steam_id;
         },
         result: function ({ data }) {
           this.myTeam = data.tournament_teams?.[0];
@@ -881,6 +884,16 @@ export default {
     },
     openOrganizersDialog() {
       this.organizersDialogOpen = true;
+    },
+    handleJoinTournament() {
+      if (!this.me) {
+        this.$router.push({
+          path: "/login",
+          query: { redirect: this.$route.fullPath },
+        });
+        return;
+      }
+      this.joinSheetOpen = true;
     },
     async cancelTournament() {
       await this.updateTournamentStatus(e_tournament_status_enum.Cancelled);

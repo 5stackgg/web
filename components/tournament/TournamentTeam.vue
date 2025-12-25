@@ -219,7 +219,7 @@ export default {
     canLeaveTeam() {
       const isMember =
         this.team.roster.find((member) => {
-          return member.player.steam_id === useAuthStore().me.steam_id;
+          return member.player.steam_id === useAuthStore().me?.steam_id;
         }) !== undefined;
 
       if (!isMember) return false;

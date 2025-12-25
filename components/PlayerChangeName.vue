@@ -143,7 +143,7 @@ export default {
     },
     canChangeName() {
       return (
-        this.player.steam_id === this.me.steam_id ||
+        this.player.steam_id === this.me?.steam_id ||
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
       );
     },

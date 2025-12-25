@@ -262,7 +262,15 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
               },
             ],
           },
-          simpleMatchFields,
+          {
+            ...simpleMatchFields,
+            invites: [
+              {},
+              {
+                steam_id: true,
+              },
+            ],
+          },
         ],
       }),
       variables: {

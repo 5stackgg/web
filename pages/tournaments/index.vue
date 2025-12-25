@@ -65,7 +65,7 @@
                   page = _page;
                 }
               "
-              :total="tournaments?.aggregate?.count"
+              :total="tournaments_aggregate?.aggregate?.count"
             ></pagination>
           </Teleport>
         </TabsContent>
@@ -100,7 +100,7 @@ import PageHeading from "~/components/PageHeading.vue";
 import { Button } from "~/components/ui/button";
 import { PlusCircle } from "lucide-vue-next";
 import { mapFields } from "~/graphql/mapGraphql";
-import { generateQuery } from "~/graphql/graphqlGen";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 
@@ -120,92 +120,93 @@ export default {
       page: 1,
       perPage: 10,
       activeTournaments: [],
+      tournaments: [],
+      tournaments_aggregate: undefined,
+      myRecentTournaments: [],
     };
   },
   apollo: {
-    activeTournaments: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        tournaments: [
-          {
-            where: {
-              status: {
-                _in: $("statuses", "[e_tournament_status_enum]"),
+    $subscribe: {
+      activeTournaments: {
+        query: typedGql("subscription")({
+          tournaments: [
+            {
+              where: {
+                status: {
+                  _in: $("statuses", "[e_tournament_status_enum]"),
+                },
               },
-            },
-            order_by: [
-              {},
-              {
-                start: order_by.asc,
-              },
-            ],
-          },
-          {
-            id: true,
-            name: true,
-            start: true,
-            description: true,
-            e_tournament_status: {
-              description: true,
-            },
-            options: {
-              type: true,
-              map_pool: [
+              order_by: [
                 {},
                 {
-                  id: true,
-                  type: true,
-                  e_type: {
-                    description: true,
-                  },
-                  maps: [{}, mapFields],
+                  start: order_by.asc,
                 },
               ],
             },
-            stages: [
-              {
-                order_by: [
+            {
+              id: true,
+              name: true,
+              start: true,
+              description: true,
+              e_tournament_status: {
+                description: true,
+              },
+              options: {
+                type: true,
+                map_pool: [
+                  {},
                   {
-                    order: order_by.asc,
+                    id: true,
+                    type: true,
+                    e_type: {
+                      description: true,
+                    },
+                    maps: [{}, mapFields],
                   },
                 ],
               },
-              {
-                id: true,
-                type: true,
-                e_tournament_stage_type: {
-                  description: true,
+              stages: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
                 },
-                order: true,
-              },
-            ],
-            teams_aggregate: [
-              {},
-              {
-                aggregate: {
-                  count: true,
+                {
+                  id: true,
+                  type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
+                  order: true,
                 },
-              },
-            ],
-          },
-        ],
-      }),
-      variables: function () {
-        return {
-          statuses: [
-            e_tournament_status_enum.Live,
-            e_tournament_status_enum.RegistrationOpen,
+              ],
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
+            },
           ],
-        };
+        }),
+        variables: function () {
+          return {
+            statuses: [
+              e_tournament_status_enum.Live,
+              e_tournament_status_enum.RegistrationOpen,
+            ],
+          };
+        },
+        result: function ({ data }: { data: any }) {
+          this.activeTournaments = data.tournaments;
+        },
       },
-      result({ data }) {
-        this.activeTournaments = data.tournaments;
-      },
-    },
-    tournaments: {
-      fetchPolicy: "network-only",
-      query: function () {
-        return generateQuery({
+      tournaments: {
+        query: typedGql("subscription")({
           tournaments: [
             {
               limit: $("limit", "Int!"),
@@ -266,114 +267,117 @@ export default {
               ],
             },
           ],
-        });
+        }),
+        variables: function () {
+          return {
+            limit: this.perPage,
+            offset: (this.page - 1) * this.perPage,
+          };
+        },
+        result: function ({ data }: { data: any }) {
+          this.tournaments = data.tournaments;
+        },
       },
-      variables: function () {
-        return {
-          limit: this.perPage,
-          offset: (this.page - 1) * this.perPage,
-        };
-      },
-    },
-    tournaments_aggregate: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        tournaments_aggregate: [
-          {},
-          {
-            aggregate: {
-              count: true,
-            },
-          },
-        ],
-      }),
-    },
-    myRecentTournaments: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          myRecentTournaments: {
-            tournaments: [
-              {
-                limit: 10,
-                where: {
-                  status: {
-                    _in: $("statuses", "[e_tournament_status_enum]"),
-                  },
-                  rosters: {
-                    player_steam_id: {
-                      _eq: $("steam_id", "bigint"),
-                    },
-                  },
-                },
-                order_by: [
-                  {},
-                  {
-                    start: order_by.desc,
-                  },
-                ],
+      tournaments_aggregate: {
+        query: typedGql("subscription")({
+          tournaments_aggregate: [
+            {},
+            {
+              aggregate: {
+                count: true,
               },
-              {
-                id: true,
-                name: true,
-                start: true,
-                description: true,
-                e_tournament_status: {
-                  description: true,
+            },
+          ],
+        }),
+        result: function ({ data }: { data: any }) {
+          this.tournaments_aggregate = data.tournaments_aggregate;
+        },
+      },
+      myRecentTournaments: {
+        query: typedGql("subscription")({
+          tournaments: [
+            {
+              limit: 10,
+              where: {
+                status: {
+                  _in: $("statuses", "[e_tournament_status_enum]"),
                 },
-                options: {
-                  type: true,
-                  map_pool: [
-                    {},
-                    {
-                      id: true,
-                      type: true,
-                      e_type: {
-                        description: true,
-                      },
-                      maps: [{}, mapFields],
-                    },
-                  ],
-                },
-                stages: [
-                  {
-                    order_by: [
-                      {
-                        order: order_by.asc,
-                      },
-                    ],
+                rosters: {
+                  player_steam_id: {
+                    _eq: $("steam_id", "bigint"),
                   },
+                },
+              },
+              order_by: [
+                {},
+                {
+                  start: order_by.desc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              start: true,
+              description: true,
+              e_tournament_status: {
+                description: true,
+              },
+              options: {
+                type: true,
+                map_pool: [
+                  {},
                   {
                     id: true,
                     type: true,
-                    e_tournament_stage_type: {
+                    e_type: {
                       description: true,
                     },
-                    order: true,
-                  },
-                ],
-                teams_aggregate: [
-                  {},
-                  {
-                    aggregate: {
-                      count: true,
-                    },
+                    maps: [{}, mapFields],
                   },
                 ],
               },
-            ],
-          },
-        },
-      }),
-      variables: function () {
-        return {
-          steam_id: useAuthStore().me.steam_id,
-          statuses: [
-            e_tournament_status_enum.Cancelled,
-            e_tournament_status_enum.CancelledMinTeams,
-            e_tournament_status_enum.Finished,
+              stages: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
+                  order: true,
+                },
+              ],
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
+            },
           ],
-        };
+        }),
+        variables: function () {
+          return {
+            steam_id: useAuthStore().me.steam_id,
+            statuses: [
+              e_tournament_status_enum.Cancelled,
+              e_tournament_status_enum.CancelledMinTeams,
+              e_tournament_status_enum.Finished,
+            ],
+          };
+        },
+        result: function ({ data }: { data: any }) {
+          this.myRecentTournaments = data.tournaments;
+        },
       },
     },
   },

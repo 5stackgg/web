@@ -13,8 +13,19 @@ import {
     <template #title>{{ $t("pages.watch.title") }}</template>
     <template #description>{{ $t("pages.watch.description") }}</template>
   </PageHeading>
-
   <Separator class="my-4" />
+
+  <div
+    v-if="liveTournaments && liveTournaments.length > 0"
+    class="my-4 space-y-4"
+  >
+    <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
+    <TournamentTableRow
+      v-for="tournament in liveTournaments"
+      :key="tournament.id"
+      :tournament="tournament"
+    ></TournamentTableRow>
+  </div>
 
   <Card class="p-4">
     <Tabs default-value="live-matches">
@@ -31,16 +42,6 @@ import {
       </TabsList>
 
       <TabsContent value="live-matches">
-        <div
-          v-if="liveTournaments && liveTournaments.length > 0"
-          class="space-y-4 mb-6"
-        >
-          <TournamentTableRow
-            v-for="tournament in liveTournaments"
-            :key="tournament.id"
-            :tournament="tournament"
-          ></TournamentTableRow>
-        </div>
         <OtherMatches
           :is-in-lineup="true"
           :statuses="[
@@ -72,7 +73,7 @@ import {
 <script lang="ts">
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import { mapFields } from "~/graphql/mapGraphql";
-import { generateQuery } from "~/graphql/graphqlGen";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 
 export default {
@@ -81,40 +82,38 @@ export default {
   },
   data() {
     return {
-      liveTournaments: [],
+      liveTournaments: [] as any[],
     };
   },
   apollo: {
-    liveTournaments: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        tournaments: [
-          {
-            where: {
-              status: {
-                _eq: $("status", "e_tournament_status_enum"),
+    $subscribe: {
+      liveTournaments: {
+        query: typedGql("subscription")({
+          tournaments: [
+            {
+              where: {
+                status: {
+                  _eq: $("status", "e_tournament_status_enum"),
+                },
               },
-            },
-            order_by: [
-              {},
-              {
-                start: order_by.asc,
-              },
-            ],
-          },
-          {
-            id: true,
-            name: true,
-            start: true,
-            description: true,
-            e_tournament_status: {
-              description: true,
-            },
-            options: {
-              type: true,
-              map_pool: [
+              order_by: [
                 {},
                 {
+                  start: order_by.asc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              start: true,
+              description: true,
+              e_tournament_status: {
+                description: true,
+              },
+              options: {
+                type: true,
+                map_pool: {
                   id: true,
                   type: true,
                   e_type: {
@@ -122,43 +121,43 @@ export default {
                   },
                   maps: [{}, mapFields],
                 },
+              },
+              stages: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
+                  order: true,
+                },
+              ],
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
               ],
             },
-            stages: [
-              {
-                order_by: [
-                  {
-                    order: order_by.asc,
-                  },
-                ],
-              },
-              {
-                id: true,
-                type: true,
-                e_tournament_stage_type: {
-                  description: true,
-                },
-                order: true,
-              },
-            ],
-            teams_aggregate: [
-              {},
-              {
-                aggregate: {
-                  count: true,
-                },
-              },
-            ],
-          },
-        ],
-      }),
-      variables: function () {
-        return {
-          status: e_tournament_status_enum.Live,
-        };
-      },
-      result({ data }) {
-        this.liveTournaments = data.tournaments;
+          ],
+        }),
+        variables: function () {
+          return {
+            status: e_tournament_status_enum.Live,
+          };
+        },
+        result({ data }: any) {
+          this.liveTournaments = data?.tournaments || [];
+        },
       },
     },
   },

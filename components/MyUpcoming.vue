@@ -25,7 +25,7 @@ import SimpleTournamentDisplay from "./tournament/SimpleTournamentDisplay.vue";
 
 <script lang="ts">
 import { mapFields } from "~/graphql/mapGraphql";
-import { generateQuery } from "~/graphql/graphqlGen";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 
 export default {
@@ -35,78 +35,82 @@ export default {
     };
   },
   apollo: {
-    tournaments: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        tournaments: [
-          {
-            where: {
-              status: {
-                _nin: $("statuses", "[e_tournament_status_enum]"),
-              },
-              rosters: {
-                player_steam_id: {
-                  _eq: $("steam_id", "bigint"),
+    $subscribe: {
+      tournaments: {
+        query: typedGql("subscription")({
+          tournaments: [
+            {
+              where: {
+                status: {
+                  _nin: $("statuses", "[e_tournament_status_enum]"),
                 },
-              },
-            },
-            order_by: [
-              {},
-              {
-                start: order_by.desc,
-              },
-            ],
-          },
-          {
-            id: true,
-            name: true,
-            start: true,
-            e_tournament_status: {
-              description: true,
-            },
-            options: {
-              type: true,
-              map_pool: {
-                maps: [{}, mapFields],
-              },
-            },
-            stages: [
-              {
-                order_by: [
-                  {
-                    order: order_by.asc,
+                rosters: {
+                  player_steam_id: {
+                    _eq: $("steam_id", "bigint"),
                   },
-                ],
+                },
               },
-              {
-                id: true,
+              order_by: [
+                {},
+                {
+                  start: order_by.desc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              start: true,
+              e_tournament_status: {
+                description: true,
+              },
+              options: {
                 type: true,
-                e_tournament_stage_type: {
-                  description: true,
-                },
-                order: true,
-              },
-            ],
-            teams_aggregate: [
-              {},
-              {
-                aggregate: {
-                  count: true,
+                map_pool: {
+                  maps: [{}, mapFields],
                 },
               },
-            ],
-          },
-        ],
-      }),
-      variables: function () {
-        return {
-          steam_id: useAuthStore().me.steam_id,
-          statuses: [
-            e_tournament_status_enum.Cancelled,
-            e_tournament_status_enum.CancelledMinTeams,
-            e_tournament_status_enum.Finished,
+              stages: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
+                  order: true,
+                },
+              ],
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
+            },
           ],
-        };
+        }),
+        variables: function () {
+          return {
+            steam_id: useAuthStore().me.steam_id,
+            statuses: [
+              e_tournament_status_enum.Cancelled,
+              e_tournament_status_enum.CancelledMinTeams,
+              e_tournament_status_enum.Finished,
+            ],
+          };
+        },
+        result: function ({ data }) {
+          this.tournaments = data.tournaments;
+        },
       },
     },
   },

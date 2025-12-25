@@ -56,7 +56,6 @@ export const useAuthStore = defineStore("auth", () => {
         next: ({ data }) => {
           me.value = data?.players_by_pk;
 
-          // Only subscribe to match-related data if user exists
           if (me.value) {
             useMatchLobbyStore().subscribeToMyMatches();
             useMatchLobbyStore().subscribeToLiveMatches();
@@ -94,7 +93,6 @@ export const useAuthStore = defineStore("auth", () => {
           return;
         }
 
-        // Only connect socket and subscribe to matches if user exists
         socket.connect();
 
         hasDiscordLinked.value = !!response.data.me.discord_id;

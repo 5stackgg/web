@@ -16,20 +16,24 @@ import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDis
       <CustomMatch class="bg-card p-8 rounded-lg" />
     </template>
 
-    <!-- Open Registration Tournaments -->
-    <div
-      v-if="openRegistrationTournaments?.length > 0"
-      class="flex gap-4 overflow-x-auto"
-    >
+    <MyUpcoming></MyUpcoming>
+
+    <Card class="p-4" v-if="openRegistrationTournaments?.length > 0">
+      <CardHeader>
+        <CardTitle>{{
+          $t("pages.play.open_registration_tournaments.title")
+        }}</CardTitle>
+        <CardDescription>
+          {{ $t("pages.play.open_registration_tournaments.description") }}
+        </CardDescription>
+      </CardHeader>
       <SimpleTournamentDisplay
         :key="tournament.id"
         :tournament="tournament"
         v-for="tournament of openRegistrationTournaments"
         class="flex-shrink-0"
       ></SimpleTournamentDisplay>
-    </div>
-
-    <MyUpcoming></MyUpcoming>
+    </Card>
 
     <Card class="p-4">
       <CardHeader>
@@ -49,7 +53,6 @@ import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDis
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { mapFields } from "~/graphql/mapGraphql";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { generateQuery } from "~/graphql/graphqlGen";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 
 export default {

@@ -24,7 +24,6 @@ import SimpleTournamentDisplay from "~/components/tournament/SimpleTournamentDis
       <SimpleTournamentDisplay
         :key="tournament.id"
         :tournament="tournament"
-        :e-match-types="eMatchTypes"
         v-for="tournament of openRegistrationTournaments"
         class="flex-shrink-0"
       ></SimpleTournamentDisplay>
@@ -59,22 +58,9 @@ export default {
       page: 1,
       perPage: 10,
       openRegistrationTournaments: [],
-      eMatchTypes: [],
     };
   },
   apollo: {
-    eMatchTypes: {
-      fetchPolicy: "cache-first",
-      query: generateQuery({
-        e_match_types: [
-          {},
-          {
-            value: true,
-            description: true,
-          },
-        ],
-      }),
-    },
     $subscribe: {
       openRegistrationTournaments: {
         query: typedGql("subscription")({

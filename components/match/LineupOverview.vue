@@ -176,7 +176,7 @@ import {
           0,
           match.max_players_per_lineup - lineup.lineup_players.length,
         )"
-        v-if="canViewEmptySlows"
+        v-if="canViewEmptySlots"
       >
         <TableCell colspan="100%">
           <div class="flex gap-4">
@@ -261,7 +261,7 @@ export default {
         this.lineup.lineup_players.length < this.maxPlayers
       );
     },
-    canViewEmptySlows() {
+    canViewEmptySlots() {
       return ![
         e_match_status_enum.Finished,
         e_match_status_enum.Forfeit,

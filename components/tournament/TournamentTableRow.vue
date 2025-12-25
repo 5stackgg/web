@@ -116,26 +116,35 @@ import { Button } from "~/components/ui/button";
 </template>
 
 <script lang="ts">
+import { generateQuery } from "~/graphql/graphqlGen";
+
 export default {
   props: {
     tournament: {
       type: Object,
       required: true,
     },
-    eMatchTypes: {
-      type: Array,
-      default: () => [],
-    },
   },
-  data() {
-    return {};
+  apollo: {
+    e_match_types: {
+      fetchPolicy: "cache-first",
+      query: generateQuery({
+        e_match_types: [
+          {},
+          {
+            value: true,
+            description: true,
+          },
+        ],
+      }),
+    },
   },
   computed: {
     tournamentTypeDescription() {
-      if (!this.tournament?.options?.type || !this.eMatchTypes?.length) {
+      if (!this.tournament?.options?.type || !this.e_match_types?.length) {
         return this.tournament?.options?.type || "";
       }
-      const matchType = this.eMatchTypes.find(
+      const matchType = this.e_match_types.find(
         (type: any) => type.value === this.tournament.options.type,
       );
       return matchType?.description || this.tournament.options.type;

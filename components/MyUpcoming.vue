@@ -17,7 +17,6 @@ import SimpleTournamentDisplay from "./tournament/SimpleTournamentDisplay.vue";
     <SimpleTournamentDisplay
       :key="`tournament-${tournament.id}`"
       :tournament="tournament"
-      :e-match-types="eMatchTypes"
       v-for="tournament of tournaments"
       class="flex-shrink-0"
     ></SimpleTournamentDisplay>
@@ -33,22 +32,9 @@ export default {
   data() {
     return {
       tournaments: [],
-      eMatchTypes: [],
     };
   },
   apollo: {
-    eMatchTypes: {
-      fetchPolicy: "cache-first",
-      query: generateQuery({
-        e_match_types: [
-          {},
-          {
-            value: true,
-            description: true,
-          },
-        ],
-      }),
-    },
     tournaments: {
       fetchPolicy: "network-only",
       query: generateQuery({

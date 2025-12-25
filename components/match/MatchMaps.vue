@@ -3,6 +3,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 import { Badge } from "~/components/ui/badge";
 import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
 import formatBytes from "~/utilities/formatBytes";
+import { Download } from "lucide-vue-next";
 </script>
 
 <template>
@@ -36,6 +37,7 @@ import formatBytes from "~/utilities/formatBytes";
               variant="outline"
               v-if="matchMap.demos_total_size"
             >
+              <Download class="w-4 h-4" />
               {{
                 matchMap.demos.length > 1
                   ? $t("match.download_demos")
@@ -49,6 +51,7 @@ import formatBytes from "~/utilities/formatBytes";
           <template v-for="demo in matchMap.demos" :key="demo.id">
             <a :href="demo.download_url">
               <Button size="sm" variant="outline">
+                <Download class="w-4 h-4" />
                 {{ $t("match.download_demo") }}
                 <small>({{ formatBytes(demo.size) }}~)</small>
               </Button>

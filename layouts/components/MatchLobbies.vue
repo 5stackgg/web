@@ -45,7 +45,7 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
   <template v-else>
     <Button
       @click="createLobby"
-      class="relative group overflow-hidden rounded bg-transparent text-white shadow-lg hover:shadow px-5 py-4 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+      class="relative group overflow-hidden rounded bg-transparent text-white shadow-lg hover:shadow px-5 py-5 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
     >
       <span
         class="absolute inset-0 rounded p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"

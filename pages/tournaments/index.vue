@@ -25,7 +25,6 @@
         v-for="tournament in activeTournaments"
         :key="tournament.id"
         :tournament="tournament"
-        :e-match-types="eMatchTypes"
       ></TournamentTableRow>
     </div>
 
@@ -54,7 +53,6 @@
               v-for="tournament in tournaments"
               :key="tournament.id"
               :tournament="tournament"
-              :e-match-types="eMatchTypes"
             ></TournamentTableRow>
           </div>
 
@@ -86,7 +84,6 @@
               v-for="tournament in myRecentTournaments"
               :key="tournament.id"
               :tournament="tournament"
-              :e-match-types="eMatchTypes"
             ></TournamentTableRow>
           </div>
         </TabsContent>
@@ -122,23 +119,10 @@ export default {
     return {
       page: 1,
       perPage: 10,
-      eMatchTypes: [],
       activeTournaments: [],
     };
   },
   apollo: {
-    eMatchTypes: {
-      fetchPolicy: "cache-first",
-      query: generateQuery({
-        e_match_types: [
-          {},
-          {
-            value: true,
-            description: true,
-          },
-        ],
-      }),
-    },
     activeTournaments: {
       fetchPolicy: "network-only",
       query: generateQuery({

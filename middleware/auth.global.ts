@@ -70,7 +70,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     hasMe = await useAuthStore().getMe();
   }
 
-  // Only redirect to login if route is NOT public and user is not authenticated
   if (!hasMe && !isPublicRoute(to.path) && to.path !== "/login") {
     return navigateTo(`/login${to.path === "/" ? "" : `?redirect=${to.path}`}`);
   }

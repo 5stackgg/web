@@ -72,7 +72,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           @selected="addMember"
         ></PlayerSearch>
 
-        <template v-if="team?.invites.length > 0">
+        <template v-if="team_invites?.length > 0">
           <h1 class="text-base font-medium">
             {{ $t("team.members.pending_invites") }}
           </h1>
@@ -87,7 +87,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 
           <div
             class="grid grid-cols-12 items-center gap-4 rounded-lg px-3 py-2 hover:bg-muted/40"
-            v-for="member of team?.invites"
+            v-for="member of team_invites"
           >
             <TeamMember
               :team="team"
@@ -169,13 +169,6 @@ export default {
                   player: playerFields,
                 },
               ],
-              invites: [
-                {},
-                {
-                  id: true,
-                  player: playerFields,
-                },
-              ],
             },
           ],
         }),
@@ -186,6 +179,34 @@ export default {
         },
         result: function ({ data }) {
           this.team = data.teams_by_pk;
+        },
+      },
+      team_invites: {
+        query: typedGql("subscription")({
+          team_invites: [
+            {
+              where: {
+                team_id: {
+                  _eq: $("teamId", "uuid!"),
+                },
+              },
+            },
+            {
+              id: true,
+              player: playerFields,
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            teamId: this.teamId,
+          };
+        },
+        skip: function () {
+          return !useAuthStore().me;
+        },
+        result: function ({ data }) {
+          this.team_invites = data.team_invites;
         },
       },
     },

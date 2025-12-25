@@ -193,13 +193,6 @@ export default {
                   player: playerFields,
                 },
               ],
-              invites: [
-                {},
-                {
-                  id: true,
-                  player: playerFields,
-                },
-              ],
               matches: [{}, simpleMatchFields],
             },
           ],
@@ -221,7 +214,7 @@ export default {
     },
     isOnTeam() {
       return !!this.team?.roster.some(({ player }) => {
-        return player.steam_id === this.me.steam_id;
+        return player.steam_id === this.me?.steam_id;
       });
     },
     isAdmin() {

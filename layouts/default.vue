@@ -62,7 +62,7 @@ export default {
     detectedCountry: {
       immediate: true,
       async handler() {
-        if (!this.me || !this.me.steam_id || this.me.country) {
+        if (!this.me || this.me.country) {
           return;
         }
 

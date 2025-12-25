@@ -251,6 +251,7 @@ export default {
         }),
         variables: function () {
           return {
+            steam_id: this.me.steam_id,
           };
         },
         result({ data }: { data: any }) {
@@ -291,6 +292,7 @@ export default {
         }),
         variables: function () {
           return {
+            steam_id: this.me.steam_id,
           };
         },
         result({ data }: { data: any }) {
@@ -355,9 +357,6 @@ export default {
             },
           ],
         }),
-        skip: function () {
-          return !this.me?.steam_id;
-        },
         result({ data }: { data: any }) {
           this.notifications = data.notifications;
         },

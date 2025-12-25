@@ -434,8 +434,6 @@ export default {
   },
   computed: {
     playerId() {
-      // If route has id param, use it (public access)
-      // Otherwise, use me.steam_id if authenticated
       return this.$route.params.id || this.me?.steam_id || null;
     },
     me() {

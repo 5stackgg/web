@@ -887,14 +887,12 @@ export default {
     },
     handleJoinTournament() {
       if (!this.me) {
-        // Redirect to login with current path as redirect
         this.$router.push({
           path: "/login",
           query: { redirect: this.$route.fullPath },
         });
         return;
       }
-      // User is authenticated, open the join sheet
       this.joinSheetOpen = true;
     },
     async cancelTournament() {

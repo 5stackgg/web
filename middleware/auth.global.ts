@@ -10,7 +10,6 @@ function isPublicRoute(path: string): boolean {
     "/login",
     "/players",
     "/teams",
-    "/tournaments",
     "/watch",
     "/public-servers",
   ];
@@ -30,12 +29,7 @@ function isPublicRoute(path: string): boolean {
   }
 
   if (path.startsWith("/tournaments/")) {
-    // Tournament detail pages are public, but sub-pages like /organizers or /match-options are not
-    const tournamentSubPaths = ["/organizers", "/match-options"];
-    const isSubPath = tournamentSubPaths.some((subPath) =>
-      path.includes(subPath),
-    );
-    return !isSubPath;
+    return true;
   }
 
   if (path.startsWith("/matches/")) {

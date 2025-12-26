@@ -4,32 +4,25 @@ import { toast } from "@/components/ui/toast";
 let checkedMe = false;
 
 function isPublicRoute(path: string): boolean {
-  const publicRoutes = [
-    "/",
-    "/login",
-    "/players",
-    "/teams",
-    "/watch",
-    "/public-servers",
-  ];
+  const publicRoutes = ["/", "/login", "/watch", "/public-servers"];
 
   if (publicRoutes.includes(path)) {
     return true;
   }
 
-  if (path.startsWith("/players/")) {
+  if (path.startsWith("/players")) {
     return true;
   }
 
-  if (path.startsWith("/teams/")) {
+  if (path.startsWith("/teams")) {
     return true;
   }
 
-  if (path.startsWith("/tournaments/")) {
+  if (path.startsWith("/tournaments")) {
     return true;
   }
 
-  if (path.startsWith("/matches/")) {
+  if (path.startsWith("/matches")) {
     return true;
   }
 

@@ -22,7 +22,7 @@ import { Button } from "~/components/ui/button";
           <!-- Type, Description, and Stage Badges - Second Line -->
           <div class="flex flex-wrap items-center gap-2 mb-2">
             <Badge variant="secondary" class="text-xs shrink-0">
-              {{ tournament.options.type }}: {{ tournamentTypeDescription }}
+              {{ tournament.options.type }}
             </Badge>
             <Badge
               v-if="stageCount > 1"
@@ -116,8 +116,6 @@ import { Button } from "~/components/ui/button";
 </template>
 
 <script lang="ts">
-import { generateQuery } from "~/graphql/graphqlGen";
-
 export default {
   props: {
     tournament: {
@@ -125,30 +123,7 @@ export default {
       required: true,
     },
   },
-  apollo: {
-    e_match_types: {
-      fetchPolicy: "cache-first",
-      query: generateQuery({
-        e_match_types: [
-          {},
-          {
-            value: true,
-            description: true,
-          },
-        ],
-      }),
-    },
-  },
   computed: {
-    tournamentTypeDescription() {
-      if (!this.tournament?.options?.type || !this.e_match_types?.length) {
-        return this.tournament?.options?.type || "";
-      }
-      const matchType = this.e_match_types.find(
-        (type: any) => type.value === this.tournament.options.type,
-      );
-      return matchType?.description || this.tournament.options.type;
-    },
     stageCount() {
       return this.tournament?.stages?.length || 0;
     },

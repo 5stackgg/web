@@ -394,6 +394,87 @@ export default {
           this.player = data.players_by_pk;
         },
       },
+      playerTournaments: {
+        query: typedGql("subscription")({
+          tournaments: [
+            {
+              limit: 10,
+              where: {
+                rosters: {
+                  player_steam_id: {
+                    _eq: $("steam_id", "bigint"),
+                  },
+                },
+              },
+              order_by: [
+                {},
+                {
+                  start: order_by.desc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              start: true,
+              description: true,
+              e_tournament_status: {
+                description: true,
+              },
+              options: {
+                type: true,
+                map_pool: [
+                  {},
+                  {
+                    id: true,
+                    type: true,
+                    e_type: {
+                      description: true,
+                    },
+                    maps: [{}, mapFields],
+                  },
+                ],
+              },
+              stages: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
+                  order: true,
+                },
+              ],
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            steam_id: this.playerId,
+          };
+        },
+        skip: function () {
+          return !this.playerId;
+        },
+        result: function ({ data }: { data: any }) {
+          this.playerTournaments = data.tournaments || [];
+        },
+      },
     },
     playerWithMatches: {
       fetchPolicy: "network-only",
@@ -463,87 +544,6 @@ export default {
         return {
           playerId: this.playerId,
         };
-      },
-    },
-    playerTournaments: {
-      query: typedGql("subscription")({
-        tournaments: [
-          {
-            limit: 10,
-            where: {
-              rosters: {
-                player_steam_id: {
-                  _eq: $("steam_id", "bigint"),
-                },
-              },
-            },
-            order_by: [
-              {},
-              {
-                start: order_by.desc,
-              },
-            ],
-          },
-          {
-            id: true,
-            name: true,
-            start: true,
-            description: true,
-            e_tournament_status: {
-              description: true,
-            },
-            options: {
-              type: true,
-              map_pool: [
-                {},
-                {
-                  id: true,
-                  type: true,
-                  e_type: {
-                    description: true,
-                  },
-                  maps: [{}, mapFields],
-                },
-              ],
-            },
-            stages: [
-              {
-                order_by: [
-                  {
-                    order: order_by.asc,
-                  },
-                ],
-              },
-              {
-                id: true,
-                type: true,
-                e_tournament_stage_type: {
-                  description: true,
-                },
-                order: true,
-              },
-            ],
-            teams_aggregate: [
-              {},
-              {
-                aggregate: {
-                  count: true,
-                },
-              },
-            ],
-          },
-        ],
-      }),
-      variables: function () {
-        return {
-          steam_id: this.playerId,
-        };
-      },
-      skip: function () {
-        return !this.playerId;
-      },
-      result: function ({ data }: { data: any }) {
-        this.playerTournaments = data.tournaments || [];
       },
     },
   },

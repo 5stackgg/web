@@ -88,7 +88,9 @@ const { isMobile } = useSidebar();
                   onFilterChange();
                 }
               "
-              :placeholder="$t('pages.manage_tournaments.enter_tournament_name')"
+              :placeholder="
+                $t('pages.manage_tournaments.enter_tournament_name')
+              "
             />
           </div>
 
@@ -267,7 +269,10 @@ export default {
       }
       const validStatuses = Object.values(e_tournament_status_enum);
       return statuses.filter(
-        (status) => status !== null && status !== undefined && validStatuses.includes(status),
+        (status) =>
+          status !== null &&
+          status !== undefined &&
+          validStatuses.includes(status),
       );
     };
 
@@ -307,7 +312,9 @@ export default {
   },
   mounted() {
     if (!this.form.values.statuses || this.form.values.statuses.length === 0) {
-      const validDefaultStatuses = this.filterValidStatuses(this.defaultStatuses);
+      const validDefaultStatuses = this.filterValidStatuses(
+        this.defaultStatuses,
+      );
       this.form.setValues({
         ...this.form.values,
         statuses: validDefaultStatuses,
@@ -389,6 +396,7 @@ export default {
                   },
                 },
               ],
+              is_organizer: true,
             },
           ],
         }),
@@ -479,7 +487,10 @@ export default {
       }
       const validStatuses = Object.values(e_tournament_status_enum);
       return statuses.filter(
-        (status) => status !== null && status !== undefined && validStatuses.includes(status),
+        (status) =>
+          status !== null &&
+          status !== undefined &&
+          validStatuses.includes(status),
       );
     },
     getWhereClause() {
@@ -522,10 +533,9 @@ export default {
       };
 
       if (this.showOnlyMyTournaments) {
-        // Note: tournaments might not have organizer_steam_id, adjust based on your schema
-        // whereClause.organizer_steam_id = {
-        //   _eq: useAuthStore().me?.steam_id,
-        // };
+        whereClause.is_organizer = {
+          _eq: true,
+        };
       }
 
       return whereClause;
@@ -575,7 +585,9 @@ export default {
       this.onFilterChange();
     },
     resetFilters() {
-      const validDefaultStatuses = this.filterValidStatuses(this.defaultStatuses);
+      const validDefaultStatuses = this.filterValidStatuses(
+        this.defaultStatuses,
+      );
       this.form.setValues({
         tournamentId: "",
         tournamentName: "",
@@ -642,4 +654,3 @@ export default {
   },
 };
 </script>
-

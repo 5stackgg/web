@@ -23,10 +23,13 @@
         "tournaments": {
             "title": "Upcoming Tournaments",
             "create": "Create Tournament",
+            "open_for_registration": "Open for Registration",
             "tabs": {
                 "tournaments": "Tournaments",
                 "my_recent": "My Recent Tournaments",
-                "finished": "Finished Tournaments"
+                "finished": "Finished Tournaments",
+                "live": "Live",
+                "upcoming": "Upcoming"
             },
             "no_recent": "You don't have any recent tournaments.",
             "no_finished": "No finished tournaments found."

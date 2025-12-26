@@ -17,77 +17,35 @@
       </template>
     </PageHeading>
 
-    <div
-      v-if="activeTournaments && activeTournaments.length > 0"
-      class="space-y-4"
-    >
-      <TournamentTableRow
-        v-for="tournament in activeTournaments"
-        :key="tournament.id"
-        :tournament="tournament"
-      ></TournamentTableRow>
-    </div>
-
     <Card class="p-4">
-      <Tabs default-value="other">
-        <TabsList>
-          <TabsTrigger value="other">{{
-            $t("pages.tournaments.tabs.tournaments")
-          }}</TabsTrigger>
-          <TabsTrigger v-if="me" value="my">{{
-            $t("pages.tournaments.tabs.my_recent")
-          }}</TabsTrigger>
-        </TabsList>
+      <div
+        v-if="!tournaments || tournaments.length === 0"
+        class="text-center py-8"
+      >
+        <p class="text-muted-foreground">
+          {{ $t("tournament.table.no_tournaments_found") }}
+        </p>
+      </div>
+      <div v-else class="space-y-4">
+        <TournamentTableRow
+          v-for="tournament in tournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+        ></TournamentTableRow>
+      </div>
 
-        <TabsContent value="other">
-          <div
-            v-if="!tournaments || tournaments.length === 0"
-            class="text-center py-8"
-          >
-            <p class="text-muted-foreground">
-              {{ $t("tournament.table.no_tournaments_found") }}
-            </p>
-          </div>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in tournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
-
-          <Teleport defer to="#pagination">
-            <pagination
-              :page="page"
-              :items-per-page="perPage"
-              @page="
-                (_page: number) => {
-                  page = _page;
-                }
-              "
-              :total="tournaments_aggregate?.aggregate?.count"
-            ></pagination>
-          </Teleport>
-        </TabsContent>
-
-        <TabsContent value="my">
-          <div
-            v-if="!myRecentTournaments || myRecentTournaments.length === 0"
-            class="text-center py-8"
-          >
-            <p class="text-muted-foreground">
-              {{ $t("pages.tournaments.no_recent") }}
-            </p>
-          </div>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in myRecentTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
-        </TabsContent>
-      </Tabs>
+      <Teleport defer to="#pagination">
+        <pagination
+          :page="page"
+          :items-per-page="perPage"
+          @page="
+            (_page: number) => {
+              page = _page;
+            }
+          "
+          :total="tournaments_aggregate?.aggregate?.count"
+        ></pagination>
+      </Teleport>
     </Card>
 
     <div id="pagination"></div>
@@ -119,92 +77,12 @@ export default {
     return {
       page: 1,
       perPage: 10,
-      activeTournaments: [],
       tournaments: [],
       tournaments_aggregate: undefined,
-      myRecentTournaments: [],
     };
   },
   apollo: {
     $subscribe: {
-      activeTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              where: {
-                status: {
-                  _in: $("statuses", "[e_tournament_status_enum]"),
-                },
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.asc,
-                },
-              ],
-            },
-            {
-              id: true,
-              name: true,
-              start: true,
-              description: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: {
-                type: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
-          ],
-        }),
-        variables: function () {
-          return {
-            statuses: [
-              e_tournament_status_enum.Live,
-              e_tournament_status_enum.RegistrationOpen,
-            ],
-          };
-        },
-        result: function ({ data }: { data: any }) {
-          this.activeTournaments = data.tournaments;
-        },
-      },
       tournaments: {
         query: typedGql("subscription")({
           tournaments: [
@@ -217,6 +95,11 @@ export default {
                   start: order_by.desc,
                 },
               ],
+              where: {
+                status: {
+                  _in: $("statuses", "[e_tournament_status_enum]"),
+                }
+              }
             },
             {
               id: true,
@@ -271,7 +154,12 @@ export default {
         variables: function () {
           return {
             limit: this.perPage,
-            offset: (this.page - 1) * this.perPage,
+            offset: (this.page - 1) * this.perPage, 
+            statuses: [
+              e_tournament_status_enum.Live,
+              e_tournament_status_enum.RegistrationOpen,
+              e_tournament_status_enum.RegistrationClosed,
+            ],
           };
         },
         result: function ({ data }: { data: any }) {
@@ -281,7 +169,13 @@ export default {
       tournaments_aggregate: {
         query: typedGql("subscription")({
           tournaments_aggregate: [
-            {},
+            {
+              where: {
+                status: {
+                  _in: $("statuses", "[e_tournament_status_enum]"),
+                },
+              },
+            },
             {
               aggregate: {
                 count: true,
@@ -289,97 +183,17 @@ export default {
             },
           ],
         }),
-        result: function ({ data }: { data: any }) {
-          this.tournaments_aggregate = data.tournaments_aggregate;
-        },
-      },
-      myRecentTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              limit: 10,
-              where: {
-                status: {
-                  _in: $("statuses", "[e_tournament_status_enum]"),
-                },
-                rosters: {
-                  player_steam_id: {
-                    _eq: $("steam_id", "bigint"),
-                  },
-                },
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.desc,
-                },
-              ],
-            },
-            {
-              id: true,
-              name: true,
-              start: true,
-              description: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: {
-                type: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
-          ],
-        }),
         variables: function () {
           return {
-            steam_id: useAuthStore().me?.steam_id,
             statuses: [
-              e_tournament_status_enum.Cancelled,
-              e_tournament_status_enum.CancelledMinTeams,
-              e_tournament_status_enum.Finished,
+              e_tournament_status_enum.Live,
+              e_tournament_status_enum.RegistrationOpen,
+              e_tournament_status_enum.RegistrationClosed,
             ],
           };
         },
-        skip: function () {
-          return !useAuthStore().me?.steam_id;
-        },
         result: function ({ data }: { data: any }) {
-          this.myRecentTournaments = data.tournaments;
+          this.tournaments_aggregate = data.tournaments_aggregate;
         },
       },
     },

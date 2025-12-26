@@ -221,6 +221,28 @@ import Logout from "./Logout.vue";
               </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <SidebarMenuItem
+            v-if="isTournamentOrganizer || isAdmin"
+            :tooltip="$t('layouts.app_nav.tooltips.manage_tournaments')"
+          >
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.manage_tournaments')"
+            >
+              <NuxtLink
+                :to="{ name: 'tournaments-manage' }"
+                :class="{
+                  'router-link-active': isRouteActive('tournaments-manage'),
+                }"
+              >
+                <TournamentBracket />
+                {{ $t("layouts.app_nav.administration.manage_tournaments") }}
+                <Badge size="sm" v-if="managingTournamentsCount > 0">
+                  {{ managingTournamentsCount }}
+                </Badge>
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <template v-if="isAdmin">
             <SidebarMenuItem
               :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
@@ -622,6 +644,9 @@ export default {
     },
     managingMatchesCount() {
       return useMatchLobbyStore().managingMatchesCount;
+    },
+    managingTournamentsCount() {
+      return useMatchLobbyStore().managingTournamentsCount;
     },
     liveMatchesCount() {
       return useMatchLobbyStore().liveMatchesCount;

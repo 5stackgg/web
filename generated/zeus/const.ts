@@ -4090,7 +4090,7 @@ export const AllTypesProps: Record<string,any> = {
 		best_of:"Int_comparison_exp",
 		check_in_setting:"e_check_in_settings_enum_comparison_exp",
 		coaches:"Boolean_comparison_exp",
-		default_skins:"Boolean_comparison_exp",
+		default_models:"Boolean_comparison_exp",
 		has_active_matches:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
@@ -4144,7 +4144,7 @@ export const AllTypesProps: Record<string,any> = {
 		best_of:"order_by",
 		check_in_setting:"order_by",
 		coaches:"order_by",
-		default_skins:"order_by",
+		default_models:"order_by",
 		has_active_matches:"order_by",
 		id:"order_by",
 		invite_code:"order_by",
@@ -8641,10 +8641,39 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		round:"order_by"
 	},
+	player_sanctions_aggregate_bool_exp:{
+		count:"player_sanctions_aggregate_bool_exp_count"
+	},
+	player_sanctions_aggregate_bool_exp_count:{
+		arguments:"player_sanctions_select_column",
+		filter:"player_sanctions_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	player_sanctions_aggregate_fields:{
 		count:{
 			columns:"player_sanctions_select_column"
 		}
+	},
+	player_sanctions_aggregate_order_by:{
+		avg:"player_sanctions_avg_order_by",
+		count:"order_by",
+		max:"player_sanctions_max_order_by",
+		min:"player_sanctions_min_order_by",
+		stddev:"player_sanctions_stddev_order_by",
+		stddev_pop:"player_sanctions_stddev_pop_order_by",
+		stddev_samp:"player_sanctions_stddev_samp_order_by",
+		sum:"player_sanctions_sum_order_by",
+		var_pop:"player_sanctions_var_pop_order_by",
+		var_samp:"player_sanctions_var_samp_order_by",
+		variance:"player_sanctions_variance_order_by"
+	},
+	player_sanctions_arr_rel_insert_input:{
+		data:"player_sanctions_insert_input",
+		on_conflict:"player_sanctions_on_conflict"
+	},
+	player_sanctions_avg_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
 	},
 	player_sanctions_bool_exp:{
 		_and:"player_sanctions_bool_exp",
@@ -8677,6 +8706,22 @@ export const AllTypesProps: Record<string,any> = {
 		sanctioned_by_steam_id:"bigint",
 		type:"e_sanction_types_enum"
 	},
+	player_sanctions_max_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		player_steam_id:"order_by",
+		reason:"order_by",
+		remove_sanction_date:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
+	player_sanctions_min_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		player_steam_id:"order_by",
+		reason:"order_by",
+		remove_sanction_date:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
 	player_sanctions_on_conflict:{
 		constraint:"player_sanctions_constraint",
 		update_columns:"player_sanctions_update_column",
@@ -8707,6 +8752,18 @@ export const AllTypesProps: Record<string,any> = {
 		sanctioned_by_steam_id:"bigint",
 		type:"e_sanction_types_enum"
 	},
+	player_sanctions_stddev_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
+	player_sanctions_stddev_pop_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
+	player_sanctions_stddev_samp_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
 	player_sanctions_stream_cursor_input:{
 		initial_value:"player_sanctions_stream_cursor_value_input",
 		ordering:"cursor_ordering"
@@ -8719,11 +8776,27 @@ export const AllTypesProps: Record<string,any> = {
 		sanctioned_by_steam_id:"bigint",
 		type:"e_sanction_types_enum"
 	},
+	player_sanctions_sum_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
 	player_sanctions_update_column: "enum" as const,
 	player_sanctions_updates:{
 		_inc:"player_sanctions_inc_input",
 		_set:"player_sanctions_set_input",
 		where:"player_sanctions_bool_exp"
+	},
+	player_sanctions_var_pop_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
+	player_sanctions_var_samp_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
+	},
+	player_sanctions_variance_order_by:{
+		player_steam_id:"order_by",
+		sanctioned_by_steam_id:"order_by"
 	},
 	player_unused_utility_aggregate_bool_exp:{
 		count:"player_unused_utility_aggregate_bool_exp_count"
@@ -9248,6 +9321,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_unused_utility_order_by",
 			where:"player_unused_utility_bool_exp"
 		},
+		sanctions:{
+			distinct_on:"player_sanctions_select_column",
+			order_by:"player_sanctions_order_by",
+			where:"player_sanctions_bool_exp"
+		},
+		sanctions_aggregate:{
+			distinct_on:"player_sanctions_select_column",
+			order_by:"player_sanctions_order_by",
+			where:"player_sanctions_bool_exp"
+		},
 		team_invites:{
 			distinct_on:"team_invites_select_column",
 			order_by:"team_invites_order_by",
@@ -9383,6 +9466,8 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
 		profile_url:"String_comparison_exp",
 		role:"e_player_roles_enum_comparison_exp",
+		sanctions:"player_sanctions_bool_exp",
+		sanctions_aggregate:"player_sanctions_aggregate_bool_exp",
 		steam_id:"bigint_comparison_exp",
 		team_invites:"team_invites_bool_exp",
 		team_invites_aggregate:"team_invites_aggregate_bool_exp",
@@ -9428,6 +9513,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_lineup:"match_lineup_players_arr_rel_insert_input",
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		role:"e_player_roles_enum",
+		sanctions:"player_sanctions_arr_rel_insert_input",
 		steam_id:"bigint",
 		team_invites:"team_invites_arr_rel_insert_input",
 		team_members:"team_roster_arr_rel_insert_input",
@@ -9486,6 +9572,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_order_by",
 		profile_url:"order_by",
 		role:"order_by",
+		sanctions_aggregate:"player_sanctions_aggregate_order_by",
 		steam_id:"order_by",
 		team_invites_aggregate:"team_invites_aggregate_order_by",
 		team_members_aggregate:"team_roster_aggregate_order_by",
@@ -12811,6 +12898,7 @@ export const AllTypesProps: Record<string,any> = {
 		name:"String_comparison_exp",
 		owner:"players_bool_exp",
 		owner_steam_id:"bigint_comparison_exp",
+		role:"String_comparison_exp",
 		roster:"team_roster_bool_exp",
 		roster_aggregate:"team_roster_aggregate_bool_exp",
 		short_name:"String_comparison_exp",
@@ -12862,6 +12950,7 @@ export const AllTypesProps: Record<string,any> = {
 		name:"order_by",
 		owner:"players_order_by",
 		owner_steam_id:"order_by",
+		role:"order_by",
 		roster_aggregate:"team_roster_aggregate_order_by",
 		short_name:"order_by",
 		tournament_teams_aggregate:"tournament_teams_aggregate_order_by"
@@ -14060,6 +14149,8 @@ export const AllTypesProps: Record<string,any> = {
 		can_close_registration:"Boolean_comparison_exp",
 		can_join:"Boolean_comparison_exp",
 		can_open_registration:"Boolean_comparison_exp",
+		can_start:"Boolean_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
 		description:"String_comparison_exp",
 		e_tournament_status:"e_tournament_status_bool_exp",
 		has_min_teams:"Boolean_comparison_exp",
@@ -14088,6 +14179,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournaments_insert_input:{
 		admin:"players_obj_rel_insert_input",
+		created_at:"timestamptz",
 		e_tournament_status:"e_tournament_status_obj_rel_insert_input",
 		id:"uuid",
 		match_options_id:"uuid",
@@ -14101,6 +14193,7 @@ export const AllTypesProps: Record<string,any> = {
 		teams:"tournament_teams_arr_rel_insert_input"
 	},
 	tournaments_max_order_by:{
+		created_at:"order_by",
 		description:"order_by",
 		id:"order_by",
 		match_options_id:"order_by",
@@ -14109,6 +14202,7 @@ export const AllTypesProps: Record<string,any> = {
 		start:"order_by"
 	},
 	tournaments_min_order_by:{
+		created_at:"order_by",
 		description:"order_by",
 		id:"order_by",
 		match_options_id:"order_by",
@@ -14131,6 +14225,8 @@ export const AllTypesProps: Record<string,any> = {
 		can_close_registration:"order_by",
 		can_join:"order_by",
 		can_open_registration:"order_by",
+		can_start:"order_by",
+		created_at:"order_by",
 		description:"order_by",
 		e_tournament_status:"e_tournament_status_order_by",
 		has_min_teams:"order_by",
@@ -14154,6 +14250,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournaments_select_column: "enum" as const,
 	tournaments_set_input:{
+		created_at:"timestamptz",
 		id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
@@ -14174,6 +14271,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	tournaments_stream_cursor_value_input:{
+		created_at:"timestamptz",
 		id:"uuid",
 		match_options_id:"uuid",
 		organizer_steam_id:"bigint",
@@ -17126,7 +17224,7 @@ export const ReturnTypes: Record<string,any> = {
 		best_of:"Int",
 		check_in_setting:"e_check_in_settings_enum",
 		coaches:"Boolean",
-		default_skins:"Boolean",
+		default_models:"Boolean",
 		has_active_matches:"Boolean",
 		id:"uuid",
 		invite_code:"String",
@@ -19319,6 +19417,8 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
 		profile_url:"String",
 		role:"e_player_roles_enum",
+		sanctions:"player_sanctions",
+		sanctions_aggregate:"player_sanctions_aggregate",
 		steam_id:"bigint",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
@@ -20462,6 +20562,7 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		owner:"players",
 		owner_steam_id:"bigint",
+		role:"String",
 		roster:"team_roster",
 		roster_aggregate:"team_roster_aggregate",
 		short_name:"String",
@@ -20492,12 +20593,14 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",
+		role:"String",
 		short_name:"String"
 	},
 	teams_min_fields:{
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",
+		role:"String",
 		short_name:"String"
 	},
 	teams_mutation_response:{
@@ -21060,6 +21163,8 @@ export const ReturnTypes: Record<string,any> = {
 		can_close_registration:"Boolean",
 		can_join:"Boolean",
 		can_open_registration:"Boolean",
+		can_start:"Boolean",
+		created_at:"timestamptz",
 		description:"String",
 		e_tournament_status:"e_tournament_status",
 		has_min_teams:"Boolean",
@@ -21105,6 +21210,7 @@ export const ReturnTypes: Record<string,any> = {
 		organizer_steam_id:"Float"
 	},
 	tournaments_max_fields:{
+		created_at:"timestamptz",
 		description:"String",
 		id:"uuid",
 		match_options_id:"uuid",
@@ -21115,6 +21221,7 @@ export const ReturnTypes: Record<string,any> = {
 		start:"timestamptz"
 	},
 	tournaments_min_fields:{
+		created_at:"timestamptz",
 		description:"String",
 		id:"uuid",
 		match_options_id:"uuid",

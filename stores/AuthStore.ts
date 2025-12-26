@@ -68,6 +68,14 @@ export const useAuthStore = defineStore("auth", () => {
             ) {
               useMatchLobbyStore().subscribeToManagingMatches();
             }
+
+            if (
+              useAuthStore().isRoleAbove(
+                e_player_roles_enum.tournament_organizer,
+              )
+            ) {
+              useMatchLobbyStore().subscribeToManagingTournaments();
+            }
           }
 
           callback();

@@ -3,6 +3,9 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
@@ -218,41 +221,79 @@ const { isMobile } = useSidebar();
     </div>
 
     <Card class="p-4">
-      <CardHeader>
-        <CardTitle class="text-xl font-bold">
-          {{ $t("pages.players.detail.matches") }}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <MatchesTable
-          :player="player"
-          :matches="playerWithMatches?.matches"
-          v-if="playerWithMatches?.matches"
-        ></MatchesTable>
-      </CardContent>
-    </Card>
+      <Tabs default-value="matches">
+        <TabsList>
+          <TabsTrigger value="matches">{{
+            $t("pages.players.detail.matches")
+          }}</TabsTrigger>
+          <TabsTrigger value="tournaments">{{
+            $t("pages.players.detail.tournaments")
+          }}</TabsTrigger>
+        </TabsList>
 
-    <Pagination
-      :page="page"
-      :per-page="perPage"
-      @page="
-        (_page) => {
-          page = _page;
-        }
-      "
-      :total="playerWithMatchesAggregate.total_matches"
-      v-if="playerWithMatchesAggregate"
-    ></Pagination>
+        <TabsContent value="matches">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold">
+              {{ $t("pages.players.detail.matches") }}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MatchesTable
+              :player="player"
+              :matches="playerWithMatches?.matches"
+              v-if="playerWithMatches?.matches"
+            ></MatchesTable>
+          </CardContent>
+          <Pagination
+            :page="page"
+            :per-page="perPage"
+            @page="
+              (_page) => {
+                page = _page;
+              }
+            "
+            :total="playerWithMatchesAggregate.total_matches"
+            v-if="playerWithMatchesAggregate"
+          ></Pagination>
+        </TabsContent>
+
+        <TabsContent value="tournaments">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold">
+              {{ $t("pages.players.detail.tournaments") }}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div
+              v-if="!playerTournaments || playerTournaments.length === 0"
+              class="text-center py-8"
+            >
+              <p class="text-muted-foreground">
+                {{ $t("pages.players.detail.no_tournaments") }}
+              </p>
+            </div>
+            <div v-else class="space-y-4">
+              <TournamentTableRow
+                v-for="tournament in playerTournaments"
+                :key="tournament.id"
+                :tournament="tournament"
+              ></TournamentTableRow>
+            </div>
+          </CardContent>
+        </TabsContent>
+      </Tabs>
+    </Card>
   </div>
 </template>
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by } from "~/generated/zeus";
+import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
 import { eloFields } from "~/graphql/eloFields";
+import { mapFields } from "~/graphql/mapGraphql";
 
 export default {
   apollo: {
@@ -353,6 +394,87 @@ export default {
           this.player = data.players_by_pk;
         },
       },
+      playerTournaments: {
+        query: typedGql("subscription")({
+          tournaments: [
+            {
+              limit: 10,
+              where: {
+                rosters: {
+                  player_steam_id: {
+                    _eq: $("steam_id", "bigint"),
+                  },
+                },
+              },
+              order_by: [
+                {},
+                {
+                  start: order_by.desc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              start: true,
+              description: true,
+              e_tournament_status: {
+                description: true,
+              },
+              options: {
+                type: true,
+                map_pool: [
+                  {},
+                  {
+                    id: true,
+                    type: true,
+                    e_type: {
+                      description: true,
+                    },
+                    maps: [{}, mapFields],
+                  },
+                ],
+              },
+              stages: [
+                {
+                  order_by: [
+                    {
+                      order: order_by.asc,
+                    },
+                  ],
+                },
+                {
+                  id: true,
+                  type: true,
+                  e_tournament_stage_type: {
+                    description: true,
+                  },
+                  order: true,
+                },
+              ],
+              teams_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            steam_id: this.playerId,
+          };
+        },
+        skip: function () {
+          return !this.playerId;
+        },
+        result: function ({ data }: { data: any }) {
+          this.playerTournaments = data.tournaments || [];
+        },
+      },
     },
     playerWithMatches: {
       fetchPolicy: "network-only",
@@ -430,6 +552,7 @@ export default {
       player: undefined,
       page: 1,
       perPage: 10,
+      playerTournaments: [],
     };
   },
   computed: {

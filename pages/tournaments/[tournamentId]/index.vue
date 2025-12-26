@@ -616,6 +616,20 @@ export default {
                   groups: true,
                   min_teams: true,
                   max_teams: true,
+                  results: [
+                    {},
+                    {
+                      wins: true,
+                      losses: true,
+                      rounds_won: true,
+                      rounds_lost: true,
+                      matches_played: true,
+                      matches_remaining: true,
+                      team: {
+                        name: true,
+                      },
+                    },
+                  ],
                   brackets: [
                     {
                       order_by: [

@@ -1,10 +1,18 @@
+import { e_tournament_stage_types_enum } from "~/generated/zeus";
+
 export function getRoundLabel(
   roundNumber: number,
   stage: number,
   isFinalStage: boolean = false,
   totalMathcdesInRound: number,
   isLoserBracket: boolean = false,
+  stageType?: string | null,
 ): string {
+  // For round robin, just show the round number
+  if (stageType === e_tournament_stage_types_enum.RoundRobin) {
+    return `Round ${roundNumber}`;
+  }
+
   if (stage === 1 && roundNumber === 1 && !isLoserBracket) {
     return "Opening Round";
   }

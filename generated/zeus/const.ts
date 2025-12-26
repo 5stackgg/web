@@ -10736,6 +10736,26 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_pool_maps_select_column",
 			order_by:"v_pool_maps_order_by",
 			where:"v_pool_maps_bool_exp"
+		},
+		v_team_stage_results:{
+			distinct_on:"v_team_stage_results_select_column",
+			order_by:"v_team_stage_results_order_by",
+			where:"v_team_stage_results_bool_exp"
+		},
+		v_team_stage_results_aggregate:{
+			distinct_on:"v_team_stage_results_select_column",
+			order_by:"v_team_stage_results_order_by",
+			where:"v_team_stage_results_bool_exp"
+		},
+		v_team_tournament_results:{
+			distinct_on:"v_team_tournament_results_select_column",
+			order_by:"v_team_tournament_results_order_by",
+			where:"v_team_tournament_results_bool_exp"
+		},
+		v_team_tournament_results_aggregate:{
+			distinct_on:"v_team_tournament_results_select_column",
+			order_by:"v_team_tournament_results_order_by",
+			where:"v_team_tournament_results_bool_exp"
 		}
 	},
 	server_regions:{
@@ -12512,6 +12532,34 @@ export const AllTypesProps: Record<string,any> = {
 		v_pool_maps_stream:{
 			cursor:"v_pool_maps_stream_cursor_input",
 			where:"v_pool_maps_bool_exp"
+		},
+		v_team_stage_results:{
+			distinct_on:"v_team_stage_results_select_column",
+			order_by:"v_team_stage_results_order_by",
+			where:"v_team_stage_results_bool_exp"
+		},
+		v_team_stage_results_aggregate:{
+			distinct_on:"v_team_stage_results_select_column",
+			order_by:"v_team_stage_results_order_by",
+			where:"v_team_stage_results_bool_exp"
+		},
+		v_team_stage_results_stream:{
+			cursor:"v_team_stage_results_stream_cursor_input",
+			where:"v_team_stage_results_bool_exp"
+		},
+		v_team_tournament_results:{
+			distinct_on:"v_team_tournament_results_select_column",
+			order_by:"v_team_tournament_results_order_by",
+			where:"v_team_tournament_results_bool_exp"
+		},
+		v_team_tournament_results_aggregate:{
+			distinct_on:"v_team_tournament_results_select_column",
+			order_by:"v_team_tournament_results_order_by",
+			where:"v_team_tournament_results_bool_exp"
+		},
+		v_team_tournament_results_stream:{
+			cursor:"v_team_tournament_results_stream_cursor_input",
+			where:"v_team_tournament_results_bool_exp"
 		}
 	},
 	team_invites_aggregate_bool_exp:{
@@ -13392,6 +13440,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"tournament_brackets_order_by",
 			where:"tournament_brackets_bool_exp"
 		},
+		results:{
+			distinct_on:"v_team_stage_results_select_column",
+			order_by:"v_team_stage_results_order_by",
+			where:"v_team_stage_results_bool_exp"
+		},
+		results_aggregate:{
+			distinct_on:"v_team_stage_results_select_column",
+			order_by:"v_team_stage_results_order_by",
+			where:"v_team_stage_results_bool_exp"
+		},
 		settings:{
 
 		}
@@ -13447,6 +13505,8 @@ export const AllTypesProps: Record<string,any> = {
 		max_teams:"Int_comparison_exp",
 		min_teams:"Int_comparison_exp",
 		order:"Int_comparison_exp",
+		results:"v_team_stage_results_bool_exp",
+		results_aggregate:"v_team_stage_results_aggregate_bool_exp",
 		settings:"jsonb_comparison_exp",
 		tournament:"tournaments_bool_exp",
 		tournament_id:"uuid_comparison_exp",
@@ -13469,6 +13529,7 @@ export const AllTypesProps: Record<string,any> = {
 		brackets:"tournament_brackets_arr_rel_insert_input",
 		e_tournament_stage_type:"e_tournament_stage_types_obj_rel_insert_input",
 		id:"uuid",
+		results:"v_team_stage_results_arr_rel_insert_input",
 		settings:"jsonb",
 		tournament:"tournaments_obj_rel_insert_input",
 		tournament_id:"uuid",
@@ -13507,6 +13568,7 @@ export const AllTypesProps: Record<string,any> = {
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
+		results_aggregate:"v_team_stage_results_aggregate_order_by",
 		settings:"order_by",
 		tournament:"tournaments_order_by",
 		tournament_id:"order_by",
@@ -13937,6 +13999,7 @@ export const AllTypesProps: Record<string,any> = {
 		invites_aggregate:"tournament_team_invites_aggregate_bool_exp",
 		name:"String_comparison_exp",
 		owner_steam_id:"bigint_comparison_exp",
+		results:"v_team_stage_results_bool_exp",
 		roster:"tournament_team_roster_bool_exp",
 		roster_aggregate:"tournament_team_roster_aggregate_bool_exp",
 		seed:"Int_comparison_exp",
@@ -13956,6 +14019,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		invites:"tournament_team_invites_arr_rel_insert_input",
 		owner_steam_id:"bigint",
+		results:"v_team_stage_results_obj_rel_insert_input",
 		roster:"tournament_team_roster_arr_rel_insert_input",
 		team:"teams_obj_rel_insert_input",
 		team_id:"uuid",
@@ -14000,6 +14064,7 @@ export const AllTypesProps: Record<string,any> = {
 		invites_aggregate:"tournament_team_invites_aggregate_order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
+		results:"v_team_stage_results_order_by",
 		roster_aggregate:"tournament_team_roster_aggregate_order_by",
 		seed:"order_by",
 		team:"teams_order_by",
@@ -14075,6 +14140,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"tournament_organizers_select_column",
 			order_by:"tournament_organizers_order_by",
 			where:"tournament_organizers_bool_exp"
+		},
+		results:{
+			distinct_on:"v_team_tournament_results_select_column",
+			order_by:"v_team_tournament_results_order_by",
+			where:"v_team_tournament_results_bool_exp"
+		},
+		results_aggregate:{
+			distinct_on:"v_team_tournament_results_select_column",
+			order_by:"v_team_tournament_results_order_by",
+			where:"v_team_tournament_results_bool_exp"
 		},
 		rosters:{
 			distinct_on:"tournament_team_roster_select_column",
@@ -14164,6 +14239,8 @@ export const AllTypesProps: Record<string,any> = {
 		organizer_steam_id:"bigint_comparison_exp",
 		organizers:"tournament_organizers_bool_exp",
 		organizers_aggregate:"tournament_organizers_aggregate_bool_exp",
+		results:"v_team_tournament_results_bool_exp",
+		results_aggregate:"v_team_tournament_results_aggregate_bool_exp",
 		rosters:"tournament_team_roster_bool_exp",
 		rosters_aggregate:"tournament_team_roster_aggregate_bool_exp",
 		stages:"tournament_stages_bool_exp",
@@ -14186,6 +14263,7 @@ export const AllTypesProps: Record<string,any> = {
 		options:"match_options_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
 		organizers:"tournament_organizers_arr_rel_insert_input",
+		results:"v_team_tournament_results_arr_rel_insert_input",
 		rosters:"tournament_team_roster_arr_rel_insert_input",
 		stages:"tournament_stages_arr_rel_insert_input",
 		start:"timestamptz",
@@ -14239,6 +14317,7 @@ export const AllTypesProps: Record<string,any> = {
 		options:"match_options_order_by",
 		organizer_steam_id:"order_by",
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
+		results_aggregate:"v_team_tournament_results_aggregate_order_by",
 		rosters_aggregate:"tournament_team_roster_aggregate_order_by",
 		stages_aggregate:"tournament_stages_aggregate_order_by",
 		start:"order_by",
@@ -15139,6 +15218,319 @@ export const AllTypesProps: Record<string,any> = {
 	v_pool_maps_updates:{
 		_set:"v_pool_maps_set_input",
 		where:"v_pool_maps_bool_exp"
+	},
+	v_team_stage_results_aggregate_bool_exp:{
+		count:"v_team_stage_results_aggregate_bool_exp_count"
+	},
+	v_team_stage_results_aggregate_bool_exp_count:{
+		arguments:"v_team_stage_results_select_column",
+		filter:"v_team_stage_results_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	v_team_stage_results_aggregate_fields:{
+		count:{
+			columns:"v_team_stage_results_select_column"
+		}
+	},
+	v_team_stage_results_aggregate_order_by:{
+		avg:"v_team_stage_results_avg_order_by",
+		count:"order_by",
+		max:"v_team_stage_results_max_order_by",
+		min:"v_team_stage_results_min_order_by",
+		stddev:"v_team_stage_results_stddev_order_by",
+		stddev_pop:"v_team_stage_results_stddev_pop_order_by",
+		stddev_samp:"v_team_stage_results_stddev_samp_order_by",
+		sum:"v_team_stage_results_sum_order_by",
+		var_pop:"v_team_stage_results_var_pop_order_by",
+		var_samp:"v_team_stage_results_var_samp_order_by",
+		variance:"v_team_stage_results_variance_order_by"
+	},
+	v_team_stage_results_arr_rel_insert_input:{
+		data:"v_team_stage_results_insert_input"
+	},
+	v_team_stage_results_avg_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_bool_exp:{
+		_and:"v_team_stage_results_bool_exp",
+		_not:"v_team_stage_results_bool_exp",
+		_or:"v_team_stage_results_bool_exp",
+		losses:"Int_comparison_exp",
+		matches_played:"Int_comparison_exp",
+		matches_remaining:"Int_comparison_exp",
+		rounds_lost:"Int_comparison_exp",
+		rounds_won:"Int_comparison_exp",
+		stage:"tournament_stages_bool_exp",
+		team:"tournament_teams_bool_exp",
+		tournament_stage_id:"uuid_comparison_exp",
+		tournament_team_id:"uuid_comparison_exp",
+		wins:"Int_comparison_exp"
+	},
+	v_team_stage_results_insert_input:{
+		stage:"tournament_stages_obj_rel_insert_input",
+		team:"tournament_teams_obj_rel_insert_input",
+		tournament_stage_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	v_team_stage_results_max_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		tournament_stage_id:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_min_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		tournament_stage_id:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_obj_rel_insert_input:{
+		data:"v_team_stage_results_insert_input"
+	},
+	v_team_stage_results_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		stage:"tournament_stages_order_by",
+		team:"tournament_teams_order_by",
+		tournament_stage_id:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_select_column: "enum" as const,
+	v_team_stage_results_stddev_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_stddev_pop_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_stddev_samp_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_stream_cursor_input:{
+		initial_value:"v_team_stage_results_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_team_stage_results_stream_cursor_value_input:{
+		tournament_stage_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	v_team_stage_results_sum_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_var_pop_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_var_samp_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_stage_results_variance_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_aggregate_bool_exp:{
+		count:"v_team_tournament_results_aggregate_bool_exp_count"
+	},
+	v_team_tournament_results_aggregate_bool_exp_count:{
+		arguments:"v_team_tournament_results_select_column",
+		filter:"v_team_tournament_results_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	v_team_tournament_results_aggregate_fields:{
+		count:{
+			columns:"v_team_tournament_results_select_column"
+		}
+	},
+	v_team_tournament_results_aggregate_order_by:{
+		avg:"v_team_tournament_results_avg_order_by",
+		count:"order_by",
+		max:"v_team_tournament_results_max_order_by",
+		min:"v_team_tournament_results_min_order_by",
+		stddev:"v_team_tournament_results_stddev_order_by",
+		stddev_pop:"v_team_tournament_results_stddev_pop_order_by",
+		stddev_samp:"v_team_tournament_results_stddev_samp_order_by",
+		sum:"v_team_tournament_results_sum_order_by",
+		var_pop:"v_team_tournament_results_var_pop_order_by",
+		var_samp:"v_team_tournament_results_var_samp_order_by",
+		variance:"v_team_tournament_results_variance_order_by"
+	},
+	v_team_tournament_results_arr_rel_insert_input:{
+		data:"v_team_tournament_results_insert_input"
+	},
+	v_team_tournament_results_avg_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_bool_exp:{
+		_and:"v_team_tournament_results_bool_exp",
+		_not:"v_team_tournament_results_bool_exp",
+		_or:"v_team_tournament_results_bool_exp",
+		losses:"Int_comparison_exp",
+		matches_played:"Int_comparison_exp",
+		matches_remaining:"Int_comparison_exp",
+		rounds_lost:"Int_comparison_exp",
+		rounds_won:"Int_comparison_exp",
+		team:"tournament_teams_bool_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp",
+		tournament_team_id:"uuid_comparison_exp",
+		wins:"Int_comparison_exp"
+	},
+	v_team_tournament_results_insert_input:{
+		team:"tournament_teams_obj_rel_insert_input",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	v_team_tournament_results_max_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		tournament_id:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_min_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		tournament_id:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		team:"tournament_teams_order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by",
+		tournament_team_id:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_select_column: "enum" as const,
+	v_team_tournament_results_stddev_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_stddev_pop_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_stddev_samp_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_stream_cursor_input:{
+		initial_value:"v_team_tournament_results_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_team_tournament_results_stream_cursor_value_input:{
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	v_team_tournament_results_sum_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_var_pop_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_var_samp_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
+	},
+	v_team_tournament_results_variance_order_by:{
+		losses:"order_by",
+		matches_played:"order_by",
+		matches_remaining:"order_by",
+		rounds_lost:"order_by",
+		rounds_won:"order_by",
+		wins:"order_by"
 	},
 	ID: `scalar.ID` as const
 }
@@ -19851,7 +20243,11 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_multi_kills:"v_player_multi_kills",
 		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate",
 		v_pool_maps:"v_pool_maps",
-		v_pool_maps_aggregate:"v_pool_maps_aggregate"
+		v_pool_maps_aggregate:"v_pool_maps_aggregate",
+		v_team_stage_results:"v_team_stage_results",
+		v_team_stage_results_aggregate:"v_team_stage_results_aggregate",
+		v_team_tournament_results:"v_team_tournament_results",
+		v_team_tournament_results_aggregate:"v_team_tournament_results_aggregate"
 	},
 	server_regions:{
 		available_server_count:"Int",
@@ -20408,7 +20804,13 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_multi_kills_stream:"v_player_multi_kills",
 		v_pool_maps:"v_pool_maps",
 		v_pool_maps_aggregate:"v_pool_maps_aggregate",
-		v_pool_maps_stream:"v_pool_maps"
+		v_pool_maps_stream:"v_pool_maps",
+		v_team_stage_results:"v_team_stage_results",
+		v_team_stage_results_aggregate:"v_team_stage_results_aggregate",
+		v_team_stage_results_stream:"v_team_stage_results",
+		v_team_tournament_results:"v_team_tournament_results",
+		v_team_tournament_results_aggregate:"v_team_tournament_results_aggregate",
+		v_team_tournament_results_stream:"v_team_tournament_results"
 	},
 	team_invites:{
 		created_at:"timestamptz",
@@ -20834,6 +21236,8 @@ export const ReturnTypes: Record<string,any> = {
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
+		results:"v_team_stage_results",
+		results_aggregate:"v_team_stage_results_aggregate",
 		settings:"jsonb",
 		tournament:"tournaments",
 		tournament_id:"uuid",
@@ -21076,6 +21480,7 @@ export const ReturnTypes: Record<string,any> = {
 		invites_aggregate:"tournament_team_invites_aggregate",
 		name:"String",
 		owner_steam_id:"bigint",
+		results:"v_team_stage_results",
 		roster:"tournament_team_roster",
 		roster_aggregate:"tournament_team_roster_aggregate",
 		seed:"Int",
@@ -21178,6 +21583,8 @@ export const ReturnTypes: Record<string,any> = {
 		organizer_steam_id:"bigint",
 		organizers:"tournament_organizers",
 		organizers_aggregate:"tournament_organizers_aggregate",
+		results:"v_team_tournament_results",
+		results_aggregate:"v_team_tournament_results_aggregate",
 		rosters:"tournament_team_roster",
 		rosters_aggregate:"tournament_team_roster_aggregate",
 		stages:"tournament_stages",
@@ -22042,6 +22449,232 @@ export const ReturnTypes: Record<string,any> = {
 	v_pool_maps_mutation_response:{
 		affected_rows:"Int",
 		returning:"v_pool_maps"
+	},
+	v_team_stage_results:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		stage:"tournament_stages",
+		team:"tournament_teams",
+		tournament_stage_id:"uuid",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_team_stage_results_aggregate:{
+		aggregate:"v_team_stage_results_aggregate_fields",
+		nodes:"v_team_stage_results"
+	},
+	v_team_stage_results_aggregate_fields:{
+		avg:"v_team_stage_results_avg_fields",
+		count:"Int",
+		max:"v_team_stage_results_max_fields",
+		min:"v_team_stage_results_min_fields",
+		stddev:"v_team_stage_results_stddev_fields",
+		stddev_pop:"v_team_stage_results_stddev_pop_fields",
+		stddev_samp:"v_team_stage_results_stddev_samp_fields",
+		sum:"v_team_stage_results_sum_fields",
+		var_pop:"v_team_stage_results_var_pop_fields",
+		var_samp:"v_team_stage_results_var_samp_fields",
+		variance:"v_team_stage_results_variance_fields"
+	},
+	v_team_stage_results_avg_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_stage_results_max_fields:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		tournament_stage_id:"uuid",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_team_stage_results_min_fields:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		tournament_stage_id:"uuid",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_team_stage_results_stddev_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_stage_results_stddev_pop_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_stage_results_stddev_samp_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_stage_results_sum_fields:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		wins:"Int"
+	},
+	v_team_stage_results_var_pop_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_stage_results_var_samp_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_stage_results_variance_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_tournament_results:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		team:"tournament_teams",
+		tournament:"tournaments",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_team_tournament_results_aggregate:{
+		aggregate:"v_team_tournament_results_aggregate_fields",
+		nodes:"v_team_tournament_results"
+	},
+	v_team_tournament_results_aggregate_fields:{
+		avg:"v_team_tournament_results_avg_fields",
+		count:"Int",
+		max:"v_team_tournament_results_max_fields",
+		min:"v_team_tournament_results_min_fields",
+		stddev:"v_team_tournament_results_stddev_fields",
+		stddev_pop:"v_team_tournament_results_stddev_pop_fields",
+		stddev_samp:"v_team_tournament_results_stddev_samp_fields",
+		sum:"v_team_tournament_results_sum_fields",
+		var_pop:"v_team_tournament_results_var_pop_fields",
+		var_samp:"v_team_tournament_results_var_samp_fields",
+		variance:"v_team_tournament_results_variance_fields"
+	},
+	v_team_tournament_results_avg_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_tournament_results_max_fields:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_team_tournament_results_min_fields:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid",
+		wins:"Int"
+	},
+	v_team_tournament_results_stddev_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_tournament_results_stddev_pop_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_tournament_results_stddev_samp_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_tournament_results_sum_fields:{
+		losses:"Int",
+		matches_played:"Int",
+		matches_remaining:"Int",
+		rounds_lost:"Int",
+		rounds_won:"Int",
+		wins:"Int"
+	},
+	v_team_tournament_results_var_pop_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_tournament_results_var_samp_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
+	},
+	v_team_tournament_results_variance_fields:{
+		losses:"Float",
+		matches_played:"Float",
+		matches_remaining:"Float",
+		rounds_lost:"Float",
+		rounds_won:"Float",
+		wins:"Float"
 	},
 	ID: `scalar.ID` as const
 }

@@ -33,6 +33,10 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  stageType: {
+    type: String,
+    default: null,
+  },
 });
 
 const roundLabels = computed(() => {
@@ -45,6 +49,7 @@ const roundLabels = computed(() => {
       props.isFinalStage,
       round.length,
       props.isLoserBracket,
+      props.stageType,
     );
     labels.set(roundNumber, label);
   }

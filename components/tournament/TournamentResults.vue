@@ -26,6 +26,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
               <TableHead>Team</TableHead>
               <TableHead class="text-center">Wins</TableHead>
               <TableHead class="text-center">Losses</TableHead>
+              <TableHead class="text-center">KDR</TableHead>
+              <TableHead class="text-center">Total Kills</TableHead>
+              <TableHead class="text-center">Total Deaths</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -55,9 +58,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
               <TableCell class="text-center">
                 {{ teamResult.losses }}
               </TableCell>
+              <TableCell class="text-center">
+                {{ teamResult.team_kdr || 0 }}
+              </TableCell>
+              <TableCell class="text-center">
+                {{ teamResult.total_kills || 0 }}
+              </TableCell>
+              <TableCell class="text-center">
+                {{ teamResult.total_deaths || 0 }}
+              </TableCell>
             </TableRow>
             <TableRow v-if="teamResults.length === 0">
-              <TableCell colspan="3" class="text-center text-muted-foreground">
+              <TableCell colspan="6" class="text-center text-muted-foreground">
                 No results yet
               </TableCell>
             </TableRow>

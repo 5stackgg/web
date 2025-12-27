@@ -23,11 +23,38 @@
         "tournaments": {
             "title": "Upcoming Tournaments",
             "create": "Create Tournament",
+            "open_for_registration": "Open for Registration",
             "tabs": {
                 "tournaments": "Tournaments",
-                "my_recent": "My Recent Tournaments"
+                "my_recent": "My Recent Tournaments",
+                "finished": "Finished Tournaments",
+                "live": "Live",
+                "upcoming": "Upcoming"
             },
-            "no_recent": "You don't have any recent tournaments."
+            "no_recent": "You don't have any recent tournaments.",
+            "no_finished": "No finished tournaments found."
+        },
+        "manage_tournaments": {
+            "title": "Manage Tournaments",
+            "description": "View and manage all tournaments across the platform.",
+            "filters": "Filters",
+            "reset_filters": "Reset Filters",
+            "search_by_id": "Search by Tournament ID",
+            "enter_tournament_id": "Enter tournament ID...",
+            "search_by_name": "Search by Name",
+            "enter_tournament_name": "Enter tournament name...",
+            "filter_by_status": "Filter by Status",
+            "select_statuses": "Select statuses...",
+            "clear_all": "Clear All",
+            "sort_by": "Sort by",
+            "created_at": "Created Date",
+            "start": "Start Date",
+            "newest_first": "Newest First",
+            "oldest_first": "Oldest First",
+            "only_my_tournaments": "Only My Organized Tournaments",
+            "showing": "Showing",
+            "tournaments": "tournaments",
+            "loading": "Loading..."
         },
         "teams": {
             "title": "Teams",
@@ -312,6 +339,8 @@
                 "play_a_match": "Play",
                 "teams": "Teams",
                 "matches": "Matches",
+                "tournaments": "Tournaments",
+                "no_tournaments": "No tournaments found for this player.",
                 "match_record": "Match Record",
                 "wins": "Wins",
                 "losses": "Losses",
@@ -588,7 +617,8 @@
                 "metrics": "System Metrics",
                 "app_settings": "App Settings",
                 "map_pools": "Map Pools",
-                "manage_matches": "Manage Matches"
+                "manage_matches": "Manage Matches",
+                "manage_tournaments": "Manage Tournaments"
             },
             "profile": {
                 "my_account": "My Settings",
@@ -617,7 +647,8 @@
                 "report_issue": "Report an Issue",
                 "join_discord": "Join our Discord",
                 "map_pools": "Map Pools",
-                "manage_matches": "Manage Matches"
+                "manage_matches": "Manage Matches",
+                "manage_tournaments": "Manage Tournaments"
             },
             "logout_dialog": {
                 "title": "Logout",

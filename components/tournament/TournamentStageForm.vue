@@ -243,7 +243,8 @@ export default {
 
           break;
         case e_tournament_stage_types_enum.RoundRobin:
-          // Round robin can work with any number of teams from 2 to 64
+        case "Swiss":
+          // Round robin and Swiss can work with any number of teams from 2 to 64
           for (let i = 64; i >= 2; i--) {
             options.push({
               value: i.toString(),

@@ -139,7 +139,6 @@ import {
               <TournamentStage
                 :stage="stage"
                 :is-final-stage="stageNumber === maxStageNumber"
-                :tournament="tournament"
               ></TournamentStage>
               <Separator
                 v-if="
@@ -177,7 +176,6 @@ import {
           <TournamentStage
             :stage="stage"
             :is-final-stage="true"
-            :tournament="tournament"
           ></TournamentStage>
         </div>
       </div>

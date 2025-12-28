@@ -348,13 +348,15 @@ onMounted(() => {
               </div>
             </div>
 
-            <!-- Record Pools within this round (stacked vertically, highest wins on top) -->
-            <div
-              v-for="pool in roundData.pools"
-              :key="`${roundData.round}-${pool.record}`"
-              class="flex flex-col swiss-pool mb-4"
-              :class="getBackgroundColor(pool.wins, pool.losses)"
-            >
+            <!-- Pools Container -->
+            <div class="flex flex-col swiss-pools-container">
+              <!-- Record Pools within this round (stacked vertically, highest wins on top) -->
+              <div
+                v-for="pool in roundData.pools"
+                :key="`${roundData.round}-${pool.record}`"
+                class="flex flex-col swiss-pool mb-4"
+                :class="getBackgroundColor(pool.wins, pool.losses)"
+              >
               <!-- Record Label -->
               <div class="text-center mb-3">
                 <div
@@ -415,6 +417,7 @@ onMounted(() => {
                 </div>
               </div>
             </div>
+            </div>
           </div>
         </div>
       </div>
@@ -474,6 +477,13 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.swiss-pools-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
 }
 
 .swiss-pool {

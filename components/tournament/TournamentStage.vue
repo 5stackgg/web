@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import TournamentBracketViewer from "./TournamentBracketViewer.vue";
+import RoundRobinResults from "./RoundRobinResults.vue";
 </script>
 <template>
   <!-- Loop through groups -->
@@ -9,17 +10,29 @@ import TournamentBracketViewer from "./TournamentBracketViewer.vue";
         $t("tournament.stage.group", { group: getGroupDisplay(groupNumber) })
       }}
     </h3>
+    <!-- Round Robin: Show results table above bracket -->
+    <RoundRobinResults
+      v-if="isRoundRobin"
+      :stage="stage"
+      :group-number="groupNumber"
+      :tournament="tournament"
+      class="mb-6"
+    ></RoundRobinResults>
+    <!-- Bracket Viewer (for both Round Robin and Elimination) -->
     <TournamentBracketViewer
       :stage="stage.order"
       :rounds="getRoundsForGroup(groupNumber)"
       :is-final-stage="isFinalStage"
       :is-loser-bracket="groupNumber > stage.groups"
       :total-groups="maxGroups"
+      :stage-type="stage.type"
     ></TournamentBracketViewer>
   </div>
 </template>
 
 <script lang="ts">
+import { e_tournament_stage_types_enum } from "~/generated/zeus";
+
 export default {
   props: {
     stage: {
@@ -30,8 +43,15 @@ export default {
       type: Boolean,
       required: true,
     },
+    tournament: {
+      type: Object,
+      required: false,
+    },
   },
   computed: {
+    isRoundRobin() {
+      return this.stage?.type === e_tournament_stage_types_enum.RoundRobin;
+    },
     maxGroups() {
       if (!this.stage.brackets || this.stage.brackets.length === 0) {
         return this.stage.groups || 1;

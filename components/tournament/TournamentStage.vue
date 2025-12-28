@@ -4,11 +4,8 @@ import SwissBracketViewer from "./SwissBracketViewer.vue";
 </script>
 <template>
   <!-- Swiss Format - groups represent record pools, so don't loop through them -->
-  <SwissBracketViewer
-    v-if="isSwissFormat"
-    :stage="stage"
-  ></SwissBracketViewer>
-  
+  <SwissBracketViewer v-if="isSwissFormat" :stage="stage"></SwissBracketViewer>
+
   <!-- Other Bracket Formats - loop through groups -->
   <template v-else>
     <div v-for="groupNumber in maxGroups" :key="groupNumber" class="mb-6">
@@ -43,7 +40,10 @@ export default {
   },
   computed: {
     isSwissFormat() {
-      return this.stage?.type === "Swiss" || this.stage?.e_tournament_stage_type?.value === "Swiss";
+      return (
+        this.stage?.type === "Swiss" ||
+        this.stage?.e_tournament_stage_type?.value === "Swiss"
+      );
     },
     maxGroups() {
       if (!this.stage.brackets || this.stage.brackets.length === 0) {

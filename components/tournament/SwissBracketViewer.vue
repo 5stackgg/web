@@ -20,6 +20,11 @@ interface RecordPool {
   eliminatedTeams: string[];
 }
 
+interface RoundData {
+  round: number;
+  pools: RecordPool[];
+}
+
 const props = defineProps({
   stage: {
     type: Object,
@@ -111,8 +116,10 @@ const teamRecords = computed(() => {
 
 // Parse group value to extract wins and losses
 // Groups are stored as numeric values with encoding:
-// 0 = 0-0, 1 = 1-0, 100 = 0-1, 2 = 2-0, 101 = 1-1, 200 = 0-2, 102 = 2-1, 201 = 1-2, 202 = 2-2
-// Pattern: wins * 100 + losses (when losses > 0), or just wins (when losses = 0)
+// 0 = 0-0, 1 = 0-1, 100 = 1-0, 2 = 0-2, 101 = 1-1, 200 = 2-0, 102 = 1-2, 201 = 2-1, 202 = 2-2
+// Pattern: 
+// - If < 100: losses = group, wins = 0 (e.g., 1 = 0-1, 2 = 0-2)
+// - If >= 100: wins = floor(group/100), losses = group % 100 (e.g., 100 = 1-0, 101 = 1-1, 200 = 2-0, 102 = 1-2, 201 = 2-1, 202 = 2-2)
 const parseGroupToRecord = (group: any): { wins: number; losses: number; recordKey: string } => {
   if (group === null || group === undefined) {
     return { wins: 0, losses: 0, recordKey: "0-0" };
@@ -125,11 +132,11 @@ const parseGroupToRecord = (group: any): { wins: number; losses: number; recordK
     if (groupNum === 0) {
       return { wins: 0, losses: 0, recordKey: "0-0" };
     } else if (groupNum < 100) {
-      // Numbers < 100 represent wins-0 (e.g., 1 = 1-0, 2 = 2-0)
-      return { wins: groupNum, losses: 0, recordKey: `${groupNum}-0` };
+      // Numbers < 100 represent 0-losses (e.g., 1 = 0-1, 2 = 0-2)
+      return { wins: 0, losses: groupNum, recordKey: `0-${groupNum}` };
     } else {
       // Numbers >= 100: wins * 100 + losses
-      // e.g., 100 = 0-1, 101 = 1-1, 200 = 0-2, 102 = 2-1, 201 = 1-2, 202 = 2-2
+      // e.g., 100 = 1-0, 101 = 1-1, 200 = 2-0, 102 = 1-2, 201 = 2-1, 202 = 2-2
       const wins = Math.floor(groupNum / 100);
       const losses = groupNum % 100;
       return { wins, losses, recordKey: `${wins}-${losses}` };
@@ -150,21 +157,28 @@ const parseGroupToRecord = (group: any): { wins: number; losses: number; recordK
   return { wins: 0, losses: 0, recordKey: "0-0" };
 };
 
-// Group brackets by record pools using the group field
-const recordPools = computed(() => {
-  const recordPoolsMap = new Map<string, RecordPool>();
+// Group brackets by rounds, then by record pools within each round
+const roundsData = computed(() => {
+  const roundsMap = new Map<number, Map<string, RecordPool>>();
 
   if (!props.stage?.brackets) {
-    return Array.from(recordPoolsMap.values());
+    return [];
   }
 
-  // Group brackets by their group field (which represents the record pool like "1-0", "0-1", etc.)
+  // First, group brackets by round, then by record pool
   props.stage.brackets.forEach((bracket: any) => {
+    const round = bracket.round || 1;
     const group = bracket.group;
     const { wins, losses, recordKey } = parseGroupToRecord(group);
 
-    if (!recordPoolsMap.has(recordKey)) {
-      recordPoolsMap.set(recordKey, {
+    if (!roundsMap.has(round)) {
+      roundsMap.set(round, new Map<string, RecordPool>());
+    }
+
+    const roundPools = roundsMap.get(round)!;
+
+    if (!roundPools.has(recordKey)) {
+      roundPools.set(recordKey, {
         record: recordKey,
         wins,
         losses,
@@ -174,7 +188,7 @@ const recordPools = computed(() => {
       });
     }
 
-    recordPoolsMap.get(recordKey)!.brackets.push(bracket);
+    roundPools.get(recordKey)!.brackets.push(bracket);
   });
 
   // Calculate advanced and eliminated teams based on final records
@@ -183,47 +197,63 @@ const recordPools = computed(() => {
     if (record.wins >= 3) {
       // Team advanced - find the pool where they got their 3rd win (would be 2-X record)
       const poolKey = `2-${record.losses}`;
-      const pool = recordPoolsMap.get(poolKey);
-      if (pool) {
-        // Check if this team played in this pool
-        const playedInPool = pool.brackets.some((b: any) => {
-          const tid1 = b.team_1?.id || b.team_1?.team_id || null;
-          const tid2 = b.team_2?.id || b.team_2?.team_id || null;
-          return tid1 === teamId || tid2 === teamId;
-        });
-        if (playedInPool && !pool.advancedTeams.includes(teamId)) {
-          pool.advancedTeams.push(teamId);
+      // Check all rounds for this pool
+      roundsMap.forEach((roundPools) => {
+        const pool = roundPools.get(poolKey);
+        if (pool) {
+          const playedInPool = pool.brackets.some((b: any) => {
+            const tid1 = b.team_1?.id || b.team_1?.team_id || null;
+            const tid2 = b.team_2?.id || b.team_2?.team_id || null;
+            return tid1 === teamId || tid2 === teamId;
+          });
+          if (playedInPool && !pool.advancedTeams.includes(teamId)) {
+            pool.advancedTeams.push(teamId);
+          }
         }
-      }
+      });
     }
     if (record.losses >= 3) {
       // Team eliminated - find the pool where they got their 3rd loss (would be X-2 record)
       const poolKey = `${record.wins}-2`;
-      const pool = recordPoolsMap.get(poolKey);
-      if (pool) {
-        // Check if this team played in this pool
-        const playedInPool = pool.brackets.some((b: any) => {
-          const tid1 = b.team_1?.id || b.team_1?.team_id || null;
-          const tid2 = b.team_2?.id || b.team_2?.team_id || null;
-          return tid1 === teamId || tid2 === teamId;
-        });
-        if (playedInPool && !pool.eliminatedTeams.includes(teamId)) {
-          pool.eliminatedTeams.push(teamId);
+      // Check all rounds for this pool
+      roundsMap.forEach((roundPools) => {
+        const pool = roundPools.get(poolKey);
+        if (pool) {
+          const playedInPool = pool.brackets.some((b: any) => {
+            const tid1 = b.team_1?.id || b.team_1?.team_id || null;
+            const tid2 = b.team_2?.id || b.team_2?.team_id || null;
+            return tid1 === teamId || tid2 === teamId;
+          });
+          if (playedInPool && !pool.eliminatedTeams.includes(teamId)) {
+            pool.eliminatedTeams.push(teamId);
+          }
         }
-      }
+      });
     }
   });
 
-  // Sort pools: 0-0, then 1-0/0-1, then 2-0/1-1/0-2, etc.
-  return Array.from(recordPoolsMap.values()).sort((a, b) => {
-    const totalA = a.wins + a.losses;
-    const totalB = b.wins + b.losses;
-    if (totalA !== totalB) {
-      return totalA - totalB;
-    }
-    // Same total games, sort by wins (descending)
-    return b.wins - a.wins;
+  // Convert to array of RoundData, sorting pools within each round
+  const rounds: RoundData[] = [];
+  roundsMap.forEach((roundPools, round) => {
+    // Sort pools within round: highest wins on top, then lowest losses
+    // So 2-0 > 1-1 > 0-2 (descending by wins, then ascending by losses)
+    const sortedPools = Array.from(roundPools.values()).sort((a, b) => {
+      // First sort by wins (descending) - higher wins on top
+      if (b.wins !== a.wins) {
+        return b.wins - a.wins;
+      }
+      // If same wins, sort by losses (ascending) - lower losses on top
+      return a.losses - b.losses;
+    });
+
+    rounds.push({
+      round,
+      pools: sortedPools,
+    });
   });
+
+  // Sort rounds by round number
+  return rounds.sort((a, b) => a.round - b.round);
 });
 
 // Get border color class based on record
@@ -305,70 +335,84 @@ onMounted(() => {
             </Badge>
           </div>
 
-          <!-- Record Pool Columns -->
+          <!-- Round Columns -->
           <div
-            v-for="pool in recordPools"
-            :key="pool.record"
-            class="flex flex-col swiss-column"
-            :class="getBackgroundColor(pool.wins, pool.losses)"
+            v-for="roundData in roundsData"
+            :key="roundData.round"
+            class="flex flex-col swiss-round-column"
           >
-            <!-- Record Label -->
-            <div class="text-center mb-4 sticky top-0 z-10">
-              <div
-                class="rounded-lg px-4 py-2 shadow-md font-semibold text-sm"
-                :class="[
-                  getBorderColor(pool.wins, pool.losses),
-                  'border-2',
-                  pool.wins >= 3
-                    ? 'bg-green-700 text-white'
-                    : pool.losses >= 3
-                      ? 'bg-red-700 text-white'
-                      : 'bg-gray-700 text-white',
-                ]"
-              >
-                {{ pool.record }}
+            <!-- Round Label -->
+            <div class="text-center mb-3 sticky top-0 z-10">
+              <div class="bg-gray-800 text-white rounded-lg px-5 py-2.5 shadow-lg font-bold text-sm border border-gray-600">
+                Round {{ roundData.round }}
               </div>
             </div>
 
-            <!-- Matches in this pool -->
-            <div class="flex flex-col gap-4 min-w-[200px]">
-              <TournamentMatch
-                v-for="bracket in pool.brackets"
-                :key="bracket.id"
-                :round="bracket.round || 1"
-                :brackets="[bracket]"
-              />
-            </div>
-
-            <!-- Advancement Indicator -->
+            <!-- Record Pools within this round (stacked vertically, highest wins on top) -->
             <div
-              v-if="pool.advancedTeams.length > 0"
-              class="mt-4 p-2 bg-green-600 text-white rounded text-xs font-semibold text-center"
+              v-for="pool in roundData.pools"
+              :key="`${roundData.round}-${pool.record}`"
+              class="flex flex-col swiss-pool mb-4"
+              :class="getBackgroundColor(pool.wins, pool.losses)"
             >
-              <div class="mb-1">ADVANCED</div>
-              <div class="flex flex-wrap gap-1 justify-center">
-                <span
-                  v-for="(teamId, index) in pool.advancedTeams"
-                  :key="teamId"
-                  class="bg-green-700 px-2 py-1 rounded"
+              <!-- Record Label -->
+              <div class="text-center mb-3">
+                <div
+                  class="rounded-lg px-4 py-2 shadow-md font-semibold text-sm"
+                  :class="[
+                    getBorderColor(pool.wins, pool.losses),
+                    'border-2',
+                    pool.wins >= 3
+                      ? 'bg-green-700 text-white'
+                      : pool.losses >= 3
+                        ? 'bg-red-700 text-white'
+                        : 'bg-gray-700 text-white',
+                  ]"
                 >
-                  {{ index + 1 }}
-                </span>
+                  {{ pool.record }}
+                </div>
               </div>
-            </div>
 
-            <!-- Elimination Indicator -->
-            <div
-              v-if="pool.eliminatedTeams.length > 0"
-              class="mt-4 p-2 bg-red-600 text-white rounded text-xs font-semibold text-center"
-            >
-              <div class="mb-1">ELIMINATED</div>
-              <div class="flex flex-wrap gap-1 justify-center">
-                <span
-                  v-for="teamId in pool.eliminatedTeams"
-                  :key="teamId"
-                  class="bg-red-700 w-4 h-4 rounded inline-block"
-                ></span>
+              <!-- Matches in this pool -->
+              <div class="flex flex-col gap-4 min-w-[200px]">
+                <TournamentMatch
+                  v-for="bracket in pool.brackets"
+                  :key="bracket.id"
+                  :round="bracket.round || 1"
+                  :brackets="[bracket]"
+                />
+              </div>
+
+              <!-- Advancement Indicator -->
+              <div
+                v-if="pool.advancedTeams.length > 0"
+                class="mt-4 p-2 bg-green-600 text-white rounded text-xs font-semibold text-center"
+              >
+                <div class="mb-1">ADVANCED</div>
+                <div class="flex flex-wrap gap-1 justify-center">
+                  <span
+                    v-for="(teamId, index) in pool.advancedTeams"
+                    :key="teamId"
+                    class="bg-green-700 px-2 py-1 rounded"
+                  >
+                    {{ index + 1 }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Elimination Indicator -->
+              <div
+                v-if="pool.eliminatedTeams.length > 0"
+                class="mt-4 p-2 bg-red-600 text-white rounded text-xs font-semibold text-center"
+              >
+                <div class="mb-1">ELIMINATED</div>
+                <div class="flex flex-wrap gap-1 justify-center">
+                  <span
+                    v-for="teamId in pool.eliminatedTeams"
+                    :key="teamId"
+                    class="bg-red-700 w-4 h-4 rounded inline-block"
+                  ></span>
+                </div>
               </div>
             </div>
           </div>
@@ -423,8 +467,19 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.swiss-column {
-  min-width: 250px;
+.swiss-round-column {
+  min-width: 260px;
+  max-width: 300px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.swiss-pool {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .fullscreen-bracket {

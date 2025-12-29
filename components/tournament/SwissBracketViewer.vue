@@ -334,9 +334,11 @@ onMounted(() => {
   <div class="relative" ref="bracketWrapper">
     <div
       class="tournament-bracket overflow-auto relative cursor-grab"
-      style="max-height: 80vh; min-height: 400px"
+      :class="{
+        'fixed top-0 left-0 w-screen h-screen z-[9999]': isFullscreen,
+      }"
+      :style="isFullscreen ? { background: 'var(--background)' } : {}"
       ref="bracketContainer"
-      :class="{ 'fullscreen-bracket': isFullscreen }"
     >
       <div
         class="bracket-content-wrapper"
@@ -358,7 +360,7 @@ onMounted(() => {
           <div
             v-for="roundData in roundsData"
             :key="roundData.round"
-            class="flex flex-col swiss-round-column"
+            class="flex flex-col flex-none min-w-[260px] max-w-[300px] gap-10"
           >
             <!-- Round Label -->
             <div class="text-center sticky top-0 z-10">
@@ -370,11 +372,11 @@ onMounted(() => {
             </div>
 
             <!-- Pools Container -->
-            <div class="flex flex-col swiss-pools-container">
+            <div class="flex flex-col flex-1 justify-center gap-20">
               <!-- Advanced Teams Pool (above pools for round 4+) -->
               <div
                 v-if="roundData.round >= 4"
-                class="flex flex-col swiss-status-pool bg-green-900/30 border-2 border-green-500 rounded-lg p-4"
+                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-green-900/30 border-2 border-green-500 rounded-lg p-4"
               >
                 <div class="text-center">
                   <div
@@ -398,7 +400,7 @@ onMounted(() => {
               <div
                 v-for="pool in roundData.pools"
                 :key="`${roundData.round}-${pool.record}`"
-                class="flex flex-col swiss-pool rounded-lg border-2 border-gray-500 bg-gray-800/20 p-4 shadow-lg gap-3"
+                class="flex flex-col rounded-lg border-2 border-gray-500 bg-gray-800/20 p-4 shadow-lg gap-3"
               >
                 <!-- Record Label -->
                 <div
@@ -458,7 +460,7 @@ onMounted(() => {
               <!-- Eliminated Teams Pool (below pools for round 4+) -->
               <div
                 v-if="roundData.round >= 4"
-                class="flex flex-col swiss-status-pool bg-red-900/30 border-2 border-red-500 rounded-lg p-4"
+                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-red-900/30 border-2 border-red-500 rounded-lg p-4"
               >
                 <div class="text-center">
                   <div
@@ -529,45 +531,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.swiss-round-column {
-  min-width: 260px;
-  max-width: 300px;
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-.swiss-pools-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex: 1;
-  gap: 1rem;
-}
-
-.swiss-pool {
-  display: flex;
-  flex-direction: column;
-}
-
-.swiss-status-pool {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-width: 260px;
-  max-width: 300px;
-}
-
-.fullscreen-bracket {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  background: var(--background);
-}
-</style>

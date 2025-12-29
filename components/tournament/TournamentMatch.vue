@@ -29,7 +29,10 @@ import TimeAgo from "~/components/TimeAgo.vue";
       </div>
 
       <!-- Display scheduled ETA if available -->
-      <div v-if="bracket.scheduled_eta" class="text-center mt-2 mb-3">
+      <div
+        v-if="bracket.scheduled_eta && !bracket.match"
+        class="text-center mt-2 mb-3"
+      >
         <div class="text-xs text-muted-foreground">
           {{ $t("tournament.match.scheduled_for") }}:
           <span class="text-blue-400 font-medium">

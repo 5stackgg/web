@@ -311,20 +311,26 @@ const getAdvancedTeams = (
           let matchNumber = 999; // Default to high number if not found
           for (const pool of roundData.pools) {
             for (const bracket of pool.brackets) {
-              const tid1 = bracket.team_1?.id || bracket.team_1?.team_id || null;
-              const tid2 = bracket.team_2?.id || bracket.team_2?.team_id || null;
-              if ((tid1 === teamId || tid2 === teamId) && bracket.match?.status === "Finished") {
+              const tid1 =
+                bracket.team_1?.id || bracket.team_1?.team_id || null;
+              const tid2 =
+                bracket.team_2?.id || bracket.team_2?.team_id || null;
+              if (
+                (tid1 === teamId || tid2 === teamId) &&
+                bracket.match?.status === "Finished"
+              ) {
                 // Check if this team won this match
                 const winningLineupId = bracket.match.winning_lineup_id;
                 const lineup1Id = bracket.match.lineup_1_id;
                 const lineup2Id = bracket.match.lineup_2_id;
-                
-                const teamWon = 
+
+                const teamWon =
                   (tid1 === teamId && winningLineupId === lineup1Id) ||
                   (tid2 === teamId && winningLineupId === lineup2Id);
-                
+
                 if (teamWon) {
-                  const bracketMatchNumber = bracket.match_number || bracket.match?.match_number;
+                  const bracketMatchNumber =
+                    bracket.match_number || bracket.match?.match_number;
                   if (bracketMatchNumber && bracketMatchNumber < matchNumber) {
                     matchNumber = bracketMatchNumber;
                   }
@@ -332,7 +338,7 @@ const getAdvancedTeams = (
               }
             }
           }
-          
+
           advancedTeams.push({
             teamId,
             teamName: record.teamName,
@@ -383,23 +389,27 @@ const getEliminatedTeams = (
           for (const bracket of pool.brackets) {
             const tid1 = bracket.team_1?.id || bracket.team_1?.team_id || null;
             const tid2 = bracket.team_2?.id || bracket.team_2?.team_id || null;
-            if ((tid1 === teamId || tid2 === teamId) && bracket.match?.status === "Finished") {
+            if (
+              (tid1 === teamId || tid2 === teamId) &&
+              bracket.match?.status === "Finished"
+            ) {
               // Check if this team lost this match
               const winningLineupId = bracket.match.winning_lineup_id;
               const lineup1Id = bracket.match.lineup_1_id;
               const lineup2Id = bracket.match.lineup_2_id;
-              
-              const teamLost = 
+
+              const teamLost =
                 (tid1 === teamId && winningLineupId === lineup2Id) ||
                 (tid2 === teamId && winningLineupId === lineup1Id);
-              
+
               if (teamLost) {
-                matchNumber = bracket.match_number || bracket.match?.match_number || 999;
+                matchNumber =
+                  bracket.match_number || bracket.match?.match_number || 999;
                 break;
               }
             }
           }
-          
+
           eliminatedTeams.push({
             teamId,
             teamName: record.teamName,
@@ -505,13 +515,6 @@ onMounted(() => {
         }"
       >
         <div class="flex gap-8 min-w-max p-6" ref="bracketContent">
-          <!-- Swiss Format Header -->
-          <div class="absolute top-2 left-6 z-10">
-            <Badge class="bg-yellow-500 text-black font-bold px-4 py-2 text-sm">
-              SWISS FORMAT
-            </Badge>
-          </div>
-
           <!-- Round Columns -->
           <div
             v-for="roundData in roundsData"

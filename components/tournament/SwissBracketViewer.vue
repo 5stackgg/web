@@ -278,6 +278,32 @@ const getEliminatedSlots = (round: number): number => {
   return lastPool.brackets.length;
 };
 
+// Get final advanced teams from the last round
+const getFinalAdvancedTeams = computed(() => {
+  if (roundsData.value.length === 0) return [];
+  const lastRound = roundsData.value[roundsData.value.length - 1];
+  if (!lastRound || lastRound.pools.length === 0) return [];
+  
+  const firstPool = lastRound.pools[0];
+  return firstPool.advancedTeams || [];
+});
+
+// Get final eliminated teams from the last round
+const getFinalEliminatedTeams = computed(() => {
+  if (roundsData.value.length === 0) return [];
+  const lastRound = roundsData.value[roundsData.value.length - 1];
+  if (!lastRound || lastRound.pools.length === 0) return [];
+  
+  const lastPool = lastRound.pools[lastRound.pools.length - 1];
+  return lastPool.eliminatedTeams || [];
+});
+
+// Get the maximum round number
+const maxRound = computed(() => {
+  if (roundsData.value.length === 0) return 0;
+  return Math.max(...roundsData.value.map(r => r.round));
+});
+
 // Get border color class based on record
 const getBorderColor = (wins: number, losses: number) => {
   if (wins >= 3) return "border-green-500";
@@ -473,6 +499,70 @@ onMounted(() => {
                   <div
                     v-for="index in getEliminatedSlots(roundData.round)"
                     :key="`eliminated-slot-${roundData.round}-${index}`"
+                    class="flex flex-col gap-1 bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50 border-dashed"
+                  >
+                    <div class="font-semibold text-red-300/50">—</div>
+                    <div class="text-xs text-red-200/30">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Final Results Column (shows advanced/eliminated from last round) -->
+          <div
+            v-if="roundsData.length > 0"
+            class="flex flex-col flex-none min-w-[260px] max-w-[300px] gap-10"
+          >
+            <!-- Final Results Label -->
+            <div class="text-center sticky top-0 z-10">
+              <div
+                class="bg-gray-800 text-white rounded-lg px-5 py-2.5 shadow-lg font-bold text-sm border border-gray-600"
+              >
+                Final Results
+              </div>
+            </div>
+
+            <!-- Final Results Container -->
+            <div class="flex flex-col flex-1 justify-center gap-20">
+              <!-- Final Advanced Teams Pool -->
+              <div
+                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-green-900/30 border-2 border-green-500 rounded-lg p-4"
+              >
+                <div class="text-center">
+                  <div
+                    class="bg-green-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-green-500"
+                  >
+                    ADVANCED
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 min-w-[200px]">
+                  <div
+                    v-for="index in getAdvancedSlots(maxRound + 1)"
+                    :key="`final-advanced-slot-${index}`"
+                    class="flex flex-col gap-1 bg-green-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-green-600/50 border-dashed"
+                  >
+                    <div class="font-semibold text-green-300/50">—</div>
+                    <div class="text-xs text-green-200/30">—</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Final Eliminated Teams Pool -->
+              <div
+                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-red-900/30 border-2 border-red-500 rounded-lg p-4"
+              >
+                <div class="text-center">
+                  <div
+                    class="bg-red-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-red-500"
+                  >
+                    ELIMINATED
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 min-w-[200px]">
+                  <div
+                    v-for="index in getEliminatedSlots(maxRound + 1)"
+                    :key="`final-eliminated-slot-${index}`"
                     class="flex flex-col gap-1 bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50 border-dashed"
                   >
                     <div class="font-semibold text-red-300/50">—</div>

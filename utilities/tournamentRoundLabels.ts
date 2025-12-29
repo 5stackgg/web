@@ -13,6 +13,11 @@ export function getRoundLabel(
     return `Round ${roundNumber}`;
   }
 
+  // For Swiss format, show record labels (handled in SwissBracketViewer)
+  if (stageType === "Swiss") {
+    return `Round ${roundNumber}`;
+  }
+
   if (stage === 1 && roundNumber === 1 && !isLoserBracket) {
     return "Opening Round";
   }

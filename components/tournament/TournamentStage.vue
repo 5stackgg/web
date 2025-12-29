@@ -1,38 +1,32 @@
 <script lang="ts" setup>
 import TournamentBracketViewer from "./TournamentBracketViewer.vue";
-import RoundRobinResults from "./RoundRobinResults.vue";
+import SwissBracketViewer from "./SwissBracketViewer.vue";
 </script>
 <template>
-  <!-- Loop through groups -->
-  <div v-for="groupNumber in maxGroups" :key="groupNumber" class="mb-6">
-    <h3 class="text-lg font-semibold mb-3" v-if="stage.groups > 1">
-      {{
-        $t("tournament.stage.group", { group: getGroupDisplay(groupNumber) })
-      }}
-    </h3>
-    <!-- Round Robin: Show results table above bracket -->
-    <RoundRobinResults
-      v-if="isRoundRobin"
-      :stage="stage"
-      :group-number="groupNumber"
-      :tournament="tournament"
-      class="mb-6"
-    ></RoundRobinResults>
-    <!-- Bracket Viewer (for both Round Robin and Elimination) -->
-    <TournamentBracketViewer
-      :stage="stage.order"
-      :rounds="getRoundsForGroup(groupNumber)"
-      :is-final-stage="isFinalStage"
-      :is-loser-bracket="groupNumber > stage.groups"
-      :total-groups="maxGroups"
-      :stage-type="stage.type"
-    ></TournamentBracketViewer>
-  </div>
+  <!-- Swiss Format - groups represent record pools, so don't loop through them -->
+  <SwissBracketViewer v-if="isSwissFormat" :stage="stage"></SwissBracketViewer>
+
+  <!-- Other Bracket Formats - loop through groups -->
+  <template v-else>
+    <div v-for="groupNumber in maxGroups" :key="groupNumber" class="mb-6">
+      <h3 class="text-lg font-semibold mb-3" v-if="stage.groups > 1">
+        {{
+          $t("tournament.stage.group", { group: getGroupDisplay(groupNumber) })
+        }}
+      </h3>
+      <TournamentBracketViewer
+        :stage="stage.order"
+        :rounds="getRoundsForGroup(groupNumber)"
+        :is-final-stage="isFinalStage"
+        :is-loser-bracket="groupNumber > stage.groups"
+        :total-groups="maxGroups"
+        :stage-type="stage.type"
+      ></TournamentBracketViewer>
+    </div>
+  </template>
 </template>
 
 <script lang="ts">
-import { e_tournament_stage_types_enum } from "~/generated/zeus";
-
 export default {
   props: {
     stage: {
@@ -43,14 +37,13 @@ export default {
       type: Boolean,
       required: true,
     },
-    tournament: {
-      type: Object,
-      required: false,
-    },
   },
   computed: {
-    isRoundRobin() {
-      return this.stage?.type === e_tournament_stage_types_enum.RoundRobin;
+    isSwissFormat() {
+      return (
+        this.stage?.type === "Swiss" ||
+        this.stage?.e_tournament_stage_type?.value === "Swiss"
+      );
     },
     maxGroups() {
       if (!this.stage.brackets || this.stage.brackets.length === 0) {

@@ -9,7 +9,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
       :id="`bracket-${bracket.id}`"
       @click="handleClick($event, bracket)"
       v-if="!(bracket.bye && !bracket.team_1 && !bracket.team_2)"
-      class="tournament-match cursor-pointer my-4 border-2 border-gray-700 rounded-lg m-4 p-4 transition-all duration-200 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm"
+      class="tournament-match cursor-pointer my-2 border-2 border-gray-700 rounded-lg p-1 transition-all duration-200 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm"
       :data-bracket-id="bracket.id"
       :data-round="round"
     >
@@ -29,7 +29,10 @@ import TimeAgo from "~/components/TimeAgo.vue";
       </div>
 
       <!-- Display scheduled ETA if available -->
-      <div v-if="bracket.scheduled_eta" class="text-center mt-2 mb-3">
+      <div
+        v-if="bracket.scheduled_eta && !bracket.match"
+        class="text-center mt-2 mb-3"
+      >
         <div class="text-xs text-muted-foreground">
           {{ $t("tournament.match.scheduled_for") }}:
           <span class="text-blue-400 font-medium">

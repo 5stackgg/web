@@ -278,9 +278,103 @@ const getEliminatedSlots = (round: number): number => {
   return lastPool.brackets.length;
 };
 
+// Get advanced teams for a specific round (teams that advanced after the previous round)
+const getAdvancedTeams = (
+  round: number,
+): Array<{
+  teamId: string;
+  teamName: string;
+  wins: number;
+  losses: number;
+}> => {
+  const roundData = roundsData.value.find((r) => r.round === round - 1);
+  if (!roundData) return [];
+
+  const advancedTeams: Array<{
+    teamId: string;
+    teamName: string;
+    wins: number;
+    losses: number;
+  }> = [];
+  const seenTeamIds = new Set<string>();
+
+  // Collect all advanced teams from all pools in the previous round
+  roundData.pools.forEach((pool) => {
+    pool.advancedTeams.forEach((teamId) => {
+      if (!seenTeamIds.has(teamId)) {
+        const record = teamRecords.value.get(teamId);
+        if (record) {
+          advancedTeams.push({
+            teamId,
+            teamName: record.teamName,
+            wins: record.wins,
+            losses: record.losses,
+          });
+          seenTeamIds.add(teamId);
+        }
+      }
+    });
+  });
+
+  return advancedTeams;
+};
+
+// Get eliminated teams for a specific round (teams that were eliminated after the previous round)
+const getEliminatedTeams = (
+  round: number,
+): Array<{
+  teamId: string;
+  teamName: string;
+  wins: number;
+  losses: number;
+}> => {
+  const roundData = roundsData.value.find((r) => r.round === round - 1);
+  if (!roundData) return [];
+
+  const eliminatedTeams: Array<{
+    teamId: string;
+    teamName: string;
+    wins: number;
+    losses: number;
+  }> = [];
+  const seenTeamIds = new Set<string>();
+
+  // Collect all eliminated teams from all pools in the previous round
+  roundData.pools.forEach((pool) => {
+    pool.eliminatedTeams.forEach((teamId) => {
+      if (!seenTeamIds.has(teamId)) {
+        const record = teamRecords.value.get(teamId);
+        if (record) {
+          eliminatedTeams.push({
+            teamId,
+            teamName: record.teamName,
+            wins: record.wins,
+            losses: record.losses,
+          });
+          seenTeamIds.add(teamId);
+        }
+      }
+    });
+  });
+
+  return eliminatedTeams;
+};
+
+// Get final advanced teams from the last round only
+const getFinalAdvancedTeams = computed(() => {
+  if (maxRound.value === 0) return [];
+  return getAdvancedTeams(maxRound.value + 1);
+});
+
+// Get final eliminated teams from the last round only
+const getFinalEliminatedTeams = computed(() => {
+  if (maxRound.value === 0) return [];
+  return getEliminatedTeams(maxRound.value + 1);
+});
+
 const maxRound = computed(() => {
   if (roundsData.value.length === 0) return 0;
-  return Math.max(...roundsData.value.map(r => r.round));
+  return Math.max(...roundsData.value.map((r) => r.round));
 });
 
 // Get border color class based on record
@@ -392,8 +486,21 @@ onMounted(() => {
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">
                   <div
-                    v-for="index in getAdvancedSlots(roundData.round)"
-                    :key="`advanced-slot-${roundData.round}-${index}`"
+                    v-for="(team, index) in getAdvancedTeams(roundData.round)"
+                    :key="`advanced-${roundData.round}-${team.teamId}`"
+                    class="flex flex-col gap-1 bg-green-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-green-600/50"
+                  >
+                    <div class="font-semibold text-green-300">
+                      {{ team.teamName }}
+                    </div>
+                  </div>
+                  <div
+                    v-for="index in Math.max(
+                      0,
+                      getAdvancedSlots(roundData.round) -
+                        getAdvancedTeams(roundData.round).length,
+                    )"
+                    :key="`advanced-slot-empty-${roundData.round}-${index}`"
                     class="flex flex-col gap-1 bg-green-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-green-600/50 border-dashed"
                   >
                     <div class="font-semibold text-green-300/50">—</div>
@@ -444,8 +551,21 @@ onMounted(() => {
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">
                   <div
-                    v-for="index in getEliminatedSlots(roundData.round)"
-                    :key="`eliminated-slot-${roundData.round}-${index}`"
+                    v-for="(team, index) in getEliminatedTeams(roundData.round)"
+                    :key="`eliminated-${roundData.round}-${team.teamId}`"
+                    class="flex flex-col gap-1 bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50"
+                  >
+                    <div class="font-semibold text-red-300">
+                      {{ team.teamName }}
+                    </div>
+                  </div>
+                  <div
+                    v-for="index in Math.max(
+                      0,
+                      getEliminatedSlots(roundData.round) -
+                        getEliminatedTeams(roundData.round).length,
+                    )"
+                    :key="`eliminated-slot-empty-${roundData.round}-${index}`"
                     class="flex flex-col gap-1 bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50 border-dashed"
                   >
                     <div class="font-semibold text-red-300/50">—</div>
@@ -485,8 +605,21 @@ onMounted(() => {
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">
                   <div
-                    v-for="index in getAdvancedSlots(maxRound + 1)"
-                    :key="`final-advanced-slot-${index}`"
+                    v-for="team in getFinalAdvancedTeams"
+                    :key="`final-advanced-${team.teamId}`"
+                    class="flex flex-col gap-1 bg-green-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-green-600/50"
+                  >
+                    <div class="font-semibold text-green-300">
+                      {{ team.teamName }}
+                    </div>
+                  </div>
+                  <div
+                    v-for="index in Math.max(
+                      0,
+                      getAdvancedSlots(maxRound + 1) -
+                        getFinalAdvancedTeams.length,
+                    )"
+                    :key="`final-advanced-slot-empty-${index}`"
                     class="flex flex-col gap-1 bg-green-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-green-600/50 border-dashed"
                   >
                     <div class="font-semibold text-green-300/50">—</div>
@@ -508,8 +641,21 @@ onMounted(() => {
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">
                   <div
-                    v-for="index in getEliminatedSlots(maxRound + 1)"
-                    :key="`final-eliminated-slot-${index}`"
+                    v-for="team in getFinalEliminatedTeams"
+                    :key="`final-eliminated-${team.teamId}`"
+                    class="flex flex-col gap-1 bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50"
+                  >
+                    <div class="font-semibold text-red-300">
+                      {{ team.teamName }}
+                    </div>
+                  </div>
+                  <div
+                    v-for="index in Math.max(
+                      0,
+                      getEliminatedSlots(maxRound + 1) -
+                        getFinalEliminatedTeams.length,
+                    )"
+                    :key="`final-eliminated-slot-empty-${index}`"
                     class="flex flex-col gap-1 bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50 border-dashed"
                   >
                     <div class="font-semibold text-red-300/50">—</div>

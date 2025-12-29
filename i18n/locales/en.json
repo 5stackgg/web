@@ -1293,6 +1293,7 @@
         },
         "sanctions": {
             "title": "Sanctions",
+            "sanctions": "Sanctions",
             "expires": "Expires",
             "active_count": "Active Sanctions",
             "past_count": "Past Sanctions",
@@ -1307,7 +1308,15 @@
             "confirm_remove": "Remove Sanction",
             "remove_description": "Are you sure you want to remove this sanction? This action cannot be undone.",
             "removed": "Sanction removed",
-            "remove_failed": "Failed to remove sanction"
+            "remove_failed": "Failed to remove sanction",
+            "abandoned_matches": "Abandoned Matches",
+            "match": "Match",
+            "no_sanctions": "No sanctions",
+            "remove_abandoned": "Remove Abandoned Match",
+            "confirm_remove_abandoned": "Remove Abandoned Match",
+            "remove_abandoned_description": "Are you sure you want to remove this abandoned match record? This action cannot be undone.",
+            "abandoned_removed": "Abandoned match removed",
+            "abandoned_remove_failed": "Failed to remove abandoned match"
         },
         "registration": {
             "title": "Register your name",

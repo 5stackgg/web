@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import TimeAgo from "@/components/TimeAgo.vue";
 import {
-  ChevronDownIcon,
   Edit2,
   Trash2,
   Calendar as CalendarIcon,
+  AlertTriangle,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -33,34 +33,95 @@ import {
 import { Calendar } from "~/components/ui/calendar";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "~/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Badge } from "~/components/ui/badge";
+import { Separator } from "~/components/ui/separator";
+import Pagination from "~/components/Pagination.vue";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 </script>
 
 <template>
-  <div class="flex flex-col gap-2" v-if="sanctions && sanctions.length > 0">
-    <Collapsible>
-      <CollapsibleTrigger class="flex items-center gap-2 group">
-        <Badge variant="destructive"
-          >{{
-            activeSanctions
-              ? $t("player.sanctions.active_count", { count: activeSanctions })
-              : $t("player.sanctions.past_count", { count: sanctions.length })
-          }}
-          {{ $t("player.sanctions.title") }}</Badge
+  <div v-if="hasAnyData">
+    <Sheet :open="sheetOpen" @update:open="sheetOpen = $event">
+      <SheetTrigger as-child>
+        <Button
+          variant="ghost"
+          size="sm"
+          class="flex items-center gap-1.5 h-auto py-1 px-2 text-sm"
+          :class="{
+            'text-destructive hover:text-destructive': activeSanctions > 0,
+          }"
         >
-        <ChevronDownIcon
-          class="h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180"
-        />
-      </CollapsibleTrigger>
+          <AlertTriangle class="h-3.5 w-3.5" />
+          <span>{{ $t("player.sanctions.title") }}</span>
+          <Badge
+            v-if="activeSanctions > 0"
+            variant="destructive"
+            class="ml-0.5 h-4 px-1.5 text-xs"
+          >
+            {{ activeSanctions }}
+          </Badge>
+          <Badge
+            v-else-if="sanctions.length > 0 || abandonedMatchesCount > 0"
+            variant="secondary"
+            class="ml-0.5 h-4 px-1.5 text-xs"
+          >
+            {{ totalCount }}
+          </Badge>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="right" class="w-full sm:max-w-lg overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle>{{ $t("player.sanctions.title") }}</SheetTitle>
+        </SheetHeader>
+        <Tabs default-value="sanctions" class="mt-6">
+          <TabsList
+            :class="[
+              'grid w-full',
+              abandonedMatchesCount > 0 ? 'grid-cols-2' : 'grid-cols-1',
+            ]"
+          >
+            <TabsTrigger value="sanctions" class="flex items-center gap-2">
+              {{ $t("player.sanctions.sanctions") }}
+              <Badge
+                v-if="sanctions.length > 0"
+                variant="secondary"
+                class="ml-1"
+              >
+                {{ sanctions.length }}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger
+              v-if="abandonedMatchesCount > 0"
+              value="abandoned"
+              class="flex items-center gap-2"
+            >
+              {{ $t("player.sanctions.abandoned_matches") }}
+              <Badge variant="secondary" class="ml-1">
+                {{ abandonedMatchesCount }}
+              </Badge>
+            </TabsTrigger>
+          </TabsList>
 
-      <CollapsibleContent>
-        <Card class="mt-2">
-          <CardContent class="pt-4">
-            <div class="flex flex-col gap-4">
+          <TabsContent value="sanctions" class="mt-4">
+            <div
+              v-if="!sanctions || sanctions.length === 0"
+              class="text-center py-8 text-muted-foreground"
+            >
+              {{ $t("player.sanctions.no_sanctions") }}
+            </div>
+            <div v-else class="flex flex-col gap-4">
               <div
                 v-for="sanction in sanctions"
                 :key="sanction.id"
-                class="flex flex-col gap-1"
+                class="flex flex-col gap-2 pb-4"
               >
                 <div class="flex justify-between items-start">
                   <div class="flex flex-col gap-1 flex-1">
@@ -106,18 +167,77 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                   <TimeAgo :date="sanction.remove_sanction_date" />
                 </div>
                 <Separator
-                  class="my-2"
-                  v-if="
-                    sanctions.length > 1 &&
-                    sanctions.indexOf(sanction) !== sanctions.length - 1
-                  "
+                  v-if="sanctions.indexOf(sanction) !== sanctions.length - 1"
+                  class="mt-2"
                 />
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </CollapsibleContent>
-    </Collapsible>
+          </TabsContent>
+
+          <TabsContent
+            value="abandoned"
+            class="mt-4"
+            v-if="abandonedMatchesCount > 0"
+          >
+            <div class="flex flex-col gap-2">
+              <div
+                v-for="(abandonedMatch, index) in displayedAbandonedMatches"
+                :key="abandonedMatch.id"
+              >
+                <div class="flex items-center justify-between py-2">
+                  <div class="flex flex-col gap-1 flex-1">
+                    <NuxtLink
+                      :to="{
+                        name: 'matches-id',
+                        params: { id: abandonedMatch.id },
+                      }"
+                      class="text-sm font-medium hover:underline text-primary"
+                    >
+                      {{ $t("player.sanctions.match") }}
+                      {{ abandonedMatch.id.slice(0, 8) }}
+                    </NuxtLink>
+                    <div
+                      class="text-xs text-muted-foreground flex items-center gap-2"
+                    >
+                      <TimeAgo :date="abandonedMatch.abandoned_at" />
+                    </div>
+                  </div>
+                  <div
+                    v-if="canManageSanctions"
+                    class="flex gap-2 items-center"
+                  >
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="h-8 w-8 text-destructive"
+                      @click="removeAbandonedMatch(abandonedMatch)"
+                      :title="$t('player.sanctions.remove_abandoned')"
+                    >
+                      <Trash2 class="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <Separator
+                  v-if="index < displayedAbandonedMatches.length - 1"
+                  class="my-1"
+                />
+              </div>
+            </div>
+            <div
+              v-if="abandonedMatches.length > itemsPerPage"
+              class="mt-4 flex justify-center"
+            >
+              <Pagination
+                :page="abandonedMatchesPage"
+                :items-per-page="itemsPerPage"
+                :total="abandonedMatches.length"
+                @update:page="abandonedMatchesPage = $event"
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </SheetContent>
+    </Sheet>
 
     <!-- Edit Sanction Dialog -->
     <Dialog :open="editDialogOpen" @update:open="editDialogOpen = $event">
@@ -209,12 +329,43 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <!-- Delete Abandoned Match Alert Dialog -->
+    <AlertDialog
+      :open="showDeleteAbandonedDialog"
+      @update:open="showDeleteAbandonedDialog = $event"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("player.sanctions.confirm_remove_abandoned")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("player.sanctions.remove_abandoned_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel @click="showDeleteAbandonedDialog = false">
+            {{ $t("common.cancel") }}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            @click="
+              confirmRemoveAbandonedMatch();
+              showDeleteAbandonedDialog = false;
+            "
+            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {{ $t("common.confirm") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, e_player_roles_enum } from "~/generated/zeus";
+import { $, e_player_roles_enum, order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -229,12 +380,18 @@ export default {
   data() {
     return {
       sanctions: [] as any[],
+      abandonedMatches: [] as any[],
       editDialogOpen: false,
       editingSanction: null as any,
       editDate: undefined as any,
       editTime: undefined as string | undefined,
       showDeleteDialog: false,
       sanctionToDelete: null as any,
+      showDeleteAbandonedDialog: false,
+      abandonedMatchToDelete: null as any,
+      abandonedMatchesPage: 1,
+      itemsPerPage: 20,
+      sheetOpen: false,
     };
   },
   apollo: {
@@ -258,13 +415,44 @@ export default {
             },
           ],
         }),
-        variables() {
+        variables: function (): { playerId: string } {
           return {
-            playerId: this.playerId,
+            playerId: (this as any).playerId,
           };
         },
-        result({ data }: { data: any }) {
-          this.sanctions = data.player_sanctions;
+        result: function ({ data }: { data: any }) {
+          (this as any).sanctions = data.player_sanctions;
+        },
+      },
+      abandoned_matches: {
+        query: typedGql("subscription")({
+          abandoned_matches: [
+            {
+              where: {
+                steam_id: {
+                  _eq: $("playerId", "bigint!"),
+                },
+              },
+              order_by: [
+                {
+                  abandoned_at: order_by.desc,
+                },
+              ],
+            },
+            {
+              id: true,
+              steam_id: true,
+              abandoned_at: true,
+            },
+          ],
+        }),
+        variables: function (): { playerId: string } {
+          return {
+            playerId: (this as any).playerId,
+          };
+        },
+        result: function ({ data }: { data: any }) {
+          (this as any).abandonedMatches = data.abandoned_matches;
         },
       },
     },
@@ -284,6 +472,26 @@ export default {
     editDateDisplay() {
       if (!this.editDate) return "";
       return this.editDate.toString();
+    },
+    abandonedMatchesCount() {
+      return this.abandonedMatches?.length || 0;
+    },
+    displayedAbandonedMatches() {
+      if (!this.abandonedMatches || this.abandonedMatches.length === 0) {
+        return [];
+      }
+      const start = (this.abandonedMatchesPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.abandonedMatches.slice(start, end);
+    },
+    hasAnyData() {
+      return (
+        (this.sanctions && this.sanctions.length > 0) ||
+        (this.abandonedMatches && this.abandonedMatches.length > 0)
+      );
+    },
+    totalCount() {
+      return this.sanctions.length + this.abandonedMatchesCount;
     },
   },
   watch: {
@@ -402,6 +610,40 @@ export default {
         console.error("Failed to remove sanction:", error);
         toast({
           title: this.$t("player.sanctions.remove_failed"),
+          variant: "destructive",
+        });
+      }
+    },
+    removeAbandonedMatch(abandonedMatch: any) {
+      this.abandonedMatchToDelete = abandonedMatch;
+      this.showDeleteAbandonedDialog = true;
+    },
+    async confirmRemoveAbandonedMatch() {
+      if (!this.abandonedMatchToDelete) return;
+
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            delete_abandoned_matches_by_pk: [
+              {
+                id: this.abandonedMatchToDelete.id,
+              },
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
+
+        toast({
+          title: this.$t("player.sanctions.abandoned_removed"),
+        });
+
+        this.abandonedMatchToDelete = null;
+      } catch (error) {
+        console.error("Failed to remove abandoned match:", error);
+        toast({
+          title: this.$t("player.sanctions.abandoned_remove_failed"),
           variant: "destructive",
         });
       }

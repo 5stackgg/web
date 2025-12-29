@@ -27,14 +27,15 @@ const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <PlayerSanctions class="my-4" :playerId="playerId" />
-
   <div class="flex-grow flex flex-col gap-4" v-if="player">
     <PageHeading>
       <template #title>
         <div class="flex items-center justify-center gap-4">
           <div class="flex flex-col gap-2">
-            <PlayerChangeName :player="player" />
+            <div class="flex items-center gap-3">
+              <PlayerChangeName :player="player" />
+              <PlayerSanctions :playerId="playerId" />
+            </div>
             <div class="flex items-center gap-4">
               <PlayerDisplay
                 :player="player"

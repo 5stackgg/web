@@ -361,7 +361,7 @@ onMounted(() => {
             class="flex flex-col swiss-round-column"
           >
             <!-- Round Label -->
-            <div class="text-center mb-6 sticky top-0 z-10">
+            <div class="text-center sticky top-0 z-10">
               <div
                 class="bg-gray-800 text-white rounded-lg px-5 py-2.5 shadow-lg font-bold text-sm border border-gray-600"
               >
@@ -374,9 +374,9 @@ onMounted(() => {
               <!-- Advanced Teams Pool (above pools for round 4+) -->
               <div
                 v-if="roundData.round >= 4"
-                class="flex flex-col swiss-status-pool mb-4 bg-green-900/30 border-2 border-green-500 rounded-lg p-4"
+                class="flex flex-col swiss-status-pool bg-green-900/30 border-2 border-green-500 rounded-lg p-4"
               >
-                <div class="text-center mb-3">
+                <div class="text-center">
                   <div
                     class="bg-green-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-green-500"
                   >
@@ -387,10 +387,10 @@ onMounted(() => {
                   <div
                     v-for="index in getAdvancedSlots(roundData.round)"
                     :key="`advanced-slot-${roundData.round}-${index}`"
-                    class="bg-green-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-green-600/50 border-dashed"
+                    class="flex flex-col gap-1 bg-green-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-green-600/50 border-dashed"
                   >
                     <div class="font-semibold text-green-300/50">—</div>
-                    <div class="text-xs text-green-200/30 mt-1">—</div>
+                    <div class="text-xs text-green-200/30">—</div>
                   </div>
                 </div>
               </div>
@@ -398,12 +398,12 @@ onMounted(() => {
               <div
                 v-for="pool in roundData.pools"
                 :key="`${roundData.round}-${pool.record}`"
-                class="flex flex-col swiss-pool mb-4 rounded-lg border-2 border-gray-600/50 bg-gray-800/30 p-4"
+                class="flex flex-col swiss-pool rounded-lg border-2 border-gray-500 bg-gray-800/20 p-4 shadow-lg gap-3"
               >
                 <!-- Record Label -->
                 <div
                   v-if="!(roundData.round === 1 && pool.record === '0-0')"
-                  class="text-center mb-3"
+                  class="text-center"
                 >
                   <div
                     class="rounded-lg px-4 py-2 shadow-md font-semibold text-sm border-2 border-gray-600 bg-gray-700 text-white"
@@ -413,7 +413,7 @@ onMounted(() => {
                 </div>
 
                 <!-- Matches in this pool -->
-                <div class="flex flex-col gap-4 min-w-[200px]">
+                <div class="flex flex-col gap-2">
                   <TournamentMatch
                     v-for="bracket in pool.brackets"
                     :key="bracket.id"
@@ -425,9 +425,9 @@ onMounted(() => {
                 <!-- Advancement Indicator -->
                 <div
                   v-if="pool.advancedTeams.length > 0"
-                  class="mt-4 p-2 bg-green-600 text-white rounded text-xs font-semibold text-center"
+                  class="flex flex-col gap-1 p-2 bg-green-600 text-white rounded text-xs font-semibold text-center"
                 >
-                  <div class="mb-1">ADVANCED</div>
+                  <div>ADVANCED</div>
                   <div class="flex flex-wrap gap-1 justify-center">
                     <span
                       v-for="(teamId, index) in pool.advancedTeams"
@@ -442,9 +442,9 @@ onMounted(() => {
                 <!-- Elimination Indicator -->
                 <div
                   v-if="pool.eliminatedTeams.length > 0"
-                  class="mt-4 p-2 bg-red-600 text-white rounded text-xs font-semibold text-center"
+                  class="flex flex-col gap-1 p-2 bg-red-600 text-white rounded text-xs font-semibold text-center"
                 >
-                  <div class="mb-1">ELIMINATED</div>
+                  <div>ELIMINATED</div>
                   <div class="flex flex-wrap gap-1 justify-center">
                     <span
                       v-for="teamId in pool.eliminatedTeams"
@@ -458,9 +458,9 @@ onMounted(() => {
               <!-- Eliminated Teams Pool (below pools for round 4+) -->
               <div
                 v-if="roundData.round >= 4"
-                class="flex flex-col swiss-status-pool mt-4 bg-red-900/30 border-2 border-red-500 rounded-lg p-4"
+                class="flex flex-col swiss-status-pool bg-red-900/30 border-2 border-red-500 rounded-lg p-4"
               >
-                <div class="text-center mb-3">
+                <div class="text-center">
                   <div
                     class="bg-red-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-red-500"
                   >
@@ -471,10 +471,10 @@ onMounted(() => {
                   <div
                     v-for="index in getEliminatedSlots(roundData.round)"
                     :key="`eliminated-slot-${roundData.round}-${index}`"
-                    class="bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50 border-dashed"
+                    class="flex flex-col gap-1 bg-red-800/30 text-white rounded px-3 py-2 text-sm font-medium border border-red-600/50 border-dashed"
                   >
                     <div class="font-semibold text-red-300/50">—</div>
-                    <div class="text-xs text-red-200/30 mt-1">—</div>
+                    <div class="text-xs text-red-200/30">—</div>
                   </div>
                 </div>
               </div>
@@ -537,7 +537,7 @@ onMounted(() => {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 2.5rem;
 }
 
 .swiss-pools-container {
@@ -545,18 +545,18 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   flex: 1;
+  gap: 1rem;
 }
 
 .swiss-pool {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
 }
 
 .swiss-status-pool {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   min-width: 260px;
   max-width: 300px;
 }

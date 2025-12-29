@@ -286,6 +286,7 @@ const getAdvancedTeams = (
   teamName: string;
   wins: number;
   losses: number;
+  matchNumber: number;
 }> => {
   const roundData = roundsData.value.find((r) => r.round === round - 1);
   if (!roundData) return [];
@@ -295,6 +296,7 @@ const getAdvancedTeams = (
     teamName: string;
     wins: number;
     losses: number;
+    matchNumber: number;
   }> = [];
   const seenTeamIds = new Set<string>();
 
@@ -304,11 +306,39 @@ const getAdvancedTeams = (
       if (!seenTeamIds.has(teamId)) {
         const record = teamRecords.value.get(teamId);
         if (record) {
+          // Find the bracket where this team advanced (the match they won to get 3 wins)
+          // Check all brackets in the round, not just the pool
+          let matchNumber = 999; // Default to high number if not found
+          for (const pool of roundData.pools) {
+            for (const bracket of pool.brackets) {
+              const tid1 = bracket.team_1?.id || bracket.team_1?.team_id || null;
+              const tid2 = bracket.team_2?.id || bracket.team_2?.team_id || null;
+              if ((tid1 === teamId || tid2 === teamId) && bracket.match?.status === "Finished") {
+                // Check if this team won this match
+                const winningLineupId = bracket.match.winning_lineup_id;
+                const lineup1Id = bracket.match.lineup_1_id;
+                const lineup2Id = bracket.match.lineup_2_id;
+                
+                const teamWon = 
+                  (tid1 === teamId && winningLineupId === lineup1Id) ||
+                  (tid2 === teamId && winningLineupId === lineup2Id);
+                
+                if (teamWon) {
+                  const bracketMatchNumber = bracket.match_number || bracket.match?.match_number;
+                  if (bracketMatchNumber && bracketMatchNumber < matchNumber) {
+                    matchNumber = bracketMatchNumber;
+                  }
+                }
+              }
+            }
+          }
+          
           advancedTeams.push({
             teamId,
             teamName: record.teamName,
             wins: record.wins,
             losses: record.losses,
+            matchNumber,
           });
           seenTeamIds.add(teamId);
         }
@@ -316,7 +346,8 @@ const getAdvancedTeams = (
     });
   });
 
-  return advancedTeams;
+  // Sort by match number
+  return advancedTeams.sort((a, b) => a.matchNumber - b.matchNumber);
 };
 
 // Get eliminated teams for a specific round (teams that were eliminated after the previous round)
@@ -327,6 +358,7 @@ const getEliminatedTeams = (
   teamName: string;
   wins: number;
   losses: number;
+  matchNumber: number;
 }> => {
   const roundData = roundsData.value.find((r) => r.round === round - 1);
   if (!roundData) return [];
@@ -336,6 +368,7 @@ const getEliminatedTeams = (
     teamName: string;
     wins: number;
     losses: number;
+    matchNumber: number;
   }> = [];
   const seenTeamIds = new Set<string>();
 
@@ -345,11 +378,34 @@ const getEliminatedTeams = (
       if (!seenTeamIds.has(teamId)) {
         const record = teamRecords.value.get(teamId);
         if (record) {
+          // Find the bracket where this team was eliminated (the match they lost to get 3 losses)
+          let matchNumber = 999; // Default to high number if not found
+          for (const bracket of pool.brackets) {
+            const tid1 = bracket.team_1?.id || bracket.team_1?.team_id || null;
+            const tid2 = bracket.team_2?.id || bracket.team_2?.team_id || null;
+            if ((tid1 === teamId || tid2 === teamId) && bracket.match?.status === "Finished") {
+              // Check if this team lost this match
+              const winningLineupId = bracket.match.winning_lineup_id;
+              const lineup1Id = bracket.match.lineup_1_id;
+              const lineup2Id = bracket.match.lineup_2_id;
+              
+              const teamLost = 
+                (tid1 === teamId && winningLineupId === lineup2Id) ||
+                (tid2 === teamId && winningLineupId === lineup1Id);
+              
+              if (teamLost) {
+                matchNumber = bracket.match_number || bracket.match?.match_number || 999;
+                break;
+              }
+            }
+          }
+          
           eliminatedTeams.push({
             teamId,
             teamName: record.teamName,
             wins: record.wins,
             losses: record.losses,
+            matchNumber,
           });
           seenTeamIds.add(teamId);
         }
@@ -357,7 +413,8 @@ const getEliminatedTeams = (
     });
   });
 
-  return eliminatedTeams;
+  // Sort by match number
+  return eliminatedTeams.sort((a, b) => a.matchNumber - b.matchNumber);
 };
 
 // Get final advanced teams from the last round only
@@ -475,7 +532,7 @@ onMounted(() => {
               <!-- Advanced Teams Pool (above pools for round 4+) -->
               <div
                 v-if="roundData.round >= 4"
-                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-green-900/30 border-2 border-green-500 rounded-lg p-4"
+                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-green-900/30 border-2 border-green-500 rounded-lg p-4 -mb-12"
               >
                 <div class="text-center">
                   <div
@@ -540,7 +597,7 @@ onMounted(() => {
               <!-- Eliminated Teams Pool (below pools for round 4+) -->
               <div
                 v-if="roundData.round >= 4"
-                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-red-900/30 border-2 border-red-500 rounded-lg p-4"
+                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-red-900/30 border-2 border-red-500 rounded-lg p-4 -mt-12"
               >
                 <div class="text-center">
                   <div
@@ -594,7 +651,7 @@ onMounted(() => {
             <div class="flex flex-col flex-1 justify-center gap-20">
               <!-- Final Advanced Teams Pool -->
               <div
-                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-green-900/30 border-2 border-green-500 rounded-lg p-4"
+                class="flex flex-col gap-4 min-w-[260px] max-w-[300px] bg-green-900/30 border-2 border-green-500 rounded-lg p-4 -mb-12"
               >
                 <div class="text-center">
                   <div

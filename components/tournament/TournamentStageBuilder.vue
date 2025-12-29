@@ -98,10 +98,7 @@ import {
 
                   <DropdownMenuItem
                     class="text-red-600"
-                    @click="
-                      deleteAlertDialogs[stageNumber] = true;
-                      stageMenus[stageNumber] = false;
-                    "
+                    @click="openDeleteDialog(stageNumber)"
                   >
                     <Trash class="mr-2 h-4 w-4 inline" />
                     {{ $t("tournament.stage.delete") }}
@@ -160,6 +157,8 @@ import {
             <CardContent>
               <TournamentStageForm
                 :order="tournament.stages.length + 1"
+                :tournament-id="tournament.id"
+                :tournament="tournament"
               ></TournamentStageForm>
             </CardContent>
           </Card>
@@ -196,6 +195,8 @@ import {
                 v-if="getFirstStageForTab(stageNumber)"
                 :stage="getFirstStageForTab(stageNumber)"
                 :order="stageNumber"
+                :tournament-id="tournament.id"
+                :tournament="tournament"
                 @updated="editStageDialogs[stageNumber] = false"
               ></TournamentStageForm>
             </SheetDescription>
@@ -207,10 +208,9 @@ import {
       <AlertDialog
         v-for="stageNumber in maxStageNumber"
         :key="`delete-${stageNumber}`"
-        :open="deleteAlertDialogs[stageNumber]"
+        :open="!!deleteAlertDialogs[stageNumber]"
         @update:open="(open) => (deleteAlertDialogs[stageNumber] = open)"
       >
-        <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{{
@@ -221,12 +221,12 @@ import {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+            <AlertDialogCancel @click="deleteAlertDialogs[stageNumber] = false">
+              {{ $t("common.cancel") }}
+            </AlertDialogCancel>
             <AlertDialogAction
-              @click="
-                deleteStage(getFirstStageForTab(stageNumber));
-                deleteAlertDialogs[stageNumber] = false;
-              "
+              @click="confirmDeleteStage(stageNumber)"
+              class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {{ $t("common.confirm") }}
             </AlertDialogAction>
@@ -266,6 +266,7 @@ import {
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -301,9 +302,35 @@ export default {
       );
       return stages.length > 0 ? stages[0] : null;
     },
+    openDeleteDialog(stageNumber: number) {
+      this.stageMenus[stageNumber] = false;
+      this.deleteAlertDialogs[stageNumber] = true;
+    },
+    async confirmDeleteStage(stageNumber: number) {
+      const stage = this.getFirstStageForTab(stageNumber);
+      if (!stage) {
+        this.deleteAlertDialogs[stageNumber] = false;
+        return;
+      }
+
+      try {
+        await this.deleteStage(stage);
+        toast({
+          title: this.$t("tournament.stage.deleted"),
+        });
+        this.deleteAlertDialogs[stageNumber] = false;
+      } catch (error) {
+        console.error("Failed to delete stage:", error);
+        toast({
+          title: this.$t("tournament.stage.delete_failed"),
+          variant: "destructive",
+        });
+        // Keep dialog open on error so user can try again
+      }
+    },
     async deleteStage(stage: any) {
       if (!stage) return;
-      await this.$apollo.mutate({
+      await (this as any).$apollo.mutate({
         mutation: generateMutation({
           delete_tournament_stages_by_pk: [
             {

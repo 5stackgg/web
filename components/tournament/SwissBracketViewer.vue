@@ -278,27 +278,6 @@ const getEliminatedSlots = (round: number): number => {
   return lastPool.brackets.length;
 };
 
-// Get final advanced teams from the last round
-const getFinalAdvancedTeams = computed(() => {
-  if (roundsData.value.length === 0) return [];
-  const lastRound = roundsData.value[roundsData.value.length - 1];
-  if (!lastRound || lastRound.pools.length === 0) return [];
-  
-  const firstPool = lastRound.pools[0];
-  return firstPool.advancedTeams || [];
-});
-
-// Get final eliminated teams from the last round
-const getFinalEliminatedTeams = computed(() => {
-  if (roundsData.value.length === 0) return [];
-  const lastRound = roundsData.value[roundsData.value.length - 1];
-  if (!lastRound || lastRound.pools.length === 0) return [];
-  
-  const lastPool = lastRound.pools[lastRound.pools.length - 1];
-  return lastPool.eliminatedTeams || [];
-});
-
-// Get the maximum round number
 const maxRound = computed(() => {
   if (roundsData.value.length === 0) return 0;
   return Math.max(...roundsData.value.map(r => r.round));
@@ -448,38 +427,6 @@ onMounted(() => {
                     :round="bracket.round || 1"
                     :brackets="[bracket]"
                   />
-                </div>
-
-                <!-- Advancement Indicator -->
-                <div
-                  v-if="pool.advancedTeams.length > 0"
-                  class="flex flex-col gap-1 p-2 bg-green-600 text-white rounded text-xs font-semibold text-center"
-                >
-                  <div>ADVANCED</div>
-                  <div class="flex flex-wrap gap-1 justify-center">
-                    <span
-                      v-for="(teamId, index) in pool.advancedTeams"
-                      :key="teamId"
-                      class="bg-green-700 px-2 py-1 rounded"
-                    >
-                      {{ index + 1 }}
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Elimination Indicator -->
-                <div
-                  v-if="pool.eliminatedTeams.length > 0"
-                  class="flex flex-col gap-1 p-2 bg-red-600 text-white rounded text-xs font-semibold text-center"
-                >
-                  <div>ELIMINATED</div>
-                  <div class="flex flex-wrap gap-1 justify-center">
-                    <span
-                      v-for="teamId in pool.eliminatedTeams"
-                      :key="teamId"
-                      class="bg-red-700 w-4 h-4 rounded inline-block"
-                    ></span>
-                  </div>
                 </div>
               </div>
 

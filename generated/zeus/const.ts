@@ -13488,6 +13488,7 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"tournament_stages_on_conflict"
 	},
 	tournament_stages_avg_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
@@ -13497,11 +13498,14 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"tournament_stages_bool_exp",
 		_not:"tournament_stages_bool_exp",
 		_or:"tournament_stages_bool_exp",
+		best_of:"Int_comparison_exp",
 		brackets:"tournament_brackets_bool_exp",
 		brackets_aggregate:"tournament_brackets_aggregate_bool_exp",
 		e_tournament_stage_type:"e_tournament_stage_types_bool_exp",
 		groups:"Int_comparison_exp",
 		id:"uuid_comparison_exp",
+		match_options:"match_options_bool_exp",
+		match_options_id:"uuid_comparison_exp",
 		max_teams:"Int_comparison_exp",
 		min_teams:"Int_comparison_exp",
 		order:"Int_comparison_exp",
@@ -13529,6 +13533,8 @@ export const AllTypesProps: Record<string,any> = {
 		brackets:"tournament_brackets_arr_rel_insert_input",
 		e_tournament_stage_type:"e_tournament_stage_types_obj_rel_insert_input",
 		id:"uuid",
+		match_options:"match_options_obj_rel_insert_input",
+		match_options_id:"uuid",
 		results:"v_team_stage_results_arr_rel_insert_input",
 		settings:"jsonb",
 		tournament:"tournaments_obj_rel_insert_input",
@@ -13536,16 +13542,20 @@ export const AllTypesProps: Record<string,any> = {
 		type:"e_tournament_stage_types_enum"
 	},
 	tournament_stages_max_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		id:"order_by",
+		match_options_id:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
 		tournament_id:"order_by"
 	},
 	tournament_stages_min_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		id:"order_by",
+		match_options_id:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
@@ -13561,10 +13571,13 @@ export const AllTypesProps: Record<string,any> = {
 		where:"tournament_stages_bool_exp"
 	},
 	tournament_stages_order_by:{
+		best_of:"order_by",
 		brackets_aggregate:"tournament_brackets_aggregate_order_by",
 		e_tournament_stage_type:"e_tournament_stage_types_order_by",
 		groups:"order_by",
 		id:"order_by",
+		match_options:"match_options_order_by",
+		match_options_id:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by",
@@ -13583,23 +13596,27 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_stages_select_column: "enum" as const,
 	tournament_stages_set_input:{
 		id:"uuid",
+		match_options_id:"uuid",
 		settings:"jsonb",
 		tournament_id:"uuid",
 		type:"e_tournament_stage_types_enum"
 	},
 	tournament_stages_stddev_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
 	},
 	tournament_stages_stddev_pop_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
 	},
 	tournament_stages_stddev_samp_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
@@ -13611,11 +13628,13 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_stages_stream_cursor_value_input:{
 		id:"uuid",
+		match_options_id:"uuid",
 		settings:"jsonb",
 		tournament_id:"uuid",
 		type:"e_tournament_stage_types_enum"
 	},
 	tournament_stages_sum_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
@@ -13633,18 +13652,21 @@ export const AllTypesProps: Record<string,any> = {
 		where:"tournament_stages_bool_exp"
 	},
 	tournament_stages_var_pop_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
 	},
 	tournament_stages_var_samp_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
 		order:"order_by"
 	},
 	tournament_stages_variance_order_by:{
+		best_of:"order_by",
 		groups:"order_by",
 		max_teams:"order_by",
 		min_teams:"order_by",
@@ -21528,11 +21550,14 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	tournament_stages:{
+		best_of:"Int",
 		brackets:"tournament_brackets",
 		brackets_aggregate:"tournament_brackets_aggregate",
 		e_tournament_stage_type:"e_tournament_stage_types",
 		groups:"Int",
 		id:"uuid",
+		match_options:"match_options",
+		match_options_id:"uuid",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
@@ -21561,22 +21586,27 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"tournament_stages_variance_fields"
 	},
 	tournament_stages_avg_fields:{
+		best_of:"Float",
 		groups:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
 	},
 	tournament_stages_max_fields:{
+		best_of:"Int",
 		groups:"Int",
 		id:"uuid",
+		match_options_id:"uuid",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
 		tournament_id:"uuid"
 	},
 	tournament_stages_min_fields:{
+		best_of:"Int",
 		groups:"Int",
 		id:"uuid",
+		match_options_id:"uuid",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int",
@@ -21587,42 +21617,49 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"tournament_stages"
 	},
 	tournament_stages_stddev_fields:{
+		best_of:"Float",
 		groups:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
 	},
 	tournament_stages_stddev_pop_fields:{
+		best_of:"Float",
 		groups:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
 	},
 	tournament_stages_stddev_samp_fields:{
+		best_of:"Float",
 		groups:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
 	},
 	tournament_stages_sum_fields:{
+		best_of:"Int",
 		groups:"Int",
 		max_teams:"Int",
 		min_teams:"Int",
 		order:"Int"
 	},
 	tournament_stages_var_pop_fields:{
+		best_of:"Float",
 		groups:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
 	},
 	tournament_stages_var_samp_fields:{
+		best_of:"Float",
 		groups:"Float",
 		max_teams:"Float",
 		min_teams:"Float",
 		order:"Float"
 	},
 	tournament_stages_variance_fields:{
+		best_of:"Float",
 		groups:"Float",
 		max_teams:"Float",
 		min_teams:"Float",

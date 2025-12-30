@@ -30,6 +30,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  tournament: {
+    type: Object,
+    required: true,
+  },
 });
 
 const bracketContainer = ref<HTMLElement | null>(null);
@@ -593,6 +597,8 @@ onMounted(() => {
                     :key="bracket.id"
                     :round="bracket.round || 1"
                     :brackets="[bracket]"
+                    :stage="stage"
+                    :tournament="tournament"
                   />
                 </div>
               </div>

@@ -17,6 +17,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  tournament: {
+    type: Object,
+    required: true,
+  },
   rounds: {
     type: Map<number, TournamentRound>,
     required: true,
@@ -616,6 +620,8 @@ function startMomentum() {
               <TournamentMatch
                 :round="Number(round)"
                 :brackets="props.rounds.get(round) as any[]"
+                :stage="props.stage"
+                :tournament="props.tournament"
               ></TournamentMatch>
             </div>
           </div>

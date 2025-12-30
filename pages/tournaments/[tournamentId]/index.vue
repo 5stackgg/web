@@ -212,7 +212,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
                 variant="outline"
                 class="text-xs font-semibold h-6 flex items-center shrink-0 w-fit"
               >
-                {{ singleStageType }}
+                {{ singleStageTypeWithBestOf }}
               </Badge>
             </div>
           </div>
@@ -475,7 +475,7 @@ import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
 import { playerFields } from "~/graphql/playerFields";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 
 export default {
   data() {
@@ -539,35 +539,7 @@ export default {
               min_players_per_lineup: true,
               max_players_per_lineup: true,
               admin: playerFields,
-              options: {
-                id: true,
-                type: true,
-                mr: true,
-                map_veto: true,
-                coaches: true,
-                knife_round: true,
-                default_models: true,
-                check_in_setting: true,
-                overtime: true,
-                region_veto: true,
-                best_of: true,
-                tv_delay: true,
-                number_of_substitutes: true,
-                timeout_setting: true,
-                tech_timeout_setting: true,
-                ready_setting: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
+              options: matchOptionsFields,
               organizers: [
                 {},
                 {
@@ -616,6 +588,7 @@ export default {
                   groups: true,
                   min_teams: true,
                   max_teams: true,
+                  match_options: matchOptionsFields,
                   results: [
                     {},
                     {
@@ -887,6 +860,26 @@ export default {
         return this.tournament.stages[0].e_tournament_stage_type.description;
       }
       return null;
+    },
+    singleStageTypeWithBestOf() {
+      if (!this.singleStageType) return null;
+
+      const stage = this.tournament?.stages?.[0];
+      if (!stage) return this.singleStageType;
+
+      // Get best_of from stage match_options, or fall back to tournament defaults
+      let bestOf: number | null = null;
+      if (stage.match_options?.best_of) {
+        bestOf = stage.match_options.best_of;
+      } else if (this.tournament?.options?.best_of) {
+        bestOf = this.tournament.options.best_of;
+      }
+
+      if (bestOf) {
+        return `${this.singleStageType} - BO${bestOf}`;
+      }
+
+      return this.singleStageType;
     },
     e_tournament_status_enum() {
       return e_tournament_status_enum;

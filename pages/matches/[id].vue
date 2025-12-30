@@ -91,6 +91,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
 import { playerFields } from "~/graphql/playerFields";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 
 export default {
   data() {
@@ -157,31 +158,8 @@ export default {
               ended_at: true,
               organizer: playerFields,
               options: {
-                id: true,
-                type: true,
-                mr: true,
-                best_of: true,
-                coaches: true,
-                tv_delay: true,
-                map_veto: true,
-                region_veto: true,
-                overtime: true,
-                knife_round: true,
-                default_models: true,
-                number_of_substitutes: true,
-                timeout_setting: true,
-                tech_timeout_setting: true,
-                ready_setting: true,
-                check_in_setting: true,
                 lobby_access: true,
-                map_pool_id: true,
-                map_pool: {
-                  type: true,
-                  e_type: {
-                    description: true,
-                  },
-                  maps: [{}, mapFields],
-                },
+                ...matchOptionsFields,
               },
               region_veto_picks: {
                 type: true,

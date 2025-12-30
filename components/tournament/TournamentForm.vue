@@ -95,6 +95,7 @@ import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
+import { toTypedSchema } from "@vee-validate/zod";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
 
@@ -147,16 +148,18 @@ export default {
       startTime: undefined,
       form: useForm({
         keepValuesOnUnmount: true,
-        validationSchema: matchOptionsValidator(
-          this,
-          {
-            name: z.string().min(1),
-            start: z.date().refine((date) => date > new Date(), {
-              message: "Date must be in the future",
-            }),
-            description: z.string().nullable().default(null),
-          },
-          useApplicationSettingsStore().settings,
+        validationSchema: toTypedSchema(
+          matchOptionsValidator(
+            this,
+            {
+              name: z.string().min(1),
+              start: z.date().refine((date) => date > new Date(), {
+                message: "Date must be in the future",
+              }),
+              description: z.string().nullable().default(null),
+            },
+            useApplicationSettingsStore().settings,
+          ),
         ),
       }),
     };

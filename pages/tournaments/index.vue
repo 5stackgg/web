@@ -146,6 +146,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Separator } from "~/components/ui/separator";
 import { PlusCircle } from "lucide-vue-next";
 import { mapFields } from "~/graphql/mapGraphql";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -202,17 +203,15 @@ export default {
               },
               options: {
                 type: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
+                best_of: true,
+                map_pool: {
+                  id: true,
+                  type: true,
+                  e_type: {
+                    description: true,
                   },
-                ],
+                  maps: [{}, mapFields],
+                },
               },
               stages: [
                 {
@@ -229,6 +228,18 @@ export default {
                     description: true,
                   },
                   order: true,
+                  match_options: {
+                    type: true,
+                    best_of: true,
+                    map_pool: {
+                      id: true,
+                      type: true,
+                      e_type: {
+                        description: true,
+                      },
+                      maps: [{}, mapFields],
+                    },
+                  },
                 },
               ],
               teams_aggregate: [
@@ -304,6 +315,7 @@ export default {
                     description: true,
                   },
                   order: true,
+                  match_options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [
@@ -381,6 +393,7 @@ export default {
                     description: true,
                   },
                   order: true,
+                  match_options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [
@@ -492,6 +505,7 @@ export default {
                     description: true,
                   },
                   order: true,
+                  match_options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [

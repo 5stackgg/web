@@ -24,19 +24,24 @@ import { Button } from "~/components/ui/button";
             <Badge variant="secondary" class="text-xs shrink-0">
               {{ tournament.options.type }}
             </Badge>
-            <Badge
-              v-if="stageCount > 1"
-              variant="outline"
-              class="text-xs shrink-0"
-            >
-              {{ stageCount }} {{ $t("tournament.stage.stages") }}
-            </Badge>
+            <!-- Multiple stages: show each stage with best_of -->
+            <template v-if="stageCount > 1">
+              <Badge
+                v-for="stage in sortedStages"
+                :key="stage.id"
+                variant="outline"
+                class="text-xs shrink-0"
+              >
+                {{ getStageLabel(stage) }}
+              </Badge>
+            </template>
+            <!-- Single stage: show stage type with best_of -->
             <Badge
               v-if="singleStageType"
               variant="outline"
               class="text-xs shrink-0"
             >
-              {{ singleStageType }}
+              {{ singleStageTypeWithBestOf }}
             </Badge>
           </div>
 
@@ -136,6 +141,32 @@ export default {
       }
       return null;
     },
+    singleStageTypeWithBestOf() {
+      if (!this.singleStageType) return null;
+
+      const stage = this.tournament?.stages?.[0];
+      if (!stage) return this.singleStageType;
+
+      // Get best_of from stage match_options, or fall back to tournament defaults
+      let bestOf: number | null = null;
+      if (stage.match_options?.best_of) {
+        bestOf = stage.match_options.best_of;
+      } else if (this.tournament?.options?.best_of) {
+        bestOf = this.tournament.options.best_of;
+      }
+
+      if (bestOf) {
+        return `${this.singleStageType} - BO${bestOf}`;
+      }
+
+      return this.singleStageType;
+    },
+    sortedStages() {
+      if (!this.tournament?.stages) return [];
+      return [...this.tournament.stages].sort((a: any, b: any) => {
+        return (a.order || 0) - (b.order || 0);
+      });
+    },
   },
   methods: {
     navigateToTournament(tournamentId: string, event?: Event) {
@@ -146,6 +177,24 @@ export default {
         name: "tournaments-tournamentId",
         params: { tournamentId },
       });
+    },
+    getStageLabel(stage: any): string {
+      const stageType =
+        stage.e_tournament_stage_type?.description || `Stage ${stage.order}`;
+
+      // Get best_of from stage match_options, or fall back to tournament defaults
+      let bestOf: number | null = null;
+      if (stage.match_options?.best_of) {
+        bestOf = stage.match_options.best_of;
+      } else if (this.tournament?.options?.best_of) {
+        bestOf = this.tournament.options.best_of;
+      }
+
+      if (bestOf) {
+        return `${stageType} - BO${bestOf}`;
+      }
+
+      return stageType;
     },
   },
 };

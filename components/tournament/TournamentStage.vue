@@ -4,7 +4,11 @@ import SwissBracketViewer from "./SwissBracketViewer.vue";
 </script>
 <template>
   <!-- Swiss Format - groups represent record pools, so don't loop through them -->
-  <SwissBracketViewer v-if="isSwissFormat" :stage="stage"></SwissBracketViewer>
+  <SwissBracketViewer
+    v-if="isSwissFormat"
+    :stage="stage"
+    :tournament="tournament"
+  ></SwissBracketViewer>
 
   <!-- Other Bracket Formats - loop through groups -->
   <template v-else>
@@ -16,6 +20,7 @@ import SwissBracketViewer from "./SwissBracketViewer.vue";
       </h3>
       <TournamentBracketViewer
         :stage="stage.order"
+        :tournament="tournament"
         :rounds="getRoundsForGroup(groupNumber)"
         :is-final-stage="isFinalStage"
         :is-loser-bracket="groupNumber > stage.groups"
@@ -30,6 +35,10 @@ import SwissBracketViewer from "./SwissBracketViewer.vue";
 export default {
   props: {
     stage: {
+      type: Object,
+      required: true,
+    },
+    tournament: {
       type: Object,
       required: true,
     },

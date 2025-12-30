@@ -113,6 +113,7 @@ export default {
               },
               options: {
                 type: true,
+                best_of: true,
                 map_pool: {
                   id: true,
                   type: true,
@@ -137,6 +138,18 @@ export default {
                     description: true,
                   },
                   order: true,
+                  match_options: {
+                    type: true,
+                    best_of: true,
+                    map_pool: {
+                      id: true,
+                      type: true,
+                      e_type: {
+                        description: true,
+                      },
+                      maps: [{}, mapFields],
+                    },
+                  },
                 },
               ],
               teams_aggregate: [

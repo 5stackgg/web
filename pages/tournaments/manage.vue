@@ -237,6 +237,7 @@ import * as z from "zod";
 import { validate as validateUUID } from "uuid";
 import { useAuthStore } from "~/stores/AuthStore";
 import { mapFields } from "~/graphql/mapGraphql";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 
 interface TournamentsData {
   tournaments: any[];
@@ -386,6 +387,7 @@ export default {
                     description: true,
                   },
                   order: true,
+                  match_options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [

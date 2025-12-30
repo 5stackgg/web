@@ -26,13 +26,12 @@ import {
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 </script>
 
 <template>
@@ -40,7 +39,12 @@ import {
     <!-- Display stages organized by stage number in tabs -->
     <div v-if="tournament.stages.length > 0">
       <!-- Show tabs only if multiple stages OR user is organizer -->
-      <Tabs v-if="shouldShowTabs" default-value="stage-1" class="w-full">
+      <Tabs
+        v-if="shouldShowTabs"
+        v-model="activeTab"
+        default-value="stage-1"
+        class="w-full"
+      >
         <TabsList
           :style="{ gridTemplateColumns: `repeat(${maxStageNumber}, 1fr)` }"
         >
@@ -63,6 +67,17 @@ import {
                     .description
                 }}
               </span>
+              <div
+                v-if="getFirstStageForTab(stageNumber)"
+                class="text-xs text-muted-foreground flex gap-2 mt-0.5"
+              >
+                <span v-if="getBestOf(getFirstStageForTab(stageNumber))">
+                  BO{{ getBestOf(getFirstStageForTab(stageNumber)) }}
+                </span>
+                <span v-if="getFirstStageForTab(stageNumber)?.max_teams">
+                  {{ getFirstStageForTab(stageNumber).max_teams }} teams
+                </span>
+              </div>
             </div>
             <DropdownMenu
               v-if="
@@ -135,6 +150,7 @@ import {
             >
               <TournamentStage
                 :stage="stage"
+                :tournament="tournament"
                 :is-final-stage="stageNumber === maxStageNumber"
               ></TournamentStage>
               <Separator
@@ -159,6 +175,7 @@ import {
                 :order="tournament.stages.length + 1"
                 :tournament-id="tournament.id"
                 :tournament="tournament"
+                @updated="handleStageCreated"
               ></TournamentStageForm>
             </CardContent>
           </Card>
@@ -174,23 +191,23 @@ import {
         >
           <TournamentStage
             :stage="stage"
+            :tournament="tournament"
             :is-final-stage="true"
           ></TournamentStage>
         </div>
       </div>
 
-      <!-- Edit Stage Sheets -->
-      <Sheet
+      <!-- Edit Stage Dialogs -->
+      <Dialog
         v-for="stageNumber in maxStageNumber"
         :key="`edit-${stageNumber}`"
         :open="editStageDialogs[stageNumber]"
         @update:open="(open) => (editStageDialogs[stageNumber] = open)"
       >
-        <SheetTrigger></SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>{{ $t("tournament.stage.edit_title") }}</SheetTitle>
-            <SheetDescription>
+        <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{{ $t("tournament.stage.edit_title") }}</DialogTitle>
+            <DialogDescription>
               <TournamentStageForm
                 v-if="getFirstStageForTab(stageNumber)"
                 :stage="getFirstStageForTab(stageNumber)"
@@ -199,10 +216,10 @@ import {
                 :tournament="tournament"
                 @updated="editStageDialogs[stageNumber] = false"
               ></TournamentStageForm>
-            </SheetDescription>
-          </SheetHeader>
-        </SheetContent>
-      </Sheet>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
 
       <!-- Delete Stage Dialogs -->
       <AlertDialog
@@ -245,12 +262,14 @@ import {
         </p>
       </div>
 
-      <Card class="p-4 max-w-md mx-auto" v-if="tournament.stages.length === 0">
+      <Card class="p-4 mx-auto" v-if="tournament.stages.length === 0">
         <h2 class="text-xl font-semibold mb-4">
           {{ $t("tournament.stage.add_first") }}
         </h2>
         <TournamentStageForm
+          :tournament="tournament"
           :order="tournament.stages.length + 1"
+          @updated="handleStageCreated"
         ></TournamentStageForm>
       </Card>
     </template>
@@ -280,6 +299,7 @@ export default {
       stageMenus: {} as Record<number, boolean>,
       editStageDialogs: {} as Record<number, boolean>,
       deleteAlertDialogs: {} as Record<number, boolean>,
+      activeTab: "stage-1",
     };
   },
   computed: {
@@ -302,6 +322,17 @@ export default {
       );
       return stages.length > 0 ? stages[0] : null;
     },
+    getBestOf(stage: any) {
+      if (!stage) return null;
+      // Get best_of from stage match_options, or fall back to tournament defaults
+      if (stage.match_options?.best_of) {
+        return stage.match_options.best_of;
+      }
+      if (this.tournament?.options?.best_of) {
+        return this.tournament.options.best_of;
+      }
+      return null;
+    },
     openDeleteDialog(stageNumber: number) {
       this.stageMenus[stageNumber] = false;
       this.deleteAlertDialogs[stageNumber] = true;
@@ -319,6 +350,8 @@ export default {
           title: this.$t("tournament.stage.deleted"),
         });
         this.deleteAlertDialogs[stageNumber] = false;
+        // Switch to the first stage tab after deletion
+        this.activeTab = "stage-1";
       } catch (error) {
         console.error("Failed to delete stage:", error);
         toast({
@@ -342,6 +375,12 @@ export default {
           ],
         }),
       });
+    },
+    handleStageCreated(order?: number) {
+      // Switch to the newly created stage tab if order is provided
+      if (order) {
+        this.activeTab = `stage-${order}`;
+      }
     },
   },
 };

@@ -119,7 +119,7 @@ import {
 } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toast } from "@/components/ui/toast";
-
+import { toTypedSchema } from "@vee-validate/zod";
 export default {
   props: {
     match: {
@@ -131,14 +131,16 @@ export default {
     return {
       form: useForm({
         keepValuesOnUnmount: true,
-        validationSchema: matchOptionsValidator(
-          this,
-          {
-            pug: z.boolean().default(true),
-            team_1: z.string().optional(),
-            team_2: z.string().optional(),
-          },
-          useApplicationSettingsStore().settings,
+        validationSchema: toTypedSchema(
+          matchOptionsValidator(
+            this,
+            {
+              pug: z.boolean().default(true),
+              team_1: z.string().optional(),
+              team_2: z.string().optional(),
+            },
+            useApplicationSettingsStore().settings,
+          ),
         ),
       }),
     };

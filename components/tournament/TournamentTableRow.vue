@@ -3,7 +3,6 @@ import { UsersIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
 </script>
 
 <template>

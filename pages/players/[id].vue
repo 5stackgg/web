@@ -295,6 +295,7 @@ import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
 import { eloFields } from "~/graphql/eloFields";
 import { mapFields } from "~/graphql/mapGraphql";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 
 export default {
   apollo: {
@@ -422,20 +423,7 @@ export default {
               e_tournament_status: {
                 description: true,
               },
-              options: {
-                type: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
+              options: matchOptionsFields,
               stages: [
                 {
                   order_by: [

@@ -4,6 +4,7 @@ import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
 import OpenMatches from "~/components/match/OpenMatches.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 </script>
 
 <template>
@@ -94,12 +95,7 @@ export default {
               e_tournament_status: {
                 description: true,
               },
-              options: {
-                type: true,
-                map_pool: {
-                  maps: [{}, mapFields],
-                },
-              },
+              options: matchOptionsFields,
               stages: [
                 {
                   order_by: [

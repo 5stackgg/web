@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import { e_tournament_stage_types_enum } from "~/generated/zeus";
 
 interface Bracket {
   id: string;
@@ -146,6 +147,36 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
           <TimeAgo :date="bracket.scheduled_eta"></TimeAgo>
         </span>
       </div>
+
+      <template
+        v-if="stage.type === e_tournament_stage_types_enum.DoubleElimination"
+      >
+        <div v-if="bracket.parent_bracket" class="text-center mt-2 mb-2">
+          <div class="text-xs text-green-400 font-medium">
+            <span class="inline-flex items-center gap-1">
+              <span>Parent →</span>
+              <span v-if="bracket.parent_bracket.match_number">
+                Round {{ bracket.parent_bracket.round }}, Match
+                {{ bracket.parent_bracket.match_number }}
+              </span>
+              <span v-else> Round {{ bracket.parent_bracket.round }} </span>
+            </span>
+          </div>
+        </div>
+
+        <div v-if="bracket.loser_bracket" class="text-center mt-2 mb-2">
+          <div class="text-xs text-red-400 font-medium">
+            <span class="inline-flex items-center gap-1">
+              <span>Loser →</span>
+              <span v-if="bracket.loser_bracket.match_number">
+                Round {{ bracket.loser_bracket.round }}, Match
+                {{ bracket.loser_bracket.match_number }}
+              </span>
+              <span v-else> Round {{ bracket.loser_bracket.round }} </span>
+            </span>
+          </div>
+        </div>
+      </template>
 
       <!-- Team Display -->
       <template v-if="bracket.bye">

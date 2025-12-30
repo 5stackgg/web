@@ -2,10 +2,7 @@
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import { Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-vue-next";
-import {
-  getRoundLabel,
-  getWinnerLabel,
-} from "~/utilities/tournamentRoundLabels";
+import { getRoundLabel } from "~/utilities/tournamentRoundLabels";
 
 interface TournamentRound {
   length: number;
@@ -14,7 +11,7 @@ interface TournamentRound {
 
 const props = defineProps({
   stage: {
-    type: Number,
+    type: Object,
     required: true,
   },
   tournament: {
@@ -49,7 +46,7 @@ const roundLabels = computed(() => {
   for (const [roundNumber, round] of props.rounds.entries()) {
     const label = getRoundLabel(
       roundNumber,
-      props.stage,
+      props.stage.order,
       props.isFinalStage,
       round.length,
       props.isLoserBracket,
@@ -618,10 +615,10 @@ function startMomentum() {
 
             <div class="flex flex-col justify-around flex-1">
               <TournamentMatch
+                :stage="stage"
+                :tournament="tournament"
                 :round="Number(round)"
                 :brackets="props.rounds.get(round) as any[]"
-                :stage="props.stage"
-                :tournament="props.tournament"
               ></TournamentMatch>
             </div>
           </div>

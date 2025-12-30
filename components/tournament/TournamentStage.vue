@@ -20,7 +20,7 @@ import { e_tournament_stage_types_enum } from "~/generated/zeus";
         }}
       </h3>
       <TournamentBracketViewer
-        :stage="stage.order"
+        :stage="stage"
         :tournament="tournament"
         :rounds="getRoundsForGroup(groupNumber)"
         :is-final-stage="isFinalStage"
@@ -52,7 +52,8 @@ export default {
     isSwissFormat() {
       return (
         this.stage?.type === e_tournament_stage_types_enum.Swiss ||
-        this.stage?.e_tournament_stage_type?.value === e_tournament_stage_types_enum.Swiss
+        this.stage?.e_tournament_stage_type?.value ===
+          e_tournament_stage_types_enum.Swiss
       );
     },
     maxGroups() {

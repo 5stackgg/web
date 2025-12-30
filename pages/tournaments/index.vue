@@ -201,18 +201,7 @@ export default {
               e_tournament_status: {
                 description: true,
               },
-              options: {
-                type: true,
-                best_of: true,
-                map_pool: {
-                  id: true,
-                  type: true,
-                  e_type: {
-                    description: true,
-                  },
-                  maps: [{}, mapFields],
-                },
-              },
+              options: matchOptionsFields,
               stages: [
                 {
                   order_by: [
@@ -286,20 +275,7 @@ export default {
               e_tournament_status: {
                 description: true,
               },
-              options: {
-                type: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
+              options: matchOptionsFields,
               stages: [
                 {
                   order_by: [
@@ -364,20 +340,7 @@ export default {
               e_tournament_status: {
                 description: true,
               },
-              options: {
-                type: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
+              options: matchOptionsFields,
               stages: [
                 {
                   order_by: [
@@ -476,20 +439,7 @@ export default {
               e_tournament_status: {
                 description: true,
               },
-              options: {
-                type: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
+              options: matchOptionsFields,
               stages: [
                 {
                   order_by: [

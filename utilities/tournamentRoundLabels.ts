@@ -14,7 +14,7 @@ export function getRoundLabel(
   }
 
   // For Swiss format, show record labels (handled in SwissBracketViewer)
-  if (stageType === "Swiss") {
+  if (stageType === e_tournament_stage_types_enum.Swiss) {
     return `Round ${roundNumber}`;
   }
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TournamentBracketViewer from "./TournamentBracketViewer.vue";
 import SwissBracketViewer from "./SwissBracketViewer.vue";
+import { e_tournament_stage_types_enum } from "~/generated/zeus";
 </script>
 <template>
   <!-- Swiss Format - groups represent record pools, so don't loop through them -->
@@ -50,8 +51,8 @@ export default {
   computed: {
     isSwissFormat() {
       return (
-        this.stage?.type === "Swiss" ||
-        this.stage?.e_tournament_stage_type?.value === "Swiss"
+        this.stage?.type === e_tournament_stage_types_enum.Swiss ||
+        this.stage?.e_tournament_stage_type?.value === e_tournament_stage_types_enum.Swiss
       );
     },
     maxGroups() {

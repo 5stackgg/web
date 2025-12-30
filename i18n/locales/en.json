@@ -805,6 +805,7 @@
             "match_options": "Match Options",
             "match_options_placeholder": "Select match options...",
             "match_options_description": "Customize match options for this stage. These settings will be used for all matches in this stage.",
+            "match_options_advanced": "Advanced Match Options",
             "use_tournament_default": "Use Tournament Default"
         },
         "match": {

@@ -591,7 +591,7 @@ onMounted(() => {
                 </div>
 
                 <!-- Matches in this pool -->
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-4">
                   <TournamentMatch
                     v-for="bracket in pool.brackets"
                     :key="bracket.id"

@@ -613,7 +613,7 @@ function startMomentum() {
               </div>
             </div>
 
-            <div class="flex flex-col justify-around flex-1">
+            <div class="flex flex-col justify-around flex-1 gap-4">
               <TournamentMatch
                 :stage="stage"
                 :tournament="tournament"

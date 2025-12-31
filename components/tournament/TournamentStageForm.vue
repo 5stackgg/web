@@ -690,6 +690,25 @@ export default {
             );
           } else {
             // Match options exist but match tournament defaults - delete them
+            // First, remove the reference from the stage to avoid FK constraint issues
+            await (this as any).$apollo.mutate({
+              mutation: generateMutation({
+                update_tournament_stages_by_pk: [
+                  {
+                    pk_columns: {
+                      id: this.stage.id,
+                    },
+                    _set: {
+                      match_options_id: null,
+                    },
+                  },
+                  {
+                    __typename: true,
+                  },
+                ],
+              }),
+            });
+            // Now safe to delete the match options
             await this.deleteMatchOptions(this.stage.options.id);
             matchOptionsId = null;
           }

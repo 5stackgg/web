@@ -631,6 +631,8 @@ export default {
                       team_2_seed: true,
                       path: true,
                       loser_parent_bracket_id: true,
+                      match_options_id: true,
+                      options: matchOptionsFields,
                       parent_bracket: {
                         id: true,
                         round: true,

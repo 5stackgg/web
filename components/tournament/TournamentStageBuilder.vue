@@ -26,12 +26,12 @@ import {
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "~/components/ui/sheet";
 </script>
 
 <template>
@@ -164,7 +164,7 @@ import {
           </div>
         </TabsContent>
         <TabsContent value="add-stage" class="mt-6">
-          <Card>
+          <Card class="p-4 max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle>
                 {{ $t("tournament.stage.add_another") }}
@@ -197,17 +197,20 @@ import {
         </div>
       </div>
 
-      <!-- Edit Stage Dialogs -->
-      <Dialog
+      <!-- Edit Stage Sheets -->
+      <Sheet
         v-for="stageNumber in maxStageNumber"
         :key="`edit-${stageNumber}`"
         :open="editStageDialogs[stageNumber]"
         @update:open="(open) => (editStageDialogs[stageNumber] = open)"
       >
-        <DialogContent class="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{{ $t("tournament.stage.edit_title") }}</DialogTitle>
-            <DialogDescription>
+        <SheetContent
+          side="right"
+          class="w-full sm:max-w-2xl lg:max-w-4xl overflow-y-auto"
+        >
+          <SheetHeader>
+            <SheetTitle>{{ $t("tournament.stage.edit_title") }}</SheetTitle>
+            <SheetDescription>
               <TournamentStageForm
                 v-if="getFirstStageForTab(stageNumber)"
                 :stage="getFirstStageForTab(stageNumber)"
@@ -216,10 +219,10 @@ import {
                 :tournament="tournament"
                 @updated="editStageDialogs[stageNumber] = false"
               ></TournamentStageForm>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
 
       <!-- Delete Stage Dialogs -->
       <AlertDialog
@@ -262,7 +265,7 @@ import {
         </p>
       </div>
 
-      <Card class="p-4 mx-auto" v-if="tournament.stages.length === 0">
+      <Card class="p-4 max-w-2xl mx-auto" v-if="tournament.stages.length === 0">
         <h2 class="text-xl font-semibold mb-4">
           {{ $t("tournament.stage.add_first") }}
         </h2>

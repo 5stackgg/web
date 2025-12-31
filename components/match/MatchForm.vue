@@ -6,7 +6,7 @@ import { Info } from "lucide-vue-next";
 
 <template>
   <form @submit.prevent="updateMatch">
-    <match-options :form="form" :match="match">
+    <MatchOptions :form="form" :match="match">
       <template #left>
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem
@@ -93,7 +93,7 @@ import { Info } from "lucide-vue-next";
           </div>
         </div>
       </template>
-    </match-options>
+    </MatchOptions>
 
     <div class="grid grid-cols-1 md:grid-cols-2">
       <Button type="submit" size="lg" class="mt-6 w-full">

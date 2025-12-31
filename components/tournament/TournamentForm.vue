@@ -14,7 +14,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
 
 <template>
   <form @submit.prevent="updateCreateTournament" class="grid gap-4">
-    <match-options :form="form" :force-veto="true">
+    <MatchOptions :form="form" :force-veto="true">
       <FormField v-slot="{ componentField }" name="name">
         <FormItem>
           <FormLabel>{{ $t("tournament.form.name") }}</FormLabel>
@@ -73,7 +73,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
           </FormControl>
         </FormItem>
       </FormField>
-    </match-options>
+    </MatchOptions>
 
     <div class="grid grid-cols-1 md:grid-cols-2">
       <div class="grid gap-4">

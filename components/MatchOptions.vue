@@ -20,7 +20,10 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div
+    class="grid grid-cols-1 gap-6"
+    :class="{ 'md:grid-cols-2': !stageBracketOverride }"
+  >
     <!-- Left Column -->
     <div class="space-y-6">
       <!-- Match Settings -->
@@ -30,7 +33,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
           <slot></slot>
 
-          <FormField v-slot="{ componentField }" name="type">
+          <FormField
+            v-slot="{ componentField }"
+            name="type"
+            v-if="!stageBracketOverride"
+          >
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
                 $t("match.options.type.label")
@@ -100,7 +107,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         <FormField
           v-slot="{ value, handleChange }"
           name="map_veto"
-          v-if="!forceVeto"
+          v-if="!forceVeto && !stageBracketOverride"
         >
           <FormItem
             class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
@@ -128,7 +135,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       </div>
 
       <!-- Map Pool Selection -->
-      <FormField name="map_pool">
+      <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
           <Card>
             <CardHeader>
@@ -913,6 +920,11 @@ export default {
       default: null,
     },
     forceVeto: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    stageBracketOverride: {
       required: false,
       type: Boolean,
       default: false,

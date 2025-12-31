@@ -808,6 +808,10 @@
             "match_options_advanced": "Advanced Match Options",
             "use_tournament_default": "Use Tournament Default"
         },
+        "bracket": {
+            "update": "Update Bracket",
+            "edit_title": "Edit Bracket - Round {round} Match {match}"
+        },
         "match": {
             "team_1": "Team 1",
             "team_2": "Team 2",

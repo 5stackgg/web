@@ -217,7 +217,7 @@ export default {
                     description: true,
                   },
                   order: true,
-                  match_options: {
+                  options: {
                     type: true,
                     best_of: true,
                     map_pool: {
@@ -291,7 +291,7 @@ export default {
                     description: true,
                   },
                   order: true,
-                  match_options: matchOptionsFields,
+                  options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [
@@ -356,7 +356,7 @@ export default {
                     description: true,
                   },
                   order: true,
-                  match_options: matchOptionsFields,
+                  options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [
@@ -455,7 +455,7 @@ export default {
                     description: true,
                   },
                   order: true,
-                  match_options: matchOptionsFields,
+                  options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [

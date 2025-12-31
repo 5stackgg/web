@@ -146,10 +146,10 @@ export default {
       const stage = this.tournament?.stages?.[0];
       if (!stage) return this.singleStageType;
 
-      // Get best_of from stage match_options, or fall back to tournament defaults
+      // Get best_of from stage options, or fall back to tournament defaults
       let bestOf: number | null = null;
-      if (stage.match_options?.best_of) {
-        bestOf = stage.match_options.best_of;
+      if (stage.options?.best_of) {
+        bestOf = stage.options.best_of;
       } else if (this.tournament?.options?.best_of) {
         bestOf = this.tournament.options.best_of;
       }
@@ -181,10 +181,10 @@ export default {
       const stageType =
         stage.e_tournament_stage_type?.description || `Stage ${stage.order}`;
 
-      // Get best_of from stage match_options, or fall back to tournament defaults
+      // Get best_of from stage options, or fall back to tournament defaults
       let bestOf: number | null = null;
-      if (stage.match_options?.best_of) {
-        bestOf = stage.match_options.best_of;
+      if (stage.options?.best_of) {
+        bestOf = stage.options.best_of;
       } else if (this.tournament?.options?.best_of) {
         bestOf = this.tournament.options.best_of;
       }

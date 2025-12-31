@@ -128,7 +128,7 @@ export default {
                     description: true,
                   },
                   order: true,
-                  match_options: {
+                  options: {
                     type: true,
                     best_of: true,
                     map_pool: {

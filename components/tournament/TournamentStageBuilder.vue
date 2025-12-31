@@ -324,9 +324,9 @@ export default {
     },
     getBestOf(stage: any) {
       if (!stage) return null;
-      // Get best_of from stage match_options, or fall back to tournament defaults
-      if (stage.match_options?.best_of) {
-        return stage.match_options.best_of;
+      // Get best_of from stage options, or fall back to tournament defaults
+      if (stage.options?.best_of) {
+        return stage.options.best_of;
       }
       if (this.tournament?.options?.best_of) {
         return this.tournament.options.best_of;

@@ -374,7 +374,7 @@ export default {
                     description: true,
                   },
                   order: true,
-                  match_options: matchOptionsFields,
+                  options: matchOptionsFields,
                 },
               ],
               teams_aggregate: [

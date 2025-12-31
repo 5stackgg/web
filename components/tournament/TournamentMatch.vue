@@ -40,7 +40,7 @@ interface Bracket {
   team_1_seed?: number;
   team_2_seed?: number;
   stage?: {
-    match_options?: {
+    options?: {
       best_of?: number;
     };
   };
@@ -55,7 +55,7 @@ const props = defineProps<{
   round: number;
   brackets: Bracket[];
   stage: {
-    match_options?: {
+    options?: {
       best_of?: number;
     };
   };
@@ -75,9 +75,9 @@ const getBestOf = (
   if (bracket.match?.options?.best_of) {
     return bracket.match.options.best_of;
   }
-  // If no match yet, try to get from stage match_options (if available)
-  if (stage?.match_options?.best_of) {
-    return stage.match_options.best_of;
+  // If no match yet, try to get from stage options (if available)
+  if (stage?.options?.best_of) {
+    return stage.options.best_of;
   }
   // Fall back to tournament options (if available)
   if (tournament?.options?.best_of) {

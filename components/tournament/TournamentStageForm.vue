@@ -265,33 +265,33 @@ export default {
           });
 
           // Load match options from stage if they exist
-          if (stage.match_options) {
+          if (stage.options) {
             this.form.setValues({
               // Match type and other match options
-              type: stage.match_options.type, // Match type (Competitive, Duel, Wingman)
-              mr: stage.match_options.mr.toString(),
-              coaches: stage.match_options.coaches,
-              knife_round: stage.match_options.knife_round,
-              default_models: stage.match_options.default_models,
-              region_veto: stage.match_options.region_veto,
-              overtime: stage.match_options.overtime,
-              best_of: stage.match_options.best_of.toString(),
-              number_of_substitutes: stage.match_options.number_of_substitutes,
-              timeout_setting: stage.match_options.timeout_setting,
-              tech_timeout_setting: stage.match_options.tech_timeout_setting,
-              ready_setting: stage.match_options.ready_setting,
-              map_pool_id: stage.match_options.map_pool?.id,
-              regions: stage.match_options.regions || [],
+              type: stage.options.type, // Match type (Competitive, Duel, Wingman)
+              mr: stage.options.mr.toString(),
+              coaches: stage.options.coaches,
+              knife_round: stage.options.knife_round,
+              default_models: stage.options.default_models,
+              region_veto: stage.options.region_veto,
+              overtime: stage.options.overtime,
+              best_of: stage.options.best_of.toString(),
+              number_of_substitutes: stage.options.number_of_substitutes,
+              timeout_setting: stage.options.timeout_setting,
+              tech_timeout_setting: stage.options.tech_timeout_setting,
+              ready_setting: stage.options.ready_setting,
+              map_pool_id: stage.options.map_pool?.id,
+              regions: stage.options.regions || [],
             });
 
             // Check if it's a custom map pool
             if (
-              stage.match_options.map_pool &&
-              !this.isDefaultMapPoolForStage(stage.match_options.map_pool)
+              stage.options.map_pool &&
+              !this.isDefaultMapPoolForStage(stage.options.map_pool)
             ) {
               this.form.setValues({
                 custom_map_pool: true,
-                map_pool: stage.match_options.map_pool.maps.map(
+                map_pool: stage.options.map_pool.maps.map(
                   ({ id }: { id: string }) => id,
                 ),
               });
@@ -352,14 +352,14 @@ export default {
     isDefaultMapPool: {
       immediate: true,
       handler(isDefaultMapPool) {
-        if (isDefaultMapPool || !this.stage?.match_options) {
+        if (isDefaultMapPool || !this.stage?.options) {
           return;
         }
 
         this.form.setValues({
           custom_map_pool: true,
-          map_pool_id: this.stage.match_options.map_pool?.id,
-          map_pool: this.stage.match_options.map_pool?.maps.map(
+          map_pool_id: this.stage.options.map_pool?.id,
+          map_pool: this.stage.options.map_pool?.maps.map(
             ({ id }: { id: string }) => {
               return id;
             },
@@ -430,10 +430,10 @@ export default {
       });
     },
     isDefaultMapPool() {
-      if (!this.defaultMapPool || !this.stage?.match_options) {
+      if (!this.defaultMapPool || !this.stage?.options) {
         return true;
       }
-      return this.defaultMapPool.id === this.stage.match_options.map_pool?.id;
+      return this.defaultMapPool.id === this.stage.options.map_pool?.id;
     },
   },
   methods: {
@@ -452,8 +452,8 @@ export default {
       }
 
       // Check if we already have a custom map pool and if the maps have changed
-      if (form.map_pool_id && this.stage?.match_options?.map_pool) {
-        const existingMapPool = this.stage.match_options.map_pool;
+      if (form.map_pool_id && this.stage?.options?.map_pool) {
+        const existingMapPool = this.stage.options.map_pool;
         const existingMapIds =
           existingMapPool.maps?.map((map: any) => map.id).sort() || [];
         const newMapIds = [...form.map_pool].sort();
@@ -726,18 +726,18 @@ export default {
         // Handle match options first to get the match_options_id
         let matchOptionsId: string | null = null;
 
-        if (this.stage.match_options?.id) {
+        if (this.stage.options?.id) {
           // Match options exist - update if different, delete if same
           if (customMatchOptions) {
             const mapPoolId = await this.getMapPoolId(form, customMatchOptions);
             matchOptionsId = await this.updateMatchOptions(
-              this.stage.match_options.id,
+              this.stage.options.id,
               form,
               mapPoolId,
             );
           } else {
             // Match options exist but match tournament defaults - delete them
-            await this.deleteMatchOptions(this.stage.match_options.id);
+            await this.deleteMatchOptions(this.stage.options.id);
             matchOptionsId = null;
           }
         } else {

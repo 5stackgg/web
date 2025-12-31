@@ -6,6 +6,7 @@ import {
   e_match_status_enum,
   e_tournament_status_enum,
 } from "~/generated/zeus";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 </script>
 
 <template>

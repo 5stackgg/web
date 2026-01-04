@@ -281,16 +281,18 @@ provide("commander", commander);
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem
-                      :value="round.round.toString()"
-                      v-for="round of currentMap.rounds"
-                    >
-                      {{
-                        $t("match.tabs.round", {
-                          number: round.round.toString(),
-                        })
-                      }}
-                    </SelectItem>
+                    <template v-for="round of currentMap.rounds">
+                      <SelectItem
+                        v-if="round.has_backup_file && round.round > 0"
+                        :value="round.round.toString()"
+                      >
+                        {{
+                          $t("match.tabs.round", {
+                            number: round.round.toString(),
+                          })
+                        }}
+                      </SelectItem>
+                    </template>
                   </SelectGroup>
                 </SelectContent>
               </Select>

@@ -205,6 +205,7 @@ export default {
                       lineup_1_side: true,
                       lineup_2_side: true,
                       winning_side: true,
+                      has_backup_file: true,
                       round: true,
                       kills: [
                         {

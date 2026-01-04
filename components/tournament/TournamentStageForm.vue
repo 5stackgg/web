@@ -422,19 +422,19 @@ export default {
       });
     },
     baseNumberOfTeamsOptions() {
+      let max = 256;
       let options = [];
-      switch (this.form.values.stage_type) {
-        case e_tournament_stage_types_enum.DoubleElimination:
-        case e_tournament_stage_types_enum.SingleElimination:
-          let max = 256;
 
+      switch (this.form.values.stage_type) {
+        case e_tournament_stage_types_enum.SingleElimination:
+        case e_tournament_stage_types_enum.DoubleElimination:
           while (max > 2) {
             options.push({
               value: max.toString(),
               display: max,
             });
 
-            max = max / 2;
+            max--;
           }
 
           if (this.order > 1) {

@@ -430,7 +430,13 @@ import { getAllCountries } from "countries-and-timezones";
                   calculateKDR(player)
                 }}</TableCell>
                 <TableCell>
-                  <PlayerElo :elo="player.elo"></PlayerElo>
+                  <PlayerElo
+                    :elo="{
+                      competitive: player.elo_competitive,
+                      wingman: player.elo_wingman,
+                      duel: player.elo_duel,
+                    }"
+                  ></PlayerElo>
                 </TableCell>
               </NuxtLink>
               <TableCell v-if="canViewAdditionalDetails">

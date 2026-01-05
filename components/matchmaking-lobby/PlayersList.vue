@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import PlayerSearch from "~/components/PlayerSearch.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Separator } from "~/components/ui/separator";
 import { Input } from "~/components/ui/input";

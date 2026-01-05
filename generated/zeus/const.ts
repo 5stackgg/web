@@ -5362,7 +5362,8 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_player_elo_by_pk:{
 			match_id:"uuid",
-			steam_id:"bigint"
+			steam_id:"bigint",
+			type:"e_match_types_enum"
 		},
 		delete_player_flashes:{
 			where:"player_flashes_bool_exp"
@@ -6743,7 +6744,12 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"migration_hashes_hashes_updates"
 		},
 		update_my_friends:{
+			_append:"my_friends_append_input",
+			_delete_at_path:"my_friends_delete_at_path_input",
+			_delete_elem:"my_friends_delete_elem_input",
+			_delete_key:"my_friends_delete_key_input",
 			_inc:"my_friends_inc_input",
+			_prepend:"my_friends_prepend_input",
 			_set:"my_friends_set_input",
 			where:"my_friends_bool_exp"
 		},
@@ -7107,6 +7113,11 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"v_pool_maps_updates"
 		}
 	},
+	my_friends:{
+		elo:{
+
+		}
+	},
 	my_friends_aggregate_bool_exp:{
 		bool_and:"my_friends_aggregate_bool_exp_bool_and",
 		bool_or:"my_friends_aggregate_bool_exp_bool_or",
@@ -7145,11 +7156,13 @@ export const AllTypesProps: Record<string,any> = {
 		var_samp:"my_friends_var_samp_order_by",
 		variance:"my_friends_variance_order_by"
 	},
+	my_friends_append_input:{
+		elo:"jsonb"
+	},
 	my_friends_arr_rel_insert_input:{
 		data:"my_friends_insert_input"
 	},
 	my_friends_avg_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
@@ -7162,7 +7175,7 @@ export const AllTypesProps: Record<string,any> = {
 		country:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		discord_id:"String_comparison_exp",
-		elo:"numeric_comparison_exp",
+		elo:"jsonb_comparison_exp",
 		friend_steam_id:"bigint_comparison_exp",
 		invited_by_steam_id:"bigint_comparison_exp",
 		language:"String_comparison_exp",
@@ -7175,15 +7188,23 @@ export const AllTypesProps: Record<string,any> = {
 		status:"String_comparison_exp",
 		steam_id:"bigint_comparison_exp"
 	},
+	my_friends_delete_at_path_input:{
+
+	},
+	my_friends_delete_elem_input:{
+
+	},
+	my_friends_delete_key_input:{
+
+	},
 	my_friends_inc_input:{
-		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		steam_id:"bigint"
 	},
 	my_friends_insert_input:{
 		created_at:"timestamptz",
-		elo:"numeric",
+		elo:"jsonb",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		last_sign_in_at:"timestamptz",
@@ -7195,7 +7216,6 @@ export const AllTypesProps: Record<string,any> = {
 		country:"order_by",
 		created_at:"order_by",
 		discord_id:"order_by",
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		language:"order_by",
@@ -7211,7 +7231,6 @@ export const AllTypesProps: Record<string,any> = {
 		country:"order_by",
 		created_at:"order_by",
 		discord_id:"order_by",
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		language:"order_by",
@@ -7240,31 +7259,31 @@ export const AllTypesProps: Record<string,any> = {
 		status:"order_by",
 		steam_id:"order_by"
 	},
+	my_friends_prepend_input:{
+		elo:"jsonb"
+	},
 	my_friends_select_column: "enum" as const,
 	my_friends_select_column_my_friends_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
 	my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	my_friends_set_input:{
 		created_at:"timestamptz",
-		elo:"numeric",
+		elo:"jsonb",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		last_sign_in_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	my_friends_stddev_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_stddev_pop_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_stddev_samp_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
@@ -7275,37 +7294,38 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	my_friends_stream_cursor_value_input:{
 		created_at:"timestamptz",
-		elo:"numeric",
+		elo:"jsonb",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		last_sign_in_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	my_friends_sum_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_updates:{
+		_append:"my_friends_append_input",
+		_delete_at_path:"my_friends_delete_at_path_input",
+		_delete_elem:"my_friends_delete_elem_input",
+		_delete_key:"my_friends_delete_key_input",
 		_inc:"my_friends_inc_input",
+		_prepend:"my_friends_prepend_input",
 		_set:"my_friends_set_input",
 		where:"my_friends_bool_exp"
 	},
 	my_friends_var_pop_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_var_samp_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
 	},
 	my_friends_variance_order_by:{
-		elo:"order_by",
 		friend_steam_id:"order_by",
 		invited_by_steam_id:"order_by",
 		steam_id:"order_by"
@@ -7992,7 +8012,8 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		player:"players_bool_exp",
-		steam_id:"bigint_comparison_exp"
+		steam_id:"bigint_comparison_exp",
+		type:"e_match_types_enum_comparison_exp"
 	},
 	player_elo_constraint: "enum" as const,
 	player_elo_inc_input:{
@@ -8007,7 +8028,8 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		player:"players_obj_rel_insert_input",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		type:"e_match_types_enum"
 	},
 	player_elo_on_conflict:{
 		constraint:"player_elo_constraint",
@@ -8021,11 +8043,13 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_order_by",
 		match_id:"order_by",
 		player:"players_order_by",
-		steam_id:"order_by"
+		steam_id:"order_by",
+		type:"order_by"
 	},
 	player_elo_pk_columns_input:{
 		match_id:"uuid",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		type:"e_match_types_enum"
 	},
 	player_elo_select_column: "enum" as const,
 	player_elo_set_input:{
@@ -8033,7 +8057,8 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		current:"numeric",
 		match_id:"uuid",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		type:"e_match_types_enum"
 	},
 	player_elo_stream_cursor_input:{
 		initial_value:"player_elo_stream_cursor_value_input",
@@ -8044,7 +8069,8 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		current:"numeric",
 		match_id:"uuid",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		type:"e_match_types_enum"
 	},
 	player_elo_update_column: "enum" as const,
 	player_elo_updates:{
@@ -9194,6 +9220,9 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_kills_order_by",
 			where:"player_kills_bool_exp"
 		},
+		elo:{
+
+		},
 		elo_history:{
 			distinct_on:"v_player_elo_select_column",
 			order_by:"v_player_elo_order_by",
@@ -9433,7 +9462,7 @@ export const AllTypesProps: Record<string,any> = {
 		deaths:"player_kills_bool_exp",
 		deaths_aggregate:"player_kills_aggregate_bool_exp",
 		discord_id:"String_comparison_exp",
-		elo:"numeric_comparison_exp",
+		elo:"jsonb_comparison_exp",
 		elo_history:"v_player_elo_bool_exp",
 		elo_history_aggregate:"v_player_elo_aggregate_bool_exp",
 		flashed_by_players:"player_flashes_bool_exp",
@@ -10365,7 +10394,8 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		player_elo_by_pk:{
 			match_id:"uuid",
-			steam_id:"bigint"
+			steam_id:"bigint",
+			type:"e_match_types_enum"
 		},
 		player_flashes:{
 			distinct_on:"player_flashes_select_column",
@@ -12037,7 +12067,8 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		player_elo_by_pk:{
 			match_id:"uuid",
-			steam_id:"bigint"
+			steam_id:"bigint",
+			type:"e_match_types_enum"
 		},
 		player_elo_stream:{
 			cursor:"player_elo_stream_cursor_input",
@@ -14717,6 +14748,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"bigint_comparison_exp",
 		player_team_elo_avg:"float8_comparison_exp",
 		team_avg_kda:"float8_comparison_exp",
+		type:"String_comparison_exp",
 		updated_elo:"Int_comparison_exp"
 	},
 	v_player_elo_insert_input:{
@@ -14754,6 +14786,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
 		team_avg_kda:"order_by",
+		type:"order_by",
 		updated_elo:"order_by"
 	},
 	v_player_elo_min_order_by:{
@@ -14777,6 +14810,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
 		team_avg_kda:"order_by",
+		type:"order_by",
 		updated_elo:"order_by"
 	},
 	v_player_elo_order_by:{
@@ -14801,6 +14835,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		player_team_elo_avg:"order_by",
 		team_avg_kda:"order_by",
+		type:"order_by",
 		updated_elo:"order_by"
 	},
 	v_player_elo_select_column: "enum" as const,
@@ -18976,7 +19011,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
-		elo:"numeric",
+		elo:"jsonb",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		language:"String",
@@ -19007,7 +19042,6 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"my_friends_variance_fields"
 	},
 	my_friends_avg_fields:{
-		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
@@ -19017,7 +19051,6 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
-		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		language:"String",
@@ -19033,7 +19066,6 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		discord_id:"String",
-		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		language:"String",
@@ -19049,43 +19081,36 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"my_friends"
 	},
 	my_friends_stddev_fields:{
-		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_stddev_pop_fields:{
-		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_stddev_samp_fields:{
-		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_sum_fields:{
-		elo:"numeric",
 		friend_steam_id:"bigint",
 		invited_by_steam_id:"bigint",
 		steam_id:"bigint"
 	},
 	my_friends_var_pop_fields:{
-		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_var_samp_fields:{
-		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
 	},
 	my_friends_variance_fields:{
-		elo:"Float",
 		friend_steam_id:"Float",
 		invited_by_steam_id:"Float",
 		steam_id:"Float"
@@ -19439,7 +19464,8 @@ export const ReturnTypes: Record<string,any> = {
 		match:"matches",
 		match_id:"uuid",
 		player:"players",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		type:"e_match_types_enum"
 	},
 	player_elo_aggregate:{
 		aggregate:"player_elo_aggregate_fields",
@@ -20099,7 +20125,7 @@ export const ReturnTypes: Record<string,any> = {
 		deaths:"player_kills",
 		deaths_aggregate:"player_kills_aggregate",
 		discord_id:"String",
-		elo:"numeric",
+		elo:"jsonb",
 		elo_history:"v_player_elo",
 		elo_history_aggregate:"v_player_elo_aggregate",
 		flashed_by_players:"player_flashes",
@@ -20177,7 +20203,6 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"players_variance_fields"
 	},
 	players_avg_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
@@ -20189,7 +20214,6 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		current_lobby_id:"uuid",
 		discord_id:"String",
-		elo:"numeric",
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
@@ -20206,7 +20230,6 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		current_lobby_id:"uuid",
 		discord_id:"String",
-		elo:"numeric",
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
@@ -20222,49 +20245,42 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"players"
 	},
 	players_stddev_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
 		wins:"Int"
 	},
 	players_stddev_pop_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
 		wins:"Int"
 	},
 	players_stddev_samp_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
 		wins:"Int"
 	},
 	players_sum_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"bigint",
 		total_matches:"Int",
 		wins:"Int"
 	},
 	players_var_pop_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
 		wins:"Int"
 	},
 	players_var_samp_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
 		wins:"Int"
 	},
 	players_variance_fields:{
-		elo:"numeric",
 		losses:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
@@ -22330,6 +22346,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
 		team_avg_kda:"float8",
+		type:"String",
 		updated_elo:"Int"
 	},
 	v_player_elo_aggregate:{
@@ -22389,6 +22406,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
 		team_avg_kda:"float8",
+		type:"String",
 		updated_elo:"Int"
 	},
 	v_player_elo_min_fields:{
@@ -22412,6 +22430,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"bigint",
 		player_team_elo_avg:"float8",
 		team_avg_kda:"float8",
+		type:"String",
 		updated_elo:"Int"
 	},
 	v_player_elo_stddev_fields:{

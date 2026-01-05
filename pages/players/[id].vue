@@ -289,12 +289,11 @@ const { isMobile } = useSidebar();
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
+import { $, order_by, e_match_types_enum } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
 import { eloFields } from "~/graphql/eloFields";
-import { mapFields } from "~/graphql/mapGraphql";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 
 export default {
@@ -369,6 +368,9 @@ export default {
                 {
                   limit: 10,
                   where: {
+                    type: {
+                      _eq: e_match_types_enum.Competitive,
+                    },
                     match: {
                       winning_lineup_id: {
                         _is_null: false,

@@ -84,11 +84,15 @@ export default defineEventHandler(async (event) => {
   }
 
   if (effectiveEloMin !== undefined && effectiveEloMin !== null) {
-    filterBy.push(`elo:>=${effectiveEloMin}`);
+    filterBy.push(
+      `(elo_competitive:>=${effectiveEloMin} || elo_wingman:>=${effectiveEloMin} || elo_duel:>=${effectiveEloMin})`,
+    );
   }
 
   if (body.elo_max !== undefined && body.elo_max !== null) {
-    filterBy.push(`elo:<=${body.elo_max}`);
+    filterBy.push(
+      `(elo_competitive:<=${body.elo_max} || elo_wingman:<=${body.elo_max} || elo_duel:<=${body.elo_max})`,
+    );
   }
 
   // Filter by countries

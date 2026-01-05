@@ -128,7 +128,11 @@ export default defineEventHandler(async (event) => {
   }
 
   // Use provided sort_by or default to name:asc
-  const sortBy = body.sort_by || "name:asc";
+  let sortBy = body.sort_by || "name:asc";
+
+  if (sortBy.includes("elo")) {
+    sortBy = sortBy.replace("elo", "elo_competitive");
+  }
 
   const searchParams: any = {
     q: query ?? "*",

@@ -33,6 +33,19 @@ import { ChevronUpIcon } from "lucide-vue-next";
     <HoverCardContent class="w-56">
       <div class="space-y-2 text-sm">
         <div class="flex items-center justify-between">
+          <span :class="['text-muted-foreground']"> Competitive </span>
+
+          <span
+            v-if="competitiveElo"
+            class="font-mono font-semibold"
+            :class="getEloColorClass(competitiveElo)"
+          >
+            {{ competitiveElo }}
+          </span>
+          <span v-else class="text-muted-foreground">—</span>
+        </div>
+
+        <div class="flex items-center justify-between">
           <span :class="['text-muted-foreground']"> Duel </span>
 
           <span

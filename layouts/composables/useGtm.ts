@@ -1,5 +1,5 @@
 import { watch, onMounted } from "vue";
-import { useApplicationSettingsStore } from "~/stores/applicationSettings";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export function useGtm() {
   const settingsStore = useApplicationSettingsStore();

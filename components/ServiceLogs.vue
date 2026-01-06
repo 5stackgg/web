@@ -8,63 +8,76 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
 
 <template>
   <Card>
-    <CardHeader class="flex flex-row gap-4 items-center justify-end w-full">
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <ExpandIcon
-              @click="expanded = !expanded"
-              class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
-              v-if="compact"
-            />
-          </TooltipTrigger>
-          <TooltipContent>{{ $t("ui.tooltips.expand") }}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <FullscreenIcon
-              @click="toggleFullscreen"
-              class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
-            />
-          </TooltipTrigger>
-          <TooltipContent>{{ $t("ui.tooltips.fullscreen") }}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-
-      <div class="flex items-center gap-2" v-if="followLogs === undefined">
-        <Switch
-          class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-          :model-value="_followLogs"
-          @click="_followLogs = !_followLogs"
-        >
-        </Switch>
-        {{ $t("ui.logs.follow") }}
+    <CardHeader class="flex flex-row gap-4 items-center justify-between">
+      <div
+        class="text-xs font-mono text-muted-foreground"
+        v-if="oldestTimestamp"
+      >
+        Displaying logs from {{ new Date(oldestTimestamp).toLocaleString() }}
       </div>
 
-      <div class="flex items-center gap-2" v-if="timestamps === undefined">
-        <Switch
-          class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-          :model-value="_timestamps"
-          @click="_timestamps = !_timestamps"
-        >
-        </Switch>
-        {{ $t("ui.logs.timestamps") }}
-      </div>
+      <div class="flex items-center gap-4">
+        <Button variant="outline" @click="jumpToLive">
+          {{ $t("ui.logs.jump_to_live") }}
+        </Button>
 
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <DownloadIcon
-              @click="downloadLogs"
-              class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
-            />
-          </TooltipTrigger>
-          <TooltipContent>{{ $t("ui.tooltips.download") }}</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <ExpandIcon
+                @click="expanded = !expanded"
+                class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+                v-if="compact"
+              />
+            </TooltipTrigger>
+            <TooltipContent>{{ $t("ui.tooltips.expand") }}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <FullscreenIcon
+                @click="toggleFullscreen"
+                class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+              />
+            </TooltipTrigger>
+            <TooltipContent>{{ $t("ui.tooltips.fullscreen") }}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <div class="flex items-center gap-2" v-if="followLogs === undefined">
+          <Switch
+            class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+            :model-value="_followLogs"
+            @click="_followLogs = !_followLogs"
+          >
+          </Switch>
+          {{ $t("ui.logs.follow") }}
+        </div>
+
+        <div class="flex items-center gap-2" v-if="timestamps === undefined">
+          <Switch
+            class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+            :model-value="_timestamps"
+            @click="_timestamps = !_timestamps"
+          >
+          </Switch>
+          {{ $t("ui.logs.timestamps") }}
+        </div>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <DownloadIcon
+                @click="downloadLogs"
+                class="cursor-pointer h-5 w-5 text-muted-foreground hover:text-foreground transition-colors"
+              />
+            </TooltipTrigger>
+            <TooltipContent>{{ $t("ui.tooltips.download") }}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     </CardHeader>
     <CardContent class="p-4">
       <div
@@ -127,6 +140,7 @@ export default {
   },
   data() {
     return {
+      oldestTimestamp: undefined,
       gettingSinceLogs: false,
       _timestamps: true,
       _followLogs: true,
@@ -143,25 +157,60 @@ export default {
     };
   },
   methods: {
+    jumpToLive() {
+      this._followLogs = true;
+      this.$emit("follow-logs-changed", true);
+      this.$nextTick(() => this.scrollToBottom());
+    },
+    preserveScrollOnPrepend(prependFn: () => void) {
+      const container = this.$refs.logsContainer as HTMLElement;
+      if (!container) {
+        prependFn();
+        return;
+      }
+
+      const prevScrollHeight = container.scrollHeight;
+      const prevScrollTop = container.scrollTop;
+
+      prependFn();
+
+      this.$nextTick(() => {
+        const newScrollHeight = container.scrollHeight;
+        const delta = newScrollHeight - prevScrollHeight;
+        container.scrollTop = prevScrollTop + delta;
+      });
+    },
+    isNearBottom(container: HTMLElement, threshold = 20) {
+      return (
+        container.scrollHeight - container.scrollTop - container.clientHeight <=
+        threshold
+      );
+    },
     getLogsSince(event: Event) {
-      if ((event.target as HTMLElement).scrollTop > 100) {
+      const container = event.target as HTMLElement;
+
+      if (this.isNearBottom(container)) {
+        if (!this._followLogs) {
+          this._followLogs = true;
+          this.$emit("follow-logs-changed", true);
+        }
+      } else {
+        if (this._followLogs) {
+          this._followLogs = false;
+          this.$emit("follow-logs-changed", false);
+        }
+      }
+
+      if (container.scrollTop > 100 || this.gettingSinceLogs) {
         return;
       }
 
-      if (this.gettingSinceLogs) {
-        return;
-      }
-
-      let end = this.logs.at(0)?.timestamp;
-
+      const end = this.logs.at(0)?.timestamp;
       if (!end) {
         return;
       }
 
-      console.info(end);
-
-      let start = new Date(end);
-
+      const start = new Date(end);
       start.setMinutes(start.getMinutes() - 60);
 
       this.gettingSinceLogs = true;
@@ -208,6 +257,11 @@ export default {
       window.URL.revokeObjectURL(url);
     },
     scrollToBottom() {
+      const container = this.$refs.logsContainer as HTMLElement;
+      if (!container) {
+        return;
+      }
+
       if (
         (this.followLogs === undefined && !this._followLogs) ||
         !this._followLogs
@@ -215,26 +269,28 @@ export default {
         return;
       }
 
-      this.$nextTick(() => {
-        const container = this.$refs.logsContainer as HTMLElement;
-        if (container) {
-          container.scrollTop = container.scrollHeight;
-        }
-      });
+      container.scrollTop = container.scrollHeight;
     },
   },
   watch: {
     $route: {
       immediate: true,
       handler() {
+        this.$emit("follow-logs-changed", true);
         if (this.logListener) {
           this.logListener.stop();
           this.logListener = undefined;
         }
 
         let partial: any[] = [];
+
         this.logListener = socket.listen(`logs:${this.service}`, (log) => {
           const _log = JSON.parse(log);
+
+          if (_log.oldest_timestamp) {
+            this.oldestTimestamp = _log.oldest_timestamp;
+            return;
+          }
 
           if (_log.end) {
             if (_log.job_finshed !== true && _log.partial !== true) {
@@ -247,10 +303,12 @@ export default {
             }
 
             if (_log.partial) {
-              this.logs.unshift(...partial);
+              this.preserveScrollOnPrepend(() => {
+                this.logs.unshift(...partial);
+              });
+
               this.gettingSinceLogs = false;
               partial = [];
-              return;
             }
 
             return;

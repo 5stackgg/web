@@ -46,6 +46,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
           :service="service"
           :timestamps="timestamps"
           :follow-logs="followLogs"
+          @follow-logs-changed="(value: boolean) => (followLogs = value)"
         />
       </TabsContent>
     </Tabs>

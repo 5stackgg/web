@@ -202,6 +202,7 @@
                 "default_models_description": "Enable default player models for all players in the match.",
                 "auto_cancel_duration": "Auto Cancel Duration",
                 "auto_cancel_duration_description": "This is the duration in minutes that a match will be auto canceled if not started within the duration.",
+                "matchmaking_type_description": "Toggle matchmaking for each type that will allow players to join matchmaking for this type of match.",
                 "update": "Update",
                 "players": {
                     "force_name_registration": "Force Player Name Registration",
@@ -257,7 +258,6 @@
                 "preferred": "Preferred",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
                 "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value."
-
             }
         },
         "watch": {

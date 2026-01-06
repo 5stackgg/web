@@ -137,7 +137,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
 
         <div class="flex flex-row gap-4">
           <div
-            v-for="type in e_match_types"
+            v-for="type in allowedMatchTypes"
             :key="type.value"
             class="flex-1 p-4 border rounded-lg transition-all duration-300 relative overflow-hidden group h-[100px]"
             :class="{
@@ -324,6 +324,9 @@ export default {
     };
   },
   methods: {
+    isMatchmakingTypeEnabled(matchType: string): boolean {
+      return useApplicationSettingsStore().isMatchmakingTypeEnabled(matchType);
+    },
     getRegionlatencyResult(region: string):
       | {
           isLan: boolean;
@@ -371,6 +374,14 @@ export default {
     },
   },
   computed: {
+    allowedMatchTypes(): {
+      value: e_match_types_enum;
+      description: string;
+    }[] {
+      return this.e_match_types.filter((type) =>
+        this.isMatchmakingTypeEnabled(type.value.toLowerCase()),
+      );
+    },
     isInQueue(): boolean {
       return !!this.matchMakingQueueDetails;
     },

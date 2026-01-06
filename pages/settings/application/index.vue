@@ -11,7 +11,7 @@ definePageMeta({
   <form @submit.prevent="updateSettings" class="grid gap-4">
     <div
       class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-      @click="toggleMatchmaking"
+      @click="toggleMatchmaking()"
     >
       <div class="space-y-0.5">
         <h4 class="text-base font-medium">
@@ -25,6 +25,28 @@ definePageMeta({
         :model-value="matchMakingAllowed"
         @update:model-value="toggleMatchmaking"
       />
+    </div>
+
+    <div v-if="matchMakingAllowed" class="space-y-2">
+      <div class="grid grid-cols-3 gap-4">
+        <template v-for="match_type in ['competitive', 'wingman', 'duel']">
+          <div
+            class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+            @click="toggleMatchmakingType(match_type)"
+          >
+            <div class="space-y-0.5">
+              <h4 class="text-base font-medium capitalize">{{ match_type }}</h4>
+            </div>
+            <Switch
+              :model-value="isMatchmakingTypeEnabled(match_type)"
+              @update:model-value="toggleMatchmakingType(match_type)"
+            />
+          </div>
+        </template>
+      </div>
+      <p class="text-sm text-muted-foreground">
+        {{ $t(`pages.settings.application.matchmaking_type_description`) }}
+      </p>
     </div>
 
     <FormField v-slot="{ componentField }" name="auto_cancel_duration">
@@ -245,6 +267,36 @@ export default {
               object: {
                 name: "public.matchmaking",
                 value: this.matchMakingAllowed ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    isMatchmakingTypeEnabled(match_type: e_match_types_enum) {
+      const matchmakingTypeSetting = this.settings.find(
+        (setting: { name: string; value: string | null }) =>
+          setting.name === `public.matchmaking_${match_type}`,
+      );
+      return matchmakingTypeSetting?.value !== "false";
+    },
+    async toggleMatchmakingType(match_type: e_match_types_enum) {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: `public.matchmaking_${match_type}`,
+                value: this.isMatchmakingTypeEnabled(match_type)
+                  ? "false"
+                  : "true",
               },
               on_conflict: {
                 constraint: settings_constraint.settings_pkey,

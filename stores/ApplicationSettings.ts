@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { ref, computed, watch } from "vue";
-import { e_player_roles_enum } from "~/generated/zeus";
+import { e_player_roles_enum, e_match_types_enum } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { useMatchmakingStore } from "./MatchmakingStore";
@@ -269,6 +269,19 @@ export const useApplicationSettingsStore = defineStore(
       globalStream.value = stream;
     };
 
+    const isMatchmakingTypeEnabled = (
+      matchType: e_match_types_enum,
+    ): boolean => {
+      console.info({
+        matchType,
+      });
+      return (
+        settings.value?.find(
+          (setting) => setting.name === `public.matchmaking_${matchType}`,
+        )?.value !== "false"
+      );
+    };
+
     return {
       settings,
       availableRegions,
@@ -285,6 +298,7 @@ export const useApplicationSettingsStore = defineStore(
       canAddWithoutInvite,
       globalStream,
       setGlobalStream,
+      isMatchmakingTypeEnabled,
     };
   },
 );

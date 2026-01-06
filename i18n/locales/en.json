@@ -153,7 +153,10 @@
                     "title": "Telemetry",
                     "telemetry": "Telemetry",
                     "telemetry_description": "Help improve 5stack by sharing anonymous usage data.",
-                    "update": "Telemetry settings updated"
+                    "update": "Update Telemetry Settings",
+                    "update_success": "Telemetry settings updated successfully",
+                    "google_tag_manager_code": "Google Tag Manager Code",
+                    "google_tag_manager_code_description": "Google Tag Manager is a tag management system that allows you to manage and deploy tags on your website."
                 },
                 "matchmaking": {
                     "title": "Matchmaking",

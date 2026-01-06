@@ -1288,7 +1288,8 @@
         "logs": {
             "follow": "Follow Logs",
             "timestamps": "Show Timestamps",
-            "container": "Container Logs"
+            "container": "Container Logs",
+            "jump_to_live": "Jump to Live"
         }
     },
     "player": {

@@ -74,6 +74,7 @@ import { FullscreenIcon, ExpandIcon } from "lucide-vue-next";
           'max-h-[50vh]': !compact,
           'max-h-[320px]': compact && !expanded,
         }"
+        @scroll="getLogsSince"
       >
         <template
           v-for="({ log, node, container, timestamp }, index) in logs"
@@ -126,6 +127,7 @@ export default {
   },
   data() {
     return {
+      gettingSinceLogs: false,
       _timestamps: true,
       _followLogs: true,
       expanded: false,
@@ -141,7 +143,41 @@ export default {
     };
   },
   methods: {
+    getLogsSince(event: Event) {
+      if ((event.target as HTMLElement).scrollTop > 100) {
+        return;
+      }
+
+      if (this.gettingSinceLogs) {
+        return;
+      }
+
+      let end = this.logs.at(0)?.timestamp;
+
+      if (!end) {
+        return;
+      }
+
+      console.info(end);
+
+      let start = new Date(end);
+
+      start.setMinutes(start.getMinutes() - 60);
+
+      this.gettingSinceLogs = true;
+
+      socket.event("logs", {
+        service: this.service,
+        since: {
+          start: start.toISOString(),
+          until: end,
+        },
+      });
+    },
     colorize(log: string) {
+      if (!log) {
+        return;
+      }
       return convert.toHtml(log);
     },
     toggleFullscreen() {
@@ -196,26 +232,45 @@ export default {
           this.logListener = undefined;
         }
 
+        let partial: any[] = [];
         this.logListener = socket.listen(`logs:${this.service}`, (log) => {
           const _log = JSON.parse(log);
 
           if (_log.end) {
-            this.retryTimeout = setTimeout(() => {
-              socket.event("logs", {
-                service: this.service,
-              });
-            }, 5000);
+            if (_log.job_finshed !== true && _log.partial !== true) {
+              this.retryTimeout = setTimeout(() => {
+                socket.event("logs", {
+                  tailLines: 250,
+                  service: this.service,
+                });
+              }, 5000);
+            }
+
+            if (_log.partial) {
+              this.logs.unshift(...partial);
+              this.gettingSinceLogs = false;
+              partial = [];
+              return;
+            }
+
             return;
           }
 
-          this.logs.push(_log);
+          if (_log.log) {
+            if (this.gettingSinceLogs) {
+              partial.push(_log);
+              return;
+            }
 
-          this.$nextTick(() => {
-            this.scrollToBottom();
-          });
+            this.logs.push(_log);
+            this.$nextTick(() => {
+              this.scrollToBottom();
+            });
+          }
         });
 
         socket.event("logs", {
+          tailLines: 250,
           service: this.service,
         });
       },

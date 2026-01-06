@@ -61,11 +61,7 @@ provide("commander", commander);
       <TabsTrigger value="streams" v-if="canConfigureStreams">
         {{ $t("match.tabs.streams") }}
       </TabsTrigger>
-      <TabsTrigger
-        :disabled="!match.server_id"
-        value="server"
-        v-if="canViewAdmin"
-      >
+      <TabsTrigger value="server" v-if="canViewAdmin">
         {{ $t("match.tabs.admin") }}
       </TabsTrigger>
     </TabsList>
@@ -202,11 +198,7 @@ provide("commander", commander);
       </Card>
     </TabsContent>
     <TabsContent value="server" class="flex flex-col gap-4">
-      <ServiceLogs
-        :service="`m-${match.id}`"
-        :compact="true"
-        v-if="match.server_type === 'On Demand'"
-      />
+      <ServiceLogs :service="`m-${match.id}`" :compact="true" />
 
       <AlertDialog :open="showConfirmDialog">
         <AlertDialogContent>
@@ -245,6 +237,7 @@ provide("commander", commander);
         :online="match.is_server_online"
         :match-id="match.id"
         v-slot="{ commander }"
+        v-if="canSendRCONCommands"
       >
         <template v-for="command of availableCommands">
           <DropdownMenuItem
@@ -521,6 +514,12 @@ export default {
       ].includes(this.match.status);
     },
     canViewAdmin() {
+      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
+        useAuthStore();
+
+      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
+    },
+    canSendRCONCommands() {
       if (
         ![
           e_match_status_enum.Live,
@@ -534,10 +533,7 @@ export default {
         return false;
       }
 
-      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
-        useAuthStore();
-
-      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
+      return true;
     },
     canAdjustLineups() {
       if (

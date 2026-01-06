@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import PublicFooter from "~/layouts/components/PublicFooter.vue";
 import PublicHeader from "~/layouts/components/PublicHeader.vue";
+import { useGtm } from "@/layouts/composables/useGtm";
+
+useGtm();
 </script>
 
 <template>

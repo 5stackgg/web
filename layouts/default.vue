@@ -8,6 +8,9 @@ import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { useGtm } from "@/layouts/composables/useGtm";
+
+useGtm();
 
 const route = useRoute();
 const authStore = useAuthStore();

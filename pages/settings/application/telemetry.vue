@@ -6,7 +6,7 @@ definePageMeta({
 </script>
 
 <template>
-  <form @submit.prevent class="grid gap-4">
+  <form @submit.prevent="updateTelemetrySettings" class="grid gap-4">
     <div
       class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
       @click="toggleTelemetry"
@@ -24,6 +24,37 @@ definePageMeta({
         @update:model-value="toggleTelemetry"
       />
     </div>
+
+    <div
+      class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+    >
+      <FormField
+        v-slot="{ componentField }"
+        name="public.google_tagmanager_code"
+      >
+        <FormItem>
+          <FormLabel>{{
+            $t("pages.settings.application.telemetry.google_tag_manager_code")
+          }}</FormLabel>
+          <FormDescription>{{
+            $t(
+              "pages.settings.application.telemetry.google_tag_manager_code_description",
+            )
+          }}</FormDescription>
+          <Input v-bind="componentField" />
+        </FormItem>
+      </FormField>
+    </div>
+
+    <div class="flex justify-start">
+      <Button
+        type="submit"
+        :disabled="Object.keys(form.errors).length > 0"
+        class="my-3"
+      >
+        {{ $t("pages.settings.application.telemetry.update") }}
+      </Button>
+    </div>
   </form>
 </template>
 
@@ -36,6 +67,33 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 
 export default {
+  data() {
+    return {
+      form: useForm({
+        validationSchema: toTypedSchema(
+          z.object({
+            public: z.object({
+              google_tagmanager_code: z.string().optional(),
+            }),
+          }),
+        ),
+      }),
+    };
+  },
+  watch: {
+    settings: {
+      immediate: true,
+      handler() {
+        this.form.setValues({
+          public: {
+            google_tagmanager_code: this.settings.find(
+              (setting) => setting.name === "public.google_tagmanager_code",
+            )?.value,
+          },
+        });
+      },
+    },
+  },
   methods: {
     async toggleTelemetry() {
       await this.$apollo.mutate({
@@ -61,7 +119,37 @@ export default {
       });
 
       toast({
-        title: this.$t("pages.settings.application.telemetry.update"),
+        title: this.$t("pages.settings.application.telemetry.update_success"),
+      });
+    },
+    async updateTelemetrySettings() {
+      const { valid } = await this.form.validate();
+      if (!valid) {
+        return;
+      }
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings: [
+            {
+              objects: [
+                {
+                  name: "public.google_tagmanager_code",
+                  value: this.form.values.public?.google_tagmanager_code,
+                },
+              ],
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+      toast({
+        title: this.$t("pages.settings.application.telemetry.update_success"),
       });
     },
   },

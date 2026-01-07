@@ -124,7 +124,6 @@ import Logout from "./Logout.vue";
               >
                 <TournamentBracket />
                 {{ $t("layouts.app_nav.navigation.tournaments") }}
-                <Badge variant="destructive" class="ml-2">beta</Badge>
                 <Badge
                   size="sm"
                   v-if="activeTournamentsCount > 0"

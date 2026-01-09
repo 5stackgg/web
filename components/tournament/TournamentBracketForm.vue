@@ -1,12 +1,5 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
 import MatchOptions from "~/components/MatchOptions.vue";
 import { $ } from "~/generated/zeus";
 </script>
@@ -22,7 +15,6 @@ import { $ } from "~/generated/zeus";
 </template>
 
 <script lang="ts">
-import * as z from "zod";
 import { useForm } from "vee-validate";
 import { generateMutation } from "~/graphql/graphqlGen";
 import matchOptionsValidator from "~/utilities/match-options-validator";
@@ -91,22 +83,20 @@ export default {
           } else {
             // If no match options, use tournament defaults for all match options
             this.form.setValues({
-              type: this.tournament.options.type,
-              mr: this.tournament.options.mr.toString(),
-              coaches: this.tournament.options.coaches,
-              knife_round: this.tournament.options.knife_round,
-              default_models: this.tournament.options.default_models,
-              region_veto: this.tournament.options.region_veto,
-              overtime: this.tournament.options.overtime,
-              best_of: this.tournament.options.best_of.toString(),
-              number_of_substitutes:
-                this.tournament.options.number_of_substitutes,
-              timeout_setting: this.tournament.options.timeout_setting,
-              tech_timeout_setting:
-                this.tournament.options.tech_timeout_setting,
-              ready_setting: this.tournament.options.ready_setting,
-              map_pool_id: this.tournament.options.map_pool.id,
-              regions: this.tournament.options.regions || [],
+              type: this.defaultOptions.type,
+              mr: this.defaultOptions.mr.toString(),
+              coaches: this.defaultOptions.coaches,
+              knife_round: this.defaultOptions.knife_round,
+              default_models: this.defaultOptions.default_models,
+              region_veto: this.defaultOptions.region_veto,
+              overtime: this.defaultOptions.overtime,
+              best_of: this.defaultOptions.best_of.toString(),
+              number_of_substitutes: this.defaultOptions.number_of_substitutes,
+              timeout_setting: this.defaultOptions.timeout_setting,
+              tech_timeout_setting: this.defaultOptions.tech_timeout_setting,
+              ready_setting: this.defaultOptions.ready_setting,
+              map_pool_id: this.defaultOptions.map_pool.id,
+              regions: this.defaultOptions.regions || [],
               map_veto: true,
             });
           }
@@ -194,6 +184,13 @@ export default {
       },
     },
   },
+  computed: {
+    defaultOptions() {
+      return this.stage?.options
+        ? this.stage.options
+        : this.tournament?.options;
+    },
+  },
   methods: {
     hasMatchOptionsChanged() {
       if (!this.tournament) {
@@ -201,23 +198,22 @@ export default {
       }
 
       const form = this.form.values;
-      const tournamentOptions = this.tournament.options;
+      const defaultOptions = this.defaultOptions;
 
       // Only check allowed fields that can be modified:
       // coaches, knife_round, default_models, region_veto, overtime,
       // best_of, number_of_substitutes, timeout_setting, tech_timeout_setting, ready_setting
       if (
-        form.coaches !== tournamentOptions.coaches ||
-        form.knife_round !== tournamentOptions.knife_round ||
-        form.default_models !== tournamentOptions.default_models ||
-        form.region_veto !== tournamentOptions.region_veto ||
-        form.overtime !== tournamentOptions.overtime ||
-        parseInt(form.best_of) !== tournamentOptions.best_of ||
-        form.number_of_substitutes !==
-          tournamentOptions.number_of_substitutes ||
-        form.timeout_setting !== tournamentOptions.timeout_setting ||
-        form.tech_timeout_setting !== tournamentOptions.tech_timeout_setting ||
-        form.ready_setting !== tournamentOptions.ready_setting
+        form.coaches !== defaultOptions.coaches ||
+        form.knife_round !== defaultOptions.knife_round ||
+        form.default_models !== defaultOptions.default_models ||
+        form.region_veto !== defaultOptions.region_veto ||
+        form.overtime !== defaultOptions.overtime ||
+        parseInt(form.best_of) !== defaultOptions.best_of ||
+        form.number_of_substitutes !== defaultOptions.number_of_substitutes ||
+        form.timeout_setting !== defaultOptions.timeout_setting ||
+        form.tech_timeout_setting !== defaultOptions.tech_timeout_setting ||
+        form.ready_setting !== defaultOptions.ready_setting
       ) {
         return true;
       }

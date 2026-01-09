@@ -80,11 +80,7 @@ import {
               </div>
             </div>
             <DropdownMenu
-              v-if="
-                tournament.is_organizer &&
-                tournament.status === e_tournament_status_enum.Setup &&
-                getFirstStageForTab(stageNumber)
-              "
+              v-if="canEditStages && getFirstStageForTab(stageNumber)"
               v-model:open="stageMenus[stageNumber]"
               @click.stop
             >
@@ -122,14 +118,7 @@ import {
               </DropdownMenuContent>
             </DropdownMenu>
           </TabsTrigger>
-          <TabsTrigger
-            value="add-stage"
-            class="text-sm"
-            v-if="
-              tournament.is_organizer &&
-              tournament.status === e_tournament_status_enum.Setup
-            "
-          >
+          <TabsTrigger value="add-stage" class="text-sm" v-if="canEditStages">
             {{ $t("tournament.stage.add_another") }}
           </TabsTrigger>
         </TabsList>
@@ -311,10 +300,13 @@ export default {
       return Math.max(...this.tournament.stages.map((s: any) => s.order || 1));
     },
     shouldShowTabs() {
+      return this.maxStageNumber > 1 || this.canEditStages;
+    },
+    canEditStages() {
       return (
-        this.maxStageNumber > 1 ||
-        (this.tournament.is_organizer &&
-          this.tournament.status === e_tournament_status_enum.Setup)
+        this.tournament.is_organizer &&
+        this.tournament.status !== e_tournament_status_enum.Live &&
+        this.tournament.status !== e_tournament_status_enum.Finished
       );
     },
   },

@@ -134,7 +134,8 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
 const canEditBracket = (bracket: Bracket) => {
   return (
     props.tournament?.is_organizer &&
-    props.tournament?.status === e_tournament_status_enum.Setup
+    (props.tournament?.status !== e_tournament_status_enum.Setup ||
+      props.tournament?.status !== e_tournament_status_enum.Finished)
   );
 };
 

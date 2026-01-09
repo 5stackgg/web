@@ -145,11 +145,10 @@ import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Separator } from "~/components/ui/separator";
 import { PlusCircle } from "lucide-vue-next";
-import { mapFields } from "~/graphql/mapGraphql";
-import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 
 export default {
   components: {
@@ -193,53 +192,7 @@ export default {
                 },
               ],
             },
-            {
-              id: true,
-              name: true,
-              start: true,
-              description: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: matchOptionsFields,
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                  options: {
-                    type: true,
-                    best_of: true,
-                    map_pool: {
-                      id: true,
-                      type: true,
-                      e_type: {
-                        description: true,
-                      },
-                      maps: [{}, mapFields],
-                    },
-                  },
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
+            simpleTournamentFields,
           ],
         }),
         variables: function () {
@@ -267,42 +220,7 @@ export default {
                 },
               ],
             },
-            {
-              id: true,
-              name: true,
-              start: true,
-              description: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: matchOptionsFields,
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                  options: matchOptionsFields,
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
+            simpleTournamentFields,
           ],
         }),
         variables: function () {
@@ -332,42 +250,7 @@ export default {
                 },
               },
             },
-            {
-              id: true,
-              name: true,
-              start: true,
-              description: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: matchOptionsFields,
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                  options: matchOptionsFields,
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
+            simpleTournamentFields,
           ],
         }),
         variables: function () {
@@ -431,42 +314,7 @@ export default {
                 },
               },
             },
-            {
-              id: true,
-              name: true,
-              start: true,
-              description: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: matchOptionsFields,
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                  options: matchOptionsFields,
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
+            simpleTournamentFields,
           ],
         }),
         variables: function () {

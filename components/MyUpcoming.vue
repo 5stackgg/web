@@ -24,9 +24,9 @@ import SimpleTournamentDisplay from "./tournament/SimpleTournamentDisplay.vue";
 </template>
 
 <script lang="ts">
-import { mapFields } from "~/graphql/mapGraphql";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
+import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 
 export default {
   data() {
@@ -57,45 +57,7 @@ export default {
                 },
               ],
             },
-            {
-              id: true,
-              name: true,
-              start: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: {
-                type: true,
-                map_pool: {
-                  maps: [{}, mapFields],
-                },
-              },
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
-            },
+            simpleTournamentFields,
           ],
         }),
         variables: function () {

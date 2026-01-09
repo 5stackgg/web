@@ -272,9 +272,6 @@ export const useApplicationSettingsStore = defineStore(
     const isMatchmakingTypeEnabled = (
       matchType: e_match_types_enum,
     ): boolean => {
-      console.info({
-        matchType,
-      });
       return (
         settings.value?.find(
           (setting) => setting.name === `public.matchmaking_${matchType}`,

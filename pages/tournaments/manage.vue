@@ -235,9 +235,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { validate as validateUUID } from "uuid";
-import { useAuthStore } from "~/stores/AuthStore";
-import { mapFields } from "~/graphql/mapGraphql";
-import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 
 interface TournamentsData {
   tournaments: any[];
@@ -351,40 +349,7 @@ export default {
               where: $("where_clause", "tournaments_bool_exp!"),
             },
             {
-              id: true,
-              name: true,
-              start: true,
-              description: true,
-              e_tournament_status: {
-                description: true,
-              },
-              options: matchOptionsFields,
-              stages: [
-                {
-                  order_by: [
-                    {
-                      order: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  type: true,
-                  e_tournament_stage_type: {
-                    description: true,
-                  },
-                  order: true,
-                  options: matchOptionsFields,
-                },
-              ],
-              teams_aggregate: [
-                {},
-                {
-                  aggregate: {
-                    count: true,
-                  },
-                },
-              ],
+              ...simpleTournamentFields,
               is_organizer: true,
             },
           ],

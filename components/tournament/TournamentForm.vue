@@ -98,6 +98,11 @@ import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toTypedSchema } from "@vee-validate/zod";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
+import {
+  setupOptions,
+  setupOptionsVariables,
+  setupOptionsSetMutation,
+} from "~/utilities/setupOptions";
 
 export default {
   emits: ["updated"],
@@ -189,19 +194,9 @@ export default {
             map_veto: true,
             name: tournament.name,
             description: tournament.description,
-            type: tournament.options.type,
-            mr: tournament.options.mr.toString(),
-            coaches: tournament.options.coaches,
-            knife_round: tournament.options.knife_round,
-            default_models: tournament.options.default_models,
-            region_veto: tournament.options.region_veto,
-            overtime: tournament.options.overtime,
-            best_of: tournament.options.best_of.toString(),
-            number_of_substitutes: tournament.options.number_of_substitutes,
-            timeout_setting: tournament.options.timeout_setting,
-            tech_timeout_setting: tournament.options.tech_timeout_setting,
-            map_pool_id: tournament.options.map_pool.id,
           });
+
+          setupOptions(this.form, tournament.options);
         }
       },
     },
@@ -315,20 +310,7 @@ export default {
         await this.$apollo.mutate({
           variables: {
             id: this.tournament.options.id,
-            mr: form.mr,
-            type: form.type,
-            best_of: form.best_of,
-            knife_round: form.knife_round,
-            default_models: form.default_models,
-            overtime: form.overtime,
-            coaches: form.coaches,
-            region_veto: form.region_veto,
-            regions: form.regions,
-            number_of_substitutes: form.number_of_substitutes,
-            timeout_setting: form.timeout_setting,
-            ready_setting: form.ready_setting,
-            tech_timeout_setting: form.tech_timeout_setting,
-            map_pool_id: mapPoolId,
+            ...setupOptionsVariables(form, { mapPoolId }),
           },
           mutation: generateMutation({
             update_match_options_by_pk: [
@@ -336,29 +318,7 @@ export default {
                 pk_columns: {
                   id: $("id", "uuid!"),
                 },
-                _set: {
-                  mr: $("mr", "Int!"),
-                  type: $("type", "e_match_types_enum!"),
-                  best_of: $("best_of", "Int!"),
-                  knife_round: $("knife_round", "Boolean!"),
-                  default_models: $("default_models", "Boolean!"),
-                  overtime: $("overtime", "Boolean!"),
-                  map_veto: true,
-                  region_veto: $("region_veto", "Boolean!"),
-                  regions: $("regions", "[String!]!"),
-                  coaches: $("coaches", "Boolean!"),
-                  number_of_substitutes: $("number_of_substitutes", "Int!"),
-                  ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                  timeout_setting: $(
-                    "timeout_setting",
-                    "e_timeout_settings_enum!",
-                  ),
-                  tech_timeout_setting: $(
-                    "tech_timeout_setting",
-                    "e_timeout_settings_enum!",
-                  ),
-                  map_pool_id: $("map_pool_id", "uuid!"),
-                },
+                _set: setupOptionsSetMutation(!!mapPoolId),
               },
               {
                 __typename: true,
@@ -374,40 +334,7 @@ export default {
       }
 
       const { data } = await this.$apollo.mutate({
-        variables: {
-          mr: form.mr,
-          type: form.type,
-          best_of: form.best_of,
-          knife_round: form.knife_round,
-          default_models: form.default_models,
-          overtime: form.overtime,
-          coaches: form.coaches,
-          region_veto: form.region_veto,
-          regions: form.regions,
-          number_of_substitutes: form.number_of_substitutes,
-          timeout_setting: form.timeout_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          ...(form.map_pool_id
-            ? {
-                map_pool_id: form.map_pool_id,
-              }
-            : {}),
-          map_pool: !form.map_pool_id
-            ? {
-                data: {
-                  type: e_map_pool_types_enum.Custom,
-                  maps: {
-                    data: form?.map_pool?.map((map_id) => {
-                      return {
-                        id: map_id,
-                      };
-                    }),
-                  },
-                },
-              }
-            : null,
-        },
+        variables: setupOptionsVariables(form),
         mutation: generateMutation({
           insert_tournaments_one: [
             {
@@ -416,32 +343,7 @@ export default {
                 start: this.form.values.start,
                 description: this.form.values.description,
                 options: {
-                  data: {
-                    mr: $("mr", "Int!"),
-                    type: $("type", "e_match_types_enum!"),
-                    best_of: $("best_of", "Int!"),
-                    knife_round: $("knife_round", "Boolean!"),
-                    default_models: $("default_models", "Boolean!"),
-                    overtime: $("overtime", "Boolean!"),
-                    map_veto: true,
-                    region_veto: $("region_veto", "Boolean!"),
-                    regions: $("regions", "[String!]!"),
-                    coaches: $("coaches", "Boolean!"),
-                    number_of_substitutes: $("number_of_substitutes", "Int!"),
-                    ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                    timeout_setting: $(
-                      "timeout_setting",
-                      "e_timeout_settings_enum!",
-                    ),
-                    tech_timeout_setting: $(
-                      "tech_timeout_setting",
-                      "e_timeout_settings_enum!",
-                    ),
-                    map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
-                    ...(form.map_pool_id
-                      ? { map_pool_id: $("map_pool_id", "uuid!") }
-                      : {}),
-                  },
+                  data: setupOptionsSetMutation(form.map_pool_id !== undefined),
                 },
               },
             },

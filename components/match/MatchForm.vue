@@ -120,6 +120,12 @@ import {
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toast } from "@/components/ui/toast";
 import { toTypedSchema } from "@vee-validate/zod";
+import {
+  setupOptions,
+  setupOptionsVariables,
+  setupOptionsSetMutation,
+} from "~/utilities/setupOptions";
+
 export default {
   props: {
     match: {
@@ -155,6 +161,8 @@ export default {
         }
         const matchOptions = match.options;
 
+        setupOptions(this.form, matchOptions);
+
         for (const key in this.form.values) {
           switch (key) {
             case "pug":
@@ -183,21 +191,6 @@ export default {
                   matchOptions.map_pool.maps.map((map) => map.id),
                 );
               }
-              break;
-            case "mr":
-              this.form.setFieldValue(key, matchOptions.mr.toString());
-              break;
-            case "best_of":
-              this.form.setFieldValue(key, matchOptions.best_of.toString());
-              break;
-            default:
-              if (
-                matchOptions[key] === undefined ||
-                matchOptions[key] === null
-              ) {
-                break;
-              }
-              this.form.setFieldValue(key, matchOptions[key]);
               break;
           }
         }
@@ -345,65 +338,17 @@ export default {
       }
 
       await this.$apollo.mutate({
-        variables: {
-          mr: form.mr,
-          type: form.type,
-          best_of: form.best_of,
-          knife_round: form.knife_round,
-          default_models: form.default_models,
-          overtime: form.overtime,
-          map_veto: form.map_veto,
-          region_veto: form.region_veto,
-          regions: form.regions,
-          coaches: form.coaches,
-          timeout_setting: form.timeout_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          tv_delay: form.tv_delay,
-          number_of_substitutes: form.number_of_substitutes,
-          map_pool_id: mapPoolId,
-          ...(this.canSetVetoSettings
-            ? { check_in_setting: form.check_in_setting }
-            : {}),
-        },
+        variables: setupOptionsVariables(form, {
+          mapPoolId: mapPoolId,
+          matchOptionsId: this.match.options.id,
+        }),
         mutation: generateMutation({
           update_match_options_by_pk: [
             {
               pk_columns: {
-                id: this.match.options.id,
+                id: $("id", "uuid!"),
               },
-              _set: {
-                mr: $("mr", "Int!"),
-                type: $("type", "e_match_types_enum!"),
-                coaches: $("coaches", "Boolean!"),
-                tv_delay: $("tv_delay", "Int!"),
-                knife_round: $("knife_round", "Boolean!"),
-                default_models: $("default_models", "Boolean!"),
-                best_of: $("best_of", "Int!"),
-                overtime: $("overtime", "Boolean!"),
-                map_veto: $("map_veto", "Boolean!"),
-                region_veto: $("region_veto", "Boolean!"),
-                regions: $("regions", "[String!]!"),
-                ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                ...(this.canSetVetoSettings
-                  ? {
-                      check_in_setting: $(
-                        "check_in_setting",
-                        "e_check_in_settings_enum!",
-                      ),
-                    }
-                  : {}),
-                timeout_setting: $(
-                  "timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                tech_timeout_setting: $(
-                  "tech_timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                number_of_substitutes: $("number_of_substitutes", "Int!"),
-                map_pool_id: $("map_pool_id", "uuid!"),
-              },
+              _set: setupOptionsSetMutation(!!mapPoolId),
             },
             {
               id: true,
@@ -420,45 +365,7 @@ export default {
       const form = this.form.values;
 
       const { data } = await this.$apollo.mutate({
-        variables: {
-          mr: form.mr,
-          type: form.type,
-          best_of: form.best_of,
-          knife_round: form.knife_round,
-          default_models: form.default_models,
-          overtime: form.overtime,
-          map_veto: form.map_veto,
-          region_veto: form.region_veto,
-          regions: form.regions,
-          coaches: form.coaches,
-          timeout_setting: form.timeout_setting,
-          ready_setting: form.ready_setting,
-          ...(this.canSetVetoSettings
-            ? { check_in_setting: form.check_in_setting }
-            : {}),
-          tech_timeout_setting: form.tech_timeout_setting,
-          tv_delay: form.tv_delay,
-          number_of_substitutes: form.number_of_substitutes,
-          ...(form.map_pool_id
-            ? {
-                map_pool_id: form.map_pool_id,
-              }
-            : {}),
-          map_pool: !form.map_pool_id
-            ? {
-                data: {
-                  type: e_map_pool_types_enum.Custom,
-                  maps: {
-                    data: form?.map_pool?.map((map_id) => {
-                      return {
-                        id: map_id,
-                      };
-                    }),
-                  },
-                },
-              }
-            : null,
-        },
+        variables: setupOptionsVariables(form),
         mutation: generateMutation({
           insert_matches_one: [
             {
@@ -480,41 +387,7 @@ export default {
                     }
                   : {}),
                 options: {
-                  data: {
-                    mr: $("mr", "Int!"),
-                    type: $("type", "e_match_types_enum!"),
-                    coaches: $("coaches", "Boolean!"),
-                    tv_delay: $("tv_delay", "Int!"),
-                    knife_round: $("knife_round", "Boolean!"),
-                    default_models: $("default_models", "Boolean!"),
-                    best_of: $("best_of", "Int!"),
-                    overtime: $("overtime", "Boolean!"),
-                    map_veto: $("map_veto", "Boolean!"),
-                    region_veto: $("region_veto", "Boolean!"),
-                    regions: $("regions", "[String!]!"),
-                    ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                    ...(this.canSetVetoSettings
-                      ? {
-                          check_in_setting: $(
-                            "check_in_setting",
-                            "e_check_in_settings_enum!",
-                          ),
-                        }
-                      : {}),
-                    timeout_setting: $(
-                      "timeout_setting",
-                      "e_timeout_settings_enum!",
-                    ),
-                    tech_timeout_setting: $(
-                      "tech_timeout_setting",
-                      "e_timeout_settings_enum!",
-                    ),
-                    number_of_substitutes: $("number_of_substitutes", "Int!"),
-                    map_pool: $("map_pool", "map_pools_obj_rel_insert_input"),
-                    ...(form.map_pool_id
-                      ? { map_pool_id: $("map_pool_id", "uuid!") }
-                      : {}),
-                  },
+                  data: setupOptionsSetMutation(form.map_pool_id !== undefined),
                 },
               },
             },

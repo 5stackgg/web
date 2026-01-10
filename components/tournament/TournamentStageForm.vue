@@ -16,16 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "~/components/ui/collapsible";
 import MatchOptions from "~/components/MatchOptions.vue";
-import { $, e_map_pool_types_enum } from "~/generated/zeus";
+import { $ } from "~/generated/zeus";
 </script>
 
 <template>
+  --{{ form.values.tv_delay }}--
   <form @submit.prevent="updateCreateStage" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="groups">
       <FormItem>
@@ -145,6 +141,11 @@ import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { mapFields } from "~/graphql/mapGraphql";
+import {
+  setupOptions,
+  setupOptionsVariables,
+  setupOptionsSetMutation,
+} from "~/utilities/setupOptions";
 
 export default {
   emits: ["updated"],
@@ -238,6 +239,7 @@ export default {
               path: ["min_teams"],
             },
           ),
+          (useApplicationSettingsStore() as any).settings,
         ),
       }),
     };
@@ -247,165 +249,21 @@ export default {
       immediate: true,
       handler(stage) {
         if (stage) {
-          // Set stage-specific fields (stage type, groups, teams)
           this.form.setValues({
-            stage_type: stage.type, // Tournament stage type (SingleElimination, etc.)
+            stage_type: stage.type,
             groups: stage.groups,
             min_teams: stage.min_teams.toString(),
             max_teams: stage.max_teams.toString(),
           });
-
-          // Load match options from stage if they exist
-          if (stage.options && this.tournament) {
-            // Always use tournament defaults for restricted fields
-            // Only load allowed fields from stage options
-            this.form.setValues({
-              // Restricted fields - always use tournament defaults
-              type: this.tournament.options.type,
-              mr: this.tournament.options.mr.toString(),
-              map_pool_id: this.tournament.options.map_pool.id,
-              regions: this.tournament.options.regions || [],
-              map_veto: true,
-              custom_map_pool: false,
-              // Allowed fields - use from stage options
-              coaches: stage.options.coaches,
-              knife_round: stage.options.knife_round,
-              default_models: stage.options.default_models,
-              region_veto: stage.options.region_veto,
-              overtime: stage.options.overtime,
-              best_of: stage.options.best_of.toString(),
-              number_of_substitutes: stage.options.number_of_substitutes,
-              timeout_setting: stage.options.timeout_setting,
-              tech_timeout_setting: stage.options.tech_timeout_setting,
-              ready_setting: stage.options.ready_setting,
-            });
-          } else if (this.tournament) {
-            // If no match options, use tournament defaults for all match options
-            this.form.setValues({
-              type: this.tournament.options.type,
-              mr: this.tournament.options.mr.toString(),
-              coaches: this.tournament.options.coaches,
-              knife_round: this.tournament.options.knife_round,
-              default_models: this.tournament.options.default_models,
-              region_veto: this.tournament.options.region_veto,
-              overtime: this.tournament.options.overtime,
-              best_of: this.tournament.options.best_of.toString(),
-              number_of_substitutes:
-                this.tournament.options.number_of_substitutes,
-              timeout_setting: this.tournament.options.timeout_setting,
-              tech_timeout_setting:
-                this.tournament.options.tech_timeout_setting,
-              ready_setting: this.tournament.options.ready_setting,
-              map_pool_id: this.tournament.options.map_pool.id,
-              regions: this.tournament.options.regions || [],
-              map_veto: true,
-            });
-          }
-        } else {
-          this.form.setValues({
-            groups: 1,
-          });
         }
+
+        this.setFormOptions();
       },
     },
     tournament: {
       immediate: true,
-      handler(tournament) {
-        if (tournament && !this.stage) {
-          // Always use tournament defaults for all fields when creating new stage
-          this.form.setValues({
-            type: tournament.options.type,
-            mr: tournament.options.mr.toString(),
-            coaches: tournament.options.coaches,
-            knife_round: tournament.options.knife_round,
-            default_models: tournament.options.default_models,
-            region_veto: tournament.options.region_veto,
-            overtime: tournament.options.overtime,
-            best_of: tournament.options.best_of.toString(),
-            number_of_substitutes: tournament.options.number_of_substitutes,
-            timeout_setting: tournament.options.timeout_setting,
-            tech_timeout_setting: tournament.options.tech_timeout_setting,
-            ready_setting: tournament.options.ready_setting,
-            map_pool_id: tournament.options.map_pool.id,
-            regions: tournament.options.regions || [],
-            map_veto: true,
-            custom_map_pool: false,
-          });
-        } else if (tournament && this.stage) {
-          // When tournament changes, ensure restricted fields use tournament defaults
-          this.form.setValues({
-            type: tournament.options.type,
-            mr: tournament.options.mr.toString(),
-            map_pool_id: tournament.options.map_pool.id,
-            regions: tournament.options.regions || [],
-            map_veto: true,
-            custom_map_pool: false,
-          });
-        }
-      },
-    },
-    // Ensure restricted fields always use tournament defaults
-    "tournament.options": {
-      deep: true,
       handler() {
-        if (!this.tournament) {
-          return;
-        }
-        // Always sync restricted fields from tournament
-        this.form.setValues({
-          type: this.tournament.options.type,
-          mr: this.tournament.options.mr.toString(),
-          map_pool_id: this.tournament.options.map_pool.id,
-          regions: this.tournament.options.regions || [],
-          map_veto: true,
-          custom_map_pool: false,
-        });
-      },
-    },
-    // Watch restricted fields and reset them to tournament defaults if changed
-    "form.values.type": {
-      handler(newValue) {
-        if (this.tournament && newValue !== this.tournament.options.type) {
-          this.form.setFieldValue("type", this.tournament.options.type);
-        }
-      },
-    },
-    "form.values.mr": {
-      handler(newValue) {
-        if (
-          this.tournament &&
-          parseInt(newValue) !== this.tournament.options.mr
-        ) {
-          this.form.setFieldValue("mr", this.tournament.options.mr.toString());
-        }
-      },
-    },
-    "form.values.regions": {
-      deep: true,
-      handler(newValue) {
-        if (this.tournament) {
-          const tournamentRegions = this.tournament.options.regions || [];
-          const formRegions = newValue || [];
-          if (
-            JSON.stringify(tournamentRegions.sort()) !==
-            JSON.stringify(formRegions.sort())
-          ) {
-            this.form.setFieldValue("regions", [...tournamentRegions]);
-          }
-        }
-      },
-    },
-    "form.values.map_pool_id": {
-      handler(newValue) {
-        if (
-          this.tournament &&
-          newValue !== this.tournament.options.map_pool.id
-        ) {
-          this.form.setFieldValue(
-            "map_pool_id",
-            this.tournament.options.map_pool.id,
-          );
-        }
+        this.setFormOptions();
       },
     },
   },
@@ -478,6 +336,17 @@ export default {
     },
   },
   methods: {
+    setFormOptions() {
+      if (!this.stage) {
+        this.form.setValues({
+          groups: 1,
+        });
+      }
+      setupOptions(this.form, this.stage?.options || this.tournament.options, {
+        type: this.tournament.options.type,
+        mr: this.tournament.options.mr.toString(),
+      });
+    },
     async getMapPoolId(
       form: any,
       customMatchOptions: boolean,
@@ -501,7 +370,7 @@ export default {
       const tournamentOptions = this.tournament.options;
 
       await (this as any).$apollo.mutate({
-        variables: {
+        variables: setupOptionsVariables({
           id: matchOptionsId,
           // Restricted fields - use tournament defaults
           mr: tournamentOptions.mr,
@@ -519,36 +388,16 @@ export default {
           timeout_setting: form.timeout_setting,
           ready_setting: form.ready_setting,
           tech_timeout_setting: form.tech_timeout_setting,
-        },
+          tv_delay: form.tv_delay,
+          check_in_setting: form.check_in_setting,
+        }),
         mutation: generateMutation({
           update_match_options_by_pk: [
             {
               pk_columns: {
                 id: $("id", "uuid!"),
               },
-              _set: {
-                mr: $("mr", "Int!"),
-                type: $("type", "e_match_types_enum!"),
-                best_of: $("best_of", "Int!"),
-                knife_round: $("knife_round", "Boolean!"),
-                default_models: $("default_models", "Boolean!"),
-                overtime: $("overtime", "Boolean!"),
-                map_veto: true,
-                region_veto: $("region_veto", "Boolean!"),
-                regions: $("regions", "[String!]!"),
-                coaches: $("coaches", "Boolean!"),
-                number_of_substitutes: $("number_of_substitutes", "Int!"),
-                ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                timeout_setting: $(
-                  "timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                tech_timeout_setting: $(
-                  "tech_timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                map_pool_id: $("map_pool_id", "uuid!"),
-              },
+              _set: setupOptionsSetMutation(),
             },
             {
               id: true,
@@ -569,7 +418,7 @@ export default {
       const tournamentOptions = this.tournament.options;
 
       const { data } = await (this as any).$apollo.mutate({
-        variables: {
+        variables: setupOptionsVariables({
           // Restricted fields - use tournament defaults
           mr: tournamentOptions.mr,
           type: tournamentOptions.type,
@@ -586,33 +435,13 @@ export default {
           timeout_setting: form.timeout_setting,
           ready_setting: form.ready_setting,
           tech_timeout_setting: form.tech_timeout_setting,
-        },
+          tv_delay: form.tv_delay,
+          check_in_setting: form.check_in_setting,
+        }),
         mutation: generateMutation({
           insert_match_options_one: [
             {
-              object: {
-                mr: $("mr", "Int!"),
-                type: $("type", "e_match_types_enum!"),
-                best_of: $("best_of", "Int!"),
-                knife_round: $("knife_round", "Boolean!"),
-                default_models: $("default_models", "Boolean!"),
-                overtime: $("overtime", "Boolean!"),
-                map_veto: true,
-                region_veto: $("region_veto", "Boolean!"),
-                regions: $("regions", "[String!]!"),
-                coaches: $("coaches", "Boolean!"),
-                number_of_substitutes: $("number_of_substitutes", "Int!"),
-                ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                timeout_setting: $(
-                  "timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                tech_timeout_setting: $(
-                  "tech_timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                map_pool_id: $("map_pool_id", "uuid!"),
-              },
+              object: setupOptionsSetMutation(),
             },
             {
               id: true,
@@ -658,7 +487,9 @@ export default {
           tournamentOptions.number_of_substitutes ||
         form.timeout_setting !== tournamentOptions.timeout_setting ||
         form.tech_timeout_setting !== tournamentOptions.tech_timeout_setting ||
-        form.ready_setting !== tournamentOptions.ready_setting
+        form.ready_setting !== tournamentOptions.ready_setting ||
+        form.tv_delay !== tournamentOptions.tv_delay ||
+        form.check_in_setting !== tournamentOptions.check_in_setting
       ) {
         return true;
       }

@@ -204,7 +204,6 @@ import {
                 v-if="getFirstStageForTab(stageNumber)"
                 :stage="getFirstStageForTab(stageNumber)"
                 :order="stageNumber"
-                :tournament-id="tournament.id"
                 :tournament="tournament"
                 @updated="editStageDialogs[stageNumber] = false"
               ></TournamentStageForm>

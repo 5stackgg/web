@@ -365,7 +365,9 @@ export default {
       const form = this.form.values;
 
       const { data } = await this.$apollo.mutate({
-        variables: setupOptionsVariables(form),
+        variables: setupOptionsVariables(form, {
+          mapPoolId: form.map_pool_id,
+        }),
         mutation: generateMutation({
           insert_matches_one: [
             {
@@ -387,7 +389,7 @@ export default {
                     }
                   : {}),
                 options: {
-                  data: setupOptionsSetMutation(form.map_pool_id !== undefined),
+                  data: setupOptionsSetMutation(!!form.map_pool_id),
                 },
               },
             },

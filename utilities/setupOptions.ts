@@ -56,7 +56,17 @@ export function setupOptionsVariables(
     matchOptionsId?: string;
   },
 ) {
-  const mapPoolId = additional?.mapPoolId || values?.map_pool_id;
+  let mapPoolId;
+
+  if (!!additional?.mapPoolId) {
+    mapPoolId = additional.mapPoolId;
+  } else if (!!values.map_pool_id) {
+    mapPoolId = values.map_pool_id;
+  }
+
+  console.log({
+    mapPoolId,
+  });
 
   if (values.mr === undefined || values.mr === null) {
     throw new Error("mr is required");

@@ -343,7 +343,7 @@ export default {
                 start: this.form.values.start,
                 description: this.form.values.description,
                 options: {
-                  data: setupOptionsSetMutation(form.map_pool_id !== undefined),
+                  data: setupOptionsSetMutation(!!form.map_pool_id),
                 },
               },
             },

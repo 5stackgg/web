@@ -21,7 +21,6 @@ import { $ } from "~/generated/zeus";
 </script>
 
 <template>
-  --{{ form.values.tv_delay }}--
   <form @submit.prevent="updateCreateStage" class="grid gap-4">
     <FormField v-slot="{ componentField }" name="groups">
       <FormItem>

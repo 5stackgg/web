@@ -214,9 +214,9 @@ export default {
               type: {
                 _neq: e_map_pool_types_enum.Custom,
               },
-            },
-            order_by: {
-              type: "asc",
+              enabled: {
+                _eq: true,
+              },
             },
           },
           {

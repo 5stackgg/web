@@ -143,7 +143,7 @@ import { e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
-
+import { order_by } from "~/generated/zeus";
 interface Map {
   id: string;
   name: string;
@@ -218,6 +218,12 @@ export default {
                 _eq: true,
               },
             },
+            order_by: [
+              {},
+              {
+                type: order_by.asc,
+              },
+            ],
           },
           {
             id: true,

@@ -647,6 +647,13 @@ export default {
                         match_number: true,
                         path: true,
                       },
+                      feeding_brackets: {
+                        id: true,
+                        round: true,
+                        group: true,
+                        match_number: true,
+                        path: true,
+                      },
                       match: {
                         id: true,
                         status: true,

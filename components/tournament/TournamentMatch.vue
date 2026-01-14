@@ -23,6 +23,14 @@ interface Bracket {
   path?: string;
   scheduled_eta?: string;
   options?: any;
+  feeding_brackets?: Array<{
+    id: string;
+    round: number;
+    match_number?: number;
+    path?: string;
+    team_1_seed?: number;
+    team_2_seed?: number;
+  }>;
   match?: {
     id: string;
     options?: {
@@ -66,6 +74,8 @@ interface Bracket {
     };
   };
 }
+
+type FeedingBracket = NonNullable<Bracket["feeding_brackets"]>[number];
 
 const props = defineProps<{
   round: number;
@@ -134,8 +144,8 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
 const canEditBracket = (bracket: Bracket) => {
   return (
     props.tournament?.is_organizer &&
-    (props.tournament?.status !== e_tournament_status_enum.Setup ||
-      props.tournament?.status !== e_tournament_status_enum.Finished)
+    props.tournament?.status !== e_tournament_status_enum.Setup &&
+    props.tournament?.status !== e_tournament_status_enum.Finished
   );
 };
 
@@ -146,6 +156,55 @@ const openEditDialog = (bracket: Bracket, event: MouseEvent) => {
 
 const handleBracketUpdated = (bracketId: string) => {
   editBracketDialogs.value[bracketId] = false;
+};
+
+const getFeedingBracketsByPath = (bracket: Bracket, path: "WB" | "LB") => {
+  return (bracket.feeding_brackets || []).filter((b) => b.path === path);
+};
+
+const getFeedingBracketAt = (
+  bracket: Bracket,
+  path: "WB" | "LB",
+  index: number,
+) => {
+  return getFeedingBracketsByPath(bracket, path)[index];
+};
+
+const isShowingDestinations = (bracket: Bracket) => {
+  return bracket.path === "WB" && !bracket.match;
+};
+
+const getBracketLabel = (path?: string) => {
+  if (path === "WB") return "Upper Bracket";
+  if (path === "LB") return "Lower Bracket";
+  return "";
+};
+
+const getFeedPrefix = (currentPath?: string, feedingPath?: string) => {
+  if (!currentPath || !feedingPath) return "Winner of";
+  return currentPath === feedingPath ? "Winner of" : "Loser of";
+};
+
+const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
+  if (!feeding) return "";
+  const prefix = getFeedPrefix(bracket.path, feeding.path);
+  const label = getBracketLabel(feeding.path);
+  const roundMatch = feeding.match_number
+    ? `Round ${feeding.round}, Match ${feeding.match_number}`
+    : `Round ${feeding.round}`;
+  return `${prefix} ${roundMatch}`.trim();
+};
+
+const formatDestinationText = (
+  type: "winner" | "loser",
+  dest?: { round: number; match_number?: number },
+) => {
+  if (!dest) return "";
+  const prefix = type === "winner" ? "Winner →" : "Loser →";
+  if (dest.match_number) {
+    return `${prefix} Round ${dest.round}, Match ${dest.match_number}`;
+  }
+  return `${prefix} Round ${dest.round}`;
 };
 </script>
 
@@ -199,23 +258,164 @@ const handleBracketUpdated = (bracketId: string) => {
         </span>
       </div>
 
+      <!-- Team Display -->
+      <div class="flex flex-col gap-2">
+        <template v-if="bracket.bye">
+          <!-- Bye round: show only the team that exists -->
+          <div v-if="bracket.team_1 || bracket.team_2" class="items-center">
+            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
+              <span class="flex items-center gap-2">
+                <span
+                  v-if="bracket.team_1_seed || bracket.team_2_seed"
+                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
+                >
+                  #{{ bracket.team_1_seed || bracket.team_2_seed }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <!-- Match exists: show both teams -->
+          <div class="items-center">
+            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
+              <span v-if="bracket.match" class="flex items-center gap-2">
+                <span
+                  v-if="bracket.team_1_seed"
+                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
+                >
+                  #{{ bracket.team_1_seed }}
+                </span>
+                <TournamentRoundLineup
+                  :lineup_name="getTeamName(bracket.team_1)"
+                  :match="bracket.match"
+                  :lineup="bracket.match.lineup_1"
+                />
+              </span>
+              <template v-else>
+                <!-- No match yet: Team 1 row shows WB feed if available, otherwise placeholder -->
+                <span class="flex items-center gap-2">
+                  <span
+                    v-if="bracket.team_1_seed"
+                    class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
+                  >
+                    #{{ bracket.team_1_seed }}
+                  </span>
+                  <span
+                    v-else-if="
+                      bracket.path !== 'WB' &&
+                      (getFeedingBracketAt(bracket, 'WB', 0)?.team_1_seed ||
+                        getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed)
+                    "
+                    class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
+                  >
+                    #{{
+                      getFeedingBracketAt(bracket, "WB", 0)?.team_1_seed || "?"
+                    }}<span
+                      v-if="getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed"
+                      >/{{
+                        getFeedingBracketAt(bracket, "WB", 0)?.team_2_seed
+                      }}</span
+                    >
+                  </span>
+                  <!-- LB: show only WB feeds in Team 1/2 -->
+                  <template
+                    v-if="
+                      bracket.path === 'LB' &&
+                      getFeedingBracketAt(bracket, 'WB', 0)
+                    "
+                  >
+                    {{
+                      formatFeedingText(
+                        bracket,
+                        getFeedingBracketAt(bracket, "WB", 0),
+                      )
+                    }}
+                  </template>
+                </span>
+              </template>
+            </div>
+          </div>
+
+          <div class="items-center">
+            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
+              <span v-if="bracket.match" class="flex items-center gap-2">
+                <span
+                  v-if="bracket.team_2_seed"
+                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
+                >
+                  #{{ bracket.team_2_seed }}
+                </span>
+                <TournamentRoundLineup
+                  :lineup_name="getTeamName(bracket.team_2)"
+                  :match="bracket.match"
+                  :lineup="bracket.match.lineup_2"
+                />
+              </span>
+              <template v-else>
+                <!-- No match yet: Team 2 row shows LB feed if available, otherwise placeholder -->
+                <span class="flex items-center gap-2">
+                  <span
+                    v-if="bracket.team_2_seed"
+                    class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
+                  >
+                    #{{ bracket.team_2_seed }}
+                  </span>
+                  <span
+                    v-else-if="
+                      bracket.path === 'LB' &&
+                      (getFeedingBracketAt(bracket, 'WB', 1)?.team_1_seed ||
+                        getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed)
+                    "
+                    class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
+                  >
+                    #{{
+                      getFeedingBracketAt(bracket, "WB", 1)?.team_1_seed || "?"
+                    }}<span
+                      v-if="getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed"
+                      >/{{
+                        getFeedingBracketAt(bracket, "WB", 1)?.team_2_seed
+                      }}</span
+                    >
+                  </span>
+                  <!-- WB: show where loser goes -->
+                  <template
+                    v-if="bracket.path === 'WB' && bracket.loser_bracket"
+                  >
+                    <span class="text-red-400">
+                      {{
+                        formatDestinationText("loser", bracket.loser_bracket)
+                      }}
+                    </span>
+                  </template>
+                  <!-- LB: show only WB feeds in Team 1/2 -->
+                  <template
+                    v-else-if="
+                      bracket.path === 'LB' &&
+                      getFeedingBracketAt(bracket, 'WB', 1)
+                    "
+                  >
+                    {{
+                      formatFeedingText(
+                        bracket,
+                        getFeedingBracketAt(bracket, "WB", 1),
+                      )
+                    }}
+                  </template>
+                </span>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
       <template
         v-if="stage.type === e_tournament_stage_types_enum.DoubleElimination"
       >
-        <div v-if="bracket.parent_bracket" class="text-center">
-          <div class="text-xs text-green-400 font-medium">
-            <span class="inline-flex items-center gap-1">
-              <span>Parent →</span>
-              <span v-if="bracket.parent_bracket.match_number">
-                Round {{ bracket.parent_bracket.round }}, Match
-                {{ bracket.parent_bracket.match_number }}
-              </span>
-              <span v-else> Round {{ bracket.parent_bracket.round }} </span>
-            </span>
-          </div>
-        </div>
-
-        <div v-if="bracket.loser_bracket" class="text-center">
+        <div
+          v-if="bracket.loser_bracket && !isShowingDestinations(bracket)"
+          class="text-center"
+        >
           <div class="text-xs text-red-400 font-medium">
             <span class="inline-flex items-center gap-1">
               <span>Loser →</span>
@@ -228,98 +428,6 @@ const handleBracketUpdated = (bracketId: string) => {
           </div>
         </div>
       </template>
-
-      <!-- Team Display -->
-      <div class="flex flex-col gap-2">
-        <template v-if="bracket.bye">
-          <!-- Bye round: show only the team that exists -->
-          <div v-if="bracket.team_1 || bracket.team_2" class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
-              <span class="flex items-center gap-2">
-                {{ getTeamName(bracket.team_1 || bracket.team_2) }}
-                <span
-                  v-if="bracket.team_1_seed || bracket.team_2_seed"
-                  class="text-muted-foreground"
-                >
-                  (#{{ bracket.team_1_seed || bracket.team_2_seed }})
-                </span>
-              </span>
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <!-- Regular match: show both teams -->
-          <div class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
-              <span v-if="bracket.match" class="flex items-center gap-2">
-                <TournamentRoundLineup
-                  :lineup_name="getTeamName(bracket.team_1)"
-                  :match="bracket.match"
-                  :lineup="bracket.match.lineup_1"
-                />
-                <span v-if="bracket.team_1_seed" class="text-muted-foreground">
-                  (#{{ bracket.team_1_seed }})
-                </span>
-              </span>
-              <template v-else>
-                <span v-if="bracket.team_1" class="flex items-center gap-2">
-                  {{ getTeamName(bracket.team_1) }}
-                  <span
-                    v-if="bracket.team_1_seed"
-                    class="text-muted-foreground"
-                  >
-                    (#{{ bracket.team_1_seed }})
-                  </span>
-                </span>
-                <span v-else class="flex items-center gap-2">
-                  {{ $t("tournament.match.team_1") }}
-                  <span
-                    v-if="bracket.team_1_seed"
-                    class="text-muted-foreground"
-                  >
-                    (#{{ bracket.team_1_seed }})
-                  </span>
-                </span>
-              </template>
-            </div>
-          </div>
-
-          <div class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
-              <span v-if="bracket.match" class="flex items-center gap-2">
-                <TournamentRoundLineup
-                  :lineup_name="getTeamName(bracket.team_2)"
-                  :match="bracket.match"
-                  :lineup="bracket.match.lineup_2"
-                />
-                <span v-if="bracket.team_2_seed" class="text-muted-foreground">
-                  (#{{ bracket.team_2_seed }})
-                </span>
-              </span>
-              <template v-else>
-                <span v-if="bracket.team_2" class="flex items-center gap-2">
-                  {{ getTeamName(bracket.team_2) }}
-                  <span
-                    v-if="bracket.team_2_seed"
-                    class="text-muted-foreground"
-                  >
-                    (#{{ bracket.team_2_seed }})
-                  </span>
-                </span>
-                <span v-else class="flex items-center gap-2">
-                  {{ $t("tournament.match.team_2") }}
-                  <span
-                    v-if="bracket.team_2_seed"
-                    class="text-muted-foreground"
-                  >
-                    (#{{ bracket.team_2_seed }})
-                  </span>
-                </span>
-              </template>
-            </div>
-          </div>
-        </template>
-      </div>
     </div>
 
     <!-- Edit Bracket Sheets -->

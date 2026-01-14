@@ -628,7 +628,7 @@ function startMomentum() {
 
     <!-- Zoom and Fullscreen Controls - Always Visible -->
     <div
-      class="zoom-controls-container absolute top-4 right-4 z-50 flex flex-col gap-3 opacity-40 hover:opacity-100 transition-opacity duration-300 ease-in-out"
+      class="zoom-controls-container absolute top-0 right-4 z-50 flex flex-col gap-3 opacity-20 hover:opacity-80 transition-opacity duration-300 ease-in-out"
     >
       <!-- Zoom Controls -->
       <div
@@ -671,10 +671,10 @@ function startMomentum() {
     </div>
 
     <!-- Minimap - Only shown when there are more than 4 rounds -->
-    <div class="absolute top-4 right-24 z-40" v-if="rounds.size > 4">
+    <div class="absolute bottom-0 right-4 z-40" v-if="rounds.size > 4">
       <!-- Minimap -->
       <div
-        class="minimap-container cursor-grab w-80 h-56 bg-gray-700/70 rounded-sm overflow-hidden shadow-lg backdrop-blur-sm transition-all duration-200 ease-in-out relative"
+        class="minimap-container cursor-grab w-56 h-40 bg-gray-700/70 rounded-sm overflow-hidden shadow-lg backdrop-blur-sm transition-all duration-200 ease-in-out relative opacity-10 hover:opacity-80"
         ref="minimapContainer"
         @mousedown="onMinimapPointerDown"
         @touchstart="onMinimapPointerDown"

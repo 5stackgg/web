@@ -40,12 +40,18 @@ interface Bracket {
     lineup_2?: any;
   };
   parent_bracket?: {
+    id?: string;
     round: number;
+    group?: number;
     match_number?: number;
+    path?: string;
   };
   loser_bracket?: {
+    id?: string;
     round: number;
+    group?: number;
     match_number?: number;
+    path?: string;
   };
   team_1?: {
     name?: string;
@@ -205,6 +211,10 @@ const formatDestinationText = (
     return `${prefix} Round ${dest.round}, Match ${dest.match_number}`;
   }
   return `${prefix} Round ${dest.round}`;
+};
+
+const isLbFeedingToWb = (bracket: Bracket) => {
+  return bracket.path === "LB" && bracket.parent_bracket?.path === "WB";
 };
 </script>
 
@@ -414,6 +424,18 @@ const formatDestinationText = (
       <template
         v-if="stage.type === e_tournament_stage_types_enum.DoubleElimination"
       >
+        <div v-if="isLbFeedingToWb(bracket)" class="text-center">
+          <div class="text-xs text-green-400 font-medium">
+            <span class="inline-flex items-center gap-1">
+              <span>Winner Bracket →</span>
+              <span v-if="bracket.parent_bracket?.match_number">
+                Round {{ bracket.parent_bracket.round }}, Match
+                {{ bracket.parent_bracket.match_number }}
+              </span>
+              <span v-else> Round {{ bracket.parent_bracket?.round }} </span>
+            </span>
+          </div>
+        </div>
         <div
           v-if="bracket.loser_bracket && !isShowingDestinations(bracket)"
           class="text-center"

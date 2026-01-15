@@ -332,6 +332,7 @@ const formatDestinationText = (
                       )
                     }}
                   </template>
+                  {{ getTeamName(bracket.team_1) }}
                 </span>
               </template>
             </div>
@@ -403,6 +404,7 @@ const formatDestinationText = (
                     }}
                   </template>
                 </span>
+                {{ getTeamName(bracket.team_2) }}
               </template>
             </div>
           </div>

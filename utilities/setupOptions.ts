@@ -1,4 +1,8 @@
-import { $, e_map_pool_types_enum, e_player_roles_enum} from "~/generated/zeus";
+import {
+  $,
+  e_map_pool_types_enum,
+  e_player_roles_enum,
+} from "~/generated/zeus";
 import { type FormContext } from "vee-validate";
 
 export const setupOptions = (
@@ -153,9 +157,11 @@ export function setupOptionsVariables(
     ready_setting: values.ready_setting,
     tech_timeout_setting: values.tech_timeout_setting,
     tv_delay: values.tv_delay,
-    ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer) ? {
-      check_in_setting: values.check_in_setting,
-    } : {}),
+    ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
+      ? {
+          check_in_setting: values.check_in_setting,
+        }
+      : {}),
     ...(mapPoolId
       ? {
           map_pool_id: mapPoolId,
@@ -195,9 +201,11 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     timeout_setting: $("timeout_setting", "e_timeout_settings_enum!"),
     tech_timeout_setting: $("tech_timeout_setting", "e_timeout_settings_enum!"),
     tv_delay: $("tv_delay", "Int!"),
-    ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer) ? {
-      check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),
-    } : {}),
+    ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
+      ? {
+          check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),
+        }
+      : {}),
     ...(hasMapPoolId
       ? {
           map_pool_id: $("map_pool_id", "uuid!"),

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import socket from "~/web-sockets/Socket";
 import { Card, CardHeader, CardContent } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import {
@@ -18,7 +17,6 @@ import {
 } from "~/components/ui/dropdown-menu";
 
 import { DownloadIcon, FullscreenIcon, ExpandIcon } from "lucide-vue-next";
-import Convert from "ansi-to-html";
 
 const config = useRuntimeConfig();
 
@@ -67,19 +65,7 @@ async function downloadFullLogs(service: string) {
   <Card>
     <CardHeader class="flex flex-col gap-2">
       <div class="flex items-center justify-between gap-4">
-        <div
-          v-if="oldestTimestamp"
-          class="text-xs font-mono text-muted-foreground"
-        >
-          Displaying logs from
-          {{ new Date(oldestTimestamp).toLocaleString() }}
-        </div>
-
         <div class="flex items-center gap-4">
-          <Button variant="outline" @click="jumpToLive">
-            {{ $t("ui.logs.jump_to_live") }}
-          </Button>
-
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -157,49 +143,33 @@ async function downloadFullLogs(service: string) {
     </CardHeader>
 
     <CardContent class="p-4">
-      <!-- Multi-pod -->
       <Tabs v-if="podCount > 1" v-model="activePod">
         <TabsContent v-for="pod in podList" :key="pod" :value="pod">
-          <div class="overflow-auto whitespace-nowrap max-h-[50vh]">
-            <div
-              v-for="(entry, index) in logsByPod[pod]"
-              :key="index"
-              class="text-xs font-mono py-1 flex gap-4"
-            >
-              <span
-                v-if="(timestamps === undefined && _timestamps) || timestamps"
-                class="text-muted-foreground"
-              >
-                {{ entry.timestamp }}
-              </span>
-              <span v-html="colorize(entry.log)" />
-            </div>
-          </div>
+          <PodLogs
+            :logs="logsByPod[pod] || []"
+            :show-timestamps="
+              (timestamps === undefined && _timestamps) || timestamps
+            "
+            :follow="(followLogs === undefined && _followLogs) || followLogs"
+          />
         </TabsContent>
       </Tabs>
 
       <!-- Single pod -->
-      <div v-else class="overflow-auto whitespace-nowrap max-h-[50vh]">
-        <div
-          v-for="(entry, index) in logsByPod[activePod] || []"
-          :key="index"
-          class="text-xs font-mono py-1 flex gap-4"
-        >
-          <span
-            v-if="(timestamps === undefined && _timestamps) || timestamps"
-            class="text-muted-foreground"
-          >
-            {{ entry.timestamp }}
-          </span>
-          <span v-html="colorize(entry.log)" />
-        </div>
-      </div>
+      <PodLogs
+        v-else
+        :logs="logsByPod[activePod] || []"
+        :show-timestamps="
+          (timestamps === undefined && _timestamps) || timestamps
+        "
+        :follow="(followLogs === undefined && _followLogs) || followLogs"
+      />
     </CardContent>
   </Card>
 </template>
 
 <script lang="ts">
-const convert = new Convert();
+import PodLogs from "~/components/PodLogs.vue";
 
 type LogEntry = {
   log: string;
@@ -221,7 +191,6 @@ export default {
     return {
       logsByPod: {} as Record<string, LogEntry[]>,
       activePod: "",
-      oldestTimestamp: undefined as string | undefined,
       _timestamps: true,
       _followLogs: true,
       expanded: false,
@@ -240,15 +209,6 @@ export default {
   },
 
   methods: {
-    colorize(log: string) {
-      return convert.toHtml(log);
-    },
-
-    jumpToLive() {
-      this._followLogs = true;
-      this.$emit("follow-logs-changed", true);
-    },
-
     toggleFullscreen() {
       document.documentElement.requestFullscreen?.();
     },
@@ -280,11 +240,6 @@ export default {
 
         this.logListener = socket.listen(`logs:${this.service}`, (raw) => {
           const log = JSON.parse(raw);
-
-          if (log.oldest_timestamp) {
-            this.oldestTimestamp = log.oldest_timestamp;
-            return;
-          }
 
           if (!log.log) return;
 

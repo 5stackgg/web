@@ -66,6 +66,10 @@ async function downloadFullLogs(service: string) {
     <CardHeader class="flex flex-col gap-2">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-4">
+          <Button variant="outline" @click="jumpToLive">
+            {{ $t("ui.logs.jump_to_live") }}
+          </Button>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -146,11 +150,12 @@ async function downloadFullLogs(service: string) {
       <Tabs v-if="podCount > 1" v-model="activePod">
         <TabsContent v-for="pod in podList" :key="pod" :value="pod">
           <PodLogs
+            :pod="pod"
             :logs="logsByPod[pod] || []"
-            :show-timestamps="
-              (timestamps === undefined && _timestamps) || timestamps
-            "
-            :follow="(followLogs === undefined && _followLogs) || followLogs"
+            :show-timestamps="effectiveTimestamps"
+            :follow="effectiveFollowLogs"
+            @follow-logs-changed="handleFollowLogsChanged"
+            @load-more-logs="handleLoadMoreLogs"
           />
         </TabsContent>
       </Tabs>
@@ -158,11 +163,12 @@ async function downloadFullLogs(service: string) {
       <!-- Single pod -->
       <PodLogs
         v-else
+        :pod="activePod"
         :logs="logsByPod[activePod] || []"
-        :show-timestamps="
-          (timestamps === undefined && _timestamps) || timestamps
-        "
-        :follow="(followLogs === undefined && _followLogs) || followLogs"
+        :show-timestamps="effectiveTimestamps"
+        :follow="effectiveFollowLogs"
+        @follow-logs-changed="handleFollowLogsChanged"
+        @load-more-logs="handleLoadMoreLogs"
       />
     </CardContent>
   </Card>
@@ -190,6 +196,7 @@ export default {
   data() {
     return {
       logsByPod: {} as Record<string, LogEntry[]>,
+      gettingSinceLogs: false,
       activePod: "",
       _timestamps: true,
       _followLogs: true,
@@ -206,9 +213,19 @@ export default {
     podCount(): number {
       return this.podList.length;
     },
+    effectiveFollowLogs(): boolean {
+      return this.followLogs === undefined ? this._followLogs : this.followLogs;
+    },
+    effectiveTimestamps(): boolean {
+      return this.timestamps === undefined ? this._timestamps : this.timestamps;
+    },
   },
 
   methods: {
+    jumpToLive() {
+      this.$emit("follow-logs-changed", true);
+    },
+
     toggleFullscreen() {
       document.documentElement.requestFullscreen?.();
     },
@@ -227,6 +244,27 @@ export default {
       a.click();
       URL.revokeObjectURL(url);
     },
+
+    handleLoadMoreLogs({ pod, oldestLogTime }) {
+      this.gettingSinceLogs = true;
+
+      const start = new Date(oldestLogTime);
+      start.setMinutes(start.getMinutes() - 60);
+
+      socket.event("logs", {
+        service: this.service,
+        since: {
+          start: start.toISOString(),
+          until: oldestLogTime.toISOString(),
+        },
+      });
+    },
+    handleFollowLogsChanged(value: boolean) {
+      if (this.followLogs === undefined) {
+        this._followLogs = value;
+      }
+      this.$emit("follow-logs-changed", value);
+    },
   },
 
   watch: {
@@ -235,13 +273,45 @@ export default {
       handler() {
         this.logsByPod = {};
         this.activePod = "";
+        let partial: Record<string, any[]> = {};
 
         this.logListener?.stop();
 
         this.logListener = socket.listen(`logs:${this.service}`, (raw) => {
           const log = JSON.parse(raw);
 
-          if (!log.log) return;
+          if (log.end) {
+            if (log.job_finshed !== true && log.partial !== true) {
+              this.retryTimeout = setTimeout(() => {
+                socket.event("logs", {
+                  tailLines: 250,
+                  service: this.service,
+                });
+              }, 5000);
+            }
+
+            if (log.partial) {
+              this.gettingSinceLogs = false;
+              for (const pod in partial) {
+                this.logsByPod[pod].unshift(...partial[pod]);
+                delete partial[pod];
+              }
+              return;
+            }
+          }
+
+          if (!log.log) {
+            return;
+          }
+
+          if (this.gettingSinceLogs) {
+            if (!partial[log.pod]) {
+              partial[log.pod] = [];
+            }
+
+            partial[log.pod].push(log);
+            return;
+          }
 
           const pod = log.pod ?? "default";
 

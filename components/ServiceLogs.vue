@@ -10,9 +10,57 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 import { DownloadIcon, FullscreenIcon, ExpandIcon } from "lucide-vue-next";
 import Convert from "ansi-to-html";
+
+const config = useRuntimeConfig();
+
+async function downloadFullLogs(service: string) {
+  try {
+    const response = await fetch(
+      `https://${config.public.apiDomain}/system/logs/download?service=${service}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ service }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to download logs");
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+
+    const contentDisposition = response.headers.get("Content-Disposition");
+    let filename = `${service}-logs.zip`;
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+      if (filenameMatch) {
+        filename = filenameMatch[1];
+      }
+    }
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading full logs", error);
+  }
+}
 </script>
 
 <template>
@@ -75,17 +123,26 @@ import Convert from "ansi-to-html";
             {{ $t("ui.logs.timestamps") }}
           </div>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <DownloadIcon
-                  @click="downloadLogs"
-                  class="h-5 w-5 cursor-pointer text-muted-foreground hover:text-foreground"
-                />
-              </TooltipTrigger>
-              <TooltipContent>{{ $t("ui.tooltips.download") }}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <button
+                class="h-5 w-5 cursor-pointer text-muted-foreground hover:text-foreground flex items-center justify-center"
+              >
+                <DownloadIcon class="h-5 w-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem @click="downloadLogs" class="cursor-pointer">
+                Download visible logs
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                @click="downloadFullLogs(service)"
+                class="cursor-pointer"
+              >
+                Download full logs
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 

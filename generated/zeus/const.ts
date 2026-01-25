@@ -1778,6 +1778,57 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_veto_pick_types_set_input",
 		where:"e_veto_pick_types_bool_exp"
 	},
+	e_winning_reasons_aggregate_fields:{
+		count:{
+			columns:"e_winning_reasons_select_column"
+		}
+	},
+	e_winning_reasons_bool_exp:{
+		_and:"e_winning_reasons_bool_exp",
+		_not:"e_winning_reasons_bool_exp",
+		_or:"e_winning_reasons_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_winning_reasons_constraint: "enum" as const,
+	e_winning_reasons_enum: "enum" as const,
+	e_winning_reasons_enum_comparison_exp:{
+		_eq:"e_winning_reasons_enum",
+		_in:"e_winning_reasons_enum",
+		_neq:"e_winning_reasons_enum",
+		_nin:"e_winning_reasons_enum"
+	},
+	e_winning_reasons_insert_input:{
+
+	},
+	e_winning_reasons_on_conflict:{
+		constraint:"e_winning_reasons_constraint",
+		update_columns:"e_winning_reasons_update_column",
+		where:"e_winning_reasons_bool_exp"
+	},
+	e_winning_reasons_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_winning_reasons_pk_columns_input:{
+
+	},
+	e_winning_reasons_select_column: "enum" as const,
+	e_winning_reasons_set_input:{
+
+	},
+	e_winning_reasons_stream_cursor_input:{
+		initial_value:"e_winning_reasons_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_winning_reasons_stream_cursor_value_input:{
+
+	},
+	e_winning_reasons_update_column: "enum" as const,
+	e_winning_reasons_updates:{
+		_set:"e_winning_reasons_set_input",
+		where:"e_winning_reasons_bool_exp"
+	},
 	float8: `scalar.float8` as const,
 	float8_comparison_exp:{
 		_eq:"float8",
@@ -3436,6 +3487,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		round:"Int_comparison_exp",
 		time:"timestamptz_comparison_exp",
+		winning_reason:"e_winning_reasons_enum_comparison_exp",
 		winning_side:"String_comparison_exp"
 	},
 	match_map_rounds_constraint: "enum" as const,
@@ -3451,7 +3503,8 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_2_side:"e_sides_enum",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
-		time:"timestamptz"
+		time:"timestamptz",
+		winning_reason:"e_winning_reasons_enum"
 	},
 	match_map_rounds_max_order_by:{
 		backup_file:"order_by",
@@ -3509,6 +3562,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		round:"order_by",
 		time:"order_by",
+		winning_reason:"order_by",
 		winning_side:"order_by"
 	},
 	match_map_rounds_pk_columns_input:{
@@ -3522,7 +3576,8 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
 		match_map_id:"uuid",
-		time:"timestamptz"
+		time:"timestamptz",
+		winning_reason:"e_winning_reasons_enum"
 	},
 	match_map_rounds_stddev_order_by:{
 		lineup_1_money:"order_by",
@@ -3562,7 +3617,8 @@ export const AllTypesProps: Record<string,any> = {
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
 		match_map_id:"uuid",
-		time:"timestamptz"
+		time:"timestamptz",
+		winning_reason:"e_winning_reasons_enum"
 	},
 	match_map_rounds_sum_order_by:{
 		lineup_1_money:"order_by",
@@ -5209,6 +5265,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_veto_pick_types_by_pk:{
 
 		},
+		delete_e_winning_reasons:{
+			where:"e_winning_reasons_bool_exp"
+		},
+		delete_e_winning_reasons_by_pk:{
+
+		},
 		delete_friends:{
 			where:"friends_bool_exp"
 		},
@@ -5383,6 +5445,12 @@ export const AllTypesProps: Record<string,any> = {
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
+		delete_player_kills_by_weapon:{
+			where:"player_kills_by_weapon_bool_exp"
+		},
+		delete_player_kills_by_weapon_by_pk:{
+			player_steam_id:"bigint"
+		},
 		delete_player_objectives:{
 			where:"player_objectives_bool_exp"
 		},
@@ -5397,6 +5465,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_player_sanctions_by_pk:{
 			created_at:"timestamptz",
 			id:"uuid"
+		},
+		delete_player_stats:{
+			where:"player_stats_bool_exp"
+		},
+		delete_player_stats_by_pk:{
+			player_steam_id:"bigint"
 		},
 		delete_player_unused_utility:{
 			where:"player_unused_utility_bool_exp"
@@ -5743,6 +5817,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"e_veto_pick_types_insert_input",
 			on_conflict:"e_veto_pick_types_on_conflict"
 		},
+		insert_e_winning_reasons:{
+			objects:"e_winning_reasons_insert_input",
+			on_conflict:"e_winning_reasons_on_conflict"
+		},
+		insert_e_winning_reasons_one:{
+			object:"e_winning_reasons_insert_input",
+			on_conflict:"e_winning_reasons_on_conflict"
+		},
 		insert_friends:{
 			objects:"friends_insert_input",
 			on_conflict:"friends_on_conflict"
@@ -5953,6 +6035,14 @@ export const AllTypesProps: Record<string,any> = {
 			objects:"player_kills_insert_input",
 			on_conflict:"player_kills_on_conflict"
 		},
+		insert_player_kills_by_weapon:{
+			objects:"player_kills_by_weapon_insert_input",
+			on_conflict:"player_kills_by_weapon_on_conflict"
+		},
+		insert_player_kills_by_weapon_one:{
+			object:"player_kills_by_weapon_insert_input",
+			on_conflict:"player_kills_by_weapon_on_conflict"
+		},
 		insert_player_kills_one:{
 			object:"player_kills_insert_input",
 			on_conflict:"player_kills_on_conflict"
@@ -5972,6 +6062,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_player_sanctions_one:{
 			object:"player_sanctions_insert_input",
 			on_conflict:"player_sanctions_on_conflict"
+		},
+		insert_player_stats:{
+			objects:"player_stats_insert_input",
+			on_conflict:"player_stats_on_conflict"
+		},
+		insert_player_stats_one:{
+			object:"player_stats_insert_input",
+			on_conflict:"player_stats_on_conflict"
 		},
 		insert_player_unused_utility:{
 			objects:"player_unused_utility_insert_input",
@@ -6477,6 +6575,17 @@ export const AllTypesProps: Record<string,any> = {
 		update_e_veto_pick_types_many:{
 			updates:"e_veto_pick_types_updates"
 		},
+		update_e_winning_reasons:{
+			_set:"e_winning_reasons_set_input",
+			where:"e_winning_reasons_bool_exp"
+		},
+		update_e_winning_reasons_by_pk:{
+			_set:"e_winning_reasons_set_input",
+			pk_columns:"e_winning_reasons_pk_columns_input"
+		},
+		update_e_winning_reasons_many:{
+			updates:"e_winning_reasons_updates"
+		},
 		update_friends:{
 			_inc:"friends_inc_input",
 			_set:"friends_set_input",
@@ -6841,6 +6950,19 @@ export const AllTypesProps: Record<string,any> = {
 			_set:"player_kills_set_input",
 			pk_columns:"player_kills_pk_columns_input"
 		},
+		update_player_kills_by_weapon:{
+			_inc:"player_kills_by_weapon_inc_input",
+			_set:"player_kills_by_weapon_set_input",
+			where:"player_kills_by_weapon_bool_exp"
+		},
+		update_player_kills_by_weapon_by_pk:{
+			_inc:"player_kills_by_weapon_inc_input",
+			_set:"player_kills_by_weapon_set_input",
+			pk_columns:"player_kills_by_weapon_pk_columns_input"
+		},
+		update_player_kills_by_weapon_many:{
+			updates:"player_kills_by_weapon_updates"
+		},
 		update_player_kills_many:{
 			updates:"player_kills_updates"
 		},
@@ -6869,6 +6991,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_player_sanctions_many:{
 			updates:"player_sanctions_updates"
+		},
+		update_player_stats:{
+			_inc:"player_stats_inc_input",
+			_set:"player_stats_set_input",
+			where:"player_stats_bool_exp"
+		},
+		update_player_stats_by_pk:{
+			_inc:"player_stats_inc_input",
+			_set:"player_stats_set_input",
+			pk_columns:"player_stats_pk_columns_input"
+		},
+		update_player_stats_many:{
+			updates:"player_stats_updates"
 		},
 		update_player_unused_utility:{
 			_inc:"player_unused_utility_inc_input",
@@ -8362,6 +8497,130 @@ export const AllTypesProps: Record<string,any> = {
 		time:"timestamptz_comparison_exp",
 		with:"String_comparison_exp"
 	},
+	player_kills_by_weapon_aggregate_bool_exp:{
+		count:"player_kills_by_weapon_aggregate_bool_exp_count"
+	},
+	player_kills_by_weapon_aggregate_bool_exp_count:{
+		arguments:"player_kills_by_weapon_select_column",
+		filter:"player_kills_by_weapon_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	player_kills_by_weapon_aggregate_fields:{
+		count:{
+			columns:"player_kills_by_weapon_select_column"
+		}
+	},
+	player_kills_by_weapon_aggregate_order_by:{
+		avg:"player_kills_by_weapon_avg_order_by",
+		count:"order_by",
+		max:"player_kills_by_weapon_max_order_by",
+		min:"player_kills_by_weapon_min_order_by",
+		stddev:"player_kills_by_weapon_stddev_order_by",
+		stddev_pop:"player_kills_by_weapon_stddev_pop_order_by",
+		stddev_samp:"player_kills_by_weapon_stddev_samp_order_by",
+		sum:"player_kills_by_weapon_sum_order_by",
+		var_pop:"player_kills_by_weapon_var_pop_order_by",
+		var_samp:"player_kills_by_weapon_var_samp_order_by",
+		variance:"player_kills_by_weapon_variance_order_by"
+	},
+	player_kills_by_weapon_arr_rel_insert_input:{
+		data:"player_kills_by_weapon_insert_input",
+		on_conflict:"player_kills_by_weapon_on_conflict"
+	},
+	player_kills_by_weapon_avg_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_kills_by_weapon_bool_exp:{
+		_and:"player_kills_by_weapon_bool_exp",
+		_not:"player_kills_by_weapon_bool_exp",
+		_or:"player_kills_by_weapon_bool_exp",
+		kill_count:"bigint_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp",
+		with:"String_comparison_exp"
+	},
+	player_kills_by_weapon_constraint: "enum" as const,
+	player_kills_by_weapon_inc_input:{
+		kill_count:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_kills_by_weapon_insert_input:{
+		kill_count:"bigint",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint"
+	},
+	player_kills_by_weapon_max_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by",
+		with:"order_by"
+	},
+	player_kills_by_weapon_min_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by",
+		with:"order_by"
+	},
+	player_kills_by_weapon_on_conflict:{
+		constraint:"player_kills_by_weapon_constraint",
+		update_columns:"player_kills_by_weapon_update_column",
+		where:"player_kills_by_weapon_bool_exp"
+	},
+	player_kills_by_weapon_order_by:{
+		kill_count:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by",
+		with:"order_by"
+	},
+	player_kills_by_weapon_pk_columns_input:{
+		player_steam_id:"bigint"
+	},
+	player_kills_by_weapon_select_column: "enum" as const,
+	player_kills_by_weapon_set_input:{
+		kill_count:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_kills_by_weapon_stddev_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_kills_by_weapon_stddev_pop_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_kills_by_weapon_stddev_samp_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_kills_by_weapon_stream_cursor_input:{
+		initial_value:"player_kills_by_weapon_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_kills_by_weapon_stream_cursor_value_input:{
+		kill_count:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_kills_by_weapon_sum_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_kills_by_weapon_update_column: "enum" as const,
+	player_kills_by_weapon_updates:{
+		_inc:"player_kills_by_weapon_inc_input",
+		_set:"player_kills_by_weapon_set_input",
+		where:"player_kills_by_weapon_bool_exp"
+	},
+	player_kills_by_weapon_var_pop_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_kills_by_weapon_var_samp_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
+	player_kills_by_weapon_variance_order_by:{
+		kill_count:"order_by",
+		player_steam_id:"order_by"
+	},
 	player_kills_constraint: "enum" as const,
 	player_kills_inc_input:{
 		attacked_steam_id:"bigint",
@@ -8832,6 +9091,89 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by",
 		sanctioned_by_steam_id:"order_by"
 	},
+	player_stats_aggregate_fields:{
+		count:{
+			columns:"player_stats_select_column"
+		}
+	},
+	player_stats_bool_exp:{
+		_and:"player_stats_bool_exp",
+		_not:"player_stats_bool_exp",
+		_or:"player_stats_bool_exp",
+		assists:"bigint_comparison_exp",
+		deaths:"bigint_comparison_exp",
+		headshot_percentage:"float8_comparison_exp",
+		headshots:"bigint_comparison_exp",
+		kills:"bigint_comparison_exp",
+		player:"players_bool_exp",
+		player_steam_id:"bigint_comparison_exp"
+	},
+	player_stats_constraint: "enum" as const,
+	player_stats_inc_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_stats_insert_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player:"players_obj_rel_insert_input",
+		player_steam_id:"bigint"
+	},
+	player_stats_obj_rel_insert_input:{
+		data:"player_stats_insert_input",
+		on_conflict:"player_stats_on_conflict"
+	},
+	player_stats_on_conflict:{
+		constraint:"player_stats_constraint",
+		update_columns:"player_stats_update_column",
+		where:"player_stats_bool_exp"
+	},
+	player_stats_order_by:{
+		assists:"order_by",
+		deaths:"order_by",
+		headshot_percentage:"order_by",
+		headshots:"order_by",
+		kills:"order_by",
+		player:"players_order_by",
+		player_steam_id:"order_by"
+	},
+	player_stats_pk_columns_input:{
+		player_steam_id:"bigint"
+	},
+	player_stats_select_column: "enum" as const,
+	player_stats_set_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_stats_stream_cursor_input:{
+		initial_value:"player_stats_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_stats_stream_cursor_value_input:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_stats_update_column: "enum" as const,
+	player_stats_updates:{
+		_inc:"player_stats_inc_input",
+		_set:"player_stats_set_input",
+		where:"player_stats_bool_exp"
+	},
 	player_unused_utility_aggregate_bool_exp:{
 		count:"player_unused_utility_aggregate_bool_exp_count"
 	},
@@ -9283,6 +9625,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_kills_order_by",
 			where:"player_kills_bool_exp"
 		},
+		kills_by_weapons:{
+			distinct_on:"player_kills_by_weapon_select_column",
+			order_by:"player_kills_by_weapon_order_by",
+			where:"player_kills_by_weapon_bool_exp"
+		},
+		kills_by_weapons_aggregate:{
+			distinct_on:"player_kills_by_weapon_select_column",
+			order_by:"player_kills_by_weapon_order_by",
+			where:"player_kills_by_weapon_bool_exp"
+		},
 		lobby_players:{
 			distinct_on:"lobby_players_select_column",
 			order_by:"lobby_players_order_by",
@@ -9480,6 +9832,8 @@ export const AllTypesProps: Record<string,any> = {
 		is_muted:"Boolean_comparison_exp",
 		kills:"player_kills_bool_exp",
 		kills_aggregate:"player_kills_aggregate_bool_exp",
+		kills_by_weapons:"player_kills_by_weapon_bool_exp",
+		kills_by_weapons_aggregate:"player_kills_by_weapon_aggregate_bool_exp",
 		language:"String_comparison_exp",
 		last_sign_in_at:"timestamptz_comparison_exp",
 		lobby_players:"lobby_players_bool_exp",
@@ -9505,6 +9859,7 @@ export const AllTypesProps: Record<string,any> = {
 		role:"e_player_roles_enum_comparison_exp",
 		sanctions:"player_sanctions_bool_exp",
 		sanctions_aggregate:"player_sanctions_aggregate_bool_exp",
+		stats:"player_stats_bool_exp",
 		steam_id:"bigint_comparison_exp",
 		team_invites:"team_invites_bool_exp",
 		team_invites_aggregate:"team_invites_aggregate_bool_exp",
@@ -9541,6 +9896,7 @@ export const AllTypesProps: Record<string,any> = {
 		friends:"my_friends_arr_rel_insert_input",
 		invited_players:"team_invites_arr_rel_insert_input",
 		kills:"player_kills_arr_rel_insert_input",
+		kills_by_weapons:"player_kills_by_weapon_arr_rel_insert_input",
 		last_sign_in_at:"timestamptz",
 		lobby_players:"lobby_players_arr_rel_insert_input",
 		multi_kills:"v_player_multi_kills_arr_rel_insert_input",
@@ -9551,6 +9907,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
 		role:"e_player_roles_enum",
 		sanctions:"player_sanctions_arr_rel_insert_input",
+		stats:"player_stats_obj_rel_insert_input",
 		steam_id:"bigint",
 		team_invites:"team_invites_arr_rel_insert_input",
 		team_members:"team_roster_arr_rel_insert_input",
@@ -9593,6 +9950,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_in_lobby:"order_by",
 		is_muted:"order_by",
 		kills_aggregate:"player_kills_aggregate_order_by",
+		kills_by_weapons_aggregate:"player_kills_by_weapon_aggregate_order_by",
 		language:"order_by",
 		last_sign_in_at:"order_by",
 		lobby_players_aggregate:"lobby_players_aggregate_order_by",
@@ -9610,6 +9968,7 @@ export const AllTypesProps: Record<string,any> = {
 		profile_url:"order_by",
 		role:"order_by",
 		sanctions_aggregate:"player_sanctions_aggregate_order_by",
+		stats:"player_stats_order_by",
 		steam_id:"order_by",
 		team_invites_aggregate:"team_invites_aggregate_order_by",
 		team_members_aggregate:"team_roster_aggregate_order_by",
@@ -10063,6 +10422,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_veto_pick_types_by_pk:{
 
 		},
+		e_winning_reasons:{
+			distinct_on:"e_winning_reasons_select_column",
+			order_by:"e_winning_reasons_order_by",
+			where:"e_winning_reasons_bool_exp"
+		},
+		e_winning_reasons_aggregate:{
+			distinct_on:"e_winning_reasons_select_column",
+			order_by:"e_winning_reasons_order_by",
+			where:"e_winning_reasons_bool_exp"
+		},
+		e_winning_reasons_by_pk:{
+
+		},
 		friends:{
 			distinct_on:"friends_select_column",
 			order_by:"friends_order_by",
@@ -10429,6 +10801,19 @@ export const AllTypesProps: Record<string,any> = {
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
+		player_kills_by_weapon:{
+			distinct_on:"player_kills_by_weapon_select_column",
+			order_by:"player_kills_by_weapon_order_by",
+			where:"player_kills_by_weapon_bool_exp"
+		},
+		player_kills_by_weapon_aggregate:{
+			distinct_on:"player_kills_by_weapon_select_column",
+			order_by:"player_kills_by_weapon_order_by",
+			where:"player_kills_by_weapon_bool_exp"
+		},
+		player_kills_by_weapon_by_pk:{
+			player_steam_id:"bigint"
+		},
 		player_objectives:{
 			distinct_on:"player_objectives_select_column",
 			order_by:"player_objectives_order_by",
@@ -10457,6 +10842,19 @@ export const AllTypesProps: Record<string,any> = {
 		player_sanctions_by_pk:{
 			created_at:"timestamptz",
 			id:"uuid"
+		},
+		player_stats:{
+			distinct_on:"player_stats_select_column",
+			order_by:"player_stats_order_by",
+			where:"player_stats_bool_exp"
+		},
+		player_stats_aggregate:{
+			distinct_on:"player_stats_select_column",
+			order_by:"player_stats_order_by",
+			where:"player_stats_bool_exp"
+		},
+		player_stats_by_pk:{
+			player_steam_id:"bigint"
 		},
 		player_unused_utility:{
 			distinct_on:"player_unused_utility_select_column",
@@ -11643,6 +12041,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"e_veto_pick_types_stream_cursor_input",
 			where:"e_veto_pick_types_bool_exp"
 		},
+		e_winning_reasons:{
+			distinct_on:"e_winning_reasons_select_column",
+			order_by:"e_winning_reasons_order_by",
+			where:"e_winning_reasons_bool_exp"
+		},
+		e_winning_reasons_aggregate:{
+			distinct_on:"e_winning_reasons_select_column",
+			order_by:"e_winning_reasons_order_by",
+			where:"e_winning_reasons_bool_exp"
+		},
+		e_winning_reasons_by_pk:{
+
+		},
+		e_winning_reasons_stream:{
+			cursor:"e_winning_reasons_stream_cursor_input",
+			where:"e_winning_reasons_bool_exp"
+		},
 		friends:{
 			distinct_on:"friends_select_column",
 			order_by:"friends_order_by",
@@ -12110,6 +12525,23 @@ export const AllTypesProps: Record<string,any> = {
 			match_map_id:"uuid",
 			time:"timestamptz"
 		},
+		player_kills_by_weapon:{
+			distinct_on:"player_kills_by_weapon_select_column",
+			order_by:"player_kills_by_weapon_order_by",
+			where:"player_kills_by_weapon_bool_exp"
+		},
+		player_kills_by_weapon_aggregate:{
+			distinct_on:"player_kills_by_weapon_select_column",
+			order_by:"player_kills_by_weapon_order_by",
+			where:"player_kills_by_weapon_bool_exp"
+		},
+		player_kills_by_weapon_by_pk:{
+			player_steam_id:"bigint"
+		},
+		player_kills_by_weapon_stream:{
+			cursor:"player_kills_by_weapon_stream_cursor_input",
+			where:"player_kills_by_weapon_bool_exp"
+		},
 		player_kills_stream:{
 			cursor:"player_kills_stream_cursor_input",
 			where:"player_kills_bool_exp"
@@ -12150,6 +12582,23 @@ export const AllTypesProps: Record<string,any> = {
 		player_sanctions_stream:{
 			cursor:"player_sanctions_stream_cursor_input",
 			where:"player_sanctions_bool_exp"
+		},
+		player_stats:{
+			distinct_on:"player_stats_select_column",
+			order_by:"player_stats_order_by",
+			where:"player_stats_bool_exp"
+		},
+		player_stats_aggregate:{
+			distinct_on:"player_stats_select_column",
+			order_by:"player_stats_order_by",
+			where:"player_stats_bool_exp"
+		},
+		player_stats_by_pk:{
+			player_steam_id:"bigint"
+		},
+		player_stats_stream:{
+			cursor:"player_stats_stream_cursor_input",
+			where:"player_stats_bool_exp"
 		},
 		player_unused_utility:{
 			distinct_on:"player_unused_utility_select_column",
@@ -13097,6 +13546,13 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"timestamptz",
 		_nin:"timestamptz"
 	},
+	tournament_brackets:{
+		feeding_brackets:{
+			distinct_on:"tournament_brackets_select_column",
+			order_by:"tournament_brackets_order_by",
+			where:"tournament_brackets_bool_exp"
+		}
+	},
 	tournament_brackets_aggregate_bool_exp:{
 		bool_and:"tournament_brackets_aggregate_bool_exp_bool_and",
 		bool_or:"tournament_brackets_aggregate_bool_exp_bool_or",
@@ -13152,6 +13608,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"tournament_brackets_bool_exp",
 		bye:"Boolean_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
+		feeding_brackets:"tournament_brackets_bool_exp",
 		finished:"Boolean_comparison_exp",
 		group:"numeric_comparison_exp",
 		id:"uuid_comparison_exp",
@@ -13248,6 +13705,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_brackets_order_by:{
 		bye:"order_by",
 		created_at:"order_by",
+		feeding_brackets_aggregate:"tournament_brackets_aggregate_order_by",
 		finished:"order_by",
 		group:"order_by",
 		id:"order_by",
@@ -16827,6 +17285,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_veto_pick_types"
 	},
+	e_winning_reasons:{
+		description:"String",
+		value:"String"
+	},
+	e_winning_reasons_aggregate:{
+		aggregate:"e_winning_reasons_aggregate_fields",
+		nodes:"e_winning_reasons"
+	},
+	e_winning_reasons_aggregate_fields:{
+		count:"Int",
+		max:"e_winning_reasons_max_fields",
+		min:"e_winning_reasons_min_fields"
+	},
+	e_winning_reasons_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_winning_reasons_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_winning_reasons_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_winning_reasons"
+	},
 	float8: `scalar.float8` as const,
 	friends:{
 		e_status:"e_friend_status",
@@ -17648,6 +18131,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		round:"Int",
 		time:"timestamptz",
+		winning_reason:"e_winning_reasons_enum",
 		winning_side:"String"
 	},
 	match_map_rounds_aggregate:{
@@ -18513,6 +18997,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_utility_types_by_pk:"e_utility_types",
 		delete_e_veto_pick_types:"e_veto_pick_types_mutation_response",
 		delete_e_veto_pick_types_by_pk:"e_veto_pick_types",
+		delete_e_winning_reasons:"e_winning_reasons_mutation_response",
+		delete_e_winning_reasons_by_pk:"e_winning_reasons",
 		delete_friends:"friends_mutation_response",
 		delete_friends_by_pk:"friends",
 		delete_game_server_nodes:"game_server_nodes_mutation_response",
@@ -18566,10 +19052,14 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_flashes_by_pk:"player_flashes",
 		delete_player_kills:"player_kills_mutation_response",
 		delete_player_kills_by_pk:"player_kills",
+		delete_player_kills_by_weapon:"player_kills_by_weapon_mutation_response",
+		delete_player_kills_by_weapon_by_pk:"player_kills_by_weapon",
 		delete_player_objectives:"player_objectives_mutation_response",
 		delete_player_objectives_by_pk:"player_objectives",
 		delete_player_sanctions:"player_sanctions_mutation_response",
 		delete_player_sanctions_by_pk:"player_sanctions",
+		delete_player_stats:"player_stats_mutation_response",
+		delete_player_stats_by_pk:"player_stats",
 		delete_player_unused_utility:"player_unused_utility_mutation_response",
 		delete_player_unused_utility_by_pk:"player_unused_utility",
 		delete_player_utility:"player_utility_mutation_response",
@@ -18665,6 +19155,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_utility_types_one:"e_utility_types",
 		insert_e_veto_pick_types:"e_veto_pick_types_mutation_response",
 		insert_e_veto_pick_types_one:"e_veto_pick_types",
+		insert_e_winning_reasons:"e_winning_reasons_mutation_response",
+		insert_e_winning_reasons_one:"e_winning_reasons",
 		insert_friends:"friends_mutation_response",
 		insert_friends_one:"friends",
 		insert_game_server_nodes:"game_server_nodes_mutation_response",
@@ -18718,11 +19210,15 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_flashes:"player_flashes_mutation_response",
 		insert_player_flashes_one:"player_flashes",
 		insert_player_kills:"player_kills_mutation_response",
+		insert_player_kills_by_weapon:"player_kills_by_weapon_mutation_response",
+		insert_player_kills_by_weapon_one:"player_kills_by_weapon",
 		insert_player_kills_one:"player_kills",
 		insert_player_objectives:"player_objectives_mutation_response",
 		insert_player_objectives_one:"player_objectives",
 		insert_player_sanctions:"player_sanctions_mutation_response",
 		insert_player_sanctions_one:"player_sanctions",
+		insert_player_stats:"player_stats_mutation_response",
+		insert_player_stats_one:"player_stats",
 		insert_player_unused_utility:"player_unused_utility_mutation_response",
 		insert_player_unused_utility_one:"player_unused_utility",
 		insert_player_utility:"player_utility_mutation_response",
@@ -18864,6 +19360,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_veto_pick_types:"e_veto_pick_types_mutation_response",
 		update_e_veto_pick_types_by_pk:"e_veto_pick_types",
 		update_e_veto_pick_types_many:"e_veto_pick_types_mutation_response",
+		update_e_winning_reasons:"e_winning_reasons_mutation_response",
+		update_e_winning_reasons_by_pk:"e_winning_reasons",
+		update_e_winning_reasons_many:"e_winning_reasons_mutation_response",
 		update_friends:"friends_mutation_response",
 		update_friends_by_pk:"friends",
 		update_friends_many:"friends_mutation_response",
@@ -18943,6 +19442,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_flashes_many:"player_flashes_mutation_response",
 		update_player_kills:"player_kills_mutation_response",
 		update_player_kills_by_pk:"player_kills",
+		update_player_kills_by_weapon:"player_kills_by_weapon_mutation_response",
+		update_player_kills_by_weapon_by_pk:"player_kills_by_weapon",
+		update_player_kills_by_weapon_many:"player_kills_by_weapon_mutation_response",
 		update_player_kills_many:"player_kills_mutation_response",
 		update_player_objectives:"player_objectives_mutation_response",
 		update_player_objectives_by_pk:"player_objectives",
@@ -18950,6 +19452,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_sanctions:"player_sanctions_mutation_response",
 		update_player_sanctions_by_pk:"player_sanctions",
 		update_player_sanctions_many:"player_sanctions_mutation_response",
+		update_player_stats:"player_stats_mutation_response",
+		update_player_stats_by_pk:"player_stats",
+		update_player_stats_many:"player_stats_mutation_response",
 		update_player_unused_utility:"player_unused_utility_mutation_response",
 		update_player_unused_utility_by_pk:"player_unused_utility",
 		update_player_unused_utility_many:"player_unused_utility_mutation_response",
@@ -19698,6 +20203,75 @@ export const ReturnTypes: Record<string,any> = {
 		attacker_steam_id:"Float",
 		round:"Float"
 	},
+	player_kills_by_weapon:{
+		kill_count:"bigint",
+		player:"players",
+		player_steam_id:"bigint",
+		with:"String"
+	},
+	player_kills_by_weapon_aggregate:{
+		aggregate:"player_kills_by_weapon_aggregate_fields",
+		nodes:"player_kills_by_weapon"
+	},
+	player_kills_by_weapon_aggregate_fields:{
+		avg:"player_kills_by_weapon_avg_fields",
+		count:"Int",
+		max:"player_kills_by_weapon_max_fields",
+		min:"player_kills_by_weapon_min_fields",
+		stddev:"player_kills_by_weapon_stddev_fields",
+		stddev_pop:"player_kills_by_weapon_stddev_pop_fields",
+		stddev_samp:"player_kills_by_weapon_stddev_samp_fields",
+		sum:"player_kills_by_weapon_sum_fields",
+		var_pop:"player_kills_by_weapon_var_pop_fields",
+		var_samp:"player_kills_by_weapon_var_samp_fields",
+		variance:"player_kills_by_weapon_variance_fields"
+	},
+	player_kills_by_weapon_avg_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float"
+	},
+	player_kills_by_weapon_max_fields:{
+		kill_count:"bigint",
+		player_steam_id:"bigint",
+		with:"String"
+	},
+	player_kills_by_weapon_min_fields:{
+		kill_count:"bigint",
+		player_steam_id:"bigint",
+		with:"String"
+	},
+	player_kills_by_weapon_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_kills_by_weapon"
+	},
+	player_kills_by_weapon_stddev_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float"
+	},
+	player_kills_by_weapon_stddev_pop_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float"
+	},
+	player_kills_by_weapon_stddev_samp_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float"
+	},
+	player_kills_by_weapon_sum_fields:{
+		kill_count:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_kills_by_weapon_var_pop_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float"
+	},
+	player_kills_by_weapon_var_samp_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float"
+	},
+	player_kills_by_weapon_variance_fields:{
+		kill_count:"Float",
+		player_steam_id:"Float"
+	},
 	player_kills_max_fields:{
 		attacked_location:"String",
 		attacked_location_coordinates:"String",
@@ -19933,6 +20507,116 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float",
 		sanctioned_by_steam_id:"Float"
 	},
+	player_stats:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player:"players",
+		player_steam_id:"bigint"
+	},
+	player_stats_aggregate:{
+		aggregate:"player_stats_aggregate_fields",
+		nodes:"player_stats"
+	},
+	player_stats_aggregate_fields:{
+		avg:"player_stats_avg_fields",
+		count:"Int",
+		max:"player_stats_max_fields",
+		min:"player_stats_min_fields",
+		stddev:"player_stats_stddev_fields",
+		stddev_pop:"player_stats_stddev_pop_fields",
+		stddev_samp:"player_stats_stddev_samp_fields",
+		sum:"player_stats_sum_fields",
+		var_pop:"player_stats_var_pop_fields",
+		var_samp:"player_stats_var_samp_fields",
+		variance:"player_stats_variance_fields"
+	},
+	player_stats_avg_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_stats_max_fields:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_stats_min_fields:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_stats_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_stats"
+	},
+	player_stats_stddev_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_stats_stddev_pop_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_stats_stddev_samp_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_stats_sum_fields:{
+		assists:"bigint",
+		deaths:"bigint",
+		headshot_percentage:"float8",
+		headshots:"bigint",
+		kills:"bigint",
+		player_steam_id:"bigint"
+	},
+	player_stats_var_pop_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_stats_var_samp_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
+	player_stats_variance_fields:{
+		assists:"Float",
+		deaths:"Float",
+		headshot_percentage:"Float",
+		headshots:"Float",
+		kills:"Float",
+		player_steam_id:"Float"
+	},
 	player_unused_utility:{
 		deleted_at:"timestamptz",
 		match:"matches",
@@ -20143,6 +20827,8 @@ export const ReturnTypes: Record<string,any> = {
 		is_muted:"Boolean",
 		kills:"player_kills",
 		kills_aggregate:"player_kills_aggregate",
+		kills_by_weapons:"player_kills_by_weapon",
+		kills_by_weapons_aggregate:"player_kills_by_weapon_aggregate",
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		lobby_players:"lobby_players",
@@ -20168,6 +20854,7 @@ export const ReturnTypes: Record<string,any> = {
 		role:"e_player_roles_enum",
 		sanctions:"player_sanctions",
 		sanctions_aggregate:"player_sanctions_aggregate",
+		stats:"player_stats",
 		steam_id:"bigint",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
@@ -20431,6 +21118,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_veto_pick_types:"e_veto_pick_types",
 		e_veto_pick_types_aggregate:"e_veto_pick_types_aggregate",
 		e_veto_pick_types_by_pk:"e_veto_pick_types",
+		e_winning_reasons:"e_winning_reasons",
+		e_winning_reasons_aggregate:"e_winning_reasons_aggregate",
+		e_winning_reasons_by_pk:"e_winning_reasons",
 		friends:"friends",
 		friends_aggregate:"friends_aggregate",
 		friends_by_pk:"friends",
@@ -20515,12 +21205,18 @@ export const ReturnTypes: Record<string,any> = {
 		player_kills:"player_kills",
 		player_kills_aggregate:"player_kills_aggregate",
 		player_kills_by_pk:"player_kills",
+		player_kills_by_weapon:"player_kills_by_weapon",
+		player_kills_by_weapon_aggregate:"player_kills_by_weapon_aggregate",
+		player_kills_by_weapon_by_pk:"player_kills_by_weapon",
 		player_objectives:"player_objectives",
 		player_objectives_aggregate:"player_objectives_aggregate",
 		player_objectives_by_pk:"player_objectives",
 		player_sanctions:"player_sanctions",
 		player_sanctions_aggregate:"player_sanctions_aggregate",
 		player_sanctions_by_pk:"player_sanctions",
+		player_stats:"player_stats",
+		player_stats_aggregate:"player_stats_aggregate",
+		player_stats_by_pk:"player_stats",
 		player_unused_utility:"player_unused_utility",
 		player_unused_utility_aggregate:"player_unused_utility_aggregate",
 		player_unused_utility_by_pk:"player_unused_utility",
@@ -20942,6 +21638,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_veto_pick_types_aggregate:"e_veto_pick_types_aggregate",
 		e_veto_pick_types_by_pk:"e_veto_pick_types",
 		e_veto_pick_types_stream:"e_veto_pick_types",
+		e_winning_reasons:"e_winning_reasons",
+		e_winning_reasons_aggregate:"e_winning_reasons_aggregate",
+		e_winning_reasons_by_pk:"e_winning_reasons",
+		e_winning_reasons_stream:"e_winning_reasons",
 		friends:"friends",
 		friends_aggregate:"friends_aggregate",
 		friends_by_pk:"friends",
@@ -21048,6 +21748,10 @@ export const ReturnTypes: Record<string,any> = {
 		player_kills:"player_kills",
 		player_kills_aggregate:"player_kills_aggregate",
 		player_kills_by_pk:"player_kills",
+		player_kills_by_weapon:"player_kills_by_weapon",
+		player_kills_by_weapon_aggregate:"player_kills_by_weapon_aggregate",
+		player_kills_by_weapon_by_pk:"player_kills_by_weapon",
+		player_kills_by_weapon_stream:"player_kills_by_weapon",
 		player_kills_stream:"player_kills",
 		player_objectives:"player_objectives",
 		player_objectives_aggregate:"player_objectives_aggregate",
@@ -21057,6 +21761,10 @@ export const ReturnTypes: Record<string,any> = {
 		player_sanctions_aggregate:"player_sanctions_aggregate",
 		player_sanctions_by_pk:"player_sanctions",
 		player_sanctions_stream:"player_sanctions",
+		player_stats:"player_stats",
+		player_stats_aggregate:"player_stats_aggregate",
+		player_stats_by_pk:"player_stats",
+		player_stats_stream:"player_stats",
 		player_unused_utility:"player_unused_utility",
 		player_unused_utility_aggregate:"player_unused_utility_aggregate",
 		player_unused_utility_by_pk:"player_unused_utility",
@@ -21382,6 +22090,7 @@ export const ReturnTypes: Record<string,any> = {
 	tournament_brackets:{
 		bye:"Boolean",
 		created_at:"timestamptz",
+		feeding_brackets:"tournament_brackets",
 		finished:"Boolean",
 		group:"numeric",
 		id:"uuid",

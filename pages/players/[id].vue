@@ -152,7 +152,7 @@ const { isMobile } = useSidebar();
                     {{ $t("pages.players.detail.kills") }}
                   </p>
                   <p class="text-2xl font-bold">
-                    {{ player.kills_aggregate.aggregate.count }}
+                    {{ player.stats?.kills || "-" }}
                   </p>
                 </div>
                 <div class="text-center flex-1">
@@ -160,7 +160,7 @@ const { isMobile } = useSidebar();
                     {{ $t("pages.players.detail.assists") }}
                   </p>
                   <p class="text-2xl font-bold">
-                    {{ player.assists_aggregate.aggregate.count }}
+                    {{ player.stats?.assists || "-" }}
                   </p>
                 </div>
                 <div class="text-center flex-1">
@@ -168,7 +168,7 @@ const { isMobile } = useSidebar();
                     {{ $t("pages.players.detail.deaths") }}
                   </p>
                   <p class="text-2xl font-bold">
-                    {{ player.deaths_aggregate.aggregate.count }}
+                    {{ player.stats?.deaths || "-" }}
                   </p>
                 </div>
               </div>
@@ -207,18 +207,73 @@ const { isMobile } = useSidebar();
         </Card>
       </div>
 
-      <Card class="flex justify-center items-center">
-        <div class="text-center">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card class="flex flex-col h-full">
           <CardHeader>
             <CardTitle class="text-xl font-bold text-center">
               {{ $t("pages.players.detail.recent_wins_and_losses") }}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <LastTenWinsAndLosses class="max-h-[300px]" :steam_id="playerId" />
+          <CardContent class="flex flex-col h-full">
+            <LastTenWinsAndLosses
+              class="max-h-[360px] w-full flex-grow"
+              :steam_id="playerId"
+            />
           </CardContent>
-        </div>
-      </Card>
+        </Card>
+
+        <Card class="flex flex-col h-full">
+          <CardHeader>
+            <CardTitle class="text-xl font-bold text-center">
+              {{ $t("pages.players.detail.weapon_kills") }}
+            </CardTitle>
+          </CardHeader>
+          <CardContent class="flex flex-col h-full">
+            <div
+              v-if="
+                !player?.kills_by_weapons ||
+                player.kills_by_weapons.length === 0
+              "
+              class="text-center py-8 flex-grow flex items-center justify-center"
+            >
+              <p class="text-muted-foreground">
+                {{ $t("pages.players.detail.no_weapon_kills") }}
+              </p>
+            </div>
+            <table v-else class="w-full">
+              <thead>
+                <tr class="border-b">
+                  <th class="text-left p-2 font-medium">Weapon</th>
+                  <th class="text-right p-2 font-medium">Kills</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(weapon, index) in player.kills_by_weapons"
+                  :key="index"
+                  class="border-b hover:bg-muted/50"
+                >
+                  <td class="p-2 flex items-center gap-2">
+                    <template v-if="weapon.with && weapon.with !== 'unknown'">
+                      <img
+                        :src="`/img/equipment/${getWeaponImageName(weapon.with)}.svg`"
+                        :alt="weapon.with"
+                        class="w-12 h-12"
+                        @error="handleImageError"
+                        :title="weapon.with"
+                      />
+                    </template>
+                    <span v-else>{{ weapon.with }}</span>
+                  </td>
+                  <td class="p-2 text-right font-medium">
+                    {{ weapon.kill_count }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+      </div>
     </div>
 
     <Card class="p-4">
@@ -320,49 +375,26 @@ export default {
               ],
               wins: true,
               losses: true,
-              kills_aggregate: [
+              stats: {
+                kills: true,
+                deaths: true,
+                assists: true,
+                headshots: true,
+                headshot_percentage: true,
+              },
+              kills_by_weapons: [
                 {
-                  where: {
-                    team_kill: {
-                      _eq: false,
-                    },
-                  },
-                },
-                {
-                  aggregate: [
+                  order_by: [
                     {},
                     {
-                      count: true,
+                      kill_count: order_by.desc,
                     },
                   ],
-                },
-              ],
-              deaths_aggregate: [
-                {},
-                {
-                  aggregate: [
-                    {},
-                    {
-                      count: true,
-                    },
-                  ],
-                },
-              ],
-              assists_aggregate: [
-                {
-                  where: {
-                    is_team_assist: {
-                      _eq: false,
-                    },
-                  },
+                  limit: 5,
                 },
                 {
-                  aggregate: [
-                    {},
-                    {
-                      count: true,
-                    },
-                  ],
+                  with: true,
+                  kill_count: true,
                 },
               ],
               elo_history: [
@@ -530,12 +562,15 @@ export default {
       );
     },
     kd() {
-      if (this.player?.deaths_aggregate.aggregate.count === 0) {
-        return this.player?.kills_aggregate.aggregate.count;
+      if (!this.player?.stats) {
+        return 0;
+      }
+
+      if (this.player?.stats?.deaths === 0) {
+        return this.player?.stats.kills;
       }
       return formatStatValue(
-        this.player?.kills_aggregate.aggregate.count /
-          this.player?.deaths_aggregate.aggregate.count,
+        this.player?.stats.kills / this.player?.stats.deaths,
       );
     },
     winLossRatio() {
@@ -545,6 +580,19 @@ export default {
         return wins > 0 ? wins : "0.00";
       }
       return formatStatValue(wins / losses);
+    },
+  },
+  methods: {
+    getWeaponImageName(weaponName) {
+      if (!weaponName || weaponName === "unknown") return "";
+
+      const overrideMappings = {};
+
+      return overrideMappings[weaponName] || weaponName;
+    },
+    handleImageError(event) {
+      const img = event.target;
+      img.style.display = "none";
     },
   },
 };

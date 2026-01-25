@@ -344,6 +344,8 @@
                 "matches": "Matches",
                 "tournaments": "Tournaments",
                 "no_tournaments": "No tournaments found for this player.",
+                "weapon_kills": "Most Used Weapons",
+                "no_weapon_kills": "No weapons recorded",
                 "match_record": "Match Record",
                 "wins": "Wins",
                 "losses": "Losses",
@@ -1461,7 +1463,8 @@
         "message_placeholder": "Type a message..."
     },
     "charts": {
-        "usage": "Usage"
+        "usage": "Usage",
+        "weapon_kills": "Weapon Kills"
     },
     "server": {
         

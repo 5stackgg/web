@@ -2,6 +2,8 @@
 import { TrashIcon, PlusIcon, TriangleAlert } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 definePageMeta({
   layout: "profile-settings",
@@ -11,72 +13,74 @@ definePageMeta({
 <template>
   <div class="space-y-6">
     <!-- API Keys Table -->
-    <Card>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
-          {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
+    <PageTransition :delay="0">
+      <AnimatedCard variant="gradient">
+        <CardHeader>
+          <CardTitle class="flex items-center justify-between">
+            {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
 
-          <Button size="sm" @click="openAddDialog">
-            <PlusIcon class="w-4 h-4 mr-2" />
-            {{ $t("pages.settings.account.api_keys_management.add_api_key") }}
-          </Button>
-        </CardTitle>
-        <CardDescription>
-          {{
-            $t(
-              "pages.settings.account.api_keys_management.api_keys_description",
-            )
-          }}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Table v-if="apiKeys.length > 0">
-          <TableHeader>
-            <TableRow>
-              <TableHead>{{
-                $t("pages.settings.account.api_keys_management.label")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.settings.account.api_keys_management.created")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.settings.account.api_keys_management.last_used")
-              }}</TableHead>
-              <TableHead class="w-[100px]">{{
-                $t("pages.settings.account.api_keys_management.actions")
-              }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow v-for="apiKey in apiKeys" :key="apiKey.id">
-              <TableCell class="font-medium">
-                {{ apiKey.label }}
-              </TableCell>
-              <TableCell>
-                <TimeAgo :date="apiKey.created_at" />
-              </TableCell>
-              <TableCell>
-                <template v-if="apiKey.last_used_at">
-                  <TimeAgo :date="apiKey.last_used_at" />
-                </template>
-                <template v-else>
-                  {{ $t("pages.settings.account.api_keys_management.never") }}
-                </template>
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  @click="openDeleteDialog(apiKey)"
-                >
-                  <TrashIcon class="w-4 h-4" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+            <Button size="sm" @click="openAddDialog">
+              <PlusIcon class="w-4 h-4 mr-2" />
+              {{ $t("pages.settings.account.api_keys_management.add_api_key") }}
+            </Button>
+          </CardTitle>
+          <CardDescription>
+            {{
+              $t(
+                "pages.settings.account.api_keys_management.api_keys_description",
+              )
+            }}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table v-if="apiKeys.length > 0">
+            <TableHeader>
+              <TableRow>
+                <TableHead>{{
+                  $t("pages.settings.account.api_keys_management.label")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.settings.account.api_keys_management.created")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.settings.account.api_keys_management.last_used")
+                }}</TableHead>
+                <TableHead class="w-[100px]">{{
+                  $t("pages.settings.account.api_keys_management.actions")
+                }}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow v-for="apiKey in apiKeys" :key="apiKey.id">
+                <TableCell class="font-medium">
+                  {{ apiKey.label }}
+                </TableCell>
+                <TableCell>
+                  <TimeAgo :date="apiKey.created_at" />
+                </TableCell>
+                <TableCell>
+                  <template v-if="apiKey.last_used_at">
+                    <TimeAgo :date="apiKey.last_used_at" />
+                  </template>
+                  <template v-else>
+                    {{ $t("pages.settings.account.api_keys_management.never") }}
+                  </template>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    @click="openDeleteDialog(apiKey)"
+                  >
+                    <TrashIcon class="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </AnimatedCard>
+    </PageTransition>
 
     <!-- Add API Key Dialog -->
     <Dialog v-model:open="showAddDialog">

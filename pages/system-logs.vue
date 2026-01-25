@@ -1,55 +1,62 @@
 <script setup lang="ts">
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
 
 <template>
-  <div class="flex flex-col space-y-4">
-    <Tabs default-value="api" orientation="vertical">
-      <div class="flex items-center justify-between flex-col lg:flex-row">
-        <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
-          <TabsTrigger
-            class="capitalize"
-            v-for="service in services"
-            :key="service"
-            :value="service"
-          >
-            {{ service }}
-          </TabsTrigger>
-        </TabsList>
-
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :model-value="followLogs"
-              @click="followLogs = !followLogs"
+  <div class="flex flex-col gap-6">
+    <PageTransition>
+      <Tabs default-value="api" orientation="vertical">
+        <div class="flex items-center justify-between flex-col lg:flex-row">
+          <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
+            <TabsTrigger
+              class="capitalize"
+              v-for="service in services"
+              :key="service"
+              :value="service"
             >
-            </Switch>
-            {{ $t("pages.system_logs.follow_logs") }}
-          </div>
+              {{ service }}
+            </TabsTrigger>
+          </TabsList>
 
-          <div class="flex items-center gap-2">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :model-value="timestamps"
-              @click="timestamps = !timestamps"
-            >
-            </Switch>
-            {{ $t("pages.system_logs.timestamps") }}
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <Switch
+                class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+                :model-value="followLogs"
+                @click="followLogs = !followLogs"
+              >
+              </Switch>
+              {{ $t("pages.system_logs.follow_logs") }}
+            </div>
+
+            <div class="flex items-center gap-2">
+              <Switch
+                class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+                :model-value="timestamps"
+                @click="timestamps = !timestamps"
+              >
+              </Switch>
+              {{ $t("pages.system_logs.timestamps") }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <TabsContent v-for="service in services" :key="service" :value="service">
-        <ServiceLogs
-          :service="service"
-          :timestamps="timestamps"
-          :follow-logs="followLogs"
-          @follow-logs-changed="(value: boolean) => (followLogs = value)"
-        />
-      </TabsContent>
-    </Tabs>
+        <TabsContent
+          v-for="service in services"
+          :key="service"
+          :value="service"
+        >
+          <ServiceLogs
+            :service="service"
+            :timestamps="timestamps"
+            :follow-logs="followLogs"
+            @follow-logs-changed="(value: boolean) => (followLogs = value)"
+          />
+        </TabsContent>
+      </Tabs>
+    </PageTransition>
   </div>
 </template>
 

@@ -17,10 +17,12 @@ import MatchTableRow from "~/components/MatchTableRow.vue";
     </template>
     <template v-else>
       <MatchTableRow
-        v-for="match of matches"
+        v-for="(match, index) of matches"
         :key="match.id"
         :match="match"
         :player="player"
+        :style="{ animationDelay: `${index * 50}ms` }"
+        class="animate-in fade-in slide-in-from-bottom-2"
       />
     </template>
   </div>

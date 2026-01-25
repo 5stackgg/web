@@ -1,5 +1,13 @@
 {
   "permissions": {
-    "allow": ["Bash(npm run build:*)", "Bash(git show:*)"]
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(git show:*)",
+      "Bash(grep:*)",
+      "Read(*)",
+      "Search(*)",
+      "Edit(*)",
+      "Write(*)"
+    ]
   }
 }

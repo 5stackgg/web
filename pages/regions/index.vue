@@ -5,111 +5,121 @@ import { Pencil, Trash, PlusCircle, Info } from "lucide-vue-next";
 import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-4">
-    <PageHeading>
-      <template #title>{{ $t("pages.regions.title") }}</template>
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition :delay="0">
+      <PageHeading>
+        <template #title>{{ $t("pages.regions.title") }}</template>
 
-      <template #description>
-        {{ $t("pages.regions.description") }}
-      </template>
+        <template #description>
+          {{ $t("pages.regions.description") }}
+        </template>
 
-      <template #actions>
-        <Button
-          @click="regionDialogOpen = true"
-          :size="isMobile ? 'default' : 'lg'"
-        >
-          <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline ml-2">{{
-            $t("pages.regions.create")
-          }}</span>
-        </Button>
-      </template>
-    </PageHeading>
+        <template #actions>
+          <Button
+            @click="regionDialogOpen = true"
+            :size="isMobile ? 'default' : 'lg'"
+          >
+            <PlusCircle class="w-4 h-4" />
+            <span class="hidden md:inline ml-2">{{
+              $t("pages.regions.create")
+            }}</span>
+          </Button>
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-    <Card class="p-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ $t("pages.regions.table.name") }}</TableHead>
-            <TableHead>{{ $t("pages.regions.table.status") }}</TableHead>
-            <TableHead>{{
-              $t("pages.regions.table.available_servers")
-            }}</TableHead>
-            <TableHead>{{ $t("pages.regions.table.description") }}</TableHead>
-            <TableHead>
-              <FivestackTooltip>
-                <template #trigger>
-                  <div class="flex items-center gap-2">
-                    <Info class="w-4 h-4" />
-                    {{ $t("pages.regions.table.use_steam_relay") }}
-                  </div>
-                </template>
-                {{ $t("pages.regions.table.use_steam_relay_description") }}
-              </FivestackTooltip>
-            </TableHead>
-            <TableHead>{{ $t("pages.regions.table.use_lan_ip") }}</TableHead>
-            <TableHead class="w-[100px]">{{
-              $t("pages.regions.table.actions")
-            }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="region of regions" :key="region.value">
-            <TableCell>
-              <span>{{ region.value }}</span>
-            </TableCell>
-            <TableCell>
-              <span>{{ region.status }}</span>
-            </TableCell>
-            <TableCell>
-              <span
-                >{{ region.available_server_count }} /
-                {{ region.total_server_count }}</span
-              >
-            </TableCell>
-            <TableCell>
-              <span>{{ region.description }}</span>
-            </TableCell>
-            <TableCell>
-              <Switch
-                :model-value="region.steam_relay"
-                @click="toggleSteamRelay(region)"
-              />
-            </TableCell>
-            <TableCell>
-              <Switch
-                :model-value="region.is_lan"
-                @click="toggleIsLan(region)"
-              />
-            </TableCell>
-            <TableCell>
-              <div class="flex gap-2">
-                <Button variant="ghost" size="icon" @click="editRegion(region)">
-                  <Pencil class="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  @click="
-                    () => {
-                      regionToDelete = region;
-                      deleteDialogOpen = true;
-                    }
-                  "
+    <PageTransition :delay="100">
+      <AnimatedCard variant="gradient" class="p-4">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{{ $t("pages.regions.table.name") }}</TableHead>
+              <TableHead>{{ $t("pages.regions.table.status") }}</TableHead>
+              <TableHead>{{
+                $t("pages.regions.table.available_servers")
+              }}</TableHead>
+              <TableHead>{{ $t("pages.regions.table.description") }}</TableHead>
+              <TableHead>
+                <FivestackTooltip>
+                  <template #trigger>
+                    <div class="flex items-center gap-2">
+                      <Info class="w-4 h-4" />
+                      {{ $t("pages.regions.table.use_steam_relay") }}
+                    </div>
+                  </template>
+                  {{ $t("pages.regions.table.use_steam_relay_description") }}
+                </FivestackTooltip>
+              </TableHead>
+              <TableHead>{{ $t("pages.regions.table.use_lan_ip") }}</TableHead>
+              <TableHead class="w-[100px]">{{
+                $t("pages.regions.table.actions")
+              }}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="region of regions" :key="region.value">
+              <TableCell>
+                <span>{{ region.value }}</span>
+              </TableCell>
+              <TableCell>
+                <span>{{ region.status }}</span>
+              </TableCell>
+              <TableCell>
+                <span
+                  >{{ region.available_server_count }} /
+                  {{ region.total_server_count }}</span
                 >
-                  <Trash class="w-4 h-4" />
-                </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Card>
+              </TableCell>
+              <TableCell>
+                <span>{{ region.description }}</span>
+              </TableCell>
+              <TableCell>
+                <Switch
+                  :model-value="region.steam_relay"
+                  @click="toggleSteamRelay(region)"
+                />
+              </TableCell>
+              <TableCell>
+                <Switch
+                  :model-value="region.is_lan"
+                  @click="toggleIsLan(region)"
+                />
+              </TableCell>
+              <TableCell>
+                <div class="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    @click="editRegion(region)"
+                  >
+                    <Pencil class="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    @click="
+                      () => {
+                        regionToDelete = region;
+                        deleteDialogOpen = true;
+                      }
+                    "
+                  >
+                    <Trash class="w-4 h-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </AnimatedCard>
+    </PageTransition>
 
     <Dialog v-model:open="regionDialogOpen">
       <DialogContent>

@@ -5,45 +5,59 @@ import OpenMatches from "~/components/match/OpenMatches.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <template v-if="matchmakingAllowed">
-      <Matchmaking></Matchmaking>
-      <Separator class="my-4" />
-    </template>
-    <template v-else-if="canCreateMatch">
-      <CustomMatch class="bg-card p-8 rounded-lg" />
-    </template>
+  <div class="flex flex-col gap-6">
+    <PageTransition>
+      <template v-if="matchmakingAllowed">
+        <Matchmaking></Matchmaking>
+        <Separator class="my-4" />
+      </template>
+      <template v-else-if="canCreateMatch">
+        <CustomMatch class="bg-card p-8 rounded-lg" />
+      </template>
+    </PageTransition>
 
-    <MyUpcoming></MyUpcoming>
+    <PageTransition :delay="100">
+      <MyUpcoming></MyUpcoming>
+    </PageTransition>
 
-    <Card class="p-4" v-if="openRegistrationTournaments?.length > 0">
-      <CardHeader>
-        <CardTitle>{{
-          $t("pages.play.open_registration_tournaments.title")
-        }}</CardTitle>
-        <CardDescription>
-          {{ $t("pages.play.open_registration_tournaments.description") }}
-        </CardDescription>
-      </CardHeader>
-      <TournamentTableRow
-        v-for="tournament of openRegistrationTournaments"
-        :key="tournament.id"
-        :tournament="tournament"
-      ></TournamentTableRow>
-    </Card>
+    <PageTransition :delay="200">
+      <AnimatedCard
+        variant="gradient"
+        class="p-4"
+        v-if="openRegistrationTournaments?.length > 0"
+      >
+        <CardHeader>
+          <CardTitle>{{
+            $t("pages.play.open_registration_tournaments.title")
+          }}</CardTitle>
+          <CardDescription>
+            {{ $t("pages.play.open_registration_tournaments.description") }}
+          </CardDescription>
+        </CardHeader>
+        <TournamentTableRow
+          v-for="tournament of openRegistrationTournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+        ></TournamentTableRow>
+      </AnimatedCard>
+    </PageTransition>
 
-    <Card class="p-4">
-      <CardHeader>
-        <CardTitle>{{ $t("pages.play.open_matches.title") }}</CardTitle>
-        <CardDescription>
-          {{ $t("pages.play.open_matches.description") }}
-        </CardDescription>
-      </CardHeader>
-      <OpenMatches> </OpenMatches>
-    </Card>
+    <PageTransition :delay="300">
+      <AnimatedCard variant="gradient" class="p-4">
+        <CardHeader>
+          <CardTitle>{{ $t("pages.play.open_matches.title") }}</CardTitle>
+          <CardDescription>
+            {{ $t("pages.play.open_matches.description") }}
+          </CardDescription>
+        </CardHeader>
+        <OpenMatches> </OpenMatches>
+      </AnimatedCard>
+    </PageTransition>
 
     <div id="pagination"></div>
   </div>

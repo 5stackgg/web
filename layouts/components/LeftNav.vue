@@ -16,12 +16,14 @@ import {
   Users,
   Radio,
   Home,
+  Search,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { Kbd, KbdGroup } from "~/components/ui/kbd";
 import Logout from "./Logout.vue";
 </script>
 
@@ -66,6 +68,17 @@ import Logout from "./Logout.vue";
                 <Home />
                 {{ $t("layouts.app_nav.navigation.dashboard") }}
               </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem tooltip="Search Players">
+            <SidebarMenuButton @click="triggerSpotlightSearch" tooltip="Search Players">
+              <Search />
+              <span>Search</span>
+              <KbdGroup class="ml-auto" v-if="isMobile || sideBarOpen">
+                <Kbd>{{ isMac ? "⌘" : "Ctrl" }}</Kbd>
+                <Kbd>K</Kbd>
+              </KbdGroup>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
@@ -617,6 +630,16 @@ export default {
         this.$route.path.startsWith(`/${route}/`)
       );
     },
+    triggerSpotlightSearch() {
+      // Trigger the keyboard shortcut to open spotlight
+      const event = new KeyboardEvent("keydown", {
+        key: "k",
+        metaKey: this.isMac,
+        ctrlKey: !this.isMac,
+        bubbles: true,
+      });
+      window.dispatchEvent(event);
+    },
   },
   computed: {
     me() {
@@ -624,6 +647,12 @@ export default {
     },
     isPWA() {
       return window.matchMedia("(display-mode: standalone)").matches;
+    },
+    isMac() {
+      if (typeof navigator !== "undefined") {
+        return navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      }
+      return false;
     },
     myMatches() {
       return useMatchLobbyStore().myMatches;

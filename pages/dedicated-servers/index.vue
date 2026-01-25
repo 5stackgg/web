@@ -12,103 +12,112 @@ import PageHeading from "~/components/PageHeading.vue";
 import { PlusCircle } from "lucide-vue-next";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-4">
-    <PageHeading>
-      <template #title> {{ $t("pages.dedicated_servers.title") }} </template>
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition :delay="0">
+      <PageHeading>
+        <template #title> {{ $t("pages.dedicated_servers.title") }} </template>
 
-      <template #description>
-        {{ $t("pages.dedicated_servers.description") }}
-        <a href="https://github.com/5stackgg/game-server"
-          >https://github.com/5stackgg/game-server</a
-        >.
-      </template>
+        <template #description>
+          {{ $t("pages.dedicated_servers.description") }}
+          <a href="https://github.com/5stackgg/game-server"
+            >https://github.com/5stackgg/game-server</a
+          >.
+        </template>
 
-      <template #actions>
-        <NuxtLink :to="{ name: 'dedicated-servers-create' }">
-          <Button :size="isMobile ? 'default' : 'lg'">
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{
-              $t("pages.dedicated_servers.create.title")
-            }}</span>
-          </Button>
-        </NuxtLink>
-      </template>
-    </PageHeading>
+        <template #actions>
+          <NuxtLink :to="{ name: 'dedicated-servers-create' }">
+            <Button :size="isMobile ? 'default' : 'lg'">
+              <PlusCircle class="w-4 h-4" />
+              <span class="hidden md:inline ml-2">{{
+                $t("pages.dedicated_servers.create.title")
+              }}</span>
+            </Button>
+          </NuxtLink>
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-    <Card class="p-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.connection_details")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.label")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.type")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.region")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.plugin_version")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.tv_port")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.enabled")
-            }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow
-            v-for="server of servers"
-            :key="server.id"
-            class="cursor-pointer"
-          >
-            <NuxtLink
-              :to="{ name: 'dedicated-servers-id', params: { id: server.id } }"
-              class="contents"
+    <PageTransition :delay="100">
+      <AnimatedCard variant="gradient" class="p-4">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.connection_details")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.label")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.type")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.region")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.plugin_version")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.tv_port")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.enabled")
+              }}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow
+              v-for="server of servers"
+              :key="server.id"
+              class="cursor-pointer"
             >
-              <TableCell>
-                <div class="flex gap-2 items-center">
-                  <ServerStatus :server="server" />
-                  <span class="truncate">
-                    {{ server.host }}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>{{ server.label }}</TableCell>
-              <TableCell>
-                <Badge variant="secondary">
-                  {{ server.type }}
-                </Badge>
-              </TableCell>
-              <TableCell>{{ server.region }}</TableCell>
-              <TableCell>
-                <template v-if="server.plugin_version">
-                  v{{ server.plugin_version }}
-                </template>
-                <template v-else> - </template>
-              </TableCell>
-              <TableCell>{{ server.tv_port }}</TableCell>
-              <TableCell>{{
-                server.enabled
-                  ? $t("pages.dedicated_servers.table.yes")
-                  : $t("pages.dedicated_servers.table.no")
-              }}</TableCell>
-            </NuxtLink>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Card>
+              <NuxtLink
+                :to="{
+                  name: 'dedicated-servers-id',
+                  params: { id: server.id },
+                }"
+                class="contents"
+              >
+                <TableCell>
+                  <div class="flex gap-2 items-center">
+                    <ServerStatus :server="server" />
+                    <span class="truncate">
+                      {{ server.host }}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell>{{ server.label }}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">
+                    {{ server.type }}
+                  </Badge>
+                </TableCell>
+                <TableCell>{{ server.region }}</TableCell>
+                <TableCell>
+                  <template v-if="server.plugin_version">
+                    v{{ server.plugin_version }}
+                  </template>
+                  <template v-else> - </template>
+                </TableCell>
+                <TableCell>{{ server.tv_port }}</TableCell>
+                <TableCell>{{
+                  server.enabled
+                    ? $t("pages.dedicated_servers.table.yes")
+                    : $t("pages.dedicated_servers.table.no")
+                }}</TableCell>
+              </NuxtLink>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </AnimatedCard>
+    </PageTransition>
 
     <Pagination
       :page="page"

@@ -7,7 +7,7 @@ import { Badge } from "~/components/ui/badge";
 
 <template>
   <div
-    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
+    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 hover:scale-[1.01] transition-all duration-300 cursor-pointer group"
     @click="navigateToTournament(tournament.id, $event)"
   >
     <div class="p-6 flex flex-col gap-4">

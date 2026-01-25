@@ -34,72 +34,80 @@ import TeamForm from "~/components/teams/TeamForm.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const teamMenu = ref(false);
 </script>
 
 <template>
-  <div v-if="team" class="grid gap-4">
-    <PageHeading>
-      <template #title>
-        {{ team.name }}
-        <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
-          [{{ team.short_name }}]
-        </span>
-      </template>
+  <div v-if="team" class="grid gap-6">
+    <PageTransition>
+      <PageHeading>
+        <template #title>
+          {{ team.name }}
+          <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+            [{{ team.short_name }}]
+          </span>
+        </template>
 
-      <template #description>
-        <PlayerDisplay :player="team.owner">
-          <template #name-postfix>
-            <Badge variant="secondary">{{ $t("team.roles.captain") }}</Badge>
-          </template>
-        </PlayerDisplay>
-      </template>
+        <template #description>
+          <PlayerDisplay :player="team.owner">
+            <template #name-postfix>
+              <Badge variant="secondary">{{ $t("team.roles.captain") }}</Badge>
+            </template>
+          </PlayerDisplay>
+        </template>
 
-      <template #actions>
-        <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
-          <DropdownMenuTrigger as-child>
-            <Button variant="outline" size="icon">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-[200px]">
-            <DropdownMenuGroup>
-              <template v-if="isAdmin || team.owner.steam_id === me.steam_id">
-                <DropdownMenuItem @click="editTeamSheet = true">
-                  {{ $t("common.actions.edit") }}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  class="text-red-600"
-                  @click="deleteTeamAlertDialog = true"
-                >
-                  <Trash class="mr-2 h-4 w-4 inline" />
-                  {{ $t("common.actions.delete") }}
-                </DropdownMenuItem>
-              </template>
-              <template v-if="isOnTeam">
-                <DropdownMenuItem
-                  class="text-red-600"
-                  @click="leaveTeamAlertDialog = true"
-                >
-                  <Trash class="mr-2 h-4 w-4 inline" /> {{ $t("team.leave") }}
-                </DropdownMenuItem>
-              </template>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </template>
-    </PageHeading>
+        <template #actions>
+          <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" size="icon">
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-[200px]">
+              <DropdownMenuGroup>
+                <template v-if="isAdmin || team.owner.steam_id === me.steam_id">
+                  <DropdownMenuItem @click="editTeamSheet = true">
+                    {{ $t("common.actions.edit") }}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    class="text-red-600"
+                    @click="deleteTeamAlertDialog = true"
+                  >
+                    <Trash class="mr-2 h-4 w-4 inline" />
+                    {{ $t("common.actions.delete") }}
+                  </DropdownMenuItem>
+                </template>
+                <template v-if="isOnTeam">
+                  <DropdownMenuItem
+                    class="text-red-600"
+                    @click="leaveTeamAlertDialog = true"
+                  >
+                    <Trash class="mr-2 h-4 w-4 inline" /> {{ $t("team.leave") }}
+                  </DropdownMenuItem>
+                </template>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-    <div class="grid md:grid-cols-2 grid-cols-1 gap-4">
-      <div>
-        <TeamMembers :team-id="$route.params.id" />
-      </div>
-      <div>
-        <PageHeading>{{ $t("match.recent.title") }}</PageHeading>
-        <MatchesTable :matches="team.matches" />
-      </div>
+    <div class="grid md:grid-cols-2 grid-cols-1 gap-6">
+      <PageTransition :delay="100">
+        <div>
+          <TeamMembers :team-id="$route.params.id" />
+        </div>
+      </PageTransition>
+      <PageTransition :delay="200">
+        <div>
+          <PageHeading>{{ $t("match.recent.title") }}</PageHeading>
+          <MatchesTable :matches="team.matches" />
+        </div>
+      </PageTransition>
     </div>
 
     <Sheet

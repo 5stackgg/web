@@ -12,6 +12,8 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -19,68 +21,89 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
     class="grid items-start gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_1fr]"
     v-if="match"
   >
-    <div class="grid grid-cols-1 gap-y-4">
-      <Card v-if="match.can_schedule">
-        <CardHeader class="p-4">
-          <CardTitle class="flex justify-between">{{
-            $t("pages.matches.detail.schedule")
-          }}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div class="flex flex-col space-y-4">
-            <template v-if="match.can_schedule">
-              <ScheduleMatch :match="match" />
-            </template>
-          </div>
-        </CardContent>
-      </Card>
+    <div class="grid grid-cols-1 gap-y-6">
+      <PageTransition>
+        <AnimatedCard variant="gradient" v-if="match.can_schedule">
+          <CardHeader class="p-4">
+            <CardTitle class="flex justify-between">{{
+              $t("pages.matches.detail.schedule")
+            }}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="flex flex-col space-y-4">
+              <template v-if="match.can_schedule">
+                <ScheduleMatch :match="match" />
+              </template>
+            </div>
+          </CardContent>
+        </AnimatedCard>
+      </PageTransition>
 
-      <CheckIntoMatch :match="match"></CheckIntoMatch>
-      <QuickMatchConnect :match="match"></QuickMatchConnect>
-      <MatchInfo :match="match"></MatchInfo>
+      <PageTransition :delay="100">
+        <div class="flex flex-col gap-4">
+          <CheckIntoMatch :match="match"></CheckIntoMatch>
+          <QuickMatchConnect :match="match"></QuickMatchConnect>
+          <MatchInfo :match="match"></MatchInfo>
+        </div>
+      </PageTransition>
 
-      <StreamEmbed
-        :streams="match.streams"
-        v-if="match.streams.length > 0 && showLiveStreams"
-      ></StreamEmbed>
+      <PageTransition :delay="200">
+        <div class="flex flex-col gap-4">
+          <StreamEmbed
+            :streams="match.streams"
+            v-if="match.streams.length > 0 && showLiveStreams"
+          ></StreamEmbed>
 
-      <ChatLobby
-        class="max-h-96"
-        instance="matches/id"
-        type="match"
-        :lobby-id="match.id"
-        :play-notification-sound="match.status !== e_match_status_enum.Live"
-        v-if="canJoinLobby"
-      />
-      <MatchLiveStreams :match="match" v-if="canViewStreams"></MatchLiveStreams>
+          <ChatLobby
+            class="max-h-96"
+            instance="matches/id"
+            type="match"
+            :lobby-id="match.id"
+            :play-notification-sound="match.status !== e_match_status_enum.Live"
+            v-if="canJoinLobby"
+          />
+          <MatchLiveStreams
+            :match="match"
+            v-if="canViewStreams"
+          ></MatchLiveStreams>
+        </div>
+      </PageTransition>
     </div>
 
-    <div class="grid grid-cols-1 gap-y-4">
-      <template
-        v-if="
-          match.match_maps.length > 0 &&
-          match.status !== e_match_status_enum.Veto
-        "
-      >
-        <div class="flex gap-4 justify-around flex-col 2xl:flex-row">
-          <div
-            v-for="match_map of match.match_maps"
-            class="max-h-[150px] md:max-h-[250px] lg:max-h-[350px]"
-          >
-            <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
+    <div class="grid grid-cols-1 gap-y-6">
+      <PageTransition>
+        <template
+          v-if="
+            match.match_maps.length > 0 &&
+            match.status !== e_match_status_enum.Veto
+          "
+        >
+          <div class="flex gap-4 justify-around flex-col 2xl:flex-row">
+            <div
+              v-for="match_map of match.match_maps"
+              class="max-h-[150px] md:max-h-[250px] lg:max-h-[350px]"
+            >
+              <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
+            </div>
           </div>
+
+          <Separator />
+        </template>
+      </PageTransition>
+
+      <PageTransition :delay="100">
+        <div class="flex flex-col gap-4">
+          <MatchRegionVeto :match="match"></MatchRegionVeto>
+          <MatchMapVeto
+            :match="match"
+            v-if="match.region && match.options.map_veto"
+          ></MatchMapVeto>
         </div>
+      </PageTransition>
 
-        <Separator />
-      </template>
-
-      <MatchRegionVeto :match="match"></MatchRegionVeto>
-      <MatchMapVeto
-        :match="match"
-        v-if="match.region && match.options.map_veto"
-      ></MatchMapVeto>
-
-      <MatchTabs :match="match"></MatchTabs>
+      <PageTransition :delay="200">
+        <MatchTabs :match="match"></MatchTabs>
+      </PageTransition>
     </div>
   </div>
 </template>

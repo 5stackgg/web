@@ -41,423 +41,433 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import { kdrColor } from "~/utilities/kdrColor";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { getAllCountries } from "countries-and-timezones";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-4">
-    <PageHeading>
-      <template #title>{{ $t("pages.players.title") }}</template>
-    </PageHeading>
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition>
+      <PageHeading>
+        <template #title>{{ $t("pages.players.title") }}</template>
+      </PageHeading>
+    </PageTransition>
 
     <!-- Filters -->
-    <Card class="p-4 mb-4">
-      <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold">
-            {{ $t("pages.manage_matches.filters") }}
-          </h3>
-          <Button variant="outline" size="sm" @click="resetFilters">
-            {{ $t("pages.manage_matches.reset_filters") }}
-          </Button>
-        </div>
+    <PageTransition :delay="100">
+      <AnimatedCard variant="gradient" class="p-4 mb-4">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">
+              {{ $t("pages.manage_matches.filters") }}
+            </h3>
+            <Button variant="outline" size="sm" @click="resetFilters">
+              {{ $t("pages.manage_matches.reset_filters") }}
+            </Button>
+          </div>
 
-        <form @submit.prevent class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Name search -->
-            <div class="space-y-2">
-              <Label for="player-name-search">{{
-                $t("pages.manage_matches.search_by_name")
-              }}</Label>
-              <Input
-                id="player-name-search"
-                :model-value="form.values.name"
-                @update:model-value="
-                  (value) => {
-                    form.setFieldValue('name', value as string);
-                    onFilterChange();
-                  }
-                "
-                :placeholder="$t('pages.manage_matches.enter_name')"
-              />
-            </div>
-
-            <!-- Privilege/Role multi-select -->
-            <div v-if="canViewAdditionalDetails" class="space-y-2">
-              <div class="flex items-center justify-between">
-                <Label for="roles-filter">{{
-                  $t("pages.players.filter_by_privilege")
+          <form @submit.prevent class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Name search -->
+              <div class="space-y-2">
+                <Label for="player-name-search">{{
+                  $t("pages.manage_matches.search_by_name")
                 }}</Label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  @click="clearAllRoles"
-                  class="text-xs h-6 px-2"
-                  :class="{ 'opacity-50': !form.values.roles?.length }"
-                >
-                  {{ $t("pages.manage_matches.clear_all") }}
-                </Button>
+                <Input
+                  id="player-name-search"
+                  :model-value="form.values.name"
+                  @update:model-value="
+                    (value) => {
+                      form.setFieldValue('name', value as string);
+                      onFilterChange();
+                    }
+                  "
+                  :placeholder="$t('pages.manage_matches.enter_name')"
+                />
               </div>
-              <Select
-                :model-value="form.values.roles || []"
-                @update:model-value="onRolesChange"
-                multiple
-              >
-                <SelectTrigger id="roles-filter">
-                  <SelectValue
-                    :placeholder="$t('pages.players.select_privileges')"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="role in availableRoles"
-                    :key="role.value"
-                    :value="role.value"
-                  >
-                    {{ role.display }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
-            <!-- Elo min -->
-            <div class="space-y-2">
-              <Label for="elo-min">{{ $t("pages.players.elo_min") }}</Label>
-              <Input
-                id="elo-min"
-                type="number"
-                :model-value="form.values.eloMin?.toString() || ''"
-                @update:model-value="
-                  (value) => {
-                    form.setFieldValue(
-                      'eloMin',
-                      value ? parseInt(value as string) || null : null,
-                    );
-                    onFilterChange();
-                  }
-                "
-                :placeholder="$t('pages.players.min_elo')"
-              />
-            </div>
-
-            <!-- Elo max -->
-            <div class="space-y-2">
-              <Label for="elo-max">{{ $t("pages.players.elo_max") }}</Label>
-              <Input
-                id="elo-max"
-                type="number"
-                :model-value="form.values.eloMax?.toString() || ''"
-                @update:model-value="
-                  (value) => {
-                    form.setFieldValue(
-                      'eloMax',
-                      value ? parseInt(value as string) || null : null,
-                    );
-                    onFilterChange();
-                  }
-                "
-                :placeholder="$t('pages.players.max_elo')"
-              />
-            </div>
-
-            <!-- Country multi-select -->
-            <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <Label for="countries-filter">{{
-                  $t("pages.players.filter_by_country")
-                }}</Label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  @click="clearAllCountries"
-                  class="text-xs h-6 px-2"
-                  :class="{ 'opacity-50': !form.values.countries?.length }"
-                >
-                  {{ $t("pages.manage_matches.clear_all") }}
-                </Button>
-              </div>
-              <Popover v-model:open="countryPopoverOpen">
-                <PopoverTrigger as-child>
+              <!-- Privilege/Role multi-select -->
+              <div v-if="canViewAdditionalDetails" class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <Label for="roles-filter">{{
+                    $t("pages.players.filter_by_privilege")
+                  }}</Label>
                   <Button
-                    id="countries-filter"
-                    role="combobox"
-                    variant="outline"
-                    class="w-full justify-between"
+                    variant="ghost"
+                    size="sm"
+                    @click="clearAllRoles"
+                    class="text-xs h-6 px-2"
+                    :class="{ 'opacity-50': !form.values.roles?.length }"
                   >
-                    <div class="flex items-center gap-2 flex-wrap">
-                      <template
-                        v-if="
-                          form.values.countries &&
-                          form.values.countries.length > 0
-                        "
-                      >
-                        <span class="text-sm">
-                          {{ form.values.countries.length }}
-                          {{ $t("pages.players.countries_selected") }}
-                        </span>
-                      </template>
-                      <template v-else>
-                        {{ $t("pages.players.select_country") }}
-                      </template>
-                    </div>
-                    <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    {{ $t("pages.manage_matches.clear_all") }}
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent class="w-full p-0">
-                  <Command class="w-[300px]">
-                    <CommandInput
-                      :placeholder="$t('pages.players.search_country')"
+                </div>
+                <Select
+                  :model-value="form.values.roles || []"
+                  @update:model-value="onRolesChange"
+                  multiple
+                >
+                  <SelectTrigger id="roles-filter">
+                    <SelectValue
+                      :placeholder="$t('pages.players.select_privileges')"
                     />
-                    <CommandEmpty>{{
-                      $t("pages.players.no_country_found")
-                    }}</CommandEmpty>
-                    <CommandList>
-                      <CommandGroup>
-                        <CommandItem
-                          v-for="country in sortedCountries"
-                          :key="country.id"
-                          :value="country.name"
-                          @select="
-                            () => {
-                              toggleCountry(country.id);
-                            }
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="role in availableRoles"
+                      :key="role.value"
+                      :value="role.value"
+                    >
+                      {{ role.display }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <!-- Elo min -->
+              <div class="space-y-2">
+                <Label for="elo-min">{{ $t("pages.players.elo_min") }}</Label>
+                <Input
+                  id="elo-min"
+                  type="number"
+                  :model-value="form.values.eloMin?.toString() || ''"
+                  @update:model-value="
+                    (value) => {
+                      form.setFieldValue(
+                        'eloMin',
+                        value ? parseInt(value as string) || null : null,
+                      );
+                      onFilterChange();
+                    }
+                  "
+                  :placeholder="$t('pages.players.min_elo')"
+                />
+              </div>
+
+              <!-- Elo max -->
+              <div class="space-y-2">
+                <Label for="elo-max">{{ $t("pages.players.elo_max") }}</Label>
+                <Input
+                  id="elo-max"
+                  type="number"
+                  :model-value="form.values.eloMax?.toString() || ''"
+                  @update:model-value="
+                    (value) => {
+                      form.setFieldValue(
+                        'eloMax',
+                        value ? parseInt(value as string) || null : null,
+                      );
+                      onFilterChange();
+                    }
+                  "
+                  :placeholder="$t('pages.players.max_elo')"
+                />
+              </div>
+
+              <!-- Country multi-select -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <Label for="countries-filter">{{
+                    $t("pages.players.filter_by_country")
+                  }}</Label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    @click="clearAllCountries"
+                    class="text-xs h-6 px-2"
+                    :class="{ 'opacity-50': !form.values.countries?.length }"
+                  >
+                    {{ $t("pages.manage_matches.clear_all") }}
+                  </Button>
+                </div>
+                <Popover v-model:open="countryPopoverOpen">
+                  <PopoverTrigger as-child>
+                    <Button
+                      id="countries-filter"
+                      role="combobox"
+                      variant="outline"
+                      class="w-full justify-between"
+                    >
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <template
+                          v-if="
+                            form.values.countries &&
+                            form.values.countries.length > 0
                           "
                         >
-                          <div class="flex items-center gap-2 w-full">
-                            <TimezoneFlag :country="country.id" />
-                            <span class="truncate">{{ country.name }}</span>
-                          </div>
-                          <Check
-                            :class="[
-                              'ml-auto h-4 w-4 flex-shrink-0',
-                              form.values.countries?.includes(country.id)
-                                ? 'opacity-100'
-                                : 'opacity-0',
-                            ]"
-                          />
-                        </CommandItem>
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div class="space-y-2">
-              <Label>{{ $t("pages.players.only_played_matches") }}</Label>
-              <div class="flex items-center gap-2">
-                <Switch
-                  :model-value="onlyPlayedMatches"
-                  @update:model-value="onlyPlayedMatches = !onlyPlayedMatches"
-                />
-                <span class="text-sm text-muted-foreground">{{
-                  onlyPlayedMatches
-                    ? $t("pages.players.played_matches")
-                    : $t("pages.players.all_players")
-                }}</span>
+                          <span class="text-sm">
+                            {{ form.values.countries.length }}
+                            {{ $t("pages.players.countries_selected") }}
+                          </span>
+                        </template>
+                        <template v-else>
+                          {{ $t("pages.players.select_country") }}
+                        </template>
+                      </div>
+                      <ChevronsUpDown
+                        class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                      />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent class="w-full p-0">
+                    <Command class="w-[300px]">
+                      <CommandInput
+                        :placeholder="$t('pages.players.search_country')"
+                      />
+                      <CommandEmpty>{{
+                        $t("pages.players.no_country_found")
+                      }}</CommandEmpty>
+                      <CommandList>
+                        <CommandGroup>
+                          <CommandItem
+                            v-for="country in sortedCountries"
+                            :key="country.id"
+                            :value="country.name"
+                            @select="
+                              () => {
+                                toggleCountry(country.id);
+                              }
+                            "
+                          >
+                            <div class="flex items-center gap-2 w-full">
+                              <TimezoneFlag :country="country.id" />
+                              <span class="truncate">{{ country.name }}</span>
+                            </div>
+                            <Check
+                              :class="[
+                                'ml-auto h-4 w-4 flex-shrink-0',
+                                form.values.countries?.includes(country.id)
+                                  ? 'opacity-100'
+                                  : 'opacity-0',
+                              ]"
+                            />
+                          </CommandItem>
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
               </div>
-            </div>
 
-            <!-- Sanction Filters (only visible to authorized users) -->
-            <div v-if="canViewAdditionalDetails" class="space-y-2">
-              <Label for="sanctions-min">{{
-                $t("pages.players.min_sanctions")
-              }}</Label>
-              <Input
-                id="sanctions-min"
-                type="number"
-                :model-value="form.values.sanctionsMin?.toString() || ''"
-                @update:model-value="
-                  (value) => {
-                    form.setFieldValue(
-                      'sanctionsMin',
-                      value ? parseInt(value as string) || null : null,
-                    );
-                    onFilterChange();
-                  }
-                "
-                :placeholder="$t('pages.players.min_sanctions')"
-                min="0"
-              />
-            </div>
+              <div class="space-y-2">
+                <Label>{{ $t("pages.players.only_played_matches") }}</Label>
+                <div class="flex items-center gap-2">
+                  <Switch
+                    :model-value="onlyPlayedMatches"
+                    @update:model-value="onlyPlayedMatches = !onlyPlayedMatches"
+                  />
+                  <span class="text-sm text-muted-foreground">{{
+                    onlyPlayedMatches
+                      ? $t("pages.players.played_matches")
+                      : $t("pages.players.all_players")
+                  }}</span>
+                </div>
+              </div>
 
-            <div v-if="canViewAdditionalDetails" class="space-y-2">
-              <Label>{{ $t("pages.players.is_banned") }}</Label>
-              <div class="flex items-center gap-2">
-                <Switch
-                  :model-value="form.values.isBanned || false"
+              <!-- Sanction Filters (only visible to authorized users) -->
+              <div v-if="canViewAdditionalDetails" class="space-y-2">
+                <Label for="sanctions-min">{{
+                  $t("pages.players.min_sanctions")
+                }}</Label>
+                <Input
+                  id="sanctions-min"
+                  type="number"
+                  :model-value="form.values.sanctionsMin?.toString() || ''"
                   @update:model-value="
                     (value) => {
-                      form.setFieldValue('isBanned', value);
+                      form.setFieldValue(
+                        'sanctionsMin',
+                        value ? parseInt(value as string) || null : null,
+                      );
                       onFilterChange();
                     }
                   "
+                  :placeholder="$t('pages.players.min_sanctions')"
+                  min="0"
                 />
-                <span class="text-sm text-muted-foreground">{{
-                  form.values.isBanned
-                    ? $t("pages.players.banned_only")
-                    : $t("pages.players.all_players")
-                }}</span>
+              </div>
+
+              <div v-if="canViewAdditionalDetails" class="space-y-2">
+                <Label>{{ $t("pages.players.is_banned") }}</Label>
+                <div class="flex items-center gap-2">
+                  <Switch
+                    :model-value="form.values.isBanned || false"
+                    @update:model-value="
+                      (value) => {
+                        form.setFieldValue('isBanned', value);
+                        onFilterChange();
+                      }
+                    "
+                  />
+                  <span class="text-sm text-muted-foreground">{{
+                    form.values.isBanned
+                      ? $t("pages.players.banned_only")
+                      : $t("pages.players.all_players")
+                  }}</span>
+                </div>
+              </div>
+
+              <div v-if="canViewAdditionalDetails" class="space-y-2">
+                <Label>{{ $t("pages.players.is_gagged") }}</Label>
+                <div class="flex items-center gap-2">
+                  <Switch
+                    :model-value="form.values.isGagged || false"
+                    @update:model-value="
+                      (value) => {
+                        form.setFieldValue('isGagged', value);
+                        onFilterChange();
+                      }
+                    "
+                  />
+                  <span class="text-sm text-muted-foreground">{{
+                    form.values.isGagged
+                      ? $t("pages.players.gagged_only")
+                      : $t("pages.players.all_players")
+                  }}</span>
+                </div>
+              </div>
+
+              <div v-if="canViewAdditionalDetails" class="space-y-2">
+                <Label>{{ $t("pages.players.is_muted") }}</Label>
+                <div class="flex items-center gap-2">
+                  <Switch
+                    :model-value="form.values.isMuted || false"
+                    @update:model-value="
+                      (value) => {
+                        form.setFieldValue('isMuted', value);
+                        onFilterChange();
+                      }
+                    "
+                  />
+                  <span class="text-sm text-muted-foreground">{{
+                    form.values.isMuted
+                      ? $t("pages.players.muted_only")
+                      : $t("pages.players.all_players")
+                  }}</span>
+                </div>
               </div>
             </div>
-
-            <div v-if="canViewAdditionalDetails" class="space-y-2">
-              <Label>{{ $t("pages.players.is_gagged") }}</Label>
-              <div class="flex items-center gap-2">
-                <Switch
-                  :model-value="form.values.isGagged || false"
-                  @update:model-value="
-                    (value) => {
-                      form.setFieldValue('isGagged', value);
-                      onFilterChange();
-                    }
-                  "
-                />
-                <span class="text-sm text-muted-foreground">{{
-                  form.values.isGagged
-                    ? $t("pages.players.gagged_only")
-                    : $t("pages.players.all_players")
-                }}</span>
-              </div>
-            </div>
-
-            <div v-if="canViewAdditionalDetails" class="space-y-2">
-              <Label>{{ $t("pages.players.is_muted") }}</Label>
-              <div class="flex items-center gap-2">
-                <Switch
-                  :model-value="form.values.isMuted || false"
-                  @update:model-value="
-                    (value) => {
-                      form.setFieldValue('isMuted', value);
-                      onFilterChange();
-                    }
-                  "
-                />
-                <span class="text-sm text-muted-foreground">{{
-                  form.values.isMuted
-                    ? $t("pages.players.muted_only")
-                    : $t("pages.players.all_players")
-                }}</span>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </Card>
-
-    <Card class="p-4 relative">
-      <div v-if="loading" class="absolute top-4 left-4 z-10">
-        <div
-          class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
-        >
-          <div
-            class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
-          ></div>
-          <span>{{ $t("pages.manage_matches.loading") }}</span>
+          </form>
         </div>
-      </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead class="cursor-pointer" @click="toggleSort('name')">
-              <div class="flex items-center gap-1">
-                {{ $t("pages.players.table.player") }}
-                <ArrowUpIcon
-                  v-if="sortField === 'name' && sortDirection === 'desc'"
-                  class="w-4 h-4"
-                />
-                <ArrowDownIcon
-                  v-else-if="sortField === 'name' && sortDirection === 'asc'"
-                  class="w-4 h-4"
-                />
-              </div>
-            </TableHead>
-            <TableHead>{{ $t("pages.players.table.wins") }}</TableHead>
-            <TableHead>{{ $t("pages.players.table.losses") }}</TableHead>
-            <TableHead>{{ $t("pages.players.table.kdr") }}</TableHead>
-            <TableHead class="cursor-pointer" @click="toggleSort('elo')">
-              <div class="flex items-center gap-1">
-                {{ $t("pages.players.table.elo") }}
-                <ArrowUpIcon
-                  v-if="sortField === 'elo' && sortDirection === 'desc'"
-                  class="w-4 h-4"
-                />
-                <ArrowDownIcon
-                  v-else-if="sortField === 'elo' && sortDirection === 'asc'"
-                  class="w-4 h-4"
-                />
-              </div>
-            </TableHead>
-            <TableHead v-if="canViewAdditionalDetails">{{
-              $t("pages.players.table.privilege")
-            }}</TableHead>
-            <TableHead v-if="canViewAdditionalDetails">
-              {{ $t("pages.players.table.last_sign_in_at") }}
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <template v-if="players?.length === 0">
+      </AnimatedCard>
+    </PageTransition>
+
+    <PageTransition :delay="200">
+      <AnimatedCard variant="gradient" class="p-4 relative">
+        <div v-if="loading" class="absolute top-4 left-4 z-10">
+          <div
+            class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
+          >
+            <div
+              class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
+            ></div>
+            <span>{{ $t("pages.manage_matches.loading") }}</span>
+          </div>
+        </div>
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableCell
-                :colspan="canViewAdditionalDetails ? 7 : 5"
-                class="text-center"
-                >{{ $t("pages.players.table.no_players") }}</TableCell
-              >
+              <TableHead class="cursor-pointer" @click="toggleSort('name')">
+                <div class="flex items-center gap-1">
+                  {{ $t("pages.players.table.player") }}
+                  <ArrowUpIcon
+                    v-if="sortField === 'name' && sortDirection === 'desc'"
+                    class="w-4 h-4"
+                  />
+                  <ArrowDownIcon
+                    v-else-if="sortField === 'name' && sortDirection === 'asc'"
+                    class="w-4 h-4"
+                  />
+                </div>
+              </TableHead>
+              <TableHead>{{ $t("pages.players.table.wins") }}</TableHead>
+              <TableHead>{{ $t("pages.players.table.losses") }}</TableHead>
+              <TableHead>{{ $t("pages.players.table.kdr") }}</TableHead>
+              <TableHead class="cursor-pointer" @click="toggleSort('elo')">
+                <div class="flex items-center gap-1">
+                  {{ $t("pages.players.table.elo") }}
+                  <ArrowUpIcon
+                    v-if="sortField === 'elo' && sortDirection === 'desc'"
+                    class="w-4 h-4"
+                  />
+                  <ArrowDownIcon
+                    v-else-if="sortField === 'elo' && sortDirection === 'asc'"
+                    class="w-4 h-4"
+                  />
+                </div>
+              </TableHead>
+              <TableHead v-if="canViewAdditionalDetails">{{
+                $t("pages.players.table.privilege")
+              }}</TableHead>
+              <TableHead v-if="canViewAdditionalDetails">
+                {{ $t("pages.players.table.last_sign_in_at") }}
+              </TableHead>
             </TableRow>
-          </template>
-          <template v-else>
-            <TableRow
-              v-for="player of players"
-              :key="player.steam_id"
-              class="cursor-pointer"
-            >
-              <NuxtLink
-                :to="{
-                  name: 'players-id',
-                  params: { id: String(player.steam_id) },
-                }"
-                class="contents"
+          </TableHeader>
+          <TableBody>
+            <template v-if="players?.length === 0">
+              <TableRow>
+                <TableCell
+                  :colspan="canViewAdditionalDetails ? 7 : 5"
+                  class="text-center"
+                  >{{ $t("pages.players.table.no_players") }}</TableCell
+                >
+              </TableRow>
+            </template>
+            <template v-else>
+              <TableRow
+                v-for="player of players"
+                :key="player.steam_id"
+                class="cursor-pointer"
               >
-                <TableCell class="font-medium">
-                  <PlayerDisplay
+                <NuxtLink
+                  :to="{
+                    name: 'players-id',
+                    params: { id: String(player.steam_id) },
+                  }"
+                  class="contents"
+                >
+                  <TableCell class="font-medium">
+                    <PlayerDisplay
+                      :player="player"
+                      :show-elo="false"
+                    ></PlayerDisplay>
+                  </TableCell>
+                  <TableCell>{{ player.wins ?? 0 }}</TableCell>
+                  <TableCell>{{ player.losses ?? 0 }}</TableCell>
+                  <TableCell :class="kdrColor(calculateKDR(player))">{{
+                    calculateKDR(player)
+                  }}</TableCell>
+                  <TableCell>
+                    <PlayerElo
+                      :elo="{
+                        competitive: player.elo_competitive,
+                        wingman: player.elo_wingman,
+                        duel: player.elo_duel,
+                      }"
+                    ></PlayerElo>
+                  </TableCell>
+                </NuxtLink>
+                <TableCell v-if="canViewAdditionalDetails">
+                  <PlayerRoleForm
                     :player="player"
-                    :show-elo="false"
-                  ></PlayerDisplay>
+                    @updated="updatePlayerRole(player.steam_id, $event)"
+                  />
                 </TableCell>
-                <TableCell>{{ player.wins ?? 0 }}</TableCell>
-                <TableCell>{{ player.losses ?? 0 }}</TableCell>
-                <TableCell :class="kdrColor(calculateKDR(player))">{{
-                  calculateKDR(player)
-                }}</TableCell>
-                <TableCell>
-                  <PlayerElo
-                    :elo="{
-                      competitive: player.elo_competitive,
-                      wingman: player.elo_wingman,
-                      duel: player.elo_duel,
-                    }"
-                  ></PlayerElo>
+                <TableCell v-if="canViewAdditionalDetails">
+                  <TimeAgo
+                    :date="player.last_sign_in_at"
+                    v-if="
+                      player.last_sign_in_at && player.last_sign_in_at !== `~~`
+                    "
+                  />
                 </TableCell>
-              </NuxtLink>
-              <TableCell v-if="canViewAdditionalDetails">
-                <PlayerRoleForm
-                  :player="player"
-                  @updated="updatePlayerRole(player.steam_id, $event)"
-                />
-              </TableCell>
-              <TableCell v-if="canViewAdditionalDetails">
-                <TimeAgo
-                  :date="player.last_sign_in_at"
-                  v-if="
-                    player.last_sign_in_at && player.last_sign_in_at !== `~~`
-                  "
-                />
-              </TableCell>
-            </TableRow>
-          </template>
-        </TableBody>
-      </Table>
-    </Card>
+              </TableRow>
+            </template>
+          </TableBody>
+        </Table>
+      </AnimatedCard>
+    </PageTransition>
   </div>
 
   <Pagination

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import PageHeading from "~/components/PageHeading.vue";
 import GameTypeConfigRow from "~/components/game-type-configs/GameTypeConfigRow.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 definePageMeta({
   layout: "application-settings",
@@ -8,49 +10,53 @@ definePageMeta({
 </script>
 
 <template>
-  <PageHeading>
-    <template #title>
-      {{ $t("pages.settings.application.game_type_configs.title") }}
-    </template>
-    <template #description>
-      {{ $t("pages.settings.application.game_type_configs.description") }}
-    </template>
-  </PageHeading>
+  <PageTransition :delay="0">
+    <PageHeading>
+      <template #title>
+        {{ $t("pages.settings.application.game_type_configs.title") }}
+      </template>
+      <template #description>
+        {{ $t("pages.settings.application.game_type_configs.description") }}
+      </template>
+    </PageHeading>
+  </PageTransition>
 
-  <Card class="p-4">
-    <!-- Loading skeleton -->
-    <div v-if="loading" class="space-y-4">
-      <Skeleton class="h-12 w-full" />
-      <div class="space-y-3">
-        <Skeleton class="h-16 w-full" />
-        <Skeleton class="h-16 w-full" />
-        <Skeleton class="h-16 w-full" />
-        <Skeleton class="h-16 w-full" />
-        <Skeleton class="h-16 w-full" />
-        <Skeleton class="h-16 w-full" />
+  <PageTransition :delay="100">
+    <AnimatedCard variant="gradient" class="p-4">
+      <!-- Loading skeleton -->
+      <div v-if="loading" class="space-y-4">
+        <Skeleton class="h-12 w-full" />
+        <div class="space-y-3">
+          <Skeleton class="h-16 w-full" />
+          <Skeleton class="h-16 w-full" />
+          <Skeleton class="h-16 w-full" />
+          <Skeleton class="h-16 w-full" />
+          <Skeleton class="h-16 w-full" />
+          <Skeleton class="h-16 w-full" />
+        </div>
       </div>
-    </div>
 
-    <!-- Actual content -->
-    <Table v-else>
-      <TableHeader>
-        <TableRow>
-          <TableHead class="flex items-center justify-between m-4">
-            <span>{{
-              $t("pages.settings.application.game_type_configs.type")
-            }}</span>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <GameTypeConfigRow
-          v-for="gameTypeConfig in gameTypeConfigs"
-          :key="gameTypeConfig.type"
-          :gameConfig="gameTypeConfig"
-        />
-      </TableBody>
-    </Table>
-  </Card>
+      <!-- Actual content -->
+      <Table v-else>
+        <TableHeader>
+          <TableRow>
+            <TableHead class="flex items-center justify-between m-4">
+              <span>{{
+                $t("pages.settings.application.game_type_configs.type")
+              }}</span>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <GameTypeConfigRow
+            v-for="gameTypeConfig in gameTypeConfigs"
+            :key="gameTypeConfig.type"
+            :gameConfig="gameTypeConfig"
+          />
+        </TableBody>
+      </Table>
+    </AnimatedCard>
+  </PageTransition>
 </template>
 
 <script lang="ts">

@@ -38,126 +38,141 @@ import Clipboard from "~/components/ClipBoard.vue";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const serverMenu = ref(false);
 </script>
 <template>
-  <PageHeading v-if="server">
-    <template #title>
-      <div class="flex items-center justify-between gap-4">
-        <div class="flex flex-col">
-          <div>
-            <Badge>{{ server.region }}</Badge>
-          </div>
-          <div class="flex gap-4">
-            <div class="flex gap-2 items-center">
-              <ServerStatus :server="server" />
-
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition :delay="0">
+      <PageHeading v-if="server">
+        <template #title>
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex flex-col">
               <div>
-                <span class="truncate">
-                  {{ server.label }}
-                  ({{ server.host }}:{{ server.port }})
-                </span>
+                <Badge>{{ server.region }}</Badge>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex gap-2 items-center">
+                  <ServerStatus :server="server" />
+
+                  <div>
+                    <span class="truncate">
+                      {{ server.label }}
+                      ({{ server.host }}:{{ server.port }})
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                  <Switch
+                    @click="toggleServerEnabled"
+                    :model-value="server.enabled"
+                  />
+                  <Label>{{
+                    $t("pages.dedicated_servers.detail.enabled")
+                  }}</Label>
+                </div>
               </div>
             </div>
+          </div>
+        </template>
 
-            <div class="flex items-center space-x-2">
-              <Switch
-                @click="toggleServerEnabled"
-                :model-value="server.enabled"
-              />
-              <Label>{{ $t("pages.dedicated_servers.detail.enabled") }}</Label>
+        <template #description>
+          <div
+            v-if="server && server.type === 'Ranked'"
+            class="bg-muted rounded-md p-4 my-4"
+          >
+            <div class="flex flex-col space-y-2">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold">
+                  {{
+                    $t("pages.dedicated_servers.detail.server_plugin_config")
+                  }}
+                </h3>
+                <div class="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    @click="showConfig = !showConfig"
+                  >
+                    <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
+                    <EyeOff v-else class="mr-2 h-4 w-4" />
+                    {{
+                      showConfig
+                        ? $t("pages.dedicated_servers.detail.hide_config")
+                        : $t("pages.dedicated_servers.detail.show_config")
+                    }}
+                  </Button>
+                </div>
+              </div>
+
+              <p class="text-sm text-muted-foreground">
+                {{ $t("pages.dedicated_servers.detail.config_location") }}
+                <Badge>
+                  addons/counterstrikesharp/config/plugins/FiveStack/FiveStack.json
+                </Badge>
+              </p>
+
+              <div v-if="showConfig" class="relative">
+                <pre
+                  class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
+                  >{{ config }}</pre
+                >
+                <div class="absolute top-2 right-2">
+                  <Clipboard :data="config"></Clipboard>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </template>
+        </template>
 
-    <template #description>
-      <div
-        v-if="server && server.type === 'Ranked'"
-        class="bg-muted rounded-md p-4 my-4"
-      >
-        <div class="flex flex-col space-y-2">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">
-              {{ $t("pages.dedicated_servers.detail.server_plugin_config") }}
-            </h3>
-            <div class="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                @click="showConfig = !showConfig"
-              >
-                <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
-                <EyeOff v-else class="mr-2 h-4 w-4" />
-                {{
-                  showConfig
-                    ? $t("pages.dedicated_servers.detail.hide_config")
-                    : $t("pages.dedicated_servers.detail.show_config")
-                }}
+        <template #actions>
+          <DropdownMenu v-model:open="serverMenu">
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" size="icon">
+                <MoreHorizontal />
               </Button>
-            </div>
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-[200px]">
+              <DropdownMenuGroup>
+                <DropdownMenuItem @click="editServerSheet = true">
+                  {{ $t("pages.dedicated_servers.detail.edit") }}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  class="text-red-600"
+                  @click="deleteServerAlertDialog = true"
+                >
+                  <Trash class="mr-2 h-4 w-4 inline" />
+                  {{ $t("pages.dedicated_servers.detail.delete") }}
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-          <p class="text-sm text-muted-foreground">
-            {{ $t("pages.dedicated_servers.detail.config_location") }}
-            <Badge>
-              addons/counterstrikesharp/config/plugins/FiveStack/FiveStack.json
-            </Badge>
-          </p>
-
-          <div v-if="showConfig" class="relative">
-            <pre
-              class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
-              >{{ config }}</pre
-            >
-            <div class="absolute top-2 right-2">
-              <Clipboard :data="config"></Clipboard>
-            </div>
-          </div>
-        </div>
+    <PageTransition :delay="100">
+      <div v-if="server">
+        <QuickServerConnect :server="server" />
       </div>
-    </template>
+    </PageTransition>
 
-    <template #actions>
-      <DropdownMenu v-model:open="serverMenu">
-        <DropdownMenuTrigger as-child>
-          <Button variant="outline" size="icon">
-            <MoreHorizontal />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" class="w-[200px]">
-          <DropdownMenuGroup>
-            <DropdownMenuItem @click="editServerSheet = true">
-              {{ $t("pages.dedicated_servers.detail.edit") }}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              class="text-red-600"
-              @click="deleteServerAlertDialog = true"
-            >
-              <Trash class="mr-2 h-4 w-4 inline" />
-              {{ $t("pages.dedicated_servers.detail.delete") }}
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </template>
-  </PageHeading>
+    <PageTransition :delay="200">
+      <ServiceLogs
+        :service="`dedicated-server-${$route.params.id}`"
+        :compact="true"
+        v-if="server?.game_server_node_id"
+      />
+    </PageTransition>
 
-  <div class="my-4" v-if="server">
-    <QuickServerConnect :server="server" />
+    <PageTransition :delay="300">
+      <RconCommander :server-id="$route.params.id as string" :online="true" />
+    </PageTransition>
   </div>
-
-  <ServiceLogs
-    class="my-4"
-    :service="`dedicated-server-${$route.params.id}`"
-    :compact="true"
-    v-if="server?.game_server_node_id"
-  />
-
-  <RconCommander :server-id="$route.params.id as string" :online="true" />
 
   <Sheet
     :open="editServerSheet"

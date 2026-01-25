@@ -70,6 +70,8 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -339,55 +341,72 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
           <template
             v-if="tournament.status === e_tournament_status_enum.Finished"
           >
-            <TournamentResults :tournament="tournament" :show-matches="false" />
-            <Separator class="my-4" />
+            <PageTransition>
+              <TournamentResults
+                :tournament="tournament"
+                :show-matches="false"
+              />
+              <Separator class="my-4" />
+            </PageTransition>
           </template>
 
           <!-- Full-width Bracket -->
-          <TournamentStageBuilder
-            class="w-full"
-            :tournament="tournament"
-          ></TournamentStageBuilder>
+          <PageTransition :delay="100">
+            <TournamentStageBuilder
+              class="w-full"
+              :tournament="tournament"
+            ></TournamentStageBuilder>
+          </PageTransition>
         </div>
       </TabsContent>
       <TabsContent value="my-team" v-if="myTeam">
         <div class="flex flex-col md:flex-row gap-6">
-          <div class="flex-grow md:w-2/3">
-            <Card class="p-4">
-              <TournamentTeam
-                :tournament="tournament"
-                :team="myTeam"
-              ></TournamentTeam>
-            </Card>
-          </div>
+          <PageTransition>
+            <div class="flex-grow md:w-2/3">
+              <AnimatedCard variant="gradient" class="p-4">
+                <TournamentTeam
+                  :tournament="tournament"
+                  :team="myTeam"
+                ></TournamentTeam>
+              </AnimatedCard>
+            </div>
+          </PageTransition>
         </div>
       </TabsContent>
       <TabsContent value="teams">
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-grow md:w-2/3">
-            <div class="grid gap-4">
-              <Card class="p-4" v-for="team of tournament.teams" :key="team.id">
-                <TournamentTeam
-                  :tournament="tournament"
-                  :team="team"
-                ></TournamentTeam>
-              </Card>
+            <div class="grid gap-6">
+              <PageTransition
+                v-for="(team, index) of tournament.teams"
+                :key="team.id"
+                :delay="index * 50"
+              >
+                <AnimatedCard variant="gradient" class="p-4">
+                  <TournamentTeam
+                    :tournament="tournament"
+                    :team="team"
+                  ></TournamentTeam>
+                </AnimatedCard>
+              </PageTransition>
             </div>
           </div>
 
-          <div class="w-full md:w-1/3 space-y-4" v-if="tournament.is_organizer">
-            <Card class="p-4">
-              <CardHeader>
-                <CardTitle class="text-xl">{{
-                  $t("tournament.add_team.title")
-                }}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TournamentJoinForm
-                  :tournament="tournament"
-                ></TournamentJoinForm>
-              </CardContent>
-            </Card>
+          <div class="w-full md:w-1/3 space-y-6" v-if="tournament.is_organizer">
+            <PageTransition :delay="200">
+              <AnimatedCard variant="gradient" class="p-4">
+                <CardHeader>
+                  <CardTitle class="text-xl">{{
+                    $t("tournament.add_team.title")
+                  }}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <TournamentJoinForm
+                    :tournament="tournament"
+                  ></TournamentJoinForm>
+                </CardContent>
+              </AnimatedCard>
+            </PageTransition>
           </div>
         </div>
       </TabsContent>
@@ -398,15 +417,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
         "
         value="results"
       >
-        <TournamentResults :tournament="tournament" />
+        <PageTransition>
+          <TournamentResults :tournament="tournament" />
+        </PageTransition>
       </TabsContent>
       <TabsContent value="match-options" v-if="tournament?.is_organizer">
-        <Card class="p-6">
-          <TournamentForm :tournament="tournament"></TournamentForm>
-        </Card>
+        <PageTransition>
+          <AnimatedCard variant="gradient" class="p-6">
+            <TournamentForm :tournament="tournament"></TournamentForm>
+          </AnimatedCard>
+        </PageTransition>
       </TabsContent>
       <TabsContent value="organizers" v-if="tournament?.is_organizer">
-        <TournamentOrganizers :tournament="tournament"></TournamentOrganizers>
+        <PageTransition>
+          <TournamentOrganizers :tournament="tournament"></TournamentOrganizers>
+        </PageTransition>
       </TabsContent>
     </Tabs>
 

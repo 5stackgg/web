@@ -14,175 +14,199 @@ import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-4">
-    <PageHeading>
-      <template #title> {{ $t("pages.public_servers.title") }} </template>
-      <template #description>
-        {{ $t("pages.public_servers.description") }}
-      </template>
-    </PageHeading>
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition :delay="0">
+      <PageHeading>
+        <template #title> {{ $t("pages.public_servers.title") }} </template>
+        <template #description>
+          {{ $t("pages.public_servers.description") }}
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-    <div>
-      <Card class="p-4" v-if="servers && (servers as any[]).length > 0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{{
-                $t("pages.public_servers.table.label")
-              }}</TableHead>
-              <TableHead>{{ $t("pages.public_servers.table.map") }}</TableHead>
-              <TableHead>{{
-                $t("pages.public_servers.table.players")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.public_servers.table.region")
-              }}</TableHead>
-              <TableHead>{{ $t("pages.public_servers.table.type") }}</TableHead>
-              <TableHead>{{
-                $t("pages.public_servers.table.connect")
-              }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow
-              v-for="server of servers"
-              :key="server.id"
-              class="cursor-pointer hover:bg-muted/50"
-            >
-              <TableCell>
-                <div class="flex gap-2 items-center">
-                  <div
-                    class="h-2 w-2 rounded-full relative"
-                    :class="{
-                      'bg-red-600': !server.connected,
-
-                      'bg-green-600': server.connected,
-                    }"
-                  >
-                    <span
-                      class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
+    <PageTransition :delay="100">
+      <div>
+        <AnimatedCard
+          variant="gradient"
+          class="p-4"
+          v-if="servers && (servers as any[]).length > 0"
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{{
+                  $t("pages.public_servers.table.label")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.map")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.players")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.region")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.type")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.connect")
+                }}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="server of servers"
+                :key="server.id"
+                class="cursor-pointer hover:bg-muted/50"
+              >
+                <TableCell>
+                  <div class="flex gap-2 items-center">
+                    <div
+                      class="h-2 w-2 rounded-full relative"
                       :class="{
                         'bg-red-600': !server.connected,
-                      }"
-                      v-if="!server.connected"
-                    ></span>
-                  </div>
-                  <span class="truncate font-mono text-sm">
-                    {{ server.label }}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                {{ getDedicatedServerMap(server.id) }}
-              </TableCell>
-              <TableCell>
-                {{ getDedicatedServerPlayers(server.id) }} /
-                {{ server.max_players }}
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">{{ server.region }}</Badge>
-              </TableCell>
-              <TableCell>
-                <Badge variant="secondary">
-                  {{ server.type }}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <QuickServerConnect :server="server" />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Card>
 
-      <Card class="p-8 text-center" v-if="servers && servers.length === 0">
-        <div class="flex flex-col items-center gap-4">
-          <div class="text-muted-foreground">
-            {{ $t("pages.public_servers.no_public_servers") }}
+                        'bg-green-600': server.connected,
+                      }"
+                    >
+                      <span
+                        class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
+                        :class="{
+                          'bg-red-600': !server.connected,
+                        }"
+                        v-if="!server.connected"
+                      ></span>
+                    </div>
+                    <span class="truncate font-mono text-sm">
+                      {{ server.label }}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {{ getDedicatedServerMap(server.id) }}
+                </TableCell>
+                <TableCell>
+                  {{ getDedicatedServerPlayers(server.id) }} /
+                  {{ server.max_players }}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline">{{ server.region }}</Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary">
+                    {{ server.type }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <QuickServerConnect :server="server" />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </AnimatedCard>
+
+        <AnimatedCard
+          variant="gradient"
+          class="p-8 text-center"
+          v-if="servers && servers.length === 0"
+        >
+          <div class="flex flex-col items-center gap-4">
+            <div class="text-muted-foreground">
+              {{ $t("pages.public_servers.no_public_servers") }}
+            </div>
           </div>
-        </div>
-      </Card>
-    </div>
+        </AnimatedCard>
+      </div>
+    </PageTransition>
 
     <!-- LAN Servers Table -->
-    <div v-if="lanServers && lanServers.length > 0">
-      <h2 class="text-xl font-semibold mb-4">
-        {{ $t("pages.public_servers.lan_servers_title") }}
-      </h2>
-      <Card class="p-4">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{{
-                $t("pages.public_servers.table.label")
-              }}</TableHead>
-              <TableHead>{{ $t("pages.public_servers.table.map") }}</TableHead>
-              <TableHead>{{
-                $t("pages.public_servers.table.players")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.public_servers.table.region")
-              }}</TableHead>
-              <TableHead>{{ $t("pages.public_servers.table.type") }}</TableHead>
-              <TableHead>{{
-                $t("pages.public_servers.table.connect")
-              }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow
-              v-for="server of lanServers"
-              :key="server.id"
-              class="cursor-pointer hover:bg-muted/50"
-            >
-              <TableCell>
-                <div class="flex gap-2 items-center">
-                  <div
-                    class="h-2 w-2 rounded-full relative"
-                    :class="{
-                      'bg-red-600': !server.connected,
-                      'bg-green-600': server.connected,
-                    }"
-                  >
-                    <span
-                      class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
+    <PageTransition :delay="200">
+      <div v-if="lanServers && lanServers.length > 0">
+        <h2 class="text-xl font-semibold mb-4">
+          {{ $t("pages.public_servers.lan_servers_title") }}
+        </h2>
+        <AnimatedCard variant="gradient" class="p-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{{
+                  $t("pages.public_servers.table.label")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.map")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.players")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.region")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.type")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.public_servers.table.connect")
+                }}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="server of lanServers"
+                :key="server.id"
+                class="cursor-pointer hover:bg-muted/50"
+              >
+                <TableCell>
+                  <div class="flex gap-2 items-center">
+                    <div
+                      class="h-2 w-2 rounded-full relative"
                       :class="{
                         'bg-red-600': !server.connected,
+                        'bg-green-600': server.connected,
                       }"
-                      v-if="!server.connected"
-                    ></span>
+                    >
+                      <span
+                        class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
+                        :class="{
+                          'bg-red-600': !server.connected,
+                        }"
+                        v-if="!server.connected"
+                      ></span>
+                    </div>
+                    <span class="truncate font-mono text-sm">
+                      {{ server.label }}
+                    </span>
                   </div>
-                  <span class="truncate font-mono text-sm">
-                    {{ server.label }}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                {{ getDedicatedServerMap(server.id) }}
-              </TableCell>
-              <TableCell>
-                {{ getDedicatedServerPlayers(server.id) }} /
-                {{ server.max_players }}
-              </TableCell>
-              <TableCell>
-                <Badge variant="outline">{{ server.region }}</Badge>
-              </TableCell>
-              <TableCell>
-                <Badge variant="secondary">
-                  {{ server.type }}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <QuickServerConnect :server="server" />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Card>
-    </div>
+                </TableCell>
+                <TableCell>
+                  {{ getDedicatedServerMap(server.id) }}
+                </TableCell>
+                <TableCell>
+                  {{ getDedicatedServerPlayers(server.id) }} /
+                  {{ server.max_players }}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline">{{ server.region }}</Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary">
+                    {{ server.type }}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <QuickServerConnect :server="server" />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </AnimatedCard>
+      </div>
+    </PageTransition>
   </div>
 </template>
 

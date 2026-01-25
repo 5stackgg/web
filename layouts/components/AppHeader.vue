@@ -8,6 +8,7 @@ import SystemStatus from "./SystemStatus.vue";
 import OnlinePlayers from "./OnlinePlayers.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import SpotlightPlayerSearch from "~/components/SpotlightPlayerSearch.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -24,6 +25,8 @@ const { isMobile } = useSidebar();
       </div>
 
       <div class="flex gap-4">
+        <SpotlightPlayerSearch v-if="me" />
+
         <MatchLobbies v-if="!isMobile"></MatchLobbies>
 
         <SystemUpdate v-if="isAdmin"></SystemUpdate>

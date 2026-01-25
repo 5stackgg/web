@@ -31,7 +31,12 @@ import {
         </TableRow>
       </template>
       <template v-else>
-        <TableRow class="cursor-pointer" v-for="team in teams" :key="team.id">
+        <TableRow
+          class="cursor-pointer hover:bg-muted/50 hover:scale-[1.01] transition-all duration-200 animate-in fade-in slide-in-from-bottom-2"
+          v-for="(team, index) in teams"
+          :key="team.id"
+          :style="{ animationDelay: `${index * 50}ms` }"
+        >
           <NuxtLink
             :to="{ name: 'teams-id', params: { id: team.id } }"
             class="contents"

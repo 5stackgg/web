@@ -4,7 +4,6 @@ import { PlusCircle, ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
 import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -17,196 +16,210 @@ import {
 import { Switch } from "~/components/ui/switch";
 import { Separator } from "~/components/ui/separator";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <PageHeading>
-    <template #title>{{ $t("pages.manage_matches.title") }}</template>
-    <template #description>{{
-      $t("pages.manage_matches.description")
-    }}</template>
-    <template #actions>
-      <Button
-        :size="isMobile ? 'default' : 'lg'"
-        @click="navigateTo('/matches/create')"
-      >
-        <PlusCircle class="w-4 h-4" />
-        <span class="hidden md:inline ml-2">{{
-          $t("pages.matches.create")
-        }}</span>
-      </Button>
-    </template>
-  </PageHeading>
+  <PageTransition :delay="0">
+    <PageHeading>
+      <template #title>{{ $t("pages.manage_matches.title") }}</template>
+      <template #description>{{
+        $t("pages.manage_matches.description")
+      }}</template>
+      <template #actions>
+        <Button
+          :size="isMobile ? 'default' : 'lg'"
+          @click="navigateTo('/matches/create')"
+        >
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden md:inline ml-2">{{
+            $t("pages.matches.create")
+          }}</span>
+        </Button>
+      </template>
+    </PageHeading>
+  </PageTransition>
 
   <Separator class="my-4" />
 
   <!-- Filters Section -->
-  <Card class="p-4 mb-4">
-    <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold">
-          {{ $t("pages.manage_matches.filters") }}
-        </h3>
-        <Button variant="outline" size="sm" @click="resetFilters">
-          {{ $t("pages.manage_matches.reset_filters") }}
+  <PageTransition :delay="100">
+    <AnimatedCard variant="gradient" class="p-4 mb-4">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.manage_matches.filters") }}
+          </h3>
+          <Button variant="outline" size="sm" @click="resetFilters">
+            {{ $t("pages.manage_matches.reset_filters") }}
+          </Button>
+        </div>
+
+        <form @submit.prevent="onFilterChange" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Match ID Search -->
+            <div class="space-y-2">
+              <Label for="match-id-search">{{
+                $t("pages.manage_matches.search_by_id")
+              }}</Label>
+              <Input
+                id="match-id-search"
+                :model-value="form.values.matchId"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('matchId', value);
+                    onFilterChange();
+                  }
+                "
+                :placeholder="$t('pages.manage_matches.enter_match_id')"
+              />
+            </div>
+
+            <!-- Team Search -->
+            <div class="space-y-2">
+              <Label for="team-search">{{
+                $t("pages.manage_matches.search_by_team")
+              }}</Label>
+              <Input
+                id="team-search"
+                :model-value="form.values.teamName"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('teamName', value);
+                    onFilterChange();
+                  }
+                "
+                :placeholder="$t('pages.manage_matches.enter_team_name')"
+              />
+            </div>
+
+            <!-- Status Filter -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <Label for="status-filter">{{
+                  $t("pages.manage_matches.filter_by_status")
+                }}</Label>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  @click="clearAllStatuses"
+                  class="text-xs h-6 px-2"
+                  :class="{ 'opacity-50': !form.values.statuses?.length }"
+                >
+                  {{ $t("pages.manage_matches.clear_all") }}
+                </Button>
+              </div>
+              <Select
+                :model-value="form.values.statuses"
+                @update:model-value="onStatusChange"
+                multiple
+              >
+                <SelectTrigger id="status-filter">
+                  <SelectValue
+                    :placeholder="$t('pages.manage_matches.select_statuses')"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="status in matchStatusOptions"
+                    :key="status.value"
+                    :value="status.value"
+                  >
+                    {{ status.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </AnimatedCard>
+  </PageTransition>
+
+  <!-- Sort Controls -->
+  <PageTransition :delay="200">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2 text-sm text-muted-foreground">
+          <span>{{ $t("pages.manage_matches.sort_by") }}:</span>
+          <Select v-model="sortField" @update:model-value="onSortChange">
+            <SelectTrigger class="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="created_at">{{
+                $t("pages.manage_matches.created_at")
+              }}</SelectItem>
+              <SelectItem value="started_at">{{
+                $t("pages.manage_matches.started_at")
+              }}</SelectItem>
+              <SelectItem value="scheduled_at">{{
+                $t("pages.manage_matches.scheduled_at")
+              }}</SelectItem>
+              <SelectItem value="ended_at">{{
+                $t("pages.manage_matches.ended_at")
+              }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          @click="toggleSortDirection"
+          class="flex items-center space-x-1"
+        >
+          <ArrowUpIcon v-if="sortDirection === 'desc'" class="w-4 h-4" />
+          <ArrowDownIcon v-else class="w-4 h-4" />
+          <span class="text-xs">{{
+            sortDirection === "desc"
+              ? $t("pages.manage_matches.newest_first")
+              : $t("pages.manage_matches.oldest_first")
+          }}</span>
         </Button>
       </div>
 
-      <form @submit.prevent="onFilterChange" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Match ID Search -->
-          <div class="space-y-2">
-            <Label for="match-id-search">{{
-              $t("pages.manage_matches.search_by_id")
-            }}</Label>
-            <Input
-              id="match-id-search"
-              :model-value="form.values.matchId"
-              @update:model-value="
-                (value) => {
-                  form.setFieldValue('matchId', value);
-                  onFilterChange();
-                }
-              "
-              :placeholder="$t('pages.manage_matches.enter_match_id')"
-            />
-          </div>
-
-          <!-- Team Search -->
-          <div class="space-y-2">
-            <Label for="team-search">{{
-              $t("pages.manage_matches.search_by_team")
-            }}</Label>
-            <Input
-              id="team-search"
-              :model-value="form.values.teamName"
-              @update:model-value="
-                (value) => {
-                  form.setFieldValue('teamName', value);
-                  onFilterChange();
-                }
-              "
-              :placeholder="$t('pages.manage_matches.enter_team_name')"
-            />
-          </div>
-
-          <!-- Status Filter -->
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <Label for="status-filter">{{
-                $t("pages.manage_matches.filter_by_status")
-              }}</Label>
-              <Button
-                variant="ghost"
-                size="sm"
-                @click="clearAllStatuses"
-                class="text-xs h-6 px-2"
-                :class="{ 'opacity-50': !form.values.statuses?.length }"
-              >
-                {{ $t("pages.manage_matches.clear_all") }}
-              </Button>
-            </div>
-            <Select
-              :model-value="form.values.statuses"
-              @update:model-value="onStatusChange"
-              multiple
-            >
-              <SelectTrigger id="status-filter">
-                <SelectValue
-                  :placeholder="$t('pages.manage_matches.select_statuses')"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem
-                  v-for="status in matchStatusOptions"
-                  :key="status.value"
-                  :value="status.value"
-                >
-                  {{ status.label }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </form>
-    </div>
-  </Card>
-
-  <!-- Sort Controls -->
-  <div class="flex items-center justify-between mb-4">
-    <div class="flex items-center space-x-4">
-      <div class="flex items-center space-x-2 text-sm text-muted-foreground">
-        <span>{{ $t("pages.manage_matches.sort_by") }}:</span>
-        <Select v-model="sortField" @update:model-value="onSortChange">
-          <SelectTrigger class="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="created_at">{{
-              $t("pages.manage_matches.created_at")
-            }}</SelectItem>
-            <SelectItem value="started_at">{{
-              $t("pages.manage_matches.started_at")
-            }}</SelectItem>
-            <SelectItem value="scheduled_at">{{
-              $t("pages.manage_matches.scheduled_at")
-            }}</SelectItem>
-            <SelectItem value="ended_at">{{
-              $t("pages.manage_matches.ended_at")
-            }}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <Button
-        variant="outline"
-        size="sm"
-        @click="toggleSortDirection"
-        class="flex items-center space-x-1"
-      >
-        <ArrowUpIcon v-if="sortDirection === 'desc'" class="w-4 h-4" />
-        <ArrowDownIcon v-else class="w-4 h-4" />
-        <span class="text-xs">{{
-          sortDirection === "desc"
-            ? $t("pages.manage_matches.newest_first")
-            : $t("pages.manage_matches.oldest_first")
-        }}</span>
-      </Button>
-    </div>
-
-    <div class="flex items-center space-x-2">
       <div class="flex items-center space-x-2">
-        <Switch
-          :model-value="showOnlyMyMatches"
-          @update:model-value="showOnlyMyMatches = !showOnlyMyMatches"
-        />
-        <Label class="text-sm font-medium">{{
-          $t("pages.manage_matches.only_my_matches")
-        }}</Label>
-      </div>
+        <div class="flex items-center space-x-2">
+          <Switch
+            :model-value="showOnlyMyMatches"
+            @update:model-value="showOnlyMyMatches = !showOnlyMyMatches"
+          />
+          <Label class="text-sm font-medium">{{
+            $t("pages.manage_matches.only_my_matches")
+          }}</Label>
+        </div>
 
-      <div class="text-sm text-muted-foreground">
-        {{ $t("pages.manage_matches.showing") }} {{ matches.length }}
-        {{ $t("pages.manage_matches.matches") }}
+        <div class="text-sm text-muted-foreground">
+          {{ $t("pages.manage_matches.showing") }} {{ matches.length }}
+          {{ $t("pages.manage_matches.matches") }}
+        </div>
       </div>
     </div>
-  </div>
+  </PageTransition>
 
-  <Card class="p-4 relative">
-    <div v-if="loading" class="absolute top-4 left-4 z-10">
-      <div
-        class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
-      >
+  <PageTransition :delay="300">
+    <AnimatedCard variant="gradient" class="p-4 relative">
+      <div v-if="loading" class="absolute top-4 left-4 z-10">
         <div
-          class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
-        ></div>
-        <span>{{ $t("pages.manage_matches.loading") }}</span>
+          class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
+        >
+          <div
+            class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
+          ></div>
+          <span>{{ $t("pages.manage_matches.loading") }}</span>
+        </div>
       </div>
-    </div>
-    <MatchesTable class="p-3" :matches="matches" v-if="matches"></MatchesTable>
-  </Card>
+      <MatchesTable
+        class="p-3"
+        :matches="matches"
+        v-if="matches"
+      ></MatchesTable>
+    </AnimatedCard>
+  </PageTransition>
 
   <Pagination
     :page="page"

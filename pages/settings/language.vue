@@ -13,6 +13,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 definePageMeta({
   layout: "profile-settings",
@@ -20,15 +22,19 @@ definePageMeta({
 </script>
 
 <template>
-  <div>
-    <h3 class="text-lg font-medium">
-      {{ $t("pages.settings.language.title") }}
-    </h3>
-    <p class="text-sm text-muted-foreground">
-      {{ $t("pages.settings.language.description") }}
-    </p>
-  </div>
+  <PageTransition :delay="0">
+    <div>
+      <h3 class="text-lg font-medium">
+        {{ $t("pages.settings.language.title") }}
+      </h3>
+      <p class="text-sm text-muted-foreground">
+        {{ $t("pages.settings.language.description") }}
+      </p>
+    </div>
+  </PageTransition>
   <Separator />
 
-  <div class="grid gap-4"></div>
+  <PageTransition :delay="100">
+    <div class="grid gap-6"></div>
+  </PageTransition>
 </template>

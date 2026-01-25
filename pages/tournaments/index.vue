@@ -1,138 +1,144 @@
 <template>
-  <div class="flex-grow flex flex-col gap-4">
-    <PageHeading>
-      <template #title>{{ $t("pages.tournaments.title") }}</template>
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition>
+      <PageHeading>
+        <template #title>{{ $t("pages.tournaments.title") }}</template>
 
-      <template #actions>
-        <div class="flex gap-4 items-center">
-          <NuxtLink v-if="canCreateTournament" to="/tournaments/create">
-            <Button :size="isMobile ? 'default' : 'lg'">
-              <PlusCircle class="w-4 h-4" />
-              <span class="hidden md:inline ml-2">{{
-                $t("pages.tournaments.create")
-              }}</span>
-            </Button>
-          </NuxtLink>
-        </div>
-      </template>
-    </PageHeading>
+        <template #actions>
+          <div class="flex gap-4 items-center">
+            <NuxtLink v-if="canCreateTournament" to="/tournaments/create">
+              <Button :size="isMobile ? 'default' : 'lg'">
+                <PlusCircle class="w-4 h-4" />
+                <span class="hidden md:inline ml-2">{{
+                  $t("pages.tournaments.create")
+                }}</span>
+              </Button>
+            </NuxtLink>
+          </div>
+        </template>
+      </PageHeading>
+    </PageTransition>
 
     <!-- Open for Registration Section -->
-    <div
-      v-if="
-        registrationOpenTournaments && registrationOpenTournaments.length > 0
-      "
-    >
-      <div class="flex items-center gap-2 mb-4">
-        <h2 class="text-xl font-semibold">
-          {{ $t("pages.tournaments.open_for_registration") }}
-        </h2>
+    <PageTransition :delay="100">
+      <div
+        v-if="
+          registrationOpenTournaments && registrationOpenTournaments.length > 0
+        "
+      >
+        <div class="flex items-center gap-2 mb-4">
+          <h2 class="text-xl font-semibold">
+            {{ $t("pages.tournaments.open_for_registration") }}
+          </h2>
+        </div>
+        <TournamentTableRow
+          v-for="tournament in registrationOpenTournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+          class="min-w-[500px]"
+        ></TournamentTableRow>
+        <Separator class="my-4" />
       </div>
-      <TournamentTableRow
-        v-for="tournament in registrationOpenTournaments"
-        :key="tournament.id"
-        :tournament="tournament"
-        class="min-w-[500px]"
-      ></TournamentTableRow>
-      <Separator class="my-4" />
-    </div>
+    </PageTransition>
 
     <!-- Tabs Section -->
-    <Card class="p-4">
-      <Tabs default-value="live">
-        <TabsList>
-          <TabsTrigger value="live">{{
-            $t("pages.tournaments.tabs.live")
-          }}</TabsTrigger>
-          <TabsTrigger value="upcoming">{{
-            $t("pages.tournaments.tabs.upcoming")
-          }}</TabsTrigger>
-          <TabsTrigger value="finished">{{
-            $t("pages.tournaments.tabs.finished")
-          }}</TabsTrigger>
-        </TabsList>
+    <PageTransition :delay="200">
+      <AnimatedCard variant="gradient" class="p-4">
+        <Tabs default-value="live">
+          <TabsList>
+            <TabsTrigger value="live">{{
+              $t("pages.tournaments.tabs.live")
+            }}</TabsTrigger>
+            <TabsTrigger value="upcoming">{{
+              $t("pages.tournaments.tabs.upcoming")
+            }}</TabsTrigger>
+            <TabsTrigger value="finished">{{
+              $t("pages.tournaments.tabs.finished")
+            }}</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="live">
-          <div
-            v-if="!liveTournaments || liveTournaments.length === 0"
-            class="text-center py-8"
-          >
-            <p class="text-muted-foreground">
-              {{ $t("tournament.table.no_tournaments_found") }}
-            </p>
-          </div>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in liveTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
-        </TabsContent>
+          <TabsContent value="live">
+            <div
+              v-if="!liveTournaments || liveTournaments.length === 0"
+              class="text-center py-8"
+            >
+              <p class="text-muted-foreground">
+                {{ $t("tournament.table.no_tournaments_found") }}
+              </p>
+            </div>
+            <div v-else class="space-y-4">
+              <TournamentTableRow
+                v-for="tournament in liveTournaments"
+                :key="tournament.id"
+                :tournament="tournament"
+              ></TournamentTableRow>
+            </div>
+          </TabsContent>
 
-        <TabsContent value="upcoming">
-          <div
-            v-if="!upcomingTournaments || upcomingTournaments.length === 0"
-            class="text-center py-8"
-          >
-            <p class="text-muted-foreground">
-              {{ $t("tournament.table.no_tournaments_found") }}
-            </p>
-          </div>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in upcomingTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
+          <TabsContent value="upcoming">
+            <div
+              v-if="!upcomingTournaments || upcomingTournaments.length === 0"
+              class="text-center py-8"
+            >
+              <p class="text-muted-foreground">
+                {{ $t("tournament.table.no_tournaments_found") }}
+              </p>
+            </div>
+            <div v-else class="space-y-4">
+              <TournamentTableRow
+                v-for="tournament in upcomingTournaments"
+                :key="tournament.id"
+                :tournament="tournament"
+              ></TournamentTableRow>
+            </div>
 
-          <Teleport defer to="#pagination">
-            <pagination
-              :page="upcomingPage"
-              :items-per-page="perPage"
-              @page="
-                (_page: number) => {
-                  upcomingPage = _page;
-                }
-              "
-              :total="upcomingTournaments_aggregate?.aggregate?.count"
-            ></pagination>
-          </Teleport>
-        </TabsContent>
+            <Teleport defer to="#pagination">
+              <pagination
+                :page="upcomingPage"
+                :items-per-page="perPage"
+                @page="
+                  (_page: number) => {
+                    upcomingPage = _page;
+                  }
+                "
+                :total="upcomingTournaments_aggregate?.aggregate?.count"
+              ></pagination>
+            </Teleport>
+          </TabsContent>
 
-        <TabsContent value="finished">
-          <div
-            v-if="!finishedTournaments || finishedTournaments.length === 0"
-            class="text-center py-8"
-          >
-            <p class="text-muted-foreground">
-              {{ $t("pages.tournaments.no_finished") }}
-            </p>
-          </div>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in finishedTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
+          <TabsContent value="finished">
+            <div
+              v-if="!finishedTournaments || finishedTournaments.length === 0"
+              class="text-center py-8"
+            >
+              <p class="text-muted-foreground">
+                {{ $t("pages.tournaments.no_finished") }}
+              </p>
+            </div>
+            <div v-else class="space-y-4">
+              <TournamentTableRow
+                v-for="tournament in finishedTournaments"
+                :key="tournament.id"
+                :tournament="tournament"
+              ></TournamentTableRow>
+            </div>
 
-          <Teleport defer to="#pagination">
-            <pagination
-              :page="finishedPage"
-              :items-per-page="perPage"
-              @page="
-                (_page: number) => {
-                  finishedPage = _page;
-                }
-              "
-              :total="finishedTournaments_aggregate?.aggregate?.count"
-            ></pagination>
-          </Teleport>
-        </TabsContent>
-      </Tabs>
-    </Card>
+            <Teleport defer to="#pagination">
+              <pagination
+                :page="finishedPage"
+                :items-per-page="perPage"
+                @page="
+                  (_page: number) => {
+                    finishedPage = _page;
+                  }
+                "
+                :total="finishedTournaments_aggregate?.aggregate?.count"
+              ></pagination>
+            </Teleport>
+          </TabsContent>
+        </Tabs>
+      </AnimatedCard>
+    </PageTransition>
 
     <div id="pagination"></div>
   </div>
@@ -149,6 +155,8 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 export default {
   components: {

@@ -7,68 +7,77 @@ import {
   e_tournament_status_enum,
 } from "~/generated/zeus";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <PageHeading>
-    <template #title>{{ $t("pages.watch.title") }}</template>
-    <template #description>{{ $t("pages.watch.description") }}</template>
-  </PageHeading>
-  <Separator class="my-4" />
+  <div class="flex flex-col gap-6">
+    <PageTransition>
+      <PageHeading>
+        <template #title>{{ $t("pages.watch.title") }}</template>
+        <template #description>{{ $t("pages.watch.description") }}</template>
+      </PageHeading>
+    </PageTransition>
 
-  <div
-    v-if="liveTournaments && liveTournaments.length > 0"
-    class="my-4 space-y-4"
-  >
-    <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
-    <TournamentTableRow
-      v-for="tournament in liveTournaments"
-      :key="tournament.id"
-      :tournament="tournament"
-    ></TournamentTableRow>
+    <PageTransition :delay="100">
+      <div
+        v-if="liveTournaments && liveTournaments.length > 0"
+        class="space-y-4"
+      >
+        <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
+        <TournamentTableRow
+          v-for="tournament in liveTournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+        ></TournamentTableRow>
+      </div>
+    </PageTransition>
+
+    <PageTransition :delay="200">
+      <AnimatedCard variant="gradient" class="p-4">
+        <Tabs default-value="live-matches">
+          <TabsList>
+            <TabsTrigger value="live-matches">{{
+              $t("pages.watch.live_matches")
+            }}</TabsTrigger>
+            <TabsTrigger value="upcoming-matches">{{
+              $t("pages.watch.upcoming_matches")
+            }}</TabsTrigger>
+            <TabsTrigger value="finished-matches">{{
+              $t("pages.watch.finished_matches")
+            }}</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="live-matches">
+            <OtherMatches
+              :is-in-lineup="true"
+              :statuses="[
+                e_match_status_enum.Live,
+                e_match_status_enum.WaitingForCheckIn,
+                e_match_status_enum.WaitingForServer,
+                e_match_status_enum.Veto,
+              ]"
+            ></OtherMatches>
+          </TabsContent>
+          <TabsContent value="upcoming-matches">
+            <OtherMatches
+              :is-in-lineup="true"
+              :statuses="[e_match_status_enum.Scheduled]"
+            ></OtherMatches>
+          </TabsContent>
+          <TabsContent value="finished-matches">
+            <OtherMatches
+              :is-in-lineup="true"
+              :statuses="[e_match_status_enum.Finished]"
+            ></OtherMatches>
+          </TabsContent>
+        </Tabs>
+      </AnimatedCard>
+    </PageTransition>
+
+    <div id="pagination"></div>
   </div>
-
-  <Card class="p-4">
-    <Tabs default-value="live-matches">
-      <TabsList>
-        <TabsTrigger value="live-matches">{{
-          $t("pages.watch.live_matches")
-        }}</TabsTrigger>
-        <TabsTrigger value="upcoming-matches">{{
-          $t("pages.watch.upcoming_matches")
-        }}</TabsTrigger>
-        <TabsTrigger value="finished-matches">{{
-          $t("pages.watch.finished_matches")
-        }}</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="live-matches">
-        <OtherMatches
-          :is-in-lineup="true"
-          :statuses="[
-            e_match_status_enum.Live,
-            e_match_status_enum.WaitingForCheckIn,
-            e_match_status_enum.WaitingForServer,
-            e_match_status_enum.Veto,
-          ]"
-        ></OtherMatches>
-      </TabsContent>
-      <TabsContent value="upcoming-matches">
-        <OtherMatches
-          :is-in-lineup="true"
-          :statuses="[e_match_status_enum.Scheduled]"
-        ></OtherMatches>
-      </TabsContent>
-      <TabsContent value="finished-matches">
-        <OtherMatches
-          :is-in-lineup="true"
-          :statuses="[e_match_status_enum.Finished]"
-        ></OtherMatches>
-      </TabsContent>
-    </Tabs>
-  </Card>
-
-  <div id="pagination"></div>
 </template>
 
 <script lang="ts">

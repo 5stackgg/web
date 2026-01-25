@@ -3,7 +3,14 @@ const animate = require("tailwindcss-animate");
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  safelist: ["dark"],
+  safelist: [
+    "dark",
+    "delay-100",
+    "delay-150",
+    "delay-200",
+    "delay-300",
+    "delay-500",
+  ],
   prefix: "",
 
   theme: {
@@ -106,6 +113,13 @@ module.exports = {
         "collapsible-up": "collapsible-up 0.2s ease-in-out",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "spin-smooth": "spin-smooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite",
+      },
+      transitionDelay: {
+        100: "100ms",
+        150: "150ms",
+        200: "200ms",
+        300: "300ms",
+        500: "500ms",
       },
     },
   },

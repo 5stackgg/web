@@ -4,7 +4,6 @@ import { PlusCircle, ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -17,203 +16,217 @@ import {
 import { Switch } from "~/components/ui/switch";
 import { Separator } from "~/components/ui/separator";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <PageHeading>
-    <template #title>{{ $t("pages.manage_tournaments.title") }}</template>
-    <template #description>{{
-      $t("pages.manage_tournaments.description")
-    }}</template>
-    <template #actions>
-      <Button
-        :size="isMobile ? 'default' : 'lg'"
-        @click="navigateTo('/tournaments/create')"
-      >
-        <PlusCircle class="w-4 h-4" />
-        <span class="hidden md:inline ml-2">{{
-          $t("pages.tournaments.create")
-        }}</span>
-      </Button>
-    </template>
-  </PageHeading>
+  <PageTransition :delay="0">
+    <PageHeading>
+      <template #title>{{ $t("pages.manage_tournaments.title") }}</template>
+      <template #description>{{
+        $t("pages.manage_tournaments.description")
+      }}</template>
+      <template #actions>
+        <Button
+          :size="isMobile ? 'default' : 'lg'"
+          @click="navigateTo('/tournaments/create')"
+        >
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden md:inline ml-2">{{
+            $t("pages.tournaments.create")
+          }}</span>
+        </Button>
+      </template>
+    </PageHeading>
+  </PageTransition>
 
   <Separator class="my-4" />
 
   <!-- Filters Section -->
-  <Card class="p-4 mb-4">
-    <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-semibold">
-          {{ $t("pages.manage_tournaments.filters") }}
-        </h3>
-        <Button variant="outline" size="sm" @click="resetFilters">
-          {{ $t("pages.manage_tournaments.reset_filters") }}
+  <PageTransition :delay="100">
+    <AnimatedCard variant="gradient" class="p-4 mb-4">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.manage_tournaments.filters") }}
+          </h3>
+          <Button variant="outline" size="sm" @click="resetFilters">
+            {{ $t("pages.manage_tournaments.reset_filters") }}
+          </Button>
+        </div>
+
+        <form @submit.prevent="onFilterChange" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Tournament ID Search -->
+            <div class="space-y-2">
+              <Label for="tournament-id-search">{{
+                $t("pages.manage_tournaments.search_by_id")
+              }}</Label>
+              <Input
+                id="tournament-id-search"
+                :model-value="form.values.tournamentId"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('tournamentId', value);
+                    onFilterChange();
+                  }
+                "
+                :placeholder="
+                  $t('pages.manage_tournaments.enter_tournament_id')
+                "
+              />
+            </div>
+
+            <!-- Tournament Name Search -->
+            <div class="space-y-2">
+              <Label for="tournament-name-search">{{
+                $t("pages.manage_tournaments.search_by_name")
+              }}</Label>
+              <Input
+                id="tournament-name-search"
+                :model-value="form.values.tournamentName"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('tournamentName', value);
+                    onFilterChange();
+                  }
+                "
+                :placeholder="
+                  $t('pages.manage_tournaments.enter_tournament_name')
+                "
+              />
+            </div>
+
+            <!-- Status Filter -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <Label for="status-filter">{{
+                  $t("pages.manage_tournaments.filter_by_status")
+                }}</Label>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  @click="clearAllStatuses"
+                  class="text-xs h-6 px-2"
+                  :class="{ 'opacity-50': !form.values.statuses?.length }"
+                >
+                  {{ $t("pages.manage_tournaments.clear_all") }}
+                </Button>
+              </div>
+              <Select
+                :model-value="form.values.statuses"
+                @update:model-value="onStatusChange"
+                multiple
+              >
+                <SelectTrigger id="status-filter">
+                  <SelectValue
+                    :placeholder="
+                      $t('pages.manage_tournaments.select_statuses')
+                    "
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="status in tournamentStatusOptions"
+                    :key="status.value"
+                    :value="status.value"
+                  >
+                    {{ status.label }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </AnimatedCard>
+  </PageTransition>
+
+  <!-- Sort Controls -->
+  <PageTransition :delay="200">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2 text-sm text-muted-foreground">
+          <span>{{ $t("pages.manage_tournaments.sort_by") }}:</span>
+          <Select v-model="sortField" @update:model-value="onSortChange">
+            <SelectTrigger class="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="created_at">{{
+                $t("pages.manage_tournaments.created_at")
+              }}</SelectItem>
+              <SelectItem value="start">{{
+                $t("pages.manage_tournaments.start")
+              }}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          @click="toggleSortDirection"
+          class="flex items-center space-x-1"
+        >
+          <ArrowUpIcon v-if="sortDirection === 'desc'" class="w-4 h-4" />
+          <ArrowDownIcon v-else class="w-4 h-4" />
+          <span class="text-xs">{{
+            sortDirection === "desc"
+              ? $t("pages.manage_tournaments.newest_first")
+              : $t("pages.manage_tournaments.oldest_first")
+          }}</span>
         </Button>
       </div>
 
-      <form @submit.prevent="onFilterChange" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Tournament ID Search -->
-          <div class="space-y-2">
-            <Label for="tournament-id-search">{{
-              $t("pages.manage_tournaments.search_by_id")
-            }}</Label>
-            <Input
-              id="tournament-id-search"
-              :model-value="form.values.tournamentId"
-              @update:model-value="
-                (value) => {
-                  form.setFieldValue('tournamentId', value);
-                  onFilterChange();
-                }
-              "
-              :placeholder="$t('pages.manage_tournaments.enter_tournament_id')"
-            />
-          </div>
-
-          <!-- Tournament Name Search -->
-          <div class="space-y-2">
-            <Label for="tournament-name-search">{{
-              $t("pages.manage_tournaments.search_by_name")
-            }}</Label>
-            <Input
-              id="tournament-name-search"
-              :model-value="form.values.tournamentName"
-              @update:model-value="
-                (value) => {
-                  form.setFieldValue('tournamentName', value);
-                  onFilterChange();
-                }
-              "
-              :placeholder="
-                $t('pages.manage_tournaments.enter_tournament_name')
-              "
-            />
-          </div>
-
-          <!-- Status Filter -->
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <Label for="status-filter">{{
-                $t("pages.manage_tournaments.filter_by_status")
-              }}</Label>
-              <Button
-                variant="ghost"
-                size="sm"
-                @click="clearAllStatuses"
-                class="text-xs h-6 px-2"
-                :class="{ 'opacity-50': !form.values.statuses?.length }"
-              >
-                {{ $t("pages.manage_tournaments.clear_all") }}
-              </Button>
-            </div>
-            <Select
-              :model-value="form.values.statuses"
-              @update:model-value="onStatusChange"
-              multiple
-            >
-              <SelectTrigger id="status-filter">
-                <SelectValue
-                  :placeholder="$t('pages.manage_tournaments.select_statuses')"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem
-                  v-for="status in tournamentStatusOptions"
-                  :key="status.value"
-                  :value="status.value"
-                >
-                  {{ status.label }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </form>
-    </div>
-  </Card>
-
-  <!-- Sort Controls -->
-  <div class="flex items-center justify-between mb-4">
-    <div class="flex items-center space-x-4">
-      <div class="flex items-center space-x-2 text-sm text-muted-foreground">
-        <span>{{ $t("pages.manage_tournaments.sort_by") }}:</span>
-        <Select v-model="sortField" @update:model-value="onSortChange">
-          <SelectTrigger class="w-40">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="created_at">{{
-              $t("pages.manage_tournaments.created_at")
-            }}</SelectItem>
-            <SelectItem value="start">{{
-              $t("pages.manage_tournaments.start")
-            }}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <Button
-        variant="outline"
-        size="sm"
-        @click="toggleSortDirection"
-        class="flex items-center space-x-1"
-      >
-        <ArrowUpIcon v-if="sortDirection === 'desc'" class="w-4 h-4" />
-        <ArrowDownIcon v-else class="w-4 h-4" />
-        <span class="text-xs">{{
-          sortDirection === "desc"
-            ? $t("pages.manage_tournaments.newest_first")
-            : $t("pages.manage_tournaments.oldest_first")
-        }}</span>
-      </Button>
-    </div>
-
-    <div class="flex items-center space-x-2">
       <div class="flex items-center space-x-2">
-        <Switch
-          :model-value="showOnlyMyTournaments"
-          @update:model-value="showOnlyMyTournaments = !showOnlyMyTournaments"
-        />
-        <Label class="text-sm font-medium">{{
-          $t("pages.manage_tournaments.only_my_tournaments")
-        }}</Label>
-      </div>
+        <div class="flex items-center space-x-2">
+          <Switch
+            :model-value="showOnlyMyTournaments"
+            @update:model-value="showOnlyMyTournaments = !showOnlyMyTournaments"
+          />
+          <Label class="text-sm font-medium">{{
+            $t("pages.manage_tournaments.only_my_tournaments")
+          }}</Label>
+        </div>
 
-      <div class="text-sm text-muted-foreground">
-        {{ $t("pages.manage_tournaments.showing") }} {{ tournaments.length }}
-        {{ $t("pages.manage_tournaments.tournaments") }}
+        <div class="text-sm text-muted-foreground">
+          {{ $t("pages.manage_tournaments.showing") }} {{ tournaments.length }}
+          {{ $t("pages.manage_tournaments.tournaments") }}
+        </div>
       </div>
     </div>
-  </div>
+  </PageTransition>
 
-  <Card class="p-4 relative">
-    <div v-if="loading" class="absolute top-4 left-4 z-10">
-      <div
-        class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
-      >
+  <PageTransition :delay="300">
+    <AnimatedCard variant="gradient" class="p-4 relative">
+      <div v-if="loading" class="absolute top-4 left-4 z-10">
         <div
-          class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
-        ></div>
-        <span>{{ $t("pages.manage_tournaments.loading") }}</span>
+          class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
+        >
+          <div
+            class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
+          ></div>
+          <span>{{ $t("pages.manage_tournaments.loading") }}</span>
+        </div>
       </div>
-    </div>
-    <div v-if="tournaments && tournaments.length > 0" class="space-y-4">
-      <TournamentTableRow
-        v-for="tournament in tournaments"
-        :key="tournament.id"
-        :tournament="tournament"
-      ></TournamentTableRow>
-    </div>
-    <div v-else class="text-center py-8">
-      <p class="text-muted-foreground">
-        {{ $t("tournament.table.no_tournaments_found") }}
-      </p>
-    </div>
-  </Card>
+      <div v-if="tournaments && tournaments.length > 0" class="space-y-4">
+        <TournamentTableRow
+          v-for="tournament in tournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+        ></TournamentTableRow>
+      </div>
+      <div v-else class="text-center py-8">
+        <p class="text-muted-foreground">
+          {{ $t("tournament.table.no_tournaments_found") }}
+        </p>
+      </div>
+    </AnimatedCard>
+  </PageTransition>
 
   <Pagination
     :page="page"

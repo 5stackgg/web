@@ -1,32 +1,40 @@
 <script setup lang="ts">
 import PageHeading from "~/components/PageHeading.vue";
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <PageHeading v-if="map_pools_by_pk">
-    <template #title>{{
-      $t("pages.map_pools.pool.title", { type: map_pools_by_pk.type })
-    }}</template>
-    <template #description>{{
-      $t("pages.map_pools.pool.description")
-    }}</template>
-  </PageHeading>
+  <div class="flex-grow flex flex-col gap-6">
+    <PageTransition :delay="0">
+      <PageHeading v-if="map_pools_by_pk">
+        <template #title>{{
+          $t("pages.map_pools.pool.title", { type: map_pools_by_pk.type })
+        }}</template>
+        <template #description>{{
+          $t("pages.map_pools.pool.description")
+        }}</template>
+      </PageHeading>
+    </PageTransition>
 
-  <Card v-if="map_pools_by_pk" class="my-4">
-    <CardHeader>
-      <CardTitle class="flex justify-between items-center">{{
-        $t("pages.map_pools.pool.modify_maps")
-      }}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <MapPoolForm
-        :pool="map_pools_by_pk"
-        :availableMaps="availableMaps"
-        v-if="map_pools_by_pk && availableMaps"
-      />
-    </CardContent>
-  </Card>
+    <PageTransition :delay="100">
+      <AnimatedCard v-if="map_pools_by_pk" variant="gradient">
+        <CardHeader>
+          <CardTitle class="flex justify-between items-center">{{
+            $t("pages.map_pools.pool.modify_maps")
+          }}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <MapPoolForm
+            :pool="map_pools_by_pk"
+            :availableMaps="availableMaps"
+            v-if="map_pools_by_pk && availableMaps"
+          />
+        </CardContent>
+      </AnimatedCard>
+    </PageTransition>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,17 +1,26 @@
+<script setup lang="ts">
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+</script>
+
 <template>
   <div v-if="tournament">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-2">
-        <Button variant="ghost" size="icon" @click="$router.back()">
-          <ArrowLeft class="h-4 w-4" />
-        </Button>
-        <h1 class="text-2xl font-bold">Match Options</h1>
+    <PageTransition :delay="0">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2">
+          <Button variant="ghost" size="icon" @click="$router.back()">
+            <ArrowLeft class="h-4 w-4" />
+          </Button>
+          <h1 class="text-2xl font-bold">Match Options</h1>
+        </div>
       </div>
-    </div>
+    </PageTransition>
 
-    <Card class="p-6">
-      <TournamentForm :tournament="tournament"></TournamentForm>
-    </Card>
+    <PageTransition :delay="100">
+      <AnimatedCard variant="gradient" class="p-6">
+        <TournamentForm :tournament="tournament"></TournamentForm>
+      </AnimatedCard>
+    </PageTransition>
   </div>
 </template>
 

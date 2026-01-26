@@ -336,6 +336,8 @@
                 "assists": "Assists",
                 "deaths": "Deaths",
                 "kd": "KD",
+                "headshots": "Headshots",
+                "headshot_percentage": "Headshot Percentage",
                 "recent_wins_and_losses": "Recent Wins and Losses",
                 "elo_history": "ELO History",
                 "no_elo_history": "Play A Match to genreate ELO",
@@ -349,7 +351,7 @@
                 "match_record": "Match Record",
                 "wins": "Wins",
                 "losses": "Losses",
-                "wl": "W/L"
+                "win_rate": "Win Rate"
             }
         },
         "play": {

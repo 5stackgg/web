@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import type { FileItem } from "~/stores/FileManagerStore";
+import FileTreeNode from './FileTreeNode.vue' 
 
 const store = useFileManagerStore();
 

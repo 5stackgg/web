@@ -58,8 +58,8 @@
         },
         "teams": {
             "title": "Equipes",
-            "description": "Gerenciar equipes e escalações",
-            "create": "Criar",
+            "description": "Gerencie equipes e escalações.",
+            "create": "Criar Equipe",
             "tabs": {},
             "search": "Pesquisar..."
 
@@ -195,7 +195,7 @@
                 "dedicated_servers_min_role_to_connect": "Função mínima necessária para conectar-se a servidores dedicados protegidos por senha.",
                 "dedicated_servers_min_role_to_connect_description": "Somente jogadores com essa função ou superior podem se conectar a servidores dedicados que exigem senha.",
                 "matchmaking_min_role": "Cargo Mínimo Permitido para entrar na Matchmaking",
-                "matchmaking_min_role_description": "Este cargo poderá juntar-se ao matchmaking.",
+                "matchmaking_min_role_description": "Esta qualificação mínima permitirá que os jogadores entrem na fila de matchmaking.",
                 "max_acceptable_latency": "Máximo Aceitável Latência",
                 "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida.",
                 "lineup_add_without_invite": "Função mínima necessária para adicionar jogadores à escalação sem convite",
@@ -271,12 +271,12 @@
         },
         "regions": {
             "title": "Regiões",
-            "description": "Gerenciamento de regiões",
+            "description": "Regiões permitem agrupar servidores de jogo por localização geográfica. Os jogadores podem selecionar regiões preferidas durante matchmaking e vetar regiões indesejadas durante a configuração da partida.",
             "create": "Criar",
             "table": {
                 "name": "Nome",
                 "status": "Status",
-                "available_servers": "Servidores disponíveis",
+                "available_servers": "Servidores Disponíveis / Total de Servidores",
                 "description": "Descrição",
                 "use_lan_ip": "Usar LAN",
                 "use_steam_relay": "Usar Steam Relay",
@@ -332,9 +332,11 @@
             "detail": {
                 "player_stats": "Estatísticas do jogador",
                 "kills": "Abates",
-                "assists": "Assistências",
+                "assists": "Assist.",
                 "deaths": "Mortes",
                 "kd": "K/D",
+                "headshots": "Headshots",
+                "headshot_percentage": "% HS",
                 "recent_wins_and_losses": "Vitórias e Derrotas Recentes",
                 "elo_history": "Histórico do ELO",
                 "no_elo_history": "Jogue uma partida para descobrir seu ELO",
@@ -343,10 +345,12 @@
                 "matches": "Partidas",
                 "tournaments": "Campeonatos",
                 "no_tournaments": "Nenhum campeonato encontrado para este jogador.",
+                "weapon_kills": "Armas Mais Utilizadas",
+                "no_weapon_kills": "Nenhuma arma registrada",
                 "match_record": "Registro de Partidas",
                 "wins": "Vitórias",
                 "losses": "Derrotas",
-                "wl": "V/D"
+                "win_rate": "Taxa de Vitórias"
             }
         },
         "play": {
@@ -446,7 +450,7 @@
                 "server_plugin_config": "Configuração do plugin do servidor",
                 "hide_config": "Ocultar configuração",
                 "show_config": "Mostrar configuração",
-                "config_location": "Localização do arquivo de configuração",
+                "config_location": "Esta configuração deve estar localizada em:",
                 "edit": "Editar",
                 "delete": "Excluir",
                 "status": {
@@ -469,7 +473,7 @@
             "table": {
                 "label": "Descrição",
                 "region": "Região",
-                "map": "Map",
+                "map": "Mapa",
                 "type": "tipo",
                 "players": "Jogadores",
                 "connect": "Conectar"
@@ -522,7 +526,7 @@
             "maps": "Mapas Disponíveis",
             "active_duty": "Campanha Ativa",
             "available_modes": "Modos disponíveis",
-            "workshop_id": "Ligação do Workshop",
+            "workshop_id": "ID do Workshop",
             "search": "Pesquisar mapas"
         },
         "map_pool": {
@@ -534,29 +538,29 @@
             "title": "Gerenciar Partidas",
             "only_my_matches": "Somente Minhas Partidas Organizadas",
             "description": "Veja e gerencie todas as partidas em toda a plataforma.",
-            "filters": "Filters",
-            "reset_filters": "Reset Filters",
-            "search_by_name": "Search by Name",
+            "filters": "Filtros",
+            "reset_filters": "Remover Filtros",
+            "search_by_name": "Procurar pelo Nome",
             "enter_name": "Enter name...",
-            "search_by_id": "Search by Match ID",
+            "search_by_id": "Procurar pelo Match ID",
             "enter_match_id": "Enter match ID...",
-            "search_by_team": "Search by Team",
-            "enter_team_name": "Enter team name...",
-            "filter_by_status": "Filter by Status",
-            "select_statuses": "Select statuses...",
-            "filter_by_regions": "Filter by Regions",
-            "select_regions": "Select regions...",
-            "clear_all": "Clear All",
-            "sort_by": "Sort by",
-            "created_at": "Created Date",
-            "started_at": "Started Date",
-            "scheduled_at": "Scheduled Date",
-            "ended_at": "Ended Date",
-            "newest_first": "Newest First",
-            "oldest_first": "Oldest First",
-            "showing": "Showing",
-            "matches": "matches",
-            "loading": "Loading..."
+            "search_by_team": "Procurar pela Equipe",
+            "enter_team_name": "Insira o nome do time...",
+            "filter_by_status": "Filtrar por Status",
+            "select_statuses": "Selecionar statuses...",
+            "filter_by_regions": "Filtrar por Regiões",
+            "select_regions": "Selecionar regiões...",
+            "clear_all": "Limpar Tudo",
+            "sort_by": "Ordenar por",
+            "created_at": "Data de Criação",
+            "started_at": "Data de Início",
+            "scheduled_at": "Data Agendada",
+            "ended_at": "Data de Término",
+            "newest_first": "Mais Novo Primeiro",
+            "oldest_first": "Mais Antigo Primeiro",
+            "showing": "Mostrando",
+            "matches": "partidas",
+            "loading": "Carregando..."
         }
     },
     "custom_match": {
@@ -589,8 +593,8 @@
             "title": "Notificações",
             "delete": "Excluir",
             "dismiss": "Dispensar",
-            "dismiss_all": "Descartar todas as notificações",
-            "delete_all_read": "Excluir todas as notificações lidas",
+            "dismiss_all": "Dispensar notificações",
+            "delete_all_read": "Excluir notificações lidas",
             "no_notifications": "Nenhuma notificação"
         },
         "app_nav": {
@@ -615,7 +619,7 @@
                 "app_settings": "Configurações do App",
                 "map_pools": "Conjuntos de Mapas",
                 "manage_matches": "Gerenciar Partidas",
-                "manage_tournaments": "Manage Tournaments"
+                "manage_tournaments": "Gerenciar Campeonatos"
             },
             "profile": {
                 "my_account": "Minhas Configurações",
@@ -645,7 +649,7 @@
                 "join_discord": "Entrar no Discord",
                 "map_pools": "Conjuntos de Mapas",
                 "manage_matches": "Gerenciar Partidas",
-                "manage_tournaments": "Manage Tournaments"
+                "manage_tournaments": "Gerenciar Campeonatos"
             },
             "logout_dialog": {
                 "title": "Sair",
@@ -656,7 +660,7 @@
         },
         "top_nav": {
             "home": "Minhas partidas",
-            "play_menu": "Reproduzir",
+            "play_menu": "Jogar",
             "community_menu": "Comunidade",
             "watch_menu": "Partidas",
             "login": "Login para Jogar",
@@ -665,7 +669,7 @@
                 "tournaments": "Campeonatos",
                 "public_servers": "Servidores Públicos",
                 "hero": {
-                    "title": "Jogar e Compete",
+                    "title": "Jogar e Competir",
                     "subtitle": "Entre em partidas, campeonatos."
                 }
             },
@@ -813,7 +817,7 @@
             "team_1": "Equipe 1",
             "team_2": "Equipe 2",
             "round_match": "Round {round} Partida {match}",
-            "bye_round": "Rodada de Adeus",
+            "bye_round": "BYE Round",
             "scheduled_for": "Agendado para"
         },
         "results": {
@@ -992,9 +996,9 @@
                     "description": "\"Round faca\" só são jogadas quando nenhuma das equipes escolheu o mapa no veto."
                 },
                 "max_rounds": {
-                    "label": "Máximo de rodadas",
-                    "description": "Descrição do máximo de rodadas",
-                    "placeholder": "Digite o máximo de rodadas"
+                    "label": "Máximo de rounds",
+                    "description": "Descrição do máximo de rounds",
+                    "placeholder": "Digite o máximo de rounds"
                 },
                 "region": {
                     "title": "Regiões",
@@ -1175,7 +1179,7 @@
         "lineup": {
             "stats": {
                 "flashes_thrown": "Flashbangs lançadas",
-                "flash_assists": "Assistências com flash",
+                "flash_assists": "Assist. com flash",
                 "enemies_flashed": "Inimigos cegados",
                 "team_flashed": "Companheiros cegados",
                 "avg_blind_time": "Tempo médio de cegueira",
@@ -1183,8 +1187,8 @@
                 "molotov_damage": "Dano de molotov",
                 "seconds": "Segundos"
             },
-            "discord_user": "Usuário do Discord",
-            "discord_link": "Link do Discord"
+            "discord_user": "Este é um usuário do Discord, registre seu ID do Discord para habilitar rastreamento de estatísticas digitando",
+            "discord_link": "no canal oficial do Discord."
         },
         "invites": {
             "title": "Convites",
@@ -1205,12 +1209,12 @@
             "leave_lineup": "Sair da escalação",
             "update_team_name": "Atualizar nome da equipe",
             "kills_full": "Abates",
-            "assists_full": "Assistências",
+            "assists_full": "Assist.",
             "deaths_full": "Mortes",
             "kd": "K/D",
             "hs": "HS%",
             "team_damage": "Dano à equipe",
-            "multi_kill_rounds": "Rodadas com múltiplos abates",
+            "multi_kill_rounds": "Multikills",
             "mkr": "MKR",
             "k2": "2K",
             "k3": "3K",
@@ -1229,8 +1233,8 @@
             "success": "Sucesso"
         },
         "clutches": {
-            "won": "Ganhos",
-            "lost": "Perdidos",
+            "won": "Venceu",
+            "lost": "Perdeu",
             "against": "contra",
             "no_clutches": "Nenhum clutch",
             "vs": "vs {count}",
@@ -1365,8 +1369,8 @@
         }
     },
     "matchmaking": {
-        "cancel_matchmaking": "Cancelar Matchmaking",
-        "searching_for_match": "A procurar por uma partida {type}",
+        "cancel_matchmaking": "Sair da Fila",
+        "searching_for_match": "Você está na fila do {type}",
         "invites": "Convites",
         "lobby": {
             "access": "Acesso à Lobby",
@@ -1391,7 +1395,7 @@
             "in_lobby": "Em uma lobby"
         },
         "others": {
-            "title": "Others"
+            "title": "Outros"
         },
         "banned": "Banido",
         "go_to_match": "Ir para a partida",
@@ -1450,7 +1454,8 @@
         "message_placeholder": "Digite uma mensagem..."
     },
     "charts": {
-        "usage": "Uso"
+        "usage": "Uso",
+        "weapon_kills": "Abates com Armas"
     },
     "server": {
         "join_server": "Entrar no servidor",

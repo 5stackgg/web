@@ -150,6 +150,7 @@ export default defineNuxtConfig({
       installPrompt: true,
     },
     workbox: {
+      maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
       globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff}"],
       navigateFallbackDenylist: [
         /^\/auth/,

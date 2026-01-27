@@ -129,6 +129,14 @@ const serverMenu = ref(false);
         </template>
 
         <template #actions>
+          <Button
+            v-if="server?.game_server_node_id"
+            variant="outline"
+            @click="$router.push(`/dedicated-servers/${server.id}/files`)"
+          >
+            <FolderOpen class="mr-2 h-4 w-4" />
+            {{ $t("pages.dedicated_servers.detail.files") }}
+          </Button>
           <DropdownMenu v-model:open="serverMenu">
             <DropdownMenuTrigger as-child>
               <Button variant="outline" size="icon">

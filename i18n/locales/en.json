@@ -720,6 +720,7 @@
         }
     },
     "common": {
+        "manage_custom_plugins_and_shared_files": "These files are moutned to `csgo` directory when the server is started.",
         "delete": "Delete",
         "cancel": "Cancel",
         "save": "Save",

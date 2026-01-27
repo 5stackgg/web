@@ -273,10 +273,52 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         }),
       });
 
-      // Refresh the parent directory of the deleted item
+      // Calculate parent directory of the deleted item
       const pathParts = path.split("/");
       pathParts.pop();
       const parentPath = pathParts.join("/");
+
+      // If currentPath is the deleted path or inside it, navigate to parent
+      if (
+        currentPath.value === path ||
+        currentPath.value.startsWith(path + "/")
+      ) {
+        currentPath.value = parentPath;
+      }
+
+      // Close any open files that were inside the deleted path
+      for (const filePath of openFiles.value.keys()) {
+        if (filePath === path || filePath.startsWith(path + "/")) {
+          openFiles.value.delete(filePath);
+        }
+      }
+
+      // Update activeFilePath if the active file was deleted
+      if (
+        activeFilePath.value &&
+        (activeFilePath.value === path ||
+          activeFilePath.value.startsWith(path + "/"))
+      ) {
+        const openPaths = Array.from(openFiles.value.keys());
+        activeFilePath.value =
+          openPaths.length > 0 ? openPaths[openPaths.length - 1] : null;
+      }
+
+      // Remove deleted paths from expandedPaths
+      for (const expandedPath of expandedPaths.value) {
+        if (expandedPath === path || expandedPath.startsWith(path + "/")) {
+          expandedPaths.value.delete(expandedPath);
+        }
+      }
+
+      // Remove deleted paths from fileTree cache
+      for (const treePath of fileTree.value.keys()) {
+        if (treePath === path || treePath.startsWith(path + "/")) {
+          fileTree.value.delete(treePath);
+        }
+      }
+
+      // Refresh the parent directory
       await loadDirectory(parentPath);
     } catch (err: any) {
       error.value = err.message || "Failed to delete item";

@@ -1,5 +1,5 @@
 <template>
-  <div class="file-manager-container h-full flex flex-col">
+  <div class="h-full flex flex-col">
     <!-- Location info -->
     <div class="p-4 border-b bg-muted/50">
       <div class="text-sm text-muted-foreground">
@@ -64,9 +64,3 @@ onUnmounted(() => {
   store.expandedPaths.clear();
 });
 </script>
-
-<style scoped>
-.file-manager-container {
-  background: var(--background);
-}
-</style>

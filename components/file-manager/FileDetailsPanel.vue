@@ -1,5 +1,5 @@
 <template>
-  <div class="file-details-panel flex-1 flex flex-col">
+  <div class="relative flex-1 flex flex-col">
     <!-- Menubar (VS Code style) - only show when file is open -->
     <Menubar
       v-if="store.activeFilePath"
@@ -411,9 +411,3 @@ onBeforeUnmount(() => {
   destroyEditor();
 });
 </script>
-
-<style scoped>
-.file-details-panel {
-  position: relative;
-}
-</style>

@@ -1,12 +1,16 @@
 <template>
   <div class="file-tree-node" @contextmenu="handleContextMenu">
     <div
-      class="flex items-center gap-2 px-2 py-1 hover:bg-accent rounded-md cursor-pointer"
+      class="flex items-center gap-2 px-2 py-1 hover:bg-accent rounded-md cursor-pointer transition-opacity"
       :class="{
         'bg-accent': isSelected,
         'bg-primary/20 border border-primary': isDragOver && item.isDirectory,
+        'opacity-50': isDragging,
       }"
+      draggable="true"
       @click="handleClick"
+      @dragstart="handleDragStart"
+      @dragend="handleDragEnd"
       @drop="handleDrop"
       @dragover.prevent="handleDragOver"
       @dragenter.prevent="handleDragEnter"
@@ -121,6 +125,7 @@
         @create-folder="$emit('create-folder', $event)"
         @delete="$emit('delete', $event)"
         @drop-files="$emit('drop-files', $event)"
+        @move-item="$emit('move-item', $event)"
       />
     </div>
   </div>
@@ -159,11 +164,13 @@ const emit = defineEmits<{
   "create-folder": [item: FileItem];
   delete: [item: FileItem];
   "drop-files": [data: { files: File[]; targetPath: string }];
+  "move-item": [data: { sourcePath: string; destPath: string }];
 }>();
 
 const store = useFileManagerStore();
 const contextMenuOpen = ref(false);
 const isDragOver = ref(false);
+const isDragging = ref(false);
 const contextMenuPosition = ref({ x: 0, y: 0 });
 let dragCounter = 0;
 const inlineCreateName = ref("");
@@ -296,21 +303,68 @@ function handleContextMenu(event: MouseEvent) {
   contextMenuOpen.value = true;
 }
 
+function handleDragStart(event: DragEvent) {
+  if (!event.dataTransfer) return;
+
+  // Set the data for internal move operations
+  event.dataTransfer.setData(
+    "application/x-file-manager-path",
+    props.item.path,
+  );
+  event.dataTransfer.setData("text/plain", props.item.name);
+  event.dataTransfer.effectAllowed = "move";
+  isDragging.value = true;
+}
+
+function handleDragEnd(event: DragEvent) {
+  // Clean up any drag state
+  isDragging.value = false;
+  isDragOver.value = false;
+  dragCounter = 0;
+}
+
 function handleDrop(event: DragEvent) {
   event.preventDefault();
   event.stopPropagation();
   dragCounter = 0;
   isDragOver.value = false;
 
-  if (!props.item.isDirectory || !event.dataTransfer?.files) return;
+  if (!props.item.isDirectory || !event.dataTransfer) return;
+
+  // Check if this is an internal move (dragging from within the file tree)
+  const sourcePath = event.dataTransfer.getData(
+    "application/x-file-manager-path",
+  );
+
+  if (sourcePath) {
+    // Internal move - don't allow dropping on itself or its children
+    if (
+      sourcePath === props.item.path ||
+      props.item.path.startsWith(sourcePath + "/")
+    ) {
+      return;
+    }
+
+    // Don't move if already in this directory
+    const sourceParent = sourcePath.split("/").slice(0, -1).join("/");
+    if (sourceParent === props.item.path) {
+      return;
+    }
+
+    emit("move-item", { sourcePath, destPath: props.item.path });
+    return;
+  }
+
+  // External file drop
+  if (!event.dataTransfer.files?.length) return;
 
   const files = Array.from(event.dataTransfer.files);
   emit("drop-files", { files, targetPath: props.item.path });
 }
 
 function handleDragOver(event: DragEvent) {
-  if (props.item.isDirectory) {
-    event.preventDefault();
+  if (props.item.isDirectory && event.dataTransfer) {
+    event.dataTransfer.dropEffect = "move";
   }
 }
 

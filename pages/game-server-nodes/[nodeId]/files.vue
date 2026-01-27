@@ -1,15 +1,14 @@
 <template>
-  <div class="flex flex-col h-screen">
+  <div class="flex flex-col h-[calc(100svh-6rem)]">
     <PageHeading>
-      <template #title>Game Server Node Files</template>
-      <template #description>
-        Manage custom plugins and shared files for node {{ nodeId }}
+      <template #title>
+        <span class="capitalize">
+          {{ node?.label || nodeId }}
+        </span>
+        Game Server Node Files
       </template>
-      <template #actions>
-        <Button variant="outline" @click="navigateBack">
-          <ArrowLeft class="w-4 h-4 mr-2" />
-          Back
-        </Button>
+      <template #description>
+        {{ $t("common.manage_custom_plugins_and_shared_files") }}
       </template>
     </PageHeading>
 
@@ -23,28 +22,46 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import PageHeading from "~/components/PageHeading.vue";
 import FileManagerContainer from "~/components/file-manager/FileManagerContainer.vue";
-import { ArrowLeft } from "lucide-vue-next";
+import { generateQuery } from "~/graphql/graphqlGen";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
 
 const route = useRoute();
 const router = useRouter();
 
 const nodeId = computed(() => route.params.nodeId as string);
 
-onMounted(() => {
-  // Check if user is administrator
+const node = ref<{
+  id: string;
+  label: string;
+} | null>(null);
+
+onMounted(async () => {
   const authStore = useAuthStore();
   if (!authStore.isAdmin) {
     void router.push("/");
   }
-});
 
-function navigateBack() {
-  router.back();
-}
+  const response = await getGraphqlClient().query({
+    query: generateQuery({
+      game_server_nodes_by_pk: [
+        {
+          id: nodeId.value,
+        },
+        {
+          id: true,
+          label: true,
+        },
+      ],
+    }),
+  });
+
+  if (response.data.game_server_nodes_by_pk) {
+    node.value = response.data.game_server_nodes_by_pk;
+  }
+});
 </script>
 
 <style scoped>

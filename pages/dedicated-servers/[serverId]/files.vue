@@ -1,23 +1,22 @@
 <template>
-  <div class="flex flex-col h-screen">
+  <div class="flex flex-col h-[calc(100svh-6rem)]">
     <PageHeading>
-      <template #title>Dedicated Server Files</template>
-      <template #description>
-        Manage files for dedicated server {{ serverId }}
+      <template #title>
+        <span class="capitalize">
+          {{ server?.label }}
+        </span>
+        Dedicated Server Files
       </template>
-      <template #actions>
-        <Button variant="outline" @click="navigateBack">
-          <ArrowLeft class="w-4 h-4 mr-2" />
-          Back
-        </Button>
+      <template #description>
+        {{ $t("common.manage_custom_plugins_and_shared_files") }}
       </template>
     </PageHeading>
 
     <div class="flex-1 overflow-hidden">
       <Card class="h-full">
         <FileManagerContainer
-          v-if="nodeId"
-          :node-id="nodeId"
+          v-if="server"
+          :node-id="server.game_server_node_id"
           :server-id="serverId"
         />
         <div v-else class="p-8 text-center text-muted-foreground">
@@ -31,7 +30,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import PageHeading from "~/components/PageHeading.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
@@ -42,7 +40,15 @@ const route = useRoute();
 const router = useRouter();
 
 const serverId = computed(() => route.params.serverId as string);
-const nodeId = ref<string | null>(null);
+const server = ref<{
+  id: string;
+  label: string;
+  game_server_node_id: string;
+  game_server_node: {
+    id: string;
+    node_ip: string;
+  };
+} | null>(null);
 
 onMounted(async () => {
   // Check if user is administrator
@@ -62,6 +68,7 @@ onMounted(async () => {
           },
           {
             id: true,
+            label: true,
             game_server_node_id: true,
             game_server_node: {
               id: true,
@@ -73,7 +80,7 @@ onMounted(async () => {
     });
 
     if (response.data.servers_by_pk) {
-      nodeId.value = response.data.servers_by_pk.game_server_node_id;
+      server.value = response.data.servers_by_pk;
     }
   } catch (error) {
     console.error("Error fetching server:", error);

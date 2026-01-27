@@ -1,6 +1,6 @@
 <template>
   <div
-    class="file-tree h-full overflow-auto border-r flex flex-col"
+    class="file-tree h-full overflow-auto border-r flex flex-col min-w-80 max-w-80"
     @contextmenu="handleTreeContextMenu"
     @drop="handleTreeDrop"
     @dragover.prevent
@@ -114,6 +114,7 @@
           @edit-file="handleEditFile"
           @delete="handleDelete"
           @drop-files="handleDropFiles"
+          @move-item="handleMoveItem"
         />
       </div>
 
@@ -499,7 +500,31 @@ async function handleTreeDrop(event: DragEvent) {
   dragCounter = 0;
   treeDragOver.value = false;
 
-  if (!event.dataTransfer?.items) return;
+  if (!event.dataTransfer) return;
+
+  // Check if this is an internal move (dragging from within the file tree)
+  const sourcePath = event.dataTransfer.getData(
+    "application/x-file-manager-path",
+  );
+
+  if (sourcePath) {
+    // Internal move to root - check if already at root
+    const sourceParent = sourcePath.split("/").slice(0, -1).join("/");
+    if (sourceParent === "") {
+      // Already at root, nothing to do
+      return;
+    }
+
+    try {
+      await store.moveItem(sourcePath, "");
+    } catch (error) {
+      console.error("Failed to move item to root:", error);
+    }
+    return;
+  }
+
+  // External file drop
+  if (!event.dataTransfer.items) return;
 
   // Use webkitGetAsEntry to properly handle folders
   const items = Array.from(event.dataTransfer.items);
@@ -540,6 +565,14 @@ async function handleDropFiles(data: { files: File[]; targetPath: string }) {
   // For drops on tree nodes, we also need to check for folders
   // But the event has already been processed, so we just use plain files
   await uploadFilesToPath(data.files, data.targetPath);
+}
+
+async function handleMoveItem(data: { sourcePath: string; destPath: string }) {
+  try {
+    await store.moveItem(data.sourcePath, data.destPath);
+  } catch (error) {
+    console.error("Failed to move item:", error);
+  }
 }
 
 function handleCreateFileInRoot() {
@@ -589,10 +622,3 @@ async function confirmDelete() {
   }
 }
 </script>
-
-<style scoped>
-.file-tree {
-  min-width: 250px;
-  max-width: 350px;
-}
-</style>

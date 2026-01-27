@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { MoreHorizontal, Trash } from "lucide-vue-next";
+import { MoreHorizontal, Trash, FolderOpen } from "lucide-vue-next";
 import PageHeading from "~/components/PageHeading.vue";
 import {
   DropdownMenu,
@@ -139,6 +139,13 @@ const serverMenu = ref(false);
               <DropdownMenuGroup>
                 <DropdownMenuItem @click="editServerSheet = true">
                   {{ $t("pages.dedicated_servers.detail.edit") }}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  v-if="server?.game_server_node_id"
+                  @click="$router.push(`/dedicated-servers/${server.id}/files`)"
+                >
+                  <FolderOpen class="mr-2 h-4 w-4 inline" />
+                  {{ $t("pages.dedicated_servers.detail.files") }}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

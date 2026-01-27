@@ -2,7 +2,10 @@
   <div class="file-tree-node" @contextmenu="handleContextMenu">
     <div
       class="flex items-center gap-2 px-2 py-1 hover:bg-accent rounded-md cursor-pointer"
-      :class="{ 'bg-accent': isSelected, 'bg-primary/20 border border-primary': isDragOver && item.isDirectory }"
+      :class="{
+        'bg-accent': isSelected,
+        'bg-primary/20 border border-primary': isDragOver && item.isDirectory,
+      }"
       @click="handleClick"
       @drop="handleDrop"
       @dragover.prevent="handleDragOver"
@@ -23,14 +26,30 @@
 
       <Folder v-if="item.isDirectory" class="w-4 h-4 text-muted-foreground" />
       <File v-else class="w-4 h-4 text-muted-foreground" />
-      <span class="text-sm truncate">{{ item.name }}</span>
+
+      <!-- Inline rename input -->
+      <Input
+        v-if="isRenaming"
+        ref="renameInput"
+        v-model="renameName"
+        class="h-6 text-sm py-0 px-1 flex-1"
+        @keydown.enter="confirmRename"
+        @keydown.escape="cancelRename"
+        @blur="handleRenameBlur"
+        @click.stop
+        autofocus
+      />
+      <span v-else class="text-sm truncate">{{ item.name }}</span>
     </div>
 
     <DropdownMenu v-model:open="contextMenuOpen">
       <DropdownMenuTrigger as-child>
         <div
           class="fixed w-0 h-0"
-          :style="{ left: `${contextMenuPosition.x}px`, top: `${contextMenuPosition.y}px` }"
+          :style="{
+            left: `${contextMenuPosition.x}px`,
+            top: `${contextMenuPosition.y}px`,
+          }"
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-48">
@@ -52,11 +71,14 @@
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </template>
-        <DropdownMenuItem @click="$emit('rename', item)">
+        <DropdownMenuItem @click="startRename">
           <PenLine class="mr-2 h-4 w-4" />
           <span>Rename</span>
         </DropdownMenuItem>
-        <DropdownMenuItem @click="$emit('delete', item)" class="text-destructive">
+        <DropdownMenuItem
+          @click="$emit('delete', item)"
+          class="text-destructive"
+        >
           <Trash2 class="mr-2 h-4 w-4" />
           <span>Delete</span>
         </DropdownMenuItem>
@@ -78,7 +100,11 @@
           ref="inlineInput"
           v-model="inlineCreateName"
           class="h-6 text-sm py-0 px-1"
-          :placeholder="store.pendingCreate.type === 'directory' ? 'folder name' : 'file name'"
+          :placeholder="
+            store.pendingCreate.type === 'directory'
+              ? 'folder name'
+              : 'file name'
+          "
           @keydown.enter="confirmInlineCreate"
           @keydown.escape="cancelInlineCreate"
           @blur="handleInlineBlur"
@@ -93,7 +119,6 @@
         @edit-file="$emit('edit-file', $event)"
         @create-file="$emit('create-file', $event)"
         @create-folder="$emit('create-folder', $event)"
-        @rename="$emit('rename', $event)"
         @delete="$emit('delete', $event)"
         @drop-files="$emit('drop-files', $event)"
       />
@@ -104,8 +129,24 @@
 <script setup lang="ts">
 import { computed, ref, watch, nextTick } from "vue";
 import type { FileItem } from "~/stores/FileManagerStore";
-import { Folder, File, ChevronRight, FilePlus, FolderPlus, Pencil, PenLine, Trash2 } from "lucide-vue-next";
+import {
+  Folder,
+  File,
+  ChevronRight,
+  FilePlus,
+  FolderPlus,
+  Pencil,
+  PenLine,
+  Trash2,
+} from "lucide-vue-next";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const props = defineProps<{
   item: FileItem;
@@ -113,20 +154,29 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   select: [item: FileItem];
-  'edit-file': [item: FileItem];
-  'create-file': [item: FileItem];
-  'create-folder': [item: FileItem];
-  'rename': [item: FileItem];
-  'delete': [item: FileItem];
-  'drop-files': [data: { files: File[]; targetPath: string }];
+  "edit-file": [item: FileItem];
+  "create-file": [item: FileItem];
+  "create-folder": [item: FileItem];
+  delete: [item: FileItem];
+  "drop-files": [data: { files: File[]; targetPath: string }];
 }>();
 
 const store = useFileManagerStore();
 const contextMenuOpen = ref(false);
 const isDragOver = ref(false);
 const contextMenuPosition = ref({ x: 0, y: 0 });
+let dragCounter = 0;
 const inlineCreateName = ref("");
-const inlineInput = ref<HTMLInputElement | null>(null);
+const inlineInput = ref<InstanceType<typeof Input> | null>(null);
+
+// Inline rename state
+const renameName = ref("");
+const renameInput = ref<InstanceType<typeof Input> | null>(null);
+
+// Computed for rename state
+const isRenaming = computed(
+  () => store.pendingRename?.path === props.item.path,
+);
 
 // Watch for pending create to focus input
 watch(
@@ -135,9 +185,25 @@ watch(
     if (pending?.parentPath === props.item.path) {
       inlineCreateName.value = "";
       await nextTick();
-      inlineInput.value?.focus();
+      // Access the underlying input element
+      const inputEl = inlineInput.value?.$el as HTMLInputElement;
+      inputEl?.focus();
     }
-  }
+  },
+);
+
+// Watch for pending rename to focus input
+watch(
+  () => store.pendingRename,
+  async (pending) => {
+    if (pending?.path === props.item.path) {
+      renameName.value = pending.currentName;
+      await nextTick();
+      const inputEl = renameInput.value?.$el as HTMLInputElement;
+      inputEl?.focus();
+      inputEl?.select();
+    }
+  },
 );
 
 async function confirmInlineCreate() {
@@ -165,12 +231,44 @@ function handleInlineBlur() {
   }, 100);
 }
 
+// Rename functions
+function startRename() {
+  store.startInlineRename(props.item.path, props.item.name);
+}
+
+async function confirmRename() {
+  if (renameName.value.trim()) {
+    await store.confirmInlineRename(renameName.value.trim());
+  }
+  renameName.value = "";
+}
+
+function cancelRename() {
+  store.cancelInlineRename();
+  renameName.value = "";
+}
+
+function handleRenameBlur() {
+  setTimeout(() => {
+    if (store.pendingRename?.path === props.item.path) {
+      if (
+        renameName.value.trim() &&
+        renameName.value.trim() !== props.item.name
+      ) {
+        confirmRename();
+      } else {
+        cancelRename();
+      }
+    }
+  }, 100);
+}
+
 function startCreateFile() {
-  store.startInlineCreate(props.item.path, 'file');
+  store.startInlineCreate(props.item.path, "file");
 }
 
 function startCreateFolder() {
-  store.startInlineCreate(props.item.path, 'directory');
+  store.startInlineCreate(props.item.path, "directory");
 }
 
 const expanded = computed(() => store.expandedPaths.has(props.item.path));
@@ -180,9 +278,7 @@ const children = computed(() => {
   return store.fileTree.get(props.item.path) || [];
 });
 
-const isSelected = computed(
-  () => store.selectedItem?.path === props.item.path
-);
+const isSelected = computed(() => store.selectedItem?.path === props.item.path);
 
 function toggleExpand() {
   store.toggleExpand(props.item.path);
@@ -203,12 +299,13 @@ function handleContextMenu(event: MouseEvent) {
 function handleDrop(event: DragEvent) {
   event.preventDefault();
   event.stopPropagation();
+  dragCounter = 0;
   isDragOver.value = false;
 
   if (!props.item.isDirectory || !event.dataTransfer?.files) return;
 
   const files = Array.from(event.dataTransfer.files);
-  emit('drop-files', { files, targetPath: props.item.path });
+  emit("drop-files", { files, targetPath: props.item.path });
 }
 
 function handleDragOver(event: DragEvent) {
@@ -219,11 +316,17 @@ function handleDragOver(event: DragEvent) {
 
 function handleDragEnter(event: DragEvent) {
   if (props.item.isDirectory) {
+    dragCounter++;
     isDragOver.value = true;
   }
 }
 
 function handleDragLeave(event: DragEvent) {
-  isDragOver.value = false;
+  if (props.item.isDirectory) {
+    dragCounter--;
+    if (dragCounter === 0) {
+      isDragOver.value = false;
+    }
+  }
 }
 </script>

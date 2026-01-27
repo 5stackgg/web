@@ -244,4 +244,10 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2024-07-15",
+
+  vite: {
+    optimizeDeps: {
+      include: ["monaco-editor"],
+    },
+  },
 });

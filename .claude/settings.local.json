@@ -7,7 +7,9 @@
       "Read(*)",
       "Search(*)",
       "Edit(*)",
-      "Write(*)"
+      "Write(*)",
+      "Bash(npx vue-tsc:*)",
+      "Bash(timeout 15 npm run dev:*)"
     ]
   }
 }

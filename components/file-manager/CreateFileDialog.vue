@@ -3,9 +3,7 @@
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Create New File</DialogTitle>
-        <DialogDescription>
-          Enter a name for the new file
-        </DialogDescription>
+        <DialogDescription> Enter a name for the new file </DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
@@ -26,9 +24,7 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">
-          Cancel
-        </Button>
+        <Button variant="outline" @click="handleCancel"> Cancel </Button>
         <Button @click="handleCreate" :disabled="!fileName || isCreating">
           {{ isCreating ? "Creating..." : "Create" }}
         </Button>
@@ -74,7 +70,7 @@ watch(
       fileName.value = "";
       localError.value = null;
     }
-  }
+  },
 );
 
 async function handleCreate() {

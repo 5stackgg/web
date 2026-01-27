@@ -22,9 +22,7 @@
           <p class="text-sm font-medium mb-1">
             Drag and drop files here or click to browse
           </p>
-          <p class="text-xs text-muted-foreground">
-            Maximum file size: 100MB
-          </p>
+          <p class="text-xs text-muted-foreground">Maximum file size: 100MB</p>
         </div>
 
         <input
@@ -44,7 +42,9 @@
           >
             <div class="flex items-center justify-between text-sm">
               <span class="truncate">{{ filename }}</span>
-              <span class="text-muted-foreground">{{ Math.round(progress) }}%</span>
+              <span class="text-muted-foreground"
+                >{{ Math.round(progress) }}%</span
+              >
             </div>
             <Progress :model-value="progress" />
           </div>

@@ -13,7 +13,10 @@
           Loading file...
         </div>
 
-        <div v-else-if="fileContent !== null" class="flex-1 min-h-[400px] border rounded-md overflow-hidden">
+        <div
+          v-else-if="fileContent !== null"
+          class="flex-1 min-h-[400px] border rounded-md overflow-hidden"
+        >
           <div ref="editorContainer" class="w-full h-full" />
         </div>
 
@@ -22,9 +25,15 @@
           <AlertDescription>{{ error }}</AlertDescription>
         </Alert>
 
-        <Alert v-if="saveSuccess" variant="default" class="bg-green-50 border-green-200">
+        <Alert
+          v-if="saveSuccess"
+          variant="default"
+          class="bg-green-50 border-green-200"
+        >
           <Check class="w-4 h-4 text-green-600" />
-          <AlertDescription class="text-green-800">File saved successfully!</AlertDescription>
+          <AlertDescription class="text-green-800"
+            >File saved successfully!</AlertDescription
+          >
         </Alert>
       </div>
 
@@ -41,7 +50,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
+import {
+  ref,
+  watch,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from "vue";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -159,7 +175,7 @@ watch(
       destroyEditor();
       resetState();
     }
-  }
+  },
 );
 
 watch(
@@ -168,7 +184,7 @@ watch(
     if (editorInstance.value) {
       monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
     }
-  }
+  },
 );
 
 async function loadFile() {

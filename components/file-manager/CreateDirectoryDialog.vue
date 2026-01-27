@@ -26,9 +26,7 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">
-          Cancel
-        </Button>
+        <Button variant="outline" @click="handleCancel"> Cancel </Button>
         <Button @click="handleCreate" :disabled="!dirName || store.isLoading">
           Create
         </Button>
@@ -71,7 +69,7 @@ watch(
       dirName.value = "";
       store.clearError();
     }
-  }
+  },
 );
 
 async function handleCreate() {

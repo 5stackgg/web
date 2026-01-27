@@ -2,10 +2,16 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Delete {{ item?.isDirectory ? "Directory" : "File" }}</DialogTitle>
+        <DialogTitle
+          >Delete {{ item?.isDirectory ? "Directory" : "File" }}</DialogTitle
+        >
         <DialogDescription>
           Are you sure you want to delete "{{ item?.name }}"?
-          {{ item?.isDirectory ? "All contents will be permanently deleted." : "This action cannot be undone." }}
+          {{
+            item?.isDirectory
+              ? "All contents will be permanently deleted."
+              : "This action cannot be undone."
+          }}
         </DialogDescription>
       </DialogHeader>
 
@@ -15,9 +21,7 @@
       </Alert>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">
-          Cancel
-        </Button>
+        <Button variant="outline" @click="handleCancel"> Cancel </Button>
         <Button
           variant="destructive"
           @click="handleDelete"
@@ -62,7 +66,7 @@ watch(
     if (!isOpen) {
       store.clearError();
     }
-  }
+  },
 );
 
 async function handleDelete() {

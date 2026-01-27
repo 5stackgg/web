@@ -21,18 +21,9 @@
     </DropdownMenuContent>
   </DropdownMenu>
 
-  <FileEditorDialog
-    v-model:open="editorDialogOpen"
-    :file-path="item.path"
-  />
-  <RenameDialog
-    v-model:open="renameDialogOpen"
-    :item="item"
-  />
-  <DeleteConfirmDialog
-    v-model:open="deleteDialogOpen"
-    :item="item"
-  />
+  <FileEditorDialog v-model:open="editorDialogOpen" :file-path="item.path" />
+  <RenameDialog v-model:open="renameDialogOpen" :item="item" />
+  <DeleteConfirmDialog v-model:open="deleteDialogOpen" :item="item" />
 </template>
 
 <script setup lang="ts">

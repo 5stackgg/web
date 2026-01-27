@@ -72,7 +72,10 @@ import Logout from "./Logout.vue";
           </SidebarMenuItem>
 
           <SidebarMenuItem tooltip="Search Players">
-            <SidebarMenuButton @click="triggerSpotlightSearch" tooltip="Search Players">
+            <SidebarMenuButton
+              @click="triggerSpotlightSearch"
+              tooltip="Search Players"
+            >
               <Search />
               <span>Search</span>
               <KbdGroup class="ml-auto" v-if="isMobile || sideBarOpen">

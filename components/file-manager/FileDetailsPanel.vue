@@ -1,11 +1,17 @@
 <template>
   <div class="file-details-panel flex-1 flex flex-col">
     <!-- Menubar (VS Code style) - only show when file is open -->
-    <Menubar v-if="store.activeFilePath" class="rounded-none border-b border-t-0 border-x-0">
+    <Menubar
+      v-if="store.activeFilePath"
+      class="rounded-none border-b border-t-0 border-x-0"
+    >
       <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem @click="handleSave" :disabled="!store.activeFile?.isDirty">
+          <MenubarItem
+            @click="handleSave"
+            :disabled="!store.activeFile?.isDirty"
+          >
             <Save class="mr-2 h-4 w-4" />
             Save
             <MenubarShortcut>⌘S</MenubarShortcut>
@@ -42,23 +48,30 @@
         <MenubarContent>
           <MenubarItem @click="toggleWordWrap">
             <WrapText class="mr-2 h-4 w-4" />
-            {{ wordWrap ? 'Disable' : 'Enable' }} Word Wrap
+            {{ wordWrap ? "Disable" : "Enable" }} Word Wrap
           </MenubarItem>
           <MenubarItem @click="toggleMinimap">
             <LayoutList class="mr-2 h-4 w-4" />
-            {{ showMinimap ? 'Hide' : 'Show' }} Minimap
+            {{ showMinimap ? "Hide" : "Show" }} Minimap
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
     </Menubar>
 
     <!-- Tabs for open files -->
-    <div v-if="openFileTabs.length > 0" class="flex border-b bg-muted/30 overflow-x-auto">
+    <div
+      v-if="openFileTabs.length > 0"
+      class="flex border-b bg-muted/30 overflow-x-auto"
+    >
       <div
         v-for="tab in openFileTabs"
         :key="tab.path"
         class="flex items-center gap-1 px-3 py-2 border-r cursor-pointer text-sm whitespace-nowrap"
-        :class="store.activeFilePath === tab.path ? 'bg-background border-b-2 border-b-primary' : 'hover:bg-muted'"
+        :class="
+          store.activeFilePath === tab.path
+            ? 'bg-background border-b-2 border-b-primary'
+            : 'hover:bg-muted'
+        "
         @click="store.setActiveFile(tab.path)"
       >
         <FileIcon class="w-3 h-3" />
@@ -74,12 +87,18 @@
     </div>
 
     <!-- Editor View (when file is open) -->
-    <div v-if="store.activeFilePath" class="flex-1 flex flex-col overflow-hidden">
+    <div
+      v-if="store.activeFilePath"
+      class="flex-1 flex flex-col overflow-hidden"
+    >
       <div ref="editorContainer" class="flex-1" />
     </div>
 
     <!-- Empty state (when no file is open) -->
-    <div v-else class="flex-1 flex items-center justify-center text-muted-foreground">
+    <div
+      v-else
+      class="flex-1 flex items-center justify-center text-muted-foreground"
+    >
       <div class="text-center">
         <FileCode class="w-16 h-16 mx-auto mb-4 opacity-50" />
         <p class="text-lg font-medium">No file open</p>
@@ -90,7 +109,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from "vue";
 import {
   Menubar,
   MenubarContent,
@@ -117,13 +143,14 @@ const colorMode = useColorMode();
 
 // Editor state
 const editorContainer = ref<HTMLElement | null>(null);
-const editorInstance = ref<monaco.editor.IStandaloneCodeEditor | null>(null);
+let editor: monaco.editor.IStandaloneCodeEditor | null = null;
 const wordWrap = ref(true);
 const showMinimap = ref(false);
-const isUpdatingFromStore = ref(false);
 
-// Cache models by file path to avoid recreating them
-const modelCache = new Map<string, monaco.editor.ITextModel>();
+// Non-reactive state to avoid reactivity issues in Monaco callbacks
+let currentEditingPath: string | null = null;
+let isSettingContent = false;
+let updateTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // Computed
 const openFileTabs = computed(() => {
@@ -177,39 +204,19 @@ function getLanguageFromPath(path: string): string {
   return languageMap[ext] || "plaintext";
 }
 
-function getOrCreateModel(filePath: string, content: string): monaco.editor.ITextModel {
-  let model = modelCache.get(filePath);
-  if (!model || model.isDisposed()) {
-    const language = getLanguageFromPath(filePath);
-    model = monaco.editor.createModel(content, language);
-    modelCache.set(filePath, model);
-
-    // Listen for changes on this model
-    model.onDidChangeContent(() => {
-      if (!isUpdatingFromStore.value) {
-        store.updateFileContent(filePath, model!.getValue());
-      }
-    });
-  }
-  return model;
-}
-
-function disposeModel(filePath: string) {
-  const model = modelCache.get(filePath);
-  if (model && !model.isDisposed()) {
-    model.dispose();
-  }
-  modelCache.delete(filePath);
-}
-
 function createEditor() {
-  if (!editorContainer.value || !store.activeFilePath || !store.activeFile) return;
+  if (!editorContainer.value || !store.activeFilePath || !store.activeFile)
+    return;
 
   const theme = colorMode.value === "dark" ? "vs-dark" : "vs";
-  const model = getOrCreateModel(store.activeFilePath, store.activeFile.content);
+  const language = getLanguageFromPath(store.activeFilePath);
+  const initialContent = store.activeFile.content;
 
-  editorInstance.value = monaco.editor.create(editorContainer.value, {
-    model,
+  currentEditingPath = store.activeFilePath;
+
+  editor = monaco.editor.create(editorContainer.value, {
+    value: initialContent,
+    language,
     theme,
     automaticLayout: true,
     minimap: { enabled: showMinimap.value },
@@ -219,64 +226,95 @@ function createEditor() {
     wordWrap: wordWrap.value ? "on" : "off",
   });
 
+  // Listen for content changes with debounce
+  editor.onDidChangeModelContent(() => {
+    if (isSettingContent) return;
+
+    if (updateTimeout) clearTimeout(updateTimeout);
+    updateTimeout = setTimeout(() => {
+      if (editor && currentEditingPath) {
+        const content = editor.getValue();
+        store.updateFileContent(currentEditingPath, content);
+      }
+    }, 300);
+  });
+
   // Add keyboard shortcuts
-  editorInstance.value.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
     handleSave();
   });
 
-  editorInstance.value.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyW, () => {
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyW, () => {
     handleCloseActiveTab();
   });
 }
 
-function destroyEditor() {
-  if (editorInstance.value) {
-    editorInstance.value.dispose();
-    editorInstance.value = null;
+function switchToFile(filePath: string, content: string) {
+  if (!editor) return;
+
+  // Clear any pending updates
+  if (updateTimeout) {
+    clearTimeout(updateTimeout);
+    updateTimeout = null;
   }
+
+  // Save current content before switching
+  if (currentEditingPath && currentEditingPath !== filePath) {
+    store.updateFileContent(currentEditingPath, editor.getValue());
+  }
+
+  // Update current file path first
+  currentEditingPath = filePath;
+
+  // Set content without triggering the change listener
+  isSettingContent = true;
+  const model = editor.getModel();
+  if (model) {
+    monaco.editor.setModelLanguage(model, getLanguageFromPath(filePath));
+    model.setValue(content);
+  }
+  isSettingContent = false;
+}
+
+function destroyEditor() {
+  if (updateTimeout) {
+    clearTimeout(updateTimeout);
+    updateTimeout = null;
+  }
+  if (editor) {
+    editor.dispose();
+    editor = null;
+  }
+  currentEditingPath = null;
 }
 
 // Watch for active file changes
 watch(
   () => store.activeFilePath,
   async (newPath) => {
-    if (newPath && store.activeFile) {
-      await nextTick();
-      if (editorInstance.value) {
-        // Switch to existing or new model
-        isUpdatingFromStore.value = true;
-        const model = getOrCreateModel(newPath, store.activeFile.content);
-        editorInstance.value.setModel(model);
-        isUpdatingFromStore.value = false;
-      } else {
-        createEditor();
+    if (newPath) {
+      const file = store.openFiles.get(newPath);
+      if (file) {
+        await nextTick();
+        if (editor) {
+          switchToFile(newPath, file.content);
+        } else {
+          createEditor();
+        }
       }
     } else {
       destroyEditor();
     }
-  }
-);
-
-// Clean up models when files are closed
-watch(
-  () => store.openFiles.size,
-  () => {
-    // Remove models for files that are no longer open
-    for (const filePath of modelCache.keys()) {
-      if (!store.openFiles.has(filePath)) {
-        disposeModel(filePath);
-      }
-    }
-  }
+  },
 );
 
 watch(
   () => colorMode.value,
   (newMode) => {
-    if (editorInstance.value) {
+    if (editor) {
       monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
     }
-  }
+  },
 );
 
 // Event handlers
@@ -285,21 +323,21 @@ async function handleSave() {
 }
 
 function handleUndo() {
-  editorInstance.value?.trigger("keyboard", "undo", null);
+  editor?.trigger("keyboard", "undo", null);
 }
 
 function handleRedo() {
-  editorInstance.value?.trigger("keyboard", "redo", null);
+  editor?.trigger("keyboard", "redo", null);
 }
 
 function toggleWordWrap() {
   wordWrap.value = !wordWrap.value;
-  editorInstance.value?.updateOptions({ wordWrap: wordWrap.value ? "on" : "off" });
+  editor?.updateOptions({ wordWrap: wordWrap.value ? "on" : "off" });
 }
 
 function toggleMinimap() {
   showMinimap.value = !showMinimap.value;
-  editorInstance.value?.updateOptions({ minimap: { enabled: showMinimap.value } });
+  editor?.updateOptions({ minimap: { enabled: showMinimap.value } });
 }
 
 function handleCloseTab(path: string, isDirty: boolean) {
@@ -320,7 +358,11 @@ function handleCloseActiveTab() {
 
 function handleCloseAllTabs() {
   if (store.hasUnsavedChanges) {
-    if (!confirm("You have unsaved changes. Are you sure you want to close all files?")) {
+    if (
+      !confirm(
+        "You have unsaved changes. Are you sure you want to close all files?",
+      )
+    ) {
       return;
     }
   }
@@ -331,17 +373,17 @@ function handleCloseAllTabs() {
 
 // Global keyboard shortcuts
 function handleKeyDown(event: KeyboardEvent) {
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
   const modifierKey = isMac ? event.metaKey : event.ctrlKey;
 
-  if (modifierKey && event.key === 's') {
+  if (modifierKey && event.key === "s") {
     event.preventDefault();
     if (store.activeFilePath && store.activeFile?.isDirty) {
       handleSave();
     }
   }
 
-  if (modifierKey && event.key === 'w') {
+  if (modifierKey && event.key === "w") {
     event.preventDefault();
     if (store.activeFilePath) {
       handleCloseActiveTab();
@@ -349,20 +391,24 @@ function handleKeyDown(event: KeyboardEvent) {
   }
 }
 
+// Warn before closing browser with unsaved changes
+function handleBeforeUnload(event: BeforeUnloadEvent) {
+  if (store.hasUnsavedChanges) {
+    event.preventDefault();
+    event.returnValue = "";
+    return "";
+  }
+}
+
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener("keydown", handleKeyDown);
+  window.addEventListener("beforeunload", handleBeforeUnload);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener("keydown", handleKeyDown);
+  window.removeEventListener("beforeunload", handleBeforeUnload);
   destroyEditor();
-  // Dispose all cached models
-  for (const model of modelCache.values()) {
-    if (!model.isDisposed()) {
-      model.dispose();
-    }
-  }
-  modelCache.clear();
 });
 </script>
 

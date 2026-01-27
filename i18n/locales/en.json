@@ -456,6 +456,7 @@
                 
                 "edit": "Edit",
                 "delete": "Delete",
+                "files": "Files",
                 "status": {
                     "disconnected": "Server is disconnected",
                     "no_rcon": "Server is connected but RCON is not available",
@@ -1444,6 +1445,7 @@
         "remove_node": "Remove Node",
         "show_update_logs": "Show Update Logs",
         "edit_label": "Edit Label",
+        "files": "Files",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",
         "version_pinning_not_supported": "Version pinning is not supported on this server.",

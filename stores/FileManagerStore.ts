@@ -1,6 +1,10 @@
 import { ref, computed } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { generateQuery, generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import {
+  generateQuery,
+  generateMutation,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import type { GraphQLTypes } from "~/generated/zeus";
 
@@ -32,30 +36,92 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   const fileTree = ref<Map<string, FileItem[]>>(new Map());
   const selectedItem = ref<FileItem | null>(null);
   const uploadProgress = ref<Map<string, number>>(new Map());
+
+  // Enhanced upload tracking
+  const uploadBatch = ref<{
+    totalFiles: number;
+    completedFiles: number;
+    totalBytes: number;
+    uploadedBytes: number;
+    currentFile: string | null;
+    isUploading: boolean;
+    failedFiles: string[];
+  }>({
+    totalFiles: 0,
+    completedFiles: 0,
+    totalBytes: 0,
+    uploadedBytes: 0,
+    currentFile: null,
+    isUploading: false,
+    failedFiles: [],
+  });
   const isLoading = ref<boolean>(false);
   const error = ref<string | null>(null);
   const expandedPaths = ref<Set<string>>(new Set([""]));
 
   // Editor state
-  const openFiles = ref<Map<string, { content: string; originalContent: string; isDirty: boolean }>>(new Map());
+  const openFiles = ref<
+    Map<string, { content: string; originalContent: string; isDirty: boolean }>
+  >(new Map());
   const activeFilePath = ref<string | null>(null);
 
   // Inline create state (VS Code style)
-  const pendingCreate = ref<{ parentPath: string; type: 'file' | 'directory' } | null>(null);
+  const pendingCreate = ref<{
+    parentPath: string;
+    type: "file" | "directory";
+  } | null>(null);
+
+  // Inline rename state (VS Code style)
+  const pendingRename = ref<{ path: string; currentName: string } | null>(null);
 
   // Computed
   const currentDirectoryItems = computed(
-    () => fileTree.value.get(currentPath.value) || []
+    () => fileTree.value.get(currentPath.value) || [],
   );
   const rootItems = computed(() => fileTree.value.get("") || []);
   const isCustomPlugins = computed(() => !serverId.value);
-  const activeFile = computed(() => activeFilePath.value ? openFiles.value.get(activeFilePath.value) : null);
+  const activeFile = computed(() =>
+    activeFilePath.value ? openFiles.value.get(activeFilePath.value) : null,
+  );
   const hasUnsavedChanges = computed(() => {
     for (const file of openFiles.value.values()) {
       if (file.isDirty) return true;
     }
     return false;
   });
+
+  const uploadOverallProgress = computed(() => {
+    if (uploadBatch.value.totalBytes === 0) return 0;
+    return (
+      (uploadBatch.value.uploadedBytes / uploadBatch.value.totalBytes) * 100
+    );
+  });
+
+  function resetUploadBatch() {
+    uploadBatch.value = {
+      totalFiles: 0,
+      completedFiles: 0,
+      totalBytes: 0,
+      uploadedBytes: 0,
+      currentFile: null,
+      isUploading: false,
+      failedFiles: [],
+    };
+    uploadProgress.value.clear();
+  }
+
+  function startUploadBatch(files: { file: File; relativePath: string }[]) {
+    const totalBytes = files.reduce((sum, f) => sum + f.file.size, 0);
+    uploadBatch.value = {
+      totalFiles: files.length,
+      completedFiles: 0,
+      totalBytes,
+      uploadedBytes: 0,
+      currentFile: null,
+      isUploading: true,
+      failedFiles: [],
+    };
+  }
 
   // Actions
   async function initialize(nId: string, sId?: string) {
@@ -112,7 +178,9 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     }
   }
 
-  async function readFile(filePath: string): Promise<FileContentResponse | null> {
+  async function readFile(
+    filePath: string,
+  ): Promise<FileContentResponse | null> {
     if (!nodeId.value) return null;
 
     isLoading.value = true;
@@ -205,7 +273,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         }),
       });
 
-      await loadDirectory(currentPath.value);
+      // Refresh the parent directory of the deleted item
+      const pathParts = path.split("/");
+      pathParts.pop();
+      const parentPath = pathParts.join("/");
+      await loadDirectory(parentPath);
     } catch (err: any) {
       error.value = err.message || "Failed to delete item";
       console.error("Error deleting item:", err);
@@ -303,7 +375,16 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
         const config = useRuntimeConfig();
         const serverPath = serverId.value ? `/${serverId.value}` : "";
-        const apiUrl = `${config.public.apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
+        let apiDomain = config.public.apiDomain;
+        // Ensure apiDomain has protocol
+        if (
+          apiDomain &&
+          !apiDomain.startsWith("http://") &&
+          !apiDomain.startsWith("https://")
+        ) {
+          apiDomain = `https://${apiDomain}`;
+        }
+        const apiUrl = `${apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
 
         const xhr = new XMLHttpRequest();
 
@@ -337,6 +418,139 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     }
 
     await loadDirectory(currentPath.value);
+  }
+
+  async function uploadFilesWithPaths(
+    fileEntries: { file: File; relativePath: string }[],
+    targetPath: string,
+  ) {
+    if (!nodeId.value) return;
+
+    // Start batch tracking
+    startUploadBatch(fileEntries);
+    let bytesUploadedSoFar = 0;
+
+    // Collect unique directories that need to be created
+    const dirsToCreate = new Set<string>();
+    for (const { relativePath } of fileEntries) {
+      const parts = relativePath.split("/");
+      // Remove the file name, keep only directories
+      parts.pop();
+      let currentDir = targetPath;
+      for (const part of parts) {
+        currentDir = currentDir ? `${currentDir}/${part}` : part;
+        dirsToCreate.add(currentDir);
+      }
+    }
+
+    // Create directories in order (shorter paths first)
+    const sortedDirs = Array.from(dirsToCreate).sort(
+      (a, b) => a.length - b.length,
+    );
+    for (const dirPath of sortedDirs) {
+      try {
+        await getGraphqlClient().mutate({
+          mutation: generateMutation({
+            createServerDirectory: [
+              {
+                node_id: nodeId.value,
+                ...(serverId.value && { server_id: serverId.value }),
+                dir_path: dirPath,
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+        });
+      } catch (err) {
+        // Directory might already exist, continue
+        console.log("Directory may already exist:", dirPath);
+      }
+    }
+
+    // Upload all files
+    for (const { file, relativePath } of fileEntries) {
+      const filePath = targetPath
+        ? `${targetPath}/${relativePath}`
+        : relativePath;
+      uploadBatch.value.currentFile = relativePath;
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("filePath", filePath);
+        formData.append("userId", useAuthStore().me?.steam_id || "");
+
+        const config = useRuntimeConfig();
+        const serverPath = serverId.value ? `/${serverId.value}` : "";
+        let apiDomain = config.public.apiDomain;
+        if (
+          apiDomain &&
+          !apiDomain.startsWith("http://") &&
+          !apiDomain.startsWith("https://")
+        ) {
+          apiDomain = `https://${apiDomain}`;
+        }
+        const apiUrl = `${apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
+
+        const xhr = new XMLHttpRequest();
+        const fileSize = file.size;
+
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const fileProgress = (e.loaded / e.total) * 100;
+            uploadProgress.value.set(relativePath, fileProgress);
+            // Update overall bytes uploaded
+            uploadBatch.value.uploadedBytes = bytesUploadedSoFar + e.loaded;
+          }
+        };
+
+        await new Promise((resolve, reject) => {
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(xhr.response);
+            } else {
+              reject(new Error(`Upload failed: ${xhr.statusText}`));
+            }
+          };
+          xhr.onerror = () => reject(new Error("Network error"));
+          xhr.open("POST", apiUrl);
+          xhr.send(formData);
+        });
+
+        // File completed successfully
+        bytesUploadedSoFar += fileSize;
+        uploadBatch.value.uploadedBytes = bytesUploadedSoFar;
+        uploadBatch.value.completedFiles++;
+        uploadProgress.value.delete(relativePath);
+      } catch (err: any) {
+        uploadProgress.value.delete(relativePath);
+        uploadBatch.value.failedFiles.push(relativePath);
+        error.value = err.message || `Failed to upload ${relativePath}`;
+        console.error("Error uploading file:", err);
+        // Continue with other files instead of throwing
+      }
+    }
+
+    // Upload complete
+    uploadBatch.value.isUploading = false;
+    uploadBatch.value.currentFile = null;
+
+    // Reload directories that were affected
+    await loadDirectory(targetPath || "");
+    for (const dir of sortedDirs) {
+      if (fileTree.value.has(dir)) {
+        await loadDirectory(dir);
+      }
+    }
+
+    // Reset batch after a delay to show completion state
+    setTimeout(() => {
+      if (!uploadBatch.value.isUploading) {
+        resetUploadBatch();
+      }
+    }, 3000);
   }
 
   async function saveFile(filePath: string, content: string): Promise<boolean> {
@@ -378,7 +592,10 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     }
   }
 
-  async function createFile(fileName: string, content: string = ""): Promise<boolean> {
+  async function createFile(
+    fileName: string,
+    content: string = "",
+  ): Promise<boolean> {
     if (!nodeId.value) return false;
 
     const filePath = currentPath.value
@@ -444,7 +661,10 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     }
 
     // Also reload current directory if it matches
-    if (dirPath === currentPath.value || operation.path.startsWith(currentPath.value)) {
+    if (
+      dirPath === currentPath.value ||
+      operation.path.startsWith(currentPath.value)
+    ) {
       void loadDirectory(currentPath.value);
     }
   }
@@ -525,7 +745,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     // If closing the active file, switch to another open file or null
     if (activeFilePath.value === filePath) {
       const openPaths = Array.from(openFiles.value.keys());
-      activeFilePath.value = openPaths.length > 0 ? openPaths[openPaths.length - 1] : null;
+      activeFilePath.value =
+        openPaths.length > 0 ? openPaths[openPaths.length - 1] : null;
     }
   }
 
@@ -535,7 +756,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     }
   }
 
-  function startInlineCreate(parentPath: string, type: 'file' | 'directory') {
+  function startInlineCreate(parentPath: string, type: "file" | "directory") {
     pendingCreate.value = { parentPath, type };
     // Make sure parent is expanded
     if (parentPath && !expandedPaths.value.has(parentPath)) {
@@ -558,22 +779,55 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     const fullPath = parentPath ? `${parentPath}/${name}` : name;
 
     try {
-      if (type === 'directory') {
+      if (type === "directory") {
         // Temporarily set current path for directory creation
         const originalPath = currentPath.value;
         currentPath.value = parentPath;
         await createDirectory(name);
         currentPath.value = originalPath;
       } else {
-        await saveFile(fullPath, '');
+        await saveFile(fullPath, "");
         // Open the new file in editor
         await openFile(fullPath);
       }
       pendingCreate.value = null;
       return true;
     } catch (err) {
-      console.error('Failed to create:', err);
+      console.error("Failed to create:", err);
       pendingCreate.value = null;
+      return false;
+    }
+  }
+
+  function startInlineRename(path: string, currentName: string) {
+    pendingRename.value = { path, currentName };
+  }
+
+  function cancelInlineRename() {
+    pendingRename.value = null;
+  }
+
+  async function confirmInlineRename(newName: string): Promise<boolean> {
+    if (!pendingRename.value || !newName.trim()) {
+      pendingRename.value = null;
+      return false;
+    }
+
+    const { path, currentName } = pendingRename.value;
+
+    // Don't rename if name hasn't changed
+    if (newName.trim() === currentName) {
+      pendingRename.value = null;
+      return true;
+    }
+
+    try {
+      await renameItem(path, newName.trim());
+      pendingRename.value = null;
+      return true;
+    } catch (err) {
+      console.error("Failed to rename:", err);
+      pendingRename.value = null;
       return false;
     }
   }
@@ -586,12 +840,14 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     fileTree,
     selectedItem,
     uploadProgress,
+    uploadBatch,
     isLoading,
     error,
     expandedPaths,
     openFiles,
     activeFilePath,
     pendingCreate,
+    pendingRename,
 
     // Computed
     currentDirectoryItems,
@@ -599,6 +855,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     isCustomPlugins,
     activeFile,
     hasUnsavedChanges,
+    uploadOverallProgress,
 
     // Actions
     initialize,
@@ -611,6 +868,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     renameItem,
     moveItem,
     uploadFiles,
+    uploadFilesWithPaths,
     toggleExpand,
     navigateToPath,
     selectItem,
@@ -623,11 +881,13 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     startInlineCreate,
     cancelInlineCreate,
     confirmInlineCreate,
+    startInlineRename,
+    cancelInlineRename,
+    confirmInlineRename,
+    resetUploadBatch,
   };
 });
 
 if (import.meta.hot) {
-  import.meta.hot.accept(
-    acceptHMRUpdate(useFileManagerStore, import.meta.hot)
-  );
+  import.meta.hot.accept(acceptHMRUpdate(useFileManagerStore, import.meta.hot));
 }

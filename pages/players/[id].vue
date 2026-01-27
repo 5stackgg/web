@@ -187,8 +187,13 @@ const { isMobile } = useSidebar();
                     :label="$t('pages.players.detail.kd')"
                     :stroke-color="kdrStrokeColor(Number(kd))"
                   />
-                  <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-3">
-                    <template v-for="(stat, index) in combatStats" :key="stat.key">
+                  <div
+                    class="flex flex-wrap items-center justify-center gap-x-4 gap-y-3"
+                  >
+                    <template
+                      v-for="(stat, index) in combatStats"
+                      :key="stat.key"
+                    >
                       <div class="flex flex-col items-center group/stat">
                         <span
                           class="text-2xl font-bold group-hover/stat:scale-110 transition-transform duration-300"

@@ -153,7 +153,9 @@ const closeOnOverlayClick = (event: MouseEvent) => {
           class="w-full max-w-2xl bg-background rounded-xl shadow-2xl border border-border/50 overflow-hidden"
         >
           <!-- Search Input -->
-          <div class="flex items-center gap-3 px-4 py-4 border-b border-border/50">
+          <div
+            class="flex items-center gap-3 px-4 py-4 border-b border-border/50"
+          >
             <MagnifyingGlassIcon
               class="size-5 text-muted-foreground flex-shrink-0"
             />
@@ -167,7 +169,10 @@ const closeOnOverlayClick = (event: MouseEvent) => {
 
           <!-- Results -->
           <div class="max-h-[400px] overflow-y-auto">
-            <div v-if="loading" class="px-4 py-8 text-center text-muted-foreground text-sm">
+            <div
+              v-if="loading"
+              class="px-4 py-8 text-center text-muted-foreground text-sm"
+            >
               Searching...
             </div>
 
@@ -178,10 +183,7 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               No players found
             </div>
 
-            <div
-              v-else-if="!query"
-              class="px-4 py-8 text-center"
-            >
+            <div v-else-if="!query" class="px-4 py-8 text-center">
               <div class="text-muted-foreground text-sm">
                 Start typing to search players
               </div>
@@ -193,9 +195,7 @@ const closeOnOverlayClick = (event: MouseEvent) => {
                 :key="`player-${player.steam_id}`"
                 :class="[
                   'px-4 py-3 cursor-pointer flex items-center gap-3 transition-colors',
-                  selectedIndex === index
-                    ? 'bg-accent'
-                    : 'hover:bg-accent/50',
+                  selectedIndex === index ? 'bg-accent' : 'hover:bg-accent/50',
                 ]"
                 @click="selectPlayer(player)"
                 @mouseenter="selectedIndex = index"
@@ -204,7 +204,6 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               </div>
             </div>
           </div>
-
         </div>
       </Transition>
     </div>

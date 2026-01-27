@@ -2,33 +2,31 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Create New Directory</DialogTitle>
-        <DialogDescription>
-          Enter a name for the new directory
-        </DialogDescription>
+        <DialogTitle>Create New File</DialogTitle>
+        <DialogDescription> Enter a name for the new file </DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
         <div class="space-y-2">
-          <Label for="dir-name">Directory Name</Label>
+          <Label for="file-name">File Name</Label>
           <Input
-            id="dir-name"
-            v-model="dirName"
-            placeholder="my-directory"
+            id="file-name"
+            v-model="fileName"
+            placeholder="my-file.txt"
             @keyup.enter="handleCreate"
           />
         </div>
 
-        <Alert v-if="store.error" variant="destructive">
+        <Alert v-if="localError" variant="destructive">
           <AlertTriangle class="w-4 h-4" />
-          <AlertDescription>{{ store.error }}</AlertDescription>
+          <AlertDescription>{{ localError }}</AlertDescription>
         </Alert>
       </div>
 
       <DialogFooter>
         <Button variant="outline" @click="handleCancel"> Cancel </Button>
-        <Button @click="handleCreate" :disabled="!dirName || store.isLoading">
-          Create
+        <Button @click="handleCreate" :disabled="!fileName || isCreating">
+          {{ isCreating ? "Creating..." : "Create" }}
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -53,6 +51,7 @@ import {
 
 const props = defineProps<{
   open: boolean;
+  parentPath?: string;
 }>();
 
 const emit = defineEmits<{
@@ -60,26 +59,42 @@ const emit = defineEmits<{
 }>();
 
 const store = useFileManagerStore();
-const dirName = ref("");
+const fileName = ref("");
+const localError = ref<string | null>(null);
+const isCreating = ref(false);
 
 watch(
   () => props.open,
   (isOpen) => {
     if (!isOpen) {
-      dirName.value = "";
-      store.clearError();
+      fileName.value = "";
+      localError.value = null;
     }
   },
 );
 
 async function handleCreate() {
-  if (!dirName.value) return;
+  if (!fileName.value) return;
+
+  isCreating.value = true;
+  localError.value = null;
 
   try {
-    await store.createDirectory(dirName.value);
-    emit("update:open", false);
-  } catch (error) {
-    // Error handled by store
+    // Build full path using parentPath if provided
+    const filePath = props.parentPath
+      ? `${props.parentPath}/${fileName.value}`
+      : fileName.value;
+
+    const success = await store.saveFile(filePath, "");
+    if (success) {
+      emit("update:open", false);
+    } else {
+      localError.value = store.error || "Failed to create file";
+    }
+  } catch (error: any) {
+    localError.value = error.message || "Failed to create file";
+  } finally {
+    isCreating.value = false;
   }
 }
 

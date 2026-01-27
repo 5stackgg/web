@@ -29,6 +29,7 @@ import {
   Plus,
   Ban,
   CheckCircle2,
+  FolderOpen,
 } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
@@ -421,6 +422,15 @@ import { AlertTriangle } from "lucide-vue-next";
           <DropdownMenuItem @click="editLabelSheet = true">
             <Pencil class="mr-2 h-4 w-4" />
             <span>{{ $t("game_server.edit_label") }}</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            @click="
+              $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
+            "
+          >
+            <FolderOpen class="mr-2 h-4 w-4" />
+            <span>{{ $t("game_server.files") }}</span>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />

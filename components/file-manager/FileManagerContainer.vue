@@ -1,31 +1,18 @@
 <template>
-  <div class="file-manager-container h-full flex flex-col">
+  <div class="h-full flex flex-col">
     <!-- Location info -->
     <div class="p-4 border-b bg-muted/50">
       <div class="text-sm text-muted-foreground">
         <span class="font-medium">Location:</span>
         <code class="ml-2 px-2 py-1 bg-background rounded text-xs">
-          {{ store.isCustomPlugins ? '/opt/5stack/custom-plugins' : `/opt/5stack/servers/${serverId}` }}
+          {{
+            store.isCustomPlugins
+              ? "/opt/5stack/custom-plugins"
+              : `/opt/5stack/servers/${serverId}`
+          }}
         </code>
       </div>
     </div>
-
-    <!-- Error alert -->
-    <Alert v-if="store.error" variant="destructive" class="m-4">
-      <AlertTriangle class="w-4 h-4" />
-      <AlertTitle>Error</AlertTitle>
-      <AlertDescription>
-        {{ store.error }}
-      </AlertDescription>
-      <Button
-        variant="outline"
-        size="sm"
-        class="mt-2"
-        @click="store.clearError"
-      >
-        Dismiss
-      </Button>
-    </Alert>
 
     <!-- Main content -->
     <div class="flex flex-1 overflow-hidden">
@@ -39,12 +26,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { onMounted, onUnmounted, watch } from "vue";
 import FileTree from "./FileTree.vue";
 import FileDetailsPanel from "./FileDetailsPanel.vue";
-import { AlertTriangle } from "lucide-vue-next";
+import { toast } from "@/components/ui/toast";
 
 const props = defineProps<{
   nodeId: string;
@@ -52,6 +37,22 @@ const props = defineProps<{
 }>();
 
 const store = useFileManagerStore();
+
+// Watch for errors and show them as toasts
+watch(
+  () => store.error,
+  (error) => {
+    if (error) {
+      toast({
+        title: "Error",
+        description: error,
+        variant: "destructive",
+      });
+      // Clear the error from store after showing toast
+      store.clearError();
+    }
+  },
+);
 
 onMounted(() => {
   void store.initialize(props.nodeId, props.serverId);
@@ -63,9 +64,3 @@ onUnmounted(() => {
   store.expandedPaths.clear();
 });
 </script>
-
-<style scoped>
-.file-manager-container {
-  background: var(--background);
-}
-</style>

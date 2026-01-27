@@ -2,7 +2,9 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Rename {{ item?.isDirectory ? "Directory" : "File" }}</DialogTitle>
+        <DialogTitle
+          >Rename {{ item?.isDirectory ? "Directory" : "File" }}</DialogTitle
+        >
         <DialogDescription>
           Enter a new name for "{{ item?.name }}"
         </DialogDescription>
@@ -11,11 +13,7 @@
       <div class="space-y-4">
         <div class="space-y-2">
           <Label for="new-name">New Name</Label>
-          <Input
-            id="new-name"
-            v-model="newName"
-            @keyup.enter="handleRename"
-          />
+          <Input id="new-name" v-model="newName" @keyup.enter="handleRename" />
         </div>
 
         <Alert v-if="store.error" variant="destructive">
@@ -25,9 +23,7 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">
-          Cancel
-        </Button>
+        <Button variant="outline" @click="handleCancel"> Cancel </Button>
         <Button @click="handleRename" :disabled="!newName || store.isLoading">
           Rename
         </Button>
@@ -73,7 +69,7 @@ watch(
     } else {
       store.clearError();
     }
-  }
+  },
 );
 
 async function handleRename() {

@@ -1,5 +1,6 @@
 <template>
   <div class="file-manager-container h-full flex flex-col">
+
     <!-- Location info -->
     <div class="p-4 border-b bg-muted/50">
       <div class="text-sm text-muted-foreground">

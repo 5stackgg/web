@@ -36,12 +36,26 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   const error = ref<string | null>(null);
   const expandedPaths = ref<Set<string>>(new Set([""]));
 
+  // Editor state
+  const openFiles = ref<Map<string, { content: string; originalContent: string; isDirty: boolean }>>(new Map());
+  const activeFilePath = ref<string | null>(null);
+
+  // Inline create state (VS Code style)
+  const pendingCreate = ref<{ parentPath: string; type: 'file' | 'directory' } | null>(null);
+
   // Computed
   const currentDirectoryItems = computed(
     () => fileTree.value.get(currentPath.value) || []
   );
   const rootItems = computed(() => fileTree.value.get("") || []);
   const isCustomPlugins = computed(() => !serverId.value);
+  const activeFile = computed(() => activeFilePath.value ? openFiles.value.get(activeFilePath.value) : null);
+  const hasUnsavedChanges = computed(() => {
+    for (const file of openFiles.value.values()) {
+      if (file.isDirty) return true;
+    }
+    return false;
+  });
 
   // Actions
   async function initialize(nId: string, sId?: string) {
@@ -57,7 +71,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   async function loadDirectory(path: string) {
-    if (!nodeId.value || !serverId.value) return;
+    if (!nodeId.value) return;
 
     isLoading.value = true;
     error.value = null;
@@ -99,7 +113,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   async function readFile(filePath: string): Promise<FileContentResponse | null> {
-    if (!nodeId.value || !serverId.value) return null;
+    if (!nodeId.value) return null;
 
     isLoading.value = true;
     error.value = null;
@@ -134,7 +148,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   async function createDirectory(dirName: string) {
-    if (!nodeId.value || !serverId.value) return;
+    if (!nodeId.value) return;
 
     isLoading.value = true;
     error.value = null;
@@ -170,7 +184,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   async function deleteItem(path: string) {
-    if (!nodeId.value || !serverId.value) return;
+    if (!nodeId.value) return;
 
     isLoading.value = true;
     error.value = null;
@@ -202,7 +216,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   async function renameItem(oldPath: string, newName: string) {
-    if (!nodeId.value || !serverId.value) return;
+    if (!nodeId.value) return;
 
     isLoading.value = true;
     error.value = null;
@@ -239,7 +253,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   async function moveItem(sourcePath: string, destPath: string) {
-    if (!nodeId.value || !serverId.value) return;
+    if (!nodeId.value) return;
 
     isLoading.value = true;
     error.value = null;
@@ -274,7 +288,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   }
 
   async function uploadFiles(files: File[]) {
-    if (!nodeId.value || !serverId.value) return;
+    if (!nodeId.value) return;
 
     for (const file of files) {
       const filePath = currentPath.value
@@ -323,6 +337,55 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     }
 
     await loadDirectory(currentPath.value);
+  }
+
+  async function saveFile(filePath: string, content: string): Promise<boolean> {
+    if (!nodeId.value) return false;
+
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      await getGraphqlClient().mutate({
+        mutation: generateMutation({
+          writeServerFile: [
+            {
+              node_id: nodeId.value,
+              ...(serverId.value && { server_id: serverId.value }),
+              file_path: filePath,
+              content,
+            },
+            {
+              success: true,
+            },
+          ],
+        }),
+      });
+
+      // Reload the directory containing the file
+      const pathParts = filePath.split("/");
+      pathParts.pop();
+      const dirPath = pathParts.join("/");
+      await loadDirectory(dirPath || currentPath.value);
+
+      return true;
+    } catch (err: any) {
+      error.value = err.message || "Failed to save file";
+      console.error("Error saving file:", err);
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function createFile(fileName: string, content: string = ""): Promise<boolean> {
+    if (!nodeId.value) return false;
+
+    const filePath = currentPath.value
+      ? `${currentPath.value}/${fileName}`
+      : fileName;
+
+    return await saveFile(filePath, content);
   }
 
   function subscribeToFileOperations() {
@@ -413,6 +476,108 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     error.value = null;
   }
 
+  async function openFile(filePath: string) {
+    // Check if file is already open
+    if (openFiles.value.has(filePath)) {
+      activeFilePath.value = filePath;
+      return true;
+    }
+
+    // Load file content
+    const response = await readFile(filePath);
+    if (response) {
+      openFiles.value.set(filePath, {
+        content: response.content,
+        originalContent: response.content,
+        isDirty: false,
+      });
+      activeFilePath.value = filePath;
+      return true;
+    }
+    return false;
+  }
+
+  function updateFileContent(filePath: string, content: string) {
+    const file = openFiles.value.get(filePath);
+    if (file) {
+      file.content = content;
+      file.isDirty = content !== file.originalContent;
+    }
+  }
+
+  async function saveActiveFile(): Promise<boolean> {
+    if (!activeFilePath.value) return false;
+
+    const file = openFiles.value.get(activeFilePath.value);
+    if (!file) return false;
+
+    const success = await saveFile(activeFilePath.value, file.content);
+    if (success) {
+      file.originalContent = file.content;
+      file.isDirty = false;
+    }
+    return success;
+  }
+
+  function closeFile(filePath: string) {
+    openFiles.value.delete(filePath);
+
+    // If closing the active file, switch to another open file or null
+    if (activeFilePath.value === filePath) {
+      const openPaths = Array.from(openFiles.value.keys());
+      activeFilePath.value = openPaths.length > 0 ? openPaths[openPaths.length - 1] : null;
+    }
+  }
+
+  function setActiveFile(filePath: string) {
+    if (openFiles.value.has(filePath)) {
+      activeFilePath.value = filePath;
+    }
+  }
+
+  function startInlineCreate(parentPath: string, type: 'file' | 'directory') {
+    pendingCreate.value = { parentPath, type };
+    // Make sure parent is expanded
+    if (parentPath && !expandedPaths.value.has(parentPath)) {
+      expandedPaths.value.add(parentPath);
+      void loadDirectory(parentPath);
+    }
+  }
+
+  function cancelInlineCreate() {
+    pendingCreate.value = null;
+  }
+
+  async function confirmInlineCreate(name: string): Promise<boolean> {
+    if (!pendingCreate.value || !name.trim()) {
+      pendingCreate.value = null;
+      return false;
+    }
+
+    const { parentPath, type } = pendingCreate.value;
+    const fullPath = parentPath ? `${parentPath}/${name}` : name;
+
+    try {
+      if (type === 'directory') {
+        // Temporarily set current path for directory creation
+        const originalPath = currentPath.value;
+        currentPath.value = parentPath;
+        await createDirectory(name);
+        currentPath.value = originalPath;
+      } else {
+        await saveFile(fullPath, '');
+        // Open the new file in editor
+        await openFile(fullPath);
+      }
+      pendingCreate.value = null;
+      return true;
+    } catch (err) {
+      console.error('Failed to create:', err);
+      pendingCreate.value = null;
+      return false;
+    }
+  }
+
   return {
     // State
     nodeId,
@@ -424,17 +589,24 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     isLoading,
     error,
     expandedPaths,
+    openFiles,
+    activeFilePath,
+    pendingCreate,
 
     // Computed
     currentDirectoryItems,
     rootItems,
     isCustomPlugins,
+    activeFile,
+    hasUnsavedChanges,
 
     // Actions
     initialize,
     loadDirectory,
     readFile,
     createDirectory,
+    createFile,
+    saveFile,
     deleteItem,
     renameItem,
     moveItem,
@@ -443,6 +615,14 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     navigateToPath,
     selectItem,
     clearError,
+    openFile,
+    updateFileContent,
+    saveActiveFile,
+    closeFile,
+    setActiveFile,
+    startInlineCreate,
+    cancelInlineCreate,
+    confirmInlineCreate,
   };
 });
 

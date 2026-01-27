@@ -1,6 +1,6 @@
 <template>
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
-    <DialogContent class="max-w-4xl max-h-[80vh]">
+    <DialogContent class="max-w-4xl max-h-[80vh] flex flex-col">
       <DialogHeader>
         <DialogTitle>Edit File: {{ filePath }}</DialogTitle>
         <DialogDescription>
@@ -8,17 +8,13 @@
         </DialogDescription>
       </DialogHeader>
 
-      <div class="space-y-4 flex-1 overflow-hidden">
+      <div class="space-y-4 flex-1 overflow-hidden flex flex-col">
         <div v-if="isLoading" class="text-center py-8 text-muted-foreground">
           Loading file...
         </div>
 
-        <div v-else-if="fileContent !== null" class="h-[400px] overflow-auto">
-          <textarea
-            v-model="fileContent"
-            class="w-full h-full p-4 font-mono text-sm border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-ring"
-            :disabled="isSaving"
-          />
+        <div v-else-if="fileContent !== null" class="flex-1 min-h-[400px] border rounded-md overflow-hidden">
+          <div ref="editorContainer" class="w-full h-full" />
         </div>
 
         <Alert v-if="error" variant="destructive">
@@ -45,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -57,6 +53,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AlertTriangle, Check } from "lucide-vue-next";
+import * as monaco from "monaco-editor";
 
 const props = defineProps<{
   open: boolean;
@@ -68,6 +65,10 @@ const emit = defineEmits<{
 }>();
 
 const store = useFileManagerStore();
+const colorMode = useColorMode();
+
+const editorContainer = ref<HTMLElement | null>(null);
+const editorInstance = ref<monaco.editor.IStandaloneCodeEditor | null>(null);
 const fileContent = ref<string | null>(null);
 const originalContent = ref<string | null>(null);
 const isLoading = ref(false);
@@ -75,15 +76,97 @@ const isSaving = ref(false);
 const error = ref<string | null>(null);
 const saveSuccess = ref(false);
 
-const hasChanges = computed(() => fileContent.value !== originalContent.value);
+const hasChanges = computed(() => {
+  if (!editorInstance.value) return false;
+  return editorInstance.value.getValue() !== originalContent.value;
+});
+
+function getLanguageFromPath(path: string): string {
+  const ext = path.split(".").pop()?.toLowerCase() || "";
+  const languageMap: Record<string, string> = {
+    js: "javascript",
+    ts: "typescript",
+    jsx: "javascript",
+    tsx: "typescript",
+    json: "json",
+    html: "html",
+    htm: "html",
+    css: "css",
+    scss: "scss",
+    less: "less",
+    md: "markdown",
+    xml: "xml",
+    yaml: "yaml",
+    yml: "yaml",
+    py: "python",
+    sh: "shell",
+    bash: "shell",
+    sql: "sql",
+    php: "php",
+    go: "go",
+    rs: "rust",
+    java: "java",
+    c: "c",
+    cpp: "cpp",
+    h: "c",
+    hpp: "cpp",
+    lua: "lua",
+    cfg: "plaintext",
+    vdf: "plaintext",
+    txt: "plaintext",
+    log: "plaintext",
+    ini: "ini",
+    conf: "plaintext",
+    toml: "plaintext",
+  };
+  return languageMap[ext] || "plaintext";
+}
+
+function createEditor() {
+  if (!editorContainer.value || !fileContent.value) return;
+
+  const theme = colorMode.value === "dark" ? "vs-dark" : "vs";
+  const language = getLanguageFromPath(props.filePath);
+
+  editorInstance.value = monaco.editor.create(editorContainer.value, {
+    value: fileContent.value,
+    language,
+    theme,
+    automaticLayout: true,
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+    fontSize: 14,
+    tabSize: 2,
+    wordWrap: "on",
+  });
+}
+
+function destroyEditor() {
+  if (editorInstance.value) {
+    editorInstance.value.dispose();
+    editorInstance.value = null;
+  }
+}
 
 watch(
   () => props.open,
   async (isOpen) => {
     if (isOpen) {
       await loadFile();
+      await nextTick();
+      createEditor();
     } else {
+      destroyEditor();
       resetState();
+    }
+  }
+);
+
+watch(
+  () => colorMode.value,
+  (newMode) => {
+    if (editorInstance.value) {
+      monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
     }
   }
 );
@@ -107,30 +190,27 @@ async function loadFile() {
 }
 
 async function handleSave() {
-  if (!fileContent.value) return;
+  if (!editorInstance.value) return;
+
+  const content = editorInstance.value.getValue();
 
   isSaving.value = true;
   error.value = null;
   saveSuccess.value = false;
 
   try {
-    // Create a file from the content
-    const blob = new Blob([fileContent.value], { type: "text/plain" });
-    const file = new File([blob], props.filePath.split("/").pop() || "file.txt");
+    const success = await store.saveFile(props.filePath, content);
 
-    // Delete the old file first
-    await store.deleteItem(props.filePath);
+    if (success) {
+      originalContent.value = content;
+      saveSuccess.value = true;
 
-    // Upload the new version
-    await store.uploadFiles([file]);
-
-    originalContent.value = fileContent.value;
-    saveSuccess.value = true;
-
-    // Auto-close after 2 seconds
-    setTimeout(() => {
-      emit("update:open", false);
-    }, 2000);
+      setTimeout(() => {
+        emit("update:open", false);
+      }, 1500);
+    } else {
+      error.value = store.error || "Failed to save file";
+    }
   } catch (err: any) {
     error.value = err.message || "Failed to save file";
   } finally {
@@ -153,4 +233,8 @@ function resetState() {
   error.value = null;
   saveSuccess.value = false;
 }
+
+onBeforeUnmount(() => {
+  destroyEditor();
+});
 </script>

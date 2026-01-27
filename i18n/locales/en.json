@@ -456,6 +456,7 @@
                 
                 "edit": "Edit",
                 "delete": "Delete",
+                "files": "Files",
                 "status": {
                     "disconnected": "Server is disconnected",
                     "no_rcon": "Server is connected but RCON is not available",
@@ -612,7 +613,8 @@
                 "tournaments": "Tournaments",
                 "public_servers": "Public Servers",
                 "players": "Players",
-                "teams": "Teams"
+                "teams": "Teams",
+                "search": "Search"
             },
             "administration": {
                 "title": "Administration",
@@ -655,7 +657,8 @@
                 "join_discord": "Join our Discord",
                 "map_pools": "Map Pools",
                 "manage_matches": "Manage Matches",
-                "manage_tournaments": "Manage Tournaments"
+                "manage_tournaments": "Manage Tournaments",
+                "search_players": "Search Players"
             },
             "logout_dialog": {
                 "title": "Logout",
@@ -719,6 +722,7 @@
         }
     },
     "common": {
+        "manage_custom_plugins_and_shared_files": "These files are moutned to `csgo` directory when the server is started.",
         "delete": "Delete",
         "cancel": "Cancel",
         "save": "Save",
@@ -738,7 +742,102 @@
         "actions_label": "Actions",
         "close": "Close",
         "confirm": "Confirm",
-        "refresh": "Refresh"
+        "refresh": "Refresh",
+        "create": "Create",
+        "rename": "Rename",
+        "creating": "Creating...",
+        "saving": "Saving...",
+        "loading": "Loading...",
+        "file": "File",
+        "directory": "Directory",
+        "undo": "Undo",
+        "redo": "Redo"
+    },
+    "spotlight_search": {
+        "placeholder": "Search players...",
+        "searching": "Searching...",
+        "no_results": "No players found",
+        "start_typing": "Start typing to search players"
+    },
+    "file_manager": {
+        "location": "Location",
+        "dedicated_server_files": "Dedicated Server Files",
+        "game_server_node_files": "Game Server Node Files",
+        "loading_server_info": "Loading server information...",
+        "create_directory": {
+            "title": "Create New Directory",
+            "description": "Enter a name for the new directory",
+            "label": "Directory Name",
+            "placeholder": "my-directory"
+        },
+        "create_file": {
+            "title": "Create New File",
+            "description": "Enter a name for the new file",
+            "label": "File Name",
+            "placeholder": "my-file.txt",
+            "failed": "Failed to create file"
+        },
+        "delete_confirm": {
+            "title_file": "Delete File",
+            "title_directory": "Delete Directory",
+            "description_file": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+            "description_directory": "Are you sure you want to delete \"{name}\"? All contents will be permanently deleted.",
+            "permanent_delete": "This will permanently delete \"{name}\". This action cannot be undone."
+        },
+        "rename": {
+            "title_file": "Rename File",
+            "title_directory": "Rename Directory",
+            "description": "Enter a new name for \"{name}\"",
+            "label": "New Name"
+        },
+        "editor": {
+            "title": "Edit File: {path}",
+            "description": "Make changes to the file content",
+            "loading": "Loading file...",
+            "save_success": "File saved successfully!",
+            "load_failed": "Failed to load file",
+            "save_failed": "Failed to save file",
+            "unsaved_changes": "You have unsaved changes. Are you sure you want to close?",
+            "unsaved_changes_all": "You have unsaved changes. Are you sure you want to close all files?"
+        },
+        "upload": {
+            "title": "Upload Files",
+            "description": "Select files to upload to the current directory",
+            "drag_drop": "Drag and drop files here or click to browse",
+            "max_size": "Maximum file size: 100MB",
+            "uploading": "Uploading files...",
+            "complete": "Upload complete",
+            "complete_with_errors": "Upload complete with errors",
+            "failed": "Failed"
+        },
+        "toolbar": {
+            "new_file": "New File",
+            "new_folder": "New Folder",
+            "upload_files": "Upload Files",
+            "refresh": "Refresh"
+        },
+        "tree": {
+            "folder_name_placeholder": "folder name",
+            "file_name_placeholder": "file name",
+            "drop_hint": "Drop files here or right-click to create",
+            "files": "files",
+            "current": "Current",
+            "hide_details": "Hide details",
+            "show_details": "Show details"
+        },
+        "details_panel": {
+            "menu_file": "File",
+            "menu_edit": "Edit",
+            "menu_view": "View",
+            "close": "Close",
+            "close_all": "Close All",
+            "enable_word_wrap": "Enable Word Wrap",
+            "disable_word_wrap": "Disable Word Wrap",
+            "show_minimap": "Show Minimap",
+            "hide_minimap": "Hide Minimap",
+            "no_file_open": "No file open",
+            "select_file_hint": "Select a file from the browser to edit"
+        }
     },
     "error": {
         "generic": "An error occurred. Please try again."
@@ -1444,6 +1543,7 @@
         "remove_node": "Remove Node",
         "show_update_logs": "Show Update Logs",
         "edit_label": "Edit Label",
+        "files": "Files",
         "label_placeholder": "Enter node label",
         "update_label": "Update Label",
         "version_pinning_not_supported": "Version pinning is not supported on this server.",

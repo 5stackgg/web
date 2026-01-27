@@ -20,7 +20,6 @@ const showLeftNav = computed(() => {
 });
 
 const containContent = computed(() => {
-  console.log(route.name);
   switch (route.name) {
     case "matches-id":
     case "map-pools":

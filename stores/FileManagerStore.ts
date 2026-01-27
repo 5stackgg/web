@@ -92,8 +92,9 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
   const uploadOverallProgress = computed(() => {
     if (uploadBatch.value.totalBytes === 0) return 0;
-    return (
-      (uploadBatch.value.uploadedBytes / uploadBatch.value.totalBytes) * 100
+    return Math.min(
+      100,
+      (uploadBatch.value.uploadedBytes / uploadBatch.value.totalBytes) * 100,
     );
   });
 
@@ -432,7 +433,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
         xhr.upload.onprogress = (e) => {
           if (e.lengthComputable) {
-            const progress = (e.loaded / e.total) * 100;
+            const progress = Math.min(100, (e.loaded / e.total) * 100);
             uploadProgress.value.set(file.name, progress);
           }
         };
@@ -541,7 +542,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
         xhr.upload.onprogress = (e) => {
           if (e.lengthComputable) {
-            const fileProgress = (e.loaded / e.total) * 100;
+            const fileProgress = Math.min(100, (e.loaded / e.total) * 100);
             uploadProgress.value.set(relativePath, fileProgress);
             // Update overall bytes uploaded
             uploadBatch.value.uploadedBytes = bytesUploadedSoFar + e.loaded;

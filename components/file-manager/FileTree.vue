@@ -68,7 +68,10 @@
               class="h-7 w-7"
               @click="refresh"
             >
-              <RefreshCcw class="h-4 w-4" />
+              <RefreshCcw
+                class="h-4 w-4"
+                :class="{ 'animate-spin-smooth': store.isLoading }"
+              />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">
@@ -79,32 +82,6 @@
     </div>
 
     <div class="p-4 flex-1 overflow-auto">
-      <!-- Inline create at root level -->
-      <div
-        v-if="store.pendingCreate?.parentPath === ''"
-        class="flex items-center gap-2 px-2 py-1 mb-1"
-      >
-        <span class="w-4"></span>
-        <component
-          :is="store.pendingCreate.type === 'directory' ? Folder : FileIcon"
-          class="w-4 h-4 text-muted-foreground"
-        />
-        <Input
-          ref="rootInlineInput"
-          v-model="rootInlineCreateName"
-          class="h-6 text-sm py-0 px-1"
-          :placeholder="
-            store.pendingCreate.type === 'directory'
-              ? 'folder name'
-              : 'file name'
-          "
-          @keydown.enter="confirmRootInlineCreate"
-          @keydown.escape="cancelRootInlineCreate"
-          @blur="handleRootInlineBlur"
-          autofocus
-        />
-      </div>
-
       <div class="space-y-1">
         <FileTreeNode
           v-for="item in store.rootItems"
@@ -116,6 +93,33 @@
           @drop-files="handleDropFiles"
           @move-item="handleMoveItem"
         />
+
+        <!-- Inline create at root level (move dummy/file-input to bottom) -->
+        <div
+          v-if="store.pendingCreate?.parentPath === ''"
+          class="flex items-center gap-2 px-2 py-1 mt-1"
+          @mousedown.stop
+        >
+          <span class="w-4"></span>
+          <component
+            :is="store.pendingCreate.type === 'directory' ? Folder : FileIcon"
+            class="w-4 h-4 text-muted-foreground"
+          />
+          <Input
+            ref="rootInlineInput"
+            v-model="rootInlineCreateName"
+            class="h-6 text-sm py-0 px-1"
+            :placeholder="
+              store.pendingCreate.type === 'directory'
+                ? 'folder name'
+                : 'file name'
+            "
+            @keydown.enter.prevent="confirmRootInlineCreate"
+            @keydown.escape="cancelRootInlineCreate"
+            @blur="handleRootInlineBlur"
+            autofocus
+          />
+        </div>
       </div>
 
       <!-- Empty state / drop zone -->
@@ -319,7 +323,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
 import type { FileItem } from "~/stores/FileManagerStore";
 import FileTreeNode from "./FileTreeNode.vue";
 import FileUploadDialog from "./FileUploadDialog.vue";
@@ -393,34 +397,123 @@ function formatBytes(bytes: number): string {
 const rootInlineCreateName = ref("");
 const rootInlineInput = ref<InstanceType<typeof Input> | null>(null);
 
-// Watch for pending create at root level
+let dummyFocusTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// Accessibility: Prevent aria-hidden bug from breaking focus on the dummy input
+// by using 'inert' on the app root rather than aria-hidden, and watching for focus changes.
+// If the root inline create input loses focus due to ancestor (such as #__nuxt) being set aria-hidden,
+// forcibly cancel/destroy the dummy if we detect the ancestor is now aria-hidden but the input is focused.
+
+// Helper to get the closest ancestor with a given id
+function getClosestAncestorWithId(
+  el: HTMLElement,
+  id: string,
+): HTMLElement | null {
+  while (el) {
+    if (el.id === id) return el;
+    el = el.parentElement as HTMLElement;
+  }
+  return null;
+}
+
+// Listen for DOM attribute changes to detect aria-hidden on #__nuxt
+let nuxtMutationObserver: MutationObserver | null = null;
+
+onMounted(() => {
+  const root = document.getElementById("__nuxt");
+  if (!root) return;
+  nuxtMutationObserver = new MutationObserver((mutations) => {
+    const inputEl = getRootInlineInputEl();
+    if (
+      inputEl &&
+      document.activeElement === inputEl &&
+      root.getAttribute("aria-hidden") === "true"
+    ) {
+      // If input is focused but ancestor is aria-hidden, forcibly blur/cancel
+      inputEl.blur();
+      cancelRootInlineCreate();
+    }
+  });
+  nuxtMutationObserver.observe(root, {
+    attributes: true,
+    attributeFilter: ["aria-hidden", "inert"],
+  });
+});
+
+onBeforeUnmount(() => {
+  if (nuxtMutationObserver) {
+    nuxtMutationObserver.disconnect();
+    nuxtMutationObserver = null;
+  }
+});
+
+function getRootInlineInputEl(): HTMLInputElement | undefined {
+  // Native <Input> or component $el may vary, handle both
+  let inputEl = rootInlineInput.value?.$el as HTMLInputElement | undefined;
+  if (!inputEl && (rootInlineInput.value as any)?.$refs?.input) {
+    inputEl = (rootInlineInput.value as any).$refs.input as HTMLInputElement;
+  }
+  return inputEl;
+}
+
+// Watch for pending create at root level, but try to keep focus sticky.
+// If input cannot be focused due to ancestor aria-hidden, do not attempt to focus aggressively.
 watch(
   () => store.pendingCreate,
   async (pending) => {
     if (pending?.parentPath === "") {
       rootInlineCreateName.value = "";
       await nextTick();
-      // Access the underlying input element
-      const inputEl = rootInlineInput.value?.$el as HTMLInputElement;
-      inputEl?.focus();
+      setTimeout(() => {
+        // Don't focus if this or ancestor (#__nuxt) is aria-hidden (app might be modal-inerted/inaccessible)
+        const inputEl = getRootInlineInputEl();
+        if (inputEl) {
+          // Check if ancestor is aria-hidden or inert.
+          let nuxtRoot = getClosestAncestorWithId(inputEl, "__nuxt");
+          if (
+            nuxtRoot &&
+            (nuxtRoot.hasAttribute("aria-hidden") ||
+              nuxtRoot.hasAttribute("inert"))
+          ) {
+            // Don't focus, prevent bug.
+            return;
+          }
+          inputEl.focus();
+        }
+      }, 20);
     }
   },
 );
 
-async function confirmRootInlineCreate() {
-  if (rootInlineCreateName.value.trim()) {
-    await store.confirmInlineCreate(rootInlineCreateName.value.trim());
-  }
-  rootInlineCreateName.value = "";
-}
-
-function cancelRootInlineCreate() {
-  store.cancelInlineCreate();
-  rootInlineCreateName.value = "";
-}
-
+// Try to keep dummy alive even if focus flickers away unintentionally (e.g. click or Tab away),
+// but DO NOT try to refocus if this or ancestor is aria-hidden/inert, which would cause a11y issues.
 function handleRootInlineBlur() {
-  setTimeout(() => {
+  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
+  dummyFocusTimeout = setTimeout(() => {
+    // If dummy still exists, see if input *actually* lost focus to outside (not inside filetree/modal)
+    const inputEl = getRootInlineInputEl();
+    const active = document.activeElement;
+    // Also check for aria-hidden/inert bug on ancestor (#__nuxt)
+    let nuxtRoot = inputEl ? getClosestAncestorWithId(inputEl, "__nuxt") : null;
+    const ancestorIsInaccessible =
+      nuxtRoot &&
+      (nuxtRoot.getAttribute("aria-hidden") === "true" ||
+        nuxtRoot.hasAttribute("inert"));
+
+    if (
+      store.pendingCreate?.parentPath === "" &&
+      active &&
+      inputEl &&
+      !ancestorIsInaccessible
+    ) {
+      // If focus is still in the file tree area (add smarter checks if needed)
+      const rootEl = inputEl.closest(".file-tree") ?? null;
+      if (rootEl && rootEl.contains(active)) {
+        // Still inside tree, do not cancel dummy
+        return;
+      }
+    }
+    // Else, really confirm/cancel the dummy as usual
     if (store.pendingCreate?.parentPath === "") {
       if (rootInlineCreateName.value.trim()) {
         confirmRootInlineCreate();
@@ -428,7 +521,21 @@ function handleRootInlineBlur() {
         cancelRootInlineCreate();
       }
     }
-  }, 100);
+  }, 120);
+}
+
+async function confirmRootInlineCreate() {
+  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
+  if (rootInlineCreateName.value.trim()) {
+    await store.confirmInlineCreate(rootInlineCreateName.value.trim());
+  }
+  rootInlineCreateName.value = "";
+}
+
+function cancelRootInlineCreate() {
+  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
+  store.cancelInlineCreate();
+  rootInlineCreateName.value = "";
 }
 
 // Delete state

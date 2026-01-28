@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex-1 flex flex-col">
+  <div class="relative flex-1 flex flex-col" @contextmenu.prevent>
     <!-- Menubar (VS Code style) - only show when file is open -->
     <Menubar
       v-if="store.activeFilePath"
@@ -499,8 +499,7 @@ function handleCloseToLeft(path: string) {
 
 // Global keyboard shortcuts
 function handleKeyDown(event: KeyboardEvent) {
-  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-  const modifierKey = isMac ? event.metaKey : event.ctrlKey;
+  const modifierKey = event.ctrlKey;
 
   if (modifierKey && event.key === "s") {
     event.preventDefault();
@@ -511,7 +510,6 @@ function handleKeyDown(event: KeyboardEvent) {
 
   if (modifierKey && event.key === "w") {
     if (store.activeFilePath) {
-      event.preventDefault();
       handleCloseActiveTab();
     } else {
       const shouldClose = confirm(
@@ -519,6 +517,8 @@ function handleKeyDown(event: KeyboardEvent) {
       );
       if (!shouldClose) {
         event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
       }
     }
   }

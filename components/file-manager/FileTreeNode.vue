@@ -58,11 +58,11 @@
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-48">
         <template v-if="item.isDirectory">
-          <DropdownMenuItem @click="startCreateFile">
+          <DropdownMenuItem @click="$emit('create-file', item)">
             <FilePlus class="mr-2 h-4 w-4" />
             <span>New File</span>
           </DropdownMenuItem>
-          <DropdownMenuItem @click="startCreateFolder">
+          <DropdownMenuItem @click="$emit('create-folder', item)">
             <FolderPlus class="mr-2 h-4 w-4" />
             <span>New Folder</span>
           </DropdownMenuItem>
@@ -75,7 +75,7 @@
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </template>
-        <DropdownMenuItem @click="startRename">
+        <DropdownMenuItem @click="$emit('rename-item', item)">
           <PenLine class="mr-2 h-4 w-4" />
           <span>Rename</span>
         </DropdownMenuItem>
@@ -165,6 +165,8 @@ const emit = defineEmits<{
   delete: [item: FileItem];
   "drop-files": [data: { files: File[]; targetPath: string }];
   "move-item": [data: { sourcePath: string; destPath: string }];
+  "open-item": [item: FileItem];
+  "rename-item": [item: FileItem];
 }>();
 
 const store = useFileManagerStore();
@@ -271,11 +273,11 @@ function handleRenameBlur() {
 }
 
 function startCreateFile() {
-  store.startInlineCreate(props.item.path, "file");
+  emit("create-file", props.item);
 }
 
 function startCreateFolder() {
-  store.startInlineCreate(props.item.path, "directory");
+  emit("create-folder", props.item);
 }
 
 const expanded = computed(() => store.expandedPaths.has(props.item.path));
@@ -292,6 +294,11 @@ function toggleExpand() {
 }
 
 function handleClick() {
+  // If it's a directory, toggle expand instead of selecting
+  if (props.item.isDirectory) {
+    store.toggleExpand(props.item.path);
+    return;
+  }
   emit("select", props.item);
   store.selectItem(props.item);
 }

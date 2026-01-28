@@ -1,11 +1,11 @@
 <template>
   <div
     class="file-tree h-full overflow-auto border-r flex flex-col min-w-80 max-w-80"
+    @contextmenu="handleTreeContextMenu"
     @drop="handleTreeDrop"
     @dragover.prevent
     @dragenter.prevent="handleDragEnter"
     @dragleave.prevent="handleDragLeave"
-    @contextmenu="handleTreeContextMenu"
   >
     <!-- File Browser Toolbar -->
     <div class="flex items-center gap-1 border-b px-2 py-1.5">
@@ -112,13 +112,9 @@
           :item="item"
           @select="handleSelect"
           @edit-file="handleEditFile"
-          @create-file="handleCreateFile"
-          @create-folder="handleCreateFolder"
           @delete="handleDelete"
           @drop-files="handleDropFiles"
           @move-item="handleMoveItem"
-          @open-item="handleOpenItem"
-          @rename-item="handleRenameItem"
         />
       </div>
 
@@ -133,173 +129,37 @@
       </div>
     </div>
 
-    <!-- Empty space context menu -->
-    <Teleport to="body">
-      <Transition
-        enter="transition ease-out duration-200"
-        enter-from="opacity-0 scale-95"
-        enter-to="opacity-100 scale-100"
-        leave="transition ease-in duration-150"
-        leave-from="opacity-100 scale-100"
-        leave-to="opacity-0 scale-95"
-      >
+    <!-- Tree context menu (for empty space) -->
+    <DropdownMenu v-model:open="treeContextMenuOpen">
+      <DropdownMenuTrigger as-child>
         <div
-          v-if="contextMenuOpen"
-          class="fixed z-50 min-w-48 rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none"
+          class="fixed w-0 h-0"
           :style="{
             left: `${contextMenuPosition.x}px`,
             top: `${contextMenuPosition.y}px`,
           }"
-          @click.stop
-        >
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="handleCreateFile"
-          >
-            <FilePlus class="mr-2 h-4 w-4" />
-            <span>New File</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘N</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="handleCreateFolder"
-          >
-            <FolderPlus class="mr-2 h-4 w-4" />
-            <span>New Folder</span>
-            <span class="ml-auto text-xs text-muted-foreground">⇧⌘N</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="openUploadDialog"
-          >
-            <Upload class="mr-2 h-4 w-4" />
-            <span>Upload Files</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘U</span>
-          </button>
-          <div class="my-1 h-px bg-border" />
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
-            :disabled="!contextMenuTarget?.isDirectory"
-            @click="handleOpenItem"
-          >
-            <FolderOpen class="mr-2 h-4 w-4" />
-            <span>Open</span>
-            <span class="ml-auto text-xs text-muted-foreground">Enter</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
-            :disabled="!contextMenuTarget"
-            @click="handleRenameItem"
-          >
-            <Pencil class="mr-2 h-4 w-4" />
-            <span>Rename</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘R</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
-            :disabled="!contextMenuTarget"
-            @click="handleDeleteItem"
-          >
-            <Trash2 class="mr-2 h-4 w-4" />
-            <span>Delete</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌫</span>
-          </button>
-          <div class="my-1 h-px bg-border" />
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="refresh"
-          >
-            <RefreshCcw class="mr-2 h-4 w-4" />
-            <span>Refresh</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘R</span>
-          </button>
-        </div>
-      </Transition>
-    </Teleport>
-
-    <!-- File/Folder node context menu -->
-    <Teleport to="body">
-      <Transition
-        enter="transition ease-out duration-200"
-        enter-from="opacity-0 scale-95"
-        enter-to="opacity-100 scale-100"
-        leave="transition ease-in duration-150"
-        leave-from="opacity-100 scale-100"
-        leave-to="opacity-0 scale-95"
-      >
-        <div
-          v-if="contextMenuOpen && contextMenuTarget"
-          class="fixed z-50 min-w-48 rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none"
-          :style="{
-            left: `${contextMenuPosition.x}px`,
-            top: `${contextMenuPosition.y}px`,
-          }"
-          @click.stop
-        >
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="handleCreateFile"
-          >
-            <FilePlus class="mr-2 h-4 w-4" />
-            <span>New File</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘N</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="handleCreateFolder"
-          >
-            <FolderPlus class="mr-2 h-4 w-4" />
-            <span>New Folder</span>
-            <span class="ml-auto text-xs text-muted-foreground">⇧⌘N</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="openUploadDialog"
-          >
-            <Upload class="mr-2 h-4 w-4" />
-            <span>Upload Files</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘U</span>
-          </button>
-          <div class="my-1 h-px bg-border" />
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
-            :disabled="!contextMenuTarget?.isDirectory"
-            @click="handleOpenItem"
-          >
-            <FolderOpen class="mr-2 h-4 w-4" />
-            <span>Open</span>
-            <span class="ml-auto text-xs text-muted-foreground">Enter</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
-            :disabled="!contextMenuTarget"
-            @click="handleRenameItem"
-          >
-            <Pencil class="mr-2 h-4 w-4" />
-            <span>Rename</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘R</span>
-          </button>
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
-            :disabled="!contextMenuTarget"
-            @click="handleDeleteItem"
-          >
-            <Trash2 class="mr-2 h-4 w-4" />
-            <span>Delete</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌫</span>
-          </button>
-          <div class="my-1 h-px bg-border" />
-          <button
-            class="flex w-full items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-            @click="refresh"
-          >
-            <RefreshCcw class="mr-2 h-4 w-4" />
-            <span>Refresh</span>
-            <span class="ml-auto text-xs text-muted-foreground">⌘R</span>
-          </button>
-        </div>
-      </Transition>
-    </Teleport>
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent class="w-48">
+        <DropdownMenuItem @click="handleCreateFileInRoot">
+          <FilePlus class="mr-2 h-4 w-4" />
+          <span>New File</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem @click="handleCreateFolderInRoot">
+          <FolderPlus class="mr-2 h-4 w-4" />
+          <span>New Folder</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem @click="openUploadDialog">
+          <Upload class="mr-2 h-4 w-4" />
+          <span>Upload Files</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem @click="refresh">
+          <RefreshCcw class="mr-2 h-4 w-4" />
+          <span>Refresh</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
 
     <!-- Upload Progress Panel -->
     <div
@@ -473,6 +333,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -492,9 +359,6 @@ import {
   AlertCircle,
   X,
   ChevronDown,
-  Trash2,
-  Pencil,
-  FolderOpen,
 } from "lucide-vue-next";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
@@ -507,10 +371,9 @@ import {
 const store = useFileManagerStore();
 
 // Tree context menu state
+const treeContextMenuOpen = ref(false);
 const treeDragOver = ref(false);
 const contextMenuPosition = ref({ x: 0, y: 0 });
-const contextMenuTarget = ref<FileItem | null>(null);
-const contextMenuOpen = ref(false);
 let dragCounter = 0;
 
 // Upload dialog state
@@ -573,26 +436,13 @@ const deleteDialogOpen = ref(false);
 const deletingItem = ref<FileItem | null>(null);
 
 function handleTreeContextMenu(event: MouseEvent) {
+  // Only show if not clicking on a file tree node
   const target = event.target as HTMLElement;
-  const node = target.closest(".file-tree-node");
-
-  if (node) {
-    // Context menu on a file/folder node
-    const item = store.rootItems.find((i) => i.path === node.dataset.path);
-    if (item) {
-      event.preventDefault();
-      event.stopPropagation();
-      contextMenuPosition.value = { x: event.clientX, y: event.clientY };
-      contextMenuTarget.value = item;
-      contextMenuOpen.value = true;
-    }
-  } else {
-    // Context menu on empty space - target is root
+  if (!target.closest(".file-tree-node")) {
     event.preventDefault();
     event.stopPropagation();
     contextMenuPosition.value = { x: event.clientX, y: event.clientY };
-    contextMenuTarget.value = null;
-    contextMenuOpen.value = true;
+    treeContextMenuOpen.value = true;
   }
 }
 
@@ -739,39 +589,6 @@ async function handleMoveItem(data: { sourcePath: string; destPath: string }) {
     await store.moveItem(data.sourcePath, data.destPath);
   } catch (error) {
     console.error("Failed to move item:", error);
-  }
-}
-
-function handleCreateFile() {
-  const targetPath = contextMenuTarget.value?.path || "";
-  store.startInlineCreate(targetPath, "file");
-  contextMenuTarget.value = null;
-}
-
-function handleCreateFolder() {
-  const targetPath = contextMenuTarget.value?.path || "";
-  store.startInlineCreate(targetPath, "directory");
-  contextMenuTarget.value = null;
-}
-
-function handleOpenItem() {
-  if (contextMenuTarget.value?.isDirectory) {
-    store.navigateToPath(contextMenuTarget.value.path);
-  }
-  contextMenuTarget.value = null;
-}
-
-function handleRenameItem() {
-  if (contextMenuTarget.value) {
-    store.startInlineCreate(contextMenuTarget.value.path, contextMenuTarget.value.isDirectory ? "directory" : "file");
-    contextMenuTarget.value = null;
-  }
-}
-
-function handleDeleteItem() {
-  if (contextMenuTarget.value) {
-    handleDelete(contextMenuTarget.value);
-    contextMenuTarget.value = null;
   }
 }
 

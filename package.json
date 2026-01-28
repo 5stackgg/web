@@ -67,7 +67,7 @@
     "monaco-editor": "^0.55.1",
     "node-fetch": "^3.3.2",
     "pinia": "^3.0.2",
-    "reka-ui": "^2.7.0",
+    "reka-ui": "^2.8.0",
     "simple-peer": "^9.11.1",
     "tailwind-merge": "^3.2.0",
     "tailwindcss-animate": "^1.0.7",

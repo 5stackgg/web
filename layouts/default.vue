@@ -27,6 +27,7 @@ const containContent = computed(() => {
     case "system-metrics":
     case "system-logs":
     case "game-server-nodes-nodeId-files":
+    case "dedicated-servers-serverId-files":
       return false;
     default:
       return true;

@@ -129,37 +129,65 @@
       </div>
     </div>
 
-    <!-- Tree context menu (for empty space) -->
-    <DropdownMenu v-model:open="treeContextMenuOpen">
-      <DropdownMenuTrigger as-child>
-        <div
-          class="fixed w-0 h-0"
-          :style="{
-            left: `${contextMenuPosition.x}px`,
-            top: `${contextMenuPosition.y}px`,
-          }"
-        />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent class="w-48">
-        <DropdownMenuItem @click="handleCreateFileInRoot">
-          <FilePlus class="mr-2 h-4 w-4" />
-          <span>New File</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem @click="handleCreateFolderInRoot">
-          <FolderPlus class="mr-2 h-4 w-4" />
-          <span>New Folder</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem @click="openUploadDialog">
-          <Upload class="mr-2 h-4 w-4" />
-          <span>Upload Files</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem @click="refresh">
-          <RefreshCcw class="mr-2 h-4 w-4" />
-          <span>Refresh</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <ContextMenu>
+      <ContextMenuTrigger
+        class="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm"
+      >
+        Right click here
+      </ContextMenuTrigger>
+      <ContextMenuContent class="w-52">
+        <ContextMenuItem inset>
+          Back
+          <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem inset disabled>
+          Forward
+          <ContextMenuShortcut>⌘]</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem inset>
+          Reload
+          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuSub>
+          <ContextMenuSubTrigger inset> More Tools </ContextMenuSubTrigger>
+          <ContextMenuSubContent class="w-44">
+            <ContextMenuItem inset>
+              Save Page...
+              <ContextMenuShortcut>⇧⌘S</ContextMenuShortcut>
+            </ContextMenuItem>
+            <ContextMenuItem>
+              <PlusIcon />
+              Create Shortcut...
+            </ContextMenuItem>
+            <ContextMenuItem inset> Name Window... </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem>
+              <Code2Icon />
+              Developer Tools
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem variant="destructive">
+              <TrashIcon />
+              Delete
+            </ContextMenuItem>
+          </ContextMenuSubContent>
+        </ContextMenuSub>
+        <ContextMenuSeparator />
+        <ContextMenuCheckboxItem :model-value="true">
+          Show Bookmarks
+          <ContextMenuShortcut>⌘⇧B</ContextMenuShortcut>
+        </ContextMenuCheckboxItem>
+        <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
+        <ContextMenuSeparator />
+        <ContextMenuRadioGroup model-value="pedro">
+          <ContextMenuLabel inset> People </ContextMenuLabel>
+          <ContextMenuRadioItem value="pedro">
+            Pedro Duarte
+          </ContextMenuRadioItem>
+          <ContextMenuRadioItem value="colm"> Colm Tuite </ContextMenuRadioItem>
+        </ContextMenuRadioGroup>
+      </ContextMenuContent>
+    </ContextMenu>
 
     <!-- Upload Progress Panel -->
     <div
@@ -334,12 +362,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -371,7 +399,6 @@ import {
 const store = useFileManagerStore();
 
 // Tree context menu state
-const treeContextMenuOpen = ref(false);
 const treeDragOver = ref(false);
 const contextMenuPosition = ref({ x: 0, y: 0 });
 let dragCounter = 0;
@@ -442,7 +469,6 @@ function handleTreeContextMenu(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
     contextMenuPosition.value = { x: event.clientX, y: event.clientY };
-    treeContextMenuOpen.value = true;
   }
 }
 

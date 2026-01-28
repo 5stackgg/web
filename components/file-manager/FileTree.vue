@@ -117,7 +117,7 @@
             @keydown.enter.prevent="confirmRootInlineCreate"
             @keydown.escape="cancelRootInlineCreate"
             @blur="handleRootInlineBlur"
-            autofocus
+            :autofocus="true"
           />
         </div>
       </div>
@@ -399,121 +399,48 @@ const rootInlineInput = ref<InstanceType<typeof Input> | null>(null);
 
 let dummyFocusTimeout: ReturnType<typeof setTimeout> | null = null;
 
-// Accessibility: Prevent aria-hidden bug from breaking focus on the dummy input
-// by using 'inert' on the app root rather than aria-hidden, and watching for focus changes.
-// If the root inline create input loses focus due to ancestor (such as #__nuxt) being set aria-hidden,
-// forcibly cancel/destroy the dummy if we detect the ancestor is now aria-hidden but the input is focused.
-
-// Helper to get the closest ancestor with a given id
-function getClosestAncestorWithId(
-  el: HTMLElement,
-  id: string,
-): HTMLElement | null {
-  while (el) {
-    if (el.id === id) return el;
-    el = el.parentElement as HTMLElement;
-  }
-  return null;
-}
-
-// Listen for DOM attribute changes to detect aria-hidden on #__nuxt
-let nuxtMutationObserver: MutationObserver | null = null;
-
-onMounted(() => {
-  const root = document.getElementById("__nuxt");
-  if (!root) return;
-  nuxtMutationObserver = new MutationObserver((mutations) => {
-    const inputEl = getRootInlineInputEl();
-    if (
-      inputEl &&
-      document.activeElement === inputEl &&
-      root.getAttribute("aria-hidden") === "true"
-    ) {
-      // If input is focused but ancestor is aria-hidden, forcibly blur/cancel
-      inputEl.blur();
-      cancelRootInlineCreate();
-    }
-  });
-  nuxtMutationObserver.observe(root, {
-    attributes: true,
-    attributeFilter: ["aria-hidden", "inert"],
-  });
-});
-
-onBeforeUnmount(() => {
-  if (nuxtMutationObserver) {
-    nuxtMutationObserver.disconnect();
-    nuxtMutationObserver = null;
-  }
-});
-
+// Helper to get the real input element from the component ref
 function getRootInlineInputEl(): HTMLInputElement | undefined {
-  // Native <Input> or component $el may vary, handle both
-  let inputEl = rootInlineInput.value?.$el as HTMLInputElement | undefined;
-  if (!inputEl && (rootInlineInput.value as any)?.$refs?.input) {
-    inputEl = (rootInlineInput.value as any).$refs.input as HTMLInputElement;
+  // Try to handle several possible component structures
+  if (rootInlineInput.value && "$el" in rootInlineInput.value && rootInlineInput.value.$el instanceof HTMLElement) {
+    // Most likely case, Vuetify or similar
+    return rootInlineInput.value.$el as HTMLInputElement;
   }
-  return inputEl;
+  // Shadcn/Vue/Shallow component, fallback to ref on root
+  if ((rootInlineInput.value as any)?.$refs?.input) {
+    return (rootInlineInput.value as any).$refs.input as HTMLInputElement;
+  }
+  // Next tick: check if Input passes through ref directly
+  if ((rootInlineInput.value as any) instanceof HTMLInputElement) {
+    return rootInlineInput.value as any as HTMLInputElement;
+  }
+  return undefined;
 }
 
-// Watch for pending create at root level, but try to keep focus sticky.
-// If input cannot be focused due to ancestor aria-hidden, do not attempt to focus aggressively.
+// Watch for pending create at root level, focus input when it appears just like FileTreeNode!
 watch(
   () => store.pendingCreate,
-  async (pending) => {
+  async (pending, prev) => {
+    // If inline create at root
     if (pending?.parentPath === "") {
       rootInlineCreateName.value = "";
       await nextTick();
-      setTimeout(() => {
-        // Don't focus if this or ancestor (#__nuxt) is aria-hidden (app might be modal-inerted/inaccessible)
-        const inputEl = getRootInlineInputEl();
-        if (inputEl) {
-          // Check if ancestor is aria-hidden or inert.
-          let nuxtRoot = getClosestAncestorWithId(inputEl, "__nuxt");
-          if (
-            nuxtRoot &&
-            (nuxtRoot.hasAttribute("aria-hidden") ||
-              nuxtRoot.hasAttribute("inert"))
-          ) {
-            // Don't focus, prevent bug.
-            return;
-          }
-          inputEl.focus();
-        }
-      }, 20);
+      const inputEl = getRootInlineInputEl();
+      if (inputEl && typeof inputEl.focus === "function") {
+        inputEl.focus();
+        // Scroll into view to help UX if needed
+        inputEl.select?.();
+        inputEl.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
+      }
     }
-  },
+  }
 );
 
-// Try to keep dummy alive even if focus flickers away unintentionally (e.g. click or Tab away),
-// but DO NOT try to refocus if this or ancestor is aria-hidden/inert, which would cause a11y issues.
+// Blur handler: confirm or cancel
 function handleRootInlineBlur() {
   if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
   dummyFocusTimeout = setTimeout(() => {
-    // If dummy still exists, see if input *actually* lost focus to outside (not inside filetree/modal)
-    const inputEl = getRootInlineInputEl();
-    const active = document.activeElement;
-    // Also check for aria-hidden/inert bug on ancestor (#__nuxt)
-    let nuxtRoot = inputEl ? getClosestAncestorWithId(inputEl, "__nuxt") : null;
-    const ancestorIsInaccessible =
-      nuxtRoot &&
-      (nuxtRoot.getAttribute("aria-hidden") === "true" ||
-        nuxtRoot.hasAttribute("inert"));
-
-    if (
-      store.pendingCreate?.parentPath === "" &&
-      active &&
-      inputEl &&
-      !ancestorIsInaccessible
-    ) {
-      // If focus is still in the file tree area (add smarter checks if needed)
-      const rootEl = inputEl.closest(".file-tree") ?? null;
-      if (rootEl && rootEl.contains(active)) {
-        // Still inside tree, do not cancel dummy
-        return;
-      }
-    }
-    // Else, really confirm/cancel the dummy as usual
+    // If still in create mode & value empty, cancel. Otherwise confirm.
     if (store.pendingCreate?.parentPath === "") {
       if (rootInlineCreateName.value.trim()) {
         confirmRootInlineCreate();

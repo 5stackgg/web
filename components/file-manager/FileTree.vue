@@ -177,7 +177,10 @@
               class="w-4 h-4 animate-spin text-primary"
             />
             <CheckCircle
-              v-else-if="store.uploadBatch.failedFiles.length === 0"
+              v-else-if="
+                store.uploadBatch.failedFiles.length === 0 &&
+                !store.uploadBatch.cancelRequested
+              "
               class="w-4 h-4 text-green-500"
             />
             <AlertCircle v-else class="w-4 h-4 text-yellow-500" />
@@ -185,21 +188,35 @@
               <template v-if="store.uploadBatch.isUploading">
                 Uploading files...
               </template>
+              <template v-else-if="store.uploadBatch.cancelRequested">
+                Upload cancelled
+              </template>
               <template v-else-if="store.uploadBatch.failedFiles.length === 0">
                 Upload complete
               </template>
               <template v-else> Upload complete with errors </template>
             </span>
           </div>
-          <Button
-            v-if="!store.uploadBatch.isUploading"
-            variant="ghost"
-            size="icon"
-            class="h-6 w-6"
-            @click="store.resetUploadBatch()"
-          >
-            <X class="h-3 w-3" />
-          </Button>
+          <div class="flex items-center gap-1">
+            <Button
+              v-if="store.uploadBatch.isUploading"
+              variant="ghost"
+              size="icon"
+              class="h-6 w-6"
+              @click="store.cancelUpload()"
+            >
+              <X class="h-3 w-3" />
+            </Button>
+            <Button
+              v-else
+              variant="ghost"
+              size="icon"
+              class="h-6 w-6"
+              @click="store.resetUploadBatch()"
+            >
+              <X class="h-3 w-3" />
+            </Button>
+          </div>
         </div>
 
         <!-- Overall progress bar -->

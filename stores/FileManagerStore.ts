@@ -46,6 +46,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     currentFile: string | null;
     isUploading: boolean;
     failedFiles: string[];
+    cancelRequested: boolean;
   }>({
     totalFiles: 0,
     completedFiles: 0,
@@ -54,7 +55,9 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     currentFile: null,
     isUploading: false,
     failedFiles: [],
+    cancelRequested: false,
   });
+  const activeXHRRequests = ref<Map<string, XMLHttpRequest>>(new Map());
   const isLoading = ref<boolean>(false);
   const error = ref<string | null>(null);
   const expandedPaths = ref<Set<string>>(new Set([""]));
@@ -107,8 +110,24 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       currentFile: null,
       isUploading: false,
       failedFiles: [],
+      cancelRequested: false,
     };
     uploadProgress.value.clear();
+    activeXHRRequests.value.clear();
+  }
+
+  function cancelUpload() {
+    uploadBatch.value.cancelRequested = true;
+
+    // Abort all active XHR requests
+    for (const xhr of activeXHRRequests.value.values()) {
+      xhr.abort();
+    }
+
+    activeXHRRequests.value.clear();
+    uploadProgress.value.clear();
+    uploadBatch.value.isUploading = false;
+    uploadBatch.value.currentFile = null;
   }
 
   function startUploadBatch(files: { file: File; relativePath: string }[]) {
@@ -406,6 +425,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     if (!nodeId.value) return;
 
     for (const file of files) {
+      // Check if upload was cancelled
+      if (uploadBatch.value.cancelRequested) {
+        break;
+      }
+
       const filePath = currentPath.value
         ? `${currentPath.value}/${file.name}`
         : file.name;
@@ -431,6 +455,9 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
         const xhr = new XMLHttpRequest();
 
+        // Store XHR reference for cancellation
+        activeXHRRequests.value.set(file.name, xhr);
+
         xhr.upload.onprogress = (e) => {
           if (e.lengthComputable) {
             const progress = Math.min(100, (e.loaded / e.total) * 100);
@@ -447,16 +474,23 @@ export const useFileManagerStore = defineStore("fileManager", () => {
             }
           };
           xhr.onerror = () => reject(new Error("Network error"));
+          xhr.onabort = () => reject(new Error("Upload cancelled"));
           xhr.open("POST", apiUrl);
           xhr.send(formData);
         });
 
         uploadProgress.value.delete(file.name);
+        activeXHRRequests.value.delete(file.name);
       } catch (err: any) {
         uploadProgress.value.delete(file.name);
-        error.value = err.message || `Failed to upload ${file.name}`;
-        console.error("Error uploading file:", err);
-        throw err;
+        activeXHRRequests.value.delete(file.name);
+
+        // Don't throw error if upload was cancelled
+        if (!uploadBatch.value.cancelRequested) {
+          error.value = err.message || `Failed to upload ${file.name}`;
+          console.error("Error uploading file:", err);
+          throw err;
+        }
       }
     }
 
@@ -472,6 +506,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     // Start batch tracking
     startUploadBatch(fileEntries);
     let bytesUploadedSoFar = 0;
+    const completedFileSizes = new Map<string, number>();
 
     // Collect unique directories that need to be created
     const dirsToCreate = new Set<string>();
@@ -512,12 +547,21 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       }
     }
 
-    // Upload all files
-    for (const { file, relativePath } of fileEntries) {
+    // Upload files with concurrency limit of 10
+    const CONCURRENCY_LIMIT = 10;
+    const uploadQueue = [...fileEntries];
+    const activeUploads = new Set<Promise<void>>();
+
+    const uploadFile = async (entry: { file: File; relativePath: string }) => {
+      const { file, relativePath } = entry;
       const filePath = targetPath
         ? `${targetPath}/${relativePath}`
         : relativePath;
-      uploadBatch.value.currentFile = relativePath;
+
+      // Check if upload was cancelled before starting
+      if (uploadBatch.value.cancelRequested) {
+        return;
+      }
 
       try {
         const formData = new FormData();
@@ -540,12 +584,20 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         const xhr = new XMLHttpRequest();
         const fileSize = file.size;
 
+        // Store XHR reference for cancellation
+        activeXHRRequests.value.set(relativePath, xhr);
+
         xhr.upload.onprogress = (e) => {
           if (e.lengthComputable) {
             const fileProgress = Math.min(100, (e.loaded / e.total) * 100);
             uploadProgress.value.set(relativePath, fileProgress);
-            // Update overall bytes uploaded
-            uploadBatch.value.uploadedBytes = bytesUploadedSoFar + e.loaded;
+            // Calculate total uploaded bytes across all completed and in-progress files
+            let totalUploaded = 0;
+            for (const size of completedFileSizes.values()) {
+              totalUploaded += size;
+            }
+            totalUploaded += e.loaded;
+            uploadBatch.value.uploadedBytes = totalUploaded;
           }
         };
 
@@ -558,21 +610,58 @@ export const useFileManagerStore = defineStore("fileManager", () => {
             }
           };
           xhr.onerror = () => reject(new Error("Network error"));
+          xhr.onabort = () => reject(new Error("Upload cancelled"));
           xhr.open("POST", apiUrl);
           xhr.send(formData);
         });
 
         // File completed successfully
-        bytesUploadedSoFar += fileSize;
-        uploadBatch.value.uploadedBytes = bytesUploadedSoFar;
+        completedFileSizes.set(relativePath, fileSize);
         uploadBatch.value.completedFiles++;
         uploadProgress.value.delete(relativePath);
+        activeXHRRequests.value.delete(relativePath);
       } catch (err: any) {
         uploadProgress.value.delete(relativePath);
-        uploadBatch.value.failedFiles.push(relativePath);
-        error.value = err.message || `Failed to upload ${relativePath}`;
-        console.error("Error uploading file:", err);
+        activeXHRRequests.value.delete(relativePath);
+
+        // Don't mark as failed if it was cancelled
+        if (!uploadBatch.value.cancelRequested) {
+          uploadBatch.value.failedFiles.push(relativePath);
+          error.value = err.message || `Failed to upload ${relativePath}`;
+          console.error("Error uploading file:", err);
+        }
         // Continue with other files instead of throwing
+      }
+    };
+
+    // Process uploads with concurrency limit
+    while (uploadQueue.length > 0 || activeUploads.size > 0) {
+      // Check if upload was cancelled
+      if (uploadBatch.value.cancelRequested) {
+        // Wait for active uploads to finish aborting
+        await Promise.allSettled(activeUploads);
+        break;
+      }
+
+      // Start new uploads up to the concurrency limit
+      while (
+        uploadQueue.length > 0 &&
+        activeUploads.size < CONCURRENCY_LIMIT &&
+        !uploadBatch.value.cancelRequested
+      ) {
+        const entry = uploadQueue.shift()!;
+        uploadBatch.value.currentFile = entry.relativePath;
+
+        const uploadPromise = uploadFile(entry).finally(() => {
+          activeUploads.delete(uploadPromise);
+        });
+
+        activeUploads.add(uploadPromise);
+      }
+
+      // Wait for at least one upload to complete before continuing
+      if (activeUploads.size > 0) {
+        await Promise.race(activeUploads);
       }
     }
 
@@ -928,6 +1017,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     cancelInlineRename,
     confirmInlineRename,
     resetUploadBatch,
+    cancelUpload,
   };
 });
 

@@ -384,9 +384,16 @@ function handleKeyDown(event: KeyboardEvent) {
   }
 
   if (modifierKey && event.key === "w") {
-    event.preventDefault();
     if (store.activeFilePath) {
+      event.preventDefault();
       handleCloseActiveTab();
+    } else {
+      const shouldClose = confirm(
+        "No files are open. This will close the browser tab. Continue?",
+      );
+      if (!shouldClose) {
+        event.preventDefault();
+      }
     }
   }
 }

@@ -58,11 +58,11 @@
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-48">
         <template v-if="item.isDirectory">
-          <DropdownMenuItem @click="$emit('create-file', item)">
+          <DropdownMenuItem @click="startCreateFile">
             <FilePlus class="mr-2 h-4 w-4" />
             <span>New File</span>
           </DropdownMenuItem>
-          <DropdownMenuItem @click="$emit('create-folder', item)">
+          <DropdownMenuItem @click="startCreateFolder">
             <FolderPlus class="mr-2 h-4 w-4" />
             <span>New Folder</span>
           </DropdownMenuItem>
@@ -273,11 +273,11 @@ function handleRenameBlur() {
 }
 
 function startCreateFile() {
-  emit("create-file", props.item);
+  store.startInlineCreate(props.item.path, "file");
 }
 
 function startCreateFolder() {
-  emit("create-folder", props.item);
+  store.startInlineCreate(props.item.path, "directory");
 }
 
 const expanded = computed(() => store.expandedPaths.has(props.item.path));

@@ -4,8 +4,8 @@
     @contextmenu="handleTreeContextMenu"
     @drop="handleTreeDrop"
     @dragover.prevent
-    @dragenter.prevent="handleDragEnter"
-    @dragleave.prevent="handleDragLeave"
+    @dragenter.prevent="handleTreeDragEnter"
+    @dragleave.prevent="handleTreeDragLeave"
   >
     <!-- File Browser Toolbar -->
     <div class="flex items-center gap-1 border-b px-2 py-1.5">
@@ -371,14 +371,29 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useFileTreeInteractions } from "./useFileTreeInteractions";
 
 const store = useFileManagerStore();
 
-// Tree context menu state
-const treeContextMenuOpen = ref(false);
-const treeDragOver = ref(false);
-const contextMenuPosition = ref({ x: 0, y: 0 });
-let dragCounter = 0;
+// Use composable for file tree interactions
+const {
+  store: storeRef,
+  treeDragOver,
+  contextMenuOpen: treeContextMenuOpen,
+  contextMenuPosition,
+  handleTreeContextMenu,
+  handleTreeDragEnter,
+  handleTreeDragLeave,
+  handleSelect,
+  handleEditFile,
+  handleDelete,
+  handleDropFiles,
+  handleMoveItem,
+  handleCreateFileInRoot,
+  handleCreateFolderInRoot,
+  openUploadDialog,
+  refresh,
+} = useFileTreeInteractions();
 
 // Upload dialog state
 const uploadDialogOpen = ref(false);
@@ -469,28 +484,6 @@ function cancelRootInlineCreate() {
 const deleteDialogOpen = ref(false);
 const deletingItem = ref<FileItem | null>(null);
 
-function handleTreeContextMenu(event: MouseEvent) {
-  // Only show if not clicking on a file tree node
-  const target = event.target as HTMLElement;
-  if (!target.closest(".file-tree-node")) {
-    event.preventDefault();
-    event.stopPropagation();
-    contextMenuPosition.value = { x: event.clientX, y: event.clientY };
-    treeContextMenuOpen.value = true;
-  }
-}
-
-function handleDragEnter() {
-  dragCounter++;
-  treeDragOver.value = true;
-}
-
-function handleDragLeave() {
-  dragCounter--;
-  if (dragCounter === 0) {
-    treeDragOver.value = false;
-  }
-}
 
 // Helper to read a FileSystemEntry as a File
 function readEntryAsFile(entry: FileSystemFileEntry): Promise<File> {
@@ -548,7 +541,7 @@ async function readEntriesRecursively(
 
 async function handleTreeDrop(event: DragEvent) {
   event.preventDefault();
-  dragCounter = 0;
+  resetDragState();
   treeDragOver.value = false;
 
   if (!event.dataTransfer) return;
@@ -610,55 +603,6 @@ async function uploadFilesToPath(files: File[], targetPath: string) {
     relativePath: file.name,
   }));
   await uploadFilesWithPaths(fileEntries, targetPath);
-}
-
-async function handleDropFiles(data: { files: File[]; targetPath: string }) {
-  // For drops on tree nodes, we also need to check for folders
-  // But the event has already been processed, so we just use plain files
-  await uploadFilesToPath(data.files, data.targetPath);
-}
-
-async function handleMoveItem(data: { sourcePath: string; destPath: string }) {
-  try {
-    await store.moveItem(data.sourcePath, data.destPath);
-  } catch (error) {
-    console.error("Failed to move item:", error);
-  }
-}
-
-function handleCreateFileInRoot() {
-  store.startInlineCreate("", "file");
-}
-
-function handleCreateFolderInRoot() {
-  store.startInlineCreate("", "directory");
-}
-
-function openUploadDialog() {
-  uploadDialogOpen.value = true;
-}
-
-function refresh() {
-  void store.loadDirectory(store.currentPath);
-}
-
-function handleSelect(item: FileItem) {
-  if (item.isDirectory) {
-    store.navigateToPath(item.path);
-  } else {
-    // Open file in embedded editor
-    handleEditFile(item);
-  }
-}
-
-function handleEditFile(item: FileItem) {
-  // Open file in the embedded Monaco editor (in FileDetailsPanel)
-  store.openFile(item.path);
-}
-
-function handleDelete(item: FileItem) {
-  deletingItem.value = item;
-  deleteDialogOpen.value = true;
 }
 
 async function confirmDelete() {

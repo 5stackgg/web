@@ -75,7 +75,7 @@
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </template>
-        <DropdownMenuItem @click="startRename">
+        <DropdownMenuItem @click="$emit('rename-item', item)">
           <PenLine class="mr-2 h-4 w-4" />
           <span>Rename</span>
         </DropdownMenuItem>
@@ -152,6 +152,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useFileTreeUtilities } from "./useFileTreeUtilities";
 
 const props = defineProps<{
   item: FileItem;
@@ -165,16 +166,44 @@ const emit = defineEmits<{
   delete: [item: FileItem];
   "drop-files": [data: { files: File[]; targetPath: string }];
   "move-item": [data: { sourcePath: string; destPath: string }];
+  "open-item": [item: FileItem];
+  "rename-item": [item: FileItem];
 }>();
 
 const store = useFileManagerStore();
-const contextMenuOpen = ref(false);
+
+// Use composable for common utilities
+const {
+  contextMenuOpen,
+  contextMenuPosition,
+  openContextMenu,
+  closeContextMenu,
+  dragCounter: dragCounterValue,
+  handleDragEnter: handleDragEnterWrapper,
+  handleDragLeave: handleDragLeaveWrapper,
+  resetDragState,
+  focusInlineInput,
+  handleInlineBlur,
+} = useFileTreeUtilities();
+
+// Wrapper functions that accept event parameters
+function handleDragEnter(event: DragEvent) {
+  handleDragEnterWrapper(event);
+  isDragOver.value = true;
+}
+
+function handleDragLeave(event: DragEvent) {
+  handleDragLeaveWrapper(event);
+  if (dragCounterValue.value === 0) {
+    isDragOver.value = false;
+  }
+}
+
 const isDragOver = ref(false);
 const isDragging = ref(false);
-const contextMenuPosition = ref({ x: 0, y: 0 });
-let dragCounter = 0;
 const inlineCreateName = ref("");
 const inlineInput = ref<InstanceType<typeof Input> | null>(null);
+const dragCounter = dragCounterValue;
 
 // Inline rename state
 const renameName = ref("");
@@ -192,9 +221,7 @@ watch(
     if (pending?.parentPath === props.item.path) {
       inlineCreateName.value = "";
       await nextTick();
-      // Access the underlying input element
-      const inputEl = inlineInput.value?.$el as HTMLInputElement;
-      inputEl?.focus();
+      focusInlineInput(inlineInput);
     }
   },
 );
@@ -206,9 +233,7 @@ watch(
     if (pending?.path === props.item.path) {
       renameName.value = pending.currentName;
       await nextTick();
-      const inputEl = renameInput.value?.$el as HTMLInputElement;
-      inputEl?.focus();
-      inputEl?.select();
+      focusInlineInput(renameInput);
     }
   },
 );
@@ -223,51 +248,6 @@ async function confirmInlineCreate() {
 function cancelInlineCreate() {
   store.cancelInlineCreate();
   inlineCreateName.value = "";
-}
-
-function handleInlineBlur() {
-  // Small delay to allow click events to fire first
-  setTimeout(() => {
-    if (store.pendingCreate?.parentPath === props.item.path) {
-      if (inlineCreateName.value.trim()) {
-        confirmInlineCreate();
-      } else {
-        cancelInlineCreate();
-      }
-    }
-  }, 100);
-}
-
-// Rename functions
-function startRename() {
-  store.startInlineRename(props.item.path, props.item.name);
-}
-
-async function confirmRename() {
-  if (renameName.value.trim()) {
-    await store.confirmInlineRename(renameName.value.trim());
-  }
-  renameName.value = "";
-}
-
-function cancelRename() {
-  store.cancelInlineRename();
-  renameName.value = "";
-}
-
-function handleRenameBlur() {
-  setTimeout(() => {
-    if (store.pendingRename?.path === props.item.path) {
-      if (
-        renameName.value.trim() &&
-        renameName.value.trim() !== props.item.name
-      ) {
-        confirmRename();
-      } else {
-        cancelRename();
-      }
-    }
-  }, 100);
 }
 
 function startCreateFile() {
@@ -292,15 +272,17 @@ function toggleExpand() {
 }
 
 function handleClick() {
+  // If it's a directory, toggle expand instead of selecting
+  if (props.item.isDirectory) {
+    store.toggleExpand(props.item.path);
+    return;
+  }
   emit("select", props.item);
   store.selectItem(props.item);
 }
 
 function handleContextMenu(event: MouseEvent) {
-  event.preventDefault();
-  event.stopPropagation();
-  contextMenuPosition.value = { x: event.clientX, y: event.clientY };
-  contextMenuOpen.value = true;
+  openContextMenu(event);
 }
 
 function handleDragStart(event: DragEvent) {
@@ -320,13 +302,13 @@ function handleDragEnd(event: DragEvent) {
   // Clean up any drag state
   isDragging.value = false;
   isDragOver.value = false;
-  dragCounter = 0;
+  resetDragState();
 }
 
 function handleDrop(event: DragEvent) {
   event.preventDefault();
   event.stopPropagation();
-  dragCounter = 0;
+  resetDragState();
   isDragOver.value = false;
 
   if (!props.item.isDirectory || !event.dataTransfer) return;
@@ -365,22 +347,6 @@ function handleDrop(event: DragEvent) {
 function handleDragOver(event: DragEvent) {
   if (props.item.isDirectory && event.dataTransfer) {
     event.dataTransfer.dropEffect = "move";
-  }
-}
-
-function handleDragEnter(event: DragEvent) {
-  if (props.item.isDirectory) {
-    dragCounter++;
-    isDragOver.value = true;
-  }
-}
-
-function handleDragLeave(event: DragEvent) {
-  if (props.item.isDirectory) {
-    dragCounter--;
-    if (dragCounter === 0) {
-      isDragOver.value = false;
-    }
   }
 }
 </script>

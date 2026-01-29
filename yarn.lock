@@ -50,7 +50,7 @@ __metadata:
     pinia: "npm:^3.0.2"
     postcss: "npm:^8.5.3"
     postcss-nesting: "npm:^13.0.1"
-    reka-ui: "npm:^2.7.0"
+    reka-ui: "npm:^2.8.0"
     sass: "npm:^1.87.0"
     shadcn-nuxt: "npm:^2.1.0"
     simple-peer: "npm:^9.11.1"
@@ -4313,7 +4313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/shared@npm:14.1.0":
+"@vueuse/shared@npm:14.1.0, @vueuse/shared@npm:^14.1.0":
   version: 14.1.0
   resolution: "@vueuse/shared@npm:14.1.0"
   peerDependencies:
@@ -12481,23 +12481,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reka-ui@npm:^2.7.0":
-  version: 2.7.0
-  resolution: "reka-ui@npm:2.7.0"
+"reka-ui@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "reka-ui@npm:2.8.0"
   dependencies:
     "@floating-ui/dom": "npm:^1.6.13"
     "@floating-ui/vue": "npm:^1.1.6"
     "@internationalized/date": "npm:^3.5.0"
     "@internationalized/number": "npm:^3.5.0"
     "@tanstack/vue-virtual": "npm:^3.12.0"
-    "@vueuse/core": "npm:^12.5.0"
-    "@vueuse/shared": "npm:^12.5.0"
+    "@vueuse/core": "npm:^14.1.0"
+    "@vueuse/shared": "npm:^14.1.0"
     aria-hidden: "npm:^1.2.4"
     defu: "npm:^6.1.4"
     ohash: "npm:^2.0.11"
   peerDependencies:
     vue: ">= 3.2.0"
-  checksum: 10c0/9bc7e802f2c388d3977a78b2efa8adca2874a979dc0517abc9b87916f1c1d26ccfa0dc84e33293228206636227dcbcce119c28053f8c260c21769f39a9036663
+  checksum: 10c0/483ae7c9e7d4024c8f044620db054e6140dbe8ef3bdebb2ef3875248bcf269a1910684be6e2c2b7bb4a6f07e5225b7c5e8906535ee687cec89d4f31fec90eab5
   languageName: node
   linkType: hard
 

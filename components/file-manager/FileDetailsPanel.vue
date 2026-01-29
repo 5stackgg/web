@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex-1 flex flex-col">
+  <div class="relative flex-1 flex flex-col" @contextmenu.prevent>
     <!-- Menubar (VS Code style) - only show when file is open -->
     <Menubar
       v-if="store.activeFilePath"
@@ -66,24 +66,65 @@
       <div
         v-for="tab in openFileTabs"
         :key="tab.path"
-        class="flex items-center gap-1 px-3 py-2 border-r cursor-pointer text-sm whitespace-nowrap"
         :class="
           store.activeFilePath === tab.path
             ? 'bg-background border-b-2 border-b-primary'
             : 'hover:bg-muted'
         "
         @click="store.setActiveFile(tab.path)"
+        @contextmenu.prevent="showTabContextMenu($event, tab.path)"
       >
-        <FileIcon class="w-3 h-3" />
-        <span>{{ tab.name }}</span>
-        <span v-if="tab.isDirty" class="text-primary">●</span>
-        <button
-          @click.stop="handleCloseTab(tab.path, tab.isDirty)"
-          class="ml-1 p-0.5 hover:bg-accent rounded"
-        >
-          <X class="w-3 h-3" />
-        </button>
+        <ContextMenu>
+          <ContextMenuTrigger
+            class="flex items-center gap-1 px-3 py-2 border-r cursor-pointer text-sm whitespace-nowrap group"
+            :class="
+              store.activeFilePath === tab.path
+                ? 'bg-background border-b-2 border-b-primary'
+                : 'hover:bg-muted'
+            "
+            @click="store.setActiveFile(tab.path)"
+          >
+            <FileIcon class="w-3 h-3" />
+            <span>{{ tab.name }}</span>
+            <span v-if="tab.isDirty" class="text-primary">●</span>
+            <button
+              @click.stop="handleCloseTab(tab.path, tab.isDirty)"
+              class="ml-1 p-0.5 hover:bg-accent rounded opacity-0 group-hover:opacity-100"
+            >
+              <X class="w-3 h-3" />
+            </button>
+          </ContextMenuTrigger>
+          <ContextMenuContent class="w-48">
+            <ContextMenuItem @click="handleCloseTab(contextMenuTabPath, false)">
+              <X class="mr-2 h-4 w-4" />
+              Close
+              <ContextMenuShortcut>⌘W</ContextMenuShortcut>
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem @click="handleCloseOthers(contextMenuTabPath)">
+              <X class="mr-2 h-4 w-4" />
+              Close Others
+            </ContextMenuItem>
+            <ContextMenuItem @click="handleCloseToRight(contextMenuTabPath)">
+              <X class="mr-2 h-4 w-4" />
+              Close to Right
+            </ContextMenuItem>
+            <ContextMenuItem @click="handleCloseToLeft(contextMenuTabPath)">
+              <X class="mr-2 h-4 w-4" />
+              Close to Left
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
       </div>
+    </div>
+
+    <!-- File path header (like Cursor IDE) -->
+    <div
+      v-if="store.activeFilePath"
+      class="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground bg-muted/20 border-b"
+    >
+      <FolderOpen class="w-3 h-3" />
+      <span class="truncate">{{ store.activeFilePath }}</span>
     </div>
 
     <!-- Editor View (when file is open) -->
@@ -127,6 +168,21 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
   Save,
   Undo,
   Redo,
@@ -135,6 +191,7 @@ import {
   X,
   File as FileIcon,
   FileCode,
+  FolderOpen,
 } from "lucide-vue-next";
 import * as monaco from "monaco-editor";
 
@@ -151,6 +208,11 @@ const showMinimap = ref(false);
 let currentEditingPath: string | null = null;
 let isSettingContent = false;
 let updateTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// Context menu state
+const contextMenuTabPath = ref<string | null>(null);
+const contextMenuX = ref(0);
+const contextMenuY = ref(0);
 
 // Computed
 const openFileTabs = computed(() => {
@@ -342,7 +404,7 @@ function toggleMinimap() {
 
 function handleCloseTab(path: string, isDirty: boolean) {
   if (isDirty) {
-    if (!confirm("You have unsaved changes. Are you sure you want to close?")) {
+    if (!confirm($t("file_manager.details_panel.unsaved_changes"))) {
       return;
     }
   }
@@ -358,11 +420,7 @@ function handleCloseActiveTab() {
 
 function handleCloseAllTabs() {
   if (store.hasUnsavedChanges) {
-    if (
-      !confirm(
-        "You have unsaved changes. Are you sure you want to close all files?",
-      )
-    ) {
+    if (!confirm($t("file_manager.details_panel.unsaved_changes_all"))) {
       return;
     }
   }
@@ -371,10 +429,77 @@ function handleCloseAllTabs() {
   }
 }
 
+function showTabContextMenu(event: MouseEvent, path: string) {
+  contextMenuTabPath.value = path;
+  contextMenuX.value = event.clientX;
+  contextMenuY.value = event.clientY;
+}
+
+function handleCloseOthers(path: string) {
+  if (store.hasUnsavedChanges) {
+    if (!confirm($t("file_manager.tabs.unsaved_changes_warning"))) {
+      return;
+    }
+  }
+  for (const [filePath] of store.openFiles) {
+    if (filePath !== path) {
+      store.closeFile(filePath);
+    }
+  }
+  contextMenuTabPath.value = null;
+}
+
+function handleCloseToRight(path: string) {
+  const tabIndex = openFileTabs.value.findIndex((t) => t.path === path);
+  if (tabIndex === -1) return;
+
+  if (store.hasUnsavedChanges) {
+    const hasUnsaved = Array.from(store.openFiles.entries())
+      .slice(tabIndex + 1)
+      .some(([filePath, file]) => filePath !== path && file.isDirty);
+
+    if (hasUnsaved) {
+      if (!confirm($t("file_manager.tabs.unsaved_changes_right_warning"))) {
+        return;
+      }
+    }
+  }
+
+  const pathsToClose = openFileTabs.value
+    .slice(tabIndex + 1)
+    .map((t) => t.path);
+  for (const p of pathsToClose) {
+    store.closeFile(p);
+  }
+  contextMenuTabPath.value = null;
+}
+
+function handleCloseToLeft(path: string) {
+  const tabIndex = openFileTabs.value.findIndex((t) => t.path === path);
+  if (tabIndex === -1) return;
+
+  if (store.hasUnsavedChanges) {
+    const hasUnsaved = Array.from(store.openFiles.entries())
+      .slice(0, tabIndex)
+      .some(([filePath, file]) => file.isDirty);
+
+    if (hasUnsaved) {
+      if (!confirm($t("file_manager.tabs.unsaved_changes_left_warning"))) {
+        return;
+      }
+    }
+  }
+
+  const pathsToClose = openFileTabs.value.slice(0, tabIndex).map((t) => t.path);
+  for (const p of pathsToClose) {
+    store.closeFile(p);
+  }
+  contextMenuTabPath.value = null;
+}
+
 // Global keyboard shortcuts
 function handleKeyDown(event: KeyboardEvent) {
-  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-  const modifierKey = isMac ? event.metaKey : event.ctrlKey;
+  const modifierKey = event.ctrlKey;
 
   if (modifierKey && event.key === "s") {
     event.preventDefault();
@@ -385,14 +510,15 @@ function handleKeyDown(event: KeyboardEvent) {
 
   if (modifierKey && event.key === "w") {
     if (store.activeFilePath) {
-      event.preventDefault();
       handleCloseActiveTab();
     } else {
       const shouldClose = confirm(
-        "No files are open. This will close the browser tab. Continue?",
+        $t("file_manager.details_panel.no_file_open"),
       );
       if (!shouldClose) {
         event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
       }
     }
   }

@@ -4,8 +4,8 @@
     @contextmenu="handleTreeContextMenu"
     @drop="handleTreeDrop"
     @dragover.prevent
-    @dragenter.prevent="handleDragEnter"
-    @dragleave.prevent="handleDragLeave"
+    @dragenter.prevent="handleTreeDragEnter"
+    @dragleave.prevent="handleTreeDragLeave"
   >
     <!-- File Browser Toolbar -->
     <div class="flex items-center gap-1 border-b px-2 py-1.5">
@@ -68,7 +68,10 @@
               class="h-7 w-7"
               @click="refresh"
             >
-              <RefreshCcw class="h-4 w-4" />
+              <RefreshCcw
+                class="h-4 w-4"
+                :class="{ 'animate-spin-smooth': store.isLoading }"
+              />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">
@@ -79,32 +82,6 @@
     </div>
 
     <div class="p-4 flex-1 overflow-auto">
-      <!-- Inline create at root level -->
-      <div
-        v-if="store.pendingCreate?.parentPath === ''"
-        class="flex items-center gap-2 px-2 py-1 mb-1"
-      >
-        <span class="w-4"></span>
-        <component
-          :is="store.pendingCreate.type === 'directory' ? Folder : FileIcon"
-          class="w-4 h-4 text-muted-foreground"
-        />
-        <Input
-          ref="rootInlineInput"
-          v-model="rootInlineCreateName"
-          class="h-6 text-sm py-0 px-1"
-          :placeholder="
-            store.pendingCreate.type === 'directory'
-              ? 'folder name'
-              : 'file name'
-          "
-          @keydown.enter="confirmRootInlineCreate"
-          @keydown.escape="cancelRootInlineCreate"
-          @blur="handleRootInlineBlur"
-          autofocus
-        />
-      </div>
-
       <div class="space-y-1">
         <FileTreeNode
           v-for="item in store.rootItems"
@@ -116,6 +93,33 @@
           @drop-files="handleDropFiles"
           @move-item="handleMoveItem"
         />
+
+        <!-- Inline create at root level (move dummy/file-input to bottom) -->
+        <div
+          v-if="store.pendingCreate?.parentPath === ''"
+          class="flex items-center gap-2 px-2 py-1 mt-1"
+          @mousedown.stop
+        >
+          <span class="w-4"></span>
+          <component
+            :is="store.pendingCreate.type === 'directory' ? Folder : FileIcon"
+            class="w-4 h-4 text-muted-foreground"
+          />
+          <Input
+            ref="rootInlineInput"
+            v-model="rootInlineCreateName"
+            class="h-6 text-sm py-0 px-1"
+            :placeholder="
+              store.pendingCreate.type === 'directory'
+                ? 'folder name'
+                : 'file name'
+            "
+            @keydown.enter.prevent="confirmRootInlineCreate"
+            @keydown.escape="cancelRootInlineCreate"
+            @blur="handleRootInlineBlur"
+            :autofocus="true"
+          />
+        </div>
       </div>
 
       <!-- Empty state / drop zone -->
@@ -319,7 +323,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
 import type { FileItem } from "~/stores/FileManagerStore";
 import FileTreeNode from "./FileTreeNode.vue";
 import FileUploadDialog from "./FileUploadDialog.vue";
@@ -367,14 +371,29 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useFileTreeInteractions } from "./useFileTreeInteractions";
 
 const store = useFileManagerStore();
 
-// Tree context menu state
-const treeContextMenuOpen = ref(false);
-const treeDragOver = ref(false);
-const contextMenuPosition = ref({ x: 0, y: 0 });
-let dragCounter = 0;
+// Use composable for file tree interactions
+const {
+  store: storeRef,
+  treeDragOver,
+  contextMenuOpen: treeContextMenuOpen,
+  contextMenuPosition,
+  handleTreeContextMenu,
+  handleTreeDragEnter,
+  handleTreeDragLeave,
+  handleSelect,
+  handleEditFile,
+  handleDelete,
+  handleDropFiles,
+  handleMoveItem,
+  handleCreateFileInRoot,
+  handleCreateFolderInRoot,
+  openUploadDialog,
+  refresh,
+} = useFileTreeInteractions();
 
 // Upload dialog state
 const uploadDialogOpen = ref(false);
@@ -393,34 +412,50 @@ function formatBytes(bytes: number): string {
 const rootInlineCreateName = ref("");
 const rootInlineInput = ref<InstanceType<typeof Input> | null>(null);
 
-// Watch for pending create at root level
+let dummyFocusTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// Helper to get the real input element from the component ref
+function getRootInlineInputEl(): HTMLInputElement | undefined {
+  // Try to handle several possible component structures
+  if (rootInlineInput.value && "$el" in rootInlineInput.value && rootInlineInput.value.$el instanceof HTMLElement) {
+    // Most likely case, Vuetify or similar
+    return rootInlineInput.value.$el as HTMLInputElement;
+  }
+  // Shadcn/Vue/Shallow component, fallback to ref on root
+  if ((rootInlineInput.value as any)?.$refs?.input) {
+    return (rootInlineInput.value as any).$refs.input as HTMLInputElement;
+  }
+  // Next tick: check if Input passes through ref directly
+  if ((rootInlineInput.value as any) instanceof HTMLInputElement) {
+    return rootInlineInput.value as any as HTMLInputElement;
+  }
+  return undefined;
+}
+
+// Watch for pending create at root level, focus input when it appears just like FileTreeNode!
 watch(
   () => store.pendingCreate,
-  async (pending) => {
+  async (pending, prev) => {
+    // If inline create at root
     if (pending?.parentPath === "") {
       rootInlineCreateName.value = "";
       await nextTick();
-      // Access the underlying input element
-      const inputEl = rootInlineInput.value?.$el as HTMLInputElement;
-      inputEl?.focus();
+      const inputEl = getRootInlineInputEl();
+      if (inputEl && typeof inputEl.focus === "function") {
+        inputEl.focus();
+        // Scroll into view to help UX if needed
+        inputEl.select?.();
+        inputEl.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
+      }
     }
-  },
+  }
 );
 
-async function confirmRootInlineCreate() {
-  if (rootInlineCreateName.value.trim()) {
-    await store.confirmInlineCreate(rootInlineCreateName.value.trim());
-  }
-  rootInlineCreateName.value = "";
-}
-
-function cancelRootInlineCreate() {
-  store.cancelInlineCreate();
-  rootInlineCreateName.value = "";
-}
-
+// Blur handler: confirm or cancel
 function handleRootInlineBlur() {
-  setTimeout(() => {
+  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
+  dummyFocusTimeout = setTimeout(() => {
+    // If still in create mode & value empty, cancel. Otherwise confirm.
     if (store.pendingCreate?.parentPath === "") {
       if (rootInlineCreateName.value.trim()) {
         confirmRootInlineCreate();
@@ -428,35 +463,27 @@ function handleRootInlineBlur() {
         cancelRootInlineCreate();
       }
     }
-  }, 100);
+  }, 120);
+}
+
+async function confirmRootInlineCreate() {
+  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
+  if (rootInlineCreateName.value.trim()) {
+    await store.confirmInlineCreate(rootInlineCreateName.value.trim());
+  }
+  rootInlineCreateName.value = "";
+}
+
+function cancelRootInlineCreate() {
+  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
+  store.cancelInlineCreate();
+  rootInlineCreateName.value = "";
 }
 
 // Delete state
 const deleteDialogOpen = ref(false);
 const deletingItem = ref<FileItem | null>(null);
 
-function handleTreeContextMenu(event: MouseEvent) {
-  // Only show if not clicking on a file tree node
-  const target = event.target as HTMLElement;
-  if (!target.closest(".file-tree-node")) {
-    event.preventDefault();
-    event.stopPropagation();
-    contextMenuPosition.value = { x: event.clientX, y: event.clientY };
-    treeContextMenuOpen.value = true;
-  }
-}
-
-function handleDragEnter() {
-  dragCounter++;
-  treeDragOver.value = true;
-}
-
-function handleDragLeave() {
-  dragCounter--;
-  if (dragCounter === 0) {
-    treeDragOver.value = false;
-  }
-}
 
 // Helper to read a FileSystemEntry as a File
 function readEntryAsFile(entry: FileSystemFileEntry): Promise<File> {
@@ -514,7 +541,7 @@ async function readEntriesRecursively(
 
 async function handleTreeDrop(event: DragEvent) {
   event.preventDefault();
-  dragCounter = 0;
+  resetDragState();
   treeDragOver.value = false;
 
   if (!event.dataTransfer) return;
@@ -576,55 +603,6 @@ async function uploadFilesToPath(files: File[], targetPath: string) {
     relativePath: file.name,
   }));
   await uploadFilesWithPaths(fileEntries, targetPath);
-}
-
-async function handleDropFiles(data: { files: File[]; targetPath: string }) {
-  // For drops on tree nodes, we also need to check for folders
-  // But the event has already been processed, so we just use plain files
-  await uploadFilesToPath(data.files, data.targetPath);
-}
-
-async function handleMoveItem(data: { sourcePath: string; destPath: string }) {
-  try {
-    await store.moveItem(data.sourcePath, data.destPath);
-  } catch (error) {
-    console.error("Failed to move item:", error);
-  }
-}
-
-function handleCreateFileInRoot() {
-  store.startInlineCreate("", "file");
-}
-
-function handleCreateFolderInRoot() {
-  store.startInlineCreate("", "directory");
-}
-
-function openUploadDialog() {
-  uploadDialogOpen.value = true;
-}
-
-function refresh() {
-  void store.loadDirectory(store.currentPath);
-}
-
-function handleSelect(item: FileItem) {
-  if (item.isDirectory) {
-    store.navigateToPath(item.path);
-  } else {
-    // Open file in embedded editor
-    handleEditFile(item);
-  }
-}
-
-function handleEditFile(item: FileItem) {
-  // Open file in the embedded Monaco editor (in FileDetailsPanel)
-  store.openFile(item.path);
-}
-
-function handleDelete(item: FileItem) {
-  deletingItem.value = item;
-  deleteDialogOpen.value = true;
 }
 
 async function confirmDelete() {

@@ -77,6 +77,13 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   // Inline rename state (VS Code style)
   const pendingRename = ref<{ path: string; currentName: string } | null>(null);
 
+  // Track newly created items for auto-selection
+  const lastCreatedPath = ref<string | null>(null);
+  const clearLastCreatedPathTimeouts = new Map<
+    string,
+    ReturnType<typeof setTimeout>
+  >();
+
   // Computed
   const currentDirectoryItems = computed(
     () => fileTree.value.get(currentPath.value) || [],
@@ -911,17 +918,47 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     const fullPath = parentPath ? `${parentPath}/${name}` : name;
 
     try {
+      let createdItem: FileItem | undefined;
+
       if (type === "directory") {
         // Temporarily set current path for directory creation
         const originalPath = currentPath.value;
         currentPath.value = parentPath;
         await createDirectory(name);
         currentPath.value = originalPath;
+
+        // Reload the directory to get the new item info
+        createdItem =
+          (fileTree.value.get(parentPath) || []).find(
+            (item: FileItem) => item.name === name,
+          ) ?? undefined;
       } else {
         await saveFile(fullPath, "");
         // Open the new file in editor
-        await openFile(fullPath);
+        const success = await openFile(fullPath);
+        if (!success && currentDirectoryItems.value.length > 0) {
+          createdItem =
+            (fileTree.value.get(currentPath.value) || []).find(
+              (item: FileItem) => item.name === name,
+            ) ?? undefined;
+        }
       }
+
+      // Track the newly created path for auto-selection
+      if (createdItem?.path) {
+        lastCreatedPath.value = createdItem.path;
+
+        // Clear after a delay to avoid interfering with user interaction
+        const timeoutId = setTimeout(() => {
+          clearLastCreatedPathTimeouts.delete(createdItem.path);
+          if (lastCreatedPath.value === createdItem.path) {
+            lastCreatedPath.value = null;
+          }
+        }, 2000);
+
+        clearLastCreatedPathTimeouts.set(createdItem.path, timeoutId);
+      }
+
       pendingCreate.value = null;
       return true;
     } catch (err) {
@@ -990,6 +1027,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     uploadOverallProgress,
 
     // Actions
+    lastCreatedPath,
+    clearLastCreatedPathTimeouts,
     initialize,
     loadDirectory,
     readFile,

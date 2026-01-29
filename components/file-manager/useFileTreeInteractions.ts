@@ -69,7 +69,10 @@ export function useFileTreeInteractions() {
     );
   }
 
-  async function handleMoveItem(data: { sourcePath: string; destPath: string }) {
+  async function handleMoveItem(data: {
+    sourcePath: string;
+    destPath: string;
+  }) {
     await store.moveItem(data.sourcePath, data.destPath);
   }
 

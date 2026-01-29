@@ -417,7 +417,11 @@ let dummyFocusTimeout: ReturnType<typeof setTimeout> | null = null;
 // Helper to get the real input element from the component ref
 function getRootInlineInputEl(): HTMLInputElement | undefined {
   // Try to handle several possible component structures
-  if (rootInlineInput.value && "$el" in rootInlineInput.value && rootInlineInput.value.$el instanceof HTMLElement) {
+  if (
+    rootInlineInput.value &&
+    "$el" in rootInlineInput.value &&
+    rootInlineInput.value.$el instanceof HTMLElement
+  ) {
     // Most likely case, Vuetify or similar
     return rootInlineInput.value.$el as HTMLInputElement;
   }
@@ -448,7 +452,7 @@ watch(
         inputEl.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
       }
     }
-  }
+  },
 );
 
 // Blur handler: confirm or cancel
@@ -483,7 +487,6 @@ function cancelRootInlineCreate() {
 // Delete state
 const deleteDialogOpen = ref(false);
 const deletingItem = ref<FileItem | null>(null);
-
 
 // Helper to read a FileSystemEntry as a File
 function readEntryAsFile(entry: FileSystemFileEntry): Promise<File> {

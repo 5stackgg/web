@@ -3,6 +3,7 @@ import PageHeading from "~/components/PageHeading.vue";
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
 </script>
 
 <template>

@@ -81,10 +81,10 @@ export default {
           servers: [
             {
               where: {
-                type : {
-                  _eq: e_server_types_enum.Ranked
-                }
-              }
+                type: {
+                  _eq: e_server_types_enum.Ranked,
+                },
+              },
             },
             {
               id: true,

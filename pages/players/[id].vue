@@ -263,11 +263,15 @@ const { isMobile } = useSidebar();
         >
           <Card class="flex flex-col h-full" v-if="player?.elo_history">
             <CardHeader>
-              <CardTitle class="text-lg md:text-base lg:text-xl font-bold text-center">
+              <CardTitle
+                class="text-lg md:text-base lg:text-xl font-bold text-center"
+              >
                 {{ $t("pages.players.detail.elo_history") }}
               </CardTitle>
             </CardHeader>
-            <CardContent class="flex-1 min-h-[200px] sm:min-h-[250px] md:min-h-[300px]">
+            <CardContent
+              class="flex-1 min-h-[200px] sm:min-h-[250px] md:min-h-[300px]"
+            >
               <template v-if="player.elo_history.length > 0">
                 <PlayerEloChart :elo-history="player.elo_history" />
               </template>
@@ -305,7 +309,9 @@ const { isMobile } = useSidebar();
         >
           <Card class="flex flex-col h-full">
             <CardHeader>
-              <CardTitle class="text-lg md:text-base lg:text-xl font-bold text-center">
+              <CardTitle
+                class="text-lg md:text-base lg:text-xl font-bold text-center"
+              >
                 {{ $t("pages.players.detail.recent_wins_and_losses") }}
               </CardTitle>
             </CardHeader>
@@ -330,7 +336,9 @@ const { isMobile } = useSidebar();
         >
           <Card class="flex flex-col h-full">
             <CardHeader>
-              <CardTitle class="text-lg md:text-base lg:text-xl font-bold text-center">
+              <CardTitle
+                class="text-lg md:text-base lg:text-xl font-bold text-center"
+              >
                 {{ $t("pages.players.detail.weapon_kills") }}
               </CardTitle>
             </CardHeader>

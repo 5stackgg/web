@@ -65,42 +65,67 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                     <div class="flex items-center justify-between">
                       <span class="text-muted-foreground">Team Elo Avg:</span>
                       <span class="font-medium">
-                        {{ (eloChange.player_team_elo_avg as number).toLocaleString() }}
+                        {{
+                          (
+                            eloChange.player_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
                         vs
-                        {{ (eloChange.opponent_team_elo_avg as number).toLocaleString() }}
+                        {{
+                          (
+                            eloChange.opponent_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
                       </span>
                     </div>
                   </div>
                   <!-- Performance Multiplier -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Performance Multiplier:</span>
+                      <span class="text-muted-foreground"
+                        >Performance Multiplier:</span
+                      >
                       <span class="font-medium">
-                        {{ parseFloat(eloChange.performance_multiplier).toFixed(5) }}%
+                        {{
+                          parseFloat(eloChange.performance_multiplier).toFixed(
+                            5,
+                          )
+                        }}%
                       </span>
                     </div>
                   </div>
                   <!-- K/D/A -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Kills / Deaths / Assists:</span>
+                      <span class="text-muted-foreground"
+                        >Kills / Deaths / Assists:</span
+                      >
                       <span class="font-medium">
-                        {{ eloChange.kills }} / {{ eloChange.deaths }} / {{ eloChange.assists }}
+                        {{ eloChange.kills }} / {{ eloChange.deaths }} /
+                        {{ eloChange.assists }}
                       </span>
                     </div>
                   </div>
                   <!-- KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Kills + Assits / Deaths Ratio:</span>
-                      <span class="font-medium">{{ parseFloat(eloChange.kda).toFixed(2) }}</span>
+                      <span class="text-muted-foreground"
+                        >Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.kda).toFixed(2)
+                      }}</span>
                     </div>
                   </div>
                   <!-- Team Avg KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Team Avg Kills + Assits / Deaths Ratio:</span>
-                      <span class="font-medium">{{ parseFloat(eloChange.team_avg_kda).toFixed(2) }}</span>
+                      <span class="text-muted-foreground"
+                        >Team Avg Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.team_avg_kda).toFixed(2)
+                      }}</span>
                     </div>
                   </div>
                   <!-- Damage -->
@@ -109,7 +134,10 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                       <span class="text-muted-foreground">Damage:</span>
                       <span class="font-medium">
                         {{ eloChange.damage }}
-                        <span>({{ Math.round(eloChange.damage_percent * 100) }}% of teams damage)</span>
+                        <span
+                          >({{ Math.round(eloChange.damage_percent * 100) }}% of
+                          teams damage)</span
+                        >
                       </span>
                     </div>
                   </div>
@@ -120,7 +148,9 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         </div>
 
         <!-- Right: Status + Time -->
-        <div class="flex items-center space-x-2 text-[10px] text-muted-foreground">
+        <div
+          class="flex items-center space-x-2 text-[10px] text-muted-foreground"
+        >
           <Badge variant="outline" class="text-[10px]">
             {{ match.e_match_status.description }}
           </Badge>
@@ -131,7 +161,9 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
       </div>
 
       <!-- Desktop Header -->
-      <div class="hidden sm:flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div
+        class="hidden sm:flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+      >
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
           <Badge variant="secondary" class="text-[10px] sm:text-xs">
             {{ match.options.type }}
@@ -174,42 +206,67 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                     <div class="flex items-center justify-between">
                       <span class="text-muted-foreground">Team Elo Avg:</span>
                       <span class="font-medium">
-                        {{ (eloChange.player_team_elo_avg as number).toLocaleString() }}
+                        {{
+                          (
+                            eloChange.player_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
                         vs
-                        {{ (eloChange.opponent_team_elo_avg as number).toLocaleString() }}
+                        {{
+                          (
+                            eloChange.opponent_team_elo_avg as number
+                          ).toLocaleString()
+                        }}
                       </span>
                     </div>
                   </div>
                   <!-- Performance Multiplier -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Performance Multiplier:</span>
+                      <span class="text-muted-foreground"
+                        >Performance Multiplier:</span
+                      >
                       <span class="font-medium">
-                        {{ parseFloat(eloChange.performance_multiplier).toFixed(5) }}%
+                        {{
+                          parseFloat(eloChange.performance_multiplier).toFixed(
+                            5,
+                          )
+                        }}%
                       </span>
                     </div>
                   </div>
                   <!-- K/D/A -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Kills / Deaths / Assists:</span>
+                      <span class="text-muted-foreground"
+                        >Kills / Deaths / Assists:</span
+                      >
                       <span class="font-medium">
-                        {{ eloChange.kills }} / {{ eloChange.deaths }} / {{ eloChange.assists }}
+                        {{ eloChange.kills }} / {{ eloChange.deaths }} /
+                        {{ eloChange.assists }}
                       </span>
                     </div>
                   </div>
                   <!-- KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Kills + Assits / Deaths Ratio:</span>
-                      <span class="font-medium">{{ parseFloat(eloChange.kda).toFixed(2) }}</span>
+                      <span class="text-muted-foreground"
+                        >Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.kda).toFixed(2)
+                      }}</span>
                     </div>
                   </div>
                   <!-- Team Avg KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Team Avg Kills + Assits / Deaths Ratio:</span>
-                      <span class="font-medium">{{ parseFloat(eloChange.team_avg_kda).toFixed(2) }}</span>
+                      <span class="text-muted-foreground"
+                        >Team Avg Kills + Assits / Deaths Ratio:</span
+                      >
+                      <span class="font-medium">{{
+                        parseFloat(eloChange.team_avg_kda).toFixed(2)
+                      }}</span>
                     </div>
                   </div>
                   <!-- Damage -->
@@ -218,7 +275,10 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                       <span class="text-muted-foreground">Damage:</span>
                       <span class="font-medium">
                         {{ eloChange.damage }}
-                        <span>({{ Math.round(eloChange.damage_percent * 100) }}% of teams damage)</span>
+                        <span
+                          >({{ Math.round(eloChange.damage_percent * 100) }}% of
+                          teams damage)</span
+                        >
                       </span>
                     </div>
                   </div>
@@ -237,7 +297,9 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
             @click.stop="navigateToMatch(match.id, $event)"
           >
             <UserPlusIcon class="h-3 w-3 sm:h-4 sm:w-4" />
-            <span class="hidden sm:inline">{{ $t("match.options.table.join") }}</span>
+            <span class="hidden sm:inline">{{
+              $t("match.options.table.join")
+            }}</span>
             <span class="sm:hidden">Join</span>
           </Button>
 
@@ -261,7 +323,9 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
             ></TimeAgo>
             <template v-if="match.ended_at">
               <span class="hidden sm:inline">•</span>
-              <span class="hidden sm:inline">Duration: {{ getMatchDuration(match) }}</span>
+              <span class="hidden sm:inline"
+                >Duration: {{ getMatchDuration(match) }}</span
+              >
             </template>
           </div>
         </div>
@@ -324,7 +388,9 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
       </div>
 
       <!-- Desktop: Teams 3-column grid -->
-      <div class="hidden sm:grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 items-center">
+      <div
+        class="hidden sm:grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 items-center"
+      >
         <!-- Team 1 -->
         <div class="flex items-center space-x-2 lg:space-x-3">
           <div class="flex-shrink-0">
@@ -361,7 +427,9 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         </div>
 
         <!-- Center score -->
-        <div class="flex items-center justify-center order-first lg:order-none py-2 lg:py-0">
+        <div
+          class="flex items-center justify-center order-first lg:order-none py-2 lg:py-0"
+        >
           <div class="text-2xl md:text-3xl font-bold">
             <span :class="getScoreColorClasses(match.lineup_1.id)">{{
               getTeamScore(match, match.lineup_1.id)
@@ -578,15 +646,41 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
               {{ matchStats.lineup_1.name }} Stats
             </h5>
             <div class="overflow-x-auto flex-1 -mx-4 px-4">
-              <table class="w-full text-xs min-w-[320px] sm:min-w-[360px] h-full">
+              <table
+                class="w-full text-xs min-w-[320px] sm:min-w-[360px] h-full"
+              >
                 <thead>
                   <tr class="border-b border-border">
-                    <th class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium">Player</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">D</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">A</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14">DMG</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K/D</th>
+                    <th
+                      class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium"
+                    >
+                      Player
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      K
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      D
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      A
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14"
+                    >
+                      DMG
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      K/D
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -668,19 +762,29 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           }"
                         />
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
                     </tr>
@@ -697,19 +801,47 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
             v-if="matchStats.lineup_2"
             class="bg-muted/50 rounded-lg p-2 sm:p-4 border border-border min-h-[150px] sm:min-h-[200px] h-full flex flex-col"
           >
-            <h5 class="text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3">
+            <h5
+              class="text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3"
+            >
               {{ matchStats.lineup_2.name }} Stats
             </h5>
             <div class="overflow-x-auto flex-1 -mx-2 sm:-mx-4 px-2 sm:px-4">
-              <table class="w-full text-xs min-w-[320px] sm:min-w-[360px] h-full">
+              <table
+                class="w-full text-xs min-w-[320px] sm:min-w-[360px] h-full"
+              >
                 <thead>
                   <tr class="border-b border-border">
-                    <th class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium">Player</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">D</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">A</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14">DMG</th>
-                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K/D</th>
+                    <th
+                      class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium"
+                    >
+                      Player
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      K
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      D
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      A
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14"
+                    >
+                      DMG
+                    </th>
+                    <th
+                      class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
+                    >
+                      K/D
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -791,19 +923,29 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           }"
                         />
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
+                      <td
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
+                      >
                         -
                       </td>
                     </tr>

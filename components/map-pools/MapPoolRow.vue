@@ -7,6 +7,22 @@ import MapDisplay from "~/components/MapDisplay.vue";
 import MapForm from "~/components/map-pools/MapForm.vue";
 import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
 import { Pencil } from "lucide-vue-next";
+import { TableRow, TableCell } from "~/components/ui/table";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "~/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "~/components/ui/dropdown-menu";
+import { Button } from "~/components/ui/button";
+import { PaginationEllipsis } from "~/components/ui/pagination";
 </script>
 
 <template>

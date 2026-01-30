@@ -47,7 +47,9 @@ const circumference = 2 * Math.PI * radius;
         <span class="text-lg sm:text-xl font-bold leading-none">
           {{ value }}
         </span>
-        <span class="text-[8px] sm:text-[10px] uppercase tracking-wide text-muted-foreground">
+        <span
+          class="text-[8px] sm:text-[10px] uppercase tracking-wide text-muted-foreground"
+        >
           {{ label }}
         </span>
       </div>

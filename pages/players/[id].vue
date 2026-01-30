@@ -15,11 +15,16 @@ import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
-import { kdrColor, kdrStrokeColor } from "~/utilities/kdrColor";
-import { PlayIcon } from "lucide-vue-next";
+import { kdrStrokeColor } from "~/utilities/kdrColor";
+import { PlayIcon, MoreHorizontal } from "lucide-vue-next";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import RadialStat from "~/components/charts/RadialStat.vue";
-import Stat from "~/components/charts/Stat.vue";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "~/components/ui/dropdown-menu";
 
 definePageMeta({
   alias: ["/me"],
@@ -45,8 +50,8 @@ const { isMobile } = useSidebar();
           <div class="flex items-center justify-center gap-4">
             <div class="flex flex-col gap-2">
               <div class="flex items-center gap-3">
-                <PlayerChangeName :player="player" />
-                <PlayerSanctions :playerId="playerId" />
+                <PlayerChangeName :player="player" class="hidden sm:flex" />
+                <PlayerSanctions :playerId="playerId" class="hidden sm:flex" />
               </div>
               <div class="flex items-center gap-4">
                 <PlayerDisplay
@@ -99,12 +104,40 @@ const { isMobile } = useSidebar();
         </template>
 
         <template #actions>
+          <div class="md:hidden">
+            <!-- Mobile: Show dropdown menu with actions -->
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
+                <Button variant="outline" size="sm">
+                  <MoreHorizontal class="w-4 h-4 mr-1" />
+                  <span class="text-xs">Actions</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <div class="p-1">
+                  <PlayerChangeName :player="player" />
+                </div>
+                <template v-if="canSanction">
+                  <div class="p-1">
+                    <SanctionPlayer :player="player" />
+                  </div>
+                  <div class="p-1">
+                    <PlayerRoleForm :player="player" />
+                  </div>
+                </template>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <!-- Desktop: Show sanction and role buttons -->
           <template v-if="canSanction">
-            <SanctionPlayer :player="player" />
-            <PlayerRoleForm :player="player" />
+            <div class="hidden sm:flex items-center gap-2">
+              <SanctionPlayer :player="player" />
+              <PlayerRoleForm :player="player" />
+            </div>
           </template>
 
-          <div class="flex items-center gap-2">
+          <div class="items-center gap-2 hidden md:flex">
             <NuxtLink to="/play" v-if="me && player.steam_id === me.steam_id">
               <Button
                 variant="default"
@@ -139,7 +172,7 @@ const { isMobile } = useSidebar();
         >
           <Card class="flex flex-col h-full">
             <CardContent class="flex-1 p-4">
-              <div class="grid grid-cols-2 gap-4 h-full">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
                 <!-- Win Rate Column -->
                 <div class="flex flex-col items-center justify-center gap-4">
                   <RadialStat
@@ -155,24 +188,24 @@ const { isMobile } = useSidebar();
                   <div class="flex items-center gap-4">
                     <div class="flex flex-col items-center group/stat">
                       <span
-                        class="text-2xl font-bold text-green-500 group-hover/stat:scale-110 transition-transform duration-300"
+                        class="text-xl md:text-lg lg:text-2xl font-bold text-green-500 group-hover/stat:scale-110 transition-transform duration-300"
                         >{{ player.wins || 0 }}</span
                       >
                       <span
-                        class="text-[10px] text-muted-foreground uppercase tracking-wider"
+                        class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
                         >{{ $t("pages.players.detail.wins") }}</span
                       >
                     </div>
                     <div
-                      class="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent"
+                      class="w-px h-6 sm:h-8 bg-gradient-to-b from-transparent via-border to-transparent"
                     ></div>
                     <div class="flex flex-col items-center group/stat">
                       <span
-                        class="text-2xl font-bold text-red-500 group-hover/stat:scale-110 transition-transform duration-300"
+                        class="text-xl md:text-lg lg:text-2xl font-bold text-red-500 group-hover/stat:scale-110 transition-transform duration-300"
                         >{{ player.losses || 0 }}</span
                       >
                       <span
-                        class="text-[10px] text-muted-foreground uppercase tracking-wider"
+                        class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
                         >{{ $t("pages.players.detail.losses") }}</span
                       >
                     </div>
@@ -188,7 +221,7 @@ const { isMobile } = useSidebar();
                     :stroke-color="kdrStrokeColor(Number(kd))"
                   />
                   <div
-                    class="flex flex-wrap items-center justify-center gap-x-4 gap-y-3"
+                    class="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-2 gap-y-3"
                   >
                     <template
                       v-for="(stat, index) in combatStats"
@@ -196,19 +229,19 @@ const { isMobile } = useSidebar();
                     >
                       <div class="flex flex-col items-center group/stat">
                         <span
-                          class="text-2xl font-bold group-hover/stat:scale-110 transition-transform duration-300"
+                          class="text-lg md:text-base lg:text-xl font-bold group-hover/stat:scale-110 transition-transform duration-300"
                           :class="stat.colorClass"
                         >
                           {{ stat.value }}
                         </span>
                         <span
-                          class="text-[10px] text-muted-foreground uppercase tracking-wider"
+                          class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
                           >{{ stat.label }}</span
                         >
                       </div>
                       <div
                         v-if="index < combatStats.length - 1"
-                        class="w-px h-8 bg-gradient-to-b from-transparent via-border to-transparent"
+                        class="w-px h-6 sm:h-8 bg-gradient-to-b from-transparent via-border to-transparent"
                       ></div>
                     </template>
                   </div>
@@ -230,11 +263,11 @@ const { isMobile } = useSidebar();
         >
           <Card class="flex flex-col h-full" v-if="player?.elo_history">
             <CardHeader>
-              <CardTitle class="text-xl font-bold text-center">
+              <CardTitle class="text-lg md:text-base lg:text-xl font-bold text-center">
                 {{ $t("pages.players.detail.elo_history") }}
               </CardTitle>
             </CardHeader>
-            <CardContent class="flex-1 min-h-[300px]">
+            <CardContent class="flex-1 min-h-[200px] sm:min-h-[250px] md:min-h-[300px]">
               <template v-if="player.elo_history.length > 0">
                 <PlayerEloChart :elo-history="player.elo_history" />
               </template>
@@ -259,7 +292,7 @@ const { isMobile } = useSidebar();
       </div>
 
       <!-- Charts Section -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Recent Wins/Losses -->
         <Transition
           appear
@@ -272,13 +305,13 @@ const { isMobile } = useSidebar();
         >
           <Card class="flex flex-col h-full">
             <CardHeader>
-              <CardTitle class="text-xl font-bold text-center">
+              <CardTitle class="text-lg md:text-base lg:text-xl font-bold text-center">
                 {{ $t("pages.players.detail.recent_wins_and_losses") }}
               </CardTitle>
             </CardHeader>
             <CardContent class="flex flex-col h-full">
               <LastTenWinsAndLosses
-                class="max-h-[375px] w-full flex-grow"
+                class="max-h-[250px] sm:max-h-[300px] md:max-h-[375px] w-full flex-grow"
                 :steam_id="playerId"
               />
             </CardContent>
@@ -297,7 +330,7 @@ const { isMobile } = useSidebar();
         >
           <Card class="flex flex-col h-full">
             <CardHeader>
-              <CardTitle class="text-xl font-bold text-center">
+              <CardTitle class="text-lg md:text-base lg:text-xl font-bold text-center">
                 {{ $t("pages.players.detail.weapon_kills") }}
               </CardTitle>
             </CardHeader>
@@ -309,7 +342,7 @@ const { isMobile } = useSidebar();
                 "
                 class="text-center py-8 flex-grow flex items-center justify-center"
               >
-                <p class="text-muted-foreground">
+                <p class="text-sm md:text-base text-muted-foreground">
                   {{ $t("pages.players.detail.no_weapon_kills") }}
                 </p>
               </div>
@@ -333,7 +366,7 @@ const { isMobile } = useSidebar();
                             <img
                               :src="`/img/equipment/${getWeaponImageName(weapon.with)}.svg`"
                               :alt="weapon.with"
-                              class="w-14 h-14 group-hover/row:scale-110 transition-transform duration-300"
+                              class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 group-hover/row:scale-110 transition-transform duration-300"
                               @error="handleImageError"
                               :title="weapon.with"
                             />
@@ -391,7 +424,7 @@ const { isMobile } = useSidebar();
                 {{ $t("pages.players.detail.matches") }}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent class="p-0">
               <MatchesTable
                 :player="player"
                 :matches="playerWithMatches?.matches"
@@ -417,7 +450,7 @@ const { isMobile } = useSidebar();
                 {{ $t("pages.players.detail.tournaments") }}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent class="p-0">
               <div
                 v-if="!playerTournaments || playerTournaments.length === 0"
                 class="text-center py-8"

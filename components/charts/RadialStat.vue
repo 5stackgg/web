@@ -12,7 +12,7 @@ const circumference = 2 * Math.PI * radius;
 
 <template>
   <div class="flex flex-col items-center gap-2">
-    <div class="relative w-32 h-32">
+    <div class="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32">
       <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
         <!-- background ring -->
         <circle
@@ -44,10 +44,10 @@ const circumference = 2 * Math.PI * radius;
 
       <!-- center content -->
       <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <span class="text-xl font-bold leading-none">
+        <span class="text-lg sm:text-xl font-bold leading-none">
           {{ value }}
         </span>
-        <span class="text-[10px] uppercase tracking-wide text-muted-foreground">
+        <span class="text-[8px] sm:text-[10px] uppercase tracking-wide text-muted-foreground">
           {{ label }}
         </span>
       </div>

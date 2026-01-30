@@ -19,22 +19,23 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
     class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
     @click="navigateToMatch(match.id, $event)"
   >
-    <div class="p-6 flex flex-col gap-3">
-      <!-- Match Header -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <Badge variant="secondary" class="text-xs">
+    <div class="p-3 sm:p-4 md:p-6 flex flex-col gap-3">
+      <!-- Mobile Header: Tags at opposite ends -->
+      <div class="flex sm:hidden items-center justify-between">
+        <!-- Left: Type + ELO -->
+        <div class="flex items-center space-x-2">
+          <Badge variant="secondary" class="text-[10px]">
             {{ match.options.type }}
           </Badge>
 
           <!-- Elo Change Display -->
-          <TooltipProvider v-if="eloChange">
+          <TooltipProvider v-if="eloChange?.elo_change">
             <Tooltip>
               <TooltipTrigger as-child>
                 <Badge
                   variant="outline"
                   :class="[
-                    'text-xs font-semibold cursor-help',
+                    'text-[10px] font-semibold cursor-help',
                     eloChange.elo_change > 0
                       ? 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30'
                       : 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30',
@@ -48,7 +49,6 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                   <div class="font-semibold border-b border-border/50 pb-1">
                     Elo Change Details
                   </div>
-
                   <!-- Current Elo → Updated Elo -->
                   <div>
                     <div class="flex items-center justify-between">
@@ -60,90 +60,56 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                       </span>
                     </div>
                   </div>
-
                   <!-- Team Elo Averages -->
                   <div>
                     <div class="flex items-center justify-between">
                       <span class="text-muted-foreground">Team Elo Avg:</span>
                       <span class="font-medium">
-                        {{
-                          (
-                            eloChange.player_team_elo_avg as number
-                          ).toLocaleString()
-                        }}
+                        {{ (eloChange.player_team_elo_avg as number).toLocaleString() }}
                         vs
-                        {{
-                          (
-                            eloChange.opponent_team_elo_avg as number
-                          ).toLocaleString()
-                        }}
+                        {{ (eloChange.opponent_team_elo_avg as number).toLocaleString() }}
                       </span>
                     </div>
                   </div>
-
                   <!-- Performance Multiplier -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Performance Multiplier:</span
-                      >
-                      <span class="font-medium"
-                        >{{
-                          parseFloat(eloChange.performance_multiplier).toFixed(
-                            5,
-                          )
-                        }}%</span
-                      >
-                    </div>
-                  </div>
-
-                  <!-- K/D/A -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Kills / Deaths / Assists:</span
-                      >
+                      <span class="text-muted-foreground">Performance Multiplier:</span>
                       <span class="font-medium">
-                        {{ eloChange.kills }} / {{ eloChange.deaths }} /
-                        {{ eloChange.assists }}
+                        {{ parseFloat(eloChange.performance_multiplier).toFixed(5) }}%
                       </span>
                     </div>
                   </div>
-
+                  <!-- K/D/A -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Kills / Deaths / Assists:</span>
+                      <span class="font-medium">
+                        {{ eloChange.kills }} / {{ eloChange.deaths }} / {{ eloChange.assists }}
+                      </span>
+                    </div>
+                  </div>
                   <!-- KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Kills + Assits / Deaths Ratio:</span
-                      >
-                      <span class="font-medium">{{
-                        parseFloat(eloChange.kda).toFixed(2)
-                      }}</span>
+                      <span class="text-muted-foreground">Kills + Assits / Deaths Ratio:</span>
+                      <span class="font-medium">{{ parseFloat(eloChange.kda).toFixed(2) }}</span>
                     </div>
                   </div>
-
                   <!-- Team Avg KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Team Avg Kills + Assits / Deaths Ratio:</span
-                      >
-                      <span class="font-medium">{{
-                        parseFloat(eloChange.team_avg_kda).toFixed(2)
-                      }}</span>
+                      <span class="text-muted-foreground">Team Avg Kills + Assits / Deaths Ratio:</span>
+                      <span class="font-medium">{{ parseFloat(eloChange.team_avg_kda).toFixed(2) }}</span>
                     </div>
                   </div>
-
                   <!-- Damage -->
                   <div>
                     <div class="flex items-center justify-between">
                       <span class="text-muted-foreground">Damage:</span>
                       <span class="font-medium">
                         {{ eloChange.damage }}
-                        <span>
-                          ({{ Math.round(eloChange.damage_percent * 100) }}% of
-                          teams damage)
-                        </span>
+                        <span>({{ Math.round(eloChange.damage_percent * 100) }}% of teams damage)</span>
                       </span>
                     </div>
                   </div>
@@ -152,22 +118,132 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
             </Tooltip>
           </TooltipProvider>
         </div>
-        <div class="flex items-center space-x-4">
+
+        <!-- Right: Status + Time -->
+        <div class="flex items-center space-x-2 text-[10px] text-muted-foreground">
+          <Badge variant="outline" class="text-[10px]">
+            {{ match.e_match_status.description }}
+          </Badge>
+          <TimeAgo
+            :date="match.started_at || match.scheduled_at || match.created_at"
+          ></TimeAgo>
+        </div>
+      </div>
+
+      <!-- Desktop Header -->
+      <div class="hidden sm:flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
+          <Badge variant="secondary" class="text-[10px] sm:text-xs">
+            {{ match.options.type }}
+          </Badge>
+
+          <!-- Elo Change Display -->
+          <TooltipProvider v-if="eloChange?.elo_change">
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <Badge
+                  variant="outline"
+                  :class="[
+                    'text-[10px] sm:text-xs font-semibold cursor-help',
+                    eloChange.elo_change > 0
+                      ? 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30'
+                      : 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30',
+                  ]"
+                >
+                  {{ formatEloChange(eloChange.elo_change) }}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent class="max-w-xs">
+                <div>
+                  <div class="font-semibold border-b border-border/50 pb-1">
+                    Elo Change Details
+                  </div>
+                  <!-- Current Elo → Updated Elo -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Elo:</span>
+                      <span class="font-medium">
+                        {{ (eloChange.current_elo as number).toLocaleString() }}
+                        →
+                        {{ (eloChange.updated_elo as number).toLocaleString() }}
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Team Elo Averages -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Team Elo Avg:</span>
+                      <span class="font-medium">
+                        {{ (eloChange.player_team_elo_avg as number).toLocaleString() }}
+                        vs
+                        {{ (eloChange.opponent_team_elo_avg as number).toLocaleString() }}
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Performance Multiplier -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Performance Multiplier:</span>
+                      <span class="font-medium">
+                        {{ parseFloat(eloChange.performance_multiplier).toFixed(5) }}%
+                      </span>
+                    </div>
+                  </div>
+                  <!-- K/D/A -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Kills / Deaths / Assists:</span>
+                      <span class="font-medium">
+                        {{ eloChange.kills }} / {{ eloChange.deaths }} / {{ eloChange.assists }}
+                      </span>
+                    </div>
+                  </div>
+                  <!-- KDA -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Kills + Assits / Deaths Ratio:</span>
+                      <span class="font-medium">{{ parseFloat(eloChange.kda).toFixed(2) }}</span>
+                    </div>
+                  </div>
+                  <!-- Team Avg KDA -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Team Avg Kills + Assits / Deaths Ratio:</span>
+                      <span class="font-medium">{{ parseFloat(eloChange.team_avg_kda).toFixed(2) }}</span>
+                    </div>
+                  </div>
+                  <!-- Damage -->
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted-foreground">Damage:</span>
+                      <span class="font-medium">
+                        {{ eloChange.damage }}
+                        <span>({{ Math.round(eloChange.damage_percent * 100) }}% of teams damage)</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
           <!-- Join Button - Prominent Position -->
           <Button
             v-if="canJoinMatch"
             variant="default"
             size="sm"
-            class="flex items-center space-x-2"
+            class="flex items-center space-x-1 sm:space-x-2 text-xs"
             @click.stop="navigateToMatch(match.id, $event)"
           >
-            <UserPlusIcon class="h-4 w-4" />
-            <span>{{ $t("match.options.table.join") }}</span>
+            <UserPlusIcon class="h-3 w-3 sm:h-4 sm:w-4" />
+            <span class="hidden sm:inline">{{ $t("match.options.table.join") }}</span>
+            <span class="sm:hidden">Join</span>
           </Button>
 
           <!-- moved player toggle below maps -->
           <div
-            class="flex items-center space-x-2 text-sm text-muted-foreground"
+            class="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground"
           >
             <StreamEmbed
               :streams="match.streams"
@@ -176,7 +252,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
               v-if="match.streams?.length > 0"
             />
 
-            <Badge variant="outline" class="text-xs">
+            <Badge variant="outline" class="text-[10px] sm:text-xs">
               {{ match.e_match_status.description }}
             </Badge>
 
@@ -184,17 +260,73 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
               :date="match.started_at || match.scheduled_at || match.created_at"
             ></TimeAgo>
             <template v-if="match.ended_at">
-              <span>•</span>
-              <span>Duration: {{ getMatchDuration(match) }}</span>
+              <span class="hidden sm:inline">•</span>
+              <span class="hidden sm:inline">Duration: {{ getMatchDuration(match) }}</span>
             </template>
           </div>
         </div>
       </div>
 
-      <!-- Team Names + Score (no player tables) -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-        <!-- Team 1 name -->
-        <div class="flex items-center space-x-3">
+      <!-- Mobile: Teams vertical column - Team 1 / Score / Team 2 -->
+      <div class="flex sm:hidden flex-col items-center gap-2">
+        <!-- Team 1 -->
+        <div class="flex items-center space-x-2">
+          <div class="flex-shrink-0">
+            <div
+              class="uppercase w-8 h-8 bg-gradient-to-br from-primary via-primary/90 to-primary/70 rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xs shadow-lg border border-primary/20"
+            >
+              {{ getTeamInitials(match.lineup_1.name) }}
+            </div>
+          </div>
+          <h3 class="font-semibold text-foreground text-sm">
+            <span
+              :class="{
+                'border-b border-primary/40':
+                  playerLineup === match.lineup_1_id,
+              }"
+            >
+              {{ match.lineup_1.name }}
+            </span>
+          </h3>
+        </div>
+
+        <!-- Score -->
+        <div class="text-2xl font-bold">
+          <span :class="getScoreColorClasses(match.lineup_1.id)">{{
+            getTeamScore(match, match.lineup_1.id)
+          }}</span>
+          <span class="mx-2 text-muted-foreground">-</span>
+          <span :class="getScoreColorClasses(match.lineup_2.id)">{{
+            getTeamScore(match, match.lineup_2.id)
+          }}</span>
+        </div>
+
+        <!-- Team 2 -->
+        <div class="flex items-center space-x-2">
+          <h3 class="font-semibold text-foreground text-sm">
+            <span
+              :class="{
+                'border-b border-primary/40':
+                  playerLineup === match.lineup_2_id,
+              }"
+            >
+              {{ match.lineup_2.name }}
+            </span>
+          </h3>
+          <div class="flex-shrink-0">
+            <div
+              class="uppercase w-8 h-8 bg-gradient-to-br from-destructive via-destructive/90 to-destructive/70 rounded-lg flex items-center justify-center text-destructive-foreground font-bold text-xs shadow-lg border border-destructive/20"
+            >
+              {{ getTeamInitials(match.lineup_2.name) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop: Teams 3-column grid -->
+      <div class="hidden sm:grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 items-center">
+        <!-- Team 1 -->
+        <div class="flex items-center space-x-2 lg:space-x-3">
           <div class="flex-shrink-0">
             <div
               class="uppercase w-10 h-10 bg-gradient-to-br from-primary via-primary/90 to-primary/70 rounded-xl flex items-center justify-center text-primary-foreground font-bold text-lg shadow-lg border-2 border-primary/20"
@@ -229,7 +361,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         </div>
 
         <!-- Center score -->
-        <div class="flex items-center justify-center">
+        <div class="flex items-center justify-center order-first lg:order-none py-2 lg:py-0">
           <div class="text-2xl md:text-3xl font-bold">
             <span :class="getScoreColorClasses(match.lineup_1.id)">{{
               getTeamScore(match, match.lineup_1.id)
@@ -241,7 +373,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
           </div>
         </div>
 
-        <!-- Team 2 name -->
+        <!-- Team 2 -->
         <div class="flex items-center space-x-3 justify-end">
           <div class="flex-1 min-w-0">
             <h3 class="font-semibold text-foreground truncate text-right">
@@ -445,16 +577,16 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
             <h5 class="text-sm font-semibold text-foreground mb-3">
               {{ matchStats.lineup_1.name }} Stats
             </h5>
-            <div class="overflow-x-auto flex-1">
-              <table class="w-full text-xs min-w-[400px] h-full">
+            <div class="overflow-x-auto flex-1 -mx-4 px-4">
+              <table class="w-full text-xs min-w-[320px] sm:min-w-[360px] h-full">
                 <thead>
                   <tr class="border-b border-border">
-                    <th class="text-left py-2 px-3 font-medium">Player</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">K</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">D</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">A</th>
-                    <th class="text-center py-2 px-3 font-medium w-16">DMG</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">K/D</th>
+                    <th class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium">Player</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">D</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">A</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14">DMG</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K/D</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -470,30 +602,30 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           lineupPlayer.player?.steam_id === player.steam_id,
                       }"
                     >
-                      <td class="py-3 px-3">
+                      <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
                         ></PlayerDisplay>
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           lineupPlayer.player.kills_aggregate?.aggregate
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           lineupPlayer.player.deaths_aggregate?.aggregate
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           lineupPlayer.player.assists_aggregate?.aggregate
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           Math.round(
                             lineupPlayer.player.damage_dealt_aggregate
@@ -501,7 +633,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           )
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           getKDRatio(
                             lineupPlayer.player.kills_aggregate?.aggregate
@@ -525,7 +657,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                     :key="`empty-${i}`"
                   >
                     <tr class="border-b border-border/50 last:border-b-0">
-                      <td class="py-3 px-3">
+                      <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :show-flag="false"
                           :show-role="false"
@@ -536,19 +668,19 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           }"
                         />
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
                     </tr>
@@ -563,21 +695,21 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         <div class="space-y-2">
           <div
             v-if="matchStats.lineup_2"
-            class="bg-muted/50 rounded-lg p-4 border border-border min-h-[200px] h-full flex flex-col"
+            class="bg-muted/50 rounded-lg p-2 sm:p-4 border border-border min-h-[150px] sm:min-h-[200px] h-full flex flex-col"
           >
-            <h5 class="text-sm font-semibold text-foreground mb-3">
+            <h5 class="text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3">
               {{ matchStats.lineup_2.name }} Stats
             </h5>
-            <div class="overflow-x-auto flex-1">
-              <table class="w-full text-xs min-w-[400px] h-full">
+            <div class="overflow-x-auto flex-1 -mx-2 sm:-mx-4 px-2 sm:px-4">
+              <table class="w-full text-xs min-w-[320px] sm:min-w-[360px] h-full">
                 <thead>
                   <tr class="border-b border-border">
-                    <th class="text-left py-2 px-3 font-medium">Player</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">K</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">D</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">A</th>
-                    <th class="text-center py-2 px-3 font-medium w-16">DMG</th>
-                    <th class="text-center py-2 px-3 font-medium w-12">K/D</th>
+                    <th class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium">Player</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">D</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">A</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14">DMG</th>
+                    <th class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10">K/D</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -593,30 +725,30 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           lineupPlayer.player?.steam_id === player.steam_id,
                       }"
                     >
-                      <td class="py-3 px-3">
+                      <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
                         ></PlayerDisplay>
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           lineupPlayer.player.kills_aggregate?.aggregate
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           lineupPlayer.player.deaths_aggregate?.aggregate
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           lineupPlayer.player.assists_aggregate?.aggregate
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           Math.round(
                             lineupPlayer.player.damage_dealt_aggregate
@@ -624,7 +756,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           )
                         }}
                       </td>
-                      <td class="text-center py-3 px-3">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           getKDRatio(
                             lineupPlayer.player.kills_aggregate?.aggregate
@@ -648,7 +780,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                     :key="`empty-${i}`"
                   >
                     <tr class="border-b border-border/50 last:border-b-0">
-                      <td class="py-3 px-3">
+                      <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :show-flag="false"
                           :show-role="false"
@@ -659,19 +791,19 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
                           }"
                         />
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
-                      <td class="text-center py-3 px-3 text-muted-foreground">
+                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground">
                         -
                       </td>
                     </tr>

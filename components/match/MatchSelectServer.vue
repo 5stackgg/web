@@ -65,6 +65,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { e_server_types_enum } from "~/generated/zeus";
 
 export default {
   props: {
@@ -78,7 +79,13 @@ export default {
       servers: {
         query: typedGql("subscription")({
           servers: [
-            {},
+            {
+              where: {
+                type : {
+                  _eq: e_server_types_enum.Ranked
+                }
+              }
+            },
             {
               id: true,
               host: true,

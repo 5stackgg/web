@@ -124,6 +124,7 @@
         @create-file="$emit('create-file', $event)"
         @create-folder="$emit('create-folder', $event)"
         @delete="$emit('delete', $event)"
+        @rename-item="$emit('rename-item', $event)"
         @drop-files="$emit('drop-files', $event)"
         @move-item="$emit('move-item', $event)"
       />
@@ -248,6 +249,27 @@ async function confirmInlineCreate() {
 function cancelInlineCreate() {
   store.cancelInlineCreate();
   inlineCreateName.value = "";
+}
+
+async function confirmRename() {
+  if (renameName.value.trim()) {
+    await store.confirmInlineRename(renameName.value.trim());
+  }
+  renameName.value = "";
+}
+
+function cancelRename() {
+  store.cancelInlineRename();
+  renameName.value = "";
+}
+
+function handleRenameBlur() {
+  handleInlineBlur(
+    () => confirmRename(),
+    () => cancelRename(),
+    renameName.value,
+    props.item.name,
+  );
 }
 
 function startCreateFile() {

@@ -90,6 +90,7 @@
           @select="handleSelect"
           @edit-file="handleEditFile"
           @delete="handleDelete"
+          @rename-item="handleRename"
           @drop-files="handleDropFiles"
           @move-item="handleMoveItem"
         />
@@ -387,6 +388,7 @@ const {
   handleSelect,
   handleEditFile,
   handleDelete,
+  handleRename,
   handleDropFiles,
   handleMoveItem,
   handleCreateFileInRoot,

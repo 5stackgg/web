@@ -62,6 +62,10 @@ export function useFileTreeInteractions() {
     await store.deleteItem(item.path);
   }
 
+  async function handleRename(item: FileItem) {
+    store.startInlineRename(item.path, item.name);
+  }
+
   async function handleDropFiles(data: { files: File[]; targetPath: string }) {
     await store.uploadFilesWithPaths(
       data.files.map((f) => ({ file: f, relativePath: f.name })),
@@ -109,6 +113,7 @@ export function useFileTreeInteractions() {
     handleSelect,
     handleEditFile,
     handleDelete,
+    handleRename,
     handleDropFiles,
     handleMoveItem,
     // Create operations

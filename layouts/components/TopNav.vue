@@ -40,7 +40,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
 
 <template>
   <nav
-    class="text-sm w-full bg-[#28282b] border-t border-[#3a3a3d] border-b-2 border-[#18181b] shadow-lg flex items-center justify-between px-4 z-50 relative sticky top-0"
+    class="text-sm w-full bg-[#28282b] border-t border-[#3a3a3d] border-b-2 border-[#18181b] shadow-lg flex items-center justify-between px-4 z-50 sticky top-0"
   >
     <div class="flex items-center gap-2 relative">
       <NuxtLink

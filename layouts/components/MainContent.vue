@@ -23,10 +23,10 @@ const containContentValue = computed(() => containContent?.value ?? true);
       :open="rightSidebarOpen"
       @update:open="setRightSidebarOpen"
       side="right"
-      class="!min-h-[calc(100svh-var(--header-height))]"
+      class="min-h-0 h-full"
     >
       <SidebarMobileSync />
-      <SidebarInset class="!min-h-[calc(100svh-var(--header-height))]">
+      <SidebarInset class="overflow-visible min-h-0 h-full">
         <!-- todo fix bg color bg-muted/10 -->
         <div
           class="p-4 w-full self-center"
@@ -47,13 +47,14 @@ const containContentValue = computed(() => containContent?.value ?? true);
 <style scoped>
 /* Override SidebarProvider's --sidebar-height and --sidebar-width variables */
 .main-content-wrapper :deep(.group\/sidebar-wrapper) {
-  --sidebar-height: calc(100svh - var(--header-height)) !important;
+  --sidebar-height: 100% !important;
   --sidebar-width: 22rem !important;
+  min-height: 0 !important;
 }
 
 /* Define sidebar height variable for right sidebar group */
 .main-content-wrapper :deep(.main-content-sidebar.group[data-side="right"]) {
-  --sidebar-height: calc(100svh - var(--header-height));
+  --sidebar-height: 100%;
 }
 
 /* Override the fixed sidebar div positioning */
@@ -62,7 +63,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
     .main-content-sidebar.group[data-side="right"]
       > div[class*="fixed"][class*="inset-y-0"]
   ) {
-  top: var(--header-height) !important;
+  top: 0 !important;
   bottom: auto !important;
 }
 </style>

@@ -43,15 +43,13 @@ provide("containContent", containContent);
   <SidebarProvider>
     <AppSidebar v-if="showLeftNav" />
 
-    <SidebarInset>
+    <SidebarInset class="flex flex-col overflow-auto" style="height: 100svh">
       <TopNav v-if="!showLeftNav" />
       <AppHeader class="px-6" v-if="showLeftNav" />
 
-      <div class="flex flex-1 flex-col">
-        <MainContent>
-          <slot></slot>
-        </MainContent>
-      </div>
+      <MainContent class="flex-1">
+        <slot></slot>
+      </MainContent>
     </SidebarInset>
   </SidebarProvider>
 

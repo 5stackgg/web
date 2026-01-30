@@ -12,12 +12,20 @@ export function useFileTreeUtilities() {
   const contextMenuPosition = ref({ x: 0, y: 0 });
 
   let isSwitchingInput = false;
+  let contextMenuJustOpened = false;
 
   function markSwitchingInput() {
     isSwitchingInput = true;
     setTimeout(() => {
       isSwitchingInput = false;
     }, 150);
+  }
+
+  function markContextMenuOpened() {
+    contextMenuJustOpened = true;
+    setTimeout(() => {
+      contextMenuJustOpened = false;
+    }, 300);
   }
 
   // Inline input utilities
@@ -56,8 +64,8 @@ export function useFileTreeUtilities() {
     }
 
     setTimeout(() => {
-      // Skip if we're switching to another input (prevents interference)
-      if (isSwitchingInput) {
+      // Skip if we're switching to another input or context menu just opened
+      if (isSwitchingInput || contextMenuJustOpened) {
         return;
       }
 
@@ -77,6 +85,7 @@ export function useFileTreeUtilities() {
     event.stopPropagation();
     contextMenuPosition.value = { x: event.clientX, y: event.clientY };
     contextMenuOpen.value = true;
+    markContextMenuOpened();
   }
 
   function closeContextMenu() {

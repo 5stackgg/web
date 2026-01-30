@@ -82,11 +82,17 @@ export function useFileTreeInteractions() {
 
   // Create operations
   function handleCreateFileInRoot() {
-    store.startInlineCreate("", "file");
+    // Delay to allow context menu to close first
+    setTimeout(() => {
+      store.startInlineCreate("", "file");
+    }, 100);
   }
 
   function handleCreateFolderInRoot() {
-    store.startInlineCreate("", "directory");
+    // Delay to allow context menu to close first
+    setTimeout(() => {
+      store.startInlineCreate("", "directory");
+    }, 100);
   }
 
   function openUploadDialog() {

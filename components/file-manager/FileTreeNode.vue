@@ -271,11 +271,17 @@ function handleRenameBlur() {
 }
 
 function startCreateFile() {
-  store.startInlineCreate(props.item.path, "file");
+  // Delay to allow context menu to close first
+  setTimeout(() => {
+    store.startInlineCreate(props.item.path, "file");
+  }, 100);
 }
 
 function startCreateFolder() {
-  store.startInlineCreate(props.item.path, "directory");
+  // Delay to allow context menu to close first
+  setTimeout(() => {
+    store.startInlineCreate(props.item.path, "directory");
+  }, 100);
 }
 
 const expanded = computed(() => store.expandedPaths.has(props.item.path));

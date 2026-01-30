@@ -13,6 +13,7 @@
           <Label for="dir-name">Directory Name</Label>
           <Input
             id="dir-name"
+            ref="inputRef"
             v-model="dirName"
             placeholder="my-directory"
             @keyup.enter="handleCreate"
@@ -36,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,6 +62,7 @@ const emit = defineEmits<{
 
 const store = useFileManagerStore();
 const dirName = ref("");
+const inputRef = ref<InstanceType<typeof Input> | null>(null);
 
 watch(
   () => props.open,
@@ -68,6 +70,10 @@ watch(
     if (!isOpen) {
       dirName.value = "";
       store.clearError();
+    } else {
+      nextTick(() => {
+        inputRef.value?.$el?.focus();
+      });
     }
   },
 );

@@ -41,7 +41,6 @@
         @keydown.escape="cancelRename"
         @blur="handleRenameBlur"
         @click.stop
-        autofocus
       />
       <span v-else class="text-sm truncate">{{ item.name }}</span>
     </div>
@@ -112,7 +111,6 @@
           @keydown.enter="confirmInlineCreate"
           @keydown.escape="cancelInlineCreate"
           @blur="handleInlineBlur"
-          autofocus
         />
       </div>
       <FileTreeNode

@@ -121,5 +121,8 @@ export function useFileTreeInteractions() {
     handleCreateFolderInRoot,
     openUploadDialog,
     refresh,
+    // Inline utilities
+    focusInlineInput,
+    handleInlineBlur,
   };
 }

@@ -11,6 +11,7 @@
           <Label for="file-name">File Name</Label>
           <Input
             id="file-name"
+            ref="inputRef"
             v-model="fileName"
             placeholder="my-file.txt"
             @keyup.enter="handleCreate"
@@ -34,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,6 +63,7 @@ const store = useFileManagerStore();
 const fileName = ref("");
 const localError = ref<string | null>(null);
 const isCreating = ref(false);
+const inputRef = ref<InstanceType<typeof Input> | null>(null);
 
 watch(
   () => props.open,
@@ -69,6 +71,10 @@ watch(
     if (!isOpen) {
       fileName.value = "";
       localError.value = null;
+    } else {
+      nextTick(() => {
+        inputRef.value?.$el?.focus();
+      });
     }
   },
 );

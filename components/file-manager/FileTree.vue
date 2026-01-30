@@ -118,7 +118,6 @@
             @keydown.enter.prevent="confirmRootInlineCreate"
             @keydown.escape="cancelRootInlineCreate"
             @blur="handleRootInlineBlur"
-            :autofocus="true"
           />
         </div>
       </div>
@@ -395,6 +394,8 @@ const {
   handleCreateFolderInRoot,
   openUploadDialog,
   refresh,
+  focusInlineInput,
+  handleInlineBlur,
 } = useFileTreeInteractions();
 
 // Upload dialog state
@@ -414,30 +415,6 @@ function formatBytes(bytes: number): string {
 const rootInlineCreateName = ref("");
 const rootInlineInput = ref<InstanceType<typeof Input> | null>(null);
 
-let dummyFocusTimeout: ReturnType<typeof setTimeout> | null = null;
-
-// Helper to get the real input element from the component ref
-function getRootInlineInputEl(): HTMLInputElement | undefined {
-  // Try to handle several possible component structures
-  if (
-    rootInlineInput.value &&
-    "$el" in rootInlineInput.value &&
-    rootInlineInput.value.$el instanceof HTMLElement
-  ) {
-    // Most likely case, Vuetify or similar
-    return rootInlineInput.value.$el as HTMLInputElement;
-  }
-  // Shadcn/Vue/Shallow component, fallback to ref on root
-  if ((rootInlineInput.value as any)?.$refs?.input) {
-    return (rootInlineInput.value as any).$refs.input as HTMLInputElement;
-  }
-  // Next tick: check if Input passes through ref directly
-  if ((rootInlineInput.value as any) instanceof HTMLInputElement) {
-    return rootInlineInput.value as any as HTMLInputElement;
-  }
-  return undefined;
-}
-
 // Watch for pending create at root level, focus input when it appears just like FileTreeNode!
 watch(
   () => store.pendingCreate,
@@ -446,34 +423,21 @@ watch(
     if (pending?.parentPath === "") {
       rootInlineCreateName.value = "";
       await nextTick();
-      const inputEl = getRootInlineInputEl();
-      if (inputEl && typeof inputEl.focus === "function") {
-        inputEl.focus();
-        // Scroll into view to help UX if needed
-        inputEl.select?.();
-        inputEl.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
-      }
+      focusInlineInput(rootInlineInput);
     }
   },
 );
 
 // Blur handler: confirm or cancel
 function handleRootInlineBlur() {
-  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
-  dummyFocusTimeout = setTimeout(() => {
-    // If still in create mode & value empty, cancel. Otherwise confirm.
-    if (store.pendingCreate?.parentPath === "") {
-      if (rootInlineCreateName.value.trim()) {
-        confirmRootInlineCreate();
-      } else {
-        cancelRootInlineCreate();
-      }
-    }
-  }, 120);
+  handleInlineBlur(
+    confirmRootInlineCreate,
+    cancelRootInlineCreate,
+    rootInlineCreateName.value,
+  );
 }
 
 async function confirmRootInlineCreate() {
-  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
   if (rootInlineCreateName.value.trim()) {
     await store.confirmInlineCreate(rootInlineCreateName.value.trim());
   }
@@ -481,7 +445,6 @@ async function confirmRootInlineCreate() {
 }
 
 function cancelRootInlineCreate() {
-  if (dummyFocusTimeout) clearTimeout(dummyFocusTimeout);
   store.cancelInlineCreate();
   rootInlineCreateName.value = "";
 }

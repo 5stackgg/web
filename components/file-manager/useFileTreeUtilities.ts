@@ -11,17 +11,29 @@ export function useFileTreeUtilities() {
   const contextMenuOpen = ref(false);
   const contextMenuPosition = ref({ x: 0, y: 0 });
 
+  let isSwitchingInput = false;
+
+  function markSwitchingInput() {
+    isSwitchingInput = true;
+    setTimeout(() => {
+      isSwitchingInput = false;
+    }, 150);
+  }
+
   // Inline input utilities
   /**
    * Focus an inline input element and select its contents
    */
   function focusInlineInput(inputRef: Ref<InstanceType<any> | null>) {
+    markSwitchingInput();
     nextTick(() => {
-      const inputEl = inputRef.value?.$el as HTMLInputElement;
-      if (inputEl && typeof inputEl.focus === "function") {
-        inputEl.focus();
-        inputEl.select?.();
-      }
+      setTimeout(() => {
+        const inputEl = inputRef.value?.$el as HTMLInputElement;
+        if (inputEl && typeof inputEl.focus === "function") {
+          inputEl.focus();
+          inputEl.select?.();
+        }
+      }, 50);
     });
   }
 
@@ -44,6 +56,11 @@ export function useFileTreeUtilities() {
     }
 
     setTimeout(() => {
+      // Skip if we're switching to another input (prevents interference)
+      if (isSwitchingInput) {
+        return;
+      }
+
       if (currentName !== undefined && value.trim() !== currentName) {
         confirmFn();
       } else if (value.trim()) {

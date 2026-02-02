@@ -27,7 +27,7 @@ __metadata:
     "@vee-validate/zod": "npm:^4.15.0"
     "@vite-pwa/nuxt": "npm:^1.0.0"
     "@vue/apollo-composable": "npm:^4.2.2"
-    "@vueuse/core": "npm:^14.1.0"
+    "@vueuse/core": "npm:^14.2.0"
     ansi-to-html: "npm:^0.7.2"
     autoprefixer: "npm:^10.4.21"
     aws4fetch: "npm:^1.0.20"
@@ -4274,6 +4274,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vueuse/core@npm:^14.2.0":
+  version: 14.2.0
+  resolution: "@vueuse/core@npm:14.2.0"
+  dependencies:
+    "@types/web-bluetooth": "npm:^0.0.21"
+    "@vueuse/metadata": "npm:14.2.0"
+    "@vueuse/shared": "npm:14.2.0"
+  peerDependencies:
+    vue: ^3.5.0
+  checksum: 10c0/5568edc8f6850e5df5b27ce42adf1b6c0e8cf6bd6f6ba3fab4c1f058b52d6cde95d948296456072a4df218c50406bd470656ca82da33e8ad4bcb0e6dcc42a973
+  languageName: node
+  linkType: hard
+
 "@vueuse/metadata@npm:10.11.1":
   version: 10.11.1
   resolution: "@vueuse/metadata@npm:10.11.1"
@@ -4292,6 +4305,13 @@ __metadata:
   version: 14.1.0
   resolution: "@vueuse/metadata@npm:14.1.0"
   checksum: 10c0/983296b13dc979e8a18831315631e0d08934e655edd0d12073c06512228a5a5140af0671eb28b20068ef42c55312a58287a7d51314427d2edcbbf0c38f5994c8
+  languageName: node
+  linkType: hard
+
+"@vueuse/metadata@npm:14.2.0":
+  version: 14.2.0
+  resolution: "@vueuse/metadata@npm:14.2.0"
+  checksum: 10c0/1c895d095361b2629edfe37acf6fb7ac3f67a03e588362a11a59dd59ff1ec31ec4ae8a3bc06ed9c371a93e77d40e774cb718897edf4cf994a68331b0cdb57e40
   languageName: node
   linkType: hard
 
@@ -4319,6 +4339,15 @@ __metadata:
   peerDependencies:
     vue: ^3.5.0
   checksum: 10c0/642ca681ffea7bf24de970bed6580fafc01bd66a4a185f8eb05ddc2450265f1ede86b79b2d8660d22d39ec3f498658f9fedadf2606dfd94d730d443bb0b10f2a
+  languageName: node
+  linkType: hard
+
+"@vueuse/shared@npm:14.2.0":
+  version: 14.2.0
+  resolution: "@vueuse/shared@npm:14.2.0"
+  peerDependencies:
+    vue: ^3.5.0
+  checksum: 10c0/39c3ffc7d7b2a3ce3a85ac099b2eb9e6bbf7b445958d25c8befc99a5dcea84f21f78a8dd2b689dd2e04910b7f81b33e5914f8e6e9be809557e5f9ef9c7ed217c
   languageName: node
   linkType: hard
 

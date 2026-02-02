@@ -2,14 +2,16 @@
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 import TimeAgo from "~/components/TimeAgo.vue";
+import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
 </script>
 
 <template>
-  <div class="flex gap-2 items-center">
+  <div class="flex gap-3 items-start">
+    <!-- Status indicator with tooltip -->
     <FiveStackToolTip>
       <template #trigger>
         <div
-          class="h-2 w-2 rounded-full relative"
+          class="h-2 w-2 rounded-full relative mt-1"
           :class="{
             ['bg-red-600']:
               gameServerNode.status ===
@@ -21,7 +23,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
                 e_game_server_node_statuses_enum.Setup ||
               gameServerNode.status ===
                 e_game_server_node_statuses_enum.NotAcceptingNewMatches,
-            ['bg-orange-600']: showMaxCPUFrequencyWarning,
+            ['bg-orange-400']: showMaxCPUFrequencyWarning,
           }"
         >
           <span
@@ -77,93 +79,38 @@ import TimeAgo from "~/components/TimeAgo.vue";
           {{ $t("pages.game_server_nodes.status.not_accepting") }}
         </template>
       </div>
-
-      <div
-        class="flex items-center gap-4 text-xs"
-        v-if="gameServerNode.status !== e_game_server_node_statuses_enum.Setup"
-      >
-        <div class="flex items-center gap-1">
-          <div class="font-medium">{{ $t("game_server.cpu_model") }}:</div>
-          <div class="text-muted-foreground">
-            {{ gameServerNode.cpu_frequency_info.model || "-" }}
-          </div>
-        </div>
-        <span class="text-muted-foreground">|</span>
-        <div class="flex items-center gap-1">
-          <div class="font-medium">{{ $t("game_server.cpu_sockets") }}:</div>
-          <div class="text-muted-foreground">
-            {{ gameServerNode.cpu_sockets || "-" }}
-          </div>
-        </div>
-        <span class="text-muted-foreground">|</span>
-        <div class="flex items-center gap-1">
-          <div class="font-medium">
-            {{ $t("game_server.cpu_cores_per_socket") }}:
-          </div>
-          <div class="text-muted-foreground">
-            {{ gameServerNode.cpu_cores_per_socket || "-" }}
-          </div>
-        </div>
-        <span class="text-muted-foreground">|</span>
-        <div class="flex items-center gap-1">
-          <div class="font-medium">{{ $t("game_server.cpu_frequency") }}:</div>
-          <div
-            class="text-muted-foreground"
-            :class="{ 'text-red-500': showMaxCPUFrequencyWarning }"
-          >
-            <FiveStackToolTip>
-              <template #trigger>
-                <div class="text-muted-foreground">
-                  {{ maxFrequency ? `${maxFrequency}GHz` : "-" }}
-                </div>
-              </template>
-              <div class="text-red-500">
-                {{ $t("game_server.cpu_frequency_warning") }}
-              </div>
-            </FiveStackToolTip>
-          </div>
-        </div>
-        <span class="text-muted-foreground">|</span>
-        <div class="flex items-center gap-1">
-          <div class="font-medium">
-            {{ $t("game_server.cpu_threads_per_core") }}:
-          </div>
-          <div class="text-muted-foreground">
-            {{ gameServerNode.cpu_threads_per_core || "-" }}
-          </div>
-        </div>
-        <span class="text-muted-foreground">|</span>
-        <div class="flex items-center gap-1">
-          <div class="font-medium">{{ $t("game_server.gpu") }}:</div>
-          <div class="text-muted-foreground">
-            {{ gameServerNode.gpu ? "Yes" : "No" }}
-          </div>
-        </div>
-      </div>
     </FiveStackToolTip>
 
-    <span class="truncate">
+    <div class="flex flex-col gap-2">
+      <!-- Node Label and ID -->
       <div class="flex flex-col">
         <div class="font-medium text-sm">
           {{ gameServerNode.label || gameServerNode.id }}
         </div>
 
         <div
-          class="text-muted-foreground"
+          class="text-muted-foreground text-xs"
           v-if="gameServerNode.lan_ip && gameServerNode.public_ip"
         >
-          <a :href="`http://${gameServerNode.lan_ip}:8080`" target="_blank">
+          <a
+            :href="`http://${gameServerNode.lan_ip}:8080`"
+            target="_blank"
+            class="hover:underline"
+          >
             {{ gameServerNode.lan_ip }}
           </a>
           {{ gameServerNode.lan_ip && gameServerNode.public_ip ? "/" : "" }}
           {{ gameServerNode.public_ip }}
         </div>
 
-        <div class="text-muted-foreground text-xs" v-if="gameServerNode.label">
+        <div
+          class="text-muted-foreground text-xs"
+          v-if="gameServerNode.label"
+        >
           {{ gameServerNode.id }}
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </template>
 
@@ -174,6 +121,14 @@ export default {
       type: Object,
       required: true,
     },
+    maxServers: {
+      type: Number,
+      default: null,
+    },
+    cpuPinningEnabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     maxFrequency() {
@@ -181,6 +136,21 @@ export default {
     },
     showMaxCPUFrequencyWarning() {
       return this.maxFrequency && this.maxFrequency < 3;
+    },
+    cpuGovernor() {
+      return this.gameServerNode.cpu_governor_info?.governor;
+    },
+    isCpuGovernorOptimal() {
+      return this.cpuGovernor === "performance";
+    },
+    isCpuGovernorPowerSave() {
+      return this.cpuGovernor === "powersave";
+    },
+    cpuGovernorClass() {
+      if (this.isCpuGovernorPowerSave) {
+        return "text-red-500";
+      }
+      return this.isCpuGovernorOptimal ? "text-green-500" : "text-yellow-500";
     },
   },
 };

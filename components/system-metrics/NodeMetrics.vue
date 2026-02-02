@@ -4,11 +4,14 @@ import MemoryChart from "~/components/charts/MemoryChart.vue";
 import NetworkChart from "~/components/charts/NetworkChart.vue";
 import DiskChart from "~/components/charts/DiskChart.vue";
 import { Card } from "@/components/ui/card";
+import Empty from "@/components/ui/empty/Empty.vue";
+import { BarChart3 } from "lucide-vue-next";
 </script>
 
 <template>
-  <div class="my-2" v-if="metricsData && showCharts">
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+  <div class="my-2">
+    <!-- Metrics Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4" v-if="metricsData && showCharts">
       <Card class="p-4 rounded-lg border border-gray-200">
         <h4 class="text-sm font-medium mb-2">
           {{ $t("pages.system_metrics.cpu_usage") }}
@@ -43,6 +46,21 @@ import { Card } from "@/components/ui/card";
         </div>
       </Card>
     </div>
+
+    <!-- Empty State -->
+    <Empty v-else class="my-8">
+      <div class="flex flex-col items-center gap-4">
+        <div class="rounded-full bg-muted p-4">
+          <BarChart3 class="h-8 w-8 text-muted-foreground" />
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-semibold text-lg">No Metrics Available</h3>
+          <p class="text-sm text-muted-foreground max-w-md">
+            {{ metricsData === null ? 'Loading metrics data...' : 'No metrics data available for this node yet. Metrics will appear once the node starts reporting data.' }}
+          </p>
+        </div>
+      </div>
+    </Empty>
   </div>
 </template>
 

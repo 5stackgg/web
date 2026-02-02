@@ -9,6 +9,7 @@ import {
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 </script>
 
 <template>

@@ -18,6 +18,7 @@ import { Separator } from "~/components/ui/separator";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -213,10 +214,15 @@ const { isMobile } = useSidebar();
           <span>{{ $t("pages.manage_matches.loading") }}</span>
         </div>
       </div>
+      <Empty v-if="matches && matches.length === 0">
+        <p class="text-muted-foreground">
+          {{ $t("pages.manage_matches.no_matches") }}
+        </p>
+      </Empty>
       <MatchesTable
         class="p-3"
         :matches="matches"
-        v-if="matches"
+        v-else-if="matches"
       ></MatchesTable>
     </AnimatedCard>
   </PageTransition>

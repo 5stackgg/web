@@ -60,8 +60,9 @@
             "title": "Teams",
             "description": "Manage teams and rosters.",
             "create": "Create Team",
+            "no_teams": "No teams found.",
             "tabs": {
-                
+
             },
             "search": "Search..."
         },
@@ -429,6 +430,7 @@
         "dedicated_servers": {
             "title": "Dedicated Servers",
             "description": "You can set up a dedicated server that will always run the game server mod",
+            "no_servers": "No dedicated servers found.",
             "create": {
                 "title": "Create Dedicated Server"
             },
@@ -541,6 +543,7 @@
             "title": "Manage Matches",
             "only_my_matches": "Only My Organized Matches",
             "description": "View and manage all matches across the platform.",
+            "no_matches": "No matches found.",
             "filters": "Filters",
             "reset_filters": "Reset Filters",
             "search_by_name": "Search by Name",

@@ -22,6 +22,7 @@ import Pagination from "~/components/Pagination.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -243,7 +244,12 @@ const { isMobile } = useSidebar();
             <span>{{ $t("pages.manage_matches.loading") }}</span>
           </div>
         </div>
-        <div class="overflow-x-auto">
+        <Empty v-if="gameServerNodes && gameServerNodes.length === 0">
+          <p class="text-muted-foreground">
+            {{ $t("pages.game_server_nodes.table.no_nodes") }}
+          </p>
+        </Empty>
+        <div class="overflow-x-auto" v-else>
           <Table>
             <TableHeader>
               <TableRow>
@@ -286,21 +292,12 @@ const { isMobile } = useSidebar();
               </TableRow>
             </TableHeader>
             <TableBody>
-              <template v-if="gameServerNodes?.length === 0">
-                <TableRow>
-                  <TableCell colspan="8" class="text-center">{{
-                    $t("pages.game_server_nodes.table.no_nodes")
-                  }}</TableCell>
-                </TableRow>
-              </template>
-              <template v-else>
-                <GameServerNodeRow
-                  :game-server-node="gameServerNode"
-                  :key="gameServerNode.id"
-                  v-for="gameServerNode of gameServerNodes"
-                  :display-metrics="displayMetrics"
-                ></GameServerNodeRow>
-              </template>
+              <GameServerNodeRow
+                :game-server-node="gameServerNode"
+                :key="gameServerNode.id"
+                v-for="gameServerNode of gameServerNodes"
+                :display-metrics="displayMetrics"
+              ></GameServerNodeRow>
             </TableBody>
           </Table>
         </div>

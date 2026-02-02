@@ -58,14 +58,13 @@
           </TabsList>
 
           <TabsContent value="live">
-            <div
+            <Empty
               v-if="!liveTournaments || liveTournaments.length === 0"
-              class="text-center py-8"
             >
               <p class="text-muted-foreground">
                 {{ $t("tournament.table.no_tournaments_found") }}
               </p>
-            </div>
+            </Empty>
             <div v-else class="space-y-4">
               <TournamentTableRow
                 v-for="tournament in liveTournaments"
@@ -76,14 +75,13 @@
           </TabsContent>
 
           <TabsContent value="upcoming">
-            <div
+            <Empty
               v-if="!upcomingTournaments || upcomingTournaments.length === 0"
-              class="text-center py-8"
             >
               <p class="text-muted-foreground">
                 {{ $t("tournament.table.no_tournaments_found") }}
               </p>
-            </div>
+            </Empty>
             <div v-else class="space-y-4">
               <TournamentTableRow
                 v-for="tournament in upcomingTournaments"
@@ -107,14 +105,13 @@
           </TabsContent>
 
           <TabsContent value="finished">
-            <div
+            <Empty
               v-if="!finishedTournaments || finishedTournaments.length === 0"
-              class="text-center py-8"
             >
               <p class="text-muted-foreground">
                 {{ $t("pages.tournaments.no_finished") }}
               </p>
-            </div>
+            </Empty>
             <div v-else class="space-y-4">
               <TournamentTableRow
                 v-for="tournament in finishedTournaments"
@@ -157,6 +154,7 @@ import { useSidebar } from "~/components/ui/sidebar/utils";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 
 export default {
   components: {

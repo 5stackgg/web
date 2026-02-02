@@ -14,6 +14,7 @@ import ServerStatus from "~/components/servers/ServerStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -46,7 +47,12 @@ const { isMobile } = useSidebar();
 
     <PageTransition :delay="100">
       <AnimatedCard variant="gradient" class="p-4">
-        <Table>
+        <Empty v-if="servers && servers.length === 0">
+          <p class="text-muted-foreground">
+            {{ $t("pages.dedicated_servers.no_servers") }}
+          </p>
+        </Empty>
+        <Table v-else>
           <TableHeader>
             <TableRow>
               <TableHead>{{

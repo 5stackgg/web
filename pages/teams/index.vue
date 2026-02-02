@@ -9,6 +9,7 @@ import Pagination from "@/components/Pagination.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -67,9 +68,14 @@ const { isMobile } = useSidebar();
           </FormField>
         </form>
 
+        <Empty v-if="(showOnlyMyTeams ? myTeams : teams) && (showOnlyMyTeams ? myTeams : teams).length === 0">
+          <p class="text-muted-foreground">
+            {{ $t("pages.teams.no_teams") }}
+          </p>
+        </Empty>
         <teams-table
           :teams="showOnlyMyTeams ? myTeams : teams"
-          v-if="showOnlyMyTeams ? myTeams : teams"
+          v-else-if="showOnlyMyTeams ? myTeams : teams"
         ></teams-table>
         <Teleport defer to="#pagination">
           <pagination

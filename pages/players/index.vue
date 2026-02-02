@@ -43,6 +43,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { getAllCountries } from "countries-and-timezones";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 </script>
 
 <template>
@@ -364,7 +365,12 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
             <span>{{ $t("pages.manage_matches.loading") }}</span>
           </div>
         </div>
-        <Table>
+        <Empty v-if="players && players.length === 0">
+          <p class="text-muted-foreground">
+            {{ $t("pages.players.table.no_players") }}
+          </p>
+        </Empty>
+        <Table v-else>
           <TableHeader>
             <TableRow>
               <TableHead class="cursor-pointer" @click="toggleSort('name')">
@@ -405,65 +411,54 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
             </TableRow>
           </TableHeader>
           <TableBody>
-            <template v-if="players?.length === 0">
-              <TableRow>
-                <TableCell
-                  :colspan="canViewAdditionalDetails ? 7 : 5"
-                  class="text-center"
-                  >{{ $t("pages.players.table.no_players") }}</TableCell
-                >
-              </TableRow>
-            </template>
-            <template v-else>
-              <TableRow
-                v-for="player of players"
-                :key="player.steam_id"
-                class="cursor-pointer"
+            <TableRow
+              v-for="player of players"
+              :key="player.steam_id"
+              class="cursor-pointer"
+            >
+              <NuxtLink
+                :to="{
+                  name: 'players-id',
+                  params: { id: String(player.steam_id) },
+                }"
+                class="contents"
               >
-                <NuxtLink
-                  :to="{
-                    name: 'players-id',
-                    params: { id: String(player.steam_id) },
-                  }"
-                  class="contents"
-                >
-                  <TableCell class="font-medium">
-                    <PlayerDisplay
-                      :player="player"
-                      :show-elo="false"
-                    ></PlayerDisplay>
-                  </TableCell>
-                  <TableCell>{{ player.wins ?? 0 }}</TableCell>
-                  <TableCell>{{ player.losses ?? 0 }}</TableCell>
-                  <TableCell :class="kdrColor(calculateKDR(player))">{{
-                    calculateKDR(player)
-                  }}</TableCell>
-                  <TableCell>
-                    <PlayerElo
-                      :elo="{
-                        competitive: player.elo_competitive,
-                        wingman: player.elo_wingman,
-                        duel: player.elo_duel,
-                      }"
-                    ></PlayerElo>
-                  </TableCell>
-                </NuxtLink>
-                <TableCell v-if="canViewAdditionalDetails">
-                  <PlayerRoleForm
+                <TableCell class="font-medium">
+                  <PlayerDisplay
                     :player="player"
-                    @updated="updatePlayerRole(player.steam_id, $event)"
-                  />
+                    :show-elo="false"
+                  ></PlayerDisplay>
                 </TableCell>
-                <TableCell v-if="canViewAdditionalDetails">
-                  <TimeAgo
-                    :date="player.last_sign_in_at"
-                    v-if="
-                      player.last_sign_in_at && player.last_sign_in_at !== `~~`
-                    "
-                  />
+                <TableCell>{{ player.wins ?? 0 }}</TableCell>
+                <TableCell>{{ player.losses ?? 0 }}</TableCell>
+                <TableCell :class="kdrColor(calculateKDR(player))">{{
+                  calculateKDR(player)
+                }}</TableCell>
+                <TableCell>
+                  <PlayerElo
+                    :elo="{
+                      competitive: player.elo_competitive,
+                      wingman: player.elo_wingman,
+                      duel: player.elo_duel,
+                    }"
+                  ></PlayerElo>
                 </TableCell>
-              </TableRow>
-            </template>
+              </NuxtLink>
+              <TableCell v-if="canViewAdditionalDetails">
+                <PlayerRoleForm
+                  :player="player"
+                  @updated="updatePlayerRole(player.steam_id, $event)"
+                />
+              </TableCell>
+              <TableCell v-if="canViewAdditionalDetails">
+                <TimeAgo
+                  :date="player.last_sign_in_at"
+                  v-if="
+                    player.last_sign_in_at && player.last_sign_in_at !== `~~`
+                  "
+                />
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </AnimatedCard>

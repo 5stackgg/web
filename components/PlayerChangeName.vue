@@ -1,54 +1,56 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div
-    class="text-blue-500 text-sm hover:underline cursor-pointer w-fit"
-    @click.prevent="showRequestNameChangeDialog = true"
-    v-if="canChangeName"
-  >
-    {{ $t("player.change_name.button") }}
+  <div v-bind="$attrs">
+    <div
+      class="text-blue-500 text-sm hover:underline cursor-pointer w-fit"
+      @click.prevent="showRequestNameChangeDialog = true"
+      v-if="canChangeName"
+    >
+      {{ $t("player.change_name.button") }}
+    </div>
+    <AlertDialog :open="showRequestNameChangeDialog">
+      <AlertDialogTrigger asChild> </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {{
+              canChangeName
+                ? $t("player.change_name.title")
+                : $t("player.change_name.request_title")
+            }}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {{
+              canChangeName
+                ? $t("player.change_name.description")
+                : $t("player.change_name.request_description")
+            }}
+
+            <FormField v-slot="{ componentField }" name="player_name">
+              <FormItem>
+                <FormLabel>{{ $t("player.change_name.name_label") }}</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" />
+                </FormControl>
+              </FormItem>
+            </FormField>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel @click="showRequestNameChangeDialog = false">
+            {{ $t("common.cancel") }}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            @click="canChangeName ? changeName() : requestNameChange()"
+          >
+            {{ $t("common.confirm") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
-  <AlertDialog :open="showRequestNameChangeDialog">
-    <AlertDialogTrigger asChild> </AlertDialogTrigger>
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>
-          {{
-            canChangeName
-              ? $t("player.change_name.title")
-              : $t("player.change_name.request_title")
-          }}
-        </AlertDialogTitle>
-        <AlertDialogDescription>
-          {{
-            canChangeName
-              ? $t("player.change_name.description")
-              : $t("player.change_name.request_description")
-          }}
-
-          <FormField v-slot="{ componentField }" name="player_name">
-            <FormItem>
-              <FormLabel>{{ $t("player.change_name.name_label") }}</FormLabel>
-              <FormControl>
-                <Input v-bind="componentField" />
-              </FormControl>
-            </FormItem>
-          </FormField>
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-
-      <AlertDialogFooter>
-        <AlertDialogCancel @click="showRequestNameChangeDialog = false">
-          {{ $t("common.cancel") }}
-        </AlertDialogCancel>
-        <AlertDialogAction
-          @click="canChangeName ? changeName() : requestNameChange()"
-        >
-          {{ $t("common.confirm") }}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
 </template>
 
 <script lang="ts">
@@ -61,6 +63,7 @@ import { toast } from "@/components/ui/toast";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
+  inheritAttrs: false,
   props: {
     player: {
       type: Object,

@@ -65,6 +65,9 @@ const { isMobile } = useSidebar();
                 $t("pages.dedicated_servers.table.plugin_version")
               }}</TableHead>
               <TableHead>{{
+                $t("pages.dedicated_servers.table.port")
+              }}</TableHead>
+              <TableHead>{{
                 $t("pages.dedicated_servers.table.tv_port")
               }}</TableHead>
               <TableHead>{{
@@ -106,6 +109,7 @@ const { isMobile } = useSidebar();
                   </template>
                   <template v-else> - </template>
                 </TableCell>
+                <TableCell>{{ server.port }}</TableCell>
                 <TableCell>{{ server.tv_port }}</TableCell>
                 <TableCell>{{
                   server.enabled

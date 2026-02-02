@@ -103,10 +103,7 @@ import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
           {{ gameServerNode.public_ip }}
         </div>
 
-        <div
-          class="text-muted-foreground text-xs"
-          v-if="gameServerNode.label"
-        >
+        <div class="text-muted-foreground text-xs" v-if="gameServerNode.label">
           {{ gameServerNode.id }}
         </div>
       </div>

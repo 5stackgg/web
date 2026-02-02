@@ -11,7 +11,10 @@ import { BarChart3 } from "lucide-vue-next";
 <template>
   <div class="my-2">
     <!-- Metrics Charts -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4" v-if="metricsData && showCharts">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-4 gap-4"
+      v-if="metricsData && showCharts"
+    >
       <Card class="p-4 rounded-lg border border-gray-200">
         <h4 class="text-sm font-medium mb-2">
           {{ $t("pages.system_metrics.cpu_usage") }}
@@ -56,7 +59,11 @@ import { BarChart3 } from "lucide-vue-next";
         <div class="space-y-1">
           <h3 class="font-semibold text-lg">No Metrics Available</h3>
           <p class="text-sm text-muted-foreground max-w-md">
-            {{ metricsData === null ? 'Loading metrics data...' : 'No metrics data available for this node yet. Metrics will appear once the node starts reporting data.' }}
+            {{
+              metricsData === null
+                ? "Loading metrics data..."
+                : "No metrics data available for this node yet. Metrics will appear once the node starts reporting data."
+            }}
           </p>
         </div>
       </div>

@@ -265,7 +265,9 @@ const { isMobile } = useSidebar();
                 }}</TableHead>
                 <TableHead class="hidden xl:table-cell text-center">
                   <div class="flex flex-col items-center gap-1">
-                    <span>{{ $t("pages.game_server_nodes.table.capacity") }}</span>
+                    <span>{{
+                      $t("pages.game_server_nodes.table.capacity")
+                    }}</span>
                     <div class="flex items-center gap-1">
                       {{ $t("pages.game_server_nodes.table.ports") }}
                       <FiveStackToolTip>{{

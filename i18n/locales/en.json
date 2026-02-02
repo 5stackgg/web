@@ -438,6 +438,7 @@
                 "type": "Type",
                 "region": "Region",
                 "plugin_version": "Plugin Version",
+                "port": "Game Port",
                 "tv_port": "TV Port",
                 "enabled": "Enabled",
                 "yes": "Yes",

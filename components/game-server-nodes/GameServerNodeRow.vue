@@ -91,11 +91,7 @@ const toggleNodeMetrics = () => {
   <!-- Desktop Table Row (xl and up) -->
   <TableRow
     class="border-b-0 hidden xl:table-row"
-    :class="
-      !gameServerNode.enabled
-        ? 'bg-muted/40 opacity-60'
-        : ''
-    "
+    :class="!gameServerNode.enabled ? 'bg-muted/40 opacity-60' : ''"
   >
     <TableCell>
       <GameServerNodeDisplay
@@ -183,7 +179,9 @@ const toggleNodeMetrics = () => {
                 </div>
                 <div
                   class="text-xs text-muted-foreground mt-1"
-                  v-if="gameServerNode.cpu_governor_info?.governor !== 'performance'"
+                  v-if="
+                    gameServerNode.cpu_governor_info?.governor !== 'performance'
+                  "
                 >
                   {{ $t("game_server.governor_performance_recommended") }}
                 </div>
@@ -433,7 +431,9 @@ const toggleNodeMetrics = () => {
         <div class="flex flex-col items-center gap-2">
           <div class="text-xs text-muted-foreground">
             {{ $t("game_server.max_servers") }}:
-            {{ maxServers !== null && maxServers !== undefined ? maxServers : "-" }}
+            {{
+              maxServers !== null && maxServers !== undefined ? maxServers : "-"
+            }}
           </div>
           <Badge
             v-if="gameServerNode.enabled"
@@ -678,7 +678,7 @@ const toggleNodeMetrics = () => {
               />
             </Button>
           </template>
-          {{ showNodeMetrics ? 'Hide Metrics' : 'Show Metrics' }}
+          {{ showNodeMetrics ? "Hide Metrics" : "Show Metrics" }}
         </FiveStackToolTip>
 
         <DropdownMenu>
@@ -820,11 +820,7 @@ const toggleNodeMetrics = () => {
     <TableCell :colspan="8" class="p-0">
       <div
         class="p-4 space-y-3"
-        :class="
-          !gameServerNode.enabled
-            ? 'bg-muted/40 opacity-60'
-            : ''
-        "
+        :class="!gameServerNode.enabled ? 'bg-muted/40 opacity-60' : ''"
       >
         <!-- Card Header -->
         <div class="flex items-start gap-3">
@@ -848,7 +844,11 @@ const toggleNodeMetrics = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem :value="region.value" v-for="region of server_regions" :key="region.value">
+                  <SelectItem
+                    :value="region.value"
+                    v-for="region of server_regions"
+                    :key="region.value"
+                  >
                     {{ region.description || region.value }}
                   </SelectItem>
                 </SelectGroup>
@@ -862,7 +862,11 @@ const toggleNodeMetrics = () => {
                 Max:
               </div>
               <div class="font-medium text-foreground">
-                {{ maxServers !== null && maxServers !== undefined ? maxServers : "-" }}
+                {{
+                  maxServers !== null && maxServers !== undefined
+                    ? maxServers
+                    : "-"
+                }}
               </div>
 
               <!-- Ports -->
@@ -902,133 +906,136 @@ const toggleNodeMetrics = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent class="w-56">
-                <template
-                  v-if="
-                    gameServerNode.status ===
-                    e_game_server_node_statuses_enum.Online
-                  "
-                >
-                  <DropdownMenuItem @click="updateCs">
-                    <template v-if="gameServerNode.build_id">
-                      <RefreshCw class="mr-2 h-4 w-4" />
-                      <span>{{ $t("game_server.update_cs") }}</span>
-                    </template>
-                    <template v-else>
-                      <Plus class="mr-2 h-4 w-4" />
-                      {{ $t("game_server.install_cs") }}
-                    </template>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-                </template>
-
-                <DropdownMenuItem @click="editLabelSheet = true">
-                  <Pencil class="mr-2 h-4 w-4" />
-                  <span>{{ $t("game_server.edit_label") }}</span>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  @click="
-                    $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
-                  "
-                >
-                  <FolderOpen class="mr-2 h-4 w-4" />
-                  <span>{{ $t("game_server.files") }}</span>
+              <template
+                v-if="
+                  gameServerNode.status ===
+                  e_game_server_node_statuses_enum.Online
+                "
+              >
+                <DropdownMenuItem @click="updateCs">
+                  <template v-if="gameServerNode.build_id">
+                    <RefreshCw class="mr-2 h-4 w-4" />
+                    <span>{{ $t("game_server.update_cs") }}</span>
+                  </template>
+                  <template v-else>
+                    <Plus class="mr-2 h-4 w-4" />
+                    {{ $t("game_server.install_cs") }}
+                  </template>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
+              </template>
 
-                <DropdownMenuItem @click="showNetworkLimiterDialog = true">
-                  <div class="flex flex-col items-center gap-1 w-full">
-                    <div class="flex items-center gap-2 whitespace-nowrap">
-                      <Activity
-                        class="mr-2 h-4 w-4"
-                        :class="
-                          gameServerNode.demo_network_limiter
-                            ? 'text-yellow-500'
-                            : 'text-muted-foreground'
-                        "
-                      />
-                      <span class="whitespace-nowrap">{{
-                        $t("demo_network_limiter.title")
-                      }}</span>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      class="text-xs w-fit whitespace-nowrap"
+              <DropdownMenuItem @click="editLabelSheet = true">
+                <Pencil class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.edit_label") }}</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                @click="
+                  $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
+                "
+              >
+                <FolderOpen class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.files") }}</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem @click="showNetworkLimiterDialog = true">
+                <div class="flex flex-col items-center gap-1 w-full">
+                  <div class="flex items-center gap-2 whitespace-nowrap">
+                    <Activity
+                      class="mr-2 h-4 w-4"
                       :class="
                         gameServerNode.demo_network_limiter
-                          ? 'border-yellow-500 text-yellow-500'
+                          ? 'text-yellow-500'
                           : 'text-muted-foreground'
                       "
-                    >
-                      <template v-if="gameServerNode.demo_network_limiter">
-                        {{ gameServerNode.demo_network_limiter }} Mbps
-                      </template>
-                      <template v-else>
-                        {{ $t("demo_network_limiter.unlimited_short") }}
-                      </template>
-                    </Badge>
+                    />
+                    <span class="whitespace-nowrap">{{
+                      $t("demo_network_limiter.title")
+                    }}</span>
                   </div>
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem @click="showPortsDialog = true">
-                  <div class="flex items-center gap-2">
-                    <span>{{ $t("game_server.edit_ports") }}</span>
-                  </div>
-                </DropdownMenuItem>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuGroup>
-                  <DropdownMenuItem @click="toggleEnabled">
-                    <template v-if="gameServerNode.enabled">
-                      <PowerOff class="mr-2 h-4 w-4" />
-                      <span>{{ $t("game_server.disable_node") }}</span>
-                    </template>
-                    <template v-else>
-                      <Power class="mr-2 h-4 w-4" />
-                      <span>{{ $t("game_server.enable_node") }}</span>
-                    </template>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    v-if="gameServerNode.enabled"
-                    @click="toggleGameServerNodeScheduling"
+                  <Badge
+                    variant="outline"
+                    class="text-xs w-fit whitespace-nowrap"
+                    :class="
+                      gameServerNode.demo_network_limiter
+                        ? 'border-yellow-500 text-yellow-500'
+                        : 'text-muted-foreground'
+                    "
                   >
-                    <template
-                      v-if="
-                        gameServerNode.status ===
-                        e_game_server_node_statuses_enum.NotAcceptingNewMatches
-                      "
-                    >
-                      <CalendarCheck class="mr-2 h-4 w-4" />
-                      {{ $t("game_server.enable_scheduling") }}
+                    <template v-if="gameServerNode.demo_network_limiter">
+                      {{ gameServerNode.demo_network_limiter }} Mbps
                     </template>
                     <template v-else>
-                      <CalendarX class="mr-2 h-4 w-4" />
-                      {{ $t("game_server.disable_scheduling") }}
+                      {{ $t("demo_network_limiter.unlimited_short") }}
                     </template>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
+                  </Badge>
+                </div>
+              </DropdownMenuItem>
 
-                <DropdownMenuSeparator />
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem @click="showPortsDialog = true">
+                <div class="flex items-center gap-2">
+                  <span>{{ $t("game_server.edit_ports") }}</span>
+                </div>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuGroup>
+                <DropdownMenuItem @click="toggleEnabled">
+                  <template v-if="gameServerNode.enabled">
+                    <PowerOff class="mr-2 h-4 w-4" />
+                    <span>{{ $t("game_server.disable_node") }}</span>
+                  </template>
+                  <template v-else>
+                    <Power class="mr-2 h-4 w-4" />
+                    <span>{{ $t("game_server.enable_node") }}</span>
+                  </template>
+                </DropdownMenuItem>
 
                 <DropdownMenuItem
-                  @click="removeGameNodeServer"
-                  class="text-red-500"
+                  v-if="gameServerNode.enabled"
+                  @click="toggleGameServerNodeScheduling"
                 >
-                  <Trash2 class="mr-2 h-4 w-4" />
-                  <span>{{ $t("game_server.remove_node") }}</span>
+                  <template
+                    v-if="
+                      gameServerNode.status ===
+                      e_game_server_node_statuses_enum.NotAcceptingNewMatches
+                    "
+                  >
+                    <CalendarCheck class="mr-2 h-4 w-4" />
+                    {{ $t("game_server.enable_scheduling") }}
+                  </template>
+                  <template v-else>
+                    <CalendarX class="mr-2 h-4 w-4" />
+                    {{ $t("game_server.disable_scheduling") }}
+                  </template>
                 </DropdownMenuItem>
-              </DropdownMenuContent>
+              </DropdownMenuGroup>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem
+                @click="removeGameNodeServer"
+                class="text-red-500"
+              >
+                <Trash2 class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.remove_node") }}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
         <!-- Overprovisioning Warning (if applicable) -->
-        <div v-if="overPrevisionedServers" class="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg">
+        <div
+          v-if="overPrevisionedServers"
+          class="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg"
+        >
           <AlertCircle class="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
           <div class="text-xs space-y-1">
             <div class="font-semibold text-red-600 dark:text-red-400">
@@ -1068,37 +1075,53 @@ const toggleNodeMetrics = () => {
               class="px-3 py-2 border-t space-y-2 text-xs"
             >
               <div class="flex justify-between">
-                <span class="text-muted-foreground">{{ $t("game_server.cpu_speed") }}:</span>
-                <span
-                  :class="showMaxCPUFrequencyWarning ? 'text-red-500' : ''"
+                <span class="text-muted-foreground"
+                  >{{ $t("game_server.cpu_speed") }}:</span
                 >
+                <span :class="showMaxCPUFrequencyWarning ? 'text-red-500' : ''">
                   {{ maxFrequency ? `${maxFrequency}GHz` : "-" }}
                 </span>
               </div>
               <div class="flex justify-between">
-                <span class="text-muted-foreground">{{ $t("game_server.cpu_model") }}:</span>
-                <span class="text-right">{{ gameServerNode.cpu_frequency_info?.model || "-" }}</span>
+                <span class="text-muted-foreground"
+                  >{{ $t("game_server.cpu_model") }}:</span
+                >
+                <span class="text-right">{{
+                  gameServerNode.cpu_frequency_info?.model || "-"
+                }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-muted-foreground">{{ $t("game_server.cpu_sockets") }}:</span>
+                <span class="text-muted-foreground"
+                  >{{ $t("game_server.cpu_sockets") }}:</span
+                >
                 <span>{{ gameServerNode.cpu_sockets || "-" }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-muted-foreground">{{ $t("game_server.cpu_cores_per_socket") }}:</span>
+                <span class="text-muted-foreground"
+                  >{{ $t("game_server.cpu_cores_per_socket") }}:</span
+                >
                 <span>{{ gameServerNode.cpu_cores_per_socket || "-" }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-muted-foreground">{{ $t("game_server.cpu_threads_per_core") }}:</span>
+                <span class="text-muted-foreground"
+                  >{{ $t("game_server.cpu_threads_per_core") }}:</span
+                >
                 <span>{{ gameServerNode.cpu_threads_per_core || "-" }}</span>
               </div>
               <div class="pt-2 border-t space-y-1">
                 <div class="flex justify-between">
-                  <span class="text-muted-foreground">{{ $t("pages.game_server_nodes.table.cpu_governor") }}:</span>
+                  <span class="text-muted-foreground"
+                    >{{
+                      $t("pages.game_server_nodes.table.cpu_governor")
+                    }}:</span
+                  >
                   <span
                     class="capitalize"
                     :class="isCpuGovernorPowerSave ? 'text-red-500' : ''"
                   >
-                    {{ gameServerNode.cpu_governor_info?.governor || "unknown" }}
+                    {{
+                      gameServerNode.cpu_governor_info?.governor || "unknown"
+                    }}
                   </span>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
@@ -1211,7 +1234,9 @@ const toggleNodeMetrics = () => {
                             >
                           </template>
                           <template v-else>
-                            <span class="truncate">{{ gameServerNode.build_id }}</span>
+                            <span class="truncate">{{
+                              gameServerNode.build_id
+                            }}</span>
                           </template>
                           <Pin
                             v-if="gameServerNode.pin_build_id"
@@ -1238,20 +1263,27 @@ const toggleNodeMetrics = () => {
                           >
                             <div class="flex flex-col gap-1">
                               <div class="flex items-center gap-1">
-                                <span class="font-medium">{{ version.version }}</span>
+                                <span class="font-medium">{{
+                                  version.version
+                                }}</span>
                                 <span class="text-muted-foreground"
                                   >({{ version.build_id }})</span
                                 >
                                 <Pin
                                   v-if="
-                                    gameServerNode.pin_build_id === version.build_id
+                                    gameServerNode.pin_build_id ===
+                                    version.build_id
                                   "
                                   class="h-3 w-3 text-blue-500 ml-1"
                                 />
                               </div>
                               <div class="text-xs text-muted-foreground">
-                                {{ new Date(version.updated_at).toLocaleString() }}
-                                <span v-if="version.current" class="text-green-500 ml-1"
+                                {{
+                                  new Date(version.updated_at).toLocaleString()
+                                }}
+                                <span
+                                  v-if="version.current"
+                                  class="text-green-500 ml-1"
                                   >({{ $t("game_server.current") }})</span
                                 >
                               </div>
@@ -1280,16 +1312,20 @@ const toggleNodeMetrics = () => {
 
               <!-- Plugin Version -->
               <div class="space-y-1" v-if="gameServerNode.build_id">
-                <label class="text-xs text-muted-foreground">Plugin Version</label>
+                <label class="text-xs text-muted-foreground"
+                  >Plugin Version</label
+                >
                 <Select
                   :model-value="pinPluginVersionForm.values.pin_plugin_version"
                   @update:model-value="(value) => pinPluginVersion(value)"
                 >
                   <SelectTrigger class="h-8 px-2 text-xs w-full">
                     <div class="flex items-center gap-1 min-w-0">
-                      <span v-if="gameServerNode.pin_plugin_version" class="truncate">{{
-                        gameServerNode.pin_plugin_version
-                      }}</span>
+                      <span
+                        v-if="gameServerNode.pin_plugin_version"
+                        class="truncate"
+                        >{{ gameServerNode.pin_plugin_version }}</span
+                      >
                       <span v-else class="text-muted-foreground truncate">{{
                         $t("game_server.auto")
                       }}</span>
@@ -1318,10 +1354,13 @@ const toggleNodeMetrics = () => {
                       >
                         <div class="flex flex-col gap-1">
                           <div class="flex items-center gap-1">
-                            <span class="font-medium">{{ version.version }}</span>
+                            <span class="font-medium">{{
+                              version.version
+                            }}</span>
                             <Pin
                               v-if="
-                                gameServerNode.pin_plugin_version === version.version
+                                gameServerNode.pin_plugin_version ===
+                                version.version
                               "
                               class="h-3 w-3 text-blue-500 ml-1"
                             />
@@ -1336,7 +1375,9 @@ const toggleNodeMetrics = () => {
                             </div>
                             <div>
                               {{ $t("game_server.plugin_version_published") }}:
-                              {{ new Date(version.published_at).toLocaleString() }}
+                              {{
+                                new Date(version.published_at).toLocaleString()
+                              }}
                             </div>
                           </div>
                         </div>
@@ -1344,7 +1385,10 @@ const toggleNodeMetrics = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                <div v-if="!gameServerNode.plugin_supported" class="flex items-center gap-2 text-red-500 text-xs">
+                <div
+                  v-if="!gameServerNode.plugin_supported"
+                  class="flex items-center gap-2 text-red-500 text-xs"
+                >
                   <AlertCircle class="h-3 w-3" />
                   <span>{{ $t("game_server.plugin_not_supported") }}</span>
                 </div>
@@ -1360,7 +1404,7 @@ const toggleNodeMetrics = () => {
             @click="toggleNodeMetrics"
           >
             <Activity class="mr-2 h-4 w-4" />
-            {{ showNodeMetrics ? 'Hide Metrics' : 'Show Metrics' }}
+            {{ showNodeMetrics ? "Hide Metrics" : "Show Metrics" }}
           </Button>
         </div>
       </div>
@@ -1474,14 +1518,18 @@ const toggleNodeMetrics = () => {
           {{ $t("demo_network_limiter.description") }}
         </DialogDescription>
       </DialogHeader>
-      
+
       <div class="py-4">
         <Select
           :model-value="selectedNetworkLimit?.toString()"
-          @update:model-value="(value) => selectedNetworkLimit = value ? parseInt(value) : null"
+          @update:model-value="
+            (value) => (selectedNetworkLimit = value ? parseInt(value) : null)
+          "
         >
           <SelectTrigger class="w-full">
-            <SelectValue :placeholder="$t('demo_network_limiter.network_limit')" />
+            <SelectValue
+              :placeholder="$t('demo_network_limiter.network_limit')"
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -1506,7 +1554,7 @@ const toggleNodeMetrics = () => {
           </SelectContent>
         </Select>
       </div>
-      
+
       <DialogFooter>
         <Button variant="outline" @click="showNetworkLimiterDialog = false">
           {{ $t("common.cancel") }}
@@ -1759,7 +1807,8 @@ export default defineComponent({
     showNetworkLimiterDialog: {
       handler(isOpen) {
         if (isOpen) {
-          this.selectedNetworkLimit = this.gameServerNode.demo_network_limiter ?? null;
+          this.selectedNetworkLimit =
+            this.gameServerNode.demo_network_limiter ?? null;
         }
       },
     },

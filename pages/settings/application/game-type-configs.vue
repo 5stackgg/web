@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PageHeading from "~/components/PageHeading.vue";
-import GameTypeConfigRow from "~/components/game-type-configs/GameTypeConfigRow.vue";
+import GameTypeConfigTabs from "~/components/game-type-configs/GameTypeConfigTabs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
@@ -31,30 +31,15 @@ definePageMeta({
           <Skeleton class="h-16 w-full" />
           <Skeleton class="h-16 w-full" />
           <Skeleton class="h-16 w-full" />
-          <Skeleton class="h-16 w-full" />
-          <Skeleton class="h-16 w-full" />
         </div>
       </div>
 
       <!-- Actual content -->
-      <Table v-else>
-        <TableHeader>
-          <TableRow>
-            <TableHead class="flex items-center justify-between m-4">
-              <span>{{
-                $t("pages.settings.application.game_type_configs.type")
-              }}</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <GameTypeConfigRow
-            v-for="gameTypeConfig in gameTypeConfigs"
-            :key="gameTypeConfig.type"
-            :gameConfig="gameTypeConfig"
-          />
-        </TableBody>
-      </Table>
+      <GameTypeConfigTabs
+        v-else
+        :game-type-configs="gameTypeConfigs"
+        @updated="handleUpdated"
+      />
     </AnimatedCard>
   </PageTransition>
 </template>
@@ -127,6 +112,9 @@ export default defineComponent<ComponentData>({
   methods: {
     async getDefaultConfigs(type: e_match_types_enum) {
       return await $fetch(`/api/get-default-config?type=${type}`);
+    },
+    handleUpdated() {
+      // Refresh the data - apollo subscription will handle this automatically
     },
   },
 });

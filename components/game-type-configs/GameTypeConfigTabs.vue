@@ -17,175 +17,7 @@ import * as monaco from "monaco-editor";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { e_game_cfg_types_enum } from "~/generated/zeus";
-
-interface GameTypeConfig {
-  type: string;
-  cfg: string;
-}
-
-const props = defineProps<{
-  gameTypeConfigs: GameTypeConfig[];
-}>();
-
-const emit = defineEmits<{
-  updated: [];
-}>();
-
-const colorMode = useColorMode();
-const activeTab = ref<string>("");
-const editorsMap = new Map<string, monaco.editor.IStandaloneCodeEditor>();
-
-function formatTypeName(type: string): string {
-  const names: Record<string, string> = {
-    [e_game_cfg_types_enum.Lan]: "LAN",
-    [e_game_cfg_types_enum.Competitive]: "Competitive",
-    [e_game_cfg_types_enum.Wingman]: "Wingman",
-    [e_game_cfg_types_enum.Duel]: "Duel",
-  };
-  return names[type] || type;
-}
-
-function initEditor(el: HTMLElement | null, type: string) {
-  if (!el) return;
-
-  const config = props.gameTypeConfigs.find((c) => c.type === type);
-  if (!config) return;
-
-  const theme = colorMode.value === "dark" ? "vs-dark" : "vs";
-
-  // If an editor already exists for this type, dispose it first
-  // because the old container was unmounted when switching tabs
-  if (editorsMap.has(type)) {
-    const oldEditor = editorsMap.get(type);
-    oldEditor?.dispose();
-    editorsMap.delete(type);
-  }
-
-  const editor = monaco.editor.create(el, {
-    value: config.cfg,
-    language: "plaintext",
-    theme,
-    automaticLayout: true,
-    minimap: { enabled: false },
-    scrollBeyondLastLine: false,
-    fontSize: 14,
-    tabSize: 2,
-    wordWrap: "on",
-  });
-
-  editorsMap.set(type, editor);
-}
-
-function getEditorValue(type: string): string {
-  return editorsMap.get(type)?.getValue() || "";
-}
-
-async function submitForm(config: GameTypeConfig) {
-  const cfgValue = getEditorValue(config.type);
-
-  try {
-    await generateMutation({
-      insert_match_type_cfgs: [
-        {
-          objects: [
-            {
-              type: config.type,
-              cfg: cfgValue,
-            },
-          ],
-          on_conflict: {
-            constraint: "match_type_cfgs_pkey",
-            update_columns: ["cfg"],
-          },
-        },
-        {
-          affected_rows: true,
-        },
-      ],
-    });
-
-    toast({
-      title: "game_type_configs.form.success.update",
-    });
-
-    emit("updated");
-  } catch (error) {
-    toast({
-      title: "game_type_configs.form.error.update",
-      variant: "destructive",
-    });
-  }
-}
-
-async function revertToDefaults(config: GameTypeConfig) {
-  try {
-    const defaultConfig = await $fetch<string>(
-      `/api/get-default-config?type=${config.type}`,
-    );
-    const editor = editorsMap.get(config.type);
-
-    if (editor) {
-      editor.setValue(defaultConfig);
-    }
-
-    await submitForm(config);
-
-    toast({
-      title: "game_type_configs.form.success.revert",
-    });
-
-    emit("updated");
-  } catch (error) {
-    toast({
-      title: "game_type_configs.form.error.revert",
-      variant: "destructive",
-    });
-  }
-}
-
-watch(
-  () => props.gameTypeConfigs,
-  (newConfigs) => {
-    if (newConfigs.length > 0 && !activeTab.value) {
-      activeTab.value = newConfigs[0].type;
-    }
-    // Clear editors when configs change
-    nextTick(() => {
-      editorsMap.forEach((editor, type) => {
-        if (!newConfigs.find((c) => c.type === type)) {
-          editor.dispose();
-          editorsMap.delete(type);
-        }
-      });
-    });
-  },
-  { immediate: true },
-);
-
-watch(
-  () => colorMode.value,
-  (newMode) => {
-    editorsMap.forEach((editor) => {
-      monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
-    });
-  },
-);
-
-watch(activeTab, (newTab) => {
-  nextTick(() => {
-    const editor = editorsMap.get(newTab);
-    if (editor) {
-      editor.layout();
-    }
-  });
-});
-
-onBeforeUnmount(() => {
-  editorsMap.forEach((editor) => {
-    editor.dispose();
-  });
-  editorsMap.clear();
-});
+import { markRaw } from "vue";
 </script>
 
 <template>
@@ -223,9 +55,7 @@ onBeforeUnmount(() => {
                     $t("game_type_configs.form.revert_confirm.title")
                   }}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    {{
-                      $t("game_type_configs.form.revert_confirm.description")
-                    }}
+                    {{ $t("game_type_configs.form.revert_confirm.description") }}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -246,15 +76,14 @@ onBeforeUnmount(() => {
         <CardContent>
           <form @submit.prevent="submitForm(config)" class="space-y-4">
             <div class="space-y-2">
-              <label class="text-sm font-medium">{{
-                $t("game_type_configs.form.cfg")
-              }}</label>
+              <label class="text-sm font-medium">{{ $t("game_type_configs.form.cfg") }}</label>
               <div
                 class="border rounded-md overflow-hidden"
                 style="height: 500px"
               >
                 <div
-                  :ref="(el) => initEditor(el as HTMLElement, config.type)"
+                  :ref="setEditorRef"
+                  :data-type="config.type"
                   class="w-full h-full"
                 />
               </div>
@@ -271,3 +100,191 @@ onBeforeUnmount(() => {
     </TabsContent>
   </Tabs>
 </template>
+
+<script lang="ts">
+import { generateMutation } from "~/graphql/graphqlGen";
+import { toast } from "@/components/ui/toast";
+import { e_game_cfg_types_enum } from "~/generated/zeus";
+import * as monaco from "monaco-editor";
+import { markRaw } from "vue";
+
+interface GameTypeConfig {
+  type: string;
+  cfg: string;
+}
+
+// Non-reactive map outside component instance
+const editorsMap = new Map<string, monaco.editor.IStandaloneCodeEditor>();
+
+export default {
+  props: {
+    gameTypeConfigs: {
+      type: Array as () => GameTypeConfig[],
+      required: true,
+    },
+  },
+  emits: ["updated"],
+  data() {
+    return {
+      activeTab: "" as string,
+      colorMode: useColorMode(),
+      pendingContainers: new Map<string, HTMLElement>(),
+    };
+  },
+  watch: {
+    gameTypeConfigs: {
+      immediate: true,
+      handler(newConfigs: GameTypeConfig[]) {
+        if (newConfigs.length > 0 && !this.activeTab) {
+          this.activeTab = newConfigs[0].type;
+        }
+        // Clear editors for configs that no longer exist
+        editorsMap.forEach((editor, type) => {
+          if (!newConfigs.find((c) => c.type === type)) {
+            editor.dispose();
+            editorsMap.delete(type);
+          }
+        });
+      },
+    },
+    "colorMode.value"(newMode: string) {
+      editorsMap.forEach((editor) => {
+        monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
+      });
+    },
+    activeTab(newTab: string) {
+      this.$nextTick(() => {
+        // Create editor for the newly active tab if container is ready
+        const container = this.pendingContainers.get(newTab);
+        if (container && !editorsMap.has(newTab)) {
+          this.createEditor(container, newTab);
+        }
+        // Layout existing editor
+        const editor = editorsMap.get(newTab);
+        if (editor) {
+          editor.layout();
+        }
+      });
+    },
+  },
+  beforeUnmount() {
+    editorsMap.forEach((editor) => {
+      editor.dispose();
+    });
+    editorsMap.clear();
+    this.pendingContainers.clear();
+  },
+  methods: {
+    formatTypeName(type: string): string {
+      const names: Record<string, string> = {
+        [e_game_cfg_types_enum.Lan]: "LAN",
+        [e_game_cfg_types_enum.Competitive]: "Competitive",
+        [e_game_cfg_types_enum.Wingman]: "Wingman",
+        [e_game_cfg_types_enum.Duel]: "Duel",
+      };
+      return names[type] || type;
+    },
+    setEditorRef(el: HTMLElement | null) {
+      if (!el) return;
+      
+      const type = el.getAttribute("data-type");
+      if (!type) return;
+      
+      // Store the container reference
+      this.pendingContainers.set(type, el);
+      
+      // Only create editor if this is the active tab and editor doesn't exist
+      if (this.activeTab === type && !editorsMap.has(type)) {
+        this.createEditor(el, type);
+      }
+    },
+    createEditor(el: HTMLElement, type: string) {
+      const config = this.gameTypeConfigs.find((c) => c.type === type);
+      if (!config) return;
+
+      const theme = this.colorMode.value === "dark" ? "vs-dark" : "vs";
+
+      const editor = monaco.editor.create(el, {
+        value: config.cfg,
+        language: "plaintext",
+        theme,
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        fontSize: 14,
+        tabSize: 2,
+        wordWrap: "on",
+      });
+
+      editorsMap.set(type, editor);
+    },
+    getEditorValue(type: string): string {
+      return editorsMap.get(type)?.getValue() || "";
+    },
+    async submitForm(config: GameTypeConfig) {
+      const cfgValue = this.getEditorValue(config.type);
+
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            insert_match_type_cfgs: [
+              {
+                objects: [
+                  {
+                    type: config.type,
+                    cfg: cfgValue,
+                  },
+                ],
+                on_conflict: {
+                  constraint: "match_type_cfgs_pkey",
+                  update_columns: ["cfg"],
+                },
+              },
+              {
+                affected_rows: true,
+              },
+            ],
+          }),
+        });
+
+        toast({
+          title: this.$t("game_type_configs.form.success.update"),
+        });
+
+        this.$emit("updated");
+      } catch (error) {
+        toast({
+          title: this.$t("game_type_configs.form.error.update"),
+          variant: "destructive",
+        });
+      }
+    },
+    async revertToDefaults(config: GameTypeConfig) {
+      try {
+        const defaultConfig = await this.getDefaultConfig(config.type);
+        const editor = editorsMap.get(config.type);
+
+        if (editor) {
+          editor.setValue(defaultConfig);
+        }
+
+        await this.submitForm(config);
+
+        toast({
+          title: this.$t("game_type_configs.form.success.revert"),
+        });
+
+        this.$emit("updated");
+      } catch (error) {
+        toast({
+          title: this.$t("game_type_configs.form.error.revert"),
+          variant: "destructive",
+        });
+      }
+    },
+    async getDefaultConfig(type: string): Promise<string> {
+      return await $fetch<string>(`/api/get-default-config?type=${type}`);
+    },
+  },
+};
+</script>

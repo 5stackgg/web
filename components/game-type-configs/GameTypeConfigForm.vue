@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-vue-next";
+import * as monaco from "monaco-editor";
 </script>
 
 <template>
@@ -24,13 +25,9 @@ import { Trash } from "lucide-vue-next";
       <FormItem>
         <FormLabel for="cfg">{{ $t("game_type_configs.form.cfg") }}</FormLabel>
         <FormControl>
-          <Textarea
-            v-bind="componentField"
-            id="cfg"
-            name="cfg"
-            required
-            rows="10"
-          />
+          <div class="border rounded-md overflow-hidden" style="height: 400px">
+            <div ref="editorContainer" class="w-full h-full" />
+          </div>
         </FormControl>
       </FormItem>
     </FormField>
@@ -80,6 +77,19 @@ export default {
     },
   },
   emits: ["updated", "created", "deleted"],
+  setup() {
+    const editorContainer = ref<HTMLElement | null>(null);
+    const editorInstance = ref<monaco.editor.IStandaloneCodeEditor | null>(
+      null,
+    );
+    const colorMode = useColorMode();
+
+    return {
+      editorContainer,
+      editorInstance,
+      colorMode,
+    };
+  },
   data() {
     return {
       verifiredMapName: false,
@@ -98,9 +108,50 @@ export default {
       }),
     };
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.createEditor();
+    });
+  },
+  beforeUnmount() {
+    this.destroyEditor();
+  },
+  watch: {
+    "colorMode.value"(newMode: string) {
+      if (this.editorInstance) {
+        monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
+      }
+    },
+  },
   methods: {
+    createEditor() {
+      if (!this.editorContainer || !this.gameTypeConfig?.cfg) return;
+
+      const theme = this.colorMode.value === "dark" ? "vs-dark" : "vs";
+
+      this.editorInstance = monaco.editor.create(this.editorContainer, {
+        value: this.gameTypeConfig.cfg,
+        language: "plaintext",
+        theme,
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        fontSize: 14,
+        tabSize: 2,
+        wordWrap: "on",
+      });
+    },
+    destroyEditor() {
+      if (this.editorInstance) {
+        this.editorInstance.dispose();
+        this.editorInstance = null;
+      }
+    },
+    getEditorValue() {
+      return this.editorInstance?.getValue() || "";
+    },
     async submitForm() {
-      const values = this.form.values;
+      const cfgValue = this.getEditorValue();
 
       try {
         await this.$apollo.mutate({
@@ -110,7 +161,7 @@ export default {
                 objects: [
                   {
                     type: this.gameTypeConfig.type,
-                    cfg: values.cfg,
+                    cfg: cfgValue,
                   },
                 ],
                 on_conflict: {
@@ -146,7 +197,10 @@ export default {
         const defaultConfig = await this.getDefaultConfig(
           this.gameTypeConfig.type,
         );
-        this.form.setFieldValue("cfg", defaultConfig);
+
+        if (this.editorInstance) {
+          this.editorInstance.setValue(defaultConfig);
+        }
 
         await this.submitForm();
 

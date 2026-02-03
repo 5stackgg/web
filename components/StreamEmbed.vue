@@ -22,9 +22,12 @@ import { ExternalLink } from "lucide-vue-next";
       </template>
     </div>
 
-    <div v-if="streams.length > 1" class="flex flex-wrap gap-2">
+    <div
+      v-if="streams.length > 1 || (showTitle == false && streams.length > 0)"
+      class="flex flex-wrap gap-2"
+    >
       <Button
-        :size="showTitle ? 'sm' : 'icon'"
+        size="sm"
         v-for="stream in streams"
         :key="stream.id"
         :variant="selectedStream?.id === stream.id ? 'default' : 'outline'"
@@ -34,7 +37,9 @@ import { ExternalLink } from "lucide-vue-next";
             ? 'bg-primary text-primary-foreground'
             : '',
         ]"
-        @click="globalStream ? setGlobalStream(stream) : selectStream(stream)"
+        @click.prevent.stop="
+          globalStream ? setGlobalStream(stream) : selectStream(stream)
+        "
       >
         <component
           :is="getPlatformIcon(stream.link)"

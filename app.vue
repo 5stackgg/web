@@ -8,8 +8,9 @@ import StreamGlobal from "~/components/StreamGlobal.vue";
 <template>
   <NuxtPwaManifest />
 
+  <StreamGlobal />
+
   <template v-if="me">
-    <StreamGlobal />
     <PlayerNameRegistration />
     <MatchmakingConfirm />
   </template>

@@ -55,7 +55,9 @@ import { markRaw } from "vue";
                     $t("game_type_configs.form.revert_confirm.title")
                   }}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    {{ $t("game_type_configs.form.revert_confirm.description") }}
+                    {{
+                      $t("game_type_configs.form.revert_confirm.description")
+                    }}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -76,7 +78,9 @@ import { markRaw } from "vue";
         <CardContent>
           <form @submit.prevent="submitForm(config)" class="space-y-4">
             <div class="space-y-2">
-              <label class="text-sm font-medium">{{ $t("game_type_configs.form.cfg") }}</label>
+              <label class="text-sm font-medium">{{
+                $t("game_type_configs.form.cfg")
+              }}</label>
               <div
                 class="border rounded-md overflow-hidden"
                 style="height: 500px"
@@ -186,15 +190,23 @@ export default {
     },
     setEditorRef(el: HTMLElement | null) {
       if (!el) return;
-      
+
       const type = el.getAttribute("data-type");
       if (!type) return;
-      
+
       // Store the container reference
       this.pendingContainers.set(type, el);
-      
-      // Only create editor if this is the active tab and editor doesn't exist
-      if (this.activeTab === type && !editorsMap.has(type)) {
+
+      // Always dispose old editor and create new one when ref fires
+      // because the container might be a newly mounted element
+      if (editorsMap.has(type)) {
+        const oldEditor = editorsMap.get(type)!;
+        oldEditor.dispose();
+        editorsMap.delete(type);
+      }
+
+      // Create editor since this is a fresh container
+      if (this.activeTab === type) {
         this.createEditor(el, type);
       }
     },

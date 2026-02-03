@@ -28,282 +28,280 @@ const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition :delay="0">
-      <PageHeading>
-        <template #title>{{ $t("pages.game_server_nodes.title") }}</template>
+  <PageTransition :delay="0">
+    <PageHeading>
+      <template #title>{{ $t("pages.game_server_nodes.title") }}</template>
 
-        <template #description>{{
-          $t("pages.game_server_nodes.description")
-        }}</template>
-        <template #actions>
-          <div class="flex items-center gap-2">
-            <div class="flex items-center gap-2" @click="toggleNodeMetrics()">
-              <div class="flex items-center gap-1">
-                {{ $t("pages.game_server_nodes.display_metrics") }}
-              </div>
-              <Switch :model-value="displayMetrics" />
-            </div>
-
-            <Popover>
-              <PopoverTrigger class="flex gap-4">
-                <template v-if="!supportsGameServerNodes">
-                  <Alert class="bg-background text-lg">
-                    <Info class="h-4 w-4" />
-                    <AlertTitle>{{
-                      $t("pages.game_server_nodes.not_supported.title")
-                    }}</AlertTitle>
-                    <AlertDescription>
-                      {{
-                        $t("pages.game_server_nodes.not_supported.description")
-                      }}
-                      <a
-                        target="_blank"
-                        class="underline"
-                        href="https://docs.5stack.gg/servers/game-server-nodes/"
-                        >Game Server Nodes</a
-                      >.
-                    </AlertDescription>
-                  </Alert>
-                </template>
-
-                <Button
-                  :size="isMobile ? 'default' : 'lg'"
-                  @click="createGameServerNode"
-                  :disabled="!supportsGameServerNodes"
-                >
-                  <PlusCircle class="w-4 h-4" />
-                  <span class="hidden md:inline ml-2">{{
-                    $t("pages.game_server_nodes.create")
-                  }}</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <div
-                  class="relative bg-gray-900 rounded-lg p-4"
-                  v-if="setupGameServer"
-                >
-                  <div class="flex justify-between items-start">
-                    <h3 class="text-white text-sm font-semibold">
-                      {{ $t("pages.game_server_nodes.installation_script") }}
-                    </h3>
-                    <ClipBoard
-                      :data="setupGameServer.link"
-                      class="text-white hover:text-gray-300 transition-colors"
-                    ></ClipBoard>
-                  </div>
-                  <div class="text-sm mt-2">
-                    {{ setupGameServer.gameServerId }}
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-        </template>
-      </PageHeading>
-    </PageTransition>
-
-    <PageTransition :delay="100">
-      <Alert class="flex items-center gap-4">
+      <template #description>{{
+        $t("pages.game_server_nodes.description")
+      }}</template>
+      <template #actions>
         <div class="flex items-center gap-2">
-          <Info class="h-4 w-4" />
-          <AlertTitle class="m-0">{{
-            $t("pages.game_server_nodes.cs_version_info")
-          }}</AlertTitle>
-        </div>
-        <AlertDescription class="m-0 flex items-center gap-2">
-          <span>{{
-            $t("pages.game_server_nodes.build_id", {
-              id: `${currentGameVersion?.version} (${currentGameVersion?.build_id})`,
-            })
-          }}</span>
-          <span class="text-muted-foreground">•</span>
-          <span>{{
-            $t("pages.game_server_nodes.last_updated", {
-              date: new Date(currentGameVersion?.updated_at).toLocaleString(),
-            })
-          }}</span>
-        </AlertDescription>
-      </Alert>
-    </PageTransition>
-
-    <!-- Filters -->
-    <PageTransition :delay="200">
-      <AnimatedCard variant="gradient" class="p-4 mb-4">
-        <div class="space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">
-              {{ $t("pages.game_server_nodes.filters") }}
-            </h3>
-            <Button variant="outline" size="sm" @click="resetFilters">
-              {{ $t("pages.manage_matches.reset_filters") }}
-            </Button>
+          <div class="flex items-center gap-2" @click="toggleNodeMetrics()">
+            <div class="flex items-center gap-1">
+              {{ $t("pages.game_server_nodes.display_metrics") }}
+            </div>
+            <Switch :model-value="displayMetrics" />
           </div>
 
-          <form @submit.prevent class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <!-- Name search -->
-              <div class="space-y-2">
-                <Label for="node-name-search">{{
-                  $t("pages.manage_matches.search_by_name")
+          <Popover>
+            <PopoverTrigger class="flex gap-4">
+              <template v-if="!supportsGameServerNodes">
+                <Alert class="bg-background text-lg">
+                  <Info class="h-4 w-4" />
+                  <AlertTitle>{{
+                    $t("pages.game_server_nodes.not_supported.title")
+                  }}</AlertTitle>
+                  <AlertDescription>
+                    {{
+                      $t("pages.game_server_nodes.not_supported.description")
+                    }}
+                    <a
+                      target="_blank"
+                      class="underline"
+                      href="https://docs.5stack.gg/servers/game-server-nodes/"
+                      >Game Server Nodes</a
+                    >.
+                  </AlertDescription>
+                </Alert>
+              </template>
+
+              <Button
+                :size="isMobile ? 'default' : 'lg'"
+                @click="createGameServerNode"
+                :disabled="!supportsGameServerNodes"
+              >
+                <PlusCircle class="w-4 h-4" />
+                <span class="hidden md:inline ml-2">{{
+                  $t("pages.game_server_nodes.create")
+                }}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div
+                class="relative bg-gray-900 rounded-lg p-4"
+                v-if="setupGameServer"
+              >
+                <div class="flex justify-between items-start">
+                  <h3 class="text-white text-sm font-semibold">
+                    {{ $t("pages.game_server_nodes.installation_script") }}
+                  </h3>
+                  <ClipBoard
+                    :data="setupGameServer.link"
+                    class="text-white hover:text-gray-300 transition-colors"
+                  ></ClipBoard>
+                </div>
+                <div class="text-sm mt-2">
+                  {{ setupGameServer.gameServerId }}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </template>
+    </PageHeading>
+  </PageTransition>
+
+  <PageTransition :delay="100" class="mt-6">
+    <Alert class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <Info class="h-4 w-4" />
+        <AlertTitle class="m-0">{{
+          $t("pages.game_server_nodes.cs_version_info")
+        }}</AlertTitle>
+      </div>
+      <AlertDescription class="m-0 flex items-center gap-2">
+        <span>{{
+          $t("pages.game_server_nodes.build_id", {
+            id: `${currentGameVersion?.version} (${currentGameVersion?.build_id})`,
+          })
+        }}</span>
+        <span class="text-muted-foreground">•</span>
+        <span>{{
+          $t("pages.game_server_nodes.last_updated", {
+            date: new Date(currentGameVersion?.updated_at).toLocaleString(),
+          })
+        }}</span>
+      </AlertDescription>
+    </Alert>
+  </PageTransition>
+
+  <!-- Filters -->
+  <PageTransition :delay="200" class="mt-6">
+    <AnimatedCard variant="gradient" class="p-4 mb-4">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.game_server_nodes.filters") }}
+          </h3>
+          <Button variant="outline" size="sm" @click="resetFilters">
+            {{ $t("pages.manage_matches.reset_filters") }}
+          </Button>
+        </div>
+
+        <form @submit.prevent class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Name search -->
+            <div class="space-y-2">
+              <Label for="node-name-search">{{
+                $t("pages.manage_matches.search_by_name")
+              }}</Label>
+              <Input
+                id="node-name-search"
+                :model-value="form.values.name"
+                @update:model-value="
+                  (value) => {
+                    form.setFieldValue('name', value);
+                    onFilterChange();
+                  }
+                "
+                :placeholder="$t('pages.manage_matches.enter_name')"
+              />
+            </div>
+
+            <!-- Regions multi-select -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <Label for="regions-filter">{{
+                  $t("pages.manage_matches.filter_by_regions")
                 }}</Label>
-                <Input
-                  id="node-name-search"
-                  :model-value="form.values.name"
-                  @update:model-value="
-                    (value) => {
-                      form.setFieldValue('name', value);
-                      onFilterChange();
-                    }
-                  "
-                  :placeholder="$t('pages.manage_matches.enter_name')"
-                />
-              </div>
-
-              <!-- Regions multi-select -->
-              <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <Label for="regions-filter">{{
-                    $t("pages.manage_matches.filter_by_regions")
-                  }}</Label>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    @click="clearAllRegions"
-                    class="text-xs h-6 px-2"
-                    :class="{ 'opacity-50': !form.values.regions?.length }"
-                  >
-                    {{ $t("pages.manage_matches.clear_all") }}
-                  </Button>
-                </div>
-                <Select
-                  :model-value="form.values.regions"
-                  @update:model-value="onRegionsChange"
-                  multiple
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  @click="clearAllRegions"
+                  class="text-xs h-6 px-2"
+                  :class="{ 'opacity-50': !form.values.regions?.length }"
                 >
-                  <SelectTrigger id="regions-filter">
-                    <SelectValue
-                      :placeholder="$t('pages.manage_matches.select_regions')"
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem
-                      v-for="region in availableRegions"
-                      :key="region.value"
-                      :value="region.value"
-                    >
-                      {{ region.description || region.value }}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                  {{ $t("pages.manage_matches.clear_all") }}
+                </Button>
               </div>
+              <Select
+                :model-value="form.values.regions"
+                @update:model-value="onRegionsChange"
+                multiple
+              >
+                <SelectTrigger id="regions-filter">
+                  <SelectValue
+                    :placeholder="$t('pages.manage_matches.select_regions')"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="region in availableRegions"
+                    :key="region.value"
+                    :value="region.value"
+                  >
+                    {{ region.description || region.value }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-              <!-- Enabled toggle -->
-              <div class="space-y-2">
-                <Label>{{ $t("pages.game_server_nodes.only_enabled") }}</Label>
-                <div class="flex items-center gap-2">
-                  <Switch
-                    :model-value="onlyEnabled"
-                    @update:model-value="onlyEnabled = !onlyEnabled"
-                  />
-                  <span class="text-sm text-muted-foreground">{{
-                    onlyEnabled ? $t("common.enabled") : $t("common.all")
-                  }}</span>
-                </div>
-              </div>
-              <!-- Hide Offline toggle -->
-              <div class="space-y-2">
-                <Label>{{ $t("pages.game_server_nodes.hide_offline") }}</Label>
-                <div class="flex items-center gap-2">
-                  <Switch
-                    :model-value="hideOffline"
-                    @update:model-value="hideOffline = !hideOffline"
-                  />
-                  <span class="text-sm text-muted-foreground">{{
-                    hideOffline
-                      ? $t("pages.game_server_nodes.status.online")
-                      : $t("pages.game_server_nodes.status.offline")
-                  }}</span>
-                </div>
+            <!-- Enabled toggle -->
+            <div class="space-y-2">
+              <Label>{{ $t("pages.game_server_nodes.only_enabled") }}</Label>
+              <div class="flex items-center gap-2">
+                <Switch
+                  :model-value="onlyEnabled"
+                  @update:model-value="onlyEnabled = !onlyEnabled"
+                />
+                <span class="text-sm text-muted-foreground">{{
+                  onlyEnabled ? $t("common.enabled") : $t("common.all")
+                }}</span>
               </div>
             </div>
-          </form>
-        </div>
-      </AnimatedCard>
-    </PageTransition>
-
-    <PageTransition :delay="300">
-      <AnimatedCard variant="gradient" class="p-4 relative">
-        <div v-if="loading" class="absolute top-4 left-4 z-10">
-          <div
-            class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
-          >
-            <div
-              class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
-            ></div>
-            <span>{{ $t("pages.manage_matches.loading") }}</span>
+            <!-- Hide Offline toggle -->
+            <div class="space-y-2">
+              <Label>{{ $t("pages.game_server_nodes.hide_offline") }}</Label>
+              <div class="flex items-center gap-2">
+                <Switch
+                  :model-value="hideOffline"
+                  @update:model-value="hideOffline = !hideOffline"
+                />
+                <span class="text-sm text-muted-foreground">{{
+                  hideOffline
+                    ? $t("pages.game_server_nodes.status.online")
+                    : $t("pages.game_server_nodes.status.offline")
+                }}</span>
+              </div>
+            </div>
           </div>
+        </form>
+      </div>
+    </AnimatedCard>
+  </PageTransition>
+
+  <PageTransition :delay="300" class="mt-6">
+    <AnimatedCard variant="gradient" class="p-4 relative">
+      <div v-if="loading" class="absolute top-4 left-4 z-10">
+        <div
+          class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
+        >
+          <div
+            class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
+          ></div>
+          <span>{{ $t("pages.manage_matches.loading") }}</span>
         </div>
-        <Empty v-if="gameServerNodes && gameServerNodes.length === 0">
-          <p class="text-muted-foreground">
-            {{ $t("pages.game_server_nodes.table.no_nodes") }}
-          </p>
-        </Empty>
-        <div class="overflow-x-auto" v-else>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead class="cursor-pointer" @click="toggleSortDirection">
+      </div>
+      <Empty v-if="gameServerNodes && gameServerNodes.length === 0">
+        <p class="text-muted-foreground">
+          {{ $t("pages.game_server_nodes.table.no_nodes") }}
+        </p>
+      </Empty>
+      <div class="overflow-x-auto" v-else>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead class="cursor-pointer" @click="toggleSortDirection">
+                <div class="flex items-center gap-1">
+                  {{ $t("pages.game_server_nodes.table.node") }}
+                  <ArrowUpIcon
+                    v-if="sortDirection === 'desc'"
+                    class="w-4 h-4"
+                  />
+                  <ArrowDownIcon v-else class="w-4 h-4" />
+                </div>
+              </TableHead>
+              <TableHead class="hidden xl:table-cell">{{
+                $t("game_server.hardware")
+              }}</TableHead>
+              <TableHead class="hidden xl:table-cell">{{
+                $t("pages.game_server_nodes.table.region")
+              }}</TableHead>
+              <TableHead class="hidden xl:table-cell text-center">
+                <div class="flex flex-col items-center gap-1">
+                  <span>{{
+                    $t("pages.game_server_nodes.table.capacity")
+                  }}</span>
                   <div class="flex items-center gap-1">
-                    {{ $t("pages.game_server_nodes.table.node") }}
-                    <ArrowUpIcon
-                      v-if="sortDirection === 'desc'"
-                      class="w-4 h-4"
-                    />
-                    <ArrowDownIcon v-else class="w-4 h-4" />
+                    {{ $t("pages.game_server_nodes.table.ports") }}
+                    <FiveStackToolTip>{{
+                      $t("pages.game_server_nodes.table.ports_tooltip")
+                    }}</FiveStackToolTip>
                   </div>
-                </TableHead>
-                <TableHead class="hidden xl:table-cell">{{
-                  $t("game_server.hardware")
-                }}</TableHead>
-                <TableHead class="hidden xl:table-cell">{{
-                  $t("pages.game_server_nodes.table.region")
-                }}</TableHead>
-                <TableHead class="hidden xl:table-cell text-center">
-                  <div class="flex flex-col items-center gap-1">
-                    <span>{{
-                      $t("pages.game_server_nodes.table.capacity")
-                    }}</span>
-                    <div class="flex items-center gap-1">
-                      {{ $t("pages.game_server_nodes.table.ports") }}
-                      <FiveStackToolTip>{{
-                        $t("pages.game_server_nodes.table.ports_tooltip")
-                      }}</FiveStackToolTip>
-                    </div>
-                  </div>
-                </TableHead>
-                <TableHead class="hidden xl:table-cell pr-1">
-                  {{ $t("pages.game_server_nodes.table.cs_build_id") }}
-                </TableHead>
-                <TableHead class="hidden xl:table-cell pl-1">
-                  {{ $t("pages.game_server_nodes.table.pin_plugin_version") }}
-                </TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <GameServerNodeRow
-                :game-server-node="gameServerNode"
-                :key="gameServerNode.id"
-                v-for="gameServerNode of gameServerNodes"
-                :display-metrics="displayMetrics"
-              ></GameServerNodeRow>
-            </TableBody>
-          </Table>
-        </div>
-      </AnimatedCard>
-    </PageTransition>
-  </div>
+                </div>
+              </TableHead>
+              <TableHead class="hidden xl:table-cell pr-1">
+                {{ $t("pages.game_server_nodes.table.cs_build_id") }}
+              </TableHead>
+              <TableHead class="hidden xl:table-cell pl-1">
+                {{ $t("pages.game_server_nodes.table.pin_plugin_version") }}
+              </TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <GameServerNodeRow
+              :game-server-node="gameServerNode"
+              :key="gameServerNode.id"
+              v-for="gameServerNode of gameServerNodes"
+              :display-metrics="displayMetrics"
+            ></GameServerNodeRow>
+          </TableBody>
+        </Table>
+      </div>
+    </AnimatedCard>
+  </PageTransition>
 
   <Pagination
     :page="page"

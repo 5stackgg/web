@@ -15,91 +15,89 @@ const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition>
-      <PageHeading>
-        <template #title>{{ $t("pages.teams.title") }}</template>
-        <template #description>{{ $t("pages.teams.description") }}</template>
-        <template #actions>
-          <NuxtLink v-if="me" :to="{ name: 'teams-create' }">
-            <Button :size="isMobile ? 'default' : 'lg'">
-              <PlusCircle class="w-4 h-4" />
-              <span class="hidden md:inline ml-2">{{
-                $t("pages.teams.create")
-              }}</span>
-            </Button>
-          </NuxtLink>
-        </template>
-      </PageHeading>
-    </PageTransition>
+  <PageTransition>
+    <PageHeading>
+      <template #title>{{ $t("pages.teams.title") }}</template>
+      <template #description>{{ $t("pages.teams.description") }}</template>
+      <template #actions>
+        <NuxtLink v-if="me" :to="{ name: 'teams-create' }">
+          <Button :size="isMobile ? 'default' : 'lg'">
+            <PlusCircle class="w-4 h-4" />
+            <span class="hidden md:inline ml-2">{{
+              $t("pages.teams.create")
+            }}</span>
+          </Button>
+        </NuxtLink>
+      </template>
+    </PageHeading>
+  </PageTransition>
 
-    <PageTransition :delay="100">
-      <div
-        v-if="me"
-        class="flex items-center space-x-2 justify-end cursor-pointer"
-        @click="showOnlyMyTeams = !showOnlyMyTeams"
+  <PageTransition :delay="100" class="mt-6">
+    <div
+      v-if="me"
+      class="flex items-center space-x-2 justify-end cursor-pointer"
+      @click="showOnlyMyTeams = !showOnlyMyTeams"
+    >
+      <Switch :model-value="showOnlyMyTeams" />
+      <Label class="text-sm">
+        {{ $t("team.search.my_teams_only") }}
+      </Label>
+    </div>
+  </PageTransition>
+
+  <PageTransition :delay="200" class="mt-6">
+    <AnimatedCard variant="gradient" class="p-4">
+      <form class="flex justify-end" @submit.prevent="viewTopTeam">
+        <FormField v-slot="{ componentField }" name="teamQuery">
+          <FormItem>
+            <FormControl>
+              <div class="relative w-full max-w-sm">
+                <Input
+                  type="text"
+                  :placeholder="$t('pages.teams.search')"
+                  class="pl-10"
+                  v-bind="componentField"
+                />
+                <Search
+                  class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                />
+              </div>
+            </FormControl>
+          </FormItem>
+        </FormField>
+      </form>
+
+      <Empty
+        v-if="
+          (showOnlyMyTeams ? myTeams : teams) &&
+          (showOnlyMyTeams ? myTeams : teams).length === 0
+        "
       >
-        <Switch :model-value="showOnlyMyTeams" />
-        <Label class="text-sm">
-          {{ $t("team.search.my_teams_only") }}
-        </Label>
-      </div>
-    </PageTransition>
-
-    <PageTransition :delay="200">
-      <AnimatedCard variant="gradient" class="p-4">
-        <form class="flex justify-end" @submit.prevent="viewTopTeam">
-          <FormField v-slot="{ componentField }" name="teamQuery">
-            <FormItem>
-              <FormControl>
-                <div class="relative w-full max-w-sm">
-                  <Input
-                    type="text"
-                    :placeholder="$t('pages.teams.search')"
-                    class="pl-10"
-                    v-bind="componentField"
-                  />
-                  <Search
-                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-                  />
-                </div>
-              </FormControl>
-            </FormItem>
-          </FormField>
-        </form>
-
-        <Empty
-          v-if="
-            (showOnlyMyTeams ? myTeams : teams) &&
-            (showOnlyMyTeams ? myTeams : teams).length === 0
+        <p class="text-muted-foreground">
+          {{ $t("pages.teams.no_teams") }}
+        </p>
+      </Empty>
+      <teams-table
+        :teams="showOnlyMyTeams ? myTeams : teams"
+        v-else-if="showOnlyMyTeams ? myTeams : teams"
+      ></teams-table>
+      <Teleport defer to="#pagination">
+        <pagination
+          :page="page"
+          :per-page="perPage"
+          @page="
+            (_page) => {
+              page = _page;
+            }
           "
-        >
-          <p class="text-muted-foreground">
-            {{ $t("pages.teams.no_teams") }}
-          </p>
-        </Empty>
-        <teams-table
-          :teams="showOnlyMyTeams ? myTeams : teams"
-          v-else-if="showOnlyMyTeams ? myTeams : teams"
-        ></teams-table>
-        <Teleport defer to="#pagination">
-          <pagination
-            :page="page"
-            :per-page="perPage"
-            @page="
-              (_page) => {
-                page = _page;
-              }
-            "
-            :total="teams_aggregate.aggregate.count"
-            v-if="!showOnlyMyTeams && teams_aggregate"
-          ></pagination>
-        </Teleport>
-      </AnimatedCard>
-    </PageTransition>
+          :total="teams_aggregate.aggregate.count"
+          v-if="!showOnlyMyTeams && teams_aggregate"
+        ></pagination>
+      </Teleport>
+    </AnimatedCard>
+  </PageTransition>
 
-    <div id="pagination"></div>
-  </div>
+  <div id="pagination"></div>
 </template>
 
 <script lang="ts">

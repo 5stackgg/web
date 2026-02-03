@@ -6,18 +6,16 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition :delay="0">
-      <PageHeading>
-        <template #title>{{
-          $t("pages.dedicated_servers.create.title")
-        }}</template>
-      </PageHeading>
-    </PageTransition>
-    <PageTransition :delay="100">
-      <AnimatedCard variant="gradient" class="w-1/2 p-4">
-        <server-form></server-form>
-      </AnimatedCard>
-    </PageTransition>
-  </div>
+  <PageTransition :delay="0">
+    <PageHeading>
+      <template #title>{{
+        $t("pages.dedicated_servers.create.title")
+      }}</template>
+    </PageHeading>
+  </PageTransition>
+  <PageTransition :delay="100" class="mt-6">
+    <AnimatedCard variant="gradient" class="w-1/2 p-4">
+      <server-form></server-form>
+    </AnimatedCard>
+  </PageTransition>
 </template>

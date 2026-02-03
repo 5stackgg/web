@@ -7,14 +7,12 @@ PageHeading;
 </script>
 
 <template>
-  <div class="w-1/2">
-    <PageTransition :delay="0">
-      <PageHeading>
-        <template #title>{{ $t("pages.teams.create") }}</template>
-      </PageHeading>
-    </PageTransition>
-    <PageTransition :delay="100">
-      <team-form></team-form>
-    </PageTransition>
-  </div>
+  <PageTransition :delay="0">
+    <PageHeading class="w-1/2">
+      <template #title>{{ $t("pages.teams.create") }}</template>
+    </PageHeading>
+  </PageTransition>
+  <PageTransition :delay="100" class="mt-6 w-1/2">
+    <team-form></team-form>
+  </PageTransition>
 </template>

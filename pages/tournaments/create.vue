@@ -6,18 +6,16 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition :delay="0">
-      <PageHeading>
-        <template #title>{{ $t("tournament.form.create") }}</template>
-        <template #description>{{
-          $t("tournament.form.description_help")
-        }}</template>
-      </PageHeading>
-    </PageTransition>
+  <PageTransition :delay="0">
+    <PageHeading>
+      <template #title>{{ $t("tournament.form.create") }}</template>
+      <template #description>{{
+        $t("tournament.form.description_help")
+      }}</template>
+    </PageHeading>
+  </PageTransition>
 
-    <PageTransition :delay="100">
-      <tournament-form></tournament-form>
-    </PageTransition>
-  </div>
+  <PageTransition :delay="100" class="mt-6">
+    <tournament-form></tournament-form>
+  </PageTransition>
 </template>

@@ -11,247 +11,241 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- API Keys Table -->
-    <PageTransition :delay="0">
-      <AnimatedCard variant="gradient">
-        <CardHeader>
-          <CardTitle class="flex items-center justify-between">
-            {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
+  <!-- API Keys Table -->
+  <PageTransition :delay="0">
+    <AnimatedCard variant="gradient">
+      <CardHeader>
+        <CardTitle class="flex items-center justify-between">
+          {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
 
-            <Button size="sm" @click="openAddDialog">
-              <PlusIcon class="w-4 h-4 mr-2" />
-              {{ $t("pages.settings.account.api_keys_management.add_api_key") }}
-            </Button>
-          </CardTitle>
-          <CardDescription>
-            {{
-              $t(
-                "pages.settings.account.api_keys_management.api_keys_description",
-              )
-            }}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table v-if="apiKeys.length > 0">
-            <TableHeader>
-              <TableRow>
-                <TableHead>{{
-                  $t("pages.settings.account.api_keys_management.label")
-                }}</TableHead>
-                <TableHead>{{
-                  $t("pages.settings.account.api_keys_management.created")
-                }}</TableHead>
-                <TableHead>{{
-                  $t("pages.settings.account.api_keys_management.last_used")
-                }}</TableHead>
-                <TableHead class="w-[100px]">{{
-                  $t("pages.settings.account.api_keys_management.actions")
-                }}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="apiKey in apiKeys" :key="apiKey.id">
-                <TableCell class="font-medium">
-                  {{ apiKey.label }}
-                </TableCell>
-                <TableCell>
-                  <TimeAgo :date="apiKey.created_at" />
-                </TableCell>
-                <TableCell>
-                  <template v-if="apiKey.last_used_at">
-                    <TimeAgo :date="apiKey.last_used_at" />
-                  </template>
-                  <template v-else>
-                    {{ $t("pages.settings.account.api_keys_management.never") }}
-                  </template>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    @click="openDeleteDialog(apiKey)"
-                  >
-                    <TrashIcon class="w-4 h-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </AnimatedCard>
-    </PageTransition>
-
-    <!-- Add API Key Dialog -->
-    <Dialog v-model:open="showAddDialog">
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle v-if="!showingNewApiKey">{{
-            $t("pages.settings.account.api_keys_management.create_new_api_key")
-          }}</DialogTitle>
-          <DialogTitle v-else>{{
+          <Button size="sm" @click="openAddDialog">
+            <PlusIcon class="w-4 h-4 mr-2" />
+            {{ $t("pages.settings.account.api_keys_management.add_api_key") }}
+          </Button>
+        </CardTitle>
+        <CardDescription>
+          {{
             $t(
-              "pages.settings.account.api_keys_management.copy_key_dialog.title",
+              "pages.settings.account.api_keys_management.api_keys_description",
             )
-          }}</DialogTitle>
-          <DialogDescription v-if="!showingNewApiKey">
-            {{
-              $t(
-                "pages.settings.account.api_keys_management.create_new_description",
-              )
-            }}
-          </DialogDescription>
-          <DialogDescription v-else>
-            {{
-              $t(
-                "pages.settings.account.api_keys_management.copy_key_dialog.description",
-              )
-            }}
-          </DialogDescription>
-        </DialogHeader>
+          }}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table v-if="apiKeys.length > 0">
+          <TableHeader>
+            <TableRow>
+              <TableHead>{{
+                $t("pages.settings.account.api_keys_management.label")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.settings.account.api_keys_management.created")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.settings.account.api_keys_management.last_used")
+              }}</TableHead>
+              <TableHead class="w-[100px]">{{
+                $t("pages.settings.account.api_keys_management.actions")
+              }}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="apiKey in apiKeys" :key="apiKey.id">
+              <TableCell class="font-medium">
+                {{ apiKey.label }}
+              </TableCell>
+              <TableCell>
+                <TimeAgo :date="apiKey.created_at" />
+              </TableCell>
+              <TableCell>
+                <template v-if="apiKey.last_used_at">
+                  <TimeAgo :date="apiKey.last_used_at" />
+                </template>
+                <template v-else>
+                  {{ $t("pages.settings.account.api_keys_management.never") }}
+                </template>
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  @click="openDeleteDialog(apiKey)"
+                >
+                  <TrashIcon class="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </CardContent>
+    </AnimatedCard>
+  </PageTransition>
 
-        <!-- Form View -->
-        <template v-if="!showingNewApiKey">
-          <form :form="form" @submit.prevent="addApiKey">
-            <FormField v-slot="{ componentField }" name="label">
-              <FormItem>
-                <FormLabel>{{
-                  $t("pages.settings.account.api_keys_management.label")
-                }}</FormLabel>
-                <FormControl>
-                  <Input
-                    v-bind="componentField"
-                    :placeholder="
-                      $t(
-                        'pages.settings.account.api_keys_management.label_placeholder',
-                      )
-                    "
-                  />
-                </FormControl>
-                <FormDescription>
-                  {{
+  <!-- Add API Key Dialog -->
+  <Dialog v-model:open="showAddDialog">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle v-if="!showingNewApiKey">{{
+          $t("pages.settings.account.api_keys_management.create_new_api_key")
+        }}</DialogTitle>
+        <DialogTitle v-else>{{
+          $t("pages.settings.account.api_keys_management.copy_key_dialog.title")
+        }}</DialogTitle>
+        <DialogDescription v-if="!showingNewApiKey">
+          {{
+            $t(
+              "pages.settings.account.api_keys_management.create_new_description",
+            )
+          }}
+        </DialogDescription>
+        <DialogDescription v-else>
+          {{
+            $t(
+              "pages.settings.account.api_keys_management.copy_key_dialog.description",
+            )
+          }}
+        </DialogDescription>
+      </DialogHeader>
+
+      <!-- Form View -->
+      <template v-if="!showingNewApiKey">
+        <form :form="form" @submit.prevent="addApiKey">
+          <FormField v-slot="{ componentField }" name="label">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.account.api_keys_management.label")
+              }}</FormLabel>
+              <FormControl>
+                <Input
+                  v-bind="componentField"
+                  :placeholder="
                     $t(
-                      "pages.settings.account.api_keys_management.label_description",
+                      'pages.settings.account.api_keys_management.label_placeholder',
                     )
-                  }}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-
-            <DialogFooter>
-              <Button type="button" variant="outline" @click="closeAddDialog">
-                {{ $t("pages.settings.account.api_keys_management.cancel") }}
-              </Button>
-              <Button type="submit">
+                  "
+                />
+              </FormControl>
+              <FormDescription>
                 {{
                   $t(
-                    "pages.settings.account.api_keys_management.create_api_key",
+                    "pages.settings.account.api_keys_management.label_description",
                   )
                 }}
-              </Button>
-            </DialogFooter>
-          </form>
-        </template>
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-        <!-- API Key Display View -->
-        <template v-else>
-          <div class="space-y-4">
-            <div class="space-y-2">
-              <label class="text-sm font-medium">{{
-                $t(
-                  "pages.settings.account.api_keys_management.copy_key_dialog.api_key_label",
-                )
-              }}</label>
-              <div v-if="newApiKey">
-                <div class="relative">
-                  <div
-                    class="border rounded-md p-3 pr-12 font-mono text-sm break-all bg-background"
-                  >
-                    {{ newApiKey }}
-                  </div>
-                  <div class="absolute top-2 right-2">
-                    <ClipBoard
-                      :data="newApiKey"
-                      class="p-2 rounded-md hover:bg-muted transition-colors"
-                    />
-                  </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" @click="closeAddDialog">
+              {{ $t("pages.settings.account.api_keys_management.cancel") }}
+            </Button>
+            <Button type="submit">
+              {{
+                $t("pages.settings.account.api_keys_management.create_api_key")
+              }}
+            </Button>
+          </DialogFooter>
+        </form>
+      </template>
+
+      <!-- API Key Display View -->
+      <template v-else>
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <label class="text-sm font-medium">{{
+              $t(
+                "pages.settings.account.api_keys_management.copy_key_dialog.api_key_label",
+              )
+            }}</label>
+            <div v-if="newApiKey">
+              <div class="relative">
+                <div
+                  class="border rounded-md p-3 pr-12 font-mono text-sm break-all bg-background"
+                >
+                  {{ newApiKey }}
                 </div>
-              </div>
-            </div>
-
-            <div class="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-              <div class="flex">
-                <TriangleAlert class="w-5 h-5 text-yellow-400 mr-2 mt-0.5" />
-                <div class="text-sm text-yellow-800">
-                  <p class="font-medium">
-                    {{
-                      $t(
-                        "pages.settings.account.api_keys_management.copy_key_dialog.warning_title",
-                      )
-                    }}
-                  </p>
-                  <p>
-                    {{
-                      $t(
-                        "pages.settings.account.api_keys_management.copy_key_dialog.warning_message",
-                      )
-                    }}
-                  </p>
+                <div class="absolute top-2 right-2">
+                  <ClipBoard
+                    :data="newApiKey"
+                    class="p-2 rounded-md hover:bg-muted transition-colors"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          <DialogFooter>
-            <Button @click="closeAddDialog">
-              {{
-                $t(
-                  "pages.settings.account.api_keys_management.copy_key_dialog.copied_button",
-                )
-              }}
-            </Button>
-          </DialogFooter>
-        </template>
-      </DialogContent>
-    </Dialog>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-md p-3">
+            <div class="flex">
+              <TriangleAlert class="w-5 h-5 text-yellow-400 mr-2 mt-0.5" />
+              <div class="text-sm text-yellow-800">
+                <p class="font-medium">
+                  {{
+                    $t(
+                      "pages.settings.account.api_keys_management.copy_key_dialog.warning_title",
+                    )
+                  }}
+                </p>
+                <p>
+                  {{
+                    $t(
+                      "pages.settings.account.api_keys_management.copy_key_dialog.warning_message",
+                    )
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <!-- Delete Confirmation Dialog -->
-    <AlertDialog v-model:open="showDeleteDialog">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{{
+        <DialogFooter>
+          <Button @click="closeAddDialog">
+            {{
+              $t(
+                "pages.settings.account.api_keys_management.copy_key_dialog.copied_button",
+              )
+            }}
+          </Button>
+        </DialogFooter>
+      </template>
+    </DialogContent>
+  </Dialog>
+
+  <!-- Delete Confirmation Dialog -->
+  <AlertDialog v-model:open="showDeleteDialog">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{{
+          $t(
+            "pages.settings.account.api_keys_management.delete_confirmation_title",
+          )
+        }}</AlertDialogTitle>
+        <AlertDialogDescription>
+          {{
             $t(
-              "pages.settings.account.api_keys_management.delete_confirmation_title",
+              "pages.settings.account.api_keys_management.delete_confirmation_description",
+              { label: apiKeyToDelete?.label },
             )
-          }}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {{
-              $t(
-                "pages.settings.account.api_keys_management.delete_confirmation_description",
-                { label: apiKeyToDelete?.label },
-              )
-            }}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel @click="closeDeleteDialog">{{
-            $t("pages.settings.account.api_keys_management.cancel")
-          }}</AlertDialogCancel>
-          <AlertDialogAction
-            @click="deleteApiKey"
-            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-          >
-            {{
-              $t(
-                "pages.settings.account.api_keys_management.delete_api_key_action",
-              )
-            }}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  </div>
+          }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="closeDeleteDialog">{{
+          $t("pages.settings.account.api_keys_management.cancel")
+        }}</AlertDialogCancel>
+        <AlertDialogAction
+          @click="deleteApiKey"
+          class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+        >
+          {{
+            $t(
+              "pages.settings.account.api_keys_management.delete_api_key_action",
+            )
+          }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts">

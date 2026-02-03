@@ -41,128 +41,127 @@ const teamMenu = ref(false);
 </script>
 
 <template>
-  <div v-if="team" class="grid gap-6">
-    <PageTransition>
-      <PageHeading>
-        <template #title>
-          {{ team.name }}
-          <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
-            [{{ team.short_name }}]
-          </span>
-        </template>
+  <PageTransition>
+    <PageHeading v-if="team">
+      <template #title>
+        {{ team.name }}
+        <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+          [{{ team.short_name }}]
+        </span>
+      </template>
 
-        <template #description>
-          <PlayerDisplay :player="team.owner">
-            <template #name-postfix>
-              <Badge variant="secondary">{{ $t("team.roles.captain") }}</Badge>
-            </template>
-          </PlayerDisplay>
-        </template>
+      <template #description>
+        <PlayerDisplay :player="team.owner">
+          <template #name-postfix>
+            <Badge variant="secondary">{{ $t("team.roles.captain") }}</Badge>
+          </template>
+        </PlayerDisplay>
+      </template>
 
-        <template #actions>
-          <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
-            <DropdownMenuTrigger as-child>
-              <Button variant="outline" size="icon">
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-[200px]">
-              <DropdownMenuGroup>
-                <template v-if="isAdmin || team.owner.steam_id === me.steam_id">
-                  <DropdownMenuItem @click="editTeamSheet = true">
-                    {{ $t("common.actions.edit") }}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    class="text-red-600"
-                    @click="deleteTeamAlertDialog = true"
-                  >
-                    <Trash class="mr-2 h-4 w-4 inline" />
-                    {{ $t("common.actions.delete") }}
-                  </DropdownMenuItem>
-                </template>
-                <template v-if="isOnTeam">
-                  <DropdownMenuItem
-                    class="text-red-600"
-                    @click="leaveTeamAlertDialog = true"
-                  >
-                    <Trash class="mr-2 h-4 w-4 inline" /> {{ $t("team.leave") }}
-                  </DropdownMenuItem>
-                </template>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </template>
-      </PageHeading>
+      <template #actions>
+        <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
+          <DropdownMenuTrigger as-child>
+            <Button variant="outline" size="icon">
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-[200px]">
+            <DropdownMenuGroup>
+              <template v-if="isAdmin || team.owner.steam_id === me.steam_id">
+                <DropdownMenuItem @click="editTeamSheet = true">
+                  {{ $t("common.actions.edit") }}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  class="text-red-600"
+                  @click="deleteTeamAlertDialog = true"
+                >
+                  <Trash class="mr-2 h-4 w-4 inline" />
+                  {{ $t("common.actions.delete") }}
+                </DropdownMenuItem>
+              </template>
+              <template v-if="isOnTeam">
+                <DropdownMenuItem
+                  class="text-red-600"
+                  @click="leaveTeamAlertDialog = true"
+                >
+                  <Trash class="mr-2 h-4 w-4 inline" /> {{ $t("team.leave") }}
+                </DropdownMenuItem>
+              </template>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </template>
+    </PageHeading>
+  </PageTransition>
+
+  <div v-if="team" class="grid md:grid-cols-2 grid-cols-1 gap-6 mt-6">
+    <PageTransition :delay="100">
+      <div>
+        <TeamMembers :team-id="$route.params.id" />
+      </div>
     </PageTransition>
-
-    <div class="grid md:grid-cols-2 grid-cols-1 gap-6">
-      <PageTransition :delay="100">
-        <div>
-          <TeamMembers :team-id="$route.params.id" />
-        </div>
-      </PageTransition>
-      <PageTransition :delay="200">
-        <div>
-          <PageHeading>{{ $t("match.recent.title") }}</PageHeading>
-          <MatchesTable :matches="team.matches" />
-        </div>
-      </PageTransition>
-    </div>
-
-    <Sheet
-      :open="editTeamSheet"
-      @update:open="(open) => (editTeamSheet = open)"
-    >
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>{{ $t("team.management.edit") }}</SheetTitle>
-          <SheetDescription>
-            <TeamForm :team="team" @updated="editTeamSheet = false" />
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
-
-    <AlertDialog
-      :open="deleteTeamAlertDialog"
-      @update:open="(open) => (deleteTeamAlertDialog = open)"
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{{
-            $t("team.confirm.delete.title")
-          }}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {{ $t("team.confirm.delete.description") }}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction @click="deleteTeam">{{
-            $t("common.confirm")
-          }}</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-
-    <AlertDialog
-      :open="leaveTeamAlertDialog"
-      @update:open="(open) => (leaveTeamAlertDialog = open)"
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{{ $t("team.confirm.leave") }}</AlertDialogTitle>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction @click="leaveTeam">{{
-            $t("common.confirm")
-          }}</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <PageTransition :delay="200">
+      <div>
+        <PageHeading>{{ $t("match.recent.title") }}</PageHeading>
+        <MatchesTable :matches="team.matches" />
+      </div>
+    </PageTransition>
   </div>
+
+  <Sheet
+    v-if="team"
+    :open="editTeamSheet"
+    @update:open="(open) => (editTeamSheet = open)"
+  >
+    <SheetContent>
+      <SheetHeader>
+        <SheetTitle>{{ $t("team.management.edit") }}</SheetTitle>
+        <SheetDescription>
+          <TeamForm :team="team" @updated="editTeamSheet = false" />
+        </SheetDescription>
+      </SheetHeader>
+    </SheetContent>
+  </Sheet>
+
+  <AlertDialog
+    :open="deleteTeamAlertDialog"
+    @update:open="(open) => (deleteTeamAlertDialog = open)"
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{{
+          $t("team.confirm.delete.title")
+        }}</AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("team.confirm.delete.description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <AlertDialogAction @click="deleteTeam">{{
+          $t("common.confirm")
+        }}</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+
+  <AlertDialog
+    :open="leaveTeamAlertDialog"
+    @update:open="(open) => (leaveTeamAlertDialog = open)"
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{{ $t("team.confirm.leave") }}</AlertDialogTitle>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <AlertDialogAction @click="leaveTeam">{{
+          $t("common.confirm")
+        }}</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts">

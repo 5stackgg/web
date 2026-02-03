@@ -4,8 +4,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <div v-if="tournament">
-    <PageTransition :delay="0">
+  <PageTransition :delay="0">
+    <div v-if="tournament">
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-2">
           <Button variant="ghost" size="icon" @click="$router.back()">
@@ -14,14 +14,14 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           <h1 class="text-2xl font-bold">Match Options</h1>
         </div>
       </div>
-    </PageTransition>
+    </div>
+  </PageTransition>
 
-    <PageTransition :delay="100">
-      <AnimatedCard variant="gradient" class="p-6">
-        <TournamentForm :tournament="tournament"></TournamentForm>
-      </AnimatedCard>
-    </PageTransition>
-  </div>
+  <PageTransition :delay="100" class="mt-6">
+    <AnimatedCard variant="gradient" class="p-6">
+      <TournamentForm :tournament="tournament"></TournamentForm>
+    </AnimatedCard>
+  </PageTransition>
 </template>
 
 <script lang="ts">

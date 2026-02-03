@@ -103,9 +103,9 @@ const { isMobile } = useSidebar();
       </div>
     </PageTransition>
 
-    <Separator />
+    <Separator class="mt-6" />
 
-    <PageTransition :delay="200">
+    <PageTransition :delay="200" class="mt-6">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold">
           {{ $t("pages.map_pools.maps") }}
@@ -124,7 +124,7 @@ const { isMobile } = useSidebar();
       </div>
     </PageTransition>
 
-    <PageTransition :delay="300">
+    <PageTransition :delay="300" class="mt-6">
       <AnimatedCard variant="gradient" class="p-4">
         <div class="relative w-full overflow-auto">
           <Table>
@@ -151,18 +151,20 @@ const { isMobile } = useSidebar();
         </div>
       </AnimatedCard>
     </PageTransition>
-  </div>
 
-  <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
-    <SheetContent>
-      <SheetHeader>
-        <SheetTitle>{{ $t("pages.dedicated_servers.detail.edit") }}</SheetTitle>
-        <SheetDescription>
-          <MapForm @created="mapFormSheet = false" />
-        </SheetDescription>
-      </SheetHeader>
-    </SheetContent>
-  </Sheet>
+    <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>{{
+            $t("pages.dedicated_servers.detail.edit")
+          }}</SheetTitle>
+          <SheetDescription>
+            <MapForm @created="mapFormSheet = false" />
+          </SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  </div>
 </template>
 
 <script lang="ts">

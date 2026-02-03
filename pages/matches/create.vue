@@ -10,16 +10,14 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition>
-      <PageHeading>
-        <template #title>{{ $t("pages.matches.create_page.title") }}</template>
-      </PageHeading>
-    </PageTransition>
-    <PageTransition :delay="100">
-      <MatchForm />
-    </PageTransition>
-  </div>
+  <PageTransition>
+    <PageHeading>
+      <template #title>{{ $t("pages.matches.create_page.title") }}</template>
+    </PageHeading>
+  </PageTransition>
+  <PageTransition :delay="100" class="mt-6">
+    <MatchForm />
+  </PageTransition>
 </template>
 
 <script lang="ts">

@@ -7,35 +7,33 @@ import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition :delay="0">
-      <PageHeading v-if="map_pools_by_pk">
-        <template #title>{{
-          $t("pages.map_pools.pool.title", { type: map_pools_by_pk.type })
-        }}</template>
-        <template #description>{{
-          $t("pages.map_pools.pool.description")
-        }}</template>
-      </PageHeading>
-    </PageTransition>
+  <PageTransition :delay="0">
+    <PageHeading v-if="map_pools_by_pk">
+      <template #title>{{
+        $t("pages.map_pools.pool.title", { type: map_pools_by_pk.type })
+      }}</template>
+      <template #description>{{
+        $t("pages.map_pools.pool.description")
+      }}</template>
+    </PageHeading>
+  </PageTransition>
 
-    <PageTransition :delay="100">
-      <AnimatedCard v-if="map_pools_by_pk" variant="gradient">
-        <CardHeader>
-          <CardTitle class="flex justify-between items-center">{{
-            $t("pages.map_pools.pool.modify_maps")
-          }}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <MapPoolForm
-            :pool="map_pools_by_pk"
-            :availableMaps="availableMaps"
-            v-if="map_pools_by_pk && availableMaps"
-          />
-        </CardContent>
-      </AnimatedCard>
-    </PageTransition>
-  </div>
+  <PageTransition :delay="100" class="mt-6">
+    <AnimatedCard v-if="map_pools_by_pk" variant="gradient">
+      <CardHeader>
+        <CardTitle class="flex justify-between items-center">{{
+          $t("pages.map_pools.pool.modify_maps")
+        }}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <MapPoolForm
+          :pool="map_pools_by_pk"
+          :availableMaps="availableMaps"
+          v-if="map_pools_by_pk && availableMaps"
+        />
+      </CardContent>
+    </AnimatedCard>
+  </PageTransition>
 </template>
 
 <script lang="ts">

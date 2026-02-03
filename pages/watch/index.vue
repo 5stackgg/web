@@ -13,29 +13,29 @@ import Empty from "~/components/ui/empty/Empty.vue";
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <PageTransition>
-      <PageHeading>
-        <template #title>{{ $t("pages.watch.title") }}</template>
-        <template #description>{{ $t("pages.watch.description") }}</template>
-      </PageHeading>
-    </PageTransition>
+  <PageTransition>
+    <PageHeading>
+      <template #title>{{ $t("pages.watch.title") }}</template>
+      <template #description>{{ $t("pages.watch.description") }}</template>
+    </PageHeading>
+  </PageTransition>
 
-    <PageTransition :delay="100">
-      <div
-        v-if="liveTournaments && liveTournaments.length > 0"
-        class="space-y-4"
-      >
-        <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
-        <TournamentTableRow
-          v-for="tournament in liveTournaments"
-          :key="tournament.id"
-          :tournament="tournament"
-        ></TournamentTableRow>
-      </div>
-    </PageTransition>
+  <PageTransition :delay="100">
+    <div
+      v-if="liveTournaments && liveTournaments.length > 0"
+      class="space-y-4 mt-6"
+    >
+      <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
+      <TournamentTableRow
+        v-for="tournament in liveTournaments"
+        :key="tournament.id"
+        :tournament="tournament"
+      ></TournamentTableRow>
+    </div>
+  </PageTransition>
 
-    <PageTransition :delay="200">
+  <PageTransition :delay="200">
+    <div class="mt-6">
       <AnimatedCard variant="gradient" class="p-4">
         <Tabs default-value="live-matches">
           <TabsList>
@@ -75,10 +75,10 @@ import Empty from "~/components/ui/empty/Empty.vue";
           </TabsContent>
         </Tabs>
       </AnimatedCard>
-    </PageTransition>
+    </div>
+  </PageTransition>
 
-    <div id="pagination"></div>
-  </div>
+  <div id="pagination" class="mt-6"></div>
 </template>
 
 <script lang="ts">

@@ -12,163 +12,154 @@ const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition :delay="0">
-      <PageHeading>
-        <template #title>{{ $t("pages.regions.title") }}</template>
+  <PageTransition :delay="0">
+    <PageHeading>
+      <template #title>{{ $t("pages.regions.title") }}</template>
 
-        <template #description>
-          {{ $t("pages.regions.description") }}
-        </template>
+      <template #description>
+        {{ $t("pages.regions.description") }}
+      </template>
 
-        <template #actions>
-          <Button
-            @click="regionDialogOpen = true"
-            :size="isMobile ? 'default' : 'lg'"
-          >
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{
-              $t("pages.regions.create")
-            }}</span>
-          </Button>
-        </template>
-      </PageHeading>
-    </PageTransition>
+      <template #actions>
+        <Button
+          @click="regionDialogOpen = true"
+          :size="isMobile ? 'default' : 'lg'"
+        >
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden md:inline ml-2">{{
+            $t("pages.regions.create")
+          }}</span>
+        </Button>
+      </template>
+    </PageHeading>
+  </PageTransition>
 
-    <PageTransition :delay="100">
-      <AnimatedCard variant="gradient" class="p-4">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{{ $t("pages.regions.table.name") }}</TableHead>
-              <TableHead>{{ $t("pages.regions.table.status") }}</TableHead>
-              <TableHead>{{
-                $t("pages.regions.table.available_servers")
-              }}</TableHead>
-              <TableHead>{{ $t("pages.regions.table.description") }}</TableHead>
-              <TableHead>
-                <FivestackTooltip>
-                  <template #trigger>
-                    <div class="flex items-center gap-2">
-                      <Info class="w-4 h-4" />
-                      {{ $t("pages.regions.table.use_steam_relay") }}
-                    </div>
-                  </template>
-                  {{ $t("pages.regions.table.use_steam_relay_description") }}
-                </FivestackTooltip>
-              </TableHead>
-              <TableHead>{{ $t("pages.regions.table.use_lan_ip") }}</TableHead>
-              <TableHead class="w-[100px]">{{
-                $t("pages.regions.table.actions")
-              }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow v-for="region of regions" :key="region.value">
-              <TableCell>
-                <span>{{ region.value }}</span>
-              </TableCell>
-              <TableCell>
-                <span>{{ region.status }}</span>
-              </TableCell>
-              <TableCell>
-                <span
-                  >{{ region.available_server_count }} /
-                  {{ region.total_server_count }}</span
+  <PageTransition :delay="100" class="mt-6">
+    <AnimatedCard variant="gradient" class="p-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{{ $t("pages.regions.table.name") }}</TableHead>
+            <TableHead>{{ $t("pages.regions.table.status") }}</TableHead>
+            <TableHead>{{
+              $t("pages.regions.table.available_servers")
+            }}</TableHead>
+            <TableHead>{{ $t("pages.regions.table.description") }}</TableHead>
+            <TableHead>
+              <FivestackTooltip>
+                <template #trigger>
+                  <div class="flex items-center gap-2">
+                    <Info class="w-4 h-4" />
+                    {{ $t("pages.regions.table.use_steam_relay") }}
+                  </div>
+                </template>
+                {{ $t("pages.regions.table.use_steam_relay_description") }}
+              </FivestackTooltip>
+            </TableHead>
+            <TableHead>{{ $t("pages.regions.table.use_lan_ip") }}</TableHead>
+            <TableHead class="w-[100px]">{{
+              $t("pages.regions.table.actions")
+            }}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="region of regions" :key="region.value">
+            <TableCell>
+              <span>{{ region.value }}</span>
+            </TableCell>
+            <TableCell>
+              <span>{{ region.status }}</span>
+            </TableCell>
+            <TableCell>
+              <span
+                >{{ region.available_server_count }} /
+                {{ region.total_server_count }}</span
+              >
+            </TableCell>
+            <TableCell>
+              <span>{{ region.description }}</span>
+            </TableCell>
+            <TableCell>
+              <Switch
+                :model-value="region.steam_relay"
+                @click="toggleSteamRelay(region)"
+              />
+            </TableCell>
+            <TableCell>
+              <Switch
+                :model-value="region.is_lan"
+                @click="toggleIsLan(region)"
+              />
+            </TableCell>
+            <TableCell>
+              <div class="flex gap-2">
+                <Button variant="ghost" size="icon" @click="editRegion(region)">
+                  <Pencil class="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  @click="
+                    () => {
+                      regionToDelete = region;
+                      deleteDialogOpen = true;
+                    }
+                  "
                 >
-              </TableCell>
-              <TableCell>
-                <span>{{ region.description }}</span>
-              </TableCell>
-              <TableCell>
-                <Switch
-                  :model-value="region.steam_relay"
-                  @click="toggleSteamRelay(region)"
-                />
-              </TableCell>
-              <TableCell>
-                <Switch
-                  :model-value="region.is_lan"
-                  @click="toggleIsLan(region)"
-                />
-              </TableCell>
-              <TableCell>
-                <div class="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    @click="editRegion(region)"
-                  >
-                    <Pencil class="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    @click="
-                      () => {
-                        regionToDelete = region;
-                        deleteDialogOpen = true;
-                      }
-                    "
-                  >
-                    <Trash class="w-4 h-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </AnimatedCard>
-    </PageTransition>
+                  <Trash class="w-4 h-4" />
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </AnimatedCard>
+  </PageTransition>
 
-    <Dialog v-model:open="regionDialogOpen">
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            <template v-if="regionToEdit">{{
-              $t("pages.regions.edit")
-            }}</template>
-            <template v-else>{{ $t("pages.regions.create") }}</template>
-          </DialogTitle>
-        </DialogHeader>
-        <RegionForm
-          @updated="regionDialogOpen = false"
-          :region="regionToEdit"
-        />
-      </DialogContent>
-    </Dialog>
+  <Dialog v-model:open="regionDialogOpen">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>
+          <template v-if="regionToEdit">{{
+            $t("pages.regions.edit")
+          }}</template>
+          <template v-else>{{ $t("pages.regions.create") }}</template>
+        </DialogTitle>
+      </DialogHeader>
+      <RegionForm @updated="regionDialogOpen = false" :region="regionToEdit" />
+    </DialogContent>
+  </Dialog>
 
-    <Dialog v-model:open="deleteDialogOpen">
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{{ $t("pages.regions.delete.title") }}</DialogTitle>
-          <DialogDescription>
-            {{ $t("pages.regions.delete.description") }}
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" @click="deleteDialogOpen = false">
-            {{ $t("pages.regions.delete.cancel") }}
-          </Button>
-          <Button variant="destructive" @click="deleteRegion">
-            {{ $t("pages.regions.delete.confirm") }}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+  <Dialog v-model:open="deleteDialogOpen">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{{ $t("pages.regions.delete.title") }}</DialogTitle>
+        <DialogDescription>
+          {{ $t("pages.regions.delete.description") }}
+        </DialogDescription>
+      </DialogHeader>
+      <DialogFooter>
+        <Button variant="outline" @click="deleteDialogOpen = false">
+          {{ $t("pages.regions.delete.cancel") }}
+        </Button>
+        <Button variant="destructive" @click="deleteRegion">
+          {{ $t("pages.regions.delete.confirm") }}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 
-    <Pagination
-      :page="page"
-      :per-page="perPage"
-      @page="
-        (_page) => {
-          page = _page;
-        }
-      "
-      :total="server_regions_aggregate.aggregate.count"
-      v-if="server_regions_aggregate"
-    ></Pagination>
-  </div>
+  <Pagination
+    :page="page"
+    :per-page="perPage"
+    @page="
+      (_page) => {
+        page = _page;
+      }
+    "
+    :total="server_regions_aggregate.aggregate.count"
+    v-if="server_regions_aggregate"
+  ></Pagination>
 </template>
 
 <script lang="ts">

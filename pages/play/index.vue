@@ -13,13 +13,15 @@ import Empty from "~/components/ui/empty/Empty.vue";
 <template>
   <div class="flex flex-col gap-6">
     <PageTransition>
-      <template v-if="matchmakingAllowed">
-        <Matchmaking></Matchmaking>
-        <Separator class="my-4" />
-      </template>
-      <template v-else-if="canCreateMatch">
-        <CustomMatch class="bg-card p-8 rounded-lg" />
-      </template>
+      <div>
+        <template v-if="matchmakingAllowed">
+          <Matchmaking></Matchmaking>
+          <Separator class="my-4" />
+        </template>
+        <template v-else-if="canCreateMatch">
+          <CustomMatch class="bg-card p-8 rounded-lg" />
+        </template>
+      </div>
     </PageTransition>
 
     <PageTransition :delay="100">

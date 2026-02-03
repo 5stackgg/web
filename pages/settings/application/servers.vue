@@ -6,54 +6,56 @@ definePageMeta({
 </script>
 
 <template>
-  <form @submit.prevent="updateSettings" class="grid gap-4">
-    <div
-      class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-      @click="toggleCpuPinning"
-    >
-      <div class="space-y-0.5">
-        <h4 class="text-base font-medium">
-          {{ $t("pages.settings.application.servers.enable_cpu_pinning") }}
-        </h4>
-        <p class="text-sm text-muted-foreground">
-          {{
-            $t(
-              "pages.settings.application.servers.enable_cpu_pinning_description",
-            )
-          }}
-        </p>
-      </div>
-      <Switch
-        :model-value="cpuPinningEnabled"
-        @update:model-value="toggleCpuPinning"
-      />
-    </div>
-
-    <FormField v-slot="{ componentField }" name="number_of_cpus_per_server">
-      <FormItem>
-        <FormLabel>{{
-          $t("pages.settings.application.servers.number_of_cpus_per_server")
-        }}</FormLabel>
-        <FormDescription>{{
-          $t(
-            "pages.settings.application.servers.number_of_cpus_per_server_description",
-          )
-        }}</FormDescription>
-        <Input type="number" v-bind="componentField" min="1" />
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <div class="flex justify-start">
-      <Button
-        type="submit"
-        :disabled="Object.keys(form.errors).length > 0"
-        class="my-3"
+  <PageTransition :delay="0">
+    <form @submit.prevent="updateSettings" class="grid gap-4">
+      <div
+        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+        @click="toggleCpuPinning"
       >
-        {{ $t("pages.settings.application.servers.update") }}
-      </Button>
-    </div>
-  </form>
+        <div class="space-y-0.5">
+          <h4 class="text-base font-medium">
+            {{ $t("pages.settings.application.servers.enable_cpu_pinning") }}
+          </h4>
+          <p class="text-sm text-muted-foreground">
+            {{
+              $t(
+                "pages.settings.application.servers.enable_cpu_pinning_description",
+              )
+            }}
+          </p>
+        </div>
+        <Switch
+          :model-value="cpuPinningEnabled"
+          @update:model-value="toggleCpuPinning"
+        />
+      </div>
+
+      <FormField v-slot="{ componentField }" name="number_of_cpus_per_server">
+        <FormItem>
+          <FormLabel>{{
+            $t("pages.settings.application.servers.number_of_cpus_per_server")
+          }}</FormLabel>
+          <FormDescription>{{
+            $t(
+              "pages.settings.application.servers.number_of_cpus_per_server_description",
+            )
+          }}</FormDescription>
+          <Input type="number" v-bind="componentField" min="1" />
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <div class="flex justify-start">
+        <Button
+          type="submit"
+          :disabled="Object.keys(form.errors).length > 0"
+          class="my-3"
+        >
+          {{ $t("pages.settings.application.servers.update") }}
+        </Button>
+      </div>
+    </form>
+  </PageTransition>
 </template>
 
 <script lang="ts">

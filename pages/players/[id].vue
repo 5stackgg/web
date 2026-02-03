@@ -27,7 +27,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 
 definePageMeta({
-  alias: ["/me"],
+  alias: ["/me/:id?"],
 });
 
 const { isMobile } = useSidebar();

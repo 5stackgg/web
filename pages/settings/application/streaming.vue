@@ -9,120 +9,127 @@ definePageMeta({
 </script>
 
 <template>
-  <form @submit.prevent="updateSettings" class="grid gap-4">
-    <FormField
-      v-slot="{ componentField }"
-      name="public.minimum_role_to_spectate"
-    >
-      <FormItem>
-        <FormLabel class="text-lg font-semibold">{{
-          $t("pages.settings.application.streaming.minimum_role_to_spectate")
-        }}</FormLabel>
-        <FormDescription>
-          {{
-            $t(
-              "pages.settings.application.streaming.minimum_role_to_spectate_description",
-            )
-          }}
-        </FormDescription>
-        <FormControl>
-          <Select v-bind="componentField">
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  :value="role.value"
-                  v-for="role in roles"
-                  :key="role.value"
-                >
-                  <span class="capitalize">{{ role.display }}</span>
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="public.minimum_role_to_stream">
-      <FormItem>
-        <FormLabel class="text-lg font-semibold">{{
-          $t("pages.settings.application.streaming.minimum_role_to_stream")
-        }}</FormLabel>
-        <FormDescription>
-          {{
-            $t(
-              "pages.settings.application.streaming.minimum_role_to_stream_description",
-            )
-          }}
-        </FormDescription>
-        <FormControl>
-          <Select v-bind="componentField">
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  :value="role.value"
-                  v-for="role in roles"
-                  :key="role.value"
-                >
-                  <span class="capitalize">{{ role.display }}</span>
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <div
-      class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-      @click="togglePlaycast"
-    >
-      <div class="space-y-0.5">
-        <h4 class="text-base font-medium">
-          {{ $t("pages.settings.application.streaming.playcast") }}
-        </h4>
-        <p class="text-sm text-muted-foreground">
-          {{ $t("pages.settings.application.streaming.playcast_description") }}
-        </p>
-        <a
-          href="https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Broadcast"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors mt-1"
-          @click.stop
-        >
-          {{ $t("pages.settings.application.streaming.playcast_learn_more") }}
-          <ExternalLink class="w-3.5 h-3.5" />
-        </a>
-      </div>
-      <Switch
-        :model-value="playcastEnabled"
-        @update:model-value="togglePlaycast"
-      />
-    </div>
-
-    <div class="flex justify-start">
-      <Button
-        type="submit"
-        :disabled="Object.keys(form.errors).length > 0"
-        class="my-3"
+  <PageTransition :delay="0">
+    <form @submit.prevent="updateSettings" class="grid gap-4">
+      <FormField
+        v-slot="{ componentField }"
+        name="public.minimum_role_to_spectate"
       >
-        {{ $t("pages.settings.application.update") }}
-      </Button>
-    </div>
-  </form>
+        <FormItem>
+          <FormLabel class="text-lg font-semibold">{{
+            $t("pages.settings.application.streaming.minimum_role_to_spectate")
+          }}</FormLabel>
+          <FormDescription>
+            {{
+              $t(
+                "pages.settings.application.streaming.minimum_role_to_spectate_description",
+              )
+            }}
+          </FormDescription>
+          <FormControl>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    :value="role.value"
+                    v-for="role in roles"
+                    :key="role.value"
+                  >
+                    <span class="capitalize">{{ role.display }}</span>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField
+        v-slot="{ componentField }"
+        name="public.minimum_role_to_stream"
+      >
+        <FormItem>
+          <FormLabel class="text-lg font-semibold">{{
+            $t("pages.settings.application.streaming.minimum_role_to_stream")
+          }}</FormLabel>
+          <FormDescription>
+            {{
+              $t(
+                "pages.settings.application.streaming.minimum_role_to_stream_description",
+              )
+            }}
+          </FormDescription>
+          <FormControl>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    :value="role.value"
+                    v-for="role in roles"
+                    :key="role.value"
+                  >
+                    <span class="capitalize">{{ role.display }}</span>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <div
+        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+        @click="togglePlaycast"
+      >
+        <div class="space-y-0.5">
+          <h4 class="text-base font-medium">
+            {{ $t("pages.settings.application.streaming.playcast") }}
+          </h4>
+          <p class="text-sm text-muted-foreground">
+            {{
+              $t("pages.settings.application.streaming.playcast_description")
+            }}
+          </p>
+          <a
+            href="https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Broadcast"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors mt-1"
+            @click.stop
+          >
+            {{ $t("pages.settings.application.streaming.playcast_learn_more") }}
+            <ExternalLink class="w-3.5 h-3.5" />
+          </a>
+        </div>
+        <Switch
+          :model-value="playcastEnabled"
+          @update:model-value="togglePlaycast"
+        />
+      </div>
+
+      <div class="flex justify-start">
+        <Button
+          type="submit"
+          :disabled="Object.keys(form.errors).length > 0"
+          class="my-3"
+        >
+          {{ $t("pages.settings.application.update") }}
+        </Button>
+      </div>
+    </form>
+  </PageTransition>
 </template>
 
 <script lang="ts">

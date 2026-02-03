@@ -58,9 +58,7 @@
           </TabsList>
 
           <TabsContent value="live">
-            <Empty
-              v-if="!liveTournaments || liveTournaments.length === 0"
-            >
+            <Empty v-if="!liveTournaments || liveTournaments.length === 0">
               <p class="text-muted-foreground">
                 {{ $t("tournament.table.no_tournaments_found") }}
               </p>

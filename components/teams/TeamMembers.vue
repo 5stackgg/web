@@ -139,6 +139,7 @@ export default {
     return {
       team: undefined,
       roles: undefined,
+      team_invites: [],
     };
   },
   apollo: {

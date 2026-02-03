@@ -68,7 +68,12 @@ const { isMobile } = useSidebar();
           </FormField>
         </form>
 
-        <Empty v-if="(showOnlyMyTeams ? myTeams : teams) && (showOnlyMyTeams ? myTeams : teams).length === 0">
+        <Empty
+          v-if="
+            (showOnlyMyTeams ? myTeams : teams) &&
+            (showOnlyMyTeams ? myTeams : teams).length === 0
+          "
+        >
           <p class="text-muted-foreground">
             {{ $t("pages.teams.no_teams") }}
           </p>

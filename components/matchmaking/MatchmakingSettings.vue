@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-vue-next";
 </script>
 
 <template>
-  <div class="space-y-2">
+  <div class="space-y-4">
     <div class="flex items-center p-8 border border-border rounded-lg bg-card">
       <div class="flex-1">
         <div class="flex justify-between mb-4">
@@ -32,96 +32,96 @@ import { Loader2 } from "lucide-vue-next";
         </p>
       </div>
     </div>
-  </div>
 
-  <div
-    class="border border-border rounded-lg bg-card"
-    v-if="availableRegions.length > 0"
-  >
-    <div class="p-4 flex justify-end">
-      <Button
-        variant="outline"
-        size="sm"
-        @click="refreshLatencies"
-        :disabled="isRefreshing"
-      >
-        <Loader2 v-if="isRefreshing" class="h-4 w-4 mr-2 animate-spin" />
-        <RefreshCw v-else class="h-4 w-4 mr-2" />
-        {{ $t("common.refresh") }}
-      </Button>
-    </div>
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-border">
-        <thead>
-          <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+    <div
+      class="border border-border rounded-lg bg-card"
+      v-if="availableRegions.length > 0"
+    >
+      <div class="p-4 flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          @click="refreshLatencies"
+          :disabled="isRefreshing"
+        >
+          <Loader2 v-if="isRefreshing" class="h-4 w-4 mr-2 animate-spin" />
+          <RefreshCw v-else class="h-4 w-4 mr-2" />
+          {{ $t("common.refresh") }}
+        </Button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border">
+          <thead>
+            <tr>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+              >
+                {{ $t("pages.settings.matchmaking.region") }}
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+              >
+                {{ $t("pages.settings.matchmaking.average_latency") }}
+              </th>
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
+              >
+                {{ $t("pages.settings.matchmaking.preferred") }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <tr
+              v-for="region in availableRegions"
+              :key="region.value"
+              :class="{
+                'hover:bg-muted/50 transition-colors': true,
+                'opacity-50':
+                  !availableRegions.includes(region) &&
+                  !isPreferredRegion(region.value),
+              }"
             >
-              {{ $t("pages.settings.matchmaking.region") }}
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
-            >
-              {{ $t("pages.settings.matchmaking.average_latency") }}
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
-            >
-              {{ $t("pages.settings.matchmaking.preferred") }}
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-border">
-          <tr
-            v-for="region in availableRegions"
-            :key="region.value"
-            :class="{
-              'hover:bg-muted/50 transition-colors': true,
-              'opacity-50':
-                !availableRegions.includes(region) &&
-                !isPreferredRegion(region.value),
-            }"
-          >
-            <template
-              v-if="
-                !region.is_lan || getRegionlatencyResult(region.value)?.isLan
-              "
-            >
-              <td class="px-6 py-4 whitespace-nowrap">
-                {{ region.description || region.value }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center gap-2">
-                  <div
-                    class="px-3 py-1 rounded-full text-xs font-medium"
-                    :class="{
-                      'bg-green-500/20 text-green-400':
-                        getLatencyStatus(region.value) === 'Excellent',
-                      'bg-blue-500/20 text-blue-400':
-                        getLatencyStatus(region.value) === 'Good',
-                      'bg-yellow-500/20 text-yellow-400':
-                        getLatencyStatus(region.value) === 'Fair',
-                      'bg-red-500/20 text-red-400':
-                        getLatencyStatus(region.value) === 'Poor',
-                      'bg-gray-500/20 text-gray-400':
-                        getLatencyStatus(region.value) === 'Measuring',
-                    }"
-                  >
-                    {{ getRegionLatency(region.value) }} ms
+              <template
+                v-if="
+                  !region.is_lan || getRegionlatencyResult(region.value)?.isLan
+                "
+              >
+                <td class="px-6 py-4 whitespace-nowrap">
+                  {{ region.description || region.value }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="px-3 py-1 rounded-full text-xs font-medium"
+                      :class="{
+                        'bg-green-500/20 text-green-400':
+                          getLatencyStatus(region.value) === 'Excellent',
+                        'bg-blue-500/20 text-blue-400':
+                          getLatencyStatus(region.value) === 'Good',
+                        'bg-yellow-500/20 text-yellow-400':
+                          getLatencyStatus(region.value) === 'Fair',
+                        'bg-red-500/20 text-red-400':
+                          getLatencyStatus(region.value) === 'Poor',
+                        'bg-gray-500/20 text-gray-400':
+                          getLatencyStatus(region.value) === 'Measuring',
+                      }"
+                    >
+                      {{ getRegionLatency(region.value) }} ms
+                    </div>
                   </div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <Switch
-                  class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-                  :model-value="isPreferredRegion(region.value)"
-                  @click="togglePreferredRegion(region.value)"
-                />
-              </td>
-            </template>
-          </tr>
-        </tbody>
-      </table>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <Switch
+                    class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+                    :model-value="isPreferredRegion(region.value)"
+                    @click="togglePreferredRegion(region.value)"
+                  />
+                </td>
+              </template>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>

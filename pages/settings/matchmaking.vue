@@ -9,17 +9,13 @@ definePageMeta({
 
 <template>
   <PageTransition :delay="0">
-    <div class="p-4 space-y-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-bold">
-            {{ $t("pages.settings.matchmaking.title") }}
-          </h1>
-          <p class="text-gray-400 mt-1">
-            {{ $t("pages.settings.matchmaking.description") }}
-          </p>
-        </div>
-      </div>
+    <div>
+      <h3 class="text-lg font-medium">
+        {{ $t("pages.settings.matchmaking.title") }}
+      </h3>
+      <p class="text-sm text-muted-foreground">
+        {{ $t("pages.settings.matchmaking.description") }}
+      </p>
     </div>
   </PageTransition>
 

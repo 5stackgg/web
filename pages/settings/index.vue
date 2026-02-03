@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/popover";
 import { useI18n } from "vue-i18n";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 const { locale, locales, setLocale } = useI18n();
 
 const availableLocales = computed(() => {
@@ -64,7 +63,6 @@ definePageMeta({
       </p>
     </div>
   </PageTransition>
-  <Separator />
 
   <PageTransition :delay="100">
     <form @submit.prevent="updateMe" class="grid gap-6">

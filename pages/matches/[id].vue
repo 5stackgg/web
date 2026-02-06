@@ -72,7 +72,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
     <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
       <PageTransition>
-        <template
+        <div
           v-if="
             match.match_maps.length > 0 &&
             match.status !== e_match_status_enum.Veto
@@ -81,14 +81,13 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           <div class="flex gap-4 justify-around flex-col 2xl:flex-row">
             <div
               v-for="match_map of match.match_maps"
-              class="max-h-[150px] md:max-h-[250px] lg:max-h-[350px]"
             >
               <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
             </div>
           </div>
 
           <Separator />
-        </template>
+        </div>
       </PageTransition>
 
       <PageTransition :delay="100">

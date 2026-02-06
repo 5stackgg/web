@@ -1,22 +1,26 @@
 <template>
   <div class="flex flex-col h-[calc(100svh-6rem)]">
-    <PageHeading>
-      <template #title>
-        <span class="capitalize">
-          {{ node?.label || nodeId }}
-        </span>
-        Game Server Node Files
-      </template>
-      <template #description>
-        {{ $t("common.manage_custom_plugins_and_shared_files") }}
-      </template>
-    </PageHeading>
+    <PageTransition>
+      <PageHeading>
+        <template #title>
+          <span class="capitalize">
+            {{ node?.label || nodeId }}
+          </span>
+          Game Server Node Files
+        </template>
+        <template #description>
+          {{ $t("common.manage_custom_plugins_and_shared_files") }}
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-    <div class="flex-1 overflow-hidden">
-      <Card class="h-full">
-        <FileManagerContainer :node-id="nodeId" />
-      </Card>
-    </div>
+    <PageTransition :delay="100" class="mt-6">
+      <div class="flex-1 overflow-hidden">
+        <Card class="h-full">
+          <FileManagerContainer :node-id="nodeId" />
+        </Card>
+      </div>
+    </PageTransition>
   </div>
 </template>
 
@@ -24,6 +28,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { Card } from "@/components/ui/card";
 import PageHeading from "~/components/PageHeading.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FileManagerContainer from "~/components/file-manager/FileManagerContainer.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";

@@ -1,29 +1,33 @@
 <template>
   <div class="flex flex-col h-[calc(100svh-6rem)]">
-    <PageHeading>
-      <template #title>
-        <span class="capitalize">
-          {{ server?.label }}
-        </span>
-        Dedicated Server Files
-      </template>
-      <template #description>
-        {{ $t("common.manage_custom_plugins_and_shared_files") }}
-      </template>
-    </PageHeading>
+    <PageTransition>
+      <PageHeading>
+        <template #title>
+          <span class="capitalize">
+            {{ server?.label }}
+          </span>
+          Dedicated Server Files
+        </template>
+        <template #description>
+          {{ $t("common.manage_custom_plugins_and_shared_files") }}
+        </template>
+      </PageHeading>
+    </PageTransition>
 
-    <div class="flex-1 overflow-hidden">
-      <Card class="h-full">
-        <FileManagerContainer
-          v-if="server"
-          :node-id="server.game_server_node_id"
-          :server-id="serverId"
-        />
-        <div v-else class="p-8 text-center text-muted-foreground">
-          Loading server information...
-        </div>
-      </Card>
-    </div>
+    <PageTransition :delay="100" class="mt-6">
+      <div class="flex-1 overflow-hidden">
+        <Card class="h-full">
+          <FileManagerContainer
+            v-if="server"
+            :node-id="server.game_server_node_id"
+            :server-id="serverId"
+          />
+          <div v-else class="p-8 text-center text-muted-foreground">
+            Loading server information...
+          </div>
+        </Card>
+      </div>
+    </PageTransition>
   </div>
 </template>
 
@@ -32,6 +36,7 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Card } from "@/components/ui/card";
 import PageHeading from "~/components/PageHeading.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import FileManagerContainer from "~/components/file-manager/FileManagerContainer.vue";

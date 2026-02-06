@@ -2,13 +2,12 @@
 import { Button } from "~/components/ui/button";
 import PageHeading from "~/components/PageHeading.vue";
 import GameServerNodeRow from "~/components/game-server-nodes/GameServerNodeRow.vue";
+import SetupDialog from "~/components/game-server-nodes/SetupDialog.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { PlusCircle, ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
-import ClipBoard from "~/components/ClipBoard.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
-import { Info, ExternalLink } from "lucide-vue-next";
+import { Info } from "lucide-vue-next";
 import { Switch } from "~/components/ui/switch";
-import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -44,59 +43,36 @@ const { isMobile } = useSidebar();
             <Switch :model-value="displayMetrics" />
           </div>
 
-          <Popover>
-            <PopoverTrigger class="flex gap-4">
-              <template v-if="!supportsGameServerNodes">
-                <Alert class="bg-background text-lg">
-                  <Info class="h-4 w-4" />
-                  <AlertTitle>{{
-                    $t("pages.game_server_nodes.not_supported.title")
-                  }}</AlertTitle>
-                  <AlertDescription>
-                    {{
-                      $t("pages.game_server_nodes.not_supported.description")
-                    }}
-                    <a
-                      target="_blank"
-                      class="underline"
-                      href="https://docs.5stack.gg/servers/game-server-nodes/"
-                      >Game Server Nodes</a
-                    >.
-                  </AlertDescription>
-                </Alert>
-              </template>
+          <template v-if="!supportsGameServerNodes">
+            <Alert class="bg-background text-lg">
+              <Info class="h-4 w-4" />
+              <AlertTitle>{{
+                $t("pages.game_server_nodes.not_supported.title")
+              }}</AlertTitle>
+              <AlertDescription>
+                {{
+                  $t("pages.game_server_nodes.not_supported.description")
+                }}
+                <a
+                  target="_blank"
+                  class="underline"
+                  href="https://docs.5stack.gg/servers/game-server-nodes/"
+                  >Game Server Nodes</a
+                >.
+              </AlertDescription>
+            </Alert>
+          </template>
 
-              <Button
-                :size="isMobile ? 'default' : 'lg'"
-                @click="createGameServerNode"
-                :disabled="!supportsGameServerNodes"
-              >
-                <PlusCircle class="w-4 h-4" />
-                <span class="hidden md:inline ml-2">{{
-                  $t("pages.game_server_nodes.create")
-                }}</span>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <div
-                class="relative bg-gray-900 rounded-lg p-4"
-                v-if="setupGameServer"
-              >
-                <div class="flex justify-between items-start">
-                  <h3 class="text-white text-sm font-semibold">
-                    {{ $t("pages.game_server_nodes.installation_script") }}
-                  </h3>
-                  <ClipBoard
-                    :data="setupGameServer.link"
-                    class="text-white hover:text-gray-300 transition-colors"
-                  ></ClipBoard>
-                </div>
-                <div class="text-sm mt-2">
-                  {{ setupGameServer.gameServerId }}
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <Button
+            :size="isMobile ? 'default' : 'lg'"
+            @click="createGameServerNode"
+            :disabled="!supportsGameServerNodes"
+          >
+            <PlusCircle class="w-4 h-4" />
+            <span class="hidden md:inline ml-2">{{
+              $t("pages.game_server_nodes.create")
+            }}</span>
+          </Button>
         </div>
       </template>
     </PageHeading>
@@ -314,6 +290,14 @@ const { isMobile } = useSidebar();
     :total="nodesAggregate || 0"
     v-if="nodesAggregate"
   ></Pagination>
+
+  <!-- Setup Dialog -->
+  <SetupDialog
+    :open="showSetupDialog"
+    :setup-game-server="setupGameServer"
+    @close="closeSetupDialog"
+    v-if="setupGameServer"
+  />
 </template>
 
 <script lang="ts">
@@ -329,7 +313,7 @@ export default {
     return {
       gameVersions: [],
       gameServerNodes: [],
-      setupGameServer: localStorage.getItem("displayMetrics") === "true",
+      setupGameServer: null,
       displayMetrics: false,
       onlyEnabled: this.loadFiltersFromStorage().onlyEnabled || false,
       hideOffline: this.loadFiltersFromStorage().hideOffline || false,
@@ -340,6 +324,7 @@ export default {
       nodesAggregate: 0,
       sortDirection: this.loadFiltersFromStorage().sortDirection || "asc",
       sortField: this.loadFiltersFromStorage().sortField || "label",
+      showSetupDialog: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -622,6 +607,14 @@ export default {
       });
 
       this.setupGameServer = data.setupGameServer;
+      this.showSetupDialog = true;
+    },
+    closeSetupDialog() {
+      this.showSetupDialog = false;
+      // Reset after a delay to avoid flash of empty content
+      setTimeout(() => {
+        this.setupGameServer = null;
+      }, 300);
     },
   },
   computed: {

@@ -68,7 +68,6 @@ import { ref } from "vue";
 
 // Mobile accordion state
 const expandedSections = ref<Set<string>>(new Set());
-const showNodeMetrics = ref(false);
 
 const toggleSection = (section: string) => {
   if (expandedSections.value.has(section)) {
@@ -80,10 +79,6 @@ const toggleSection = (section: string) => {
 
 const isSectionExpanded = (section: string) => {
   return expandedSections.value.has(section);
-};
-
-const toggleNodeMetrics = () => {
-  showNodeMetrics.value = !showNodeMetrics.value;
 };
 </script>
 
@@ -674,11 +669,11 @@ const toggleNodeMetrics = () => {
             >
               <Activity
                 class="h-4 w-4"
-                :class="showNodeMetrics ? 'text-primary' : ''"
+                :class="shouldShowMetrics ? 'text-primary' : ''"
               />
             </Button>
           </template>
-          {{ showNodeMetrics ? "Hide Metrics" : "Show Metrics" }}
+          {{ shouldShowMetrics ? "Hide Metrics" : "Show Metrics" }}
         </FiveStackToolTip>
 
         <DropdownMenu>
@@ -1404,7 +1399,7 @@ const toggleNodeMetrics = () => {
             @click="toggleNodeMetrics"
           >
             <Activity class="mr-2 h-4 w-4" />
-            {{ showNodeMetrics ? "Hide Metrics" : "Show Metrics" }}
+            {{ shouldShowMetrics ? "Hide Metrics" : "Show Metrics" }}
           </Button>
         </div>
       </div>
@@ -1412,7 +1407,7 @@ const toggleNodeMetrics = () => {
   </TableRow>
 
   <!-- Mobile Metrics Row -->
-  <TableRow class="xl:hidden border-t-0" v-if="showNodeMetrics">
+  <TableRow class="xl:hidden border-t-0" v-if="shouldShowMetrics">
     <TableCell :colspan="8">
       <NodeMetrics :game-server-node="gameServerNode" />
     </TableCell>
@@ -1429,7 +1424,7 @@ const toggleNodeMetrics = () => {
   </TableRow>
 
   <!-- Desktop Metrics Row (xl and up) -->
-  <TableRow class="hidden xl:table-row border-t-0" v-if="showNodeMetrics">
+  <TableRow class="hidden xl:table-row border-t-0" v-if="shouldShowMetrics">
     <TableCell :colspan="8">
       <NodeMetrics :game-server-node="gameServerNode" />
     </TableCell>
@@ -1620,6 +1615,7 @@ interface GameServerNode {
 interface ComponentData {
   showUpdateLogs: boolean;
   showLogs: boolean;
+  showNodeMetrics: boolean;
   showNetworkLimiterDialog: boolean;
   showPortsDialog: boolean;
   selectedNetworkLimit: number | null;
@@ -1709,6 +1705,7 @@ export default defineComponent({
     return {
       showUpdateLogs: false,
       showLogs: false,
+      showNodeMetrics: false,
       showNetworkLimiterDialog: false,
       showPortsDialog: false,
       selectedNetworkLimit: null,
@@ -2045,8 +2042,15 @@ export default defineComponent({
     toggleLogs() {
       this.showLogs = !this.showLogs;
     },
+    toggleNodeMetrics() {
+      this.showNodeMetrics = !this.showNodeMetrics;
+    },
   },
   computed: {
+    shouldShowMetrics() {
+      // Force show metrics if parent displayMetrics is true, otherwise use local state
+      return this.displayMetrics || this.showNodeMetrics;
+    },
     currentGameVersion() {
       return this.gameVersions.find((version) => {
         return version.current === true;

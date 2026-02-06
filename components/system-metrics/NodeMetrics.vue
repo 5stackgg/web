@@ -6,68 +6,78 @@ import DiskChart from "~/components/charts/DiskChart.vue";
 import { Card } from "@/components/ui/card";
 import Empty from "@/components/ui/empty/Empty.vue";
 import { BarChart3 } from "lucide-vue-next";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
 
 <template>
   <div class="my-2">
     <!-- Metrics Charts -->
-    <div
-      class="grid grid-cols-1 lg:grid-cols-4 gap-4"
-      v-if="metricsData && showCharts"
-    >
-      <Card class="p-4 rounded-lg border border-gray-200">
-        <h4 class="text-sm font-medium mb-2">
-          {{ $t("pages.system_metrics.cpu_usage") }}
-        </h4>
-        <div class="h-[350px]">
-          <CpuChart :metrics="metricsData.cpu" />
-        </div>
-      </Card>
+    <PageTransition v-if="metricsData && showCharts">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <PageTransition :delay="0">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">
+              {{ $t("pages.system_metrics.cpu_usage") }}
+            </h4>
+            <div class="h-[350px]">
+              <CpuChart :metrics="metricsData.cpu" />
+            </div>
+          </Card>
+        </PageTransition>
 
-      <Card class="p-4 rounded-lg border border-gray-200">
-        <h4 class="text-sm font-medium mb-2">
-          {{ $t("pages.system_metrics.memory_usage") }}
-        </h4>
-        <div class="h-[350px]">
-          <MemoryChart :metrics="metricsData.memory" />
-        </div>
-      </Card>
+        <PageTransition :delay="100">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">
+              {{ $t("pages.system_metrics.memory_usage") }}
+            </h4>
+            <div class="h-[350px]">
+              <MemoryChart :metrics="metricsData.memory" />
+            </div>
+          </Card>
+        </PageTransition>
 
-      <Card class="p-4 rounded-lg border border-gray-200">
-        <h4 class="text-sm font-medium mb-2">
-          {{ $t("pages.system_metrics.network") }}
-        </h4>
-        <div class="h-[350px]">
-          <NetworkChart :metrics="metricsData.network" />
-        </div>
-      </Card>
+        <PageTransition :delay="200">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">
+              {{ $t("pages.system_metrics.network") }}
+            </h4>
+            <div class="h-[350px]">
+              <NetworkChart :metrics="metricsData.network" />
+            </div>
+          </Card>
+        </PageTransition>
 
-      <Card class="p-4 rounded-lg border border-gray-200">
-        <h4 class="text-sm font-medium mb-2">Disks</h4>
-        <div class="h-[350px]">
-          <DiskChart :metrics="metricsData.disks" />
-        </div>
-      </Card>
-    </div>
+        <PageTransition :delay="300">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">Disks</h4>
+            <div class="h-[350px]">
+              <DiskChart :metrics="metricsData.disks" />
+            </div>
+          </Card>
+        </PageTransition>
+      </div>
+    </PageTransition>
 
     <!-- Empty State -->
-    <Empty v-else class="my-8">
-      <div class="flex flex-col items-center gap-4">
-        <div class="rounded-full bg-muted p-4">
-          <BarChart3 class="h-8 w-8 text-muted-foreground" />
+    <PageTransition v-else>
+      <Empty class="my-8">
+        <div class="flex flex-col items-center gap-4">
+          <div class="rounded-full bg-muted p-4">
+            <BarChart3 class="h-8 w-8 text-muted-foreground" />
+          </div>
+          <div class="space-y-1">
+            <h3 class="font-semibold text-lg">No Metrics Available</h3>
+            <p class="text-sm text-muted-foreground max-w-md">
+              {{
+                metricsData === null
+                  ? "Loading metrics data..."
+                  : "No metrics data available for this node yet. Metrics will appear once the node starts reporting data."
+              }}
+            </p>
+          </div>
         </div>
-        <div class="space-y-1">
-          <h3 class="font-semibold text-lg">No Metrics Available</h3>
-          <p class="text-sm text-muted-foreground max-w-md">
-            {{
-              metricsData === null
-                ? "Loading metrics data..."
-                : "No metrics data available for this node yet. Metrics will appear once the node starts reporting data."
-            }}
-          </p>
-        </div>
-      </div>
-    </Empty>
+      </Empty>
+    </PageTransition>
   </div>
 </template>
 

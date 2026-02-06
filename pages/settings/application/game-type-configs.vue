@@ -21,7 +21,7 @@ definePageMeta({
     </PageHeading>
   </PageTransition>
 
-  <PageTransition :delay="100">
+  <PageTransition :delay="100" class="mt-6">
     <AnimatedCard variant="gradient" class="p-4">
       <!-- Loading skeleton -->
       <div v-if="loading" class="space-y-4">

@@ -28,7 +28,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
   </PageTransition>
 
   <PageTransition :delay="100">
-    <div>
+    <div class="mt-6">
       <AnimatedCard
         variant="gradient"
         class="p-4"
@@ -121,7 +121,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
   <!-- LAN Servers Table -->
   <PageTransition :delay="200">
-    <div v-if="lanServers && lanServers.length > 0">
+    <div v-if="lanServers && lanServers.length > 0" class="mt-6">
       <h2 class="text-xl font-semibold mb-4">
         {{ $t("pages.public_servers.lan_servers_title") }}
       </h2>

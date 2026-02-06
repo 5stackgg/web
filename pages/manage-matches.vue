@@ -47,7 +47,7 @@ const { isMobile } = useSidebar();
   <Separator class="my-4" />
 
   <!-- Filters Section -->
-  <PageTransition :delay="100">
+  <PageTransition :delay="100" class="mt-6">
     <AnimatedCard variant="gradient" class="p-4 mb-4">
       <div class="space-y-4">
         <div class="flex items-center justify-between">
@@ -141,7 +141,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <!-- Sort Controls -->
-  <PageTransition :delay="200">
+  <PageTransition :delay="200" class="mt-6">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center space-x-4">
         <div class="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -202,7 +202,7 @@ const { isMobile } = useSidebar();
     </div>
   </PageTransition>
 
-  <PageTransition :delay="300">
+  <PageTransition :delay="300" class="mt-6">
     <AnimatedCard variant="gradient" class="p-4 relative">
       <div v-if="loading" class="absolute top-4 left-4 z-10">
         <div

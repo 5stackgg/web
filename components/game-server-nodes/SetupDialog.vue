@@ -134,7 +134,6 @@ export default {
           };
         },
         result: function ({ data }) {
-          console.log(data);
           this.createdNode = data.game_server_nodes_by_pk;
         },
       },

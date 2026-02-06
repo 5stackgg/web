@@ -34,7 +34,6 @@
         v-for="tournament in registrationOpenTournaments"
         :key="tournament.id"
         :tournament="tournament"
-        class="min-w-[500px]"
       ></TournamentTableRow>
       <Separator class="my-4" />
     </div>

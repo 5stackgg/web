@@ -30,141 +30,139 @@ const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6">
-    <PageTransition :delay="0">
-      <PageHeading>
-        <template #title>{{ $t("pages.map_pools.title") }}</template>
+  <PageTransition>
+    <PageHeading>
+      <template #title>{{ $t("pages.map_pools.title") }}</template>
 
-        <template #description>
-          {{ $t("pages.map_pools.description") }}
-        </template>
+      <template #description>
+        {{ $t("pages.map_pools.description") }}
+      </template>
 
-        <template #actions>
-          <div class="flex flex-col items-center gap-4 md:flex-row">
-            <FiveStackToolTip>
-              <template #trigger>
-                <div
-                  class="flex items-center gap-2"
-                  @click="toggleUpdateMapPools"
-                >
-                  <div class="flex items-center gap-1">
-                    <Info :size="14" />
-                    {{
-                      $t("pages.settings.application.update_map_pools.title")
-                    }}
-                  </div>
-                  <Switch
-                    :model-value="updateMapPools"
-                    @update:model-value="toggleUpdateMapPools"
-                  />
+      <template #actions>
+        <div class="flex flex-col items-center gap-4 md:flex-row">
+          <FiveStackToolTip>
+            <template #trigger>
+              <div
+                class="flex items-center gap-2"
+                @click="toggleUpdateMapPools"
+              >
+                <div class="flex items-center gap-1">
+                  <Info :size="14" />
+                  {{
+                    $t("pages.settings.application.update_map_pools.title")
+                  }}
                 </div>
-              </template>
-              {{
-                $t("pages.settings.application.update_map_pools.description")
-              }}
-            </FiveStackToolTip>
+                <Switch
+                  :model-value="updateMapPools"
+                  @update:model-value="toggleUpdateMapPools"
+                />
+              </div>
+            </template>
+            {{
+              $t("pages.settings.application.update_map_pools.description")
+            }}
+          </FiveStackToolTip>
 
-            <Button
-              @click="mapFormSheet = true"
-              :size="isMobile ? 'default' : 'lg'"
-            >
-              <PlusCircle class="w-4 h-4" />
-              <span class="hidden md:inline ml-2">{{
-                $t("pages.map_pools.add_new_map")
-              }}</span>
-            </Button>
-          </div>
-        </template>
-      </PageHeading>
-    </PageTransition>
-
-    <PageTransition :delay="100">
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <AnimatedCard
-          v-for="pool in map_pools"
-          :key="pool.id"
-          variant="gradient"
-          class="relative p-4"
-        >
-          <div class="flex items-start justify-between">
-            <div>
-              <h2 class="text-lg font-semibold">{{ pool.type }} Pool</h2>
-              <p class="text-sm text-muted-foreground mt-1">
-                {{ pool.maps.map((map) => map.name).join(", ") }}
-              </p>
-            </div>
-            <Button variant="secondary" size="sm" as-child>
-              <NuxtLink :to="{ name: 'map-pools-id', params: { id: pool.id } }">
-                {{ $t("pages.map_pools.edit") }}
-              </NuxtLink>
-            </Button>
-          </div>
-        </AnimatedCard>
-      </div>
-    </PageTransition>
-
-    <Separator class="mt-6" />
-
-    <PageTransition :delay="200" class="mt-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold">
-          {{ $t("pages.map_pools.maps") }}
-        </h2>
-        <div class="relative w-full max-w-sm">
-          <Input
-            v-model="searchQuery"
-            type="text"
-            :placeholder="$t('pages.map_pools.search')"
-            class="pl-10"
-          />
-          <Search
-            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-          />
+          <Button
+            @click="mapFormSheet = true"
+            :size="isMobile ? 'default' : 'lg'"
+          >
+            <PlusCircle class="w-4 h-4" />
+            <span class="hidden md:inline ml-2">{{
+              $t("pages.map_pools.add_new_map")
+            }}</span>
+          </Button>
         </div>
-      </div>
-    </PageTransition>
+      </template>
+    </PageHeading>
+  </PageTransition>
 
-    <PageTransition :delay="300" class="mt-6">
-      <AnimatedCard variant="gradient" class="p-4">
-        <div class="relative w-full overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead class="w-[350px]"></TableHead>
-                <TableHead>{{ $t("pages.map_pools.active_duty") }}</TableHead>
-                <TableHead>{{
-                  $t("pages.map_pools.available_modes")
-                }}</TableHead>
-                <TableHead>{{ $t("pages.map_pools.workshop_id") }}</TableHead>
-                <TableHead class="w-[50px]"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <MapPoolRow
-                v-for="map in availableMaps"
-                :key="map.id"
-                :map="map"
-                :match-types="matchTypes"
-              />
-            </TableBody>
-          </Table>
+  <PageTransition :delay="100" class="mt-6">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <AnimatedCard
+        v-for="pool in map_pools"
+        :key="pool.id"
+        variant="gradient"
+        class="relative p-4"
+      >
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 class="text-lg font-semibold">{{ pool.type }} Pool</h2>
+            <p class="text-sm text-muted-foreground mt-1">
+              {{ pool.maps.map((map) => map.name).join(", ") }}
+            </p>
+          </div>
+          <Button variant="secondary" size="sm" as-child>
+            <NuxtLink :to="{ name: 'map-pools-id', params: { id: pool.id } }">
+              {{ $t("pages.map_pools.edit") }}
+            </NuxtLink>
+          </Button>
         </div>
       </AnimatedCard>
-    </PageTransition>
+    </div>
+  </PageTransition>
 
-    <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>{{
-            $t("pages.dedicated_servers.detail.edit")
-          }}</SheetTitle>
-          <SheetDescription>
-            <MapForm @created="mapFormSheet = false" />
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
-  </div>
+  <Separator class="mt-6" />
+
+  <PageTransition :delay="200" class="mt-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold">
+        {{ $t("pages.map_pools.maps") }}
+      </h2>
+      <div class="relative w-full max-w-sm">
+        <Input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="$t('pages.map_pools.search')"
+          class="pl-10"
+        />
+        <Search
+          class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+        />
+      </div>
+    </div>
+  </PageTransition>
+
+  <PageTransition :delay="300" class="mt-6">
+    <AnimatedCard variant="gradient" class="p-4">
+      <div class="relative w-full overflow-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead class="w-[350px]"></TableHead>
+              <TableHead>{{ $t("pages.map_pools.active_duty") }}</TableHead>
+              <TableHead>{{
+                $t("pages.map_pools.available_modes")
+              }}</TableHead>
+              <TableHead>{{ $t("pages.map_pools.workshop_id") }}</TableHead>
+              <TableHead class="w-[50px]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <MapPoolRow
+              v-for="map in availableMaps"
+              :key="map.id"
+              :map="map"
+              :match-types="matchTypes"
+            />
+          </TableBody>
+        </Table>
+      </div>
+    </AnimatedCard>
+  </PageTransition>
+
+  <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
+    <SheetContent>
+      <SheetHeader>
+        <SheetTitle>{{
+          $t("pages.dedicated_servers.detail.edit")
+        }}</SheetTitle>
+        <SheetDescription>
+          <MapForm @created="mapFormSheet = false" />
+        </SheetDescription>
+      </SheetHeader>
+    </SheetContent>
+  </Sheet>
 </template>
 
 <script lang="ts">

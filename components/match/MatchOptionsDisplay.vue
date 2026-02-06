@@ -1,19 +1,19 @@
 <script lang="ts" setup>
 import BooleanToText from "../BooleanToText.vue";
-import MapDisplay from "~/components/MapDisplay.vue";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/components/ui/collapsible";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
 </script>
 
 <template>
   <template v-if="options.map_veto">
-    <div class="my-6">
+    <div class="my-3">
       <div class="flex gap-4">
-        <MapDisplay
+        <MiniMapDisplay
           v-for="map in options.map_pool.maps"
           :key="map.id"
           :map="map"

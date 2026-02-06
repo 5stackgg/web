@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UsersIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
-import cleanMapName from "~/utilities/cleanMapName";
+import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
 import { Badge } from "~/components/ui/badge";
 </script>
 
@@ -82,24 +82,7 @@ import { Badge } from "~/components/ui/badge";
               Maps:
             </span>
             <div class="flex flex-wrap gap-2">
-              <div
-                v-for="map in tournament.options.map_pool.maps"
-                :key="map.id"
-                class="flex items-center space-x-2 bg-muted/50 rounded-lg px-2 py-1 border border-border"
-              >
-                <img
-                  v-if="map.patch"
-                  :src="map.patch"
-                  :alt="map.name"
-                  class="w-5 h-5"
-                  @error="
-                    ($event.target as HTMLImageElement).style.display = 'none'
-                  "
-                />
-                <span class="text-xs font-medium first-letter:uppercase">{{
-                  cleanMapName(map.name)
-                }}</span>
-              </div>
+              <MiniMapDisplay :map="map" v-for="map in tournament.options.map_pool.maps" :key="map.id" />
             </div>
           </div>
         </div>

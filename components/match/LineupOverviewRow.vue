@@ -4,7 +4,7 @@ import { kdrColor } from "~/utilities/kdrColor";
 </script>
 <template>
   <TableRow>
-    <TableCell>
+    <TableCell class="overflow-hidden">
       <LineupMember :match="match" :member="member"></LineupMember>
     </TableCell>
     <template v-if="showStats">
@@ -50,28 +50,26 @@ import { kdrColor } from "~/utilities/kdrColor";
         {{ member.player?.zeus_kills_aggregate.aggregate.count }}
       </TableCell>
       <TableCell class="hidden table-cell text-center">
-        <div class="flex flex-col flex-auto items-center">
-          <div>
+        <div class="flex items-center justify-center gap-2">
+          <span>
             {{
               member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0
             }}
-          </div>
-          <div>
-            <Badge class="text-xs my-3" variant="outline">
-              <span
-                :class="{
-                  'text-red-500': adr >= 0 && adr < 50,
-                  'text-orange-500': adr >= 50 && adr < 75,
-                  'text-white': adr >= 75 && adr < 95,
-                  'text-green-400': adr >= 95 && adr < 115,
-                  'text-green-600': adr >= 115,
-                }"
-              >
-                {{ adr }}
-              </span>
-              &nbsp; ADR
-            </Badge>
-          </div>
+          </span>
+          <Badge class="text-xs whitespace-nowrap" variant="outline">
+            <span
+              :class="{
+                'text-red-500': adr >= 0 && adr < 50,
+                'text-orange-500': adr >= 50 && adr < 75,
+                'text-white': adr >= 75 && adr < 95,
+                'text-green-400': adr >= 95 && adr < 115,
+                'text-green-600': adr >= 115,
+              }"
+            >
+              {{ adr }}
+            </span>
+            &nbsp; ADR
+          </Badge>
         </div>
       </TableCell>
     </template>

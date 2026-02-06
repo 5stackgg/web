@@ -5,6 +5,7 @@ import {
   e_check_in_settings_enum,
   e_match_status_enum,
 } from "~/generated/zeus";
+import { useSidebar } from "../ui/sidebar";
 </script>
 
 <template>
@@ -16,9 +17,15 @@ import {
     :ping-status="showDetails"
     :show-role="showDetails"
     :linkable="linkable"
+    :show-elo="false"
+    :compact="isMobile"
   >
     <template v-slot:avatar-sub v-if="showDetails">
-      <Badge variant="outline" v-if="member.captain">
+      <Badge
+        variant="outline"
+        class="hidden md:inline-flex text-[10px] px-1 py-0"
+        v-if="member.captain"
+      >
         {{ $t("match.player.captain") }}
       </Badge>
     </template>
@@ -140,6 +147,9 @@ export default {
     },
   },
   computed: {
+    isMobile() {
+      return useSidebar().isMobile.value;
+    },
     e_match_status_enum() {
       return e_match_status_enum;
     },

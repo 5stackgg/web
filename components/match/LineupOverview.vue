@@ -31,10 +31,10 @@ import {
 </script>
 
 <template>
-  <Table>
+  <Table class="min-w-[480px]">
     <TableHeader>
       <TableRow>
-        <TableHead class="w-[300px] text-left">
+        <TableHead class="w-[220px] text-left">
           <div class="flex items-center gap-4">
             <div
               v-if="match.status === e_match_status_enum.WaitingForCheckIn"
@@ -55,108 +55,123 @@ import {
                 }"
               ></span>
             </div>
-            <span>{{ lineup.name }}</span>
-            <Dialog
-              v-if="lineup.can_update_lineup"
-              v-model:open="editModalOpen"
-            >
-              <DialogTrigger as-child>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  class="h-6 w-6"
-                  @click="prepareEditName()"
-                >
-                  <PencilIcon class="h-3 w-3" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>{{
-                  $t("match.overview.update_team_name")
-                }}</DialogTitle>
-                <form @submit.prevent="saveTeamName" class="space-y-4 pt-2">
-                  <FormField name="team_name" v-slot="{ componentField }">
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          v-bind="componentField"
-                          v-model="editName"
-                          :placeholder="
-                            $t('match.overview.team_name') as string
-                          "
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </FormField>
-                  <div class="flex justify-end gap-2">
-                    <DialogClose as-child>
-                      <Button type="button" variant="outline">{{
-                        $t("common.cancel")
+            <span class="truncate">{{ lineup.name }}</span>
+            <div class="w-6 h-6 flex-shrink-0">
+              <Dialog
+                v-if="lineup.can_update_lineup"
+                v-model:open="editModalOpen"
+              >
+                <DialogTrigger as-child>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    class="h-6 w-6"
+                    @click="prepareEditName()"
+                  >
+                    <PencilIcon class="h-3 w-3" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>{{
+                    $t("match.overview.update_team_name")
+                  }}</DialogTitle>
+                  <form @submit.prevent="saveTeamName" class="space-y-4 pt-2">
+                    <FormField name="team_name" v-slot="{ componentField }">
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            v-bind="componentField"
+                            v-model="editName"
+                            :placeholder="
+                              $t('match.overview.team_name') as string
+                            "
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </FormField>
+                    <div class="flex justify-end gap-2">
+                      <DialogClose as-child>
+                        <Button type="button" variant="outline">{{
+                          $t("common.cancel")
+                        }}</Button>
+                      </DialogClose>
+                      <Button type="submit" :disabled="!editName?.trim()">{{
+                        $t("common.save")
                       }}</Button>
-                    </DialogClose>
-                    <Button type="submit" :disabled="!editName?.trim()">{{
-                      $t("common.save")
-                    }}</Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </TableHead>
         <template v-if="showStats">
-          <TableHead class="w-[4ch] text-center">
+          <TableHead class="w-10 md:w-[4ch] text-center whitespace-nowrap">
             <span class="xl:hidden">K</span>
             <span class="hidden xl:inline">{{
               $t("match.overview.kills_full")
             }}</span>
           </TableHead>
-          <TableHead class="hidden md:table-cell w-[4ch] text-center">
+          <TableHead
+            class="hidden md:table-cell w-10 md:w-[4ch] text-center whitespace-nowrap"
+          >
             <span class="xl:hidden">A</span>
             <span class="hidden xl:inline">{{
               $t("match.overview.assists_full")
             }}</span>
           </TableHead>
-          <TableHead class="w-[4ch] text-center">
+          <TableHead class="w-10 md:w-[4ch] text-center whitespace-nowrap">
             <span class="xl:hidden">D</span>
             <span class="hidden xl:inline">{{
               $t("match.overview.deaths_full")
             }}</span>
           </TableHead>
-          <TableHead class="hidden md:table-cell w-[16ch] text-center">{{
-            $t("match.overview.kd")
-          }}</TableHead>
-          <TableHead class="hidden lg:table-cell w-[4ch] text-center">{{
-            $t("match.overview.hs")
-          }}</TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[16ch] text-center">{{
-            $t("match.overview.team_damage")
-          }}</TableHead>
-          <TableHead class="hidden xl:table-cell w-[30ch] text-center">
+          <TableHead
+            class="hidden md:table-cell w-12 md:w-[16ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.kd") }}</TableHead
+          >
+          <TableHead
+            class="hidden lg:table-cell w-[4ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.hs") }}</TableHead
+          >
+          <TableHead
+            class="hidden 2xl:table-cell w-[16ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.team_damage") }}</TableHead
+          >
+          <TableHead
+            class="hidden xl:table-cell w-[30ch] text-center whitespace-nowrap"
+          >
             <span class="hidden 2xl:inline">
               {{ $t("match.overview.multi_kill_rounds") }}
             </span>
             <span class="2xl:hidden"> {{ $t("match.overview.mkr") }} </span>
           </TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
-            $t("match.overview.k2")
-          }}</TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
-            $t("match.overview.k3")
-          }}</TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
-            $t("match.overview.k4")
-          }}</TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
-            $t("match.overview.k5")
-          }}</TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
-            $t("match.overview.knifes")
-          }}</TableHead>
-          <TableHead class="hidden 2xl:table-cell w-[4ch] text-center">{{
-            $t("match.overview.zeus")
-          }}</TableHead>
-          <TableHead class="text-center w-[24ch] text-center">{{
+          <TableHead
+            class="hidden 2xl:table-cell w-[4ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.k2") }}</TableHead
+          >
+          <TableHead
+            class="hidden 2xl:table-cell w-[4ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.k3") }}</TableHead
+          >
+          <TableHead
+            class="hidden 2xl:table-cell w-[4ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.k4") }}</TableHead
+          >
+          <TableHead
+            class="hidden 2xl:table-cell w-[4ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.k5") }}</TableHead
+          >
+          <TableHead
+            class="hidden 2xl:table-cell w-[4ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.knifes") }}</TableHead
+          >
+          <TableHead
+            class="hidden 2xl:table-cell w-[4ch] text-center whitespace-nowrap"
+            >{{ $t("match.overview.zeus") }}</TableHead
+          >
+          <TableHead class="text-center w-20 md:w-[24ch] whitespace-nowrap">{{
             $t("match.overview.total_damage")
           }}</TableHead>
           <TableHead v-if="lineup.can_update_lineup"> </TableHead>

@@ -157,9 +157,9 @@ const { isMobile } = useSidebar();
       </PageHeading>
     </Transition>
 
-    <div class="flex flex-col gap-6" v-if="player">
+    <div class="flex flex-col gap-4 md:gap-6" v-if="player">
       <!-- Stats and Elo Section -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Performance Stats -->
         <Transition
           appear
@@ -296,7 +296,9 @@ const { isMobile } = useSidebar();
       </div>
 
       <!-- Charts Section -->
-      <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"
+      >
         <!-- Recent Wins/Losses -->
         <Transition
           appear

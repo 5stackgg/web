@@ -65,24 +65,26 @@ provide("commander", commander);
         {{ $t("match.tabs.admin") }}
       </TabsTrigger>
     </TabsList>
-    <TabsContent value="overview" class="grid gap-4 max-w-[1500px]">
-      <Card>
-        <CardContent class="py-2">
-          <LineupOverview
-            :match="match"
-            :lineup="match.lineup_1"
-          ></LineupOverview>
-        </CardContent>
-      </Card>
+    <TabsContent value="overview">
+      <div class="grid gap-4">
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <LineupOverview
+              :match="match"
+              :lineup="match.lineup_1"
+            ></LineupOverview>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardContent class="py-2">
-          <LineupOverview
-            :match="match"
-            :lineup="match.lineup_2"
-          ></LineupOverview>
-        </CardContent>
-      </Card>
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <LineupOverview
+              :match="match"
+              :lineup="match.lineup_2"
+            ></LineupOverview>
+          </CardContent>
+        </Card>
+      </div>
 
       <Drawer :open="inviteDialog">
         <DrawerContent class="p-4">
@@ -105,8 +107,7 @@ provide("commander", commander);
           <ScrollArea class="max-h-[60vh] overflow-auto">
             <div class="w-full flex flex-col md:flex-row gap-4">
               <Card class="w-full md:w-1/2">
-                <CardHeader></CardHeader>
-                <CardContent>
+                <CardContent class="py-2">
                   <LineupOverview
                     :match="match"
                     :lineup="match.lineup_1"
@@ -117,8 +118,7 @@ provide("commander", commander);
               </Card>
 
               <Card class="w-full md:w-1/2">
-                <CardHeader></CardHeader>
-                <CardContent>
+                <CardContent class="py-2">
                   <LineupOverview
                     :match="match"
                     :lineup="match.lineup_2"
@@ -144,58 +144,66 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="utility">
-      <Card>
-        <CardHeader> </CardHeader>
-        <CardContent>
-          <lineup-utility
-            :match="match"
-            :lineup="match.lineup_1"
-          ></lineup-utility>
-        </CardContent>
-        <CardContent>
-          <lineup-utility
-            :match="match"
-            :lineup="match.lineup_2"
-          ></lineup-utility>
-        </CardContent>
-      </Card>
+      <div class="grid gap-4 max-w-[1500px] mx-auto">
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-utility
+              :match="match"
+              :lineup="match.lineup_1"
+            ></lineup-utility>
+          </CardContent>
+        </Card>
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-utility
+              :match="match"
+              :lineup="match.lineup_2"
+            ></lineup-utility>
+          </CardContent>
+        </Card>
+      </div>
     </TabsContent>
     <TabsContent value="opening-duels">
-      <Card>
-        <CardHeader> </CardHeader>
-        <CardContent>
-          <lineup-opening-duels
-            :match="match"
-            :lineup="match.lineup_1"
-          ></lineup-opening-duels>
-        </CardContent>
-        <CardContent>
-          <lineup-opening-duels
-            :match="match"
-            :lineup="match.lineup_2"
-          ></lineup-opening-duels>
-        </CardContent>
-      </Card>
+      <div class="grid gap-4 max-w-[1500px] mx-auto">
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-opening-duels
+              :match="match"
+              :lineup="match.lineup_1"
+            ></lineup-opening-duels>
+          </CardContent>
+        </Card>
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-opening-duels
+              :match="match"
+              :lineup="match.lineup_2"
+            ></lineup-opening-duels>
+          </CardContent>
+        </Card>
+      </div>
     </TabsContent>
     <TabsContent value="clutches">
-      <Card>
-        <CardHeader> </CardHeader>
-        <CardContent>
-          <lineup-clutches
-            :match="match"
-            :lineup1="match.lineup_1"
-            :lineup2="match.lineup_2"
-          ></lineup-clutches>
-        </CardContent>
-      </Card>
+      <div class="grid gap-4 max-w-[1500px] mx-auto">
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-clutches
+              :match="match"
+              :lineup1="match.lineup_1"
+              :lineup2="match.lineup_2"
+            ></lineup-clutches>
+          </CardContent>
+        </Card>
+      </div>
     </TabsContent>
     <TabsContent value="veto">
-      <Card>
-        <CardHeader> </CardHeader>
-        <CardContent>
-          <MatchPicksDisplay :match="match" />
-        </CardContent>
-      </Card>
+      <div class="grid gap-4 max-w-[1500px] mx-auto">
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <MatchPicksDisplay :match="match" />
+          </CardContent>
+        </Card>
+      </div>
     </TabsContent>
     <TabsContent value="server" class="flex flex-col gap-4">
       <ServiceLogs :service="`m-${match.id}`" :compact="true" />
@@ -298,8 +306,8 @@ provide("commander", commander);
       </RconCommander>
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4">
-      <Card class="p-3">
-        <CardContent>
+      <Card>
+        <CardContent class="py-4">
           <MatchOptionsDisplay
             :options="match.options"
             :show-details-by-default="true"
@@ -335,8 +343,10 @@ provide("commander", commander);
           </template>
         </CardContent>
       </Card>
-      <Card class="p-3" v-if="match.is_organizer && showMatchSettingsForm">
-        <MatchForm :match="match" />
+      <Card v-if="match.is_organizer && showMatchSettingsForm">
+        <CardContent class="py-4">
+          <MatchForm :match="match" />
+        </CardContent>
       </Card>
     </TabsContent>
     <TabsContent value="streams">

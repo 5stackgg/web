@@ -18,10 +18,10 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 <template>
   <div
-    class="grid items-start gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_1fr]"
+    class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_1fr]"
     v-if="match"
   >
-    <div class="grid grid-cols-1 gap-y-6">
+    <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
       <PageTransition>
         <AnimatedCard variant="gradient" v-if="match.can_schedule">
           <CardHeader class="p-4">
@@ -70,7 +70,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       </PageTransition>
     </div>
 
-    <div class="grid grid-cols-1 gap-y-6">
+    <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
       <PageTransition>
         <template
           v-if="
@@ -102,7 +102,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       </PageTransition>
 
       <PageTransition :delay="200">
-        <MatchTabs :match="match"></MatchTabs>
+        <MatchTabs :match="match" class="max-w-[1500px]"></MatchTabs>
       </PageTransition>
     </div>
   </div>

@@ -6,16 +6,30 @@ import LineupMember from "~/components/match/LineupMember.vue";
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead class="w-[200px] text-left">
+        <TableHead class="w-[220px] text-left whitespace-nowrap">
           {{ lineup.name }}
         </TableHead>
-        <TableHead> {{ $t("match.lineup.stats.flashes_thrown") }} </TableHead>
-        <TableHead> {{ $t("match.lineup.stats.flash_assists") }} </TableHead>
-        <TableHead> {{ $t("match.lineup.stats.enemies_flashed") }} </TableHead>
-        <TableHead> {{ $t("match.lineup.stats.team_flashed") }} </TableHead>
-        <TableHead> {{ $t("match.lineup.stats.avg_blind_time") }} </TableHead>
-        <TableHead> {{ $t("match.lineup.stats.he_damage") }} </TableHead>
-        <TableHead> {{ $t("match.lineup.stats.molotov_damage") }} </TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.lineup.stats.flashes_thrown")
+        }}</TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.lineup.stats.flash_assists")
+        }}</TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.lineup.stats.enemies_flashed")
+        }}</TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.lineup.stats.team_flashed")
+        }}</TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.lineup.stats.avg_blind_time")
+        }}</TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.lineup.stats.he_damage")
+        }}</TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.lineup.stats.molotov_damage")
+        }}</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

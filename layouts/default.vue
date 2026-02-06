@@ -43,7 +43,10 @@ provide("containContent", containContent);
   <SidebarProvider>
     <AppSidebar v-if="showLeftNav" />
 
-    <SidebarInset class="flex flex-col overflow-auto" style="height: 100svh">
+    <SidebarInset
+      class="flex flex-col overflow-y-auto overflow-x-hidden"
+      style="height: 100svh"
+    >
       <TopNav v-if="!showLeftNav" />
       <AppHeader class="px-6" v-if="showLeftNav" />
 

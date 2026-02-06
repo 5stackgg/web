@@ -5,11 +5,15 @@ import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead class="w-[200px] text-left">
+        <TableHead class="w-[220px] text-left whitespace-nowrap">
           {{ lineup.name }}
         </TableHead>
-        <TableHead> {{ $t("match.opening_duels.attempts") }} </TableHead>
-        <TableHead> {{ $t("match.opening_duels.success") }} </TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.opening_duels.attempts")
+        }}</TableHead>
+        <TableHead class="whitespace-nowrap">{{
+          $t("match.opening_duels.success")
+        }}</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>

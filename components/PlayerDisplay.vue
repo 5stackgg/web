@@ -14,18 +14,23 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
     "
     active-class="player-display-active"
     exact-active-class="player-display-active"
-    class="grid gap-2"
+    class="grid min-h-12"
     :class="{
       'cursor-pointer': linkable,
+      'gap-2': !compact,
+      'gap-1.5': compact,
       'grid-cols-[52px_1fr]':
-        size !== 'xs' && (showName || showSteamId || showRole || showFlag),
+        size !== 'xs' &&
+        !compact &&
+        (showName || showSteamId || showRole || showFlag),
       'grid-cols-[32px_1fr]':
-        size === 'xs' && (showName || showSteamId || showRole || showFlag),
+        (size === 'xs' || compact) &&
+        (showName || showSteamId || showRole || showFlag),
     }"
   >
     <div class="flex flex-col items-center justify-center relative">
       <slot name="avatar">
-        <Avatar shape="square" :class="{ 'h-8 w-8': size === 'xs' }">
+        <Avatar shape="square" :class="{ 'h-8 w-8': size === 'xs' || compact }">
           <AvatarImage
             :src="player.avatar_url"
             :alt="player.name"
@@ -66,21 +71,26 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         <div
           class="text-left"
           :class="{
-            'text-xs': size === 'xs',
-            'text-sm': size === 'sm',
-            'text-lg': size === 'lg',
-            'text-xl': size === 'xl',
+            'text-xs': size === 'xs' || compact,
+            'text-sm': size === 'sm' && !compact,
+            'text-lg': size === 'lg' && !compact,
+            'text-xl': size === 'xl' && !compact,
           }"
         >
           <div class="flex items-center gap-2">
             <slot name="name-prefix"></slot>
             <div class="flex items-center gap-2">
               <TimezoneFlag
-                class="mt-1"
+                :class="{ 'hidden md:block': compact, 'mt-1': !compact }"
                 v-if="showFlag"
                 :country="player.country"
               />
-              <div v-if="showName">{{ player.name }}</div>
+              <div
+                v-if="showName"
+                :class="{ 'truncate max-w-[80px] sm:max-w-none': compact }"
+              >
+                {{ player.name }}
+              </div>
               <div class="flex gap-2">
                 <TooltipProvider v-if="player.is_banned">
                   <Tooltip>
@@ -235,6 +245,10 @@ export default {
     tooltip: {
       type: Boolean,
       default: true,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {

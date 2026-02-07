@@ -11,7 +11,7 @@ import { ChevronUpIcon } from "lucide-vue-next";
   <HoverCard v-if="competitiveElo || wingmanElo || duelElo">
     <HoverCardTrigger as-child>
       <div
-        class="inline-flex items-center gap-1 px-2 py-1 rounded-md cursor-default transition-colors hover:bg-muted"
+        class="inline-flex items-center gap-1 rounded-md cursor-default transition-colors hover:bg-muted"
       >
         <!-- Primary ELO -->
         <span

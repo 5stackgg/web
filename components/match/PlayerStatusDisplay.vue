@@ -17,7 +17,7 @@ import { useSidebar } from "../ui/sidebar";
     :ping-status="showDetails"
     :show-role="showDetails"
     :linkable="linkable"
-    :show-elo="false"
+    :show-elo="true"
     :compact="isMobile"
   >
     <template v-slot:avatar-sub v-if="showDetails">

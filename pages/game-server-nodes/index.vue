@@ -50,9 +50,7 @@ const { isMobile } = useSidebar();
                 $t("pages.game_server_nodes.not_supported.title")
               }}</AlertTitle>
               <AlertDescription>
-                {{
-                  $t("pages.game_server_nodes.not_supported.description")
-                }}
+                {{ $t("pages.game_server_nodes.not_supported.description") }}
                 <a
                   target="_blank"
                   class="underline"

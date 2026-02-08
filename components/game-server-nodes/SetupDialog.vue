@@ -27,17 +27,18 @@ import {
 
       <div class="space-y-4">
         <!-- Installation script -->
-        <div
-          v-if="setupGameServer"
-          class="relative bg-gray-900 rounded-lg p-4"
-        >
+        <div v-if="setupGameServer" class="relative bg-gray-900 rounded-lg p-4">
           <div class="flex justify-between items-start mb-2">
             <h3 class="text-white text-sm font-semibold">
-              {{ $t("pages.game_server_nodes.setup_dialog.installation_script") }}
+              {{
+                $t("pages.game_server_nodes.setup_dialog.installation_script")
+              }}
             </h3>
             <ClipBoard :data="setupGameServer.link" />
           </div>
-          <code class="text-sm block text-gray-300 select-all cursor-text break-all">
+          <code
+            class="text-sm block text-gray-300 select-all cursor-text break-all"
+          >
             {{ setupGameServer.link }}
           </code>
         </div>

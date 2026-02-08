@@ -79,9 +79,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           "
         >
           <div class="flex gap-4 justify-around flex-col 2xl:flex-row">
-            <div
-              v-for="match_map of match.match_maps"
-            >
+            <div v-for="match_map of match.match_maps">
               <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
             </div>
           </div>

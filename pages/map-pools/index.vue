@@ -48,9 +48,7 @@ const { isMobile } = useSidebar();
               >
                 <div class="flex items-center gap-1">
                   <Info :size="14" />
-                  {{
-                    $t("pages.settings.application.update_map_pools.title")
-                  }}
+                  {{ $t("pages.settings.application.update_map_pools.title") }}
                 </div>
                 <Switch
                   :model-value="updateMapPools"
@@ -58,9 +56,7 @@ const { isMobile } = useSidebar();
                 />
               </div>
             </template>
-            {{
-              $t("pages.settings.application.update_map_pools.description")
-            }}
+            {{ $t("pages.settings.application.update_map_pools.description") }}
           </FiveStackToolTip>
 
           <Button
@@ -131,9 +127,7 @@ const { isMobile } = useSidebar();
             <TableRow>
               <TableHead class="w-[350px]"></TableHead>
               <TableHead>{{ $t("pages.map_pools.active_duty") }}</TableHead>
-              <TableHead>{{
-                $t("pages.map_pools.available_modes")
-              }}</TableHead>
+              <TableHead>{{ $t("pages.map_pools.available_modes") }}</TableHead>
               <TableHead>{{ $t("pages.map_pools.workshop_id") }}</TableHead>
               <TableHead class="w-[50px]"></TableHead>
             </TableRow>
@@ -154,9 +148,7 @@ const { isMobile } = useSidebar();
   <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>{{
-          $t("pages.dedicated_servers.detail.edit")
-        }}</SheetTitle>
+        <SheetTitle>{{ $t("pages.dedicated_servers.detail.edit") }}</SheetTitle>
         <SheetDescription>
           <MapForm @created="mapFormSheet = false" />
         </SheetDescription>

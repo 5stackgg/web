@@ -82,7 +82,11 @@ import { Badge } from "~/components/ui/badge";
               Maps:
             </span>
             <div class="flex flex-wrap gap-2">
-              <MiniMapDisplay :map="map" v-for="map in tournament.options.map_pool.maps" :key="map.id" />
+              <MiniMapDisplay
+                :map="map"
+                v-for="map in tournament.options.map_pool.maps"
+                :key="map.id"
+              />
             </div>
           </div>
         </div>

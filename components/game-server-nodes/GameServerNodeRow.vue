@@ -1449,6 +1449,7 @@ const isSectionExpanded = (section: string) => {
               <NumberField
                 :min="30000"
                 :max="32767"
+                :step="2"
                 :model-value="value"
                 @update:model-value="
                   (val) => portForm.setFieldValue('start_port_range', val)
@@ -1474,6 +1475,7 @@ const isSectionExpanded = (section: string) => {
               <NumberField
                 :min="30000"
                 :max="32767"
+                :step="2"
                 :model-value="value"
                 @update:model-value="
                   (val) => portForm.setFieldValue('end_port_range', val)
@@ -1763,15 +1765,6 @@ export default defineComponent({
       }),
     };
   },
-  mounted() {
-    this.$watch(
-      () => this.portForm.values,
-      async () => {
-        this.updateServerPorts();
-      },
-      { deep: true },
-    );
-  },
   watch: {
     gameServerNode: {
       immediate: true,
@@ -1780,13 +1773,8 @@ export default defineComponent({
           return;
         }
 
-        const { region, start_port_range, end_port_range } = gameServerNode;
+        const { region } = gameServerNode;
         this.regionForm.region = region;
-
-        this.portForm.setValues({
-          start_port_range,
-          end_port_range,
-        });
 
         if (this.gameServerNode.pin_build_id) {
           this.pinBuildIdForm.setValues({
@@ -1797,6 +1785,20 @@ export default defineComponent({
         if (this.gameServerNode.pin_plugin_version) {
           this.pinPluginVersionForm.setValues({
             pin_plugin_version: this.gameServerNode.pin_plugin_version,
+          });
+        }
+      },
+    },
+    showPortsDialog: {
+      handler(isOpen) {
+        if (isOpen) {
+          const start = this.gameServerNode.start_port_range || 30000;
+          const end =
+            this.gameServerNode.end_port_range || 30000 + this.maxServers * 2;
+
+          this.portForm.setValues({
+            start_port_range: start,
+            end_port_range: end,
           });
         }
       },

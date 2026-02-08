@@ -4,32 +4,47 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Hypertables</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Hypertables</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-2xl font-bold">{{ timescaleStats?.hypertables?.length || 0 }}</div>
+          <div class="text-2xl font-bold">
+            {{ timescaleStats?.hypertables?.length || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Total Chunks</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Total Chunks</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-2xl font-bold">{{ timescaleStats?.chunks_count || 0 }}</div>
+          <div class="text-2xl font-bold">
+            {{ timescaleStats?.chunks_count || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Background Jobs</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Background Jobs</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-2xl font-bold">{{ timescaleStats?.jobs?.length || 0 }}</div>
+          <div class="text-2xl font-bold">
+            {{ timescaleStats?.jobs?.length || 0 }}
+          </div>
         </CardContent>
       </Card>
     </div>
 
     <!-- Check if TimescaleDB is installed -->
-    <Empty v-if="!timescaleStats || timescaleStats.hypertables.length === 0" class="p-12">
+    <Empty
+      v-if="!timescaleStats || timescaleStats.hypertables.length === 0"
+      class="p-12"
+    >
       <div class="mb-4">
         <svg
           class="w-16 h-16 mx-auto opacity-50"
@@ -45,9 +60,11 @@
           />
         </svg>
       </div>
-      <p class="text-lg font-medium mb-2">{{ $t('pages.database.timescale.no_data_title') }}</p>
+      <p class="text-lg font-medium mb-2">
+        {{ $t("pages.database.timescale.no_data_title") }}
+      </p>
       <p class="text-sm text-muted-foreground">
-        {{ $t('pages.database.timescale.no_data_description') }}
+        {{ $t("pages.database.timescale.no_data_description") }}
       </p>
     </Empty>
 
@@ -65,12 +82,25 @@
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow v-for="hypertable in timescaleStats.hypertables" :key="hypertable.hypertable_name">
-                <TableCell class="font-mono">{{ hypertable.hypertable_name }}</TableCell>
-                <TableCell class="text-right">{{ hypertable.num_chunks }}</TableCell>
+              <TableRow
+                v-for="hypertable in timescaleStats.hypertables"
+                :key="hypertable.hypertable_name"
+              >
+                <TableCell class="font-mono">{{
+                  hypertable.hypertable_name
+                }}</TableCell>
+                <TableCell class="text-right">{{
+                  hypertable.num_chunks
+                }}</TableCell>
                 <TableCell class="text-center">
-                  <Badge :variant="hypertable.compression_enabled ? 'default' : 'secondary'">
-                    {{ hypertable.compression_enabled ? 'Enabled' : 'Disabled' }}
+                  <Badge
+                    :variant="
+                      hypertable.compression_enabled ? 'default' : 'secondary'
+                    "
+                  >
+                    {{
+                      hypertable.compression_enabled ? "Enabled" : "Disabled"
+                    }}
                   </Badge>
                 </TableCell>
               </TableRow>
@@ -97,19 +127,30 @@
               <TableRow v-for="job in timescaleStats.jobs" :key="job.job_id">
                 <TableCell>{{ job.job_id }}</TableCell>
                 <TableCell class="text-xs">{{ job.job_type }}</TableCell>
-                <TableCell class="font-mono text-xs">{{ job.hypertable_name || 'N/A' }}</TableCell>
+                <TableCell class="font-mono text-xs">{{
+                  job.hypertable_name || "N/A"
+                }}</TableCell>
                 <TableCell>
-                  <Badge v-if="job.last_run_status" :variant="getJobStatusVariant(job.last_run_status)">
+                  <Badge
+                    v-if="job.last_run_status"
+                    :variant="getJobStatusVariant(job.last_run_status)"
+                  >
                     {{ job.last_run_status }}
                   </Badge>
-                  <span v-else class="text-muted-foreground text-xs">Not run</span>
+                  <span v-else class="text-muted-foreground text-xs"
+                    >Not run</span
+                  >
                 </TableCell>
-                <TableCell class="text-xs">{{ formatDate(job.next_start) }}</TableCell>
+                <TableCell class="text-xs">{{
+                  formatDate(job.next_start)
+                }}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
           <Empty v-if="timescaleStats.jobs.length === 0">
-            <p class="text-muted-foreground">{{ $t('pages.database.timescale.no_jobs') }}</p>
+            <p class="text-muted-foreground">
+              {{ $t("pages.database.timescale.no_jobs") }}
+            </p>
           </Empty>
         </Card>
       </div>
@@ -119,7 +160,14 @@
 
 <script lang="ts">
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { generateQuery } from "~/graphql/graphqlGen";
@@ -139,7 +187,7 @@ export default {
     Empty,
     Badge,
   },
-  inject: ['pollInterval'],
+  inject: ["pollInterval"],
   data() {
     return {
       timescaleStats: null as any,
@@ -147,14 +195,14 @@ export default {
   },
   methods: {
     formatDate(date: string | null) {
-      if (!date) return 'Not scheduled';
+      if (!date) return "Not scheduled";
       return new Date(date).toLocaleString();
     },
     getJobStatusVariant(status: string) {
-      if (status === 'Success') return 'default';
-      if (status === 'Failed') return 'destructive';
-      if (status === 'Running') return 'secondary';
-      return 'outline';
+      if (status === "Success") return "default";
+      if (status === "Failed") return "destructive";
+      if (status === "Running") return "secondary";
+      return "outline";
     },
   },
   apollo: {

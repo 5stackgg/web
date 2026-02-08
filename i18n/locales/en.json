@@ -613,6 +613,7 @@
                 "locks": "Locks & Transactions",
                 "io": "I/O & Buffers",
                 "index_usage": "Index Usage",
+                "storage": "Storage",
                 "timescale": "TimescaleDB"
             },
             "query_performance": {
@@ -644,7 +645,28 @@
                 "index_scans": "Index Scans",
                 "tuples_read": "Tuples Read",
                 "tuples_fetched": "Tuples Fetched",
+                "index_size": "Index Size",
+                "table_size": "Table Size",
+                "size_ratio": "% of Table",
                 "no_stats": "No index usage statistics available"
+            },
+            "storage": {
+                "overview": "Storage Overview",
+                "total_database_size": "Total Database Size",
+                "total_table_size": "Total Table Size",
+                "total_indexes_size": "Total Index Size",
+                "reclaimable_space": "Reclaimable Space",
+                "from_dead_tuples": "From dead tuples",
+                "table_sizes": "Table Storage Details",
+                "schema": "Schema",
+                "table": "Table",
+                "total_size": "Total Size",
+                "table_size": "Table Size",
+                "indexes_size": "Indexes",
+                "live_tuples": "Live Tuples",
+                "dead_tuples": "Dead Tuples",
+                "dead_tuple_size": "Dead Tuple Size",
+                "no_tables": "No table storage information available"
             },
             "timescale": {
                 "no_data_title": "No TimescaleDB Data",

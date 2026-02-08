@@ -4,23 +4,33 @@
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Total</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Total</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-2xl font-bold">{{ connectionStats?.total || 0 }}</div>
+          <div class="text-2xl font-bold">
+            {{ connectionStats?.total || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Active</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Active</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-2xl font-bold">{{ connectionStats?.active || 0 }}</div>
+          <div class="text-2xl font-bold">
+            {{ connectionStats?.active || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Idle</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Idle</CardTitle
+          >
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">{{ connectionStats?.idle || 0 }}</div>
@@ -28,18 +38,26 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Idle in Txn</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Idle in Txn</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-2xl font-bold">{{ connectionStats?.idle_in_transaction || 0 }}</div>
+          <div class="text-2xl font-bold">
+            {{ connectionStats?.idle_in_transaction || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Waiting</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Waiting</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-2xl font-bold">{{ connectionStats?.waiting || 0 }}</div>
+          <div class="text-2xl font-bold">
+            {{ connectionStats?.waiting || 0 }}
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -64,7 +82,9 @@
             <TableRow v-for="query in activeQueries" :key="query.pid">
               <TableCell>{{ query.pid }}</TableCell>
               <TableCell>{{ query.usename }}</TableCell>
-              <TableCell class="text-xs">{{ query.application_name || 'N/A' }}</TableCell>
+              <TableCell class="text-xs">{{
+                query.application_name || "N/A"
+              }}</TableCell>
               <TableCell>
                 <Badge :variant="getStateVariant(query.state)">
                   {{ query.state }}
@@ -86,7 +106,9 @@
               </TableCell>
               <TableCell class="max-w-md">
                 <div class="flex items-center gap-2">
-                  <div class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1">
+                  <div
+                    class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1"
+                  >
                     {{ query.query }}
                   </div>
                   <Button
@@ -103,7 +125,9 @@
           </TableBody>
         </Table>
         <Empty v-if="activeQueries.length === 0">
-          <p class="text-muted-foreground">{{ $t('pages.database.connections.no_active_queries') }}</p>
+          <p class="text-muted-foreground">
+            {{ $t("pages.database.connections.no_active_queries") }}
+          </p>
         </Empty>
       </Card>
     </div>
@@ -126,9 +150,13 @@
           <TableBody>
             <TableRow v-for="conn in activeConnections" :key="conn.pid">
               <TableCell>{{ conn.pid }}</TableCell>
-              <TableCell>{{ conn.usename || 'System' }}</TableCell>
-              <TableCell class="text-xs">{{ conn.application_name || 'N/A' }}</TableCell>
-              <TableCell class="text-xs">{{ conn.client_addr || 'local' }}</TableCell>
+              <TableCell>{{ conn.usename || "System" }}</TableCell>
+              <TableCell class="text-xs">{{
+                conn.application_name || "N/A"
+              }}</TableCell>
+              <TableCell class="text-xs">{{
+                conn.client_addr || "local"
+              }}</TableCell>
               <TableCell>
                 <Badge v-if="conn.state" :variant="getStateVariant(conn.state)">
                   {{ conn.state }}
@@ -137,7 +165,9 @@
               </TableCell>
               <TableCell class="max-w-md">
                 <div v-if="conn.query" class="flex items-center gap-2">
-                  <div class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1">
+                  <div
+                    class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1"
+                  >
                     {{ conn.query }}
                   </div>
                   <Button
@@ -155,7 +185,9 @@
           </TableBody>
         </Table>
         <Empty v-if="activeConnections.length === 0">
-          <p class="text-muted-foreground">{{ $t('pages.database.connections.no_connections') }}</p>
+          <p class="text-muted-foreground">
+            {{ $t("pages.database.connections.no_connections") }}
+          </p>
         </Empty>
       </Card>
     </div>
@@ -163,9 +195,16 @@
 </template>
 
 <script lang="ts">
-import { CopyIcon } from 'lucide-vue-next';
+import { CopyIcon } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -188,7 +227,7 @@ export default {
     Button,
     CopyIcon,
   },
-  inject: ['pollInterval'],
+  inject: ["pollInterval"],
   data() {
     return {
       connectionStats: null as any,
@@ -198,15 +237,15 @@ export default {
   },
   methods: {
     getStateVariant(state: string) {
-      if (state === 'active') return 'default';
-      if (state === 'idle') return 'secondary';
-      if (state === 'idle in transaction') return 'outline';
-      return 'secondary';
+      if (state === "active") return "default";
+      if (state === "idle") return "secondary";
+      if (state === "idle in transaction") return "outline";
+      return "secondary";
     },
     getDurationVariant(seconds: number) {
-      if (seconds > 60) return 'destructive';
-      if (seconds > 10) return 'secondary';
-      return 'default';
+      if (seconds > 60) return "destructive";
+      if (seconds > 10) return "secondary";
+      return "default";
     },
     formatDuration(seconds: number) {
       if (seconds < 60) return `${seconds.toFixed(1)}s`;
@@ -217,10 +256,10 @@ export default {
     async copyQuery(query: string) {
       try {
         await navigator.clipboard.writeText(query);
-        this.$toast?.success(this.$t('pages.database.query_copied'));
+        this.$toast?.success(this.$t("pages.database.query_copied"));
       } catch (error) {
-        console.error('Failed to copy:', error);
-        this.$toast?.error(this.$t('pages.database.copy_failed'));
+        console.error("Failed to copy:", error);
+        this.$toast?.error(this.$t("pages.database.copy_failed"));
       }
     },
   },

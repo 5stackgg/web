@@ -16514,8 +16514,10 @@ export const ReturnTypes: Record<string,any> = {
 		idx_scan:"Int",
 		idx_tup_fetch:"Int",
 		idx_tup_read:"Int",
+		index_size:"Int",
 		indexname:"String",
 		schemaname:"String",
+		table_size:"Int",
 		tablename:"String"
 	},
 	LockInfo:{

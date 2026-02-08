@@ -6,35 +6,53 @@
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground">Commits</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="text-2xl font-bold">{{ databaseStats?.xact_commit?.toLocaleString() || 0 }}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground">Rollbacks</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="text-2xl font-bold">{{ databaseStats?.xact_rollback?.toLocaleString() || 0 }}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground">Deadlocks</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="text-2xl font-bold">{{ databaseStats?.deadlocks?.toLocaleString() || 0 }}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground">Cache Hit Ratio</CardTitle>
+            <CardTitle class="text-sm font-medium text-muted-foreground"
+              >Commits</CardTitle
+            >
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
-              {{ databaseStats ? (databaseStats.cache_hit_ratio * 100).toFixed(1) : 0 }}%
+              {{ databaseStats?.xact_commit?.toLocaleString() || 0 }}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader class="pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground"
+              >Rollbacks</CardTitle
+            >
+          </CardHeader>
+          <CardContent>
+            <div class="text-2xl font-bold">
+              {{ databaseStats?.xact_rollback?.toLocaleString() || 0 }}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader class="pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground"
+              >Deadlocks</CardTitle
+            >
+          </CardHeader>
+          <CardContent>
+            <div class="text-2xl font-bold">
+              {{ databaseStats?.deadlocks?.toLocaleString() || 0 }}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader class="pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground"
+              >Cache Hit Ratio</CardTitle
+            >
+          </CardHeader>
+          <CardContent>
+            <div class="text-2xl font-bold">
+              {{
+                databaseStats
+                  ? (databaseStats.cache_hit_ratio * 100).toFixed(1)
+                  : 0
+              }}%
             </div>
           </CardContent>
         </Card>
@@ -45,34 +63,50 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Active Backends</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Active Backends</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-xl font-semibold">{{ databaseStats?.numbackends || 0 }}</div>
+          <div class="text-xl font-semibold">
+            {{ databaseStats?.numbackends || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Tuples Inserted</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Tuples Inserted</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-xl font-semibold">{{ databaseStats?.tup_inserted?.toLocaleString() || 0 }}</div>
+          <div class="text-xl font-semibold">
+            {{ databaseStats?.tup_inserted?.toLocaleString() || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Tuples Updated</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Tuples Updated</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-xl font-semibold">{{ databaseStats?.tup_updated?.toLocaleString() || 0 }}</div>
+          <div class="text-xl font-semibold">
+            {{ databaseStats?.tup_updated?.toLocaleString() || 0 }}
+          </div>
         </CardContent>
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Tuples Deleted</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground"
+            >Tuples Deleted</CardTitle
+          >
         </CardHeader>
         <CardContent>
-          <div class="text-xl font-semibold">{{ databaseStats?.tup_deleted?.toLocaleString() || 0 }}</div>
+          <div class="text-xl font-semibold">
+            {{ databaseStats?.tup_deleted?.toLocaleString() || 0 }}
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -97,17 +131,21 @@
             <TableRow v-for="(lock, index) in currentLocks" :key="index">
               <TableCell>{{ lock.pid }}</TableCell>
               <TableCell class="text-xs">{{ lock.locktype }}</TableCell>
-              <TableCell class="text-xs font-mono">{{ lock.relation || 'N/A' }}</TableCell>
+              <TableCell class="text-xs font-mono">{{
+                lock.relation || "N/A"
+              }}</TableCell>
               <TableCell class="text-xs">{{ lock.mode }}</TableCell>
               <TableCell class="text-center">
                 <Badge :variant="lock.granted ? 'default' : 'destructive'">
-                  {{ lock.granted ? 'Yes' : 'No' }}
+                  {{ lock.granted ? "Yes" : "No" }}
                 </Badge>
               </TableCell>
-              <TableCell class="text-xs">{{ lock.usename || 'N/A' }}</TableCell>
+              <TableCell class="text-xs">{{ lock.usename || "N/A" }}</TableCell>
               <TableCell class="max-w-md">
                 <div v-if="lock.query" class="flex items-center gap-2">
-                  <div class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1">
+                  <div
+                    class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1"
+                  >
                     {{ lock.query }}
                   </div>
                   <Button
@@ -125,7 +163,9 @@
           </TableBody>
         </Table>
         <Empty v-if="currentLocks.length === 0">
-          <p class="text-muted-foreground">{{ $t('pages.database.locks.no_locks') }}</p>
+          <p class="text-muted-foreground">
+            {{ $t("pages.database.locks.no_locks") }}
+          </p>
         </Empty>
       </Card>
     </div>
@@ -147,23 +187,42 @@
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow v-for="table in filteredTableStats.slice(0, 20)" :key="`${table.schemaname}.${table.relname}`">
+            <TableRow
+              v-for="table in filteredTableStats.slice(0, 20)"
+              :key="`${table.schemaname}.${table.relname}`"
+            >
               <TableCell class="text-xs">{{ table.schemaname }}</TableCell>
-              <TableCell class="font-mono text-xs">{{ table.relname }}</TableCell>
-              <TableCell class="text-right">{{ table.n_live_tup.toLocaleString() }}</TableCell>
+              <TableCell class="font-mono text-xs">{{
+                table.relname
+              }}</TableCell>
+              <TableCell class="text-right">{{
+                table.n_live_tup.toLocaleString()
+              }}</TableCell>
               <TableCell class="text-right">
-                <Badge :variant="getDeadTupleVariant(table.n_dead_tup, table.n_live_tup)">
+                <Badge
+                  :variant="
+                    getDeadTupleVariant(table.n_dead_tup, table.n_live_tup)
+                  "
+                >
                   {{ table.n_dead_tup.toLocaleString() }}
                 </Badge>
               </TableCell>
-              <TableCell class="text-xs">{{ formatDate(table.last_vacuum) }}</TableCell>
-              <TableCell class="text-xs">{{ formatDate(table.last_autovacuum) }}</TableCell>
-              <TableCell class="text-xs">{{ formatDate(table.last_analyze) }}</TableCell>
+              <TableCell class="text-xs">{{
+                formatDate(table.last_vacuum)
+              }}</TableCell>
+              <TableCell class="text-xs">{{
+                formatDate(table.last_autovacuum)
+              }}</TableCell>
+              <TableCell class="text-xs">{{
+                formatDate(table.last_analyze)
+              }}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
         <Empty v-if="filteredTableStats.length === 0">
-          <p class="text-muted-foreground">{{ $t('pages.database.locks.no_table_stats') }}</p>
+          <p class="text-muted-foreground">
+            {{ $t("pages.database.locks.no_table_stats") }}
+          </p>
         </Empty>
       </Card>
     </div>
@@ -171,9 +230,16 @@
 </template>
 
 <script lang="ts">
-import { CopyIcon } from 'lucide-vue-next';
+import { CopyIcon } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -196,7 +262,7 @@ export default {
     Button,
     CopyIcon,
   },
-  inject: ['pollInterval', 'selectedSchemas'],
+  inject: ["pollInterval", "selectedSchemas"],
   data() {
     return {
       databaseStats: null as any,
@@ -208,28 +274,30 @@ export default {
     filteredTableStats() {
       const schemas = this.selectedSchemas();
       if (schemas.length === 0) return this.tableStats;
-      return this.tableStats.filter((stat: any) => schemas.includes(stat.schemaname));
+      return this.tableStats.filter((stat: any) =>
+        schemas.includes(stat.schemaname),
+      );
     },
   },
   methods: {
     formatDate(date: string | null) {
-      if (!date) return 'Never';
+      if (!date) return "Never";
       return new Date(date).toLocaleString();
     },
     getDeadTupleVariant(dead: number, live: number) {
-      if (live === 0) return 'secondary';
+      if (live === 0) return "secondary";
       const ratio = dead / live;
-      if (ratio > 0.2) return 'destructive';
-      if (ratio > 0.1) return 'secondary';
-      return 'default';
+      if (ratio > 0.2) return "destructive";
+      if (ratio > 0.1) return "secondary";
+      return "default";
     },
     async copyQuery(query: string) {
       try {
         await navigator.clipboard.writeText(query);
-        this.$toast?.success(this.$t('pages.database.query_copied'));
+        this.$toast?.success(this.$t("pages.database.query_copied"));
       } catch (error) {
-        console.error('Failed to copy:', error);
-        this.$toast?.error(this.$t('pages.database.copy_failed'));
+        console.error("Failed to copy:", error);
+        this.$toast?.error(this.$t("pages.database.copy_failed"));
       }
     },
   },

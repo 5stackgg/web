@@ -25,15 +25,15 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
     <Empty v-else key="empty" class="p-3 min-h-[200px]">
       <EmptyTitle>{{ $t("match.no_matches") }}</EmptyTitle>
-      <EmptyDescription>{{ $t("match.no_matches_description") }}</EmptyDescription>
+      <EmptyDescription>{{
+        $t("match.no_matches_description")
+      }}</EmptyDescription>
     </Empty>
   </Transition>
 
   <Teleport defer to="#pagination">
     <Pagination
-      v-if="
-        otherMatchesAggregate && otherMatchesAggregate.aggregate.count > 0
-      "
+      v-if="otherMatchesAggregate && otherMatchesAggregate.aggregate.count > 0"
       :page="page"
       :per-page="perPage"
       @page="

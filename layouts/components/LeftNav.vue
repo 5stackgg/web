@@ -435,9 +435,7 @@ import Logout from "./Logout.vue";
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.database')"
-            >
+            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.database')">
               <SidebarMenuButton
                 as-child
                 :tooltip="$t('layouts.app_nav.tooltips.database')"

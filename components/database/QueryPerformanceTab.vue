@@ -63,7 +63,9 @@
           >
             <TableCell class="max-w-md">
               <div class="flex items-center gap-2">
-                <div class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1">
+                <div
+                  class="overflow-x-auto max-h-20 font-mono text-xs whitespace-nowrap flex-1"
+                >
                   {{ stat.query }}
                 </div>
                 <Button
@@ -76,13 +78,17 @@
                 </Button>
               </div>
             </TableCell>
-            <TableCell class="text-right">{{ stat.calls.toLocaleString() }}</TableCell>
+            <TableCell class="text-right">{{
+              stat.calls.toLocaleString()
+            }}</TableCell>
             <TableCell class="text-right font-medium">
               <Badge :variant="getTimeVariant(stat.mean_exec_time)">
                 {{ stat.mean_exec_time.toFixed(2) }}
               </Badge>
             </TableCell>
-            <TableCell class="text-right">{{ stat.max_exec_time.toFixed(2) }}</TableCell>
+            <TableCell class="text-right">{{
+              stat.max_exec_time.toFixed(2)
+            }}</TableCell>
             <TableCell class="text-right">
               <span v-if="stat.cache_hit_ratio !== null">
                 {{ (stat.cache_hit_ratio * 100).toFixed(1) }}%
@@ -96,7 +102,11 @@
               <span v-else class="text-muted-foreground">0</span>
             </TableCell>
             <TableCell class="text-center">
-              <Button @click.stop="openDetail(stat.queryid)" variant="ghost" size="sm">
+              <Button
+                @click.stop="openDetail(stat.queryid)"
+                variant="ghost"
+                size="sm"
+              >
                 Details
               </Button>
             </TableCell>
@@ -104,7 +114,9 @@
         </TableBody>
       </Table>
       <Empty v-if="filteredStats.length === 0">
-        <p class="text-muted-foreground">{{ $t('pages.database.query_performance.no_stats') }}</p>
+        <p class="text-muted-foreground">
+          {{ $t("pages.database.query_performance.no_stats") }}
+        </p>
       </Empty>
     </Card>
 
@@ -118,15 +130,28 @@
 </template>
 
 <script lang="ts">
-import { CopyIcon } from 'lucide-vue-next';
+import { CopyIcon } from "lucide-vue-next";
 import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import QueryDetailModal from "./QueryDetailModal.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 
@@ -153,13 +178,13 @@ export default {
     QueryDetailModal,
     CopyIcon,
   },
-  inject: ['pollInterval'],
+  inject: ["pollInterval"],
   data() {
     return {
       queryStats: [] as any[],
-      searchQuery: '',
+      searchQuery: "",
       minCalls: 5,
-      sortBy: 'mean_exec_time',
+      sortBy: "mean_exec_time",
       selectedQueryId: null as string | null,
     };
   },
@@ -187,9 +212,9 @@ export default {
   },
   methods: {
     getTimeVariant(meanTime: number) {
-      if (meanTime > 100) return 'destructive';
-      if (meanTime > 10) return 'secondary';
-      return 'default';
+      if (meanTime > 100) return "destructive";
+      if (meanTime > 10) return "secondary";
+      return "default";
     },
     openDetail(queryid: string) {
       this.selectedQueryId = queryid;
@@ -197,10 +222,10 @@ export default {
     async copyQuery(query: string) {
       try {
         await navigator.clipboard.writeText(query);
-        this.$toast?.success(this.$t('pages.database.query_copied'));
+        this.$toast?.success(this.$t("pages.database.query_copied"));
       } catch (error) {
-        console.error('Failed to copy:', error);
-        this.$toast?.error(this.$t('pages.database.copy_failed'));
+        console.error("Failed to copy:", error);
+        this.$toast?.error(this.$t("pages.database.copy_failed"));
       }
     },
   },

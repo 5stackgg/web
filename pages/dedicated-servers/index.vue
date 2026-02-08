@@ -59,79 +59,79 @@ const { isMobile } = useSidebar();
         </Empty>
 
         <Table v-else-if="servers && servers.length > 0" key="servers">
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.connection_details")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.label")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.type")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.region")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.plugin_version")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.port")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.tv_port")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.dedicated_servers.table.enabled")
-            }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow
-            v-for="server of servers"
-            :key="server.id"
-            class="cursor-pointer"
-          >
-            <NuxtLink
-              :to="{
-                name: 'dedicated-servers-id',
-                params: { id: server.id },
-              }"
-              class="contents"
+          <TableHeader>
+            <TableRow>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.connection_details")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.label")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.type")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.region")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.plugin_version")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.port")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.tv_port")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.dedicated_servers.table.enabled")
+              }}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow
+              v-for="server of servers"
+              :key="server.id"
+              class="cursor-pointer"
             >
-              <TableCell>
-                <div class="flex gap-2 items-center">
-                  <ServerStatus :server="server" />
-                  <span class="truncate">
-                    {{ server.host }}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>{{ server.label }}</TableCell>
-              <TableCell>
-                <Badge variant="secondary">
-                  {{ server.type }}
-                </Badge>
-              </TableCell>
-              <TableCell>{{ server.region }}</TableCell>
-              <TableCell>
-                <template v-if="server.plugin_version">
-                  v{{ server.plugin_version }}
-                </template>
-                <template v-else> - </template>
-              </TableCell>
-              <TableCell>{{ server.port }}</TableCell>
-              <TableCell>{{ server.tv_port }}</TableCell>
-              <TableCell>{{
-                server.enabled
-                  ? $t("pages.dedicated_servers.table.yes")
-                  : $t("pages.dedicated_servers.table.no")
-              }}</TableCell>
-            </NuxtLink>
-          </TableRow>
-        </TableBody>
-      </Table>
+              <NuxtLink
+                :to="{
+                  name: 'dedicated-servers-id',
+                  params: { id: server.id },
+                }"
+                class="contents"
+              >
+                <TableCell>
+                  <div class="flex gap-2 items-center">
+                    <ServerStatus :server="server" />
+                    <span class="truncate">
+                      {{ server.host }}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell>{{ server.label }}</TableCell>
+                <TableCell>
+                  <Badge variant="secondary">
+                    {{ server.type }}
+                  </Badge>
+                </TableCell>
+                <TableCell>{{ server.region }}</TableCell>
+                <TableCell>
+                  <template v-if="server.plugin_version">
+                    v{{ server.plugin_version }}
+                  </template>
+                  <template v-else> - </template>
+                </TableCell>
+                <TableCell>{{ server.port }}</TableCell>
+                <TableCell>{{ server.tv_port }}</TableCell>
+                <TableCell>{{
+                  server.enabled
+                    ? $t("pages.dedicated_servers.table.yes")
+                    : $t("pages.dedicated_servers.table.no")
+                }}</TableCell>
+              </NuxtLink>
+            </TableRow>
+          </TableBody>
+        </Table>
 
         <Empty v-else key="empty" class="min-h-[200px]">
           <EmptyTitle>{{

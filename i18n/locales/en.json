@@ -29,7 +29,10 @@
                 "my_recent": "My Recent Tournaments",
                 "finished": "Finished Tournaments",
                 "live": "Live",
-                "upcoming": "Upcoming"
+                "upcoming": "Upcoming",
+                "no_live_title": "No Live Tournaments",
+                "no_upcoming_title": "No Upcoming Tournaments",
+                "no_finished_title": "No Finished Tournaments"
             },
             "no_recent": "You don't have any recent tournaments.",
             "no_finished": "No finished tournaments found."
@@ -60,6 +63,7 @@
             "title": "Teams",
             "description": "Manage teams and rosters.",
             "create": "Create Team",
+            "no_teams_title": "No Teams Found",
             "no_teams": "No teams found.",
             "tabs": {
 
@@ -397,6 +401,7 @@
                 "title": "Your Panel currently does not support Game Server Nodes.",
                 "description": "View the documentation to setup Game Server Nodes."
             },
+            "no_nodes_title": "No Game Server Nodes",
             "display_metrics": "Display Metrics",
             "filters": "Filters",
             "create": "Create Game Server Node",
@@ -446,6 +451,7 @@
         "dedicated_servers": {
             "title": "Dedicated Servers",
             "description": "You can set up a dedicated server that will always run the game server mod",
+            "no_servers_title": "No Dedicated Servers",
             "no_servers": "No dedicated servers found.",
             "create": {
                 "title": "Create Dedicated Server"
@@ -490,7 +496,7 @@
             "title": "Public Servers",
             "description": "Browse and join public servers",
             "table": {
-                
+
                 "label": "Label",
                 "region": "Region",
                 "map": "Map",
@@ -498,7 +504,7 @@
                 "players": "Players",
                 "connect": "Connect"
             },
-            
+            "no_servers_title": "No Servers Available",
             "no_public_servers": "No public servers available at the moment.",
             "lan_servers_title": "LAN Servers"
         },
@@ -1088,6 +1094,8 @@
         }
     },
     "match": {
+        "no_matches": "No Matches Found",
+        "no_matches_description": "There are currently no matches available.",
         "simple": {
             "vs": "vs"
         },

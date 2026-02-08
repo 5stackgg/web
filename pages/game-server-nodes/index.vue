@@ -516,6 +516,23 @@ export default {
   },
   methods: {
     resetFilters() {
+      // Check if any filters would actually change
+      const currentName = this.form.values.name || "";
+      const currentRegions = this.form.values.regions || [];
+      const hasChanges =
+        currentName !== "" ||
+        currentRegions.length > 0 ||
+        this.onlyEnabled !== false ||
+        this.hideOffline !== false ||
+        this.sortDirection !== "asc" ||
+        this.sortField !== "label" ||
+        this.page !== 1;
+
+      // Only reset if there are actual changes
+      if (!hasChanges) {
+        return;
+      }
+
       this.form.setValues({
         name: "",
         regions: [],
@@ -526,12 +543,6 @@ export default {
       this.sortField = "label";
       this.page = 1;
       this.saveFiltersToStorage();
-      this.updatePagedNodes();
-    },
-    updatePagedNodes() {
-      const start = (this.page - 1) * this.perPage;
-      const end = start + this.perPage;
-      this.gameServerNodes = (this.allGameServerNodes || []).slice(start, end);
     },
     loadFiltersFromStorage() {
       if (process.client) {

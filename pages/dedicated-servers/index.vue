@@ -15,6 +15,9 @@ import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -46,12 +49,16 @@ const { isMobile } = useSidebar();
 
   <PageTransition :delay="100" class="mt-6">
     <AnimatedCard variant="gradient" class="p-4">
-      <Empty v-if="servers && servers.length === 0">
-        <p class="text-muted-foreground">
-          {{ $t("pages.dedicated_servers.no_servers") }}
-        </p>
-      </Empty>
-      <Table v-else>
+      <Transition name="fade" mode="out-in">
+        <Empty v-if="loading" key="loading" class="min-h-[200px]">
+          <div class="space-y-3 w-full max-w-md">
+            <Skeleton class="h-4 w-3/4 mx-auto" />
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6 mx-auto" />
+          </div>
+        </Empty>
+
+        <Table v-else-if="servers && servers.length > 0" key="servers">
         <TableHeader>
           <TableRow>
             <TableHead>{{
@@ -125,10 +132,21 @@ const { isMobile } = useSidebar();
           </TableRow>
         </TableBody>
       </Table>
+
+        <Empty v-else key="empty" class="min-h-[200px]">
+          <EmptyTitle>{{
+            $t("pages.dedicated_servers.no_servers_title")
+          }}</EmptyTitle>
+          <EmptyDescription>{{
+            $t("pages.dedicated_servers.no_servers")
+          }}</EmptyDescription>
+        </Empty>
+      </Transition>
     </AnimatedCard>
   </PageTransition>
 
   <Pagination
+    v-if="servers_aggregate && servers_aggregate.aggregate.count > 0"
     :page="page"
     :per-page="perPage"
     @page="
@@ -137,7 +155,6 @@ const { isMobile } = useSidebar();
       }
     "
     :total="servers_aggregate.aggregate.count"
-    v-if="servers_aggregate"
   ></Pagination>
 </template>
 
@@ -151,6 +168,7 @@ export default {
       page: 1,
       perPage: 10,
       servers: undefined,
+      loading: true,
     };
   },
   apollo: {
@@ -191,6 +209,7 @@ export default {
         },
         result: function ({ data }) {
           this.servers = data.servers;
+          this.loading = false;
         },
       },
     },
@@ -209,3 +228,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

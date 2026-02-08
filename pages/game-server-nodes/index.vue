@@ -22,6 +22,9 @@ import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -206,23 +209,21 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="300" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4 relative">
-      <div v-if="loading" class="absolute top-4 left-4 z-10">
+    <AnimatedCard variant="gradient" class="p-4">
+      <Transition name="fade" mode="out-in">
+        <Empty v-if="loading" key="loading" class="min-h-[200px]">
+          <div class="space-y-3 w-full max-w-md">
+            <Skeleton class="h-4 w-3/4 mx-auto" />
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6 mx-auto" />
+          </div>
+        </Empty>
+
         <div
-          class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
+          v-else-if="gameServerNodes && gameServerNodes.length > 0"
+          key="nodes"
+          class="overflow-x-auto"
         >
-          <div
-            class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
-          ></div>
-          <span>{{ $t("pages.manage_matches.loading") }}</span>
-        </div>
-      </div>
-      <Empty v-if="gameServerNodes && gameServerNodes.length === 0">
-        <p class="text-muted-foreground">
-          {{ $t("pages.game_server_nodes.table.no_nodes") }}
-        </p>
-      </Empty>
-      <div class="overflow-x-auto" v-else>
         <Table>
           <TableHeader>
             <TableRow>
@@ -273,11 +274,22 @@ const { isMobile } = useSidebar();
             ></GameServerNodeRow>
           </TableBody>
         </Table>
-      </div>
+        </div>
+
+        <Empty v-else key="empty" class="min-h-[200px]">
+          <EmptyTitle>{{
+            $t("pages.game_server_nodes.no_nodes_title")
+          }}</EmptyTitle>
+          <EmptyDescription>{{
+            $t("pages.game_server_nodes.table.no_nodes")
+          }}</EmptyDescription>
+        </Empty>
+      </Transition>
     </AnimatedCard>
   </PageTransition>
 
   <Pagination
+    v-if="nodesAggregate && nodesAggregate > 0"
     :page="page"
     :per-page="perPage"
     @page="
@@ -286,7 +298,6 @@ const { isMobile } = useSidebar();
       }
     "
     :total="nodesAggregate || 0"
-    v-if="nodesAggregate"
   ></Pagination>
 
   <!-- Setup Dialog -->
@@ -658,3 +669,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

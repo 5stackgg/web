@@ -15,6 +15,10 @@ import { $ } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 </script>
 
 <template>
@@ -29,12 +33,20 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
   <PageTransition :delay="100">
     <div class="mt-6">
-      <AnimatedCard
-        variant="gradient"
-        class="p-4"
-        v-if="servers && (servers as any[]).length > 0"
-      >
-        <Table>
+      <AnimatedCard variant="gradient" class="p-4">
+        <Transition name="fade" mode="out-in">
+          <Empty v-if="loading" key="loading" class="min-h-[200px]">
+            <div class="space-y-3 w-full max-w-md">
+              <Skeleton class="h-4 w-3/4 mx-auto" />
+              <Skeleton class="h-3 w-full" />
+              <Skeleton class="h-3 w-5/6 mx-auto" />
+            </div>
+          </Empty>
+
+          <Table
+            v-else-if="servers && (servers as any[]).length > 0"
+            key="servers"
+          >
           <TableHeader>
             <TableRow>
               <TableHead>{{
@@ -103,30 +115,27 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
             </TableRow>
           </TableBody>
         </Table>
-      </AnimatedCard>
 
-      <AnimatedCard
-        variant="gradient"
-        class="p-8 text-center"
-        v-if="servers && servers.length === 0"
-      >
-        <div class="flex flex-col items-center gap-4">
-          <div class="text-muted-foreground">
-            {{ $t("pages.public_servers.no_public_servers") }}
-          </div>
-        </div>
+          <Empty v-else key="empty" class="min-h-[200px]">
+            <EmptyTitle>{{ $t("pages.public_servers.no_servers_title") }}</EmptyTitle>
+            <EmptyDescription>{{
+              $t("pages.public_servers.no_public_servers")
+            }}</EmptyDescription>
+          </Empty>
+        </Transition>
       </AnimatedCard>
     </div>
   </PageTransition>
 
   <!-- LAN Servers Table -->
   <PageTransition :delay="200">
-    <div v-if="lanServers && lanServers.length > 0" class="mt-6">
+    <div v-if="!loading && lanServers && lanServers.length > 0" class="mt-6">
       <h2 class="text-xl font-semibold mb-4">
         {{ $t("pages.public_servers.lan_servers_title") }}
       </h2>
       <AnimatedCard variant="gradient" class="p-4">
-        <Table>
+        <Transition name="fade" mode="out-in">
+          <Table key="lan-servers">
           <TableHeader>
             <TableRow>
               <TableHead>{{
@@ -194,6 +203,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
             </TableRow>
           </TableBody>
         </Table>
+        </Transition>
       </AnimatedCard>
     </div>
   </PageTransition>
@@ -206,6 +216,7 @@ export default {
       servers: undefined as any[] | undefined,
       lanServers: undefined as any[] | undefined,
       getDedicatedServerInfo: undefined as any[] | undefined,
+      loading: true,
     };
   },
   apollo: {
@@ -289,6 +300,7 @@ export default {
           this.lanServers = data.servers.filter(
             (server: any) => server.server_region.is_lan,
           );
+          this.loading = false;
         },
       },
     },
@@ -309,3 +321,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

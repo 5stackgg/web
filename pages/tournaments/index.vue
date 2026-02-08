@@ -56,38 +56,76 @@
         </TabsList>
 
         <TabsContent value="live">
-          <Empty v-if="!liveTournaments || liveTournaments.length === 0">
-            <p class="text-muted-foreground">
-              {{ $t("tournament.table.no_tournaments_found") }}
-            </p>
-          </Empty>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in liveTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
+          <Transition name="fade" mode="out-in">
+            <Empty v-if="loadingLive" key="loading" class="min-h-[200px]">
+              <div class="space-y-3 w-full max-w-md">
+                <Skeleton class="h-4 w-3/4 mx-auto" />
+                <Skeleton class="h-3 w-full" />
+                <Skeleton class="h-3 w-5/6 mx-auto" />
+              </div>
+            </Empty>
+
+            <div
+              v-else-if="liveTournaments && liveTournaments.length > 0"
+              key="tournaments"
+              class="space-y-4"
+            >
+              <TournamentTableRow
+                v-for="tournament in liveTournaments"
+                :key="tournament.id"
+                :tournament="tournament"
+              ></TournamentTableRow>
+            </div>
+
+            <Empty v-else key="empty" class="min-h-[200px]">
+              <EmptyTitle>{{
+                $t("pages.tournaments.tabs.no_live_title")
+              }}</EmptyTitle>
+              <EmptyDescription>{{
+                $t("tournament.table.no_tournaments_found")
+              }}</EmptyDescription>
+            </Empty>
+          </Transition>
         </TabsContent>
 
         <TabsContent value="upcoming">
-          <Empty
-            v-if="!upcomingTournaments || upcomingTournaments.length === 0"
-          >
-            <p class="text-muted-foreground">
-              {{ $t("tournament.table.no_tournaments_found") }}
-            </p>
-          </Empty>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in upcomingTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
+          <Transition name="fade" mode="out-in">
+            <Empty v-if="loadingUpcoming" key="loading" class="min-h-[200px]">
+              <div class="space-y-3 w-full max-w-md">
+                <Skeleton class="h-4 w-3/4 mx-auto" />
+                <Skeleton class="h-3 w-full" />
+                <Skeleton class="h-3 w-5/6 mx-auto" />
+              </div>
+            </Empty>
+
+            <div
+              v-else-if="upcomingTournaments && upcomingTournaments.length > 0"
+              key="tournaments"
+              class="space-y-4"
+            >
+              <TournamentTableRow
+                v-for="tournament in upcomingTournaments"
+                :key="tournament.id"
+                :tournament="tournament"
+              ></TournamentTableRow>
+            </div>
+
+            <Empty v-else key="empty" class="min-h-[200px]">
+              <EmptyTitle>{{
+                $t("pages.tournaments.tabs.no_upcoming_title")
+              }}</EmptyTitle>
+              <EmptyDescription>{{
+                $t("tournament.table.no_tournaments_found")
+              }}</EmptyDescription>
+            </Empty>
+          </Transition>
 
           <Teleport defer to="#pagination">
             <pagination
+              v-if="
+                upcomingTournaments_aggregate &&
+                upcomingTournaments_aggregate.aggregate.count > 0
+              "
               :page="upcomingPage"
               :items-per-page="perPage"
               @page="
@@ -101,23 +139,43 @@
         </TabsContent>
 
         <TabsContent value="finished">
-          <Empty
-            v-if="!finishedTournaments || finishedTournaments.length === 0"
-          >
-            <p class="text-muted-foreground">
-              {{ $t("pages.tournaments.no_finished") }}
-            </p>
-          </Empty>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in finishedTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
+          <Transition name="fade" mode="out-in">
+            <Empty v-if="loadingFinished" key="loading" class="min-h-[200px]">
+              <div class="space-y-3 w-full max-w-md">
+                <Skeleton class="h-4 w-3/4 mx-auto" />
+                <Skeleton class="h-3 w-full" />
+                <Skeleton class="h-3 w-5/6 mx-auto" />
+              </div>
+            </Empty>
+
+            <div
+              v-else-if="finishedTournaments && finishedTournaments.length > 0"
+              key="tournaments"
+              class="space-y-4"
+            >
+              <TournamentTableRow
+                v-for="tournament in finishedTournaments"
+                :key="tournament.id"
+                :tournament="tournament"
+              ></TournamentTableRow>
+            </div>
+
+            <Empty v-else key="empty" class="min-h-[200px]">
+              <EmptyTitle>{{
+                $t("pages.tournaments.tabs.no_finished_title")
+              }}</EmptyTitle>
+              <EmptyDescription>{{
+                $t("pages.tournaments.no_finished")
+              }}</EmptyDescription>
+            </Empty>
+          </Transition>
 
           <Teleport defer to="#pagination">
             <pagination
+              v-if="
+                finishedTournaments_aggregate &&
+                finishedTournaments_aggregate.aggregate.count > 0
+              "
               :page="finishedPage"
               :items-per-page="perPage"
               @page="
@@ -150,6 +208,9 @@ import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
 export default {
   components: {
@@ -173,6 +234,9 @@ export default {
       upcomingTournaments_aggregate: undefined,
       finishedTournaments: [],
       finishedTournaments_aggregate: undefined,
+      loadingLive: true,
+      loadingUpcoming: true,
+      loadingFinished: true,
     };
   },
   apollo: {
@@ -231,6 +295,7 @@ export default {
         },
         result: function ({ data }: { data: any }) {
           this.liveTournaments = data.tournaments || [];
+          this.loadingLive = false;
         },
       },
       upcomingTournaments: {
@@ -266,6 +331,7 @@ export default {
         },
         result: function ({ data }: { data: any }) {
           this.upcomingTournaments = data.tournaments || [];
+          this.loadingUpcoming = false;
         },
       },
       upcomingTournaments_aggregate: {
@@ -331,6 +397,7 @@ export default {
         },
         result: function ({ data }: { data: any }) {
           this.finishedTournaments = data.tournaments || [];
+          this.loadingFinished = false;
         },
       },
       finishedTournaments_aggregate: {
@@ -382,3 +449,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

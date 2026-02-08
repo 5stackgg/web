@@ -10,6 +10,9 @@ import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -67,22 +70,38 @@ const { isMobile } = useSidebar();
         </FormField>
       </form>
 
-      <Empty
-        v-if="
-          (showOnlyMyTeams ? myTeams : teams) &&
-          (showOnlyMyTeams ? myTeams : teams).length === 0
-        "
-      >
-        <p class="text-muted-foreground">
-          {{ $t("pages.teams.no_teams") }}
-        </p>
-      </Empty>
-      <teams-table
-        :teams="showOnlyMyTeams ? myTeams : teams"
-        v-else-if="showOnlyMyTeams ? myTeams : teams"
-      ></teams-table>
+      <Transition name="fade" mode="out-in">
+        <Empty v-if="loading" key="loading" class="min-h-[200px]">
+          <div class="space-y-3 w-full max-w-md">
+            <Skeleton class="h-4 w-3/4 mx-auto" />
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6 mx-auto" />
+          </div>
+        </Empty>
+
+        <teams-table
+          v-else-if="
+            (showOnlyMyTeams ? myTeams : teams) &&
+            (showOnlyMyTeams ? myTeams : teams).length > 0
+          "
+          key="teams"
+          :teams="showOnlyMyTeams ? myTeams : teams"
+        ></teams-table>
+
+        <Empty v-else key="empty" class="min-h-[200px]">
+          <EmptyTitle>{{ $t("pages.teams.no_teams_title") }}</EmptyTitle>
+          <EmptyDescription>{{
+            $t("pages.teams.no_teams")
+          }}</EmptyDescription>
+        </Empty>
+      </Transition>
       <Teleport defer to="#pagination">
         <pagination
+          v-if="
+            !showOnlyMyTeams &&
+            teams_aggregate &&
+            teams_aggregate.aggregate.count > 0
+          "
           :page="page"
           :per-page="perPage"
           @page="
@@ -91,7 +110,6 @@ const { isMobile } = useSidebar();
             }
           "
           :total="teams_aggregate.aggregate.count"
-          v-if="!showOnlyMyTeams && teams_aggregate"
         ></pagination>
       </Teleport>
     </AnimatedCard>
@@ -119,6 +137,7 @@ export default {
       teams_aggregate: undefined as any,
       myTeams: undefined as any,
       showOnlyMyTeams: false,
+      loading: true,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -144,6 +163,9 @@ export default {
   apollo: {
     teams: {
       fetchPolicy: "network-only",
+      result: function () {
+        this.loading = false;
+      },
       query: function (this: any) {
         return generateQuery({
           teams: [
@@ -256,3 +278,15 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

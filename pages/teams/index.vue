@@ -90,9 +90,7 @@ const { isMobile } = useSidebar();
 
         <Empty v-else key="empty" class="min-h-[200px]">
           <EmptyTitle>{{ $t("pages.teams.no_teams_title") }}</EmptyTitle>
-          <EmptyDescription>{{
-            $t("pages.teams.no_teams")
-          }}</EmptyDescription>
+          <EmptyDescription>{{ $t("pages.teams.no_teams") }}</EmptyDescription>
         </Empty>
       </Transition>
       <Teleport defer to="#pagination">

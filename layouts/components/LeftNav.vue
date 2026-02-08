@@ -17,6 +17,7 @@ import {
   Radio,
   Home,
   Search,
+  Database,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -430,6 +431,23 @@ import Logout from "./Logout.vue";
                 >
                   <Logs />
                   {{ $t("layouts.app_nav.administration.logs") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.database')">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.database')"
+              >
+                <NuxtLink
+                  :to="{ name: 'database' }"
+                  :class="{
+                    'router-link-active': isRouteActive('database'),
+                  }"
+                >
+                  <Database />
+                  {{ $t("layouts.app_nav.administration.database") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

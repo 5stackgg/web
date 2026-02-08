@@ -224,56 +224,56 @@ const { isMobile } = useSidebar();
           key="nodes"
           class="overflow-x-auto"
         >
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead class="cursor-pointer" @click="toggleSortDirection">
-                <div class="flex items-center gap-1">
-                  {{ $t("pages.game_server_nodes.table.node") }}
-                  <ArrowUpIcon
-                    v-if="sortDirection === 'desc'"
-                    class="w-4 h-4"
-                  />
-                  <ArrowDownIcon v-else class="w-4 h-4" />
-                </div>
-              </TableHead>
-              <TableHead class="hidden xl:table-cell">{{
-                $t("game_server.hardware")
-              }}</TableHead>
-              <TableHead class="hidden xl:table-cell">{{
-                $t("pages.game_server_nodes.table.region")
-              }}</TableHead>
-              <TableHead class="hidden xl:table-cell text-center">
-                <div class="flex flex-col items-center gap-1">
-                  <span>{{
-                    $t("pages.game_server_nodes.table.capacity")
-                  }}</span>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead class="cursor-pointer" @click="toggleSortDirection">
                   <div class="flex items-center gap-1">
-                    {{ $t("pages.game_server_nodes.table.ports") }}
-                    <FiveStackToolTip>{{
-                      $t("pages.game_server_nodes.table.ports_tooltip")
-                    }}</FiveStackToolTip>
+                    {{ $t("pages.game_server_nodes.table.node") }}
+                    <ArrowUpIcon
+                      v-if="sortDirection === 'desc'"
+                      class="w-4 h-4"
+                    />
+                    <ArrowDownIcon v-else class="w-4 h-4" />
                   </div>
-                </div>
-              </TableHead>
-              <TableHead class="hidden xl:table-cell pr-1">
-                {{ $t("pages.game_server_nodes.table.cs_build_id") }}
-              </TableHead>
-              <TableHead class="hidden xl:table-cell pl-1">
-                {{ $t("pages.game_server_nodes.table.pin_plugin_version") }}
-              </TableHead>
-              <TableHead></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <GameServerNodeRow
-              :game-server-node="gameServerNode"
-              :key="gameServerNode.id"
-              v-for="gameServerNode of gameServerNodes"
-              :display-metrics="displayMetrics"
-            ></GameServerNodeRow>
-          </TableBody>
-        </Table>
+                </TableHead>
+                <TableHead class="hidden xl:table-cell">{{
+                  $t("game_server.hardware")
+                }}</TableHead>
+                <TableHead class="hidden xl:table-cell">{{
+                  $t("pages.game_server_nodes.table.region")
+                }}</TableHead>
+                <TableHead class="hidden xl:table-cell text-center">
+                  <div class="flex flex-col items-center gap-1">
+                    <span>{{
+                      $t("pages.game_server_nodes.table.capacity")
+                    }}</span>
+                    <div class="flex items-center gap-1">
+                      {{ $t("pages.game_server_nodes.table.ports") }}
+                      <FiveStackToolTip>{{
+                        $t("pages.game_server_nodes.table.ports_tooltip")
+                      }}</FiveStackToolTip>
+                    </div>
+                  </div>
+                </TableHead>
+                <TableHead class="hidden xl:table-cell pr-1">
+                  {{ $t("pages.game_server_nodes.table.cs_build_id") }}
+                </TableHead>
+                <TableHead class="hidden xl:table-cell pl-1">
+                  {{ $t("pages.game_server_nodes.table.pin_plugin_version") }}
+                </TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <GameServerNodeRow
+                :game-server-node="gameServerNode"
+                :key="gameServerNode.id"
+                v-for="gameServerNode of gameServerNodes"
+                :display-metrics="displayMetrics"
+              ></GameServerNodeRow>
+            </TableBody>
+          </Table>
         </div>
 
         <Empty v-else key="empty" class="min-h-[200px]">

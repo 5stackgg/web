@@ -1,5 +1,10 @@
 <template>
   <div class="space-y-4">
+    <!-- Schema Selector -->
+    <div class="flex justify-end">
+      <SchemaSelector @change="handleSchemaChange" />
+    </div>
+
     <Tabs default-value="table" class="w-full">
       <TabsList>
         <TabsTrigger value="table">{{
@@ -31,7 +36,7 @@
               </TableHeader>
               <TableBody>
                 <TableRow
-                  v-for="table in filteredTableIOStats"
+                  v-for="table in tableIOStats"
                   :key="`${table.schemaname}.${table.relname}`"
                 >
                   <TableCell class="text-xs">{{ table.schemaname }}</TableCell>
@@ -68,7 +73,7 @@
                 </TableRow>
               </TableBody>
             </Table>
-            <Empty v-if="filteredTableIOStats.length === 0">
+            <Empty v-if="tableIOStats.length === 0">
               <p class="text-muted-foreground">
                 {{ $t("pages.database.io.no_table_stats") }}
               </p>
@@ -97,7 +102,7 @@
               </TableHeader>
               <TableBody>
                 <TableRow
-                  v-for="index in filteredIndexIOStats"
+                  v-for="index in indexIOStats"
                   :key="`${index.schemaname}.${index.indexname}`"
                 >
                   <TableCell class="text-xs">{{ index.schemaname }}</TableCell>
@@ -133,7 +138,7 @@
                 </TableRow>
               </TableBody>
             </Table>
-            <Empty v-if="filteredIndexIOStats.length === 0">
+            <Empty v-if="indexIOStats.length === 0">
               <p class="text-muted-foreground">
                 {{ $t("pages.database.io.no_index_io_stats") }}
               </p>
@@ -159,6 +164,7 @@ import {
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { generateQuery } from "~/graphql/graphqlGen";
+import SchemaSelector from "./SchemaSelector.vue";
 
 export default {
   components: {
@@ -175,31 +181,26 @@ export default {
     TableRow,
     Empty,
     Badge,
+    SchemaSelector,
   },
-  inject: ["pollInterval", "selectedSchemas"],
+  inject: ["pollInterval", "refreshTrigger"],
   data() {
     return {
       tableIOStats: [] as any[],
       indexIOStats: [] as any[],
+      selectedSchemas: ["public"] as string[],
     };
   },
-  computed: {
-    filteredTableIOStats() {
-      const schemas = this.selectedSchemas();
-      if (schemas.length === 0) return this.tableIOStats;
-      return this.tableIOStats.filter((stat: any) =>
-        schemas.includes(stat.schemaname),
-      );
-    },
-    filteredIndexIOStats() {
-      const schemas = this.selectedSchemas();
-      if (schemas.length === 0) return this.indexIOStats;
-      return this.indexIOStats.filter((stat: any) =>
-        schemas.includes(stat.schemaname),
-      );
-    },
-  },
   methods: {
+    handleSchemaChange(schemas: string[]) {
+      this.selectedSchemas = schemas;
+      if (this.$apollo.queries.tableIOStats) {
+        this.$apollo.queries.tableIOStats.refetch();
+      }
+      if (this.$apollo.queries.indexIOStats) {
+        this.$apollo.queries.indexIOStats.refetch();
+      }
+    },
     getCacheHitVariant(ratio: number | null) {
       if (ratio === null) return "secondary";
       if (ratio < 0.8) return "destructive";
@@ -214,42 +215,67 @@ export default {
   },
   apollo: {
     tableIOStats: {
-      query: generateQuery({
-        getTableIOStats: [
-          {},
-          {
-            schemaname: true,
-            relname: true,
-            heap_blks_read: true,
-            heap_blks_hit: true,
-            idx_blks_read: true,
-            idx_blks_hit: true,
-            cache_hit_ratio: true,
-          },
-        ],
-      }),
+      query() {
+        return generateQuery({
+          getTableIOStats: [
+            this.selectedSchemas.length > 0
+              ? { schemas: this.selectedSchemas }
+              : {},
+            {
+              schemaname: true,
+              relname: true,
+              heap_blks_read: true,
+              heap_blks_hit: true,
+              idx_blks_read: true,
+              idx_blks_hit: true,
+              cache_hit_ratio: true,
+            },
+          ],
+        });
+      },
       update: (data: any) => data.getTableIOStats,
       pollInterval() {
         return this.pollInterval();
       },
+      skip() {
+        return this.selectedSchemas.length === 0;
+      },
     },
     indexIOStats: {
-      query: generateQuery({
-        getIndexIOStats: [
-          {},
-          {
-            schemaname: true,
-            tablename: true,
-            indexname: true,
-            idx_blks_read: true,
-            idx_blks_hit: true,
-          },
-        ],
-      }),
+      query() {
+        return generateQuery({
+          getIndexIOStats: [
+            this.selectedSchemas.length > 0
+              ? { schemas: this.selectedSchemas }
+              : {},
+            {
+              schemaname: true,
+              tablename: true,
+              indexname: true,
+              idx_blks_read: true,
+              idx_blks_hit: true,
+            },
+          ],
+        });
+      },
       update: (data: any) => data.getIndexIOStats,
       pollInterval() {
         return this.pollInterval();
       },
+      skip() {
+        return this.selectedSchemas.length === 0;
+      },
+    },
+  },
+  watch: {
+    refreshTrigger() {
+      // Refetch when manual refresh is triggered
+      if (this.$apollo.queries.tableIOStats) {
+        this.$apollo.queries.tableIOStats.refetch();
+      }
+      if (this.$apollo.queries.indexIOStats) {
+        this.$apollo.queries.indexIOStats.refetch();
+      }
     },
   },
 };

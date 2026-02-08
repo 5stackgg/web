@@ -1,5 +1,10 @@
 <template>
   <div class="space-y-6">
+    <!-- Schema Selector -->
+    <div class="flex justify-end">
+      <SchemaSelector @change="handleSchemaChange" />
+    </div>
+
     <!-- Index Usage Stats -->
     <div>
       <h3 class="text-lg font-semibold mb-3">
@@ -40,7 +45,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="index in filteredIndexStats"
+              v-for="index in indexStats"
               :key="`${index.schemaname}.${index.indexname}`"
             >
               <TableCell class="text-xs">{{ index.schemaname }}</TableCell>
@@ -80,7 +85,7 @@
             </TableRow>
           </TableBody>
         </Table>
-        <Empty v-if="filteredIndexStats.length === 0">
+        <Empty v-if="indexStats.length === 0">
           <p class="text-muted-foreground">
             {{ $t("pages.database.index_usage.no_stats") }}
           </p>
@@ -103,6 +108,7 @@ import {
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { generateQuery } from "~/graphql/graphqlGen";
+import SchemaSelector from "./SchemaSelector.vue";
 
 export default {
   components: {
@@ -115,23 +121,22 @@ export default {
     TableRow,
     Empty,
     Badge,
+    SchemaSelector,
   },
-  inject: ["pollInterval", "selectedSchemas"],
+  inject: ["pollInterval", "refreshTrigger"],
   data() {
     return {
       indexStats: [] as any[],
+      selectedSchemas: ["public"] as string[],
     };
   },
-  computed: {
-    filteredIndexStats() {
-      const schemas = this.selectedSchemas();
-      if (schemas.length === 0) return this.indexStats;
-      return this.indexStats.filter((stat: any) =>
-        schemas.includes(stat.schemaname),
-      );
-    },
-  },
   methods: {
+    handleSchemaChange(schemas: string[]) {
+      this.selectedSchemas = schemas;
+      if (this.$apollo.queries.indexStats) {
+        this.$apollo.queries.indexStats.refetch();
+      }
+    },
     formatBytes(bytes: number): string {
       if (bytes === 0) return "0 B";
       const k = 1024;
@@ -154,25 +159,40 @@ export default {
   },
   apollo: {
     indexStats: {
-      query: generateQuery({
-        getIndexStats: [
-          {},
-          {
-            schemaname: true,
-            tablename: true,
-            indexname: true,
-            idx_scan: true,
-            idx_tup_read: true,
-            idx_tup_fetch: true,
-            index_size: true,
-            table_size: true,
-          },
-        ],
-      }),
+      query() {
+        return generateQuery({
+          getIndexStats: [
+            this.selectedSchemas.length > 0
+              ? { schemas: this.selectedSchemas }
+              : {},
+            {
+              schemaname: true,
+              tablename: true,
+              indexname: true,
+              idx_scan: true,
+              idx_tup_read: true,
+              idx_tup_fetch: true,
+              index_size: true,
+              table_size: true,
+            },
+          ],
+        });
+      },
       update: (data: any) => data.getIndexStats,
       pollInterval() {
         return this.pollInterval();
       },
+      skip() {
+        return this.selectedSchemas.length === 0;
+      },
+    },
+  },
+  watch: {
+    refreshTrigger() {
+      // Refetch when manual refresh is triggered
+      if (this.$apollo.queries.indexStats) {
+        this.$apollo.queries.indexStats.refetch();
+      }
     },
   },
 };

@@ -1,5 +1,10 @@
 <template>
   <div class="space-y-6">
+    <!-- Schema Selector -->
+    <div class="flex justify-end">
+      <SchemaSelector @change="handleSchemaChange" />
+    </div>
+
     <!-- Database Stats Cards -->
     <div>
       <h3 class="text-lg font-semibold mb-3">Database Statistics</h3>
@@ -188,7 +193,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="table in filteredTableStats"
+              v-for="table in tableStats"
               :key="`${table.schemaname}.${table.relname}`"
             >
               <TableCell class="text-xs">{{ table.schemaname }}</TableCell>
@@ -219,7 +224,7 @@
             </TableRow>
           </TableBody>
         </Table>
-        <Empty v-if="filteredTableStats.length === 0">
+        <Empty v-if="tableStats.length === 0">
           <p class="text-muted-foreground">
             {{ $t("pages.database.locks.no_table_stats") }}
           </p>
@@ -244,6 +249,7 @@ import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { generateQuery } from "~/graphql/graphqlGen";
+import SchemaSelector from "./SchemaSelector.vue";
 
 export default {
   components: {
@@ -260,26 +266,25 @@ export default {
     Empty,
     Badge,
     Button,
+    SchemaSelector,
     CopyIcon,
   },
-  inject: ["pollInterval", "selectedSchemas"],
+  inject: ["pollInterval", "refreshTrigger"],
   data() {
     return {
       databaseStats: null as any,
       currentLocks: [] as any[],
       tableStats: [] as any[],
+      selectedSchemas: ["public"] as string[],
     };
   },
-  computed: {
-    filteredTableStats() {
-      const schemas = this.selectedSchemas();
-      if (schemas.length === 0) return this.tableStats;
-      return this.tableStats.filter((stat: any) =>
-        schemas.includes(stat.schemaname),
-      );
-    },
-  },
   methods: {
+    handleSchemaChange(schemas: string[]) {
+      this.selectedSchemas = schemas;
+      if (this.$apollo.queries.tableStats) {
+        this.$apollo.queries.tableStats.refetch();
+      }
+    },
     formatDate(date: string | null) {
       if (!date) return "Never";
       return new Date(date).toLocaleString();
@@ -350,33 +355,48 @@ export default {
       },
     },
     tableStats: {
-      query: generateQuery({
-        getTableStats: [
-          {},
-          {
-            schemaname: true,
-            relname: true,
-            seq_scan: true,
-            seq_tup_read: true,
-            idx_scan: true,
-            idx_tup_fetch: true,
-            n_tup_ins: true,
-            n_tup_upd: true,
-            n_tup_del: true,
-            n_tup_hot_upd: true,
-            n_live_tup: true,
-            n_dead_tup: true,
-            last_vacuum: true,
-            last_autovacuum: true,
-            last_analyze: true,
-            last_autoanalyze: true,
-          },
-        ],
-      }),
+      query() {
+        return generateQuery({
+          getTableStats: [
+            this.selectedSchemas.length > 0
+              ? { schemas: this.selectedSchemas }
+              : {},
+            {
+              schemaname: true,
+              relname: true,
+              seq_scan: true,
+              seq_tup_read: true,
+              idx_scan: true,
+              idx_tup_fetch: true,
+              n_tup_ins: true,
+              n_tup_upd: true,
+              n_tup_del: true,
+              n_tup_hot_upd: true,
+              n_live_tup: true,
+              n_dead_tup: true,
+              last_vacuum: true,
+              last_autovacuum: true,
+              last_analyze: true,
+              last_autoanalyze: true,
+            },
+          ],
+        });
+      },
       update: (data: any) => data.getTableStats,
       pollInterval() {
         return this.pollInterval();
       },
+      skip() {
+        return this.selectedSchemas.length === 0;
+      },
+    },
+  },
+  watch: {
+    refreshTrigger() {
+      // Refetch when manual refresh is triggered
+      if (this.$apollo.queries.tableStats) {
+        this.$apollo.queries.tableStats.refetch();
+      }
     },
   },
 };

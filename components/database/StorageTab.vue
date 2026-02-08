@@ -1,5 +1,10 @@
 <template>
   <div class="space-y-6">
+    <!-- Schema Selector -->
+    <div class="flex justify-end">
+      <SchemaSelector @change="handleSchemaChange" />
+    </div>
+
     <!-- Summary Cards -->
     <div>
       <h3 class="text-lg font-semibold mb-3">
@@ -97,7 +102,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="table in filteredTables"
+              v-for="table in storageStats?.tables || []"
               :key="`${table.schemaname}.${table.tablename}`"
             >
               <TableCell class="text-xs">{{ table.schemaname }}</TableCell>
@@ -139,7 +144,7 @@
             </TableRow>
           </TableBody>
         </Table>
-        <Empty v-if="filteredTables.length === 0">
+        <Empty v-if="!storageStats?.tables || storageStats.tables.length === 0">
           <p class="text-muted-foreground">
             {{ $t("pages.database.storage.no_tables") }}
           </p>
@@ -162,6 +167,7 @@ import {
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { generateQuery } from "~/graphql/graphqlGen";
+import SchemaSelector from "./SchemaSelector.vue";
 
 export default {
   components: {
@@ -177,24 +183,22 @@ export default {
     TableRow,
     Empty,
     Badge,
+    SchemaSelector,
   },
-  inject: ["pollInterval", "selectedSchemas"],
+  inject: ["pollInterval", "refreshTrigger"],
   data() {
     return {
       storageStats: null as any,
+      selectedSchemas: ["public"] as string[],
     };
   },
-  computed: {
-    filteredTables() {
-      if (!this.storageStats?.tables) return [];
-      const schemas = this.selectedSchemas();
-      if (schemas.length === 0) return this.storageStats.tables;
-      return this.storageStats.tables.filter((table: any) =>
-        schemas.includes(table.schemaname),
-      );
-    },
-  },
   methods: {
+    handleSchemaChange(schemas: string[]) {
+      this.selectedSchemas = schemas;
+      if (this.$apollo.queries.storageStats) {
+        this.$apollo.queries.storageStats.refetch();
+      }
+    },
     formatBytes(bytes: number): string {
       if (bytes === 0) return "0 B";
       const k = 1024;
@@ -212,33 +216,48 @@ export default {
   },
   apollo: {
     storageStats: {
-      query: generateQuery({
-        getStorageStats: [
-          {},
-          {
-            summary: {
-              total_database_size: true,
-              total_table_size: true,
-              total_indexes_size: true,
-              estimated_reclaimable_space: true,
+      query() {
+        return generateQuery({
+          getStorageStats: [
+            this.selectedSchemas.length > 0
+              ? { schemas: this.selectedSchemas }
+              : {},
+            {
+              summary: {
+                total_database_size: true,
+                total_table_size: true,
+                total_indexes_size: true,
+                estimated_reclaimable_space: true,
+              },
+              tables: {
+                schemaname: true,
+                tablename: true,
+                total_size: true,
+                table_size: true,
+                indexes_size: true,
+                n_live_tup: true,
+                n_dead_tup: true,
+                estimated_dead_tuple_bytes: true,
+              },
             },
-            tables: {
-              schemaname: true,
-              tablename: true,
-              total_size: true,
-              table_size: true,
-              indexes_size: true,
-              n_live_tup: true,
-              n_dead_tup: true,
-              estimated_dead_tuple_bytes: true,
-            },
-          },
-        ],
-      }),
+          ],
+        });
+      },
       update: (data: any) => data.getStorageStats,
       pollInterval() {
         return this.pollInterval();
       },
+      skip() {
+        return this.selectedSchemas.length === 0;
+      },
+    },
+  },
+  watch: {
+    refreshTrigger() {
+      // Refetch when manual refresh is triggered
+      if (this.$apollo.queries.storageStats) {
+        this.$apollo.queries.storageStats.refetch();
+      }
     },
   },
 };

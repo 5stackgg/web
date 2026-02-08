@@ -10490,10 +10490,25 @@ export const AllTypesProps: Record<string,any> = {
 		game_versions_by_pk:{
 
 		},
+		getIndexIOStats:{
+
+		},
+		getIndexStats:{
+
+		},
 		getNodeStats:{
 
 		},
 		getQueryDetail:{
+
+		},
+		getStorageStats:{
+
+		},
+		getTableIOStats:{
+
+		},
+		getTableStats:{
 
 		},
 		listServerFiles:{

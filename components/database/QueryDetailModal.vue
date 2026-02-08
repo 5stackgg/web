@@ -3,6 +3,9 @@
     <DialogContent class="w-[80vw] max-w-none max-h-[90vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>{{ $t("pages.database.query_detail.title") }}</DialogTitle>
+        <DialogDescription class="sr-only">
+          Detailed query statistics and execution plan visualization
+        </DialogDescription>
       </DialogHeader>
 
       <!-- Loading State -->
@@ -237,7 +240,11 @@
             </Button>
           </div>
           <Card v-if="queryDetail.explain_plan">
-            <CardContent class="pt-6 bg-muted">
+            <CardContent class="pt-6">
+              <!-- <AnalyzeQuery
+                :plan="queryDetail.explain_plan"
+                :query="queryDetail.query"
+              /> -->
               <pre class="text-xs font-mono whitespace-pre-wrap">{{
                 queryDetail.explain_plan
               }}</pre>
@@ -270,7 +277,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
+import AnalyzeQuery from "./AnalyzeQuery.vue";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -282,11 +291,13 @@ export default {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     Card,
     CardContent,
     Badge,
     Button,
     CopyIcon,
+    AnalyzeQuery,
   },
   props: {
     queryid: {

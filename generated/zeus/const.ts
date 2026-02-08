@@ -16594,6 +16594,16 @@ export const ReturnTypes: Record<string,any> = {
 		gameServerId:"String",
 		link:"String"
 	},
+	StorageStats:{
+		summary:"StorageSummary",
+		tables:"TableSizeInfo"
+	},
+	StorageSummary:{
+		estimated_reclaimable_space:"Float",
+		total_database_size:"Float",
+		total_indexes_size:"Float",
+		total_table_size:"Float"
+	},
 	SuccessOutput:{
 		success:"Boolean"
 	},
@@ -16605,6 +16615,16 @@ export const ReturnTypes: Record<string,any> = {
 		idx_blks_read:"Int",
 		relname:"String",
 		schemaname:"String"
+	},
+	TableSizeInfo:{
+		estimated_dead_tuple_bytes:"Float",
+		indexes_size:"Float",
+		n_dead_tup:"Int",
+		n_live_tup:"Int",
+		schemaname:"String",
+		table_size:"Float",
+		tablename:"String",
+		total_size:"Float"
 	},
 	TableStat:{
 		idx_scan:"Int",
@@ -21348,6 +21368,7 @@ export const ReturnTypes: Record<string,any> = {
 		getQueryStats:"QueryStat",
 		getSchemas:"String",
 		getServiceStats:"PodStats",
+		getStorageStats:"StorageStats",
 		getTableIOStats:"TableIOStat",
 		getTableStats:"TableStat",
 		getTimescaleStats:"TimescaleStats",

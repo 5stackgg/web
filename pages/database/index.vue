@@ -86,20 +86,9 @@
             </Popover>
 
             <!-- Refresh Interval with Pause Icon -->
-            <div class="flex items-center gap-1">
-              <Button
-                :variant="isPaused ? 'outline' : 'ghost'"
-                size="sm"
-                class="px-2"
-                @click="togglePause"
-              >
-                <component
-                  :is="isPaused ? PlayIcon : PauseIcon"
-                  class="w-4 h-4"
-                />
-              </Button>
+            <ButtonGroup>
               <Select v-model="refreshInterval" :disabled="isPaused">
-                <SelectTrigger class="w-24 h-9">
+                <SelectTrigger data-slot="select-trigger" class="w-24 h-9">
                   <SelectValue
                     :placeholder="$t('pages.database.auto_refresh.interval')"
                   />
@@ -113,7 +102,18 @@
                   <SelectItem value="60">60s</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+              <Button
+                :variant="isPaused ? 'default' : 'outline'"
+                size="sm"
+                class="px-3 h-9"
+                @click="togglePause"
+              >
+                <component
+                  :is="isPaused ? PlayIcon : PauseIcon"
+                  class="w-4 h-4"
+                />
+              </Button>
+            </ButtonGroup>
           </div>
         </div>
 
@@ -147,6 +147,7 @@
 import { PlayIcon, PauseIcon, ChevronDownIcon } from "lucide-vue-next";
 import PageTransition from "@/components/ui/transitions/PageTransition.vue";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import {
@@ -184,6 +185,7 @@ export default {
   components: {
     PageTransition,
     Button,
+    ButtonGroup,
     Card,
     CardContent,
     Label,
@@ -223,6 +225,8 @@ export default {
       isPaused: false,
       availableSchemas: [] as string[],
       selectedSchemas: ["public"] as string[],
+      PlayIcon,
+      PauseIcon,
     };
   },
   computed: {

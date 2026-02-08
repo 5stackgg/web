@@ -5093,7 +5093,13 @@ export const AllTypesProps: Record<string,any> = {
 		createApiKey:{
 
 		},
+		createServerDirectory:{
+
+		},
 		deleteMatch:{
+
+		},
+		deleteServerItem:{
 
 		},
 		delete__map_pool:{
@@ -6225,10 +6231,16 @@ export const AllTypesProps: Record<string,any> = {
 		leaveLineup:{
 
 		},
+		moveServerItem:{
+
+		},
 		randomizeTeams:{
 			match_id:"uuid"
 		},
 		registerName:{
+
+		},
+		renameServerItem:{
 
 		},
 		requestNameChange:{
@@ -7246,6 +7258,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_v_pool_maps_many:{
 			updates:"v_pool_maps_updates"
+		},
+		writeServerFile:{
+
 		}
 	},
 	my_friends:{
@@ -10478,6 +10493,12 @@ export const AllTypesProps: Record<string,any> = {
 		getNodeStats:{
 
 		},
+		getQueryDetail:{
+
+		},
+		listServerFiles:{
+
+		},
 		lobbies:{
 			distinct_on:"lobbies_select_column",
 			order_by:"lobbies_order_by",
@@ -10909,6 +10930,9 @@ export const AllTypesProps: Record<string,any> = {
 			where:"plugin_versions_bool_exp"
 		},
 		plugin_versions_by_pk:{
+
+		},
+		readServerFile:{
 
 		},
 		server_regions:{
@@ -16361,14 +16385,79 @@ export const ReturnTypes: Record<string,any> = {
 		ttl:"Int",
 		refresh:"Boolean"
 	},
+	ActiveConnection:{
+		application_name:"String",
+		client_addr:"String",
+		pid:"Int",
+		query:"String",
+		query_start:"timestamp",
+		state:"String",
+		usename:"String"
+	},
+	ActiveQuery:{
+		application_name:"String",
+		client_addr:"String",
+		duration_seconds:"Float",
+		pid:"Int",
+		query:"String",
+		query_start:"timestamp",
+		state:"String",
+		usename:"String",
+		wait_event:"String",
+		wait_event_type:"String"
+	},
 	ApiKeyResponse:{
 		key:"String"
+	},
+	ConnectionByState:{
+		count:"Int",
+		state:"String",
+		wait_event_type:"String",
+		waiting_count:"Int"
+	},
+	ConnectionStats:{
+		active:"Int",
+		by_state:"ConnectionByState",
+		idle:"Int",
+		idle_in_transaction:"Int",
+		total:"Int",
+		waiting:"Int"
 	},
 	CpuStat:{
 		time:"timestamp",
 		total:"bigint",
 		used:"bigint",
 		window:"Float"
+	},
+	DatabaseStats:{
+		blks_hit:"Int",
+		blks_read:"Int",
+		cache_hit_ratio:"Float",
+		conflicts:"Int",
+		datname:"String",
+		deadlocks:"Int",
+		numbackends:"Int",
+		tup_deleted:"Int",
+		tup_fetched:"Int",
+		tup_inserted:"Int",
+		tup_returned:"Int",
+		tup_updated:"Int",
+		xact_commit:"Int",
+		xact_rollback:"Int"
+	},
+	DbStats:{
+		calls:"Int",
+		local_blks_hit:"Int",
+		local_blks_read:"Int",
+		max_exec_time:"Float",
+		mean_exec_time:"Float",
+		min_exec_time:"Float",
+		query:"String",
+		queryid:"String",
+		shared_blks_hit:"Int",
+		shared_blks_read:"Int",
+		total_exec_time:"Float",
+		total_rows:"Int"
 	},
 	DedicatedSeverInfo:{
 		id:"String",
@@ -16388,9 +16477,55 @@ export const ReturnTypes: Record<string,any> = {
 		disks:"DiskStat",
 		time:"timestamp"
 	},
+	FileContentResponse:{
+		content:"String",
+		path:"String",
+		size:"bigint"
+	},
+	FileItem:{
+		isDirectory:"Boolean",
+		modified:"timestamp",
+		name:"String",
+		path:"String",
+		size:"bigint",
+		type:"String"
+	},
+	FileListResponse:{
+		currentPath:"String",
+		items:"FileItem"
+	},
 	GetTestUploadResponse:{
 		error:"String",
 		link:"String"
+	},
+	HypertableInfo:{
+		compression_enabled:"Boolean",
+		hypertable_name:"String",
+		num_chunks:"Int"
+	},
+	IndexIOStat:{
+		idx_blks_hit:"Int",
+		idx_blks_read:"Int",
+		indexname:"String",
+		schemaname:"String",
+		tablename:"String"
+	},
+	IndexStat:{
+		idx_scan:"Int",
+		idx_tup_fetch:"Int",
+		idx_tup_read:"Int",
+		indexname:"String",
+		schemaname:"String",
+		tablename:"String"
+	},
+	LockInfo:{
+		granted:"Boolean",
+		locktype:"String",
+		mode:"String",
+		pid:"Int",
+		query:"String",
+		relation:"String",
+		usename:"String"
 	},
 	MeResponse:{
 		avatar_url:"String",
@@ -16430,6 +16565,29 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		node:"String"
 	},
+	QueryDetail:{
+		explain_plan:"String",
+		query:"String",
+		queryid:"String",
+		stats:"QueryStat"
+	},
+	QueryStat:{
+		cache_hit_ratio:"Float",
+		calls:"Int",
+		local_blks_hit:"Int",
+		local_blks_read:"Int",
+		max_exec_time:"Float",
+		mean_exec_time:"Float",
+		min_exec_time:"Float",
+		query:"String",
+		queryid:"String",
+		shared_blks_hit:"Int",
+		shared_blks_read:"Int",
+		stddev_exec_time:"Float",
+		temp_blks_written:"Int",
+		total_exec_time:"Float",
+		total_rows:"Int"
+	},
 	SetupGameServeOutput:{
 		gameServerId:"String",
 		link:"String"
@@ -16437,11 +16595,50 @@ export const ReturnTypes: Record<string,any> = {
 	SuccessOutput:{
 		success:"Boolean"
 	},
+	TableIOStat:{
+		cache_hit_ratio:"Float",
+		heap_blks_hit:"Int",
+		heap_blks_read:"Int",
+		idx_blks_hit:"Int",
+		idx_blks_read:"Int",
+		relname:"String",
+		schemaname:"String"
+	},
+	TableStat:{
+		idx_scan:"Int",
+		idx_tup_fetch:"Int",
+		last_analyze:"timestamp",
+		last_autoanalyze:"timestamp",
+		last_autovacuum:"timestamp",
+		last_vacuum:"timestamp",
+		n_dead_tup:"Int",
+		n_live_tup:"Int",
+		n_tup_del:"Int",
+		n_tup_hot_upd:"Int",
+		n_tup_ins:"Int",
+		n_tup_upd:"Int",
+		relname:"String",
+		schemaname:"String",
+		seq_scan:"Int",
+		seq_tup_read:"Int"
+	},
 	TelemetryStats:{
 		online:"Int"
 	},
 	TestUploadResponse:{
 		error:"String"
+	},
+	TimescaleJob:{
+		hypertable_name:"String",
+		job_id:"Int",
+		job_type:"String",
+		last_run_status:"String",
+		next_start:"timestamp"
+	},
+	TimescaleStats:{
+		chunks_count:"Int",
+		hypertables:"HypertableInfo",
+		jobs:"TimescaleJob"
 	},
 	_map_pool:{
 		map_id:"uuid",
@@ -18940,7 +19137,9 @@ export const ReturnTypes: Record<string,any> = {
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
+		createServerDirectory:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
+		deleteServerItem:"SuccessOutput",
 		delete__map_pool:"_map_pool_mutation_response",
 		delete__map_pool_by_pk:"_map_pool",
 		delete_abandoned_matches:"abandoned_matches_mutation_response",
@@ -19260,8 +19459,10 @@ export const ReturnTypes: Record<string,any> = {
 		joinLineup:"SuccessOutput",
 		leaveLineup:"SuccessOutput",
 		logout:"SuccessOutput",
+		moveServerItem:"SuccessOutput",
 		randomizeTeams:"SuccessOutput",
 		registerName:"SuccessOutput",
+		renameServerItem:"SuccessOutput",
 		requestNameChange:"SuccessOutput",
 		restartService:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
@@ -19509,7 +19710,8 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_match_captains:"v_match_captains_mutation_response",
 		update_v_match_captains_many:"v_match_captains_mutation_response",
 		update_v_pool_maps:"v_pool_maps_mutation_response",
-		update_v_pool_maps_many:"v_pool_maps_mutation_response"
+		update_v_pool_maps_many:"v_pool_maps_mutation_response",
+		writeServerFile:"SuccessOutput"
 	},
 	my_friends:{
 		avatar_url:"String",
@@ -21043,6 +21245,7 @@ export const ReturnTypes: Record<string,any> = {
 		api_keys:"api_keys",
 		api_keys_aggregate:"api_keys_aggregate",
 		api_keys_by_pk:"api_keys",
+		dbStats:"DbStats",
 		db_backups:"db_backups",
 		db_backups_aggregate:"db_backups_aggregate",
 		db_backups_by_pk:"db_backups",
@@ -21130,9 +21333,23 @@ export const ReturnTypes: Record<string,any> = {
 		game_versions:"game_versions",
 		game_versions_aggregate:"game_versions_aggregate",
 		game_versions_by_pk:"game_versions",
+		getActiveConnections:"ActiveConnection",
+		getActiveQueries:"ActiveQuery",
+		getConnectionStats:"ConnectionStats",
+		getCurrentLocks:"LockInfo",
+		getDatabaseStats:"DatabaseStats",
 		getDedicatedServerInfo:"DedicatedSeverInfo",
+		getIndexIOStats:"IndexIOStat",
+		getIndexStats:"IndexStat",
 		getNodeStats:"NodeStats",
+		getQueryDetail:"QueryDetail",
+		getQueryStats:"QueryStat",
+		getSchemas:"String",
 		getServiceStats:"PodStats",
+		getTableIOStats:"TableIOStat",
+		getTableStats:"TableStat",
+		getTimescaleStats:"TimescaleStats",
+		listServerFiles:"FileListResponse",
 		lobbies:"lobbies",
 		lobbies_aggregate:"lobbies_aggregate",
 		lobbies_by_pk:"lobbies",
@@ -21229,6 +21446,7 @@ export const ReturnTypes: Record<string,any> = {
 		plugin_versions:"plugin_versions",
 		plugin_versions_aggregate:"plugin_versions_aggregate",
 		plugin_versions_by_pk:"plugin_versions",
+		readServerFile:"FileContentResponse",
 		server_regions:"server_regions",
 		server_regions_aggregate:"server_regions_aggregate",
 		server_regions_by_pk:"server_regions",

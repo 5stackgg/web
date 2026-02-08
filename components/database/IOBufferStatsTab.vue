@@ -31,7 +31,7 @@
               </TableHeader>
               <TableBody>
                 <TableRow
-                  v-for="table in filteredTableIOStats.slice(0, 30)"
+                  v-for="table in filteredTableIOStats"
                   :key="`${table.schemaname}.${table.relname}`"
                 >
                   <TableCell class="text-xs">{{ table.schemaname }}</TableCell>
@@ -97,7 +97,7 @@
               </TableHeader>
               <TableBody>
                 <TableRow
-                  v-for="index in filteredIndexIOStats.slice(0, 30)"
+                  v-for="index in filteredIndexIOStats"
                   :key="`${index.schemaname}.${index.indexname}`"
                 >
                   <TableCell class="text-xs">{{ index.schemaname }}</TableCell>

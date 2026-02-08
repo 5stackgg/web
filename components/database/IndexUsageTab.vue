@@ -40,7 +40,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="index in filteredIndexStats.slice(0, 30)"
+              v-for="index in filteredIndexStats"
               :key="`${index.schemaname}.${index.indexname}`"
             >
               <TableCell class="text-xs">{{ index.schemaname }}</TableCell>

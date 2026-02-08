@@ -97,7 +97,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="table in filteredTables.slice(0, 50)"
+              v-for="table in filteredTables"
               :key="`${table.schemaname}.${table.tablename}`"
             >
               <TableCell class="text-xs">{{ table.schemaname }}</TableCell>

@@ -188,7 +188,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="table in filteredTableStats.slice(0, 20)"
+              v-for="table in filteredTableStats"
               :key="`${table.schemaname}.${table.relname}`"
             >
               <TableCell class="text-xs">{{ table.schemaname }}</TableCell>

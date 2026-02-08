@@ -36,7 +36,7 @@
                 <Button
                   variant="outline"
                   size="sm"
-                  class="justify-between min-w-[150px]"
+                  class="justify-between w-[180px]"
                 >
                   <span
                     v-if="selectedSchemas.length === 0"
@@ -73,10 +73,9 @@
                         :value="schema"
                         @select="toggleSchema(schema)"
                       >
-                        <Checkbox
-                          :checked="selectedSchemas.includes(schema)"
-                          class="mr-2"
-                        />
+                        <div class="flex items-center pointer-events-none mr-2">
+                          <Checkbox :model-value="selectedSchemas.includes(schema)" />
+                        </div>
                         {{ schema }}
                       </CommandItem>
                     </CommandGroup>
@@ -87,8 +86,18 @@
 
             <!-- Refresh Interval with Pause Icon -->
             <ButtonGroup>
+              <Button
+                variant="outline"
+                size="sm"
+                class="px-3 h-9"
+                @click="forceRefresh"
+              >
+                <RefreshCwIcon
+                  :class="['w-4 h-4 transition-transform', isRefreshing && 'animate-spin']"
+                />
+              </Button>
               <Select v-model="refreshInterval" :disabled="isPaused">
-                <SelectTrigger data-slot="select-trigger" class="w-24 h-9">
+                <SelectTrigger data-slot="select-trigger" class="w-14 h-9 [&>svg]:hidden text-center justify-center">
                   <SelectValue
                     :placeholder="$t('pages.database.auto_refresh.interval')"
                   />
@@ -144,7 +153,7 @@
 </template>
 
 <script lang="ts">
-import { PlayIcon, PauseIcon, ChevronDownIcon } from "lucide-vue-next";
+import { PlayIcon, PauseIcon, ChevronDownIcon, RefreshCwIcon } from "lucide-vue-next";
 import PageTransition from "@/components/ui/transitions/PageTransition.vue";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -218,6 +227,7 @@ export default {
     PlayIcon,
     PauseIcon,
     ChevronDownIcon,
+    RefreshCwIcon,
   },
   data() {
     return {
@@ -225,8 +235,11 @@ export default {
       isPaused: false,
       availableSchemas: [] as string[],
       selectedSchemas: ["public"] as string[],
+      refreshTrigger: 0,
+      loadingCount: 0,
       PlayIcon,
       PauseIcon,
+      RefreshCwIcon,
     };
   },
   computed: {
@@ -236,11 +249,15 @@ export default {
       }
       return parseInt(this.refreshInterval) * 1000;
     },
+    isRefreshing() {
+      return this.loadingCount > 0;
+    },
   },
   provide() {
     return {
       pollInterval: () => this.pollInterval,
       selectedSchemas: () => this.selectedSchemas,
+      refreshTrigger: () => this.refreshTrigger,
     };
   },
   methods: {
@@ -257,6 +274,16 @@ export default {
     },
     resetSchemaFilter() {
       this.selectedSchemas = ["public"];
+    },
+    forceRefresh() {
+      // Show spinning animation
+      this.loadingCount++;
+      // Increment trigger to force child components to refresh
+      this.refreshTrigger++;
+      // Stop animation after 1 second
+      setTimeout(() => {
+        this.loadingCount = Math.max(0, this.loadingCount - 1);
+      }, 1000);
     },
   },
   apollo: {

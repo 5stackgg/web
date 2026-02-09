@@ -194,9 +194,11 @@ import {
   FolderOpen,
 } from "lucide-vue-next";
 import * as monaco from "monaco-editor";
+import { useI18n } from "vue-i18n";
 
 const store = useFileManagerStore();
 const colorMode = useColorMode();
+const { t } = useI18n();
 
 // Editor state
 const editorContainer = ref<HTMLElement | null>(null);
@@ -404,7 +406,7 @@ function toggleMinimap() {
 
 function handleCloseTab(path: string, isDirty: boolean) {
   if (isDirty) {
-    if (!confirm($t("file_manager.details_panel.unsaved_changes"))) {
+    if (!confirm(t("file_manager.details_panel.unsaved_changes"))) {
       return;
     }
   }
@@ -420,7 +422,7 @@ function handleCloseActiveTab() {
 
 function handleCloseAllTabs() {
   if (store.hasUnsavedChanges) {
-    if (!confirm($t("file_manager.details_panel.unsaved_changes_all"))) {
+    if (!confirm(t("file_manager.details_panel.unsaved_changes_all"))) {
       return;
     }
   }
@@ -437,7 +439,7 @@ function showTabContextMenu(event: MouseEvent, path: string) {
 
 function handleCloseOthers(path: string) {
   if (store.hasUnsavedChanges) {
-    if (!confirm($t("file_manager.tabs.unsaved_changes_warning"))) {
+    if (!confirm(t("file_manager.tabs.unsaved_changes_warning"))) {
       return;
     }
   }
@@ -459,7 +461,7 @@ function handleCloseToRight(path: string) {
       .some(([filePath, file]) => filePath !== path && file.isDirty);
 
     if (hasUnsaved) {
-      if (!confirm($t("file_manager.tabs.unsaved_changes_right_warning"))) {
+      if (!confirm(t("file_manager.tabs.unsaved_changes_right_warning"))) {
         return;
       }
     }
@@ -484,7 +486,7 @@ function handleCloseToLeft(path: string) {
       .some(([filePath, file]) => file.isDirty);
 
     if (hasUnsaved) {
-      if (!confirm($t("file_manager.tabs.unsaved_changes_left_warning"))) {
+      if (!confirm(t("file_manager.tabs.unsaved_changes_left_warning"))) {
         return;
       }
     }
@@ -513,7 +515,7 @@ function handleKeyDown(event: KeyboardEvent) {
       handleCloseActiveTab();
     } else {
       const shouldClose = confirm(
-        $t("file_manager.details_panel.no_file_open"),
+        t("file_manager.details_panel.no_file_open"),
       );
       if (!shouldClose) {
         event.preventDefault();

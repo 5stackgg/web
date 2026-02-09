@@ -5,7 +5,6 @@ import { Copy } from "lucide-vue-next";
   <Button
     variant="outline"
     size="icon"
-    class="copy bg-background hover:bg-background/50 transition-colors"
     @click="copyToClipboard"
   >
     <div ref="copy" :data-clipboard-text="data">

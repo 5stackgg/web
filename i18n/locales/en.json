@@ -974,7 +974,9 @@
             "show_minimap": "Show Minimap",
             "hide_minimap": "Hide Minimap",
             "no_file_open": "No file open",
-            "select_file_hint": "Select a file from the browser to edit"
+            "select_file_hint": "Select a file from the browser to edit",
+            "unsaved_changes": "You have unsaved changes. Are you sure you want to close?",
+            "unsaved_changes_all": "You have unsaved changes. Are you sure you want to close all files?"
         },
         "tabs": {
             "close": "Close",

@@ -14,6 +14,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 </script>
 
 <template>
@@ -83,19 +84,42 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
               <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
             </div>
           </div>
-
-          <Separator />
         </div>
       </PageTransition>
 
+      <Separator
+        v-if="
+          match.match_maps.length > 0 &&
+          match.status !== e_match_status_enum.Veto
+        "
+      />
+
       <PageTransition :delay="100">
-        <div class="flex flex-col gap-4">
-          <MatchRegionVeto :match="match"></MatchRegionVeto>
-          <MatchMapVeto
-            :match="match"
-            v-if="match.region && match.options.map_veto"
-          ></MatchMapVeto>
-        </div>
+        <template
+          v-if="
+            regions.length === 0 && match.options.region_veto && !match.region
+          "
+        >
+          <Alert variant="destructive" class="bg-red-600 text-white max-w-md">
+            <AlertTitle>{{
+              $t("match.region_veto.no_regions_available")
+            }}</AlertTitle>
+            <AlertDescription>
+              {{ $t("match.region_veto.no_regions_available_description") }}
+            </AlertDescription>
+          </Alert>
+        </template>
+      </PageTransition>
+
+      <PageTransition :delay="100">
+        <MatchRegionVeto :match="match"></MatchRegionVeto>
+      </PageTransition>
+
+      <PageTransition :delay="100">
+        <MatchMapVeto
+          :match="match"
+          v-if="match.region && match.options.map_veto"
+        ></MatchMapVeto>
       </PageTransition>
 
       <PageTransition :delay="200">
@@ -278,6 +302,11 @@ export default {
   computed: {
     matchId() {
       return this.$route.params.id;
+    },
+    regions() {
+      return useApplicationSettingsStore().availableRegions.filter((region) => {
+        return region.is_lan === false;
+      });
     },
     canJoinLobby() {
       if (!this.match) {

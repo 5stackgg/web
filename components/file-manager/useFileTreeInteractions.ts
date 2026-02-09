@@ -108,6 +108,8 @@ export function useFileTreeInteractions() {
     store,
     // Drag state
     treeDragOver,
+    dragCounter,
+    resetDragState,
     // Context menu
     contextMenuOpen,
     contextMenuPosition,

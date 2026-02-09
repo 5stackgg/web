@@ -379,6 +379,8 @@ const store = useFileManagerStore();
 const {
   store: storeRef,
   treeDragOver,
+  dragCounter,
+  resetDragState,
   contextMenuOpen: treeContextMenuOpen,
   contextMenuPosition,
   handleTreeContextMenu,

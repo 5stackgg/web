@@ -774,8 +774,8 @@ export default {
       return roleObj ? roleObj.display : role;
     },
     calculateKDR(player: any) {
-      const kills = player.kills_aggregate?.aggregate?.count ?? 0;
-      const deaths = player.deaths_aggregate?.aggregate?.count ?? 0;
+      const kills = player.stats?.kills ?? 0;
+      const deaths = player.stats?.deaths ?? 0;
       if (deaths === 0) {
         return kills > 0 ? kills.toFixed(2) : "0.00";
       }

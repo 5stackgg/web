@@ -116,9 +116,7 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
       </PageTransition>
 
       <PageTransition :delay="100">
-        <MatchMapVeto
-          :match="match"
-        ></MatchMapVeto>
+        <MatchMapVeto :match="match"></MatchMapVeto>
       </PageTransition>
 
       <PageTransition :delay="200">

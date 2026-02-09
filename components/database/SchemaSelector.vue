@@ -1,21 +1,18 @@
 <template>
   <Popover>
     <PopoverTrigger as-child>
-      <Button variant="outline" size="sm" class="justify-between w-[180px]">
-        <span
-          v-if="selectedSchemas.length === 0"
-          class="text-muted-foreground text-xs"
-        >
+      <Button variant="outline" class="justify-between w-full h-10">
+        <span v-if="selectedSchemas.length === 0" class="text-muted-foreground">
           {{ $t("pages.database.filters.select_schemas") }}
         </span>
-        <span v-else-if="selectedSchemas.length === 1" class="text-xs">
+        <span v-else-if="selectedSchemas.length === 1">
           {{ selectedSchemas[0] }}
         </span>
-        <span v-else class="text-xs">
+        <span v-else>
           {{ selectedSchemas.length }}
           {{ $t("pages.database.filters.schemas_selected") }}
         </span>
-        <ChevronDownIcon class="ml-2 h-4 w-4 shrink-0" />
+        <ChevronDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
     <PopoverContent class="w-[200px] p-0">

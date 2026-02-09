@@ -1,8 +1,55 @@
 <template>
   <div class="space-y-6">
-    <!-- Schema Selector -->
-    <div class="flex justify-end">
-      <SchemaSelector @change="handleSchemaChange" />
+    <!-- Filters -->
+    <div class="flex gap-4">
+      <div class="flex-1 space-y-2">
+        <Label class="text-sm">Schema</Label>
+        <SchemaSelector @change="handleSchemaChange" />
+      </div>
+      <div class="flex-1 space-y-2">
+        <Label for="table-filter" class="text-sm">Table</Label>
+        <Popover>
+          <PopoverTrigger as-child>
+            <Button
+              id="table-filter"
+              variant="outline"
+              class="justify-between w-full h-10"
+            >
+              <span v-if="!selectedTable" class="text-muted-foreground">
+                All tables
+              </span>
+              <span v-else>
+                {{ selectedTable }}
+              </span>
+              <ChevronDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search tables..." />
+              <CommandEmpty>No tables found</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    value="__all__"
+                    @select="selectedTable = undefined"
+                  >
+                    All tables
+                  </CommandItem>
+                  <CommandItem
+                    v-for="table in availableTables"
+                    :key="table"
+                    :value="table"
+                    @select="selectedTable = table"
+                  >
+                    {{ table }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
     </div>
 
     <!-- Summary Cards -->
@@ -102,7 +149,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="table in storageStats?.tables || []"
+              v-for="table in filteredTables"
               :key="`${table.schemaname}.${table.tablename}`"
             >
               <TableCell class="text-xs">{{ table.schemaname }}</TableCell>
@@ -144,7 +191,7 @@
             </TableRow>
           </TableBody>
         </Table>
-        <Empty v-if="!storageStats?.tables || storageStats.tables.length === 0">
+        <Empty v-if="filteredTables.length === 0">
           <p class="text-muted-foreground">
             {{ $t("pages.database.storage.no_tables") }}
           </p>
@@ -155,6 +202,7 @@
 </template>
 
 <script lang="ts">
+import { ChevronDownIcon } from "lucide-vue-next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -166,6 +214,21 @@ import {
 } from "@/components/ui/table";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { generateQuery } from "~/graphql/graphqlGen";
 import SchemaSelector from "./SchemaSelector.vue";
 
@@ -183,6 +246,18 @@ export default {
     TableRow,
     Empty,
     Badge,
+    Label,
+    Button,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    ChevronDownIcon,
     SchemaSelector,
   },
   inject: ["pollInterval", "refreshTrigger"],
@@ -190,7 +265,25 @@ export default {
     return {
       storageStats: null as any,
       selectedSchemas: ["public"] as string[],
+      selectedTable: undefined as string | undefined,
     };
+  },
+  computed: {
+    availableTables() {
+      const tables = new Set(
+        (this.storageStats?.tables || []).map((table: any) => table.tablename),
+      );
+      return Array.from(tables).sort();
+    },
+    filteredTables() {
+      const tables = this.storageStats?.tables || [];
+      if (this.selectedTable) {
+        return tables.filter(
+          (table: any) => table.tablename === this.selectedTable,
+        );
+      }
+      return tables;
+    },
   },
   methods: {
     handleSchemaChange(schemas: string[]) {

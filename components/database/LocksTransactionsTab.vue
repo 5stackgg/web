@@ -1,7 +1,8 @@
 <template>
   <div class="space-y-6">
     <!-- Schema Selector -->
-    <div class="flex justify-end">
+    <div class="max-w-xs space-y-2">
+      <Label class="text-sm">Schema</Label>
       <SchemaSelector @change="handleSchemaChange" />
     </div>
 
@@ -248,6 +249,7 @@ import {
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { generateQuery } from "~/graphql/graphqlGen";
 import SchemaSelector from "./SchemaSelector.vue";
 
@@ -266,6 +268,7 @@ export default {
     Empty,
     Badge,
     Button,
+    Label,
     SchemaSelector,
     CopyIcon,
   },

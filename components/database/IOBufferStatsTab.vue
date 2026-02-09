@@ -1,7 +1,8 @@
 <template>
   <div class="space-y-4">
     <!-- Schema Selector -->
-    <div class="flex justify-end">
+    <div class="max-w-xs space-y-2">
+      <Label class="text-sm">Schema</Label>
       <SchemaSelector @change="handleSchemaChange" />
     </div>
 
@@ -163,6 +164,7 @@ import {
 } from "@/components/ui/table";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { generateQuery } from "~/graphql/graphqlGen";
 import SchemaSelector from "./SchemaSelector.vue";
 
@@ -181,6 +183,7 @@ export default {
     TableRow,
     Empty,
     Badge,
+    Label,
     SchemaSelector,
   },
   inject: ["pollInterval", "refreshTrigger"],

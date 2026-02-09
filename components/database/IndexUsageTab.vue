@@ -1,8 +1,64 @@
 <template>
   <div class="space-y-6">
-    <!-- Schema Selector -->
-    <div class="flex justify-end">
-      <SchemaSelector @change="handleSchemaChange" />
+    <!-- Filters -->
+    <div class="flex gap-4">
+      <div class="flex-1 space-y-2">
+        <Label for="schema-filter" class="text-sm">Schema</Label>
+        <SchemaSelector id="schema-filter" @change="handleSchemaChange" />
+      </div>
+      <div class="flex-1 space-y-2">
+        <Label for="table-filter" class="text-sm">Table</Label>
+        <Popover>
+          <PopoverTrigger as-child>
+            <Button
+              id="table-filter"
+              variant="outline"
+              class="justify-between w-full h-10"
+            >
+              <span v-if="!selectedTable" class="text-muted-foreground">
+                All tables
+              </span>
+              <span v-else>
+                {{ selectedTable }}
+              </span>
+              <ChevronDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search tables..." />
+              <CommandEmpty>No tables found</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    value="__all__"
+                    @select="selectedTable = undefined"
+                  >
+                    All tables
+                  </CommandItem>
+                  <CommandItem
+                    v-for="table in availableTables"
+                    :key="table"
+                    :value="table"
+                    @select="selectedTable = table"
+                  >
+                    {{ table }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+      <div class="flex-1 space-y-2">
+        <Label for="index-filter" class="text-sm">Index</Label>
+        <Input
+          id="index-filter"
+          v-model="indexFilter"
+          placeholder="Search indexes..."
+          class="w-full"
+        />
+      </div>
     </div>
 
     <!-- Index Usage Stats -->
@@ -45,7 +101,7 @@
           </TableHeader>
           <TableBody>
             <TableRow
-              v-for="index in indexStats"
+              v-for="index in filteredIndexStats"
               :key="`${index.schemaname}.${index.indexname}`"
             >
               <TableCell class="text-xs">{{ index.schemaname }}</TableCell>
@@ -85,7 +141,7 @@
             </TableRow>
           </TableBody>
         </Table>
-        <Empty v-if="indexStats.length === 0">
+        <Empty v-if="filteredIndexStats.length === 0">
           <p class="text-muted-foreground">
             {{ $t("pages.database.index_usage.no_stats") }}
           </p>
@@ -96,6 +152,7 @@
 </template>
 
 <script lang="ts">
+import { ChevronDownIcon } from "lucide-vue-next";
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -107,6 +164,22 @@ import {
 } from "@/components/ui/table";
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { generateQuery } from "~/graphql/graphqlGen";
 import SchemaSelector from "./SchemaSelector.vue";
 
@@ -121,6 +194,19 @@ export default {
     TableRow,
     Empty,
     Badge,
+    Input,
+    Label,
+    Button,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    ChevronDownIcon,
     SchemaSelector,
   },
   inject: ["pollInterval", "refreshTrigger"],
@@ -128,7 +214,37 @@ export default {
     return {
       indexStats: [] as any[],
       selectedSchemas: ["public"] as string[],
+      selectedTable: undefined as string | undefined,
+      indexFilter: "",
     };
+  },
+  computed: {
+    availableTables() {
+      const tables = new Set(
+        this.indexStats.map((stat: any) => stat.tablename),
+      );
+      return Array.from(tables).sort();
+    },
+    filteredIndexStats() {
+      let filtered = this.indexStats;
+
+      // Filter by table name
+      if (this.selectedTable) {
+        filtered = filtered.filter(
+          (stat: any) => stat.tablename === this.selectedTable,
+        );
+      }
+
+      // Filter by index name
+      if (this.indexFilter) {
+        const indexFilterLower = this.indexFilter.toLowerCase();
+        filtered = filtered.filter((stat: any) =>
+          stat.indexname.toLowerCase().includes(indexFilterLower),
+        );
+      }
+
+      return filtered;
+    },
   },
   methods: {
     handleSchemaChange(schemas: string[]) {

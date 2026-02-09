@@ -26,7 +26,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
       class="min-h-0 h-full"
     >
       <SidebarMobileSync />
-      <SidebarInset class="overflow-visible min-h-0 h-full">
+      <SidebarInset class="overflow-scroll min-h-0 h-full">
         <!-- todo fix bg color bg-muted/10 -->
         <div
           class="p-4 w-full self-center"

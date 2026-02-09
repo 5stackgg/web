@@ -118,7 +118,6 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
       <PageTransition :delay="100">
         <MatchMapVeto
           :match="match"
-          v-if="match.region && match.options.map_veto"
         ></MatchMapVeto>
       </PageTransition>
 

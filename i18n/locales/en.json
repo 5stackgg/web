@@ -509,7 +509,7 @@
             "lan_servers_title": "LAN Servers"
         },
         "map_pools": {
-            "title": "Default Map Pools",
+            "title": "Map Pools",
             "description": "Manage map pools and available maps for matchmaking.",
             "form": {
                 "name": "Name",
@@ -614,7 +614,8 @@
                 "io": "I/O & Buffers",
                 "index_usage": "Index Usage",
                 "storage": "Storage",
-                "timescale": "TimescaleDB"
+                "timescale": "TimescaleDB",
+                "backups": "Backups"
             },
             "query_performance": {
                 "no_stats": "No query statistics found"
@@ -672,6 +673,9 @@
                 "no_data_title": "No TimescaleDB Data",
                 "no_data_description": "TimescaleDB extension is not installed or no hypertables are configured.",
                 "no_jobs": "No background jobs configured"
+            },
+            "backups": {
+                "no_backups": "No database backups available"
             },
             "query_detail": {
                 "title": "Query Details",
@@ -750,19 +754,25 @@
                 "teams": "Teams",
                 "search": "Search"
             },
+            "community": {
+                "title": "Community"
+            },
             "administration": {
                 "title": "Administration",
                 "regions": "Regions",
                 "servers": "Servers",
                 "dedicated_servers": "Dedicated Servers",
                 "game_server_nodes": "Game Server Nodes",
-                "logs": "System Logs",
-                "database": "Database",
-                "metrics": "System Metrics",
                 "app_settings": "App Settings",
                 "map_pools": "Map Pools",
                 "manage_matches": "Manage Matches",
                 "manage_tournaments": "Manage Tournaments"
+            },
+            "system": {
+                "title": "System",
+                "logs": "Logs",
+                "database": "Database",
+                "metrics": "Metrics"
             },
             "profile": {
                 "my_account": "My Settings",

@@ -147,7 +147,11 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       currentFile: null,
       isUploading: true,
       failedFiles: [],
+      cancelRequested: false,
     };
+    // Clear any previous tracking data
+    uploadProgress.value.clear();
+    activeXHRRequests.value.clear();
   }
 
   // Actions
@@ -564,6 +568,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       const filePath = targetPath
         ? `${targetPath}/${relativePath}`
         : relativePath;
+      const fileSize = file.size;
 
       // Check if upload was cancelled before starting
       if (uploadBatch.value.cancelRequested) {
@@ -589,7 +594,6 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         const apiUrl = `${apiDomain}/file-manager/upload/${nodeId.value}${serverPath}`;
 
         const xhr = new XMLHttpRequest();
-        const fileSize = file.size;
 
         // Store XHR reference for cancellation
         activeXHRRequests.value.set(relativePath, xhr);
@@ -625,6 +629,10 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         // File completed successfully
         completedFileSizes.set(relativePath, fileSize);
         uploadBatch.value.completedFiles++;
+        // Recalculate total uploaded bytes from completed files
+        uploadBatch.value.uploadedBytes = Array.from(
+          completedFileSizes.values(),
+        ).reduce((sum, size) => sum + size, 0);
         uploadProgress.value.delete(relativePath);
         activeXHRRequests.value.delete(relativePath);
       } catch (err: any) {
@@ -636,6 +644,14 @@ export const useFileManagerStore = defineStore("fileManager", () => {
           uploadBatch.value.failedFiles.push(relativePath);
           error.value = err.message || `Failed to upload ${relativePath}`;
           console.error("Error uploading file:", err);
+
+          // Still count the failed file towards progress so the progress bar moves forward
+          completedFileSizes.set(relativePath, fileSize);
+          uploadBatch.value.completedFiles++;
+          // Recalculate total uploaded bytes from completed files
+          uploadBatch.value.uploadedBytes = Array.from(
+            completedFileSizes.values(),
+          ).reduce((sum, size) => sum + size, 0);
         }
         // Continue with other files instead of throwing
       }

@@ -25,6 +25,9 @@ export function useFileTreeInteractions() {
   // Drag state for the tree
   const treeDragOver = ref(false);
 
+  // Upload dialog state
+  const uploadDialogOpen = ref(false);
+
   // Context menu handlers
   function handleTreeContextMenu(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -96,7 +99,7 @@ export function useFileTreeInteractions() {
   }
 
   function openUploadDialog() {
-    // This would be handled by the parent component
+    uploadDialogOpen.value = true;
   }
 
   function refresh() {
@@ -110,6 +113,8 @@ export function useFileTreeInteractions() {
     treeDragOver,
     dragCounter,
     resetDragState,
+    // Upload dialog
+    uploadDialogOpen,
     // Context menu
     contextMenuOpen,
     contextMenuPosition,

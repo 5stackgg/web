@@ -34,19 +34,40 @@
         />
 
         <!-- Upload progress -->
-        <div v-if="store.uploadProgress.size > 0" class="space-y-2">
-          <div
-            v-for="[filename, progress] in store.uploadProgress"
-            :key="filename"
-            class="space-y-1"
-          >
+        <div
+          v-if="
+            store.uploadBatch.isUploading || store.uploadBatch.completedFiles > 0
+          "
+          class="space-y-3"
+        >
+          <!-- Overall progress -->
+          <div class="space-y-2">
             <div class="flex items-center justify-between text-sm">
-              <span class="truncate">{{ filename }}</span>
-              <span class="text-muted-foreground"
-                >{{ Math.round(progress) }}%</span
-              >
+              <span class="font-medium">
+                {{ store.uploadBatch.isUploading ? "Uploading..." : "Complete" }}
+              </span>
+              <span class="text-muted-foreground">
+                {{ store.uploadBatch.completedFiles }} /
+                {{ store.uploadBatch.totalFiles }} files
+              </span>
             </div>
-            <Progress :model-value="progress" />
+            <Progress :model-value="store.uploadOverallProgress" class="h-2" />
+          </div>
+
+          <!-- Current file progress -->
+          <div
+            v-if="store.uploadBatch.currentFile"
+            class="text-xs text-muted-foreground"
+          >
+            Current: {{ store.uploadBatch.currentFile }}
+          </div>
+
+          <!-- Failed files warning -->
+          <div
+            v-if="store.uploadBatch.failedFiles.length > 0"
+            class="text-xs text-destructive"
+          >
+            {{ store.uploadBatch.failedFiles.length }} file(s) failed to upload
           </div>
         </div>
       </div>
@@ -73,6 +94,7 @@ import {
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Upload } from "lucide-vue-next";
+import { useFileUpload } from "./useFileUpload";
 
 defineProps<{
   open: boolean;
@@ -85,6 +107,7 @@ const emit = defineEmits<{
 const store = useFileManagerStore();
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const isDragging = ref(false);
+const { processFileInput, processDropEvent } = useFileUpload();
 
 function triggerFileInput() {
   fileInputRef.value?.click();
@@ -94,8 +117,9 @@ async function handleFileSelect(event: Event) {
   const target = event.target as HTMLInputElement;
   if (!target.files) return;
 
-  const files = Array.from(target.files);
-  await store.uploadFiles(files);
+  // Use the composable to process files (supports directories if browser allows)
+  const fileEntries = await processFileInput(target.files);
+  await store.uploadFilesWithPaths(fileEntries, store.currentPath);
 
   // Clear input
   target.value = "";
@@ -105,9 +129,12 @@ async function handleDrop(event: DragEvent) {
   event.preventDefault();
   isDragging.value = false;
 
-  if (!event.dataTransfer?.files) return;
+  if (!event.dataTransfer) return;
 
-  const files = Array.from(event.dataTransfer.files);
-  await store.uploadFiles(files);
+  // Use the composable to process drop event (supports directories)
+  const fileEntries = await processDropEvent(event.dataTransfer);
+  if (fileEntries.length > 0) {
+    await store.uploadFilesWithPaths(fileEntries, store.currentPath);
+  }
 }
 </script>

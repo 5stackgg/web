@@ -372,8 +372,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useFileTreeInteractions } from "./useFileTreeInteractions";
+import { useFileUpload } from "./useFileUpload";
 
 const store = useFileManagerStore();
+const { processDropEvent } = useFileUpload();
 
 // Use composable for file tree interactions
 const {
@@ -381,6 +383,7 @@ const {
   treeDragOver,
   dragCounter,
   resetDragState,
+  uploadDialogOpen,
   contextMenuOpen: treeContextMenuOpen,
   contextMenuPosition,
   handleTreeContextMenu,
@@ -400,8 +403,7 @@ const {
   handleInlineBlur,
 } = useFileTreeInteractions();
 
-// Upload dialog state
-const uploadDialogOpen = ref(false);
+// Upload details state
 const uploadDetailsOpen = ref(false);
 
 // Helper to format bytes
@@ -455,60 +457,6 @@ function cancelRootInlineCreate() {
 const deleteDialogOpen = ref(false);
 const deletingItem = ref<FileItem | null>(null);
 
-// Helper to read a FileSystemEntry as a File
-function readEntryAsFile(entry: FileSystemFileEntry): Promise<File> {
-  return new Promise((resolve, reject) => {
-    entry.file(resolve, reject);
-  });
-}
-
-// Helper to read all entries from a directory
-function readDirectoryEntries(
-  reader: FileSystemDirectoryReader,
-): Promise<FileSystemEntry[]> {
-  return new Promise((resolve, reject) => {
-    reader.readEntries(resolve, reject);
-  });
-}
-
-// Recursively read all files from a FileSystemEntry (file or directory)
-async function readEntriesRecursively(
-  entry: FileSystemEntry,
-  basePath: string = "",
-): Promise<{ file: File; relativePath: string }[]> {
-  const results: { file: File; relativePath: string }[] = [];
-
-  if (entry.isFile) {
-    const fileEntry = entry as FileSystemFileEntry;
-    const file = await readEntryAsFile(fileEntry);
-    const relativePath = basePath ? `${basePath}/${entry.name}` : entry.name;
-    results.push({ file, relativePath });
-  } else if (entry.isDirectory) {
-    const dirEntry = entry as FileSystemDirectoryEntry;
-    const reader = dirEntry.createReader();
-    const newBasePath = basePath ? `${basePath}/${entry.name}` : entry.name;
-
-    // Read all entries (readEntries may not return all at once)
-    let entries: FileSystemEntry[] = [];
-    let batch: FileSystemEntry[];
-    do {
-      batch = await readDirectoryEntries(reader);
-      entries = entries.concat(batch);
-    } while (batch.length > 0);
-
-    // Process all entries recursively
-    for (const childEntry of entries) {
-      const childResults = await readEntriesRecursively(
-        childEntry,
-        newBasePath,
-      );
-      results.push(...childResults);
-    }
-  }
-
-  return results;
-}
-
 async function handleTreeDrop(event: DragEvent) {
   event.preventDefault();
   resetDragState();
@@ -537,42 +485,11 @@ async function handleTreeDrop(event: DragEvent) {
     return;
   }
 
-  // External file drop
-  if (!event.dataTransfer.items) return;
-
-  // Use webkitGetAsEntry to properly handle folders
-  const items = Array.from(event.dataTransfer.items);
-  const fileEntries: { file: File; relativePath: string }[] = [];
-
-  for (const item of items) {
-    if (item.kind !== "file") continue;
-
-    const entry = item.webkitGetAsEntry();
-    if (entry) {
-      const results = await readEntriesRecursively(entry);
-      fileEntries.push(...results);
-    }
-  }
-
+  // External file drop - use composable for better directory support
+  const fileEntries = await processDropEvent(event.dataTransfer);
   if (fileEntries.length > 0) {
-    await uploadFilesWithPaths(fileEntries, store.currentPath);
+    await store.uploadFilesWithPaths(fileEntries, store.currentPath);
   }
-}
-
-async function uploadFilesWithPaths(
-  fileEntries: { file: File; relativePath: string }[],
-  targetPath: string,
-) {
-  await store.uploadFilesWithPaths(fileEntries, targetPath);
-}
-
-async function uploadFilesToPath(files: File[], targetPath: string) {
-  // Convert to file entries format (no relative paths, just file names)
-  const fileEntries = files.map((file) => ({
-    file,
-    relativePath: file.name,
-  }));
-  await uploadFilesWithPaths(fileEntries, targetPath);
 }
 
 async function confirmDelete() {

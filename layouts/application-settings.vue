@@ -40,6 +40,11 @@ import Default from "~/layouts/default.vue";
               {{ $t("pages.settings.application.game_type_configs.title") }}
             </Button>
           </nuxt-link>
+          <nuxt-link to="/settings/application/map-pools">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              {{ $t("pages.map_pools.title") }}
+            </Button>
+          </nuxt-link>
           <nuxt-link to="/settings/application/demo-settings">
             <Button variant="ghost" class="w-full text-left justify-start">
               {{ $t("pages.settings.application.demo_settings.title") }}
@@ -62,7 +67,14 @@ import Default from "~/layouts/default.vue";
           </nuxt-link>
         </nav>
       </aside>
-      <div class="flex-1 lg:max-w-2xl">
+      <div
+        :class="[
+          'flex-1',
+          $route.name !== 'settings-application-map-pools'
+            ? 'lg:max-w-2xl'
+            : '',
+        ]"
+      >
         <div class="space-y-6">
           <slot />
         </div>

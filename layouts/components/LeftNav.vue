@@ -86,6 +86,8 @@ import Logout from "./Logout.vue";
             </SidebarMenuButton>
           </SidebarMenuItem>
 
+          <Separator class="mx-4 w-auto" />
+
           <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
             <SidebarMenuButton
               as-child
@@ -168,7 +170,17 @@ import Logout from "./Logout.vue";
               </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
 
+      <Separator class="mx-4 w-auto" />
+
+      <SidebarGroup>
+        <SidebarGroupLabel>{{
+          $t("layouts.app_nav.community.title")
+        }}</SidebarGroupLabel>
+
+        <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               as-child
@@ -395,25 +407,6 @@ import Logout from "./Logout.vue";
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
-              >
-                <NuxtLink
-                  :to="{ name: 'map-pools' }"
-                  :class="{
-                    'router-link-active': isRouteActive('map-pools'),
-                  }"
-                >
-                  <Map />
-                  {{ $t("layouts.app_nav.administration.map_pools") }}
-                </NuxtLink>
-              </SidebarMenuButton>
             </SidebarMenuItem>
 
             <SidebarMenuItem

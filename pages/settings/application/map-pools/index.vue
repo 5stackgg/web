@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Info, PlusCircle } from "lucide-vue-next";
-import PageHeading from "~/components/PageHeading.vue";
 import { Separator } from "~/components/ui/separator";
 import {
   Sheet,
@@ -26,54 +25,44 @@ import {
   TableRow,
 } from "~/components/ui/table";
 
+definePageMeta({
+  layout: "application-settings",
+});
+
 const { isMobile } = useSidebar();
 </script>
 
 <template>
-  <PageTransition>
-    <PageHeading>
-      <template #title>{{ $t("pages.map_pools.title") }}</template>
+  <PageTransition :delay="0">
+    <div
+      class="flex flex-col items-start gap-4 mb-6 md:flex-row md:items-center md:justify-between"
+    >
+      <FiveStackToolTip>
+        <template #trigger>
+          <div class="flex items-center gap-2" @click="toggleUpdateMapPools">
+            <div class="flex items-center gap-1">
+              <Info :size="14" />
+              {{ $t("pages.settings.application.update_map_pools.title") }}
+            </div>
+            <Switch
+              :model-value="updateMapPools"
+              @update:model-value="toggleUpdateMapPools"
+            />
+          </div>
+        </template>
+        {{ $t("pages.settings.application.update_map_pools.description") }}
+      </FiveStackToolTip>
 
-      <template #description>
-        {{ $t("pages.map_pools.description") }}
-      </template>
-
-      <template #actions>
-        <div class="flex flex-col items-center gap-4 md:flex-row">
-          <FiveStackToolTip>
-            <template #trigger>
-              <div
-                class="flex items-center gap-2"
-                @click="toggleUpdateMapPools"
-              >
-                <div class="flex items-center gap-1">
-                  <Info :size="14" />
-                  {{ $t("pages.settings.application.update_map_pools.title") }}
-                </div>
-                <Switch
-                  :model-value="updateMapPools"
-                  @update:model-value="toggleUpdateMapPools"
-                />
-              </div>
-            </template>
-            {{ $t("pages.settings.application.update_map_pools.description") }}
-          </FiveStackToolTip>
-
-          <Button
-            @click="mapFormSheet = true"
-            :size="isMobile ? 'default' : 'lg'"
-          >
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{
-              $t("pages.map_pools.add_new_map")
-            }}</span>
-          </Button>
-        </div>
-      </template>
-    </PageHeading>
+      <Button @click="mapFormSheet = true" :size="isMobile ? 'default' : 'lg'">
+        <PlusCircle class="w-4 h-4" />
+        <span class="hidden md:inline ml-2">{{
+          $t("pages.map_pools.add_new_map")
+        }}</span>
+      </Button>
+    </div>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6">
+  <PageTransition :delay="100">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <AnimatedCard
         v-for="pool in map_pools"
@@ -89,7 +78,12 @@ const { isMobile } = useSidebar();
             </p>
           </div>
           <Button variant="secondary" size="sm" as-child>
-            <NuxtLink :to="{ name: 'map-pools-id', params: { id: pool.id } }">
+            <NuxtLink
+              :to="{
+                name: 'settings-application-map-pools-id',
+                params: { id: pool.id },
+              }"
+            >
               {{ $t("pages.map_pools.edit") }}
             </NuxtLink>
           </Button>

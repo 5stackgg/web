@@ -1,24 +1,16 @@
 <script setup lang="ts">
-import PageHeading from "~/components/PageHeading.vue";
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
+
+definePageMeta({
+  layout: "application-settings",
+});
 </script>
 
 <template>
   <PageTransition :delay="0">
-    <PageHeading v-if="map_pools_by_pk">
-      <template #title>{{
-        $t("pages.map_pools.pool.title", { type: map_pools_by_pk.type })
-      }}</template>
-      <template #description>{{
-        $t("pages.map_pools.pool.description")
-      }}</template>
-    </PageHeading>
-  </PageTransition>
-
-  <PageTransition :delay="100" class="mt-6">
     <AnimatedCard v-if="map_pools_by_pk" variant="gradient">
       <CardHeader>
         <CardTitle class="flex justify-between items-center">{{

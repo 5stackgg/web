@@ -299,7 +299,7 @@
             }
         },
         "map_pools": {
-            "title": "Default Map Pools",
+            "title": "Map Pools",
             "description": "Manage map pools and available maps for matchmaking.",
             "form": {
                 "name": "Name",

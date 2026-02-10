@@ -509,7 +509,7 @@
             "lan_servers_title": "LAN Servers"
         },
         "map_pools": {
-            "title": "Default Map Pools",
+            "title": "Map Pools",
             "description": "Manage map pools and available maps for matchmaking.",
             "form": {
                 "name": "Name",
@@ -753,6 +753,9 @@
                 "players": "Players",
                 "teams": "Teams",
                 "search": "Search"
+            },
+            "community": {
+                "title": "Community"
             },
             "administration": {
                 "title": "Administration",

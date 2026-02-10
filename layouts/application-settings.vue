@@ -55,11 +55,6 @@ import Default from "~/layouts/default.vue";
               {{ $t("pages.settings.application.discord.title") }}
             </Button>
           </nuxt-link>
-          <nuxt-link to="/settings/application/db-backups">
-            <Button variant="ghost" class="w-full text-left justify-start">
-              {{ $t("pages.settings.application.db_backups.title") }}
-            </Button>
-          </nuxt-link>
           <nuxt-link to="/settings/application/telemetry">
             <Button variant="ghost" class="w-full text-left justify-start">
               {{ $t("pages.settings.application.telemetry.title") }}

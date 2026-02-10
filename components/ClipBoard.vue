@@ -2,11 +2,7 @@
 import { Copy } from "lucide-vue-next";
 </script>
 <template>
-  <Button
-    variant="outline"
-    size="icon"
-    @click="copyToClipboard"
-  >
+  <Button variant="outline" size="icon" @click="copyToClipboard">
     <div ref="copy" :data-clipboard-text="data">
       <slot>
         <Copy></Copy>

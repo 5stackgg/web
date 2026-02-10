@@ -27,6 +27,9 @@
             <TabsTrigger value="timescale">{{
               $t("pages.database.tabs.timescale")
             }}</TabsTrigger>
+            <TabsTrigger value="backups">{{
+              $t("pages.database.tabs.backups")
+            }}</TabsTrigger>
           </TabsList>
 
           <div class="flex items-center gap-2">
@@ -99,6 +102,9 @@
         <TabsContent value="timescale">
           <TimescaleTab />
         </TabsContent>
+        <TabsContent value="backups">
+          <BackupsTab />
+        </TabsContent>
       </Tabs>
     </div>
   </PageTransition>
@@ -131,6 +137,7 @@ import IOBufferStatsTab from "@/components/database/IOBufferStatsTab.vue";
 import IndexUsageTab from "@/components/database/IndexUsageTab.vue";
 import StorageTab from "@/components/database/StorageTab.vue";
 import TimescaleTab from "@/components/database/TimescaleTab.vue";
+import BackupsTab from "@/components/database/BackupsTab.vue";
 
 export default {
   components: {
@@ -156,6 +163,7 @@ export default {
     IndexUsageTab,
     StorageTab,
     TimescaleTab,
+    BackupsTab,
     PlayIcon,
     PauseIcon,
     RefreshCwIcon,

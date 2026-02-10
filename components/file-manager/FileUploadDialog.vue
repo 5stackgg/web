@@ -36,7 +36,8 @@
         <!-- Upload progress -->
         <div
           v-if="
-            store.uploadBatch.isUploading || store.uploadBatch.completedFiles > 0
+            store.uploadBatch.isUploading ||
+            store.uploadBatch.completedFiles > 0
           "
           class="space-y-3"
         >
@@ -44,7 +45,9 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between text-sm">
               <span class="font-medium">
-                {{ store.uploadBatch.isUploading ? "Uploading..." : "Complete" }}
+                {{
+                  store.uploadBatch.isUploading ? "Uploading..." : "Complete"
+                }}
               </span>
               <span class="text-muted-foreground">
                 {{ store.uploadBatch.completedFiles }} /

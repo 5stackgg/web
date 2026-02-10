@@ -514,9 +514,7 @@ function handleKeyDown(event: KeyboardEvent) {
     if (store.activeFilePath) {
       handleCloseActiveTab();
     } else {
-      const shouldClose = confirm(
-        t("file_manager.details_panel.no_file_open"),
-      );
+      const shouldClose = confirm(t("file_manager.details_panel.no_file_open"));
       if (!shouldClose) {
         event.preventDefault();
         event.stopPropagation();

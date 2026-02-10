@@ -260,25 +260,6 @@ import Logout from "./Logout.vue";
             </SidebarMenuButton>
           </SidebarMenuItem>
           <template v-if="isAdmin">
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
-              >
-                <NuxtLink
-                  :to="{ name: 'map-pools' }"
-                  :class="{
-                    'router-link-active': isRouteActive('map-pools'),
-                  }"
-                >
-                  <Map />
-                  {{ $t("layouts.app_nav.administration.map_pools") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
             <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.regions')">
               <SidebarMenuButton
                 as-child
@@ -417,56 +398,20 @@ import Logout from "./Logout.vue";
             </SidebarMenuItem>
 
             <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
+              :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
             >
               <SidebarMenuButton
                 as-child
-                :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
+                :tooltip="$t('layouts.app_nav.tooltips.map_pools')"
               >
                 <NuxtLink
-                  :to="{ name: 'system-logs' }"
+                  :to="{ name: 'map-pools' }"
                   :class="{
-                    'router-link-active': isRouteActive('system-logs'),
+                    'router-link-active': isRouteActive('map-pools'),
                   }"
                 >
-                  <Logs />
-                  {{ $t("layouts.app_nav.administration.logs") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.database')">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.database')"
-              >
-                <NuxtLink
-                  :to="{ name: 'database' }"
-                  :class="{
-                    'router-link-active': isRouteActive('database'),
-                  }"
-                >
-                  <Database />
-                  {{ $t("layouts.app_nav.administration.database") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
-              >
-                <NuxtLink
-                  :to="{ name: 'system-metrics' }"
-                  :class="{
-                    'router-link-active': isRouteActive('system-metrics'),
-                  }"
-                >
-                  <LineChart />
-                  {{ $t("layouts.app_nav.administration.metrics") }}
+                  <Map />
+                  {{ $t("layouts.app_nav.administration.map_pools") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -492,6 +437,72 @@ import Logout from "./Logout.vue";
           </template>
         </SidebarMenu>
       </SidebarGroup>
+
+      <Separator class="mx-4 w-auto" v-if="isAdmin" />
+
+      <SidebarGroup v-if="isAdmin">
+        <SidebarGroupLabel>{{
+          $t("layouts.app_nav.system.title")
+        }}</SidebarGroupLabel>
+
+        <SidebarMenu>
+          <SidebarMenuItem
+            :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
+          >
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
+            >
+              <NuxtLink
+                :to="{ name: 'system-logs' }"
+                :class="{
+                  'router-link-active': isRouteActive('system-logs'),
+                }"
+              >
+                <Logs />
+                {{ $t("layouts.app_nav.system.logs") }}
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem
+            :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
+          >
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
+            >
+              <NuxtLink
+                :to="{ name: 'system-metrics' }"
+                :class="{
+                  'router-link-active': isRouteActive('system-metrics'),
+                }"
+              >
+                <LineChart />
+                {{ $t("layouts.app_nav.system.metrics") }}
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.database')">
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.database')"
+            >
+              <NuxtLink
+                :to="{ name: 'database' }"
+                :class="{
+                  'router-link-active': isRouteActive('database'),
+                }"
+              >
+                <Database />
+                {{ $t("layouts.app_nav.system.database") }}
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+
       <SidebarGroup v-if="telemetryStats?.online > 0 && sideBarOpen">
         <Badge size="sm" variant="outline" class="p-2 flex items-center gap-2">
           <Server class="w-3 h-3" />

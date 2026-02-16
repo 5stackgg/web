@@ -28,7 +28,7 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
     </PageTransition>
 
     <PageTransition :delay="100">
-      <AnimatedCard variant="gradient" class="w-full max-w-md">
+      <AnimatedCard variant="gradient" class="w-full max-w-md border-0">
         <CardHeader>
           <CardTitle class="text-3xl font-bold text-center">{{ brandName || '5Stack' }}</CardTitle>
         </CardHeader>

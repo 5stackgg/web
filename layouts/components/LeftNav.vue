@@ -502,13 +502,13 @@ import Logout from "./Logout.vue";
     </SidebarContent>
     <SidebarFooter>
       <SidebarMenu>
-        <SidebarMenuItem v-if="me?.role === e_player_roles_enum.administrator">
+        <SidebarMenuItem v-if="me?.role === e_player_roles_enum.administrator && showReportIssue">
           <SidebarMenuButton
             as-child
             :tooltip="$t('layouts.app_nav.tooltips.report_issue')"
           >
             <a
-              href="https://github.com/5stackgg/5stack-panel/issues"
+              :href="githubUrl"
               target="_blank"
               rel="noopener noreferrer"
               class="text-muted-foreground transition-colors hover:text-foreground"
@@ -673,6 +673,12 @@ export default {
     },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
+    },
+    showReportIssue() {
+      return useApplicationSettingsStore().showReportIssue;
+    },
+    githubUrl() {
+      return useApplicationSettingsStore().githubUrl;
     },
     isPWA() {
       return window.matchMedia("(display-mode: standalone)").matches;

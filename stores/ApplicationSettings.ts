@@ -295,6 +295,22 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    const showReportIssue = computed(() => {
+      return (
+        settings.value.find(
+          (s) => s.name === "public.show_report_issue",
+        )?.value !== "false"
+      );
+    });
+
+    const githubUrl = computed(() => {
+      return (
+        settings.value.find(
+          (s) => s.name === "public.github_url",
+        )?.value || "https://github.com/5stackgg/5stack-panel"
+      );
+    });
+
     const isMatchmakingTypeEnabled = (
       matchType: e_match_types_enum,
     ): boolean => {
@@ -323,6 +339,8 @@ export const useApplicationSettingsStore = defineStore(
       logoUrl,
       faviconUrl,
       showSeparators,
+      showReportIssue,
+      githubUrl,
       globalStream,
       setGlobalStream,
       isMatchmakingTypeEnabled,

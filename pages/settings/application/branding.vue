@@ -17,53 +17,147 @@ definePageMeta({
         </p>
       </div>
 
-      <!-- Brand Name -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium">Brand Name</label>
-        <p class="text-sm text-muted-foreground">
-          Displayed in the sidebar and page title.
-        </p>
-        <Input v-model="brandName" placeholder="5Stack" class="max-w-sm" />
-      </div>
-
-      <!-- Border Radius -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium">Border Radius</label>
-        <p class="text-sm text-muted-foreground">
-          Controls the roundness of buttons, cards, and inputs.
-        </p>
-        <div class="flex items-center gap-3 max-w-sm">
-          <input
-            type="range"
-            v-model="borderRadius"
-            min="0"
-            max="1.5"
-            step="0.125"
-            class="flex-1"
-          />
-          <span class="text-sm font-mono w-16 text-right">{{ borderRadius }}rem</span>
-        </div>
-      </div>
-
-      <!-- Show Separators -->
-      <div
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="toggleSeparators()"
-      >
-        <div class="space-y-0.5">
-          <label class="text-sm font-medium cursor-pointer">Show Separators</label>
+      <!-- General -->
+      <div class="rounded-lg border p-6 space-y-4">
+        <div>
+          <label class="text-sm font-medium">General</label>
           <p class="text-sm text-muted-foreground">
-            Display horizontal divider lines between sections.
+            Basic panel appearance settings.
           </p>
         </div>
-        <Switch
-          :model-value="showSeparators"
-          @update:model-value="toggleSeparators"
-        />
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Brand Name</label>
+          <p class="text-sm text-muted-foreground">
+            Displayed in the sidebar and page title.
+          </p>
+          <Input v-model="brandName" placeholder="5Stack" class="max-w-sm" />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Border Radius</label>
+          <p class="text-sm text-muted-foreground">
+            Controls the roundness of buttons, cards, and inputs.
+          </p>
+          <div class="flex items-center gap-3 max-w-sm">
+            <input
+              type="range"
+              v-model="borderRadius"
+              min="0"
+              max="1.5"
+              step="0.125"
+              class="flex-1"
+            />
+            <span class="text-sm font-mono w-16 text-right">{{ borderRadius }}rem</span>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+          @click="toggleSeparators()"
+        >
+          <div class="space-y-0.5">
+            <label class="text-sm font-medium cursor-pointer">Show Separators</label>
+            <p class="text-sm text-muted-foreground">
+              Display horizontal divider lines between sections.
+            </p>
+          </div>
+          <Switch
+            :model-value="showSeparators"
+            @update:model-value="toggleSeparators"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Logo</label>
+          <p class="text-sm text-muted-foreground">
+            Upload a custom logo for the sidebar. Recommended: square image, PNG
+            or SVG.
+          </p>
+          <div class="flex items-center gap-4">
+            <div
+              class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
+            >
+              <img
+                v-if="logoPreview"
+                :src="logoPreview"
+                class="max-w-full max-h-full object-contain"
+              />
+              <NuxtImg
+                v-else
+                src="/favicon/64.png"
+                class="max-w-full max-h-full"
+              />
+            </div>
+            <div class="flex gap-2">
+              <Button size="sm" @click="$refs.logoInput.click()">
+                Upload Logo
+              </Button>
+              <Button
+                v-if="logoPreview"
+                size="sm"
+                variant="outline"
+                @click="removeLogo"
+              >
+                Remove
+              </Button>
+            </div>
+            <input
+              ref="logoInput"
+              type="file"
+              accept="image/png,image/jpeg,image/svg+xml,image/webp"
+              class="hidden"
+              @change="handleLogoUpload"
+            />
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Favicon</label>
+          <p class="text-sm text-muted-foreground">
+            Upload a custom favicon. Recommended: square image, PNG or ICO.
+          </p>
+          <div class="flex items-center gap-4">
+            <div
+              class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
+            >
+              <img
+                v-if="faviconPreview"
+                :src="faviconPreview"
+                class="max-w-full max-h-full object-contain"
+              />
+              <NuxtImg
+                v-else
+                src="/favicon/64.png"
+                class="max-w-full max-h-full"
+              />
+            </div>
+            <div class="flex gap-2">
+              <Button size="sm" @click="$refs.faviconInput.click()">
+                Upload Favicon
+              </Button>
+              <Button
+                v-if="faviconPreview"
+                size="sm"
+                variant="outline"
+                @click="removeFavicon"
+              >
+                Remove
+              </Button>
+            </div>
+            <input
+              ref="faviconInput"
+              type="file"
+              accept="image/png,image/jpeg,image/x-icon,image/webp"
+              class="hidden"
+              @change="handleFaviconUpload"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Login Page -->
-      <div class="space-y-4">
+      <div class="rounded-lg border p-6 space-y-4">
         <div>
           <label class="text-sm font-medium">Login Page</label>
           <p class="text-sm text-muted-foreground">
@@ -98,97 +192,39 @@ definePageMeta({
         </div>
       </div>
 
-      <!-- Logo Upload -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium">Logo</label>
-        <p class="text-sm text-muted-foreground">
-          Upload a custom logo for the sidebar. Recommended: square image, PNG
-          or SVG.
-        </p>
-        <div class="flex items-center gap-4">
-          <div
-            class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
-          >
-            <img
-              v-if="logoPreview"
-              :src="logoPreview"
-              class="max-w-full max-h-full object-contain"
-            />
-            <NuxtImg
-              v-else
-              src="/favicon/64.png"
-              class="max-w-full max-h-full"
-            />
+      <!-- Report an Issue -->
+      <div class="rounded-lg border p-6 space-y-4">
+        <div>
+          <label class="text-sm font-medium">Report an Issue</label>
+          <p class="text-sm text-muted-foreground">
+            Configure the "Report an Issue" link in the sidebar and the GitHub URL.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+          @click="toggleReportIssue()"
+        >
+          <div class="space-y-0.5">
+            <label class="text-sm font-medium cursor-pointer">Show Report an Issue</label>
+            <p class="text-sm text-muted-foreground">
+              Display a "Report an Issue" link in the sidebar footer.
+            </p>
           </div>
-          <div class="flex gap-2">
-            <Button size="sm" @click="$refs.logoInput.click()">
-              Upload Logo
-            </Button>
-            <Button
-              v-if="logoPreview"
-              size="sm"
-              variant="outline"
-              @click="removeLogo"
-            >
-              Remove
-            </Button>
-          </div>
-          <input
-            ref="logoInput"
-            type="file"
-            accept="image/png,image/jpeg,image/svg+xml,image/webp"
-            class="hidden"
-            @change="handleLogoUpload"
+          <Switch
+            :model-value="showReportIssue"
+            @update:model-value="toggleReportIssue"
           />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium">GitHub URL</label>
+          <Input v-model="githubUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
         </div>
       </div>
 
-      <!-- Favicon Upload -->
-      <div class="space-y-2">
-        <label class="text-sm font-medium">Favicon</label>
-        <p class="text-sm text-muted-foreground">
-          Upload a custom favicon. Recommended: square image, PNG or ICO.
-        </p>
-        <div class="flex items-center gap-4">
-          <div
-            class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
-          >
-            <img
-              v-if="faviconPreview"
-              :src="faviconPreview"
-              class="max-w-full max-h-full object-contain"
-            />
-            <NuxtImg
-              v-else
-              src="/favicon/64.png"
-              class="max-w-full max-h-full"
-            />
-          </div>
-          <div class="flex gap-2">
-            <Button size="sm" @click="$refs.faviconInput.click()">
-              Upload Favicon
-            </Button>
-            <Button
-              v-if="faviconPreview"
-              size="sm"
-              variant="outline"
-              @click="removeFavicon"
-            >
-              Remove
-            </Button>
-          </div>
-          <input
-            ref="faviconInput"
-            type="file"
-            accept="image/png,image/jpeg,image/x-icon,image/webp"
-            class="hidden"
-            @change="handleFaviconUpload"
-          />
-        </div>
-      </div>
-
-      <!-- Color Customization -->
-      <div class="space-y-4">
+      <!-- Theme Colors -->
+      <div class="rounded-lg border p-6 space-y-4">
         <div>
           <label class="text-sm font-medium">Theme Colors</label>
           <p class="text-sm text-muted-foreground">
@@ -382,6 +418,7 @@ export default {
       borderRadius: "0.5",
       loginFooterText: "",
       loginFooterUrl: "",
+      githubUrl: "",
       colorValues: {} as Record<string, string>,
       colorMode: "dark" as "light" | "dark",
       saving: false,
@@ -402,6 +439,12 @@ export default {
       return this.settings.find(
         (s: { name: string; value: string | null }) =>
           s.name === "public.login_show_footer",
+      )?.value !== "false";
+    },
+    showReportIssue() {
+      return this.settings.find(
+        (s: { name: string; value: string | null }) =>
+          s.name === "public.show_report_issue",
       )?.value !== "false";
     },
     apiDomain() {
@@ -459,6 +502,13 @@ export default {
           this.loginFooterUrl = loginFooterUrlSetting.value;
         }
 
+        const githubUrlSetting = newVal.find(
+          (s) => s.name === "public.github_url",
+        );
+        if (githubUrlSetting) {
+          this.githubUrl = githubUrlSetting.value;
+        }
+
         for (const setting of newVal) {
           if (setting.name.startsWith("public.color_")) {
             this.colorValues[setting.name] = setting.value;
@@ -497,6 +547,27 @@ export default {
               object: {
                 name: "public.login_show_footer",
                 value: this.loginShowFooter ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    async toggleReportIssue() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: "public.show_report_issue",
+                value: this.showReportIssue ? "false" : "true",
               },
               on_conflict: {
                 constraint: settings_constraint.settings_pkey,
@@ -600,6 +671,9 @@ export default {
         if (this.loginFooterUrl) {
           objects.push({ name: "public.login_footer_url", value: this.loginFooterUrl });
         }
+        if (this.githubUrl) {
+          objects.push({ name: "public.github_url", value: this.githubUrl });
+        }
 
         for (const [key, value] of Object.entries(this.colorValues)) {
           if (value) {
@@ -638,7 +712,7 @@ export default {
     async resetAll() {
       try {
         // Delete all branding settings
-        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators", "public.login_footer_text", "public.login_footer_url", "public.login_show_footer"];
+        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators", "public.login_footer_text", "public.login_footer_url", "public.login_show_footer", "public.show_report_issue", "public.github_url"];
         for (const sections of [lightColorSections, darkColorSections]) {
           for (const section of sections) {
             for (const field of section.fields) {
@@ -670,6 +744,7 @@ export default {
         this.borderRadius = "0.5";
         this.loginFooterText = "";
         this.loginFooterUrl = "";
+        this.githubUrl = "";
         this.colorValues = {};
 
         toast({ title: "Branding reset to defaults" });
@@ -710,6 +785,8 @@ export default {
           loginFooterText: this.loginFooterText,
           loginFooterUrl: this.loginFooterUrl,
           loginShowFooter: this.loginShowFooter,
+          showReportIssue: this.showReportIssue,
+          githubUrl: this.githubUrl,
           colors: { ...this.colorValues },
         };
 
@@ -770,6 +847,12 @@ export default {
         }
         if (typeof data.loginShowFooter === "boolean" && data.loginShowFooter !== this.loginShowFooter) {
           this.toggleLoginFooter();
+        }
+        if (typeof data.showReportIssue === "boolean" && data.showReportIssue !== this.showReportIssue) {
+          this.toggleReportIssue();
+        }
+        if (data.githubUrl) {
+          this.githubUrl = data.githubUrl;
         }
         if (data.loginFooterText) {
           this.loginFooterText = data.loginFooterText;

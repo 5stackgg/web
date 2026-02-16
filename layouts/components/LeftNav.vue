@@ -31,20 +31,14 @@ import Logout from "./Logout.vue";
 <template>
   <Sidebar collapsible="icon">
     <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton size="lg" as-child>
-            <nuxt-link to="/">
-              <NuxtImg
-                class="rounded max-w-8"
-                :src="customLogoUrl || '/favicon/64.png'"
-                v-if="isMobile || !isPWA || !sideBarOpen"
-              />
-              <span v-if="!isPWA"> {{ customBrandName || $t("layouts.app_nav.brand") }} </span>
-            </nuxt-link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
+      <nuxt-link to="/" class="flex items-center gap-2 px-2 py-1.5">
+        <NuxtImg
+          class="rounded max-w-8"
+          :src="customLogoUrl || '/favicon/64.png'"
+          v-if="isMobile || !isPWA || !sideBarOpen"
+        />
+        <span v-if="!isPWA" class="font-semibold text-sm truncate"> {{ customBrandName || $t("layouts.app_nav.brand") }} </span>
+      </nuxt-link>
     </SidebarHeader>
     <SidebarContent>
       <SidebarGroup>

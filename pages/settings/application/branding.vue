@@ -30,6 +30,27 @@ definePageMeta({
 
       <Separator />
 
+      <!-- Border Radius -->
+      <div class="space-y-2">
+        <label class="text-sm font-medium">Border Radius</label>
+        <p class="text-sm text-muted-foreground">
+          Controls the roundness of buttons, cards, and inputs.
+        </p>
+        <div class="flex items-center gap-3 max-w-sm">
+          <input
+            type="range"
+            v-model="borderRadius"
+            min="0"
+            max="1.5"
+            step="0.125"
+            class="flex-1"
+          />
+          <span class="text-sm font-mono w-16 text-right">{{ borderRadius }}rem</span>
+        </div>
+      </div>
+
+      <Separator />
+
       <!-- Logo Upload -->
       <div class="space-y-2">
         <label class="text-sm font-medium">Logo</label>
@@ -226,6 +247,9 @@ const lightColorSections: ColorSection[] = [
       { key: "public.color_muted", label: "Muted (subtle backgrounds)", default: "240 4.8% 95.9%" },
       { key: "public.color_muted_foreground", label: "Muted Foreground (secondary text)", default: "240 3.8% 46.1%" },
       { key: "public.color_destructive", label: "Destructive (delete/error)", default: "0 84.2% 60.2%" },
+      { key: "public.color_destructive_foreground", label: "Destructive Foreground", default: "0 0% 98%" },
+      { key: "public.color_warning", label: "Warning", default: "36 100% 50%" },
+      { key: "public.color_warning_foreground", label: "Warning Foreground", default: "0 0% 100%" },
     ],
   },
   {
@@ -234,6 +258,10 @@ const lightColorSections: ColorSection[] = [
       { key: "public.color_card", label: "Card Background", default: "0 0% 100%" },
       { key: "public.color_card_foreground", label: "Card Text", default: "240 10% 3.9%" },
       { key: "public.color_border", label: "Borders", default: "240 5.9% 90%" },
+      { key: "public.color_popover", label: "Popover Background", default: "0 0% 100%" },
+      { key: "public.color_popover_foreground", label: "Popover Text", default: "240 10% 3.9%" },
+      { key: "public.color_input", label: "Input Borders", default: "240 5.9% 90%" },
+      { key: "public.color_ring", label: "Focus Ring", default: "240 10% 3.9%" },
     ],
   },
   {
@@ -244,6 +272,9 @@ const lightColorSections: ColorSection[] = [
       { key: "public.color_sidebar_accent", label: "Sidebar Active/Hover", default: "240 4.8% 95.9%" },
       { key: "public.color_sidebar_accent_foreground", label: "Sidebar Active Text", default: "240 5.9% 10%" },
       { key: "public.color_sidebar_border", label: "Sidebar Border", default: "220 13% 91%" },
+      { key: "public.color_sidebar_primary", label: "Sidebar Primary", default: "240 5.9% 10%" },
+      { key: "public.color_sidebar_primary_foreground", label: "Sidebar Primary Text", default: "0 0% 98%" },
+      { key: "public.color_sidebar_ring", label: "Sidebar Focus Ring", default: "217.2 91.2% 59.8%" },
     ],
   },
 ];
@@ -263,6 +294,9 @@ const darkColorSections: ColorSection[] = [
       { key: "public.color_dark_muted", label: "Muted (subtle backgrounds)", default: "240 3.7% 15.9%" },
       { key: "public.color_dark_muted_foreground", label: "Muted Foreground (secondary text)", default: "240 5% 64.9%" },
       { key: "public.color_dark_destructive", label: "Destructive (delete/error)", default: "0 62.8% 30.6%" },
+      { key: "public.color_dark_destructive_foreground", label: "Destructive Foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_warning", label: "Warning", default: "36 100% 30%" },
+      { key: "public.color_dark_warning_foreground", label: "Warning Foreground", default: "0 0% 100%" },
     ],
   },
   {
@@ -271,6 +305,10 @@ const darkColorSections: ColorSection[] = [
       { key: "public.color_dark_card", label: "Card Background", default: "240 10% 3.9%" },
       { key: "public.color_dark_card_foreground", label: "Card Text", default: "0 0% 98%" },
       { key: "public.color_dark_border", label: "Borders", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_popover", label: "Popover Background", default: "240 10% 3.9%" },
+      { key: "public.color_dark_popover_foreground", label: "Popover Text", default: "0 0% 98%" },
+      { key: "public.color_dark_input", label: "Input Borders", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_ring", label: "Focus Ring", default: "240 4.9% 83.9%" },
     ],
   },
   {
@@ -281,6 +319,9 @@ const darkColorSections: ColorSection[] = [
       { key: "public.color_dark_sidebar_accent", label: "Sidebar Active/Hover", default: "240 3.7% 15.9%" },
       { key: "public.color_dark_sidebar_accent_foreground", label: "Sidebar Active Text", default: "240 4.8% 95.9%" },
       { key: "public.color_dark_sidebar_border", label: "Sidebar Border", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_sidebar_primary", label: "Sidebar Primary", default: "224.3 76.3% 48%" },
+      { key: "public.color_dark_sidebar_primary_foreground", label: "Sidebar Primary Text", default: "0 0% 100%" },
+      { key: "public.color_dark_sidebar_ring", label: "Sidebar Focus Ring", default: "217.2 91.2% 59.8%" },
     ],
   },
 ];
@@ -289,6 +330,7 @@ export default {
   data() {
     return {
       brandName: "",
+      borderRadius: "0.5",
       colorValues: {} as Record<string, string>,
       colorMode: "dark" as "light" | "dark",
       saving: false,
@@ -330,6 +372,13 @@ export default {
         );
         if (brandSetting) {
           this.brandName = brandSetting.value;
+        }
+
+        const radiusSetting = newVal.find(
+          (s) => s.name === "public.border_radius",
+        );
+        if (radiusSetting) {
+          this.borderRadius = parseFloat(radiusSetting.value).toString();
         }
 
         for (const setting of newVal) {
@@ -423,6 +472,8 @@ export default {
           objects.push({ name: "public.brand_name", value: this.brandName });
         }
 
+        objects.push({ name: "public.border_radius", value: this.borderRadius + "rem" });
+
         for (const [key, value] of Object.entries(this.colorValues)) {
           if (value) {
             objects.push({ name: key, value });
@@ -460,7 +511,7 @@ export default {
     async resetAll() {
       try {
         // Delete all branding settings
-        const brandingKeys: string[] = ["public.brand_name"];
+        const brandingKeys: string[] = ["public.brand_name", "public.border_radius"];
         for (const sections of [lightColorSections, darkColorSections]) {
           for (const section of sections) {
             for (const field of section.fields) {
@@ -489,6 +540,7 @@ export default {
         ]);
 
         this.brandName = "";
+        this.borderRadius = "0.5";
         this.colorValues = {};
 
         toast({ title: "Branding reset to defaults" });

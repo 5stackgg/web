@@ -14,16 +14,26 @@ const lightColorMap: Record<string, string> = {
   "public.color_muted": "--muted",
   "public.color_muted_foreground": "--muted-foreground",
   "public.color_destructive": "--destructive",
+  "public.color_destructive_foreground": "--destructive-foreground",
+  "public.color_warning": "--warning",
+  "public.color_warning_foreground": "--warning-foreground",
   // Cards & Borders
   "public.color_card": "--card",
   "public.color_card_foreground": "--card-foreground",
   "public.color_border": "--border",
+  "public.color_popover": "--popover",
+  "public.color_popover_foreground": "--popover-foreground",
+  "public.color_input": "--input",
+  "public.color_ring": "--ring",
   // Sidebar
   "public.color_sidebar_background": "--sidebar-background",
   "public.color_sidebar_foreground": "--sidebar-foreground",
   "public.color_sidebar_accent": "--sidebar-accent",
   "public.color_sidebar_accent_foreground": "--sidebar-accent-foreground",
   "public.color_sidebar_border": "--sidebar-border",
+  "public.color_sidebar_primary": "--sidebar-primary",
+  "public.color_sidebar_primary_foreground": "--sidebar-primary-foreground",
+  "public.color_sidebar_ring": "--sidebar-ring",
 };
 
 const darkColorMap: Record<string, string> = {
@@ -39,16 +49,26 @@ const darkColorMap: Record<string, string> = {
   "public.color_dark_muted": "--muted",
   "public.color_dark_muted_foreground": "--muted-foreground",
   "public.color_dark_destructive": "--destructive",
+  "public.color_dark_destructive_foreground": "--destructive-foreground",
+  "public.color_dark_warning": "--warning",
+  "public.color_dark_warning_foreground": "--warning-foreground",
   // Cards & Borders
   "public.color_dark_card": "--card",
   "public.color_dark_card_foreground": "--card-foreground",
   "public.color_dark_border": "--border",
+  "public.color_dark_popover": "--popover",
+  "public.color_dark_popover_foreground": "--popover-foreground",
+  "public.color_dark_input": "--input",
+  "public.color_dark_ring": "--ring",
   // Sidebar
   "public.color_dark_sidebar_background": "--sidebar-background",
   "public.color_dark_sidebar_foreground": "--sidebar-foreground",
   "public.color_dark_sidebar_accent": "--sidebar-accent",
   "public.color_dark_sidebar_accent_foreground": "--sidebar-accent-foreground",
   "public.color_dark_sidebar_border": "--sidebar-border",
+  "public.color_dark_sidebar_primary": "--sidebar-primary",
+  "public.color_dark_sidebar_primary_foreground": "--sidebar-primary-foreground",
+  "public.color_dark_sidebar_ring": "--sidebar-ring",
 };
 
 export function useBranding() {
@@ -87,6 +107,16 @@ export function useBranding() {
         } else {
           document.documentElement.style.removeProperty(cssVar);
         }
+      }
+
+      // Handle border radius (not a color, it's a rem value)
+      const radiusSetting = store.settings.find(
+        (s: { name: string }) => s.name === "public.border_radius",
+      );
+      if (radiusSetting?.value) {
+        document.documentElement.style.setProperty("--radius", radiusSetting.value);
+      } else {
+        document.documentElement.style.removeProperty("--radius");
       }
     },
     { immediate: true, deep: true },

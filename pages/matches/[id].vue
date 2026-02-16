@@ -89,6 +89,7 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 
       <Separator
         v-if="
+          showSeparators &&
           match.match_maps.length > 0 &&
           match.status !== e_match_status_enum.Veto
         "
@@ -297,6 +298,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     matchId() {
       return this.$route.params.id;
     },

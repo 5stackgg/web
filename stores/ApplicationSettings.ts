@@ -287,6 +287,14 @@ export const useApplicationSettingsStore = defineStore(
       )?.value;
     });
 
+    const showSeparators = computed(() => {
+      return (
+        settings.value.find(
+          (s) => s.name === "public.show_separators",
+        )?.value !== "false"
+      );
+    });
+
     const isMatchmakingTypeEnabled = (
       matchType: e_match_types_enum,
     ): boolean => {
@@ -314,6 +322,7 @@ export const useApplicationSettingsStore = defineStore(
       brandName,
       logoUrl,
       faviconUrl,
+      showSeparators,
       globalStream,
       setGlobalStream,
       isMatchmakingTypeEnabled,

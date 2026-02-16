@@ -19,6 +19,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 definePageMeta({
   layout: "profile-settings",
 });
+
+const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
 </script>
 
 <template>
@@ -32,7 +34,7 @@ definePageMeta({
       </p>
     </div>
   </PageTransition>
-  <Separator />
+  <Separator v-if="showSeparators" />
 
   <PageTransition :delay="100">
     <div class="grid gap-6"></div>

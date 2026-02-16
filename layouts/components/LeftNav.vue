@@ -80,7 +80,7 @@ import Logout from "./Logout.vue";
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <Separator class="mx-4 w-auto" />
+          <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
           <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
             <SidebarMenuButton
@@ -167,7 +167,7 @@ import Logout from "./Logout.vue";
         </SidebarMenu>
       </SidebarGroup>
 
-      <Separator class="mx-4 w-auto" />
+      <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
       <SidebarGroup>
         <SidebarGroupLabel>{{
@@ -212,8 +212,8 @@ import Logout from "./Logout.vue";
       </SidebarGroup>
 
       <Separator
+        v-if="showSeparators && (isAdmin || isMatchOrganizer || isTournamentOrganizer)"
         class="mx-4 w-auto"
-        v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer"
       />
 
       <SidebarGroup v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer">
@@ -425,7 +425,7 @@ import Logout from "./Logout.vue";
         </SidebarMenu>
       </SidebarGroup>
 
-      <Separator class="mx-4 w-auto" v-if="isAdmin" />
+      <Separator v-if="showSeparators && isAdmin" class="mx-4 w-auto" />
 
       <SidebarGroup v-if="isAdmin">
         <SidebarGroupLabel>{{
@@ -670,6 +670,9 @@ export default {
     },
     customBrandName() {
       return useApplicationSettingsStore().brandName;
+    },
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
     },
     isPWA() {
       return window.matchMedia("(display-mode: standalone)").matches;

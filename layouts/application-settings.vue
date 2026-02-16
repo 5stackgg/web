@@ -2,6 +2,8 @@
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
+
+const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
 </script>
 
 <template>
@@ -14,7 +16,7 @@ import Default from "~/layouts/default.vue";
         {{ $t("layouts.application_settings.description") }}
       </p>
     </div>
-    <Separator class="my-6" />
+    <Separator v-if="showSeparators" class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <aside class="w-full lg:w-auto">
         <nav

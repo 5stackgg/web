@@ -181,8 +181,8 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
           </div>
         </div>
 
-        <Separator class="my-4" />
-        <CustomMatch />
+        <Separator v-if="showSeparators" class="my-4" />
+        <CustomMatch :class="{ 'mt-4': !showSeparators }" />
       </div>
     </template>
     <template v-else-if="match">
@@ -374,6 +374,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     allowedMatchTypes(): {
       value: e_match_types_enum;
       description: string;

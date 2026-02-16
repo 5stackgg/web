@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Separator } from "@/components/ui/separator";
 
 definePageMeta({
   layout: "application-settings",
@@ -17,8 +16,6 @@ definePageMeta({
         </p>
       </div>
 
-      <Separator />
-
       <!-- Brand Name -->
       <div class="space-y-2">
         <label class="text-sm font-medium">Brand Name</label>
@@ -27,8 +24,6 @@ definePageMeta({
         </p>
         <Input v-model="brandName" placeholder="5Stack" class="max-w-sm" />
       </div>
-
-      <Separator />
 
       <!-- Border Radius -->
       <div class="space-y-2">
@@ -49,7 +44,22 @@ definePageMeta({
         </div>
       </div>
 
-      <Separator />
+      <!-- Show Separators -->
+      <div
+        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+        @click="toggleSeparators()"
+      >
+        <div class="space-y-0.5">
+          <label class="text-sm font-medium cursor-pointer">Show Separators</label>
+          <p class="text-sm text-muted-foreground">
+            Display horizontal divider lines between sections.
+          </p>
+        </div>
+        <Switch
+          :model-value="showSeparators"
+          @update:model-value="toggleSeparators"
+        />
+      </div>
 
       <!-- Logo Upload -->
       <div class="space-y-2">
@@ -96,8 +106,6 @@ definePageMeta({
         </div>
       </div>
 
-      <Separator />
-
       <!-- Favicon Upload -->
       <div class="space-y-2">
         <label class="text-sm font-medium">Favicon</label>
@@ -141,8 +149,6 @@ definePageMeta({
           />
         </div>
       </div>
-
-      <Separator />
 
       <!-- Color Customization -->
       <div class="space-y-4">
@@ -198,11 +204,8 @@ definePageMeta({
               </div>
             </div>
           </div>
-          <Separator />
         </div>
       </div>
-
-      <Separator />
 
       <!-- Actions -->
       <div class="flex gap-2 flex-wrap">
@@ -349,6 +352,12 @@ export default {
     settings() {
       return useApplicationSettingsStore().settings;
     },
+    showSeparators() {
+      return this.settings.find(
+        (s: { name: string; value: string | null }) =>
+          s.name === "public.show_separators",
+      )?.value !== "false";
+    },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
@@ -399,6 +408,27 @@ export default {
     },
   },
   methods: {
+    async toggleSeparators() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: "public.show_separators",
+                value: this.showSeparators ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
     async handleLogoUpload(event: Event) {
       const input = event.target as HTMLInputElement;
       if (!input.files?.length) return;
@@ -520,7 +550,7 @@ export default {
     async resetAll() {
       try {
         // Delete all branding settings
-        const brandingKeys: string[] = ["public.brand_name", "public.border_radius"];
+        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators"];
         for (const sections of [lightColorSections, darkColorSections]) {
           for (const section of sections) {
             for (const field of section.fields) {

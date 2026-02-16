@@ -346,7 +346,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 :tournament="tournament"
                 :show-matches="false"
               />
-              <Separator class="my-4" />
+              <Separator v-if="showSeparators" class="my-4" />
             </PageTransition>
           </template>
 
@@ -856,6 +856,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     me() {
       return useAuthStore().me;
     },

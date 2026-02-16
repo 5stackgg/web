@@ -28,7 +28,7 @@ import Default from "~/layouts/default.vue";
         {{ $t("layouts.account_settings.description") }}
       </p>
     </div>
-    <Separator class="my-6" />
+    <Separator v-if="showSeparators" class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <aside class="w-full lg:w-auto">
         <nav
@@ -149,6 +149,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     hasDiscordLinked() {
       return useAuthStore().hasDiscordLinked;
     },

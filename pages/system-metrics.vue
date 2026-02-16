@@ -5,11 +5,13 @@ import MemoryChart from "~/components/charts/MemoryChart.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+
+const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
 </script>
 
 <template>
   <PageTransition :delay="100">
-    <Separator :label="$t('pages.system_metrics.services')" class="my-8" />
+    <Separator v-if="showSeparators" :label="$t('pages.system_metrics.services')" class="my-8" />
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">

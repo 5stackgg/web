@@ -3,6 +3,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
 definePageMeta({
   layout: "application-settings",
+  middleware: "admin",
 });
 </script>
 

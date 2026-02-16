@@ -205,9 +205,18 @@ definePageMeta({
       <Separator />
 
       <!-- Actions -->
-      <div class="flex gap-2">
+      <div class="flex gap-2 flex-wrap">
         <Button @click="saveAll" :disabled="saving"> Save Branding </Button>
         <Button variant="outline" @click="resetAll"> Reset to Defaults </Button>
+        <Button variant="outline" @click="exportTheme"> Export Theme </Button>
+        <Button variant="outline" @click="$refs.importInput.click()"> Import Theme </Button>
+        <input
+          ref="importInput"
+          type="file"
+          accept=".json"
+          class="hidden"
+          @change="importTheme"
+        />
       </div>
     </div>
   </PageTransition>
@@ -551,6 +560,57 @@ export default {
           variant: "destructive",
         });
       }
+    },
+    exportTheme() {
+      const data = {
+        brandName: this.brandName,
+        borderRadius: this.borderRadius,
+        colors: { ...this.colorValues },
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "5stack-theme.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({ title: "Theme exported" });
+    },
+    importTheme(event: Event) {
+      const input = event.target as HTMLInputElement;
+      if (!input.files?.length) return;
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target?.result as string);
+          if (typeof data !== "object" || !data.colors) {
+            throw new Error("Invalid theme file");
+          }
+          if (data.brandName) {
+            this.brandName = data.brandName;
+          }
+          if (data.borderRadius) {
+            this.borderRadius = data.borderRadius;
+          }
+          if (typeof data.colors === "object") {
+            for (const [key, value] of Object.entries(data.colors)) {
+              if (typeof key === "string" && typeof value === "string" && key.startsWith("public.color_")) {
+                this.colorValues[key] = value;
+              }
+            }
+          }
+          toast({ title: "Theme imported — click Save to apply" });
+        } catch (error: any) {
+          toast({
+            title: "Import failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      };
+      reader.readAsText(file);
+      input.value = "";
     },
     hexToHsl(hex: string): string {
       const r = parseInt(hex.slice(1, 3), 16) / 255;

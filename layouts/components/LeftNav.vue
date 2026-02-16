@@ -650,10 +650,8 @@ export default {
   },
   methods: {
     isRouteActive(route: string) {
-      return (
-        this.$route.path === `/${route}` ||
-        this.$route.path.startsWith(`/${route}/`)
-      );
+      const name = this.$route.name as string;
+      return name === route || name?.startsWith(`${route}-`);
     },
     triggerSpotlightSearch() {
       // Trigger the keyboard shortcut to open spotlight

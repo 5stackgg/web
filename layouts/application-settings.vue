@@ -93,7 +93,7 @@ export default {};
 </script>
 
 <style lang="postcss">
-.router-link-exact-active {
-  @apply bg-muted hover:bg-muted rounded-md;
+.router-link-exact-active > button {
+  @apply bg-muted hover:bg-muted;
 }
 </style>

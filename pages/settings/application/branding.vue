@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 definePageMeta({
   layout: "application-settings",
@@ -52,21 +53,20 @@ definePageMeta({
           </div>
         </div>
 
-        <div
-          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-          @click="toggleSeparators()"
-        >
-          <div class="space-y-0.5">
-            <label class="text-sm font-medium cursor-pointer">Show Separators</label>
-            <p class="text-sm text-muted-foreground">
-              Display horizontal divider lines between sections.
-            </p>
+        <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleSeparators()">
+          <div class="flex flex-row items-center justify-between p-4">
+            <div class="space-y-0.5">
+              <label class="text-sm font-medium cursor-pointer">Show Separators</label>
+              <p class="text-sm text-muted-foreground">
+                Display horizontal divider lines between sections.
+              </p>
+            </div>
+            <Switch
+              :model-value="showSeparators"
+              @update:model-value="toggleSeparators"
+            />
           </div>
-          <Switch
-            :model-value="showSeparators"
-            @update:model-value="toggleSeparators"
-          />
-        </div>
+        </AnimatedCard>
 
         <div class="space-y-2">
           <label class="text-sm font-medium">Logo</label>
@@ -165,21 +165,20 @@ definePageMeta({
           </p>
         </div>
 
-        <div
-          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-          @click="toggleLoginFooter()"
-        >
-          <div class="space-y-0.5">
-            <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
-            <p class="text-sm text-muted-foreground">
-              Display a footer link on the login page.
-            </p>
+        <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleLoginFooter()">
+          <div class="flex flex-row items-center justify-between p-4">
+            <div class="space-y-0.5">
+              <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
+              <p class="text-sm text-muted-foreground">
+                Display a footer link on the login page.
+              </p>
+            </div>
+            <Switch
+              :model-value="loginShowFooter"
+              @update:model-value="toggleLoginFooter"
+            />
           </div>
-          <Switch
-            :model-value="loginShowFooter"
-            @update:model-value="toggleLoginFooter"
-          />
-        </div>
+        </AnimatedCard>
 
         <div class="space-y-2">
           <label class="text-sm font-medium">Footer Text</label>
@@ -201,21 +200,20 @@ definePageMeta({
           </p>
         </div>
 
-        <div
-          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-          @click="toggleReportIssue()"
-        >
-          <div class="space-y-0.5">
-            <label class="text-sm font-medium cursor-pointer">Show Report an Issue</label>
-            <p class="text-sm text-muted-foreground">
-              Display a "Report an Issue" link in the sidebar footer.
-            </p>
+        <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleReportIssue()">
+          <div class="flex flex-row items-center justify-between p-4">
+            <div class="space-y-0.5">
+              <label class="text-sm font-medium cursor-pointer">Show Report an Issue</label>
+              <p class="text-sm text-muted-foreground">
+                Display a "Report an Issue" link in the sidebar footer.
+              </p>
+            </div>
+            <Switch
+              :model-value="showReportIssue"
+              @update:model-value="toggleReportIssue"
+            />
           </div>
-          <Switch
-            :model-value="showReportIssue"
-            @update:model-value="toggleReportIssue"
-          />
-        </div>
+        </AnimatedCard>
 
         <div class="space-y-2">
           <label class="text-sm font-medium">GitHub URL</label>

@@ -304,7 +304,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       <Collapsible v-model:open="showAdvancedSettings">
         <CollapsibleTrigger as-child>
           <div
-            class="flex items-center justify-between p-4 mb-4 bg-secondary rounded-lg cursor-pointer hover:bg-secondary-hover transition-colors duration-200 cursor-pointer"
+            class="flex items-center justify-between p-4 mb-4 bg-secondary rounded-lg cursor-pointer hover:bg-secondary/80 transition-colors duration-200 cursor-pointer"
           >
             <div class="flex items-center space-x-3">
               <SettingsIcon name="settings" class="h-5 w-5 text-foreground" />

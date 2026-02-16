@@ -65,12 +65,17 @@ import Default from "~/layouts/default.vue";
               {{ $t("pages.settings.application.telemetry.title") }}
             </Button>
           </nuxt-link>
+          <nuxt-link to="/settings/application/branding">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              Branding
+            </Button>
+          </nuxt-link>
         </nav>
       </aside>
       <div
         :class="[
           'flex-1',
-          $route.name !== 'settings-application-map-pools'
+          $route.name !== 'settings-application-map-pools' && $route.name !== 'settings-application-branding'
             ? 'lg:max-w-2xl'
             : '',
         ]"

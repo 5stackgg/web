@@ -3,6 +3,9 @@ import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill";
 import MatchmakingConfirm from "~/components/matchmaking/MatchmakingConfirm.vue";
 import PlayerNameRegistration from "~/components/PlayerNameRegistration.vue";
 import StreamGlobal from "~/components/StreamGlobal.vue";
+import { useBranding } from "~/composables/useBranding";
+
+useBranding();
 </script>
 
 <template>

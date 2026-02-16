@@ -269,6 +269,24 @@ export const useApplicationSettingsStore = defineStore(
       globalStream.value = stream;
     };
 
+    const brandName = computed(() => {
+      return settings.value.find(
+        (s) => s.name === "public.brand_name",
+      )?.value;
+    });
+
+    const logoUrl = computed(() => {
+      return settings.value.find(
+        (s) => s.name === "public.logo_url",
+      )?.value;
+    });
+
+    const faviconUrl = computed(() => {
+      return settings.value.find(
+        (s) => s.name === "public.favicon_url",
+      )?.value;
+    });
+
     const isMatchmakingTypeEnabled = (
       matchType: e_match_types_enum,
     ): boolean => {
@@ -293,6 +311,9 @@ export const useApplicationSettingsStore = defineStore(
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,
+      brandName,
+      logoUrl,
+      faviconUrl,
       globalStream,
       setGlobalStream,
       isMatchmakingTypeEnabled,

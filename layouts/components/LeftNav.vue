@@ -37,10 +37,10 @@ import Logout from "./Logout.vue";
             <nuxt-link to="/">
               <NuxtImg
                 class="rounded max-w-8"
-                src="/favicon/64.png"
+                :src="customLogoUrl || '/favicon/64.png'"
                 v-if="isMobile || !isPWA || !sideBarOpen"
               />
-              <span v-if="!isPWA"> {{ $t("layouts.app_nav.brand") }} </span>
+              <span v-if="!isPWA"> {{ customBrandName || $t("layouts.app_nav.brand") }} </span>
             </nuxt-link>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -669,6 +669,15 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    customLogoUrl() {
+      const store = useApplicationSettingsStore();
+      return store.logoUrl
+        ? `https://${useRuntimeConfig().public.apiDomain}/branding/logo`
+        : null;
+    },
+    customBrandName() {
+      return useApplicationSettingsStore().brandName;
     },
     isPWA() {
       return window.matchMedia("(display-mode: standalone)").matches;

@@ -155,5 +155,24 @@ export function useBranding() {
     { immediate: true, deep: true },
   );
 
-  return { brandName, logoUrl };
+  const loginFooterText = computed(() => {
+    return store.settings.find(
+      (s: { name: string }) => s.name === "public.login_footer_text",
+    )?.value;
+  });
+
+  const loginFooterUrl = computed(() => {
+    return store.settings.find(
+      (s: { name: string }) => s.name === "public.login_footer_url",
+    )?.value;
+  });
+
+  const loginShowFooter = computed(() => {
+    return store.settings.find(
+      (s: { name: string; value: string | null }) =>
+        s.name === "public.login_show_footer",
+    )?.value !== "false";
+  });
+
+  return { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter };
 }

@@ -61,6 +61,42 @@ definePageMeta({
         />
       </div>
 
+      <!-- Login Page -->
+      <div class="space-y-4">
+        <div>
+          <label class="text-sm font-medium">Login Page</label>
+          <p class="text-sm text-muted-foreground">
+            Customize the login page footer link.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
+          @click="toggleLoginFooter()"
+        >
+          <div class="space-y-0.5">
+            <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
+            <p class="text-sm text-muted-foreground">
+              Display a footer link on the login page.
+            </p>
+          </div>
+          <Switch
+            :model-value="loginShowFooter"
+            @update:model-value="toggleLoginFooter"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Footer Text</label>
+          <Input v-model="loginFooterText" placeholder="5stack.gg" class="max-w-sm" />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-sm font-medium">Footer URL</label>
+          <Input v-model="loginFooterUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
+        </div>
+      </div>
+
       <!-- Logo Upload -->
       <div class="space-y-2">
         <label class="text-sm font-medium">Logo</label>
@@ -211,7 +247,7 @@ definePageMeta({
       <div class="flex gap-2 flex-wrap">
         <Button @click="saveAll" :disabled="saving"> Save Branding </Button>
         <Button variant="outline" @click="resetAll"> Reset to Defaults </Button>
-        <Button variant="outline" @click="exportTheme"> Export Theme </Button>
+        <Button variant="outline" @click="exportTheme" :disabled="exporting"> Export Theme </Button>
         <Button variant="outline" @click="$refs.importInput.click()"> Import Theme </Button>
         <input
           ref="importInput"
@@ -343,9 +379,12 @@ export default {
     return {
       brandName: "",
       borderRadius: "0.5",
+      loginFooterText: "",
+      loginFooterUrl: "",
       colorValues: {} as Record<string, string>,
       colorMode: "dark" as "light" | "dark",
       saving: false,
+      exporting: false,
     };
   },
   computed: {
@@ -356,6 +395,12 @@ export default {
       return this.settings.find(
         (s: { name: string; value: string | null }) =>
           s.name === "public.show_separators",
+      )?.value !== "false";
+    },
+    loginShowFooter() {
+      return this.settings.find(
+        (s: { name: string; value: string | null }) =>
+          s.name === "public.login_show_footer",
       )?.value !== "false";
     },
     apiDomain() {
@@ -399,6 +444,20 @@ export default {
           this.borderRadius = parseFloat(radiusSetting.value).toString();
         }
 
+        const loginFooterTextSetting = newVal.find(
+          (s) => s.name === "public.login_footer_text",
+        );
+        if (loginFooterTextSetting) {
+          this.loginFooterText = loginFooterTextSetting.value;
+        }
+
+        const loginFooterUrlSetting = newVal.find(
+          (s) => s.name === "public.login_footer_url",
+        );
+        if (loginFooterUrlSetting) {
+          this.loginFooterUrl = loginFooterUrlSetting.value;
+        }
+
         for (const setting of newVal) {
           if (setting.name.startsWith("public.color_")) {
             this.colorValues[setting.name] = setting.value;
@@ -416,6 +475,27 @@ export default {
               object: {
                 name: "public.show_separators",
                 value: this.showSeparators ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    async toggleLoginFooter() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: "public.login_show_footer",
+                value: this.loginShowFooter ? "false" : "true",
               },
               on_conflict: {
                 constraint: settings_constraint.settings_pkey,
@@ -513,6 +593,13 @@ export default {
 
         objects.push({ name: "public.border_radius", value: this.borderRadius + "rem" });
 
+        if (this.loginFooterText) {
+          objects.push({ name: "public.login_footer_text", value: this.loginFooterText });
+        }
+        if (this.loginFooterUrl) {
+          objects.push({ name: "public.login_footer_url", value: this.loginFooterUrl });
+        }
+
         for (const [key, value] of Object.entries(this.colorValues)) {
           if (value) {
             objects.push({ name: key, value });
@@ -550,7 +637,7 @@ export default {
     async resetAll() {
       try {
         // Delete all branding settings
-        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators"];
+        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators", "public.login_footer_text", "public.login_footer_url", "public.login_show_footer"];
         for (const sections of [lightColorSections, darkColorSections]) {
           for (const section of sections) {
             for (const field of section.fields) {
@@ -580,6 +667,8 @@ export default {
 
         this.brandName = "";
         this.borderRadius = "0.5";
+        this.loginFooterText = "";
+        this.loginFooterUrl = "";
         this.colorValues = {};
 
         toast({ title: "Branding reset to defaults" });
@@ -591,60 +680,130 @@ export default {
         });
       }
     },
-    exportTheme() {
-      const data = {
-        brandName: this.brandName,
-        borderRadius: this.borderRadius,
-        showSeparators: this.showSeparators,
-        colors: { ...this.colorValues },
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "5stack-theme.json";
-      a.click();
-      URL.revokeObjectURL(url);
-      toast({ title: "Theme exported" });
+    blobToBase64(blob: Blob): Promise<string> {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
     },
-    importTheme(event: Event) {
+    base64ToFile(dataUri: string, name: string, fallbackMimeType: string): File {
+      const [header, base64] = dataUri.split(",");
+      const mimeMatch = header.match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : fallbackMimeType;
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new File([bytes], name, { type: mime });
+    },
+    async exportTheme() {
+      this.exporting = true;
+      try {
+        const data: Record<string, any> = {
+          brandName: this.brandName,
+          borderRadius: this.borderRadius,
+          showSeparators: this.showSeparators,
+          loginFooterText: this.loginFooterText,
+          loginFooterUrl: this.loginFooterUrl,
+          loginShowFooter: this.loginShowFooter,
+          colors: { ...this.colorValues },
+        };
+
+        // Fetch logo and favicon as base64
+        try {
+          const logoRes = await fetch(`https://${this.apiDomain}/branding/logo`, { credentials: "include" });
+          if (logoRes.ok) {
+            const blob = await logoRes.blob();
+            data.logo = { data: await this.blobToBase64(blob), mimeType: blob.type };
+          }
+        } catch {}
+
+        try {
+          const faviconRes = await fetch(`https://${this.apiDomain}/branding/favicon`, { credentials: "include" });
+          if (faviconRes.ok) {
+            const blob = await faviconRes.blob();
+            data.favicon = { data: await this.blobToBase64(blob), mimeType: blob.type };
+          }
+        } catch {}
+
+        const jsonBlob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(jsonBlob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "5stack-theme.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        toast({ title: "Theme exported" });
+      } catch (error: any) {
+        toast({
+          title: "Export failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      } finally {
+        this.exporting = false;
+      }
+    },
+    async importTheme(event: Event) {
       const input = event.target as HTMLInputElement;
       if (!input.files?.length) return;
       const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = JSON.parse(e.target?.result as string);
-          if (typeof data !== "object" || !data.colors) {
-            throw new Error("Invalid theme file");
-          }
-          if (data.brandName) {
-            this.brandName = data.brandName;
-          }
-          if (data.borderRadius) {
-            this.borderRadius = data.borderRadius;
-          }
-          if (typeof data.showSeparators === "boolean" && data.showSeparators !== this.showSeparators) {
-            this.toggleSeparators();
-          }
-          if (typeof data.colors === "object") {
-            for (const [key, value] of Object.entries(data.colors)) {
-              if (typeof key === "string" && typeof value === "string" && key.startsWith("public.color_")) {
-                this.colorValues[key] = value;
-              }
+      const text = await file.text();
+      input.value = "";
+      try {
+        const data = JSON.parse(text);
+        if (typeof data !== "object" || !data.colors) {
+          throw new Error("Invalid theme file");
+        }
+        if (data.brandName) {
+          this.brandName = data.brandName;
+        }
+        if (data.borderRadius) {
+          this.borderRadius = data.borderRadius;
+        }
+        if (typeof data.showSeparators === "boolean" && data.showSeparators !== this.showSeparators) {
+          this.toggleSeparators();
+        }
+        if (typeof data.loginShowFooter === "boolean" && data.loginShowFooter !== this.loginShowFooter) {
+          this.toggleLoginFooter();
+        }
+        if (data.loginFooterText) {
+          this.loginFooterText = data.loginFooterText;
+        }
+        if (data.loginFooterUrl) {
+          this.loginFooterUrl = data.loginFooterUrl;
+        }
+        if (typeof data.colors === "object") {
+          for (const [key, value] of Object.entries(data.colors)) {
+            if (typeof key === "string" && typeof value === "string" && key.startsWith("public.color_")) {
+              this.colorValues[key] = value;
             }
           }
-          toast({ title: "Theme imported — click Save to apply" });
-        } catch (error: any) {
-          toast({
-            title: "Import failed",
-            description: error.message,
-            variant: "destructive",
-          });
         }
-      };
-      reader.readAsText(file);
-      input.value = "";
+
+        // Import logo
+        if (data.logo?.data) {
+          const logoFile = this.base64ToFile(data.logo.data, "logo.png", data.logo.mimeType || "image/png");
+          await this.uploadBrandingFile("logo", logoFile);
+        }
+
+        // Import favicon
+        if (data.favicon?.data) {
+          const faviconFile = this.base64ToFile(data.favicon.data, "favicon.png", data.favicon.mimeType || "image/png");
+          await this.uploadBrandingFile("favicon", faviconFile);
+        }
+
+        toast({ title: "Theme imported — click Save to apply" });
+      } catch (error: any) {
+        toast({
+          title: "Import failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     },
     hexToHsl(hex: string): string {
       const r = parseInt(hex.slice(1, 3), 16) / 255;

@@ -70,7 +70,7 @@ definePageMeta({
         </p>
         <div class="flex items-center gap-4">
           <div
-            class="w-16 h-16 rounded border flex items-center justify-center overflow-hidden bg-muted"
+            class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
           >
             <img
               v-if="logoPreview"
@@ -114,7 +114,7 @@ definePageMeta({
         </p>
         <div class="flex items-center gap-4">
           <div
-            class="w-16 h-16 rounded border flex items-center justify-center overflow-hidden bg-muted"
+            class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
           >
             <img
               v-if="faviconPreview"
@@ -194,7 +194,7 @@ definePageMeta({
                 type="color"
                 :value="hslToHex(colorValues[color.key] || color.default)"
                 @input="onColorChange(color.key, $event)"
-                class="w-10 h-10 rounded border cursor-pointer bg-transparent"
+                class="w-10 h-10 rounded cursor-pointer bg-transparent"
               />
               <div>
                 <p class="text-sm font-medium">{{ color.label }}</p>
@@ -595,6 +595,7 @@ export default {
       const data = {
         brandName: this.brandName,
         borderRadius: this.borderRadius,
+        showSeparators: this.showSeparators,
         colors: { ...this.colorValues },
       };
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -622,6 +623,9 @@ export default {
           }
           if (data.borderRadius) {
             this.borderRadius = data.borderRadius;
+          }
+          if (typeof data.showSeparators === "boolean" && data.showSeparators !== this.showSeparators) {
+            this.toggleSeparators();
           }
           if (typeof data.colors === "object") {
             for (const [key, value] of Object.entries(data.colors)) {

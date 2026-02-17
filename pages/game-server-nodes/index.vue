@@ -39,30 +39,12 @@ const { isMobile } = useSidebar();
       }}</template>
       <template #actions>
         <div class="flex items-center gap-2">
-          <div class="flex items-center gap-2" @click="toggleNodeMetrics()">
+          <div class="flex items-center gap-2 cursor-pointer" @click="toggleNodeMetrics()">
             <div class="flex items-center gap-1">
               {{ $t("pages.game_server_nodes.display_metrics") }}
             </div>
             <Switch :model-value="displayMetrics" />
           </div>
-
-          <template v-if="!supportsGameServerNodes">
-            <Alert class="bg-background text-lg">
-              <Info class="h-4 w-4" />
-              <AlertTitle>{{
-                $t("pages.game_server_nodes.not_supported.title")
-              }}</AlertTitle>
-              <AlertDescription>
-                {{ $t("pages.game_server_nodes.not_supported.description") }}
-                <a
-                  target="_blank"
-                  class="underline"
-                  href="https://docs.5stack.gg/servers/game-server-nodes/"
-                  >Game Server Nodes</a
-                >.
-              </AlertDescription>
-            </Alert>
-          </template>
 
           <Button
             :size="isMobile ? 'default' : 'lg'"
@@ -79,32 +61,54 @@ const { isMobile } = useSidebar();
     </PageHeading>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6">
-    <Alert class="flex items-center gap-4">
-      <div class="flex items-center gap-2">
+  <PageTransition :delay="100" class="mt-6" v-if="!supportsGameServerNodes">
+    <AnimatedCard variant="gradient">
+      <Alert class="bg-transparent border-0">
         <Info class="h-4 w-4" />
-        <AlertTitle class="m-0">{{
-          $t("pages.game_server_nodes.cs_version_info")
+        <AlertTitle>{{
+          $t("pages.game_server_nodes.not_supported.title")
         }}</AlertTitle>
+        <AlertDescription>
+          {{ $t("pages.game_server_nodes.not_supported.description") }}
+          <a
+            target="_blank"
+            class="underline"
+            href="https://docs.5stack.gg/servers/game-server-nodes/"
+            >Game Server Nodes</a
+          >.
+        </AlertDescription>
+      </Alert>
+    </AnimatedCard>
+  </PageTransition>
+
+  <PageTransition :delay="200" class="mt-6">
+    <AnimatedCard variant="gradient">
+      <div class="p-4 flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <Info class="h-4 w-4 shrink-0" />
+          <span class="font-medium">{{
+            $t("pages.game_server_nodes.cs_version_info")
+          }}</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>{{
+            $t("pages.game_server_nodes.build_id", {
+              id: `${currentGameVersion?.version} (${currentGameVersion?.build_id})`,
+            })
+          }}</span>
+          <span>•</span>
+          <span>{{
+            $t("pages.game_server_nodes.last_updated", {
+              date: new Date(currentGameVersion?.updated_at).toLocaleString(),
+            })
+          }}</span>
+        </div>
       </div>
-      <AlertDescription class="m-0 flex items-center gap-2">
-        <span>{{
-          $t("pages.game_server_nodes.build_id", {
-            id: `${currentGameVersion?.version} (${currentGameVersion?.build_id})`,
-          })
-        }}</span>
-        <span class="text-muted-foreground">•</span>
-        <span>{{
-          $t("pages.game_server_nodes.last_updated", {
-            date: new Date(currentGameVersion?.updated_at).toLocaleString(),
-          })
-        }}</span>
-      </AlertDescription>
-    </Alert>
+    </AnimatedCard>
   </PageTransition>
 
   <!-- Filters -->
-  <PageTransition :delay="200" class="mt-6">
+  <PageTransition :delay="300" class="mt-6">
     <AnimatedCard variant="gradient" class="p-4 mb-4">
       <div class="space-y-4">
         <div class="flex items-center justify-between">
@@ -208,7 +212,7 @@ const { isMobile } = useSidebar();
     </AnimatedCard>
   </PageTransition>
 
-  <PageTransition :delay="300" class="mt-6">
+  <PageTransition :delay="400" class="mt-6">
     <AnimatedCard variant="gradient" class="p-4">
       <Transition name="fade" mode="out-in">
         <Empty v-if="loading" key="loading" class="min-h-[200px]">

@@ -54,21 +54,21 @@ const { isMobile } = useSidebar();
                 <PlayerSanctions :playerId="playerId" class="hidden sm:flex" />
               </div>
               <div class="flex items-center gap-4">
+                <!-- <a
+                  v-if="player?.profile_url"
+                  :href="player.profile_url"
+                  target="_blank"
+                  class="flex items-center justify-center p-2 rounded-md bg-background hover:bg-accent/50 hover:scale-110 transition-all duration-200"
+                  title="View Steam Profile"
+                >
+                  <SteamIcon class="size-5 fill-foreground" />
+                </a> -->
                 <PlayerDisplay
                   :player="player"
                   size="xl"
                   :show-steam-id="true"
                   v-if="player"
                 />
-                <a
-                  v-if="player?.profile_url"
-                  :href="player.profile_url"
-                  target="_blank"
-                  class="flex items-center justify-center p-2 rounded-md border border-border bg-background hover:bg-accent/50 hover:scale-110 transition-all duration-200"
-                  title="View Steam Profile"
-                >
-                  <SteamIcon class="size-5 fill-foreground" />
-                </a>
               </div>
               <div
                 v-if="player?.teams && player.teams.length > 0"

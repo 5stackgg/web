@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
+import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import { Crown, Shield, BadgeCheck, BadgeIcon, Podcast } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
@@ -181,8 +182,17 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </span>
             </FiveStackToolTip>
             <PlayerElo :elo="player.elo" v-if="showElo" />
-            <p class="text-muted-foreground text-xs" v-if="showSteamId">
+            <p class="text-muted-foreground text-xs flex items-center gap-1" v-if="showSteamId">
               {{ player.steam_id }}
+              <a
+                v-if="player.profile_url"
+                :href="player.profile_url"
+                target="_blank"
+                class="hover:text-foreground transition-colors"
+                title="View Steam Profile"
+              >
+                <SteamIcon class="size-3 fill-current" />
+              </a>
             </p>
           </div>
         </div>

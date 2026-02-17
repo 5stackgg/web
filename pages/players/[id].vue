@@ -5,8 +5,10 @@ import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
@@ -36,15 +38,7 @@ const { isMobile } = useSidebar();
 <template>
   <div class="flex-grow flex flex-col gap-6" v-if="player">
     <!-- Header Section with Fade In -->
-    <Transition
-      appear
-      enter-active-class="transition-all duration-600 ease-out"
-      enter-from-class="opacity-0 translate-y-5"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition-all duration-600 ease-out"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 -translate-y-5"
-    >
+    <PageTransition>
       <PageHeading>
         <template #title>
           <div class="flex items-center justify-center gap-4">
@@ -155,22 +149,14 @@ const { isMobile } = useSidebar();
           </div>
         </template>
       </PageHeading>
-    </Transition>
+    </PageTransition>
 
     <div class="flex flex-col gap-4 md:gap-6" v-if="player">
       <!-- Stats and Elo Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Performance Stats -->
-        <Transition
-          appear
-          enter-active-class="transition-all duration-600 ease-out delay-100"
-          enter-from-class="opacity-0 translate-y-5"
-          enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition-all duration-600 ease-out"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 -translate-y-5"
-        >
-          <Card class="flex flex-col h-full">
+        <PageTransition :delay="100">
+          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
             <CardContent class="flex-1 p-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
                 <!-- Win Rate Column -->
@@ -248,20 +234,12 @@ const { isMobile } = useSidebar();
                 </div>
               </div>
             </CardContent>
-          </Card>
-        </Transition>
+          </AnimatedCard>
+        </PageTransition>
 
         <!-- Elo History Chart -->
-        <Transition
-          appear
-          enter-active-class="transition-all duration-600 ease-out delay-200"
-          enter-from-class="opacity-0 translate-y-5"
-          enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition-all duration-600 ease-out"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 -translate-y-5"
-        >
-          <Card class="flex flex-col h-full" v-if="player?.elo_history">
+        <PageTransition :delay="200">
+          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4" v-if="player?.elo_history">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -291,8 +269,8 @@ const { isMobile } = useSidebar();
                 </div>
               </template>
             </CardContent>
-          </Card>
-        </Transition>
+          </AnimatedCard>
+        </PageTransition>
       </div>
 
       <!-- Charts Section -->
@@ -300,16 +278,8 @@ const { isMobile } = useSidebar();
         class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"
       >
         <!-- Recent Wins/Losses -->
-        <Transition
-          appear
-          enter-active-class="transition-all duration-600 ease-out delay-300"
-          enter-from-class="opacity-0 translate-y-5"
-          enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition-all duration-600 ease-out"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 -translate-y-5"
-        >
-          <Card class="flex flex-col h-full">
+        <PageTransition :delay="300">
+          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -323,20 +293,12 @@ const { isMobile } = useSidebar();
                 :steam_id="playerId"
               />
             </CardContent>
-          </Card>
-        </Transition>
+          </AnimatedCard>
+        </PageTransition>
 
         <!-- Weapon Kills -->
-        <Transition
-          appear
-          enter-active-class="transition-all duration-600 ease-out delay-500"
-          enter-from-class="opacity-0 translate-y-5"
-          enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition-all duration-600 ease-out"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 -translate-y-5"
-        >
-          <Card class="flex flex-col h-full">
+        <PageTransition :delay="500">
+          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -398,22 +360,14 @@ const { isMobile } = useSidebar();
                 </table>
               </div>
             </CardContent>
-          </Card>
-        </Transition>
+          </AnimatedCard>
+        </PageTransition>
       </div>
     </div>
 
     <!-- Matches/Tournaments Section -->
-    <Transition
-      appear
-      enter-active-class="transition-all duration-600 ease-out delay-500"
-      enter-from-class="opacity-0 translate-y-5"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition-all duration-600 ease-out"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 -translate-y-5"
-    >
-      <Card class="p-4">
+    <PageTransition :delay="500">
+      <AnimatedCard variant="gradient" class="p-4">
         <Tabs default-value="matches">
           <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
             <TabsTrigger
@@ -479,8 +433,8 @@ const { isMobile } = useSidebar();
             </CardContent>
           </TabsContent>
         </Tabs>
-      </Card>
-    </Transition>
+      </AnimatedCard>
+    </PageTransition>
   </div>
 </template>
 

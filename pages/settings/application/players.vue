@@ -9,143 +9,154 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form class="grid gap-6" @submit.prevent="updateSettings">
-      <div
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="togglePlayerNameRegistration"
-      >
-        <div class="space-y-0.5">
-          <h4 class="text-base font-medium">
-            {{
-              $t("pages.settings.application.players.force_name_registration")
-            }}
-          </h4>
-          <p class="text-sm text-muted-foreground">
-            {{
-              $t(
-                "pages.settings.application.players.force_name_registration_description",
-              )
-            }}
-          </p>
+      <AnimatedCard variant="gradient" class="cursor-pointer" @click="togglePlayerNameRegistration">
+        <div class="flex flex-row items-center justify-between p-4">
+          <div class="space-y-0.5">
+            <h4 class="text-base font-medium">
+              {{
+                $t("pages.settings.application.players.force_name_registration")
+              }}
+            </h4>
+            <p class="text-sm text-muted-foreground">
+              {{
+                $t(
+                  "pages.settings.application.players.force_name_registration_description",
+                )
+              }}
+            </p>
+          </div>
+          <Switch
+            :model-value="playerNameRegistration"
+            @update:model-value="togglePlayerNameRegistration"
+          />
         </div>
-        <Switch
-          :model-value="playerNameRegistration"
-          @update:model-value="togglePlayerNameRegistration"
-        />
-      </div>
+      </AnimatedCard>
 
-      <FormField v-slot="{ componentField }" name="public.create_matches_role">
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t("pages.settings.application.create_matches_role")
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t("pages.settings.application.create_matches_role_description")
-            }}
-          </FormDescription>
-          <FormControl>
-            <Select v-bind="componentField">
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField v-slot="{ componentField }" name="public.create_matches_role">
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("pages.settings.application.create_matches_role")
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t("pages.settings.application.create_matches_role_description")
+                }}
+              </FormDescription>
               <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="role.value"
+                        v-for="role in roles"
+                        :key="role.value"
+                      >
+                        <span>{{ role.display }}</span>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="role.value"
-                    v-for="role in roles"
-                    :key="role.value"
-                  >
-                    <span>{{ role.display }}</span>
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="public.create_tournaments_role"
-      >
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t("pages.settings.application.create_tournaments_role")
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t(
-                "pages.settings.application.create_tournaments_role_description",
-              )
-            }}
-          </FormDescription>
-          <FormControl>
-            <Select v-bind="componentField">
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField
+            v-slot="{ componentField }"
+            name="public.create_tournaments_role"
+          >
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("pages.settings.application.create_tournaments_role")
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t(
+                    "pages.settings.application.create_tournaments_role_description",
+                  )
+                }}
+              </FormDescription>
               <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="role.value"
+                        v-for="role in roles"
+                        :key="role.value"
+                      >
+                        <span class="capitalize">{{ role.display }}</span>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="role.value"
-                    v-for="role in roles"
-                    :key="role.value"
-                  >
-                    <span class="capitalize">{{ role.display }}</span>
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
-      <FormField
-        v-slot="{ componentField }"
-        name="public.dedicated_servers_min_role_to_connect"
-      >
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t(
-              "pages.settings.application.dedicated_servers_min_role_to_connect",
-            )
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t(
-                "pages.settings.application.dedicated_servers_min_role_to_connect_description",
-              )
-            }}
-          </FormDescription>
-          <FormControl>
-            <Select v-bind="componentField">
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField
+            v-slot="{ componentField }"
+            name="public.dedicated_servers_min_role_to_connect"
+          >
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">{{
+                $t(
+                  "pages.settings.application.dedicated_servers_min_role_to_connect",
+                )
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t(
+                    "pages.settings.application.dedicated_servers_min_role_to_connect_description",
+                  )
+                }}
+              </FormDescription>
               <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="role.value"
+                        v-for="role in roles"
+                        :key="role.value"
+                      >
+                        <span class="capitalize">{{ role.display }}</span>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="role.value"
-                    v-for="role in roles"
-                    :key="role.value"
-                  >
-                    <span class="capitalize">{{ role.display }}</span>
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
       <div class="flex justify-start">
         <Button

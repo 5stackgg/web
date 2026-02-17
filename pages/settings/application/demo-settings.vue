@@ -65,103 +65,119 @@ definePageMeta({
 
   <PageTransition :delay="200">
     <form @submit.prevent="updateSettings" class="grid gap-6">
-      <FormField v-slot="{ componentField }" name="demo_network_limiter">
-        <FormItem>
-          <FormLabel>{{
-            $t("pages.settings.application.demo_settings.demo_network_limiter")
-          }}</FormLabel>
-          <FormDescription>{{
-            $t(
-              "pages.settings.application.demo_settings.demo_network_limiter_description",
-            )
-          }}</FormDescription>
-          <Select v-bind="componentField">
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue
-                  :placeholder="$t('demo_network_limiter.network_limit')"
-                />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem :value="null">
-                  {{ $t("demo_network_limiter.unlimited") }}
-                </SelectItem>
-                <SelectItem :value="0">0 Mbps</SelectItem>
-                <SelectItem :value="1">1 Mbps</SelectItem>
-                <SelectItem :value="2">2 Mbps</SelectItem>
-                <SelectItem :value="5">5 Mbps</SelectItem>
-                <SelectItem :value="10">10 Mbps</SelectItem>
-                <SelectItem :value="20">20 Mbps</SelectItem>
-                <SelectItem :value="50">50 Mbps</SelectItem>
-                <SelectItem :value="100">100 Mbps</SelectItem>
-                <SelectItem :value="200">200 Mbps</SelectItem>
-                <SelectItem :value="500">500 Mbps</SelectItem>
-                <SelectItem :value="1000">1000 Mbps</SelectItem>
-                <SelectItem :value="2000">2000 Mbps</SelectItem>
-                <SelectItem :value="5000">5000 Mbps</SelectItem>
-                <SelectItem :value="10000">10000 Mbps</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField v-slot="{ componentField }" name="demo_network_limiter">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.demo_network_limiter")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.demo_network_limiter_description",
+                )
+              }}</FormDescription>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      :placeholder="$t('demo_network_limiter.network_limit')"
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem :value="null">
+                      {{ $t("demo_network_limiter.unlimited") }}
+                    </SelectItem>
+                    <SelectItem :value="0">0 Mbps</SelectItem>
+                    <SelectItem :value="1">1 Mbps</SelectItem>
+                    <SelectItem :value="2">2 Mbps</SelectItem>
+                    <SelectItem :value="5">5 Mbps</SelectItem>
+                    <SelectItem :value="10">10 Mbps</SelectItem>
+                    <SelectItem :value="20">20 Mbps</SelectItem>
+                    <SelectItem :value="50">50 Mbps</SelectItem>
+                    <SelectItem :value="100">100 Mbps</SelectItem>
+                    <SelectItem :value="200">200 Mbps</SelectItem>
+                    <SelectItem :value="500">500 Mbps</SelectItem>
+                    <SelectItem :value="1000">1000 Mbps</SelectItem>
+                    <SelectItem :value="2000">2000 Mbps</SelectItem>
+                    <SelectItem :value="5000">5000 Mbps</SelectItem>
+                    <SelectItem :value="10000">10000 Mbps</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
-      <FormField v-slot="{ componentField }" name="s3_min_retention">
-        <FormItem>
-          <FormLabel>{{
-            $t("pages.settings.application.demo_settings.min_retention")
-          }}</FormLabel>
-          <FormDescription>{{
-            $t(
-              "pages.settings.application.demo_settings.min_retention_description",
-            )
-          }}</FormDescription>
-          <Input type="number" v-bind="componentField"></Input>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField v-slot="{ componentField }" name="s3_min_retention">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.min_retention")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.min_retention_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
-      <FormField v-slot="{ componentField }" name="s3_max_storage">
-        <FormItem>
-          <FormLabel>{{
-            $t("pages.settings.application.demo_settings.max_storage")
-          }}</FormLabel>
-          <FormDescription>{{
-            $t(
-              "pages.settings.application.demo_settings.max_storage_description",
-            )
-          }}</FormDescription>
-          <Input type="number" v-bind="componentField"></Input>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField v-slot="{ componentField }" name="s3_max_storage">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.max_storage")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.max_storage_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
-      <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
-        <FormItem>
-          <FormLabel>{{
-            $t("pages.settings.application.demo_settings.cloudflare_worker_url")
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t(
-                "pages.settings.application.demo_settings.cloudflare_worker_url_description",
-              )
-            }}
-            <a
-              href="https://docs.5stack.gg/s3/backblaze"
-              target="_blank"
-              class="text-primary hover:underline"
-            >
-              https://docs.5stack.gg/s3/backblaze
-            </a>
-          </FormDescription>
-          <Input v-bind="componentField"></Input>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.cloudflare_worker_url")
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t(
+                    "pages.settings.application.demo_settings.cloudflare_worker_url_description",
+                  )
+                }}
+                <a
+                  href="https://docs.5stack.gg/s3/backblaze"
+                  target="_blank"
+                  class="text-primary hover:underline"
+                >
+                  https://docs.5stack.gg/s3/backblaze
+                </a>
+              </FormDescription>
+              <Input v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
       <div class="flex justify-start">
         <Button

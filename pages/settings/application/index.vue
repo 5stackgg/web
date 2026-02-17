@@ -12,41 +12,39 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-6">
-      <div
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="toggleMatchmaking()"
-      >
-        <div class="space-y-0.5">
-          <h4 class="text-base font-medium">
-            {{ $t("pages.settings.application.matchmaking.title") }}
-          </h4>
-          <p class="text-sm text-muted-foreground">
-            {{ $t("pages.settings.application.matchmaking.description") }}
-          </p>
+      <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleMatchmaking()">
+        <div class="flex flex-row items-center justify-between p-4">
+          <div class="space-y-0.5">
+            <h4 class="text-base font-medium">
+              {{ $t("pages.settings.application.matchmaking.title") }}
+            </h4>
+            <p class="text-sm text-muted-foreground">
+              {{ $t("pages.settings.application.matchmaking.description") }}
+            </p>
+          </div>
+          <Switch
+            :model-value="matchMakingAllowed"
+            @update:model-value="toggleMatchmaking"
+          />
         </div>
-        <Switch
-          :model-value="matchMakingAllowed"
-          @update:model-value="toggleMatchmaking"
-        />
-      </div>
+      </AnimatedCard>
 
       <div v-if="matchMakingAllowed" class="space-y-2">
         <div class="grid grid-cols-3 gap-4">
           <template v-for="match_type in ['competitive', 'wingman', 'duel']">
-            <div
-              class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-              @click="toggleMatchmakingType(match_type)"
-            >
-              <div class="space-y-0.5">
-                <h4 class="text-base font-medium capitalize">
-                  {{ match_type }}
-                </h4>
+            <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleMatchmakingType(match_type)">
+              <div class="flex flex-row items-center justify-between p-4">
+                <div class="space-y-0.5">
+                  <h4 class="text-base font-medium capitalize">
+                    {{ match_type }}
+                  </h4>
+                </div>
+                <Switch
+                  :model-value="isMatchmakingTypeEnabled(match_type)"
+                  @update:model-value="toggleMatchmakingType(match_type)"
+                />
               </div>
-              <Switch
-                :model-value="isMatchmakingTypeEnabled(match_type)"
-                @update:model-value="toggleMatchmakingType(match_type)"
-              />
-            </div>
+            </AnimatedCard>
           </template>
         </div>
         <p class="text-sm text-muted-foreground">
@@ -54,135 +52,150 @@ definePageMeta({
         </p>
       </div>
 
-      <FormField v-slot="{ componentField }" name="auto_cancel_duration">
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t("pages.settings.application.auto_cancel_duration")
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t("pages.settings.application.auto_cancel_duration_description")
-            }}
-          </FormDescription>
-          <FormControl>
-            <Input v-bind="componentField" type="number" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ componentField }" name="public.matchmaking_min_role">
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t("pages.settings.application.matchmaking_min_role")
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t("pages.settings.application.matchmaking_min_role_description")
-            }}
-          </FormDescription>
-          <FormControl>
-            <Select v-bind="componentField">
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField v-slot="{ componentField }" name="auto_cancel_duration">
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("pages.settings.application.auto_cancel_duration")
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t("pages.settings.application.auto_cancel_duration_description")
+                }}
+              </FormDescription>
               <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
+                <Input v-bind="componentField" type="number" />
               </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="role.value"
-                    v-for="role in roles"
-                    :key="role.value"
-                  >
-                    <span class="capitalize">{{ role.display }}</span>
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField
-        v-slot="{ componentField }"
-        name="public.max_acceptable_latency"
-      >
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t("pages.settings.application.max_acceptable_latency")
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t(
-                "pages.settings.application.max_acceptable_latency_description",
-              )
-            }}
-          </FormDescription>
-          <FormControl>
-            <Input v-bind="componentField" type="number" />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField
-        v-slot="{ componentField }"
-        name="public.lineup_add_without_invite"
-      >
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t("pages.settings.application.lineup_add_without_invite")
-          }}</FormLabel>
-          <FormDescription>
-            {{
-              $t(
-                "pages.settings.application.lineup_add_without_invite_description",
-              )
-            }}
-          </FormDescription>
-          <FormControl>
-            <Select v-bind="componentField">
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="role.value"
-                    v-for="role in lineupRoles"
-                    :key="role.value"
-                  >
-                    <span class="capitalize">{{ role.display }}</span>
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <div
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="toggleDefaultModels"
-      >
-        <div class="space-y-0.5">
-          <h4 class="text-base font-medium">
-            {{ $t("pages.settings.application.default_models") }}
-          </h4>
-          <p class="text-sm text-muted-foreground">
-            {{ $t("match.options.advanced.default_player_models.description") }}
-          </p>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
-        <Switch
-          :model-value="defaultModelsEnabled"
-          @update:model-value="toggleDefaultModels"
-        />
-      </div>
+      </AnimatedCard>
+
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField v-slot="{ componentField }" name="public.matchmaking_min_role">
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("pages.settings.application.matchmaking_min_role")
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t("pages.settings.application.matchmaking_min_role_description")
+                }}
+              </FormDescription>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="role.value"
+                        v-for="role in roles"
+                        :key="role.value"
+                      >
+                        <span class="capitalize">{{ role.display }}</span>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
+
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField
+            v-slot="{ componentField }"
+            name="public.max_acceptable_latency"
+          >
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("pages.settings.application.max_acceptable_latency")
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t(
+                    "pages.settings.application.max_acceptable_latency_description",
+                  )
+                }}
+              </FormDescription>
+              <FormControl>
+                <Input v-bind="componentField" type="number" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
+
+      <AnimatedCard variant="gradient">
+        <div class="p-4">
+          <FormField
+            v-slot="{ componentField }"
+            name="public.lineup_add_without_invite"
+          >
+            <FormItem>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("pages.settings.application.lineup_add_without_invite")
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t(
+                    "pages.settings.application.lineup_add_without_invite_description",
+                  )
+                }}
+              </FormDescription>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="role.value"
+                        v-for="role in lineupRoles"
+                        :key="role.value"
+                      >
+                        <span class="capitalize">{{ role.display }}</span>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
+
+      <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleDefaultModels">
+        <div class="flex flex-row items-center justify-between p-4">
+          <div class="space-y-0.5">
+            <h4 class="text-base font-medium">
+              {{ $t("pages.settings.application.default_models") }}
+            </h4>
+            <p class="text-sm text-muted-foreground">
+              {{ $t("match.options.advanced.default_player_models.description") }}
+            </p>
+          </div>
+          <Switch
+            :model-value="defaultModelsEnabled"
+            @update:model-value="toggleDefaultModels"
+          />
+        </div>
+      </AnimatedCard>
 
       <div class="flex justify-start">
         <Button

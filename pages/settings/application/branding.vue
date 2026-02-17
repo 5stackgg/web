@@ -19,7 +19,8 @@ definePageMeta({
       </div>
 
       <!-- General -->
-      <div class="rounded-lg border p-6 space-y-4">
+      <AnimatedCard variant="gradient">
+        <div class="p-6 space-y-4">
         <div>
           <label class="text-sm font-medium">General</label>
           <p class="text-sm text-muted-foreground">
@@ -154,129 +155,136 @@ definePageMeta({
             />
           </div>
         </div>
-      </div>
+        </div>
+      </AnimatedCard>
 
       <!-- Login Page -->
-      <div class="rounded-lg border p-6 space-y-4">
-        <div>
-          <label class="text-sm font-medium">Login Page</label>
-          <p class="text-sm text-muted-foreground">
-            Customize the login page footer link.
-          </p>
-        </div>
-
-        <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleLoginFooter()">
-          <div class="flex flex-row items-center justify-between p-4">
-            <div class="space-y-0.5">
-              <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
-              <p class="text-sm text-muted-foreground">
-                Display a footer link on the login page.
-              </p>
-            </div>
-            <Switch
-              :model-value="loginShowFooter"
-              @update:model-value="toggleLoginFooter"
-            />
+      <AnimatedCard variant="gradient">
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="text-sm font-medium">Login Page</label>
+            <p class="text-sm text-muted-foreground">
+              Customize the login page footer link.
+            </p>
           </div>
-        </AnimatedCard>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Footer Text</label>
-          <Input v-model="loginFooterText" placeholder="5stack.gg" class="max-w-sm" />
-        </div>
+          <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleLoginFooter()">
+            <div class="flex flex-row items-center justify-between p-4">
+              <div class="space-y-0.5">
+                <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
+                <p class="text-sm text-muted-foreground">
+                  Display a footer link on the login page.
+                </p>
+              </div>
+              <Switch
+                :model-value="loginShowFooter"
+                @update:model-value="toggleLoginFooter"
+              />
+            </div>
+          </AnimatedCard>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Footer URL</label>
-          <Input v-model="loginFooterUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Footer Text</label>
+            <Input v-model="loginFooterText" placeholder="5stack.gg" class="max-w-sm" />
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Footer URL</label>
+            <Input v-model="loginFooterUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
+          </div>
         </div>
-      </div>
+      </AnimatedCard>
 
       <!-- Report an Issue -->
-      <div class="rounded-lg border p-6 space-y-4">
-        <div>
-          <label class="text-sm font-medium">Report an Issue</label>
-          <p class="text-sm text-muted-foreground">
-            Configure the "Report an Issue" link in the sidebar and the GitHub URL.
-          </p>
-        </div>
-
-        <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleReportIssue()">
-          <div class="flex flex-row items-center justify-between p-4">
-            <div class="space-y-0.5">
-              <label class="text-sm font-medium cursor-pointer">Show Report an Issue</label>
-              <p class="text-sm text-muted-foreground">
-                Display a "Report an Issue" link in the sidebar footer.
-              </p>
-            </div>
-            <Switch
-              :model-value="showReportIssue"
-              @update:model-value="toggleReportIssue"
-            />
+      <AnimatedCard variant="gradient">
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="text-sm font-medium">Report an Issue</label>
+            <p class="text-sm text-muted-foreground">
+              Configure the "Report an Issue" link in the sidebar and the GitHub URL.
+            </p>
           </div>
-        </AnimatedCard>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">GitHub URL</label>
-          <Input v-model="githubUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
+          <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleReportIssue()">
+            <div class="flex flex-row items-center justify-between p-4">
+              <div class="space-y-0.5">
+                <label class="text-sm font-medium cursor-pointer">Show Report an Issue</label>
+                <p class="text-sm text-muted-foreground">
+                  Display a "Report an Issue" link in the sidebar footer.
+                </p>
+              </div>
+              <Switch
+                :model-value="showReportIssue"
+                @update:model-value="toggleReportIssue"
+              />
+            </div>
+          </AnimatedCard>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium">GitHub URL</label>
+            <Input v-model="githubUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
+          </div>
         </div>
-      </div>
+      </AnimatedCard>
 
       <!-- Theme Colors -->
-      <div class="rounded-lg border p-6 space-y-4">
-        <div>
-          <label class="text-sm font-medium">Theme Colors</label>
-          <p class="text-sm text-muted-foreground">
-            Customize the theme colors. Changes are previewed live.
-          </p>
-        </div>
+      <AnimatedCard variant="gradient">
+        <div class="p-6 space-y-4">
+          <div>
+            <label class="text-sm font-medium">Theme Colors</label>
+            <p class="text-sm text-muted-foreground">
+              Customize the theme colors. Changes are previewed live.
+            </p>
+          </div>
 
-        <div class="flex gap-2 mb-4">
-          <Button
-            size="sm"
-            :variant="colorMode === 'light' ? 'default' : 'outline'"
-            @click="colorMode = 'light'"
-          >
-            Light Mode
-          </Button>
-          <Button
-            size="sm"
-            :variant="colorMode === 'dark' ? 'default' : 'outline'"
-            @click="colorMode = 'dark'"
-          >
-            Dark Mode
-          </Button>
-        </div>
-
-        <div
-          v-for="section in currentColorSections"
-          :key="section.title"
-          class="space-y-3"
-        >
-          <h4 class="text-sm font-medium text-muted-foreground">
-            {{ section.title }}
-          </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div
-              v-for="color in section.fields"
-              :key="color.key"
-              class="flex items-center gap-3"
+          <div class="flex gap-2 mb-4">
+            <Button
+              size="sm"
+              :variant="colorMode === 'light' ? 'default' : 'outline'"
+              @click="colorMode = 'light'"
             >
-              <input
-                type="color"
-                :value="hslToHex(colorValues[color.key] || color.default)"
-                @input="onColorChange(color.key, $event)"
-                class="w-10 h-10 rounded cursor-pointer bg-transparent"
-              />
-              <div>
-                <p class="text-sm font-medium">{{ color.label }}</p>
-                <p class="text-xs text-muted-foreground font-mono">
-                  {{ colorValues[color.key] || color.default }}
-                </p>
+              Light Mode
+            </Button>
+            <Button
+              size="sm"
+              :variant="colorMode === 'dark' ? 'default' : 'outline'"
+              @click="colorMode = 'dark'"
+            >
+              Dark Mode
+            </Button>
+          </div>
+
+          <div
+            v-for="section in currentColorSections"
+            :key="section.title"
+            class="space-y-3"
+          >
+            <h4 class="text-sm font-medium text-muted-foreground">
+              {{ section.title }}
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div
+                v-for="color in section.fields"
+                :key="color.key"
+                class="flex items-center gap-3"
+              >
+                <input
+                  type="color"
+                  :value="hslToHex(colorValues[color.key] || color.default)"
+                  @input="onColorChange(color.key, $event)"
+                  class="w-10 h-10 rounded cursor-pointer bg-transparent"
+                />
+                <div>
+                  <p class="text-sm font-medium">{{ color.label }}</p>
+                  <p class="text-xs text-muted-foreground font-mono">
+                    {{ colorValues[color.key] || color.default }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </AnimatedCard>
 
       <!-- Actions -->
       <div class="flex gap-2 flex-wrap">

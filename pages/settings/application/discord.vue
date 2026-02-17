@@ -9,41 +9,45 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-6">
-      <FormField v-slot="{ componentField }" name="discord_invite_link">
-        <FormItem>
-          <FormLabel>{{
-            $t("pages.settings.application.discord.invite_link")
-          }}</FormLabel>
-          <Input v-bind="componentField"></Input>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+      <AnimatedCard variant="gradient">
+        <div class="p-6 space-y-6">
+          <FormField v-slot="{ componentField }" name="discord_invite_link">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.discord.invite_link")
+              }}</FormLabel>
+              <Input v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-      <FormField v-slot="{ componentField }" name="discord_support_webhook">
-        <FormItem>
-          <FormLabel>{{
-            $t("pages.settings.application.discord.webhook")
-          }}</FormLabel>
-          <FormDescription>{{
-            $t("pages.settings.application.discord.webhook_description")
-          }}</FormDescription>
-          <Input v-bind="componentField"></Input>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+          <FormField v-slot="{ componentField }" name="discord_support_webhook">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.discord.webhook")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t("pages.settings.application.discord.webhook_description")
+              }}</FormDescription>
+              <Input v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
 
-      <FormField v-slot="{ componentField }" name="discord_support_role_id">
-        <FormItem>
-          <FormLabel>{{
-            $t("pages.settings.application.discord.support_role")
-          }}</FormLabel>
-          <FormDescription>{{
-            $t("pages.settings.application.discord.support_role_description")
-          }}</FormDescription>
-          <Input v-bind="componentField"></Input>
-          <FormMessage />
-        </FormItem>
-      </FormField>
+          <FormField v-slot="{ componentField }" name="discord_support_role_id">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.discord.support_role")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t("pages.settings.application.discord.support_role_description")
+              }}</FormDescription>
+              <Input v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </AnimatedCard>
 
       <div class="flex justify-start">
         <Button

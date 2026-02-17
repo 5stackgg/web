@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import TimeAgo from "../TimeAgo.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -136,49 +137,50 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
         </div>
 
         <div class="flex flex-row gap-4">
-          <div
+          <AnimatedCard
             v-for="type in allowedMatchTypes"
             :key="type.value"
-            class="flex-1 p-4 border rounded-lg transition-all duration-300 relative overflow-hidden group h-[100px]"
+            variant="gradient"
+            class="flex-1 cursor-pointer transition-all duration-300"
             :class="{
-              'hover:bg-accent/50 cursor-pointer':
-                pendingMatchType !== type.value,
-              'bg-primary/20 border-primary cursor-pointer shadow-lg scale-[1.02]':
+              'ring-2 ring-primary shadow-lg scale-[1.02]':
                 pendingMatchType === type.value,
             }"
             @click="handleMatchTypeClick(type.value)"
           >
-            <Badge
-              variant="secondary"
-              class="absolute top-2 right-2 px-3 py-1"
-              v-if="inQueueStas[type.value] > 0"
-            >
-              {{ inQueueStas[type.value] || 0 }}
-              {{ $t("matchmaking.in_queue") }}
-            </Badge>
-            <div class="relative z-10 h-full">
-              <template v-if="pendingMatchType !== type.value">
-                <h3 class="text-lg font-medium">{{ type.value }}</h3>
-                <p class="text-sm text-muted-foreground">
-                  {{ type.description }}
-                </p>
-              </template>
-              <div
-                v-else
-                class="absolute inset-0 flex items-center justify-center"
+            <div class="p-4 relative h-[100px]">
+              <Badge
+                variant="secondary"
+                class="absolute top-2 right-2 px-3 py-1"
+                v-if="inQueueStas[type.value] > 0"
               >
-                <span
-                  class="text-xl font-semibold text-primary animate-fade-in"
+                {{ inQueueStas[type.value] || 0 }}
+                {{ $t("matchmaking.in_queue") }}
+              </Badge>
+              <div class="relative z-10 h-full">
+                <template v-if="pendingMatchType !== type.value">
+                  <h3 class="text-lg font-medium">{{ type.value }}</h3>
+                  <p class="text-sm text-muted-foreground">
+                    {{ type.description }}
+                  </p>
+                </template>
+                <div
+                  v-else
+                  class="absolute inset-0 flex items-center justify-center"
                 >
-                  {{ $t("matchmaking.confirm_selection") }}
-                </span>
+                  <span
+                    class="text-xl font-semibold text-primary animate-fade-in"
+                  >
+                    {{ $t("matchmaking.confirm_selection") }}
+                  </span>
+                </div>
               </div>
+              <div
+                v-if="pendingMatchType === type.value"
+                class="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10 animate-pulse"
+              ></div>
             </div>
-            <div
-              v-if="pendingMatchType === type.value"
-              class="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10 animate-pulse"
-            ></div>
-          </div>
+          </AnimatedCard>
         </div>
 
         <Separator v-if="showSeparators" class="my-4" />
@@ -214,6 +216,7 @@ import socket from "~/web-sockets/Socket";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { e_match_types_enum, e_match_status_enum } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
 
 interface Region {
   value: string;
@@ -337,6 +340,11 @@ export default {
     },
     handleMatchTypeClick(matchType: e_match_types_enum): void {
       if (this.preferredRegions.length === 0) {
+        this.showSettings = true;
+        toast({
+          title: this.$t("matchmaking.no_preferred_regions") as string,
+          variant: "destructive",
+        });
         return;
       }
       if (this.pendingMatchType === matchType) {

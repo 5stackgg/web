@@ -145,9 +145,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       <!-- Map Pool Selection -->
       <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
-          <Card>
-            <CardHeader>
-              <CardTitle class="flex justify-between items-center">
+          <AnimatedCard variant="gradient">
+            <div class="p-6 space-y-6">
+              <div class="flex justify-between items-center">
                 <FormLabel class="text-lg font-semibold">
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
@@ -195,9 +195,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                     </FormControl>
                   </FormField>
                 </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </div>
               <div class="space-y-6">
                 <div
                   class="flex items-center justify-between"
@@ -278,8 +276,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                   </div>
                 </template>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </AnimatedCard>
           <FormMessage />
         </FormItem>
       </FormField>

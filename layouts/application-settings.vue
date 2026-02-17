@@ -96,9 +96,9 @@ export default {};
 
 <style lang="postcss">
 .settings-nav a > button {
-  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground;
 }
 .settings-nav .router-link-exact-active > button {
-  @apply bg-accent/70 hover:bg-accent/70 text-accent-foreground;
+  @apply bg-accent/70;
 }
 </style>

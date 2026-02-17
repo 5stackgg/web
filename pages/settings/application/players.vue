@@ -33,7 +33,7 @@ definePageMeta({
       </AnimatedCard>
 
       <AnimatedCard variant="gradient">
-        <div class="p-4">
+        <div class="p-6 space-y-6">
           <FormField v-slot="{ componentField }" name="public.create_matches_role">
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
@@ -67,11 +67,7 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </AnimatedCard>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-4">
           <FormField
             v-slot="{ componentField }"
             name="public.create_tournaments_role"
@@ -110,11 +106,7 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </AnimatedCard>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-4">
           <FormField
             v-slot="{ componentField }"
             name="public.dedicated_servers_min_role_to_connect"

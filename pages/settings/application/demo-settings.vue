@@ -66,7 +66,7 @@ definePageMeta({
   <PageTransition :delay="200">
     <form @submit.prevent="updateSettings" class="grid gap-6">
       <AnimatedCard variant="gradient">
-        <div class="p-4">
+        <div class="p-6 space-y-6">
           <FormField v-slot="{ componentField }" name="demo_network_limiter">
             <FormItem>
               <FormLabel>{{
@@ -110,11 +110,7 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </AnimatedCard>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-4">
           <FormField v-slot="{ componentField }" name="s3_min_retention">
             <FormItem>
               <FormLabel>{{
@@ -129,11 +125,7 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </AnimatedCard>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-4">
           <FormField v-slot="{ componentField }" name="s3_max_storage">
             <FormItem>
               <FormLabel>{{
@@ -148,11 +140,7 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </AnimatedCard>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-4">
           <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
             <FormItem>
               <FormLabel>{{

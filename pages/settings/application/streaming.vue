@@ -13,7 +13,7 @@ definePageMeta({
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-4">
       <AnimatedCard variant="gradient">
-        <div class="p-4">
+        <div class="p-6 space-y-6">
           <FormField
             v-slot="{ componentField }"
             name="public.minimum_role_to_spectate"
@@ -52,11 +52,7 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </AnimatedCard>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-4">
           <FormField
             v-slot="{ componentField }"
             name="public.minimum_role_to_stream"

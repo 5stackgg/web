@@ -20,7 +20,7 @@ const showSeparators = computed(() => useApplicationSettingsStore().showSeparato
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <aside class="w-full lg:w-auto">
         <nav
-          class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
+          class="settings-nav flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
         >
           <nuxt-link to="/settings/application/players">
             <Button variant="ghost" class="w-full text-left justify-start">
@@ -95,7 +95,10 @@ export default {};
 </script>
 
 <style lang="postcss">
-.router-link-exact-active > button {
-  @apply bg-muted hover:bg-muted;
+.settings-nav a > button {
+  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+}
+.settings-nav .router-link-exact-active > button {
+  @apply bg-accent/70 hover:bg-accent/70 text-accent-foreground;
 }
 </style>

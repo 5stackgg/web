@@ -30,8 +30,8 @@ provide("commander", commander);
 </script>
 
 <template>
-  <Tabs default-value="overview">
-    <TabsList class="lg:inline-flex grid grid-cols-1 mb-4">
+  <Tabs default-value="overview" class="match-tabs">
+    <TabsList class="lg:inline-flex grid grid-cols-1 mb-4 bg-transparent p-0 h-auto gap-1">
       <TabsTrigger value="overview">
         {{ $t("match.tabs.overview") }}
       </TabsTrigger>
@@ -609,3 +609,12 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss">
+.match-tabs [role="tab"] {
+  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors;
+}
+.match-tabs [role="tab"][data-state="active"] {
+  @apply bg-accent/70 shadow-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+}
+</style>

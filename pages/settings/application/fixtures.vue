@@ -4,10 +4,19 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 definePageMeta({
   layout: "application-settings",
-  middleware: "admin",
 });
 
 const config = useRuntimeConfig();

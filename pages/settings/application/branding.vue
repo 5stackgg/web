@@ -753,7 +753,7 @@ export default {
         this.githubUrl = "";
         this.colorValues = {};
 
-        toast({ title: "Branding reset to defaults" });
+        await this.saveAll();
       } catch (error: any) {
         toast({
           title: "Reset failed",
@@ -886,7 +886,7 @@ export default {
           await this.uploadBrandingFile("favicon", faviconFile);
         }
 
-        toast({ title: "Theme imported — click Save to apply" });
+        await this.saveAll();
       } catch (error: any) {
         toast({
           title: "Import failed",

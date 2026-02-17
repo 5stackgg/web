@@ -3,65 +3,70 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
   <form @submit.prevent="updateCreateTeam" class="grid gap-6">
-    <FormField v-slot="{ componentField }" name="team_name">
-      <FormItem>
-        <FormLabel>{{ $t("team.form.name") }}</FormLabel>
-        <FormControl>
-          <Input
-            v-bind="componentField"
-            :placeholder="$t('team.form.name_placeholder')"
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+    <AnimatedCard variant="gradient">
+      <div class="p-6 space-y-6">
+        <FormField v-slot="{ componentField }" name="team_name">
+          <FormItem>
+            <FormLabel>{{ $t("team.form.name") }}</FormLabel>
+            <FormControl>
+              <Input
+                v-bind="componentField"
+                :placeholder="$t('team.form.name_placeholder')"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <FormField v-slot="{ componentField }" name="short_name">
-      <FormItem>
-        <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
-        <FormControl>
-          <Input
-            v-bind="componentField"
-            :placeholder="$t('team.form.short_name_placeholder')"
-            maxlength="3"
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+        <FormField v-slot="{ componentField }" name="short_name">
+          <FormItem>
+            <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
+            <FormControl>
+              <Input
+                v-bind="componentField"
+                :placeholder="$t('team.form.short_name_placeholder')"
+                maxlength="3"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <FormField
-      v-if="team && canUpdateOwner"
-      v-slot="{ componentField }"
-      name="owner_steam_id"
-    >
-      <FormItem>
-        <FormLabel>{{ $t("team.form.owner") }}</FormLabel>
-        <Select v-bind="componentField">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue :placeholder="$t('team.form.select_owner')" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem
-                v-for="{ player } in team.roster"
-                :key="player.steam_id"
-                :value="player.steam_id"
-              >
-                <PlayerDisplay :player="player" />
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+        <FormField
+          v-if="team && canUpdateOwner"
+          v-slot="{ componentField }"
+          name="owner_steam_id"
+        >
+          <FormItem>
+            <FormLabel>{{ $t("team.form.owner") }}</FormLabel>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue :placeholder="$t('team.form.select_owner')" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="{ player } in team.roster"
+                    :key="player.steam_id"
+                    :value="player.steam_id"
+                  >
+                    <PlayerDisplay :player="player" />
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </AnimatedCard>
 
     <Button
       type="submit"

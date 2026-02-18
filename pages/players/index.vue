@@ -395,16 +395,31 @@ import {
             <TableHead>{{ $t("common.stats.losses") }}</TableHead>
             <TableHead>{{ $t("pages.players.table.kdr") }}</TableHead>
             <TableHead class="cursor-pointer" @click="toggleSort('elo')">
-              <div class="flex items-center gap-1">
-                {{ $t("pages.players.table.elo") }}
-                <ArrowUpIcon
-                  v-if="sortField === 'elo' && sortDirection === 'desc'"
-                  class="w-4 h-4"
-                />
-                <ArrowDownIcon
-                  v-else-if="sortField === 'elo' && sortDirection === 'asc'"
-                  class="w-4 h-4"
-                />
+              <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1">
+                  {{ $t("pages.players.table.elo") }}
+                  <ArrowUpIcon
+                    v-if="sortField === 'elo' && sortDirection === 'desc'"
+                    class="w-4 h-4"
+                  />
+                  <ArrowDownIcon
+                    v-else-if="sortField === 'elo' && sortDirection === 'asc'"
+                    class="w-4 h-4"
+                  />
+                </div>
+                <Select
+                  :model-value="eloTrack"
+                  @update:model-value="onEloTrackChange"
+                  @click.stop
+                >
+                  <SelectTrigger class="h-6 w-[110px] text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="season">Season</SelectItem>
+                    <SelectItem value="tournament">Tournament</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </TableHead>
             <TableHead v-if="canViewAdditionalDetails">{{
@@ -469,6 +484,9 @@ import {
                     competitive: player.elo_competitive,
                     wingman: player.elo_wingman,
                     duel: player.elo_duel,
+                    tournament_competitive: player.tournament_elo_competitive,
+                    tournament_wingman: player.tournament_elo_wingman,
+                    tournament_duel: player.tournament_elo_duel,
                   }"
                 ></PlayerElo>
               </TableCell>
@@ -530,6 +548,7 @@ export default {
       playersAggregate: 0,
       sortField: this.loadFiltersFromStorage().sortField || "name",
       sortDirection: this.loadFiltersFromStorage().sortDirection || "asc",
+      eloTrack: this.loadFiltersFromStorage().eloTrack || "season" as "season" | "tournament",
       onlyPlayedMatches:
         this.loadFiltersFromStorage().onlyPlayedMatches || false,
       countryPopoverOpen: false,
@@ -829,6 +848,7 @@ export default {
       this.onlyPlayedMatches = false;
       this.sortField = "name";
       this.sortDirection = "asc";
+      this.eloTrack = "season";
       this.page = 1;
       this.saveFiltersToStorage();
       this.searchPlayers();
@@ -886,6 +906,7 @@ export default {
             onlyPlayedMatches: this.onlyPlayedMatches,
             sortField: this.sortField,
             sortDirection: this.sortDirection,
+            eloTrack: this.eloTrack,
             perPage: this.perPage,
           };
           localStorage.setItem("players-filters", JSON.stringify(filters));
@@ -909,6 +930,11 @@ export default {
         this.sortDirection = "asc";
       }
       this.saveFiltersToStorage();
+    },
+    onEloTrackChange(track: "season" | "tournament") {
+      this.eloTrack = track;
+      this.saveFiltersToStorage();
+      this.searchPlayers();
     },
     onRolesChange(roles: any) {
       this.form.setValues({
@@ -1010,6 +1036,7 @@ export default {
                 ? this.form.values.isMuted
                 : undefined,
             only_played_matches: this.onlyPlayedMatches,
+            elo_track: this.eloTrack,
             sort_by: this.getSortBy(),
           },
         });

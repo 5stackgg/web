@@ -57,11 +57,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // Determine ELO field prefix based on track selection
+  const eloTrack = body.elo_track || "season";
+  const eloFieldPrefix = eloTrack === "tournament" ? "tournament_elo" : "elo";
+
   // Use provided sort_by or default to name:asc
   let sortBy = body.sort_by || "name:asc";
 
   if (sortBy.includes("elo")) {
-    sortBy = sortBy.replace("elo", "elo_competitive");
+    sortBy = sortBy.replace("elo", `${eloFieldPrefix}_competitive`);
   }
 
   if (body.registeredOnly || sortBy.includes("last_sign_in_at")) {
@@ -94,13 +98,13 @@ export default defineEventHandler(async (event) => {
 
   if (effectiveEloMin !== undefined && effectiveEloMin !== null) {
     filterBy.push(
-      `(elo_competitive:>=${effectiveEloMin} || elo_wingman:>=${effectiveEloMin} || elo_duel:>=${effectiveEloMin})`,
+      `(${eloFieldPrefix}_competitive:>=${effectiveEloMin} || ${eloFieldPrefix}_wingman:>=${effectiveEloMin} || ${eloFieldPrefix}_duel:>=${effectiveEloMin})`,
     );
   }
 
   if (body.elo_max !== undefined && body.elo_max !== null) {
     filterBy.push(
-      `(elo_competitive:<=${body.elo_max} || elo_wingman:<=${body.elo_max} || elo_duel:<=${body.elo_max})`,
+      `(${eloFieldPrefix}_competitive:<=${body.elo_max} || ${eloFieldPrefix}_wingman:<=${body.elo_max} || ${eloFieldPrefix}_duel:<=${body.elo_max})`,
     );
   }
 

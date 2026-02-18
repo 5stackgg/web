@@ -23,6 +23,7 @@ export const eloFields = Selector("v_player_elo")({
   player_name: true,
   player_steam_id: true,
   player_team_elo_avg: true,
+  season_id: true,
   series_multiplier: true,
   team_avg_kda: true,
   type: true,

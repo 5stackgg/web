@@ -2962,6 +2962,7 @@
             "select_section": "Select section",
             "branding_nav": "Branding",
             "fixtures_nav": "Fixtures",
+            "seasons_nav": "Seasons",
             "groups": {
                 "general": "General",
                 "match_setup": "Fixture Setup",

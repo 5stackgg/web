@@ -183,7 +183,7 @@ import Logout from "./Logout.vue";
               <NuxtLink
                 :to="{ name: 'players' }"
                 :class="{
-                  'router-link-active': isRouteActive('players'),
+                  'router-link-active': isRouteActive('players') && !$route.path.startsWith('/me'),
                 }"
               >
                 <Users />

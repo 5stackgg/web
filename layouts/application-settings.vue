@@ -4,6 +4,11 @@ import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 
 const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+
+const isDev = computed(() => {
+  const domain = useRuntimeConfig().public.webDomain;
+  return domain.includes("localhost") || domain.includes(".local");
+});
 </script>
 
 <template>
@@ -70,6 +75,11 @@ const showSeparators = computed(() => useApplicationSettingsStore().showSeparato
           <nuxt-link to="/settings/application/branding">
             <Button variant="ghost" class="w-full text-left justify-start">
               Branding
+            </Button>
+          </nuxt-link>
+          <nuxt-link v-if="isDev" to="/settings/application/fixtures">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              Fixtures
             </Button>
           </nuxt-link>
         </nav>

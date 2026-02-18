@@ -105,7 +105,7 @@ async function doRemoveFixtures() {
             Populate the database with sample players, teams, matches, and tournaments for testing.
           </p>
           <div class="mt-4">
-            <Button :disabled="loading" @click="showLoadDialog = true">
+            <Button variant="destructive" :disabled="loading" @click="showLoadDialog = true">
               {{ loading ? "Loading..." : "Load Fixtures" }}
             </Button>
           </div>
@@ -132,13 +132,18 @@ async function doRemoveFixtures() {
           <AlertDialogHeader>
             <AlertDialogTitle>Load Fixture Data?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will insert ~30 players, ~6 teams, ~100 matches, and 3 tournaments
+              This will insert 40 players, 8 teams, ~120 matches, and 4 tournaments
               into the database. This is sample data for development purposes.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction @click="doLoadFixtures">Load Fixtures</AlertDialogAction>
+            <AlertDialogAction
+              class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              @click="doLoadFixtures"
+            >
+              Load Fixtures
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

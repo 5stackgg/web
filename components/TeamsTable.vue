@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import {
   Table,
   TableBody,
@@ -41,8 +42,21 @@ import {
             :to="{ name: 'teams-id', params: { id: team.id } }"
             class="contents"
           >
-            <TableCell class="font-medium">
-              {{ team.name }}
+            <TableCell>
+              <div class="flex flex-col gap-2">
+                <div class="font-medium">{{ team.name }}</div>
+                <div class="flex flex-wrap gap-2">
+                  <PlayerDisplay
+                    v-for="rosterItem in team.roster || []"
+                    :key="rosterItem.player?.steam_id"
+                    :player="rosterItem.player"
+                    :show-flag="true"
+                    :show-role="false"
+                    :show-elo="false"
+                    class="text-xs"
+                  />
+                </div>
+              </div>
             </TableCell>
           </NuxtLink>
         </TableRow>

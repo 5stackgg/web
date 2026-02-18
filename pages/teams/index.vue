@@ -122,6 +122,7 @@ import { $, order_by } from "~/generated/zeus";
 import { useAuthStore } from "#imports";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useForm } from "vee-validate";
+import { playerFields } from "~/graphql/playerFields";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 
@@ -189,6 +190,12 @@ export default {
             {
               id: true,
               name: true,
+              roster: [
+                {},
+                {
+                  player: playerFields,
+                },
+              ],
             },
           ],
         });
@@ -249,6 +256,12 @@ export default {
                   {
                     id: true,
                     name: true,
+                    roster: [
+                      {},
+                      {
+                        player: playerFields,
+                      },
+                    ],
                   },
                 ],
               },

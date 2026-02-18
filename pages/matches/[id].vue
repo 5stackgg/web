@@ -120,10 +120,11 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
         <MatchMapVeto :match="match"></MatchMapVeto>
       </PageTransition>
 
-      <PageTransition :delay="200">
-        <MatchTabs :match="match" class="max-w-[1500px]"></MatchTabs>
-      </PageTransition>
     </div>
+
+    <PageTransition :delay="200" class="lg:col-span-2">
+      <MatchTabs :match="match"></MatchTabs>
+    </PageTransition>
   </div>
 </template>
 

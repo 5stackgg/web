@@ -195,38 +195,6 @@ definePageMeta({
         </div>
       </AnimatedCard>
 
-      <!-- Report an Issue -->
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-4">
-          <div>
-            <label class="text-sm font-medium">Report an Issue</label>
-            <p class="text-sm text-muted-foreground">
-              Configure the "Report an Issue" link in the sidebar and the GitHub URL.
-            </p>
-          </div>
-
-          <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleReportIssue()">
-            <div class="flex flex-row items-center justify-between p-4">
-              <div class="space-y-0.5">
-                <label class="text-sm font-medium cursor-pointer">Show Report an Issue</label>
-                <p class="text-sm text-muted-foreground">
-                  Display a "Report an Issue" link in the sidebar footer.
-                </p>
-              </div>
-              <Switch
-                :model-value="showReportIssue"
-                @update:model-value="toggleReportIssue"
-              />
-            </div>
-          </AnimatedCard>
-
-          <div class="space-y-2">
-            <label class="text-sm font-medium">GitHub URL</label>
-            <Input v-model="githubUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
-          </div>
-        </div>
-      </AnimatedCard>
-
       <!-- Theme Colors -->
       <AnimatedCard variant="gradient">
         <div class="p-6 space-y-4">
@@ -424,7 +392,6 @@ export default {
       borderRadius: "0.5",
       loginFooterText: "",
       loginFooterUrl: "",
-      githubUrl: "",
       colorValues: {} as Record<string, string>,
       colorMode: "dark" as "light" | "dark",
       saving: false,
@@ -445,12 +412,6 @@ export default {
       return this.settings.find(
         (s: { name: string; value: string | null }) =>
           s.name === "public.login_show_footer",
-      )?.value !== "false";
-    },
-    showReportIssue() {
-      return this.settings.find(
-        (s: { name: string; value: string | null }) =>
-          s.name === "public.show_report_issue",
       )?.value !== "false";
     },
     apiDomain() {
@@ -508,13 +469,6 @@ export default {
           this.loginFooterUrl = loginFooterUrlSetting.value;
         }
 
-        const githubUrlSetting = newVal.find(
-          (s) => s.name === "public.github_url",
-        );
-        if (githubUrlSetting) {
-          this.githubUrl = githubUrlSetting.value;
-        }
-
         for (const setting of newVal) {
           if (setting.name.startsWith("public.color_")) {
             this.colorValues[setting.name] = setting.value;
@@ -553,27 +507,6 @@ export default {
               object: {
                 name: "public.login_show_footer",
                 value: this.loginShowFooter ? "false" : "true",
-              },
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async toggleReportIssue() {
-      await (this as any).$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings_one: [
-            {
-              object: {
-                name: "public.show_report_issue",
-                value: this.showReportIssue ? "false" : "true",
               },
               on_conflict: {
                 constraint: settings_constraint.settings_pkey,
@@ -677,10 +610,6 @@ export default {
         if (this.loginFooterUrl) {
           objects.push({ name: "public.login_footer_url", value: this.loginFooterUrl });
         }
-        if (this.githubUrl) {
-          objects.push({ name: "public.github_url", value: this.githubUrl });
-        }
-
         for (const [key, value] of Object.entries(this.colorValues)) {
           if (value) {
             objects.push({ name: key, value });
@@ -718,7 +647,7 @@ export default {
     async resetAll() {
       try {
         // Delete all branding settings
-        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators", "public.login_footer_text", "public.login_footer_url", "public.login_show_footer", "public.show_report_issue", "public.github_url"];
+        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators", "public.login_footer_text", "public.login_footer_url", "public.login_show_footer"];
         for (const sections of [lightColorSections, darkColorSections]) {
           for (const section of sections) {
             for (const field of section.fields) {
@@ -750,7 +679,6 @@ export default {
         this.borderRadius = "0.5";
         this.loginFooterText = "";
         this.loginFooterUrl = "";
-        this.githubUrl = "";
         this.colorValues = {};
 
         await this.saveAll();
@@ -791,8 +719,6 @@ export default {
           loginFooterText: this.loginFooterText,
           loginFooterUrl: this.loginFooterUrl,
           loginShowFooter: this.loginShowFooter,
-          showReportIssue: this.showReportIssue,
-          githubUrl: this.githubUrl,
           colors: { ...this.colorValues },
         };
 
@@ -853,12 +779,6 @@ export default {
         }
         if (typeof data.loginShowFooter === "boolean" && data.loginShowFooter !== this.loginShowFooter) {
           this.toggleLoginFooter();
-        }
-        if (typeof data.showReportIssue === "boolean" && data.showReportIssue !== this.showReportIssue) {
-          this.toggleReportIssue();
-        }
-        if (data.githubUrl) {
-          this.githubUrl = data.githubUrl;
         }
         if (data.loginFooterText) {
           this.loginFooterText = data.loginFooterText;

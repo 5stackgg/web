@@ -169,6 +169,6 @@ export default {
   @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground;
 }
 .settings-nav .router-link-exact-active > button {
-  @apply bg-accent/70;
+  @apply bg-sidebar-accent text-sidebar-accent-foreground;
 }
 </style>

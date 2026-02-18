@@ -289,7 +289,7 @@ definePageMeta({
       <!-- Actions -->
       <div class="flex gap-2 flex-wrap">
         <Button @click="saveAll" :disabled="saving"> Save Branding </Button>
-        <Button variant="outline" @click="resetAll"> Reset to Defaults </Button>
+        <Button variant="destructive" @click="resetAll"> Reset to Defaults </Button>
         <Button variant="outline" @click="exportTheme" :disabled="exporting"> Export Theme </Button>
         <Button variant="outline" @click="$refs.importInput.click()"> Import Theme </Button>
         <input

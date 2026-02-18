@@ -27,6 +27,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "~/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 definePageMeta({
   alias: ["/me/:id?"],
@@ -239,19 +246,36 @@ const { isMobile } = useSidebar();
 
         <!-- Elo History Chart -->
         <PageTransition :delay="200">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4" v-if="player?.elo_history">
+          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4" v-if="player?.elo_history || filteredEloHistory">
             <CardHeader>
-              <CardTitle
-                class="text-lg md:text-base lg:text-xl font-bold text-center"
-              >
-                {{ $t("pages.players.detail.elo_history") }}
-              </CardTitle>
+              <div class="flex items-center justify-between">
+                <CardTitle
+                  class="text-lg md:text-base lg:text-xl font-bold"
+                >
+                  {{ $t("pages.players.detail.elo_history") }}
+                </CardTitle>
+                <Select v-model="selectedSeasonId" v-if="availableSeasons.length > 0">
+                  <SelectTrigger class="w-[160px]">
+                    <SelectValue placeholder="All Time" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Time</SelectItem>
+                    <SelectItem
+                      v-for="season in availableSeasons"
+                      :key="season.id"
+                      :value="season.id"
+                    >
+                      {{ season.name }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardHeader>
             <CardContent
               class="flex-1 min-h-[200px] sm:min-h-[250px] md:min-h-[300px]"
             >
-              <template v-if="player.elo_history.length > 0">
-                <PlayerEloChart :elo-history="player.elo_history" />
+              <template v-if="filteredEloHistory.length > 0">
+                <PlayerEloChart :elo-history="filteredEloHistory" />
               </template>
               <template v-else>
                 <div
@@ -441,7 +465,7 @@ const { isMobile } = useSidebar();
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_match_types_enum } from "~/generated/zeus";
-import { generateQuery } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
 import { eloFields } from "~/graphql/eloFields";
@@ -477,6 +501,17 @@ export default {
                 assists: true,
                 headshot_percentage: true,
               },
+              season_stats: [
+                {},
+                {
+                  season_id: true,
+                  kills: true,
+                  deaths: true,
+                  assists: true,
+                  headshots: true,
+                  headshot_percentage: true,
+                },
+              ],
               kills_by_weapons: [
                 {
                   order_by: [
@@ -560,6 +595,28 @@ export default {
           this.playerTournaments = data.tournaments || [];
         },
       },
+      availableSeasons: {
+        query: typedGql("subscription")({
+          seasons: [
+            {
+              order_by: [
+                {
+                  starts_at: order_by.desc,
+                },
+              ],
+            },
+            {
+              id: true,
+              name: true,
+              starts_at: true,
+              ends_at: true,
+            },
+          ],
+        }),
+        result: function ({ data }: { data: any }) {
+          this.availableSeasons = data.seasons || [];
+        },
+      },
     },
     playerWithMatches: {
       fetchPolicy: "network-only",
@@ -638,6 +695,13 @@ export default {
       page: 1,
       perPage: 10,
       playerTournaments: [],
+      availableSeasons: [] as Array<{
+        id: string;
+        name: string;
+        starts_at: string;
+        ends_at: string | null;
+      }>,
+      selectedSeasonId: "all" as string,
     };
   },
   computed: {
@@ -650,15 +714,12 @@ export default {
     },
 
     kdPercentage() {
-      if (
-        !this.player?.stats ||
-        !this.player.stats.kills ||
-        !this.player.stats.deaths
-      ) {
+      const stats = this.activeStats;
+      if (!stats || !stats.kills || !stats.deaths) {
         return 0;
       }
 
-      const kdRatio = this.player.stats.kills / this.player.stats.deaths;
+      const kdRatio = stats.kills / stats.deaths;
       return Math.min((kdRatio / 2) * 100, 100);
     },
     playerId() {
@@ -677,16 +738,15 @@ export default {
       );
     },
     kd() {
-      if (!this.player?.stats) {
+      const stats = this.activeStats;
+      if (!stats) {
         return 0;
       }
 
-      if (this.player?.stats?.deaths === 0) {
-        return this.player?.stats.kills;
+      if (stats.deaths === 0) {
+        return stats.kills;
       }
-      return formatStatValue(
-        this.player?.stats.kills / this.player?.stats.deaths,
-      );
+      return formatStatValue(stats.kills / stats.deaths);
     },
     winLossRatio() {
       const wins = this.player?.wins || 0;
@@ -696,24 +756,41 @@ export default {
       }
       return formatStatValue(wins / losses);
     },
+    filteredEloHistory() {
+      const history = this.player?.elo_history || [];
+      if (!this.selectedSeasonId || this.selectedSeasonId === "all") {
+        return history;
+      }
+      return history.filter((e: any) => e.season_id === this.selectedSeasonId);
+    },
+    activeStats() {
+      if (this.selectedSeasonId && this.selectedSeasonId !== "all" && this.player?.season_stats) {
+        const seasonStats = this.player.season_stats.find(
+          (s: any) => s.season_id === this.selectedSeasonId,
+        );
+        if (seasonStats) return seasonStats;
+      }
+      return this.player?.stats;
+    },
     combatStats() {
+      const stats = this.activeStats;
       return [
         {
           key: "kills",
-          value: this.player?.stats?.kills ?? "-",
+          value: stats?.kills ?? "-",
           label: this.$t("pages.players.detail.kills"),
           colorClass: "text-foreground",
         },
         {
           key: "assists",
-          value: this.player?.stats?.assists ?? "-",
+          value: stats?.assists ?? "-",
           label: "Assists",
           colorClass: "text-foreground",
         },
         {
           key: "hs",
-          value: this.player?.stats?.headshot_percentage
-            ? (this.player.stats.headshot_percentage * 100).toFixed(1) + "%"
+          value: stats?.headshot_percentage
+            ? (stats.headshot_percentage * 100).toFixed(1) + "%"
             : "-",
           label: "HeadShot %",
           colorClass: "text-primary",

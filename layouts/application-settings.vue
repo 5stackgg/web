@@ -73,6 +73,11 @@ const isDev = computed(() => {
               {{ $t("pages.settings.application.telemetry.title") }}
             </Button>
           </nuxt-link>
+          <nuxt-link to="/settings/application/seasons">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              Seasons
+            </Button>
+          </nuxt-link>
           <nuxt-link to="/settings/application/branding">
             <Button variant="ghost" class="w-full text-left justify-start">
               Branding

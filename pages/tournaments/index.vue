@@ -324,6 +324,7 @@ export default {
             limit: this.perPage,
             offset: (this.upcomingPage - 1) * this.perPage,
             statuses: [
+              e_tournament_status_enum.RegistrationOpen,
               e_tournament_status_enum.RegistrationClosed,
               e_tournament_status_enum.Setup,
             ],
@@ -354,6 +355,7 @@ export default {
         variables: function () {
           return {
             statuses: [
+              e_tournament_status_enum.RegistrationOpen,
               e_tournament_status_enum.RegistrationClosed,
               e_tournament_status_enum.Setup,
             ],

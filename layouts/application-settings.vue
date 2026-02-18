@@ -2,6 +2,11 @@
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
+
+const isDev = computed(() => {
+  const domain = useRuntimeConfig().public.webDomain;
+  return domain.includes("localhost") || domain.includes(".local");
+});
 </script>
 
 <template>
@@ -63,6 +68,11 @@ import Default from "~/layouts/default.vue";
           <nuxt-link to="/settings/application/telemetry">
             <Button variant="ghost" class="w-full text-left justify-start">
               {{ $t("pages.settings.application.telemetry.title") }}
+            </Button>
+          </nuxt-link>
+          <nuxt-link v-if="isDev" to="/settings/application/fixtures">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              Fixtures
             </Button>
           </nuxt-link>
         </nav>

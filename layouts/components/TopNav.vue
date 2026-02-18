@@ -36,6 +36,7 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
 
 const { isMobile } = useSidebar();
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
+const { brandName, logoUrl } = useBranding();
 </script>
 
 <template>
@@ -48,10 +49,10 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
         class="flex items-center gap-2 select-none"
         v-if="!isMobile"
       >
-        <NuxtImg class="rounded h-6 w-6" src="/favicon/64.png" />
-        <span class="font-extrabold text-base tracking-widest text-[#f5c6a5]"
-          >5Stack</span
-        >
+        <NuxtImg class="rounded h-6 w-6" :src="logoUrl || '/favicon/64.png'" />
+        <span class="uppercase font-bold text-base">
+          {{ brandName || $t("layouts.app_nav.brand") }}
+        </span>
       </NuxtLink>
       <SystemStatus v-if="!isMobile" />
       <!-- Unified Play and Community menus for all screen sizes -->
@@ -254,7 +255,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                         </a>
                       </NavigationMenuLink>
                     </li>
-                    <li>
+                    <li v-if="showReportIssue">
                       <NavigationMenuLink as-child>
                         <a
                           :href="githubUrl"
@@ -262,21 +263,11 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                           rel="noopener noreferrer"
                           class="flex flex-col px-2 py-2 rounded hover:text-green-300 transition-colors"
                         >
-                          <span class="block font-bold">
-                            {{
-                              $t(
-                                "layouts.top_nav.community.social.github.title",
-                              )
-                            }}
-                          </span>
+                          <span class="block font-bold">GitHub</span>
                           <span
                             class="block text-xs text-neutral-400 flex items-center gap-1"
                           >
-                            {{
-                              $t(
-                                "layouts.top_nav.community.social.github.subtitle",
-                              )
-                            }}
+                            {{ $t("layouts.app_nav.footer.report_issue") }}
                           </span>
                         </a>
                       </NavigationMenuLink>
@@ -393,6 +384,9 @@ export default {
     },
     githubUrl() {
       return useApplicationSettingsStore().githubUrl;
+    },
+    showReportIssue() {
+      return useApplicationSettingsStore().showReportIssue;
     },
     me() {
       return useAuthStore().me;

@@ -2,6 +2,7 @@
 import TournamentStage from "~/components/tournament/TournamentStage.vue";
 import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue";
 import Separator from "../ui/separator/Separator.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { e_tournament_status_enum } from "~/generated/zeus";
 import {
@@ -153,7 +154,7 @@ import {
           </div>
         </TabsContent>
         <TabsContent value="add-stage" class="mt-6">
-          <Card class="p-4 max-w-2xl mx-auto">
+          <AnimatedCard variant="gradient" class="p-4 max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle>
                 {{ $t("tournament.stage.add_another") }}
@@ -167,7 +168,7 @@ import {
                 @updated="handleStageCreated"
               ></TournamentStageForm>
             </CardContent>
-          </Card>
+          </AnimatedCard>
         </TabsContent>
       </Tabs>
 
@@ -253,7 +254,7 @@ import {
         </p>
       </div>
 
-      <Card class="p-4 max-w-2xl mx-auto" v-if="tournament.stages.length === 0">
+      <AnimatedCard variant="gradient" class="p-4 max-w-2xl mx-auto" v-if="tournament.stages.length === 0">
         <h2 class="text-xl font-semibold mb-4">
           {{ $t("tournament.stage.add_first") }}
         </h2>
@@ -262,7 +263,7 @@ import {
           :order="tournament.stages.length + 1"
           @updated="handleStageCreated"
         ></TournamentStageForm>
-      </Card>
+      </AnimatedCard>
     </template>
     <template v-else>
       <div v-if="tournament.stages.length === 0" class="text-center p-8">

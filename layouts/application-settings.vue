@@ -3,6 +3,8 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 
+const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+
 const isDev = computed(() => {
   const domain = useRuntimeConfig().public.webDomain;
   return domain.includes("localhost") || domain.includes(".local");
@@ -19,11 +21,11 @@ const isDev = computed(() => {
         {{ $t("layouts.application_settings.description") }}
       </p>
     </div>
-    <Separator class="my-6" />
+    <Separator v-if="showSeparators" class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <aside class="w-full lg:w-auto">
         <nav
-          class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
+          class="settings-nav flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
         >
           <nuxt-link to="/settings/application/players">
             <Button variant="ghost" class="w-full text-left justify-start">
@@ -70,6 +72,11 @@ const isDev = computed(() => {
               {{ $t("pages.settings.application.telemetry.title") }}
             </Button>
           </nuxt-link>
+          <nuxt-link to="/settings/application/branding">
+            <Button variant="ghost" class="w-full text-left justify-start">
+              Branding
+            </Button>
+          </nuxt-link>
           <nuxt-link v-if="isDev" to="/settings/application/fixtures">
             <Button variant="ghost" class="w-full text-left justify-start">
               Fixtures
@@ -80,7 +87,7 @@ const isDev = computed(() => {
       <div
         :class="[
           'flex-1',
-          $route.name !== 'settings-application-map-pools'
+          $route.name !== 'settings-application-map-pools' && $route.name !== 'settings-application-branding'
             ? 'lg:max-w-2xl'
             : '',
         ]"
@@ -98,7 +105,10 @@ export default {};
 </script>
 
 <style lang="postcss">
-.router-link-exact-active {
-  @apply bg-muted hover:bg-muted rounded-md;
+.settings-nav a > button {
+  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground;
+}
+.settings-nav .router-link-exact-active > button {
+  @apply bg-accent/70;
 }
 </style>

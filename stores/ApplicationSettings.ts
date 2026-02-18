@@ -269,6 +269,48 @@ export const useApplicationSettingsStore = defineStore(
       globalStream.value = stream;
     };
 
+    const brandName = computed(() => {
+      return settings.value.find(
+        (s) => s.name === "public.brand_name",
+      )?.value;
+    });
+
+    const logoUrl = computed(() => {
+      return settings.value.find(
+        (s) => s.name === "public.logo_url",
+      )?.value;
+    });
+
+    const faviconUrl = computed(() => {
+      return settings.value.find(
+        (s) => s.name === "public.favicon_url",
+      )?.value;
+    });
+
+    const showSeparators = computed(() => {
+      return (
+        settings.value.find(
+          (s) => s.name === "public.show_separators",
+        )?.value !== "false"
+      );
+    });
+
+    const showReportIssue = computed(() => {
+      return (
+        settings.value.find(
+          (s) => s.name === "public.show_report_issue",
+        )?.value !== "false"
+      );
+    });
+
+    const githubUrl = computed(() => {
+      return (
+        settings.value.find(
+          (s) => s.name === "public.github_url",
+        )?.value || "https://github.com/5stackgg/5stack-panel"
+      );
+    });
+
     const isMatchmakingTypeEnabled = (
       matchType: e_match_types_enum,
     ): boolean => {
@@ -293,6 +335,12 @@ export const useApplicationSettingsStore = defineStore(
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,
+      brandName,
+      logoUrl,
+      faviconUrl,
+      showSeparators,
+      showReportIssue,
+      githubUrl,
       globalStream,
       setGlobalStream,
       isMatchmakingTypeEnabled,

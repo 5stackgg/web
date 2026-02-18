@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { SidebarProps } from '.'
+import { computed } from 'vue'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from './utils'
+import { useApplicationSettingsStore } from '@/stores/ApplicationSettings'
 
 defineOptions({
   inheritAttrs: false,
@@ -15,6 +17,10 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 })
 
 const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+
+const showSeparators = computed(() => {
+  return useApplicationSettingsStore().showSeparators
+})
 </script>
 
 <template>
@@ -72,7 +78,9 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
         // Adjust the padding for floating and inset variants.
         variant === 'floating' || variant === 'inset'
           ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]'
-          : 'group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l',
+          : showSeparators
+            ? 'group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l'
+            : 'group-data-[collapsible=icon]:w-[--sidebar-width-icon]',
         props.class,
       )"
       :style="{ height: 'var(--sidebar-height, 100svh)' }"

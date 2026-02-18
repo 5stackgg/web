@@ -31,20 +31,14 @@ import Logout from "./Logout.vue";
 <template>
   <Sidebar collapsible="icon">
     <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton size="lg" as-child>
-            <nuxt-link to="/">
-              <NuxtImg
-                class="rounded max-w-8"
-                src="/favicon/64.png"
-                v-if="isMobile || !isPWA || !sideBarOpen"
-              />
-              <span v-if="!isPWA"> {{ $t("layouts.app_nav.brand") }} </span>
-            </nuxt-link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
+      <nuxt-link to="/" class="flex items-center gap-2 px-2 py-1.5">
+        <NuxtImg
+          class="rounded max-w-8"
+          :src="customLogoUrl || '/favicon/64.png'"
+          v-if="isMobile || !isPWA || !sideBarOpen"
+        />
+        <span v-if="!isPWA" class="font-semibold text-sm truncate"> {{ customBrandName || $t("layouts.app_nav.brand") }} </span>
+      </nuxt-link>
     </SidebarHeader>
     <SidebarContent>
       <SidebarGroup>
@@ -86,7 +80,7 @@ import Logout from "./Logout.vue";
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <Separator class="mx-4 w-auto" />
+          <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
           <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
             <SidebarMenuButton
@@ -173,7 +167,7 @@ import Logout from "./Logout.vue";
         </SidebarMenu>
       </SidebarGroup>
 
-      <Separator class="mx-4 w-auto" />
+      <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
       <SidebarGroup>
         <SidebarGroupLabel>{{
@@ -218,8 +212,8 @@ import Logout from "./Logout.vue";
       </SidebarGroup>
 
       <Separator
+        v-if="showSeparators && (isAdmin || isMatchOrganizer || isTournamentOrganizer)"
         class="mx-4 w-auto"
-        v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer"
       />
 
       <SidebarGroup v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer">
@@ -431,7 +425,7 @@ import Logout from "./Logout.vue";
         </SidebarMenu>
       </SidebarGroup>
 
-      <Separator class="mx-4 w-auto" v-if="isAdmin" />
+      <Separator v-if="showSeparators && isAdmin" class="mx-4 w-auto" />
 
       <SidebarGroup v-if="isAdmin">
         <SidebarGroupLabel>{{
@@ -508,13 +502,13 @@ import Logout from "./Logout.vue";
     </SidebarContent>
     <SidebarFooter>
       <SidebarMenu>
-        <SidebarMenuItem v-if="me?.role === e_player_roles_enum.administrator">
+        <SidebarMenuItem v-if="me?.role === e_player_roles_enum.administrator && showReportIssue">
           <SidebarMenuButton
             as-child
             :tooltip="$t('layouts.app_nav.tooltips.report_issue')"
           >
             <a
-              href="https://github.com/5stackgg/5stack-panel/issues"
+              :href="githubUrl"
               target="_blank"
               rel="noopener noreferrer"
               class="text-muted-foreground transition-colors hover:text-foreground"
@@ -650,10 +644,8 @@ export default {
   },
   methods: {
     isRouteActive(route: string) {
-      return (
-        this.$route.path === `/${route}` ||
-        this.$route.path.startsWith(`/${route}/`)
-      );
+      const name = this.$route.name as string;
+      return name === route || name?.startsWith(`${route}-`);
     },
     triggerSpotlightSearch() {
       // Trigger the keyboard shortcut to open spotlight
@@ -669,6 +661,24 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    customLogoUrl() {
+      const store = useApplicationSettingsStore();
+      return store.logoUrl
+        ? `https://${useRuntimeConfig().public.apiDomain}/branding/logo`
+        : null;
+    },
+    customBrandName() {
+      return useApplicationSettingsStore().brandName;
+    },
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
+    showReportIssue() {
+      return useApplicationSettingsStore().showReportIssue;
+    },
+    githubUrl() {
+      return useApplicationSettingsStore().githubUrl;
     },
     isPWA() {
       return window.matchMedia("(display-mode: standalone)").matches;

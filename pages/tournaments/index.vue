@@ -35,7 +35,7 @@
         :key="tournament.id"
         :tournament="tournament"
       ></TournamentTableRow>
-      <Separator class="my-4" />
+      <Separator v-if="showSeparators" class="my-4" />
     </div>
   </PageTransition>
 
@@ -433,6 +433,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     me() {
       return useAuthStore().me;
     },

@@ -15,7 +15,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
     <div>
       <template v-if="matchmakingAllowed">
         <Matchmaking></Matchmaking>
-        <Separator class="my-4" />
+        <Separator v-if="showSeparators" class="my-4" />
       </template>
       <template v-else-if="canCreateMatch">
         <CustomMatch class="bg-card p-8 rounded-lg" />
@@ -122,6 +122,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     me() {
       return useAuthStore().me;
     },

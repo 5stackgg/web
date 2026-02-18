@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import { Info } from "lucide-vue-next";
 </script>
 
@@ -9,32 +10,34 @@ import { Info } from "lucide-vue-next";
     <MatchOptions :form="form" :match="match">
       <template #left>
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
-          <FormItem
-            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-            @click="handleChange(!value)"
-          >
-            <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">{{
-                $t("pages.matches.create_page.pick_up_game")
-              }}</FormLabel>
-              <FormControl>
-                <Switch
-                  class="pointer-events-none"
-                  :model-value="value"
-                  @update:model-value="handleChange"
-                />
-              </FormControl>
-            </div>
-            <FormDescription>
-              {{ $t("pages.matches.create_page.pick_up_game_description") }}
-            </FormDescription>
+          <FormItem>
+            <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+              <div class="flex flex-col space-y-3 p-4">
+                <div class="flex justify-between items-center">
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("pages.matches.create_page.pick_up_game")
+                  }}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      class="pointer-events-none"
+                      :model-value="value"
+                      @update:model-value="handleChange"
+                    />
+                  </FormControl>
+                </div>
+                <FormDescription>
+                  {{ $t("pages.matches.create_page.pick_up_game_description") }}
+                </FormDescription>
+              </div>
+            </AnimatedCard>
           </FormItem>
         </FormField>
 
-        <div
-          class="flex flex-col gap-4 rounded-lg border p-4"
+        <AnimatedCard
+          variant="gradient"
           v-if="!form.values.pug"
         >
+          <div class="flex flex-col gap-4 p-4">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <FormField v-slot="{ handleChange, componentField }" name="team_1">
               <FormItem>
@@ -91,7 +94,8 @@ import { Info } from "lucide-vue-next";
               {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
             </span>
           </div>
-        </div>
+          </div>
+        </AnimatedCard>
       </template>
     </MatchOptions>
 

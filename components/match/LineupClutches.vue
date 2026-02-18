@@ -9,7 +9,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     :key="match_map.id"
     class="bg-secondary p-6 rounded-lg mb-8"
   >
-    <h3 class="text-2xl font-bold mb-6 text-primary">
+    <h3 class="text-2xl font-bold mb-6 text-foreground">
       {{ cleanMapName(match_map.map.name) }}
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

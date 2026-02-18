@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { useBranding } from "~/composables/useBranding";
 
 definePageMeta({
   layout: "public",
 });
+
+const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } = useBranding();
 </script>
 
 <template>
@@ -12,16 +15,22 @@ definePageMeta({
     class="flex flex-col items-center justify-center min-h-screen bg-black gap-6"
   >
     <PageTransition>
+      <img
+        v-if="logoUrl"
+        class="max-w-48 max-h-48 shadow-lg object-contain"
+        :src="logoUrl"
+      />
       <NuxtImg
+        v-else
         class="rounded-full w-32 h-32 shadow-lg"
         src="/favicon/512.png"
       />
     </PageTransition>
 
     <PageTransition :delay="100">
-      <AnimatedCard variant="gradient" class="w-full max-w-md">
+      <AnimatedCard variant="gradient" class="w-full max-w-md border-0">
         <CardHeader>
-          <CardTitle class="text-3xl font-bold text-center">5Stack</CardTitle>
+          <CardTitle class="text-3xl font-bold text-center">{{ brandName || '5Stack' }}</CardTitle>
         </CardHeader>
         <CardContent class="flex flex-col items-center">
           <img
@@ -34,16 +43,17 @@ definePageMeta({
       </AnimatedCard>
     </PageTransition>
 
-    <PageTransition :delay="200">
+    <PageTransition v-if="loginShowFooter" :delay="200">
       <div>
         <a
-          href="https://github.com/5stackgg/5stack-panel"
+          :href="loginFooterUrl || 'https://github.com/5stackgg/5stack-panel'"
           target="_blank"
           rel="noopener noreferrer"
           class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          {{ $t("pages.login.powered_by") }} 5stack.gg
-          <GithubLogoIcon class="w-4 h-4" />
+          {{ $t("pages.login.powered_by") }} {{ loginFooterText || '5stack.gg' }}
+          <GithubLogoIcon v-if="(loginFooterUrl || 'https://github.com/5stackgg/5stack-panel').includes('github.com')" class="w-4 h-4" />
+          <ExternalLink v-else class="w-4 h-4" />
         </a>
       </div>
     </PageTransition>
@@ -53,6 +63,7 @@ definePageMeta({
 <script lang="ts">
 import { useAuthStore } from "~/stores/AuthStore";
 import { GithubLogoIcon } from "@radix-icons/vue";
+import { ExternalLink } from "lucide-vue-next";
 
 export default {
   methods: {

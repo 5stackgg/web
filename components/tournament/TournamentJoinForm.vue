@@ -11,6 +11,7 @@ import { Switch } from "~/components/ui/switch";
 import { MessageCircleWarning } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -25,22 +26,23 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
     </h1>
 
     <FormField v-slot="{ value, handleChange }" name="new_team">
-      <FormItem
-        class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-        @click="handleChange(!value)"
-      >
-        <div class="space-y-0.5">
-          <FormLabel class="text-base">{{
-            $t("tournament.team.new")
-          }}</FormLabel>
-        </div>
-        <FormControl>
-          <Switch
-            class="pointer-events-none"
-            :model-value="value"
-            @update:model-value="handleChange"
-          />
-        </FormControl>
+      <FormItem>
+        <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+          <div class="flex flex-row items-center justify-between p-4">
+            <div class="space-y-0.5">
+              <FormLabel class="text-base">{{
+                $t("tournament.team.new")
+              }}</FormLabel>
+            </div>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :model-value="value"
+                @update:model-value="handleChange"
+              />
+            </FormControl>
+          </div>
+        </AnimatedCard>
       </FormItem>
     </FormField>
 
@@ -50,22 +52,23 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
         v-slot="{ value, handleChange }"
         name="add_self_to_lineup"
       >
-        <FormItem
-          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer"
-          @click="handleChange(!value)"
-        >
-          <div class="space-y-0.5">
-            <FormLabel class="text-base">{{
-              $t("tournament.join.add_self_to_lineup")
-            }}</FormLabel>
-          </div>
-          <FormControl>
-            <Switch
-              class="pointer-events-none"
-              :model-value="value"
-              @update:model-value="handleChange"
-            />
-          </FormControl>
+        <FormItem>
+          <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+            <div class="flex flex-row items-center justify-between p-4">
+              <div class="space-y-0.5">
+                <FormLabel class="text-base">{{
+                  $t("tournament.join.add_self_to_lineup")
+                }}</FormLabel>
+              </div>
+              <FormControl>
+                <Switch
+                  class="pointer-events-none"
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                />
+              </FormControl>
+            </div>
+          </AnimatedCard>
         </FormItem>
       </FormField>
 

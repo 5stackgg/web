@@ -1677,7 +1677,8 @@
             "toggle": "Adjust Settings",
             "queue_order": "Queue Order"
         },
-        "high_latency_warning": "Your latency is too high for competitive matches"
+        "high_latency_warning": "Your latency is too high for competitive matches",
+        "no_preferred_regions": "Please select at least one preferred region in matchmaking settings"
     },
     "game_server": {
         "update_cs": "Update CS",

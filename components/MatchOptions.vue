@@ -17,6 +17,7 @@ import {
   CollapsibleContent,
 } from "~/components/ui/collapsible";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -30,7 +31,8 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       <div class="space-y-4">
         <slot name="left"></slot>
 
-        <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
+        <AnimatedCard variant="gradient">
+          <div class="grid grid-cols-1 gap-8 p-4">
           <slot></slot>
 
           <FormField
@@ -102,34 +104,40 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
+          </div>
+        </AnimatedCard>
 
         <FormField
           v-slot="{ value, handleChange }"
           name="map_veto"
           v-if="!forceVeto && !stageBracketOverride"
         >
-          <FormItem
-            class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-            :class="{ 'cursor-not-allowed opacity-60': isLocked }"
-            @click="!isLocked && handleChange(!value)"
-          >
-            <div class="flex justify-between items-center">
-              <FormLabel class="text-lg font-semibold">{{
-                $t("match.options.map_veto_settings.label")
-              }}</FormLabel>
-              <FormControl>
-                <Switch
-                  class="pointer-events-none"
-                  :model-value="value"
-                  @update:model-value="handleChange"
-                  :disabled="isLocked"
-                />
-              </FormControl>
-            </div>
-            <FormDescription>
-              {{ $t("match.options.map_veto_settings.description") }}
-            </FormDescription>
+          <FormItem>
+            <AnimatedCard
+              variant="gradient"
+              class="cursor-pointer"
+              :class="{ 'cursor-not-allowed opacity-60': isLocked }"
+              @click="!isLocked && handleChange(!value)"
+            >
+              <div class="flex flex-col space-y-3 p-4">
+                <div class="flex justify-between items-center">
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.map_veto_settings.label")
+                  }}</FormLabel>
+                  <FormControl>
+                    <Switch
+                      class="pointer-events-none"
+                      :model-value="value"
+                      @update:model-value="handleChange"
+                      :disabled="isLocked"
+                    />
+                  </FormControl>
+                </div>
+                <FormDescription>
+                  {{ $t("match.options.map_veto_settings.description") }}
+                </FormDescription>
+              </div>
+            </AnimatedCard>
           </FormItem>
         </FormField>
       </div>
@@ -137,9 +145,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       <!-- Map Pool Selection -->
       <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
-          <Card>
-            <CardHeader>
-              <CardTitle class="flex justify-between items-center">
+          <AnimatedCard variant="gradient">
+            <div class="p-6 space-y-6">
+              <div class="flex justify-between items-center">
                 <FormLabel class="text-lg font-semibold">
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
@@ -187,9 +195,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     </FormControl>
                   </FormField>
                 </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </div>
               <div class="space-y-6">
                 <div
                   class="flex items-center justify-between"
@@ -270,8 +276,8 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   </div>
                 </template>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </AnimatedCard>
           <FormMessage />
         </FormItem>
       </FormField>
@@ -304,10 +310,10 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       <Collapsible v-model:open="showAdvancedSettings">
         <CollapsibleTrigger as-child>
           <div
-            class="flex items-center justify-between p-4 mb-4 bg-secondary rounded-lg cursor-pointer hover:bg-secondary-hover transition-colors duration-200 cursor-pointer"
+            class="flex items-center justify-between p-4 mb-4 bg-secondary rounded-lg cursor-pointer hover:bg-secondary/80 transition-colors duration-200 cursor-pointer"
           >
             <div class="flex items-center space-x-3">
-              <SettingsIcon name="settings" class="h-5 w-5 text-primary" />
+              <SettingsIcon name="settings" class="h-5 w-5 text-foreground" />
               <span class="text-lg font-semibold">{{
                 $t("match.options.advanced.title")
               }}</span>
@@ -339,92 +345,92 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
 
         <CollapsibleContent>
           <div class="flex flex-col gap-4">
-            <FormField v-slot="{ value, handleChange }" name="overtime">
-              <FormItem
-                class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-                @click="handleChange(!value)"
-              >
-                <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.overtime.label")
-                  }}</FormLabel>
-                  <FormControl>
-                    <Switch
-                      class="pointer-events-none"
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                </div>
-                <FormDescription>
-                  {{ $t("match.options.advanced.overtime.description") }}
-                </FormDescription>
-              </FormItem>
-            </FormField>
-
-            <FormField v-slot="{ value, handleChange }" name="knife_round">
-              <FormItem
-                class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-                @click="handleChange(!value)"
-              >
-                <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.knife_round.label")
-                  }}</FormLabel>
-                  <FormControl>
-                    <Switch
-                      class="pointer-events-none"
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                </div>
-                <FormDescription>
-                  {{ $t("match.options.advanced.knife_round.description") }}
-                </FormDescription>
-              </FormItem>
-            </FormField>
-
-            <div class="grid grid-cols-1 gap-8 rounded-lg border p-4">
-              <FormField v-slot="{ componentField }" name="mr">
-                <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.max_rounds.label")
-                  }}</FormLabel>
-                  <FormDescription>
-                    {{ $t("match.options.advanced.max_rounds.description") }}
-                  </FormDescription>
-                  <Select v-bind="componentField" :disabled="isLive">
-                    <FormControl>
-                      <SelectTrigger :disabled="isLive">
-                        <SelectValue
-                          :placeholder="
-                            $t('match.options.advanced.max_rounds.placeholder')
-                          "
+            <AnimatedCard variant="gradient">
+              <div class="p-4 space-y-6">
+                <FormField v-slot="{ value, handleChange }" name="overtime">
+                  <FormItem>
+                    <div class="flex flex-row items-center justify-between cursor-pointer" @click="handleChange(!value)">
+                      <div class="space-y-0.5">
+                        <FormLabel class="text-lg font-semibold">{{
+                          $t("match.options.advanced.overtime.label")
+                        }}</FormLabel>
+                        <FormDescription>
+                          {{ $t("match.options.advanced.overtime.description") }}
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
                         />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem
-                          :value="rounds"
-                          v-for="rounds in ['8', '12', '15']"
-                          :key="rounds"
-                          :disabled="isLive"
-                        >
-                          {{ rounds }}
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-            </div>
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
 
-            <Card v-if="availableRegions.length > 1">
-              <CardHeader>
-                <CardTitle class="flex justify-between items-center">
+                <FormField v-slot="{ value, handleChange }" name="knife_round">
+                  <FormItem>
+                    <div class="flex flex-row items-center justify-between cursor-pointer" @click="handleChange(!value)">
+                      <div class="space-y-0.5">
+                        <FormLabel class="text-lg font-semibold">{{
+                          $t("match.options.advanced.knife_round.label")
+                        }}</FormLabel>
+                        <FormDescription>
+                          {{ $t("match.options.advanced.knife_round.description") }}
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                  </FormItem>
+                </FormField>
+
+                <FormField v-slot="{ componentField }" name="mr">
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.max_rounds.label")
+                    }}</FormLabel>
+                    <FormDescription>
+                      {{ $t("match.options.advanced.max_rounds.description") }}
+                    </FormDescription>
+                    <Select v-bind="componentField" :disabled="isLive">
+                      <FormControl>
+                        <SelectTrigger :disabled="isLive">
+                          <SelectValue
+                            :placeholder="
+                              $t('match.options.advanced.max_rounds.placeholder')
+                            "
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="rounds"
+                            v-for="rounds in ['8', '12', '15']"
+                            :key="rounds"
+                            :disabled="isLive"
+                          >
+                            {{ rounds }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard variant="gradient" v-if="availableRegions.length > 1">
+              <div class="p-6 space-y-6">
+                <div class="flex justify-between items-center">
                   <div class="text-lg font-semibold">
                     {{ $t("match.options.advanced.region.title") }}
                   </div>
@@ -439,39 +445,43 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                       "
                     />
                   </div>
-                </CardTitle>
-              </CardHeader>
+                </div>
 
-              <CardContent class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
-                  <FormItem
-                    class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-                    :class="{
-                      'cursor-not-allowed': form.values.lan,
-                      'opacity-60': isLocked,
-                    }"
-                    @click="
-                      !form.values.lan && !isLocked && handleChange(!value)
-                    "
-                  >
-                    <div class="flex justify-between items-center">
-                      <FormLabel class="text-lg font-semibold">{{
-                        $t("match.options.advanced.region.veto.label")
-                      }}</FormLabel>
-                      <FormControl>
-                        <Switch
-                          class="pointer-events-none"
-                          :model-value="value"
-                          @update:model-value="
-                            form.values.lan === false && handleChange
-                          "
-                          :disabled="form.values.lan || isLocked"
-                        />
-                      </FormControl>
-                    </div>
-                    <FormDescription>
-                      {{ $t("match.options.advanced.region.veto.description") }}
-                    </FormDescription>
+                  <FormItem>
+                    <AnimatedCard
+                      variant="gradient"
+                      class="cursor-pointer"
+                      :class="{
+                        'cursor-not-allowed': form.values.lan,
+                        'opacity-60': isLocked,
+                      }"
+                      @click="
+                        !form.values.lan && !isLocked && handleChange(!value)
+                      "
+                    >
+                      <div class="flex flex-col space-y-3 p-4">
+                        <div class="flex justify-between items-center">
+                          <FormLabel class="text-lg font-semibold">{{
+                            $t("match.options.advanced.region.veto.label")
+                          }}</FormLabel>
+                          <FormControl>
+                            <Switch
+                              class="pointer-events-none"
+                              :model-value="value"
+                              @update:model-value="
+                                form.values.lan === false && handleChange
+                              "
+                              :disabled="form.values.lan || isLocked"
+                            />
+                          </FormControl>
+                        </div>
+                        <FormDescription>
+                          {{ $t("match.options.advanced.region.veto.description") }}
+                        </FormDescription>
+                      </div>
+                    </AnimatedCard>
                   </FormItem>
                 </FormField>
 
@@ -627,10 +637,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     <FormMessage />
                   </FormItem>
                 </FormField>
-              </CardContent>
-            </Card>
+                </div>
+              </div>
+            </AnimatedCard>
 
-            <div class="flex flex-col space-y-3 rounded-lg border p-4">
+            <AnimatedCard variant="gradient">
+              <div class="flex flex-col space-y-3 p-4">
               <FormField v-slot="{ value }" name="number_of_substitutes">
                 <FormItem>
                   <FormLabel class="text-lg font-semibold">{{
@@ -698,80 +710,79 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   <FormMessage />
                 </FormItem>
               </FormField>
-            </div>
+              </div>
+            </AnimatedCard>
 
-            <div
-              class="flex flex-col space-y-3 rounded-lg border p-4"
-              v-if="canSetcheckInSettings"
-            >
-              <FormField v-slot="{ componentField }" name="check_in_setting">
-                <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.check_in_settings.label")
-                  }}</FormLabel>
-                  <FormDescription>{{
-                    $t("match.options.advanced.check_in_settings.description")
-                  }}</FormDescription>
-                  <FormControl>
-                    <Select v-bind="componentField">
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem
-                            :value="vetoSetting.value"
-                            v-for="vetoSetting in checkInSettings"
-                            :key="vetoSetting.value"
-                          >
-                            {{ vetoSetting.display }}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-            </div>
+            <AnimatedCard variant="gradient">
+              <div class="p-4 space-y-6">
+                <FormField v-if="canSetcheckInSettings" v-slot="{ componentField }" name="check_in_setting">
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.check_in_settings.label")
+                    }}</FormLabel>
+                    <FormDescription>{{
+                      $t("match.options.advanced.check_in_settings.description")
+                    }}</FormDescription>
+                    <FormControl>
+                      <Select v-bind="componentField">
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem
+                              :value="vetoSetting.value"
+                              v-for="vetoSetting in checkInSettings"
+                              :key="vetoSetting.value"
+                            >
+                              {{ vetoSetting.display }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
 
-            <div class="flex flex-col space-y-3 rounded-lg border p-4">
-              <FormField v-slot="{ componentField }" name="ready_setting">
-                <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.ready_settings.label")
-                  }}</FormLabel>
-                  <FormDescription>{{
-                    $t("match.options.advanced.ready_settings.description")
-                  }}</FormDescription>
-                  <FormControl>
-                    <Select v-bind="componentField">
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem
-                            :value="readySetting.value"
-                            v-for="readySetting in readySettings"
-                            :key="readySetting.value"
-                          >
-                            {{ readySetting.display }}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-            </div>
+                <FormField v-slot="{ componentField }" name="ready_setting">
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.ready_settings.label")
+                    }}</FormLabel>
+                    <FormDescription>{{
+                      $t("match.options.advanced.ready_settings.description")
+                    }}</FormDescription>
+                    <FormControl>
+                      <Select v-bind="componentField">
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem
+                              :value="readySetting.value"
+                              v-for="readySetting in readySettings"
+                              :key="readySetting.value"
+                            >
+                              {{ readySetting.display }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </div>
+            </AnimatedCard>
 
-            <div class="flex flex-col space-y-3 rounded-lg border p-4">
+            <AnimatedCard variant="gradient">
+              <div class="flex flex-col space-y-3 p-4">
               <FormField v-slot="{ componentField }" name="timeout_setting">
                 <FormItem>
                   <FormLabel class="text-lg font-semibold">{{
@@ -838,28 +849,30 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                   <FormMessage />
                 </FormItem>
               </FormField>
-            </div>
+              </div>
+            </AnimatedCard>
 
             <FormField v-slot="{ value, handleChange }" name="default_models">
-              <FormItem
-                class="flex flex-col space-y-3 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-                @click="handleChange(!value)"
-              >
-                <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.default_models.label")
-                  }}</FormLabel>
-                  <FormControl>
-                    <Switch
-                      class="pointer-events-none"
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                </div>
-                <FormDescription>
-                  {{ $t("match.options.advanced.default_models.description") }}
-                </FormDescription>
+              <FormItem>
+                <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+                  <div class="flex flex-col space-y-3 p-4">
+                    <div class="flex justify-between items-center">
+                      <FormLabel class="text-lg font-semibold">{{
+                        $t("match.options.advanced.default_models.label")
+                      }}</FormLabel>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+                    <FormDescription>
+                      {{ $t("match.options.advanced.default_models.description") }}
+                    </FormDescription>
+                  </div>
+                </AnimatedCard>
               </FormItem>
             </FormField>
           </div>

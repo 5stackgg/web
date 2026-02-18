@@ -274,7 +274,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent>
-            <div class="mt-2 pt-3 border-t border-border space-y-6">
+            <div :class="['mt-2 pt-3 space-y-6', showSeparators && 'border-t border-border']">
               <!-- Match Options -->
               <MatchOptionsDisplay
                 :show-details-by-default="false"
@@ -286,7 +286,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
         <!-- Organized By - Bottom Right -->
         <div
-          class="flex items-center justify-end gap-1.5 mt-4 pt-3 border-t border-border"
+          :class="['flex items-center justify-end gap-1.5 mt-4 pt-3', showSeparators && 'border-t border-border']"
         >
           <span class="text-xs text-muted-foreground">{{
             $t("tournament.organizer.organized_by")
@@ -346,7 +346,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 :tournament="tournament"
                 :show-matches="false"
               />
-              <Separator class="my-4" />
+              <Separator v-if="showSeparators" class="my-4" />
             </PageTransition>
           </template>
 
@@ -856,6 +856,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     me() {
       return useAuthStore().me;
     },

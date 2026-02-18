@@ -257,7 +257,7 @@ const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
                     <li>
                       <NavigationMenuLink as-child>
                         <a
-                          href="https://github.com/5stackgg/5stack-panel"
+                          :href="githubUrl"
                           target="_blank"
                           rel="noopener noreferrer"
                           class="flex flex-col px-2 py-2 rounded hover:text-green-300 transition-colors"
@@ -390,6 +390,9 @@ export default {
   computed: {
     inviteLink() {
       return `https://${useRuntimeConfig().public.webDomain}/discord-invite`;
+    },
+    githubUrl() {
+      return useApplicationSettingsStore().githubUrl;
     },
     me() {
       return useAuthStore().me;

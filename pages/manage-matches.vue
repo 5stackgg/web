@@ -44,7 +44,7 @@ const { isMobile } = useSidebar();
     </PageHeading>
   </PageTransition>
 
-  <Separator class="my-4" />
+  <Separator v-if="showSeparators" class="my-4" />
 
   <!-- Filters Section -->
   <PageTransition :delay="100" class="mt-6">
@@ -562,6 +562,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     hasActiveFilters(): boolean {
       const formValues = this.form.values;
       return !!(

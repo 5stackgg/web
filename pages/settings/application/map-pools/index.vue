@@ -92,7 +92,7 @@ const { isMobile } = useSidebar();
     </div>
   </PageTransition>
 
-  <Separator class="mt-6" />
+  <Separator v-if="showSeparators" class="mt-6" />
 
   <PageTransition :delay="200" class="mt-6">
     <div class="flex items-center justify-between">
@@ -272,6 +272,9 @@ export default {
     },
   },
   computed: {
+    showSeparators() {
+      return useApplicationSettingsStore().showSeparators;
+    },
     availableMaps(): Map[] {
       const uniqueMapsMap = new Map<string, Map>();
 

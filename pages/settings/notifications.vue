@@ -51,6 +51,8 @@ const testCountdownSound = () => {
 const isAdmin = computed(() => {
   return useAuthStore().isAdmin;
 });
+
+const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
 </script>
 
 <template>
@@ -64,7 +66,7 @@ const isAdmin = computed(() => {
       </p>
     </div>
   </PageTransition>
-  <Separator />
+  <Separator v-if="showSeparators" />
 
   <PageTransition :delay="100">
     <div class="space-y-6">

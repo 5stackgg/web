@@ -543,6 +543,7 @@ import Logout from "./Logout.vue";
             <DropdownMenuTrigger as-child>
               <SidebarMenuButton
                 size="lg"
+                class="hover:!bg-transparent hover:!text-current active:!bg-transparent"
                 :class="{
                   'bg-sidebar-accent text-sidebar-accent-foreground':
                     profileOpened,

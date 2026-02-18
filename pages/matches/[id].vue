@@ -139,8 +139,12 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import { useMatchContext } from "~/composables/useMatchContext";
 
 export default {
+  unmounted() {
+    useMatchContext().value = null;
+  },
   data() {
     return {
       match: undefined,
@@ -182,6 +186,7 @@ export default {
               can_check_in: true,
               requested_organizer: true,
               is_tournament_match: true,
+              label: true,
               can_cancel: true,
               can_assign_server: true,
               min_players_per_lineup: true,
@@ -208,6 +213,17 @@ export default {
                 lobby_access: true,
                 ...matchOptionsFields,
               },
+              tournament_brackets: [
+                { limit: 1 },
+                {
+                  stage: {
+                    tournament: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              ],
               region_veto_picks: {
                 type: true,
                 region: true,
@@ -298,6 +314,22 @@ export default {
         }),
         result: function ({ data }) {
           this.match = data.matches_by_pk;
+
+          const match = data.matches_by_pk;
+          if (match) {
+            const mc = useMatchContext();
+            const displayText =
+              match.label ||
+              `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`;
+            const tournament = match.tournament_brackets?.[0]?.stage?.tournament;
+            mc.value = {
+              id: match.id,
+              displayText,
+              ...(tournament
+                ? { tournament: { id: tournament.id, name: tournament.name } }
+                : {}),
+            };
+          }
         },
       },
     },

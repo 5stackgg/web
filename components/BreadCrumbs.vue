@@ -27,6 +27,7 @@
 <script lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useTournamentContext } from "~/composables/useTournamentContext";
+import { useMatchContext } from "~/composables/useMatchContext";
 
 export default {
   computed: {
@@ -39,10 +40,33 @@ export default {
       });
 
       const tc = useTournamentContext();
+      const mc = useMatchContext();
       const breadcrumbs: Array<{
         text: string;
         to: string;
       }> = [];
+
+      // Tournament match: Dashboard > Tournaments > {name} > {match display}
+      if (
+        segments[0] === "matches" &&
+        segments[1] &&
+        mc.value?.tournament
+      ) {
+        breadcrumbs.push({
+          text: "tournaments",
+          to: "/tournaments",
+        });
+        breadcrumbs.push({
+          text: mc.value.tournament.name,
+          to: `/tournaments/${mc.value.tournament.id}`,
+        });
+        breadcrumbs.push({
+          text: mc.value.displayText,
+          to: `/matches/${segments[1]}`,
+        });
+        return breadcrumbs;
+      }
+
       let path = "";
       segments.forEach((segment: string, index: number) => {
         path += `/${segment}`;
@@ -62,12 +86,21 @@ export default {
         }
 
         // Replace tournament UUID with name when available
-        const displayText =
+        let displayText =
           segments[0] === "tournaments" &&
           index === 1 &&
           tc.value?.id === segment
             ? tc.value.name
             : segment;
+
+        // Replace match UUID with human-readable display text
+        if (
+          segments[0] === "matches" &&
+          index === 1 &&
+          mc.value?.id === segment
+        ) {
+          displayText = mc.value.displayText;
+        }
 
         breadcrumbs.push({
           text: displayText,

@@ -26,6 +26,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Kbd, KbdGroup } from "~/components/ui/kbd";
 import Logout from "./Logout.vue";
+import { useMatchContext } from "~/composables/useMatchContext";
 </script>
 
 <template>
@@ -132,7 +133,7 @@ import Logout from "./Logout.vue";
               <NuxtLink
                 :to="{ name: 'tournaments' }"
                 :class="{
-                  'router-link-active': isRouteActive('tournaments'),
+                  'router-link-active': isRouteActive('tournaments') || useMatchContext().value?.tournament != null,
                 }"
               >
                 <TournamentBracket />

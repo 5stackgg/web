@@ -32,9 +32,6 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    tournamentContext() {
-      return useTournamentContext().value;
-    },
     crumbs() {
       const segments = this.$route.path.split("/").filter((segment: string) => {
         return segment.trim() !== "";
@@ -45,28 +42,6 @@ export default {
         to: string;
       }> = [];
       let path = "";
-      const isMatchRoute =
-        segments[0] === "matches" || segments[0] === "manage-matches";
-
-      // If this is a tournament match, show tournament breadcrumbs instead
-      if (isMatchRoute && this.tournamentContext) {
-        breadcrumbs.push({
-          text: "Tournaments",
-          to: "/tournaments",
-        });
-        breadcrumbs.push({
-          text: this.tournamentContext.name,
-          to: `/tournaments/${this.tournamentContext.id}`,
-        });
-        // Add the match ID segment as the last crumb
-        const matchId = segments[segments.length - 1];
-        breadcrumbs.push({
-          text: matchId,
-          to: this.$route.path,
-        });
-        return breadcrumbs;
-      }
-
       segments.forEach((segment: string) => {
         path += `/${segment}`;
 

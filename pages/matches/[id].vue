@@ -182,6 +182,17 @@ export default {
               can_check_in: true,
               requested_organizer: true,
               is_tournament_match: true,
+              tournament_brackets: [
+                { limit: 1 },
+                {
+                  stage: {
+                    tournament: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              ],
               can_cancel: true,
               can_assign_server: true,
               min_players_per_lineup: true,
@@ -298,9 +309,18 @@ export default {
         }),
         result: function ({ data }) {
           this.match = data.matches_by_pk;
+          const tournament =
+            this.match?.tournament_brackets?.[0]?.stage?.tournament;
+          const tournamentContext = useTournamentContext();
+          tournamentContext.value = tournament
+            ? { id: tournament.id, name: tournament.name }
+            : null;
         },
       },
     },
+  },
+  unmounted() {
+    useTournamentContext().value = null;
   },
   computed: {
     showSeparators() {

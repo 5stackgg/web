@@ -132,7 +132,7 @@ import Logout from "./Logout.vue";
               <NuxtLink
                 :to="{ name: 'tournaments' }"
                 :class="{
-                  'router-link-active': isRouteActive('tournaments'),
+                  'router-link-active': isRouteActive('tournaments') || isTournamentMatch,
                 }"
               >
                 <TournamentBracket />
@@ -662,6 +662,9 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    isTournamentMatch() {
+      return useTournamentContext().value !== null;
     },
     customLogoUrl() {
       const store = useApplicationSettingsStore();

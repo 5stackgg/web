@@ -123,7 +123,11 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
     </div>
 
     <PageTransition :delay="200" class="lg:col-span-2">
-      <MatchTabs :match="match"></MatchTabs>
+      <AnimatedCard variant="gradient">
+        <CardContent class="p-4">
+          <MatchTabs :match="match"></MatchTabs>
+        </CardContent>
+      </AnimatedCard>
     </PageTransition>
   </div>
 </template>

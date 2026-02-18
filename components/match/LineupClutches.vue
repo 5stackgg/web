@@ -7,7 +7,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
   <div
     v-for="match_map in match.match_maps"
     :key="match_map.id"
-    class="bg-secondary p-6 rounded-lg mb-8"
+    class="bg-muted/30 p-6 rounded-lg mb-8"
   >
     <h3 class="text-2xl font-bold mb-6 text-foreground">
       {{ cleanMapName(match_map.map.name) }}
@@ -27,8 +27,8 @@ import PlayerDisplay from "../PlayerDisplay.vue";
             :class="[
               'px-3 py-1 rounded-full text-sm font-medium',
               clutches[match_map.id][round.round].success
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800',
+                ? 'bg-green-900/50 text-green-400'
+                : 'bg-red-900/50 text-red-400',
             ]"
           >
             {{
@@ -67,13 +67,13 @@ import PlayerDisplay from "../PlayerDisplay.vue";
               >
                 <PlayerDisplay
                   :player="player"
-                  class="w-full text-sm bg-secondary px-3 py-2 rounded"
+                  class="w-full text-sm bg-muted/50 px-3 py-2 rounded"
                 ></PlayerDisplay>
               </template>
             </div>
           </div>
         </div>
-        <p v-else class="text-sm text-gray-500 italic mt-4">
+        <p v-else class="text-sm text-muted-foreground italic mt-4">
           {{ $t("match.clutches.no_clutches") }}
         </p>
       </div>

@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
+import { useTournamentContext } from "~/composables/useTournamentContext";
 
 export default {
   computed: {
@@ -37,12 +38,13 @@ export default {
         return segment.trim() !== "";
       });
 
+      const tc = useTournamentContext();
       const breadcrumbs: Array<{
         text: string;
         to: string;
       }> = [];
       let path = "";
-      segments.forEach((segment: string) => {
+      segments.forEach((segment: string, index: number) => {
         path += `/${segment}`;
 
         if (path === `/players/${this.me?.steam_id}`) {
@@ -59,8 +61,16 @@ export default {
           path = path.replace("/manage-matches", "/matches");
         }
 
+        // Replace tournament UUID with name when available
+        const displayText =
+          segments[0] === "tournaments" &&
+          index === 1 &&
+          tc.value?.id === segment
+            ? tc.value.name
+            : segment;
+
         breadcrumbs.push({
-          text: segment,
+          text: displayText,
           to: path,
         });
       });

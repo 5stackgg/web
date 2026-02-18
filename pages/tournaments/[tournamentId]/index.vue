@@ -519,6 +519,9 @@ export default {
       e_match_types: [],
     };
   },
+  unmounted() {
+    useTournamentContext().value = null;
+  },
   apollo: {
     e_match_types: {
       fetchPolicy: "cache-first",
@@ -803,6 +806,9 @@ export default {
         },
         result: function ({ data }) {
           this.tournament = data.tournaments_by_pk;
+          useTournamentContext().value = this.tournament
+            ? { id: this.tournament.id, name: this.tournament.name }
+            : null;
         },
       },
       tournament_teams: {

@@ -12,7 +12,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     <h3 class="text-2xl font-bold mb-6 text-foreground">
       {{ cleanMapName(match_map.map.name) }}
     </h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div
         v-for="round in match_map.rounds.filter((r: any) => r.round !== 0)"
         :key="round.round"

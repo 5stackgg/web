@@ -19,7 +19,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
           :player="rosterItem.player"
           :show-flag="true"
           :show-role="false"
-          :show-elo="false"
+          :show-elo="true"
           class="text-sm"
         />
       </div>

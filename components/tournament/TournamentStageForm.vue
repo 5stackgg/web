@@ -124,61 +124,62 @@ import { $ } from "~/generated/zeus";
       </FormItem>
     </FormField>
 
-    <MatchOptions :form="form" :stage-bracket-override="true"></MatchOptions>
-
-    <template
-      v-if="
-        form.values.stage_type &&
-        form.values.stage_type !== 'RoundRobin'
-      "
-    >
-      <FormField v-slot="{ value, handleChange }" name="enable_decider_bo">
-        <FormItem class="flex items-center justify-between gap-4">
-          <div>
-            <FormLabel>{{
-              $t("tournament.stage.decider_best_of_toggle")
-            }}</FormLabel>
-            <FormDescription>
-              {{ $t("tournament.stage.decider_best_of_toggle_description") }}
-            </FormDescription>
-          </div>
-          <FormControl>
-            <Switch :model-value="value" @update:model-value="handleChange" />
-          </FormControl>
-        </FormItem>
-      </FormField>
-
-      <FormField
-        v-if="form.values.enable_decider_bo"
-        v-slot="{ componentField }"
-        name="decider_best_of"
+    <MatchOptions :form="form" :stage-bracket-override="true">
+      <template
+        v-if="
+          form.values.stage_type &&
+          form.values.stage_type !== 'RoundRobin'
+        "
+        #before-advanced
       >
-        <FormItem>
-          <FormLabel>{{
-            $t("tournament.stage.decider_best_of_label")
-          }}</FormLabel>
-          <Select v-bind="componentField">
+        <FormField v-slot="{ value, handleChange }" name="enable_decider_bo">
+          <FormItem class="flex items-center justify-between gap-4">
+            <div>
+              <FormLabel>{{
+                $t("tournament.stage.decider_best_of_toggle")
+              }}</FormLabel>
+              <FormDescription>
+                {{ $t("tournament.stage.decider_best_of_toggle_description") }}
+              </FormDescription>
+            </div>
             <FormControl>
-              <SelectTrigger>
-                <SelectValue
-                  :placeholder="
-                    $t('tournament.stage.decider_best_of_placeholder')
-                  "
-                />
-              </SelectTrigger>
+              <Switch :model-value="value" @update:model-value="handleChange" />
             </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="1">Best of 1</SelectItem>
-                <SelectItem value="3">Best of 3</SelectItem>
-                <SelectItem value="5">Best of 5</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-    </template>
+          </FormItem>
+        </FormField>
+
+        <FormField
+          v-if="form.values.enable_decider_bo"
+          v-slot="{ componentField }"
+          name="decider_best_of"
+        >
+          <FormItem>
+            <FormLabel>{{
+              $t("tournament.stage.decider_best_of_label")
+            }}</FormLabel>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue
+                    :placeholder="
+                      $t('tournament.stage.decider_best_of_placeholder')
+                    "
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="1">Best of 1</SelectItem>
+                  <SelectItem value="3">Best of 3</SelectItem>
+                  <SelectItem value="5">Best of 5</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </template>
+    </MatchOptions>
 
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
       <template v-if="stage">{{ $t("tournament.stage.update") }}</template>
@@ -430,7 +431,6 @@ export default {
 
       await (this as any).$apollo.mutate({
         variables: setupOptionsVariables({
-          id: matchOptionsId,
           // Restricted fields - use tournament defaults
           mr: tournamentOptions.mr,
           type: tournamentOptions.type,
@@ -449,6 +449,8 @@ export default {
           tech_timeout_setting: form.tech_timeout_setting,
           tv_delay: form.tv_delay,
           check_in_setting: form.check_in_setting,
+        }, {
+          matchOptionsId: matchOptionsId,
         }),
         mutation: generateMutation({
           update_match_options_by_pk: [

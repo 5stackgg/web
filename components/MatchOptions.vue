@@ -307,6 +307,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
         </FormItem>
       </FormField> -->
 
+      <slot name="before-advanced"></slot>
+
       <Collapsible v-model:open="showAdvancedSettings">
         <CollapsibleTrigger as-child>
           <div

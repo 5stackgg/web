@@ -130,12 +130,12 @@ import { $ } from "~/generated/zeus";
           form.values.stage_type &&
           form.values.stage_type !== 'RoundRobin'
         "
-        #before-advanced
+        #before-overtime
       >
         <FormField v-slot="{ value, handleChange }" name="enable_decider_bo">
           <FormItem class="flex items-center justify-between gap-4">
             <div>
-              <FormLabel>{{
+              <FormLabel class="text-lg font-semibold">{{
                 $t("tournament.stage.decider_best_of_toggle")
               }}</FormLabel>
               <FormDescription>

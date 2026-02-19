@@ -307,8 +307,6 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
         </FormItem>
       </FormField> -->
 
-      <slot name="before-advanced"></slot>
-
       <Collapsible v-model:open="showAdvancedSettings">
         <CollapsibleTrigger as-child>
           <div
@@ -349,6 +347,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           <div class="flex flex-col gap-4">
             <AnimatedCard variant="gradient">
               <div class="p-4 space-y-6">
+                <slot name="before-overtime"></slot>
                 <FormField v-slot="{ value, handleChange }" name="overtime">
                   <FormItem>
                     <div class="flex flex-row items-center justify-between cursor-pointer" @click="handleChange(!value)">

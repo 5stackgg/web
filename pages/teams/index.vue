@@ -75,10 +75,12 @@ const { isMobile } = useSidebar();
     <div>
     <AnimatedCard variant="gradient" class="p-4">
       <!-- Loading -->
-      <div v-if="loading" class="space-y-4">
-        <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
-          <Skeleton class="h-6 flex-1" />
-          <Skeleton class="h-6 w-40" />
+      <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div v-for="i in perPage" :key="i" class="bg-muted/30 p-4 rounded-lg space-y-3">
+          <Skeleton class="h-5 w-32" />
+          <div class="flex flex-col gap-2">
+            <Skeleton v-for="j in 5" :key="j" class="h-5 w-full" />
+          </div>
         </div>
       </div>
 

@@ -619,6 +619,7 @@
             "col": {
                 "elo": "ELO",
                 "elo_change": "ELO Change",
+                "win_streak": "Win Streak",
                 "kdr": "K/D Ratio",
                 "kills": "Kills",
                 "deaths": "Deaths",

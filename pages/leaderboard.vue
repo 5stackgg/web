@@ -284,9 +284,10 @@ const CATEGORY_CONFIG: Record<string, {
     columns: {
       value: "pages.leaderboard.col.elo",
       secondary_value: "pages.leaderboard.col.elo_change",
+      tertiary_value: "pages.leaderboard.col.win_streak",
       matches_played: "pages.leaderboard.columns.matches",
     },
-    sortable: ["value", "secondary_value", "matches_played"],
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
   best_kdr: {
     columns: {
@@ -462,10 +463,6 @@ export default {
     },
     formatTertiary(value: number | null): string {
       if (value == null) return "\u2014";
-      if (this.category === "elo") {
-        const rounded = Math.round(value);
-        return (rounded >= 0 ? "+" : "") + rounded.toLocaleString();
-      }
       return Math.round(value).toLocaleString();
     },
   },

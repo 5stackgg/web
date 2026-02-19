@@ -130,21 +130,27 @@ import { $ } from "~/generated/zeus";
           form.values.stage_type &&
           form.values.stage_type !== 'RoundRobin'
         "
-        #before-advanced
+        #before-overtime
       >
         <FormField v-slot="{ value, handleChange }" name="enable_decider_bo">
-          <FormItem class="flex items-center justify-between gap-4">
-            <div>
-              <FormLabel>{{
-                $t("tournament.stage.decider_best_of_toggle")
-              }}</FormLabel>
-              <FormDescription>
-                {{ $t("tournament.stage.decider_best_of_toggle_description") }}
-              </FormDescription>
+          <FormItem>
+            <div class="flex flex-row items-center justify-between cursor-pointer" @click="handleChange(!value)">
+              <div class="space-y-0.5">
+                <FormLabel class="text-lg font-semibold">{{
+                  $t("tournament.stage.decider_best_of_toggle")
+                }}</FormLabel>
+                <FormDescription>
+                  {{ $t("tournament.stage.decider_best_of_toggle_description") }}
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  class="pointer-events-none"
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                />
+              </FormControl>
             </div>
-            <FormControl>
-              <Switch :model-value="value" @update:model-value="handleChange" />
-            </FormControl>
           </FormItem>
         </FormField>
 

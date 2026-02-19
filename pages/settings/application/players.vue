@@ -1,13 +1,88 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
+import { generateMutation } from "~/graphql/graphqlGen";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 definePageMeta({
   layout: "application-settings",
 });
+
+const showRefreshDialog = ref(false);
+const refreshing = ref(false);
+
+async function doRefreshAllPlayers() {
+  refreshing.value = true;
+  showRefreshDialog.value = false;
+
+  try {
+    await useNuxtApp().$apollo.defaultClient.mutate({
+      mutation: generateMutation({
+        refreshAllPlayers: {
+          success: true,
+        },
+      }),
+    });
+
+    toast({
+      title: "Player refresh queued successfully",
+    });
+  } catch (error: any) {
+    toast({
+      title: "Failed to refresh players",
+      description: error?.message || "An error occurred",
+      variant: "destructive",
+    });
+  } finally {
+    refreshing.value = false;
+  }
+}
 </script>
 
 <template>
   <PageTransition :delay="0">
+    <div>
+      <AnimatedCard variant="gradient" class="p-6 mb-6">
+        <h3 class="text-lg font-semibold">Refresh All Players</h3>
+        <p class="text-sm text-muted-foreground mt-1">
+          Re-sync all player data in the search index. Use this if player information (like ELO) appears outdated or missing.
+        </p>
+        <div class="mt-4">
+          <Button :disabled="refreshing" @click="showRefreshDialog = true">
+            {{ refreshing ? "Refreshing..." : "Refresh All Players" }}
+          </Button>
+        </div>
+      </AnimatedCard>
+
+      <AlertDialog v-model:open="showRefreshDialog">
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Refresh All Players?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will queue a job to re-sync all player data in the Typesense search index.
+              This may take a few minutes depending on the number of players.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction @click="doRefreshAllPlayers">
+              Refresh All Players
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     <form class="grid gap-6" @submit.prevent="updateSettings">
       <AnimatedCard variant="gradient" class="cursor-pointer" @click="togglePlayerNameRegistration">
         <div class="flex flex-row items-center justify-between p-4">
@@ -160,6 +235,7 @@ definePageMeta({
         </Button>
       </div>
     </form>
+    </div>
   </PageTransition>
 </template>
 

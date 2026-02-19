@@ -18,6 +18,7 @@ import {
   Home,
   Search,
   Database,
+  Trophy,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -26,6 +27,7 @@ import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Kbd, KbdGroup } from "~/components/ui/kbd";
 import Logout from "./Logout.vue";
+import { useMatchContext } from "~/composables/useMatchContext";
 </script>
 
 <template>
@@ -132,7 +134,7 @@ import Logout from "./Logout.vue";
               <NuxtLink
                 :to="{ name: 'tournaments' }"
                 :class="{
-                  'router-link-active': isRouteActive('tournaments'),
+                  'router-link-active': isRouteActive('tournaments') || useMatchContext().value?.tournament != null,
                 }"
               >
                 <TournamentBracket />
@@ -183,7 +185,7 @@ import Logout from "./Logout.vue";
               <NuxtLink
                 :to="{ name: 'players' }"
                 :class="{
-                  'router-link-active': isRouteActive('players'),
+                  'router-link-active': isRouteActive('players') && !$route.path.startsWith('/me'),
                 }"
               >
                 <Users />
@@ -205,6 +207,23 @@ import Logout from "./Logout.vue";
               >
                 <ShieldHalf />
                 {{ $t("layouts.app_nav.navigation.teams") }}
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.leaderboard')"
+            >
+              <NuxtLink
+                :to="{ name: 'leaderboard' }"
+                :class="{
+                  'router-link-active': isRouteActive('leaderboard'),
+                }"
+              >
+                <Trophy />
+                {{ $t("layouts.app_nav.navigation.leaderboard") }}
               </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -543,6 +562,7 @@ import Logout from "./Logout.vue";
             <DropdownMenuTrigger as-child>
               <SidebarMenuButton
                 size="lg"
+                class="hover:!bg-transparent hover:!text-current active:!bg-transparent"
                 :class="{
                   'bg-sidebar-accent text-sidebar-accent-foreground':
                     profileOpened,

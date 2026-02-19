@@ -590,6 +590,47 @@
             "matches": "matches",
             "loading": "Loading..."
         },
+        "leaderboard": {
+            "title": "Leaderboard",
+            "description": "Top players ranked by performance across different categories.",
+            "no_results": "No leaderboard data available for the selected filters.",
+            "categories": {
+                "elo": "ELO",
+                "best_kdr": "KDR",
+                "best_win_rate": "Win Rate",
+                "highest_hs_pct": "HS%"
+            },
+            "time_periods": {
+                "last_7_days": "Last 7 Days",
+                "last_30_days": "Last 30 Days",
+                "all_time": "All Time"
+            },
+            "match_types": {
+                "all": "All Types",
+                "competitive": "Competitive",
+                "wingman": "Wingman",
+                "duel": "Duel"
+            },
+            "columns": {
+                "rank": "#",
+                "player": "Player",
+                "matches": "Matches"
+            },
+            "col": {
+                "elo": "ELO",
+                "elo_change": "ELO Change",
+                "win_streak": "Win Streak",
+                "kdr": "K/D Ratio",
+                "kills": "Kills",
+                "deaths": "Deaths",
+                "win_rate": "Win Rate",
+                "wins": "Wins",
+                "losses": "Losses",
+                "hs_pct": "HS%",
+                "total_kills": "Total Kills"
+            },
+            "exclude_tournaments": "Exclude Tournaments"
+        },
         "database": {
             "title": "Database Monitoring",
             "query_copied": "Query copied to clipboard",
@@ -752,6 +793,7 @@
                 "public_servers": "Public Servers",
                 "players": "Players",
                 "teams": "Teams",
+                "leaderboard": "Leaderboard",
                 "search": "Search"
             },
             "community": {
@@ -790,6 +832,7 @@
                 "tournaments": "Tournaments",
                 "players": "Players",
                 "teams": "Teams",
+                "leaderboard": "Leaderboard",
                 "public_servers": "Public Servers",
                 "regions": "Regions",
                 "servers": "Servers",
@@ -840,6 +883,10 @@
                 "teams": {
                     "title": "Teams",
                     "subtitle": "Find and manage teams"
+                },
+                "leaderboard": {
+                    "title": "Leaderboard",
+                    "subtitle": "Top players and rankings"
                 },
                 "social": {
                     "title": "Social",
@@ -1071,7 +1118,11 @@
             "match_options_placeholder": "Select match options...",
             "match_options_description": "Customize match options for this stage. These settings will be used for all matches in this stage.",
             "match_options_advanced": "Advanced Match Options",
-            "use_tournament_default": "Use Tournament Default"
+            "use_tournament_default": "Use Tournament Default",
+            "decider_best_of_toggle": "Different decider BO series",
+            "decider_best_of_toggle_description": "Use a different Best Of format for deciding matches (finals, advancement, elimination).",
+            "decider_best_of_label": "Decider Match Format",
+            "decider_best_of_placeholder": "Select format..."
         },
         "bracket": {
             "update": "Update Bracket",
@@ -1084,9 +1135,11 @@
             "bye_round": "Bye Round",
             "scheduled_for": "Scheduled for"
         },
+        "standings": {
+            "title": "Standings"
+        },
         "results": {
-            "title": "Results",
-            "matches": "Matches"
+            "title": "Results"
         },
 
         "organizer": {

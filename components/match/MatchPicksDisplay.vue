@@ -52,7 +52,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
           <template v-slot:header>
             <div class="absolute top-3">
               <badge
-                :variant="pick.type === 'Pick' ? 'default' : 'destructive'"
+                :variant="pick.type === 'Pick' ? 'default' : pick.type === 'Decider' ? 'warning' : 'destructive'"
               >
                 <template v-if="pick.type === 'Decider'">
                   {{ $t("match.picks.decider") }}

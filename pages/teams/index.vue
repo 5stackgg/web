@@ -35,22 +35,10 @@ const { isMobile } = useSidebar();
     </PageHeading>
   </PageTransition>
 
+  <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div
-      v-if="me"
-      class="flex items-center space-x-2 justify-end cursor-pointer"
-      @click="showOnlyMyTeams = !showOnlyMyTeams"
-    >
-      <Switch :model-value="showOnlyMyTeams" />
-      <Label class="text-sm">
-        {{ $t("team.search.my_teams_only") }}
-      </Label>
-    </div>
-  </PageTransition>
-
-  <PageTransition :delay="200" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4">
-      <form class="flex justify-end" @submit.prevent="viewTopTeam">
+    <div class="flex flex-col md:flex-row gap-4 mb-4 items-center justify-between">
+      <form class="flex-1" @submit.prevent="viewTopTeam">
         <FormField v-slot="{ componentField }" name="teamQuery">
           <FormItem>
             <FormControl>
@@ -69,51 +57,65 @@ const { isMobile } = useSidebar();
           </FormItem>
         </FormField>
       </form>
-
-      <Transition name="fade" mode="out-in">
-        <Empty v-if="loading" key="loading" class="min-h-[200px]">
-          <div class="space-y-3 w-full max-w-md">
-            <Skeleton class="h-4 w-3/4 mx-auto" />
-            <Skeleton class="h-3 w-full" />
-            <Skeleton class="h-3 w-5/6 mx-auto" />
-          </div>
-        </Empty>
-
-        <teams-table
-          v-else-if="
-            (showOnlyMyTeams ? myTeams : teams) &&
-            (showOnlyMyTeams ? myTeams : teams).length > 0
-          "
-          key="teams"
-          :teams="showOnlyMyTeams ? myTeams : teams"
-        ></teams-table>
-
-        <Empty v-else key="empty" class="min-h-[200px]">
-          <EmptyTitle>{{ $t("pages.teams.no_teams_title") }}</EmptyTitle>
-          <EmptyDescription>{{ $t("pages.teams.no_teams") }}</EmptyDescription>
-        </Empty>
-      </Transition>
-      <Teleport defer to="#pagination">
-        <pagination
-          v-if="
-            !showOnlyMyTeams &&
-            teams_aggregate &&
-            teams_aggregate.aggregate.count > 0
-          "
-          :page="page"
-          :per-page="perPage"
-          @page="
-            (_page) => {
-              page = _page;
-            }
-          "
-          :total="teams_aggregate.aggregate.count"
-        ></pagination>
-      </Teleport>
-    </AnimatedCard>
+      <div
+        v-if="me"
+        class="flex items-center space-x-2 cursor-pointer"
+        @click="showOnlyMyTeams = !showOnlyMyTeams"
+      >
+        <Switch :model-value="showOnlyMyTeams" />
+        <Label class="text-sm cursor-pointer">
+          {{ $t("team.search.my_teams_only") }}
+        </Label>
+      </div>
+    </div>
   </PageTransition>
 
-  <div id="pagination"></div>
+  <!-- Results -->
+  <PageTransition :delay="200" class="mt-2">
+    <div>
+    <AnimatedCard variant="gradient" class="p-4">
+      <!-- Loading -->
+      <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div v-for="i in perPage" :key="i" class="bg-muted/30 p-4 rounded-lg space-y-3">
+          <Skeleton class="h-5 w-32" />
+          <div class="flex flex-col gap-2">
+            <Skeleton v-for="j in 5" :key="j" class="h-5 w-full" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <Empty v-else-if="
+        !(showOnlyMyTeams ? myTeams : teams) ||
+        (showOnlyMyTeams ? myTeams : teams).length === 0
+      " class="min-h-[200px]">
+        <EmptyTitle>{{ $t("pages.teams.no_teams_title") }}</EmptyTitle>
+        <EmptyDescription>{{ $t("pages.teams.no_teams") }}</EmptyDescription>
+      </Empty>
+
+      <!-- Teams Table -->
+      <teams-table
+        v-else
+        :teams="showOnlyMyTeams ? myTeams : teams"
+      ></teams-table>
+    </AnimatedCard>
+
+    <!-- Pagination -->
+    <Pagination
+      v-if="
+        !showOnlyMyTeams &&
+        teams_aggregate &&
+        teams_aggregate.aggregate.count > 0
+      "
+      :page="page"
+      :per-page="perPage"
+      :total="teams_aggregate.aggregate.count"
+      :show-per-page-selector="true"
+      @page="onPageChange"
+      @update:perPage="onPerPageChange"
+    />
+    </div>
+  </PageTransition>
 </template>
 
 <script lang="ts">
@@ -122,6 +124,7 @@ import { $, order_by } from "~/generated/zeus";
 import { useAuthStore } from "#imports";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useForm } from "vee-validate";
+import { playerFields } from "~/graphql/playerFields";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 
@@ -189,6 +192,12 @@ export default {
             {
               id: true,
               name: true,
+              roster: [
+                {},
+                {
+                  player: playerFields,
+                },
+              ],
             },
           ],
         });
@@ -249,6 +258,12 @@ export default {
                   {
                     id: true,
                     name: true,
+                    roster: [
+                      {},
+                      {
+                        player: playerFields,
+                      },
+                    ],
                   },
                 ],
               },
@@ -273,18 +288,13 @@ export default {
 
       this.$router.push(`/teams/${team.id}`);
     },
+    onPageChange(newPage: number) {
+      this.page = newPage;
+    },
+    onPerPageChange(value: number) {
+      this.perPage = value;
+      this.page = 1;
+    },
   },
 };
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

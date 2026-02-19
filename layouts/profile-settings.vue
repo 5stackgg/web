@@ -16,6 +16,7 @@ import {
 import { Link, Unlink } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import Default from "~/layouts/default.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -32,7 +33,7 @@ import Default from "~/layouts/default.vue";
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <aside class="w-full lg:w-auto">
         <nav
-          class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
+          class="settings-nav flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
         >
           <nuxt-link to="/settings">
             <Button variant="ghost" class="w-full text-left justify-start">
@@ -77,11 +78,11 @@ import Default from "~/layouts/default.vue";
           </nuxt-link>
         </nav>
       </aside>
-      <div class="flex-1 lg:max-w-2xl">
+      <AnimatedCard variant="gradient" class="flex-1 lg:max-w-2xl p-6">
         <div class="space-y-6">
           <slot />
         </div>
-      </div>
+      </AnimatedCard>
     </div>
 
     <AlertDialog :open="showUnlinkDiscordDialog">
@@ -163,7 +164,11 @@ export default {
 </script>
 
 <style lang="postcss">
-.router-link-exact-active {
-  @apply bg-muted hover:bg-muted rounded-md;
+.settings-nav a > button,
+.settings-nav > button {
+  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground;
+}
+.settings-nav .router-link-exact-active > button {
+  @apply bg-sidebar-accent text-sidebar-accent-foreground;
 }
 </style>

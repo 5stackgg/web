@@ -3,6 +3,7 @@ import { Input } from "~/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { Switch } from "~/components/ui/switch";
 import MatchOptions from "~/components/MatchOptions.vue";
 import { $ } from "~/generated/zeus";
 </script>
@@ -124,6 +126,60 @@ import { $ } from "~/generated/zeus";
 
     <MatchOptions :form="form" :stage-bracket-override="true"></MatchOptions>
 
+    <template
+      v-if="
+        form.values.stage_type &&
+        form.values.stage_type !== 'RoundRobin'
+      "
+    >
+      <FormField v-slot="{ value, handleChange }" name="enable_decider_bo">
+        <FormItem class="flex items-center justify-between gap-4">
+          <div>
+            <FormLabel>{{
+              $t("tournament.stage.decider_best_of_toggle")
+            }}</FormLabel>
+            <FormDescription>
+              {{ $t("tournament.stage.decider_best_of_toggle_description") }}
+            </FormDescription>
+          </div>
+          <FormControl>
+            <Switch :model-value="value" @update:model-value="handleChange" />
+          </FormControl>
+        </FormItem>
+      </FormField>
+
+      <FormField
+        v-if="form.values.enable_decider_bo"
+        v-slot="{ componentField }"
+        name="decider_best_of"
+      >
+        <FormItem>
+          <FormLabel>{{
+            $t("tournament.stage.decider_best_of_label")
+          }}</FormLabel>
+          <Select v-bind="componentField">
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue
+                  :placeholder="
+                    $t('tournament.stage.decider_best_of_placeholder')
+                  "
+                />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="1">Best of 1</SelectItem>
+                <SelectItem value="3">Best of 3</SelectItem>
+                <SelectItem value="5">Best of 5</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </template>
+
     <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
       <template v-if="stage">{{ $t("tournament.stage.update") }}</template>
       <template v-else>{{ $t("tournament.stage.create") }}</template>
@@ -229,6 +285,8 @@ export default {
               max_teams: z.string().refine((val) => !isNaN(parseInt(val)), {
                 message: "max teams must be a number",
               }),
+              enable_decider_bo: z.boolean().default(false),
+              decider_best_of: z.string().nullable().optional(),
             },
             (useApplicationSettingsStore() as any).settings,
           ).refine(
@@ -253,6 +311,8 @@ export default {
             groups: stage.groups,
             min_teams: stage.min_teams.toString(),
             max_teams: stage.max_teams.toString(),
+            enable_decider_bo: !!stage.decider_best_of,
+            decider_best_of: stage.decider_best_of?.toString() || null,
           });
         }
 
@@ -557,6 +617,9 @@ export default {
           type: this.form.values.stage_type,
           min_teams: this.form.values.min_teams,
           max_teams: this.form.values.max_teams,
+          decider_best_of: this.form.values.enable_decider_bo
+            ? parseInt(this.form.values.decider_best_of)
+            : null,
         };
 
         if (matchOptionsId !== null) {
@@ -605,6 +668,9 @@ export default {
                 type: this.form.values.stage_type,
                 min_teams: this.form.values.min_teams,
                 max_teams: this.form.values.max_teams,
+                decider_best_of: this.form.values.enable_decider_bo
+                  ? parseInt(this.form.values.decider_best_of)
+                  : null,
                 tournament_id:
                   (this as any).$route.params.tournamentId ||
                   (this as any).$route.params.id,

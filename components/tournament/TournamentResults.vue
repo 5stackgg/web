@@ -14,10 +14,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 <template>
   <div class="space-y-6">
-    <!-- Results Table -->
-    <Card>
+    <!-- Standings Table -->
+    <Card v-if="showStandings">
       <CardHeader>
-        <CardTitle>{{ $t("tournament.results.title") }}</CardTitle>
+        <CardTitle>{{ $t("tournament.standings.title") }}</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -26,9 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
               <TableHead>Team</TableHead>
               <TableHead class="text-center">Wins</TableHead>
               <TableHead class="text-center">Losses</TableHead>
-              <TableHead class="text-center">KDR</TableHead>
-              <TableHead class="text-center">Total Kills</TableHead>
-              <TableHead class="text-center">Total Deaths</TableHead>
+              <TableHead class="text-center">Matches</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -59,18 +57,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
                 {{ teamResult.losses }}
               </TableCell>
               <TableCell class="text-center">
-                {{ teamResult.team_kdr || 0 }}
-              </TableCell>
-              <TableCell class="text-center">
-                {{ teamResult.total_kills || 0 }}
-              </TableCell>
-              <TableCell class="text-center">
-                {{ teamResult.total_deaths || 0 }}
+                {{ teamResult.matches.length }}
               </TableCell>
             </TableRow>
             <TableRow v-if="teamResults.length === 0">
-              <TableCell colspan="6" class="text-center text-muted-foreground">
-                No results yet
+              <TableCell colspan="4" class="text-center text-muted-foreground">
+                No standings yet
               </TableCell>
             </TableRow>
           </TableBody>
@@ -81,7 +73,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
     <!-- All Matches -->
     <Card v-if="showMatches">
       <CardHeader>
-        <CardTitle>{{ $t("tournament.results.matches") }}</CardTitle>
+        <CardTitle>{{ $t("tournament.results.title") }}</CardTitle>
       </CardHeader>
       <CardContent>
         <div class="space-y-4">
@@ -108,6 +100,10 @@ export default {
     tournament: {
       type: Object,
       required: true,
+    },
+    showStandings: {
+      type: Boolean,
+      default: true,
     },
     showMatches: {
       type: Boolean,

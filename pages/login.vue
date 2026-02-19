@@ -51,7 +51,7 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
           rel="noopener noreferrer"
           class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          {{ $t("pages.login.powered_by") }} {{ loginFooterText || '5stack.gg' }}
+          {{ loginFooterText || '5stack.gg' }}
           <GithubLogoIcon v-if="(loginFooterUrl || 'https://github.com/5stackgg/5stack-panel').includes('github.com')" class="w-4 h-4" />
           <ExternalLink v-else class="w-4 h-4" />
         </a>

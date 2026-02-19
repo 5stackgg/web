@@ -2,8 +2,10 @@
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+
 const isDev = computed(() => {
   const domain = useRuntimeConfig().public.webDomain;
   return domain.includes("localhost") || domain.includes(".local");
@@ -83,9 +85,10 @@ const isDev = computed(() => {
           </nuxt-link>
         </nav>
       </aside>
-      <div
+      <AnimatedCard
+        variant="gradient"
         :class="[
-          'flex-1',
+          'flex-1 p-6',
           $route.name !== 'settings-application-map-pools' && $route.name !== 'settings-application-branding'
             ? 'lg:max-w-2xl'
             : '',
@@ -94,7 +97,7 @@ const isDev = computed(() => {
         <div class="space-y-6">
           <slot />
         </div>
-      </div>
+      </AnimatedCard>
     </div>
   </default>
 </template>
@@ -108,6 +111,6 @@ export default {};
   @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground;
 }
 .settings-nav .router-link-exact-active > button {
-  @apply bg-accent/70;
+  @apply bg-sidebar-accent text-sidebar-accent-foreground;
 }
 </style>

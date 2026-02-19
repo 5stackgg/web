@@ -431,7 +431,6 @@ export default {
 
       await (this as any).$apollo.mutate({
         variables: setupOptionsVariables({
-          id: matchOptionsId,
           // Restricted fields - use tournament defaults
           mr: tournamentOptions.mr,
           type: tournamentOptions.type,
@@ -450,6 +449,8 @@ export default {
           tech_timeout_setting: form.tech_timeout_setting,
           tv_delay: form.tv_delay,
           check_in_setting: form.check_in_setting,
+        }, {
+          matchOptionsId: matchOptionsId,
         }),
         mutation: generateMutation({
           update_match_options_by_pk: [

@@ -628,6 +628,7 @@ export default {
                   groups: true,
                   min_teams: true,
                   max_teams: true,
+                  decider_best_of: true,
                   options: matchOptionsFields,
                   results: [
                     {},

@@ -1118,7 +1118,11 @@
             "match_options_placeholder": "Select match options...",
             "match_options_description": "Customize match options for this stage. These settings will be used for all matches in this stage.",
             "match_options_advanced": "Advanced Match Options",
-            "use_tournament_default": "Use Tournament Default"
+            "use_tournament_default": "Use Tournament Default",
+            "decider_best_of_toggle": "Different decider BO series",
+            "decider_best_of_toggle_description": "Use a different Best Of format for deciding matches (finals, advancement, elimination).",
+            "decider_best_of_label": "Decider Match Format",
+            "decider_best_of_placeholder": "Select format..."
         },
         "bracket": {
             "update": "Update Bracket",

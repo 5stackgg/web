@@ -28,7 +28,10 @@
                 "my_recent": "我的近期賽事",
                 "finished": "已結束的錦標賽",
                 "live": "進行中",
-                "upcoming": "即將開始"
+                "upcoming": "即將開始",
+                "no_live_title": "目前沒有進行中的賽事",
+                "no_upcoming_title": "目前沒有即將開始的賽事",
+                "no_finished_title": "目前沒有已結束的賽事"
             },
             "no_recent": "你近期沒有參加任何錦標賽。",
             "no_finished": "找不到已結束的錦標賽。"
@@ -59,6 +62,8 @@
             "title": "戰隊",
             "description": "管理戰隊與選手名單。",
             "create": "建立戰隊",
+            "no_teams_title": "找不到任何戰隊",
+            "no_teams": "目前沒有任何戰隊資料。",
             "tabs": {},
             "search": "搜尋..."
         },
@@ -150,7 +155,10 @@
                     "title": "遙測",
                     "telemetry": "遙測資料",
                     "telemetry_description": "透過匿名使用數據協助改善 5Stack。",
-                    "update": "已更新遙測設定"
+                    "update": "已更新遙測設定",
+                    "update_success": "遙測設定已成功更新",
+                    "google_tag_manager_code": "Google Tag Manager 代碼",
+                    "google_tag_manager_code_description": "Google Tag Manager 是一套代碼管理系統，讓您能輕鬆管理並在網站上部署標記代碼。"
                 },
                 "matchmaking": {
                     "title": "配對系統",
@@ -199,6 +207,7 @@
                 "default_models_description": "為比賽中的所有玩家啟用預設玩家角色模型。",
                 "auto_cancel_duration": "自動取消時間",
                 "auto_cancel_duration_description": "若比賽在時限內未開始，將在此設定的分鐘數後自動取消。",
+                "matchmaking_type_description": "開啟或關閉各類型的配對功能，這將決定玩家是否能加入該類型的比賽配對。",
                 "update": "更新",
                 "players": {
                     "force_name_registration": "強制註冊玩家名稱",
@@ -329,6 +338,8 @@
                 "assists": "助攻",
                 "deaths": "死亡",
                 "kd": "擊殺死亡比",
+                "headshots": "爆頭數",
+                "headshot_percentage": "爆頭率",
                 "recent_wins_and_losses": "近期勝敗紀錄",
                 "elo_history": "Elo 歷史記錄",
                 "no_elo_history": "進行一場比賽以產生 Elo 分數",
@@ -337,10 +348,12 @@
                 "matches": "比賽數",
                 "tournaments": "參加的錦標賽",
                 "no_tournaments": "該玩家沒有錦標賽紀錄。",
+                "weapon_kills": "常用武器",
+                "no_weapon_kills": "尚無武器使用紀錄",
                 "match_record": "比賽紀錄",
                 "wins": "勝場",
                 "losses": "敗場",
-                "wl": "勝率 (W/L)"
+                "win_rate": "勝率"
             }
         },
         "play": {
@@ -384,6 +397,7 @@
                 "title": "你的控制面板目前不支援遊戲伺服器節點。",
                 "description": "請參閱文件以設定伺服器節點。"
             },
+            "no_nodes_title": "找不到遊戲伺服器節點",
             "display_metrics": "顯示效能指標",
             "filters": "篩選器",
             "create": "新增伺服器節點",
@@ -391,6 +405,22 @@
             "cs_version_info": "CS2 版本資訊：",
             "hide_offline": "隱藏離線節點",
             "only_enabled": "僅顯示啟用中的節點",
+            "setup_dialog": {
+                "title": "遊戲伺服器節點設定",
+                "description": "在您的伺服器上執行此安裝腳本，以將其連接至 5Stack。",
+                "installation_script": "安裝腳本",
+                "game_server_id": "遊戲伺服器 ID",
+                "node_status": "節點狀態",
+                "waiting_title": "正在等待節點連接...",
+                "waiting_description": "請在您的伺服器上執行安裝腳本。當節點連接成功時，狀態將會自動更新。",
+                "new_node": "遊戲伺服器節點已成功連接",
+                "status_label": "狀態",
+                "region_label": "區域",
+                "capacity_label": "容量",
+                "capacity_available": "可用",
+                "connected_message": "您現在可以關閉此視窗。",
+                "close": "關閉"
+            },
             "status": {
                 "offline": "離線",
                 "online": "在線",
@@ -399,8 +429,8 @@
             },
             "table": {
                 "node": "節點",
-                "demo_network_limiter": "Demo 網路限制器",
                 "cs_build_id": "CS 構建版本",
+                "pin_plugin_version": "插件版本",
                 "region": "地區",
                 "capacity": "容量",
                 "ports": "通訊埠",
@@ -409,11 +439,7 @@
                 "no_nodes": "尚未建立遊戲伺服器節點",
                 "supports_low_latency": "支援低延遲",
                 "supports_cpu_pinning": "支援 CPU 綁定",
-                "cpu_governor": "CPU 調節模式",
-                "pin_build_id": "指定構建版本",
-                "pin_build_id_tooltip": "指定 CS2 伺服器的構建 ID",
-                "pin_plugin_version": "指定外掛",
-                "pin_plugin_version_tooltip": "指定 5Stack 外掛版本"
+                "cpu_governor": "CPU 調節模式"
             },
             "build_id": "版本 ID：{id}",
             "last_updated": "上次更新時間：{date}"
@@ -421,6 +447,8 @@
         "dedicated_servers": {
             "title": "專用伺服器",
             "description": "你可以設置一台專用伺服器，持續執行遊戲伺服器模組。",
+            "no_servers_title": "沒有專用伺服器",
+            "no_servers": "找不到任何專用伺服器。",
             "create": {
                 "title": "建立專用伺服器"
             },
@@ -430,6 +458,7 @@
                 "type": "類型",
                 "region": "地區",
                 "plugin_version": "外掛版本",
+                "port": "遊戲連接埠",
                 "tv_port": "TV 埠口",
                 "enabled": "啟用",
                 "yes": "是",
@@ -443,6 +472,7 @@
                 "config_location": "請將此設定檔放置於：",
                 "edit": "編輯",
                 "delete": "刪除",
+                "files": "檔案管理",
                 "status": {
                     "disconnected": "伺服器已斷線",
                     "no_rcon": "伺服器已連線但 RCON 無法使用",
@@ -468,11 +498,12 @@
                 "players": "玩家",
                 "connect": "連線"
             },
+            "no_servers_title": "目前無可用伺服器",
             "no_public_servers": "目前沒有可用的公開伺服器。",
             "lan_servers_title": "區網伺服器"
         },
         "map_pools": {
-            "title": "預設地圖池",
+            "title": "地圖池",
             "description": "管理配對所使用的地圖池與可用地圖。",
             "form": {
                 "name": "名稱",
@@ -528,6 +559,7 @@
             "title": "比賽管理",
             "only_my_matches": "只顯示我主辦的比賽",
             "description": "檢視與管理平台上的所有比賽。",
+            "no_matches": "找不到任何比賽。",
             "filters": "篩選器",
             "reset_filters": "重設篩選",
             "search_by_name": "依名稱搜尋",
@@ -551,6 +583,163 @@
             "showing": "顯示",
             "matches": "場比賽",
             "loading": "載入中…"
+        },
+        "leaderboard": {
+            "title": "排行榜",
+            "description": "根據不同類別表現排名的頂尖玩家。",
+            "no_results": "所選的篩選條件下沒有排行榜數據。",
+            "categories": {
+                "elo": "ELO 分數",
+                "best_kdr": "擊殺死亡比 (KDR)",
+                "best_win_rate": "勝率",
+                "highest_hs_pct": "爆頭率 (HS%)"
+            },
+            "time_periods": {
+                "last_7_days": "最近 7 天",
+                "last_30_days": "最近 30 天",
+                "all_time": "總排行"
+            },
+            "match_types": {
+                "all": "所有模式",
+                "competitive": "競技模式",
+                "wingman": "搭檔模式",
+                "duel": "單挑模式"
+            },
+            "columns": {
+                "rank": "排名",
+                "player": "玩家",
+                "matches": "比賽場數"
+            },
+            "col": {
+                "elo": "ELO",
+                "elo_change": "ELO 變動",
+                "win_streak": "連勝紀錄",
+                "kdr": "擊殺死亡比",
+                "kills": "擊殺數",
+                "deaths": "死亡數",
+                "win_rate": "勝率",
+                "wins": "勝場",
+                "losses": "敗場",
+                "hs_pct": "爆頭率",
+                "total_kills": "總擊殺數"
+            },
+            "exclude_tournaments": "排除錦標賽"
+        },
+        "database": {
+            "title": "資料庫監控",
+            "query_copied": "查詢語句已複製到剪貼簿",
+            "copy_failed": "複製失敗",
+            "auto_refresh": {
+                "play": "開始",
+                "pause": "暫停",
+                "interval": "更新間隔"
+            },
+            "filters": {
+                "schemas": "依結構架構 (Schemas) 篩選",
+                "select_schemas": "選擇結構架構...",
+                "search_schemas": "搜尋結構架構...",
+                "no_schemas": "找不到結構架構",
+                "schemas_selected": "個結構架構已選擇",
+                "reset": "重設"
+            },
+            "tabs": {
+                "queries": "查詢效能",
+                "connections": "連線狀態",
+                "locks": "鎖定與事務",
+                "io": "I/O 與緩衝區",
+                "index_usage": "索引使用率",
+                "storage": "儲存空間",
+                "timescale": "TimescaleDB",
+                "backups": "備份紀錄"
+            },
+            "query_performance": {
+                "no_stats": "找不到查詢統計數據"
+            },
+            "connections": {
+                "no_active_queries": "目前沒有執行中的查詢",
+                "no_connections": "找不到連線"
+            },
+            "locks": {
+                "no_locks": "目前沒有使用中的鎖定",
+                "no_table_stats": "無可用的資料表統計數據"
+            },
+            "io": {
+                "tabs": {
+                    "table_io": "資料表 I/O",
+                    "index_io": "索引 I/O"
+                },
+                "table_io_stats": "資料表 I/O 統計",
+                "index_io_stats": "索引 I/O 統計",
+                "no_table_stats": "無可用的資料表 I/O 統計數據",
+                "no_index_io_stats": "無可用的索引 I/O 統計數據"
+            },
+            "index_usage": {
+                "title": "索引使用統計",
+                "schema": "結構架構 (Schema)",
+                "table": "資料表",
+                "index": "索引",
+                "index_scans": "索引掃描次數",
+                "tuples_read": "讀取元組 (Tuples Read)",
+                "tuples_fetched": "擷取元組 (Tuples Fetched)",
+                "index_size": "索引大小",
+                "table_size": "資料表大小",
+                "size_ratio": "佔資料表百分比",
+                "no_stats": "無可用的索引使用統計"
+            },
+            "storage": {
+                "overview": "儲存空間概觀",
+                "total_database_size": "資料庫總容量",
+                "total_table_size": "資料表總容量",
+                "total_indexes_size": "索引總容量",
+                "reclaimable_space": "可回收空間",
+                "from_dead_tuples": "來自無效元組 (Dead Tuples)",
+                "table_sizes": "資料表儲存細節",
+                "schema": "結構架構",
+                "table": "資料表",
+                "total_size": "總大小",
+                "table_size": "資料表大小",
+                "indexes_size": "索引大小",
+                "live_tuples": "有效元組 (Live)",
+                "dead_tuples": "無效元組 (Dead)",
+                "dead_tuple_size": "無效元組大小",
+                "no_tables": "無可用的資料表儲存資訊"
+            },
+            "timescale": {
+                "no_data_title": "無 TimescaleDB 數據",
+                "no_data_description": "尚未安裝 TimescaleDB 擴充功能或未設定超表 (Hypertables)。",
+                "no_jobs": "未設定背景作業"
+            },
+            "backups": {
+                "no_backups": "無可用的資料庫備份"
+            },
+            "query_detail": {
+                "title": "查詢詳情",
+                "query": "查詢語句",
+                "copy": "複製",
+                "query_copied": "查詢語句已複製到剪貼簿",
+                "plan_copied": "執行計畫已複製到剪貼簿",
+                "copy_failed": "複製失敗",
+                "statistics": "統計數據",
+                "calls": "呼叫次數",
+                "avg_time": "平均耗時",
+                "max_time": "最長耗時",
+                "total_rows": "總列數",
+                "execution_times": "執行時間 (ms)",
+                "min": "最小值",
+                "mean": "平均值",
+                "max": "最大值",
+                "std_dev": "標準差",
+                "buffer_stats": "緩衝區統計 (Buffer)",
+                "shared_blocks_hit": "共享區塊命中",
+                "shared_blocks_read": "共享區塊讀取",
+                "cache_hit_ratio": "快取命中率",
+                "local_blocks_hit": "區域區塊命中",
+                "local_blocks_read": "區域區塊讀取",
+                "temp_blocks_written": "暫存區塊寫入",
+                "execution_plan": "執行計畫 (Execution Plan)",
+                "no_explain_plan": "無法為此查詢產生 EXPLAIN 執行計畫",
+                "not_found": "找不到查詢詳情"
+            }
         }
     },
     "custom_match": {
@@ -596,7 +785,12 @@
                 "tournaments": "錦標賽",
                 "public_servers": "公開伺服器",
                 "players": "玩家",
-                "teams": "戰隊"
+                "teams": "戰隊",
+                "leaderboard": "排行榜",
+                "search": "搜尋"
+            },
+            "community": {
+                "title": "社群"
             },
             "administration": {
                 "title": "後台管理",
@@ -604,12 +798,16 @@
                 "servers": "伺服器",
                 "dedicated_servers": "專用伺服器",
                 "game_server_nodes": "遊戲伺服器節點",
-                "logs": "系統日誌",
-                "metrics": "系統效能",
                 "app_settings": "應用程式設定",
                 "map_pools": "地圖池",
                 "manage_matches": "比賽管理",
                 "manage_tournaments": "管理錦標賽"
+            },
+            "system": {
+                "title": "系統",
+                "logs": "日誌",
+                "database": "資料庫",
+                "metrics": "效能指標"
             },
             "profile": {
                 "my_account": "我的設定",
@@ -627,19 +825,22 @@
                 "tournaments": "錦標賽",
                 "players": "玩家",
                 "teams": "戰隊",
+                "leaderboard": "排行榜",
                 "public_servers": "公開伺服器",
                 "regions": "地區管理",
                 "servers": "伺服器",
                 "dedicated_servers": "專用伺服器",
                 "game_server_nodes": "遊戲伺服器節點",
                 "system_logs": "系統日誌",
+                "database": "資料庫",
                 "system_metrics": "系統效能",
                 "app_settings": "應用程式設定",
                 "report_issue": "回報問題",
                 "join_discord": "加入 Discord",
                 "map_pools": "地圖池",
                 "manage_matches": "比賽管理",
-                "manage_tournaments": "管理錦標賽"
+                "manage_tournaments": "管理錦標賽",
+                "search_players": "搜尋玩家"
             },
             "logout_dialog": {
                 "title": "登出",
@@ -676,6 +877,10 @@
                     "title": "隊伍",
                     "subtitle": "尋找並管理隊伍"
                 },
+                "leaderboard": {
+                    "title": "排行榜",
+                    "subtitle": "頂尖玩家與排名"
+                },
                 "social": {
                     "title": "社交",
                     "join_discord": {
@@ -702,6 +907,7 @@
         }
     },
     "common": {
+        "manage_custom_plugins_and_shared_files": "伺服器啟動時，這些檔案將會掛載至 `csgo` 目錄中。",
         "delete": "刪除",
         "cancel": "取消",
         "save": "儲存",
@@ -709,6 +915,8 @@
         "enabled": "已啟用",
         "all": "全部",
         "tbd": "待定",
+        "yes": "是",
+        "no": "否",
         "boolean": {
             "yes": "是",
             "no": "否"
@@ -721,7 +929,113 @@
         "actions_label": "操作",
         "close": "關閉",
         "confirm": "確認",
-        "refresh": "重新整理"
+        "refresh": "重新整理",
+        "create": "建立",
+        "rename": "重新命名",
+        "creating": "正在建立...",
+        "saving": "正在儲存...",
+        "loading": "正在載入...",
+        "file": "檔案",
+        "directory": "目錄",
+        "undo": "復原",
+        "redo": "重做"
+    },
+    "spotlight_search": {
+        "placeholder": "搜尋玩家...",
+        "searching": "正在搜尋...",
+        "no_results": "找不到玩家",
+        "start_typing": "輸入文字以搜尋玩家"
+    },
+    "file_manager": {
+        "location": "位置",
+        "dedicated_server_files": "專用伺服器檔案",
+        "game_server_node_files": "遊戲伺服器節點檔案",
+        "loading_server_info": "正在載入伺服器資訊...",
+        "create_directory": {
+            "title": "建立新目錄",
+            "description": "請輸入新目錄的名稱",
+            "label": "目錄名稱",
+            "placeholder": "my-directory"
+        },
+        "create_file": {
+            "title": "建立新檔案",
+            "description": "請輸入新檔案的名稱",
+            "label": "檔案名稱",
+            "placeholder": "my-file.txt",
+            "failed": "檔案建立失敗"
+        },
+        "delete_confirm": {
+            "title_file": "刪除檔案",
+            "title_directory": "刪除目錄",
+            "description_file": "確定要刪除 \"{name}\" 嗎？此操作無法復原。",
+            "description_directory": "確定要刪除 \"{name}\" 嗎？目錄內的所有內容都將被永久刪除。",
+            "permanent_delete": "這將永久刪除 \"{name}\"。此操作無法復原。"
+        },
+        "rename": {
+            "title_file": "重新命名檔案",
+            "title_directory": "重新命名目錄",
+            "description": "為 \"{name}\" 輸入新名稱",
+            "label": "新名稱"
+        },
+        "editor": {
+            "title": "編輯檔案：{path}",
+            "description": "修改檔案內容",
+            "loading": "正在載入檔案...",
+            "save_success": "檔案儲存成功！",
+            "load_failed": "檔案載入失敗",
+            "save_failed": "檔案儲存失敗",
+            "unsaved_changes": "您有尚未儲存的變更。確定要關閉嗎？",
+            "unsaved_changes_all": "您有尚未儲存的變更。確定要關閉所有檔案嗎？"
+        },
+        "upload": {
+            "title": "上傳檔案",
+            "description": "選擇檔案並上傳至當前目錄",
+            "drag_drop": "將檔案拖放到此處，或點擊進行瀏覽",
+            "max_size": "檔案大小限制：100MB",
+            "uploading": "正在上傳檔案...",
+            "complete": "上傳完成",
+            "complete_with_errors": "上傳完成（包含部分錯誤）",
+            "failed": "上傳失敗"
+        },
+        "toolbar": {
+            "new_file": "新檔案",
+            "new_folder": "新資料夾",
+            "upload_files": "上傳檔案",
+            "refresh": "重新整理"
+        },
+        "tree": {
+            "folder_name_placeholder": "資料夾名稱",
+            "file_name_placeholder": "檔案名稱",
+            "drop_hint": "將檔案拖放到此處，或點擊右鍵建立",
+            "files": "檔案",
+            "current": "當前",
+            "hide_details": "隱藏詳情",
+            "show_details": "顯示詳情"
+        },
+        "details_panel": {
+            "menu_file": "檔案",
+            "menu_edit": "編輯",
+            "menu_view": "檢視",
+            "close": "關閉",
+            "close_all": "全部關閉",
+            "enable_word_wrap": "啟用自動換行",
+            "disable_word_wrap": "停用自動換行",
+            "show_minimap": "顯示縮圖導覽",
+            "hide_minimap": "隱藏縮圖導覽",
+            "no_file_open": "未開啟任何檔案",
+            "select_file_hint": "從瀏覽器中選擇一個檔案進行編輯",
+            "unsaved_changes": "您有尚未儲存的變更。確定要關閉嗎？",
+            "unsaved_changes_all": "您有尚未儲存的變更。確定要關閉所有檔案嗎？"
+        },
+        "tabs": {
+            "close": "關閉",
+            "close_others": "關閉其他檔案",
+            "close_to_right": "關閉右側檔案",
+            "close_to_left": "關閉左側檔案",
+            "unsaved_changes_warning": "其他檔案中有尚未儲存的變更。確定要關閉嗎？",
+            "unsaved_changes_right_warning": "右側檔案中有尚未儲存的變更。確定要關閉嗎？",
+            "unsaved_changes_left_warning": "左側檔案中有尚未儲存的變更。確定要關閉嗎？"
+        }
     },
     "error": {
         "generic": "發生錯誤，請再試一次。"
@@ -796,7 +1110,15 @@
             "match_options_placeholder": "選擇比賽選項...",
             "match_options_description": "自訂此階段的比賽選項。這些設定將套用到此階段的所有比賽。",
             "match_options_advanced": "進階比賽選項",
-            "use_tournament_default": "使用錦標賽預設值"
+            "use_tournament_default": "使用錦標賽預設值",
+            "decider_best_of_toggle": "自訂決勝場賽制",
+            "decider_best_of_toggle_description": "針對關鍵比賽（如決賽、晉級賽或淘汰賽）使用不同的戰數格式 (Best Of)。",
+            "decider_best_of_label": "決勝場比賽賽制",
+            "decider_best_of_placeholder": "選擇賽制..."
+        },
+        "bracket": {
+            "update": "更新對陣圖",
+            "edit_title": "編輯對陣圖 - 第 {round} 輪，第 {match} 場次"
         },
         "match": {
             "team_1": "隊伍 1",
@@ -805,9 +1127,11 @@
             "bye_round": "輪空回合",
             "scheduled_for": "預定時間"
         },
+        "standings": {
+            "title": "排名積分榜"
+        },
         "results": {
-            "title": "結果",
-            "matches": "比賽場次"
+            "title": "結果"
         },
         "organizer": {
             "title": "錦標賽主辦者",
@@ -937,6 +1261,8 @@
         }
     },
     "match": {
+        "no_matches": "找不到任何比賽",
+        "no_matches_description": "目前沒有可參加或進行中的比賽。",
         "simple": {
             "vs": "對戰"
         },
@@ -1269,7 +1595,8 @@
         "logs": {
             "follow": "即時追蹤",
             "timestamps": "顯示時間戳記",
-            "container": "容器日誌"
+            "container": "容器日誌",
+            "jump_to_live": "跳至最末端"
         }
     },
     "player": {
@@ -1390,15 +1717,21 @@
             "toggle": "調整設定",
             "queue_order": "佇列順序"
         },
-        "high_latency_warning": "你的延遲過高，不適合進行競技比賽"
+        "high_latency_warning": "你的延遲過高，不適合進行競技比賽",
+        "no_preferred_regions": "請在配對設定中至少選擇一個偏好地區"
     },
     "game_server": {
         "update_cs": "更新 CS",
         "pin_build_id": "指定伺服器版本",
         "unpin_build_id": "使用最新版本",
+        "use_latest_version": "自動使用最新 CS2 版本",
         "pinned_build_id": "已指定伺服器版本",
         "pin_plugin_version": "指定外掛版本",
         "unpin_plugin_version": "使用最新外掛版本",
+        "use_latest_plugin": "自動使用最新插件版本",
+        "plugin": "插件",
+        "auto": "最新版本",
+        "current": "當前",
         "plugin_not_supported": "不支援此版本外掛",
         "pinned_plugin_version": "已指定外掛版本",
         "plugin_version_supports": "支援",
@@ -1417,6 +1750,11 @@
         "remove_node": "移除節點",
         "show_update_logs": "顯示更新日誌",
         "edit_label": "編輯標籤",
+        "edit_ports": "編輯連接埠 (Ports)",
+        "edit_ports_description": "設定此節點允許使用的連接埠範圍。",
+        "port_start": "起始連接埠",
+        "port_end": "結束連接埠",
+        "files": "檔案管理",
         "label_placeholder": "輸入節點標籤",
         "update_label": "更新標籤",
         "version_pinning_not_supported": "此伺服器不支援版本鎖定。",
@@ -1431,14 +1769,30 @@
             "scheduling_updated": "節點排程已更新"
         },
         "enable_scheduling": "啟用排程",
-        "disable_scheduling": "停用排程"
+        "disable_scheduling": "停用排程",
+        "enable_node": "啟用節點",
+        "disable_node": "停用節點",
+        "feature_enabled": "功能已啟用",
+        "feature_disabled": "功能已停用",
+        "learn_more": "了解更多",
+        "current_governor": "目前調節器 (Governor)",
+        "governor_performance_recommended": "建議將調節器設為 Performance 以獲得最佳伺服器效能",
+        "max_servers": "最大伺服器數",
+        "hardware": "硬體資訊",
+        "cpu": "中央處理器 (CPU)",
+        "cpu_info_title": "CPU 資訊",
+        "cpu_speed": "時脈速度",
+        "gpu_present": "有可用 GPU",
+        "gpu_not_present": "無可用 GPU",
+        "gpu_description": "此節點具備可用於伺服器工作負載的顯示卡"
     },
     "chat": {
         "lobby_chat": "大廳聊天",
         "message_placeholder": "輸入訊息…"
     },
     "charts": {
-        "usage": "使用情況"
+        "usage": "使用情況",
+        "weapon_kills": "武器擊殺統計"
     },
     "server": {
         "join_server": "加入伺服器",
@@ -1539,6 +1893,10 @@
     },
     "demo_network_limiter": {
         "network_limit": "網路上限 (Mbps)",
-        "unlimited": "無限制"
+        "unlimited": "無限制",
+        "unlimited_short": "無限制",
+        "title": "Demo 網路速限設定",
+        "description": "配置 Demo 檔案下載的網路速度限制",
+        "updated": "網路速限已更新"
     }
 }

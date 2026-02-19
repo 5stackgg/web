@@ -595,13 +595,10 @@
             "description": "Top players ranked by performance across different categories.",
             "no_results": "No leaderboard data available for the selected filters.",
             "categories": {
-                "highest_elo": "Highest ELO",
-                "most_elo_gained": "Most ELO Gained",
-                "most_kills": "Most Kills",
-                "best_kdr": "Best KDR",
-                "best_win_rate": "Best Win Rate",
-                "most_matches": "Most Matches",
-                "highest_hs_pct": "Highest HS%"
+                "elo": "ELO",
+                "best_kdr": "KDR",
+                "best_win_rate": "Win Rate",
+                "highest_hs_pct": "HS%"
             },
             "time_periods": {
                 "last_7_days": "Last 7 Days",
@@ -617,22 +614,18 @@
             "columns": {
                 "rank": "#",
                 "player": "Player",
-                "value": "Value",
                 "matches": "Matches"
             },
-            "value_labels": {
+            "col": {
                 "elo": "ELO",
-                "elo_gained": "ELO Gained",
-                "kills": "Kills",
+                "elo_change": "ELO Change",
                 "kdr": "K/D Ratio",
-                "win_rate": "Win Rate",
-                "matches": "Matches",
-                "hs_pct": "HS%"
-            },
-            "secondary_labels": {
-                "last_change": "Last Change",
                 "kills": "Kills",
+                "deaths": "Deaths",
+                "win_rate": "Win Rate",
                 "wins": "Wins",
+                "losses": "Losses",
+                "hs_pct": "HS%",
                 "total_kills": "Total Kills"
             },
             "exclude_tournaments": "Exclude Tournaments"

@@ -2,7 +2,7 @@
 import PageHeading from "~/components/PageHeading.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import Pagination from "~/components/Pagination.vue";
-import { Trophy } from "lucide-vue-next";
+import { Trophy, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-vue-next";
 import {
   Select,
   SelectContent,
@@ -85,7 +85,7 @@ import { Label } from "~/components/ui/label";
           v-for="cat in categories"
           :key="cat.value"
           :value="cat.value"
-          class="flex-1 min-w-[120px]"
+          class="flex-1 min-w-[80px]"
         >
           {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
         </TabsTrigger>
@@ -120,9 +120,49 @@ import { Label } from "~/components/ui/label";
           <TableRow>
             <TableHead class="w-16">{{ $t("pages.leaderboard.columns.rank") }}</TableHead>
             <TableHead>{{ $t("pages.leaderboard.columns.player") }}</TableHead>
-            <TableHead class="text-right">{{ valueColumnLabel }}</TableHead>
-            <TableHead class="text-right" v-if="showSecondaryColumn">{{ secondaryColumnLabel }}</TableHead>
-            <TableHead class="text-right" v-if="showMatchesColumn">{{ $t("pages.leaderboard.columns.matches") }}</TableHead>
+            <TableHead
+              class="text-right"
+              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('value') }"
+              @click="toggleSort('value')"
+            >
+              <div class="flex items-center justify-end gap-1">
+                {{ columnLabels.value }}
+                <component v-if="isSortable('value')" :is="sortIcon('value')" class="h-3.5 w-3.5" />
+              </div>
+            </TableHead>
+            <TableHead
+              v-if="columnLabels.secondary_value"
+              class="text-right"
+              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('secondary_value') }"
+              @click="toggleSort('secondary_value')"
+            >
+              <div class="flex items-center justify-end gap-1">
+                {{ columnLabels.secondary_value }}
+                <component v-if="isSortable('secondary_value')" :is="sortIcon('secondary_value')" class="h-3.5 w-3.5" />
+              </div>
+            </TableHead>
+            <TableHead
+              v-if="columnLabels.tertiary_value"
+              class="text-right"
+              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('tertiary_value') }"
+              @click="toggleSort('tertiary_value')"
+            >
+              <div class="flex items-center justify-end gap-1">
+                {{ columnLabels.tertiary_value }}
+                <component v-if="isSortable('tertiary_value')" :is="sortIcon('tertiary_value')" class="h-3.5 w-3.5" />
+              </div>
+            </TableHead>
+            <TableHead
+              v-if="columnLabels.matches_played"
+              class="text-right"
+              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('matches_played') }"
+              @click="toggleSort('matches_played')"
+            >
+              <div class="flex items-center justify-end gap-1">
+                {{ columnLabels.matches_played }}
+                <component v-if="isSortable('matches_played')" :is="sortIcon('matches_played')" class="h-3.5 w-3.5" />
+              </div>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -170,11 +210,14 @@ import { Label } from "~/components/ui/label";
               <TableCell class="text-right font-mono font-semibold">
                 {{ formatValue(entry.value) }}
               </TableCell>
-              <TableCell class="text-right text-muted-foreground" v-if="showSecondaryColumn">
-                {{ formatSecondaryValue(entry.secondary_value) }}
+              <TableCell v-if="columnLabels.secondary_value" class="text-right font-mono text-muted-foreground">
+                {{ formatSecondary(entry.secondary_value) }}
               </TableCell>
-              <TableCell class="text-right text-muted-foreground" v-if="showMatchesColumn">
-                {{ entry.matches_played ?? "—" }}
+              <TableCell v-if="columnLabels.tertiary_value" class="text-right font-mono text-muted-foreground">
+                {{ formatTertiary(entry.tertiary_value) }}
+              </TableCell>
+              <TableCell v-if="columnLabels.matches_played" class="text-right font-mono text-muted-foreground">
+                {{ entry.matches_played ?? "\u2014" }}
               </TableCell>
             </NuxtLink>
           </TableRow>
@@ -200,8 +243,8 @@ import { Label } from "~/components/ui/label";
 import gql from "graphql-tag";
 
 const LEADERBOARD_QUERY = gql`
-  query GetLeaderboard($category: String!, $window_days: Int!, $match_type: String, $limit: Int, $offset: Int, $exclude_tournaments: Boolean) {
-    getLeaderboard(category: $category, window_days: $window_days, match_type: $match_type, limit: $limit, offset: $offset, exclude_tournaments: $exclude_tournaments) {
+  query GetLeaderboard($category: String!, $window_days: Int!, $match_type: String, $limit: Int, $offset: Int, $exclude_tournaments: Boolean, $sort_by: String, $sort_dir: String) {
+    getLeaderboard(category: $category, window_days: $window_days, match_type: $match_type, limit: $limit, offset: $offset, exclude_tournaments: $exclude_tournaments, sort_by: $sort_by, sort_dir: $sort_dir) {
       entries {
         rank
         player_steam_id
@@ -210,6 +253,7 @@ const LEADERBOARD_QUERY = gql`
         player_country
         value
         secondary_value
+        tertiary_value
         matches_played
       }
       total
@@ -225,13 +269,57 @@ interface LeaderboardEntry {
   player_country: string | null;
   value: number;
   secondary_value: number | null;
+  tertiary_value: number | null;
   matches_played: number | null;
 }
+
+type SortField = "value" | "secondary_value" | "tertiary_value" | "matches_played";
+
+// Per-category column configuration
+const CATEGORY_CONFIG: Record<string, {
+  columns: { value: string; secondary_value?: string; tertiary_value?: string; matches_played?: string };
+  sortable: SortField[];
+}> = {
+  elo: {
+    columns: {
+      value: "pages.leaderboard.col.elo",
+      secondary_value: "pages.leaderboard.col.elo_change",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "matches_played"],
+  },
+  best_kdr: {
+    columns: {
+      value: "pages.leaderboard.col.kdr",
+      secondary_value: "pages.leaderboard.col.kills",
+      tertiary_value: "pages.leaderboard.col.deaths",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  best_win_rate: {
+    columns: {
+      value: "pages.leaderboard.col.win_rate",
+      secondary_value: "pages.leaderboard.col.wins",
+      tertiary_value: "pages.leaderboard.col.losses",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  highest_hs_pct: {
+    columns: {
+      value: "pages.leaderboard.col.hs_pct",
+      secondary_value: "pages.leaderboard.col.total_kills",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "matches_played"],
+  },
+};
 
 export default {
   data() {
     return {
-      category: "highest_elo",
+      category: "elo",
       windowDays: "30",
       matchType: "all",
       excludeTournaments: false,
@@ -240,18 +328,29 @@ export default {
       page: 1,
       perPage: 10,
       loading: true,
+      sortBy: null as SortField | null,
+      sortDir: "desc" as "asc" | "desc",
       categories: [
-        { value: "highest_elo" },
-        { value: "most_elo_gained" },
-        { value: "most_kills" },
+        { value: "elo" },
         { value: "best_kdr" },
         { value: "best_win_rate" },
-        { value: "most_matches" },
         { value: "highest_hs_pct" },
       ],
     };
   },
   computed: {
+    config() {
+      return CATEGORY_CONFIG[this.category];
+    },
+    columnLabels() {
+      const cols = this.config.columns;
+      return {
+        value: this.$t(cols.value),
+        secondary_value: cols.secondary_value ? this.$t(cols.secondary_value) : null,
+        tertiary_value: cols.tertiary_value ? this.$t(cols.tertiary_value) : null,
+        matches_played: cols.matches_played ? this.$t(cols.matches_played) : null,
+      };
+    },
     queryVariables() {
       return {
         category: this.category,
@@ -260,38 +359,15 @@ export default {
         limit: this.perPage,
         offset: (this.page - 1) * this.perPage,
         exclude_tournaments: this.excludeTournaments || null,
+        sort_by: this.sortBy,
+        sort_dir: this.sortBy ? this.sortDir : null,
       };
-    },
-    valueColumnLabel(): string {
-      const labels: Record<string, string> = {
-        highest_elo: this.$t("pages.leaderboard.value_labels.elo"),
-        most_elo_gained: this.$t("pages.leaderboard.value_labels.elo_gained"),
-        most_kills: this.$t("pages.leaderboard.value_labels.kills"),
-        best_kdr: this.$t("pages.leaderboard.value_labels.kdr"),
-        best_win_rate: this.$t("pages.leaderboard.value_labels.win_rate"),
-        most_matches: this.$t("pages.leaderboard.value_labels.matches"),
-        highest_hs_pct: this.$t("pages.leaderboard.value_labels.hs_pct"),
-      };
-      return labels[this.category] || this.$t("pages.leaderboard.columns.value");
-    },
-    secondaryColumnLabel(): string {
-      const labels: Record<string, string> = {
-        highest_elo: this.$t("pages.leaderboard.secondary_labels.last_change"),
-        best_kdr: this.$t("pages.leaderboard.secondary_labels.kills"),
-        best_win_rate: this.$t("pages.leaderboard.secondary_labels.wins"),
-        highest_hs_pct: this.$t("pages.leaderboard.secondary_labels.total_kills"),
-      };
-      return labels[this.category] || "";
-    },
-    showSecondaryColumn(): boolean {
-      return ["highest_elo", "best_kdr", "best_win_rate", "highest_hs_pct"].includes(this.category);
-    },
-    showMatchesColumn(): boolean {
-      return ["most_elo_gained", "most_kills", "best_kdr", "best_win_rate", "highest_hs_pct"].includes(this.category);
     },
   },
   watch: {
     category() {
+      this.sortBy = null;
+      this.sortDir = "desc";
       this.onFilterChange();
     },
     windowDays() {
@@ -308,6 +384,29 @@ export default {
     this.fetchLeaderboard();
   },
   methods: {
+    isSortable(field: SortField): boolean {
+      return this.config.sortable.includes(field);
+    },
+    sortIcon(field: SortField) {
+      if (this.sortBy !== field) return ArrowUpDown;
+      return this.sortDir === "asc" ? ArrowUp : ArrowDown;
+    },
+    toggleSort(field: SortField) {
+      if (!this.isSortable(field)) return;
+      if (this.sortBy === field) {
+        if (this.sortDir === "desc") {
+          this.sortDir = "asc";
+        } else {
+          this.sortBy = null;
+          this.sortDir = "desc";
+        }
+      } else {
+        this.sortBy = field;
+        this.sortDir = "desc";
+      }
+      this.page = 1;
+      this.fetchLeaderboard();
+    },
     onFilterChange() {
       this.page = 1;
       this.fetchLeaderboard();
@@ -340,12 +439,9 @@ export default {
       }
     },
     formatValue(value: number): string {
-      if (value == null) return "—";
+      if (value == null) return "\u2014";
       switch (this.category) {
-        case "highest_elo":
-        case "most_elo_gained":
-        case "most_kills":
-        case "most_matches":
+        case "elo":
           return Math.round(value).toLocaleString();
         case "best_kdr":
           return value.toFixed(2);
@@ -356,15 +452,21 @@ export default {
           return String(value);
       }
     },
-    formatSecondaryValue(value: number | null): string {
-      if (value == null) return "—";
-      switch (this.category) {
-        case "highest_elo":
-          const num = Number(value);
-          return (num >= 0 ? "+" : "") + Math.round(num).toLocaleString();
-        default:
-          return Math.round(value).toLocaleString();
+    formatSecondary(value: number | null): string {
+      if (value == null) return "\u2014";
+      if (this.category === "elo") {
+        const rounded = Math.round(value);
+        return (rounded >= 0 ? "+" : "") + rounded.toLocaleString();
       }
+      return Math.round(value).toLocaleString();
+    },
+    formatTertiary(value: number | null): string {
+      if (value == null) return "\u2014";
+      if (this.category === "elo") {
+        const rounded = Math.round(value);
+        return (rounded >= 0 ? "+" : "") + rounded.toLocaleString();
+      }
+      return Math.round(value).toLocaleString();
     },
   },
 };

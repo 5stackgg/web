@@ -1137,9 +1137,11 @@
             "bye_round": "Bye Round",
             "scheduled_for": "Scheduled for"
         },
+        "standings": {
+            "title": "Standings"
+        },
         "results": {
-            "title": "Results",
-            "matches": "Matches"
+            "title": "Results"
         },
 
         "organizer": {

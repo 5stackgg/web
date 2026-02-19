@@ -97,6 +97,15 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
               tournament.status === e_tournament_status_enum.Live ||
               tournament.status === e_tournament_status_enum.Finished
             "
+            value="standings"
+          >
+            {{ $t("tournament.standings.title") }}
+          </TabsTrigger>
+          <TabsTrigger
+            v-if="
+              tournament.status === e_tournament_status_enum.Live ||
+              tournament.status === e_tournament_status_enum.Finished
+            "
             value="results"
           >
             {{ $t("tournament.results.title") }}
@@ -336,28 +345,12 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       </div>
 
       <TabsContent value="overview">
-        <div class="space-y-6">
-          <!-- Show results table if tournament is finished -->
-          <template
-            v-if="tournament.status === e_tournament_status_enum.Finished"
-          >
-            <PageTransition>
-              <TournamentResults
-                :tournament="tournament"
-                :show-matches="false"
-              />
-              <Separator v-if="showSeparators" class="my-4" />
-            </PageTransition>
-          </template>
-
-          <!-- Full-width Bracket -->
-          <PageTransition :delay="100">
-            <TournamentStageBuilder
-              class="w-full"
-              :tournament="tournament"
-            ></TournamentStageBuilder>
-          </PageTransition>
-        </div>
+        <PageTransition>
+          <TournamentStageBuilder
+            class="w-full"
+            :tournament="tournament"
+          ></TournamentStageBuilder>
+        </PageTransition>
       </TabsContent>
       <TabsContent value="my-team" v-if="myTeam">
         <div class="flex flex-col md:flex-row gap-6">
@@ -415,10 +408,29 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           tournament.status === e_tournament_status_enum.Live ||
           tournament.status === e_tournament_status_enum.Finished
         "
+        value="standings"
+      >
+        <PageTransition>
+          <TournamentResults
+            :tournament="tournament"
+            :show-standings="true"
+            :show-matches="false"
+          />
+        </PageTransition>
+      </TabsContent>
+      <TabsContent
+        v-if="
+          tournament.status === e_tournament_status_enum.Live ||
+          tournament.status === e_tournament_status_enum.Finished
+        "
         value="results"
       >
         <PageTransition>
-          <TournamentResults :tournament="tournament" />
+          <TournamentResults
+            :tournament="tournament"
+            :show-standings="false"
+            :show-matches="true"
+          />
         </PageTransition>
       </TabsContent>
       <TabsContent value="match-options" v-if="tournament?.is_organizer">

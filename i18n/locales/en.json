@@ -590,6 +590,53 @@
             "matches": "matches",
             "loading": "Loading..."
         },
+        "leaderboard": {
+            "title": "Leaderboard",
+            "description": "Top players ranked by performance across different categories.",
+            "no_results": "No leaderboard data available for the selected filters.",
+            "categories": {
+                "highest_elo": "Highest ELO",
+                "most_elo_gained": "Most ELO Gained",
+                "most_kills": "Most Kills",
+                "best_kdr": "Best KDR",
+                "best_win_rate": "Best Win Rate",
+                "most_matches": "Most Matches",
+                "highest_hs_pct": "Highest HS%"
+            },
+            "time_periods": {
+                "last_7_days": "Last 7 Days",
+                "last_30_days": "Last 30 Days",
+                "all_time": "All Time"
+            },
+            "match_types": {
+                "all": "All Types",
+                "competitive": "Competitive",
+                "wingman": "Wingman",
+                "duel": "Duel"
+            },
+            "columns": {
+                "rank": "#",
+                "player": "Player",
+                "value": "Value",
+                "matches": "Matches"
+            },
+            "value_labels": {
+                "elo": "ELO",
+                "elo_gained": "ELO Gained",
+                "kills": "Kills",
+                "kdr": "K/D Ratio",
+                "win_rate": "Win Rate",
+                "matches": "Matches",
+                "hs_pct": "HS%"
+            },
+            "secondary_labels": {
+                "last_change": "Last Change",
+                "kills": "Kills",
+                "wins": "Wins",
+                "total_kills": "Total Kills"
+            },
+            "exclude_tournaments": "Exclude Tournaments"
+        },
         "database": {
             "title": "Database Monitoring",
             "query_copied": "Query copied to clipboard",
@@ -752,6 +799,7 @@
                 "public_servers": "Public Servers",
                 "players": "Players",
                 "teams": "Teams",
+                "leaderboard": "Leaderboard",
                 "search": "Search"
             },
             "community": {
@@ -790,6 +838,7 @@
                 "tournaments": "Tournaments",
                 "players": "Players",
                 "teams": "Teams",
+                "leaderboard": "Leaderboard",
                 "public_servers": "Public Servers",
                 "regions": "Regions",
                 "servers": "Servers",
@@ -840,6 +889,10 @@
                 "teams": {
                     "title": "Teams",
                     "subtitle": "Find and manage teams"
+                },
+                "leaderboard": {
+                    "title": "Leaderboard",
+                    "subtitle": "Top players and rankings"
                 },
                 "social": {
                     "title": "Social",

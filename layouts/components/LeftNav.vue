@@ -18,6 +18,7 @@ import {
   Home,
   Search,
   Database,
+  Trophy,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -206,6 +207,23 @@ import { useMatchContext } from "~/composables/useMatchContext";
               >
                 <ShieldHalf />
                 {{ $t("layouts.app_nav.navigation.teams") }}
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              as-child
+              :tooltip="$t('layouts.app_nav.tooltips.leaderboard')"
+            >
+              <NuxtLink
+                :to="{ name: 'leaderboard' }"
+                :class="{
+                  'router-link-active': isRouteActive('leaderboard'),
+                }"
+              >
+                <Trophy />
+                {{ $t("layouts.app_nav.navigation.leaderboard") }}
               </NuxtLink>
             </SidebarMenuButton>
           </SidebarMenuItem>

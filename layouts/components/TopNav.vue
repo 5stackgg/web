@@ -221,6 +221,21 @@ const { brandName, logoUrl } = useBranding();
                         </NuxtLink>
                       </NavigationMenuLink>
                     </li>
+                    <li>
+                      <NavigationMenuLink as-child>
+                        <NuxtLink
+                          to="/leaderboard"
+                          class="flex flex-col px-2 py-2 rounded hover:text-green-300 transition-colors"
+                        >
+                          <span class="block font-bold">{{
+                            $t("layouts.top_nav.community.leaderboard.title")
+                          }}</span>
+                          <span class="block text-xs text-neutral-400">{{
+                            $t("layouts.top_nav.community.leaderboard.subtitle")
+                          }}</span>
+                        </NuxtLink>
+                      </NavigationMenuLink>
+                    </li>
                   </ul>
                 </div>
                 <!-- Social group -->

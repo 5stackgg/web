@@ -243,20 +243,46 @@ import { Label } from "~/components/ui/label";
 import gql from "graphql-tag";
 
 const LEADERBOARD_QUERY = gql`
-  query GetLeaderboard($category: String!, $window_days: Int!, $match_type: String, $limit: Int, $offset: Int, $exclude_tournaments: Boolean, $sort_by: String, $sort_dir: String) {
-    getLeaderboard(category: $category, window_days: $window_days, match_type: $match_type, limit: $limit, offset: $offset, exclude_tournaments: $exclude_tournaments, sort_by: $sort_by, sort_dir: $sort_dir) {
-      entries {
-        rank
-        player_steam_id
-        player_name
-        player_avatar_url
-        player_country
-        value
-        secondary_value
-        tertiary_value
-        matches_played
+  query GetLeaderboard(
+    $category: String!
+    $window_days: Int!
+    $match_type: String
+    $exclude_tournaments: Boolean
+    $limit: Int
+    $offset: Int
+    $order_by: [leaderboard_entries_order_by!]
+  ) {
+    get_leaderboard(
+      args: {
+        _category: $category
+        _window_days: $window_days
+        _match_type: $match_type
+        _exclude_tournaments: $exclude_tournaments
       }
-      total
+      limit: $limit
+      offset: $offset
+      order_by: $order_by
+    ) {
+      player_steam_id
+      player_name
+      player_avatar_url
+      player_country
+      value
+      secondary_value
+      tertiary_value
+      matches_played
+    }
+    get_leaderboard_aggregate(
+      args: {
+        _category: $category
+        _window_days: $window_days
+        _match_type: $match_type
+        _exclude_tournaments: $exclude_tournaments
+      }
+    ) {
+      aggregate {
+        count
+      }
     }
   }
 `;
@@ -329,6 +355,7 @@ export default {
       page: 1,
       perPage: 10,
       loading: true,
+      fetchGeneration: 0,
       sortBy: null as SortField | null,
       sortDir: "desc" as "asc" | "desc",
       categories: [
@@ -352,16 +379,24 @@ export default {
         matches_played: cols.matches_played ? this.$t(cols.matches_played) : null,
       };
     },
+    offset() {
+      return (this.page - 1) * this.perPage;
+    },
+    orderBy() {
+      if (this.sortBy) {
+        return [{ [this.sortBy]: this.sortDir }];
+      }
+      return [{ value: "desc" }];
+    },
     queryVariables() {
       return {
         category: this.category,
         window_days: parseInt(this.windowDays),
         match_type: this.matchType === "all" ? null : this.matchType,
+        exclude_tournaments: this.excludeTournaments,
         limit: this.perPage,
-        offset: (this.page - 1) * this.perPage,
-        exclude_tournaments: this.excludeTournaments || null,
-        sort_by: this.sortBy,
-        sort_dir: this.sortBy ? this.sortDir : null,
+        offset: this.offset,
+        order_by: this.orderBy,
       };
     },
   },
@@ -423,20 +458,33 @@ export default {
     },
     async fetchLeaderboard() {
       this.loading = true;
+      const gen = ++this.fetchGeneration;
       try {
         const { data } = await this.$apollo.query({
           query: LEADERBOARD_QUERY,
           variables: this.queryVariables,
           fetchPolicy: "network-only",
         });
-        this.entries = data?.getLeaderboard?.entries || [];
-        this.total = data?.getLeaderboard?.total || 0;
+        if (gen !== this.fetchGeneration) return;
+        const rows = data?.get_leaderboard || [];
+        this.entries = rows.map((row: any, index: number): LeaderboardEntry => ({
+          ...row,
+          rank: this.offset + index + 1,
+          value: Number(row.value),
+          secondary_value: row.secondary_value != null ? Number(row.secondary_value) : null,
+          tertiary_value: row.tertiary_value != null ? Number(row.tertiary_value) : null,
+          matches_played: row.matches_played != null ? Number(row.matches_played) : null,
+        }));
+        this.total = Number(data?.get_leaderboard_aggregate?.aggregate?.count) || 0;
       } catch (error) {
+        if (gen !== this.fetchGeneration) return;
         console.error("Error fetching leaderboard:", error);
         this.entries = [];
         this.total = 0;
       } finally {
-        this.loading = false;
+        if (gen === this.fetchGeneration) {
+          this.loading = false;
+        }
       }
     },
     formatValue(value: number): string {

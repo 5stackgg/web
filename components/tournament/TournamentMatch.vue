@@ -2,6 +2,7 @@
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import {
+  e_match_status_enum,
   e_tournament_stage_types_enum,
   e_tournament_status_enum,
 } from "~/generated/zeus";
@@ -33,6 +34,7 @@ interface Bracket {
   }>;
   match?: {
     id: string;
+    status?: string;
     options?: {
       best_of?: number;
     };
@@ -148,11 +150,31 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
 };
 
 const canEditBracket = (bracket: Bracket) => {
-  return (
-    props.tournament?.is_organizer &&
-    props.tournament?.status !== e_tournament_status_enum.Setup &&
-    props.tournament?.status !== e_tournament_status_enum.Finished
-  );
+  if (
+    !props.tournament?.is_organizer ||
+    props.tournament?.status === e_tournament_status_enum.Setup ||
+    props.tournament?.status === e_tournament_status_enum.Finished
+  ) {
+    return false;
+  }
+
+  // Hide gear icon for matches in active or terminal states
+  const matchStatus = bracket.match?.status;
+  if (
+    matchStatus &&
+    [
+      e_match_status_enum.Veto,
+      e_match_status_enum.Live,
+      e_match_status_enum.Finished,
+      e_match_status_enum.Forfeit,
+      e_match_status_enum.Tie,
+      e_match_status_enum.Surrendered,
+    ].includes(matchStatus)
+  ) {
+    return false;
+  }
+
+  return true;
 };
 
 const openEditDialog = (bracket: Bracket, event: MouseEvent) => {

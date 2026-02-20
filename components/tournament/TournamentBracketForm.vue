@@ -259,36 +259,13 @@ export default {
       let matchOptionsId: string | null = null;
 
       if (this.bracket.options?.id) {
-        // Match options exist - update if different, delete if same
+        // Match options exist — other brackets may share this record,
+        // so always create a new one instead of mutating the shared row.
         if (customMatchOptions) {
           const mapPoolId = await this.getMapPoolId(form, customMatchOptions);
-          matchOptionsId = await this.updateMatchOptions(
-            this.bracket.options.id,
-            form,
-            mapPoolId,
-          );
+          matchOptionsId = await this.createMatchOptions(form, mapPoolId);
         } else {
-          // Match options exist but match tournament defaults - delete them
-          // First, remove the reference from the bracket to avoid FK constraint issues
-          await (this as any).$apollo.mutate({
-            mutation: generateMutation({
-              update_tournament_brackets_by_pk: [
-                {
-                  pk_columns: {
-                    id: this.bracket.id,
-                  },
-                  _set: {
-                    match_options_id: null,
-                  },
-                },
-                {
-                  __typename: true,
-                },
-              ],
-            }),
-          });
-          // Now safe to delete the match options
-          await this.deleteMatchOptions(this.bracket.options.id);
+          // Revert to defaults — just unlink, don't delete (shared record)
           matchOptionsId = null;
         }
       } else {

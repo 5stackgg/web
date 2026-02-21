@@ -39,7 +39,10 @@ const { isMobile } = useSidebar();
       }}</template>
       <template #actions>
         <div class="flex items-center gap-2">
-          <div class="flex items-center gap-2 cursor-pointer" @click="toggleNodeMetrics()">
+          <div
+            class="flex items-center gap-2 cursor-pointer"
+            @click="toggleNodeMetrics()"
+          >
             <div class="flex items-center gap-1">
               {{ $t("pages.game_server_nodes.display_metrics") }}
             </div>

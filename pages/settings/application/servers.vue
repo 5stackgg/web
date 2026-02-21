@@ -17,7 +17,9 @@ definePageMeta({
           >
             <div class="space-y-0.5">
               <h4 class="text-base font-medium">
-                {{ $t("pages.settings.application.servers.enable_cpu_pinning") }}
+                {{
+                  $t("pages.settings.application.servers.enable_cpu_pinning")
+                }}
               </h4>
               <p class="text-sm text-muted-foreground">
                 {{
@@ -33,10 +35,15 @@ definePageMeta({
             />
           </div>
 
-          <FormField v-slot="{ componentField }" name="number_of_cpus_per_server">
+          <FormField
+            v-slot="{ componentField }"
+            name="number_of_cpus_per_server"
+          >
             <FormItem>
               <FormLabel>{{
-                $t("pages.settings.application.servers.number_of_cpus_per_server")
+                $t(
+                  "pages.settings.application.servers.number_of_cpus_per_server",
+                )
               }}</FormLabel>
               <FormDescription>{{
                 $t(

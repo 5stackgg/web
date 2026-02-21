@@ -70,7 +70,9 @@ definePageMeta({
           <FormField v-slot="{ componentField }" name="demo_network_limiter">
             <FormItem>
               <FormLabel>{{
-                $t("pages.settings.application.demo_settings.demo_network_limiter")
+                $t(
+                  "pages.settings.application.demo_settings.demo_network_limiter",
+                )
               }}</FormLabel>
               <FormDescription>{{
                 $t(
@@ -144,7 +146,9 @@ definePageMeta({
           <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
             <FormItem>
               <FormLabel>{{
-                $t("pages.settings.application.demo_settings.cloudflare_worker_url")
+                $t(
+                  "pages.settings.application.demo_settings.cloudflare_worker_url",
+                )
               }}</FormLabel>
               <FormDescription>
                 {{

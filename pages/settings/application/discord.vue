@@ -40,7 +40,9 @@ definePageMeta({
                 $t("pages.settings.application.discord.support_role")
               }}</FormLabel>
               <FormDescription>{{
-                $t("pages.settings.application.discord.support_role_description")
+                $t(
+                  "pages.settings.application.discord.support_role_description",
+                )
               }}</FormDescription>
               <Input v-bind="componentField"></Input>
               <FormMessage />

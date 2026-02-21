@@ -202,7 +202,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="300">
-    <Card variant="gradient" class="p-4 relative">
+    <div>
       <div v-if="loading" class="absolute top-4 left-4 z-10">
         <div
           class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
@@ -225,7 +225,7 @@ const { isMobile } = useSidebar();
           {{ $t("tournament.table.no_tournaments_found") }}
         </p>
       </div>
-    </Card>
+    </div>
   </PageTransition>
 
   <Pagination

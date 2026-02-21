@@ -14,7 +14,10 @@ definePageMeta({
     <form @submit.prevent="updateSettings" class="grid gap-6">
       <Card variant="gradient">
         <div class="p-6 space-y-6">
-          <div class="flex flex-row items-center justify-between cursor-pointer" @click="toggleMatchmaking()">
+          <div
+            class="flex flex-row items-center justify-between cursor-pointer"
+            @click="toggleMatchmaking()"
+          >
             <div class="space-y-0.5">
               <h4 class="text-base font-medium">
                 {{ $t("pages.settings.application.matchmaking.title") }}
@@ -33,8 +36,13 @@ definePageMeta({
             <Separator />
             <div class="space-y-2">
               <div class="grid grid-cols-3 gap-4">
-                <template v-for="match_type in ['competitive', 'wingman', 'duel']">
-                  <div class="flex flex-row items-center justify-between p-4 rounded-lg border cursor-pointer" @click="toggleMatchmakingType(match_type)">
+                <template
+                  v-for="match_type in ['competitive', 'wingman', 'duel']"
+                >
+                  <div
+                    class="flex flex-row items-center justify-between p-4 rounded-lg border cursor-pointer"
+                    @click="toggleMatchmakingType(match_type)"
+                  >
                     <div class="space-y-0.5">
                       <h4 class="text-base font-medium capitalize">
                         {{ match_type }}
@@ -48,20 +56,27 @@ definePageMeta({
                 </template>
               </div>
               <p class="text-sm text-muted-foreground">
-                {{ $t(`pages.settings.application.matchmaking_type_description`) }}
+                {{
+                  $t(`pages.settings.application.matchmaking_type_description`)
+                }}
               </p>
             </div>
-            
+
             <Separator />
 
-            <FormField v-slot="{ componentField }" name="public.matchmaking_min_role">
+            <FormField
+              v-slot="{ componentField }"
+              name="public.matchmaking_min_role"
+            >
               <FormItem>
                 <FormLabel class="text-lg font-semibold">{{
                   $t("pages.settings.application.matchmaking_min_role")
                 }}</FormLabel>
                 <FormDescription>
                   {{
-                    $t("pages.settings.application.matchmaking_min_role_description")
+                    $t(
+                      "pages.settings.application.matchmaking_min_role_description",
+                    )
                   }}
                 </FormDescription>
                 <FormControl>
@@ -117,7 +132,9 @@ definePageMeta({
                 }}</FormLabel>
                 <FormDescription>
                   {{
-                    $t("pages.settings.application.auto_cancel_duration_description")
+                    $t(
+                      "pages.settings.application.auto_cancel_duration_description",
+                    )
                   }}
                 </FormDescription>
                 <FormControl>
@@ -132,54 +149,59 @@ definePageMeta({
 
       <div class="space-y-6">
         <FormField
-            v-slot="{ componentField }"
-            name="public.lineup_add_without_invite"
-          >
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.lineup_add_without_invite")
-              }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.lineup_add_without_invite_description",
-                  )
-                }}
-              </FormDescription>
-              <FormControl>
-                <Select v-bind="componentField">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="role.value"
-                        v-for="role in lineupRoles"
-                        :key="role.value"
-                      >
-                        <span class="capitalize">{{ role.display }}</span>
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          v-slot="{ componentField }"
+          name="public.lineup_add_without_invite"
+        >
+          <FormItem>
+            <FormLabel class="text-lg font-semibold">{{
+              $t("pages.settings.application.lineup_add_without_invite")
+            }}</FormLabel>
+            <FormDescription>
+              {{
+                $t(
+                  "pages.settings.application.lineup_add_without_invite_description",
+                )
+              }}
+            </FormDescription>
+            <FormControl>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="role.value"
+                      v-for="role in lineupRoles"
+                      :key="role.value"
+                    >
+                      <span class="capitalize">{{ role.display }}</span>
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
         </FormField>
       </div>
 
       <Card variant="gradient">
         <div class="p-6 space-y-6">
-          <div class="flex flex-row items-center justify-between cursor-pointer" @click="toggleDefaultModels">
+          <div
+            class="flex flex-row items-center justify-between cursor-pointer"
+            @click="toggleDefaultModels"
+          >
             <div class="space-y-0.5">
               <h4 class="text-base font-medium">
                 {{ $t("pages.settings.application.default_models") }}
               </h4>
               <p class="text-sm text-muted-foreground">
-                {{ $t("match.options.advanced.default_player_models.description") }}
+                {{
+                  $t("match.options.advanced.default_player_models.description")
+                }}
               </p>
             </div>
             <Switch

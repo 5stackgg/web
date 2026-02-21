@@ -20,7 +20,9 @@ definePageMeta({
           >
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.streaming.minimum_role_to_spectate")
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_spectate",
+                )
               }}</FormLabel>
               <FormDescription>
                 {{
@@ -59,7 +61,9 @@ definePageMeta({
           >
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.streaming.minimum_role_to_stream")
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_stream",
+                )
               }}</FormLabel>
               <FormDescription>
                 {{
@@ -112,7 +116,9 @@ definePageMeta({
               class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors mt-1"
               @click.stop
             >
-              {{ $t("pages.settings.application.streaming.playcast_learn_more") }}
+              {{
+                $t("pages.settings.application.streaming.playcast_learn_more")
+              }}
               <ExternalLink class="w-3.5 h-3.5" />
             </a>
           </div>

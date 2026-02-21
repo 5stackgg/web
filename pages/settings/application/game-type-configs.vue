@@ -10,10 +10,10 @@ definePageMeta({
 </script>
 
 <template>
-   <GameTypeConfigTabs
-        :game-type-configs="gameTypeConfigs"
-        @updated="handleUpdated"
-      />
+  <GameTypeConfigTabs
+    :game-type-configs="gameTypeConfigs"
+    @updated="handleUpdated"
+  />
 </template>
 
 <script lang="ts">

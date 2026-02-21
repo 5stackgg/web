@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 definePageMeta({
   layout: "application-settings",
 });
@@ -9,7 +9,7 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-6">
-      <AnimatedCard variant="gradient">
+      <Card variant="gradient">
         <div class="p-6 space-y-6">
           <FormField v-slot="{ componentField }" name="discord_invite_link">
             <FormItem>
@@ -40,14 +40,16 @@ definePageMeta({
                 $t("pages.settings.application.discord.support_role")
               }}</FormLabel>
               <FormDescription>{{
-                $t("pages.settings.application.discord.support_role_description")
+                $t(
+                  "pages.settings.application.discord.support_role_description",
+                )
               }}</FormDescription>
               <Input v-bind="componentField"></Input>
               <FormMessage />
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </Card>
 
       <div class="flex justify-start">
         <Button

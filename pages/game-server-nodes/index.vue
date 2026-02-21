@@ -20,7 +20,7 @@ import {
 import Pagination from "~/components/Pagination.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
@@ -39,7 +39,10 @@ const { isMobile } = useSidebar();
       }}</template>
       <template #actions>
         <div class="flex items-center gap-2">
-          <div class="flex items-center gap-2 cursor-pointer" @click="toggleNodeMetrics()">
+          <div
+            class="flex items-center gap-2 cursor-pointer"
+            @click="toggleNodeMetrics()"
+          >
             <div class="flex items-center gap-1">
               {{ $t("pages.game_server_nodes.display_metrics") }}
             </div>
@@ -62,7 +65,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6" v-if="!supportsGameServerNodes">
-    <AnimatedCard variant="gradient">
+    <Card variant="gradient">
       <Alert class="bg-transparent border-0">
         <Info class="h-4 w-4" />
         <AlertTitle>{{
@@ -78,11 +81,11 @@ const { isMobile } = useSidebar();
           >.
         </AlertDescription>
       </Alert>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
-    <AnimatedCard variant="gradient">
+    <Card variant="gradient">
       <div class="p-4 flex items-center gap-4">
         <div class="flex items-center gap-2">
           <Info class="h-4 w-4 shrink-0" />
@@ -104,12 +107,12 @@ const { isMobile } = useSidebar();
           }}</span>
         </div>
       </div>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <!-- Filters -->
   <PageTransition :delay="300" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4 mb-4">
+    <Card variant="gradient" class="p-4 mb-4">
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold">
@@ -209,11 +212,11 @@ const { isMobile } = useSidebar();
           </div>
         </form>
       </div>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <PageTransition :delay="400" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4">
+    <Card variant="gradient" class="p-4">
       <Transition name="fade" mode="out-in">
         <Empty v-if="loading" key="loading" class="min-h-[200px]">
           <div class="space-y-3 w-full max-w-md">
@@ -289,7 +292,7 @@ const { isMobile } = useSidebar();
           }}</EmptyDescription>
         </Empty>
       </Transition>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <Pagination

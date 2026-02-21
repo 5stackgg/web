@@ -17,7 +17,7 @@ import {
   CollapsibleContent,
 } from "~/components/ui/collapsible";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 </script>
 
 <template>
@@ -31,81 +31,84 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       <div class="space-y-4">
         <slot name="left"></slot>
 
-        <AnimatedCard variant="gradient">
+        <Card>
           <div class="grid grid-cols-1 gap-8 p-4">
-          <slot></slot>
+            <slot></slot>
 
-          <FormField
-            v-slot="{ componentField }"
-            name="type"
-            v-if="!stageBracketOverride"
-          >
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t("match.options.type.label")
-              }}</FormLabel>
-              <RadioGroup
-                v-bind="componentField"
-                class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
-              >
-                <div
-                  v-for="type in e_match_types"
-                  :key="type.value"
-                  class="flex items-center space-x-2 p-8 cursor-pointer"
-                  :class="{ 'cursor-not-allowed opacity-60': isLocked }"
-                  @click="!isLocked && form.setFieldValue('type', type.value)"
+            <FormField
+              v-slot="{ componentField }"
+              name="type"
+              v-if="!stageBracketOverride"
+            >
+              <FormItem>
+                <FormLabel class="text-lg font-semibold">{{
+                  $t("match.options.type.label")
+                }}</FormLabel>
+                <RadioGroup
+                  v-bind="componentField"
+                  class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
                 >
-                  <RadioGroupItem
-                    :id="type.value"
-                    :value="type.value"
-                    :disabled="isLocked"
-                  />
-                  <Label :for="type.value" class="flex flex-col cursor-pointer">
-                    <span>{{ type.value }}</span>
-                    <span class="text-xs text-muted-foreground">
-                      {{ type.description }}
-                    </span>
-                  </Label>
-                </div>
-              </RadioGroup>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="best_of">
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t("match.options.best_of.label")
-              }}</FormLabel>
-              <FormDescription>
-                {{ $t("match.options.best_of.description") }}
-              </FormDescription>
-              <Select v-bind="componentField" :disabled="isLocked">
-                <FormControl>
-                  <SelectTrigger :disabled="isLocked">
-                    <SelectValue
-                      :placeholder="$t('match.options.best_of.placeholder')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      :value="bestOf.value"
-                      v-for="bestOf in bestOfOptions"
-                      :key="bestOf.value"
+                  <div
+                    v-for="type in e_match_types"
+                    :key="type.value"
+                    class="flex items-center space-x-2 p-8 cursor-pointer"
+                    :class="{ 'cursor-not-allowed opacity-60': isLocked }"
+                    @click="!isLocked && form.setFieldValue('type', type.value)"
+                  >
+                    <RadioGroupItem
+                      :id="type.value"
+                      :value="type.value"
                       :disabled="isLocked"
+                    />
+                    <Label
+                      :for="type.value"
+                      class="flex flex-col cursor-pointer"
                     >
-                      {{ bestOf.display }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+                      <span>{{ type.value }}</span>
+                      <span class="text-xs text-muted-foreground">
+                        {{ type.description }}
+                      </span>
+                    </Label>
+                  </div>
+                </RadioGroup>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="best_of">
+              <FormItem>
+                <FormLabel class="text-lg font-semibold">{{
+                  $t("match.options.best_of.label")
+                }}</FormLabel>
+                <FormDescription>
+                  {{ $t("match.options.best_of.description") }}
+                </FormDescription>
+                <Select v-bind="componentField" :disabled="isLocked">
+                  <FormControl>
+                    <SelectTrigger :disabled="isLocked">
+                      <SelectValue
+                        :placeholder="$t('match.options.best_of.placeholder')"
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="bestOf.value"
+                        v-for="bestOf in bestOfOptions"
+                        :key="bestOf.value"
+                        :disabled="isLocked"
+                      >
+                        {{ bestOf.display }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </div>
-        </AnimatedCard>
+        </Card>
 
         <FormField
           v-slot="{ value, handleChange }"
@@ -113,8 +116,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           v-if="!forceVeto && !stageBracketOverride"
         >
           <FormItem>
-            <AnimatedCard
-              variant="gradient"
+            <Card
               class="cursor-pointer"
               :class="{ 'cursor-not-allowed opacity-60': isLocked }"
               @click="!isLocked && handleChange(!value)"
@@ -137,7 +139,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                   {{ $t("match.options.map_veto_settings.description") }}
                 </FormDescription>
               </div>
-            </AnimatedCard>
+            </Card>
           </FormItem>
         </FormField>
       </div>
@@ -145,7 +147,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       <!-- Map Pool Selection -->
       <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
-          <AnimatedCard variant="gradient">
+          <Card>
             <div class="p-6 space-y-6">
               <div class="flex justify-between items-center">
                 <FormLabel class="text-lg font-semibold">
@@ -277,7 +279,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 </template>
               </div>
             </div>
-          </AnimatedCard>
+          </Card>
           <FormMessage />
         </FormItem>
       </FormField>
@@ -345,18 +347,23 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
         <CollapsibleContent>
           <div class="flex flex-col gap-4">
-            <AnimatedCard variant="gradient">
+            <Card>
               <div class="p-4 space-y-6">
                 <slot name="before-overtime"></slot>
                 <FormField v-slot="{ value, handleChange }" name="overtime">
                   <FormItem>
-                    <div class="flex flex-row items-center justify-between cursor-pointer" @click="handleChange(!value)">
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
                       <div class="space-y-0.5">
                         <FormLabel class="text-lg font-semibold">{{
                           $t("match.options.advanced.overtime.label")
                         }}</FormLabel>
                         <FormDescription>
-                          {{ $t("match.options.advanced.overtime.description") }}
+                          {{
+                            $t("match.options.advanced.overtime.description")
+                          }}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -372,13 +379,18 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
                 <FormField v-slot="{ value, handleChange }" name="knife_round">
                   <FormItem>
-                    <div class="flex flex-row items-center justify-between cursor-pointer" @click="handleChange(!value)">
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
                       <div class="space-y-0.5">
                         <FormLabel class="text-lg font-semibold">{{
                           $t("match.options.advanced.knife_round.label")
                         }}</FormLabel>
                         <FormDescription>
-                          {{ $t("match.options.advanced.knife_round.description") }}
+                          {{
+                            $t("match.options.advanced.knife_round.description")
+                          }}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -405,7 +417,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                         <SelectTrigger :disabled="isLive">
                           <SelectValue
                             :placeholder="
-                              $t('match.options.advanced.max_rounds.placeholder')
+                              $t(
+                                'match.options.advanced.max_rounds.placeholder',
+                              )
                             "
                           />
                         </SelectTrigger>
@@ -427,9 +441,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                   </FormItem>
                 </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
-            <AnimatedCard variant="gradient" v-if="availableRegions.length > 1">
+            <Card v-if="availableRegions.length > 1">
               <div class="p-6 space-y-6">
                 <div class="flex justify-between items-center">
                   <div class="text-lg font-semibold">
@@ -449,274 +463,284 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <FormField v-slot="{ value, handleChange }" name="region_veto">
-                  <FormItem>
-                    <AnimatedCard
-                      variant="gradient"
-                      class="cursor-pointer"
-                      :class="{
-                        'cursor-not-allowed': form.values.lan,
-                        'opacity-60': isLocked,
-                      }"
-                      @click="
-                        !form.values.lan && !isLocked && handleChange(!value)
-                      "
-                    >
-                      <div class="flex flex-col space-y-3 p-4">
-                        <div class="flex justify-between items-center">
-                          <FormLabel class="text-lg font-semibold">{{
-                            $t("match.options.advanced.region.veto.label")
-                          }}</FormLabel>
-                          <FormControl>
-                            <Switch
-                              class="pointer-events-none"
-                              :model-value="value"
-                              @update:model-value="
-                                form.values.lan === false && handleChange
-                              "
-                              :disabled="form.values.lan || isLocked"
-                            />
-                          </FormControl>
-                        </div>
-                        <FormDescription>
-                          {{ $t("match.options.advanced.region.veto.description") }}
-                        </FormDescription>
-                      </div>
-                    </AnimatedCard>
-                  </FormItem>
-                </FormField>
-
-                <FormField name="regions">
-                  <FormItem>
-                    <FormLabel>
-                      <div class="text-lg font-semibold">
-                        <template v-if="form.values.region_veto">
-                          {{ $t("match.options.advanced.region.preferred") }}
-                        </template>
-                        <template v-else>{{
-                          $t("match.options.advanced.region.single")
-                        }}</template>
-                      </div>
-                    </FormLabel>
-
-                    <FormControl>
-                      <template
-                        v-if="form.values.lan || !form.values.region_veto"
+                  <FormField
+                    v-slot="{ value, handleChange }"
+                    name="region_veto"
+                  >
+                    <FormItem>
+                      <Card
+                        class="cursor-pointer"
+                        :class="{
+                          'cursor-not-allowed': form.values.lan,
+                          'opacity-60': isLocked,
+                        }"
+                        @click="
+                          !form.values.lan && !isLocked && handleChange(!value)
+                        "
                       >
-                        <Select
-                          v-model="select_single_region"
-                          :options="regions"
-                          option-label="description"
-                          option-value="value"
-                          class="w-full"
-                          :disabled="isLocked"
-                        >
-                          <FormControl>
-                            <SelectTrigger :disabled="isLocked">
-                              <SelectValue
-                                :placeholder="
-                                  $t(
-                                    'match.options.advanced.region.placeholder',
-                                  )
+                        <div class="flex flex-col space-y-3 p-4">
+                          <div class="flex justify-between items-center">
+                            <FormLabel class="text-lg font-semibold">{{
+                              $t("match.options.advanced.region.veto.label")
+                            }}</FormLabel>
+                            <FormControl>
+                              <Switch
+                                class="pointer-events-none"
+                                :model-value="value"
+                                @update:model-value="
+                                  form.values.lan === false && handleChange
                                 "
+                                :disabled="form.values.lan || isLocked"
                               />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectItem
-                                v-for="region in regions"
-                                :key="region.value"
-                                :value="region.value"
-                                :disabled="isLocked"
-                              >
-                                {{ region.description || region.value }}
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </template>
-                      <Popover v-else>
-                        <PopoverTrigger as-child>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            class="justify-between w-full"
+                            </FormControl>
+                          </div>
+                          <FormDescription>
+                            {{
+                              $t(
+                                "match.options.advanced.region.veto.description",
+                              )
+                            }}
+                          </FormDescription>
+                        </div>
+                      </Card>
+                    </FormItem>
+                  </FormField>
+
+                  <FormField name="regions">
+                    <FormItem>
+                      <FormLabel>
+                        <div class="text-lg font-semibold">
+                          <template v-if="form.values.region_veto">
+                            {{ $t("match.options.advanced.region.preferred") }}
+                          </template>
+                          <template v-else>{{
+                            $t("match.options.advanced.region.single")
+                          }}</template>
+                        </div>
+                      </FormLabel>
+
+                      <FormControl>
+                        <template
+                          v-if="form.values.lan || !form.values.region_veto"
+                        >
+                          <Select
+                            v-model="select_single_region"
+                            :options="regions"
+                            option-label="description"
+                            option-value="value"
+                            class="w-full"
                             :disabled="isLocked"
                           >
-                            <span
-                              v-if="
-                                form.values.regions &&
-                                form.values.regions.length
-                              "
-                            >
-                              {{
-                                form.values.regions
-                                  .map(
-                                    (r) =>
-                                      regions.find(
-                                        (region) => region.value === r,
-                                      )?.description,
-                                  )
-                                  .join(", ")
-                              }}
-                            </span>
-                            <span v-else class="text-muted-foreground">
-                              {{ $t("match.options.advanced.region.any") }}
-                            </span>
-                            <ChevronsUpDown
-                              class="ml-2 h-4 w-4 shrink-0 opacity-50"
-                            />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent class="w-[200px] p-0">
-                          <Command>
-                            <CommandList>
-                              <CommandGroup>
-                                <CommandItem
+                            <FormControl>
+                              <SelectTrigger :disabled="isLocked">
+                                <SelectValue
+                                  :placeholder="
+                                    $t(
+                                      'match.options.advanced.region.placeholder',
+                                    )
+                                  "
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectItem
                                   v-for="region in regions"
                                   :key="region.value"
                                   :value="region.value"
-                                  @select="
-                                    () => {
-                                      if (isLocked) {
-                                        return;
-                                      }
-                                      const currentRegions =
-                                        form.values.regions || [];
-                                      const index = currentRegions.indexOf(
-                                        region.value,
-                                      );
-                                      if (index === -1) {
-                                        form.setFieldValue('regions', [
-                                          ...currentRegions,
-                                          region.value,
-                                        ]);
-                                      } else {
-                                        const updatedRegions = [
-                                          ...currentRegions,
-                                        ];
-                                        updatedRegions.splice(index, 1);
-
-                                        if (
-                                          form.values.lan &&
-                                          updatedRegions.length === 0
-                                        ) {
-                                          return;
-                                        }
-
-                                        form.setFieldValue(
-                                          'regions',
-                                          updatedRegions,
-                                        );
-                                      }
-                                    }
-                                  "
                                   :disabled="isLocked"
                                 >
                                   {{ region.description || region.value }}
-                                  <Check
-                                    :class="[
-                                      'mr-2 h-4 mx-auto',
-                                      form.values.regions?.includes(
-                                        region.value,
-                                      )
-                                        ? 'opacity-100'
-                                        : 'opacity-0',
-                                    ]"
-                                  />
-                                </CommandItem>
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </template>
+                        <Popover v-else>
+                          <PopoverTrigger as-child>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              class="justify-between w-full"
+                              :disabled="isLocked"
+                            >
+                              <span
+                                v-if="
+                                  form.values.regions &&
+                                  form.values.regions.length
+                                "
+                              >
+                                {{
+                                  form.values.regions
+                                    .map(
+                                      (r) =>
+                                        regions.find(
+                                          (region) => region.value === r,
+                                        )?.description,
+                                    )
+                                    .join(", ")
+                                }}
+                              </span>
+                              <span v-else class="text-muted-foreground">
+                                {{ $t("match.options.advanced.region.any") }}
+                              </span>
+                              <ChevronsUpDown
+                                class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                              />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent class="w-[200px] p-0">
+                            <Command>
+                              <CommandList>
+                                <CommandGroup>
+                                  <CommandItem
+                                    v-for="region in regions"
+                                    :key="region.value"
+                                    :value="region.value"
+                                    @select="
+                                      () => {
+                                        if (isLocked) {
+                                          return;
+                                        }
+                                        const currentRegions =
+                                          form.values.regions || [];
+                                        const index = currentRegions.indexOf(
+                                          region.value,
+                                        );
+                                        if (index === -1) {
+                                          form.setFieldValue('regions', [
+                                            ...currentRegions,
+                                            region.value,
+                                          ]);
+                                        } else {
+                                          const updatedRegions = [
+                                            ...currentRegions,
+                                          ];
+                                          updatedRegions.splice(index, 1);
+
+                                          if (
+                                            form.values.lan &&
+                                            updatedRegions.length === 0
+                                          ) {
+                                            return;
+                                          }
+
+                                          form.setFieldValue(
+                                            'regions',
+                                            updatedRegions,
+                                          );
+                                        }
+                                      }
+                                    "
+                                    :disabled="isLocked"
+                                  >
+                                    {{ region.description || region.value }}
+                                    <Check
+                                      :class="[
+                                        'mr-2 h-4 mx-auto',
+                                        form.values.regions?.includes(
+                                          region.value,
+                                        )
+                                          ? 'opacity-100'
+                                          : 'opacity-0',
+                                      ]"
+                                    />
+                                  </CommandItem>
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      </FormControl>
+                      <FormDescription>
+                        {{ $t("match.options.advanced.region.description") }}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                </div>
+              </div>
+            </Card>
+
+            <Card>
+              <div class="flex flex-col space-y-3 p-4">
+                <FormField v-slot="{ value }" name="number_of_substitutes">
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.substitutes.label")
+                    }}</FormLabel>
                     <FormDescription>
-                      {{ $t("match.options.advanced.region.description") }}
+                      {{ $t("match.options.advanced.substitutes.description") }}
+                    </FormDescription>
+                    <NumberField
+                      class="gap-2"
+                      :min="0"
+                      :max="5"
+                      :model-value="value"
+                      @update:model-value="
+                        (number_of_substitutes) => {
+                          form.setFieldValue(
+                            'number_of_substitutes',
+                            number_of_substitutes,
+                          );
+                        }
+                      "
+                    >
+                      <NumberFieldContent>
+                        <NumberFieldDecrement />
+                        <FormControl>
+                          <NumberFieldInput />
+                        </FormControl>
+                        <NumberFieldIncrement />
+                      </NumberFieldContent>
+                    </NumberField>
+                    <FormDescription>
+                      {{ $t("match.options.advanced.substitutes.range") }}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 </FormField>
-                </div>
+
+                <FormField v-slot="{ value }" name="tv_delay">
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.tv_delay.label")
+                    }}</FormLabel>
+                    <NumberField
+                      class="gap-2"
+                      :min="0"
+                      :max="120"
+                      :model-value="value"
+                      @update:model-value="
+                        (delay) => {
+                          form.setFieldValue('tv_delay', delay);
+                        }
+                      "
+                    >
+                      <NumberFieldContent>
+                        <NumberFieldDecrement />
+                        <FormControl>
+                          <NumberFieldInput />
+                        </FormControl>
+                        <NumberFieldIncrement />
+                      </NumberFieldContent>
+                    </NumberField>
+                    <FormDescription>
+                      {{ $t("match.options.advanced.tv_delay.range") }}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
-            <AnimatedCard variant="gradient">
-              <div class="flex flex-col space-y-3 p-4">
-              <FormField v-slot="{ value }" name="number_of_substitutes">
-                <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.substitutes.label")
-                  }}</FormLabel>
-                  <FormDescription>
-                    {{ $t("match.options.advanced.substitutes.description") }}
-                  </FormDescription>
-                  <NumberField
-                    class="gap-2"
-                    :min="0"
-                    :max="5"
-                    :model-value="value"
-                    @update:model-value="
-                      (number_of_substitutes) => {
-                        form.setFieldValue(
-                          'number_of_substitutes',
-                          number_of_substitutes,
-                        );
-                      }
-                    "
-                  >
-                    <NumberFieldContent>
-                      <NumberFieldDecrement />
-                      <FormControl>
-                        <NumberFieldInput />
-                      </FormControl>
-                      <NumberFieldIncrement />
-                    </NumberFieldContent>
-                  </NumberField>
-                  <FormDescription>
-                    {{ $t("match.options.advanced.substitutes.range") }}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-
-              <FormField v-slot="{ value }" name="tv_delay">
-                <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.tv_delay.label")
-                  }}</FormLabel>
-                  <NumberField
-                    class="gap-2"
-                    :min="0"
-                    :max="120"
-                    :model-value="value"
-                    @update:model-value="
-                      (delay) => {
-                        form.setFieldValue('tv_delay', delay);
-                      }
-                    "
-                  >
-                    <NumberFieldContent>
-                      <NumberFieldDecrement />
-                      <FormControl>
-                        <NumberFieldInput />
-                      </FormControl>
-                      <NumberFieldIncrement />
-                    </NumberFieldContent>
-                  </NumberField>
-                  <FormDescription>
-                    {{ $t("match.options.advanced.tv_delay.range") }}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard variant="gradient">
+            <Card>
               <div class="p-4 space-y-6">
-                <FormField v-if="canSetcheckInSettings" v-slot="{ componentField }" name="check_in_setting">
+                <FormField
+                  v-if="canSetcheckInSettings"
+                  v-slot="{ componentField }"
+                  name="check_in_setting"
+                >
                   <FormItem>
                     <FormLabel class="text-lg font-semibold">{{
                       $t("match.options.advanced.check_in_settings.label")
@@ -780,82 +804,84 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                   </FormItem>
                 </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
-            <AnimatedCard variant="gradient">
+            <Card>
               <div class="flex flex-col space-y-3 p-4">
-              <FormField v-slot="{ componentField }" name="timeout_setting">
-                <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.timeouts.tactical.label")
-                  }}</FormLabel>
-                  <FormDescription>{{
-                    $t("match.options.advanced.timeouts.tactical.description")
-                  }}</FormDescription>
-                  <FormControl>
-                    <Select v-bind="componentField">
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem
-                            :value="timeoutSetting.value"
-                            v-for="timeoutSetting in timeoutSettings"
-                            :key="timeoutSetting.value"
-                          >
-                            {{ timeoutSetting.display }}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
+                <FormField v-slot="{ componentField }" name="timeout_setting">
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.timeouts.tactical.label")
+                    }}</FormLabel>
+                    <FormDescription>{{
+                      $t("match.options.advanced.timeouts.tactical.description")
+                    }}</FormDescription>
+                    <FormControl>
+                      <Select v-bind="componentField">
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem
+                              :value="timeoutSetting.value"
+                              v-for="timeoutSetting in timeoutSettings"
+                              :key="timeoutSetting.value"
+                            >
+                              {{ timeoutSetting.display }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
 
-              <FormField
-                v-slot="{ componentField }"
-                name="tech_timeout_setting"
-              >
-                <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.advanced.timeouts.technical.label")
-                  }}</FormLabel>
-                  <FormDescription>{{
-                    $t("match.options.advanced.timeouts.technical.description")
-                  }}</FormDescription>
-                  <FormControl>
-                    <Select v-bind="componentField">
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem
-                            :value="timeoutSetting.value"
-                            v-for="timeoutSetting in timeoutSettings"
-                            :key="timeoutSetting.value"
-                          >
-                            {{ timeoutSetting.display }}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </FormField>
+                <FormField
+                  v-slot="{ componentField }"
+                  name="tech_timeout_setting"
+                >
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.timeouts.technical.label")
+                    }}</FormLabel>
+                    <FormDescription>{{
+                      $t(
+                        "match.options.advanced.timeouts.technical.description",
+                      )
+                    }}</FormDescription>
+                    <FormControl>
+                      <Select v-bind="componentField">
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem
+                              :value="timeoutSetting.value"
+                              v-for="timeoutSetting in timeoutSettings"
+                              :key="timeoutSetting.value"
+                            >
+                              {{ timeoutSetting.display }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
             <FormField v-slot="{ value, handleChange }" name="default_models">
               <FormItem>
-                <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+                <Card class="cursor-pointer" @click="handleChange(!value)">
                   <div class="flex flex-col space-y-3 p-4">
                     <div class="flex justify-between items-center">
                       <FormLabel class="text-lg font-semibold">{{
@@ -870,10 +896,12 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                       </FormControl>
                     </div>
                     <FormDescription>
-                      {{ $t("match.options.advanced.default_models.description") }}
+                      {{
+                        $t("match.options.advanced.default_models.description")
+                      }}
                     </FormDescription>
                   </div>
-                </AnimatedCard>
+                </Card>
               </FormItem>
             </FormField>
           </div>

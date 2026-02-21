@@ -126,21 +126,23 @@ import { $ } from "~/generated/zeus";
 
     <MatchOptions :form="form" :stage-bracket-override="true">
       <template
-        v-if="
-          form.values.stage_type &&
-          form.values.stage_type !== 'RoundRobin'
-        "
+        v-if="form.values.stage_type && form.values.stage_type !== 'RoundRobin'"
         #before-overtime
       >
         <FormField v-slot="{ value, handleChange }" name="enable_decider_bo">
           <FormItem>
-            <div class="flex flex-row items-center justify-between cursor-pointer" @click="handleChange(!value)">
+            <div
+              class="flex flex-row items-center justify-between cursor-pointer"
+              @click="handleChange(!value)"
+            >
               <div class="space-y-0.5">
                 <FormLabel class="text-lg font-semibold">{{
                   $t("tournament.stage.decider_best_of_toggle")
                 }}</FormLabel>
                 <FormDescription>
-                  {{ $t("tournament.stage.decider_best_of_toggle_description") }}
+                  {{
+                    $t("tournament.stage.decider_best_of_toggle_description")
+                  }}
                 </FormDescription>
               </div>
               <FormControl>
@@ -436,28 +438,31 @@ export default {
       const tournamentOptions = this.tournament.options;
 
       await (this as any).$apollo.mutate({
-        variables: setupOptionsVariables({
-          // Restricted fields - use tournament defaults
-          mr: tournamentOptions.mr,
-          type: tournamentOptions.type,
-          regions: tournamentOptions.regions || [],
-          map_pool_id: mapPoolId || tournamentOptions.map_pool.id,
-          // Allowed fields - use from form
-          best_of: parseInt(form.best_of),
-          knife_round: form.knife_round,
-          default_models: form.default_models,
-          overtime: form.overtime,
-          coaches: form.coaches,
-          region_veto: form.region_veto,
-          number_of_substitutes: form.number_of_substitutes,
-          timeout_setting: form.timeout_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          tv_delay: form.tv_delay,
-          check_in_setting: form.check_in_setting,
-        }, {
-          matchOptionsId: matchOptionsId,
-        }),
+        variables: setupOptionsVariables(
+          {
+            // Restricted fields - use tournament defaults
+            mr: tournamentOptions.mr,
+            type: tournamentOptions.type,
+            regions: tournamentOptions.regions || [],
+            map_pool_id: mapPoolId || tournamentOptions.map_pool.id,
+            // Allowed fields - use from form
+            best_of: parseInt(form.best_of),
+            knife_round: form.knife_round,
+            default_models: form.default_models,
+            overtime: form.overtime,
+            coaches: form.coaches,
+            region_veto: form.region_veto,
+            number_of_substitutes: form.number_of_substitutes,
+            timeout_setting: form.timeout_setting,
+            ready_setting: form.ready_setting,
+            tech_timeout_setting: form.tech_timeout_setting,
+            tv_delay: form.tv_delay,
+            check_in_setting: form.check_in_setting,
+          },
+          {
+            matchOptionsId: matchOptionsId,
+          },
+        ),
         mutation: generateMutation({
           update_match_options_by_pk: [
             {

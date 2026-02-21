@@ -4,14 +4,19 @@ import CpuChart from "~/components/charts/CpuChart.vue";
 import MemoryChart from "~/components/charts/MemoryChart.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
-const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+const showSeparators = computed(
+  () => useApplicationSettingsStore().showSeparators,
+);
 </script>
 
 <template>
   <PageTransition :delay="100">
-    <Separator v-if="showSeparators" :label="$t('pages.system_metrics.services')" class="my-8" />
+    <Separator
+      v-if="showSeparators"
+      :label="$t('pages.system_metrics.services')"
+      class="my-8"
+    />
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
@@ -21,10 +26,7 @@ const showSeparators = computed(() => useApplicationSettingsStore().showSeparato
         :key="`${service.node}-${service.name}`"
       >
         <template v-if="hasServiceMetrics(service)">
-          <AnimatedCard
-            variant="gradient"
-            class="p-4 rounded-lg border border-gray-200"
-          >
+          <div class="p-4 rounded-lg border border-gray-200">
             <div class="flex items-center gap-2 mb-4">
               <div class="text-lg font-semibold">
                 {{ service.name }}
@@ -49,7 +51,7 @@ const showSeparators = computed(() => useApplicationSettingsStore().showSeparato
                 </div>
               </div>
             </div>
-          </AnimatedCard>
+          </div>
         </template>
       </template>
     </div>

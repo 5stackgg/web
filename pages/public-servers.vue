@@ -14,7 +14,7 @@ import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
@@ -33,7 +33,7 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
   <PageTransition :delay="100">
     <div class="mt-6">
-      <AnimatedCard variant="gradient" class="p-4">
+      <Card variant="gradient" class="p-4">
         <Transition name="fade" mode="out-in">
           <Empty v-if="loading" key="loading" class="min-h-[200px]">
             <div class="space-y-3 w-full max-w-md">
@@ -129,7 +129,7 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
             }}</EmptyDescription>
           </Empty>
         </Transition>
-      </AnimatedCard>
+      </Card>
     </div>
   </PageTransition>
 
@@ -139,7 +139,7 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
       <h2 class="text-xl font-semibold mb-4">
         {{ $t("pages.public_servers.lan_servers_title") }}
       </h2>
-      <AnimatedCard variant="gradient" class="p-4">
+      <Card variant="gradient" class="p-4">
         <Transition name="fade" mode="out-in">
           <Table key="lan-servers">
             <TableHeader>
@@ -214,7 +214,7 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
             </TableBody>
           </Table>
         </Transition>
-      </AnimatedCard>
+      </Card>
     </div>
   </PageTransition>
 </template>

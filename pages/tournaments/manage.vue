@@ -17,7 +17,7 @@ import { Switch } from "~/components/ui/switch";
 import { Separator } from "~/components/ui/separator";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 
 const { isMobile } = useSidebar();
 </script>
@@ -47,7 +47,7 @@ const { isMobile } = useSidebar();
 
   <!-- Filters Section -->
   <PageTransition :delay="100">
-    <AnimatedCard variant="gradient" class="p-4 mb-4">
+    <Card variant="gradient" class="p-4 mb-4">
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold">
@@ -142,7 +142,7 @@ const { isMobile } = useSidebar();
           </div>
         </form>
       </div>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <!-- Sort Controls -->
@@ -202,7 +202,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="300">
-    <AnimatedCard variant="gradient" class="p-4 relative">
+    <div>
       <div v-if="loading" class="absolute top-4 left-4 z-10">
         <div
           class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
@@ -225,7 +225,7 @@ const { isMobile } = useSidebar();
           {{ $t("tournament.table.no_tournaments_found") }}
         </p>
       </div>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
   <Pagination

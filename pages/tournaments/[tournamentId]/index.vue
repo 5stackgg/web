@@ -69,9 +69,8 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -283,7 +282,12 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent>
-            <div :class="['mt-2 pt-3 space-y-6', showSeparators && 'border-t border-border']">
+            <div
+              :class="[
+                'mt-2 pt-3 space-y-6',
+                showSeparators && 'border-t border-border',
+              ]"
+            >
               <!-- Match Options -->
               <MatchOptionsDisplay
                 :show-details-by-default="false"
@@ -295,7 +299,10 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
         <!-- Organized By - Bottom Right -->
         <div
-          :class="['flex items-center justify-end gap-1.5 mt-4 pt-3', showSeparators && 'border-t border-border']"
+          :class="[
+            'flex items-center justify-end gap-1.5 mt-4 pt-3',
+            showSeparators && 'border-t border-border',
+          ]"
         >
           <span class="text-xs text-muted-foreground">{{
             $t("tournament.organizer.organized_by")
@@ -355,13 +362,11 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       <TabsContent value="my-team" v-if="myTeam">
         <div class="flex flex-col md:flex-row gap-6">
           <PageTransition>
-            <div class="flex-grow md:w-2/3">
-              <AnimatedCard variant="gradient" class="p-4">
-                <TournamentTeam
-                  :tournament="tournament"
-                  :team="myTeam"
-                ></TournamentTeam>
-              </AnimatedCard>
+            <div class="flex-grow md:w-2/3 p-4">
+              <TournamentTeam
+                :tournament="tournament"
+                :team="myTeam"
+              ></TournamentTeam>
             </div>
           </PageTransition>
         </div>
@@ -375,19 +380,19 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 :key="team.id"
                 :delay="index * 50"
               >
-                <AnimatedCard variant="gradient" class="p-4">
+                <div class="p-4">
                   <TournamentTeam
                     :tournament="tournament"
                     :team="team"
                   ></TournamentTeam>
-                </AnimatedCard>
+                </div>
               </PageTransition>
             </div>
           </div>
 
           <div class="w-full md:w-1/3 space-y-6" v-if="tournament.is_organizer">
             <PageTransition :delay="200">
-              <AnimatedCard variant="gradient" class="p-4">
+              <div class="p-4">
                 <CardHeader>
                   <CardTitle class="text-xl">{{
                     $t("tournament.add_team.title")
@@ -398,7 +403,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                     :tournament="tournament"
                   ></TournamentJoinForm>
                 </CardContent>
-              </AnimatedCard>
+              </div>
             </PageTransition>
           </div>
         </div>
@@ -435,9 +440,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       </TabsContent>
       <TabsContent value="match-options" v-if="tournament?.is_organizer">
         <PageTransition>
-          <AnimatedCard variant="gradient" class="p-6">
+          <div class="p-6">
             <TournamentForm :tournament="tournament"></TournamentForm>
-          </AnimatedCard>
+          </div>
         </PageTransition>
       </TabsContent>
       <TabsContent value="organizers" v-if="tournament?.is_organizer">

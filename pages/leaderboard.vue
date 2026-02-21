@@ -10,14 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
@@ -28,11 +23,12 @@ import { Label } from "~/components/ui/label";
     <PageHeading>
       <template #title>
         <div class="flex items-center gap-2">
-          <Trophy class="w-6 h-6" />
           {{ $t("pages.leaderboard.title") }}
         </div>
       </template>
-      <template #description>{{ $t("pages.leaderboard.description") }}</template>
+      <template #description>{{
+        $t("pages.leaderboard.description")
+      }}</template>
     </PageHeading>
   </PageTransition>
 
@@ -42,25 +38,43 @@ import { Label } from "~/components/ui/label";
       <div class="flex-1">
         <Select v-model="windowDays">
           <SelectTrigger class="w-full md:w-[200px]">
-            <SelectValue :placeholder="$t('pages.leaderboard.time_periods.last_30_days')" />
+            <SelectValue
+              :placeholder="$t('pages.leaderboard.time_periods.last_30_days')"
+            />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="7">{{ $t("pages.leaderboard.time_periods.last_7_days") }}</SelectItem>
-            <SelectItem value="30">{{ $t("pages.leaderboard.time_periods.last_30_days") }}</SelectItem>
-            <SelectItem value="0">{{ $t("pages.leaderboard.time_periods.all_time") }}</SelectItem>
+            <SelectItem value="7">{{
+              $t("pages.leaderboard.time_periods.last_7_days")
+            }}</SelectItem>
+            <SelectItem value="30">{{
+              $t("pages.leaderboard.time_periods.last_30_days")
+            }}</SelectItem>
+            <SelectItem value="0">{{
+              $t("pages.leaderboard.time_periods.all_time")
+            }}</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div>
         <Select v-model="matchType">
           <SelectTrigger class="w-full md:w-[200px]">
-            <SelectValue :placeholder="$t('pages.leaderboard.match_types.all')" />
+            <SelectValue
+              :placeholder="$t('pages.leaderboard.match_types.all')"
+            />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{{ $t("pages.leaderboard.match_types.all") }}</SelectItem>
-            <SelectItem value="Competitive">{{ $t("pages.leaderboard.match_types.competitive") }}</SelectItem>
-            <SelectItem value="Wingman">{{ $t("pages.leaderboard.match_types.wingman") }}</SelectItem>
-            <SelectItem value="Duel">{{ $t("pages.leaderboard.match_types.duel") }}</SelectItem>
+            <SelectItem value="all">{{
+              $t("pages.leaderboard.match_types.all")
+            }}</SelectItem>
+            <SelectItem value="Competitive">{{
+              $t("pages.leaderboard.match_types.competitive")
+            }}</SelectItem>
+            <SelectItem value="Wingman">{{
+              $t("pages.leaderboard.match_types.wingman")
+            }}</SelectItem>
+            <SelectItem value="Duel">{{
+              $t("pages.leaderboard.match_types.duel")
+            }}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -96,145 +110,186 @@ import { Label } from "~/components/ui/label";
   <!-- Results -->
   <PageTransition :delay="300" class="mt-6">
     <div>
-    <AnimatedCard variant="gradient" class="p-4 relative">
-      <!-- Loading -->
-      <div v-if="loading" class="space-y-4">
-        <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
-          <Skeleton class="h-6 w-8" />
-          <Skeleton class="h-10 w-10 rounded" />
-          <Skeleton class="h-6 flex-1" />
-          <Skeleton class="h-6 w-20" />
+      <div class="p-4 relative">
+        <!-- Loading -->
+        <div v-if="loading" class="space-y-4">
+          <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
+            <Skeleton class="h-6 w-8" />
+            <Skeleton class="h-10 w-10 rounded" />
+            <Skeleton class="h-6 flex-1" />
+            <Skeleton class="h-6 w-20" />
+          </div>
         </div>
+
+        <!-- Empty State -->
+        <Empty v-else-if="!entries || entries.length === 0">
+          <p class="text-muted-foreground">
+            {{ $t("pages.leaderboard.no_results") }}
+          </p>
+        </Empty>
+
+        <!-- Results Table -->
+        <Table v-else>
+          <TableHeader>
+            <TableRow>
+              <TableHead class="w-16">{{
+                $t("pages.leaderboard.columns.rank")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.leaderboard.columns.player")
+              }}</TableHead>
+              <TableHead
+                class="text-right"
+                :class="{
+                  'cursor-pointer select-none hover:text-foreground':
+                    isSortable('value'),
+                }"
+                @click="toggleSort('value')"
+              >
+                <div class="flex items-center justify-end gap-1">
+                  {{ columnLabels.value }}
+                  <component
+                    v-if="isSortable('value')"
+                    :is="sortIcon('value')"
+                    class="h-3.5 w-3.5"
+                  />
+                </div>
+              </TableHead>
+              <TableHead
+                v-if="columnLabels.secondary_value"
+                class="text-right"
+                :class="{
+                  'cursor-pointer select-none hover:text-foreground':
+                    isSortable('secondary_value'),
+                }"
+                @click="toggleSort('secondary_value')"
+              >
+                <div class="flex items-center justify-end gap-1">
+                  {{ columnLabels.secondary_value }}
+                  <component
+                    v-if="isSortable('secondary_value')"
+                    :is="sortIcon('secondary_value')"
+                    class="h-3.5 w-3.5"
+                  />
+                </div>
+              </TableHead>
+              <TableHead
+                v-if="columnLabels.tertiary_value"
+                class="text-right"
+                :class="{
+                  'cursor-pointer select-none hover:text-foreground':
+                    isSortable('tertiary_value'),
+                }"
+                @click="toggleSort('tertiary_value')"
+              >
+                <div class="flex items-center justify-end gap-1">
+                  {{ columnLabels.tertiary_value }}
+                  <component
+                    v-if="isSortable('tertiary_value')"
+                    :is="sortIcon('tertiary_value')"
+                    class="h-3.5 w-3.5"
+                  />
+                </div>
+              </TableHead>
+              <TableHead
+                v-if="columnLabels.matches_played"
+                class="text-right"
+                :class="{
+                  'cursor-pointer select-none hover:text-foreground':
+                    isSortable('matches_played'),
+                }"
+                @click="toggleSort('matches_played')"
+              >
+                <div class="flex items-center justify-end gap-1">
+                  {{ columnLabels.matches_played }}
+                  <component
+                    v-if="isSortable('matches_played')"
+                    :is="sortIcon('matches_played')"
+                    class="h-3.5 w-3.5"
+                  />
+                </div>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow
+              v-for="entry in entries"
+              :key="entry.player_steam_id"
+              class="cursor-pointer"
+            >
+              <NuxtLink
+                :to="{
+                  name: 'players-id',
+                  params: { id: entry.player_steam_id },
+                }"
+                class="contents"
+              >
+                <TableCell>
+                  <div class="flex items-center justify-center">
+                    <span
+                      :class="{
+                        'text-yellow-400 font-bold': entry.rank === 1,
+                        'text-gray-300 font-bold': entry.rank === 2,
+                        'text-amber-600 font-bold': entry.rank === 3,
+                        'text-muted-foreground': entry.rank > 3,
+                      }"
+                    >
+                      {{ entry.rank }}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <PlayerDisplay
+                    :player="{
+                      steam_id: entry.player_steam_id,
+                      name: entry.player_name,
+                      avatar_url: entry.player_avatar_url,
+                      country: entry.player_country,
+                    }"
+                    :show-elo="false"
+                    :show-online="false"
+                    :show-role="false"
+                    :linkable="false"
+                    size="xs"
+                  />
+                </TableCell>
+                <TableCell class="text-right font-mono font-semibold">
+                  {{ formatValue(entry.value) }}
+                </TableCell>
+                <TableCell
+                  v-if="columnLabels.secondary_value"
+                  class="text-right font-mono text-muted-foreground"
+                >
+                  {{ formatSecondary(entry.secondary_value) }}
+                </TableCell>
+                <TableCell
+                  v-if="columnLabels.tertiary_value"
+                  class="text-right font-mono text-muted-foreground"
+                >
+                  {{ formatTertiary(entry.tertiary_value) }}
+                </TableCell>
+                <TableCell
+                  v-if="columnLabels.matches_played"
+                  class="text-right font-mono text-muted-foreground"
+                >
+                  {{ entry.matches_played ?? "\u2014" }}
+                </TableCell>
+              </NuxtLink>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
 
-      <!-- Empty State -->
-      <Empty v-else-if="!entries || entries.length === 0">
-        <p class="text-muted-foreground">
-          {{ $t("pages.leaderboard.no_results") }}
-        </p>
-      </Empty>
-
-      <!-- Results Table -->
-      <Table v-else>
-        <TableHeader>
-          <TableRow>
-            <TableHead class="w-16">{{ $t("pages.leaderboard.columns.rank") }}</TableHead>
-            <TableHead>{{ $t("pages.leaderboard.columns.player") }}</TableHead>
-            <TableHead
-              class="text-right"
-              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('value') }"
-              @click="toggleSort('value')"
-            >
-              <div class="flex items-center justify-end gap-1">
-                {{ columnLabels.value }}
-                <component v-if="isSortable('value')" :is="sortIcon('value')" class="h-3.5 w-3.5" />
-              </div>
-            </TableHead>
-            <TableHead
-              v-if="columnLabels.secondary_value"
-              class="text-right"
-              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('secondary_value') }"
-              @click="toggleSort('secondary_value')"
-            >
-              <div class="flex items-center justify-end gap-1">
-                {{ columnLabels.secondary_value }}
-                <component v-if="isSortable('secondary_value')" :is="sortIcon('secondary_value')" class="h-3.5 w-3.5" />
-              </div>
-            </TableHead>
-            <TableHead
-              v-if="columnLabels.tertiary_value"
-              class="text-right"
-              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('tertiary_value') }"
-              @click="toggleSort('tertiary_value')"
-            >
-              <div class="flex items-center justify-end gap-1">
-                {{ columnLabels.tertiary_value }}
-                <component v-if="isSortable('tertiary_value')" :is="sortIcon('tertiary_value')" class="h-3.5 w-3.5" />
-              </div>
-            </TableHead>
-            <TableHead
-              v-if="columnLabels.matches_played"
-              class="text-right"
-              :class="{ 'cursor-pointer select-none hover:text-foreground': isSortable('matches_played') }"
-              @click="toggleSort('matches_played')"
-            >
-              <div class="flex items-center justify-end gap-1">
-                {{ columnLabels.matches_played }}
-                <component v-if="isSortable('matches_played')" :is="sortIcon('matches_played')" class="h-3.5 w-3.5" />
-              </div>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow
-            v-for="entry in entries"
-            :key="entry.player_steam_id"
-            class="cursor-pointer"
-          >
-            <NuxtLink
-              :to="{
-                name: 'players-id',
-                params: { id: entry.player_steam_id },
-              }"
-              class="contents"
-            >
-              <TableCell>
-                <div class="flex items-center justify-center">
-                  <span
-                    :class="{
-                      'text-yellow-400 font-bold': entry.rank === 1,
-                      'text-gray-300 font-bold': entry.rank === 2,
-                      'text-amber-600 font-bold': entry.rank === 3,
-                      'text-muted-foreground': entry.rank > 3,
-                    }"
-                  >
-                    {{ entry.rank }}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <PlayerDisplay
-                  :player="{
-                    steam_id: entry.player_steam_id,
-                    name: entry.player_name,
-                    avatar_url: entry.player_avatar_url,
-                    country: entry.player_country,
-                  }"
-                  :show-elo="false"
-                  :show-online="false"
-                  :show-role="false"
-                  :linkable="false"
-                  size="xs"
-                />
-              </TableCell>
-              <TableCell class="text-right font-mono font-semibold">
-                {{ formatValue(entry.value) }}
-              </TableCell>
-              <TableCell v-if="columnLabels.secondary_value" class="text-right font-mono text-muted-foreground">
-                {{ formatSecondary(entry.secondary_value) }}
-              </TableCell>
-              <TableCell v-if="columnLabels.tertiary_value" class="text-right font-mono text-muted-foreground">
-                {{ formatTertiary(entry.tertiary_value) }}
-              </TableCell>
-              <TableCell v-if="columnLabels.matches_played" class="text-right font-mono text-muted-foreground">
-                {{ entry.matches_played ?? "\u2014" }}
-              </TableCell>
-            </NuxtLink>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </AnimatedCard>
-
-    <!-- Pagination -->
-    <Pagination
-      v-if="total > 0"
-      :page="page"
-      :per-page="perPage"
-      :total="total"
-      :show-per-page-selector="true"
-      @page="onPageChange"
-      @update:perPage="onPerPageChange"
-    />
+      <!-- Pagination -->
+      <Pagination
+        v-if="total > 0"
+        :page="page"
+        :per-page="perPage"
+        :total="total"
+        :show-per-page-selector="true"
+        @page="onPageChange"
+        @update:perPage="onPerPageChange"
+      />
     </div>
   </PageTransition>
 </template>
@@ -299,13 +354,25 @@ interface LeaderboardEntry {
   matches_played: number | null;
 }
 
-type SortField = "value" | "secondary_value" | "tertiary_value" | "matches_played";
+type SortField =
+  | "value"
+  | "secondary_value"
+  | "tertiary_value"
+  | "matches_played";
 
 // Per-category column configuration
-const CATEGORY_CONFIG: Record<string, {
-  columns: { value: string; secondary_value?: string; tertiary_value?: string; matches_played?: string };
-  sortable: SortField[];
-}> = {
+const CATEGORY_CONFIG: Record<
+  string,
+  {
+    columns: {
+      value: string;
+      secondary_value?: string;
+      tertiary_value?: string;
+      matches_played?: string;
+    };
+    sortable: SortField[];
+  }
+> = {
   elo: {
     columns: {
       value: "pages.leaderboard.col.elo",
@@ -374,9 +441,15 @@ export default {
       const cols = this.config.columns;
       return {
         value: this.$t(cols.value),
-        secondary_value: cols.secondary_value ? this.$t(cols.secondary_value) : null,
-        tertiary_value: cols.tertiary_value ? this.$t(cols.tertiary_value) : null,
-        matches_played: cols.matches_played ? this.$t(cols.matches_played) : null,
+        secondary_value: cols.secondary_value
+          ? this.$t(cols.secondary_value)
+          : null,
+        tertiary_value: cols.tertiary_value
+          ? this.$t(cols.tertiary_value)
+          : null,
+        matches_played: cols.matches_played
+          ? this.$t(cols.matches_played)
+          : null,
       };
     },
     offset() {
@@ -467,15 +540,21 @@ export default {
         });
         if (gen !== this.fetchGeneration) return;
         const rows = data?.get_leaderboard || [];
-        this.entries = rows.map((row: any, index: number): LeaderboardEntry => ({
-          ...row,
-          rank: this.offset + index + 1,
-          value: Number(row.value),
-          secondary_value: row.secondary_value != null ? Number(row.secondary_value) : null,
-          tertiary_value: row.tertiary_value != null ? Number(row.tertiary_value) : null,
-          matches_played: row.matches_played != null ? Number(row.matches_played) : null,
-        }));
-        this.total = Number(data?.get_leaderboard_aggregate?.aggregate?.count) || 0;
+        this.entries = rows.map(
+          (row: any, index: number): LeaderboardEntry => ({
+            ...row,
+            rank: this.offset + index + 1,
+            value: Number(row.value),
+            secondary_value:
+              row.secondary_value != null ? Number(row.secondary_value) : null,
+            tertiary_value:
+              row.tertiary_value != null ? Number(row.tertiary_value) : null,
+            matches_played:
+              row.matches_played != null ? Number(row.matches_played) : null,
+          }),
+        );
+        this.total =
+          Number(data?.get_leaderboard_aggregate?.aggregate?.count) || 0;
       } catch (error) {
         if (gen !== this.fetchGeneration) return;
         console.error("Error fetching leaderboard:", error);

@@ -16,7 +16,7 @@ import MapPoolRow from "~/components/map-pools/MapPoolRow.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 import {
   Table,
   TableBody,
@@ -64,7 +64,7 @@ const { isMobile } = useSidebar();
 
   <PageTransition :delay="100">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <AnimatedCard
+      <Card
         v-for="pool in map_pools"
         :key="pool.id"
         variant="gradient"
@@ -88,7 +88,7 @@ const { isMobile } = useSidebar();
             </NuxtLink>
           </Button>
         </div>
-      </AnimatedCard>
+      </Card>
     </div>
   </PageTransition>
 
@@ -114,7 +114,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="300" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4">
+    <Card variant="gradient" class="p-4">
       <div class="relative w-full overflow-auto">
         <Table>
           <TableHeader>
@@ -136,7 +136,7 @@ const { isMobile } = useSidebar();
           </TableBody>
         </Table>
       </div>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">

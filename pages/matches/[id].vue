@@ -13,7 +13,7 @@ import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 </script>
 
@@ -24,7 +24,7 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
   >
     <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
       <PageTransition>
-        <AnimatedCard variant="gradient" v-if="match.can_schedule">
+        <div v-if="match.can_schedule">
           <CardHeader class="p-4">
             <CardTitle class="flex justify-between">{{
               $t("pages.matches.detail.schedule")
@@ -37,7 +37,7 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
               </template>
             </div>
           </CardContent>
-        </AnimatedCard>
+        </div>
       </PageTransition>
 
       <PageTransition :delay="100">
@@ -119,15 +119,12 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
       <PageTransition :delay="100">
         <MatchMapVeto :match="match"></MatchMapVeto>
       </PageTransition>
-
     </div>
 
     <PageTransition :delay="200" class="lg:col-span-2">
-      <AnimatedCard variant="gradient">
-        <CardContent class="p-4">
-          <MatchTabs :match="match"></MatchTabs>
-        </CardContent>
-      </AnimatedCard>
+      <CardContent class="p-4">
+        <MatchTabs :match="match"></MatchTabs>
+      </CardContent>
     </PageTransition>
   </div>
 </template>
@@ -321,7 +318,8 @@ export default {
             const displayText =
               match.label ||
               `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`;
-            const tournament = match.tournament_brackets?.[0]?.stage?.tournament;
+            const tournament =
+              match.tournament_brackets?.[0]?.stage?.tournament;
             mc.value = {
               id: match.id,
               displayText,

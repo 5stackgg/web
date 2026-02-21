@@ -15,8 +15,6 @@ import formatStatValue from "~/utilities/formatStatValue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
-import SteamIcon from "~/components/icons/SteamIcon.vue";
-import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import { kdrStrokeColor } from "~/utilities/kdrColor";
 import { PlayIcon, MoreHorizontal } from "lucide-vue-next";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -25,8 +23,12 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
 } from "~/components/ui/dropdown-menu";
+import { Separator } from "~/components/ui/separator";
+import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 
 definePageMeta({
   alias: ["/me/:id?"],
@@ -156,7 +158,7 @@ const { isMobile } = useSidebar();
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Performance Stats -->
         <PageTransition :delay="100">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardContent class="flex-1 p-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
                 <!-- Win Rate Column -->
@@ -239,7 +241,11 @@ const { isMobile } = useSidebar();
 
         <!-- Elo History Chart -->
         <PageTransition :delay="200">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4" v-if="player?.elo_history">
+          <AnimatedCard
+            variant="elevated"
+            class="flex flex-col h-full p-4"
+            v-if="player?.elo_history"
+          >
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -279,7 +285,7 @@ const { isMobile } = useSidebar();
       >
         <!-- Recent Wins/Losses -->
         <PageTransition :delay="300">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -298,7 +304,7 @@ const { isMobile } = useSidebar();
 
         <!-- Weapon Kills -->
         <PageTransition :delay="500">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -318,11 +324,8 @@ const { isMobile } = useSidebar();
                   {{ $t("pages.players.detail.no_weapon_kills") }}
                 </p>
               </div>
-              <div
-                v-else
-                class="overflow-hidden rounded-lg border border-border/50"
-              >
-                <table class="w-full">
+              <div v-else class="overflow-hidden rounded-lg">
+                <table class="w-full border-90">
                   <tbody>
                     <tr
                       v-for="(weapon, index) in player.kills_by_weapons"
@@ -365,36 +368,41 @@ const { isMobile } = useSidebar();
       </div>
     </div>
 
-    <!-- Matches/Tournaments Section -->
-    <PageTransition :delay="500">
-      <AnimatedCard variant="gradient" class="p-4">
-        <Tabs default-value="matches">
-          <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
-            <TabsTrigger
-              value="matches"
-              class="transition-all duration-300 data-[state=active]:shadow-lg"
-              >{{ $t("pages.players.detail.matches") }}</TabsTrigger
-            >
-            <TabsTrigger
-              value="tournaments"
-              class="transition-all duration-300 data-[state=active]:shadow-lg"
-              >{{ $t("pages.players.detail.tournaments") }}</TabsTrigger
-            >
-          </TabsList>
+    <Separator />
 
-          <TabsContent value="matches">
-            <CardHeader>
-              <CardTitle class="text-xl font-bold">
-                {{ $t("pages.players.detail.matches") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="p-0">
-              <MatchesTable
-                :player="player"
-                :matches="playerWithMatches?.matches"
-                v-if="playerWithMatches?.matches"
-              ></MatchesTable>
-            </CardContent>
+    <PageTransition :delay="500">
+      <Tabs default-value="matches">
+        <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
+          <TabsTrigger
+            value="matches"
+            class="transition-all duration-300 data-[state=active]:shadow-lg"
+            >{{ $t("pages.players.detail.matches") }}</TabsTrigger
+          >
+          <TabsTrigger
+            value="tournaments"
+            class="transition-all duration-300 data-[state=active]:shadow-lg"
+            >{{ $t("pages.players.detail.tournaments") }}</TabsTrigger
+          >
+        </TabsList>
+
+        <TabsContent value="matches">
+          <Empty
+            v-if="
+              playerWithMatchesAggregate &&
+              playerWithMatchesAggregate.total_matches === 0
+            "
+            class="min-h-[200px]"
+          >
+            <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
+            <EmptyDescription>{{
+              $t("pages.players.detail.no_matches_description")
+            }}</EmptyDescription>
+          </Empty>
+          <template v-else-if="playerWithMatches?.matches?.length">
+            <MatchesTable
+              :player="player"
+              :matches="playerWithMatches?.matches"
+            />
             <Pagination
               :page="page"
               :per-page="perPage"
@@ -405,35 +413,31 @@ const { isMobile } = useSidebar();
               "
               :total="playerWithMatchesAggregate.total_matches"
               v-if="playerWithMatchesAggregate"
-            ></Pagination>
-          </TabsContent>
+            />
+          </template>
+        </TabsContent>
 
-          <TabsContent value="tournaments">
-            <CardHeader>
-              <CardTitle class="text-xl font-bold">
-                {{ $t("pages.players.detail.tournaments") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="p-0">
-              <div
-                v-if="!playerTournaments || playerTournaments.length === 0"
-                class="text-center py-8"
-              >
-                <p class="text-muted-foreground">
-                  {{ $t("pages.players.detail.no_tournaments") }}
-                </p>
-              </div>
-              <div v-else class="space-y-4">
-                <TournamentTableRow
-                  v-for="tournament in playerTournaments"
-                  :key="tournament.id"
-                  :tournament="tournament"
-                ></TournamentTableRow>
-              </div>
-            </CardContent>
-          </TabsContent>
-        </Tabs>
-      </AnimatedCard>
+        <TabsContent value="tournaments">
+          <Empty
+            v-if="!playerTournaments || playerTournaments.length === 0"
+            class="min-h-[200px]"
+          >
+            <EmptyTitle>{{
+              $t("pages.players.detail.no_tournaments")
+            }}</EmptyTitle>
+            <EmptyDescription>{{
+              $t("pages.players.detail.no_tournaments_description")
+            }}</EmptyDescription>
+          </Empty>
+          <div v-else class="space-y-4">
+            <TournamentTableRow
+              v-for="tournament in playerTournaments"
+              :key="tournament.id"
+              :tournament="tournament"
+            ></TournamentTableRow>
+          </div>
+        </TabsContent>
+      </Tabs>
     </PageTransition>
   </div>
 </template>

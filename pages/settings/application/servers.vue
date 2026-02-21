@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import Card from "~/components/ui/card/Card.vue";
 definePageMeta({
   layout: "application-settings",
 });
@@ -9,7 +9,7 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-4">
-      <AnimatedCard variant="gradient">
+      <Card variant="gradient">
         <div class="p-6 space-y-6">
           <div
             class="flex flex-row items-center justify-between cursor-pointer"
@@ -17,7 +17,9 @@ definePageMeta({
           >
             <div class="space-y-0.5">
               <h4 class="text-base font-medium">
-                {{ $t("pages.settings.application.servers.enable_cpu_pinning") }}
+                {{
+                  $t("pages.settings.application.servers.enable_cpu_pinning")
+                }}
               </h4>
               <p class="text-sm text-muted-foreground">
                 {{
@@ -33,10 +35,15 @@ definePageMeta({
             />
           </div>
 
-          <FormField v-slot="{ componentField }" name="number_of_cpus_per_server">
+          <FormField
+            v-slot="{ componentField }"
+            name="number_of_cpus_per_server"
+          >
             <FormItem>
               <FormLabel>{{
-                $t("pages.settings.application.servers.number_of_cpus_per_server")
+                $t(
+                  "pages.settings.application.servers.number_of_cpus_per_server",
+                )
               }}</FormLabel>
               <FormDescription>{{
                 $t(
@@ -48,7 +55,7 @@ definePageMeta({
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </Card>
 
       <div class="flex justify-start">
         <Button

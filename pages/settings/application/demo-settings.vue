@@ -2,7 +2,7 @@
 import { LucideDownload, LucideUpload, LucideHardDrive } from "lucide-vue-next";
 import formatBytes from "~/utilities/formatBytes";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 
 definePageMeta({
   layout: "application-settings",
@@ -11,7 +11,7 @@ definePageMeta({
 
 <template>
   <PageTransition :delay="0">
-    <AnimatedCard
+    <Card
       v-if="match_map_demos_aggregate"
       variant="gradient"
       class="mb-8 p-4 flex items-center gap-4"
@@ -29,11 +29,11 @@ definePageMeta({
           {{ formatBytes(match_map_demos_aggregate.aggregate.sum.size) }}~
         </p>
       </div>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <PageTransition :delay="100">
-    <AnimatedCard variant="gradient" class="mb-8 p-4 flex flex-col gap-2">
+    <Card variant="gradient" class="mb-8 p-4 flex flex-col gap-2">
       <h3 class="text-lg font-semibold">
         {{ $t("pages.settings.application.demo_settings.test_s3_title") }}
       </h3>
@@ -60,17 +60,19 @@ definePageMeta({
           {{ $t("pages.settings.application.demo_settings.test_download") }}
         </Button>
       </div>
-    </AnimatedCard>
+    </Card>
   </PageTransition>
 
   <PageTransition :delay="200">
     <form @submit.prevent="updateSettings" class="grid gap-6">
-      <AnimatedCard variant="gradient">
+      <Card variant="gradient">
         <div class="p-6 space-y-6">
           <FormField v-slot="{ componentField }" name="demo_network_limiter">
             <FormItem>
               <FormLabel>{{
-                $t("pages.settings.application.demo_settings.demo_network_limiter")
+                $t(
+                  "pages.settings.application.demo_settings.demo_network_limiter",
+                )
               }}</FormLabel>
               <FormDescription>{{
                 $t(
@@ -144,7 +146,9 @@ definePageMeta({
           <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
             <FormItem>
               <FormLabel>{{
-                $t("pages.settings.application.demo_settings.cloudflare_worker_url")
+                $t(
+                  "pages.settings.application.demo_settings.cloudflare_worker_url",
+                )
               }}</FormLabel>
               <FormDescription>
                 {{
@@ -165,7 +169,7 @@ definePageMeta({
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </Card>
 
       <div class="flex justify-start">
         <Button

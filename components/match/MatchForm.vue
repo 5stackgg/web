@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 import { Info } from "lucide-vue-next";
 </script>
 
@@ -11,7 +11,7 @@ import { Info } from "lucide-vue-next";
       <template #left>
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem>
-            <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+            <Card class="cursor-pointer" @click="handleChange(!value)">
               <div class="flex flex-col space-y-3 p-4">
                 <div class="flex justify-between items-center">
                   <FormLabel class="text-lg font-semibold">{{
@@ -29,73 +29,79 @@ import { Info } from "lucide-vue-next";
                   {{ $t("pages.matches.create_page.pick_up_game_description") }}
                 </FormDescription>
               </div>
-            </AnimatedCard>
+            </Card>
           </FormItem>
         </FormField>
 
-        <AnimatedCard
-          variant="gradient"
+        <Card
+          class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50"
           v-if="!form.values.pug"
         >
           <div class="flex flex-col gap-4 p-4">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <FormField v-slot="{ handleChange, componentField }" name="team_1">
-              <FormItem>
-                <FormLabel>{{
-                  $t("pages.matches.create_page.team_1")
-                }}</FormLabel>
-                <TeamSearch
-                  :label="$t('pages.matches.create_page.search_team')"
-                  @selected="
-                    (team) => {
-                      if (team.id == form.values.team_1) {
-                        handleChange(undefined);
-                        return;
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <FormField
+                v-slot="{ handleChange, componentField }"
+                name="team_1"
+              >
+                <FormItem>
+                  <FormLabel>{{
+                    $t("pages.matches.create_page.team_1")
+                  }}</FormLabel>
+                  <TeamSearch
+                    :label="$t('pages.matches.create_page.search_team')"
+                    @selected="
+                      (team) => {
+                        if (team.id == form.values.team_1) {
+                          handleChange(undefined);
+                          return;
+                        }
+                        handleChange(team.id);
                       }
-                      handleChange(team.id);
-                    }
-                  "
-                  v-model="componentField.modelValue"
-                  class="w-full"
-                ></TeamSearch>
-                <FormMessage />
-              </FormItem>
-            </FormField>
+                    "
+                    v-model="componentField.modelValue"
+                    class="w-full"
+                  ></TeamSearch>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
 
-            <FormField v-slot="{ handleChange, componentField }" name="team_2">
-              <FormItem>
-                <FormLabel>{{
-                  $t("pages.matches.create_page.team_2")
-                }}</FormLabel>
-                <TeamSearch
-                  :label="$t('pages.matches.create_page.search_team')"
-                  @selected="
-                    (team) => {
-                      if (team.id == form.values.team_2) {
-                        handleChange(undefined);
-                        return;
+              <FormField
+                v-slot="{ handleChange, componentField }"
+                name="team_2"
+              >
+                <FormItem>
+                  <FormLabel>{{
+                    $t("pages.matches.create_page.team_2")
+                  }}</FormLabel>
+                  <TeamSearch
+                    :label="$t('pages.matches.create_page.search_team')"
+                    @selected="
+                      (team) => {
+                        if (team.id == form.values.team_2) {
+                          handleChange(undefined);
+                          return;
+                        }
+                        handleChange(team.id);
                       }
-                      handleChange(team.id);
-                    }
-                  "
-                  v-model="componentField.modelValue"
-                  class="w-full"
-                ></TeamSearch>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-          </div>
+                    "
+                    v-model="componentField.modelValue"
+                    class="w-full"
+                  ></TeamSearch>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
 
-          <div
-            class="flex items-center gap-2 text-sm text-muted-foreground italic"
-          >
-            <Info class="inline-block w-4 h-4" />
-            <span>
-              {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
-            </span>
+            <div
+              class="flex items-center gap-2 text-sm text-muted-foreground italic"
+            >
+              <Info class="inline-block w-4 h-4" />
+              <span>
+                {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
+              </span>
+            </div>
           </div>
-          </div>
-        </AnimatedCard>
+        </Card>
       </template>
     </MatchOptions>
 

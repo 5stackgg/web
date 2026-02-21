@@ -41,7 +41,7 @@
 
   <!-- Tabs Section -->
   <PageTransition :delay="200" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4">
+    <div class="p-4">
       <Tabs default-value="live">
         <TabsList>
           <TabsTrigger value="live">{{
@@ -188,7 +188,7 @@
           </Teleport>
         </TabsContent>
       </Tabs>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
   <div id="pagination"></div>
@@ -206,7 +206,6 @@ import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";

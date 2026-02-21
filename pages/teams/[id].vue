@@ -35,7 +35,6 @@ import PageHeading from "~/components/PageHeading.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const teamMenu = ref(false);
 </script>

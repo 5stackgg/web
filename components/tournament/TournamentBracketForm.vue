@@ -149,28 +149,31 @@ export default {
       const tournamentOptions = this.tournament.options;
 
       await (this as any).$apollo.mutate({
-        variables: setupOptionsVariables({
-          // Restricted fields - use tournament defaults
-          mr: tournamentOptions.mr,
-          type: tournamentOptions.type,
-          regions: tournamentOptions.regions || [],
-          map_pool_id: mapPoolId || tournamentOptions.map_pool.id,
-          // Allowed fields - use from form
-          best_of: parseInt(form.best_of),
-          knife_round: form.knife_round,
-          default_models: form.default_models,
-          overtime: form.overtime,
-          coaches: form.coaches,
-          region_veto: form.region_veto,
-          number_of_substitutes: form.number_of_substitutes,
-          timeout_setting: form.timeout_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          tv_delay: form.tv_delay,
-          check_in_setting: form.check_in_setting,
-        }, {
-          matchOptionsId: matchOptionsId,
-        }),
+        variables: setupOptionsVariables(
+          {
+            // Restricted fields - use tournament defaults
+            mr: tournamentOptions.mr,
+            type: tournamentOptions.type,
+            regions: tournamentOptions.regions || [],
+            map_pool_id: mapPoolId || tournamentOptions.map_pool.id,
+            // Allowed fields - use from form
+            best_of: parseInt(form.best_of),
+            knife_round: form.knife_round,
+            default_models: form.default_models,
+            overtime: form.overtime,
+            coaches: form.coaches,
+            region_veto: form.region_veto,
+            number_of_substitutes: form.number_of_substitutes,
+            timeout_setting: form.timeout_setting,
+            ready_setting: form.ready_setting,
+            tech_timeout_setting: form.tech_timeout_setting,
+            tv_delay: form.tv_delay,
+            check_in_setting: form.check_in_setting,
+          },
+          {
+            matchOptionsId: matchOptionsId,
+          },
+        ),
         mutation: generateMutation({
           update_match_options_by_pk: [
             {

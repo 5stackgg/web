@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 
 definePageMeta({
   layout: "application-settings",
@@ -11,155 +11,156 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <div class="space-y-6">
-      <div>
-        <h3 class="text-lg font-medium">Branding</h3>
-        <p class="text-sm text-muted-foreground">
-          Customize your panel's logo, favicon, name, and theme colors.
-        </p>
-      </div>
-
       <!-- General -->
-      <AnimatedCard variant="gradient">
+      <Card variant="gradient">
         <div class="p-6 space-y-4">
-        <div>
-          <label class="text-sm font-medium">General</label>
-          <p class="text-sm text-muted-foreground">
-            Basic panel appearance settings.
-          </p>
-        </div>
-
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Brand Name</label>
-          <p class="text-sm text-muted-foreground">
-            Displayed in the sidebar and page title.
-          </p>
-          <Input v-model="brandName" placeholder="5Stack" class="max-w-sm" />
-        </div>
-
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Border Radius</label>
-          <p class="text-sm text-muted-foreground">
-            Controls the roundness of buttons, cards, and inputs.
-          </p>
-          <div class="flex items-center gap-3 max-w-sm">
-            <input
-              type="range"
-              v-model="borderRadius"
-              min="0"
-              max="1.5"
-              step="0.125"
-              class="flex-1"
-            />
-            <span class="text-sm font-mono w-16 text-right">{{ borderRadius }}rem</span>
+          <div>
+            <label class="text-sm font-medium">General</label>
+            <p class="text-sm text-muted-foreground">
+              Basic panel appearance settings.
+            </p>
           </div>
-        </div>
 
-        <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleSeparators()">
-          <div class="flex flex-row items-center justify-between p-4">
-            <div class="space-y-0.5">
-              <label class="text-sm font-medium cursor-pointer">Show Separators</label>
-              <p class="text-sm text-muted-foreground">
-                Display horizontal divider lines between sections.
-              </p>
-            </div>
-            <Switch
-              :model-value="showSeparators"
-              @update:model-value="toggleSeparators"
-            />
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Brand Name</label>
+            <p class="text-sm text-muted-foreground">
+              Displayed in the sidebar and page title.
+            </p>
+            <Input v-model="brandName" placeholder="5Stack" class="max-w-sm" />
           </div>
-        </AnimatedCard>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Logo</label>
-          <p class="text-sm text-muted-foreground">
-            Upload a custom logo for the sidebar. Recommended: square image, PNG
-            or SVG.
-          </p>
-          <div class="flex items-center gap-4">
-            <div
-              class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
-            >
-              <img
-                v-if="logoPreview"
-                :src="logoPreview"
-                class="max-w-full max-h-full object-contain"
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Border Radius</label>
+            <p class="text-sm text-muted-foreground">
+              Controls the roundness of buttons, cards, and inputs.
+            </p>
+            <div class="flex items-center gap-3 max-w-sm">
+              <input
+                type="range"
+                v-model="borderRadius"
+                min="0"
+                max="1.5"
+                step="0.125"
+                class="flex-1"
               />
-              <NuxtImg
-                v-else
-                src="/favicon/64.png"
-                class="max-w-full max-h-full"
-              />
-            </div>
-            <div class="flex gap-2">
-              <Button size="sm" @click="$refs.logoInput.click()">
-                Upload Logo
-              </Button>
-              <Button
-                v-if="logoPreview"
-                size="sm"
-                variant="outline"
-                @click="removeLogo"
+              <span class="text-sm font-mono w-16 text-right"
+                >{{ borderRadius }}rem</span
               >
-                Remove
-              </Button>
             </div>
-            <input
-              ref="logoInput"
-              type="file"
-              accept="image/png,image/jpeg,image/svg+xml,image/webp"
-              class="hidden"
-              @change="handleLogoUpload"
-            />
           </div>
-        </div>
 
-        <div class="space-y-2">
-          <label class="text-sm font-medium">Favicon</label>
-          <p class="text-sm text-muted-foreground">
-            Upload a custom favicon. Recommended: square image, PNG or ICO.
-          </p>
-          <div class="flex items-center gap-4">
-            <div
-              class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
-            >
-              <img
-                v-if="faviconPreview"
-                :src="faviconPreview"
-                class="max-w-full max-h-full object-contain"
-              />
-              <NuxtImg
-                v-else
-                src="/favicon/64.png"
-                class="max-w-full max-h-full"
+          <Card
+            variant="gradient"
+            class="cursor-pointer"
+            @click="toggleSeparators()"
+          >
+            <div class="flex flex-row items-center justify-between p-4">
+              <div class="space-y-0.5">
+                <label class="text-sm font-medium cursor-pointer"
+                  >Show Separators</label
+                >
+                <p class="text-sm text-muted-foreground">
+                  Display horizontal divider lines between sections.
+                </p>
+              </div>
+              <Switch
+                :model-value="showSeparators"
+                @update:model-value="toggleSeparators"
               />
             </div>
-            <div class="flex gap-2">
-              <Button size="sm" @click="$refs.faviconInput.click()">
-                Upload Favicon
-              </Button>
-              <Button
-                v-if="faviconPreview"
-                size="sm"
-                variant="outline"
-                @click="removeFavicon"
+          </Card>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Logo</label>
+            <p class="text-sm text-muted-foreground">
+              Upload a custom logo for the sidebar. Recommended: square image,
+              PNG or SVG.
+            </p>
+            <div class="flex items-center gap-4">
+              <div
+                class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
               >
-                Remove
-              </Button>
+                <img
+                  v-if="logoPreview"
+                  :src="logoPreview"
+                  class="max-w-full max-h-full object-contain"
+                />
+                <NuxtImg
+                  v-else
+                  src="/favicon/64.png"
+                  class="max-w-full max-h-full"
+                />
+              </div>
+              <div class="flex gap-2">
+                <Button size="sm" @click="$refs.logoInput.click()">
+                  Upload Logo
+                </Button>
+                <Button
+                  v-if="logoPreview"
+                  size="sm"
+                  variant="outline"
+                  @click="removeLogo"
+                >
+                  Remove
+                </Button>
+              </div>
+              <input
+                ref="logoInput"
+                type="file"
+                accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                class="hidden"
+                @change="handleLogoUpload"
+              />
             </div>
-            <input
-              ref="faviconInput"
-              type="file"
-              accept="image/png,image/jpeg,image/x-icon,image/webp"
-              class="hidden"
-              @change="handleFaviconUpload"
-            />
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium">Favicon</label>
+            <p class="text-sm text-muted-foreground">
+              Upload a custom favicon. Recommended: square image, PNG or ICO.
+            </p>
+            <div class="flex items-center gap-4">
+              <div
+                class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
+              >
+                <img
+                  v-if="faviconPreview"
+                  :src="faviconPreview"
+                  class="max-w-full max-h-full object-contain"
+                />
+                <NuxtImg
+                  v-else
+                  src="/favicon/64.png"
+                  class="max-w-full max-h-full"
+                />
+              </div>
+              <div class="flex gap-2">
+                <Button size="sm" @click="$refs.faviconInput.click()">
+                  Upload Favicon
+                </Button>
+                <Button
+                  v-if="faviconPreview"
+                  size="sm"
+                  variant="outline"
+                  @click="removeFavicon"
+                >
+                  Remove
+                </Button>
+              </div>
+              <input
+                ref="faviconInput"
+                type="file"
+                accept="image/png,image/jpeg,image/x-icon,image/webp"
+                class="hidden"
+                @change="handleFaviconUpload"
+              />
+            </div>
           </div>
         </div>
-        </div>
-      </AnimatedCard>
+      </Card>
 
       <!-- Login Page -->
-      <AnimatedCard variant="gradient">
+      <Card variant="gradient">
         <div class="p-6 space-y-4">
           <div>
             <label class="text-sm font-medium">Login Page</label>
@@ -168,10 +169,16 @@ definePageMeta({
             </p>
           </div>
 
-          <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleLoginFooter()">
+          <Card
+            variant="gradient"
+            class="cursor-pointer"
+            @click="toggleLoginFooter()"
+          >
             <div class="flex flex-row items-center justify-between p-4">
               <div class="space-y-0.5">
-                <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
+                <label class="text-sm font-medium cursor-pointer"
+                  >Show Login Footer</label
+                >
                 <p class="text-sm text-muted-foreground">
                   Display a footer link on the login page.
                 </p>
@@ -181,22 +188,30 @@ definePageMeta({
                 @update:model-value="toggleLoginFooter"
               />
             </div>
-          </AnimatedCard>
+          </Card>
 
           <div class="space-y-2">
             <label class="text-sm font-medium">Footer Text</label>
-            <Input v-model="loginFooterText" placeholder="5stack.gg" class="max-w-sm" />
+            <Input
+              v-model="loginFooterText"
+              placeholder="5stack.gg"
+              class="max-w-sm"
+            />
           </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium">Footer URL</label>
-            <Input v-model="loginFooterUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
+            <Input
+              v-model="loginFooterUrl"
+              placeholder="https://github.com/5stackgg/5stack-panel"
+              class="max-w-sm"
+            />
           </div>
         </div>
-      </AnimatedCard>
+      </Card>
 
       <!-- Theme Colors -->
-      <AnimatedCard variant="gradient">
+      <Card variant="gradient">
         <div class="p-6 space-y-4">
           <div>
             <label class="text-sm font-medium">Theme Colors</label>
@@ -252,14 +267,20 @@ definePageMeta({
             </div>
           </div>
         </div>
-      </AnimatedCard>
+      </Card>
 
       <!-- Actions -->
       <div class="flex gap-2 flex-wrap">
         <Button @click="saveAll" :disabled="saving"> Save Branding </Button>
-        <Button variant="destructive" @click="resetAll"> Reset to Defaults </Button>
-        <Button variant="outline" @click="exportTheme" :disabled="exporting"> Export Theme </Button>
-        <Button variant="outline" @click="$refs.importInput.click()"> Import Theme </Button>
+        <Button variant="destructive" @click="resetAll">
+          Reset to Defaults
+        </Button>
+        <Button variant="outline" @click="exportTheme" :disabled="exporting">
+          Export Theme
+        </Button>
+        <Button variant="outline" @click="$refs.importInput.click()">
+          Import Theme
+        </Button>
         <input
           ref="importInput"
           type="file"
@@ -273,10 +294,7 @@ definePageMeta({
 </template>
 
 <script lang="ts">
-import {
-  settings_constraint,
-  settings_update_column,
-} from "~/generated/zeus";
+import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 
@@ -295,45 +313,153 @@ const lightColorSections: ColorSection[] = [
   {
     title: "Core",
     fields: [
-      { key: "public.color_background", label: "Background", default: "0 0% 100%" },
-      { key: "public.color_foreground", label: "Foreground (text)", default: "240 10% 3.9%" },
-      { key: "public.color_primary", label: "Primary (buttons)", default: "240 5.9% 10%" },
-      { key: "public.color_primary_foreground", label: "Primary Foreground (button text)", default: "0 0% 98%" },
-      { key: "public.color_secondary", label: "Secondary", default: "240 4.8% 95.9%" },
-      { key: "public.color_secondary_foreground", label: "Secondary Foreground", default: "240 5.9% 10%" },
-      { key: "public.color_accent", label: "Accent (selected items)", default: "240 4.8% 95.9%" },
-      { key: "public.color_accent_foreground", label: "Accent Foreground", default: "240 5.9% 10%" },
-      { key: "public.color_muted", label: "Muted (subtle backgrounds)", default: "240 4.8% 95.9%" },
-      { key: "public.color_muted_foreground", label: "Muted Foreground (secondary text)", default: "240 3.8% 46.1%" },
-      { key: "public.color_destructive", label: "Destructive (delete/error)", default: "0 84.2% 60.2%" },
-      { key: "public.color_destructive_foreground", label: "Destructive Foreground", default: "0 0% 98%" },
+      {
+        key: "public.color_background",
+        label: "Background",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_foreground",
+        label: "Foreground (text)",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_primary",
+        label: "Primary (buttons)",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_primary_foreground",
+        label: "Primary Foreground (button text)",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_secondary",
+        label: "Secondary",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_secondary_foreground",
+        label: "Secondary Foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_accent",
+        label: "Accent (selected items)",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_accent_foreground",
+        label: "Accent Foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_muted",
+        label: "Muted (subtle backgrounds)",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_muted_foreground",
+        label: "Muted Foreground (secondary text)",
+        default: "240 3.8% 46.1%",
+      },
+      {
+        key: "public.color_destructive",
+        label: "Destructive (delete/error)",
+        default: "0 84.2% 60.2%",
+      },
+      {
+        key: "public.color_destructive_foreground",
+        label: "Destructive Foreground",
+        default: "0 0% 98%",
+      },
       { key: "public.color_warning", label: "Warning", default: "36 100% 50%" },
-      { key: "public.color_warning_foreground", label: "Warning Foreground", default: "0 0% 100%" },
+      {
+        key: "public.color_warning_foreground",
+        label: "Warning Foreground",
+        default: "0 0% 100%",
+      },
     ],
   },
   {
     title: "Cards & Borders",
     fields: [
-      { key: "public.color_card", label: "Card Background", default: "0 0% 100%" },
-      { key: "public.color_card_foreground", label: "Card Text", default: "240 10% 3.9%" },
+      {
+        key: "public.color_card",
+        label: "Card Background",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_card_foreground",
+        label: "Card Text",
+        default: "240 10% 3.9%",
+      },
       { key: "public.color_border", label: "Borders", default: "240 5.9% 90%" },
-      { key: "public.color_popover", label: "Popover Background", default: "0 0% 100%" },
-      { key: "public.color_popover_foreground", label: "Popover Text", default: "240 10% 3.9%" },
-      { key: "public.color_input", label: "Input Borders", default: "240 5.9% 90%" },
-      { key: "public.color_ring", label: "Focus Ring", default: "240 10% 3.9%" },
+      {
+        key: "public.color_popover",
+        label: "Popover Background",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_popover_foreground",
+        label: "Popover Text",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_input",
+        label: "Input Borders",
+        default: "240 5.9% 90%",
+      },
+      {
+        key: "public.color_ring",
+        label: "Focus Ring",
+        default: "240 10% 3.9%",
+      },
     ],
   },
   {
     title: "Sidebar",
     fields: [
-      { key: "public.color_sidebar_background", label: "Sidebar Background", default: "0 0% 98%" },
-      { key: "public.color_sidebar_foreground", label: "Sidebar Text", default: "240 5.3% 26.1%" },
-      { key: "public.color_sidebar_accent", label: "Sidebar Active/Hover", default: "240 4.8% 95.9%" },
-      { key: "public.color_sidebar_accent_foreground", label: "Sidebar Active Text", default: "240 5.9% 10%" },
-      { key: "public.color_sidebar_border", label: "Sidebar Border", default: "220 13% 91%" },
-      { key: "public.color_sidebar_primary", label: "Sidebar Primary", default: "240 5.9% 10%" },
-      { key: "public.color_sidebar_primary_foreground", label: "Sidebar Primary Text", default: "0 0% 98%" },
-      { key: "public.color_sidebar_ring", label: "Sidebar Focus Ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_sidebar_background",
+        label: "Sidebar Background",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_sidebar_foreground",
+        label: "Sidebar Text",
+        default: "240 5.3% 26.1%",
+      },
+      {
+        key: "public.color_sidebar_accent",
+        label: "Sidebar Active/Hover",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_sidebar_accent_foreground",
+        label: "Sidebar Active Text",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_sidebar_border",
+        label: "Sidebar Border",
+        default: "220 13% 91%",
+      },
+      {
+        key: "public.color_sidebar_primary",
+        label: "Sidebar Primary",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_sidebar_primary_foreground",
+        label: "Sidebar Primary Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_sidebar_ring",
+        label: "Sidebar Focus Ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
 ];
@@ -342,45 +468,161 @@ const darkColorSections: ColorSection[] = [
   {
     title: "Core",
     fields: [
-      { key: "public.color_dark_background", label: "Background", default: "240 10% 3.9%" },
-      { key: "public.color_dark_foreground", label: "Foreground (text)", default: "0 0% 98%" },
-      { key: "public.color_dark_primary", label: "Primary (buttons)", default: "0 0% 98%" },
-      { key: "public.color_dark_primary_foreground", label: "Primary Foreground (button text)", default: "240 5.9% 10%" },
-      { key: "public.color_dark_secondary", label: "Secondary", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_secondary_foreground", label: "Secondary Foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_accent", label: "Accent (selected items)", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_accent_foreground", label: "Accent Foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_muted", label: "Muted (subtle backgrounds)", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_muted_foreground", label: "Muted Foreground (secondary text)", default: "240 5% 64.9%" },
-      { key: "public.color_dark_destructive", label: "Destructive (delete/error)", default: "0 62.8% 30.6%" },
-      { key: "public.color_dark_destructive_foreground", label: "Destructive Foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_warning", label: "Warning", default: "36 100% 30%" },
-      { key: "public.color_dark_warning_foreground", label: "Warning Foreground", default: "0 0% 100%" },
+      {
+        key: "public.color_dark_background",
+        label: "Background",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_foreground",
+        label: "Foreground (text)",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_primary",
+        label: "Primary (buttons)",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_primary_foreground",
+        label: "Primary Foreground (button text)",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_dark_secondary",
+        label: "Secondary",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_secondary_foreground",
+        label: "Secondary Foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_accent",
+        label: "Accent (selected items)",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_accent_foreground",
+        label: "Accent Foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_muted",
+        label: "Muted (subtle backgrounds)",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_muted_foreground",
+        label: "Muted Foreground (secondary text)",
+        default: "240 5% 64.9%",
+      },
+      {
+        key: "public.color_dark_destructive",
+        label: "Destructive (delete/error)",
+        default: "0 62.8% 30.6%",
+      },
+      {
+        key: "public.color_dark_destructive_foreground",
+        label: "Destructive Foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_warning",
+        label: "Warning",
+        default: "36 100% 30%",
+      },
+      {
+        key: "public.color_dark_warning_foreground",
+        label: "Warning Foreground",
+        default: "0 0% 100%",
+      },
     ],
   },
   {
     title: "Cards & Borders",
     fields: [
-      { key: "public.color_dark_card", label: "Card Background", default: "240 10% 3.9%" },
-      { key: "public.color_dark_card_foreground", label: "Card Text", default: "0 0% 98%" },
-      { key: "public.color_dark_border", label: "Borders", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_popover", label: "Popover Background", default: "240 10% 3.9%" },
-      { key: "public.color_dark_popover_foreground", label: "Popover Text", default: "0 0% 98%" },
-      { key: "public.color_dark_input", label: "Input Borders", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_ring", label: "Focus Ring", default: "240 4.9% 83.9%" },
+      {
+        key: "public.color_dark_card",
+        label: "Card Background",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_card_foreground",
+        label: "Card Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_border",
+        label: "Borders",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_popover",
+        label: "Popover Background",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_popover_foreground",
+        label: "Popover Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_input",
+        label: "Input Borders",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_ring",
+        label: "Focus Ring",
+        default: "240 4.9% 83.9%",
+      },
     ],
   },
   {
     title: "Sidebar",
     fields: [
-      { key: "public.color_dark_sidebar_background", label: "Sidebar Background", default: "240 5.9% 10%" },
-      { key: "public.color_dark_sidebar_foreground", label: "Sidebar Text", default: "240 4.8% 95.9%" },
-      { key: "public.color_dark_sidebar_accent", label: "Sidebar Active/Hover", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_sidebar_accent_foreground", label: "Sidebar Active Text", default: "240 4.8% 95.9%" },
-      { key: "public.color_dark_sidebar_border", label: "Sidebar Border", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_sidebar_primary", label: "Sidebar Primary", default: "224.3 76.3% 48%" },
-      { key: "public.color_dark_sidebar_primary_foreground", label: "Sidebar Primary Text", default: "0 0% 100%" },
-      { key: "public.color_dark_sidebar_ring", label: "Sidebar Focus Ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_dark_sidebar_background",
+        label: "Sidebar Background",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_dark_sidebar_foreground",
+        label: "Sidebar Text",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_accent",
+        label: "Sidebar Active/Hover",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_accent_foreground",
+        label: "Sidebar Active Text",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_border",
+        label: "Sidebar Border",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_primary",
+        label: "Sidebar Primary",
+        default: "224.3 76.3% 48%",
+      },
+      {
+        key: "public.color_dark_sidebar_primary_foreground",
+        label: "Sidebar Primary Text",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_dark_sidebar_ring",
+        label: "Sidebar Focus Ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
 ];
@@ -403,16 +645,20 @@ export default {
       return useApplicationSettingsStore().settings;
     },
     showSeparators() {
-      return this.settings.find(
-        (s: { name: string; value: string | null }) =>
-          s.name === "public.show_separators",
-      )?.value !== "false";
+      return (
+        this.settings.find(
+          (s: { name: string; value: string | null }) =>
+            s.name === "public.show_separators",
+        )?.value !== "false"
+      );
     },
     loginShowFooter() {
-      return this.settings.find(
-        (s: { name: string; value: string | null }) =>
-          s.name === "public.login_show_footer",
-      )?.value !== "false";
+      return (
+        this.settings.find(
+          (s: { name: string; value: string | null }) =>
+            s.name === "public.login_show_footer",
+        )?.value !== "false"
+      );
     },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
@@ -421,9 +667,7 @@ export default {
       const setting = this.settings.find(
         (s: { name: string }) => s.name === "public.logo_url",
       );
-      return setting?.value
-        ? `https://${this.apiDomain}/branding/logo`
-        : null;
+      return setting?.value ? `https://${this.apiDomain}/branding/logo` : null;
     },
     faviconPreview() {
       const setting = this.settings.find(
@@ -441,9 +685,7 @@ export default {
     settings: {
       immediate: true,
       handler(newVal: Array<{ name: string; value: string }>) {
-        const brandSetting = newVal.find(
-          (s) => s.name === "public.brand_name",
-        );
+        const brandSetting = newVal.find((s) => s.name === "public.brand_name");
         if (brandSetting) {
           this.brandName = brandSetting.value;
         }
@@ -602,13 +844,22 @@ export default {
           objects.push({ name: "public.brand_name", value: this.brandName });
         }
 
-        objects.push({ name: "public.border_radius", value: this.borderRadius + "rem" });
+        objects.push({
+          name: "public.border_radius",
+          value: this.borderRadius + "rem",
+        });
 
         if (this.loginFooterText) {
-          objects.push({ name: "public.login_footer_text", value: this.loginFooterText });
+          objects.push({
+            name: "public.login_footer_text",
+            value: this.loginFooterText,
+          });
         }
         if (this.loginFooterUrl) {
-          objects.push({ name: "public.login_footer_url", value: this.loginFooterUrl });
+          objects.push({
+            name: "public.login_footer_url",
+            value: this.loginFooterUrl,
+          });
         }
         for (const [key, value] of Object.entries(this.colorValues)) {
           if (value) {
@@ -647,7 +898,14 @@ export default {
     async resetAll() {
       try {
         // Delete all branding settings
-        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators", "public.login_footer_text", "public.login_footer_url", "public.login_show_footer"];
+        const brandingKeys: string[] = [
+          "public.brand_name",
+          "public.border_radius",
+          "public.show_separators",
+          "public.login_footer_text",
+          "public.login_footer_url",
+          "public.login_show_footer",
+        ];
         for (const sections of [lightColorSections, darkColorSections]) {
           for (const section of sections) {
             for (const field of section.fields) {
@@ -698,7 +956,11 @@ export default {
         reader.readAsDataURL(blob);
       });
     },
-    base64ToFile(dataUri: string, name: string, fallbackMimeType: string): File {
+    base64ToFile(
+      dataUri: string,
+      name: string,
+      fallbackMimeType: string,
+    ): File {
       const [header, base64] = dataUri.split(",");
       const mimeMatch = header.match(/:(.*?);/);
       const mime = mimeMatch ? mimeMatch[1] : fallbackMimeType;
@@ -724,22 +986,36 @@ export default {
 
         // Fetch logo and favicon as base64
         try {
-          const logoRes = await fetch(`https://${this.apiDomain}/branding/logo`, { credentials: "include" });
+          const logoRes = await fetch(
+            `https://${this.apiDomain}/branding/logo`,
+            { credentials: "include" },
+          );
           if (logoRes.ok) {
             const blob = await logoRes.blob();
-            data.logo = { data: await this.blobToBase64(blob), mimeType: blob.type };
+            data.logo = {
+              data: await this.blobToBase64(blob),
+              mimeType: blob.type,
+            };
           }
         } catch {}
 
         try {
-          const faviconRes = await fetch(`https://${this.apiDomain}/branding/favicon`, { credentials: "include" });
+          const faviconRes = await fetch(
+            `https://${this.apiDomain}/branding/favicon`,
+            { credentials: "include" },
+          );
           if (faviconRes.ok) {
             const blob = await faviconRes.blob();
-            data.favicon = { data: await this.blobToBase64(blob), mimeType: blob.type };
+            data.favicon = {
+              data: await this.blobToBase64(blob),
+              mimeType: blob.type,
+            };
           }
         } catch {}
 
-        const jsonBlob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
         const url = URL.createObjectURL(jsonBlob);
         const a = document.createElement("a");
         a.href = url;
@@ -774,10 +1050,16 @@ export default {
         if (data.borderRadius) {
           this.borderRadius = data.borderRadius;
         }
-        if (typeof data.showSeparators === "boolean" && data.showSeparators !== this.showSeparators) {
+        if (
+          typeof data.showSeparators === "boolean" &&
+          data.showSeparators !== this.showSeparators
+        ) {
           this.toggleSeparators();
         }
-        if (typeof data.loginShowFooter === "boolean" && data.loginShowFooter !== this.loginShowFooter) {
+        if (
+          typeof data.loginShowFooter === "boolean" &&
+          data.loginShowFooter !== this.loginShowFooter
+        ) {
           this.toggleLoginFooter();
         }
         if (data.loginFooterText) {
@@ -788,7 +1070,11 @@ export default {
         }
         if (typeof data.colors === "object") {
           for (const [key, value] of Object.entries(data.colors)) {
-            if (typeof key === "string" && typeof value === "string" && key.startsWith("public.color_")) {
+            if (
+              typeof key === "string" &&
+              typeof value === "string" &&
+              key.startsWith("public.color_")
+            ) {
               this.colorValues[key] = value;
             }
           }
@@ -796,13 +1082,21 @@ export default {
 
         // Import logo
         if (data.logo?.data) {
-          const logoFile = this.base64ToFile(data.logo.data, "logo.png", data.logo.mimeType || "image/png");
+          const logoFile = this.base64ToFile(
+            data.logo.data,
+            "logo.png",
+            data.logo.mimeType || "image/png",
+          );
           await this.uploadBrandingFile("logo", logoFile);
         }
 
         // Import favicon
         if (data.favicon?.data) {
-          const faviconFile = this.base64ToFile(data.favicon.data, "favicon.png", data.favicon.mimeType || "image/png");
+          const faviconFile = this.base64ToFile(
+            data.favicon.data,
+            "favicon.png",
+            data.favicon.mimeType || "image/png",
+          );
           await this.uploadBrandingFile("favicon", faviconFile);
         }
 

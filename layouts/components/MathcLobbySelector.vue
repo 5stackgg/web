@@ -4,16 +4,16 @@ import MatchLobby from "./MatchLobby.vue";
 
 <template>
   <div
-    class="hidden md:flex gap-2 p-1 rounded-sm border transition-colors bg-background"
+    class="hidden md:flex h-9 items-center gap-2 rounded-sm border transition-colors bg-background"
     :class="{
-      'flex-col': showSwitch,
+      'flex-col h-auto': showSwitch,
       'cursor-pointer': canRoute,
       'hover:border-gray-600': canRoute,
     }"
     @click="goToMatch"
   >
     <div
-      class="flex items-center justify-center px-4 py-1 gap-1 bg-accent/70 text-green-400 text-xs font-medium rounded-sm"
+      class="flex h-9 min-w-0 items-center justify-center gap-1 rounded-sm bg-accent/70 px-4 text-green-400 text-xs font-medium"
       :class="{
         'animate-pulse': pulse,
       }"

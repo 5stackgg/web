@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -18,9 +17,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-6">
-      <TournamentForm :tournament="tournament"></TournamentForm>
-    </AnimatedCard>
+    <TournamentForm :tournament="tournament"></TournamentForm>
   </PageTransition>
 </template>
 

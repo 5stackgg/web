@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
 import { useBranding } from "~/composables/useBranding";
 
 definePageMeta({
   layout: "public",
 });
 
-const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } = useBranding();
+const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
+  useBranding();
 </script>
 
 <template>
@@ -28,9 +29,11 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
     </PageTransition>
 
     <PageTransition :delay="100">
-      <AnimatedCard variant="gradient" class="w-full max-w-md border-0">
+      <div class="w-full max-w-md">
         <CardHeader>
-          <CardTitle class="text-3xl font-bold text-center">{{ brandName || '5Stack' }}</CardTitle>
+          <CardTitle class="text-3xl font-bold text-center">{{
+            brandName || "5Stack"
+          }}</CardTitle>
         </CardHeader>
         <CardContent class="flex flex-col items-center">
           <img
@@ -40,7 +43,7 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
             @click="signIn"
           />
         </CardContent>
-      </AnimatedCard>
+      </div>
     </PageTransition>
 
     <PageTransition v-if="loginShowFooter" :delay="200">
@@ -51,8 +54,15 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
           rel="noopener noreferrer"
           class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          {{ loginFooterText || '5stack.gg' }}
-          <GithubLogoIcon v-if="(loginFooterUrl || 'https://github.com/5stackgg/5stack-panel').includes('github.com')" class="w-4 h-4" />
+          {{ loginFooterText || "5stack.gg" }}
+          <GithubLogoIcon
+            v-if="
+              (
+                loginFooterUrl || 'https://github.com/5stackgg/5stack-panel'
+              ).includes('github.com')
+            "
+            class="w-4 h-4"
+          />
           <ExternalLink v-else class="w-4 h-4" />
         </a>
       </div>

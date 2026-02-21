@@ -14,13 +14,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 definePageMeta({
   layout: "profile-settings",
 });
 
-const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+const showSeparators = computed(
+  () => useApplicationSettingsStore().showSeparators,
+);
 </script>
 
 <template>

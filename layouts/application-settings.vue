@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
-const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+const showSeparators = computed(
+  () => useApplicationSettingsStore().showSeparators,
+);
 
 const isDev = computed(() => {
   const domain = useRuntimeConfig().public.webDomain;
@@ -85,19 +87,9 @@ const isDev = computed(() => {
           </nuxt-link>
         </nav>
       </aside>
-      <AnimatedCard
-        variant="gradient"
-        :class="[
-          'flex-1 p-6',
-          $route.name !== 'settings-application-map-pools' && $route.name !== 'settings-application-branding'
-            ? 'lg:max-w-2xl'
-            : '',
-        ]"
-      >
-        <div class="space-y-6">
-          <slot />
-        </div>
-      </AnimatedCard>
+      <div class="space-y-6 flex-1 min-w-0">
+        <slot />
+      </div>
     </div>
   </default>
 </template>

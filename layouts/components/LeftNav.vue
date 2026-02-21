@@ -39,7 +39,9 @@ import { useMatchContext } from "~/composables/useMatchContext";
           :src="customLogoUrl || '/favicon/64.png'"
           v-if="isMobile || !isPWA || !sideBarOpen"
         />
-        <span v-if="!isPWA" class="font-semibold text-sm truncate"> {{ customBrandName || $t("layouts.app_nav.brand") }} </span>
+        <span v-if="!isPWA" class="font-semibold text-sm truncate">
+          {{ customBrandName || $t("layouts.app_nav.brand") }}
+        </span>
       </nuxt-link>
     </SidebarHeader>
     <SidebarContent>
@@ -134,7 +136,9 @@ import { useMatchContext } from "~/composables/useMatchContext";
               <NuxtLink
                 :to="{ name: 'tournaments' }"
                 :class="{
-                  'router-link-active': isRouteActive('tournaments') || useMatchContext().value?.tournament != null,
+                  'router-link-active':
+                    isRouteActive('tournaments') ||
+                    useMatchContext().value?.tournament != null,
                 }"
               >
                 <TournamentBracket />
@@ -185,7 +189,8 @@ import { useMatchContext } from "~/composables/useMatchContext";
               <NuxtLink
                 :to="{ name: 'players' }"
                 :class="{
-                  'router-link-active': isRouteActive('players') && !$route.path.startsWith('/me'),
+                  'router-link-active':
+                    isRouteActive('players') && !$route.path.startsWith('/me'),
                 }"
               >
                 <Users />
@@ -231,7 +236,10 @@ import { useMatchContext } from "~/composables/useMatchContext";
       </SidebarGroup>
 
       <Separator
-        v-if="showSeparators && (isAdmin || isMatchOrganizer || isTournamentOrganizer)"
+        v-if="
+          showSeparators &&
+          (isAdmin || isMatchOrganizer || isTournamentOrganizer)
+        "
         class="mx-4 w-auto"
       />
 
@@ -521,7 +529,11 @@ import { useMatchContext } from "~/composables/useMatchContext";
     </SidebarContent>
     <SidebarFooter>
       <SidebarMenu>
-        <SidebarMenuItem v-if="me?.role === e_player_roles_enum.administrator && showReportIssue">
+        <SidebarMenuItem
+          v-if="
+            me?.role === e_player_roles_enum.administrator && showReportIssue
+          "
+        >
           <SidebarMenuButton
             as-child
             :tooltip="$t('layouts.app_nav.tooltips.report_issue')"

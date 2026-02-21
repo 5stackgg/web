@@ -2,7 +2,7 @@
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Switch } from "@/components/ui/switch";
 import { ExternalLink } from "lucide-vue-next";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 
 definePageMeta({
   layout: "application-settings",
@@ -12,7 +12,7 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-4">
-      <AnimatedCard variant="gradient">
+      <Card variant="gradient">
         <div class="p-6 space-y-6">
           <FormField
             v-slot="{ componentField }"
@@ -20,7 +20,9 @@ definePageMeta({
           >
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.streaming.minimum_role_to_spectate")
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_spectate",
+                )
               }}</FormLabel>
               <FormDescription>
                 {{
@@ -59,7 +61,9 @@ definePageMeta({
           >
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.streaming.minimum_role_to_stream")
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_stream",
+                )
               }}</FormLabel>
               <FormDescription>
                 {{
@@ -92,9 +96,9 @@ definePageMeta({
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </Card>
 
-      <AnimatedCard variant="gradient" class="cursor-pointer" @click="togglePlaycast">
+      <Card variant="gradient" class="cursor-pointer" @click="togglePlaycast">
         <div class="flex flex-row items-center justify-between p-4">
           <div class="space-y-0.5">
             <h4 class="text-base font-medium">
@@ -112,7 +116,9 @@ definePageMeta({
               class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors mt-1"
               @click.stop
             >
-              {{ $t("pages.settings.application.streaming.playcast_learn_more") }}
+              {{
+                $t("pages.settings.application.streaming.playcast_learn_more")
+              }}
               <ExternalLink class="w-3.5 h-3.5" />
             </a>
           </div>
@@ -121,7 +127,7 @@ definePageMeta({
             @update:model-value="togglePlaycast"
           />
         </div>
-      </AnimatedCard>
+      </Card>
 
       <div class="flex justify-start">
         <Button

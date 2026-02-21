@@ -5,7 +5,9 @@
     <BreadcrumbList>
       <BreadcrumbItem>
         <BreadcrumbLink as-child>
-          <NuxtLink :to="{ name: 'play' }" class="breadcrumb-link"> dashboard </NuxtLink>
+          <NuxtLink :to="{ name: 'play' }" class="breadcrumb-link">
+            dashboard
+          </NuxtLink>
         </BreadcrumbLink>
       </BreadcrumbItem>
 
@@ -47,11 +49,7 @@ export default {
       }> = [];
 
       // Tournament match: Dashboard > Tournaments > {name} > {match display}
-      if (
-        segments[0] === "matches" &&
-        segments[1] &&
-        mc.value?.tournament
-      ) {
+      if (segments[0] === "matches" && segments[1] && mc.value?.tournament) {
         breadcrumbs.push({
           text: "tournaments",
           to: "/tournaments",

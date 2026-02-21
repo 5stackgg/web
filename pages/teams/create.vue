@@ -2,7 +2,6 @@
 import PageHeading from "~/components/PageHeading.vue";
 import TeamForm from "~/components/teams/TeamForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 PageHeading;
 </script>
 

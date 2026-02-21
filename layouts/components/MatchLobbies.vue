@@ -12,7 +12,7 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
     <template v-if="myMatches.length > 1">
       <Popover v-model:open="choosingLobby">
         <PopoverTrigger>
-          <Button variant="outline" class="px-3 py-5">
+          <Button variant="outline" size="default" class="h-9 px-3">
             <ChevronDown class="h-4 w-4" />
           </Button>
         </PopoverTrigger>
@@ -45,7 +45,8 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
   <template v-else>
     <Button
       @click="createLobby"
-      class="relative group overflow-hidden rounded bg-transparent text-white shadow-lg hover:shadow px-5 py-4 transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+      size="default"
+      class="relative group h-9 overflow-hidden rounded bg-transparent px-5 text-white shadow-lg hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
     >
       <span
         class="absolute inset-0 rounded p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"

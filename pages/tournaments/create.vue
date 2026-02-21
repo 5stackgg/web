@@ -2,7 +2,6 @@
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import PageHeading from "~/components/PageHeading.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>

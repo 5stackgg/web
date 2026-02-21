@@ -87,7 +87,7 @@ const isDev = computed(() => {
           </nuxt-link>
         </nav>
       </aside>
-      <div class="space-y-6">
+      <div class="space-y-6 flex-1 min-w-0">
         <slot />
       </div>
     </div>

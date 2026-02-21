@@ -28,6 +28,7 @@ import { Separator } from "~/components/ui/separator";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 
 definePageMeta({
   alias: ["/me/:id?"],
@@ -323,10 +324,7 @@ const { isMobile } = useSidebar();
                   {{ $t("pages.players.detail.no_weapon_kills") }}
                 </p>
               </div>
-              <div
-                v-else
-                class="overflow-hidden rounded-lg border border-border/50"
-              >
+              <div v-else class="overflow-hidden rounded-lg">
                 <table class="w-full border-90">
                   <tbody>
                     <tr

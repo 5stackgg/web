@@ -54,7 +54,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div class="p-4 mb-4">
+    <Card variant="gradient" class="p-4 mb-4">
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold">
@@ -346,11 +346,11 @@ import Empty from "~/components/ui/empty/Empty.vue";
           </div>
         </form>
       </div>
-    </div>
+    </Card>
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
-    <div class="p-4 relative">
+    <Card variant="gradient" class="p-4 relative">
       <div v-if="loading" class="absolute top-4 left-4 z-10">
         <div
           class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
@@ -455,7 +455,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
           </TableRow>
         </TableBody>
       </Table>
-    </div>
+    </Card>
   </PageTransition>
 
   <Pagination

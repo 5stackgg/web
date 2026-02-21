@@ -36,9 +36,9 @@ import { markRaw } from "vue";
       v-for="config in gameTypeConfigs"
       :key="config.type"
       :value="config.type"
-      class="space-y-4"
+      class="space-y-4 w-full"
     >
-      <Card>
+      <Card class="w-full">
         <CardHeader class="flex flex-row items-center justify-between">
           <CardTitle>{{ formatTypeName(config.type) }} Configuration</CardTitle>
           <div class="flex gap-2">
@@ -76,13 +76,13 @@ import { markRaw } from "vue";
           </div>
         </CardHeader>
         <CardContent>
-          <form @submit.prevent="submitForm(config)" class="space-y-4">
-            <div class="space-y-2">
+          <form @submit.prevent="submitForm(config)" class="space-y-4 w-full">
+            <div class="space-y-2 w-full">
               <label class="text-sm font-medium">{{
                 $t("game_type_configs.form.cfg")
               }}</label>
               <div
-                class="border rounded-md overflow-hidden"
+                class="border rounded-md overflow-hidden w-full"
                 style="height: 500px"
               >
                 <div

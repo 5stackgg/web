@@ -8,14 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
-import SteamIcon from "~/components/icons/SteamIcon.vue";
-import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import { kdrStrokeColor } from "~/utilities/kdrColor";
 import { PlayIcon, MoreHorizontal } from "lucide-vue-next";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -24,8 +23,8 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
 } from "~/components/ui/dropdown-menu";
+import { Separator } from "~/components/ui/separator";
 
 definePageMeta({
   alias: ["/me/:id?"],
@@ -155,7 +154,7 @@ const { isMobile } = useSidebar();
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Performance Stats -->
         <PageTransition :delay="100">
-          <div class="flex flex-col h-full p-4">
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardContent class="flex-1 p-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
                 <!-- Win Rate Column -->
@@ -233,12 +232,12 @@ const { isMobile } = useSidebar();
                 </div>
               </div>
             </CardContent>
-          </div>
+          </AnimatedCard>
         </PageTransition>
 
         <!-- Elo History Chart -->
         <PageTransition :delay="200">
-          <div class="flex flex-col h-full p-4" v-if="player?.elo_history">
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4" v-if="player?.elo_history">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -268,7 +267,7 @@ const { isMobile } = useSidebar();
                 </div>
               </template>
             </CardContent>
-          </div>
+          </AnimatedCard>
         </PageTransition>
       </div>
 
@@ -278,7 +277,7 @@ const { isMobile } = useSidebar();
       >
         <!-- Recent Wins/Losses -->
         <PageTransition :delay="300">
-          <div class="flex flex-col h-full p-4">
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -292,12 +291,12 @@ const { isMobile } = useSidebar();
                 :steam_id="playerId"
               />
             </CardContent>
-          </div>
+          </AnimatedCard>
         </PageTransition>
 
         <!-- Weapon Kills -->
         <PageTransition :delay="500">
-          <div class="flex flex-col h-full p-4">
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -321,7 +320,7 @@ const { isMobile } = useSidebar();
                 v-else
                 class="overflow-hidden rounded-lg border border-border/50"
               >
-                <table class="w-full">
+                <table class="w-full border-90">
                   <tbody>
                     <tr
                       v-for="(weapon, index) in player.kills_by_weapons"
@@ -359,15 +358,15 @@ const { isMobile } = useSidebar();
                 </table>
               </div>
             </CardContent>
-          </div>
+          </AnimatedCard>
         </PageTransition>
       </div>
     </div>
 
-    <!-- Matches/Tournaments Section -->
+    <Separator />
+
     <PageTransition :delay="500">
-      <div class="p-4">
-        <Tabs default-value="matches">
+      <Tabs default-value="matches">
           <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
             <TabsTrigger
               value="matches"
@@ -382,18 +381,11 @@ const { isMobile } = useSidebar();
           </TabsList>
 
           <TabsContent value="matches">
-            <CardHeader>
-              <CardTitle class="text-xl font-bold">
-                {{ $t("pages.players.detail.matches") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="p-0">
-              <MatchesTable
+            <MatchesTable
                 :player="player"
                 :matches="playerWithMatches?.matches"
                 v-if="playerWithMatches?.matches"
               ></MatchesTable>
-            </CardContent>
             <Pagination
               :page="page"
               :per-page="perPage"
@@ -408,13 +400,7 @@ const { isMobile } = useSidebar();
           </TabsContent>
 
           <TabsContent value="tournaments">
-            <CardHeader>
-              <CardTitle class="text-xl font-bold">
-                {{ $t("pages.players.detail.tournaments") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="p-0">
-              <div
+            <div
                 v-if="!playerTournaments || playerTournaments.length === 0"
                 class="text-center py-8"
               >
@@ -429,10 +415,8 @@ const { isMobile } = useSidebar();
                   :tournament="tournament"
                 ></TournamentTableRow>
               </div>
-            </CardContent>
           </TabsContent>
         </Tabs>
-      </div>
     </PageTransition>
   </div>
 </template>
